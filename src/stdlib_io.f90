@@ -2,7 +2,7 @@ module stdlib_io
 use stdlib_types
 implicit none
 private
-public loadtxt, savetxt
+public :: loadtxt, savetxt
 
 contains
 
