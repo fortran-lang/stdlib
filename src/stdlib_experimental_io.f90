@@ -1,12 +1,31 @@
 module stdlib_experimental_io
-use iso_fortran_env, only: dp=>real64
+use iso_fortran_env, only: sp=>real32, dp=>real64
 implicit none
 private
 public :: loadtxt, savetxt
 
+interface loadtxt
+    module procedure sloadtxt
+    module procedure dloadtxt
+end interface
+
+interface savetxt
+    module procedure ssavetxt
+    module procedure dsavetxt
+end interface
+
 contains
 
-subroutine loadtxt(filename, d)
+subroutine sloadtxt(filename, d)
+character(len=*), intent(in) :: filename
+real(sp), allocatable, intent(out) :: d(:,:)
+real(dp), allocatable :: tmp(:,:)
+call dloadtxt(filename, tmp)
+allocate(d(size(tmp,1),size(tmp,2)))
+d = real(tmp,sp)
+end subroutine
+
+subroutine dloadtxt(filename, d)
 ! Loads a 2D array from a text file.
 !
 ! Arguments
@@ -15,7 +34,7 @@ subroutine loadtxt(filename, d)
 ! Filename to load the array from
 character(len=*), intent(in) :: filename
 ! The array 'd' will be automatically allocated with the correct dimensions
-real(dp), allocatable, intent(out) :: d(:, :)
+real(dp), allocatable, intent(out) :: d(:,:)
 !
 ! Example
 ! -------
@@ -67,14 +86,20 @@ end do
 close(s)
 end subroutine
 
-subroutine savetxt(filename, d)
+subroutine ssavetxt(filename, d)
+character(len=*), intent(in) :: filename
+real(sp), intent(in) :: d(:,:)
+call dsavetxt(filename, real(d,dp))
+end subroutine
+
+subroutine dsavetxt(filename, d)
 ! Saves a 2D array into a textfile.
 !
 ! Arguments
 ! ---------
 !
 character(len=*), intent(in) :: filename  ! File to save the array to
-real(dp), intent(in) :: d(:, :)           ! The 2D array to save
+real(dp), intent(in) :: d(:,:)           ! The 2D array to save
 !
 ! Example
 ! -------
