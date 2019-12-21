@@ -1,5 +1,5 @@
 module stdlib_io
-use stdlib_types
+use iso_fortran_env, only: dp=>real64
 implicit none
 private
 public :: loadtxt, savetxt

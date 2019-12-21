@@ -1,5 +1,5 @@
 program test_loadtxt
-use stdlib_types, only: dp
+use iso_fortran_env, only: dp=>real64
 use stdlib_io, only: loadtxt, savetxt
 use stdlib_error, only: assert
 implicit none

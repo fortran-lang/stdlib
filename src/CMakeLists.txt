@@ -1,5 +1,4 @@
 set(SRC
-    stdlib_types.f90
     stdlib_io.f90
     stdlib_error.f90
 )
