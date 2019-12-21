@@ -1,7 +1,7 @@
 module stdlib_error
 implicit none
 private
-public assert, error_stop
+public :: assert, error_stop
 
 contains
 
