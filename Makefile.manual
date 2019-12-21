@@ -1,0 +1,18 @@
+# Fortran stdlib Makefile
+
+FC = gfortran
+FCFLAGS=-O0
+
+.PHONY: all clean
+
+all: stdlib tests 
+
+stdlib:
+	$(MAKE) -f Makefile.manual FC=${FC} FCFLAGS=${FCFLAGS} --directory=src/lib
+
+tests: stdlib
+	$(MAKE) -f Makefile.manual FC=${FC} FCFLAGS=${FCFLAGS} --directory=src/tests
+
+clean:
+	$(MAKE) -f Makefile.manual clean --directory=src/lib
+	$(MAKE) -f Makefile.manual clean --directory=src/tests
