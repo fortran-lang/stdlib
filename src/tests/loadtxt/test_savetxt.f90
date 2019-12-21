@@ -1,7 +1,7 @@
 program test_loadtxt
 use iso_fortran_env, only: dp=>real64
-use stdlib_io, only: loadtxt, savetxt
-use stdlib_error, only: assert
+use stdlib_experimental_io, only: loadtxt, savetxt
+use stdlib_experimental_error, only: assert
 implicit none
 
 real(dp) :: d(3, 2), e(2, 3)

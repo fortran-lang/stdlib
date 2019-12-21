@@ -1,4 +1,4 @@
-module stdlib_error
+module stdlib_experimental_error
 implicit none
 private
 public :: assert, error_stop

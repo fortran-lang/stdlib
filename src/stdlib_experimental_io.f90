@@ -1,4 +1,4 @@
-module stdlib_io
+module stdlib_experimental_io
 use iso_fortran_env, only: dp=>real64
 implicit none
 private

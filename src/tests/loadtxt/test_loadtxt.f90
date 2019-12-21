@@ -1,6 +1,6 @@
 program test_loadtxt
 use iso_fortran_env, only: dp=>real64
-use stdlib_io, only: loadtxt
+use stdlib_experimental_io, only: loadtxt
 implicit none
 
 real(dp), allocatable :: d(:, :)

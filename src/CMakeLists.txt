@@ -1,6 +1,6 @@
 set(SRC
-    stdlib_io.f90
-    stdlib_error.f90
+    stdlib_experimental_io.f90
+    stdlib_experimental_error.f90
 )
 
 add_library(fortran_stdlib ${SRC})
