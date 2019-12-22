@@ -1,7 +1,12 @@
 program test_ascii
 
     use stdlib_experimental_error, only: assert
-    use stdlib_experimental_ascii
+    use stdlib_experimental_ascii, only: lowercase, uppercase, digits, &
+        octal_digits, fullhex_digits, hex_digits, lowerhex_digits, &
+        whitespace, letters, is_alphanum, is_alpha, is_lower, is_upper, &
+        is_digit, is_octal_digit, is_hex_digit, is_white, is_blank, &
+        is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
+        to_lower, to_upper, LF, TAB, NUL, DEL
 
     write(*,*) "Lowercase letters: ", lowercase
     write(*,*) "Uppercase letters: ", uppercase
@@ -34,6 +39,9 @@ program test_ascii
 
     call test_is_white_short
     call test_is_white_long
+
+    call test_is_blank_short
+    call test_is_blank_long
 
     call test_is_control_short
     call test_is_control_long
@@ -260,6 +268,32 @@ contains
         end do
     end subroutine
 
+    subroutine test_is_blank_short
+        write(*,*) "test_is_blank_short"
+        call assert(is_blank(' '))
+        call assert(is_blank(TAB))
+        call assert(.not. is_blank('1'))
+        call assert(.not. is_blank('a'))
+        call assert(.not. is_blank('#'))
+    end subroutine
+
+    subroutine test_is_blank_long
+        integer :: i
+        character(len=:), allocatable :: clist
+        write(*,*) "test_is_blank_long"
+        do i = 1, len(whitespace)
+            if (whitespace(i:i) == ' ' .or. whitespace(i:i) == TAB) then
+                call assert(is_blank(whitespace(i:i)))
+            else
+                call assert(.not. is_blank(whitespace(i:i)))
+            end if
+        end do
+        clist = digits//letters
+        do i = 1, len(clist)
+            call assert(.not. is_blank(clist(i:i)))
+        end do
+    end subroutine
+
     subroutine test_is_control_short
         write(*,*) "test_is_control_short"
         ! write(*,*) is_control('\0')
@@ -283,7 +317,7 @@ contains
         do i = 0, 31
             call assert(is_control(achar(i)))
         end do
-        call assert(is_control(del))
+        call assert(is_control(DEL))
 
         clist = digits//letters//' '
         do i = 1, len(clist)
