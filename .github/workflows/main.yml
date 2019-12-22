@@ -1,17 +1,17 @@
 name: CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  build:
-
+  Linux:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Run a multi-line script
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+    - name: Install GFortran
+      run: sudo apt-get install gfortran
+    - name: cmake
+      run: cmake .
+    - name: make
+      run: make
+    - name: test
+      run: ctest --output-on-failure
