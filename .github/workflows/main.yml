@@ -23,7 +23,9 @@ jobs:
     - name: Add conda to $PATH
       run: echo ::add-path::$CONDA/condabin
     - name: Install GFortran
-      run: sudo conda install -c conda-forge gfortran_osx-64
+      run: |
+          sudo conda install -c conda-forge gfortran_osx-64
+          which gfortran
     - name: cmake
       run: cmake .
     - name: make
