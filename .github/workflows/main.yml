@@ -21,6 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install GFortran
+      run: export PATH="/Users/runner/miniconda3/bin:$PATH"
       run: conda install -c conda-forge gfortran_osx-64
     - name: cmake
       run: cmake .
