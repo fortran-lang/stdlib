@@ -20,10 +20,10 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v1
+    - name: Add conda to $PATH
+      run: echo ::add-path::$CONDA/condabin
     - name: Install GFortran
-      run: |
-          export PATH="/Users/runner/miniconda3/bin:$PATH"
-          conda install -c conda-forge gfortran_osx-64
+      run: sudo conda install -c conda-forge gfortran_osx-64
     - name: cmake
       run: cmake .
     - name: make
