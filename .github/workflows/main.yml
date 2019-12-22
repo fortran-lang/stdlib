@@ -1,0 +1,61 @@
+name: CI
+
+on: [push, pull_request]
+
+env:
+  CI: "ON" # We can detect this in the build system and other vendors implement it
+  CMAKE_BUILD_PARALLEL_LEVEL: "2" # 2 cores on each GHA VM, enable parallel builds
+  CTEST_OUTPUT_ON_FAILURE: "ON" # This way we don't need a flag to ctest
+  CTEST_PARALLEL_LEVEL: "2"
+  HOMEBREW_NO_ANALYTICS: "ON" # Make Homebrew installation a little quicker
+  HOMEBREW_NO_AUTO_UPDATE: "ON"
+  HOMEBREW_NO_BOTTLE_SOURCE_FALLBACK: "ON"
+  HOMEBREW_NO_GITHUB_API: "ON"
+  HOMEBREW_NO_INSTALL_CLEANUP: "ON"
+
+jobs:
+  Build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        gcc_v: [7, 8, 9] # Version of GFortran we want to use.
+    env:
+      FC: gfortran-${{ matrix.gcc_v }}
+      GCC_V: ${{ matrix.gcc_v }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v1
+
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v1 # Use pip to install latest CMake, & FORD/Jin2For, etc.
+      with:
+        python-version: 3.x
+
+    - name: Set up common
+      run: pip install --upgrade cmake
+
+    - name: Install GFortran Linux
+      if: contains( matrix.os, 'ubuntu')
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt-get update
+        sudo apt-get install -y gcc-${GCC_V} gfortran-${GCC_V}
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_V} 100 \
+        --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} \
+        --slave /usr/bingcov gcov /usr/bin/gcov-${GCC_V}
+
+    - name: Install GFortran macOS
+      if: contains( matrix.os, 'macos')
+      run: brew install gcc@${GCC_V} || brew upgrade gcc@${GCC_V} || true
+
+    - name: Configure with CMake
+      run: cmake -Wdev -S . -B . # We should build out of source but loadtxt needs fixing
+
+    - name: Build and compile
+      run: cmake --build . || cmake --build . --verbose --parallel 1
+
+    - name: test
+      run: cmake --build . --target test
