@@ -1,0 +1,55 @@
+# EditorConfig file. For more info, please see:
+# https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# All files should have a final newline and not have trailing whitespace
+# but we need to explicitly enumerate files we care about to prevent random junk
+# from being linted
+
+[*.{f90,F90}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+max_line_length = 132
+insert_final_newline = true
+
+[{CMakeLists.txt, *.cmake}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+max_line_length = 132
+insert_final_newline = true
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+charset = utf-8
+insert_final_newline = true
+
+# Tab indentation (no size specified)
+[Makefile]
+indent_style = tab
+indent_size = 4
+trim_trailing_whitespace = true
+max_line_length = 132
+insert_final_newline = true
+
+[*.sh]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+max_line_length = 132
+insert_final_newline = true
+
+[*.nml]
+trim_trailing_whitespace = true
+max_line_length = 132
+insert_final_newline = true
+
+[*.{yml,json}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+insert_final_newline = true
