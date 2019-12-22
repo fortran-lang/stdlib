@@ -1,5 +1,5 @@
 module stdlib_experimental_io
-use iso_fortran_env, only: sp=>real32, dp=>real64 ,qp=>real128
+use iso_fortran_env, only: sp=>real32, dp=>real64, qp=>real128
 implicit none
 private
 public :: loadtxt, savetxt
@@ -18,7 +18,6 @@ end interface
 
 contains
 
-!PUBLIC
 subroutine sloadtxt(filename, d)
 ! Loads a 2D array from a text file.
 !
@@ -45,12 +44,12 @@ real(sp), allocatable, intent(out) :: d(:,:)
 !     ...
 !
 integer :: s
-integer ::nrow,ncol,i
+integer :: nrow,ncol,i
 
 open(newunit=s, file=filename, status="old")
 
 ! determine number of columns
-ncol=number_of_columns(s)
+ncol = number_of_columns(s)
 
 ! determine number or rows
 nrow = number_of_rows_numeric(s)
@@ -88,12 +87,12 @@ real(dp), allocatable, intent(out) :: d(:,:)
 !     ...
 !
 integer :: s
-integer ::nrow,ncol,i
+integer :: nrow,ncol,i
 
 open(newunit=s, file=filename, status="old")
 
 ! determine number of columns
-ncol=number_of_columns(s)
+ncol = number_of_columns(s)
 
 ! determine number or rows
 nrow = number_of_rows_numeric(s)
@@ -131,12 +130,12 @@ real(qp), allocatable, intent(out) :: d(:,:)
 !     ...
 !
 integer :: s
-integer ::nrow,ncol,i
+integer :: nrow,ncol,i
 
 open(newunit=s, file=filename, status="old")
 
 ! determine number of columns
-ncol=number_of_columns(s)
+ncol = number_of_columns(s)
 
 ! determine number or rows
 nrow = number_of_rows_numeric(s)
@@ -219,7 +218,6 @@ close(s)
 end subroutine
 
 
-!PRIVATE
 integer function number_of_columns(s)
  ! determine number of columns
  integer,intent(in)::s
