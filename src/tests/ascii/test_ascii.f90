@@ -478,28 +478,31 @@ contains
         pcfs(11)%pcf => is_digit
         pcfs(12)%pcf => is_hex_digit
 
+        ! loop through functions
         do i = 1, 12
-            table(1,i)  = all([(pcfs(i)%pcf(achar(j)),j=0,8)])
-            table(2,i)  = pcfs(i)%pcf(achar(9))
-            table(3,i)  = all([(pcfs(i)%pcf(achar(j)),j=10,13)])
-            table(4,i)  = all([(pcfs(i)%pcf(achar(j)),j=14,31)])
-            table(5,i)  = pcfs(i)%pcf(achar(32))
-            table(6,i)  = all([(pcfs(i)%pcf(achar(j)),j=33,47)])
-            table(7,i)  = all([(pcfs(i)%pcf(achar(j)),j=48,57)])
-            table(8,i)  = all([(pcfs(i)%pcf(achar(j)),j=58,64)])
-            table(9,i)  = all([(pcfs(i)%pcf(achar(j)),j=65,70)])
-            table(10,i) = all([(pcfs(i)%pcf(achar(j)),j=71,90)])
-            table(11,i) = all([(pcfs(i)%pcf(achar(j)),j=91,96)])
-            table(12,i) = all([(pcfs(i)%pcf(achar(j)),j=97,102)])
-            table(13,i) = all([(pcfs(i)%pcf(achar(j)),j=103,122)])
-            table(14,i) = all([(pcfs(i)%pcf(achar(j)),j=123,126)])
-            table(15,i) = pcfs(i)%pcf(achar(127))
+            table(1,i)  = all([(pcfs(i)%pcf(achar(j)),j=0,8)])      ! control codes
+            table(2,i)  = pcfs(i)%pcf(achar(9))                     ! tab
+            table(3,i)  = all([(pcfs(i)%pcf(achar(j)),j=10,13)])    ! whitespaces
+            table(4,i)  = all([(pcfs(i)%pcf(achar(j)),j=14,31)])    ! control codes
+            table(5,i)  = pcfs(i)%pcf(achar(32))                    ! space
+            table(6,i)  = all([(pcfs(i)%pcf(achar(j)),j=33,47)])    ! !"#$%&'()*+,-./
+            table(7,i)  = all([(pcfs(i)%pcf(achar(j)),j=48,57)])    ! 0123456789
+            table(8,i)  = all([(pcfs(i)%pcf(achar(j)),j=58,64)])    ! :;<=>?@
+            table(9,i)  = all([(pcfs(i)%pcf(achar(j)),j=65,70)])    ! ABCDEF
+            table(10,i) = all([(pcfs(i)%pcf(achar(j)),j=71,90)])    ! GHIJKLMNOPQRSTUVWXYZ
+            table(11,i) = all([(pcfs(i)%pcf(achar(j)),j=91,96)])    ! [\]^_`
+            table(12,i) = all([(pcfs(i)%pcf(achar(j)),j=97,102)])   ! abcdef
+            table(13,i) = all([(pcfs(i)%pcf(achar(j)),j=103,122)])  ! ghijklmnopqrstuvwxyz
+            table(14,i) = all([(pcfs(i)%pcf(achar(j)),j=123,126)])  ! {|}~
+            table(15,i) = pcfs(i)%pcf(achar(127))                   ! backspace character
         end do
 
+        ! output table for verification
         write(*,'(5X,12(I4))') (i,i=1,12)
         do j = 1, 15
             write(*,'(I3,2X,12(L4),2X,I3)') j, (table(j,i),i=1,12), count(table(j,:))
         end do
         write(*,'(5X,12(I4))') (count(table(:,i)),i=1,12)
     end subroutine
+
 end program
