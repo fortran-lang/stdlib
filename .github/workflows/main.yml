@@ -20,6 +20,8 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v1
+    - name: Install GFortran
+      run: conda install -c conda-forge gfortran_osx-64
     - name: cmake
       run: cmake .
     - name: make
