@@ -4,25 +4,12 @@
 
 The goal of the Fortran Standard Library is to achieve the following general scope:
 
-* Utilities
-    * Containers
-    * Algorithms
-    * Strings
-    * Files
-    * OS/Environment integration
-    * Unit testing & assertions stuff
-    * Logging
-    * Searching and sorting
-* Mathematics
-    * Linear algebra (`eig`, `solve`, ...)
-    * Sparse matrices
-    * Special functions (spherical harmonics, hypergeometric functions, ...)
-    * FFT
-    * Random numbers
-    * Statistics
-    * ODE solvers
-    * Numerical integration (Gauss-Legendre points and weights and other algorithms)
-    * Optimization (root finding, ...)
+* Utilities (containers, strings, files, OS/environment integration, unit
+  testing & assertions, logging,  ...)
+* Algorithms (searching and sorting, merging, ...)
+* Mathematics (linear algebra, sparse matrices, special functions, fast Fourier
+  transform, random numbers, statistics, ordinary differential equations,
+  numerical integration, optimization, ...)
 
 
 ## Getting started
