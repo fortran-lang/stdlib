@@ -1,18 +1,13 @@
-# Fortran stdlib Makefile
-
-CPPFLAGS=-I../lib
-OBJS = ../lib/mod_stdlib.o
-
 .PHONY: all clean
-.SUFFIXES: .f90 .o
 
-all: test_dummy
+all: ascii/test_ascii loadtxt/test_loadtxt
 
-test_dummy: test_dummy.f90 $(OBJS)
-	$(FC) $(FCFLAGS) $(CPPFLAGS) $< -o $@ $(OBJS)
+ascii/test_ascii:
+	$(MAKE) -f Makefile.manual --directory=ascii
 
-%.o: %.mod
+loadtxt/test_loadtxt:
+	$(MAKE) -f Makefile.manual --directory=loadtxt
 
 clean:
-	$(RM) test_dummy
-	$(RM) *.o *.mod
+	$(MAKE) -f Makefile.manual --directory=ascii clean
+	$(MAKE) -f Makefile.manual --directory=loadtxt clean

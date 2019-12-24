@@ -1,0 +1,20 @@
+CPPFLAGS = -I../..
+OBJS = ../../stdlib_experimental_error.o \
+       ../../stdlib_experimental_io.o
+
+.PHONY: all clean
+.SUFFIXES: .f90 .o
+
+all: test_loadtxt test_savetxt
+
+test_loadtxt: test_loadtxt.f90 $(OBJS)
+	$(FC) $(FCFLAGS) $(CPPFLAGS) $< -o $@ $(OBJS)
+
+test_savetxt: test_savetxt.f90 $(OBJS)
+	$(FC) $(FCFLAGS) $(CPPFLAGS) $< -o $@ $(OBJS)
+
+%.o: %.mod
+
+clean:
+	$(RM) test_loadtxt test_savetxt
+	$(RM) *.o *.mod

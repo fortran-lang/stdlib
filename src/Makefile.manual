@@ -1,18 +1,20 @@
-# Fortran stdlib Makefile
-
-OBJS = mod_stdlib.o
+OBJS = stdlib_experimental_ascii.o \
+       stdlib_experimental_error.o \
+       stdlib_experimental_io.o \
 
 .PHONY: all clean
 .SUFFIXES: .f90 .o
 
-all: mod_stdlib.o
+all: $(OBJS)
 
 .f90.o:
 	$(FC) $(FCFLAGS) -c $<
 
 %.o: %.mod
 
-mod_stdlib.o: mod_stdlib.f90
+stdlib_experimental_ascii.o: stdlib_experimental_ascii.f90
+stdlib_experimental_error.o: stdlib_experimental_error.f90
+stdlib_experimental_io.o: stdlib_experimental_io.f90
 
 clean:
 	$(RM) *.o *.mod
