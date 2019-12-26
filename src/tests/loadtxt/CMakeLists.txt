@@ -10,3 +10,6 @@ target_link_libraries(test_savetxt fortran_stdlib)
 
 add_test(test_loadtxt ${PROJECT_BINARY_DIR}/test_loadtxt)
 add_test(test_savetxt ${PROJECT_BINARY_DIR}/test_savetxt)
+
+file(COPY array1.dat  array2.dat  array3.dat  array4.dat
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
