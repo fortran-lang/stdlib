@@ -1,5 +1,6 @@
 module stdlib_experimental_io
 use iso_fortran_env, only: sp=>real32, dp=>real64, qp=>real128
+use stdlib_experimental_ascii, only: is_blank
 implicit none
 private
 public :: loadtxt, savetxt
@@ -224,16 +225,16 @@ integer function number_of_columns(s)
 
  integer :: ios
  character :: c
- logical :: lastwhite
+ logical :: lastblank
 
  rewind(s)
  number_of_columns = 0
- lastwhite = .true.
+ lastblank = .true.
  do
     read(s, '(a)', advance='no', iostat=ios) c
     if (ios /= 0) exit
-    if (lastwhite .and. .not. whitechar(c)) number_of_columns = number_of_columns + 1
-    lastwhite = whitechar(c)
+    if (lastblank .and. .not. is_blank(c)) number_of_columns = number_of_columns + 1
+    lastblank = is_blank(c)
  end do
  rewind(s)
 
@@ -244,7 +245,7 @@ integer function number_of_rows_numeric(s)
  integer,intent(in)::s
  integer :: ios
  
- real::r
+ real :: r
  
  rewind(s)
  number_of_rows_numeric = 0
@@ -256,16 +257,6 @@ integer function number_of_rows_numeric(s)
  
  rewind(s)
 
-end function
-
-logical function whitechar(char) ! white character
-! returns .true. if char is space (32) or tab (9), .false. otherwise
-character, intent(in) :: char
-if (iachar(char) == 32 .or. iachar(char) == 9) then
-    whitechar = .true.
-else
-    whitechar = .false.
-end if
 end function
 
 end module

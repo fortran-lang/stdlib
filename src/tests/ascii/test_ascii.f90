@@ -6,7 +6,7 @@ program test_ascii
         whitespace, letters, is_alphanum, is_alpha, is_lower, is_upper, &
         is_digit, is_octal_digit, is_hex_digit, is_white, is_blank, &
         is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
-        to_lower, to_upper, LF, TAB, NUL, DEL
+        to_lower, to_upper, ascii_control_char
 
     write(*,*) "Lowercase letters: ", lowercase
     write(*,*) "Uppercase letters: ", uppercase
@@ -15,6 +15,7 @@ program test_ascii
     write(*,*) "Full hex digits: ", fullhex_digits
     write(*,*) "Hex digits: ", hex_digits
     write(*,*) "Lower hex digits: ", lowerhex_digits
+    write(*,*)
 
     call test_is_alphanum_short
     call test_is_alphanum_long
@@ -64,7 +65,7 @@ program test_ascii
     call test_to_upper_short
     call test_to_upper_long
 
-    ! call test_ascii_table
+    call test_ascii_table
 
 contains
 
@@ -248,8 +249,8 @@ contains
     subroutine test_is_white_short
         write(*,*) "test_is_white_short"
         call assert(is_white(' '))
-        call assert(is_white(TAB))
-        call assert(is_white(LF))
+        call assert(is_white(ascii_control_char%TAB))
+        call assert(is_white(ascii_control_char%LF))
         call assert(.not. is_white('1'))
         call assert(.not. is_white('a'))
         call assert(.not. is_white('#'))
@@ -271,7 +272,7 @@ contains
     subroutine test_is_blank_short
         write(*,*) "test_is_blank_short"
         call assert(is_blank(' '))
-        call assert(is_blank(TAB))
+        call assert(is_blank(ascii_control_char%TAB))
         call assert(.not. is_blank('1'))
         call assert(.not. is_blank('a'))
         call assert(.not. is_blank('#'))
@@ -282,7 +283,8 @@ contains
         character(len=:), allocatable :: clist
         write(*,*) "test_is_blank_long"
         do i = 1, len(whitespace)
-            if (whitespace(i:i) == ' ' .or. whitespace(i:i) == TAB) then
+            if (whitespace(i:i) == ' ' .or. &
+                whitespace(i:i) == ascii_control_char%TAB) then
                 call assert(is_blank(whitespace(i:i)))
             else
                 call assert(.not. is_blank(whitespace(i:i)))
@@ -317,7 +319,7 @@ contains
         do i = 0, 31
             call assert(is_control(achar(i)))
         end do
-        call assert(is_control(DEL))
+        call assert(is_control(ascii_control_char%DEL))
 
         clist = digits//letters//' '
         do i = 1, len(clist)
@@ -339,8 +341,8 @@ contains
         call assert(.not. is_punctuation('1'))
         call assert(.not. is_punctuation('a'))
         call assert(.not. is_punctuation(' '))
-        call assert(.not. is_punctuation(LF)) ! new line character
-        call assert(.not. is_punctuation(NUL))
+        call assert(.not. is_punctuation(ascii_control_char%LF)) ! new line character
+        call assert(.not. is_punctuation(ascii_control_char%NUL))
 
         ! N.B.: Non-ASCII Unicode punctuation characters are not recognized.
         ! write(*,*) is_punctuation('\u2012') ! (U+2012 = en-dash)
@@ -366,8 +368,8 @@ contains
         call assert(is_graphical('a'))
         call assert(is_graphical('#'))
         call assert(.not. is_graphical(' ')) ! whitespace is not graphical
-        call assert(.not. is_graphical(LF))
-        call assert(.not. is_graphical(NUL))
+        call assert(.not. is_graphical(ascii_control_char%LF))
+        call assert(.not. is_graphical(ascii_control_char%NUL))
 
         ! N.B.: Unicode graphical characters are not regarded as such.
         call assert(.not. is_graphical('ä'))
@@ -393,7 +395,7 @@ contains
         call assert(is_printable('1'))
         call assert(is_printable('a'))
         call assert(is_printable('#'))
-        call assert(.not. is_printable(NUL)) ! control characters are not printable
+        call assert(.not. is_printable(ascii_control_char%NUL)) ! control characters are not printable
 
         ! N.B.: Printable non-ASCII Unicode characters are not recognized.
         call assert(.not. is_printable('ä'))
@@ -478,65 +480,126 @@ contains
         end do
     end subroutine
 
-    !
-    !   This test reproduces the true/false table found at
-    !   https://en.cppreference.com/w/cpp/string/byte
-    !
+
+!>  This test reproduces the true/false table found at
+!   https://en.cppreference.com/w/cpp/string/byte
+!   by passing allocatable character arrays filled with subsets 
+!   of ascii characters to the stdlib character validation functions.
+!
     subroutine test_ascii_table
         integer :: i, j
-        character(len=1) :: c
         logical :: table(15,12)
+        character(len=7) :: col
+        
+        character(len=1), allocatable :: ca(:)
+        integer :: ic(16) ! 15 + 1
 
-        abstract interface
-            pure logical function validation_func_interface(c)
-                character(len=1), intent(in) :: c
-            end function
-        end interface
+        write(*,*) "test_ascii_table"
 
-        type :: proc_pointer_array
-            procedure(validation_func_interface), pointer, nopass :: pcf
-        end type proc_pointer_array
+        !     0-8   control codes
+        !       9   tab
+        !   10-13   whitespaces
+        !   14-31   control codes
+        !      32   space
+        !   33-47   !"#$%&'()*+,-./
+        !   48-57   0123456789
+        !   58-64   :;<=>?@
+        !   65-70   ABCDEF
+        !   71-90   GHIJKLMNOPQRSTUVWXYZ
+        !   91-96   [\]^_`
+        !  97-102   abcdef
+        ! 103-122   ghijklmnopqrstuvwxyz
+        ! 123-126   {|}~
+        !     127   backspace character
 
-        type(proc_pointer_array) :: pcfs(12)
+        ic = [0,9,10,14,32,33,48,58,65,71,91,97,103,123,127,128]
 
-        pcfs(1)%pcf => is_control
-        pcfs(2)%pcf => is_printable
-        pcfs(3)%pcf => is_white
-        pcfs(4)%pcf => is_blank
-        pcfs(5)%pcf => is_graphical
-        pcfs(6)%pcf => is_punctuation
-        pcfs(7)%pcf => is_alphanum
-        pcfs(8)%pcf => is_alpha
-        pcfs(9)%pcf => is_upper
-        pcfs(10)%pcf => is_lower
-        pcfs(11)%pcf => is_digit
-        pcfs(12)%pcf => is_hex_digit
-
-        ! loop through functions
-        do i = 1, 12
-            table(1,i)  = all([(pcfs(i)%pcf(achar(j)),j=0,8)])      ! control codes
-            table(2,i)  = pcfs(i)%pcf(achar(9))                     ! tab
-            table(3,i)  = all([(pcfs(i)%pcf(achar(j)),j=10,13)])    ! whitespaces
-            table(4,i)  = all([(pcfs(i)%pcf(achar(j)),j=14,31)])    ! control codes
-            table(5,i)  = pcfs(i)%pcf(achar(32))                    ! space
-            table(6,i)  = all([(pcfs(i)%pcf(achar(j)),j=33,47)])    ! !"#$%&'()*+,-./
-            table(7,i)  = all([(pcfs(i)%pcf(achar(j)),j=48,57)])    ! 0123456789
-            table(8,i)  = all([(pcfs(i)%pcf(achar(j)),j=58,64)])    ! :;<=>?@
-            table(9,i)  = all([(pcfs(i)%pcf(achar(j)),j=65,70)])    ! ABCDEF
-            table(10,i) = all([(pcfs(i)%pcf(achar(j)),j=71,90)])    ! GHIJKLMNOPQRSTUVWXYZ
-            table(11,i) = all([(pcfs(i)%pcf(achar(j)),j=91,96)])    ! [\]^_`
-            table(12,i) = all([(pcfs(i)%pcf(achar(j)),j=97,102)])   ! abcdef
-            table(13,i) = all([(pcfs(i)%pcf(achar(j)),j=103,122)])  ! ghijklmnopqrstuvwxyz
-            table(14,i) = all([(pcfs(i)%pcf(achar(j)),j=123,126)])  ! {|}~
-            table(15,i) = pcfs(i)%pcf(achar(127))                   ! backspace character
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,1) = all(is_control(ca))
         end do
 
-        ! output table for verification
-        write(*,'(5X,12(I4))') (i,i=1,12)
-        do j = 1, 15
-            write(*,'(I3,2X,12(L4),2X,I3)') j, (table(j,i),i=1,12), count(table(j,:))
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,2) = all(is_printable(ca))
         end do
-        write(*,'(5X,12(I4))') (count(table(:,i)),i=1,12)
+
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,3) = all(is_white(ca))
+        end do
+
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,4) = all(is_blank(ca))
+        end do
+
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,5) = all(is_graphical(ca))
+        end do
+
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,6) = all(is_punctuation(ca))
+        end do
+
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,7) = all(is_alphanum(ca))
+        end do
+
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,8) = all(is_alpha(ca))
+        end do
+
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,9) = all(is_upper(ca))
+        end do
+
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,10) = all(is_lower(ca))
+        end do
+
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,11) = all(is_digit(ca))
+        end do
+
+        do i = 1, 15
+            ca = [(achar(j),j=ic(i),ic(i+1)-1)]
+            table(i,12) = all(is_hex_digit(ca))
+        end do
+
+
+        ! Output true/false table for verification
+        write(*,*)
+        write(*,'(10X,A)')              "is_control"
+        write(*,'(10X,A)')              "| is_printable"
+        write(*,'(10X,A)')              "| | is_whitespace"
+        write(*,'(10X,A)')              "| | | is_blank"
+        write(*,'(10X,A)')              "| | | | is_graphical"
+        write(*,'(10X,A)')              "| | | | | is_punctuation"
+        write(*,'(10X,A)')              "| | | | | | is_alphanum"
+        write(*,'(10X,A)')              "| | | | | | | is_alpha"
+        write(*,'(10X,A)')              "| | | | | | | | is_upper"
+        write(*,'(10X,A)')              "| | | | | | | | | is_lower"
+        write(*,'(10X,A)')              "| | | | | | | | | | is_digit"
+        write(*,'(A10,A)') " decimal  ","| | | | | | | | | | | is_hex_digit"
+        write(*,*)         "-------------------------------------------"
+        do i = 1, 15
+            ! Process first column
+            if (ic(i) /= ic(i+1)-1) then
+                write(col,'(I0,"-",I0)') ic(i), ic(i+1)-1 
+            else
+                write(col,'(I0)') ic(i)
+            end if
+
+            write(*,'(1X,A7,2X,12(L1,:,X),2X,I3)') adjustr(col), (table(i,j),j=1,12)
+        end do
     end subroutine
 
 end program
