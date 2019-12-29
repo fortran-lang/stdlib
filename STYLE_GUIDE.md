@@ -13,8 +13,12 @@
 
 - Source files should contain at most one `program`, `module`, or `submodule`.
 - The filename should match the program or module name and have the file extension `.f90` or `.F90` if preprocessing is required.
-- If the interface and implementation is split using submodules the implementation submodule file should have the same name as the interface (parent) module but end in `_implementation`. E.g., `string_class.f90` and `string_class_implementation.f90`
-- Tests should be added in the `tests` subdirectory and have the same name as the module they are testing with the `test_` prefix added. E.g., `string_class.f90` and `tests/test_string_class.f90`
+- If the interface and implementation is split using submodules the implementation submodule file should have the same name as the
+  interface (parent) module but end in `_implementation`.
+  E.g., `string_class.f90` and `string_class_implementation.f90`
+- Tests should be added in the `tests` subdirectory and have the same name as the module they are testing with the `test_` prefix
+  added.
+  E.g., `string_class.f90` and `tests/test_string_class.f90`
 
 ## Indentation & whitespace
 
