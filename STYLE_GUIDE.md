@@ -15,15 +15,15 @@ This style guide is a living document and proposed changes may be adopted after 
 
 ## File naming conventions
 
-* Source files should contain at most one `program`, `module`, or `submodule`.
-* The filename should match the program or module name and have the file extension `.f90` or `.F90` if preprocessing is required.
+* Source files should contain at most one `program`, `module`, or `submodule`
+* The filename should match the program or module name and have the file extension `.f90` or `.F90` if preprocessing is required
 * If the interface and implementation is split using submodules the implementation submodule file should have the same name as the
-  interface (parent) module but end in `_implementation`.
+  interface (parent) module but end in `_implementation`
   E.g., `string_class.f90` and `string_class_implementation.f90`
 * Tests should be added in the `tests` subdirectory and have the same name as the module they are testing with the `test_` prefix
-  added.
+  added
   E.g., `string_class.f90` and `tests/test_string_class.f90`
-* There should only ever be one `program` and `module` statement per file.
+* There should only ever be one `program` and `module` statement per file
 
 ## Indentation & whitespace
 
@@ -31,7 +31,7 @@ By setting and following a convention for indentation and whitespace, code revie
 focus on the semantics of the proposed changes rather than style and formatting.
 
 * The body of every Fortran construct should be indented by __4 spaces__
-* Line length *should be limited to 80 characters* and __must not exceed 132__.
+* Line length *should be limited to 80 characters* and __must not exceed 132__
 * Please do not use <kbd>Tab</kbd> characters for indentation
 * Please remove trailing white space before committing code
 
