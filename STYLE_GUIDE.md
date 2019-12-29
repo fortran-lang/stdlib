@@ -25,12 +25,10 @@
 By setting and following a convention for indentation and whitespace, code reviews and git-diffs can
 focus on the semantics of the proposed changes rather than style and formatting.
 
-* __TABs vs spaces__: __Spaces__: TABs should never be used for indentation
-* __Trailing whitespace__: All trailing whitespace must be removed
-* __End of File (EOF)__: The file must end in a single new-line character
-* __Line length__: __132__: The Fortran 90 (and later) standard mandates lines be no longer than 132 characters
-* __Indentation__: __Four (4) spaces__ for all control constructs, line continuations, etc.
-* __Line ending character__: __Native__: Git will convert line endings to `\n` (Unix style) on commit, and will checkout files with native line endings
+* The body of every Fortran construct should be indented by __4 spaces__
+* Line length *should be limited to 80 characters* and __must not exceed 132__.
+* Please do not use <kbd>Tab</kbd> characters for indentation
+* Please remove trailing white space before committing code
 
 ## Variable and procedure naming
 
