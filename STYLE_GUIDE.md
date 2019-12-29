@@ -1,13 +1,10 @@
 # Fortran stdlib Style Guide
 
-> [A]utomate and codify as much as you possibly can while remembering that the human touch is still necessary to praise
-> and be kind to your contributors.
-> Let robots handle your project’s pedantry and humans handle your project’s empathy.
-
--- @mikemcquaid, [Homebrew] project leader<sup>[1]</sup>
-
-[1]: https://mikemcquaid.com/2018/06/05/robot-pedantry-human-empathy/
-[Homebrew]: https://brew.sh
+Adopting a consistent style can improve code legibility through the choice of good naming conventions.
+In addition, style checks will be run during CI to flag any severe non-conformance.
+This allows code review discussions to focus on semantics and substance rather than pedantry.
+Consistent whitespace usage, and not poluting line endigs with trailing white space makes `git diff`s considerably more legible.
+This style guide is a living document and proposed changes may be adopted after discussing them and coming to a consensus.
 
 ## File naming conventions
 
