@@ -23,7 +23,6 @@ This style guide is a living document and proposed changes may be adopted after 
 * Tests should be added in the `tests` subdirectory and have the same name as the module they are testing with the `test_` prefix
   added
   E.g., `string_class.f90` and `tests/test_string_class.f90`
-* There should only ever be one `program` and `module` statement per file
 
 ## Indentation & whitespace
 
