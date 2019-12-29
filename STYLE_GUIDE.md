@@ -6,6 +6,13 @@ This allows code review discussions to focus on semantics and substance rather t
 Consistent whitespace usage, and not poluting line endigs with trailing white space makes `git diff`s considerably more legible.
 This style guide is a living document and proposed changes may be adopted after discussing them and coming to a consensus.
 
+## Use (modern) standard Fortran
+
+* Do not use obsolescent or deleted language features
+  E.g., `common`, `pause`, `entry`, arithmetic `if` and computed `goto`
+* Do not use vendor extensions in the form of non-standard syntax and vendor supplied intrinsic procedures
+  E.g., `real*8` or `etime()`
+
 ## File naming conventions
 
 * Source files should contain at most one `program`, `module`, or `submodule`.
