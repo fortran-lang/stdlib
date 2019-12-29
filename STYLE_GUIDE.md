@@ -42,8 +42,5 @@ focus on the semantics of the proposed changes rather than style and formatting.
 ## End <scope> block closing statements
 
 Fortran allows certain block constructs or scopes to include the name of the program unit in the end statement.
-The convention adopted herein is to __NOT__ include procedure names, `module` names and `program` names in the `end` statement.
-There should only ever be one `program` and `module` statement per file and therefore including the name provides no useful information.
-An exception to this rule is for procedures (`function`s and `subroutine`s) that are longer than a page of text.
-Long procedures often are a sign of poor abstraction, however, sometimes they are necessary.
-In such cases, the procedure name may be included in the `end` procedure statement.
+The convention adopted herein is to include procedure names, `module` names and `program` names in the `end` statement,
+unless the closing statement can reasonably be expected to be on the same screen or page, within about 25 lines.
