@@ -33,31 +33,11 @@ focus on the semantics of the proposed changes rather than style and formatting.
 
 ## Variable and procedure naming
 
-Variable names should be descriptive, and not artificially short.
-By default, where it makes sense to do so, variable names shall be made up of one or more full words separated by an underscore.
-For cases where a conventional & appropriate shortening of a word is used then the underscore may be omitted.
-
-Examples:
-
-__GOOD__:
-
-``` fortran
-logical :: has_failed
-real function linspace(...)
-```
-
-__BAD__:
-
-``` fortran
-logical :: has_failed
-real function lin_space(...)
-```
-
-## Keyword case
-
-Fortran keywords should __*not*__ be UPPERCASE.
-Modern editors and IDEs can highlight Fortran syntax and UPPERCASE keywords.
-UPPERCASE keywords give Fortran source code the appearance of being antiquated.
+* Variable and procedure names, as well as Fortran keywords, should be written in lowercase
+* Variable and procedure names should be made up of one or more full words separated by an underscore,
+  for example `has_failed` is preferred over `hasfailed`
+* Where conventional and appropriate shortening of a word is used then the underscore may be omitted,
+  for example `linspace` is preferred over `lin_space`
 
 ## End <scope> block closing statements
 
