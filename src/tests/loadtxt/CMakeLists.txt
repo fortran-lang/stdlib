@@ -1,5 +1,3 @@
-project(loadtxt)
-
 add_executable(test_loadtxt test_loadtxt.f90)
 target_link_libraries(test_loadtxt fortran_stdlib)
 

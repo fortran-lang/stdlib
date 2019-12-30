@@ -1,5 +1,3 @@
-project(ascii)
-
 add_executable(test_ascii test_ascii.f90)
 target_link_libraries(test_ascii fortran_stdlib)
 
