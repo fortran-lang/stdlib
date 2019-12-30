@@ -46,7 +46,7 @@ real(sp), allocatable, intent(out) :: d(:,:)
 integer :: s
 integer :: nrow,ncol,i
 
-open(newunit=s, file=filename, status="old")
+open(newunit=s, file=filename, status="old", action="read")
 
 ! determine number of columns
 ncol = number_of_columns(s)
@@ -89,7 +89,7 @@ real(dp), allocatable, intent(out) :: d(:,:)
 integer :: s
 integer :: nrow,ncol,i
 
-open(newunit=s, file=filename, status="old")
+open(newunit=s, file=filename, status="old", action="read")
 
 ! determine number of columns
 ncol = number_of_columns(s)
@@ -132,7 +132,7 @@ real(qp), allocatable, intent(out) :: d(:,:)
 integer :: s
 integer :: nrow,ncol,i
 
-open(newunit=s, file=filename, status="old")
+open(newunit=s, file=filename, status="old", action="read")
 
 ! determine number of columns
 ncol = number_of_columns(s)
@@ -164,7 +164,7 @@ real(sp), intent(in) :: d(:,:)           ! The 2D array to save
 ! call savetxt("log.txt", data)
 
 integer :: s, i
-open(newunit=s, file=filename, status="replace")
+open(newunit=s, file=filename, status="replace", action="write")
 do i = 1, size(d, 1)
     write(s, *) d(i, :)
 end do
@@ -187,7 +187,7 @@ real(dp), intent(in) :: d(:,:)           ! The 2D array to save
 ! call savetxt("log.txt", data)
 
 integer :: s, i
-open(newunit=s, file=filename, status="replace")
+open(newunit=s, file=filename, status="replace", action="write")
 do i = 1, size(d, 1)
     write(s, *) d(i, :)
 end do
@@ -210,7 +210,7 @@ real(qp), intent(in) :: d(:,:)           ! The 2D array to save
 ! call savetxt("log.txt", data)
 
 integer :: s, i
-open(newunit=s, file=filename, status="replace")
+open(newunit=s, file=filename, status="replace", action="write")
 do i = 1, size(d, 1)
     write(s, *) d(i, :)
 end do
@@ -243,9 +243,9 @@ integer function number_of_rows_numeric(s)
  ! determine number or rows
  integer,intent(in)::s
  integer :: ios
- 
+
  real::r
- 
+
  rewind(s)
  number_of_rows_numeric = 0
  do
@@ -253,7 +253,7 @@ integer function number_of_rows_numeric(s)
     if (ios /= 0) exit
     number_of_rows_numeric = number_of_rows_numeric + 1
  end do
- 
+
  rewind(s)
 
 end function
