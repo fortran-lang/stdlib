@@ -12,7 +12,9 @@ cd stdlib
 ### Build with CMake
 
 ```
-cmake .
+mkdir build
+cd build
+cmake ..
 make
 ctest
 ```
