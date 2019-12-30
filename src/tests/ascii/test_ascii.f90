@@ -8,13 +8,13 @@ program test_ascii
         is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
         to_lower, to_upper, LF, TAB, NUL, DEL
 
-    write(*,*) "Lowercase letters: ", lowercase
-    write(*,*) "Uppercase letters: ", uppercase
-    write(*,*) "Digits: ", digits
-    write(*,*) "Octal digits: ", octal_digits
-    write(*,*) "Full hex digits: ", fullhex_digits
-    write(*,*) "Hex digits: ", hex_digits
-    write(*,*) "Lower hex digits: ", lowerhex_digits
+    print *, "Lowercase letters: ", lowercase
+    print *, "Uppercase letters: ", uppercase
+    print *, "Digits: ", digits
+    print *, "Octal digits: ", octal_digits
+    print *, "Full hex digits: ", fullhex_digits
+    print *, "Hex digits: ", hex_digits
+    print *, "Lower hex digits: ", lowerhex_digits
 
     call test_is_alphanum_short
     call test_is_alphanum_long
@@ -69,7 +69,7 @@ program test_ascii
 contains
 
     subroutine test_is_alphanum_short
-        write(*,*) "test_is_alphanum_short"
+        print *, "test_is_alphanum_short"
         call assert(is_alphanum('A'))
         call assert(is_alphanum('1'))
         call assert(.not. is_alphanum('#'))
@@ -82,7 +82,7 @@ contains
         integer :: i
         character(len=:), allocatable :: clist
 
-        write(*,*) "test_is_alphanum_long"
+        print *, "test_is_alphanum_long"
 
         clist = digits//octal_digits//fullhex_digits//letters//lowercase//uppercase
         do i = 1, len(clist)
@@ -96,7 +96,7 @@ contains
     end subroutine
 
     subroutine test_is_alpha_short
-        write(*,*) "test_is_alpha_short"
+        print *, "test_is_alpha_short"
         call assert(is_alpha('A'))
         call assert(.not. is_alpha('1'))
         call assert(.not. is_alpha('#'))
@@ -109,7 +109,7 @@ contains
         integer :: i
         character(len=:), allocatable :: clist
 
-        write(*,*) "test_is_alpha_long"
+        print *, "test_is_alpha_long"
 
         clist = letters//lowercase//uppercase
         do i = 1, len(clist)
@@ -123,7 +123,7 @@ contains
     end subroutine
 
     subroutine test_is_lower_short
-        write(*,*) "test_is_lower_short"
+        print *, "test_is_lower_short"
         call assert(is_lower('a'))
         call assert(.not. is_lower('A'))
         call assert(.not. is_lower('#'))
@@ -137,7 +137,7 @@ contains
         integer :: i
         character(len=:), allocatable :: clist
 
-        write(*,*) "test_is_lower_long"
+        print *, "test_is_lower_long"
         do i = 1, len(lowercase)
             call assert(is_lower(lowercase(i:i)))
         end do
@@ -149,7 +149,7 @@ contains
     end subroutine
 
     subroutine test_is_upper_short
-        write(*,*) "test_is_upper_short"
+        print *, "test_is_upper_short"
         call assert(is_upper('A'))
         call assert(.not. is_upper('a'))
         call assert(.not. is_upper('#'))
@@ -162,7 +162,7 @@ contains
     subroutine test_is_upper_long
         integer :: i
         character(len=:), allocatable :: clist
-        write(*,*) "test_is_upper_long"
+        print *, "test_is_upper_long"
         do i = 1, len(uppercase)
             call assert(is_upper(uppercase(i:i)))
         end do
@@ -175,7 +175,7 @@ contains
 
 
     subroutine test_is_digit_short
-        write(*,*) "test_is_digit_short"
+        print *, "test_is_digit_short"
         call assert(is_digit('3'))
         call assert(is_digit('8'))
         call assert(.not. is_digit('B'))
@@ -189,7 +189,7 @@ contains
     subroutine test_is_digit_long
         integer :: i
         character(len=:), allocatable :: clist
-        write(*,*) "test_is_digit_long"
+        print *, "test_is_digit_long"
         do i = 1, len(digits)
             call assert(is_digit(digits(i:i)))
         end do
@@ -201,7 +201,7 @@ contains
     end subroutine
 
     subroutine test_is_octal_digit_short
-        write(*,*) "test_is_octal_digit_short"
+        print *, "test_is_octal_digit_short"
         call assert(is_octal_digit('0'))
         call assert(is_octal_digit('7'))
         call assert(.not. is_octal_digit('8'))
@@ -212,7 +212,7 @@ contains
     subroutine test_is_octal_digit_long
         integer :: i
         character(len=:), allocatable :: clist
-        write(*,*) "test_is_octal_digit_long"
+        print *, "test_is_octal_digit_long"
         do i = 1, len(octal_digits)
             call assert(is_octal_digit(octal_digits(i:i)))
         end do
@@ -223,7 +223,7 @@ contains
     end subroutine
 
     subroutine test_is_hex_digit_short
-        write(*,*) "test_is_hex_digit_short"
+        print *, "test_is_hex_digit_short"
         call assert(is_hex_digit('0'))
         call assert(is_hex_digit('A'))
         call assert(is_hex_digit('f')) !! lowercase hex digits are accepted
@@ -235,7 +235,7 @@ contains
     subroutine test_is_hex_digit_long
         integer :: i
         character(len=:), allocatable :: clist
-        write(*,*) "test_is_hex_digit_long"
+        print *, "test_is_hex_digit_long"
         do i = 1, len(fullhex_digits)
             call assert(is_hex_digit(fullhex_digits(i:i)))
         end do
@@ -246,7 +246,7 @@ contains
     end subroutine
 
     subroutine test_is_white_short
-        write(*,*) "test_is_white_short"
+        print *, "test_is_white_short"
         call assert(is_white(' '))
         call assert(is_white(TAB))
         call assert(is_white(LF))
@@ -258,7 +258,7 @@ contains
     subroutine test_is_white_long
         integer :: i
         character(len=:), allocatable :: clist
-        write(*,*) "test_is_white_long"
+        print *, "test_is_white_long"
         do i = 1, len(whitespace)
             call assert(is_white(whitespace(i:i)))
         end do
@@ -269,7 +269,7 @@ contains
     end subroutine
 
     subroutine test_is_blank_short
-        write(*,*) "test_is_blank_short"
+        print *, "test_is_blank_short"
         call assert(is_blank(' '))
         call assert(is_blank(TAB))
         call assert(.not. is_blank('1'))
@@ -280,7 +280,7 @@ contains
     subroutine test_is_blank_long
         integer :: i
         character(len=:), allocatable :: clist
-        write(*,*) "test_is_blank_long"
+        print *, "test_is_blank_long"
         do i = 1, len(whitespace)
             if (whitespace(i:i) == ' ' .or. whitespace(i:i) == TAB) then
                 call assert(is_blank(whitespace(i:i)))
@@ -295,9 +295,9 @@ contains
     end subroutine
 
     subroutine test_is_control_short
-        write(*,*) "test_is_control_short"
-        ! write(*,*) is_control('\0')
-        ! write(*,*) is_control('\022')
+        print *, "test_is_control_short"
+        ! print *, is_control('\0')
+        ! print *, is_control('\022')
         call assert(is_control(new_line('a'))) ! newline is both whitespace and control
         call assert(.not. is_control(' '))
         call assert(.not. is_control('1'))
@@ -305,15 +305,15 @@ contains
         call assert(.not. is_control('#'))
 
         ! N.B.: non-ASCII Unicode control characters are not recognized:
-        ! write(*,*) .not. is_control('\u0080')
-        ! write(*,*) .not. is_control('\u2028')
-        ! write(*,*) .not. is_control('\u2029')
+        ! print *, .not. is_control('\u0080')
+        ! print *, .not. is_control('\u2028')
+        ! print *, .not. is_control('\u2029')
     end subroutine
 
     subroutine test_is_control_long
         integer :: i
         character(len=:), allocatable :: clist
-        write(*,*) "test_is_control_long"
+        print *, "test_is_control_long"
         do i = 0, 31
             call assert(is_control(achar(i)))
         end do
@@ -326,7 +326,7 @@ contains
     end subroutine
 
     subroutine test_is_punctuation_short
-        write(*,*) "test_is_punctuation_short"
+        print *, "test_is_punctuation_short"
         call assert(is_punctuation('.'))
         call assert(is_punctuation(','))
         call assert(is_punctuation(':'))
@@ -343,13 +343,13 @@ contains
         call assert(.not. is_punctuation(NUL))
 
         ! N.B.: Non-ASCII Unicode punctuation characters are not recognized.
-        ! write(*,*) is_punctuation('\u2012') ! (U+2012 = en-dash)
+        ! print *, is_punctuation('\u2012') ! (U+2012 = en-dash)
     end subroutine
 
     subroutine test_is_punctuation_long
         integer :: i
         character(len=1) :: c
-        write(*,*) "test_is_punctuation_long"
+        print *, "test_is_punctuation_long"
         do i = 0, 127
             c = achar(i)
             if (is_control(c) .or. is_alphanum(c) .or. c == ' ') then
@@ -361,7 +361,7 @@ contains
     end subroutine
 
     subroutine test_is_graphical_short
-        write(*,*) "test_is_graphical"
+        print *, "test_is_graphical"
         call assert(is_graphical('1'))
         call assert(is_graphical('a'))
         call assert(is_graphical('#'))
@@ -376,7 +376,7 @@ contains
     subroutine test_is_graphical_long
         integer :: i
         character(len=1) :: c
-        write(*,*) "test_is_graphical_long"
+        print *, "test_is_graphical_long"
         do i = 0, 127
             c = achar(i)
             if (is_control(c) .or. c == ' ') then
@@ -388,7 +388,7 @@ contains
     end subroutine
 
     subroutine test_is_printable_short
-        write(*,*) "test_is_printable_short"
+        print *, "test_is_printable_short"
         call assert(is_printable(' ')) ! whitespace is printable
         call assert(is_printable('1'))
         call assert(is_printable('a'))
@@ -402,7 +402,7 @@ contains
     subroutine test_is_printable_long
         integer :: i
         character(len=1) :: c
-        write(*,*) "test_is_printable_long"
+        print *, "test_is_printable_long"
         do i = 0, 127
             c = achar(i)
             if (is_control(c)) then
@@ -414,14 +414,14 @@ contains
     end subroutine
 
     subroutine test_is_ascii_short()
-        write(*,*) "test_is_ascii_short"
+        print *, "test_is_ascii_short"
         call assert(is_ascii('a'))
         call assert(.not. is_ascii('ä'))
     end subroutine
 
     subroutine test_is_ascii_long()
         integer :: i
-        write(*,*) "test_is_ascii_long"
+        print *, "test_is_ascii_long"
         do i = 0, 127
             call assert(is_ascii(achar(i)))
         end do
@@ -430,7 +430,7 @@ contains
     end subroutine
 
     subroutine test_to_lower_short()
-        write(*,*) "test_to_lower_short"
+        print *, "test_to_lower_short"
         call assert(to_lower('a') == 'a')
         call assert(to_lower('A') == 'a')
         call assert(to_lower('#') == '#')
@@ -439,7 +439,7 @@ contains
     subroutine test_to_lower_long()
         integer :: i
         character(len=1) :: c
-        write(*,*) "test_to_lower_long"
+        print *, "test_to_lower_long"
         do i = 1, len(uppercase)
             call assert(to_lower(uppercase(i:i)) == lowercase(i:i))
         end do
@@ -454,7 +454,7 @@ contains
     end subroutine
 
     subroutine test_to_upper_short()
-        write(*,*) "test_to_upper_short"
+        print *, "test_to_upper_short"
         call assert(to_upper('a') == 'A')
         call assert(to_upper('A') == 'A')
         call assert(to_upper('#') == '#')
@@ -463,7 +463,7 @@ contains
     subroutine test_to_upper_long()
         integer :: i
         character(len=1) :: c
-        write(*,*) "test_to_upper_long"
+        print *, "test_to_upper_long"
         do i = 1, len(lowercase)
             call assert(to_upper(lowercase(i:i)) == uppercase(i:i))
         end do
