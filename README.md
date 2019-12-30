@@ -2,10 +2,29 @@
 
 ## Getting started
 
+### Get the code
+
 ```
 git clone https://github.com/fortran-lang/stdlib
 cd stdlib
+```
+
+### Build with CMake
+
+```
+mkdir build
+cd build
+cmake ..
 make
+ctest
+```
+
+### Build with make
+
+Alternatively, you can build using provided Makefiles:
+
+```
+make -f Makefile.manual
 ```
 
 ## Contributing

@@ -8,11 +8,11 @@ FCFLAGS=-O0
 all: stdlib tests 
 
 stdlib:
-	$(MAKE) -f Makefile.manual FC=${FC} FCFLAGS=${FCFLAGS} --directory=src/lib
+	$(MAKE) -f Makefile.manual FC=${FC} FCFLAGS=${FCFLAGS} --directory=src
 
 tests: stdlib
 	$(MAKE) -f Makefile.manual FC=${FC} FCFLAGS=${FCFLAGS} --directory=src/tests
 
 clean:
-	$(MAKE) -f Makefile.manual clean --directory=src/lib
+	$(MAKE) -f Makefile.manual clean --directory=src
 	$(MAKE) -f Makefile.manual clean --directory=src/tests
