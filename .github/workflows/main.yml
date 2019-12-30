@@ -59,3 +59,10 @@ jobs:
 
     - name: test
       run: cmake --build build --target test
+
+    - name: Test in-tree builds
+      if: contains( matrix.gcc_v, '9') # Only test one compiler on each platform
+      run: |
+          cmake .
+          cmake --build .
+          cmake --build . --target test
