@@ -21,9 +21,9 @@ contains
 
     call get_command_argument(1, argv, status=ierr)
     if (ierr==0) then
-    outpath = trim(argv)
+        outpath = trim(argv)
     else
-    outpath = '.'
+        outpath = '.'
     endif
     end function get_outpath
 
