@@ -1,6 +1,7 @@
 program test_loadtxt
 use iso_fortran_env, only: sp=>real32, dp=>real64 ,qp=>real128
 use stdlib_experimental_io, only: loadtxt
+use stdlib_experimental_error, only: error_stop
 implicit none
 
 real(sp), allocatable :: s(:, :)
@@ -46,8 +47,7 @@ print *, "Array, shape=(", size(a, 1), ",", size(a, 2), ")"
     print *, a(i, :)
    end do
   class default
-   write(*,'(a)')'The proposed type is not supported'
-   error stop
+   call error_stop('The proposed type is not supported')
  end select
 
 end subroutine
