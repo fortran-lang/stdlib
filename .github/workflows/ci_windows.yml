@@ -27,7 +27,7 @@ jobs:
       if: failure()
 
     - name: CTest
-      run: ctest --parallel -V
+      run: ctest --output-on-failure --parallel -V
       working-directory: build
 
     - uses: actions/upload-artifact@v1
