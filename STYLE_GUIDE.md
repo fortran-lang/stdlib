@@ -3,7 +3,7 @@
 Adopting a consistent style can improve code legibility through the choice of good naming conventions.
 In addition, style checks will be run during CI to flag any severe non-conformance.
 This allows code review discussions to focus on semantics and substance rather than pedantry.
-Consistent whitespace usage, and not poluting line endigs with trailing white space makes `git diff`s considerably more legible.
+Consistent whitespace usage, and not polluting line endings with trailing white space makes `git diff`s considerably more legible.
 This style guide is a living document and proposed changes may be adopted after discussing them and coming to a consensus.
 
 ## Use (modern) standard Fortran
