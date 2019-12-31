@@ -1,0 +1,37 @@
+name: CI_windows
+
+on: [push, pull_request]
+
+env:
+  CI: "ON"
+
+jobs:
+  Build:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - run: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" -Wdev -B build
+      env:
+        FC: gfortran
+        CC: gcc
+        CXX: g++
+
+    - name: CMake build
+      run: cmake --build build --parallel
+
+    - run: cmake --build build --verbose --parallel 1
+      if: failure()
+
+    - name: CTest
+      run: ctest --parallel -V
+      working-directory: build
+
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: WindowsCMakeTestlog
+        path: build/Testing/Temporary/LastTest.log
