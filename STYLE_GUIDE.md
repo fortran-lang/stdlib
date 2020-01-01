@@ -29,7 +29,7 @@ This style guide is a living document and proposed changes may be adopted after 
 By setting and following a convention for indentation and whitespace, code reviews and git-diffs can
 focus on the semantics of the proposed changes rather than style and formatting.
 
-* The body of every Fortran construct should be indented by __two (2) spaces__
+* The body of every Fortran construct should be indented by __two (4) spaces__
 * Line length *should be limited to 80 characters* and __must not exceed 132__
 * Please do not use <kbd>Tab</kbd> characters for indentation
 * Please remove trailing white space before committing code
