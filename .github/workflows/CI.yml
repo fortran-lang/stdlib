@@ -66,3 +66,8 @@ jobs:
           cmake .
           cmake --build .
           cmake --build . --target test
+
+    - name: Test manual makefiles
+      if: contains(matrix.os, 'ubuntu') && contains(matrix.gcc_v, '9')
+      run: |
+        make -f Makefile.manual
