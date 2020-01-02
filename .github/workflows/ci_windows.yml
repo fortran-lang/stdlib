@@ -28,7 +28,7 @@ jobs:
       if: failure()
 
     - name: CTest
-      run: ctest --output-on-failure --parallel -V
+      run: ctest --output-on-failure --parallel -V -LE quadruple_precision
       working-directory: build
 
     - uses: actions/upload-artifact@v1

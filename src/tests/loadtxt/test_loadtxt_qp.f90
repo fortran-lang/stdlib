@@ -1,25 +1,12 @@
-program test_loadtxt
+program test_loadtxt_qp
 use iso_fortran_env, only: sp=>real32, dp=>real64, qp=>real128
 use stdlib_experimental_io, only: loadtxt
 implicit none
 
-real(sp), allocatable :: s(:, :)
-real(dp), allocatable :: d(:, :)
+real(qp), allocatable :: q(:, :)
 
-call loadtxt("array1.dat", s)
-call print_array(s)
-
-call loadtxt("array1.dat", d)
-call print_array(d)
-
-call loadtxt("array2.dat", d)
-call print_array(d)
-
-call loadtxt("array3.dat", d)
-call print_array(d)
-
-call loadtxt("array4.dat", d)
-call print_array(d)
+call loadtxt("array4.dat", q)
+call print_array(q)
 
 contains
 
