@@ -5,7 +5,7 @@ implicit none
 
 real(sp), allocatable :: s(:, :)
 real(dp), allocatable :: d(:, :)
-real(qp), allocatable :: q(:, :)
+!real(qp), allocatable :: q(:, :)
 
 call loadtxt("array1.dat", s)
 call print_array(s)
@@ -22,8 +22,8 @@ call print_array(d)
 call loadtxt("array4.dat", d)
 call print_array(d)
 
-call loadtxt("array4.dat", q)
-call print_array(q)
+!call loadtxt("array4.dat", q)
+!call print_array(q)
 
 contains
 
