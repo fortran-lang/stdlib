@@ -1,5 +1,5 @@
-program test_loadtxt
-use iso_fortran_env, only: sp=>real32, dp=>real64 ,qp=>real128
+program test_savetxt
+use iso_fortran_env, only: sp=>real32, dp=>real64
 use stdlib_experimental_io, only: loadtxt, savetxt
 use stdlib_experimental_error, only: assert
 implicit none
@@ -10,7 +10,6 @@ outpath = get_outpath() // "/tmp.dat"
 
 call test_sp(outpath)
 call test_dp(outpath)
-!call test_qp(outpath)
 
 contains
 
@@ -60,23 +59,6 @@ contains
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._dp)))
-    end subroutine
-
-    subroutine test_qp(outpath)
-    character(*), intent(in) :: outpath
-    real(qp) :: d(3, 2), e(2, 3)
-    real(qp), allocatable :: d2(:, :)
-    d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
-    call savetxt(outpath, d)
-    call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [3, 2]))
-    call assert(all(abs(d-d2) < epsilon(1._qp)))
-
-    e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
-    call savetxt(outpath, e)
-    call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [2, 3]))
-    call assert(all(abs(e-d2) < epsilon(1._qp)))
     end subroutine
 
 end program
