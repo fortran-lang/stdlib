@@ -1,4 +1,4 @@
-program test_loadtxt
+program test_savetxt_qp
 use iso_fortran_env, only: qp=>real128
 use stdlib_experimental_io, only: loadtxt, savetxt
 use stdlib_experimental_error, only: assert

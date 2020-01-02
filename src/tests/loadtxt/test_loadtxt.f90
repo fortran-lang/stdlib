@@ -1,5 +1,5 @@
 program test_loadtxt
-use iso_fortran_env, only: sp=>real32, dp=>real64!, qp=>real128
+use iso_fortran_env, only: sp=>real32, dp=>real64
 use stdlib_experimental_io, only: loadtxt
 implicit none
 
@@ -34,10 +34,6 @@ print *, "Array, shape=(", size(a, 1), ",", size(a, 2), ")"
     print *, a(i, :)
    end do
   type is(real(dp))
-   do i = 1, size(a, 1)
-    print *, a(i, :)
-   end do
-  type is(real(qp))
    do i = 1, size(a, 1)
     print *, a(i, :)
    end do
