@@ -1,5 +1,5 @@
 program test_loadtxt_qp
-use iso_fortran_env, only: qp=>real128
+use stdlib_experimental_kinds, only: qp
 use stdlib_experimental_io, only: loadtxt
 implicit none
 
