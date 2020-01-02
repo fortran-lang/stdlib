@@ -1,17 +1,22 @@
+PROG = test_ascii
+OBJS = test_ascii.o
+
 CPPFLAGS = -I../..
-OBJS = ../../stdlib_experimental_ascii.o \
-       ../../stdlib_experimental_error.o
+LDFLAGS = -L../.. -lstdlib
 
-.PHONY: all clean
-.SUFFIXES: .f90 .o
+.PHONY: all clean test
+.SUFFIXES: $(SUFFIXES) .f90 .o
 
-all: test_ascii
+all: $(PROG)
 
-test_ascii: test_ascii.f90 $(OBJS)
-	$(FC) $(FCFLAGS) $(CPPFLAGS) $< -o $@ $(OBJS)
+$(PROG): $(OBJS)
+	$(FC) $(FCFLAGS) $(CPPFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
-%.o: %.mod
+test:
+	./$(PROG)
 
 clean:
-	$(RM) test_ascii
-	$(RM) *.o *.mod
+	$(RM) $(PROG) $(OBJS) *.mod
+
+%.o: %.f90
+	$(FC) $(FCFLAGS) $(CPPFLAGS) -c $<
