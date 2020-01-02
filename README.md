@@ -1,5 +1,17 @@
 # Fortran Standard Library
 
+## Scope
+
+The goal of the Fortran Standard Library is to achieve the following general scope:
+
+* Utilities (containers, strings, files, OS/environment integration, unit
+  testing & assertions, logging,  ...)
+* Algorithms (searching and sorting, merging, ...)
+* Mathematics (linear algebra, sparse matrices, special functions, fast Fourier
+  transform, random numbers, statistics, ordinary differential equations,
+  numerical integration, optimization, ...)
+
+
 ## Getting started
 
 ### Get the code
