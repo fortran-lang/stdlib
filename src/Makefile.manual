@@ -22,3 +22,7 @@ clean:
 
 %.o: %.f90
 	$(FC) $(FFLAGS) -c $<
+
+
+# Fortran module dependencies
+f18estop.o: stdlib_experimental_error.o
