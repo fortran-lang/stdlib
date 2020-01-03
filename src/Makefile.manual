@@ -1,6 +1,7 @@
 OBJS = stdlib_experimental_ascii.o \
        stdlib_experimental_error.o \
        stdlib_experimental_io.o \
+       stdlib_experimental_default.o \
 
 .PHONY: all clean
 .SUFFIXES: .f90 .o
@@ -15,6 +16,7 @@ all: $(OBJS)
 stdlib_experimental_ascii.o: stdlib_experimental_ascii.f90
 stdlib_experimental_error.o: stdlib_experimental_error.f90
 stdlib_experimental_io.o: stdlib_experimental_io.f90
+stdlib_experimental_default.o: stdlib_experimental_default.f90
 
 clean:
 	$(RM) *.o *.mod
