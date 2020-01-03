@@ -1,10 +1,10 @@
 # Fortran stdlib Makefile
 
 FC = gfortran
-FCFLAGS = -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all
+FFLAGS = -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all
 
 export FC
-export FCFLAGS
+export FFLAGS
 
 .PHONY: all clean test
 

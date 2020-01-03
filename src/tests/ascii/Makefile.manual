@@ -10,7 +10,7 @@ LDFLAGS = -L../.. -lstdlib
 all: $(PROG)
 
 $(PROG): $(OBJS)
-	$(FC) $(FCFLAGS) $(CPPFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+	$(FC) $(FFLAGS) $(CPPFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
 test:
 	./$(PROG)
@@ -19,4 +19,4 @@ clean:
 	$(RM) $(PROG) $(OBJS) *.mod
 
 %.o: %.f90
-	$(FC) $(FCFLAGS) $(CPPFLAGS) -c $<
+	$(FC) $(FFLAGS) $(CPPFLAGS) -c $<

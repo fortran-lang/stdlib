@@ -11,7 +11,7 @@ OBJS = $(PROGS:=.o)
 all: $(PROGS)
 
 $(PROGS): %: %.o
-	$(FC) $(FCFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
+	$(FC) $(FFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 test:
 	./test_loadtxt
@@ -23,4 +23,4 @@ clean:
 	$(RM) $(PROGS) $(OBJS) tmp.dat tmp_qp.dat
 
 %.o: %.f90
-	$(FC) $(FCFLAGS) $(CPPFLAGS) -c $<
+	$(FC) $(FFLAGS) $(CPPFLAGS) -c $<

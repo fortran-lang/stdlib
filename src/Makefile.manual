@@ -17,4 +17,4 @@ clean:
 	$(RM) $(LIB) $(OBJS) *.mod
 
 %.o: %.f90
-	$(FC) $(FCFLAGS) -c $<
+	$(FC) $(FFLAGS) -c $<
