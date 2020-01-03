@@ -1,13 +1,13 @@
 .PHONY: all clean
 
-all: ascii/test_ascii loadtxt/test_loadtxt
+all: ascii/test_ascii io/test_loadtxt
 
 ascii/test_ascii:
 	$(MAKE) -f Makefile.manual --directory=ascii
 
-loadtxt/test_loadtxt:
-	$(MAKE) -f Makefile.manual --directory=loadtxt
+io/test_loadtxt:
+	$(MAKE) -f Makefile.manual --directory=io
 
 clean:
 	$(MAKE) -f Makefile.manual --directory=ascii clean
-	$(MAKE) -f Makefile.manual --directory=loadtxt clean
+	$(MAKE) -f Makefile.manual --directory=io clean
