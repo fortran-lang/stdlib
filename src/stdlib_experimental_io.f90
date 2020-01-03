@@ -281,6 +281,10 @@ integer function open(filename, mode) result(u)
 !
 ! u = open("somefile.txt", "w")
 
+! To append to the end of the file if it exists:
+!
+! u = open("somefile.txt", "a")
+
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: mode
 character(:), allocatable :: mode_
@@ -292,6 +296,9 @@ if (mode_ == "r") then
     open(newunit=u, file=filename, status="old", action="read")
 else if (mode_ == "w") then
     open(newunit=u, file=filename, status="replace", action="write")
+else if (mode_ == "a") then
+    open(newunit=u, file=filename, position="append", status="old", &
+        action="write")
 else
     call error_stop("Unsupported mode")
 end if
