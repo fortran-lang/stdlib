@@ -5,7 +5,6 @@ CPPFLAGS = -I../..
 LDFLAGS = -L../.. -lstdlib
 
 .PHONY: all clean test
-.SUFFIXES: $(SUFFIXES) .f90 .o
 
 all: $(PROG)
 

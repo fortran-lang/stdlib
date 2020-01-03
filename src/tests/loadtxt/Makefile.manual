@@ -2,7 +2,6 @@ CPPFLAGS = -I../..
 LDFLAGS = -L../.. -lstdlib
 
 .PHONY: all clean test
-.SUFFIXES: $(SUFFIXES) .f90 .o
 
 PROGS = test_loadtxt test_savetxt test_loadtxt_qp test_savetxt_qp
 OBJS = $(PROGS:=.o)

@@ -6,7 +6,6 @@ OBJS = stdlib_experimental_ascii.o \
 	   f18estop.o
 
 .PHONY: all clean
-.SUFFIXES: $(SUFFIXES) .f90 .o
 
 all: $(LIB)
 
