@@ -11,7 +11,7 @@ module stdlib_experimental_default
   !! For additional clarity, `default` be called with keyword argument
   !! for the fallback value, e.g., `default(x, to=1.0)`.
   !!
-  use iso_fortran_env, only: sp => real32, dp => real64, qp => real128, int16, int32, int64
+  use iso_fortran_env, only: sp => real32, dp => real64, qp => real128, int8, int16, int32, int64
   implicit none
 
 
@@ -23,6 +23,7 @@ module stdlib_experimental_default
      module procedure default_sp
      module procedure default_dp
      module procedure default_qp
+     module procedure default_int8
      module procedure default_int16
      module procedure default_int32
      module procedure default_int64
@@ -73,6 +74,19 @@ contains
        y = to
     end if
   end function default_qp
+
+  
+  function default_int8(x, to) result(y)
+    integer(int8), intent(in), optional :: x
+    integer(int8), intent(in) :: to
+    integer(int8) :: y
+
+    if (present(x)) then
+       y = x
+    else
+       y = to
+    end if
+  end function default_int8
 
   
   function default_int16(x, to) result(y)
