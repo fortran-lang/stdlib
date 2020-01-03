@@ -9,6 +9,7 @@ LIB = libstdlib.a
 
 OBJS = $(SRC:.f90=.o)
 MODS = $(OBJS:.o=.mod)
+SMODS = $(OBJS:.o=*.smod)
 
 .PHONY: all clean
 
@@ -18,7 +19,7 @@ $(LIB): $(OBJS)
 	ar rcs $@ $(OBJS)
 
 clean:
-	$(RM) $(LIB) $(OBJS) $(MODS)
+	$(RM) $(LIB) $(OBJS) $(MODS) $(SMODS)
 
 %.o: %.f90
 	$(FC) $(FFLAGS) -c $<
