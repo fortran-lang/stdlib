@@ -5,6 +5,8 @@ OBJS = stdlib_experimental_ascii.o \
        stdlib_experimental_io.o \
 	   f18estop.o
 
+MODS = $(OBJS:.o=.mod)
+
 .PHONY: all clean
 
 all: $(LIB)
@@ -13,7 +15,7 @@ $(LIB): $(OBJS)
 	ar rcs $@ $(OBJS)
 
 clean:
-	$(RM) $(LIB) $(OBJS) *.mod
+	$(RM) $(LIB) $(OBJS) $(MODS)
 
 %.o: %.f90
 	$(FC) $(FFLAGS) -c $<
