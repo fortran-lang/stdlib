@@ -1,25 +1,9 @@
-CPPFLAGS = -I../..
-LDFLAGS = -L../.. -lstdlib
+PROGS_SRC = test_loadtxt.f90 \
+			test_savetxt.f90 \
+			test_loadtxt_qp.f90 \
+			test_savetxt_qp.f90
 
-.PHONY: all clean test
-
-PROGS = test_loadtxt test_savetxt test_loadtxt_qp test_savetxt_qp
-OBJS = $(PROGS:=.o)
+CLEAN_FILES = tmp.dat tmp_qp.dat
 
 
-all: $(PROGS)
-
-$(PROGS): %: %.o
-	$(FC) $(FFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
-
-test:
-	./test_loadtxt
-	./test_loadtxt_qp
-	./test_savetxt
-	./test_savetxt_qp
-
-clean:
-	$(RM) $(PROGS) $(OBJS) tmp.dat tmp_qp.dat
-
-%.o: %.f90
-	$(FC) $(FFLAGS) $(CPPFLAGS) -c $<
+include ../Makefile.manual.test.mk
