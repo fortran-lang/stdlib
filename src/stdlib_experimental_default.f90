@@ -1,4 +1,4 @@
-module default_m
+module stdlib_experimental_default
   !!
   !! Provides a generic function `default`, which can be used to
   !! conveniently implement fallback values for optional arguments
