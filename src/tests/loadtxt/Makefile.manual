@@ -5,7 +5,5 @@ PROGS_SRC = test_loadtxt.f90 \
 
 CLEAN_FILES = tmp.dat tmp_qp.dat
 
-CPPFLAGS = -I../..
-LDFLAGS = -L../.. -lstdlib
 
 include ../Makefile.manual.test.mk

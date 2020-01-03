@@ -1,6 +1,8 @@
 # Common Makefile rules that are included from each test subdirectory's
 # Makefile
 
+CPPFLAGS += -I../..
+LDFLAGS += -L../.. -lstdlib
 
 OBJS = $(PROGS_SRC:.f90=.o)
 PROGS = $(OBJS:.o=)

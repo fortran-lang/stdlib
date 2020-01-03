@@ -1,6 +1,4 @@
 PROGS_SRC = test_ascii.f90
 
-CPPFLAGS = -I../..
-LDFLAGS = -L../.. -lstdlib
 
 include ../Makefile.manual.test.mk
