@@ -1,12 +1,12 @@
-.PHONY: all clean
+.PHONY: all clean test
 
-all: ascii/test_ascii loadtxt/test_loadtxt
-
-ascii/test_ascii:
+all:
 	$(MAKE) -f Makefile.manual --directory=ascii
-
-loadtxt/test_loadtxt:
 	$(MAKE) -f Makefile.manual --directory=loadtxt
+
+test:
+	$(MAKE) -f Makefile.manual --directory=ascii test
+	$(MAKE) -f Makefile.manual --directory=loadtxt test
 
 clean:
 	$(MAKE) -f Makefile.manual --directory=ascii clean

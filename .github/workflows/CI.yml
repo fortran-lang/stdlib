@@ -71,3 +71,5 @@ jobs:
       if: contains(matrix.os, 'ubuntu') && contains(matrix.gcc_v, '9')
       run: |
         make -f Makefile.manual
+        make -f Makefile.manual test
+        make -f Makefile.manual clean

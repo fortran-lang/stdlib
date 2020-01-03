@@ -1,20 +1,19 @@
+LIB = libstdlib.a
+
 OBJS = stdlib_experimental_ascii.o \
        stdlib_experimental_error.o \
        stdlib_experimental_io.o \
+	   f18estop.o
 
 .PHONY: all clean
-.SUFFIXES: .f90 .o
 
-all: $(OBJS)
+all: $(LIB)
 
-.f90.o:
-	$(FC) $(FCFLAGS) -c $<
-
-%.o: %.mod
-
-stdlib_experimental_ascii.o: stdlib_experimental_ascii.f90
-stdlib_experimental_error.o: stdlib_experimental_error.f90
-stdlib_experimental_io.o: stdlib_experimental_io.f90
+$(LIB): $(OBJS)
+	ar rcs $@ $(OBJS)
 
 clean:
-	$(RM) *.o *.mod
+	$(RM) $(LIB) $(OBJS) *.mod
+
+%.o: %.f90
+	$(FC) $(FFLAGS) -c $<
