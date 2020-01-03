@@ -1,21 +1,6 @@
-PROG = test_ascii
-OBJS = test_ascii.o
+PROGS_SRC = test_ascii.f90
 
 CPPFLAGS = -I../..
 LDFLAGS = -L../.. -lstdlib
 
-.PHONY: all clean test
-
-all: $(PROG)
-
-$(PROG): $(OBJS)
-	$(FC) $(FFLAGS) $(CPPFLAGS) -o $@ $(OBJS) $(LDFLAGS)
-
-test:
-	./$(PROG)
-
-clean:
-	$(RM) $(PROG) $(OBJS) *.mod
-
-%.o: %.f90
-	$(FC) $(FFLAGS) $(CPPFLAGS) -c $<
+include ../Makefile.manual.test.mk
