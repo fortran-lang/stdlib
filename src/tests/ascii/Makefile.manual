@@ -1,17 +1,4 @@
-CPPFLAGS = -I../..
-OBJS = ../../stdlib_experimental_ascii.o \
-       ../../stdlib_experimental_error.o
+PROGS_SRC = test_ascii.f90
 
-.PHONY: all clean
-.SUFFIXES: .f90 .o
 
-all: test_ascii
-
-test_ascii: test_ascii.f90 $(OBJS)
-	$(FC) $(FCFLAGS) $(CPPFLAGS) $< -o $@ $(OBJS)
-
-%.o: %.mod
-
-clean:
-	$(RM) test_ascii
-	$(RM) *.o *.mod
+include ../Makefile.manual.test.mk

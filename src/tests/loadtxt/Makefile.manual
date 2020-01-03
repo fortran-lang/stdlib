@@ -1,20 +1,9 @@
-CPPFLAGS = -I../..
-OBJS = ../../stdlib_experimental_error.o \
-       ../../stdlib_experimental_io.o
+PROGS_SRC = test_loadtxt.f90 \
+			test_savetxt.f90 \
+			test_loadtxt_qp.f90 \
+			test_savetxt_qp.f90
 
-.PHONY: all clean
-.SUFFIXES: .f90 .o
+CLEAN_FILES = tmp.dat tmp_qp.dat
 
-all: test_loadtxt test_savetxt
 
-test_loadtxt: test_loadtxt.f90 $(OBJS)
-	$(FC) $(FCFLAGS) $(CPPFLAGS) $< -o $@ $(OBJS)
-
-test_savetxt: test_savetxt.f90 $(OBJS)
-	$(FC) $(FCFLAGS) $(CPPFLAGS) $< -o $@ $(OBJS)
-
-%.o: %.mod
-
-clean:
-	$(RM) test_loadtxt test_savetxt
-	$(RM) *.o *.mod
+include ../Makefile.manual.test.mk
