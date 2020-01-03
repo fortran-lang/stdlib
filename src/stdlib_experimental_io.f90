@@ -274,7 +274,7 @@ integer function open(filename, mode) result(u)
 !
 ! To open a file to read:
 !
-! u = open("somefile.txt")        # The default `mode` is "r"
+! u = open("somefile.txt")        # The default `mode` is "rt"
 ! u = open("somefile.txt", "r")
 !
 ! To open a file to write:
@@ -288,17 +288,22 @@ integer function open(filename, mode) result(u)
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: mode
 character(:), allocatable :: mode_
-mode_ = "r"
+mode_ = "rt"
 if (present(mode)) mode_ = mode
 ! Note: the Fortran standard says that the default values for `status` and
 ! `action` are processor dependent, so we have to explicitly set them below
-if (mode_ == "r") then
-    open(newunit=u, file=filename, status="old", action="read")
-else if (mode_ == "w") then
-    open(newunit=u, file=filename, status="replace", action="write")
-else if (mode_ == "a") then
+if (mode_ == "r" .or. mode_ == 'rt') then
+    open(newunit=u, file=filename, status="old", action="read", &
+             access='sequential', form='formatted')
+else if (mode_ == "w" .or. mode_ == "wt") then
+    open(newunit=u, file=filename, status="replace", action="write", &
+              access='sequential', form='formatted')
+else if (mode_ == "a" .or. mode_ == "at") then
     open(newunit=u, file=filename, position="append", status="old", &
-        action="write")
+        action="write", access='sequential', form='formatted')
+else if (mode_ == "x" .or. mode_ == "xt") then
+    open(newunit=u, file=filename, status="new", &
+            action="write", access='sequential', form='formatted')
 else
     call error_stop("Unsupported mode")
 end if
