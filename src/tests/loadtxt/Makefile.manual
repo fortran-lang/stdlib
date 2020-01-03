@@ -3,22 +3,20 @@ PROGS_SRC = test_loadtxt.f90 \
 			test_loadtxt_qp.f90 \
 			test_savetxt_qp.f90
 
+CLEAN_FILES = tmp.dat tmp_qp.dat
+
 CPPFLAGS = -I../..
 LDFLAGS = -L../.. -lstdlib
+
 
 
 OBJS = $(PROGS_SRC:.f90=.o)
 PROGS = $(OBJS:.o=)
 TESTPROGS = $(PROGS:=TEST)
 
-
-
 .PHONY: all clean test $(TESTPROGS)
 
 all: $(PROGS)
-
-$(PROGS): %: %.o
-	$(FC) $(FFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 test: $(TESTPROGS)
 
@@ -26,7 +24,10 @@ $(TESTPROGS):
 	./$(@:TEST=)
 
 clean:
-	$(RM) $(PROGS) $(OBJS) tmp.dat tmp_qp.dat
+	$(RM) $(PROGS) $(OBJS) $(CLEAN_FILES)
 
 %.o: %.f90
 	$(FC) $(FFLAGS) $(CPPFLAGS) -c $<
+
+$(PROGS): %: %.o
+	$(FC) $(FFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
