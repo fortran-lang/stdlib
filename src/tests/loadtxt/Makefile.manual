@@ -1,11 +1,18 @@
+PROGS_SRC = test_loadtxt.f90 \
+			test_savetxt.f90 \
+			test_loadtxt_qp.f90 \
+			test_savetxt_qp.f90
+
 CPPFLAGS = -I../..
 LDFLAGS = -L../.. -lstdlib
 
+
+OBJS = $(PROGS_SRC:.f90=.o)
+PROGS = $(OBJS:.o=)
+
+
+
 .PHONY: all clean test
-
-PROGS = test_loadtxt test_savetxt test_loadtxt_qp test_savetxt_qp
-OBJS = $(PROGS:=.o)
-
 
 all: $(PROGS)
 
