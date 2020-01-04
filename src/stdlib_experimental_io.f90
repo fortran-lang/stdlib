@@ -287,26 +287,85 @@ integer function open(filename, mode) result(u)
 
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: mode
-character(:), allocatable :: mode_
-mode_ = "rt"
-if (present(mode)) mode_ = mode
-! Note: the Fortran standard says that the default values for `status` and
-! `action` are processor dependent, so we have to explicitly set them below
-if (mode_ == "r" .or. mode_ == 'rt') then
-    open(newunit=u, file=filename, status="old", action="read", &
-             access='sequential', form='formatted')
-else if (mode_ == "w" .or. mode_ == "wt") then
-    open(newunit=u, file=filename, status="replace", action="write", &
-              access='sequential', form='formatted')
-else if (mode_ == "a" .or. mode_ == "at") then
-    open(newunit=u, file=filename, position="append", status="old", &
-        action="write", access='sequential', form='formatted')
-else if (mode_ == "x" .or. mode_ == "xt") then
-    open(newunit=u, file=filename, status="new", &
-            action="write", access='sequential', form='formatted')
+integer :: io
+character(3):: mode_
+character(:),allocatable :: action_, position_, status_, access_, form_
+
+
+mode_ = "r t"
+if (present(mode)) mode_ = parse_mode(mode)
+
+if (mode_(1:2) == 'r ') then
+    action_='read'
+    position_='asis'
+    status_='old'
+else if (mode_(1:2) == 'w ') then
+    action_='write'
+    position_='asis'
+    status_='replace'
+else if (mode_(1:2) == 'a ') then
+    action_='write'
+    position_='append'
+    status_='old'
+else if (mode_(1:2) == 'x ') then
+    action_='write'
+    position_='asis'
+    status_='new'
+else if (mode_(1:2) == 'r+') then
+    action_='readwrite'
+    position_='asis'
+    status_='old'
+else if (mode_(1:2) == 'w+') then
+    action_='readwrite'
+    position_='asis'
+    status_='replace'
+else if (mode_(1:2) == 'a+') then
+    action_='readwrite'
+    position_='append'
+    status_='old'
+else if (mode_(1:2) == 'x+') then
+    action_='readwrite'
+    position_='asis'
+    status_='new'
 else
-    call error_stop("Unsupported mode")
+    call error_stop("Unsupported mode: "//mode_(1:2))
 end if
+
+if (mode_(3:3) == 't') then
+    access_='sequential'
+    form_='formatted'
+else if (mode_(3:3) == 'b' .or. mode_(3:3) == 's') then
+    access_='stream'
+    form_='unformatted'
+else
+    call error_stop("Unsupported mode: "//mode_(3:3))
+endif
+
+open(newunit=u, file=filename, &
+     action = action_, position = position_, status = status_, &
+     access = access_, form = form_, &
+     iostat = io)
+
+end function
+
+character(3) function parse_mode(mode) result(mode_)
+character(*), intent(in) :: mode
+
+mode_ = 'r t'
+mode_(1:1) = mode(1:1)
+
+if (len_trim(adjustl(mode)) > 1) then
+    if (mode(2:2) == '+' )then
+        mode_(2:2) = '+'
+    else
+        mode_(3:3) = mode(2:2)
+    endif
+end if
+
+if (len_trim(adjustl(mode)) > 2) then
+        mode_(3:3) = mode(3:3)
+end if
+
 end function
 
 end module
