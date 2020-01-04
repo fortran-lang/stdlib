@@ -1,5 +1,6 @@
 add_subdirectory(ascii)
 add_subdirectory(io)
+add_subdirectory(optval)
 
 add_executable(test_skip test_skip.f90)
 target_link_libraries(test_skip fortran_stdlib)
