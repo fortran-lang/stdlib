@@ -1,8 +1,15 @@
 module stdlib_experimental_io
 use iso_fortran_env, only: sp=>real32, dp=>real64, qp=>real128
+use stdlib_experimental_error, only: error_stop
+use stdlib_experimental_optval, only: optval
 implicit none
 private
-public :: loadtxt, savetxt
+! Public API
+public :: loadtxt, savetxt, open
+
+! Private API that is exposed so that we can test it in tests
+public :: parse_mode
+
 
 interface loadtxt
     module procedure sloadtxt
@@ -46,7 +53,7 @@ real(sp), allocatable, intent(out) :: d(:,:)
 integer :: s
 integer :: nrow,ncol,i
 
-open(newunit=s, file=filename, status="old", action="read")
+s = open(filename)
 
 ! determine number of columns
 ncol = number_of_columns(s)
@@ -89,7 +96,7 @@ real(dp), allocatable, intent(out) :: d(:,:)
 integer :: s
 integer :: nrow,ncol,i
 
-open(newunit=s, file=filename, status="old", action="read")
+s = open(filename)
 
 ! determine number of columns
 ncol = number_of_columns(s)
@@ -132,7 +139,7 @@ real(qp), allocatable, intent(out) :: d(:,:)
 integer :: s
 integer :: nrow,ncol,i
 
-open(newunit=s, file=filename, status="old", action="read")
+s = open(filename)
 
 ! determine number of columns
 ncol = number_of_columns(s)
@@ -164,7 +171,7 @@ real(sp), intent(in) :: d(:,:)           ! The 2D array to save
 ! call savetxt("log.txt", data)
 
 integer :: s, i
-open(newunit=s, file=filename, status="replace", action="write")
+s = open(filename, "w")
 do i = 1, size(d, 1)
     write(s, *) d(i, :)
 end do
@@ -187,7 +194,7 @@ real(dp), intent(in) :: d(:,:)           ! The 2D array to save
 ! call savetxt("log.txt", data)
 
 integer :: s, i
-open(newunit=s, file=filename, status="replace", action="write")
+s = open(filename, "w")
 do i = 1, size(d, 1)
     write(s, *) d(i, :)
 end do
@@ -210,7 +217,7 @@ real(qp), intent(in) :: d(:,:)           ! The 2D array to save
 ! call savetxt("log.txt", data)
 
 integer :: s, i
-open(newunit=s, file=filename, status="replace", action="write")
+s = open(filename, "w")
 do i = 1, size(d, 1)
     write(s, *) d(i, :)
 end do
@@ -266,6 +273,110 @@ if (iachar(char) == 32 .or. iachar(char) == 9) then
 else
     whitechar = .false.
 end if
+end function
+
+integer function open(filename, mode) result(u)
+! Open a file
+!
+! To open a file to read:
+!
+! u = open("somefile.txt")        # The default `mode` is "rt"
+! u = open("somefile.txt", "r")
+!
+! To open a file to write:
+!
+! u = open("somefile.txt", "w")
+
+! To append to the end of the file if it exists:
+!
+! u = open("somefile.txt", "a")
+
+character(*), intent(in) :: filename
+character(*), intent(in), optional :: mode
+integer :: io
+character(3):: mode_
+character(:),allocatable :: action_, position_, status_, access_, form_
+
+
+mode_ = parse_mode(optval(mode, ""))
+
+if (mode_(1:2) == 'r ') then
+    action_='read'
+    position_='asis'
+    status_='old'
+else if (mode_(1:2) == 'w ') then
+    action_='write'
+    position_='asis'
+    status_='replace'
+else if (mode_(1:2) == 'a ') then
+    action_='write'
+    position_='append'
+    status_='old'
+else if (mode_(1:2) == 'x ') then
+    action_='write'
+    position_='asis'
+    status_='new'
+else if (mode_(1:2) == 'r+') then
+    action_='readwrite'
+    position_='asis'
+    status_='old'
+else if (mode_(1:2) == 'w+') then
+    action_='readwrite'
+    position_='asis'
+    status_='replace'
+else if (mode_(1:2) == 'a+') then
+    action_='readwrite'
+    position_='append'
+    status_='old'
+else if (mode_(1:2) == 'x+') then
+    action_='readwrite'
+    position_='asis'
+    status_='new'
+else
+    call error_stop("Unsupported mode: "//mode_(1:2))
+end if
+
+if (mode_(3:3) == 't') then
+    access_='sequential'
+    form_='formatted'
+else if (mode_(3:3) == 'b' .or. mode_(3:3) == 's') then
+    access_='stream'
+    form_='unformatted'
+else
+    call error_stop("Unsupported mode: "//mode_(3:3))
+endif
+
+open(newunit=u, file=filename, &
+     action = action_, position = position_, status = status_, &
+     access = access_, form = form_, &
+     iostat = io)
+
+end function
+
+character(3) function parse_mode(mode) result(mode_)
+character(*), intent(in) :: mode
+
+mode_ = 'r t'
+if (len_trim(mode) == 0) return
+mode_(1:1) = mode(1:1)
+
+if (len_trim(adjustl(mode)) > 1) then
+    if (mode(2:2) == '+' )then
+        mode_(2:2) = '+'
+    else
+        mode_(3:3) = mode(2:2)
+    endif
+end if
+
+if (len_trim(adjustl(mode)) > 2) then
+        mode_(3:3) = mode(3:3)
+end if
+
+if (mode_(1:1) == 'b') then
+    mode_(1:1) = mode_(3:3)
+    mode_(3:3) = 'b'
+end if
+
 end function
 
 end module
