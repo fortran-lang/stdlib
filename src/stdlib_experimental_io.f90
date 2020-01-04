@@ -297,8 +297,11 @@ character(3):: mode_
 character(:),allocatable :: action_, position_, status_, access_, form_
 
 
-mode_ = "r t"
-if (present(mode)) mode_ = parse_mode(mode)
+! Note: with `optval` this could be written as:
+! mode_ = parse_mode(optval(mode, ""))
+mode_ = ""
+if (present(mode)) mode_ = mode
+mode_ = parse_mode(mode_)
 
 if (mode_(1:2) == 'r ') then
     action_='read'
