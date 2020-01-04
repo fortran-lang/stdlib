@@ -357,6 +357,7 @@ character(3) function parse_mode(mode) result(mode_)
 character(*), intent(in) :: mode
 
 mode_ = 'r t'
+if (len_trim(mode) == 0) return
 mode_(1:1) = mode(1:1)
 
 if (len_trim(adjustl(mode)) > 1) then
