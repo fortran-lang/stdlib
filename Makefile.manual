@@ -1,17 +1,21 @@
 # Fortran stdlib Makefile
 
 FC = gfortran
-FCFLAGS=-O0
+FFLAGS = -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all
 
-.PHONY: all clean
+export FC
+export FFLAGS
 
-all: stdlib tests 
+.PHONY: all clean test
 
-stdlib:
-	$(MAKE) -f Makefile.manual FC=${FC} FCFLAGS=${FCFLAGS} --directory=src
+all:
+	$(MAKE) -f Makefile.manual --directory=src
+	$(MAKE) -f Makefile.manual --directory=src/tests
 
-tests: stdlib
-	$(MAKE) -f Makefile.manual FC=${FC} FCFLAGS=${FCFLAGS} --directory=src/tests
+test:
+	$(MAKE) -f Makefile.manual --directory=src/tests test
+	@echo
+	@echo "All tests passed."
 
 clean:
 	$(MAKE) -f Makefile.manual clean --directory=src
