@@ -356,26 +356,31 @@ end function
 character(3) function parse_mode(mode) result(mode_)
 character(*), intent(in) :: mode
 
+integer::i
+character(:),allocatable::a
+
 mode_ = 'r t'
+
 if (len_trim(mode) == 0) return
-mode_(1:1) = mode(1:1)
+a=trim(adjustl(mode))
 
-if (len_trim(adjustl(mode)) > 1) then
-    if (mode(2:2) == '+' )then
-        mode_(2:2) = '+'
+do i=1,len(a)
+    if (a(i:i) == 'r'  &
+        .or. a(i:i) == 'w' &
+        .or. a(i:i) == 'a' &
+        .or. a(i:i) == 'x' &
+        ) then
+        mode_(1:1) = a(i:i)
+    else if (a(i:i) == '+') then
+        mode_(2:2) = a(i:i)
+    else if (a(i:i) == 't' .or. a(i:i) == 'b') then
+        mode_(3:3) = a(i:i)
+    else if (a(i:i) == ' ') then
+     cycle
     else
-        mode_(3:3) = mode(2:2)
+        call error_stop("Wrong character: "//a(i:i))
     endif
-end if
-
-if (len_trim(adjustl(mode)) > 2) then
-        mode_(3:3) = mode(3:3)
-end if
-
-if (mode_(1:1) == 'b') then
-    mode_(1:1) = mode_(3:3)
-    mode_(3:3) = 'b'
-end if
+end do
 
 end function
 
