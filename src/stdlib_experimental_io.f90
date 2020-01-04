@@ -3,7 +3,12 @@ use iso_fortran_env, only: sp=>real32, dp=>real64, qp=>real128
 use stdlib_experimental_error, only: error_stop
 implicit none
 private
+! Public API
 public :: loadtxt, savetxt, open
+
+! Private API that is exposed so that we can test it in tests
+public :: parse_mode
+
 
 interface loadtxt
     module procedure sloadtxt
