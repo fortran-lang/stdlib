@@ -1,9 +1,9 @@
-program test_open
+program test_parse_mode
 use stdlib_experimental_io, only: parse_mode
 use stdlib_experimental_error, only: assert
 implicit none
 
-call test_parse_mode()
+call test_parse_mode_expected_order()
 
 call test_parse_mode_reverse_order()
 
@@ -11,7 +11,7 @@ call test_parse_mode_random_order()
 
 contains
 
-    subroutine test_parse_mode()
+    subroutine test_parse_mode_expected_order()
     character(3) :: m
     m = parse_mode("")
     call assert(m == "r t")
