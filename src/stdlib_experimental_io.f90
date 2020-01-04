@@ -1,6 +1,7 @@
 module stdlib_experimental_io
 use iso_fortran_env, only: sp=>real32, dp=>real64, qp=>real128
 use stdlib_experimental_error, only: error_stop
+use stdlib_experimental_optval, only: optval
 implicit none
 private
 ! Public API
@@ -297,11 +298,7 @@ character(3):: mode_
 character(:),allocatable :: action_, position_, status_, access_, form_
 
 
-! Note: with `optval` this could be written as:
-! mode_ = parse_mode(optval(mode, ""))
-mode_ = ""
-if (present(mode)) mode_ = mode
-mode_ = parse_mode(mode_)
+mode_ = parse_mode(optval(mode, ""))
 
 if (mode_(1:2) == 'r ') then
     action_='read'
