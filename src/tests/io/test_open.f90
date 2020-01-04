@@ -6,6 +6,7 @@ implicit none
 character(:), allocatable :: filename
 integer :: u, a(3)
 
+! Text file
 filename = get_outpath() // "/io_open.dat"
 
 ! Test mode "w"
@@ -30,6 +31,32 @@ read(u, *) a
 call assert(all(a == [4, 5, 6]))
 close(u)
 
+
+
+! Stream file
+filename = get_outpath() // "/io_open.stream"
+
+! Test mode "w"
+u = open(filename, "wb")
+write(u) 1, 2, 3
+close(u)
+
+! Test mode "r"
+u = open(filename, "rb")
+read(u) a
+call assert(all(a == [1, 2, 3]))
+close(u)
+
+! Test mode "a"
+u = open(filename, "ab")
+write(u) 4, 5, 6
+close(u)
+u = open(filename, "rb")
+read(u) a
+call assert(all(a == [1, 2, 3]))
+read(u) a
+call assert(all(a == [4, 5, 6]))
+close(u)
 
 contains
 

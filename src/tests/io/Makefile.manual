@@ -5,7 +5,7 @@ OBJS = ../../stdlib_experimental_error.o \
 .PHONY: all clean
 .SUFFIXES: .f90 .o
 
-all: test_loadtxt test_savetxt
+all: test_loadtxt test_savetxt test_open
 
 test_loadtxt: test_loadtxt.f90 $(OBJS)
 	$(FC) $(FCFLAGS) $(CPPFLAGS) $< -o $@ $(OBJS)
@@ -13,8 +13,11 @@ test_loadtxt: test_loadtxt.f90 $(OBJS)
 test_savetxt: test_savetxt.f90 $(OBJS)
 	$(FC) $(FCFLAGS) $(CPPFLAGS) $< -o $@ $(OBJS)
 
+test_open: test_open.f90 $(OBJS)
+	$(FC) $(FCFLAGS) $(CPPFLAGS) $< -o $@ $(OBJS)
+
 %.o: %.mod
 
 clean:
-	$(RM) test_loadtxt test_savetxt
+	$(RM) test_loadtxt test_savetxt test_open
 	$(RM) *.o *.mod
