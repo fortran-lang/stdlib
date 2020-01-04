@@ -95,11 +95,11 @@ contains
     call assert(m == "a b")
 
     m = parse_mode("br")
-    !call assert(m == "r b")
+    call assert(m == "r b")
     m = parse_mode("bw")
-    !call assert(m == "w b")
+    call assert(m == "w b")
     m = parse_mode("ba")
-    !call assert(m == "a b")
+    call assert(m == "a b")
 
     m = parse_mode("r+")
     call assert(m == "r+t")

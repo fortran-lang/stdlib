@@ -371,6 +371,11 @@ if (len_trim(adjustl(mode)) > 2) then
         mode_(3:3) = mode(3:3)
 end if
 
+if (mode_(1:1) == 'b') then
+    mode_(1:1) = mode_(3:3)
+    mode_(3:3) = 'b'
+end if
+
 end function
 
 end module
