@@ -3,11 +3,14 @@
 all:
 	$(MAKE) -f Makefile.manual --directory=ascii
 	$(MAKE) -f Makefile.manual --directory=loadtxt
+	$(MAKE) -f Makefile.manual --directory=optval
 
 test:
 	$(MAKE) -f Makefile.manual --directory=ascii test
 	$(MAKE) -f Makefile.manual --directory=loadtxt test
+	$(MAKE) -f Makefile.manual --directory=optval test
 
 clean:
 	$(MAKE) -f Makefile.manual --directory=ascii clean
 	$(MAKE) -f Makefile.manual --directory=loadtxt clean
+	$(MAKE) -f Makefile.manual --directory=optval clean
