@@ -275,7 +275,7 @@ else
 end if
 end function
 
-integer function open(filename, mode) result(u)
+integer function open(filename, mode, io) result(u)
 ! Open a file
 !
 ! To open a file to read:
@@ -293,7 +293,9 @@ integer function open(filename, mode) result(u)
 
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: mode
-integer :: io
+integer, intent(out), optional :: io
+
+integer :: io_
 character(3):: mode_
 character(:),allocatable :: action_, position_, status_, access_, form_
 
@@ -351,7 +353,9 @@ end select
 open(newunit=u, file=filename, &
      action = action_, position = position_, status = status_, &
      access = access_, form = form_, &
-     iostat = io)
+     iostat = io_)
+
+if(present(io))io=io_
 
 end function
 
