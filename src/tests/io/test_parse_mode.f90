@@ -9,6 +9,8 @@ call test_parse_mode_reverse_order()
 
 call test_parse_mode_random_order()
 
+!call test_parse_mode_always_fail()
+
 contains
 
     subroutine test_parse_mode_expected_order()
@@ -149,21 +151,35 @@ contains
 
     m = parse_mode("tr+ ")
     call assert(m == "r+t")
-    m = parse_mode("wtt + ")
+    m = parse_mode("wt + ")
     call assert(m == "w+t")
     m = parse_mode("a + t")
     call assert(m == "a+t")
     m = parse_mode(" xt + ")
     call assert(m == "x+t")
 
-    m = parse_mode("t + t")
+    m = parse_mode(" + t")
     call assert(m == "r+t")
-    m = parse_mode(" ww + b")
+    m = parse_mode(" +w  b")
     call assert(m == "w+b")
     m = parse_mode("a + b")
     call assert(m == "a+b")
     m = parse_mode(" b + x  ")
     call assert(m == "x+b")
+
+    end subroutine
+
+    subroutine test_parse_mode_always_fail()
+    character(3) :: m
+
+    m = parse_mode("r+w")
+    call assert(m /= "r t")
+
+    m = parse_mode("tt")
+    call assert(m /= "r t")
+
+    m = parse_mode("bt")
+    call assert(m /= "r t")
 
     end subroutine
 

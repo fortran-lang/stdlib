@@ -358,27 +358,35 @@ end function
 character(3) function parse_mode(mode) result(mode_)
 character(*), intent(in) :: mode
 
-integer::i
-character(:),allocatable::a
+integer :: i
+character(:),allocatable :: a
+logical :: lfirst(3)
 
 mode_ = 'r t'
 
 if (len_trim(mode) == 0) return
 a=trim(adjustl(mode))
 
+lfirst = .true.
 do i=1,len(a)
-    select case (a(i:i))
-    case('r', 'w', 'a', 'x')
+    if (lfirst(1) &
+        .and. (a(i:i) == 'r' .or. a(i:i) == 'w' .or. a(i:i) == 'a' .or. a(i:i) == 'x') &
+        ) then
         mode_(1:1) = a(i:i)
-    case('+')
+        lfirst(1)=.false.
+    else if (lfirst(2) .and. a(i:i) == '+') then
         mode_(2:2) = a(i:i)
-    case('t', 'b')
+        lfirst(2)=.false.
+    else if (lfirst(3) .and. (a(i:i) == 't' .or. a(i:i) == 'b')) then
         mode_(3:3) = a(i:i)
-    case(' ')
-        cycle
-    case default
+        lfirst(3)=.false.
+    else if (a(i:i) == ' ') then
+     cycle
+    else if(any(.not.lfirst)) then
+        call error_stop("Wrong mode: "//trim(a))
+    else
         call error_stop("Wrong character: "//a(i:i))
-    end select
+    endif
 end do
 
 end function
