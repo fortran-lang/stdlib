@@ -1,5 +1,7 @@
 submodule (stdlib_experimental_error) estop
 
+implicit none
+
 contains
 
 module procedure error_stop

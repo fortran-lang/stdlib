@@ -8,6 +8,8 @@ program test_ascii
         is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
         to_lower, to_upper, LF, TAB, NUL, DEL
 
+    implicit none
+
     print *, "Lowercase letters: ", lowercase
     print *, "Uppercase letters: ", uppercase
     print *, "Digits: ", digits
