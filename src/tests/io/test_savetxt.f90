@@ -1,5 +1,5 @@
 program test_savetxt
-use iso_fortran_env, only: sp=>real32, dp=>real64
+use stdlib_experimental_kinds, only: sp, dp
 use stdlib_experimental_io, only: loadtxt, savetxt
 use stdlib_experimental_error, only: assert
 implicit none

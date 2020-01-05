@@ -1,5 +1,5 @@
 module stdlib_experimental_io
-use iso_fortran_env, only: sp=>real32, dp=>real64, qp=>real128
+use stdlib_experimental_kinds, only: sp, dp, qp
 use stdlib_experimental_error, only: error_stop
 use stdlib_experimental_optval, only: optval
 implicit none

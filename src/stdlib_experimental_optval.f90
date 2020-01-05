@@ -8,7 +8,7 @@ module stdlib_experimental_optval
   !!
   !! It is an error to call `optval` with a single actual argument.
   !!
-  use iso_fortran_env, only: sp => real32, dp => real64, qp => real128, int8, int16, int32, int64
+  use stdlib_experimental_kinds, only: sp, dp, qp, int8, int16, int32, int64
   implicit none
 
 
