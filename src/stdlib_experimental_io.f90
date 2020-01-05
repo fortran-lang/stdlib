@@ -232,16 +232,16 @@ integer function number_of_columns(s)
 
  integer :: ios
  character :: c
- logical :: lastwhite
+ logical :: lastblank
 
  rewind(s)
  number_of_columns = 0
- lastwhite = .true.
+ lastblank = .true.
  do
     read(s, '(a)', advance='no', iostat=ios) c
     if (ios /= 0) exit
-    if (lastwhite .and. .not. is_blank(c)) number_of_columns = number_of_columns + 1
-    lastwhite = is_blank(c)
+    if (lastblank .and. .not. is_blank(c)) number_of_columns = number_of_columns + 1
+    lastblank = is_blank(c)
  end do
  rewind(s)
 
