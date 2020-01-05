@@ -265,7 +265,7 @@ integer function number_of_rows_numeric(s)
 
 end function
 
-logical function whitechar(char) ! white character
+pure logical function whitechar(char) ! white character
 ! returns .true. if char is space (32) or tab (9), .false. otherwise
 character, intent(in) :: char
 if (iachar(char) == 32 .or. iachar(char) == 9) then
