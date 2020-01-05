@@ -287,7 +287,7 @@ character(*), intent(in), optional :: mode
 integer, intent(out), optional :: io
 
 integer :: io_
-character(3):: mode_
+character(3) :: mode_
 character(:),allocatable :: action_, position_, status_, access_, form_
 
 
