@@ -67,7 +67,7 @@ u = open(filename, "rb", io)
 call assert(io == 0)
 if (io == 0) close(u)
 
-u = open(filename, "ab")
+u = open(filename, "ab", io)
 call assert(io == 0)
 if (io == 0) close(u)
 
