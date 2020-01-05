@@ -300,51 +300,53 @@ character(:),allocatable :: action_, position_, status_, access_, form_
 
 mode_ = parse_mode(optval(mode, ""))
 
-if (mode_(1:2) == 'r ') then
+select case (mode_(1:2))
+case('r')
     action_='read'
     position_='asis'
     status_='old'
-else if (mode_(1:2) == 'w ') then
+case('w')
     action_='write'
     position_='asis'
     status_='replace'
-else if (mode_(1:2) == 'a ') then
+case('a')
     action_='write'
     position_='append'
     status_='old'
-else if (mode_(1:2) == 'x ') then
+case('x')
     action_='write'
     position_='asis'
     status_='new'
-else if (mode_(1:2) == 'r+') then
+case('r+')
     action_='readwrite'
     position_='asis'
     status_='old'
-else if (mode_(1:2) == 'w+') then
+case('w+')
     action_='readwrite'
     position_='asis'
     status_='replace'
-else if (mode_(1:2) == 'a+') then
+case('a+')
     action_='readwrite'
     position_='append'
     status_='old'
-else if (mode_(1:2) == 'x+') then
+case('x+')
     action_='readwrite'
     position_='asis'
     status_='new'
-else
+case default
     call error_stop("Unsupported mode: "//mode_(1:2))
-end if
+end select
 
-if (mode_(3:3) == 't') then
+select case (mode_(3:3))
+case('t')
     access_='sequential'
     form_='formatted'
-else if (mode_(3:3) == 'b' .or. mode_(3:3) == 's') then
+case('b', 's')
     access_='stream'
     form_='unformatted'
-else
+case default
     call error_stop("Unsupported mode: "//mode_(3:3))
-endif
+end select
 
 open(newunit=u, file=filename, &
      action = action_, position = position_, status = status_, &
@@ -365,21 +367,18 @@ if (len_trim(mode) == 0) return
 a=trim(adjustl(mode))
 
 do i=1,len(a)
-    if (a(i:i) == 'r'  &
-        .or. a(i:i) == 'w' &
-        .or. a(i:i) == 'a' &
-        .or. a(i:i) == 'x' &
-        ) then
+    select case (a(i:i))
+    case('r', 'w', 'a', 'x')
         mode_(1:1) = a(i:i)
-    else if (a(i:i) == '+') then
+    case('+')
         mode_(2:2) = a(i:i)
-    else if (a(i:i) == 't' .or. a(i:i) == 'b') then
+    case('t', 'b')
         mode_(3:3) = a(i:i)
-    else if (a(i:i) == ' ') then
-     cycle
-    else
+    case(' ')
+        cycle
+    case default
         call error_stop("Wrong character: "//a(i:i))
-    endif
+    end select
 end do
 
 end function
