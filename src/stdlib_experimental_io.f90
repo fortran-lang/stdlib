@@ -337,6 +337,9 @@ case('t')
 case('b', 's')
     access_='stream'
     form_='unformatted'
+case('u')
+    access_='sequential'
+    form_='unformatted'
 case default
     call error_stop("Unsupported mode: "//mode_(3:3))
 end select
@@ -376,7 +379,10 @@ do i=1,len(a)
     else if (lfirst(2) .and. a(i:i) == '+') then
         mode_(2:2) = a(i:i)
         lfirst(2)=.false.
-    else if (lfirst(3) .and. (a(i:i) == 't' .or. a(i:i) == 'b')) then
+    else if (lfirst(3) &
+             .and. (a(i:i) == 't' &
+             .or. a(i:i) == 'b' .or. a(i:i) == 's'&
+             .or. a(i:i) == 'u')) then
         mode_(3:3) = a(i:i)
         lfirst(3)=.false.
     else if (a(i:i) == ' ') then
@@ -385,7 +391,7 @@ do i=1,len(a)
         call error_stop("Wrong mode: "//trim(a))
     else
         call error_stop("Wrong character: "//a(i:i))
-    endif
+    end if
 end do
 
 end function

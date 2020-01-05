@@ -59,6 +59,31 @@ call assert(all(a == [4, 5, 6]))
 close(u)
 
 
+! Unformatted sequential file
+filename = get_outpath() // "/io_open.bin"
+
+! Test mode "w"
+u = open(filename, "wu")
+write(u) 1, 2, 3
+close(u)
+
+! Test mode "r"
+u = open(filename, "ru")
+read(u) a
+call assert(all(a == [1, 2, 3]))
+close(u)
+
+! Test mode "a"
+u = open(filename, "au")
+write(u) 4, 5, 6
+close(u)
+u = open(filename, "ru")
+read(u) a
+call assert(all(a == [1, 2, 3]))
+read(u) a
+call assert(all(a == [4, 5, 6]))
+close(u)
+
 
 !0 and non-0 open
 filename = get_outpath() // "/io_open.stream"
