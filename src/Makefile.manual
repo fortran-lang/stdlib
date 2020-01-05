@@ -8,7 +8,7 @@ LIB = libstdlib.a
 
 
 
-OBJS = $(SRC:.f90=.o)
+OBJS = $(SRC:.f90=.o) $(SRC:.F90=.o)
 MODS = $(OBJS:.o=.mod)
 SMODS = $(OBJS:.o=*.smod)
 
@@ -22,7 +22,7 @@ $(LIB): $(OBJS)
 clean:
 	$(RM) $(LIB) $(OBJS) $(MODS) $(SMODS)
 
-%.o: %.f90
+%.o: %.f90 %.F90
 	$(FC) $(FFLAGS) -c $<
 
 

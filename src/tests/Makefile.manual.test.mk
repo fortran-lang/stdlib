@@ -4,7 +4,7 @@
 CPPFLAGS += -I../..
 LDFLAGS += -L../.. -lstdlib
 
-OBJS = $(PROGS_SRC:.f90=.o)
+OBJS = $(PROGS_SRC:.f90=.o) $(PROGS_SRC:.F90=.o)
 PROGS = $(OBJS:.o=)
 TESTPROGS = $(PROGS:=TEST)
 
@@ -20,7 +20,7 @@ $(TESTPROGS):
 clean:
 	$(RM) $(PROGS) $(OBJS) $(CLEAN_FILES)
 
-%.o: %.f90
+%.o: %.f90 %.F90
 	$(FC) $(FFLAGS) $(CPPFLAGS) -c $<
 
 $(PROGS): %: %.o

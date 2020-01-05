@@ -1,5 +1,5 @@
 macro(ADDTEST name)
-    add_executable(test_${name} test_${name}.f90)
+    add_executable(test_${name} test_${name}.F90)
     target_link_libraries(test_${name} fortran_stdlib)
     add_test(NAME ${name}
              COMMAND $<TARGET_FILE:test_${name}> ${CMAKE_CURRENT_BINARY_DIR}

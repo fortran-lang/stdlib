@@ -1,9 +1,9 @@
-PROGS_SRC = test_loadtxt.f90 \
-			test_savetxt.f90 \
-			test_loadtxt_qp.f90 \
-			test_savetxt_qp.f90 \
-			test_parse_mode.f90 \
-			test_open.f90
+PROGS_SRC = test_loadtxt.F90 \
+			test_savetxt.F90 \
+			test_loadtxt_qp.F90 \
+			test_savetxt_qp.F90 \
+			test_parse_mode.F90 \
+			test_open.F90
 
 CLEAN_FILES = tmp.dat tmp_qp.dat io_open.dat io_open.stream
 
