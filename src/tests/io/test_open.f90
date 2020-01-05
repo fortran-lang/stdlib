@@ -4,8 +4,7 @@ use stdlib_experimental_error, only: assert
 implicit none
 
 character(:), allocatable :: filename
-integer :: u, a(3)
-
+integer :: io, u, a(3)
 
 ! Text file
 filename = get_outpath() // "/io_open.dat"
@@ -58,6 +57,29 @@ call assert(all(a == [1, 2, 3]))
 read(u) a
 call assert(all(a == [4, 5, 6]))
 close(u)
+
+
+
+!0 and non-0 open
+filename = get_outpath() // "/io_open.stream"
+
+u = open(filename, "rb", io)
+call assert(io == 0)
+if (io == 0) close(u)
+
+u = open(filename, "ab", io)
+call assert(io == 0)
+if (io == 0) close(u)
+
+
+filename = get_outpath() // "/does_not_exist.error"
+
+u = open(filename, "a", io)
+call assert(io /= 0)
+
+u = open(filename, "r", io)
+call assert(io /= 0)
+
 
 contains
 

@@ -2,6 +2,7 @@ module stdlib_experimental_io
 use stdlib_experimental_kinds, only: sp, dp, qp
 use stdlib_experimental_error, only: error_stop
 use stdlib_experimental_optval, only: optval
+use stdlib_experimental_ascii, only: is_blank
 implicit none
 private
 ! Public API
@@ -231,16 +232,16 @@ integer function number_of_columns(s)
 
  integer :: ios
  character :: c
- logical :: lastwhite
+ logical :: lastblank
 
  rewind(s)
  number_of_columns = 0
- lastwhite = .true.
+ lastblank = .true.
  do
     read(s, '(a)', advance='no', iostat=ios) c
     if (ios /= 0) exit
-    if (lastwhite .and. .not. whitechar(c)) number_of_columns = number_of_columns + 1
-    lastwhite = whitechar(c)
+    if (lastblank .and. .not. is_blank(c)) number_of_columns = number_of_columns + 1
+    lastblank = is_blank(c)
  end do
  rewind(s)
 
@@ -265,17 +266,7 @@ integer function number_of_rows_numeric(s)
 
 end function
 
-pure logical function whitechar(char) ! white character
-! returns .true. if char is space (32) or tab (9), .false. otherwise
-character, intent(in) :: char
-if (iachar(char) == 32 .or. iachar(char) == 9) then
-    whitechar = .true.
-else
-    whitechar = .false.
-end if
-end function
-
-integer function open(filename, mode) result(u)
+integer function open(filename, mode, iostat) result(u)
 ! Open a file
 !
 ! To open a file to read:
@@ -293,8 +284,10 @@ integer function open(filename, mode) result(u)
 
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: mode
-integer :: io
-character(3):: mode_
+integer, intent(out), optional :: iostat
+
+integer :: io_
+character(3) :: mode_
 character(:),allocatable :: action_, position_, status_, access_, form_
 
 
@@ -348,37 +341,51 @@ case default
     call error_stop("Unsupported mode: "//mode_(3:3))
 end select
 
-open(newunit=u, file=filename, &
-     action = action_, position = position_, status = status_, &
-     access = access_, form = form_, &
-     iostat = io)
+if (present(iostat)) then
+    open(newunit=u, file=filename, &
+         action = action_, position = position_, status = status_, &
+         access = access_, form = form_, &
+         iostat = iostat)
+else
+    open(newunit=u, file=filename, &
+         action = action_, position = position_, status = status_, &
+         access = access_, form = form_)
+end if
 
 end function
 
 character(3) function parse_mode(mode) result(mode_)
 character(*), intent(in) :: mode
 
-integer::i
-character(:),allocatable::a
+integer :: i
+character(:),allocatable :: a
+logical :: lfirst(3)
 
 mode_ = 'r t'
 
 if (len_trim(mode) == 0) return
 a=trim(adjustl(mode))
 
+lfirst = .true.
 do i=1,len(a)
-    select case (a(i:i))
-    case('r', 'w', 'a', 'x')
+    if (lfirst(1) &
+        .and. (a(i:i) == 'r' .or. a(i:i) == 'w' .or. a(i:i) == 'a' .or. a(i:i) == 'x') &
+        ) then
         mode_(1:1) = a(i:i)
-    case('+')
+        lfirst(1)=.false.
+    else if (lfirst(2) .and. a(i:i) == '+') then
         mode_(2:2) = a(i:i)
-    case('t', 'b')
+        lfirst(2)=.false.
+    else if (lfirst(3) .and. (a(i:i) == 't' .or. a(i:i) == 'b')) then
         mode_(3:3) = a(i:i)
-    case(' ')
-        cycle
-    case default
+        lfirst(3)=.false.
+    else if (a(i:i) == ' ') then
+     cycle
+    else if(any(.not.lfirst)) then
+        call error_stop("Wrong mode: "//trim(a))
+    else
         call error_stop("Wrong character: "//a(i:i))
-    end select
+    endif
 end do
 
 end function
