@@ -266,7 +266,7 @@ integer function number_of_rows_numeric(s)
 
 end function
 
-integer function open(filename, mode, io) result(u)
+integer function open(filename, mode, iostat) result(u)
 ! Open a file
 !
 ! To open a file to read:
@@ -284,7 +284,7 @@ integer function open(filename, mode, io) result(u)
 
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: mode
-integer, intent(out), optional :: io
+integer, intent(out), optional :: iostat
 
 integer :: io_
 character(3) :: mode_
@@ -341,12 +341,16 @@ case default
     call error_stop("Unsupported mode: "//mode_(3:3))
 end select
 
-open(newunit=u, file=filename, &
-     action = action_, position = position_, status = status_, &
-     access = access_, form = form_, &
-     iostat = io_)
-
-if(present(io))io=io_
+if (present(iostat)) then
+    open(newunit=u, file=filename, &
+         action = action_, position = position_, status = status_, &
+         access = access_, form = form_, &
+         iostat = iostat)
+else
+    open(newunit=u, file=filename, &
+         action = action_, position = position_, status = status_, &
+         access = access_, form = form_)
+end if
 
 end function
 

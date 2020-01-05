@@ -6,16 +6,6 @@ implicit none
 character(:), allocatable :: filename
 integer :: io, u, a(3)
 
-!Wrong open
-filename = get_outpath() // "/does_not_exist.error"
-
-u = open(filename, "a", io)
-call assert(io /= 0)
-
-u = open(filename, "r", io)
-call assert(io /= 0)
-
-
 ! Text file
 filename = get_outpath() // "/io_open.dat"
 
@@ -47,30 +37,49 @@ close(u)
 filename = get_outpath() // "/io_open.stream"
 
 ! Test mode "w"
-u = open(filename, "wb", io)
-call assert(io == 0)
+u = open(filename, "wb")
 write(u) 1, 2, 3
 close(u)
 
 ! Test mode "r"
-u = open(filename, "rb", io)
-call assert(io == 0)
+u = open(filename, "rb")
 read(u) a
 call assert(all(a == [1, 2, 3]))
 close(u)
 
 ! Test mode "a"
-u = open(filename, "ab", io)
-call assert(io == 0)
+u = open(filename, "ab")
 write(u) 4, 5, 6
 close(u)
-u = open(filename, "rb", io)
-call assert(io == 0)
+u = open(filename, "rb")
 read(u) a
 call assert(all(a == [1, 2, 3]))
 read(u) a
 call assert(all(a == [4, 5, 6]))
 close(u)
+
+
+
+!0 and non-0 open
+filename = get_outpath() // "/io_open.stream"
+
+u = open(filename, "rb", io)
+call assert(io == 0)
+if (io == 0) close(u)
+
+u = open(filename, "ab")
+call assert(io == 0)
+if (io == 0) close(u)
+
+
+filename = get_outpath() // "/does_not_exist.error"
+
+u = open(filename, "a", io)
+call assert(io /= 0)
+
+u = open(filename, "r", io)
+call assert(io /= 0)
+
 
 contains
 
