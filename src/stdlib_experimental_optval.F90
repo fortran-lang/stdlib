@@ -8,7 +8,12 @@ module stdlib_experimental_optval
   !!
   !! It is an error to call `optval` with a single actual argument.
   !!
-  use iso_fortran_env, only: sp => real32, dp => real64, qp => real128, int8, int16, int32, int64
+  use iso_fortran_env, only: sp => real32, dp => real64, int8, int16, int32, int64
+#ifdef REAL128
+  use iso_fortran_env, only: qp => real128
+#endif
+
+
   implicit none
 
 
@@ -19,7 +24,9 @@ module stdlib_experimental_optval
   interface optval
      module procedure optval_sp
      module procedure optval_dp
+#ifdef REAL128
      module procedure optval_qp
+#endif
      module procedure optval_int8
      module procedure optval_int16
      module procedure optval_int32
@@ -59,7 +66,7 @@ contains
     end if
   end function optval_dp
 
-
+#ifdef REAL128
   pure function optval_qp(x, default) result(y)
     real(qp), intent(in), optional :: x
     real(qp), intent(in) :: default
@@ -71,7 +78,7 @@ contains
        y = default
     end if
   end function optval_qp
-
+#endif
 
   pure function optval_int8(x, default) result(y)
     integer(int8), intent(in), optional :: x

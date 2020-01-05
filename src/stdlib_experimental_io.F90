@@ -1,5 +1,8 @@
 module stdlib_experimental_io
-use iso_fortran_env, only: sp=>real32, dp=>real64, qp=>real128
+use iso_fortran_env, only: sp=>real32, dp=>real64
+#ifdef REAL128
+use iso_fortran_env, only: qp => real128
+#endif
 use stdlib_experimental_error, only: error_stop
 use stdlib_experimental_optval, only: optval
 implicit none
@@ -14,13 +17,17 @@ public :: parse_mode
 interface loadtxt
     module procedure sloadtxt
     module procedure dloadtxt
+#ifdef REAL128
     module procedure qloadtxt
+#endif
 end interface
 
 interface savetxt
     module procedure ssavetxt
     module procedure dsavetxt
+#ifdef REAL128
     module procedure qsavetxt
+#endif
 end interface
 
 contains
@@ -111,6 +118,7 @@ end do
 close(s)
 end subroutine
 
+#ifdef REAL128
 subroutine qloadtxt(filename, d)
 ! Loads a 2D array from a text file.
 !
@@ -153,7 +161,7 @@ do i = 1, nrow
 end do
 close(s)
 end subroutine
-
+#endif
 
 subroutine ssavetxt(filename, d)
 ! Saves a 2D array into a textfile.
@@ -201,6 +209,7 @@ end do
 close(s)
 end subroutine
 
+#ifdef REAL128
 subroutine qsavetxt(filename, d)
 ! Saves a 2D array into a textfile.
 !
@@ -223,7 +232,7 @@ do i = 1, size(d, 1)
 end do
 close(s)
 end subroutine
-
+#endif
 
 integer function number_of_columns(s)
  ! determine number of columns
