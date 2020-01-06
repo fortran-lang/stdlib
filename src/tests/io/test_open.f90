@@ -6,8 +6,8 @@ implicit none
 character(:), allocatable :: filename
 integer :: io, u, a(3)
 
-! Text file
-filename = get_outpath() // "/io_open.dat"
+! Stream text file
+filename = get_outpath() // "/io_open_stream.dat"
 
 ! Test mode "w"
 u = open(filename, "w")
@@ -32,9 +32,34 @@ call assert(all(a == [4, 5, 6]))
 close(u)
 
 
+! Sequential text file
+filename = get_outpath() // "/io_open_seq.dat"
 
-! Stream file
-filename = get_outpath() // "/io_open.stream"
+! Test mode "w"
+u = open(filename, "w", access = 'sequential')
+write(u, *) 1, 2, 3
+close(u)
+
+! Test mode "r"
+u = open(filename, "r", access = 'sequential')
+read(u, *) a
+call assert(all(a == [1, 2, 3]))
+close(u)
+
+! Test mode "a"
+u = open(filename, "a", access = 'sequential')
+write(u, *) 4, 5, 6
+close(u)
+u = open(filename, "r", access = 'sequential')
+read(u, *) a
+call assert(all(a == [1, 2, 3]))
+read(u, *) a
+call assert(all(a == [4, 5, 6]))
+close(u)
+
+
+! Stream binary file
+filename = get_outpath() // "/io_open_stream.bin"
 
 ! Test mode "w"
 u = open(filename, "wb")
@@ -59,9 +84,34 @@ call assert(all(a == [4, 5, 6]))
 close(u)
 
 
+! Sequential binary file
+filename = get_outpath() // "/io_open_seq.bin"
+
+! Test mode "w"
+u = open(filename, "wb", access = 'sequential')
+write(u) 1, 2, 3
+close(u)
+
+! Test mode "r"
+u = open(filename, "rb", access = 'sequential')
+read(u) a
+call assert(all(a == [1, 2, 3]))
+close(u)
+
+! Test mode "a"
+u = open(filename, "ab", access = 'sequential')
+write(u) 4, 5, 6
+close(u)
+u = open(filename, "rb", access = 'sequential')
+read(u) a
+call assert(all(a == [1, 2, 3]))
+read(u) a
+call assert(all(a == [4, 5, 6]))
+close(u)
+
 
 !0 and non-0 open
-filename = get_outpath() // "/io_open.stream"
+filename = get_outpath() // "/io_open_stream.bin"
 
 u = open(filename, "rb", io)
 call assert(io == 0)

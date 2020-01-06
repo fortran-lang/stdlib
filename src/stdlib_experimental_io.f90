@@ -269,7 +269,7 @@ integer function number_of_rows_numeric(s)
 
 end function
 
-integer function open(filename, mode, iostat) result(u)
+integer function open(filename, mode, iostat, access) result(u)
 ! Open a file
 !
 ! To open a file to read:
@@ -287,6 +287,7 @@ integer function open(filename, mode, iostat) result(u)
 
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: mode
+character(*), intent(in), optional :: access
 integer, intent(out), optional :: iostat
 
 integer :: io_
@@ -298,51 +299,64 @@ mode_ = parse_mode(optval(mode, ""))
 
 select case (mode_(1:2))
 case('r')
-    action_='read'
-    position_='asis'
-    status_='old'
+    action_ = 'read'
+    position_ = 'asis'
+    status_ = 'old'
 case('w')
-    action_='write'
-    position_='asis'
-    status_='replace'
+    action_ = 'write'
+    position_ = 'asis'
+    status_ = 'replace'
 case('a')
-    action_='write'
-    position_='append'
-    status_='old'
+    action_ = 'write'
+    position_ = 'append'
+    status_ = 'old'
 case('x')
-    action_='write'
-    position_='asis'
-    status_='new'
+    action_ = 'write'
+    position_ = 'asis'
+    status_ = 'new'
 case('r+')
-    action_='readwrite'
-    position_='asis'
-    status_='old'
+    action_ = 'readwrite'
+    position_ = 'asis'
+    status_ = 'old'
 case('w+')
-    action_='readwrite'
-    position_='asis'
-    status_='replace'
+    action_ = 'readwrite'
+    position_ = 'asis'
+    status_ = 'replace'
 case('a+')
-    action_='readwrite'
-    position_='append'
-    status_='old'
+    action_ = 'readwrite'
+    position_ = 'append'
+    status_ = 'old'
 case('x+')
-    action_='readwrite'
-    position_='asis'
-    status_='new'
+    action_ = 'readwrite'
+    position_ = 'asis'
+    status_ = 'new'
 case default
     call error_stop("Unsupported mode: "//mode_(1:2))
 end select
 
 select case (mode_(3:3))
 case('t')
-    form_='formatted'
+    form_ = 'formatted'
 case('b')
-    form_='unformatted'
+    form_ = 'unformatted'
 case default
     call error_stop("Unsupported mode: "//mode_(3:3))
 end select
 
 access_ = 'stream'
+
+if (present(access)) then
+    select case (trim(adjustl(access)))
+    case('direct')
+        access_ = 'direct'
+    case('sequential')
+        access_ = 'sequential'
+    case('stream')
+        access_ = 'stream'
+    case default
+        call error_stop("Unsupported access: "//trim(access))
+    end select
+end if
 
 if (present(iostat)) then
     open(newunit=u, file=filename, &
