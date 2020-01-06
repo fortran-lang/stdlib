@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 env:
   CI: "ON"
+  CTEST_TIME_TIMEOUT: "5"  # some failures hang forever
 
 jobs:
   Build:
@@ -24,7 +25,8 @@ jobs:
     - name: CMake build
       run: cmake --build build --parallel
 
-    - run: cmake --build build --verbose --parallel 1
+    - name: catch build fail
+      run: cmake --build build --verbose --parallel 1
       if: failure()
 
     - name: CTest
