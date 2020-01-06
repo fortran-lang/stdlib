@@ -347,8 +347,8 @@ access_ = 'stream'
 
 if (present(access)) then
     select case (trim(adjustl(access)))
-    case('direct')
-        access_ = 'direct'
+!    case('direct')
+!        access_ = 'direct'
     case('sequential')
         access_ = 'sequential'
     case('stream')
