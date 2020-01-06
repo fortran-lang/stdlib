@@ -1,9 +1,9 @@
 set(SRC
     stdlib_experimental_ascii.f90
-    stdlib_experimental_io.f90
+    stdlib_experimental_io.F90
     stdlib_experimental_error.f90
-    stdlib_experimental_optval.f90
-    stdlib_experimental_kinds.f90
+    stdlib_experimental_optval.F90
+    stdlib_experimental_kinds.F90
 )
 
 add_library(fortran_stdlib ${SRC})
@@ -12,6 +12,11 @@ if(f18errorstop)
   target_sources(fortran_stdlib PRIVATE f18estop.f90)
 else()
   target_sources(fortran_stdlib PRIVATE f08estop.f90)
+endif()
+
+if(REAL128)
+  target_compile_definitions(fortran_stdlib PRIVATE REAL128)
+  target_sources(fortran_stdlib PRIVATE io_qp.f90 opt_qp.f90)
 endif()
 
 add_subdirectory(tests)

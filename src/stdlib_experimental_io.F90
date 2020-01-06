@@ -1,12 +1,15 @@
 module stdlib_experimental_io
-use stdlib_experimental_kinds, only: sp, dp, qp
+use stdlib_experimental_kinds, only: sp, dp
+#ifdef REAL128
+use stdlib_experimental_kinds, only: qp
+#endif
 use stdlib_experimental_error, only: error_stop
 use stdlib_experimental_optval, only: optval
 use stdlib_experimental_ascii, only: is_blank
 implicit none
 private
 ! Public API
-public :: loadtxt, savetxt, open
+public :: loadtxt, savetxt, open, number_of_columns, number_of_rows_numeric
 
 ! Private API that is exposed so that we can test it in tests
 public :: parse_mode
@@ -15,14 +18,33 @@ public :: parse_mode
 interface loadtxt
     module procedure sloadtxt
     module procedure dloadtxt
+#ifdef REAL128
     module procedure qloadtxt
+#endif
 end interface
 
 interface savetxt
     module procedure ssavetxt
     module procedure dsavetxt
+#ifdef REAL128
     module procedure qsavetxt
+#endif
 end interface
+
+#ifdef REAL128
+interface
+module subroutine qsavetxt(filename, d)
+character(len=*), intent(in) :: filename  ! File to save the array to
+real(qp), intent(in) :: d(:,:)           ! The 2D array to save
+end subroutine
+
+module subroutine qloadtxt(filename, d)
+character(len=*), intent(in) :: filename
+real(qp), allocatable, intent(out) :: d(:,:)
+end subroutine
+
+end interface
+#endif
 
 contains
 
@@ -112,49 +134,6 @@ end do
 close(s)
 end subroutine
 
-subroutine qloadtxt(filename, d)
-! Loads a 2D array from a text file.
-!
-! Arguments
-! ---------
-!
-! Filename to load the array from
-character(len=*), intent(in) :: filename
-! The array 'd' will be automatically allocated with the correct dimensions
-real(qp), allocatable, intent(out) :: d(:,:)
-!
-! Example
-! -------
-!
-! real(qp), allocatable :: data(:, :)
-! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
-!
-! Where 'log.txt' contains for example::
-!
-!     1 2 3
-!     2 4 6
-!     8 9 10
-!     11 12 13
-!     ...
-!
-integer :: s
-integer :: nrow,ncol,i
-
-s = open(filename)
-
-! determine number of columns
-ncol = number_of_columns(s)
-
-! determine number or rows
-nrow = number_of_rows_numeric(s)
-
-allocate(d(nrow, ncol))
-do i = 1, nrow
-    read(s, *) d(i, :)
-end do
-close(s)
-end subroutine
-
 
 subroutine ssavetxt(filename, d)
 ! Saves a 2D array into a textfile.
@@ -201,33 +180,6 @@ do i = 1, size(d, 1)
 end do
 close(s)
 end subroutine
-
-subroutine qsavetxt(filename, d)
-! Saves a 2D array into a textfile.
-!
-! Arguments
-! ---------
-!
-character(len=*), intent(in) :: filename  ! File to save the array to
-real(qp), intent(in) :: d(:,:)           ! The 2D array to save
-!
-! Example
-! -------
-!
-! real(dp) :: data(3, 2)
-! call savetxt("log.txt", data)
-
-integer :: s, i
-character(len=14) :: format_string
-
-write(format_string, '(a1,i06,a7)') '(', size(d, 2), 'f40.34)'
-s = open(filename, "w")
-do i = 1, size(d, 1)
-    write(s, format_string) d(i, :)
-end do
-close(s)
-end subroutine
-
 
 integer function number_of_columns(s)
  ! determine number of columns

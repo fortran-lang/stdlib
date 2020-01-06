@@ -7,6 +7,8 @@ enable_testing()
 #  and thereby can clash if module/submodule names are the same in different parts of library
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR})
 
+option(REAL128 "make real128 precision available")
+
 # --- compiler options
 if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   add_compile_options(-fimplicit-none)
@@ -21,5 +23,8 @@ include(CheckFortranSourceCompiles)
 include(CheckFortranSourceRuns)
 check_fortran_source_compiles("error stop i; end" f18errorstop SRC_EXT f90)
 check_fortran_source_runs("use, intrinsic :: iso_fortran_env, only : real128; real(real128) :: x; x = x+1; end" f03real128)
+if(NOT f03real128)
+  set(REAL128 false)
+endif()
 
 add_subdirectory(src)

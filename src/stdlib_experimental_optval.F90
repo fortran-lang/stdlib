@@ -8,7 +8,11 @@ module stdlib_experimental_optval
   !!
   !! It is an error to call `optval` with a single actual argument.
   !!
-  use stdlib_experimental_kinds, only: sp, dp, qp, int8, int16, int32, int64
+  use stdlib_experimental_kinds, only: sp, dp, int8, int16, int32, int64
+#ifdef REAL128
+  use stdlib_experimental_kinds, only : qp
+#endif
+
   implicit none
 
 
@@ -19,7 +23,9 @@ module stdlib_experimental_optval
   interface optval
      module procedure optval_sp
      module procedure optval_dp
+#ifdef REAL128
      module procedure optval_qp
+#endif
      module procedure optval_int8
      module procedure optval_int16
      module procedure optval_int32
@@ -30,6 +36,15 @@ module stdlib_experimental_optval
      ! TODO: differentiate ascii & ucs char kinds
   end interface optval
 
+#ifdef REAL128
+  interface
+    module pure function optval_qp(x, default) result(y)
+      real(qp), intent(in), optional :: x
+      real(qp), intent(in) :: default
+      real(qp) :: y
+    end function
+  end interface
+#endif
 
 contains
 
@@ -58,19 +73,6 @@ contains
        y = default
     end if
   end function optval_dp
-
-
-  pure function optval_qp(x, default) result(y)
-    real(qp), intent(in), optional :: x
-    real(qp), intent(in) :: default
-    real(qp) :: y
-
-    if (present(x)) then
-       y = x
-    else
-       y = default
-    end if
-  end function optval_qp
 
 
   pure function optval_int8(x, default) result(y)
