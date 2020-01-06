@@ -5,7 +5,9 @@ PROGS_SRC = test_loadtxt.f90 \
 			test_parse_mode.f90 \
 			test_open.f90
 
-CLEAN_FILES = tmp.dat tmp_qp.dat io_open.dat io_open.stream
+CLEAN_FILES = tmp.dat tmp_qp.dat \
+		io_open_seq.dat io_open_stream.dat \
+		io_open_seq.bin io_open_stream.bin
 
 
 include ../Makefile.manual.test.mk

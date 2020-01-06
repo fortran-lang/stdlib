@@ -269,7 +269,7 @@ integer function number_of_rows_numeric(s)
 
 end function
 
-integer function open(filename, mode, iostat) result(u)
+integer function open(filename, mode, iostat, access) result(u)
 ! Open a file
 !
 ! To open a file to read:
@@ -287,6 +287,7 @@ integer function open(filename, mode, iostat) result(u)
 
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: mode
+character(*), intent(in), optional :: access
 integer, intent(out), optional :: iostat
 
 integer :: io_
@@ -335,14 +336,27 @@ end select
 
 select case (mode_(3:3))
 case('t')
-    access_='sequential'
     form_='formatted'
-case('b', 's')
-    access_='stream'
+case('b')
     form_='unformatted'
 case default
     call error_stop("Unsupported mode: "//mode_(3:3))
 end select
+
+access_='stream'
+
+if (present(access)) then
+    select case (trim(adjustl(access)))
+    case('direct')
+        access_='direct'
+    case('sequential')
+        access_='sequential'
+    case('stream')
+        access_='stream'
+    case default
+        call error_stop("Unsupported access: "//trim(access))
+    end select
+end if
 
 if (present(iostat)) then
     open(newunit=u, file=filename, &
