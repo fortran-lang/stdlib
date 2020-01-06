@@ -336,7 +336,7 @@ end select
 select case (mode_(3:3))
 case('t')
     form_='formatted'
-case('b', 's')
+case('b')
     form_='unformatted'
 case default
     call error_stop("Unsupported mode: "//mode_(3:3))
