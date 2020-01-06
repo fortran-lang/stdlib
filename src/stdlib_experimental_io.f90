@@ -218,9 +218,12 @@ real(qp), intent(in) :: d(:,:)           ! The 2D array to save
 ! call savetxt("log.txt", data)
 
 integer :: s, i
+character(len=14) :: format_string
+
+write(format_string, '(a1,i06,a7)') '(', size(d, 2), 'f40.34)'
 s = open(filename, "w")
 do i = 1, size(d, 1)
-    write(s, *) d(i, :)
+    write(s, format_string) d(i, :)
 end do
 close(s)
 end subroutine
