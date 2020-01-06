@@ -18,6 +18,13 @@ changes in it by opening an
    It's OK to implement only a few functions of a new module, and continue work
    on the others in a later PR. All new functionality goes into an
    "experimental" namespace (`stdlib_experimental_*.f90`).
+   As part of the PR, when submitting a new public facing API, please provide
+   the initial draft of the specification document as well as the the initial
+   reference implementation of this specification.
+   The specification is a document that describes the API and the
+   functionality, so that anyone can use it to create an implementation from
+   scratch without looking at `stdlib`. The `stdlib` library then provides the
+   reference implementation.
 
 4. When opening a PR, request reviews from one or more people that are most
    relevant to it. These are likely to be people involved in prior steps of the
@@ -26,12 +33,9 @@ changes in it by opening an
    participants are on the same page. We should not merge if there is a strong
    objection from the reviewers or from somebody in the wider community.
 
-5. Moving from experimental to main. Once new functionality lands into
-   "experimental", the next step is to write a "specification". The
-   specification is a document that describes the API and the functionality, so
-   that anyone can use it to create an implementation from scratch without
-   looking at `stdlib`. `stdlib` provides the reference implementation. When
-   this specification document is approved by the wide community and the
-   standards committee (informally), then we can move the code into main, and
-   the particular specification document becomes part of the Fortran Standard
-   Library.
+5. Moving from experimental to main. The experimental "namespace" contains new
+   functionality together with its specification. In order to move from
+   experimental to main, the specification document must be approved by the
+   wide community and the standards committee (informally). If that happens,
+   then we can move the code into main, and the particular specification
+   document becomes part of the Fortran Standard Library.
