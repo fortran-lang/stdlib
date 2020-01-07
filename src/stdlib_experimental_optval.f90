@@ -34,7 +34,7 @@ module stdlib_experimental_optval
 contains
 
 
-  pure function optval_sp(x, default) result(y)
+  pure elemental function optval_sp(x, default) result(y)
     real(sp), intent(in), optional :: x
     real(sp), intent(in) :: default
     real(sp) :: y
@@ -47,7 +47,7 @@ contains
   end function optval_sp
 
 
-  pure function optval_dp(x, default) result(y)
+  pure elemental function optval_dp(x, default) result(y)
     real(dp), intent(in), optional :: x
     real(dp), intent(in) :: default
     real(dp) :: y
@@ -60,7 +60,7 @@ contains
   end function optval_dp
 
 
-  pure function optval_qp(x, default) result(y)
+  pure elemental function optval_qp(x, default) result(y)
     real(qp), intent(in), optional :: x
     real(qp), intent(in) :: default
     real(qp) :: y
@@ -73,7 +73,7 @@ contains
   end function optval_qp
 
 
-  pure function optval_int8(x, default) result(y)
+  pure elemental function optval_int8(x, default) result(y)
     integer(int8), intent(in), optional :: x
     integer(int8), intent(in) :: default
     integer(int8) :: y
@@ -86,7 +86,7 @@ contains
   end function optval_int8
 
 
-  pure function optval_int16(x, default) result(y)
+  pure elemental function optval_int16(x, default) result(y)
     integer(int16), intent(in), optional :: x
     integer(int16), intent(in) :: default
     integer(int16) :: y
@@ -99,7 +99,7 @@ contains
   end function optval_int16
 
 
-  pure function optval_int32(x, default) result(y)
+  pure elemental function optval_int32(x, default) result(y)
     integer(int32), intent(in), optional :: x
     integer(int32), intent(in) :: default
     integer(int32) :: y
@@ -112,7 +112,7 @@ contains
   end function optval_int32
 
 
-  pure function optval_int64(x, default) result(y)
+  pure elemental function optval_int64(x, default) result(y)
     integer(int64), intent(in), optional :: x
     integer(int64), intent(in) :: default
     integer(int64) :: y
@@ -125,7 +125,7 @@ contains
   end function optval_int64
 
 
-  pure function optval_logical(x, default) result(y)
+  pure elemental function optval_logical(x, default) result(y)
     logical, intent(in), optional :: x
     logical, intent(in) :: default
     logical :: y
