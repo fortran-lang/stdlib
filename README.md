@@ -1,5 +1,9 @@
 # Fortran Standard Library
 
+[![Actions Status](https://github.com/fortran-lang/stdlib/workflows/CI/badge.svg)](https://github.com/fortran-lang/stdlib/actions)
+[![Actions Status](https://github.com/fortran-lang/stdlib/workflows/CI_windows/badge.svg)](https://github.com/fortran-lang/stdlib/actions)
+
+
 ## Goals and Motivation
 
 The Fortran Standard, as published by the ISO (https://wg5-fortran.org/), does
@@ -31,19 +35,19 @@ The goal of the Fortran Standard Library is to achieve the following general sco
 
 ### Get the code
 
-```
+```sh
 git clone https://github.com/fortran-lang/stdlib
 cd stdlib
 ```
 
 ### Build with CMake
 
-```
-mkdir build
-cd build
-cmake ..
-make
-ctest
+```sh
+cmake -B build
+
+cmake --build build
+
+cmake --build build --target test
 ```
 
 ### Build with make

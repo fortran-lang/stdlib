@@ -9,6 +9,7 @@ endmacro(ADDTEST)
 add_subdirectory(ascii)
 add_subdirectory(io)
 add_subdirectory(optval)
+add_subdirectory(system)
 
 ADDTEST(always_skip)
 set_tests_properties(always_skip PROPERTIES SKIP_RETURN_CODE 77)
