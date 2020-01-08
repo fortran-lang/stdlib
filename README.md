@@ -1,5 +1,20 @@
 # Fortran Standard Library
 
+## Goals and Motivation
+
+The Fortran Standard, as published by the ISO (https://wg5-fortran.org/), does
+not have a Standard Library. The goal of this project is to provide a community
+driven and agreed upon *de facto* "standard" library for Fortran, called a
+Fortran Standard Library (`stdlib`). We have a rigorous process how `stdlib` is
+developed as documented in our [Workflow](WORKFLOW.md). `stdlib` is both a
+specification and a reference implementation. We are cooperating with the
+Fortran Standards Committee (e.g., the effort
+[started](https://github.com/j3-fortran/fortran_proposals/issues/104) at the J3
+committee repository) and the plan is to continue working with the Committee in
+the future (such as in the step 5. in the [Workflow](WORKFLOW.md) document), so
+that if the Committee wants to standardize some feature already available in `stdlib`, it would
+base it on `stdlib`'s implementation.
+
 ## Scope
 
 The goal of the Fortran Standard Library is to achieve the following general scope:
