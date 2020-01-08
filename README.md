@@ -12,7 +12,7 @@ Fortran Standards Committee (e.g., the effort
 [started](https://github.com/j3-fortran/fortran_proposals/issues/104) at the J3
 committee repository) and the plan is to continue working with the Committee in
 the future (such as in the step 5. in the [Workflow](WORKFLOW.md) document), so
-that if the Committee wants to standardize some feature from `stdlib`, it would
+that if the Committee wants to standardize some feature already available in `stdlib`, it would
 base it on `stdlib`'s implementation.
 
 ## Scope
