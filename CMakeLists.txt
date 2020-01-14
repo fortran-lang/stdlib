@@ -2,11 +2,6 @@ cmake_minimum_required(VERSION 3.14.0)
 project(stdlib Fortran)
 enable_testing()
 
-# this avoids stdlib and projects using stdlib from having to introspect stdlib's directory structure
-# FIXME: this eventually needs to be handled more precisely, as this spills all .mod/.smod into one directory
-#  and thereby can clash if module/submodule names are the same in different parts of library
-set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR})
-
 # --- compiler options
 if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   add_compile_options(-fimplicit-none)
