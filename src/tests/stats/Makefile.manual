@@ -1,0 +1,3 @@
+PROGS_SRC = test_mean.f90
+
+include ../Makefile.manual.test.mk

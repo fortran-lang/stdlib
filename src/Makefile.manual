@@ -3,7 +3,9 @@ SRC = stdlib_experimental_ascii.f90 \
       stdlib_experimental_io.f90 \
       stdlib_experimental_optval.f90 \
       stdlib_experimental_kinds.f90 \
-      f18estop.f90
+      f18estop.f90 \
+      f03_stdlib_experimental_stats.f90 \
+      f03_stdlib_experimental_stats_mean.f90 
 
 LIB = libstdlib.a
 
@@ -34,3 +36,7 @@ stdlib_experimental_io.o: \
 	stdlib_experimental_optval.o \
 	stdlib_experimental_kinds.o
 stdlib_experimental_optval.o: stdlib_experimental_kinds.o
+f03_stdlib_experimental_stats_mean.o: \
+	stdlib_experimental_optval.o \
+	stdlib_experimental_kinds.o \
+	f03_stdlib_experimental_stats.o

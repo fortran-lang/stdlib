@@ -1,0 +1,293 @@
+submodule (stdlib_experimental_stats) stdlib_experimental_stats_mean
+
+#:set VERSION90 = defined('VERSION90')
+#:set REALKINDS = ["sp", "dp", "qp"]
+#:set INTKINDS = ["int8", "int16", "int32", "int64"]
+#:set REALTYPES = ["real({})".format(k) for k in REALKINDS]
+#:set INTTYPES = ["integer({})".format(k) for k in INTKINDS]
+#:set iktr = list(zip(range(len(REALKINDS)), REALKINDS, REALTYPES))
+#:set ikti = list(zip(range(len(INTKINDS)), INTKINDS, INTTYPES))
+
+use stdlib_experimental_error, only: error_stop
+implicit none
+
+contains
+
+#:for i1, k1, t1 in iktr
+module function mean_1_${k1}$_${k1}$(x) result(res)
+    ${t1}$, intent(in) :: x(:)
+    ${t1}$ :: res
+
+    integer :: i
+
+    res = 0.0_${k1}$
+    do i = 1, size(x)
+        res = res + x(i)
+    enddo
+    res = res / real(size(x), ${k1}$)
+
+end function mean_1_${k1}$_${k1}$
+#:endfor
+
+#:for i1, k1, t1 in ikti
+module function mean_1_${k1}$_dp(x) result(res)
+    ${t1}$, intent(in) :: x(:)
+    real(dp) :: res
+
+    integer :: i
+
+    res = 0.0_dp
+    do i = 1, size(x)
+        res = res + real(x(i), dp)
+    enddo
+    res = res / real(size(x), dp)
+
+end function mean_1_${k1}$_dp
+#:endfor
+
+
+#:for i1, k1, t1 in iktr
+module function mean_2_all_${k1}$_${k1}$(x) result(res)
+    ${t1}$, intent(in) :: x(:,:)
+    ${t1}$ :: res
+
+    integer :: i, i_
+
+    res = 0.0_${k1}$
+    do i_ = 1, size(x, 2)
+     do i = 1, size(x, 1)
+         res = res + x(i,i_)
+     enddo
+    enddo
+    res = res / real(size(x), ${k1}$)
+
+end function mean_2_all_${k1}$_${k1}$
+#:endfor
+
+#:for i1, k1, t1 in ikti
+module function mean_2_all_${k1}$_dp(x) result(res)
+    ${t1}$, intent(in) :: x(:,:)
+    real(dp) :: res
+
+    integer :: i, i_
+
+    res = 0.0_dp
+    do i_ = 1, size(x, 2)
+     do i = 1, size(x, 1)
+         res = res + real(x(i,i_), dp)
+     enddo
+    enddo
+    res = res / real(size(x), dp)
+
+end function mean_2_all_${k1}$_dp
+#:endfor
+
+#:for i1, k1, t1 in iktr
+module function mean_2_${k1}$_${k1}$(x, dim) result(res)
+    ${t1}$, intent(in) :: x(:,:)
+    integer, intent(in) :: dim
+    ${t1}$ :: res(size(x)/size(x, dim))
+
+    integer :: i, i_
+
+    res = 0.0_${k1}$
+
+    select case(dim)
+     case(1)
+        do i_ = 1, size(x, 2)
+         do i = 1, size(x, 1)
+            res(i_) = res(i_) + x(i, i_)
+         end do
+        end do
+     case(2)
+        do i_ = 1, size(x, 2)
+         do i = 1, size(x, 1)
+            res(i) = res(i) + x(i, i_)
+         end do
+        end do
+     case default
+        call error_stop("ERROR (mean): wrong dimension")
+    end select
+
+    res = res / real(size(x, dim), ${k1}$)
+
+end function mean_2_${k1}$_${k1}$
+#:endfor
+
+#:for i1, k1, t1 in ikti
+module function mean_2_${k1}$_dp(x, dim) result(res)
+    ${t1}$, intent(in) :: x(:,:)
+    integer, intent(in) :: dim
+    real(dp) :: res(size(x)/size(x, dim))
+
+    integer :: i, i_
+
+    res = 0.0_dp
+
+    select case(dim)
+     case(1)
+        do i_ = 1, size(x, 2)
+         do i = 1, size(x, 1)
+            res(i_) = res(i_) + real(x(i, i_), dp)
+         end do
+        end do
+     case(2)
+        do i_ = 1, size(x, 2)
+         do i = 1, size(x, 1)
+            res(i) = res(i) + real(x(i, i_), dp)
+         end do
+        end do
+     case default
+        call error_stop("ERROR (mean): wrong dimension")
+    end select
+
+    res = res / real(size(x, dim), dp)
+
+end function mean_2_${k1}$_dp
+#:endfor
+
+
+#:def ranksuffix(rank)
+#{if rank > 0}#(${":" + ",:" * (rank - 1)}$)#{endif}#
+#:enddef
+
+#:def isuffix(rank)
+#:if rank > 0
+i#{for i in range(2,rank)}#${",i"+"_" * (i-1)}$#{endfor}#
+#:endif
+#:enddef
+
+#:def ressuffix(rank,dim)
+#:if rank > 0
+#{for i in range(1,dim-1)}#${"i" + "_" * (i-1)+","}$#{endfor}##{if dim-1 >0}#i${"_"*(dim-2) }$#{endif}##{if dim -1 >0 and dim <rank}#,#{endif}##{if dim <rank}#i${"_"*(dim) }$#{endif}##{for i in range(dim+1,rank)}#${",i"+"_" * (i)}$#{endfor}#
+#:endif
+#:enddef
+
+
+#:if VERSION90
+#:set ranks = range(3,8)
+#:else
+#:set ranks = range(3,16)
+#:endif
+
+#:for i1, k1, t1 in iktr
+#:for rank in ranks
+module function mean_${rank}$_all_${k1}$_${k1}$(x) result(res)
+    ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+    ${t1}$ :: res
+
+    integer :: ${isuffix(rank+1)}$
+
+    res = 0.0_${k1}$
+
+#:for fj in range(rank,0,-1)
+    ${" "* (rank - fj)}$do i${"_"* (fj-1)}$ = 1, size(x, ${fj}$)
+#:endfor
+    ${" "* (rank)}$res = res + x(${isuffix(rank+1)}$)
+#:for fj in range(rank,0,-1)
+    ${" "* (fj-1)}$end do
+#:endfor
+
+    res = res / real(size(x), ${k1}$)
+
+end function mean_${rank}$_all_${k1}$_${k1}$
+#:endfor
+#:endfor
+
+#:for i1, k1, t1 in ikti
+#:for rank in ranks
+module function mean_${rank}$_all_${k1}$_dp(x) result(res)
+    ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+    real(dp) :: res
+
+    integer :: ${isuffix(rank+1)}$
+
+    res = 0.0_dp
+
+#:for fj in range(rank,0,-1)
+    ${" "* (rank - fj)}$do i${"_"* (fj-1)}$ = 1, size(x, ${fj}$)
+#:endfor
+    ${" "* (rank)}$res = res + real(x(${isuffix(rank+1)}$), dp)
+#:for fj in range(rank,0,-1)
+    ${" "* (fj-1)}$end do
+#:endfor
+
+    res = res / real(size(x), dp)
+
+end function mean_${rank}$_all_${k1}$_dp
+#:endfor
+#:endfor
+
+#:for i1, k1, t1 in iktr
+#:for rank in ranks
+module function mean_${rank}$_${k1}$_${k1}$(x, dim) result(res)
+    ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+    integer, intent(in) :: dim
+    ${t1}$ :: res( &
+#:for imerge in range(1,rank-1)
+                  merge(size(x,${imerge}$),size(x,${imerge + 1}$),mask = ${imerge}$ < dim ), &
+#:endfor
+                  merge(size(x,${rank-1}$),size(x,${rank}$),mask = ${rank-1}$ < dim ) )
+
+    integer :: ${isuffix(rank+1)}$
+
+    res = 0.0_${k1}$
+
+    select case(dim)
+#:for fi in range(1,rank+1)
+     case(${fi}$)
+#:for fj in range(rank,0,-1)
+       ${" "* (rank - fj)}$do i${"_"* (fj-1)}$ = 1, size(x, ${fj}$)
+#:endfor
+       ${" "* (rank)}$res(${ressuffix(rank,fi)}$) = res(${ressuffix(rank,fi)}$) + x(${isuffix(rank+1)}$)
+#:for fj in range(rank,0,-1)
+       ${" "* (fj-1)}$end do
+#:endfor
+#:endfor
+     case default
+       call error_stop("ERROR (mean): wrong dimension")
+    end select
+
+    res = res / real(size(x, dim), ${k1}$)
+
+end function mean_${rank}$_${k1}$_${k1}$
+#:endfor
+#:endfor
+
+#:for i1, k1, t1 in ikti
+#:for rank in ranks
+module function mean_${rank}$_${k1}$_dp(x, dim) result(res)
+    ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+    integer, intent(in) :: dim
+    real(dp) :: res( &
+#:for imerge in range(1,rank-1)
+                  merge(size(x,${imerge}$),size(x,${imerge + 1}$),mask = ${imerge}$ < dim ), &
+#:endfor
+                  merge(size(x,${rank-1}$),size(x,${rank}$),mask = ${rank-1}$ < dim ) )
+
+    integer :: ${isuffix(rank+1)}$
+
+    res = 0.0_dp
+
+    select case(dim)
+#:for fi in range(1,rank+1)
+     case(${fi}$)
+#:for fj in range(rank,0,-1)
+       ${" "* (rank - fj)}$do i${"_"* (fj-1)}$ = 1, size(x, ${fj}$)
+#:endfor
+       ${" "* (rank)}$res(${ressuffix(rank,fi)}$) = res(${ressuffix(rank,fi)}$) + real(x(${isuffix(rank+1)}$), dp)
+#:for fj in range(rank,0,-1)
+       ${" "* (fj-1)}$end do
+#:endfor
+#:endfor
+     case default
+       call error_stop("ERROR (mean): wrong dimension")
+    end select
+
+    res = res / real(size(x, dim), dp)
+
+end function mean_${rank}$_${k1}$_dp
+#:endfor
+#:endfor
+
+end submodule

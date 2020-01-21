@@ -23,6 +23,14 @@ else()
   target_sources(fortran_stdlib PRIVATE f08estop.f90)
 endif()
 
+if(f03rank)
+  target_sources(fortran_stdlib PRIVATE f03_stdlib_experimental_stats.f90)
+  target_sources(fortran_stdlib PRIVATE f03_stdlib_experimental_stats_mean.f90)
+else()
+  target_sources(fortran_stdlib PRIVATE f90_stdlib_experimental_stats.f90)
+  target_sources(fortran_stdlib PRIVATE f90_stdlib_experimental_stats_mean.f90)
+endif()
+
 add_subdirectory(tests)
 
 install(TARGETS fortran_stdlib
