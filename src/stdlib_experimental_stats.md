@@ -4,32 +4,32 @@
 
  * `mean`
 
-## MEAN - mean of array elements
+## `mean` - mean of array elements
 
-### Description:
+### Description
 
-Returns the mean of all the elements of *array*, or of the elements of *array* along dimension *dim*.
+Returns the mean of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided.
 
-### Syntax:
+### Syntax
 
-RESULT = mean(*array*)
+`result = mean(array)`
 
-RESULT = mean(*array*, *dim*)
+`result = mean(array, dim)`
 
-### Arguments:
+### Arguments
 
-*array*: Shall be an array of type INTEGER, or REAL.
+`array`: Shall be an array of type `integer`, or `real`.
 
-*dim* (optional): Shall be a scalar of type INTEGER with a value in the range from 1 to n, where n is the rank of *array*.
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to n, where n is the rank of `array`.
 
-### Return value:
+### Return value
 
-If *array* is of type REAL, the result is of the same type as array.
-If *array* is of type INTEGER, the result is of type as *double precision*.
+If `array` is of type `real`, the result is of the same type as `array`.
+If `array` is of type `integer`, the result is of type `double precision`.
 
-If *dim* is absent, a scalar with the mean of all elements in *array* is returned. Otherwise, an array of rank n-1, where n equals the rank of *array*, and a shape similar to that of *array* with dimension *dim* dropped is returned.
+If `dim` is absent, a scalar with the mean of all elements in `array` is returned. Otherwise, an array of rank n-1, where n equals the rank of `array`, and a shape similar to that of `array` with dimension `dim` dropped is returned.
 
-### Example:
+### Example
 
 ```fortran
 program test
