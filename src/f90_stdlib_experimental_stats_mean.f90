@@ -15,7 +15,7 @@ module function mean_1_sp_sp(x) result(res)
     res = 0.0_sp
     do i = 1, size(x)
         res = res + x(i)
-    enddo
+    end do
     res = res / real(size(x), sp)
 
 end function mean_1_sp_sp
@@ -28,7 +28,7 @@ module function mean_1_dp_dp(x) result(res)
     res = 0.0_dp
     do i = 1, size(x)
         res = res + x(i)
-    enddo
+    end do
     res = res / real(size(x), dp)
 
 end function mean_1_dp_dp
@@ -41,7 +41,7 @@ module function mean_1_qp_qp(x) result(res)
     res = 0.0_qp
     do i = 1, size(x)
         res = res + x(i)
-    enddo
+    end do
     res = res / real(size(x), qp)
 
 end function mean_1_qp_qp
@@ -55,7 +55,7 @@ module function mean_1_int8_dp(x) result(res)
     res = 0.0_dp
     do i = 1, size(x)
         res = res + real(x(i), dp)
-    enddo
+    end do
     res = res / real(size(x), dp)
 
 end function mean_1_int8_dp
@@ -68,7 +68,7 @@ module function mean_1_int16_dp(x) result(res)
     res = 0.0_dp
     do i = 1, size(x)
         res = res + real(x(i), dp)
-    enddo
+    end do
     res = res / real(size(x), dp)
 
 end function mean_1_int16_dp
@@ -81,7 +81,7 @@ module function mean_1_int32_dp(x) result(res)
     res = 0.0_dp
     do i = 1, size(x)
         res = res + real(x(i), dp)
-    enddo
+    end do
     res = res / real(size(x), dp)
 
 end function mean_1_int32_dp
@@ -94,7 +94,7 @@ module function mean_1_int64_dp(x) result(res)
     res = 0.0_dp
     do i = 1, size(x)
         res = res + real(x(i), dp)
-    enddo
+    end do
     res = res / real(size(x), dp)
 
 end function mean_1_int64_dp
@@ -108,10 +108,10 @@ module function mean_2_all_sp_sp(x) result(res)
 
     res = 0.0_sp
     do i_ = 1, size(x, 2)
-     do i = 1, size(x, 1)
-         res = res + x(i,i_)
-     enddo
-    enddo
+      do i = 1, size(x, 1)
+        res = res + x(i, i_)
+      end do
+    end do
     res = res / real(size(x), sp)
 
 end function mean_2_all_sp_sp
@@ -123,10 +123,10 @@ module function mean_2_all_dp_dp(x) result(res)
 
     res = 0.0_dp
     do i_ = 1, size(x, 2)
-     do i = 1, size(x, 1)
-         res = res + x(i,i_)
-     enddo
-    enddo
+      do i = 1, size(x, 1)
+        res = res + x(i, i_)
+      end do
+    end do
     res = res / real(size(x), dp)
 
 end function mean_2_all_dp_dp
@@ -138,10 +138,10 @@ module function mean_2_all_qp_qp(x) result(res)
 
     res = 0.0_qp
     do i_ = 1, size(x, 2)
-     do i = 1, size(x, 1)
-         res = res + x(i,i_)
-     enddo
-    enddo
+      do i = 1, size(x, 1)
+        res = res + x(i, i_)
+      end do
+    end do
     res = res / real(size(x), qp)
 
 end function mean_2_all_qp_qp
@@ -154,10 +154,10 @@ module function mean_2_all_int8_dp(x) result(res)
 
     res = 0.0_dp
     do i_ = 1, size(x, 2)
-     do i = 1, size(x, 1)
-         res = res + real(x(i,i_), dp)
-     enddo
-    enddo
+      do i = 1, size(x, 1)
+        res = res + real(x(i, i_), dp)
+      end do
+    end do
     res = res / real(size(x), dp)
 
 end function mean_2_all_int8_dp
@@ -169,10 +169,10 @@ module function mean_2_all_int16_dp(x) result(res)
 
     res = 0.0_dp
     do i_ = 1, size(x, 2)
-     do i = 1, size(x, 1)
-         res = res + real(x(i,i_), dp)
-     enddo
-    enddo
+      do i = 1, size(x, 1)
+        res = res + real(x(i, i_), dp)
+      end do
+    end do
     res = res / real(size(x), dp)
 
 end function mean_2_all_int16_dp
@@ -184,10 +184,10 @@ module function mean_2_all_int32_dp(x) result(res)
 
     res = 0.0_dp
     do i_ = 1, size(x, 2)
-     do i = 1, size(x, 1)
-         res = res + real(x(i,i_), dp)
-     enddo
-    enddo
+      do i = 1, size(x, 1)
+        res = res + real(x(i, i_), dp)
+      end do
+    end do
     res = res / real(size(x), dp)
 
 end function mean_2_all_int32_dp
@@ -199,10 +199,10 @@ module function mean_2_all_int64_dp(x) result(res)
 
     res = 0.0_dp
     do i_ = 1, size(x, 2)
-     do i = 1, size(x, 1)
-         res = res + real(x(i,i_), dp)
-     enddo
-    enddo
+      do i = 1, size(x, 1)
+        res = res + real(x(i, i_), dp)
+      end do
+    end do
     res = res / real(size(x), dp)
 
 end function mean_2_all_int64_dp
@@ -218,19 +218,19 @@ module function mean_2_sp_sp(x, dim) result(res)
 
     select case(dim)
      case(1)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i_) = res(i_) + x(i, i_)
+           res(i_) = res(i_) + x(i, i_)
          end do
-        end do
+       end do
      case(2)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i) = res(i) + x(i, i_)
+           res(i) = res(i) + x(i, i_)
          end do
-        end do
+       end do
      case default
-        call error_stop("ERROR (mean): wrong dimension")
+       call error_stop("ERROR (mean): wrong dimension")
     end select
 
     res = res / real(size(x, dim), sp)
@@ -247,19 +247,19 @@ module function mean_2_dp_dp(x, dim) result(res)
 
     select case(dim)
      case(1)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i_) = res(i_) + x(i, i_)
+           res(i_) = res(i_) + x(i, i_)
          end do
-        end do
+       end do
      case(2)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i) = res(i) + x(i, i_)
+           res(i) = res(i) + x(i, i_)
          end do
-        end do
+       end do
      case default
-        call error_stop("ERROR (mean): wrong dimension")
+       call error_stop("ERROR (mean): wrong dimension")
     end select
 
     res = res / real(size(x, dim), dp)
@@ -276,19 +276,19 @@ module function mean_2_qp_qp(x, dim) result(res)
 
     select case(dim)
      case(1)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i_) = res(i_) + x(i, i_)
+           res(i_) = res(i_) + x(i, i_)
          end do
-        end do
+       end do
      case(2)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i) = res(i) + x(i, i_)
+           res(i) = res(i) + x(i, i_)
          end do
-        end do
+       end do
      case default
-        call error_stop("ERROR (mean): wrong dimension")
+       call error_stop("ERROR (mean): wrong dimension")
     end select
 
     res = res / real(size(x, dim), qp)
@@ -306,19 +306,19 @@ module function mean_2_int8_dp(x, dim) result(res)
 
     select case(dim)
      case(1)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i_) = res(i_) + real(x(i, i_), dp)
+           res(i_) = res(i_) + real(x(i, i_), dp)
          end do
-        end do
+       end do
      case(2)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i) = res(i) + real(x(i, i_), dp)
+           res(i) = res(i) + real(x(i, i_), dp)
          end do
-        end do
+       end do
      case default
-        call error_stop("ERROR (mean): wrong dimension")
+       call error_stop("ERROR (mean): wrong dimension")
     end select
 
     res = res / real(size(x, dim), dp)
@@ -335,19 +335,19 @@ module function mean_2_int16_dp(x, dim) result(res)
 
     select case(dim)
      case(1)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i_) = res(i_) + real(x(i, i_), dp)
+           res(i_) = res(i_) + real(x(i, i_), dp)
          end do
-        end do
+       end do
      case(2)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i) = res(i) + real(x(i, i_), dp)
+           res(i) = res(i) + real(x(i, i_), dp)
          end do
-        end do
+       end do
      case default
-        call error_stop("ERROR (mean): wrong dimension")
+       call error_stop("ERROR (mean): wrong dimension")
     end select
 
     res = res / real(size(x, dim), dp)
@@ -364,19 +364,19 @@ module function mean_2_int32_dp(x, dim) result(res)
 
     select case(dim)
      case(1)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i_) = res(i_) + real(x(i, i_), dp)
+           res(i_) = res(i_) + real(x(i, i_), dp)
          end do
-        end do
+       end do
      case(2)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i) = res(i) + real(x(i, i_), dp)
+           res(i) = res(i) + real(x(i, i_), dp)
          end do
-        end do
+       end do
      case default
-        call error_stop("ERROR (mean): wrong dimension")
+       call error_stop("ERROR (mean): wrong dimension")
     end select
 
     res = res / real(size(x, dim), dp)
@@ -393,19 +393,19 @@ module function mean_2_int64_dp(x, dim) result(res)
 
     select case(dim)
      case(1)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i_) = res(i_) + real(x(i, i_), dp)
+           res(i_) = res(i_) + real(x(i, i_), dp)
          end do
-        end do
+       end do
      case(2)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i) = res(i) + real(x(i, i_), dp)
+           res(i) = res(i) + real(x(i, i_), dp)
          end do
-        end do
+       end do
      case default
-        call error_stop("ERROR (mean): wrong dimension")
+       call error_stop("ERROR (mean): wrong dimension")
     end select
 
     res = res / real(size(x, dim), dp)

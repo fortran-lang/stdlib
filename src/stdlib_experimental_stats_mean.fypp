@@ -23,7 +23,7 @@ module function mean_1_${k1}$_${k1}$(x) result(res)
     res = 0.0_${k1}$
     do i = 1, size(x)
         res = res + x(i)
-    enddo
+    end do
     res = res / real(size(x), ${k1}$)
 
 end function mean_1_${k1}$_${k1}$
@@ -39,7 +39,7 @@ module function mean_1_${k1}$_dp(x) result(res)
     res = 0.0_dp
     do i = 1, size(x)
         res = res + real(x(i), dp)
-    enddo
+    end do
     res = res / real(size(x), dp)
 
 end function mean_1_${k1}$_dp
@@ -55,10 +55,10 @@ module function mean_2_all_${k1}$_${k1}$(x) result(res)
 
     res = 0.0_${k1}$
     do i_ = 1, size(x, 2)
-     do i = 1, size(x, 1)
-         res = res + x(i,i_)
-     enddo
-    enddo
+      do i = 1, size(x, 1)
+        res = res + x(i, i_)
+      end do
+    end do
     res = res / real(size(x), ${k1}$)
 
 end function mean_2_all_${k1}$_${k1}$
@@ -73,10 +73,10 @@ module function mean_2_all_${k1}$_dp(x) result(res)
 
     res = 0.0_dp
     do i_ = 1, size(x, 2)
-     do i = 1, size(x, 1)
-         res = res + real(x(i,i_), dp)
-     enddo
-    enddo
+      do i = 1, size(x, 1)
+        res = res + real(x(i, i_), dp)
+      end do
+    end do
     res = res / real(size(x), dp)
 
 end function mean_2_all_${k1}$_dp
@@ -94,19 +94,19 @@ module function mean_2_${k1}$_${k1}$(x, dim) result(res)
 
     select case(dim)
      case(1)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i_) = res(i_) + x(i, i_)
+           res(i_) = res(i_) + x(i, i_)
          end do
-        end do
+       end do
      case(2)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i) = res(i) + x(i, i_)
+           res(i) = res(i) + x(i, i_)
          end do
-        end do
+       end do
      case default
-        call error_stop("ERROR (mean): wrong dimension")
+       call error_stop("ERROR (mean): wrong dimension")
     end select
 
     res = res / real(size(x, dim), ${k1}$)
@@ -126,19 +126,19 @@ module function mean_2_${k1}$_dp(x, dim) result(res)
 
     select case(dim)
      case(1)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i_) = res(i_) + real(x(i, i_), dp)
+           res(i_) = res(i_) + real(x(i, i_), dp)
          end do
-        end do
+       end do
      case(2)
-        do i_ = 1, size(x, 2)
+       do i_ = 1, size(x, 2)
          do i = 1, size(x, 1)
-            res(i) = res(i) + real(x(i, i_), dp)
+           res(i) = res(i) + real(x(i, i_), dp)
          end do
-        end do
+       end do
      case default
-        call error_stop("ERROR (mean): wrong dimension")
+       call error_stop("ERROR (mean): wrong dimension")
     end select
 
     res = res / real(size(x, dim), dp)
