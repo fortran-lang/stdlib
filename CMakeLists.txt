@@ -15,6 +15,7 @@ endif()
 include(CheckFortranSourceCompiles)
 include(CheckFortranSourceRuns)
 check_fortran_source_compiles("error stop i; end" f18errorstop SRC_EXT f90)
+check_fortran_source_compiles("real, allocatable :: array(:, :, :, :, :, :, :, :, :, :); end" f03rank SRC_EXT f90)
 check_fortran_source_runs("use, intrinsic :: iso_fortran_env, only : real128; real(real128) :: x; x = x+1; end" f03real128)
 
 add_subdirectory(src)

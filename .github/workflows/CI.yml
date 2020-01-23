@@ -39,6 +39,9 @@ jobs:
       if: contains(matrix.os, 'ubuntu')
       run: ci/install_cmake.sh
 
+    - name: Install fypp
+      run: pip install --upgrade fypp
+
     - name: Install GFortran Linux
       if: contains( matrix.os, 'ubuntu')
       run: |
