@@ -35,8 +35,9 @@ jobs:
       with:
         python-version: 3.x
 
-    - name: Set up common
-      run: pip install --upgrade cmake
+    - name: Install CMake Linux
+      if: contains(matrix.os, 'ubuntu')
+      run: ci/install_cmake.sh
 
     - name: Install GFortran Linux
       if: contains( matrix.os, 'ubuntu')
