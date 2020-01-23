@@ -15,6 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - name: Install fypp
+      run: pip install fypp
+
     - run: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" -Wdev -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
 
       env:
