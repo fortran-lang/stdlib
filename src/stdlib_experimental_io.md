@@ -57,16 +57,16 @@ Returns the unit number of a file opened to read, to write, or to read and write
 
 | Character | Meaning |
 | --------- | ------- |
-| `r` | open for reading (default) |
-| `w` | open for writing, truncating the file first |
-| `x` | open for exclusive creation, failing if the file already exists |
-| `a` | open for writing, appending to the end of the file if it exists |
-| `b` | binary mode |
-| `t` | text mode (default) |
-| `+` | open for updating (reading and writing) |
+| '`r`' | open for reading (default) |
+| '`w`' | open for writing, truncating the file first |
+| '`x`' | open for exclusive creation, failing if the file already exists |
+| '`a`' | open for writing, appending to the end of the file if it exists |
+| '`+`' | open for updating (reading and writing) |
+| '`b`' | binary mode |
+| '`t`' | text mode (default) |
 
 
-The default mode is `rt` (i.e. open for reading a text file).
+The default `mode` is '`rt`' (i.e. open for reading a text file). The `mode` may include one of the four different methods for opening a file (i.e., '`r`', '`w`', '`x`', and '`a`'). These four methods can be associated with the character '`+`' to open the file for updating. In addition, it can be specified if the file should be handled as a binary file ('`b`') or a text file ('`t`').
 
 `iostat` (optional): Shall be a scalar of type `integer` that receives the error status of `open`, if provided. If no error exists, `iostat` is zero.
 
