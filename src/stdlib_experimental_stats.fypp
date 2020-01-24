@@ -49,7 +49,7 @@ interface mean
     module function mean_2_${k1}$_${k1}$(x, dim) result(res)
         ${t1}$, intent(in) :: x(:,:)
         integer, intent(in) :: dim
-        ${t1}$ :: res(size(x)/size(x, dim))
+        ${t1}$ :: res(merge(size(x, 1), size(x, 2), mask = 1 < dim ))
     end function mean_2_${k1}$_${k1}$
 #:endfor
 
@@ -57,7 +57,7 @@ interface mean
     module function mean_2_${k1}$_dp(x, dim) result(res)
         ${t1}$, intent(in) :: x(:,:)
         integer, intent(in) :: dim
-        real(dp) :: res(size(x)/size(x, dim))
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask = 1 < dim ))
     end function mean_2_${k1}$_dp
 #:endfor
 
@@ -66,7 +66,9 @@ interface mean
 #{if rank > 0}#(${":" + ",:" * (rank - 1)}$)#{endif}#
 #:enddef
 
-#:if VERSION90
+#:if defined('MAXRANK')
+#:set ranks = range(3,MAXRANK+1)
+#:elif VERSION90
 #:set ranks = range(3,8)
 #:else
 #:set ranks = range(3,16)
@@ -75,47 +77,47 @@ interface mean
 
 #:for i1, k1, t1 in iktr
 #:for rank in ranks
-module function mean_${rank}$_all_${k1}$_${k1}$(x) result(res)
-    ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-    ${t1}$ :: res
-end function mean_${rank}$_all_${k1}$_${k1}$
+    module function mean_${rank}$_all_${k1}$_${k1}$(x) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        ${t1}$ :: res
+    end function mean_${rank}$_all_${k1}$_${k1}$
 #:endfor
 #:endfor
 
 #:for i1, k1, t1 in ikti
 #:for rank in ranks
-module function mean_${rank}$_all_${k1}$_dp(x) result(res)
-    ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-    real(dp) :: res
-end function mean_${rank}$_all_${k1}$_dp
+    module function mean_${rank}$_all_${k1}$_dp(x) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        real(dp) :: res
+    end function mean_${rank}$_all_${k1}$_dp
 #:endfor
 #:endfor
 
 #:for i1, k1, t1 in iktr
 #:for rank in ranks
-module function mean_${rank}$_${k1}$_${k1}$(x, dim) result(res)
-    ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-    integer, intent(in) :: dim
-    ${t1}$ :: res( &
+    module function mean_${rank}$_${k1}$_${k1}$(x, dim) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        ${t1}$ :: res( &
 #:for imerge in range(1,rank-1)
-                  merge(size(x,${imerge}$),size(x,${imerge + 1}$),mask = ${imerge}$ < dim ), &
+                      merge(size(x,${imerge}$),size(x,${imerge + 1}$),mask = ${imerge}$ < dim ), &
 #:endfor
-                  merge(size(x,${rank-1}$),size(x,${rank}$),mask = ${rank-1}$ < dim ) )
-end function mean_${rank}$_${k1}$_${k1}$
+                      merge(size(x,${rank-1}$),size(x,${rank}$),mask = ${rank-1}$ < dim ) )
+    end function mean_${rank}$_${k1}$_${k1}$
 #:endfor
 #:endfor
 
 #:for i1, k1, t1 in ikti
 #:for rank in ranks
-module function mean_${rank}$_${k1}$_dp(x, dim) result(res)
-    ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-    integer, intent(in) :: dim
-    real(dp) :: res( &
+    module function mean_${rank}$_${k1}$_dp(x, dim) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        real(dp) :: res( &
 #:for imerge in range(1,rank-1)
-                  merge(size(x,${imerge}$),size(x,${imerge + 1}$),mask = ${imerge}$ < dim ), &
+                      merge(size(x,${imerge}$),size(x,${imerge + 1}$),mask = ${imerge}$ < dim ), &
 #:endfor
-                  merge(size(x,${rank-1}$),size(x,${rank}$),mask = ${rank-1}$ < dim ) )
-end function mean_${rank}$_${k1}$_dp
+                      merge(size(x,${rank-1}$),size(x,${rank}$),mask = ${rank-1}$ < dim ) )
+    end function mean_${rank}$_${k1}$_dp
 #:endfor
 #:endfor
 
