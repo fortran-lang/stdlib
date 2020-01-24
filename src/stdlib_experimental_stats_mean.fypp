@@ -18,7 +18,7 @@ module function mean_1_${k1}$_${k1}$(x) result(res)
     ${t1}$, intent(in) :: x(:)
     ${t1}$ :: res
 
-    res = sum(x) / real(size(x), ${k1}$)
+    res = sum(x) / real(size(x, kind = int64), ${k1}$)
 
 end function mean_1_${k1}$_${k1}$
 #:endfor
@@ -28,7 +28,7 @@ module function mean_1_${k1}$_dp(x) result(res)
     ${t1}$, intent(in) :: x(:)
     real(dp) :: res
 
-    res = sum(real(x, dp)) / real(size(x), dp)
+    res = sum(real(x, dp)) / real(size(x, kind = int64), dp)
 
 end function mean_1_${k1}$_dp
 #:endfor
@@ -39,7 +39,7 @@ module function mean_2_all_${k1}$_${k1}$(x) result(res)
     ${t1}$, intent(in) :: x(:,:)
     ${t1}$ :: res
 
-    res = sum(x) / real(size(x), ${k1}$)
+    res = sum(x) / real(size(x, kind = int64), ${k1}$)
 
 end function mean_2_all_${k1}$_${k1}$
 #:endfor
@@ -49,7 +49,7 @@ module function mean_2_all_${k1}$_dp(x) result(res)
     ${t1}$, intent(in) :: x(:,:)
     real(dp) :: res
 
-    res = sum(real(x, dp)) / real(size(x), dp)
+    res = sum(real(x, dp)) / real(size(x, kind = int64), dp)
 
 end function mean_2_all_${k1}$_dp
 #:endfor
@@ -58,7 +58,7 @@ end function mean_2_all_${k1}$_dp
 module function mean_2_${k1}$_${k1}$(x, dim) result(res)
     ${t1}$, intent(in) :: x(:,:)
     integer, intent(in) :: dim
-    ${t1}$ :: res(size(x)/size(x, dim))
+    ${t1}$ :: res(merge(size(x, 1), size(x, 2), mask = 1 < dim ))
 
     select case(dim)
      case(1)
@@ -76,7 +76,7 @@ end function mean_2_${k1}$_${k1}$
 module function mean_2_${k1}$_dp(x, dim) result(res)
     ${t1}$, intent(in) :: x(:,:)
     integer, intent(in) :: dim
-    real(dp) :: res(size(x)/size(x, dim))
+    real(dp) :: res(merge(size(x, 1), size(x, 2), mask = 1 < dim ))
 
     select case(dim)
      case(1)
@@ -95,23 +95,6 @@ end function mean_2_${k1}$_dp
 #{if rank > 0}#(${":" + ",:" * (rank - 1)}$)#{endif}#
 #:enddef
 
-!As proposed by @arady
-#:def varsuffix(rank)
-${str(rank)}$
-#:enddef
-
-#:def varlist(varname, startlist, endlist)
-#:if startlist > 0
-${",".join([varname + varsuffix(i) for i in range(startlist, endlist + 1)])}$
-#:endif
-#:enddef
-
-#:def varlistskip(varname, rank, dim)
-#:if rank > 0
-${varlist(varname,1,dim-1)}$#{if dim -1 > 0 and dim < rank}#,#{endif}#${varlist(varname,dim+1,rank)}$
-#:endif
-#:enddef
-
 #:if VERSION90
 #:set ranks = range(3,8)
 #:else
@@ -124,7 +107,7 @@ module function mean_${rank}$_all_${k1}$_${k1}$(x) result(res)
     ${t1}$, intent(in) :: x${ranksuffix(rank)}$
     ${t1}$ :: res
 
-    res = sum(x) / real(size(x), ${k1}$)
+    res = sum(x) / real(size(x, kind = int64), ${k1}$)
 
 end function mean_${rank}$_all_${k1}$_${k1}$
 #:endfor
@@ -136,7 +119,7 @@ module function mean_${rank}$_all_${k1}$_dp(x) result(res)
     ${t1}$, intent(in) :: x${ranksuffix(rank)}$
     real(dp) :: res
 
-    res = sum(real(x, dp)) / real(size(x), dp)
+    res = sum(real(x, dp)) / real(size(x, kind = int64), dp)
 
 end function mean_${rank}$_all_${k1}$_dp
 #:endfor
@@ -156,7 +139,7 @@ module function mean_${rank}$_${k1}$_${k1}$(x, dim) result(res)
     select case(dim)
 #:for fi in range(1,rank+1)
      case(${fi}$)
-      res=sum(x, ${fi}$) / real(size(x, ${fi}$), ${k1}$)
+       res=sum(x, ${fi}$) / real(size(x, ${fi}$), ${k1}$)
 #:endfor
      case default
        call error_stop("ERROR (mean): wrong dimension")
@@ -180,7 +163,7 @@ module function mean_${rank}$_${k1}$_dp(x, dim) result(res)
     select case(dim)
 #:for fi in range(1,rank+1)
      case(${fi}$)
-      res=sum(real(x, dp), ${fi}$) / real(size(x, ${fi}$), dp)
+       res=sum(real(x, dp), ${fi}$) / real(size(x, ${fi}$), dp)
 #:endfor
      case default
        call error_stop("ERROR (mean): wrong dimension")
