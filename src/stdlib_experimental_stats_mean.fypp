@@ -95,7 +95,9 @@ end function mean_2_${k1}$_dp
 #{if rank > 0}#(${":" + ",:" * (rank - 1)}$)#{endif}#
 #:enddef
 
-#:if VERSION90
+#:if defined('MAXRANK')
+#:set ranks = range(3,MAXRANK+1)
+#:elif VERSION90
 #:set ranks = range(3,8)
 #:else
 #:set ranks = range(3,16)

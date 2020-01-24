@@ -19,19 +19,25 @@ foreach(infileName IN LISTS fppFiles)
     set(infile "${CMAKE_CURRENT_SOURCE_DIR}/${infileName}")
 
     # Custom command to do the processing
-if(f03rank)
-    add_custom_command(
-        OUTPUT "${outfile}"
-        COMMAND fypp "${infile}" "${outfile}"
-        MAIN_DEPENDENCY "${infile}"
-        VERBATIM)
-else()
-    add_custom_command(
-        OUTPUT "${outfile}"
-        COMMAND fypp -DVERSION90 "${infile}" "${outfile}"
-        MAIN_DEPENDENCY "${infile}"
-        VERBATIM)
-endif()
+    if(DEFINED CMAKE_MAXIMUM_RANK)
+        add_custom_command(
+            OUTPUT "${outfile}"
+            COMMAND fypp -DMAXRANK=${CMAKE_MAXIMUM_RANK} "${infile}" "${outfile}"
+            MAIN_DEPENDENCY "${infile}"
+            VERBATIM)
+    elseif(f03rank)
+        add_custom_command(
+            OUTPUT "${outfile}"
+            COMMAND fypp "${infile}" "${outfile}"
+            MAIN_DEPENDENCY "${infile}"
+            VERBATIM)
+    else()
+        add_custom_command(
+            OUTPUT "${outfile}"
+            COMMAND fypp -DVERSION90 "${infile}" "${outfile}"
+            MAIN_DEPENDENCY "${infile}"
+            VERBATIM)
+    endif()
 
     # Finally add output file to a list
     set(outFiles ${outFiles} "${outfile}")
