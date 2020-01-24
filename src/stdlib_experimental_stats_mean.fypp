@@ -28,13 +28,7 @@ module function mean_1_${k1}$_dp(x) result(res)
     ${t1}$, intent(in) :: x(:)
     real(dp) :: res
 
-    integer :: i1
-
-    res = 0.0_dp
-    do i1 = 1, size(x)
-        res = res + real(x(i1), dp)
-    end do
-    res = res / real(size(x), dp)
+    res = sum(real(x, dp)) / real(size(x), dp)
 
 end function mean_1_${k1}$_dp
 #:endfor
@@ -55,15 +49,7 @@ module function mean_2_all_${k1}$_dp(x) result(res)
     ${t1}$, intent(in) :: x(:,:)
     real(dp) :: res
 
-    integer :: i1, i2
-
-    res = 0.0_dp
-    do i2 = 1, size(x, 2)
-      do i1 = 1, size(x, 1)
-        res = res + real(x(i1, i2), dp)
-      end do
-    end do
-    res = res / real(size(x), dp)
+    res = sum(real(x, dp)) / real(size(x), dp)
 
 end function mean_2_all_${k1}$_dp
 #:endfor
@@ -92,28 +78,14 @@ module function mean_2_${k1}$_dp(x, dim) result(res)
     integer, intent(in) :: dim
     real(dp) :: res(size(x)/size(x, dim))
 
-    integer :: i1, i2
-
-    res = 0.0_dp
-
     select case(dim)
      case(1)
-       do i2 = 1, size(x, 2)
-         do i1 = 1, size(x, 1)
-           res(i2) = res(i2) + real(x(i1, i2), dp)
-         end do
-       end do
+       res = sum(real(x, dp), 1) / real(size(x, 1), dp)
      case(2)
-       do i2 = 1, size(x, 2)
-         do i1 = 1, size(x, 1)
-           res(i1) = res(i1) + real(x(i1, i2), dp)
-         end do
-       end do
+       res = sum(real(x, dp), 2) / real(size(x, 2), dp)
      case default
        call error_stop("ERROR (mean): wrong dimension")
     end select
-
-    res = res / real(size(x, dim), dp)
 
 end function mean_2_${k1}$_dp
 #:endfor
@@ -164,19 +136,7 @@ module function mean_${rank}$_all_${k1}$_dp(x) result(res)
     ${t1}$, intent(in) :: x${ranksuffix(rank)}$
     real(dp) :: res
 
-    integer :: ${varlist("i",1,rank)}$
-
-    res = 0.0_dp
-
-#:for fj in range(rank,0,-1)
-    ${"  "* (rank - fj)}$do i${varsuffix(fj)}$ = 1, size(x, ${fj}$)
-#:endfor
-    ${"  "* (rank)}$res = res + real(x(${varlist("i",1,rank)}$), dp)
-#:for fj in range(rank,0,-1)
-    ${"  "* (fj-1)}$end do
-#:endfor
-
-    res = res / real(size(x), dp)
+    res = sum(real(x, dp)) / real(size(x), dp)
 
 end function mean_${rank}$_all_${k1}$_dp
 #:endfor
@@ -217,26 +177,14 @@ module function mean_${rank}$_${k1}$_dp(x, dim) result(res)
 #:endfor
                   merge(size(x,${rank-1}$),size(x,${rank}$),mask = ${rank-1}$ < dim ) )
 
-    integer :: ${varlist("i",1,rank)}$
-
-    res = 0.0_dp
-
     select case(dim)
 #:for fi in range(1,rank+1)
      case(${fi}$)
-#:for fj in range(rank,0,-1)
-       ${"  "* (rank - fj)}$do i${varsuffix(fj)}$ = 1, size(x, ${fj}$)
-#:endfor
-       ${"  "* (rank)}$res(${varlistskip("i", rank, fi)}$) = res(${varlistskip("i", rank, fi)}$) + real(x(${varlist("i",1,rank)}$), dp)
-#:for fj in range(rank,0,-1)
-       ${"  "* (fj-1)}$end do
-#:endfor
+      res=sum(real(x, dp), ${fi}$) / real(size(x, ${fi}$), dp)
 #:endfor
      case default
        call error_stop("ERROR (mean): wrong dimension")
     end select
-
-    res = res / real(size(x, dim), dp)
 
 end function mean_${rank}$_${k1}$_dp
 #:endfor
