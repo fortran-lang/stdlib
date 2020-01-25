@@ -1,5 +1,5 @@
 program test_savetxt
-use stdlib_experimental_kinds, only: sp, dp
+use stdlib_experimental_kinds, only: int32, sp, dp
 use stdlib_experimental_io, only: loadtxt, savetxt
 use stdlib_experimental_error, only: assert
 implicit none
@@ -8,6 +8,7 @@ character(:), allocatable :: outpath
 
 outpath = get_outpath() // "/tmp.dat"
 
+call test_int32(outpath)
 call test_sp(outpath)
 call test_dp(outpath)
 
@@ -25,6 +26,24 @@ contains
         outpath = '.'
     endif
     end function get_outpath
+
+    subroutine test_int32(outpath)
+    character(*), intent(in) :: outpath
+    integer(int32) :: d(3, 2), e(2, 3)
+    integer(int32), allocatable :: d2(:, :)
+    d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
+    call savetxt(outpath, d)
+    call loadtxt(outpath, d2)
+    call assert(all(shape(d2) == [3, 2]))
+    call assert(all(abs(d-d2) == 0))
+
+    e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
+    call savetxt(outpath, e)
+    call loadtxt(outpath, d2)
+    call assert(all(shape(d2) == [2, 3]))
+    call assert(all(abs(e-d2) == 0))
+    end subroutine
+
 
     subroutine test_sp(outpath)
     character(*), intent(in) :: outpath

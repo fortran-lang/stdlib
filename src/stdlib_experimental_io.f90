@@ -1,5 +1,8 @@
 module stdlib_experimental_io
-use stdlib_experimental_kinds, only: sp, dp, qp
+
+
+use stdlib_experimental_kinds, only: sp, dp, qp, &
+    int8, int16, int32, int64
 use stdlib_experimental_error, only: error_stop
 use stdlib_experimental_optval, only: optval
 use stdlib_experimental_ascii, only: is_blank
@@ -11,22 +14,29 @@ public :: loadtxt, savetxt, open
 ! Private API that is exposed so that we can test it in tests
 public :: parse_mode
 
-
 interface loadtxt
-    module procedure sloadtxt
-    module procedure dloadtxt
-    module procedure qloadtxt
+    module procedure loadtxt_sp
+    module procedure loadtxt_dp
+    module procedure loadtxt_qp
+    module procedure loadtxt_int8
+    module procedure loadtxt_int16
+    module procedure loadtxt_int32
+    module procedure loadtxt_int64
 end interface
 
 interface savetxt
-    module procedure ssavetxt
-    module procedure dsavetxt
-    module procedure qsavetxt
+    module procedure savetxt_sp
+    module procedure savetxt_dp
+    module procedure savetxt_qp
+    module procedure savetxt_int8
+    module procedure savetxt_int16
+    module procedure savetxt_int32
+    module procedure savetxt_int64
 end interface
 
 contains
 
-subroutine sloadtxt(filename, d)
+subroutine loadtxt_sp(filename, d)
 ! Loads a 2D array from a text file.
 !
 ! Arguments
@@ -68,8 +78,7 @@ do i = 1, nrow
 end do
 close(s)
 end subroutine
-
-subroutine dloadtxt(filename, d)
+subroutine loadtxt_dp(filename, d)
 ! Loads a 2D array from a text file.
 !
 ! Arguments
@@ -111,8 +120,7 @@ do i = 1, nrow
 end do
 close(s)
 end subroutine
-
-subroutine qloadtxt(filename, d)
+subroutine loadtxt_qp(filename, d)
 ! Loads a 2D array from a text file.
 !
 ! Arguments
@@ -154,10 +162,177 @@ do i = 1, nrow
 end do
 close(s)
 end subroutine
+subroutine loadtxt_int8(filename, d)
+! Loads a 2D array from a text file.
+!
+! Arguments
+! ---------
+!
+! Filename to load the array from
+character(len=*), intent(in) :: filename
+! The array 'd' will be automatically allocated with the correct dimensions
+integer(int8), allocatable, intent(out) :: d(:,:)
+!
+! Example
+! -------
+!
+! integer(int8), allocatable :: data(:, :)
+! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
+!
+! Where 'log.txt' contains for example::
+!
+!     1 2 3
+!     2 4 6
+!     8 9 10
+!     11 12 13
+!     ...
+!
+integer :: s
+integer :: nrow,ncol,i
 
+s = open(filename)
 
-subroutine ssavetxt(filename, d)
-! Saves a 2D array into a textfile.
+! determine number of columns
+ncol = number_of_columns(s)
+
+! determine number or rows
+nrow = number_of_rows_numeric(s)
+
+allocate(d(nrow, ncol))
+do i = 1, nrow
+    read(s, *) d(i, :)
+end do
+close(s)
+end subroutine
+subroutine loadtxt_int16(filename, d)
+! Loads a 2D array from a text file.
+!
+! Arguments
+! ---------
+!
+! Filename to load the array from
+character(len=*), intent(in) :: filename
+! The array 'd' will be automatically allocated with the correct dimensions
+integer(int16), allocatable, intent(out) :: d(:,:)
+!
+! Example
+! -------
+!
+! integer(int16), allocatable :: data(:, :)
+! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
+!
+! Where 'log.txt' contains for example::
+!
+!     1 2 3
+!     2 4 6
+!     8 9 10
+!     11 12 13
+!     ...
+!
+integer :: s
+integer :: nrow,ncol,i
+
+s = open(filename)
+
+! determine number of columns
+ncol = number_of_columns(s)
+
+! determine number or rows
+nrow = number_of_rows_numeric(s)
+
+allocate(d(nrow, ncol))
+do i = 1, nrow
+    read(s, *) d(i, :)
+end do
+close(s)
+end subroutine
+subroutine loadtxt_int32(filename, d)
+! Loads a 2D array from a text file.
+!
+! Arguments
+! ---------
+!
+! Filename to load the array from
+character(len=*), intent(in) :: filename
+! The array 'd' will be automatically allocated with the correct dimensions
+integer(int32), allocatable, intent(out) :: d(:,:)
+!
+! Example
+! -------
+!
+! integer(int32), allocatable :: data(:, :)
+! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
+!
+! Where 'log.txt' contains for example::
+!
+!     1 2 3
+!     2 4 6
+!     8 9 10
+!     11 12 13
+!     ...
+!
+integer :: s
+integer :: nrow,ncol,i
+
+s = open(filename)
+
+! determine number of columns
+ncol = number_of_columns(s)
+
+! determine number or rows
+nrow = number_of_rows_numeric(s)
+
+allocate(d(nrow, ncol))
+do i = 1, nrow
+    read(s, *) d(i, :)
+end do
+close(s)
+end subroutine
+subroutine loadtxt_int64(filename, d)
+! Loads a 2D array from a text file.
+!
+! Arguments
+! ---------
+!
+! Filename to load the array from
+character(len=*), intent(in) :: filename
+! The array 'd' will be automatically allocated with the correct dimensions
+integer(int64), allocatable, intent(out) :: d(:,:)
+!
+! Example
+! -------
+!
+! integer(int64), allocatable :: data(:, :)
+! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
+!
+! Where 'log.txt' contains for example::
+!
+!     1 2 3
+!     2 4 6
+!     8 9 10
+!     11 12 13
+!     ...
+!
+integer :: s
+integer :: nrow,ncol,i
+
+s = open(filename)
+
+! determine number of columns
+ncol = number_of_columns(s)
+
+! determine number or rows
+nrow = number_of_rows_numeric(s)
+
+allocate(d(nrow, ncol))
+do i = 1, nrow
+    read(s, *) d(i, :)
+end do
+close(s)
+end subroutine
+
+subroutine savetxt_sp(filename, d)
+! Saves a 2D array into a text file.
 !
 ! Arguments
 ! ---------
@@ -178,9 +353,8 @@ do i = 1, size(d, 1)
 end do
 close(s)
 end subroutine
-
-subroutine dsavetxt(filename, d)
-! Saves a 2D array into a textfile.
+subroutine savetxt_dp(filename, d)
+! Saves a 2D array into a text file.
 !
 ! Arguments
 ! ---------
@@ -201,9 +375,8 @@ do i = 1, size(d, 1)
 end do
 close(s)
 end subroutine
-
-subroutine qsavetxt(filename, d)
-! Saves a 2D array into a textfile.
+subroutine savetxt_qp(filename, d)
+! Saves a 2D array into a text file.
 !
 ! Arguments
 ! ---------
@@ -214,16 +387,101 @@ real(qp), intent(in) :: d(:,:)           ! The 2D array to save
 ! Example
 ! -------
 !
-! real(dp) :: data(3, 2)
+! real(qp) :: data(3, 2)
 ! call savetxt("log.txt", data)
 
 integer :: s, i
-character(len=14) :: format_string
-
-write(format_string, '(a1,i06,a7)') '(', size(d, 2), 'f40.34)'
 s = open(filename, "w")
 do i = 1, size(d, 1)
-    write(s, format_string) d(i, :)
+    write(s, *) d(i, :)
+end do
+close(s)
+end subroutine
+subroutine savetxt_int8(filename, d)
+! Saves a 2D array into a text file.
+!
+! Arguments
+! ---------
+!
+character(len=*), intent(in) :: filename  ! File to save the array to
+integer(int8), intent(in) :: d(:,:)           ! The 2D array to save
+!
+! Example
+! -------
+!
+! integer(int8) :: data(3, 2)
+! call savetxt("log.txt", data)
+
+integer :: s, i
+s = open(filename, "w")
+do i = 1, size(d, 1)
+    write(s, *) d(i, :)
+end do
+close(s)
+end subroutine
+subroutine savetxt_int16(filename, d)
+! Saves a 2D array into a text file.
+!
+! Arguments
+! ---------
+!
+character(len=*), intent(in) :: filename  ! File to save the array to
+integer(int16), intent(in) :: d(:,:)           ! The 2D array to save
+!
+! Example
+! -------
+!
+! integer(int16) :: data(3, 2)
+! call savetxt("log.txt", data)
+
+integer :: s, i
+s = open(filename, "w")
+do i = 1, size(d, 1)
+    write(s, *) d(i, :)
+end do
+close(s)
+end subroutine
+subroutine savetxt_int32(filename, d)
+! Saves a 2D array into a text file.
+!
+! Arguments
+! ---------
+!
+character(len=*), intent(in) :: filename  ! File to save the array to
+integer(int32), intent(in) :: d(:,:)           ! The 2D array to save
+!
+! Example
+! -------
+!
+! integer(int32) :: data(3, 2)
+! call savetxt("log.txt", data)
+
+integer :: s, i
+s = open(filename, "w")
+do i = 1, size(d, 1)
+    write(s, *) d(i, :)
+end do
+close(s)
+end subroutine
+subroutine savetxt_int64(filename, d)
+! Saves a 2D array into a text file.
+!
+! Arguments
+! ---------
+!
+character(len=*), intent(in) :: filename  ! File to save the array to
+integer(int64), intent(in) :: d(:,:)           ! The 2D array to save
+!
+! Example
+! -------
+!
+! integer(int64) :: data(3, 2)
+! call savetxt("log.txt", data)
+
+integer :: s, i
+s = open(filename, "w")
+do i = 1, size(d, 1)
+    write(s, *) d(i, :)
 end do
 close(s)
 end subroutine
@@ -289,7 +547,6 @@ character(*), intent(in) :: filename
 character(*), intent(in), optional :: mode
 integer, intent(out), optional :: iostat
 
-integer :: io_
 character(3) :: mode_
 character(:),allocatable :: action_, position_, status_, access_, form_
 
