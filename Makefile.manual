@@ -2,9 +2,11 @@
 
 FC = gfortran
 FFLAGS = -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all
+FYPPFLAGS=
 
 export FC
 export FFLAGS
+export FYPPFLAGS
 
 .PHONY: all clean test
 

@@ -39,6 +39,9 @@ jobs:
       if: contains(matrix.os, 'ubuntu')
       run: ci/install_cmake.sh
 
+    - name: Install fypp
+      run: pip install --upgrade fypp
+
     - name: Install GFortran Linux
       if: contains( matrix.os, 'ubuntu')
       run: |
@@ -54,7 +57,7 @@ jobs:
       run: brew install gcc@${GCC_V} || brew upgrade gcc@${GCC_V} || true
 
     - name: Configure with CMake
-      run: cmake -Wdev -DCMAKE_BUILD_TYPE=Release -S . -B build
+      run: cmake -Wdev -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAXIMUM_RANK=4 -S . -B build
 
     - name: Build and compile
       run: cmake --build build
@@ -77,6 +80,6 @@ jobs:
     - name: Test manual makefiles
       if: contains(matrix.os, 'ubuntu') && contains(matrix.gcc_v, '9')
       run: |
-        make -f Makefile.manual
+        make -f Makefile.manual FYPPFLAGS="-DMAXRANK=4"
         make -f Makefile.manual test
         make -f Makefile.manual clean
