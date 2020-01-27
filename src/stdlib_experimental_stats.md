@@ -32,12 +32,12 @@ If `dim` is absent, a scalar with the mean of all elements in `array` is returne
 ### Example
 
 ```fortran
-program test
+program demo_mean
     use stdlib_experimental_stats, only: mean
     implicit none
     real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
     print *, mean(x)                            !returns 21.
     print *, mean( reshape(x, [ 2, 3 ] ))       !returns 21.
     print *, mean( reshape(x, [ 2, 3 ] ), 1)    !returns [ 3., 7., 11. ]
-end program
+end program demo_mean
 ```

@@ -29,12 +29,12 @@ Returns an allocated rank-2 `array` with the content of `filename`.
 ### Example
 
 ```fortran
-program test
+program demo_loadtxt
     use stdlib_experimental_io, only: loadtxt
     implicit none
     real, allocatable :: x(:,:)
     call loadtxt('example.dat', x) 
-end program
+end program demo_loadtxt
 ```
 
 
@@ -80,12 +80,14 @@ The result is a scalar of type `integer`.
 ### Example
 
 ```fortran
-program test
-    use stdlib_experimental_stats, only: mean
+program demo_open
+    use stdlib_experimental_io, only: open
     implicit none
-    integer :: io, u
-    u = open('example.dat', 'rt', iostat = io)
-end program
+    integer :: u
+    u = open('example.dat', 'wt')
+    write(u,'(a)')'This is an example for open'
+    close(u)
+end program demo_open
 ```
 
 
@@ -111,10 +113,10 @@ Provides a text file called `filename` that contains the rank-2 `array`.
 ### Example
 
 ```fortran
-program test
+program demo_savetxt
     use stdlib_experimental_io, only: savetxt
     implicit none
     real :: x(3,2) = 1
     call savetxt('example.dat', x) 
-end program
+end program demo_savetxt
 ```

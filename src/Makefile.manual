@@ -42,5 +42,6 @@ stdlib_experimental_stats_mean.o: \
 	stdlib_experimental_optval.o \
 	stdlib_experimental_kinds.o \
 	stdlib_experimental_stats.o
+stdlib_experimental_io.f90: stdlib_experimental_io.fypp
 stdlib_experimental_stats.f90: stdlib_experimental_stats.fypp
 stdlib_experimental_stats_mean.f90: stdlib_experimental_stats_mean.fypp

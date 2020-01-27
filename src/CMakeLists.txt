@@ -2,6 +2,7 @@
 
 # Create a list of the files to be preprocessed
 set(fppFiles
+    stdlib_experimental_io.fypp
     stdlib_experimental_stats.fypp
     stdlib_experimental_stats_mean.fypp
 )
