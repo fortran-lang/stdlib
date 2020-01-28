@@ -1,7 +1,5 @@
 #:include "common.fypp"
 
-#:set REAL_KINDS_TYPES = REAL_KINDS_TYPES
-#:set INT_KINDS_TYPES = INT_KINDS_TYPES
 #:set RANKS = range(3, MAXRANK + 1)
 
 
