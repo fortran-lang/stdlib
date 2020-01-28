@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.14.0)
 project(stdlib Fortran)
 enable_testing()
 
+include(${CMAKE_SOURCE_DIR}/cmake/stdlib.cmake)
+
 # --- compiler options
 if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   add_compile_options(-fimplicit-none)
@@ -20,6 +22,12 @@ check_fortran_source_runs("use, intrinsic :: iso_fortran_env, only : real128; re
 
 if(DEFINED CMAKE_MAXIMUM_RANK)
   set(CMAKE_MAXIMUM_RANK ${CMAKE_MAXIMUM_RANK})
+endif()
+
+# --- find preprocessor
+find_program(FYPP fypp)
+if(NOT FYPP)
+  message(FATAL_ERROR "Preprocessor fypp not found!")
 endif()
 
 add_subdirectory(src)

@@ -7,45 +7,17 @@ set(fppFiles
     stdlib_experimental_stats_mean.fypp
 )
 
-# Pre-process
-foreach(infileName IN LISTS fppFiles)
 
-    # Generate output file name
-    string(REGEX REPLACE ".fypp\$" ".f90" outfileName "${infileName}")
+# Custom preprocessor flags
+if(DEFINED CMAKE_MAXIMUM_RANK)
+  set(fyppFlags "-DMAXRANK=${CMAKE_MAXIMUM_RANK}")
+elseif(f03rank)
+  set(fyppFlags)
+else()
+  set(fyppFlags "-DVERSION90")
+endif()
 
-    # Create the full path for the new file
-    set(outfile "${CMAKE_CURRENT_BINARY_DIR}/${outfileName}")
-
-    # Generate input file name
-    set(infile "${CMAKE_CURRENT_SOURCE_DIR}/${infileName}")
-
-    # Custom command to do the processing
-    if(DEFINED CMAKE_MAXIMUM_RANK)
-        add_custom_command(
-            OUTPUT "${outfile}"
-            COMMAND fypp -DMAXRANK=${CMAKE_MAXIMUM_RANK} "${infile}" "${outfile}"
-            MAIN_DEPENDENCY "${infile}"
-            VERBATIM)
-    elseif(f03rank)
-        add_custom_command(
-            OUTPUT "${outfile}"
-            COMMAND fypp "${infile}" "${outfile}"
-            MAIN_DEPENDENCY "${infile}"
-            VERBATIM)
-    else()
-        add_custom_command(
-            OUTPUT "${outfile}"
-            COMMAND fypp -DVERSION90 "${infile}" "${outfile}"
-            MAIN_DEPENDENCY "${infile}"
-            VERBATIM)
-    endif()
-
-    # Finally add output file to a list
-    set(outFiles ${outFiles} "${outfile}")
-
-endforeach(infileName)
-
-
+fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
     stdlib_experimental_ascii.f90
