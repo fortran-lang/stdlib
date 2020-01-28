@@ -1,13 +1,11 @@
+#:include "common.fypp"
+
+#:set REAL_KINDS_TYPES = REAL_KINDS_TYPES
+#:set INT_KINDS_TYPES = INT_KINDS_TYPES
+#:set RANKS = range(3, MAXRANK + 1)
+
+
 module stdlib_experimental_stats
-
-#:set VERSION90 = defined('VERSION90')
-#:set REALKINDS = ["sp", "dp", "qp"]
-#:set INTKINDS = ["int8", "int16", "int32", "int64"]
-#:set REALTYPES = ["real({})".format(k) for k in REALKINDS]
-#:set INTTYPES = ["integer({})".format(k) for k in INTKINDS]
-#:set iktr = list(zip(range(len(REALKINDS)), REALKINDS, REALTYPES))
-#:set ikti = list(zip(range(len(INTKINDS)), INTKINDS, INTTYPES))
-
 use stdlib_experimental_kinds, only: sp, dp, qp, &
     int8, int16, int32, int64
 implicit none
@@ -16,14 +14,14 @@ private
 public :: mean
 
 interface mean
-#:for i1, k1, t1 in iktr
+#:for k1, t1 in REAL_KINDS_TYPES
     module function mean_1_${k1}$_${k1}$(x) result(res)
         ${t1}$, intent(in) :: x(:)
         ${t1}$ :: res
     end function mean_1_${k1}$_${k1}$
 #:endfor
 
-#:for i1, k1, t1 in ikti
+#:for k1, t1 in INT_KINDS_TYPES
     module function mean_1_${k1}$_dp(x) result(res)
         ${t1}$, intent(in) :: x(:)
         real(dp) :: res
@@ -31,21 +29,21 @@ interface mean
 #:endfor
 
 
-#:for i1, k1, t1 in iktr
+#:for k1, t1 in REAL_KINDS_TYPES
     module function mean_2_all_${k1}$_${k1}$(x) result(res)
         ${t1}$, intent(in) :: x(:,:)
         ${t1}$ :: res
     end function mean_2_all_${k1}$_${k1}$
 #:endfor
 
-#:for i1, k1, t1 in ikti
+#:for k1, t1 in INT_KINDS_TYPES
     module function mean_2_all_${k1}$_dp(x) result(res)
         ${t1}$, intent(in) :: x(:,:)
         real(dp) :: res
     end function mean_2_all_${k1}$_dp
 #:endfor
 
-#:for i1, k1, t1 in iktr
+#:for k1, t1 in REAL_KINDS_TYPES
     module function mean_2_${k1}$_${k1}$(x, dim) result(res)
         ${t1}$, intent(in) :: x(:,:)
         integer, intent(in) :: dim
@@ -53,7 +51,7 @@ interface mean
     end function mean_2_${k1}$_${k1}$
 #:endfor
 
-#:for i1, k1, t1 in ikti
+#:for k1, t1 in INT_KINDS_TYPES
     module function mean_2_${k1}$_dp(x, dim) result(res)
         ${t1}$, intent(in) :: x(:,:)
         integer, intent(in) :: dim
@@ -62,21 +60,10 @@ interface mean
 #:endfor
 
 
-#:def ranksuffix(rank)
-#{if rank > 0}#(${":" + ",:" * (rank - 1)}$)#{endif}#
-#:enddef
-
-#:if defined('MAXRANK')
-#:set ranks = range(3,MAXRANK+1)
-#:elif VERSION90
-#:set ranks = range(3,8)
-#:else
-#:set ranks = range(3,16)
-#:endif
 
 
-#:for i1, k1, t1 in iktr
-#:for rank in ranks
+#:for k1, t1 in REAL_KINDS_TYPES
+#:for rank in RANKS
     module function mean_${rank}$_all_${k1}$_${k1}$(x) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         ${t1}$ :: res
@@ -84,8 +71,8 @@ interface mean
 #:endfor
 #:endfor
 
-#:for i1, k1, t1 in ikti
-#:for rank in ranks
+#:for k1, t1 in INT_KINDS_TYPES
+#:for rank in RANKS
     module function mean_${rank}$_all_${k1}$_dp(x) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         real(dp) :: res
@@ -93,8 +80,8 @@ interface mean
 #:endfor
 #:endfor
 
-#:for i1, k1, t1 in iktr
-#:for rank in ranks
+#:for k1, t1 in REAL_KINDS_TYPES
+#:for rank in RANKS
     module function mean_${rank}$_${k1}$_${k1}$(x, dim) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: dim
@@ -107,8 +94,8 @@ interface mean
 #:endfor
 #:endfor
 
-#:for i1, k1, t1 in ikti
-#:for rank in ranks
+#:for k1, t1 in INT_KINDS_TYPES
+#:for rank in RANKS
     module function mean_${rank}$_${k1}$_dp(x, dim) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: dim

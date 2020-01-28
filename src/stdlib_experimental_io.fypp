@@ -1,12 +1,9 @@
-module stdlib_experimental_io
+#:include "common.fypp"
 
-#:set REALKINDS = ["sp", "dp", "qp"]
-#:set INTKINDS = ["int8", "int16", "int32", "int64"]
-#:set REALTYPES = ["real({})".format(k) for k in REALKINDS]
-#:set INTTYPES = ["integer({})".format(k) for k in INTKINDS]
-#:set KINDS = REALKINDS + INTKINDS
-#:set TYPES = REALTYPES + INTTYPES
-#:set ikt = list(zip(range(len(KINDS)), KINDS, TYPES))
+#:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES
+
+
+module stdlib_experimental_io
 
 use stdlib_experimental_kinds, only: sp, dp, qp, &
     int8, int16, int32, int64
@@ -22,20 +19,20 @@ public :: loadtxt, savetxt, open
 public :: parse_mode
 
 interface loadtxt
-#:for i1, k1, t1 in ikt
+#:for k1, _ in KINDS_TYPES
     module procedure loadtxt_${k1}$
 #:endfor
 end interface
 
 interface savetxt
-#:for i1, k1, t1 in ikt
+#:for k1, _ in KINDS_TYPES
     module procedure savetxt_${k1}$
 #:endfor
 end interface
 
 contains
 
-#:for i1, k1, t1 in ikt
+#:for k1, t1 in KINDS_TYPES
 subroutine loadtxt_${k1}$(filename, d)
 ! Loads a 2D array from a text file.
 !
@@ -80,7 +77,7 @@ close(s)
 end subroutine
 #:endfor
 
-#:for i1, k1, t1 in ikt
+#:for k1, t1 in KINDS_TYPES
 subroutine savetxt_${k1}$(filename, d)
 ! Saves a 2D array into a text file.
 !
