@@ -37,6 +37,17 @@ call assert( sum( abs( mean(d,1) - sum(d,1)/real(size(d,1), dp) )) < dptol)
 call assert( sum( abs( mean(d,2) - sum(d,2)/real(size(d,2), dp) )) < dptol)
 
 
+! check mask = .false.
+
+call assert( isnan(mean(d, .false.)))
+call assert( any(isnan(mean(d, 1, .false.))))
+call assert( any(isnan(mean(d, 2, .false.))))
+
+! check mask of the same shape as input
+call assert( abs(mean(d, d > 0._dp) - sum(d, d > 0._dp)/real(count(d > 0._dp), dp)) < dptol)
+call assert( sum(abs(mean(d, 1, d > 0._dp) - sum(d, 1, d > 0._dp)/real(count(d > 0._dp, 1), dp))) < dptol)
+call assert( sum(abs(mean(d, 2, d > 0._dp) - sum(d, 2, d > 0._dp)/real(count(d > 0._dp, 2), dp))) < dptol)
+
 !int32
 call loadtxt("array3.dat", d)
 
@@ -67,7 +78,7 @@ call assert( sum( abs( mean(d3,3) - sum(d3,3)/real(size(d3,3), dp) )) < dptol)
 
 !dp rank 4
 allocate(d4(size(d,1),size(d,2),3,9))
-d4 = 1.
+d4 = -1._dp
 d4(:,:,1,1)=d;
 d4(:,:,2,1)=d*1.5_dp;
 d4(:,:,3,1)=d*4._dp;
@@ -78,5 +89,21 @@ call assert( sum( abs( mean(d4,1) - sum(d4,1)/real(size(d4,1), dp) )) < dptol)
 call assert( sum( abs( mean(d4,2) - sum(d4,2)/real(size(d4,2), dp) )) < dptol)
 call assert( sum( abs( mean(d4,3) - sum(d4,3)/real(size(d4,3), dp) )) < dptol)
 call assert( sum( abs( mean(d4,4) - sum(d4,4)/real(size(d4,4), dp) )) < dptol)
+
+! check mask = .false.
+
+call assert( isnan(mean(d4, .false.)))
+call assert( any(isnan(mean(d4, 1, .false.))))
+call assert( any(isnan(mean(d4, 2, .false.))))
+call assert( any(isnan(mean(d4, 3, .false.))))
+call assert( any(isnan(mean(d4, 4, .false.))))
+
+
+! check mask of the same shape as input
+call assert( abs(mean(d4, d4 > 0._dp) - sum(d4, d4 > 0._dp)/real(count(d4 > 0._dp), dp)) < dptol)
+call assert( any(isnan(mean(d4, 1, d4 > 0._dp))) )
+call assert( any(isnan(mean(d4, 2, d4 > 0._dp))) )
+call assert( any(isnan(mean(d4, 3, d4 > 0._dp))) )
+call assert( sum(abs(mean(d4, 4, d4 > 0._dp) - sum(d4, 4, d4 > 0._dp)/real(count(d4 > 0._dp, 4), dp))) < dptol)
 
 end program
