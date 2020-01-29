@@ -5,6 +5,8 @@ use stdlib_experimental_io, only: loadtxt
 use stdlib_experimental_stats, only: mean
 implicit none
 
+real(sp) :: s1(3) = [1.0_sp, 2.0_sp, 3.0_sp]
+
 real(sp), allocatable :: s(:, :)
 real(dp), allocatable :: d(:, :)
 
@@ -18,6 +20,10 @@ call loadtxt("array3.dat", s)
 call assert( mean(s) - sum(s)/real(size(s), sp) == 0.0_sp)
 call assert( sum( abs( mean(s,1) - sum(s,1)/real(size(s,1), sp) )) == 0.0_sp)
 call assert( sum( abs( mean(s,2) - sum(s,2)/real(size(s,2), sp) )) == 0.0_sp)
+
+! check reduction of rank one array to scalar
+call assert(mean(s1) - sum(s1) / real(size(s1), sp) == 0.0_dp)
+call assert(mean(s1, dim=1) - sum(s1, dim=1) / real(size(s1, dim=1), sp) == 0.0_dp)
 
 
 !dp

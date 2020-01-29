@@ -37,7 +37,7 @@
 #! Generates an array rank suffix.
 #!
 #! Args:
-#!     rank [in]: Integer with rank.
+#!     rank (int): Rank of the variable
 #!
 #! Returns:
 #!     Array rank suffix string (e.g. (:,:) if rank = 2)
@@ -45,5 +45,49 @@
 #:def ranksuffix(rank)
 #{if rank > 0}#(${":" + ",:" * (rank - 1)}$)#{endif}#
 #:enddef
+
+
+#! Joins stripped lines with given character string
+#!
+#! Args:
+#!   txt (str): Text to process
+#!   joinstr (str): String to use as connector
+#!   prefix (str): String to add as prefix before the joined text
+#!   suffix (str): String to add as suffix after the joined text
+#!
+#! Returns:
+#!   Lines stripped and joined with the given string.
+#!
+#:def join_lines(txt, joinstr, prefix="", suffix="")
+${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
+#:enddef
+
+
+#! Brace enclosed, comma separated Fortran expressions for a reduced shape.
+#!
+#! Rank of the original variable will be reduced by one. The routine generates
+#! for each dimension a Fortan expression using merge(), which calculates the
+#! size of the array for that dimension.
+#!
+#! Args:
+#!   varname (str): Name of the variable to be used as origin
+#!   origrank (int): Rank of the original variable
+#!   idim (int): Index of the reduced dimension
+#!
+#! Returns:
+#!   Shape expression enclosed in braces, so that it can be used as suffix to
+#!   define array shapes in declarations.
+#!
+#:def reduced_shape(varname, origrank, idim)
+  #:assert origrank > 0
+  #:if origrank > 1
+    #:call join_lines(joinstr=", ", prefix="(", suffix=")")
+      #:for i in range(1, origrank)
+        merge(size(${varname}$, ${i}$), size(${varname}$, ${i + 1}$), mask=${i}$<${idim}$)
+      #:endfor
+    #:endcall
+  #:endif
+#:enddef
+
 
 #:endmute

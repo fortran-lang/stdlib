@@ -1,6 +1,6 @@
 #:include "common.fypp"
 
-#:set RANKS = range(3, MAXRANK + 1)
+#:set RANKS = range(1, MAXRANK + 1)
 
 
 module stdlib_experimental_stats
@@ -12,49 +12,6 @@ module stdlib_experimental_stats
   public :: mean
 
   interface mean
-    #:for k1, t1 in REAL_KINDS_TYPES
-      module function mean_1_${k1}$_${k1}$(x) result(res)
-        ${t1}$, intent(in) :: x(:)
-        ${t1}$ :: res
-      end function mean_1_${k1}$_${k1}$
-    #:endfor
-
-    #:for k1, t1 in INT_KINDS_TYPES
-      module function mean_1_${k1}$_dp(x) result(res)
-        ${t1}$, intent(in) :: x(:)
-        real(dp) :: res
-      end function mean_1_${k1}$_dp
-    #:endfor
-
-    #:for k1, t1 in REAL_KINDS_TYPES
-      module function mean_2_all_${k1}$_${k1}$(x) result(res)
-          ${t1}$, intent(in) :: x(:,:)
-          ${t1}$ :: res
-        end function mean_2_all_${k1}$_${k1}$
-    #:endfor
-
-    #:for k1, t1 in INT_KINDS_TYPES
-      module function mean_2_all_${k1}$_dp(x) result(res)
-        ${t1}$, intent(in) :: x(:,:)
-        real(dp) :: res
-      end function mean_2_all_${k1}$_dp
-    #:endfor
-
-    #:for k1, t1 in REAL_KINDS_TYPES
-      module function mean_2_${k1}$_${k1}$(x, dim) result(res)
-        ${t1}$, intent(in) :: x(:,:)
-        integer, intent(in) :: dim
-        ${t1}$ :: res(merge(size(x, 1), size(x, 2), mask = 1 < dim ))
-      end function mean_2_${k1}$_${k1}$
-    #:endfor
-
-    #:for k1, t1 in INT_KINDS_TYPES
-      module function mean_2_${k1}$_dp(x, dim) result(res)
-        ${t1}$, intent(in) :: x(:,:)
-        integer, intent(in) :: dim
-        real(dp) :: res(merge(size(x, 1), size(x, 2), mask = 1 < dim ))
-      end function mean_2_${k1}$_dp
-    #:endfor
 
     #:for k1, t1 in REAL_KINDS_TYPES
       #:for rank in RANKS
@@ -76,34 +33,23 @@ module stdlib_experimental_stats
 
     #:for k1, t1 in REAL_KINDS_TYPES
       #:for rank in RANKS
-      module function mean_${rank}$_${k1}$_${k1}$(x, dim) result(res)
-        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-        integer, intent(in) :: dim
-        ${t1}$ :: res( &
-        #:for imerge in range(1,rank-1)
-            & merge(size(x, ${imerge}$),size(x, ${imerge + 1}$),&
-            & mask = ${imerge}$ < dim), &
-        #:endfor
-          & merge(size(x, ${rank-1}$), size(x, ${rank}$),&
-          & mask = ${rank-1}$ < dim))
-      end function mean_${rank}$_${k1}$_${k1}$
+        module function mean_${rank}$_${k1}$_${k1}$(x, dim) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: dim
+          ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+        end function mean_${rank}$_${k1}$_${k1}$
+      #:endfor
     #:endfor
-  #:endfor
 
-  #:for k1, t1 in INT_KINDS_TYPES
-    #:for rank in RANKS
-      module function mean_${rank}$_${k1}$_dp(x, dim) result(res)
-        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-        integer, intent(in) :: dim
-        real(dp) :: res( &
-        #:for imerge in range(1,rank-1)
-            & merge(size(x, ${imerge}$), size(x,${imerge + 1}$),&
-            & mask = ${imerge}$ < dim), &
-        #:endfor
-          & merge(size(x,${rank-1}$),size(x,${rank}$),mask = ${rank-1}$ < dim ))
-      end function mean_${rank}$_${k1}$_dp
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for rank in RANKS
+        module function mean_${rank}$_${k1}$_dp(x, dim) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: dim
+          real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+        end function mean_${rank}$_${k1}$_dp
+      #:endfor
     #:endfor
-  #:endfor
 
   end interface mean
 
