@@ -1,7 +1,6 @@
 #:include "common.fypp"
 
 submodule (stdlib_experimental_quadrature) stdlib_experimental_quadrature_trapz
-    use stdlib_experimental_kinds, only: sp, dp, qp
 
     implicit none
 
