@@ -5,6 +5,8 @@ set(fppFiles
     stdlib_experimental_io.fypp
     stdlib_experimental_stats.fypp
     stdlib_experimental_stats_mean.fypp
+    stdlib_experimental_quadrature.fypp
+    stdlib_experimental_quadrature_trapz.fypp
 )
 
 

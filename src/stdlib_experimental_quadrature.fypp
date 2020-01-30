@@ -1,0 +1,37 @@
+#:include "common.fypp"
+
+module stdlib_experimental_quadrature
+    use stdlib_experimental_kinds, only: sp, dp, qp
+
+    implicit none
+
+    private
+    public :: trapz, trapz_weights
+
+    interface trapz
+        #:for KIND in REAL_KINDS
+        pure module function trapz_dx_${KIND}$(y, dx) result(integral)
+            real(${KIND}$), dimension(:), intent(in) :: y
+            real(${KIND}$), intent(in) :: dx
+            real(${KIND}$) :: integral
+        end function trapz_dx_${KIND}$
+        #:endfor
+        #:for KIND in REAL_KINDS
+        pure module function trapz_x_${KIND}$(y, x) result(integral)
+            real(${KIND}$), dimension(:), intent(in) :: y
+            real(${KIND}$), dimension(size(y)), intent(in) :: x
+            real(${KIND}$) :: integral
+        end function trapz_x_${KIND}$
+        #:endfor
+    end interface trapz
+
+    interface trapz_weights
+        #:for KIND in REAL_KINDS
+        pure module function trapz_weights_${KIND}$(x) result(w)
+            real(${KIND}$), dimension(:), intent(in) :: x
+            real(${KIND}$), dimension(size(x)) :: w
+        end function trapz_weights_${KIND}$
+        #:endfor
+    end interface trapz_weights
+
+end module stdlib_experimental_quadrature
