@@ -1,7 +1,7 @@
 #:include "common.fypp"
 
 #:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES + &
-  & [('l1','logical'), ('C1','character')]
+  & [('l1','logical')]
 
 module stdlib_experimental_optval
   !!
@@ -25,6 +25,7 @@ module stdlib_experimental_optval
     #:for k1, t1 in KINDS_TYPES
       module procedure optval_${t1[0]}$${k1}$
     #:endfor
+    module procedure optval_character
      ! TODO: differentiate ascii & ucs char kinds
   end interface optval
 
@@ -44,5 +45,18 @@ contains
     end if
   end function optval_${t1[0]}$${k1}$
   #:endfor
+
+  ! Cannot be made elemental
+  pure function optval_character(x, default) result(y)
+    character(len=*), intent(in), optional :: x
+    character(len=*), intent(in) :: default
+    character(len=:), allocatable :: y
+
+    if (present(x)) then
+       y = x
+    else
+       y = default
+    end if
+  end function optval_character
 
 end module stdlib_experimental_optval
