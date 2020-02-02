@@ -20,7 +20,6 @@ module stdlib_experimental_io
   interface loadtxt
     #:for k1, t1 in KINDS_TYPES
       module procedure loadtxt_${t1[0]}$${k1}$
-! loadtxt_${k1}$
     #:endfor
   end interface loadtxt
 
@@ -59,7 +58,7 @@ contains
       !     ...
       !
       integer :: s
-      integer :: nrow,ncol,i
+      integer :: nrow, ncol, i
 
       s = open(filename)
 
@@ -107,7 +106,7 @@ contains
 
   integer function number_of_columns(s)
     ! determine number of columns
-    integer,intent(in)::s
+    integer,intent(in) :: s
 
     integer :: ios
     character :: c
