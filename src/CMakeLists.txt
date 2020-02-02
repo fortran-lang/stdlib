@@ -3,6 +3,7 @@
 # Create a list of the files to be preprocessed
 set(fppFiles
     stdlib_experimental_io.fypp
+    stdlib_experimental_optval.fypp
     stdlib_experimental_stats.fypp
     stdlib_experimental_stats_mean.fypp
 )
@@ -25,6 +26,7 @@ set(SRC
     stdlib_experimental_error.f90
     stdlib_experimental_kinds.f90
     stdlib_experimental_optval.f90
+    stdlib_experimental_stats.f90
     stdlib_experimental_system.F90
     ${outFiles}
 )
