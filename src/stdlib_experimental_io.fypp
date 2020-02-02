@@ -1,6 +1,6 @@
 #:include "common.fypp"
 
-#:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES
+#:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES
 
 module stdlib_experimental_io
 
@@ -18,21 +18,22 @@ module stdlib_experimental_io
   public :: parse_mode
 
   interface loadtxt
-    #:for k1, _ in KINDS_TYPES
-      module procedure loadtxt_${k1}$
+    #:for k1, t1 in KINDS_TYPES
+      module procedure loadtxt_${t1[0]}$${k1}$
+! loadtxt_${k1}$
     #:endfor
   end interface loadtxt
 
   interface savetxt
-    #:for k1, _ in KINDS_TYPES
-      module procedure savetxt_${k1}$
+    #:for k1, t1 in KINDS_TYPES
+      module procedure savetxt_${t1[0]}$${k1}$
     #:endfor
   end interface
 
 contains
 
   #:for k1, t1 in KINDS_TYPES
-    subroutine loadtxt_${k1}$(filename, d)
+    subroutine  loadtxt_${t1[0]}$${k1}$(filename, d)
       ! Loads a 2D array from a text file.
       !
       ! Arguments
@@ -74,12 +75,12 @@ contains
       end do
       close(s)
 
-    end subroutine loadtxt_${k1}$
+    end subroutine loadtxt_${t1[0]}$${k1}$
   #:endfor
 
 
   #:for k1, t1 in KINDS_TYPES
-    subroutine savetxt_${k1}$(filename, d)
+    subroutine savetxt_${t1[0]}$${k1}$(filename, d)
       ! Saves a 2D array into a text file.
       !
       ! Arguments
@@ -100,7 +101,7 @@ contains
         write(s, *) d(i, :)
       end do
       close(s)
-    end subroutine savetxt_${k1}$
+    end subroutine savetxt_${t1[0]}$${k1}$
   #:endfor
 
 
@@ -126,23 +127,33 @@ contains
   end function number_of_columns
 
 
-  integer function number_of_rows_numeric(s)
+  integer function number_of_rows_numeric(s) result(nrows)
     ! determine number or rows
     integer,intent(in)::s
     integer :: ios
 
-    real::r
+    real :: r
+    complex :: z
 
     rewind(s)
-    number_of_rows_numeric = 0
+    nrows = 0
     do
       read(s, *, iostat=ios) r
       if (ios /= 0) exit
-      number_of_rows_numeric = number_of_rows_numeric + 1
+      nrows = nrows + 1
     end do
 
     rewind(s)
 
+    ! If there are no rows of real numbers, it may be that they are complex
+    if( nrows == 0) then
+      do
+        read(s, *, iostat=ios) z
+        if (ios /= 0) exit
+        nrows = nrows + 1
+      end do
+      rewind(s)
+    end if
   end function number_of_rows_numeric
 
 
