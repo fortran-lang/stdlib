@@ -11,6 +11,7 @@ program test_optval
   call test_optval_dp
   call test_optval_qp
 
+  call test_optval_csp
   call test_optval_cdp
 
   call test_optval_int8
@@ -62,24 +63,24 @@ contains
   endfunction foo_dp
 
 
-  subroutine test_optval_sdp
+  subroutine test_optval_csp
     complex(sp) :: z1
-    print *, "test_optval_dp"
+    print *, "test_optval_csp"
     z1 = cmplx(1.0_sp, 2.0_sp)
-    call assert(foo_sdp(z1) == z1)
-    call assert(foo_sdp() == z1)
-  end subroutine test_optval_sdp
+    call assert(foo_csp(z1) == z1)
+    call assert(foo_csp() == z1)
+  end subroutine test_optval_csp
 
-  function foo_sdp(x) result(z)
+  function foo_csp(x) result(z)
     complex(sp), intent(in), optional :: x
     complex(sp) :: z
     z = optval(x, cmplx(1.0_sp, 2.0_sp, kind=sp))
-  endfunction foo_sdp
+  endfunction foo_csp
 
 
   subroutine test_optval_cdp
     complex(dp) :: z1
-    print *, "test_optval_dp"
+    print *, "test_optval_cdp"
     z1 = cmplx(1.0_dp, 2.0_dp)
     call assert(foo_cdp(z1) == z1)
     call assert(foo_cdp() == z1)
