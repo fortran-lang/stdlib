@@ -7,39 +7,44 @@ program test_optval
 
   implicit none
 
-  call test_optval_sp
-  call test_optval_dp
-  call test_optval_qp
+  call test_optval_rsp
+  call test_optval_rdp
+  call test_optval_rqp
 
   call test_optval_csp
   call test_optval_cdp
-  call test_optval_csp
-  call test_optval_int8
-  call test_optval_int16
-  call test_optval_int32
-  call test_optval_int64
+  call test_optval_cqp
+
+  call test_optval_iint8
+  call test_optval_iint16
+  call test_optval_iint32
+  call test_optval_iint64
 
   call test_optval_logical
 
   call test_optval_character
 
 
-  call test_optval_sp_arr
-  call test_optval_dp_arr
-  call test_optval_qp_arr
+  call test_optval_rsp_arr
+  call test_optval_rdp_arr
+  call test_optval_rqp_arr
 
-  call test_optval_int8_arr
-  call test_optval_int16_arr
-  call test_optval_int32_arr
-  call test_optval_int64_arr
+  call test_optval_csp_arr
+  call test_optval_cdp_arr
+  call test_optval_cqp_arr
+
+  call test_optval_iint8_arr
+  call test_optval_iint16_arr
+  call test_optval_iint32_arr
+  call test_optval_iint64_arr
 
 contains
 
-  subroutine test_optval_sp
-    print *, "test_optval_sp"
+  subroutine test_optval_rsp
+    print *, "test_optval_rsp"
     call assert(foo_sp(1.0_sp) == 1.0_sp)
     call assert(foo_sp() == 2.0_sp)
-  end subroutine test_optval_sp
+  end subroutine test_optval_rsp
 
 
   function foo_sp(x) result(z)
@@ -49,11 +54,11 @@ contains
   endfunction foo_sp
 
 
-  subroutine test_optval_dp
-    print *, "test_optval_dp"
+  subroutine test_optval_rdp
+    print *, "test_optval_rdp"
     call assert(foo_dp(1.0_dp) == 1.0_dp)
     call assert(foo_dp() == 2.0_dp)
-  end subroutine test_optval_dp
+  end subroutine test_optval_rdp
 
 
   function foo_dp(x) result(z)
@@ -63,10 +68,24 @@ contains
   endfunction foo_dp
 
 
+  subroutine test_optval_rqp
+    print *, "test_optval_rqp"
+    call assert(foo_qp(1.0_qp) == 1.0_qp)
+    call assert(foo_qp() == 2.0_qp)
+  end subroutine test_optval_rqp
+
+
+  function foo_qp(x) result(z)
+    real(qp), intent(in), optional :: x
+    real(qp) :: z
+    z = optval(x, 2.0_qp)
+  endfunction foo_qp
+
+
   subroutine test_optval_csp
     complex(sp) :: z1
     print *, "test_optval_csp"
-    z1 = cmplx(1.0_sp, 2.0_sp)
+    z1 = cmplx(1.0_sp, 2.0_sp, kind=sp)
     call assert(foo_csp(z1) == z1)
     call assert(foo_csp() == z1)
   end subroutine test_optval_csp
@@ -93,25 +112,26 @@ contains
   endfunction foo_cdp
 
 
-  subroutine test_optval_qp
-    print *, "test_optval_qp"
-    call assert(foo_qp(1.0_qp) == 1.0_qp)
-    call assert(foo_qp() == 2.0_qp)
-  end subroutine test_optval_qp
+  subroutine test_optval_cqp
+    complex(qp) :: z1
+    print *, "test_optval_cqp"
+    z1 = cmplx(1.0_qp, 2.0_qp, kind=qp)
+    call assert(foo_cqp(z1) == z1)
+    call assert(foo_cqp() == z1)
+  end subroutine test_optval_cqp
+
+  function foo_cqp(x) result(z)
+    complex(qp), intent(in), optional :: x
+    complex(qp) :: z
+    z = optval(x, cmplx(1.0_qp, 2.0_qp, kind=qp))
+  endfunction foo_cqp
 
 
-  function foo_qp(x) result(z)
-    real(qp), intent(in), optional :: x
-    real(qp) :: z
-    z = optval(x, 2.0_qp)
-  endfunction foo_qp
-
-
-  subroutine test_optval_int8
-    print *, "test_optval_int8"
+  subroutine test_optval_iint8
+    print *, "test_optval_iint8"
     call assert(foo_int8(1_int8) == 1_int8)
     call assert(foo_int8() == 2_int8)
-  end subroutine test_optval_int8
+  end subroutine test_optval_iint8
 
 
   function foo_int8(x) result(z)
@@ -121,11 +141,11 @@ contains
   endfunction foo_int8
 
 
-  subroutine test_optval_int16
-    print *, "test_optval_int16"
+  subroutine test_optval_iint16
+    print *, "test_optval_iint16"
     call assert(foo_int16(1_int16) == 1_int16)
     call assert(foo_int16() == 2_int16)
-  end subroutine test_optval_int16
+  end subroutine test_optval_iint16
 
 
   function foo_int16(x) result(z)
@@ -135,11 +155,11 @@ contains
   endfunction foo_int16
 
 
-  subroutine test_optval_int32
-    print *, "test_optval_int32"
+  subroutine test_optval_iint32
+    print *, "test_optval_iint32"
     call assert(foo_int32(1_int32) == 1_int32)
     call assert(foo_int32() == 2_int32)
-  end subroutine test_optval_int32
+  end subroutine test_optval_iint32
 
 
   function foo_int32(x) result(z)
@@ -149,11 +169,11 @@ contains
   endfunction foo_int32
 
 
-  subroutine test_optval_int64
+  subroutine test_optval_iint64
     print *, "test_optval_int64"
     call assert(foo_int64(1_int64) == 1_int64)
     call assert(foo_int64() == 2_int64)
-  end subroutine test_optval_int64
+  end subroutine test_optval_iint64
 
 
   function foo_int64(x) result(z)
@@ -191,11 +211,11 @@ contains
   endfunction foo_character
 
 
-  subroutine test_optval_sp_arr
-    print *, "test_optval_sp_arr"
+  subroutine test_optval_rsp_arr
+    print *, "test_optval_rsp_arr"
     call assert(all(foo_sp_arr([1.0_sp, -1.0_sp]) == [1.0_sp, -1.0_sp]))
     call assert(all(foo_sp_arr() == [2.0_sp, -2.0_sp]))
-  end subroutine test_optval_sp_arr
+  end subroutine test_optval_rsp_arr
 
 
   function foo_sp_arr(x) result(z)
@@ -205,11 +225,11 @@ contains
   end function foo_sp_arr
 
 
-  subroutine test_optval_dp_arr
-    print *, "test_optval_dp_arr"
+  subroutine test_optval_rdp_arr
+    print *, "test_optval_rdp_arr"
     call assert(all(foo_dp_arr([1.0_dp, -1.0_dp]) == [1.0_dp, -1.0_dp]))
     call assert(all(foo_dp_arr() == [2.0_dp, -2.0_dp]))
-  end subroutine test_optval_dp_arr
+  end subroutine test_optval_rdp_arr
 
 
   function foo_dp_arr(x) result(z)
@@ -219,11 +239,11 @@ contains
   end function foo_dp_arr
 
 
-  subroutine test_optval_qp_arr
+  subroutine test_optval_rqp_arr
     print *, "test_optval_qp_arr"
     call assert(all(foo_qp_arr([1.0_qp, -1.0_qp]) == [1.0_qp, -1.0_qp]))
     call assert(all(foo_qp_arr() == [2.0_qp, -2.0_qp]))
-  end subroutine test_optval_qp_arr
+  end subroutine test_optval_rqp_arr
 
 
   function foo_qp_arr(x) result(z)
@@ -233,11 +253,62 @@ contains
   end function foo_qp_arr
 
 
-  subroutine test_optval_int8_arr
+  subroutine test_optval_csp_arr
+    complex(sp), dimension(2) :: z1, z2
+    print *, "test_optval_csp_arr"
+    z1 = cmplx(1.0_sp, 2.0_sp, kind=sp)*[1.0_sp, -1.0_sp]
+    z2 = cmplx(2.0_sp, 2.0_sp, kind=sp)*[1.0_sp, -1.0_sp]
+    call assert(all(foo_csp_arr(z1) == z1))
+    call assert(all(foo_csp_arr() == z2))
+  end subroutine test_optval_csp_arr
+
+
+  function foo_csp_arr(x) result(z)
+    complex(sp), dimension(2), intent(in), optional :: x
+    complex(sp), dimension(2) :: z
+    z = optval(x, cmplx(2.0_sp, 2.0_sp, kind=sp)*[1.0_sp, -1.0_sp])
+  end function foo_csp_arr
+
+
+  subroutine test_optval_cdp_arr
+    complex(dp), dimension(2) :: z1, z2
+    print *, "test_optval_cdp_arr"
+    z1 = cmplx(1.0_dp, 2.0_dp, kind=dp)*[1.0_dp, -1.0_dp]
+    z2 = cmplx(2.0_dp, 2.0_dp, kind=dp)*[1.0_dp, -1.0_dp]
+    call assert(all(foo_cdp_arr(z1) == z1))
+    call assert(all(foo_cdp_arr() == z2))
+  end subroutine test_optval_cdp_arr
+
+
+  function foo_cdp_arr(x) result(z)
+    complex(dp), dimension(2), intent(in), optional :: x
+    complex(dp), dimension(2) :: z
+    z = optval(x, cmplx(2.0_dp, 2.0_dp, kind=dp)*[1.0_dp, -1.0_dp])
+  end function foo_cdp_arr
+
+
+  subroutine test_optval_cqp_arr
+    complex(qp), dimension(2) :: z1, z2
+    print *, "test_optval_cqp_arr"
+    z1 = cmplx(1.0_qp, 2.0_qp, kind=qp)*[1.0_qp, -1.0_qp]
+    z2 = cmplx(2.0_qp, 2.0_qp, kind=qp)*[1.0_qp, -1.0_qp]
+    call assert(all(foo_cqp_arr(z1) == z1))
+    call assert(all(foo_cqp_arr() == z2))
+  end subroutine test_optval_cqp_arr
+
+
+  function foo_cqp_arr(x) result(z)
+    complex(qp), dimension(2), intent(in), optional :: x
+    complex(qp), dimension(2) :: z
+    z = optval(x, cmplx(2.0_qp, 2.0_qp, kind=qp)*[1.0_qp, -1.0_qp])
+  end function foo_cqp_arr
+
+
+  subroutine test_optval_iint8_arr
     print *, "test_optval_int8_arr"
     call assert(all(foo_int8_arr([1_int8, -1_int8]) == [1_int8, -1_int8]))
     call assert(all(foo_int8_arr() == [2_int8, -2_int8]))
-  end subroutine test_optval_int8_arr
+  end subroutine test_optval_iint8_arr
 
 
   function foo_int8_arr(x) result(z)
@@ -247,11 +318,11 @@ contains
   end function foo_int8_arr
 
 
-  subroutine test_optval_int16_arr
+  subroutine test_optval_iint16_arr
     print *, "test_optval_int16_arr"
     call assert(all(foo_int16_arr([1_int16, -1_int16]) == [1_int16, -1_int16]))
     call assert(all(foo_int16_arr() == [2_int16, -2_int16]))
-  end subroutine test_optval_int16_arr
+  end subroutine test_optval_iint16_arr
 
 
   function foo_int16_arr(x) result(z)
@@ -261,11 +332,11 @@ contains
   end function foo_int16_arr
 
 
-  subroutine test_optval_int32_arr
+  subroutine test_optval_iint32_arr
     print *, "test_optval_int32_arr"
     call assert(all(foo_int32_arr([1_int32, -1_int32]) == [1_int32, -1_int32]))
     call assert(all(foo_int32_arr() == [2_int32, -2_int32]))
-  end subroutine test_optval_int32_arr
+  end subroutine test_optval_iint32_arr
 
 
   function foo_int32_arr(x) result(z)
@@ -275,11 +346,11 @@ contains
   end function foo_int32_arr
 
 
-  subroutine test_optval_int64_arr
+  subroutine test_optval_iint64_arr
     print *, "test_optval_int64_arr"
     call assert(all(foo_int64_arr([1_int64, -1_int64]) == [1_int64, -1_int64]))
     call assert(all(foo_int64_arr() == [2_int64, -2_int64]))
-  end subroutine test_optval_int64_arr
+  end subroutine test_optval_iint64_arr
 
 
   function foo_int64_arr(x) result(z)
