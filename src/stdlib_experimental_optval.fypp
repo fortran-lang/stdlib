@@ -1,0 +1,62 @@
+#:include "common.fypp"
+
+#:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES + &
+  & [('l1','logical')]
+
+module stdlib_experimental_optval
+  !!
+  !! Provides a generic function `optval`, which can be used to
+  !! conveniently implement fallback values for optional arguments
+  !! to subprograms. If `x` is an `optional` parameter of a
+  !! subprogram, then the expression `optval(x, default)` inside that
+  !! subprogram evaluates to `x` if it is present, otherwise `default`.
+  !!
+  !! It is an error to call `optval` with a single actual argument.
+  !!
+  use stdlib_experimental_kinds, only: sp, dp, qp, int8, int16, int32, int64
+  implicit none
+
+
+  private
+  public :: optval
+
+
+  interface optval
+    #:for k1, t1 in KINDS_TYPES
+      module procedure optval_${t1[0]}$${k1}$
+    #:endfor
+    module procedure optval_character
+     ! TODO: differentiate ascii & ucs char kinds
+  end interface optval
+
+
+contains
+
+  #:for k1, t1 in KINDS_TYPES
+    pure elemental function optval_${t1[0]}$${k1}$(x, default) result(y)
+    ${t1}$, intent(in), optional :: x
+    ${t1}$, intent(in) :: default
+    ${t1}$ :: y
+
+    if (present(x)) then
+       y = x
+    else
+       y = default
+    end if
+  end function optval_${t1[0]}$${k1}$
+  #:endfor
+
+  ! Cannot be made elemental
+  pure function optval_character(x, default) result(y)
+    character(len=*), intent(in), optional :: x
+    character(len=*), intent(in) :: default
+    character(len=:), allocatable :: y
+
+    if (present(x)) then
+       y = x
+    else
+       y = default
+    end if
+  end function optval_character
+
+end module stdlib_experimental_optval
