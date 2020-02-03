@@ -1,35 +1,35 @@
 program test_savetxt
-  use stdlib_experimental_kinds, only: int32, sp, dp
-  use stdlib_experimental_io, only: loadtxt, savetxt
-  use stdlib_experimental_error, only: assert
-  implicit none
+use stdlib_experimental_kinds, only: int32, sp, dp
+use stdlib_experimental_io, only: loadtxt, savetxt
+use stdlib_experimental_error, only: assert
+implicit none
 
-  character(:), allocatable :: outpath
+character(:), allocatable :: outpath
 
-  outpath = get_outpath() // "/tmp.dat"
+outpath = get_outpath() // "/tmp.dat"
 
-  call test_int32(outpath)
-  call test_rsp(outpath)
-  call test_rdp(outpath)
-  call test_csp(outpath)
-  call test_cdp(outpath)
+call test_int32(outpath)
+call test_rsp(outpath)
+call test_rdp(outpath)
+call test_csp(outpath)
+call test_cdp(outpath)
 
 contains
 
-  function get_outpath() result(outpath)
+    function get_outpath() result(outpath)
     integer :: ierr
     character(256) :: argv
     character(:), allocatable :: outpath
 
     call get_command_argument(1, argv, status=ierr)
     if (ierr==0) then
-      outpath = trim(argv)
+        outpath = trim(argv)
     else
-      outpath = '.'
+        outpath = '.'
     endif
-  end function get_outpath
+    end function get_outpath
 
-  subroutine test_int32(outpath)
+    subroutine test_int32(outpath)
     character(*), intent(in) :: outpath
     integer(int32) :: d(3, 2), e(2, 3)
     integer(int32), allocatable :: d2(:, :)
@@ -44,10 +44,10 @@ contains
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) == 0))
-  end subroutine test_int32
+    end subroutine
 
 
-  subroutine test_rsp(outpath)
+    subroutine test_rsp(outpath)
     character(*), intent(in) :: outpath
     real(sp) :: d(3, 2), e(2, 3)
     real(sp), allocatable :: d2(:, :)
@@ -62,7 +62,7 @@ contains
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._sp)))
-  end subroutine test_rsp
+    end subroutine
 
 
   subroutine test_rdp(outpath)
@@ -80,9 +80,9 @@ contains
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._dp)))
-  end subroutine test_rdp
+    end subroutine
 
-  subroutine test_csp(outpath)
+    subroutine test_csp(outpath)
     character(*), intent(in) :: outpath
     complex(sp) :: d(3, 2), e(2, 3)
     complex(sp), allocatable :: d2(:, :)
@@ -92,14 +92,14 @@ contains
     call assert(all(shape(d2) == [3, 2]))
     call assert(all(abs(d-d2) < epsilon(1._sp)))
 
-    e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
+    e = cmplx(1, 1)* reshape([1, 2, 3, 4, 5, 6], [2, 3])
     call savetxt(outpath, e)
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._sp)))
-  end subroutine test_csp
+    end subroutine
 
-  subroutine test_cdp(outpath)
+    subroutine test_cdp(outpath)
     character(*), intent(in) :: outpath
     complex(dp) :: d(3, 2), e(2, 3)
     complex(dp), allocatable :: d2(:, :)
@@ -109,11 +109,11 @@ contains
     call assert(all(shape(d2) == [3, 2]))
     call assert(all(abs(d-d2) < epsilon(1._dp)))
 
-    e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
+    e = cmplx(1, 1)* reshape([1, 2, 3, 4, 5, 6], [2, 3])
     call savetxt(outpath, e)
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._dp)))
-  end subroutine test_cdp
+    end subroutine
 
 end program test_savetxt
