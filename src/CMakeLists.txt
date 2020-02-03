@@ -21,7 +21,6 @@ fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
     stdlib_experimental_ascii.f90
-    stdlib_experimental_io.f90
     stdlib_experimental_error.f90
     stdlib_experimental_kinds.f90
     stdlib_experimental_optval.f90
