@@ -8,7 +8,7 @@ character(:), allocatable :: outpath
 
 outpath = get_outpath() // "/tmp.dat"
 
-call test_int32(outpath)
+call test_iint32(outpath)
 call test_rsp(outpath)
 call test_rdp(outpath)
 call test_csp(outpath)
@@ -29,7 +29,7 @@ contains
     endif
     end function get_outpath
 
-    subroutine test_int32(outpath)
+    subroutine test_iint32(outpath)
     character(*), intent(in) :: outpath
     integer(int32) :: d(3, 2), e(2, 3)
     integer(int32), allocatable :: d2(:, :)
@@ -62,10 +62,10 @@ contains
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._sp)))
-    end subroutine
+    end subroutine test_rsp
 
 
-  subroutine test_rdp(outpath)
+    subroutine test_rdp(outpath)
     character(*), intent(in) :: outpath
     real(dp) :: d(3, 2), e(2, 3)
     real(dp), allocatable :: d2(:, :)
@@ -80,7 +80,7 @@ contains
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._dp)))
-    end subroutine
+    end subroutine test_rdp
 
     subroutine test_csp(outpath)
     character(*), intent(in) :: outpath
@@ -97,7 +97,7 @@ contains
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._sp)))
-    end subroutine
+    end subroutine test_csp
 
     subroutine test_cdp(outpath)
     character(*), intent(in) :: outpath
@@ -114,6 +114,6 @@ contains
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._dp)))
-    end subroutine
+    end subroutine test_cdp
 
 end program test_savetxt

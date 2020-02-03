@@ -1,32 +1,32 @@
 program test_savetxt_qp
-  use stdlib_experimental_kinds, only: qp
-  use stdlib_experimental_io, only: loadtxt, savetxt
-  use stdlib_experimental_error, only: assert
-  implicit none
+use stdlib_experimental_kinds, only: qp
+use stdlib_experimental_io, only: loadtxt, savetxt
+use stdlib_experimental_error, only: assert
+implicit none
 
-  character(:), allocatable :: outpath
+character(:), allocatable :: outpath
 
-  outpath = get_outpath() // "/tmp_qp.dat"
+outpath = get_outpath() // "/tmp_qp.dat"
 
-  call test_qp(outpath)
-  call test_cqp(outpath)
+call test_rqp(outpath)
+call test_cqp(outpath)
 
 contains
 
-  function get_outpath() result(outpath)
+    function get_outpath() result(outpath)
     integer :: ierr
     character(256) :: argv
     character(:), allocatable :: outpath
 
     call get_command_argument(1, argv, status=ierr)
     if (ierr==0) then
-      outpath = trim(argv)
+        outpath = trim(argv)
     else
-      outpath = '.'
+        outpath = '.'
     endif
-  end function get_outpath
+    end function get_outpath
 
-  subroutine test_qp(outpath)
+    subroutine test_rqp(outpath)
     character(*), intent(in) :: outpath
     real(qp) :: d(3, 2), e(2, 3)
     real(qp), allocatable :: d2(:, :)
@@ -41,10 +41,9 @@ contains
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._qp)))
-  end subroutine test_qp
+    end subroutine test_rqp
 
-
-  subroutine test_cqp(outpath)
+    subroutine test_cqp(outpath)
     character(*), intent(in) :: outpath
     complex(qp) :: d(3, 2), e(2, 3)
     complex(qp), allocatable :: d2(:, :)
@@ -59,7 +58,6 @@ contains
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._qp)))
-  end subroutine test_cqp
-
+    end subroutine test_cqp
 
 end program test_savetxt_qp
