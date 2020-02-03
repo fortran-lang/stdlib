@@ -13,7 +13,7 @@ program test_optval
 
   call test_optval_csp
   call test_optval_cdp
-
+  call test_optval_csp
   call test_optval_int8
   call test_optval_int16
   call test_optval_int32
