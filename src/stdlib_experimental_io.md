@@ -20,7 +20,7 @@ Loads a rank-2 `array` from a text file.
 
 `filename`: Shall be  a character expression containing the file name from which to load the rank-2 `array`.
 
-`array`: Shall be an allocatable rank-2 array of type `real` or `integer`.
+`array`: Shall be an allocatable rank-2 array of type `real`, `complex` or `integer`.
 
 ### Return value
 
@@ -104,7 +104,7 @@ Saves a rank-2 `array` into a text file.
 
 `filename`: Shall be  a character expression containing the name of the file that will contain the 2D `array`.
 
-`array`: Shall be a rank-2 array of type `real` or `integer`.
+`array`: Shall be a rank-2 array of type `real`, `complex` or `integer`.
 
 ### Output
 

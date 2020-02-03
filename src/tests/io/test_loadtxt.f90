@@ -7,6 +7,7 @@ implicit none
 integer(int32), allocatable :: i(:, :)
 real(sp), allocatable :: s(:, :)
 real(dp), allocatable :: d(:, :)
+complex(dp), allocatable :: z(:, :)
 
 call loadtxt("array1.dat", i)
 call print_array(i)
@@ -25,6 +26,9 @@ call print_array(d)
 
 call loadtxt("array4.dat", d)
 call print_array(d)
+
+call loadtxt("array5.dat", z)
+call print_array(z)
 
 contains
 
@@ -46,6 +50,10 @@ print *, "Array, shape=(", size(a, 1), ",", size(a, 2), ")"
    do i = 1, size(a, 1)
     print *, a(i, :)
    end do
+  type is(complex(dp))
+    do i = 1, size(a, 1)
+      print *, a(i, :)
+    end do
   class default
    call error_stop('The proposed type is not supported')
  end select

@@ -8,7 +8,8 @@ character(:), allocatable :: outpath
 
 outpath = get_outpath() // "/tmp_qp.dat"
 
-call test_qp(outpath)
+call test_rqp(outpath)
+call test_cqp(outpath)
 
 contains
 
@@ -25,7 +26,7 @@ contains
     endif
     end function get_outpath
 
-    subroutine test_qp(outpath)
+    subroutine test_rqp(outpath)
     character(*), intent(in) :: outpath
     real(qp) :: d(3, 2), e(2, 3)
     real(qp), allocatable :: d2(:, :)
@@ -40,6 +41,23 @@ contains
     call loadtxt(outpath, d2)
     call assert(all(shape(d2) == [2, 3]))
     call assert(all(abs(e-d2) < epsilon(1._qp)))
-    end subroutine
+    end subroutine test_rqp
 
-end program
+    subroutine test_cqp(outpath)
+    character(*), intent(in) :: outpath
+    complex(qp) :: d(3, 2), e(2, 3)
+    complex(qp), allocatable :: d2(:, :)
+    d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
+    call savetxt(outpath, d)
+    call loadtxt(outpath, d2)
+    call assert(all(shape(d2) == [3, 2]))
+    call assert(all(abs(d-d2) < epsilon(1._qp)))
+
+    e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
+    call savetxt(outpath, e)
+    call loadtxt(outpath, d2)
+    call assert(all(shape(d2) == [2, 3]))
+    call assert(all(abs(e-d2) < epsilon(1._qp)))
+    end subroutine test_cqp
+
+end program test_savetxt_qp
