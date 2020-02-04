@@ -10,7 +10,7 @@
 
 Returns `x` if it is PRESENT, otherwise `default`. 
 
-This function is intended to be called in a proceudre with one or more OPTIONAL arguments, in order to conveniently fall back to a default value if an OPTIONAL argument is not PRESENT.
+This function is intended to be called in a procedure with one or more OPTIONAL arguments, in order to conveniently fall back to a default value if an OPTIONAL argument is not PRESENT.
 
 ### Syntax
 
@@ -40,7 +40,7 @@ contains
     real function root(x, n)
 	real, intent(in) :: x
         integer, intent(in), optional :: n
-	root = x**(1.0/optval(n, 2))
+        root = x**(1.0/optval(n, 2))
     end function root
 end program demo_optval
 ```
