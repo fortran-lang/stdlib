@@ -7,6 +7,7 @@ implicit none
 
 real(dp), allocatable :: d(:, :)
 real(dp), allocatable :: d8(:, :, :, :, :, :, :, :)
+complex(dp), allocatable :: cd8(:, :, :, :, :, :, :, :)
 
 
 !dp
@@ -33,6 +34,20 @@ call assert( sum( abs( mean(d8,6) - sum(d8,6)/real(size(d8,6), dp) )) == 0.0_dp)
 call assert( sum( abs( mean(d8,7) - sum(d8,7)/real(size(d8,7), dp) )) == 0.0_dp)
 call assert( sum( abs( mean(d8,8) - sum(d8,8)/real(size(d8,8), dp) )) == 0.0_dp)
 
+!cdp rank 8
+allocate(cd8(size(d,1), size(d,2), 3, 4, 5, 6, 7, 8))
+cd8 = cmplx(1._dp, 1._dp, kind=dp)*d8
+
+call assert( mean(cd8) - sum(cd8)/real(size(cd8), dp) == 0.0_dp)
+
+call assert( sum( abs( mean(cd8,1) - sum(cd8,1)/real(size(cd8,1), dp) )) == 0.0_dp)
+call assert( sum( abs( mean(cd8,2) - sum(cd8,2)/real(size(cd8,2), dp) )) == 0.0_dp)
+call assert( sum( abs( mean(cd8,3) - sum(cd8,3)/real(size(cd8,3), dp) )) == 0.0_dp)
+call assert( sum( abs( mean(cd8,4) - sum(cd8,4)/real(size(cd8,4), dp) )) == 0.0_dp)
+call assert( sum( abs( mean(cd8,5) - sum(cd8,5)/real(size(cd8,5), dp) )) == 0.0_dp)
+call assert( sum( abs( mean(cd8,6) - sum(cd8,6)/real(size(cd8,6), dp) )) == 0.0_dp)
+call assert( sum( abs( mean(cd8,7) - sum(cd8,7)/real(size(cd8,7), dp) )) == 0.0_dp)
+call assert( sum( abs( mean(cd8,8) - sum(cd8,8)/real(size(cd8,8), dp) )) == 0.0_dp)
 contains
 
 end program
