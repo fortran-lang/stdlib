@@ -31,16 +31,16 @@ If `x` is PRESENT, the result is `x`, otherwise the result is `default`.
 ```fortran
 program demo_optval
     use stdlib_experimental_optval, only: optval
-	implicit none
-	print *, root(64.0)
+    implicit none
+    print *, root(64.0)
 ! 8.0
     print *, root(64.0, 3)
 ! 4.0
 contains
     real function root(x, n)
-	    real, intent(in) :: x
-	    integer, intent(in), optional :: n
-		root = x**(1.0/optval(n, 2))
+	real, intent(in) :: x
+        integer, intent(in), optional :: n
+	root = x**(1.0/optval(n, 2))
     end function root
 end program demo_optval
 ```
