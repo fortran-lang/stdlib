@@ -10,12 +10,10 @@ submodule (stdlib_experimental_stats) stdlib_experimental_stats_mean
 
 contains
 
-#:def name(Rank, Type, Kind)
-$:"mean_{0}_all_{1}{2}_{1}{2}".format(Rank, Type[0], Kind)
-#:enddef
   #:for k1, t1 in RC_KINDS_TYPES
     #:for rank in RANKS
-      module function ${name(rank, t1, k1)}$ (x, mask) result(res)
+      #:set RName = rname("mean_all",rank, t1, k1)
+      module function ${RName}$ (x, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in), optional :: mask
         ${t1}$ :: res
@@ -27,16 +25,14 @@ $:"mean_{0}_all_{1}{2}_{1}{2}".format(Rank, Type[0], Kind)
 
         res = sum(x) / real(size(x, kind = int64), ${k1}$)
 
-      end function ${name(rank, t1, k1)}$
+      end function ${RName}$
     #:endfor
   #:endfor
 
-#:def name(Rank, Type, Kind)
-$:"mean_{0}_all_{1}{2}_rdp".format(Rank, Type[0], Kind)
-#:enddef
   #:for k1, t1 in INT_KINDS_TYPES
     #:for rank in RANKS
-      module function ${name(rank, t1, k1)}$(x, mask) result(res)
+      #:set RName = rname('mean_all', rank, t1, k1,'dp')
+      module function ${RName}$(x, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in), optional :: mask
         real(dp) :: res
@@ -48,17 +44,15 @@ $:"mean_{0}_all_{1}{2}_rdp".format(Rank, Type[0], Kind)
 
         res = sum(real(x, dp)) / real(size(x, kind = int64), dp)
 
-      end function ${name(rank, t1, k1)}$
+      end function ${RName}$
     #:endfor
   #:endfor
 
 
-#:def name(Rank, Type, Kind)
-$:"mean_{0}_{1}{2}_{1}{2}".format(Rank, Type[0], Kind)
-#:enddef
   #:for k1, t1 in RC_KINDS_TYPES
     #:for rank in RANKS
-      module function ${name(rank, t1, k1)}$(x, dim, mask) result(res)
+      #:set RName = rname("mean",rank, t1, k1)
+      module function ${RName}$(x, dim, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: dim
         logical, intent(in), optional :: mask
@@ -75,17 +69,15 @@ $:"mean_{0}_{1}{2}_{1}{2}".format(Rank, Type[0], Kind)
           call error_stop("ERROR (mean): wrong dimension")
         end if
 
-      end function ${name(rank, t1, k1)}$
+      end function ${RName}$
     #:endfor
   #:endfor
 
 
-#:def name(Rank, Type, Kind)
-$:"mean_{0}_{1}{2}_rdp".format(Rank, Type[0], Kind)
-#:enddef
   #:for k1, t1 in INT_KINDS_TYPES
     #:for rank in RANKS
-      module function ${name(rank, t1, k1)}$(x, dim, mask) result(res)
+      #:set RName = rname("mean",rank, t1, k1,'dp')
+      module function ${RName}$(x, dim, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: dim
         logical, intent(in), optional :: mask
@@ -102,49 +94,43 @@ $:"mean_{0}_{1}{2}_rdp".format(Rank, Type[0], Kind)
           call error_stop("ERROR (mean): wrong dimension")
         end if
 
-      end function ${name(rank, t1, k1)}$
+      end function ${RName}$
     #:endfor
   #:endfor
 
-#:def name(Rank, Type, Kind)
-$:"mean_{0}_mask_all_{1}{2}_{1}{2}".format(Rank, Type[0], Kind)
-#:enddef
   #:for k1, t1 in RC_KINDS_TYPES
     #:for rank in RANKS
-      module function ${name(rank, t1, k1)}$(x, mask) result(res)
+      #:set RName = rname('mean_mask_all',rank, t1, k1)
+      module function ${RName}$(x, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in) :: mask${ranksuffix(rank)}$
         ${t1}$ :: res
 
         res = sum(x, mask) / real(count(mask, kind = int64), ${k1}$)
 
-      end function ${name(rank, t1, k1)}$
+      end function ${RName}$
     #:endfor
   #:endfor
 
 
-#:def name(Rank, Type, Kind)
-$:"mean_{0}_mask_all_{1}{2}_rdp".format(Rank, Type[0], Kind)
-#:enddef
   #:for k1, t1 in INT_KINDS_TYPES
     #:for rank in RANKS
-      module function ${name(rank, t1, k1)}$(x, mask) result(res)
+      #:set RName = rname('mean_mask_all',rank, t1, k1, 'dp')
+      module function ${RName}$(x, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in) :: mask${ranksuffix(rank)}$
         real(dp) :: res
 
         res = sum(real(x, dp), mask) / real(count(mask, kind = int64), dp)
 
-      end function ${name(rank, t1, k1)}$
+      end function ${RName}$
     #:endfor
   #:endfor
 
-#:def name(Rank, Type, Kind)
-$:"mean_{0}_mask_{1}{2}_{1}{2}".format(Rank, Type[0], Kind)
-#:enddef
   #:for k1, t1 in RC_KINDS_TYPES
     #:for rank in RANKS
-      module function ${name(rank, t1, k1)}$(x, dim, mask) result(res)
+      #:set RName = rname('mean_mask',rank, t1, k1)
+      module function  ${RName}$(x, dim, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: dim
         logical, intent(in) :: mask${ranksuffix(rank)}$
@@ -156,17 +142,15 @@ $:"mean_{0}_mask_{1}{2}_{1}{2}".format(Rank, Type[0], Kind)
           call error_stop("ERROR (mean): wrong dimension")
         end if
 
-      end function ${name(rank, t1, k1)}$
+      end function ${RName}$
     #:endfor
   #:endfor
 
 
-#:def name(Rank, Type, Kind)
-$:"mean_{0}_mask_{1}{2}_rdp".format(Rank, Type[0], Kind)
-#:enddef
   #:for k1, t1 in INT_KINDS_TYPES
     #:for rank in RANKS
-      module function ${name(rank, t1, k1)}$(x, dim, mask) result(res)
+      #:set RName = rname('mean_mask',rank, t1, k1, 'dp')
+      module function ${RName}$(x, dim, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: dim
         logical, intent(in) :: mask${ranksuffix(rank)}$
@@ -178,7 +162,7 @@ $:"mean_{0}_mask_{1}{2}_rdp".format(Rank, Type[0], Kind)
           call error_stop("ERROR (mean): wrong dimension")
         end if
 
-      end function ${name(rank, t1, k1)}$
+      end function ${RName}$
     #:endfor
   #:endfor
 
