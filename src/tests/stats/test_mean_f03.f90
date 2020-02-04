@@ -5,7 +5,7 @@ use stdlib_experimental_io, only: loadtxt
 use stdlib_experimental_stats, only: mean
 implicit none
 
-real(dp), parameter :: dptol = 2.2e-15_dp
+real(dp), parameter :: dptol =10 * epsilon(1._dp)
 
 real(dp), allocatable :: d(:, :)
 real(dp), allocatable :: d8(:, :, :, :, :, :, :, :)

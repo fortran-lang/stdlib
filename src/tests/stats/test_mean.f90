@@ -5,8 +5,8 @@ use stdlib_experimental_io, only: loadtxt
 use stdlib_experimental_stats, only: mean
 implicit none
 
-real(sp), parameter :: sptol = 1.2e-06_sp
-real(dp), parameter :: dptol = 2.2e-15_dp
+real(sp), parameter :: sptol =10 * epsilon(1._sp)
+real(dp), parameter :: dptol =10 * epsilon(1._dp)
 
 real(sp) :: s1(3) = [1.0_sp, 2.0_sp, 3.0_sp]
 
