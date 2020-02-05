@@ -107,91 +107,99 @@ module stdlib_experimental_stats
 
   interface var
 
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
-        module function var_${rank}$_all_${k1}$_${k1}$(x, mask) result(res)
+        #:set RName = rname("var_all",rank, t1, k1)
+        module function ${RName}$(x, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in), optional :: mask
           ${t1}$ :: res
-        end function var_${rank}$_all_${k1}$_${k1}$
+        end function ${RName}$
       #:endfor
     #:endfor
 
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
-        module function var_${rank}$_all_${k1}$_dp(x, mask) result(res)
+        #:set RName = rname("var_all",rank, t1, k1, 'dp')
+        module function ${RName}$(x, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in), optional :: mask
           real(dp) :: res
-        end function var_${rank}$_all_${k1}$_dp
+        end function ${RName}$
       #:endfor
     #:endfor
 
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
-        module function var_${rank}$_${k1}$_${k1}$(x, dim, mask) result(res)
+        #:set RName = rname("var",rank, t1, k1)
+        module function ${RName}$(x, dim, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in), optional :: mask
           ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
-        end function var_${rank}$_${k1}$_${k1}$
+        end function ${RName}$
       #:endfor
     #:endfor
 
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
-        module function var_${rank}$_${k1}$_dp(x, dim, mask) result(res)
+        #:set RName = rname("var",rank, t1, k1, 'dp')
+        module function ${RName}$(x, dim, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in), optional :: mask
           real(dp) :: res${reduced_shape('x', rank, 'dim')}$
-        end function var_${rank}$_${k1}$_dp
+        end function ${RName}$
       #:endfor
     #:endfor
 
 
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
-        module function var_${rank}$_mask_all_${k1}$_${k1}$(x, mask) result(res)
+        #:set RName = rname("var_mask_all",rank, t1, k1)
+        module function ${RName}$(x, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in) :: mask${ranksuffix(rank)}$
           ${t1}$ :: res
-        end function var_${rank}$_mask_all_${k1}$_${k1}$
+        end function ${RName}$
       #:endfor
     #:endfor
 
 
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
-        module function var_${rank}$_mask_all_${k1}$_dp(x, mask) result(res)
+        #:set RName = rname("var_mask_all",rank, t1, k1, 'dp')
+        module function ${RName}$(x, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in) :: mask${ranksuffix(rank)}$
           real(dp) :: res
-        end function var_${rank}$_mask_all_${k1}$_dp
+        end function ${RName}$
       #:endfor
     #:endfor
 
 
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
-        module function var_${rank}$_mask_${k1}$_${k1}$(x, dim, mask) result(res)
+        #:set RName = rname("var_mask",rank, t1, k1)
+        module function ${RName}$(x, dim, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in) :: mask${ranksuffix(rank)}$
           ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
-        end function var_${rank}$_mask_${k1}$_${k1}$
+        end function ${RName}$
       #:endfor
     #:endfor
 
 
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
-        module function var_${rank}$_mask_${k1}$_dp(x, dim, mask) result(res)
+        #:set RName = rname("var_mask",rank, t1, k1, 'dp')
+        module function ${RName}$(x, dim, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in) :: mask${ranksuffix(rank)}$
           real(dp) :: res${reduced_shape('x', rank, 'dim')}$
-        end function var_${rank}$_mask_${k1}$_dp
+        end function ${RName}$
       #:endfor
     #:endfor
 
