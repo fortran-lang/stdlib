@@ -1,0 +1,240 @@
+#:include "common.fypp"
+
+#:set RANKS = range(1, MAXRANK + 1)
+
+
+submodule (stdlib_experimental_stats) stdlib_experimental_stats_var
+
+  use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
+  use stdlib_experimental_error, only: error_stop
+  use stdlib_experimental_optval, only: optval
+  implicit none
+
+contains
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:for rank in RANKS
+      module function var_${rank}$_all_${k1}$_${k1}$(x, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        logical, intent(in), optional :: mask
+        ${t1}$ :: res
+
+        ${t1}$ :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(res, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), ${k1}$)
+        mean = sum(x) / n
+
+        res = sum((x - mean)**2) / (n - 1._${k1}$)
+
+      end function var_${rank}$_all_${k1}$_${k1}$
+    #:endfor
+  #:endfor
+
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:for rank in RANKS
+      module function var_${rank}$_all_${k1}$_dp(x, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        logical, intent(in), optional :: mask
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(res, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - 1._dp)
+
+      end function var_${rank}$_all_${k1}$_dp
+    #:endfor
+  #:endfor
+
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:for rank in RANKS
+      module function var_${rank}$_${k1}$_${k1}$(x, dim, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+
+        integer :: i
+        ${t1}$ :: n
+        ${t1}$ :: mean${reduced_shape('x', rank, 'dim')}$
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(res, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._${k1}$
+        select case(dim)
+          #:for fi in range(1, rank+1)
+          case(${fi}$)
+            n = real(size(x, dim), ${k1}$)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+              res = res + (x${rankindice(':', 'i', rank, fi )}$ - mean)**2
+            end do
+          #:endfor
+          case default
+            call error_stop("ERROR (mean): wrong dimension")
+        end select
+        res = res / (n - 1._${k1}$)
+
+      end function var_${rank}$_${k1}$_${k1}$
+    #:endfor
+  #:endfor
+
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:for rank in RANKS
+      module function var_${rank}$_${k1}$_dp(x, dim, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean${reduced_shape('x', rank, 'dim')}$
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(res, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          #:for fi in range(1, rank+1)
+          case(${fi}$)
+            n = real(size(x, dim), dp)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x${rankindice(':', 'i', rank, fi )}$, dp) - mean)**2
+            end do
+          #:endfor
+          case default
+            call error_stop("ERROR (mean): wrong dimension")
+        end select
+        res = res / (n - 1._dp)
+
+      end function var_${rank}$_${k1}$_dp
+    #:endfor
+  #:endfor
+
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:for rank in RANKS
+      module function var_${rank}$_mask_all_${k1}$_${k1}$(x, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        logical, intent(in) :: mask${ranksuffix(rank)}$
+        ${t1}$ :: res
+
+        ${t1}$ :: n, mean
+
+        n = real(count(mask, kind = int64), ${k1}$)
+        mean = sum(x, mask) / n
+
+        res = sum((x - mean)**2, mask) / (n - 1._${k1}$)
+
+      end function var_${rank}$_mask_all_${k1}$_${k1}$
+    #:endfor
+  #:endfor
+
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:for rank in RANKS
+      module function var_${rank}$_mask_all_${k1}$_dp(x, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        logical, intent(in) :: mask${ranksuffix(rank)}$
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n - 1._dp)
+
+      end function var_${rank}$_mask_all_${k1}$_dp
+    #:endfor
+  #:endfor
+
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:for rank in RANKS
+      module function var_${rank}$_mask_${k1}$_${k1}$(x, dim, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask${ranksuffix(rank)}$
+        ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+
+        integer :: i
+        ${t1}$ :: n${reduced_shape('x', rank, 'dim')}$
+        ${t1}$ :: mean${reduced_shape('x', rank, 'dim')}$
+
+        res = 0._${k1}$
+        select case(dim)
+          #:for fi in range(1, rank+1)
+          case(${fi}$)
+            n = real(count(mask, dim), ${k1}$)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge( (x${rankindice(':', 'i', rank, fi )}$ - mean)**2,&
+                                  0._${k1}$, mask${rankindice(':', 'i', rank, fi)}$)
+            end do
+          #:endfor
+          case default
+            call error_stop("ERROR (mean): wrong dimension")
+        end select
+        res = res / (n - 1._${k1}$)
+
+      end function var_${rank}$_mask_${k1}$_${k1}$
+    #:endfor
+  #:endfor
+
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:for rank in RANKS
+      module function var_${rank}$_mask_${k1}$_dp(x, dim, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask${ranksuffix(rank)}$
+        real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+
+        integer :: i
+        real(dp) :: n${reduced_shape('x', rank, 'dim')}$
+        real(dp) :: mean${reduced_shape('x', rank, 'dim')}$
+
+        res = 0._dp
+        select case(dim)
+          #:for fi in range(1, rank+1)
+          case(${fi}$)
+            n = real(count(mask, dim), dp)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x${rankindice(':', 'i', rank, fi )}$, dp) - mean)**2,&
+                                  0._dp, mask${rankindice(':', 'i', rank, fi)}$)
+            end do
+          #:endfor
+          case default
+            call error_stop("ERROR (mean): wrong dimension")
+        end select
+        res = res / (n - 1._dp)
+
+      end function var_${rank}$_mask_${k1}$_dp
+    #:endfor
+  #:endfor
+
+end submodule

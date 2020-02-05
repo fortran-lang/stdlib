@@ -6,6 +6,7 @@ set(fppFiles
     stdlib_experimental_optval.fypp
     stdlib_experimental_stats.fypp
     stdlib_experimental_stats_mean.fypp
+    stdlib_experimental_stats_var.fypp
 )
 
 
