@@ -77,3 +77,39 @@ program demo_trapz_weights
 end program
 
 ```
+
+# `simps` - integrate sampled values using Simpson's rule
+
+Returns the Simpson's rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`. 
+
+Simpson's rule is defined for odd-length arrays only. For even-length arrays, an optional argument `even` may be used to specify at which index to replace Simpson's rule with Simpson's 3/8 rule. The 3/8 rule will be used for the array section `u(even:even+4)` and the ordinary Simpon's rule will be used elsewhere.
+
+### Syntax
+
+`result = simps(y, x [, even])`
+
+`result = simps(y, dx [, even])`
+
+### Arguments
+
+`y`: Shall be a rank-one array of type `real`.
+
+`x`: Shall be a rank-one array of type `real` having the same kind and size as `y`. 
+
+`dx`: Shall be a scalar of type `real` having the same kind as `y`.
+
+`even`: (Optional) Shall be a scalar integer of default kind. Its default value is `1`.
+
+### Return value
+
+The result is a scalar of type `real` having the same kind as `y`.
+
+If the size of `y` is zero or one, the result is zero.
+
+If the size of `y` is two, the result is the same as if `trapz` had been called instead, regardless of the value of `even`.
+
+If the size of `y` is even, the result 
+
+### Example
+
+TBD
