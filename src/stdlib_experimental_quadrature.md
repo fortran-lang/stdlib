@@ -44,7 +44,7 @@ program demo_trapz
 end program
 ```
 
-## `trapz_weights` - compute trapezoidal rule weights for given abscissas
+## `trapz_weights` - trapezoidal rule weights for given abscissas
 
 Given an array of abscissas `x`, computes the array of weights `w` such that if `y` represented function values tabulated at `x`, then `sum(w*y)` produces a trapezoidal rule approximation to the integral.
 
@@ -54,13 +54,13 @@ Given an array of abscissas `x`, computes the array of weights `w` such that if 
 
 ### Arguments
 
-`x`: Shall be an array of type `real`.
+`x`: Shall be a rank-one array of type `real`.
 
 ### Return value
 
 The result is a `real` array with the same size and kind as `x`.
 
-If the size of `x` is one, then the only element of the result is zero.
+If the size of `x` is one, then the sole element of the result is zero.
 
 ### Example
 
