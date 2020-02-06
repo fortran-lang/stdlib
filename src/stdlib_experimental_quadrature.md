@@ -111,3 +111,31 @@ If the size of `y` is two, the result is the same as if `trapz` had been called 
 ### Example
 
 TBD
+
+# `simps_weights` - Simpson's rule weights for given abscissas
+
+Given an array of abscissas `x`, computes the array of weights `w` such that if `y` represented function values tabulated at `x`, then `sum(w*y)` produces a Simpson's rule approximation to the integral.
+
+Simpson's rule is defined for odd-length arrays only. For even-length arrays, an optional argument `even` may be used to specify at which index to replace Simpson's rule with Simpson's 3/8 rule. The 3/8 rule will be used for the array section `x(even:even+4)` and the ordinary Simpon's rule will be used elsewhere.
+
+### Syntax
+
+`result = simps_weights(x [, even])`
+
+### Arguments
+
+`x`: Shall be a rank-one array of type `real`.
+
+`even`: (Optional) Shall be a scalar integer of default kind. Its default value is `1`.
+
+### Return value
+
+The result is a `real` array with the same size and kind as `x`.
+
+If the size of `x` is one, then the sole element of the result is zero.
+
+If the size of `x` is two, then the result is the same as if `trapz_weights` had been called instead.
+
+### Example
+
+TBD
