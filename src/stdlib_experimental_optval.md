@@ -8,9 +8,9 @@
 
 ### Description
 
-Returns `x` if it is PRESENT, otherwise `default`. 
+Returns `x` if it is present, otherwise `default`. 
 
-This function is intended to be called in a procedure with one or more OPTIONAL arguments, in order to conveniently fall back to a default value if an OPTIONAL argument is not PRESENT.
+This function is intended to be called in a procedure with one or more `optional` arguments, in order to conveniently fall back to a default value if an `optional` argument is not present.
 
 ### Syntax
 
@@ -24,7 +24,7 @@ This function is intended to be called in a procedure with one or more OPTIONAL 
 
 ### Return value
 
-If `x` is PRESENT, the result is `x`, otherwise the result is `default`.
+If `x` is present, the result is `x`, otherwise the result is `default`.
 
 ### Example
 
