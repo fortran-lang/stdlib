@@ -21,7 +21,7 @@ contains
         ${t1}$ :: n, mean
 
         if (.not.optval(mask, .true.)) then
-          res = ieee_value(real(res, kind=${k1}$), ieee_quiet_nan)
+          res = ieee_value(1._${k1}$, ieee_quiet_nan)
           return
         end if
 
@@ -46,7 +46,7 @@ contains
         real(dp) :: n, mean
 
         if (.not.optval(mask, .true.)) then
-          res = ieee_value(res, ieee_quiet_nan)
+          res = ieee_value(1._dp, ieee_quiet_nan)
           return
         end if
 
@@ -74,7 +74,7 @@ contains
         ${t1}$ :: mean${reduced_shape('x', rank, 'dim')}$
 
         if (.not.optval(mask, .true.)) then
-          res = ieee_value(real(res, kind=${k1}$), ieee_quiet_nan)
+          res = ieee_value(1._${k1}$, ieee_quiet_nan)
           return
         end if
 
@@ -112,7 +112,7 @@ contains
         real(dp) :: mean${reduced_shape('x', rank, 'dim')}$
 
         if (.not.optval(mask, .true.)) then
-          res = ieee_value(res, ieee_quiet_nan)
+          res = ieee_value(1._dp, ieee_quiet_nan)
           return
         end if
 
