@@ -215,7 +215,7 @@ contains
 
         print *, "test_trapz_zero_dp"
 
-        call assert(trapz(a, 1.0_dp)) < epsilon(0.0_dp))
+        call assert(abs(trapz(a, 1.0_dp)) < epsilon(0.0_dp))
         call assert(abs(trapz([1.0_dp], 1.0_dp)) < epsilon(0.0_dp))
         call assert(abs(trapz(a, a)) < epsilon(0.0_dp))
         call assert(abs(trapz([1.0_dp], [1.0_dp])) < epsilon(0.0_dp))
@@ -227,10 +227,10 @@ contains
 
         print *, "test_trapz_zero_qp"
 
-        call assert(trapz(a, 1.0_qp) < epsilon(0.0_qp))
-        call assert(trapz([1.0_qp], 1.0_qp) < epsilon(0.0_qp))
-        call assert(trapz(a, a) < epsilon(0.0_qp))
-        call assert(trapz([1.0_qp], [1.0_qp]) < epsilon(0.0_qp))
+        call assert(abs(trapz(a, 1.0_qp)) < epsilon(0.0_qp))
+        call assert(abs(trapz([1.0_qp], 1.0_qp)) < epsilon(0.0_qp))
+        call assert(abs(trapz(a, a)) < epsilon(0.0_qp))
+        call assert(abs(trapz([1.0_qp], [1.0_qp])) < epsilon(0.0_qp))
     end subroutine test_trapz_zero_qp
 
 end program test_trapz
