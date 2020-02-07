@@ -20,9 +20,24 @@ program test_var
 
     real(sp), allocatable :: s(:, :), s3(:, :, :)
     real(dp), allocatable :: d3(:, :, :)
-    real(dp) :: d(4, 3)= reshape([1._dp, 3._dp, 5._dp, 7._dp,&
+    real(dp) :: d(4, 3) = reshape([1._dp, 3._dp, 5._dp, 7._dp,&
                                    2._dp, 4._dp, 6._dp, 8._dp,&
                                    9._dp, 10._dp, 11._dp, 12._dp], [4, 3])
+
+
+    complex(sp) :: cs1(5) = [ cmplx(0.57706_sp, 0.00000_sp),&
+                            cmplx(0.00000_sp, 1.44065_sp),&
+                            cmplx(1.26401_sp, 0.00000_sp),&
+                            cmplx(0.00000_sp, 0.88833_sp),&
+                            cmplx(1.14352_sp, 0.00000_sp)]
+    complex(dp) :: cd1(5) = [ cmplx(0.57706_dp, 0.00000_dp),&
+                            cmplx(0.00000_dp, 1.44065_dp),&
+                            cmplx(1.26401_dp, 0.00000_dp),&
+                            cmplx(0.00000_dp, 0.88833_dp),&
+                            cmplx(1.14352_dp, 0.00000_dp)]
+    complex(sp) :: cs(5,3)
+    complex(dp) :: cd(5,3)
+
 
     !sp
     !1dim
@@ -387,5 +402,77 @@ program test_var
                            50._dp, 60.5_dp, 72._dp],&
                            [size(i643,1), size(i643,2)] ))&
                  < dptol ))
+
+    !csp
+    !1dim
+    print*,' test_csp_1dim'
+    call assert( abs(var(cs1) - (var(real(cs1)) + var(aimag(cs1)))) < sptol)
+    call assert( abs(var(cs1, dim=1) - (var(real(cs1),1) + var(aimag(cs1), 1)) ) < sptol)
+
+    print*,' test_csp_1dim_mask'
+    call assert( isnan(var(cs1, .false.)))
+    call assert( isnan(var(cs1, 1, .false.)))
+
+    print*,' test_sp_1dim_mask_array'
+    call assert( abs(var(cs1, aimag(cs1) == 0) - var(real(cs1), aimag(cs1) == 0)) < sptol)
+    call assert( abs(var(cs1, 1, aimag(cs1) == 0) - var(real(cs1), 1, aimag(cs1) == 0)) < sptol)
+
+    !2dim
+    cs(:,1) = cs1
+    cs(:,2) = cs1*3_sp
+    cs(:,3) = cs1*1.5_sp
+
+    print*,' test_sp_2dim'
+    print*,var(cs),(var(real(cs)) + var(aimag(cs)))
+    print*,var(cs)-(var(real(cs)) + var(aimag(cs))),sptol
+    call assert( abs(var(cs) - (var(real(cs)) + var(aimag(cs)))) < sptol)
+    call assert( all( abs( var(cs, 1) - (var(real(cs), 1) + var(aimag(cs), 1))) < sptol))
+    call assert( all( abs( var(cs, 2) - (var(real(cs), 2) + var(aimag(cs), 2))) < sptol))
+
+    print*,' test_sp_2dim_mask'
+    call assert( isnan(var(cs, .false.)))
+    call assert( any(isnan(var(cs, 1, .false.))))
+    call assert( any(isnan(var(cs, 2, .false.))))
+
+    print*,' test_sp_2dim_mask_array'
+    call assert( abs(var(cs, aimag(cs) == 0) - var(real(cs), aimag(cs) == 0)) < sptol)
+    call assert( all( abs( var(cs, 1, aimag(cs) == 0) - var(real(cs), 1, aimag(cs) == 0)) < sptol))
+    call assert( all( abs( var(cs, 2, aimag(cs) == 0) - var(real(cs), 2, aimag(cs) == 0)) < sptol))
+
+    !cdp
+    !1dim
+    print*,' test_cdp_1dim'
+    call assert( abs(var(cd1) - (var(real(cd1)) + var(aimag(cd1)))) < dptol)
+    call assert( abs(var(cd1, dim=1) - (var(real(cd1),1) + var(aimag(cd1), 1)) ) < dptol)
+
+    print*,' test_cdp_1dim_mask'
+    call assert( isnan(var(cd1, .false.)))
+    call assert( isnan(var(cd1, 1, .false.)))
+
+    print*,' test_sp_1dim_mask_array'
+    call assert( abs(var(cd1, aimag(cd1) == 0) - var(real(cd1), aimag(cd1) == 0)) < dptol)
+    call assert( abs(var(cd1, 1, aimag(cd1) == 0) - var(real(cd1), 1, aimag(cd1) == 0)) < dptol)
+
+    !2dim
+    cd(:,1) = cd1
+    cd(:,2) = cd1*3_sp
+    cd(:,3) = cd1*1.5_sp
+
+    print*,' test_sp_2dim'
+    print*,var(cd),(var(real(cd)) + var(aimag(cd)))
+    print*,var(cd)-(var(real(cd)) + var(aimag(cd))),dptol
+    call assert( abs(var(cd) - (var(real(cd)) + var(aimag(cd)))) < dptol)
+    call assert( all( abs( var(cd, 1) - (var(real(cd), 1) + var(aimag(cd), 1))) < dptol))
+    call assert( all( abs( var(cd, 2) - (var(real(cd), 2) + var(aimag(cd), 2))) < dptol))
+
+    print*,' test_sp_2dim_mask'
+    call assert( isnan(var(cd, .false.)))
+    call assert( any(isnan(var(cd, 1, .false.))))
+    call assert( any(isnan(var(cd, 2, .false.))))
+
+    print*,' test_sp_2dim_mask_array'
+    call assert( abs(var(cd, aimag(cd) == 0) - var(real(cd), aimag(cd) == 0)) < dptol)
+    call assert( all( abs( var(cd, 1, aimag(cd) == 0) - var(real(cd), 1, aimag(cd) == 0)) < dptol))
+    call assert( all( abs( var(cd, 2, aimag(cd) == 0) - var(real(cd), 2, aimag(cd) == 0)) < dptol))
 
 end program
