@@ -1,5 +1,6 @@
 #:include "common.fypp"
-
+#:set WEIGHT_FUNS = ["sin", "cos", "pole"]
+#:set QUAD_OK = False
 module stdlib_experimental_quadrature
     use stdlib_experimental_kinds, only: sp, dp, qp
 
@@ -12,6 +13,15 @@ module stdlib_experimental_quadrature
     public :: trapz_weights
     public :: simps
     public :: simps_weights
+
+    ! automatic integration of (weighted) functions
+    #:if QUAD_OK
+    public :: quad
+    public :: weight_t
+    #:for WFUN in WEIGHT_FUNS
+    public :: ${WFUN}$_weight_t
+    #:endfor
+    #:endif
 
 
     interface trapz
@@ -72,4 +82,57 @@ module stdlib_experimental_quadrature
         #:endfor
     end interface simps_weights
 
+
+    ! Interface for a simple f(x)-style integrand function.
+    ! Could become fancier as we learn about the performance
+    ! ramifications of different ways to do callbacks.
+    abstract interface
+        #:for KIND in REAL_KINDS
+        pure function integrand_${KIND}$(x) result(f)
+            import :: ${KIND}$
+            real(${KIND}$), intent(in) :: x
+            real(${KIND}$) :: f
+        end function integrand_${KIND}$
+        #:endfor
+    end interface
+
+#:if QUAD_OK
+    ! Base class to avoid repeating kind parameter declaration.
+    type, abstract :: weight_t(kind)
+        integer, kind :: kind
+    end type weight_t
+
+    type, extends(weight_t) :: sin_weight_t
+        real(kind) :: omega
+    end type sin_weight_t
+
+    type, extends(weight_t) :: cos_weight_t
+        real(kind) :: omega
+    end type cos_weight_t
+
+    type, extends(weight_t) :: pole_weight_t
+        real(kind) :: c
+    end type pole_weight_t
+
+! gfortran 9.2.0 chokes on ICE if I include this ("buffer overflow detected")
+! Interestingly, though, the ICE happens while trying to build the trapz submodule
+! PDT bug?
+    interface quad
+        #:for WFUN in WEIGHT_FUNS
+        #:for KIND in REAL_KINDS
+        module function quad_${WFUN}$_${KIND}$(f, a, b, weight, points, abstol, reltol, delta) result(integral)
+            procedure(integrand_${KIND}$) :: f
+            real(${KIND}$), intent(in) :: a
+            real(${KIND}$), intent(in) :: b
+            type(${WFUN}$_weight_t(${KIND}$)), intent(in) :: weight
+            real(${KIND}$), intent(in), dimension(:) :: points
+            real(${KIND}$), intent(in) :: abstol
+            real(${KIND}$), intent(in) :: reltol
+            real(${KIND}$), intent(out), optional :: delta
+            real(${KIND}$) :: integral
+        end function quad_${WFUN}$_${KIND}$
+        #:endfor
+        #:endfor
+    end interface quad
+#:endif
 end module stdlib_experimental_quadrature
