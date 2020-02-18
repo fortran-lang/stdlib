@@ -1,0 +1,75 @@
+#:include "common.fypp"
+
+module stdlib_experimental_quadrature
+    use stdlib_experimental_kinds, only: sp, dp, qp
+
+    implicit none
+
+    private
+
+    ! array integration
+    public :: trapz
+    public :: trapz_weights
+    public :: simps
+    public :: simps_weights
+
+
+    interface trapz
+        #:for KIND in REAL_KINDS
+        pure module function trapz_dx_${KIND}$(y, dx) result(integral)
+            real(${KIND}$), dimension(:), intent(in) :: y
+            real(${KIND}$), intent(in) :: dx
+            real(${KIND}$) :: integral
+        end function trapz_dx_${KIND}$
+        #:endfor
+        #:for KIND in REAL_KINDS
+        pure module function trapz_x_${KIND}$(y, x) result(integral)
+            real(${KIND}$), dimension(:), intent(in) :: y
+            real(${KIND}$), dimension(size(y)), intent(in) :: x
+            real(${KIND}$) :: integral
+        end function trapz_x_${KIND}$
+        #:endfor
+    end interface trapz
+
+
+    interface trapz_weights
+        #:for KIND in REAL_KINDS
+        pure module function trapz_weights_${KIND}$(x) result(w)
+            real(${KIND}$), dimension(:), intent(in) :: x
+            real(${KIND}$), dimension(size(x)) :: w
+        end function trapz_weights_${KIND}$
+        #:endfor
+    end interface trapz_weights
+
+
+    interface simps
+        #:for KIND in REAL_KINDS
+        pure module function simps_dx_${KIND}$(y, dx, even) result(integral)
+            real(${KIND}$), dimension(:), intent(in) :: y
+            real(${KIND}$), intent(in) :: dx
+            integer, intent(in), optional :: even
+            real(${KIND}$) :: integral
+        end function simps_dx_${KIND}$
+        #:endfor
+        #:for KIND in REAL_KINDS
+        pure module function simps_x_${KIND}$(y, x, even) result(integral)
+            real(${KIND}$), dimension(:), intent(in) :: y
+            real(${KIND}$), dimension(size(y)), intent(in) :: x
+            integer, intent(in), optional :: even
+            real(${KIND}$) :: integral
+        end function simps_x_${KIND}$
+        #:endfor
+    end interface simps
+
+
+    interface simps_weights
+        #:for KIND in REAL_KINDS
+        pure module function simps_weights_${KIND}$(x, even) result(w)
+            real(${KIND}$), dimension(:), intent(in) :: x
+            real(${KIND}$), dimension(size(x)) :: w
+            integer, intent(in), optional :: even
+        end function simps_weights_${KIND}$
+        #:endfor
+    end interface simps_weights
+
+end module stdlib_experimental_quadrature

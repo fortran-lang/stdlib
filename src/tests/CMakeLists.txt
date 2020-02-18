@@ -11,6 +11,7 @@ add_subdirectory(io)
 add_subdirectory(optval)
 add_subdirectory(stats)
 add_subdirectory(system)
+add_subdirectory(quadrature)
 
 ADDTEST(always_skip)
 set_tests_properties(always_skip PROPERTIES SKIP_RETURN_CODE 77)
