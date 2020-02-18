@@ -97,6 +97,7 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
   #:endif
 #:enddef
 
+
 #! Generates a routine name from a generic name, rank, type and kind
 #!
 #! Args:
@@ -111,6 +112,30 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
 #!
 #:def rname(gname, rank, type, kind, suffix='')
   $:"{0}_{1}_{2}{3}_{2}{3}".format(gname, rank, type[0], kind) if suffix == '' else "{0}_{1}_{2}{3}_{4}".format(gname, rank, type[0], kind, suffix)
+#:enddef
+
+
+#! Generates an array rank suffix for subarrays reducing the dimension
+#!
+#! Args:
+#!   rank (int): Rank of the original variable
+#!   selectors (array): Dimension and name of the variable(s)
+#!
+#! Returns:
+#!   Array rank suffix string enclosed in braces
+#!
+#! E.g.,
+#!   select_subarray(5 , [(4, 'i'), (5, 'j')])}$
+#!   -> (:, :, :, i, j)
+#!
+#:def select_subarray(rank, selectors)
+  #:assert rank > 0
+  #:set seldict = dict(selectors)
+  #:call join_lines(joinstr=", ", prefix="(", suffix=")")
+    #:for i in range(1, rank + 1)
+      $:seldict.get(i, ":")
+    #:endfor
+  #:endcall
 #:enddef
 
 #:endmute
