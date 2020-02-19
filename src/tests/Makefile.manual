@@ -4,12 +4,14 @@ all:
 	$(MAKE) -f Makefile.manual --directory=ascii
 	$(MAKE) -f Makefile.manual --directory=io
 	$(MAKE) -f Makefile.manual --directory=optval
+	$(MAKE) -f Makefile.manual --directory=quadrature
 	$(MAKE) -f Makefile.manual --directory=stats
 
 test:
 	$(MAKE) -f Makefile.manual --directory=ascii test
 	$(MAKE) -f Makefile.manual --directory=io test
 	$(MAKE) -f Makefile.manual --directory=optval test
+	$(MAKE) -f Makefile.manual --directory=quadrature test
 	$(MAKE) -f Makefile.manual --directory=stats test
 
 clean:
