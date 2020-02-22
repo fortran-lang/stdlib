@@ -32,10 +32,10 @@ contains
 
         #:if t1[0] == 'r'
           res = sum((x - mean)**2) / (n - merge(1._${k1}$, 0._${k1}$,&
-                                               (optval(corrected, .true.) .and. n > 0._${k1}$)))
+                                                optval(corrected, .true.)))
         #:else
           res = sum(abs(x - mean)**2) / (n - merge(1._${k1}$, 0._${k1}$,&
-                                                  (optval(corrected, .true.) .and. n > 0._${k1}$)))
+                                                  optval(corrected, .true.)))
         #:endif
 
       end function ${RName}$
@@ -63,7 +63,7 @@ contains
         mean = sum(real(x, dp)) / n
 
         res = sum((real(x, dp) - mean)**2) / (n - merge(1._dp, 0._dp,&
-                                                       (optval(corrected, .true.) .and. n > 0._dp)))
+                                                        optval(corrected, .true.)))
 
       end function ${RName}$
     #:endfor
@@ -107,7 +107,7 @@ contains
             call error_stop("ERROR (mean): wrong dimension")
         end select
         res = res / (n - merge(1._${k1}$, 0._${k1}$,&
-                              (optval(corrected, .true.) .and. n > 0._${k1}$)))
+                               optval(corrected, .true.)))
 
       end function ${RName}$
     #:endfor
@@ -147,7 +147,7 @@ contains
             call error_stop("ERROR (mean): wrong dimension")
         end select
         res = res / (n - merge(1._dp, 0._dp,&
-                              (optval(corrected, .true.) .and. n > 0._dp)))
+                               optval(corrected, .true.)))
 
       end function ${RName}$
     #:endfor
