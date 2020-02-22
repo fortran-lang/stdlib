@@ -13,9 +13,10 @@ contains
   #:for k1, t1 in RC_KINDS_TYPES
     #:for rank in RANKS
       #:set RName = rname("var_all",rank, t1, k1)
-      module function ${RName}$(x, mask) result(res)
+      module function ${RName}$(x, mask, corrected) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
         real(${k1}$) :: res
 
         real(${k1}$) :: n
@@ -30,9 +31,11 @@ contains
         mean = sum(x) / n
 
         #:if t1[0] == 'r'
-          res = sum((x - mean)**2) / (n - 1._${k1}$)
+          res = sum((x - mean)**2) / (n - merge(1._${k1}$, 0._${k1}$,&
+                                               (optval(corrected, .true.) .and. n > 0._${k1}$)))
         #:else
-          res = sum(abs(x - mean)**2) / (n - 1._${k1}$)
+          res = sum(abs(x - mean)**2) / (n - merge(1._${k1}$, 0._${k1}$,&
+                                                  (optval(corrected, .true.) .and. n > 0._${k1}$)))
         #:endif
 
       end function ${RName}$
@@ -43,9 +46,10 @@ contains
   #:for k1, t1 in INT_KINDS_TYPES
     #:for rank in RANKS
       #:set RName = rname("var_all",rank, t1, k1, 'dp')
-      module function ${RName}$(x, mask) result(res)
+      module function ${RName}$(x, mask, corrected) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
         real(dp) :: res
 
         real(dp) :: n, mean
@@ -58,7 +62,8 @@ contains
         n = real(size(x, kind = int64), dp)
         mean = sum(real(x, dp)) / n
 
-        res = sum((real(x, dp) - mean)**2) / (n - 1._dp)
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1._dp, 0._dp,&
+                                                       (optval(corrected, .true.) .and. n > 0._dp)))
 
       end function ${RName}$
     #:endfor
@@ -68,10 +73,11 @@ contains
   #:for k1, t1 in RC_KINDS_TYPES
     #:for rank in RANKS
       #:set RName = rname("var",rank, t1, k1)
-      module function ${RName}$(x, dim, mask) result(res)
+      module function ${RName}$(x, dim, mask, corrected) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: dim
         logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
         real(${k1}$) :: res${reduced_shape('x', rank, 'dim')}$
 
         integer :: i
@@ -100,7 +106,8 @@ contains
           case default
             call error_stop("ERROR (mean): wrong dimension")
         end select
-        res = res / (n - 1._${k1}$)
+        res = res / (n - merge(1._${k1}$, 0._${k1}$,&
+                              (optval(corrected, .true.) .and. n > 0._${k1}$)))
 
       end function ${RName}$
     #:endfor
@@ -110,10 +117,11 @@ contains
   #:for k1, t1 in INT_KINDS_TYPES
     #:for rank in RANKS
       #:set RName = rname("var",rank, t1, k1, 'dp')
-      module function ${RName}$(x, dim, mask) result(res)
+      module function ${RName}$(x, dim, mask, corrected) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: dim
         logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
         real(dp) :: res${reduced_shape('x', rank, 'dim')}$
 
         integer :: i
@@ -138,7 +146,8 @@ contains
           case default
             call error_stop("ERROR (mean): wrong dimension")
         end select
-        res = res / (n - 1._dp)
+        res = res / (n - merge(1._dp, 0._dp,&
+                              (optval(corrected, .true.) .and. n > 0._dp)))
 
       end function ${RName}$
     #:endfor
@@ -148,9 +157,10 @@ contains
   #:for k1, t1 in RC_KINDS_TYPES
     #:for rank in RANKS
       #:set RName = rname("var_mask_all",rank, t1, k1)
-      module function ${RName}$(x, mask) result(res)
+      module function ${RName}$(x, mask, corrected) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in) :: mask${ranksuffix(rank)}$
+        logical, intent(in), optional :: corrected
         real(${k1}$) :: res
 
         real(${k1}$) :: n
@@ -160,9 +170,11 @@ contains
         mean = sum(x, mask) / n
 
         #:if t1[0] == 'r'
-          res = sum((x - mean)**2, mask) / (n - 1._${k1}$)
+          res = sum((x - mean)**2, mask) / (n -&
+                merge(1._${k1}$, 0._${k1}$, (optval(corrected, .true.)) .and. n > 0._${k1}$))
         #:else
-          res = sum(abs(x - mean)**2, mask) / (n - 1._${k1}$)
+          res = sum(abs(x - mean)**2, mask) / (n - merge(1._${k1}$, 0._${k1}$,&
+                                                        (optval(corrected, .true.) .and. n > 0._${k1}$)))
         #:endif
 
       end function ${RName}$
@@ -173,9 +185,10 @@ contains
   #:for k1, t1 in INT_KINDS_TYPES
     #:for rank in RANKS
       #:set RName = rname("var_mask_all",rank, t1, k1, 'dp')
-      module function ${RName}$(x, mask) result(res)
+      module function ${RName}$(x, mask, corrected) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in) :: mask${ranksuffix(rank)}$
+        logical, intent(in), optional :: corrected
         real(dp) :: res
 
         real(dp) :: n, mean
@@ -183,7 +196,8 @@ contains
         n = real(count(mask, kind = int64), dp)
         mean = sum(real(x, dp), mask) / n
 
-        res = sum((real(x, dp) - mean)**2, mask) / (n - 1._dp)
+        res = sum((real(x, dp) - mean)**2, mask) / (n - merge(1._dp, 0._dp,&
+                                                             (optval(corrected, .true.) .and. n > 0._dp)))
 
       end function ${RName}$
     #:endfor
@@ -193,10 +207,11 @@ contains
   #:for k1, t1 in RC_KINDS_TYPES
     #:for rank in RANKS
       #:set RName = rname("var_mask",rank, t1, k1)
-      module function ${RName}$(x, dim, mask) result(res)
+      module function ${RName}$(x, dim, mask, corrected) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: dim
         logical, intent(in) :: mask${ranksuffix(rank)}$
+        logical, intent(in), optional :: corrected
         real(${k1}$) :: res${reduced_shape('x', rank, 'dim')}$
 
         integer :: i
@@ -222,7 +237,8 @@ contains
           case default
             call error_stop("ERROR (mean): wrong dimension")
         end select
-        res = res / (n - 1._${k1}$)
+        res = res / (n - merge(1._${k1}$, 0._${k1}$,&
+                              (optval(corrected, .true.) .and. n > 0._${k1}$)))
 
       end function ${RName}$
     #:endfor
@@ -232,10 +248,11 @@ contains
   #:for k1, t1 in INT_KINDS_TYPES
     #:for rank in RANKS
       #:set RName = rname("var_mask",rank, t1, k1, 'dp')
-      module function ${RName}$(x, dim, mask) result(res)
+      module function ${RName}$(x, dim, mask, corrected) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: dim
         logical, intent(in) :: mask${ranksuffix(rank)}$
+        logical, intent(in), optional :: corrected
         real(dp) :: res${reduced_shape('x', rank, 'dim')}$
 
         integer :: i
@@ -256,7 +273,7 @@ contains
           case default
             call error_stop("ERROR (mean): wrong dimension")
         end select
-        res = res / (n - 1._dp)
+        res = res / (n - merge(1._dp, 0._dp, (optval(corrected, .true.) .and. n > 0._dp)))
 
       end function ${RName}$
     #:endfor
