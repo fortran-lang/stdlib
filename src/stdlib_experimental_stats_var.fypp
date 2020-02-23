@@ -27,15 +27,13 @@ contains
           return
         end if
 
-        n = real(size(x, kind = int64), ${k1}$)
+        n = size(x, kind = int64)
         mean = sum(x) / n
 
         #:if t1[0] == 'r'
-          res = sum((x - mean)**2) / (n - merge(1._${k1}$, 0._${k1}$,&
-                                                optval(corrected, .true.)))
+          res = sum((x - mean)**2) / (n - merge(1, 0 , optval(corrected, .true.)))
         #:else
-          res = sum(abs(x - mean)**2) / (n - merge(1._${k1}$, 0._${k1}$,&
-                                                  optval(corrected, .true.)))
+          res = sum(abs(x - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
         #:endif
 
       end function ${RName}$
@@ -59,11 +57,10 @@ contains
           return
         end if
 
-        n = real(size(x, kind = int64), dp)
+        n = size(x, kind = int64)
         mean = sum(real(x, dp)) / n
 
-        res = sum((real(x, dp) - mean)**2) / (n - merge(1._dp, 0._dp,&
-                                                        optval(corrected, .true.)))
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function ${RName}$
     #:endfor
@@ -93,7 +90,7 @@ contains
         select case(dim)
           #:for fi in range(1, rank+1)
           case(${fi}$)
-            n = real(size(x, dim), ${k1}$)
+            n = size(x, dim)
             mean = sum(x, dim) / n
             do i = 1, size(x, dim)
               #:if t1[0] == 'r'
@@ -106,8 +103,7 @@ contains
           case default
             call error_stop("ERROR (mean): wrong dimension")
         end select
-        res = res / (n - merge(1._${k1}$, 0._${k1}$,&
-                               optval(corrected, .true.)))
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function ${RName}$
     #:endfor
@@ -137,7 +133,7 @@ contains
         select case(dim)
           #:for fi in range(1, rank+1)
           case(${fi}$)
-            n = real(size(x, dim), dp)
+            n = size(x, dim)
             mean = sum(real(x, dp), dim) / n
             do i = 1, size(x, dim)
               res = res + (real(x${select_subarray(rank, [(fi, 'i')])}$, dp) - mean)**2
@@ -146,8 +142,7 @@ contains
           case default
             call error_stop("ERROR (mean): wrong dimension")
         end select
-        res = res / (n - merge(1._dp, 0._dp,&
-                               optval(corrected, .true.)))
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function ${RName}$
     #:endfor
@@ -166,16 +161,15 @@ contains
         real(${k1}$) :: n
         ${t1}$ :: mean
 
-        n = real(count(mask, kind = int64), ${k1}$)
+        n = count(mask, kind = int64)
         mean = sum(x, mask) / n
 
         #:if t1[0] == 'r'
           res = sum((x - mean)**2, mask) / (n -&
-                merge(1._${k1}$, 0._${k1}$, (optval(corrected, .true.)) .and. n > 0._${k1}$))
         #:else
-          res = sum(abs(x - mean)**2, mask) / (n - merge(1._${k1}$, 0._${k1}$,&
-                                                        (optval(corrected, .true.) .and. n > 0._${k1}$)))
+          res = sum(abs(x - mean)**2, mask) / (n -&
         #:endif
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function ${RName}$
     #:endfor
@@ -193,11 +187,11 @@ contains
 
         real(dp) :: n, mean
 
-        n = real(count(mask, kind = int64), dp)
+        n = count(mask, kind = int64)
         mean = sum(real(x, dp), mask) / n
 
-        res = sum((real(x, dp) - mean)**2, mask) / (n - merge(1._dp, 0._dp,&
-                                                             (optval(corrected, .true.) .and. n > 0._dp)))
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function ${RName}$
     #:endfor
@@ -222,7 +216,7 @@ contains
         select case(dim)
           #:for fi in range(1, rank+1)
           case(${fi}$)
-            n = real(count(mask, dim), ${k1}$)
+            n = count(mask, dim)
             mean = sum(x, dim, mask) / n
             do i = 1, size(x, dim)
               #:if t1[0] == 'r'
@@ -237,8 +231,7 @@ contains
           case default
             call error_stop("ERROR (mean): wrong dimension")
         end select
-        res = res / (n - merge(1._${k1}$, 0._${k1}$,&
-                              (optval(corrected, .true.) .and. n > 0._${k1}$)))
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function ${RName}$
     #:endfor
@@ -263,7 +256,7 @@ contains
         select case(dim)
           #:for fi in range(1, rank+1)
           case(${fi}$)
-            n = real(count(mask, dim), dp)
+            n = count(mask, dim)
             mean = sum(real(x, dp), dim, mask) / n
             do i = 1, size(x, dim)
               res = res + merge((real(x${select_subarray(rank, [(fi, 'i')])}$, dp) - mean)**2,&
@@ -273,7 +266,7 @@ contains
           case default
             call error_stop("ERROR (mean): wrong dimension")
         end select
-        res = res / (n - merge(1._dp, 0._dp, (optval(corrected, .true.) .and. n > 0._dp)))
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function ${RName}$
     #:endfor
