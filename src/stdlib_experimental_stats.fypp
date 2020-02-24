@@ -110,9 +110,10 @@ module stdlib_experimental_stats
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("var_all",rank, t1, k1)
-        module function ${RName}$(x, mask) result(res)
+        module function ${RName}$(x, mask, corrected) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in), optional :: mask
+          logical, intent(in), optional :: corrected
           real(${k1}$) :: res
         end function ${RName}$
       #:endfor
@@ -121,9 +122,10 @@ module stdlib_experimental_stats
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("var_all",rank, t1, k1, 'dp')
-        module function ${RName}$(x, mask) result(res)
+        module function ${RName}$(x, mask, corrected) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in), optional :: mask
+          logical, intent(in), optional :: corrected
           real(dp) :: res
         end function ${RName}$
       #:endfor
@@ -132,10 +134,11 @@ module stdlib_experimental_stats
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("var",rank, t1, k1)
-        module function ${RName}$(x, dim, mask) result(res)
+        module function ${RName}$(x, dim, mask, corrected) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in), optional :: mask
+          logical, intent(in), optional :: corrected
           real(${k1}$) :: res${reduced_shape('x', rank, 'dim')}$
         end function ${RName}$
       #:endfor
@@ -144,10 +147,11 @@ module stdlib_experimental_stats
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("var",rank, t1, k1, 'dp')
-        module function ${RName}$(x, dim, mask) result(res)
+        module function ${RName}$(x, dim, mask, corrected) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in), optional :: mask
+          logical, intent(in), optional :: corrected
           real(dp) :: res${reduced_shape('x', rank, 'dim')}$
         end function ${RName}$
       #:endfor
@@ -156,9 +160,10 @@ module stdlib_experimental_stats
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("var_mask_all",rank, t1, k1)
-        module function ${RName}$(x, mask) result(res)
+        module function ${RName}$(x, mask, corrected) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in) :: mask${ranksuffix(rank)}$
+          logical, intent(in), optional :: corrected
           real(${k1}$) :: res
         end function ${RName}$
       #:endfor
@@ -167,9 +172,10 @@ module stdlib_experimental_stats
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("var_mask_all",rank, t1, k1, 'dp')
-        module function ${RName}$(x, mask) result(res)
+        module function ${RName}$(x, mask, corrected) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in) :: mask${ranksuffix(rank)}$
+          logical, intent(in), optional :: corrected
           real(dp) :: res
         end function ${RName}$
       #:endfor
@@ -178,10 +184,11 @@ module stdlib_experimental_stats
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("var_mask",rank, t1, k1)
-        module function ${RName}$(x, dim, mask) result(res)
+        module function ${RName}$(x, dim, mask, corrected) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in) :: mask${ranksuffix(rank)}$
+          logical, intent(in), optional :: corrected
           real(${k1}$) :: res${reduced_shape('x', rank, 'dim')}$
         end function ${RName}$
       #:endfor
@@ -190,10 +197,11 @@ module stdlib_experimental_stats
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("var_mask",rank, t1, k1, 'dp')
-        module function ${RName}$(x, dim, mask) result(res)
+        module function ${RName}$(x, dim, mask, corrected) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in) :: mask${ranksuffix(rank)}$
+          logical, intent(in), optional :: corrected
           real(dp) :: res${reduced_shape('x', rank, 'dim')}$
         end function ${RName}$
       #:endfor

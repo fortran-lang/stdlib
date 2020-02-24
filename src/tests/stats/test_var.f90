@@ -1,8 +1,7 @@
 program test_var
     use stdlib_experimental_error, only: assert
     use stdlib_experimental_kinds, only: sp, dp, int32, int64
-    use stdlib_experimental_io, only: loadtxt
-    use stdlib_experimental_stats, only: mean, var
+    use stdlib_experimental_stats, only: var
     implicit none
 
 
@@ -51,8 +50,9 @@ program test_var
 
     print*,' test_sp_1dim_mask_array'
     call assert( abs(var(s1, s1 < 5) - 5./3.) < sptol)
+    call assert( isnan((var(s1, s1 < 0.))))
+    call assert( isnan((var(s1, s1 == 1.))))
     call assert( abs(var(s1, 1, s1 < 5) - 5./3.) < sptol)
-
 
     !2dim
     print*,' test_sp_2dim'
@@ -107,14 +107,11 @@ program test_var
 
     print*,' test_sp_3dim_mask_array'
     call assert( abs(var(s3, s3 < 11) - 8.2205877_sp) < sptol)
-    call assert( all( abs( var(s3, 1, s3 < 25) -&
-                  reshape([20./3., 20./3., 5./3.,  80./3., 80./3., 20./3., 64., 64., 0.],&
+    call assert( all( abs( var(s3, 1, s3 < 45) -&
+                  reshape([20./3., 20./3., 5./3.,  80./3., 80./3., 20./3.,&
+                           320./3., 320./3., 16.],&
                   [size(s3, 2), size(s3, 3)])) < sptol ))
-    call assert( all( abs( var(s3, 2, s3 < 25) -&
-                  reshape([19., 43./3., 31./3.,  7.,&
-                           4*19., 4*43./3., 4*31./3., 4*7.,&
-                           8., 8., 8., 0.],&
-                  [size(s3, 1), size(s3, 3)])) < sptol ))
+    call assert( any( isnan( var(s3, 2, s3 < 25))))
     call assert( all( abs( var(s3, 3, s3 < 25) -&
                  reshape([ 7./3., 21., 175./3.,&
                            24.5, 28./3., 112./3.,&
@@ -133,8 +130,10 @@ program test_var
     call assert( isnan(var(d1, .false.)))
     call assert( isnan(var(d1, 1, .false.)))
 
-    print*,' test_sp_1dim_mask_array'
+    print*,' test_dp_1dim_mask_array'
     call assert( abs(var(d1, d1 < 5) - 5._dp/3._dp) < dptol)
+    call assert( isnan((var(d1, d1 < 0.))))
+    call assert( isnan((var(d1, d1 == 1.))))
     call assert( abs(var(d1, 1, d1 < 5) - 5._dp/3._dp) < dptol)
 
     !2dim
@@ -196,18 +195,13 @@ program test_var
 
     print*,' test_dp_3dim_mask_array'
     call assert( abs(var(d3, d3 < 25) - 46.041379310344823_dp) < dptol)
-    call assert( all( abs( var(d3, 1, d3 < 25) -&
+    call assert( all( abs( var(d3, 1, d3 < 45) -&
                   reshape([20._dp/3._dp, 20._dp/3._dp, 5._dp/3._dp,&
                            80._dp/3._dp, 80._dp/3._dp, 20._dp/3._dp,&
-                           64._dp, 64._dp, 0._dp],&
+                           320._dp/3._dp, 320._dp/3._dp, 16._dp],&
                            [size(d3, 2), size(d3, 3)]))&
                   < dptol ))
-    call assert( all( abs( var(d3, 2, d3 < 25) -&
-                  reshape([19._dp, 43._dp/3._dp, 31._dp/3._dp,  7._dp,&
-                           4*19._dp, 4*43._dp/3._dp, 4*31._dp/3._dp, 4*7._dp,&
-                           8._dp, 8._dp, 8._dp, 0._dp],&
-                           [size(d3, 1), size(d3, 3)]))&
-                  < dptol ))
+    call assert( any( isnan( var(d3, 2, d3 < 25))))
     call assert( all( abs( var(d3, 3, d3 < 25) -&
                  reshape([ 7._dp/3._dp, 21._dp, 175._dp/3._dp,&
                            24.5_dp, 28._dp/3._dp, 112._dp/3._dp,&
@@ -228,8 +222,10 @@ program test_var
     call assert( isnan(var(i321, .false.)))
     call assert( isnan(var(i321, 1, .false.)))
 
-    print*,' test_sp_1dim_mask_array'
+    print*,' test_int32_1dim_mask_array'
     call assert( abs(var(i321, i321 < 5) - 5._dp/3._dp) < dptol)
+    call assert( isnan((var(i321, i321 < 0))))
+    call assert( isnan((var(i321, i321 == 1))))
     call assert( abs(var(i321, 1, i321 < 5) - 5._dp/3._dp) < dptol)
 
     !2dim
@@ -290,18 +286,13 @@ program test_var
 
     print*,' test_int32_3dim_mask_array'
     call assert( abs(var(i323, i323 < 25) - 46.041379310344823_dp) < dptol)
-    call assert( all( abs( var(i323, 1, i323 < 25) -&
+    call assert( all( abs( var(i323, 1, i323 < 45) -&
                   reshape([20._dp/3._dp, 20._dp/3._dp, 5._dp/3._dp,&
                            80._dp/3._dp, 80._dp/3._dp, 20._dp/3._dp,&
-                           64._dp, 64._dp, 0._dp],&
+                           320._dp/3._dp, 320._dp/3._dp, 16._dp],&
                            [size(i323, 2), size(i323, 3)]))&
                   < dptol ))
-    call assert( all( abs( var(i323, 2, i323 < 25) -&
-                  reshape([19._dp, 43._dp/3._dp, 31._dp/3._dp,  7._dp,&
-                           4*19._dp, 4*43._dp/3._dp, 4*31._dp/3._dp, 4*7._dp,&
-                           8._dp, 8._dp, 8._dp, 0._dp],&
-                           [size(i323, 1), size(i323, 3)]))&
-                  < dptol ))
+    call assert( any( isnan( var(i323, 2, i323 < 25))))
     call assert( all( abs( var(i323, 3, i323 < 25) -&
                  reshape([ 7._dp/3._dp, 21._dp, 175._dp/3._dp,&
                            24.5_dp, 28._dp/3._dp, 112._dp/3._dp,&
@@ -321,8 +312,10 @@ program test_var
     call assert( isnan(var(i641, .false.)))
     call assert( isnan(var(i641, 1, .false.)))
 
-    print*,' test_sp_1dim_mask_array'
+    print*,' test_int641_1dim_mask_array'
     call assert( abs(var(i641, i641 < 5) - 5._dp/3._dp) < dptol)
+    call assert( isnan((var(i641, i641 < 0))))
+    call assert( isnan((var(i641, i641 == 1))))
     call assert( abs(var(i641, 1, i641 < 5) - 5._dp/3._dp) < dptol)
 
     !2dim
@@ -381,20 +374,15 @@ program test_var
     call assert( any(isnan(var(i643, 2, .false.))))
     call assert( any(isnan(var(i643, 3, .false.))))
 
-    print*,' test_int32_3dim_mask_array'
+    print*,' test_int64_3dim_mask_array'
     call assert( abs(var(i643, i643 < 25) - 46.041379310344823_dp) < dptol)
-    call assert( all( abs( var(i643, 1, i643 < 25) -&
+    call assert( all( abs( var(i643, 1, i643 < 45) -&
                   reshape([20._dp/3._dp, 20._dp/3._dp, 5._dp/3._dp,&
                            80._dp/3._dp, 80._dp/3._dp, 20._dp/3._dp,&
-                           64._dp, 64._dp, 0._dp],&
+                           320._dp/3._dp, 320._dp/3._dp, 16._dp],&
                            [size(i643, 2), size(i643, 3)]))&
                   < dptol ))
-    call assert( all( abs( var(i643, 2, i643 < 25) -&
-                  reshape([19._dp, 43._dp/3._dp, 31._dp/3._dp,  7._dp,&
-                           4*19._dp, 4*43._dp/3._dp, 4*31._dp/3._dp, 4*7._dp,&
-                           8._dp, 8._dp, 8._dp, 0._dp],&
-                           [size(i643, 1), size(i643, 3)]))&
-                  < dptol ))
+    call assert( any( isnan( var(i643, 2, i643 < 25))))
     call assert( all( abs( var(i643, 3, i643 < 25) -&
                  reshape([ 7._dp/3._dp, 21._dp, 175._dp/3._dp,&
                            24.5_dp, 28._dp/3._dp, 112._dp/3._dp,&
@@ -413,7 +401,7 @@ program test_var
     call assert( isnan(var(cs1, .false.)))
     call assert( isnan(var(cs1, 1, .false.)))
 
-    print*,' test_sp_1dim_mask_array'
+    print*,' test_csp_1dim_mask_array'
     call assert( abs(var(cs1, aimag(cs1) == 0) - var(real(cs1), aimag(cs1) == 0)) < sptol)
     call assert( abs(var(cs1, 1, aimag(cs1) == 0) - var(real(cs1), 1, aimag(cs1) == 0)) < sptol)
 
@@ -422,22 +410,20 @@ program test_var
     cs(:,2) = cs1*3_sp
     cs(:,3) = cs1*1.5_sp
 
-    print*,' test_sp_2dim'
-    print*,var(cs),(var(real(cs)) + var(aimag(cs)))
-    print*,var(cs)-(var(real(cs)) + var(aimag(cs))),sptol
+    print*,' test_csp_2dim'
     call assert( abs(var(cs) - (var(real(cs)) + var(aimag(cs)))) < sptol)
     call assert( all( abs( var(cs, 1) - (var(real(cs), 1) + var(aimag(cs), 1))) < sptol))
     call assert( all( abs( var(cs, 2) - (var(real(cs), 2) + var(aimag(cs), 2))) < sptol))
 
-    print*,' test_sp_2dim_mask'
+    print*,' test_csp_2dim_mask'
     call assert( isnan(var(cs, .false.)))
     call assert( any(isnan(var(cs, 1, .false.))))
     call assert( any(isnan(var(cs, 2, .false.))))
 
-    print*,' test_sp_2dim_mask_array'
+    print*,' test_csp_2dim_mask_array'
     call assert( abs(var(cs, aimag(cs) == 0) - var(real(cs), aimag(cs) == 0)) < sptol)
     call assert( all( abs( var(cs, 1, aimag(cs) == 0) - var(real(cs), 1, aimag(cs) == 0)) < sptol))
-    call assert( all( abs( var(cs, 2, aimag(cs) == 0) - var(real(cs), 2, aimag(cs) == 0)) < sptol))
+    call assert( any( isnan( var(cs, 2, aimag(cs) == 0))))
 
     !cdp
     !1dim
@@ -449,7 +435,7 @@ program test_var
     call assert( isnan(var(cd1, .false.)))
     call assert( isnan(var(cd1, 1, .false.)))
 
-    print*,' test_sp_1dim_mask_array'
+    print*,' test_cdp_1dim_mask_array'
     call assert( abs(var(cd1, aimag(cd1) == 0) - var(real(cd1), aimag(cd1) == 0)) < dptol)
     call assert( abs(var(cd1, 1, aimag(cd1) == 0) - var(real(cd1), 1, aimag(cd1) == 0)) < dptol)
 
@@ -458,21 +444,19 @@ program test_var
     cd(:,2) = cd1*3_sp
     cd(:,3) = cd1*1.5_sp
 
-    print*,' test_sp_2dim'
-    print*,var(cd),(var(real(cd)) + var(aimag(cd)))
-    print*,var(cd)-(var(real(cd)) + var(aimag(cd))),dptol
+    print*,' test_cdp_2dim'
     call assert( abs(var(cd) - (var(real(cd)) + var(aimag(cd)))) < dptol)
     call assert( all( abs( var(cd, 1) - (var(real(cd), 1) + var(aimag(cd), 1))) < dptol))
     call assert( all( abs( var(cd, 2) - (var(real(cd), 2) + var(aimag(cd), 2))) < dptol))
 
-    print*,' test_sp_2dim_mask'
+    print*,' test_cdp_2dim_mask'
     call assert( isnan(var(cd, .false.)))
     call assert( any(isnan(var(cd, 1, .false.))))
     call assert( any(isnan(var(cd, 2, .false.))))
 
-    print*,' test_sp_2dim_mask_array'
+    print*,' test_cdp_2dim_mask_array'
     call assert( abs(var(cd, aimag(cd) == 0) - var(real(cd), aimag(cd) == 0)) < dptol)
     call assert( all( abs( var(cd, 1, aimag(cd) == 0) - var(real(cd), 1, aimag(cd) == 0)) < dptol))
-    call assert( all( abs( var(cd, 2, aimag(cd) == 0) - var(real(cd), 2, aimag(cd) == 0)) < dptol))
+    call assert( any( isnan( var(cd, 2, aimag(cd) == 0))))
 
 end program
