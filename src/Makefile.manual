@@ -8,6 +8,7 @@ SRC = f18estop.f90 \
       stdlib_experimental_quadrature_trapz.f90 \
       stdlib_experimental_stats.f90 \
       stdlib_experimental_stats_mean.f90 \
+      stdlib_experimental_stats_moment.f90 \
       stdlib_experimental_stats_var.f90
 
 LIB = libstdlib.a
@@ -46,6 +47,10 @@ stdlib_experimental_stats_mean.o: \
 	stdlib_experimental_optval.o \
 	stdlib_experimental_kinds.o \
 	stdlib_experimental_stats.o
+stdlib_experimental_stats_moment.o: \
+	stdlib_experimental_optval.o \
+	stdlib_experimental_kinds.o \
+	stdlib_experimental_stats.o
 stdlib_experimental_stats_var.o: \
 	stdlib_experimental_optval.o \
 	stdlib_experimental_kinds.o \
@@ -56,4 +61,5 @@ stdlib_experimental_io.f90: stdlib_experimental_io.fypp
 stdlib_experimental_quadrature.f90: stdlib_experimental_quadrature.fypp
 stdlib_experimental_stats.f90: stdlib_experimental_stats.fypp
 stdlib_experimental_stats_mean.f90: stdlib_experimental_stats_mean.fypp
+stdlib_experimental_stats_moment.f90: stdlib_experimental_stats_moment.fypp
 stdlib_experimental_stats_var.f90: stdlib_experimental_stats_var.fypp

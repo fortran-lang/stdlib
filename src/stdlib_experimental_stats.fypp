@@ -7,7 +7,7 @@ module stdlib_experimental_stats
   implicit none
   private
   ! Public API
-  public :: mean, var
+  public :: mean, moment, var
 
   interface mean
     #:for k1, t1 in RC_KINDS_TYPES
@@ -209,5 +209,106 @@ module stdlib_experimental_stats
 
   end interface var
 
+  interface moment
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("moment_all",rank, t1, k1)
+        module function ${RName}$(x, order, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          logical, intent(in), optional :: mask
+          ${t1}$ :: res
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("moment_all",rank, t1, k1, 'dp')
+        module function ${RName}$(x, order, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          logical, intent(in), optional :: mask
+          real(dp) :: res
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("moment",rank, t1, k1)
+        module function ${RName}$(x, order, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          integer, intent(in) :: dim
+          logical, intent(in), optional :: mask
+          ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("moment",rank, t1, k1, 'dp')
+        module function ${RName}$(x, order, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          integer, intent(in) :: dim
+          logical, intent(in), optional :: mask
+          real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("moment_mask_all",rank, t1, k1)
+        module function ${RName}$(x, order, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          ${t1}$ :: res
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("moment_mask_all",rank, t1, k1, 'dp')
+        module function ${RName}$(x, order, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          real(dp) :: res
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("moment_mask",rank, t1, k1)
+        module function ${RName}$(x, order, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          integer, intent(in) :: dim
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("moment_mask",rank, t1, k1, 'dp')
+        module function ${RName}$(x, order, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          integer, intent(in) :: dim
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+  end interface moment
 
 end module stdlib_experimental_stats
