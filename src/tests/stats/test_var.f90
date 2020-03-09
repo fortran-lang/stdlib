@@ -154,7 +154,7 @@ program test_var
     call assert( all( abs( var(d, 1, d < 11) -&
                  [20._dp / 3._dp, 20._dp / 3._dp, 0.5_dp]) < dptol))
     call assert( all( abs( var(d, 2, d < 11) -&
-                 [19.0_dp, 43._dp / 3._dp, 0.5 _dp, 0.5_dp]) < dptol))
+                 [19.0_dp, 43._dp / 3._dp, 0.5_dp, 0.5_dp]) < dptol))
 
     !3dim
     allocate(d3(size(d,1),size(d,2),3))
@@ -337,7 +337,7 @@ program test_var
     call assert( all( abs( var(i64, 1, i64 < 11) -&
                  [20._dp / 3._dp, 20._dp / 3._dp, 0.5_dp]) < dptol))
     call assert( all( abs( var(i64, 2, i64 < 11) -&
-                 [19.0_dp, 43._dp / 3._dp, 0.5 _dp, 0.5_dp]) < dptol))
+                 [19.0_dp, 43._dp / 3._dp, 0.5_dp, 0.5_dp]) < dptol))
 
     !3dim
     allocate(i643(size(d,1),size(d,2),3))
