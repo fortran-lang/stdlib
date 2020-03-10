@@ -40,6 +40,14 @@ git clone https://github.com/fortran-lang/stdlib
 cd stdlib
 ```
 
+### Requirements
+
+The preprocessor ```fypp``` (https://github.com/aradi/fypp) is needed because metaprogramming is used.
+It can be installed using the command line installer ```pip```.
+```sh
+pip install fypp
+```
+
 ### Build with CMake
 
 ```sh
