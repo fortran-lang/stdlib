@@ -94,7 +94,7 @@ contains
             end do
           #:endfor
           case default
-            call error_stop("ERROR (mean): wrong dimension")
+            call error_stop("ERROR (moment): wrong dimension")
         end select
         res = res / n
 
@@ -134,7 +134,7 @@ contains
             end do
           #:endfor
           case default
-            call error_stop("ERROR (mean): wrong dimension")
+            call error_stop("ERROR (moment): wrong dimension")
         end select
         res = res / n
 
@@ -218,7 +218,7 @@ contains
             end do
           #:endfor
           case default
-            call error_stop("ERROR (mean): wrong dimension")
+            call error_stop("ERROR (moment): wrong dimension")
         end select
         res = res / n
 
@@ -254,7 +254,7 @@ contains
             end do
           #:endfor
           case default
-            call error_stop("ERROR (mean): wrong dimension")
+            call error_stop("ERROR (moment): wrong dimension")
         end select
         res = res / n
 
