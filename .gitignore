@@ -35,6 +35,9 @@ build/
 
 # Build directory for out-of-tree builds
 /build
+/bin
+/lib
+/include
 
 # Emacs backup files
 *~
