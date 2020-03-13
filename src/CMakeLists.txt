@@ -33,13 +33,13 @@ set(SRC
 
 add_library(fortran_stdlib ${SRC})
 
-set(LIB_MOD_DIR ${CMAKE_CURRENT_BINARY_DIR}/mod_files/)
-set_target_properties(fortran_stdlib PROPERTIES
-    Fortran_MODULE_DIRECTORY ${LIB_MOD_DIR})
-target_include_directories(fortran_stdlib PUBLIC
-    $<BUILD_INTERFACE:${LIB_MOD_DIR}>
-    $<INSTALL_INTERFACE:include>
-)
+#set(LIB_MOD_DIR ${CMAKE_CURRENT_BINARY_DIR}/mod_files/)
+#set_target_properties(fortran_stdlib PROPERTIES
+#    Fortran_MODULE_DIRECTORY ${LIB_MOD_DIR})
+#target_include_directories(fortran_stdlib PUBLIC
+#    $<BUILD_INTERFACE:${LIB_MOD_DIR}>
+#    $<INSTALL_INTERFACE:include>
+#)
 
 if(f18errorstop)
   target_sources(fortran_stdlib PRIVATE f18estop.f90)
@@ -49,9 +49,9 @@ endif()
 
 add_subdirectory(tests)
 
-install(TARGETS fortran_stdlib
-        RUNTIME DESTINATION bin
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-    )
-install(DIRECTORY ${LIB_MOD_DIR} DESTINATION include)
+#install(TARGETS fortran_stdlib
+#        RUNTIME DESTINATION bin
+#        ARCHIVE DESTINATION lib
+	#        LIBRARY DESTINATION lib
+	#    )
+#install(DIRECTORY ${LIB_MOD_DIR} DESTINATION include)
