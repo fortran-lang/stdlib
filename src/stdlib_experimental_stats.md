@@ -1,9 +1,29 @@
 # Descriptive statistics
 
-## Implemented
 
- * `mean`
- * `var`
+## Implemented
+<!-- vim-markdown-toc GFM -->
+
+* [`mean` - mean of array elements](#mean---mean-of-array-elements)
+	* [Description](#description)
+	* [Syntax](#syntax)
+	* [Arguments](#arguments)
+	* [Return value](#return-value)
+	* [Example](#example)
+* [`moment` - central moment of array elements](#moment---central-moment-of-array-elements)
+	* [Description](#description-1)
+	* [Syntax](#syntax-1)
+	* [Arguments](#arguments-1)
+	* [Return value](#return-value-1)
+	* [Example](#example-1)
+* [`var` - variance of array elements](#var---variance-of-array-elements)
+	* [Description](#description-2)
+	* [Syntax](#syntax-2)
+	* [Arguments](#arguments-2)
+	* [Return value](#return-value-2)
+	* [Example](#example-2)
+
+<!-- vim-markdown-toc -->
 
 ## `mean` - mean of array elements
 
@@ -28,7 +48,7 @@ Returns the mean of all the elements of `array`, or of the elements of `array` a
 ### Return value
 
 If `array` is of type `real` or `complex`, the result is of the same type as `array`.
-If `array` is of type `integer`, the result is of type `double precision`.
+If `array` is of type `integer`, the result is of type `real(dp)`.
 
 If `dim` is absent, a scalar with the mean of all elements in `array` is returned. Otherwise, an array of rank n-1, where n equals the rank of `array`, and a shape similar to that of `array` with dimension `dim` dropped is returned.
 
@@ -49,6 +69,60 @@ program demo_mean
 end program demo_mean
 ```
 
+## `moment` - central moment of array elements
+
+### Description
+
+Returns the _k_-th order central moment of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
+
+The _k_-th order central moment is defined as :
+
+```
+ moment(array) = 1/n sum_i (array(i) - mean(array))^k
+```
+
+where n is the number of elements.
+
+### Syntax
+
+`result = moment(array, order [, mask])`
+
+`result = moment(array, order, dim [, mask])`
+
+### Arguments
+
+`array`: Shall be an array of type `integer`, `real`, or `complex`.
+
+`order`: Shall be an scalar of type `integer`.
+
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to n, where n is the rank of `array`.
+
+`mask` (optional): Shall be of type `logical` and either by a scalar or an array of the same shape as `array`.
+
+### Return value
+
+If `array` is of type `real` or `complex`, the result is of the same type as `array`.
+If `array` is of type `integer`, the result is of type `real(dp)`.
+
+If `dim` is absent, a scalar with the _k_-th central moment of all elements in `array` is returned. Otherwise, an array of rank n-1, where n equals the rank of `array`, and a shape similar to that of `array` with dimension `dim` dropped is returned.
+
+If `mask` is specified, the result is the _k_-th central moment of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
+
+### Example
+
+```fortran
+program demo_moment
+    use stdlib_experimental_stats, only: moment
+    implicit none
+    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
+    print *, moment(x, 2)                            !returns 2.9167
+    print *, moment( reshape(x, [ 2, 3 ] ), 2)       !returns 2.9167
+    print *, moment( reshape(x, [ 2, 3 ] ), 2, 1)    !returns [0.25, 0.25, 0.25]
+    print *, moment( reshape(x, [ 2, 3 ] ), 2, 1,&
+                     reshape(x, [ 2, 3 ] ) > 3.)     !returns [NaN, 0., 0.25]
+end program demo_moment
+```
+
 ## `var` - variance of array elements
 
 ### Description
@@ -58,7 +132,7 @@ Returns the variance of all the elements of `array`, or of the elements of `arra
 Per default, the variance is defined as the best unbiased estimator and is computed as:
 
 ```
- var(x) = 1/(n-1) sum_i (array(i) - mean(array))^2
+ var(array) = 1/(n-1) sum_i (array(i) - mean(array))^2
 ```
 
 where n is the number of elements.
@@ -108,7 +182,7 @@ program demo_var
                   reshape(x, [ 2, 3 ] ) > 3.)  !returns [NaN, NaN, 0.5]
     print *, var( reshape(x, [ 2, 3 ] ), 1,&
                   reshape(x, [ 2, 3 ] ) > 3.,&
-                  corrected=.false.)           !returns [NaN, 0., 0.5]
+                  corrected=.false.)           !returns [NaN, 0., 0.25]
 end program demo_var
 ```
 
