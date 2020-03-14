@@ -5,21 +5,25 @@
 <!-- vim-markdown-toc GFM -->
 
 * [`trapz` - integrate sampled values using trapezoidal rule](#trapz---integrate-sampled-values-using-trapezoidal-rule)
+	* [Description](#description)
 	* [Syntax](#syntax)
 	* [Arguments](#arguments)
 	* [Return value](#return-value)
 	* [Example](#example)
 * [`trapz_weights` - trapezoidal rule weights for given abscissas](#trapz_weights---trapezoidal-rule-weights-for-given-abscissas)
+	* [Description](#description-1)
 	* [Syntax](#syntax-1)
 	* [Arguments](#arguments-1)
 	* [Return value](#return-value-1)
 	* [Example](#example-1)
 * [`simps` - integrate sampled values using Simpson's rule (to be implemented)](#simps---integrate-sampled-values-using-simpsons-rule-to-be-implemented)
+	* [Description](#description-2)
 	* [Syntax](#syntax-2)
 	* [Arguments](#arguments-2)
 	* [Return value](#return-value-2)
 	* [Example](#example-2)
 * [`simps_weights` - Simpson's rule weights for given abscissas (to be implemented)](#simps_weights---simpsons-rule-weights-for-given-abscissas-to-be-implemented)
+	* [Description](#description-3)
 	* [Syntax](#syntax-3)
 	* [Arguments](#arguments-3)
 	* [Return value](#return-value-3)
@@ -28,6 +32,8 @@
 <!-- vim-markdown-toc -->
 
 ## `trapz` - integrate sampled values using trapezoidal rule
+
+### Description
 
 Returns the trapezoidal rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`.
 
@@ -68,6 +74,8 @@ end program
 
 ## `trapz_weights` - trapezoidal rule weights for given abscissas
 
+### Description
+
 Given an array of abscissas `x`, computes the array of weights `w` such that if `y` represented function values tabulated at `x`, then `sum(w*y)` produces a trapezoidal rule approximation to the integral.
 
 ### Syntax
@@ -102,6 +110,8 @@ end program
 
 ## `simps` - integrate sampled values using Simpson's rule (to be implemented)
 
+### Description
+
 Returns the Simpson's rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`. 
 
 Simpson's rule is defined for odd-length arrays only. For even-length arrays, an optional argument `even` may be used to specify at which index to replace Simpson's rule with Simpson's 3/8 rule. The 3/8 rule will be used for the array section `y(even:even+4)` and the ordinary Simpon's rule will be used elsewhere.
@@ -135,6 +145,8 @@ If the size of `y` is two, the result is the same as if `trapz` had been called 
 TBD
 
 ## `simps_weights` - Simpson's rule weights for given abscissas (to be implemented)
+
+### Description
 
 Given an array of abscissas `x`, computes the array of weights `w` such that if `y` represented function values tabulated at `x`, then `sum(w*y)` produces a Simpson's rule approximation to the integral.
 
