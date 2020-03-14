@@ -2,8 +2,30 @@
 
 ## Implemented
 
-* `trapz`
-* `trapz_weights`
+<!-- vim-markdown-toc GFM -->
+
+	* [`trapz` - integrate sampled values using trapezoidal rule](#trapz---integrate-sampled-values-using-trapezoidal-rule)
+		* [Syntax](#syntax)
+		* [Arguments](#arguments)
+		* [Return value](#return-value)
+		* [Example](#example)
+	* [`trapz_weights` - trapezoidal rule weights for given abscissas](#trapz_weights---trapezoidal-rule-weights-for-given-abscissas)
+		* [Syntax](#syntax-1)
+		* [Arguments](#arguments-1)
+		* [Return value](#return-value-1)
+		* [Example](#example-1)
+* [`simps` - integrate sampled values using Simpson's rule (to be implemented)](#simps---integrate-sampled-values-using-simpsons-rule-to-be-implemented)
+		* [Syntax](#syntax-2)
+		* [Arguments](#arguments-2)
+		* [Return value](#return-value-2)
+		* [Example](#example-2)
+* [`simps_weights` - Simpson's rule weights for given abscissas (to be implemented)](#simps_weights---simpsons-rule-weights-for-given-abscissas-to-be-implemented)
+		* [Syntax](#syntax-3)
+		* [Arguments](#arguments-3)
+		* [Return value](#return-value-3)
+		* [Example](#example-3)
+
+<!-- vim-markdown-toc -->
 
 ## `trapz` - integrate sampled values using trapezoidal rule
 
@@ -78,7 +100,7 @@ end program
 
 ```
 
-# `simps` - integrate sampled values using Simpson's rule
+# `simps` - integrate sampled values using Simpson's rule (to be implemented)
 
 Returns the Simpson's rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`. 
 
@@ -112,7 +134,7 @@ If the size of `y` is two, the result is the same as if `trapz` had been called 
 
 TBD
 
-# `simps_weights` - Simpson's rule weights for given abscissas
+# `simps_weights` - Simpson's rule weights for given abscissas (to be implemented)
 
 Given an array of abscissas `x`, computes the array of weights `w` such that if `y` represented function values tabulated at `x`, then `sum(w*y)` produces a Simpson's rule approximation to the integral.
 
