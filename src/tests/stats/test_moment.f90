@@ -2,6 +2,7 @@ program test_moment
     use stdlib_experimental_error, only: assert
     use stdlib_experimental_kinds, only: sp, dp, int32, int64
     use stdlib_experimental_stats, only: moment
+    use,intrinsic :: ieee_arithmetic, only : ieee_is_nan
     implicit none
 
 
@@ -48,8 +49,8 @@ contains
         call assert( abs(moment(x1, order, dim=1)) < sptol)
 
         print*,' test_sp_1dim_mask', order
-        call assert( isnan(moment(x1, order, .false.)))
-        call assert( isnan(moment(x1, order, 1, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, 1, .false.)))
 
         print*,' test_sp_1dim_mask_array', order
         call assert( abs(moment(x1, order, x1 < 5)) < sptol)
@@ -62,9 +63,9 @@ contains
         call assert( all( abs( moment(x2, order, 2)) < sptol))
 
         print*,' test_sp_2dim_mask', order
-        call assert( isnan(moment(x2, order, .false.)))
-        call assert( any(isnan(moment(x2, order, 1, .false.))))
-        call assert( any(isnan(moment(x2, order, 2, .false.))))
+        call assert( ieee_is_nan(moment(x2, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x2, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x2, order, 2, .false.))))
 
         print*,' test_sp_2dim_mask_array', order
         call assert( abs(moment(x2, order, x2 < 11)) < sptol)
@@ -84,10 +85,10 @@ contains
         call assert( all( abs( moment(x3, order, 3)) < sptol))
     
         print*,' test_sp_3dim_mask', order
-        call assert( isnan(moment(x3, order, .false.)))
-        call assert( any(isnan(moment(x3, order, 1, .false.))))
-        call assert( any(isnan(moment(x3, order, 2, .false.))))
-        call assert( any(isnan(moment(x3, order, 3, .false.))))
+        call assert( ieee_is_nan(moment(x3, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x3, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 2, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 3, .false.))))
     
         print*,' test_sp_3dim_mask_array', order
         call assert( abs(moment(x3, order, x3 < 11) ) < sptol)
@@ -104,8 +105,8 @@ contains
         call assert( abs(moment(x1, order, dim=1) - 2._sp) < sptol)
 
         print*,' test_sp_1dim_mask', order
-        call assert( isnan(moment(x1, order, .false.)))
-        call assert( isnan(moment(x1, order, 1, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, 1, .false.)))
 
         print*,' test_sp_1dim_mask_array', order
         call assert( abs(moment(x1, order, x1 < 5) - 1.25_sp) < sptol)
@@ -118,9 +119,9 @@ contains
         call assert( all( abs( moment(x2, order, 2) - [19.0, 43. / 3., 31. / 3. , 7.0]*2./3.) < sptol))
 
         print*,' test_sp_2dim_mask', order
-        call assert( isnan(moment(x2, order, .false.)))
-        call assert( any(isnan(moment(x2, order, 1, .false.))))
-        call assert( any(isnan(moment(x2, order, 2, .false.))))
+        call assert( ieee_is_nan(moment(x2, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x2, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x2, order, 2, .false.))))
 
         print*,' test_sp_2dim_mask_array', order
         call assert( abs(moment(x2, order, x2 < 11)- 2.75_sp*3.) < sptol)
@@ -153,10 +154,10 @@ contains
                  < sptol))
     
         print*,' test_sp_3dim_mask', order
-        call assert( isnan(moment(x3, order, .false.)))
-        call assert( any(isnan(moment(x3, order, 1, .false.))))
-        call assert( any(isnan(moment(x3, order, 2, .false.))))
-        call assert( any(isnan(moment(x3, order, 3, .false.))))
+        call assert( ieee_is_nan(moment(x3, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x3, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 2, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 3, .false.))))
     
         print*,' test_sp_3dim_mask_array', order
         call assert( abs(moment(x3, order, x3 < 11) - 7.7370242214532876_dp ) < sptol)
@@ -193,8 +194,8 @@ contains
         call assert( abs(moment(x1, order, dim=1)) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call assert( isnan(moment(x1, order, .false.)))
-        call assert( isnan(moment(x1, order, 1, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, 1, .false.)))
 
         print*,' test_dp_1dim_mask_array', order
         call assert( abs(moment(x1, order, x1 < 5)) < dptol)
@@ -207,9 +208,9 @@ contains
         call assert( all( abs( moment(x2, order, 2)) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call assert( isnan(moment(x2, order, .false.)))
-        call assert( any(isnan(moment(x2, order, 1, .false.))))
-        call assert( any(isnan(moment(x2, order, 2, .false.))))
+        call assert( ieee_is_nan(moment(x2, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x2, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x2, order, 2, .false.))))
 
         print*,' test_dp_2dim_mask_array', order
         call assert( abs(moment(x2, order, x2 < 11)) < dptol)
@@ -229,10 +230,10 @@ contains
         call assert( all( abs( moment(x3, order, 3)) < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call assert( isnan(moment(x3, order, .false.)))
-        call assert( any(isnan(moment(x3, order, 1, .false.))))
-        call assert( any(isnan(moment(x3, order, 2, .false.))))
-        call assert( any(isnan(moment(x3, order, 3, .false.))))
+        call assert( ieee_is_nan(moment(x3, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x3, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 2, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 3, .false.))))
     
         print*,' test_dp_3dim_mask_array', order
         call assert( abs(moment(x3, order, x3 < 11) ) < dptol)
@@ -249,8 +250,8 @@ contains
         call assert( abs(moment(x1, order, dim=1) - 2._dp) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call assert( isnan(moment(x1, order, .false.)))
-        call assert( isnan(moment(x1, order, 1, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, 1, .false.)))
 
         print*,' test_dp_1dim_mask_array', order
         call assert( abs(moment(x1, order, x1 < 5) - 1.25_dp) < dptol)
@@ -264,9 +265,9 @@ contains
                       [19._dp, 43._dp / 3., 31._dp / 3. , 7._dp]*2._dp/3.) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call assert( isnan(moment(x2, order, .false.)))
-        call assert( any(isnan(moment(x2, order, 1, .false.))))
-        call assert( any(isnan(moment(x2, order, 2, .false.))))
+        call assert( ieee_is_nan(moment(x2, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x2, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x2, order, 2, .false.))))
 
         print*,' test_dp_2dim_mask_array', order
         call assert( abs(moment(x2, order, x2 < 11)- 2.75_dp*3.) < dptol)
@@ -299,10 +300,10 @@ contains
                  < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call assert( isnan(moment(x3, order, .false.)))
-        call assert( any(isnan(moment(x3, order, 1, .false.))))
-        call assert( any(isnan(moment(x3, order, 2, .false.))))
-        call assert( any(isnan(moment(x3, order, 3, .false.))))
+        call assert( ieee_is_nan(moment(x3, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x3, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 2, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 3, .false.))))
     
         print*,' test_dp_3dim_mask_array', order
         call assert( abs(moment(x3, order, x3 < 11) - 7.7370242214532876_dp ) < dptol)
@@ -339,8 +340,8 @@ contains
         call assert( abs(moment(x1, order, dim=1)) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call assert( isnan(moment(x1, order, .false.)))
-        call assert( isnan(moment(x1, order, 1, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, 1, .false.)))
 
         print*,' test_dp_1dim_mask_array', order
         call assert( abs(moment(x1, order, x1 < 5)) < dptol)
@@ -353,9 +354,9 @@ contains
         call assert( all( abs( moment(x2, order, 2)) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call assert( isnan(moment(x2, order, .false.)))
-        call assert( any(isnan(moment(x2, order, 1, .false.))))
-        call assert( any(isnan(moment(x2, order, 2, .false.))))
+        call assert( ieee_is_nan(moment(x2, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x2, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x2, order, 2, .false.))))
 
         print*,' test_dp_2dim_mask_array', order
         call assert( abs(moment(x2, order, x2 < 11)) < dptol)
@@ -375,10 +376,10 @@ contains
         call assert( all( abs( moment(x3, order, 3)) < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call assert( isnan(moment(x3, order, .false.)))
-        call assert( any(isnan(moment(x3, order, 1, .false.))))
-        call assert( any(isnan(moment(x3, order, 2, .false.))))
-        call assert( any(isnan(moment(x3, order, 3, .false.))))
+        call assert( ieee_is_nan(moment(x3, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x3, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 2, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 3, .false.))))
     
         print*,' test_dp_3dim_mask_array', order
         call assert( abs(moment(x3, order, x3 < 11) ) < dptol)
@@ -395,8 +396,8 @@ contains
         call assert( abs(moment(x1, order, dim=1) - 2._dp) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call assert( isnan(moment(x1, order, .false.)))
-        call assert( isnan(moment(x1, order, 1, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, 1, .false.)))
 
         print*,' test_dp_1dim_mask_array', order
         call assert( abs(moment(x1, order, x1 < 5) - 1.25_dp) < dptol)
@@ -410,9 +411,9 @@ contains
                       [19._dp, 43._dp / 3., 31._dp / 3. , 7._dp]*2._dp/3.) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call assert( isnan(moment(x2, order, .false.)))
-        call assert( any(isnan(moment(x2, order, 1, .false.))))
-        call assert( any(isnan(moment(x2, order, 2, .false.))))
+        call assert( ieee_is_nan(moment(x2, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x2, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x2, order, 2, .false.))))
 
         print*,' test_dp_2dim_mask_array', order
         call assert( abs(moment(x2, order, x2 < 11)- 2.75_dp*3.) < dptol)
@@ -445,10 +446,10 @@ contains
                  < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call assert( isnan(moment(x3, order, .false.)))
-        call assert( any(isnan(moment(x3, order, 1, .false.))))
-        call assert( any(isnan(moment(x3, order, 2, .false.))))
-        call assert( any(isnan(moment(x3, order, 3, .false.))))
+        call assert( ieee_is_nan(moment(x3, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x3, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 2, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 3, .false.))))
     
         print*,' test_dp_3dim_mask_array', order
         call assert( abs(moment(x3, order, x3 < 11) - 7.7370242214532876_dp ) < dptol)
@@ -485,8 +486,8 @@ contains
         call assert( abs(moment(x1, order, dim=1)) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call assert( isnan(moment(x1, order, .false.)))
-        call assert( isnan(moment(x1, order, 1, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, 1, .false.)))
 
         print*,' test_dp_1dim_mask_array', order
         call assert( abs(moment(x1, order, x1 < 5)) < dptol)
@@ -499,9 +500,9 @@ contains
         call assert( all( abs( moment(x2, order, 2)) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call assert( isnan(moment(x2, order, .false.)))
-        call assert( any(isnan(moment(x2, order, 1, .false.))))
-        call assert( any(isnan(moment(x2, order, 2, .false.))))
+        call assert( ieee_is_nan(moment(x2, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x2, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x2, order, 2, .false.))))
 
         print*,' test_dp_2dim_mask_array', order
         call assert( abs(moment(x2, order, x2 < 11)) < dptol)
@@ -521,10 +522,10 @@ contains
         call assert( all( abs( moment(x3, order, 3)) < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call assert( isnan(moment(x3, order, .false.)))
-        call assert( any(isnan(moment(x3, order, 1, .false.))))
-        call assert( any(isnan(moment(x3, order, 2, .false.))))
-        call assert( any(isnan(moment(x3, order, 3, .false.))))
+        call assert( ieee_is_nan(moment(x3, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x3, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 2, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 3, .false.))))
     
         print*,' test_dp_3dim_mask_array', order
         call assert( abs(moment(x3, order, x3 < 11) ) < dptol)
@@ -541,8 +542,8 @@ contains
         call assert( abs(moment(x1, order, dim=1) - 2._dp) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call assert( isnan(moment(x1, order, .false.)))
-        call assert( isnan(moment(x1, order, 1, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, .false.)))
+        call assert( ieee_is_nan(moment(x1, order, 1, .false.)))
 
         print*,' test_dp_1dim_mask_array', order
         call assert( abs(moment(x1, order, x1 < 5) - 1.25_dp) < dptol)
@@ -556,9 +557,9 @@ contains
                       [19._dp, 43._dp / 3., 31._dp / 3. , 7._dp]*2._dp/3.) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call assert( isnan(moment(x2, order, .false.)))
-        call assert( any(isnan(moment(x2, order, 1, .false.))))
-        call assert( any(isnan(moment(x2, order, 2, .false.))))
+        call assert( ieee_is_nan(moment(x2, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x2, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x2, order, 2, .false.))))
 
         print*,' test_dp_2dim_mask_array', order
         call assert( abs(moment(x2, order, x2 < 11)- 2.75_dp*3.) < dptol)
@@ -591,10 +592,10 @@ contains
                  < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call assert( isnan(moment(x3, order, .false.)))
-        call assert( any(isnan(moment(x3, order, 1, .false.))))
-        call assert( any(isnan(moment(x3, order, 2, .false.))))
-        call assert( any(isnan(moment(x3, order, 3, .false.))))
+        call assert( ieee_is_nan(moment(x3, order, .false.)))
+        call assert( any(ieee_is_nan(moment(x3, order, 1, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 2, .false.))))
+        call assert( any(ieee_is_nan(moment(x3, order, 3, .false.))))
     
         print*,' test_dp_3dim_mask_array', order
         call assert( abs(moment(x3, order, x3 < 11) - 7.7370242214532876_dp ) < dptol)
@@ -631,8 +632,8 @@ contains
         call assert( abs(moment(x1, order, dim=1)) < sptol)
 
         print*,' test_sp_1dim_mask', order
-        call assert( isnan(abs(moment(x1, order, .false.))))
-        call assert( isnan(abs(moment(x1, order, 1, .false.))))
+        call assert( ieee_is_nan(abs(moment(x1, order, .false.))))
+        call assert( ieee_is_nan(abs(moment(x1, order, 1, .false.))))
 
         print*,' test_sp_1dim_mask_array', order
         call assert( abs(moment(x1, order, aimag(x1) == 0)) < sptol)
@@ -645,14 +646,14 @@ contains
         call assert( all( abs( moment(x2, order, 2)) < sptol))
 
         print*,' test_sp_2dim_mask', order
-        call assert( isnan(abs(moment(x2, order, .false.))))
-        call assert( any(isnan(abs(moment(x2, order, 1, .false.)))))
-        call assert( any(isnan(abs(moment(x2, order, 2, .false.)))))
+        call assert( ieee_is_nan(abs(moment(x2, order, .false.))))
+        call assert( any(ieee_is_nan(abs(moment(x2, order, 1, .false.)))))
+        call assert( any(ieee_is_nan(abs(moment(x2, order, 2, .false.)))))
 
         print*,' test_sp_2dim_mask_array', order
         call assert( abs(moment(x2, order, aimag(x2) == 0)) < sptol)
         call assert( all( abs( moment(x2, order, 1, aimag(x2) == 0)) < sptol))
-        call assert( any(isnan( abs( moment(x2, order, 2, aimag(x2) == 0)))))
+        call assert( any(ieee_is_nan( abs( moment(x2, order, 2, aimag(x2) == 0)))))
 
         order = 2
 
@@ -663,8 +664,8 @@ contains
                         (-6.459422410E-02,-0.556084037)) < sptol)
 
         print*,' test_sp_1dim_mask', order
-        call assert( isnan(abs(moment(x1, order, .false.))))
-        call assert( isnan(abs(moment(x1, order, 1, .false.))))
+        call assert( ieee_is_nan(abs(moment(x1, order, .false.))))
+        call assert( ieee_is_nan(abs(moment(x1, order, 1, .false.))))
 
         print*,' test_sp_1dim_mask_array', order
         call assert( abs(moment(x1, order, aimag(x1) == 0) -&
@@ -689,9 +690,9 @@ contains
                      ) < sptol))
 
         print*,' test_sp_2dim_mask', order
-        call assert( isnan(abs(moment(x2, order, .false.))))
-        call assert( any(isnan(abs(moment(x2, order, 1, .false.)))))
-        call assert( any(isnan(abs(moment(x2, order, 2, .false.)))))
+        call assert( ieee_is_nan(abs(moment(x2, order, .false.))))
+        call assert( any(ieee_is_nan(abs(moment(x2, order, 1, .false.)))))
+        call assert( any(ieee_is_nan(abs(moment(x2, order, 2, .false.)))))
 
         print*,' test_sp_2dim_mask_array', order
         call assert( abs(moment(x2, order, aimag(x2) == 0)-&
