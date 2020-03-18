@@ -2,28 +2,9 @@
 
 ## Implemented
 
-<!-- vim-markdown-toc GFM -->
-
 * [`loadtxt` - load a 2D array from a text file](#loadtxt---load-a-2d-array-from-a-text-file)
-	* [Description](#description)
-	* [Syntax](#syntax)
-	* [Arguments](#arguments)
-	* [Return value](#return-value)
-	* [Example](#example)
 * [`open` - open a file](#open---open-a-file)
-	* [Description](#description-1)
-	* [Syntax](#syntax-1)
-	* [Arguments](#arguments-1)
-	* [Return value](#return-value-1)
-	* [Example](#example-1)
 * [`savetxt` - save a 2D array into a text file](#savetxt---save-a-2d-array-into-a-text-file)
-	* [Description](#description-2)
-	* [Syntax](#syntax-2)
-	* [Arguments](#arguments-2)
-	* [Output](#output)
-	* [Example](#example-2)
-
-<!-- vim-markdown-toc -->
 
 ## `loadtxt` - load a 2D array from a text file
 

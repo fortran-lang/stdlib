@@ -2,28 +2,10 @@
 
 
 ## Implemented
-<!-- vim-markdown-toc GFM -->
 
 * [`mean` - mean of array elements](#mean---mean-of-array-elements)
-	* [Description](#description)
-	* [Syntax](#syntax)
-	* [Arguments](#arguments)
-	* [Return value](#return-value)
-	* [Example](#example)
 * [`moment` - central moment of array elements](#moment---central-moment-of-array-elements)
-	* [Description](#description-1)
-	* [Syntax](#syntax-1)
-	* [Arguments](#arguments-1)
-	* [Return value](#return-value-1)
-	* [Example](#example-1)
 * [`var` - variance of array elements](#var---variance-of-array-elements)
-	* [Description](#description-2)
-	* [Syntax](#syntax-2)
-	* [Arguments](#arguments-2)
-	* [Return value](#return-value-2)
-	* [Example](#example-2)
-
-<!-- vim-markdown-toc -->
 
 ## `mean` - mean of array elements
 

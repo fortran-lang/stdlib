@@ -2,17 +2,7 @@
 
 ## Implemented
 
-
-<!-- vim-markdown-toc GFM -->
-
 * [`optval` - fallback value for optional arguments](#optval---fallback-value-for-optional-arguments)
-	* [Description](#description)
-	* [Syntax](#syntax)
-	* [Arguments](#arguments)
-	* [Return value](#return-value)
-	* [Example](#example)
-
-<!-- vim-markdown-toc -->
 
 ## `optval` - fallback value for optional arguments
 

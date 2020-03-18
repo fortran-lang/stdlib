@@ -2,34 +2,10 @@
 
 ## Implemented
 
-<!-- vim-markdown-toc GFM -->
-
 * [`trapz` - integrate sampled values using trapezoidal rule](#trapz---integrate-sampled-values-using-trapezoidal-rule)
-	* [Description](#description)
-	* [Syntax](#syntax)
-	* [Arguments](#arguments)
-	* [Return value](#return-value)
-	* [Example](#example)
 * [`trapz_weights` - trapezoidal rule weights for given abscissas](#trapz_weights---trapezoidal-rule-weights-for-given-abscissas)
-	* [Description](#description-1)
-	* [Syntax](#syntax-1)
-	* [Arguments](#arguments-1)
-	* [Return value](#return-value-1)
-	* [Example](#example-1)
 * [`simps` - integrate sampled values using Simpson's rule (to be implemented)](#simps---integrate-sampled-values-using-simpsons-rule-to-be-implemented)
-	* [Description](#description-2)
-	* [Syntax](#syntax-2)
-	* [Arguments](#arguments-2)
-	* [Return value](#return-value-2)
-	* [Example](#example-2)
 * [`simps_weights` - Simpson's rule weights for given abscissas (to be implemented)](#simps_weights---simpsons-rule-weights-for-given-abscissas-to-be-implemented)
-	* [Description](#description-3)
-	* [Syntax](#syntax-3)
-	* [Arguments](#arguments-3)
-	* [Return value](#return-value-3)
-	* [Example](#example-3)
-
-<!-- vim-markdown-toc -->
 
 ## `trapz` - integrate sampled values using trapezoidal rule
 
