@@ -3,6 +3,7 @@ use stdlib_experimental_error, only: assert
 use stdlib_experimental_kinds, only: sp, dp, int32, int64
 use stdlib_experimental_io, only: loadtxt
 use stdlib_experimental_stats, only: mean
+use,intrinsic :: ieee_arithmetic, only : ieee_is_nan
 implicit none
 
 real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
@@ -60,9 +61,9 @@ call assert( sum( abs( mean(cd,2) - sum(cd,2)/real(size(cd,2), dp) )) < dptol)
 
 ! check mask = .false.
 
-call assert( isnan(mean(d, .false.)))
-call assert( any(isnan(mean(d, 1, .false.))))
-call assert( any(isnan(mean(d, 2, .false.))))
+call assert( ieee_is_nan(mean(d, .false.)))
+call assert( any(ieee_is_nan(mean(d, 1, .false.))))
+call assert( any(ieee_is_nan(mean(d, 2, .false.))))
 
 ! check mask of the same shape as input
 call assert( abs(mean(d, d > 0) - sum(d, d > 0)/real(count(d > 0), dp)) < dptol)
@@ -125,18 +126,18 @@ call assert( sum( abs( mean(d4,4) - sum(d4,4)/real(size(d4,4), dp) )) < dptol)
 
 ! check mask = .false.
 
-call assert( isnan(mean(d4, .false.)))
-call assert( any(isnan(mean(d4, 1, .false.))))
-call assert( any(isnan(mean(d4, 2, .false.))))
-call assert( any(isnan(mean(d4, 3, .false.))))
-call assert( any(isnan(mean(d4, 4, .false.))))
+call assert( ieee_is_nan(mean(d4, .false.)))
+call assert( any(ieee_is_nan(mean(d4, 1, .false.))))
+call assert( any(ieee_is_nan(mean(d4, 2, .false.))))
+call assert( any(ieee_is_nan(mean(d4, 3, .false.))))
+call assert( any(ieee_is_nan(mean(d4, 4, .false.))))
 
 
 ! check mask of the same shape as input
 call assert( abs(mean(d4, d4 > 0) - sum(d4, d4 > 0)/real(count(d4 > 0), dp)) < dptol)
-call assert( any(isnan(mean(d4, 1, d4 > 0))) )
-call assert( any(isnan(mean(d4, 2, d4 > 0))) )
-call assert( any(isnan(mean(d4, 3, d4 > 0))) )
+call assert( any(ieee_is_nan(mean(d4, 1, d4 > 0))) )
+call assert( any(ieee_is_nan(mean(d4, 2, d4 > 0))) )
+call assert( any(ieee_is_nan(mean(d4, 3, d4 > 0))) )
 call assert( sum(abs(mean(d4, 4, d4 > 0) - sum(d4, 4, d4 > 0)/real(count(d4 > 0, 4), dp))) < dptol)
 
 end program

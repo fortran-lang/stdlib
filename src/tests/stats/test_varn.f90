@@ -2,6 +2,7 @@ program test_varn
     use stdlib_experimental_error, only: assert
     use stdlib_experimental_kinds, only: sp, dp, int32, int64
     use stdlib_experimental_stats, only: var
+    use,intrinsic :: ieee_arithmetic, only : ieee_is_nan
     implicit none
 
 
@@ -37,12 +38,12 @@ program test_varn
     call assert( abs(var(s1, dim=1, corrected=.false.) - 2.5*(4./5.)) < sptol)
 
     print*,' test_sp_1dim_mask'
-    call assert( isnan(var(s1, .false., corrected=.false.)))
-    call assert( isnan(var(s1, 1, .false., corrected=.false.)))
+    call assert( ieee_is_nan(var(s1, .false., corrected=.false.)))
+    call assert( ieee_is_nan(var(s1, 1, .false., corrected=.false.)))
 
     print*,' test_sp_1dim_mask_array'
     call assert( abs(var(s1, s1 < 5, corrected=.false.) - 5./4.) < sptol)
-    call assert( isnan((var(s1, s1 < 0., corrected=.false.))))
+    call assert( ieee_is_nan((var(s1, s1 < 0., corrected=.false.))))
     call assert( abs(var(s1, s1 == 1., corrected=.false.)) < sptol)
     call assert( abs(var(s1, 1, s1 < 5, corrected=.false.) - 5./4.) < sptol)
 
@@ -55,9 +56,9 @@ program test_varn
                       [19.0, 43. / 3., 31. / 3. , 7.0]*2./3.) < sptol))
 
     print*,' test_sp_2dim_mask'
-    call assert( isnan(var(s, .false., corrected=.false.)))
-    call assert( any(isnan(var(s, 1, .false., corrected=.false.))))
-    call assert( any(isnan(var(s, 2, .false., corrected=.false.))))
+    call assert( ieee_is_nan(var(s, .false., corrected=.false.)))
+    call assert( any(ieee_is_nan(var(s, 1, .false., corrected=.false.))))
+    call assert( any(ieee_is_nan(var(s, 2, .false., corrected=.false.))))
 
     print*,' test_sp_2dim_mask_array'
     call assert( abs(var(s, s < 11, corrected=.false.) - 2.75*3.) < sptol)
@@ -95,10 +96,10 @@ program test_varn
                  < sptol))
 
     print*,' test_sp_3dim_mask'
-    call assert( isnan(var(s3, .false., corrected=.false.)))
-    call assert( any(isnan(var(s3, 1, .false., corrected=.false.))))
-    call assert( any(isnan(var(s3, 2, .false., corrected=.false.))))
-    call assert( any(isnan(var(s3, 3, .false., corrected=.false.))))
+    call assert( ieee_is_nan(var(s3, .false., corrected=.false.)))
+    call assert( any(ieee_is_nan(var(s3, 1, .false., corrected=.false.))))
+    call assert( any(ieee_is_nan(var(s3, 2, .false., corrected=.false.))))
+    call assert( any(ieee_is_nan(var(s3, 3, .false., corrected=.false.))))
 
     print*,' test_sp_3dim_mask_array'
     call assert( abs(var(s3, s3 < 11, corrected=.false.) - 7.73702383_sp) < sptol)
@@ -124,12 +125,12 @@ program test_varn
     call assert( abs(var(d1, dim=1, corrected=.false.) - 2.5_dp*(4._dp/5.)) < dptol)
 
     print*,' test_dp_1dim_mask'
-    call assert( isnan(var(d1, .false., corrected=.false.)))
-    call assert( isnan(var(d1, 1, .false., corrected=.false.)))
+    call assert( ieee_is_nan(var(d1, .false., corrected=.false.)))
+    call assert( ieee_is_nan(var(d1, 1, .false., corrected=.false.)))
 
     print*,' test_dp_1dim_mask_array'
     call assert( abs(var(d1, d1 < 5, corrected=.false.) - 5._dp/4.) < dptol)
-    call assert( isnan((var(d1, d1 < 0, corrected=.false.))))
+    call assert( ieee_is_nan((var(d1, d1 < 0, corrected=.false.))))
     call assert( abs(var(d1, d1 == 1, corrected=.false.)) < dptol)
     call assert( abs(var(d1, 1, d1 < 5, corrected=.false.) - 5._dp/4.) < dptol)
 
@@ -141,9 +142,9 @@ program test_varn
                       [38._dp, 86._dp / 3._dp, 62._dp / 3._dp , 14._dp]/3._dp) < dptol))
 
     print*,' test_dp_2dim_mask'
-    call assert( isnan(var(d, .false., corrected=.false.)))
-    call assert( any(isnan(var(d, 1, .false., corrected=.false.))))
-    call assert( any(isnan(var(d, 2, .false., corrected=.false.))))
+    call assert( ieee_is_nan(var(d, .false., corrected=.false.)))
+    call assert( any(ieee_is_nan(var(d, 1, .false., corrected=.false.))))
+    call assert( any(ieee_is_nan(var(d, 2, .false., corrected=.false.))))
 
     print*,' test_dp_2dim_mask_array'
     call assert( abs(var(d, d < 11, corrected=.false.) - 2.75_dp*3._dp) < dptol)
@@ -183,10 +184,10 @@ program test_varn
                  < dptol))
 
     print*,' test_dp_3dim_mask'
-    call assert( isnan(var(d3, .false., corrected=.false.)))
-    call assert( any(isnan(var(d3, 1, .false., corrected=.false.))))
-    call assert( any(isnan(var(d3, 2, .false., corrected=.false.))))
-    call assert( any(isnan(var(d3, 3, .false., corrected=.false.))))
+    call assert( ieee_is_nan(var(d3, .false., corrected=.false.)))
+    call assert( any(ieee_is_nan(var(d3, 1, .false., corrected=.false.))))
+    call assert( any(ieee_is_nan(var(d3, 2, .false., corrected=.false.))))
+    call assert( any(ieee_is_nan(var(d3, 3, .false., corrected=.false.))))
 
     print*,' test_dp_3dim_mask_array'
     call assert( abs(var(d3, d3 < 11, corrected=.false.) -&
@@ -216,12 +217,12 @@ program test_varn
     call assert( abs(var(i321, dim=1, corrected=.false.) - 2.5_dp*(4._dp/5.)) < dptol)
 
     print*,' test_int32_1dim_mask'
-    call assert( isnan(var(i321, .false., corrected=.false.)))
-    call assert( isnan(var(i321, 1, .false., corrected=.false.)))
+    call assert( ieee_is_nan(var(i321, .false., corrected=.false.)))
+    call assert( ieee_is_nan(var(i321, 1, .false., corrected=.false.)))
 
     print*,' test_int32_1dim_mask_array'
     call assert( abs(var(i321, i321 < 5, corrected=.false.) - 5._dp/4.) < dptol)
-    call assert( isnan((var(i321, i321 < 0, corrected=.false.))))
+    call assert( ieee_is_nan((var(i321, i321 < 0, corrected=.false.))))
     call assert( abs(var(i321, i321 == 1, corrected=.false.)) < dptol)
     call assert( abs(var(i321, 1, i321 < 5, corrected=.false.) - 5._dp/4.) < dptol)
 
@@ -235,9 +236,9 @@ program test_varn
                       [38._dp, 86._dp / 3._dp, 62._dp / 3._dp , 14._dp]/3._dp) < dptol))
 
     print*,' test_int32_2dim_mask'
-    call assert( isnan(var(i32, .false., corrected=.false.)))
-    call assert( any(isnan(var(i32, 1, .false., corrected=.false.))))
-    call assert( any(isnan(var(i32, 2, .false., corrected=.false.))))
+    call assert( ieee_is_nan(var(i32, .false., corrected=.false.)))
+    call assert( any(ieee_is_nan(var(i32, 1, .false., corrected=.false.))))
+    call assert( any(ieee_is_nan(var(i32, 2, .false., corrected=.false.))))
 
     print*,' test_int32_2dim_mask_array'
     call assert( abs(var(i32, i32 < 11, corrected=.false.) - 2.75_dp*3._dp) < dptol)
@@ -277,10 +278,10 @@ program test_varn
                  < dptol))
 
     print*,' test_int32_3dim_mask'
-    call assert( isnan(var(i323, .false., corrected=.false.)))
-    call assert( any(isnan(var(i323, 1, .false., corrected=.false.))))
-    call assert( any(isnan(var(i323, 2, .false., corrected=.false.))))
-    call assert( any(isnan(var(i323, 3, .false., corrected=.false.))))
+    call assert( ieee_is_nan(var(i323, .false., corrected=.false.)))
+    call assert( any(ieee_is_nan(var(i323, 1, .false., corrected=.false.))))
+    call assert( any(ieee_is_nan(var(i323, 2, .false., corrected=.false.))))
+    call assert( any(ieee_is_nan(var(i323, 3, .false., corrected=.false.))))
 
     print*,' test_int32_3dim_mask_array'
     call assert( abs(var(i323, i323 < 11, corrected=.false.) -&
@@ -314,15 +315,15 @@ program test_varn
                   var(aimag(cd1), dim=1, corrected=.false.))) < dptol)
 
     print*,' test_cdp_1dim_mask'
-    call assert( isnan(var(cd1, .false., corrected=.false.)))
-    call assert( isnan(var(cd1, 1, .false., corrected=.false.)))
+    call assert( ieee_is_nan(var(cd1, .false., corrected=.false.)))
+    call assert( ieee_is_nan(var(cd1, 1, .false., corrected=.false.)))
 
     print*,' test_cdp_1dim_mask_array'
     call assert( abs(var(cd1, aimag(cd1) == 0, corrected=.false.) -&
                      var(real(cd1), aimag(cd1) == 0, corrected=.false.)) < dptol)
     call assert( abs(var(cd1, 1, aimag(cd1) == 0, corrected=.false.) -&
                      var(real(cd1), 1, aimag(cd1) == 0, corrected=.false.)) < dptol)
-    call assert( isnan((var(cd1, (real(cd1) == 0 .and. aimag(cd1) == 0),&
+    call assert( ieee_is_nan((var(cd1, (real(cd1) == 0 .and. aimag(cd1) == 0),&
                             corrected=.false.))))
     call assert( abs(var(cd1, (real(cd1) > 1.2 .and. aimag(cd1) == 0),&
                      corrected=.false.)) < dptol)
@@ -344,15 +345,15 @@ program test_varn
                           var(aimag(cd), 2, corrected=.false.))) < dptol))
 
     print*,' test_cdp_2dim_mask'
-    call assert( isnan(var(cd, .false., corrected=.false.)))
-    call assert( any(isnan(var(cd, 1, .false., corrected=.false.))))
-    call assert( any(isnan(var(cd, 2, .false., corrected=.false.))))
+    call assert( ieee_is_nan(var(cd, .false., corrected=.false.)))
+    call assert( any(ieee_is_nan(var(cd, 1, .false., corrected=.false.))))
+    call assert( any(ieee_is_nan(var(cd, 2, .false., corrected=.false.))))
 
     print*,' test_cdp_2dim_mask_array'
     call assert( abs(var(cd, aimag(cd) == 0, corrected=.false.) -&
                      var(real(cd), aimag(cd) == 0, corrected=.false.)) < dptol)
     call assert( all( abs( var(cd, 1, aimag(cd) == 0, corrected=.false.) -&
                            var(real(cd), 1, aimag(cd) == 0, corrected=.false.)) < dptol))
-    call assert( any( isnan( var(cd, 2, aimag(cd) == 0, corrected=.false.))))
+    call assert( any( ieee_is_nan( var(cd, 2, aimag(cd) == 0, corrected=.false.))))
 
 end program
