@@ -1,7 +1,5 @@
 # Numerical integration
 
-## Implemented
-
 * [`trapz` - integrate sampled values using trapezoidal rule](#trapz---integrate-sampled-values-using-trapezoidal-rule)
 * [`trapz_weights` - trapezoidal rule weights for given abscissas](#trapz_weights---trapezoidal-rule-weights-for-given-abscissas)
 * [`simps` - integrate sampled values using Simpson's rule (to be implemented)](#simps---integrate-sampled-values-using-simpsons-rule-to-be-implemented)

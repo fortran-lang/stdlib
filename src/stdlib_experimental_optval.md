@@ -1,7 +1,5 @@
 # Default values for optional arguments
 
-## Implemented
-
 * [`optval` - fallback value for optional arguments](#optval---fallback-value-for-optional-arguments)
 
 ## `optval` - fallback value for optional arguments

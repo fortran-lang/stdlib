@@ -1,8 +1,5 @@
 # Descriptive statistics
 
-
-## Implemented
-
 * [`mean` - mean of array elements](#mean---mean-of-array-elements)
 * [`moment` - central moment of array elements](#moment---central-moment-of-array-elements)
 * [`var` - variance of array elements](#var---variance-of-array-elements)
