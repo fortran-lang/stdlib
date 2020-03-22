@@ -1,5 +1,6 @@
 ADDTEST(mean)
 ADDTEST(moment)
+ADDTEST(rawmoment)
 ADDTEST(var)
 ADDTEST(varn)
 
