@@ -1,8 +1,8 @@
 program test_always_skip
 
-use stdlib_experimental_error, only : assert
+use stdlib_experimental_error, only: check
 implicit none
 
-call assert(.false., 77)
+call check(.false., code=77)
 
 end program

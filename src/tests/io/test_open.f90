@@ -1,6 +1,6 @@
 program test_open
 use stdlib_experimental_io, only: open
-use stdlib_experimental_error, only: assert
+use stdlib_experimental_error, only: check
 implicit none
 
 character(:), allocatable :: filename
@@ -17,7 +17,7 @@ close(u)
 ! Test mode "r"
 u = open(filename, "r")
 read(u, *) a
-call assert(all(a == [1, 2, 3]))
+call check(all(a == [1, 2, 3]))
 close(u)
 
 ! Test mode "a"
@@ -26,9 +26,9 @@ write(u, *) 4, 5, 6
 close(u)
 u = open(filename, "r")
 read(u, *) a
-call assert(all(a == [1, 2, 3]))
+call check(all(a == [1, 2, 3]))
 read(u, *) a
-call assert(all(a == [4, 5, 6]))
+call check(all(a == [4, 5, 6]))
 close(u)
 
 
@@ -44,7 +44,7 @@ close(u)
 ! Test mode "r"
 u = open(filename, "rb")
 read(u) a
-call assert(all(a == [1, 2, 3]))
+call check(all(a == [1, 2, 3]))
 close(u)
 
 ! Test mode "a"
@@ -53,9 +53,9 @@ write(u) 4, 5, 6
 close(u)
 u = open(filename, "rb")
 read(u) a
-call assert(all(a == [1, 2, 3]))
+call check(all(a == [1, 2, 3]))
 read(u) a
-call assert(all(a == [4, 5, 6]))
+call check(all(a == [4, 5, 6]))
 close(u)
 
 
@@ -64,21 +64,21 @@ close(u)
 filename = get_outpath() // "/io_open.stream"
 
 u = open(filename, "rb", io)
-call assert(io == 0)
+call check(io == 0)
 if (io == 0) close(u)
 
 u = open(filename, "ab", io)
-call assert(io == 0)
+call check(io == 0)
 if (io == 0) close(u)
 
 
 filename = get_outpath() // "/does_not_exist.error"
 
 u = open(filename, "a", io)
-call assert(io /= 0)
+call check(io /= 0)
 
 u = open(filename, "r", io)
-call assert(io /= 0)
+call check(io /= 0)
 
 
 contains
