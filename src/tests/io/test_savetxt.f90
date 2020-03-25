@@ -1,7 +1,7 @@
 program test_savetxt
 use stdlib_experimental_kinds, only: int32, sp, dp
 use stdlib_experimental_io, only: loadtxt, savetxt
-use stdlib_experimental_error, only: assert
+use stdlib_experimental_error, only: check
 implicit none
 
 character(:), allocatable :: outpath
@@ -36,14 +36,14 @@ contains
     d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
     call savetxt(outpath, d)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [3, 2]))
-    call assert(all(abs(d-d2) == 0))
+    call check(all(shape(d2) == [3, 2]))
+    call check(all(abs(d-d2) == 0))
 
     e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
     call savetxt(outpath, e)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [2, 3]))
-    call assert(all(abs(e-d2) == 0))
+    call check(all(shape(d2) == [2, 3]))
+    call check(all(abs(e-d2) == 0))
     end subroutine
 
 
@@ -54,14 +54,14 @@ contains
     d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
     call savetxt(outpath, d)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [3, 2]))
-    call assert(all(abs(d-d2) < epsilon(1._sp)))
+    call check(all(shape(d2) == [3, 2]))
+    call check(all(abs(d-d2) < epsilon(1._sp)))
 
     e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
     call savetxt(outpath, e)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [2, 3]))
-    call assert(all(abs(e-d2) < epsilon(1._sp)))
+    call check(all(shape(d2) == [2, 3]))
+    call check(all(abs(e-d2) < epsilon(1._sp)))
     end subroutine test_rsp
 
 
@@ -72,14 +72,14 @@ contains
     d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
     call savetxt(outpath, d)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [3, 2]))
-    call assert(all(abs(d-d2) < epsilon(1._dp)))
+    call check(all(shape(d2) == [3, 2]))
+    call check(all(abs(d-d2) < epsilon(1._dp)))
 
     e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
     call savetxt(outpath, e)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [2, 3]))
-    call assert(all(abs(e-d2) < epsilon(1._dp)))
+    call check(all(shape(d2) == [2, 3]))
+    call check(all(abs(e-d2) < epsilon(1._dp)))
     end subroutine test_rdp
 
     subroutine test_csp(outpath)
@@ -89,14 +89,14 @@ contains
     d = cmplx(1, 1)* reshape([1, 2, 3, 4, 5, 6], [3, 2])
     call savetxt(outpath, d)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [3, 2]))
-    call assert(all(abs(d-d2) < epsilon(1._sp)))
+    call check(all(shape(d2) == [3, 2]))
+    call check(all(abs(d-d2) < epsilon(1._sp)))
 
     e = cmplx(1, 1)* reshape([1, 2, 3, 4, 5, 6], [2, 3])
     call savetxt(outpath, e)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [2, 3]))
-    call assert(all(abs(e-d2) < epsilon(1._sp)))
+    call check(all(shape(d2) == [2, 3]))
+    call check(all(abs(e-d2) < epsilon(1._sp)))
     end subroutine test_csp
 
     subroutine test_cdp(outpath)
@@ -106,14 +106,14 @@ contains
     d = cmplx(1._dp, 1._dp)* reshape([1, 2, 3, 4, 5, 6], [3, 2])
     call savetxt(outpath, d)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [3, 2]))
-    call assert(all(abs(d-d2) < epsilon(1._dp)))
+    call check(all(shape(d2) == [3, 2]))
+    call check(all(abs(d-d2) < epsilon(1._dp)))
 
     e = cmplx(1, 1)* reshape([1, 2, 3, 4, 5, 6], [2, 3])
     call savetxt(outpath, e)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [2, 3]))
-    call assert(all(abs(e-d2) < epsilon(1._dp)))
+    call check(all(shape(d2) == [2, 3]))
+    call check(all(abs(e-d2) < epsilon(1._dp)))
     end subroutine test_cdp
 
 end program test_savetxt
