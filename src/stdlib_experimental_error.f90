@@ -33,12 +33,13 @@ subroutine check(condition, msg, code, warn)
     character(*), intent(in), optional :: msg
     integer, intent(in), optional :: code
     logical, intent(in), optional :: warn
-    character(*), parameter :: msg_default = 'Test failed.'
+    character(*), parameter :: msg_default = 'Check failed.'
 
     ! Examples
     ! --------
     !
-    ! ! Stops the program with exit code 1 and prints 'Test failed.'
+    ! ! If a /= 5, stops the program with exit code 1
+    ! ! and prints 'Check failed.'
     ! call check(a == 5)
     !
     ! ! As above, but prints 'a == 5 failed.'
