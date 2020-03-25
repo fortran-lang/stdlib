@@ -37,6 +37,7 @@ clean:
 
 # Fortran module dependencies
 f18estop.o: stdlib_experimental_error.o
+stdlib_experimental_error.o: stdlib_experimental_optval.o
 stdlib_experimental_io.o: \
 	stdlib_experimental_error.o \
 	stdlib_experimental_optval.o \
