@@ -45,13 +45,6 @@ contains
         zero2_1 = 0
         zero2_2 = 0
 
-        allocate(zero3_1(size(x3, 2), size(x3, 3))&
-                 ,zero3_2(size(x3, 1), size(x3, 3))&
-                 ,zero3_3(size(x3, 1), size(x3, 2)))
-        zero3_1 = 0
-        zero3_2 = 0
-        zero3_3 = 0
-
         order = 1
 
         !1dim
@@ -109,6 +102,13 @@ contains
         x3(:,:,1)=x2;
         x3(:,:,2)=x2*2;
         x3(:,:,3)=x2*4;
+
+        allocate(zero3_1(size(x3, 2), size(x3, 3))&
+                 ,zero3_2(size(x3, 1), size(x3, 3))&
+                 ,zero3_3(size(x3, 1), size(x3, 2)))
+        zero3_1 = 0
+        zero3_2 = 0
+        zero3_3 = 0
 
         print*,' test_sp_3dim', order
         call assert( abs(moment(x3, order, center = 0.) - mean(x3)) < sptol)
@@ -270,14 +270,6 @@ contains
         zero2_1 = 0
         zero2_2 = 0
 
-        allocate(zero3_1(size(x3, 2), size(x3, 3))&
-                 ,zero3_2(size(x3, 1), size(x3, 3))&
-                 ,zero3_3(size(x3, 1), size(x3, 2)))
-        zero3_1 = 0
-        zero3_2 = 0
-        zero3_3 = 0
-
-
         order = 1
 
         !1dim
@@ -336,6 +328,13 @@ contains
         x3(:,:,1)=x2;
         x3(:,:,2)=x2*2;
         x3(:,:,3)=x2*4;
+
+        allocate(zero3_1(size(x3, 2), size(x3, 3))&
+                 ,zero3_2(size(x3, 1), size(x3, 3))&
+                 ,zero3_3(size(x3, 1), size(x3, 2)))
+        zero3_1 = 0
+        zero3_2 = 0
+        zero3_3 = 0
 
         print*,' test_sp_3dim', order
         call assert( abs(moment(x3, order, center = 0._dp) - mean(x3)) < sptol)
@@ -500,7 +499,6 @@ contains
         complex(sp), intent(in) :: x1(:), x2(:, :)
 
         integer :: order
-        complex(sp), allocatable :: x3(:, :, :)
         complex(sp), allocatable :: zero2_1(:), zero2_2(:)
 
         allocate(zero2_1(size(x2, 2)), zero2_2(size(x2, 1)))

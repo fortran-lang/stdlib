@@ -627,7 +627,6 @@ contains
         complex(sp), intent(in) :: x1(:), x2(:, :)
 
         integer :: order
-        complex(sp), allocatable :: x3(:, :, :)
 
         order = 1
 
