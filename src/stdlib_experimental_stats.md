@@ -1,7 +1,7 @@
 # Descriptive statistics
 
 * [`mean` - mean of array elements](#mean---mean-of-array-elements)
-* [`moment` - raw and central moments of array elements](#moment---raw-and-central-moments-of-array-elements)
+* [`moment` - central moments of array elements](#moment---central-moments-of-array-elements)
 * [`var` - variance of array elements](#var---variance-of-array-elements)
 
 ## `mean` - mean of array elements
@@ -48,24 +48,24 @@ program demo_mean
 end program demo_mean
 ```
 
-## `moment` - raw and central moments of array elements
+## `moment` - central moments of array elements
 
 ### Description
 
-Returns the _k_-th order raw moment of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
+Returns the _k_-th order central moment of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
 
-If an array `center` is provided, the function returns the _k_-th order central moment of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
+If a scalar or an array `center` is provided, the function returns the _k_-th order moment about 'center', of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
 
 
-The _k_-th order raw moment is defined as :
+The _k_-th order central moment is defined as :
 
 ```
- moment(array) = 1/n sum_i (array(i))^k
+ moment(array) = 1/n sum_i (array(i) - mean(array))^k
 ```
 
 where n is the number of elements.
 
-The _k_-th order central moment is defined as :
+The _k_-th order moment about `center` is defined as :
 
 ```
  moment(array) = 1/n sum_i (array(i) - center)^k
@@ -85,7 +85,7 @@ The _k_-th order central moment is defined as :
 
 `dim`: Shall be a scalar of type `integer` with a value in the range from 1 to n, where n is the rank of `array`.
 
-`center` (optional): Shall be a scalar of the same type of `array` if `array` is `real` or `complex`, or of type `real(dp)` if `array` is of type `integer`. If `dim` is provided, `center` shall be an array (with a shape similar to that of `array` with dimension `dim` dropped) of the same type of `array` if `array` is `real` or `complex`, or of type `real(dp)` if `array` is of type `integer`.
+`center` (optional): Shall be a scalar of the same type of `result` if `dim` is not provided. If `dim` is provided, `center` shall be a scalar or an array (with a shape similar to that of `array` with dimension `dim` dropped) of the same type of `result`.
 
 `mask` (optional): Shall be of type `logical` and either by a scalar or an array of the same shape as `array`.
 
@@ -94,9 +94,9 @@ The _k_-th order central moment is defined as :
 If `array` is of type `real` or `complex`, the result is of the same type as `array`.
 If `array` is of type `integer`, the result is of type `real(dp)`.
 
-If `dim` is absent, a scalar with the _k_-th raw (or central if `center` is provided) moment of all elements in `array` is returned. Otherwise, an array of rank n-1, where n equals the rank of `array`, and a shape similar to that of `array` with dimension `dim` dropped is returned.
+If `dim` is absent, a scalar with the _k_-th (central) moment of all elements in `array` is returned. Otherwise, an array of rank n-1, where n equals the rank of `array`, and a shape similar to that of `array` with dimension `dim` dropped is returned.
 
-If `mask` is specified, the result is the _k_-th raw (or central if `center` is provided) moment of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
+If `mask` is specified, the result is the _k_-th  (central) moment of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
 
 ### Example
 
@@ -106,14 +106,12 @@ program demo_moment
     implicit none
     real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
     real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
-    print *, moment(x, 2, center = mean(x))                 !returns 2.9167
-    print *, moment( y, 2,&
-                     center = mean(y))                      !returns 2.9167
-    print *, moment( y, 2, 1,&
-                     center = mean(y, 1))                   !returns [0.25, 0.25, 0.25]
-    print *, moment( y, 2, 1,&
-                     center = mean(y, 1, y > 3.),&
-                     mask = (y > 3.))                       !returns [NaN, 0., 0.25]
+    print *, moment(x, 2)                        !returns 2.9167
+    print *, moment( y, 2)                       !returns 2.9167
+    print *, moment( y, 2, 1)                    !returns [0.25, 0.25, 0.25]
+    print *, moment( y, 2, 1, mask = (y > 3.))   !returns [NaN, 0., 0.25]
+    print *, moment(x, 2, center = 0.)           !returns 15.1667
+    print *, moment( y, 1, 1, center = 0.)       !returns [1.5, 3.5, 5.5]
 end program demo_moment
 ```
 

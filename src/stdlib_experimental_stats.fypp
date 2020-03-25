@@ -1,5 +1,6 @@
 #:include "common.fypp"
 #:set RANKS = range(1, MAXRANK + 1)
+#:set REDRANKS = range(2, MAXRANK + 1)
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_experimental_stats
   use stdlib_experimental_kinds, only: sp, dp, qp, &
@@ -237,6 +238,20 @@ module stdlib_experimental_stats
     #:endfor
 
     #:for k1, t1 in RC_KINDS_TYPES
+      #:for rank in REDRANKS
+        #:set RName = rname("moment_scalar",rank, t1, k1)
+        module function ${RName}$(x, order, dim, center, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          integer, intent(in) :: dim
+          ${t1}$, intent(in) :: center
+          logical, intent(in), optional :: mask
+          ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("moment",rank, t1, k1)
         module function ${RName}$(x, order, dim, center, mask) result(res)
@@ -246,6 +261,20 @@ module stdlib_experimental_stats
           ${t1}$, intent(in), optional :: center${reduced_shape('x', rank, 'dim')}$
           logical, intent(in), optional :: mask
           ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for rank in REDRANKS
+        #:set RName = rname("moment_scalar",rank, t1, k1, 'dp')
+        module function ${RName}$(x, order, dim, center, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          integer, intent(in) :: dim
+          real(dp),intent(in) :: center
+          logical, intent(in), optional :: mask
+          real(dp) :: res${reduced_shape('x', rank, 'dim')}$
         end function ${RName}$
       #:endfor
     #:endfor
@@ -291,6 +320,20 @@ module stdlib_experimental_stats
     #:endfor
 
     #:for k1, t1 in RC_KINDS_TYPES
+      #:for rank in REDRANKS
+        #:set RName = rname("moment_mask_scalar",rank, t1, k1)
+        module function ${RName}$(x, order, dim, center, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          integer, intent(in) :: dim
+          ${t1}$, intent(in) :: center
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("moment_mask",rank, t1, k1)
         module function ${RName}$(x, order, dim, center, mask) result(res)
@@ -300,6 +343,20 @@ module stdlib_experimental_stats
           ${t1}$, intent(in), optional :: center${reduced_shape('x', rank, 'dim')}$
           logical, intent(in) :: mask${ranksuffix(rank)}$
           ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for rank in REDRANKS
+        #:set RName = rname("moment_mask_scalar",rank, t1, k1, 'dp')
+        module function ${RName}$(x, order, dim, center, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: order
+          integer, intent(in) :: dim
+          real(dp), intent(in) :: center
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          real(dp) :: res${reduced_shape('x', rank, 'dim')}$
         end function ${RName}$
       #:endfor
     #:endfor
