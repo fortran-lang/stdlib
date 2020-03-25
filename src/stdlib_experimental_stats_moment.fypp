@@ -32,7 +32,7 @@ contains
         if (present(center)) then
          res = sum((x - center)**order) / n
         else
-         res = sum((x)**order) / n
+         res = sum((x - mean(x))**order) / n
         end if
 
       end function ${RName}$
@@ -62,7 +62,7 @@ contains
         if (present(center)) then
          res = sum((real(x, dp) - center)**order) / n
         else
-         res = sum((real(x, dp))**order) / n
+         res = sum((real(x, dp) - mean(x))**order) / n
         end if
 
       end function ${RName}$
@@ -83,6 +83,7 @@ contains
 
         integer :: i
         real(${k1}$) :: n
+        ${t1}$, allocatable :: mean_${ranksuffix(rank-1)}$
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._${k1}$, ieee_quiet_nan)
@@ -100,9 +101,11 @@ contains
                 res = res + (x${select_subarray(rank, [(fi, 'i')])}$ - center)**order
               end do
             else
+              allocate(mean_, source = mean(x, ${fi}$))
               do i = 1, size(x, ${fi}$)
-                res = res + (x${select_subarray(rank, [(fi, 'i')])}$)**order
+                res = res + (x${select_subarray(rank, [(fi, 'i')])}$ - mean_)**order
               end do
+              deallocate(mean_)
             end if
           #:endfor
           case default
@@ -128,6 +131,7 @@ contains
 
         integer :: i
         real(dp) :: n
+        real(dp), allocatable :: mean_${ranksuffix(rank-1)}$
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -146,9 +150,11 @@ contains
                   center)**order
               end do
             else
+              allocate(mean_, source = mean(x, ${fi}$))
               do i = 1, size(x, ${fi}$)
-                res = res + (real(x${select_subarray(rank, [(fi, 'i')])}$, dp))**order
+                res = res + (real(x${select_subarray(rank, [(fi, 'i')])}$, dp) - mean_)**order
               end do
+              deallocate(mean_)
             end if
           #:endfor
           case default
@@ -178,7 +184,7 @@ contains
         if (present(center)) then
          res = sum((x - center)**order, mask) / n
         else
-         res = sum((x)**order, mask) / n
+         res = sum((x - mean(x, mask))**order, mask) / n
         end if
 
       end function ${RName}$
@@ -203,7 +209,7 @@ contains
         if (present(center)) then
          res = sum((real(x, dp) - center)**order, mask) / n
         else
-         res = sum((real(x, dp))**order, mask) / n
+         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
         end if
 
       end function ${RName}$
@@ -224,6 +230,7 @@ contains
 
         integer :: i
         real(${k1}$) :: n${reduced_shape('x', rank, 'dim')}$
+        ${t1}$, allocatable :: mean_${ranksuffix(rank-1)}$
 
         n = count(mask, dim)
 
@@ -243,8 +250,9 @@ contains
                     mask${select_subarray(rank, [(fi, 'i')])}$)
               end do
             else
+              allocate(mean_, source = mean(x, ${fi}$, mask))
               do i = 1, size(x, ${fi}$)
-                res = res + merge( (x${select_subarray(rank, [(fi, 'i')])}$)**order,&
+                res = res + merge( (x${select_subarray(rank, [(fi, 'i')])}$ - mean_)**order,&
                   #:if t1[0] == 'r'
                     0._${k1}$,&
                   #:else
@@ -252,6 +260,7 @@ contains
                   #:endif
                     mask${select_subarray(rank, [(fi, 'i')])}$)
               end do
+              deallocate(mean_)
             end if
           #:endfor
           case default
@@ -277,6 +286,7 @@ contains
 
         integer :: i
         real(dp) :: n${reduced_shape('x', rank, 'dim')}$
+        real(dp), allocatable :: mean_${ranksuffix(rank-1)}$
 
         n = count(mask, dim)
 
@@ -291,11 +301,13 @@ contains
                                     0._dp, mask${select_subarray(rank, [(fi, 'i')])}$)
               end do
             else
+              allocate(mean_, source = mean(x, ${fi}$, mask))
               do i = 1, size(x, ${fi}$)
-                res = res + merge((real(x${select_subarray(rank, [(fi, 'i')])}$, dp))&
+                res = res + merge((real(x${select_subarray(rank, [(fi, 'i')])}$, dp) - mean_)&
                                     **order,&
                                     0._dp, mask${select_subarray(rank, [(fi, 'i')])}$)
               end do
+              deallocate(mean_)
             end if
           #:endfor
           case default
