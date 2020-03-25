@@ -112,11 +112,11 @@ contains
 
         print*,' test_sp_3dim', order
         call assert( abs(moment(x3, order, center = 0.) - mean(x3)) < sptol)
-        call assert( all( abs( moment(x3, order, dim = 1, center = 0.) -&
+        call assert( all( abs( moment(x3, order, dim = 1, center = 0._sp) -&
                                mean(x3, 1)) < sptol))
-        call assert( all( abs( moment(x3, order, dim = 2, center = 0.) -&
+        call assert( all( abs( moment(x3, order, dim = 2, center = 0._sp) -&
                                mean(x3, 2)) < sptol))
-        call assert( all( abs( moment(x3, order, dim = 3, center = 0.) -&
+        call assert( all( abs( moment(x3, order, dim = 3, center = 0._sp) -&
                                mean(x3, 3)) < sptol))
         call assert( all( abs( moment(x3, order, dim = 1, center = zero3_1) -&
                                mean(x3, 1)) < sptol))
