@@ -73,7 +73,7 @@ jobs:
     - name: Test in-tree builds
       if: contains( matrix.gcc_v, '9') # Only test one compiler on each platform
       run: |
-          cmake .
+          cmake -DCMAKE_MAXIMUM_RANK=4 .
           cmake --build .
           cmake --build . --target test
 
