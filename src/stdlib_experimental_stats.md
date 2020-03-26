@@ -1,7 +1,7 @@
 # Descriptive statistics
 
 * [`mean` - mean of array elements](#mean---mean-of-array-elements)
-* [`moment` - central moment of array elements](#moment---central-moment-of-array-elements)
+* [`moment` - central moments of array elements](#moment---central-moments-of-array-elements)
 * [`var` - variance of array elements](#var---variance-of-array-elements)
 
 ## `mean` - mean of array elements
@@ -48,11 +48,14 @@ program demo_mean
 end program demo_mean
 ```
 
-## `moment` - central moment of array elements
+## `moment` - central moments of array elements
 
 ### Description
 
 Returns the _k_-th order central moment of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
+
+If a scalar or an array `center` is provided, the function returns the _k_-th order moment about 'center', of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
+
 
 The _k_-th order central moment is defined as :
 
@@ -62,11 +65,17 @@ The _k_-th order central moment is defined as :
 
 where n is the number of elements.
 
+The _k_-th order moment about `center` is defined as :
+
+```
+ moment(array) = 1/n sum_i (array(i) - center)^k
+```
+
 ### Syntax
 
-`result = moment(array, order [, mask])`
+`result = moment(array, order [, center [, mask]])`
 
-`result = moment(array, order, dim [, mask])`
+`result = moment(array, order, dim [, center [, mask]])`
 
 ### Arguments
 
@@ -76,6 +85,8 @@ where n is the number of elements.
 
 `dim`: Shall be a scalar of type `integer` with a value in the range from 1 to n, where n is the rank of `array`.
 
+`center` (optional): Shall be a scalar of the same type of `result` if `dim` is not provided. If `dim` is provided, `center` shall be a scalar or an array (with a shape similar to that of `array` with dimension `dim` dropped) of the same type of `result`.
+
 `mask` (optional): Shall be of type `logical` and either by a scalar or an array of the same shape as `array`.
 
 ### Return value
@@ -83,22 +94,24 @@ where n is the number of elements.
 If `array` is of type `real` or `complex`, the result is of the same type as `array`.
 If `array` is of type `integer`, the result is of type `real(dp)`.
 
-If `dim` is absent, a scalar with the _k_-th central moment of all elements in `array` is returned. Otherwise, an array of rank n-1, where n equals the rank of `array`, and a shape similar to that of `array` with dimension `dim` dropped is returned.
+If `dim` is absent, a scalar with the _k_-th (central) moment of all elements in `array` is returned. Otherwise, an array of rank n-1, where n equals the rank of `array`, and a shape similar to that of `array` with dimension `dim` dropped is returned.
 
-If `mask` is specified, the result is the _k_-th central moment of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
+If `mask` is specified, the result is the _k_-th  (central) moment of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
 
 ### Example
 
 ```fortran
 program demo_moment
-    use stdlib_experimental_stats, only: moment
+    use stdlib_experimental_stats, only: mean, moment
     implicit none
     real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    print *, moment(x, 2)                            !returns 2.9167
-    print *, moment( reshape(x, [ 2, 3 ] ), 2)       !returns 2.9167
-    print *, moment( reshape(x, [ 2, 3 ] ), 2, 1)    !returns [0.25, 0.25, 0.25]
-    print *, moment( reshape(x, [ 2, 3 ] ), 2, 1,&
-                     reshape(x, [ 2, 3 ] ) > 3.)     !returns [NaN, 0., 0.25]
+    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
+    print *, moment(x, 2)                        !returns 2.9167
+    print *, moment( y, 2)                       !returns 2.9167
+    print *, moment( y, 2, 1)                    !returns [0.25, 0.25, 0.25]
+    print *, moment( y, 2, 1, mask = (y > 3.))   !returns [NaN, 0., 0.25]
+    print *, moment(x, 2, center = 0.)           !returns 15.1667
+    print *, moment( y, 1, 1, center = 0.)       !returns [1.5, 3.5, 5.5]
 end program demo_moment
 ```
 

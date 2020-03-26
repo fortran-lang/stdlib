@@ -49,12 +49,12 @@ contains
         call check( abs(moment(x1, order, dim=1)) < sptol)
 
         print*,' test_sp_1dim_mask', order
-        call check( ieee_is_nan(moment(x1, order, .false.)))
-        call check( ieee_is_nan(moment(x1, order, 1, .false.)))
+        call check( ieee_is_nan(moment(x1, order, mask = .false.)))
+        call check( ieee_is_nan(moment(x1, order, 1, mask = .false.)))
 
         print*,' test_sp_1dim_mask_array', order
-        call check( abs(moment(x1, order, x1 < 5)) < sptol)
-        call check( abs(moment(x1, order, 1, x1 < 5)) < sptol)
+        call check( abs(moment(x1, order, mask = (x1 < 5))) < sptol)
+        call check( abs(moment(x1, order, 1, mask = (x1 < 5))) < sptol)
 
         !2dim
         print*,' test_sp_2dim', order
@@ -63,14 +63,14 @@ contains
         call check( all( abs( moment(x2, order, 2)) < sptol))
 
         print*,' test_sp_2dim_mask', order
-        call check( ieee_is_nan(moment(x2, order, .false.)))
-        call check( any(ieee_is_nan(moment(x2, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x2, order, 2, .false.))))
+        call check( ieee_is_nan(moment(x2, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x2, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x2, order, 2, mask = .false.))))
 
         print*,' test_sp_2dim_mask_array', order
-        call check( abs(moment(x2, order, x2 < 11)) < sptol)
-        call check( all( abs( moment(x2, order, 1, x2 < 11)) < sptol))
-        call check( all( abs( moment(x2, order, 2, x2 < 11)) < sptol))
+        call check( abs(moment(x2, order, mask = (x2 < 11))) < sptol)
+        call check( all( abs( moment(x2, order, 1, mask = (x2 < 11))) < sptol))
+        call check( all( abs( moment(x2, order, 2, mask = (x2 < 11))) < sptol))
 
         !3dim
         allocate(x3(size(x2,1),size(x2,2),3))
@@ -85,16 +85,16 @@ contains
         call check( all( abs( moment(x3, order, 3)) < sptol))
     
         print*,' test_sp_3dim_mask', order
-        call check( ieee_is_nan(moment(x3, order, .false.)))
-        call check( any(ieee_is_nan(moment(x3, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 2, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 3, .false.))))
+        call check( ieee_is_nan(moment(x3, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x3, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 2, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 3, mask = .false.))))
     
         print*,' test_sp_3dim_mask_array', order
-        call check( abs(moment(x3, order, x3 < 11) ) < sptol)
-        call check( all( abs( moment(x3, order, 1, x3 < 45)) < sptol ))
-        call check( all( abs( moment(x3, order, 2, x3 < 45)) < sptol ))
-        call check( all( abs( moment(x3, order, 3, x3 < 45)) < sptol ))
+        call check( abs(moment(x3, order, mask = (x3 < 11)) ) < sptol)
+        call check( all( abs( moment(x3, order, 1, mask = (x3 < 45))) < sptol ))
+        call check( all( abs( moment(x3, order, 2, mask = (x3 < 45))) < sptol ))
+        call check( all( abs( moment(x3, order, 3, mask = (x3 < 45))) < sptol ))
  
 
         order = 2
@@ -105,29 +105,30 @@ contains
         call check( abs(moment(x1, order, dim=1) - 2._sp) < sptol)
 
         print*,' test_sp_1dim_mask', order
-        call check( ieee_is_nan(moment(x1, order, .false.)))
-        call check( ieee_is_nan(moment(x1, order, 1, .false.)))
+        call check( ieee_is_nan(moment(x1, order, mask = .false.)))
+        call check( ieee_is_nan(moment(x1, order, 1, mask = .false.)))
 
         print*,' test_sp_1dim_mask_array', order
-        call check( abs(moment(x1, order, x1 < 5) - 1.25_sp) < sptol)
-        call check( abs(moment(x1, order, 1, x1 < 5) - 1.25_sp) < sptol)
+        call check( abs(moment(x1, order, mask = (x1 < 5)) - 1.25_sp) < sptol)
+        call check( abs(moment(x1, order, 1, mask = (x1 < 5)) - 1.25_sp) < sptol)
 
         !2dim
         print*,' test_sp_2dim', order
         call check( abs(moment(x2, order) - 107.25_sp/9.) < sptol)
         call check( all( abs( moment(x2, order, 1) - [5._sp, 5._sp, 1.25_sp]) < sptol))
-        call check( all( abs( moment(x2, order, 2) - [19.0, 43. / 3., 31. / 3. , 7.0]*2./3.) < sptol))
+        call check( all( abs( moment(x2, order, 2) -&
+                           [19.0, 43. / 3., 31. / 3. , 7.0]*2./3.) < sptol))
 
         print*,' test_sp_2dim_mask', order
-        call check( ieee_is_nan(moment(x2, order, .false.)))
-        call check( any(ieee_is_nan(moment(x2, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x2, order, 2, .false.))))
+        call check( ieee_is_nan(moment(x2, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x2, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x2, order, 2, mask = .false.))))
 
         print*,' test_sp_2dim_mask_array', order
-        call check( abs(moment(x2, order, x2 < 11)- 2.75_sp*3.) < sptol)
-        call check( all( abs( moment(x2, order, 1, x2 < 11) -&
+        call check( abs(moment(x2, order, mask = (x2 < 11))- 2.75_sp*3.) < sptol)
+        call check( all( abs( moment(x2, order, 1, mask = (x2 < 11)) -&
                       [5._sp, 5._sp, 0.25_sp]) < sptol))
-        call check( all( abs( moment(x2, order, 2, x2 < 11) -&
+        call check( all( abs( moment(x2, order, 2, mask = (x2 < 11)) -&
                       [19._sp*2./3., 43._sp/9.*2., 0.25_sp , 0.25_sp]) < sptol))
 
         !3dim
@@ -154,24 +155,25 @@ contains
                  < sptol))
     
         print*,' test_sp_3dim_mask', order
-        call check( ieee_is_nan(moment(x3, order, .false.)))
-        call check( any(ieee_is_nan(moment(x3, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 2, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 3, .false.))))
+        call check( ieee_is_nan(moment(x3, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x3, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 2, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 3, mask = .false.))))
     
         print*,' test_sp_3dim_mask_array', order
-        call check( abs(moment(x3, order, x3 < 11) - 7.7370242214532876_dp ) < sptol)
-        call check( all( abs( moment(x3, order, 1, x3 < 45) -&
+        call check( abs(moment(x3, order, mask = (x3 < 11)) -&
+                      7.7370242214532876_dp ) < sptol)
+        call check( all( abs( moment(x3, order, 1, mask = (x3 < 45)) -&
                       reshape([5._sp, 5._sp, 1.25_sp,  20._sp, 20._sp, 5._sp,&
                                80._sp, 80._sp, 32._sp/3.],&
                                [size(x3, 2), size(x3, 3)])) < sptol ))
-        call check( all( abs( moment(x3, order, 2, x3 < 45) -&
+        call check( all( abs( moment(x3, order, 2, mask = (x3 < 45)) -&
                       reshape([ 38._sp/3., 86._sp/9., 62._sp/9., 14._sp/3., 152._sp/3.,&
                                 344._sp/9., 248._sp/9., 168._sp/9., 1824._sp/9.,&
                                 1376._sp/9., 992._sp/9., 4._sp&
                                ],&
                       [size(x3, 1), size(x3, 3)])) < sptol ))
-        call check( all( abs( moment(x3, order, 3, x3 < 45) -&
+        call check( all( abs( moment(x3, order, 3, mask = (x3 < 45)) -&
                      reshape([14._sp/9., 14._sp, 350._sp/9., 686._sp/9., 56._sp/9.,&
                               224._sp/9., 56._sp, 896._sp/9., 126._sp, 1400._sp/9.,&
                               1694._sp/9., 36._sp&
@@ -194,12 +196,12 @@ contains
         call check( abs(moment(x1, order, dim=1)) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call check( ieee_is_nan(moment(x1, order, .false.)))
-        call check( ieee_is_nan(moment(x1, order, 1, .false.)))
+        call check( ieee_is_nan(moment(x1, order, mask = .false.)))
+        call check( ieee_is_nan(moment(x1, order, 1, mask = .false.)))
 
         print*,' test_dp_1dim_mask_array', order
-        call check( abs(moment(x1, order, x1 < 5)) < dptol)
-        call check( abs(moment(x1, order, 1, x1 < 5)) < dptol)
+        call check( abs(moment(x1, order, mask = (x1 < 5))) < dptol)
+        call check( abs(moment(x1, order, 1, mask = (x1 < 5))) < dptol)
 
         !2dim
         print*,' test_dp_2dim', order
@@ -208,14 +210,14 @@ contains
         call check( all( abs( moment(x2, order, 2)) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call check( ieee_is_nan(moment(x2, order, .false.)))
-        call check( any(ieee_is_nan(moment(x2, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x2, order, 2, .false.))))
+        call check( ieee_is_nan(moment(x2, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x2, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x2, order, 2, mask = .false.))))
 
         print*,' test_dp_2dim_mask_array', order
-        call check( abs(moment(x2, order, x2 < 11)) < dptol)
-        call check( all( abs( moment(x2, order, 1, x2 < 11)) < dptol))
-        call check( all( abs( moment(x2, order, 2, x2 < 11)) < dptol))
+        call check( abs(moment(x2, order, mask = (x2 < 11))) < dptol)
+        call check( all( abs( moment(x2, order, 1, mask = (x2 < 11))) < dptol))
+        call check( all( abs( moment(x2, order, 2, mask = (x2 < 11))) < dptol))
 
         !3dim
         allocate(x3(size(x2,1),size(x2,2),3))
@@ -230,16 +232,16 @@ contains
         call check( all( abs( moment(x3, order, 3)) < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call check( ieee_is_nan(moment(x3, order, .false.)))
-        call check( any(ieee_is_nan(moment(x3, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 2, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 3, .false.))))
+        call check( ieee_is_nan(moment(x3, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x3, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 2, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 3, mask = .false.))))
     
         print*,' test_dp_3dim_mask_array', order
-        call check( abs(moment(x3, order, x3 < 11) ) < dptol)
-        call check( all( abs( moment(x3, order, 1, x3 < 45)) < dptol ))
-        call check( all( abs( moment(x3, order, 2, x3 < 45)) < dptol ))
-        call check( all( abs( moment(x3, order, 3, x3 < 45)) < dptol ))
+        call check( abs(moment(x3, order, mask = (x3 < 11)) ) < dptol)
+        call check( all( abs( moment(x3, order, 1, mask = (x3 < 45))) < dptol ))
+        call check( all( abs( moment(x3, order, 2, mask = (x3 < 45))) < dptol ))
+        call check( all( abs( moment(x3, order, 3, mask = (x3 < 45))) < dptol ))
  
 
         order = 2
@@ -250,12 +252,12 @@ contains
         call check( abs(moment(x1, order, dim=1) - 2._dp) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call check( ieee_is_nan(moment(x1, order, .false.)))
-        call check( ieee_is_nan(moment(x1, order, 1, .false.)))
+        call check( ieee_is_nan(moment(x1, order, mask = .false.)))
+        call check( ieee_is_nan(moment(x1, order, 1, mask = .false.)))
 
         print*,' test_dp_1dim_mask_array', order
-        call check( abs(moment(x1, order, x1 < 5) - 1.25_dp) < dptol)
-        call check( abs(moment(x1, order, 1, x1 < 5) - 1.25_dp) < dptol)
+        call check( abs(moment(x1, order, mask = (x1 < 5)) - 1.25_dp) < dptol)
+        call check( abs(moment(x1, order, 1, mask = (x1 < 5)) - 1.25_dp) < dptol)
 
         !2dim
         print*,' test_dp_2dim', order
@@ -265,15 +267,15 @@ contains
                       [19._dp, 43._dp / 3., 31._dp / 3. , 7._dp]*2._dp/3.) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call check( ieee_is_nan(moment(x2, order, .false.)))
-        call check( any(ieee_is_nan(moment(x2, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x2, order, 2, .false.))))
+        call check( ieee_is_nan(moment(x2, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x2, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x2, order, 2, mask = .false.))))
 
         print*,' test_dp_2dim_mask_array', order
-        call check( abs(moment(x2, order, x2 < 11)- 2.75_dp*3.) < dptol)
-        call check( all( abs( moment(x2, order, 1, x2 < 11) -&
+        call check( abs(moment(x2, order, mask = (x2 < 11))- 2.75_dp*3.) < dptol)
+        call check( all( abs( moment(x2, order, 1, mask = (x2 < 11)) -&
                       [5._dp, 5._dp, 0.25_dp]) < dptol))
-        call check( all( abs( moment(x2, order, 2, x2 < 11) -&
+        call check( all( abs( moment(x2, order, 2, mask = (x2 < 11)) -&
                       [19._dp*2./3., 43._dp/9.*2., 0.25_dp , 0.25_dp]) < dptol))
 
         !3dim
@@ -300,24 +302,25 @@ contains
                  < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call check( ieee_is_nan(moment(x3, order, .false.)))
-        call check( any(ieee_is_nan(moment(x3, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 2, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 3, .false.))))
+        call check( ieee_is_nan(moment(x3, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x3, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 2, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 3, mask = .false.))))
     
         print*,' test_dp_3dim_mask_array', order
-        call check( abs(moment(x3, order, x3 < 11) - 7.7370242214532876_dp ) < dptol)
-        call check( all( abs( moment(x3, order, 1, x3 < 45) -&
+        call check( abs(moment(x3, order, mask = (x3 < 11)) -&
+                          7.7370242214532876_dp ) < dptol)
+        call check( all( abs( moment(x3, order, 1, mask = (x3 < 45)) -&
                       reshape([5._dp, 5._dp, 1.25_dp,  20._dp, 20._dp, 5._dp,&
                                80._dp, 80._dp, 32._dp/3.],&
                                [size(x3, 2), size(x3, 3)])) < dptol ))
-        call check( all( abs( moment(x3, order, 2, x3 < 45) -&
+        call check( all( abs( moment(x3, order, 2, mask = (x3 < 45)) -&
                       reshape([ 38._dp/3., 86._dp/9., 62._dp/9., 14._dp/3., 152._dp/3.,&
                                 344._dp/9., 248._dp/9., 168._dp/9., 1824._dp/9.,&
                                 1376._dp/9., 992._dp/9., 4._dp&
                                ],&
                       [size(x3, 1), size(x3, 3)])) < dptol ))
-        call check( all( abs( moment(x3, order, 3, x3 < 45) -&
+        call check( all( abs( moment(x3, order, 3, mask = (x3 < 45)) -&
                      reshape([14._dp/9., 14._dp, 350._dp/9., 686._dp/9., 56._dp/9.,&
                               224._dp/9., 56._dp, 896._dp/9., 126._dp, 1400._dp/9.,&
                               1694._dp/9., 36._dp&
@@ -340,12 +343,12 @@ contains
         call check( abs(moment(x1, order, dim=1)) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call check( ieee_is_nan(moment(x1, order, .false.)))
-        call check( ieee_is_nan(moment(x1, order, 1, .false.)))
+        call check( ieee_is_nan(moment(x1, order, mask = .false.)))
+        call check( ieee_is_nan(moment(x1, order, 1, mask = .false.)))
 
         print*,' test_dp_1dim_mask_array', order
-        call check( abs(moment(x1, order, x1 < 5)) < dptol)
-        call check( abs(moment(x1, order, 1, x1 < 5)) < dptol)
+        call check( abs(moment(x1, order, mask = (x1 < 5))) < dptol)
+        call check( abs(moment(x1, order, 1, mask = (x1 < 5))) < dptol)
 
         !2dim
         print*,' test_dp_2dim', order
@@ -354,14 +357,14 @@ contains
         call check( all( abs( moment(x2, order, 2)) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call check( ieee_is_nan(moment(x2, order, .false.)))
-        call check( any(ieee_is_nan(moment(x2, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x2, order, 2, .false.))))
+        call check( ieee_is_nan(moment(x2, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x2, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x2, order, 2, mask = .false.))))
 
         print*,' test_dp_2dim_mask_array', order
-        call check( abs(moment(x2, order, x2 < 11)) < dptol)
-        call check( all( abs( moment(x2, order, 1, x2 < 11)) < dptol))
-        call check( all( abs( moment(x2, order, 2, x2 < 11)) < dptol))
+        call check( abs(moment(x2, order, mask = (x2 < 11))) < dptol)
+        call check( all( abs( moment(x2, order, 1, mask = (x2 < 11))) < dptol))
+        call check( all( abs( moment(x2, order, 2, mask = (x2 < 11))) < dptol))
 
         !3dim
         allocate(x3(size(x2,1),size(x2,2),3))
@@ -376,16 +379,16 @@ contains
         call check( all( abs( moment(x3, order, 3)) < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call check( ieee_is_nan(moment(x3, order, .false.)))
-        call check( any(ieee_is_nan(moment(x3, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 2, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 3, .false.))))
+        call check( ieee_is_nan(moment(x3, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x3, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 2, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 3, mask = .false.))))
     
         print*,' test_dp_3dim_mask_array', order
-        call check( abs(moment(x3, order, x3 < 11) ) < dptol)
-        call check( all( abs( moment(x3, order, 1, x3 < 45)) < dptol ))
-        call check( all( abs( moment(x3, order, 2, x3 < 45)) < dptol ))
-        call check( all( abs( moment(x3, order, 3, x3 < 45)) < dptol ))
+        call check( abs(moment(x3, order, mask = (x3 < 11)) ) < dptol)
+        call check( all( abs( moment(x3, order, 1, mask = (x3 < 45))) < dptol ))
+        call check( all( abs( moment(x3, order, 2, mask = (x3 < 45))) < dptol ))
+        call check( all( abs( moment(x3, order, 3, mask = (x3 < 45))) < dptol ))
  
 
         order = 2
@@ -396,12 +399,12 @@ contains
         call check( abs(moment(x1, order, dim=1) - 2._dp) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call check( ieee_is_nan(moment(x1, order, .false.)))
-        call check( ieee_is_nan(moment(x1, order, 1, .false.)))
+        call check( ieee_is_nan(moment(x1, order, mask = .false.)))
+        call check( ieee_is_nan(moment(x1, order, 1, mask = .false.)))
 
         print*,' test_dp_1dim_mask_array', order
-        call check( abs(moment(x1, order, x1 < 5) - 1.25_dp) < dptol)
-        call check( abs(moment(x1, order, 1, x1 < 5) - 1.25_dp) < dptol)
+        call check( abs(moment(x1, order, mask = (x1 < 5)) - 1.25_dp) < dptol)
+        call check( abs(moment(x1, order, 1, mask = (x1 < 5)) - 1.25_dp) < dptol)
 
         !2dim
         print*,' test_dp_2dim', order
@@ -411,15 +414,15 @@ contains
                       [19._dp, 43._dp / 3., 31._dp / 3. , 7._dp]*2._dp/3.) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call check( ieee_is_nan(moment(x2, order, .false.)))
-        call check( any(ieee_is_nan(moment(x2, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x2, order, 2, .false.))))
+        call check( ieee_is_nan(moment(x2, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x2, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x2, order, 2, mask = .false.))))
 
         print*,' test_dp_2dim_mask_array', order
-        call check( abs(moment(x2, order, x2 < 11)- 2.75_dp*3.) < dptol)
-        call check( all( abs( moment(x2, order, 1, x2 < 11) -&
+        call check( abs(moment(x2, order, mask = (x2 < 11))- 2.75_dp*3.) < dptol)
+        call check( all( abs( moment(x2, order, 1, mask = (x2 < 11)) -&
                       [5._dp, 5._dp, 0.25_dp]) < dptol))
-        call check( all( abs( moment(x2, order, 2, x2 < 11) -&
+        call check( all( abs( moment(x2, order, 2, mask = (x2 < 11)) -&
                       [19._dp*2./3., 43._dp/9.*2., 0.25_dp , 0.25_dp]) < dptol))
 
         !3dim
@@ -446,24 +449,25 @@ contains
                  < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call check( ieee_is_nan(moment(x3, order, .false.)))
-        call check( any(ieee_is_nan(moment(x3, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 2, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 3, .false.))))
+        call check( ieee_is_nan(moment(x3, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x3, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 2, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 3, mask = .false.))))
     
         print*,' test_dp_3dim_mask_array', order
-        call check( abs(moment(x3, order, x3 < 11) - 7.7370242214532876_dp ) < dptol)
-        call check( all( abs( moment(x3, order, 1, x3 < 45) -&
+        call check( abs(moment(x3, order, mask = (x3 < 11)) -&
+                          7.7370242214532876_dp ) < dptol)
+        call check( all( abs( moment(x3, order, 1, mask = (x3 < 45)) -&
                       reshape([5._dp, 5._dp, 1.25_dp,  20._dp, 20._dp, 5._dp,&
                                80._dp, 80._dp, 32._dp/3.],&
                                [size(x3, 2), size(x3, 3)])) < dptol ))
-        call check( all( abs( moment(x3, order, 2, x3 < 45) -&
+        call check( all( abs( moment(x3, order, 2, mask = (x3 < 45)) -&
                       reshape([ 38._dp/3., 86._dp/9., 62._dp/9., 14._dp/3., 152._dp/3.,&
                                 344._dp/9., 248._dp/9., 168._dp/9., 1824._dp/9.,&
                                 1376._dp/9., 992._dp/9., 4._dp&
                                ],&
                       [size(x3, 1), size(x3, 3)])) < dptol ))
-        call check( all( abs( moment(x3, order, 3, x3 < 45) -&
+        call check( all( abs( moment(x3, order, 3, mask = (x3 < 45)) -&
                      reshape([14._dp/9., 14._dp, 350._dp/9., 686._dp/9., 56._dp/9.,&
                               224._dp/9., 56._dp, 896._dp/9., 126._dp, 1400._dp/9.,&
                               1694._dp/9., 36._dp&
@@ -486,12 +490,12 @@ contains
         call check( abs(moment(x1, order, dim=1)) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call check( ieee_is_nan(moment(x1, order, .false.)))
-        call check( ieee_is_nan(moment(x1, order, 1, .false.)))
+        call check( ieee_is_nan(moment(x1, order, mask = .false.)))
+        call check( ieee_is_nan(moment(x1, order, 1, mask = .false.)))
 
         print*,' test_dp_1dim_mask_array', order
-        call check( abs(moment(x1, order, x1 < 5)) < dptol)
-        call check( abs(moment(x1, order, 1, x1 < 5)) < dptol)
+        call check( abs(moment(x1, order, mask = (x1 < 5))) < dptol)
+        call check( abs(moment(x1, order, 1, mask = (x1 < 5))) < dptol)
 
         !2dim
         print*,' test_dp_2dim', order
@@ -500,14 +504,14 @@ contains
         call check( all( abs( moment(x2, order, 2)) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call check( ieee_is_nan(moment(x2, order, .false.)))
-        call check( any(ieee_is_nan(moment(x2, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x2, order, 2, .false.))))
+        call check( ieee_is_nan(moment(x2, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x2, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x2, order, 2, mask = .false.))))
 
         print*,' test_dp_2dim_mask_array', order
-        call check( abs(moment(x2, order, x2 < 11)) < dptol)
-        call check( all( abs( moment(x2, order, 1, x2 < 11)) < dptol))
-        call check( all( abs( moment(x2, order, 2, x2 < 11)) < dptol))
+        call check( abs(moment(x2, order, mask = (x2 < 11))) < dptol)
+        call check( all( abs( moment(x2, order, 1, mask = (x2 < 11))) < dptol))
+        call check( all( abs( moment(x2, order, 2, mask = (x2 < 11))) < dptol))
 
         !3dim
         allocate(x3(size(x2,1),size(x2,2),3))
@@ -522,16 +526,16 @@ contains
         call check( all( abs( moment(x3, order, 3)) < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call check( ieee_is_nan(moment(x3, order, .false.)))
-        call check( any(ieee_is_nan(moment(x3, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 2, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 3, .false.))))
+        call check( ieee_is_nan(moment(x3, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x3, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 2, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 3, mask = .false.))))
     
         print*,' test_dp_3dim_mask_array', order
-        call check( abs(moment(x3, order, x3 < 11) ) < dptol)
-        call check( all( abs( moment(x3, order, 1, x3 < 45)) < dptol ))
-        call check( all( abs( moment(x3, order, 2, x3 < 45)) < dptol ))
-        call check( all( abs( moment(x3, order, 3, x3 < 45)) < dptol ))
+        call check( abs(moment(x3, order, mask = (x3 < 11)) ) < dptol)
+        call check( all( abs( moment(x3, order, 1, mask = (x3 < 45))) < dptol ))
+        call check( all( abs( moment(x3, order, 2, mask = (x3 < 45))) < dptol ))
+        call check( all( abs( moment(x3, order, 3, mask = (x3 < 45))) < dptol ))
  
 
         order = 2
@@ -542,12 +546,12 @@ contains
         call check( abs(moment(x1, order, dim=1) - 2._dp) < dptol)
 
         print*,' test_dp_1dim_mask', order
-        call check( ieee_is_nan(moment(x1, order, .false.)))
-        call check( ieee_is_nan(moment(x1, order, 1, .false.)))
+        call check( ieee_is_nan(moment(x1, order, mask = .false.)))
+        call check( ieee_is_nan(moment(x1, order, 1, mask = .false.)))
 
         print*,' test_dp_1dim_mask_array', order
-        call check( abs(moment(x1, order, x1 < 5) - 1.25_dp) < dptol)
-        call check( abs(moment(x1, order, 1, x1 < 5) - 1.25_dp) < dptol)
+        call check( abs(moment(x1, order, mask = (x1 < 5)) - 1.25_dp) < dptol)
+        call check( abs(moment(x1, order, 1, mask = (x1 < 5)) - 1.25_dp) < dptol)
 
         !2dim
         print*,' test_dp_2dim', order
@@ -557,15 +561,15 @@ contains
                       [19._dp, 43._dp / 3., 31._dp / 3. , 7._dp]*2._dp/3.) < dptol))
 
         print*,' test_dp_2dim_mask', order
-        call check( ieee_is_nan(moment(x2, order, .false.)))
-        call check( any(ieee_is_nan(moment(x2, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x2, order, 2, .false.))))
+        call check( ieee_is_nan(moment(x2, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x2, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x2, order, 2, mask = .false.))))
 
         print*,' test_dp_2dim_mask_array', order
-        call check( abs(moment(x2, order, x2 < 11)- 2.75_dp*3.) < dptol)
-        call check( all( abs( moment(x2, order, 1, x2 < 11) -&
+        call check( abs(moment(x2, order, mask = (x2 < 11))- 2.75_dp*3.) < dptol)
+        call check( all( abs( moment(x2, order, 1, mask = (x2 < 11)) -&
                       [5._dp, 5._dp, 0.25_dp]) < dptol))
-        call check( all( abs( moment(x2, order, 2, x2 < 11) -&
+        call check( all( abs( moment(x2, order, 2, mask = (x2 < 11)) -&
                       [19._dp*2./3., 43._dp/9.*2., 0.25_dp , 0.25_dp]) < dptol))
 
         !3dim
@@ -592,24 +596,25 @@ contains
                  < dptol))
     
         print*,' test_dp_3dim_mask', order
-        call check( ieee_is_nan(moment(x3, order, .false.)))
-        call check( any(ieee_is_nan(moment(x3, order, 1, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 2, .false.))))
-        call check( any(ieee_is_nan(moment(x3, order, 3, .false.))))
+        call check( ieee_is_nan(moment(x3, order, mask = .false.)))
+        call check( any(ieee_is_nan(moment(x3, order, 1, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 2, mask = .false.))))
+        call check( any(ieee_is_nan(moment(x3, order, 3, mask = .false.))))
     
         print*,' test_dp_3dim_mask_array', order
-        call check( abs(moment(x3, order, x3 < 11) - 7.7370242214532876_dp ) < dptol)
-        call check( all( abs( moment(x3, order, 1, x3 < 45) -&
+        call check( abs(moment(x3, order, mask = (x3 < 11)) -&
+                          7.7370242214532876_dp ) < dptol)
+        call check( all( abs( moment(x3, order, 1, mask = (x3 < 45)) -&
                       reshape([5._dp, 5._dp, 1.25_dp,  20._dp, 20._dp, 5._dp,&
                                80._dp, 80._dp, 32._dp/3.],&
                                [size(x3, 2), size(x3, 3)])) < dptol ))
-        call check( all( abs( moment(x3, order, 2, x3 < 45) -&
+        call check( all( abs( moment(x3, order, 2, mask = (x3 < 45)) -&
                       reshape([ 38._dp/3., 86._dp/9., 62._dp/9., 14._dp/3., 152._dp/3.,&
                                 344._dp/9., 248._dp/9., 168._dp/9., 1824._dp/9.,&
                                 1376._dp/9., 992._dp/9., 4._dp&
                                ],&
                       [size(x3, 1), size(x3, 3)])) < dptol ))
-        call check( all( abs( moment(x3, order, 3, x3 < 45) -&
+        call check( all( abs( moment(x3, order, 3, mask = (x3 < 45)) -&
                      reshape([14._dp/9., 14._dp, 350._dp/9., 686._dp/9., 56._dp/9.,&
                               224._dp/9., 56._dp, 896._dp/9., 126._dp, 1400._dp/9.,&
                               1694._dp/9., 36._dp&
@@ -622,7 +627,6 @@ contains
         complex(sp), intent(in) :: x1(:), x2(:, :)
 
         integer :: order
-        complex(sp), allocatable :: x3(:, :, :)
 
         order = 1
 
@@ -632,12 +636,12 @@ contains
         call check( abs(moment(x1, order, dim=1)) < sptol)
 
         print*,' test_sp_1dim_mask', order
-        call check( ieee_is_nan(abs(moment(x1, order, .false.))))
-        call check( ieee_is_nan(abs(moment(x1, order, 1, .false.))))
+        call check( ieee_is_nan(abs(moment(x1, order, mask = .false.))))
+        call check( ieee_is_nan(abs(moment(x1, order, 1, mask = .false.))))
 
         print*,' test_sp_1dim_mask_array', order
-        call check( abs(moment(x1, order, aimag(x1) == 0)) < sptol)
-        call check( abs(moment(x1, order, 1, aimag(x1) == 0)) < sptol)
+        call check( abs(moment(x1, order, mask = (aimag(x1) == 0))) < sptol)
+        call check( abs(moment(x1, order, 1, mask = (aimag(x1) == 0))) < sptol)
 
         !2dim
         print*,' test_sp_2dim', order
@@ -646,14 +650,15 @@ contains
         call check( all( abs( moment(x2, order, 2)) < sptol))
 
         print*,' test_sp_2dim_mask', order
-        call check( ieee_is_nan(abs(moment(x2, order, .false.))))
-        call check( any(ieee_is_nan(abs(moment(x2, order, 1, .false.)))))
-        call check( any(ieee_is_nan(abs(moment(x2, order, 2, .false.)))))
+        call check( ieee_is_nan(abs(moment(x2, order, mask = .false.))))
+        call check( any(ieee_is_nan(abs(moment(x2, order, 1, mask = .false.)))))
+        call check( any(ieee_is_nan(abs(moment(x2, order, 2, mask = .false.)))))
 
         print*,' test_sp_2dim_mask_array', order
-        call check( abs(moment(x2, order, aimag(x2) == 0)) < sptol)
-        call check( all( abs( moment(x2, order, 1, aimag(x2) == 0)) < sptol))
-        call check( any(ieee_is_nan( abs( moment(x2, order, 2, aimag(x2) == 0)))))
+        call check( abs(moment(x2, order, mask = (aimag(x2) == 0))) < sptol)
+        call check( all( abs( moment(x2, order, 1, mask = (aimag(x2) == 0))) < sptol))
+        call check( any(ieee_is_nan( abs( moment(x2, order, 2,&
+                          mask = (aimag(x2) == 0))))))
 
         order = 2
 
@@ -664,13 +669,13 @@ contains
                         (-6.459422410E-02,-0.556084037)) < sptol)
 
         print*,' test_sp_1dim_mask', order
-        call check( ieee_is_nan(abs(moment(x1, order, .false.))))
-        call check( ieee_is_nan(abs(moment(x1, order, 1, .false.))))
+        call check( ieee_is_nan(abs(moment(x1, order, mask = .false.))))
+        call check( ieee_is_nan(abs(moment(x1, order, 1, mask = .false.))))
 
         print*,' test_sp_1dim_mask_array', order
-        call check( abs(moment(x1, order, aimag(x1) == 0) -&
+        call check( abs(moment(x1, order, mask = (aimag(x1) == 0)) -&
                           (8.969944715E-02,0.00000000)) < sptol)
-        call check( abs(moment(x1, order, 1, aimag(x1) == 0) -&
+        call check( abs(moment(x1, order, 1, mask = (aimag(x1) == 0)) -&
                           (8.969944715E-02,0.00000000)) < sptol)
 
         !2dim
@@ -690,14 +695,14 @@ contains
                      ) < sptol))
 
         print*,' test_sp_2dim_mask', order
-        call check( ieee_is_nan(abs(moment(x2, order, .false.))))
-        call check( any(ieee_is_nan(abs(moment(x2, order, 1, .false.)))))
-        call check( any(ieee_is_nan(abs(moment(x2, order, 2, .false.)))))
+        call check( ieee_is_nan(abs(moment(x2, order, mask = .false.))))
+        call check( any(ieee_is_nan(abs(moment(x2, order, 1, mask = .false.)))))
+        call check( any(ieee_is_nan(abs(moment(x2, order, 2, mask = .false.)))))
 
         print*,' test_sp_2dim_mask_array', order
-        call check( abs(moment(x2, order, aimag(x2) == 0)-&
+        call check( abs(moment(x2, order, mask = (aimag(x2) == 0))-&
                      (1.08109438,0.00000000)) < sptol)
-        call check( all( abs( moment(x2, order, 1, aimag(x2)==0) -&
+        call check( all( abs( moment(x2, order, 1, mask = (aimag(x2)==0)) -&
                       [(8.969944715E-02,0.00000000),&
                        (0.807295084,0.00000000),&
                        (0.201823771,0.00000000)]&
