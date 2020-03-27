@@ -18,7 +18,7 @@ Checks the value of a logical condition.
 
 `condition`: Shall be a scalar of type `logical`.
 
-`msg` (optional): Shall be a character expression containing the message to be printed to `stderr`. The default `msg` is 'Check failed'.
+`msg` (optional): Shall be a character expression containing the message to be printed to `stderr`. The default `msg` is 'Check failed.'.
 
 `code` (optional): Shall be a scalar of type `integer`. The default `code` is `1`.
 
@@ -101,6 +101,6 @@ Aborts the program with printing the message `msg` to `stderr` and a nonzero exi
 program demo_error_stop
     use stdlib_experimental_error, only: error_stop
     implicit none
-    call error_stop("Invalid argument")
+    call error_stop("Invalid argument", code = 123)
 end program demo_error_stop
 ```
