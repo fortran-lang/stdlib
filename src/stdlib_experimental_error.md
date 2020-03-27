@@ -95,12 +95,24 @@ Aborts the program with a message and a nonzero exit code.
 
 Aborts the program with printing the message `msg` to `stderr` and a nonzero exit code. The nonzero exit code is equal to `code` if provided, and 1 otherwise.
 
-### Example
+### Examples
+
+Without error code:
 
 ```fortran
-program demo_error_stop
+program demo_error_stop1
+    use stdlib_experimental_error, only: error_stop
+    implicit none
+    call error_stop("Invalid argument")
+end program demo_error_stop1
+```
+
+With error code:
+
+```fortran
+program demo_error_stop2
     use stdlib_experimental_error, only: error_stop
     implicit none
     call error_stop("Invalid argument", code = 123)
-end program demo_error_stop
+end program demo_error_stop2
 ```
