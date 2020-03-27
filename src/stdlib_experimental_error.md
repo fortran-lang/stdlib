@@ -89,7 +89,7 @@ Aborts the program with a message and a nonzero exit code.
 
 `msg`: Shall be a character expression containing the message to be printed to `stderr`.
 
-`code` (optional): Shall be a scalar of type `integer to be returned as exit code.
+`code` (optional): Shall be a scalar of type `integer` to be returned as exit code.
 
 ### Output
 
