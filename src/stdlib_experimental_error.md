@@ -75,7 +75,7 @@ program demo_check3
 end program demo_check3
 ```
 
-## `error_stop` - aborts a program
+## `error_stop` - aborts the program
 
 ### Description
 
