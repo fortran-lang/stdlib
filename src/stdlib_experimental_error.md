@@ -93,7 +93,7 @@ Aborts the program with a message and a nonzero exit code.
 
 ### Output
 
-Aborts the program with printing the message `msg` to `stderr` and a nonzero exit code. The nonzero exit code is equal to `code` if provided.
+Aborts the program with printing the message `msg` to `stderr` and a nonzero exit code. The nonzero exit code is equal to `code` if provided, and 1 otherwise.
 
 ### Example
 
