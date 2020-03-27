@@ -1,7 +1,7 @@
 # Catching and handling errors
 
 * [`check` - Checks the value of a logical condition](#check---checks-the-value-of-a-logical-condition)
-* [`error_stop` - aborts a program](#error_stop---aborts-a-program)
+* [`error_stop` - aborts the program](#error_stop---aborts-the-program)
 
 
 ## `check` - Checks the value of a logical condition
