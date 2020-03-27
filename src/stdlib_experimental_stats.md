@@ -40,11 +40,11 @@ program demo_mean
     use stdlib_experimental_stats, only: mean
     implicit none
     real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    print *, mean(x)                            !returns 3.5
-    print *, mean( reshape(x, [ 2, 3 ] ))       !returns 3.5
-    print *, mean( reshape(x, [ 2, 3 ] ), 1)    !returns [ 1.5, 3.5, 5.5 ]
-    print *, mean( reshape(x, [ 2, 3 ] ), 1,&
-                   reshape(x, [ 2, 3 ] ) > 3.)  !returns [ NaN, 4.0, 5.5 ]
+    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
+    print *, mean(x)                                  !returns 3.5
+    print *, mean(y)                                  !returns 3.5
+    print *, mean(y, 1)                               !returns [ 1.5, 3.5, 5.5 ]
+    print *, mean(y, 1,y > 3.)                        !returns [ NaN, 4.0, 5.5 ]
 end program demo_mean
 ```
 
@@ -106,12 +106,12 @@ program demo_moment
     implicit none
     real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
     real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
-    print *, moment(x, 2)                        !returns 2.9167
-    print *, moment( y, 2)                       !returns 2.9167
-    print *, moment( y, 2, 1)                    !returns [0.25, 0.25, 0.25]
-    print *, moment( y, 2, 1, mask = (y > 3.))   !returns [NaN, 0., 0.25]
-    print *, moment(x, 2, center = 0.)           !returns 15.1667
-    print *, moment( y, 1, 1, center = 0.)       !returns [1.5, 3.5, 5.5]
+    print *, moment(x, 2)                            !returns 2.9167
+    print *, moment(y, 2)                            !returns 2.9167
+    print *, moment(y, 2, 1)                         !returns [0.25, 0.25, 0.25]
+    print *, moment(y, 2, 1, mask = (y > 3.))        !returns [NaN, 0., 0.25]
+    print *, moment(x, 2, center = 0.)               !returns 15.1667
+    print *, moment(y, 1, 1, center = 0.)            !returns [1.5, 3.5, 5.5]
 end program demo_moment
 ```
 
@@ -166,15 +166,13 @@ program demo_var
     use stdlib_experimental_stats, only: var
     implicit none
     real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    print *, var(x)                            !returns 3.5
-    print *, var(x, corrected = .false.)       !returns 2.9167
-    print *, var( reshape(x, [ 2, 3 ] ))       !returns 3.5
-    print *, var( reshape(x, [ 2, 3 ] ), 1)    !returns [0.5, 0.5, 0.5]
-    print *, var( reshape(x, [ 2, 3 ] ), 1,&
-                  reshape(x, [ 2, 3 ] ) > 3.)  !returns [NaN, NaN, 0.5]
-    print *, var( reshape(x, [ 2, 3 ] ), 1,&
-                  reshape(x, [ 2, 3 ] ) > 3.,&
-                  corrected=.false.)           !returns [NaN, 0., 0.25]
+    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
+    print *, var(x)                                  !returns 3.5
+    print *, var(x, corrected = .false.)             !returns 2.9167
+    print *, var(y)                                  !returns 3.5
+    print *, var(y, 1)                               !returns [0.5, 0.5, 0.5]
+    print *, var(y, 1, y > 3.)                       !returns [NaN, NaN, 0.5]
+    print *, var(y, 1, y > 3., corrected=.false.)    !returns [NaN, 0., 0.25]
 end program demo_var
 ```
 
