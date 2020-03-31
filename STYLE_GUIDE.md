@@ -42,6 +42,15 @@ focus on the semantics of the proposed changes rather than style and formatting.
 * Where conventional and appropriate shortening of a word is used then the underscore may be omitted,
   for example `linspace` is preferred over `lin_space`
 
+## Order of attributes
+
+Similiar to the guidlines for indentation and whitespace, specifiying the order of appearance of attributes can  help reviewing code and git-diffs.
+
+1. ```dimension```
+2. ```allocatable```
+3. ```intent(intent-spec)```
+4. ```optional```
+
 ## End <scope> block closing statements
 
 Fortran allows certain block constructs or scopes to include the name of the program unit in the end statement.
