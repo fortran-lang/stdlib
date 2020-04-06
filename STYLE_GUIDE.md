@@ -42,14 +42,25 @@ focus on the semantics of the proposed changes rather than style and formatting.
 * Where conventional and appropriate shortening of a word is used then the underscore may be omitted,
   for example `linspace` is preferred over `lin_space`
 
-## Order of attributes
+## Attributes
 
-Similiar to the guidlines for indentation and whitespace, specifiying the order of appearance of attributes can  help reviewing code and git-diffs.
+* Always specify ```intent``` for dummy arguments
+* Don't use ```dimension``` attribute to declare arrays because it is less verbose.
+  Use this:
 
-1. ```dimension```
-2. ```allocatable```
-3. ```intent(intent-spec)```
-4. ```optional```
+  ```
+  real, allocatable :: a(:), b(:,:)
+  ```
+
+  instead of:
+
+  ```
+  real, dimension(:), allocatable :: a
+  real, dimension(:,:), allocatable :: b
+  ```
+
+  When defining a lot of arrays of the same dimension ```dimension``` can be used as an exception.
+* If ```optional``` attribute is used to declare a dummy argument, it should follow the intent attribute
 
 ## End <scope> block closing statements
 
