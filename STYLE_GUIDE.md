@@ -44,8 +44,8 @@ focus on the semantics of the proposed changes rather than style and formatting.
 
 ## Attributes
 
-* Always specify ```intent``` for dummy arguments.
-* Don't use ```dimension``` attribute to declare arrays because it is less verbose.
+* Always specify `intent` for dummy arguments.
+* Don't use `dimension` attribute to declare arrays because it is less verbose.
   Use this:
 
   ```
@@ -59,8 +59,8 @@ focus on the semantics of the proposed changes rather than style and formatting.
   real, dimension(:,:), allocatable :: b
   ```
 
-When defining many arrays of the same dimension, ```dimension``` can be used as an exception if it makes the code less verbose.
-* If ```optional``` attribute is used to declare a dummy argument, it should follow the intent attribute
+  When defining many arrays of the same dimension, `dimension` can be used as an exception if it makes the code less verbose.
+* If the `optional` attribute is used to declare a dummy argument, it should follow the `intent` attribute.
 
 ## End <scope> block closing statements
 
