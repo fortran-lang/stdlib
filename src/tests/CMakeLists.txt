@@ -8,6 +8,7 @@ endmacro(ADDTEST)
 
 add_subdirectory(ascii)
 add_subdirectory(io)
+add_subdirectory(linalg)
 add_subdirectory(optval)
 add_subdirectory(stats)
 add_subdirectory(system)
