@@ -59,7 +59,7 @@ focus on the semantics of the proposed changes rather than style and formatting.
   real, dimension(:,:), allocatable :: b
   ```
 
-  When defining a lot of arrays of the same dimension ```dimension``` can be used as an exception.
+When defining many arrays of the same dimension, ```dimension``` can be used as an exception if it makes the code less verbose.
 * If ```optional``` attribute is used to declare a dummy argument, it should follow the intent attribute
 
 ## End <scope> block closing statements
