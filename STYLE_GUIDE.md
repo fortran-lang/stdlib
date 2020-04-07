@@ -44,7 +44,7 @@ focus on the semantics of the proposed changes rather than style and formatting.
 
 ## Attributes
 
-* Always specify ```intent``` for dummy arguments
+* Always specify ```intent``` for dummy arguments.
 * Don't use ```dimension``` attribute to declare arrays because it is less verbose.
   Use this:
 
