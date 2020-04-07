@@ -42,6 +42,26 @@ focus on the semantics of the proposed changes rather than style and formatting.
 * Where conventional and appropriate shortening of a word is used then the underscore may be omitted,
   for example `linspace` is preferred over `lin_space`
 
+## Attributes
+
+* Always specify `intent` for dummy arguments.
+* Don't use `dimension` attribute to declare arrays because it is less verbose.
+  Use this:
+
+  ```
+  real, allocatable :: a(:), b(:,:)
+  ```
+
+  instead of:
+
+  ```
+  real, dimension(:), allocatable :: a
+  real, dimension(:,:), allocatable :: b
+  ```
+
+  When defining many arrays of the same dimension, `dimension` can be used as an exception if it makes the code less verbose.
+* If the `optional` attribute is used to declare a dummy argument, it should follow the `intent` attribute.
+
 ## End <scope> block closing statements
 
 Fortran allows certain block constructs or scopes to include the name of the program unit in the end statement.
