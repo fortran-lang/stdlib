@@ -49,7 +49,7 @@ program test_varn
 
     !2dim
     print*,' test_sp_2dim'
-    s = d
+    allocate(s, source = real(d))
     call check( abs(var(s, corrected=.false.) - 13.*11./12.) < sptol)
     call check( all( abs( var(s, 1, corrected=.false.) - [20., 20., 5.]/4.) < sptol))
     call check( all( abs( var(s, 2, corrected=.false.) -&
@@ -227,7 +227,7 @@ program test_varn
     call check( abs(var(i321, 1, i321 < 5, corrected=.false.) - 5._dp/4.) < dptol)
 
     !2dim
-    i32 = d
+    allocate(i32, source = int(d, int32))
     print*,' test_int32_2dim'
     call check( abs(var(i32, corrected=.false.) - 13._dp*11./12.) < dptol)
     call check( all( abs( var(i32, 1, corrected=.false.) -&

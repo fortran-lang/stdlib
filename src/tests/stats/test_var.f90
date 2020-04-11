@@ -57,7 +57,7 @@ program test_var
 
     !2dim
     print*,' test_sp_2dim'
-    s = d
+    allocate(s, source = real(d))
     call check( abs(var(s) - 13) < sptol)
     call check( all( abs( var(s, 1) - [20. / 3., 20. / 3., 5. / 3.]) < sptol))
     call check( all( abs( var(s, 2) - [19.0, 43. / 3., 31. / 3. , 7.0]) < sptol))
@@ -231,7 +231,7 @@ program test_var
 
     !2dim
     print*,' test_int32_2dim'
-    i32 = d
+    allocate(i32, source = int(d))
     call check( abs(var(i32) - 13) < dptol)
     call check( all( abs( var(i32,1) -&
                  [20._dp/3._dp, 20._dp/3._dp, 5._dp/3._dp]) < dptol))
@@ -321,7 +321,7 @@ program test_var
 
     !2dim
     print*,' test_int64_2dim'
-    i64 = d
+    allocate(i64, source = int(d, int64))
     call check( abs(var(i64) - 13) < dptol)
     call check( all( abs( var(i64,1) -&
                  [20._dp/3._dp, 20._dp/3._dp, 5._dp/3._dp]) < dptol))
