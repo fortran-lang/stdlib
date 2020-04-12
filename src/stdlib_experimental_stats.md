@@ -1,8 +1,65 @@
 # Descriptive statistics
 
+* [`cov` - covariance of array elements](#cov---covariance-of-array-elements)
 * [`mean` - mean of array elements](#mean---mean-of-array-elements)
 * [`moment` - central moments of array elements](#moment---central-moments-of-array-elements)
 * [`var` - variance of array elements](#var---variance-of-array-elements)
+
+
+## `cov` - covariance of array elements
+
+### Description
+
+Returns the covariance of the elements of `array` along dimension `dim` if the corresponding element in `mask` is `true` (if `mask` is provided).
+
+Per default, the covariance is defined as:
+
+```
+ cov(array) = 1/(n-1) sum_i (array(i) - mean(array) * (array(i) - mean(array)) )
+```
+
+where n is the number of elements.
+
+The scaling can be changed with the logical argument `corrected`. If `corrected` is `.false.`, then the sum is scaled with `n`, otherwise with `n-1`.
+
+
+### Syntax
+
+`result = cov(array, dim [, mask [, corrected]])`
+
+### Arguments
+
+`array`: Shall be a 1-rank or a 2-rank array of type `integer`, `real`, or `complex`.
+
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to n, where n is the rank of `array`.
+
+`mask` (optional): Shall be of type `logical` and either by a scalar or an array of the same shape as `array`.
+
+`corrected` (optional): Shall be a scalar of type `logical`. If `corrected` is `.true.` (default value), the sum is scaled with `n-1`. If `corrected` is `.false.`, then the sum is scaled with `n`.
+
+### Return value
+
+If `array` is of rank 1 and of type `real` or `complex`, the result is of the same type `real` corresponding to the type of `array`.
+If `array` is of rank 2 and of type `real` or `complex`, the result is of the same type as `array`.
+If `array` is of type `integer`, the result is of type `real(dp)`.
+
+If `array` is of rank 1, a scalar with the covariance (that is the variance) of all elements in `array` is returned.
+If `array` is of rank 2, a 2-rank array is returned.
+
+If `mask` is specified, the result is the covariance of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
+### Example
+
+```fortran
+program demo_cov
+    use stdlib_experimental_stats, only: cov
+    implicit none
+    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
+    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
+    print *, cov(x, 1)                          !returns 3.5
+    print *, cov(x, 1, corrected = .false.)     !returns 2.9167
+    print *, cov(y, 1)                          !returns a square matrix of size 3 with all elements equal to 0.5
+end program demo_cov
+```
 
 ## `mean` - mean of array elements
 

@@ -8,7 +8,102 @@ module stdlib_experimental_stats
   implicit none
   private
   ! Public API
-  public :: mean, moment, var
+  public :: cov, mean, moment, var
+
+  interface cov
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:set RName = rname("cov",1, t1, k1)
+      module function ${RName}$(x, dim, mask, corrected) result(res)
+        ${t1}$, intent(in) :: x(:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(${k1}$) :: res
+      end function ${RName}$
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:set RName = rname("cov",1, t1, k1, 'dp')
+      module function ${RName}$(x, dim, mask, corrected) result(res)
+        ${t1}$, intent(in) :: x(:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+      end function ${RName}$
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:set RName = rname("cov_mask",1, t1, k1)
+      module function ${RName}$(x, dim, mask, corrected) result(res)
+        ${t1}$, intent(in) :: x(:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:)
+        logical, intent(in), optional :: corrected
+        real(${k1}$) :: res
+      end function ${RName}$
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:set RName = rname("cov_mask",1, t1, k1, 'dp')
+      module function ${RName}$(x, dim, mask, corrected) result(res)
+        ${t1}$, intent(in) :: x(:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+      end function ${RName}$
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:set RName = rname("cov",2, t1, k1)
+      module function ${RName}$(x, dim, mask, corrected) result(res)
+        ${t1}$, intent(in) :: x(:, :)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        ${t1}$ :: res(merge(size(x, 1), size(x, 2), mask = 1<dim)&
+                            , merge(size(x, 1), size(x, 2), mask = 1<dim))
+      end function ${RName}$
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:set RName = rname("cov",2, t1, k1, 'dp')
+      module function ${RName}$(x, dim, mask, corrected) result(res)
+        ${t1}$, intent(in) :: x(:, :)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask = 1<dim)&
+                        , merge(size(x, 1), size(x, 2), mask = 1<dim))
+      end function ${RName}$
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:set RName = rname("cov_mask",2, t1, k1)
+      module function ${RName}$(x, dim, mask, corrected) result(res)
+        ${t1}$, intent(in) :: x(:, :)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:)
+        logical, intent(in), optional :: corrected
+        ${t1}$ :: res(merge(size(x, 1), size(x, 2), mask = 1<dim)&
+                            , merge(size(x, 1), size(x, 2), mask = 1<dim))
+      end function ${RName}$
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:set RName = rname("cov_mask",2, t1, k1, 'dp')
+      module function ${RName}$(x, dim, mask, corrected) result(res)
+        ${t1}$, intent(in) :: x(:, :)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask = 1<dim)&
+                            , merge(size(x, 1), size(x, 2), mask = 1<dim))
+      end function ${RName}$
+    #:endfor
+  end interface cov
+
 
   interface mean
     #:for k1, t1 in RC_KINDS_TYPES
@@ -209,6 +304,7 @@ module stdlib_experimental_stats
     #:endfor
 
   end interface var
+
 
   interface moment
     #:for k1, t1 in RC_KINDS_TYPES
