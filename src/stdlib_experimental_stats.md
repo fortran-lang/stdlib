@@ -10,12 +10,12 @@
 
 ### Description
 
-Returns the covariance of the elements of `array` along dimension `dim` if the corresponding element in `mask` is `true` (if `mask` is provided).
+Returns the covariance of the elements of `array` along dimension `dim` if the corresponding element in `mask` is `true`.
 
 Per default, the covariance is defined as:
 
 ```
- cov(array) = 1/(n-1) sum_i (array(i) - mean(array) * (array(i) - mean(array)) )
+ cov(array) = 1/(n-1) sum_i (array(i) - mean(array) * (array(i) - mean(array)))
 ```
 
 where n is the number of elements.
@@ -29,7 +29,7 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 ### Arguments
 
-`array`: Shall be a 1-rank or a 2-rank array of type `integer`, `real`, or `complex`.
+`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`.
 
 `dim`: Shall be a scalar of type `integer` with a value in the range from 1 to n, where n is the rank of `array`.
 
@@ -39,14 +39,15 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 ### Return value
 
-If `array` is of rank 1 and of type `real` or `complex`, the result is of the same type `real` corresponding to the type of `array`.
+If `array` is of rank 1 and of type `real` or `complex`, the result is of type `real` corresponding to the type of `array`.
 If `array` is of rank 2 and of type `real` or `complex`, the result is of the same type as `array`.
 If `array` is of type `integer`, the result is of type `real(dp)`.
 
 If `array` is of rank 1, a scalar with the covariance (that is the variance) of all elements in `array` is returned.
-If `array` is of rank 2, a 2-rank array is returned.
+If `array` is of rank 2, a rank-2 array is returned.
 
 If `mask` is specified, the result is the covariance of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
+
 ### Example
 
 ```fortran
