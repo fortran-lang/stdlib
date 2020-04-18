@@ -101,7 +101,7 @@ contains
             end do
           #:endfor
           case default
-            call error_stop("ERROR (mean): wrong dimension")
+            call error_stop("ERROR (var): wrong dimension")
         end select
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
@@ -140,7 +140,7 @@ contains
             end do
           #:endfor
           case default
-            call error_stop("ERROR (mean): wrong dimension")
+            call error_stop("ERROR (var): wrong dimension")
         end select
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
@@ -229,7 +229,7 @@ contains
             end do
           #:endfor
           case default
-            call error_stop("ERROR (mean): wrong dimension")
+            call error_stop("ERROR (var): wrong dimension")
         end select
         res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
@@ -264,7 +264,7 @@ contains
             end do
           #:endfor
           case default
-            call error_stop("ERROR (mean): wrong dimension")
+            call error_stop("ERROR (var): wrong dimension")
         end select
         res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
