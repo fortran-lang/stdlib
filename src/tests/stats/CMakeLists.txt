@@ -1,3 +1,4 @@
+ADDTEST(cov)
 ADDTEST(mean)
 ADDTEST(moment)
 ADDTEST(rawmoment)
