@@ -3,6 +3,8 @@
 # Create a list of the files to be preprocessed
 set(fppFiles
     stdlib_experimental_io.fypp
+    stdlib_experimental_linalg.fypp
+    stdlib_experimental_linalg_diag.fypp
     stdlib_experimental_optval.fypp
     stdlib_experimental_stats.fypp
     stdlib_experimental_stats_cov.fypp
