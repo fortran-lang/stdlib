@@ -77,7 +77,7 @@ contains
 
         x = y**2
         val = trapz(y, x)
-        ans = 2728.0_sp
+        ans = 2728.0_dp
         call check(abs(val - ans) < epsilon(ans))
     end subroutine test_trapz_dp
 
