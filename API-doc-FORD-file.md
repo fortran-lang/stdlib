@@ -17,6 +17,7 @@ proc_internals: true
 md_extensions: markdown.extensions.toc
 graph: true
 graph_maxnodes: 200
+graph_maxdepth: 5
 coloured_edges: true
 sort: permission-alpha
 extra_mods: iso_fortran_env:https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html
@@ -39,6 +40,10 @@ dbg: true
 [TOC]
 
 @warning This API documentation for the Fortran-lang/stdlib is a work in progress
+
+@info
+Use the navigation bar at the top of the screen to browse modules, procedures, source files, etc.
+The listings near the bottom of the page are incomplete.
 
 Fortran stdlib API Documentation
 ================================
