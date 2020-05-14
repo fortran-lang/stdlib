@@ -5,6 +5,7 @@ src_dir: src
 exclude_dir: src/tests
 output_dir: API-doc
 page_dir: doc
+media_dir: doc/media
 fpp_extensions: fypp
 preprocess: true
 macro: MAXRANK=4
@@ -27,6 +28,7 @@ creation_date: %Y-%m-%d %H:%M %z
 project_github: https://github.com/fortran-lang/stdlib
 project_download: https://github.com/fortran-lang/stdlib/archive/master.zip
 project_website: https://stdlib.fortran-lang.org
+favicon: doc/media/favicon.ico
 license: by-sa
 author: fortran-lang/stdlib contributors
 author_pic: https://fortran-lang.org/assets/img/fortran_logo_512x512.png
