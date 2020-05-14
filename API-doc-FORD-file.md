@@ -43,7 +43,7 @@ dbg: true
 
 @warning This API documentation for the Fortran-lang/stdlib is a work in progress
 
-@info
+@note
 Use the navigation bar at the top of the screen to browse modules, procedures, source files, etc.
 The listings near the bottom of the page are incomplete.
 

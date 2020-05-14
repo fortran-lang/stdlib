@@ -1,3 +1,3 @@
 ---
-title: Specs, examples & user documentation
+title: Specs, examples & user docs
 ---
