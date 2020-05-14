@@ -56,5 +56,4 @@ jobs:
           publish_branch: master
           allow_empty_commit: true
           force_orphan: false
-          user_name: ${{ github.actor }}
           commit_message: "From https://github.com/${{ github.repository }}/commit/${{ github.sha }} ${{ github.ref }}"
