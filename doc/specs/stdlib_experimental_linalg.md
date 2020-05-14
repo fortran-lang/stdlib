@@ -1,8 +1,10 @@
+---
+title: experimental_linalg
+---
+
 # Linear Algebra
 
-* [`diag` - Create a diagonal array or extract the diagonal elements of an array](#diag---create-a-diagonal-array-or-extract-the-diagonal-elements-of-an-array)
-* [`eye` - Construct the identity matrix](#eye---construct-the-identity-matrix)
-* [`trace` - Trace of a matrix](#trace---trace-of-a-matrix)
+[TOC]
 
 ## `diag` - Create a diagonal array or extract the diagonal elements of an array
 

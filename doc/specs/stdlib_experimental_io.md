@@ -1,8 +1,10 @@
+---
+title: experimental_IO
+---
+
 # IO
 
-* [`loadtxt` - load a 2D array from a text file](#loadtxt---load-a-2d-array-from-a-text-file)
-* [`open` - open a file](#open---open-a-file)
-* [`savetxt` - save a 2D array into a text file](#savetxt---save-a-2d-array-into-a-text-file)
+[TOC]
 
 ## `loadtxt` - load a 2D array from a text file
 
