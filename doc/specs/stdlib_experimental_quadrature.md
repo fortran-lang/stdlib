@@ -1,9 +1,10 @@
+---
+title: experimental_quadrature
+---
+
 # Numerical integration
 
-* [`trapz` - integrate sampled values using trapezoidal rule](#trapz---integrate-sampled-values-using-trapezoidal-rule)
-* [`trapz_weights` - trapezoidal rule weights for given abscissas](#trapz_weights---trapezoidal-rule-weights-for-given-abscissas)
-* [`simps` - integrate sampled values using Simpson's rule (to be implemented)](#simps---integrate-sampled-values-using-simpsons-rule-to-be-implemented)
-* [`simps_weights` - Simpson's rule weights for given abscissas (to be implemented)](#simps_weights---simpsons-rule-weights-for-given-abscissas-to-be-implemented)
+[TOC]
 
 ## `trapz` - integrate sampled values using trapezoidal rule
 

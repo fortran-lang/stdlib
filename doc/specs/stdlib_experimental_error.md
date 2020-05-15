@@ -1,8 +1,10 @@
+---
+title: experimental_error
+---
+
 # Catching and handling errors
 
-* [`check` - Checks the value of a logical condition](#check---checks-the-value-of-a-logical-condition)
-* [`error_stop` - aborts the program](#error_stop---aborts-the-program)
-
+[TOC]
 
 ## `check` - Checks the value of a logical condition
 

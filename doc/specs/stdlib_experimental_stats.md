@@ -1,10 +1,10 @@
+---
+title: experimental_stats
+---
+
 # Descriptive statistics
 
-* [`cov` - covariance of array elements](#cov---covariance-of-array-elements)
-* [`mean` - mean of array elements](#mean---mean-of-array-elements)
-* [`moment` - central moments of array elements](#moment---central-moments-of-array-elements)
-* [`var` - variance of array elements](#var---variance-of-array-elements)
-
+[TOC]
 
 ## `cov` - covariance of array elements
 
