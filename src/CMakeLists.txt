@@ -32,6 +32,7 @@ set(SRC
     stdlib_experimental_error.f90
     stdlib_experimental_kinds.f90
     stdlib_experimental_system.F90
+    stdlib_experimental_sparse.f90
     ${outFiles}
 )
 
