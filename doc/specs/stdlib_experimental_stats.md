@@ -6,6 +6,54 @@ title: experimental_stats
 
 [TOC]
 
+## `corr` - Pearson correlation of array elements
+
+### Description
+
+Returns the Pearson correlation of the elements of `array` along dimension `dim` if the corresponding element in `mask` is `true`.
+
+The Pearson correlation between two rows (or columns), say `x` and `y`, of `array` is defined as:
+
+```
+ corr(x, y) = cov(x, y) / sqrt( var(x) * var(y))
+```
+
+### Syntax
+
+`result = corr(array, dim [, mask])`
+
+### Arguments
+
+`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`.
+
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
+
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`.
+
+### Return value
+
+If `array` is of rank 1 and of type `real` or `complex`, the result is of type `real` corresponding to the type of `array`.
+If `array` is of rank 2 and of type `real` or `complex`, the result is of the same type as `array`.
+If `array` is of type `integer`, the result is of type `real(dp)`.
+
+If `array` is of rank 1 and of size larger than 1, a scalar equal to 1 is returned. Otherwise, IEEE `NaN` is returned.
+If `array` is of rank 2, a rank-2 array  with the corresponding correlations is returned.
+
+If `mask` is specified, the result is the Pearson correlation of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
+
+### Example
+
+```fortran
+program demo_corr
+    use stdlib_experimental_stats, only: corr
+    implicit none
+    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
+    real :: y(1:2, 1:3) = reshape([ -1., 40., -3., 4., 10., 6. ], [ 2, 3])
+    print *, corr(x, 1)           !returns 1.
+    print *, corr(y, 2)           !returns reshape([ 1., -.32480, -.32480, 1. ], [ 2, 3])
+end program demo_corr
+```
+
 ## `cov` - covariance of array elements
 
 ### Description
