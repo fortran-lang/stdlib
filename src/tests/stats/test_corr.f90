@@ -92,6 +92,15 @@ contains
             ) < sptol)&
             , 'sp check 12')
 
+
+        call check( all(abs(corr(x2, 1, mask = x2 < 1000) - corr(x2, 1))&
+            < sptol)&
+            , 'sp check 13')
+
+        call check( all(abs(corr(x2, 2, mask = x2 < 1000) - corr(x2, 2))&
+            < sptol)&
+            , 'sp check 14')
+
     end subroutine test_sp
 
     subroutine test_dp(x, x2)
@@ -144,6 +153,14 @@ contains
             ,[ size(x2, 1), size(x2, 1)])&
             ) < dptol)&
             , 'dp check 12')
+
+        call check( all(abs(corr(x2, 1, mask = x2 < 1000) - corr(x2, 1))&
+            < dptol)&
+            , 'dp check 13')
+
+        call check( all(abs(corr(x2, 2, mask = x2 < 1000) - corr(x2, 2))&
+            < dptol)&
+            , 'dp check 14')
 
     end subroutine test_dp
 
@@ -198,6 +215,14 @@ contains
             ) < dptol)&
             , 'int32 check 12')
 
+        call check( all(abs(corr(x2, 1, mask = x2 < 1000) - corr(x2, 1))&
+            < dptol)&
+            , 'int32 check 13')
+
+        call check( all(abs(corr(x2, 2, mask = x2 < 1000) - corr(x2, 2))&
+            < dptol)&
+            , 'int32 check 14')
+
     end subroutine test_int32
 
     subroutine test_int64(x, x2)
@@ -251,6 +276,14 @@ contains
             ) < dptol)&
             , 'int64 check 12')
 
+        call check( all(abs(corr(x2, 1, mask = x2 < 1000) - corr(x2, 1))&
+            < dptol)&
+            , 'int64 check 13')
+
+        call check( all(abs(corr(x2, 2, mask = x2 < 1000) - corr(x2, 2))&
+            < dptol)&
+            , 'int64 check 14')
+
     end subroutine test_int64
 
     subroutine test_csp(x, x2)
@@ -286,11 +319,19 @@ contains
             , 'csp check 7')
 
         call check( all( abs( corr(x2, 2, mask = aimag(x2) < 6) - reshape([&
-             (1._sp,0._sp), (0._sp,-1._sp)&
-             ,(0._sp,1._sp), (1._sp,0._sp)]&
+             (1._sp,0._sp), (0._sp,1._sp)&
+             ,(0._sp,-1._sp), (1._sp,0._sp)]&
             ,[ size(x2, 1), size(x2, 1)])&
             ) < sptol)&
             , 'csp check 8')
+
+        call check( all(abs(corr(x2, 1, mask = aimag(x2) < 1000) - corr(x2, 1))&
+            < sptol)&
+            , 'csp check 9')
+
+        call check( all(abs(corr(x2, 2, mask = aimag(x2) < 1000) - corr(x2, 2))&
+            < sptol)&
+            , 'csp check 10')
 
     end subroutine test_csp
 
@@ -327,11 +368,19 @@ contains
             , 'cdp check 7')
 
         call check( all( abs( corr(x2, 2, mask = aimag(x2) < 6) - reshape([&
-             (1._dp,0._dp), (0._dp,-1._dp)&
-             ,(0._dp,1._dp), (1._dp,0._dp)]&
+             (1._dp,0._dp), (0._dp,1._dp)&
+             ,(0._dp,-1._dp), (1._dp,0._dp)]&
             ,[ size(x2, 1), size(x2, 1)])&
             ) < dptol)&
             , 'cdp check 8')
+
+        call check( all(abs(corr(x2, 1, mask = aimag(x2) < 1000) - corr(x2, 1))&
+            < sptol)&
+            , 'csp check 9')
+
+        call check( all(abs(corr(x2, 2, mask = aimag(x2) < 1000) - corr(x2, 2))&
+            < sptol)&
+            , 'csp check 10')
 
     end subroutine test_cdp
 

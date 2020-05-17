@@ -243,7 +243,7 @@ contains
               #:endif
                 mask_)
 
-              res(j, i) = dot_product( centerj_, centeri_)&
+              res(j, i) = dot_product( centeri_, centerj_)&
                /sqrt(dot_product( centeri_, centeri_)*&
                      dot_product( centerj_, centerj_))
             end do
@@ -295,7 +295,7 @@ contains
              centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),&
                 0._dp, mask_)
 
-             res(j, i) = dot_product( centerj_, centeri_)&
+             res(j, i) = dot_product( centeri_, centerj_)&
                  /sqrt(dot_product( centeri_, centeri_)*&
                        dot_product( centerj_, centerj_))
             end do
