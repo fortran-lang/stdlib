@@ -51,6 +51,7 @@ jobs:
         if: github.event_name == 'push' && github.repository == 'fortran-lang/stdlib' && ( startsWith( github.ref, 'refs/tags/' ) || github.ref == 'refs/heads/master' )
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          cname: 'stdlib.fortran-lang.org'
           external_repository: fortran-lang/stdlib-docs
           publish_dir: ./API-doc
           publish_branch: master
