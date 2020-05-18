@@ -1,4 +1,5 @@
 module stdlib_experimental_error
+  !!Provides a support for catching and handling errors
 use, intrinsic :: iso_fortran_env, only: stderr => error_unit
 use stdlib_experimental_optval, only: optval
 implicit none

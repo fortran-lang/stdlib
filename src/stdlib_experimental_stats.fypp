@@ -3,6 +3,8 @@
 #:set REDRANKS = range(2, MAXRANK + 1)
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_experimental_stats
+  !!Provides a support for various statistical methods. This includes currently
+  !!descriptive statistics.
   use stdlib_experimental_kinds, only: sp, dp, qp, &
       int8, int16, int32, int64
   implicit none
