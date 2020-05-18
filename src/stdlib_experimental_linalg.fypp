@@ -1,6 +1,7 @@
 #:include "common.fypp"
 #:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
 module stdlib_experimental_linalg
+  !!Provides a support for various linear algebra procedures.
   use stdlib_experimental_kinds, only: sp, dp, qp, &
     int8, int16, int32, int64
   implicit none
