@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: FORD-API-docs
-          path: ./API-docs
+          path: ./API-doc/
       - name: Broken Link Check
         uses: technote-space/broken-link-checker-action@v1
         with:
