@@ -1,5 +1,7 @@
 module stdlib_experimental_error
-  !!Provides a support for catching and handling errors
+    !! Provide support for catching and handling errors ([spec](../page/specs/stdlib_experimental_error.html))
+    !!
+    !! __Read the [specification here](../page/specs/stdlib_experimental_error.html).__
 use, intrinsic :: iso_fortran_env, only: stderr => error_unit
 use stdlib_experimental_optval, only: optval
 implicit none
@@ -7,6 +9,9 @@ private
 
 interface ! f{08,18}estop.f90
     module subroutine error_stop(msg, code)
+        !! Provides a call to `error stop` and allows the user to specify a code and message.
+        !!
+        !! __Read the [specification here](..//page/specs/stdlib_experimental_error.html#description_1).__
         character(*), intent(in) :: msg
         integer, intent(in), optional :: code
     end subroutine error_stop
@@ -17,15 +22,44 @@ public :: check, error_stop
 contains
 
 subroutine check(condition, msg, code, warn)
+    !! Checks the value of a logical condition. ([spec](../page/specs/stdlib_experimental_error.html#description))
+    !!
+    !! __Read the [specification here](../page/specs/stdlib_experimental_error.html#description).__
+    !!
+    !!##### Behavior
+    !!
+    !! If `condition == .false.` and:
+    !!
+    !!   * No other arguments are provided, it stops the program with the default
+    !!     message and exit code `1`;
+    !!   * `msg` is provided, it prints the value of `msg`;
+    !!   * `code` is provided, it stops the program with the given exit code;
+    !!   * `warn` is provided and `.true.`, it doesn't stop the program and prints
+    !!     the message.
+    !!
+    !!##### Examples
+    !!
+    !!* If `a /= 5`, stops the program with exit code `1`
+    !!  and prints `Check failed.`
+    !!``` fortran
+    !!  call check(a == 5)
+    !!```
+    !!
+    !!* As above, but prints `a == 5 failed`.
+    !!``` fortran
+    !!  call check(a == 5, msg='a == 5 failed.')
+    !!```
+    !!
+    !!* As above, but doesn't stop the program.
+    !!``` fortran
+    !!  call check(a == 5, msg='a == 5 failed.', warn=.true.)
+    !!```
+    !!
+    !!* As example #2, but stops the program with exit code `77`
+    !!``` fortran
+    !!  call check(a == 5, msg='a == 5 failed.', code=77)
+    !!```
 
-    ! Checks the value of a logical condition. If condition == .false. and:
-    !
-    !   * No other arguments are provided, it stops the program with the default
-    !     message and exit code 1;
-    !   * msg is provided, it prints the value of msg;
-    !   * code is provided, it stops the program with the given exit code;
-    !   * warn is provided and .true., it doesn't stop the program and prints
-    !   * the message.
     !
     ! Arguments
     ! ---------
@@ -35,22 +69,6 @@ subroutine check(condition, msg, code, warn)
     integer, intent(in), optional :: code
     logical, intent(in), optional :: warn
     character(*), parameter :: msg_default = 'Check failed.'
-
-    ! Examples
-    ! --------
-    !
-    ! ! If a /= 5, stops the program with exit code 1
-    ! ! and prints 'Check failed.'
-    ! call check(a == 5)
-    !
-    ! ! As above, but prints 'a == 5 failed.'
-    ! call check(a == 5, msg='a == 5 failed.')
-    !
-    ! ! As above, but doesn't stop the program.
-    ! call check(a == 5, msg='a == 5 failed.', warn=.true.)
-    !
-    ! ! As example #2, but stops the program with exit code 77
-    ! call check(a == 5, msg='a == 5 failed.', code=77)
 
     if (.not. condition) then
         if (optval(warn, .false.)) then

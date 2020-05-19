@@ -8,16 +8,15 @@ page_dir: doc
 media_dir: doc/media
 fpp_extensions: fypp
 preprocess: true
-macro: MAXRANK=4
+macro: MAXRANK=3
 preprocessor: fypp
 display: public
          protected
-         private
 source: true
 proc_internals: true
 md_extensions: markdown.extensions.toc
 graph: true
-graph_maxnodes: 200
+graph_maxnodes: 250
 graph_maxdepth: 5
 coloured_edges: true
 sort: permission-alpha

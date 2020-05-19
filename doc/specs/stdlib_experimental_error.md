@@ -6,7 +6,7 @@ title: experimental_error
 
 [TOC]
 
-## `check` - Checks the value of a logical condition
+## `[[stdlib_experimental_error(module):check(subroutine)]]` - Checks the value of a logical condition
 
 ### Description
 
@@ -14,7 +14,8 @@ Checks the value of a logical condition.
 
 ### Syntax
 
-`call check(condition, msg, code, warn)`
+`call [[check(subroutine)]](condition, msg, code, warn)`
+
 
 ### Arguments
 
@@ -77,7 +78,7 @@ program demo_check3
 end program demo_check3
 ```
 
-## `error_stop` - aborts the program
+## `[[stdlib_experimental_error:error_stop]]` - aborts the program
 
 ### Description
 
@@ -85,7 +86,7 @@ Aborts the program with a message and a nonzero exit code.
 
 ### Syntax
 
-`call error_stop(msg, code)`
+`call [[stdlib_experimental_error(module):error_stop(interface)]](msg, code)`
 
 ### Arguments
 
