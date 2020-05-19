@@ -79,7 +79,7 @@ The following two sections are most relevant for contributing new code:
 * [Documentation Meta Data](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Documentation-Meta-Data)
 * [Limitations](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Limitations)
 
-For write the "spec" (specification) for a new proposal, please place it in the
+To write the "spec" (specification) for a new proposal, please place it in the
 [FORD "pages"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Pages) directory at
 [`doc/specs/`](https://github.com/fortran-lang/stdlib/tree/master/doc/specs).
 To get help please see the ["Writing Pages"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Pages)
