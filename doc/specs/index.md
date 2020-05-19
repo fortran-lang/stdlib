@@ -24,6 +24,12 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [stats](./stdlib_experimental_stats.html)
    - Descriptive Statistics
 
+## Missing specs
+
+@todo
+Populate this section with a list of missing specs and link to their
+[sources on GH](https://github.com/fortran-lang/stdlib/tree/master/src).
+
 ## Released/Stable Features & Modules
 
  - (None yet)
