@@ -15,6 +15,7 @@ env:
   PIP_NO_CLEAN: "ON"
   PIP_PREFER_BINARY: "ON"
   TZ: "UTC"
+  FORD_FILE: "API-doc-FORD-file.md"
 
 jobs:
   Build-API-Docs:
@@ -30,16 +31,20 @@ jobs:
           type -a ford
           ford --version
           gfortran --version
+      - name: Skip graph and search unless deploying
+        if: ! ( startsWith( github.ref, 'refs/tags/' ) || github.ref == 'refs/heads/master' )
+        run: |
+            sed -i .bak 's/^[[:blank:]]*graph:  *[Tt]rue/graph: false/' "${FORD_FILE}"
+            echo "::set-env name=MAYBE_SKIP_SEARCH::--no-search"
       - name: Build Docs
         run: |
           git fetch --all --tags
-          ford -r $(git describe --always) --debug API-doc-FORD-file.md
-          zip -vr API-docs.zip API-doc/ -x "*.DS_Store"
+          ford -r $(git describe --always) --debug ${MAYBE_SKIP_SEARCH} "${FORD_FILE}"
       - name: Upload Documentation
         uses: actions/upload-artifact@v2
         with:
           name: FORD-API-docs
-          path: ./API-docs.zip
+          path: ./API-docs
       - name: Broken Link Check
         uses: technote-space/broken-link-checker-action@v1
         with:
