@@ -1,5 +1,29 @@
 ---
-title: specs
+title: Specifications (specs)
 ---
 
-@todo Explain what these are, how to write them, why they're needed, etc.
+# Fortran stdlib Specifications (specs)
+
+This is and index/directory of the specifications (specs) for each new module/feature as described in the
+[workflow document](../Workflow.html).
+
+[TOC]
+
+## Experimental Features & Modules
+
+ - [error](./stdlib_experimental_error.html)
+   - Catching and handling errors
+ - [IO](./stdlib_experimental_io.html)
+   - Input/output helper & convenience
+ - [linalg](./stdlib_experimental_linalg.html)
+   - Linear Algebra
+ - [optval](./stdlib_experimental_optval.html)
+   - Fallback value for optional arguments
+ - [quadrature](./stdlib_experimental_quadrature.html)
+   - Numerical integration
+ - [stats](./stdlib_experimental_stats.html)
+   - Descriptive Statistics
+
+## Released/Stable Features & Modules
+
+ - (None yet)
