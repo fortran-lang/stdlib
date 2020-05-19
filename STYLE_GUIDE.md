@@ -68,7 +68,7 @@ Fortran allows certain block constructs or scopes to include the name of the pro
 The convention adopted herein is to include procedure names, `module` names and `program` names in the `end` statement,
 unless the closing statement can reasonably be expected to be on the same screen or page, within about 25 lines.
 
-## Document public and protected entities and arguments using FORD
+## Document public API code with FORD
 
 Documentation strings should be provided for all public and protected entities and their arguments or parameters.
 This is currently accomplished using the [FORD tool](https://github.com/Fortran-FOSS-Programmers/ford).
