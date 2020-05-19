@@ -14,4 +14,4 @@ jobs:
           locale: "US"
           reporter: github-pr-review
           level: warning
-          ignore: [colour]
+          ignore: colour
