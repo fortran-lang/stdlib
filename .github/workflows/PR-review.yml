@@ -12,6 +12,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           locale: "US"
-          reporter: [github-pr-review]
+          reporter: github-pr-review
           level: warning
           ignore: [colour]
