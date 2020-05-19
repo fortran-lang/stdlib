@@ -67,3 +67,21 @@ focus on the semantics of the proposed changes rather than style and formatting.
 Fortran allows certain block constructs or scopes to include the name of the program unit in the end statement.
 The convention adopted herein is to include procedure names, `module` names and `program` names in the `end` statement,
 unless the closing statement can reasonably be expected to be on the same screen or page, within about 25 lines.
+
+## Document public and protected entities and arguments using FORD
+
+Documentation strings should be provided for all public and protected entities and their arguments or parameters.
+This is currently accomplished using the [FORD tool](https://github.com/Fortran-FOSS-Programmers/ford).
+For help writing FORD style documentation please see the [FORD wiki](https://github.com/Fortran-FOSS-Programmers/ford/wiki).
+The following two sections are most relevant for contributing new code:
+
+* [Writing Documentation](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Documentation)
+* [Documentation Meta Data](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Documentation-Meta-Data)
+* [Limitations](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Limitations)
+
+For write the "spec" (specification) for a new proposal, please place it in the
+[FORD "pages"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Pages) directory at
+[`doc/specs/`](https://github.com/fortran-lang/stdlib/tree/master/doc/specs).
+To get help please see the ["Writing Pages"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Pages)
+and ["Writing Documentation"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Documentation) pages
+on the [FORD wiki](https://github.com/Fortran-FOSS-Programmers/ford/wiki).
