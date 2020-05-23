@@ -6,7 +6,7 @@ title: experimental_linalg
 
 [TOC]
 
-## `diag` - Create a diagonal array or extract the diagonal elements of an array
+## `[[stdlib_experimental_linalg(module):diag(interface)]]` - Create a diagonal array or extract the diagonal elements of an array
 
 ### Description
 
@@ -14,7 +14,7 @@ Create a diagonal array or extract the diagonal elements of an array
 
 ### Syntax
 
-`d = diag(a [, k])`
+`d = [[stdlib_experimental_linalg(module):diag(interface)]](a [, k])`
 
 ### Arguments
 
@@ -91,7 +91,7 @@ program demo_diag5
 end program demo_diag5
 ```
 
-## `eye` - Construct the identity matrix
+## `[[stdlib_experimental_linalg(module):eye(function)]]` - Construct the identity matrix
 
 ### Description
 
@@ -99,7 +99,7 @@ Construct the identity matrix
 
 ## Syntax
 
-`I = eye(n)`
+`I = [[stdlib_experimental_linalg(module):eye(function)]](n)`
 
 ### Arguments
 
@@ -128,7 +128,7 @@ program demo_eye2
 end program demo_eye2
 ```
 
-## `trace` - Trace of a matrix
+## `[[stdlib_experimental_linalg(module):trace(interface)]]` - Trace of a matrix
 
 ### Description
 
@@ -136,7 +136,7 @@ Trace of a matrix (rank-2 array)
 
 ### Syntax
 
-`result = trace(A)`
+`result = [stdlib_experimental_linalg(module):trace(interface)](A)`
 
 ### Arguments
 

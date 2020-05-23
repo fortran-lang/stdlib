@@ -6,7 +6,7 @@ title: experimental_optval
 
 [TOC]
 
-## `optval` - fallback value for optional arguments
+## `[[stdlib_experimental_optval(module):optval(interface)]]` - fallback value for optional arguments
 
 ### Description
 
@@ -16,7 +16,7 @@ This function is intended to be called in a procedure with one or more `optional
 
 ### Syntax
 
-`result = optval(x, default)`
+`result = [[stdlib_experimental_optval(module):optval(interface)]](x, default)`
 
 ### Arguments
 

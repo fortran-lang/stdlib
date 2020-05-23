@@ -6,7 +6,7 @@ title: experimental_stats
 
 [TOC]
 
-## `cov` - covariance of array elements
+## `[[stdlib_experimental_stats(module):cov(interface)]]` - covariance of array elements
 
 ### Description
 
@@ -25,7 +25,7 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 ### Syntax
 
-`result = cov(array, dim [, mask [, corrected]])`
+`result = [[stdlib_experimental_stats(module):cov(interface)]](array, dim [, mask [, corrected]])`
 
 ### Arguments
 
@@ -62,7 +62,7 @@ program demo_cov
 end program demo_cov
 ```
 
-## `mean` - mean of array elements
+## `[[stdlib_experimental_stats(module):mean(interface)]]` - mean of array elements
 
 ### Description
 
@@ -70,9 +70,9 @@ Returns the mean of all the elements of `array`, or of the elements of `array` a
 
 ### Syntax
 
-`result = mean(array [, mask])`
+`result = [[stdlib_experimental_stats(module):mean(interface)]](array [, mask])`
 
-`result = mean(array, dim [, mask])`
+`result = [[stdlib_experimental_stats(module):mean(interface)]](array, dim [, mask])`
 
 ### Arguments
 
@@ -106,7 +106,7 @@ program demo_mean
 end program demo_mean
 ```
 
-## `moment` - central moments of array elements
+## `[[stdlib_experimental_stats(module):moment(interface)]]` - central moments of array elements
 
 ### Description
 
@@ -131,9 +131,9 @@ The _k_-th order moment about `center` is defined as :
 
 ### Syntax
 
-`result = moment(array, order [, center [, mask]])`
+`result = [[stdlib_experimental_stats(module):moment(interface)]](array, order [, center [, mask]])`
 
-`result = moment(array, order, dim [, center [, mask]])`
+`result = [[stdlib_experimental_stats(module):moment(interface)]](array, order, dim [, center [, mask]])`
 
 ### Arguments
 
@@ -173,7 +173,7 @@ program demo_moment
 end program demo_moment
 ```
 
-## `var` - variance of array elements
+## `[[stdlib_experimental_stats(module):var(interface)]]` - variance of array elements
 
 ### Description
 
@@ -192,9 +192,9 @@ The use of the term `n-1` for scaling is called Bessel 's correction. The scalin
 
 ### Syntax
 
-`result = var(array [, mask [, corrected]])`
+`result = [[stdlib_experimental_stats(module):var(interface)]](array [, mask [, corrected]])`
 
-`result = var(array, dim [, mask [, corrected]])`
+`result = [[stdlib_experimental_stats(module):var(interface)]](array, dim [, mask [, corrected]])`
 
 ### Arguments
 

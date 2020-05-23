@@ -6,7 +6,7 @@ title: experimental_quadrature
 
 [TOC]
 
-## `trapz` - integrate sampled values using trapezoidal rule
+## `[[stdlib_experimental_quadrature(module):trapz(interface)]]` - integrate sampled values using trapezoidal rule
 
 ### Description
 
@@ -14,9 +14,9 @@ Returns the trapezoidal rule integral of an array `y` representing discrete samp
 
 ### Syntax
 
-`result = trapz(y, x)`
+`result = [[stdlib_experimental_quadrature(module):trapz(interface)]](y, x)`
 
-`result = trapz(y, dx)`
+`result = [[stdlib_experimental_quadrature(module):trapz(interface)]](y, dx)`
 
 ### Arguments
 
@@ -44,10 +44,10 @@ program demo_trapz
 ! 22.0
     print *, trapz(y, 0.5) 
 ! 11.0
-end program
+end program demo_trapz
 ```
 
-## `trapz_weights` - trapezoidal rule weights for given abscissas
+## `[[stdlib_experimental_quadrature(module):trapz_weights(interface)]]` - trapezoidal rule weights for given abscissas
 
 ### Description
 
@@ -55,7 +55,7 @@ Given an array of abscissas `x`, computes the array of weights `w` such that if 
 
 ### Syntax
 
-`result = trapz_weights(x)`
+`result = [[stdlib_experimental_quadrature(module):trapz_weights(interface)]](x)`
 
 ### Arguments
 
@@ -79,7 +79,7 @@ program demo_trapz_weights
     w = trapz_weight(x)
     print *, dot_product(w, y)
 ! 22.0
-end program
+end program demo_trapz_weights
 
 ```
 
