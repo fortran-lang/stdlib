@@ -1,5 +1,5 @@
 module stdlib_experimental_error
-    !! Provide support for catching and handling errors ([spec](../page/specs/stdlib_experimental_error.html))
+    !! Provide support for catching and handling errors.
     !!
     !! __Read the [specification here](../page/specs/stdlib_experimental_error.html).__
 use, intrinsic :: iso_fortran_env, only: stderr => error_unit

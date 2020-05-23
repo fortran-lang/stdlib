@@ -15,6 +15,9 @@ module stdlib_experimental_quadrature
 
 
     interface trapz
+        !! Integrates sampled values using trapezoidal rule
+        !!
+        !! __Read the [specification here](../page/specs/stdlib_experimental_quadrature.html#description)__
         #:for KIND in REAL_KINDS
         pure module function trapz_dx_${KIND}$(y, dx) result(integral)
             real(${KIND}$), dimension(:), intent(in) :: y
@@ -33,6 +36,9 @@ module stdlib_experimental_quadrature
 
 
     interface trapz_weights
+        !! Integrates sampled values using trapezoidal rule weights for given abscissas
+        !!
+        !! __Read the [specification here](../page/specs/stdlib_experimental_quadrature.html#description_1)__
         #:for KIND in REAL_KINDS
         pure module function trapz_weights_${KIND}$(x) result(w)
             real(${KIND}$), dimension(:), intent(in) :: x

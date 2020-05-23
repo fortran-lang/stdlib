@@ -3,7 +3,9 @@
 #:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES
 
 module stdlib_experimental_io
-  !!Provides a support for file handling.
+  !! Provides a support for file handling.
+  !!
+  !! __Read the [specification here](../page/specs/stdlib_experimental_io.html).__
   use stdlib_experimental_kinds, only: sp, dp, qp, &
       int8, int16, int32, int64
   use stdlib_experimental_error, only: error_stop
@@ -18,12 +20,18 @@ module stdlib_experimental_io
   public :: parse_mode
 
   interface loadtxt
+    !! Loads a 2D array from a text file
+    !!
+    !! __Read the [specification here](../page/specs/stdlib_experimental_io.html#description)__
     #:for k1, t1 in KINDS_TYPES
       module procedure loadtxt_${t1[0]}$${k1}$
     #:endfor
   end interface loadtxt
 
   interface savetxt
+    !! Saves a 2D array into a text file
+    !!
+    !! __Read the [specification here](../page/specs/stdlib_experimental_io.html#description_2)__
     #:for k1, t1 in KINDS_TYPES
       module procedure savetxt_${t1[0]}$${k1}$
     #:endfor
@@ -157,20 +165,25 @@ contains
 
 
   integer function open(filename, mode, iostat) result(u)
-    ! Open a file
-    !
-    ! To open a file to read:
-    !
-    ! u = open("somefile.txt")        # The default `mode` is "rt"
-    ! u = open("somefile.txt", "r")
-    !
-    ! To open a file to write:
-    !
-    ! u = open("somefile.txt", "w")
-
-    ! To append to the end of the file if it exists:
-    !
-    ! u = open("somefile.txt", "a")
+    !! Opens a file
+    !!
+    !! __Read the [specification here](../page/specs/stdlib_experimental_io.html#description_1)__
+    !!
+    !!##### Behavior
+    !!
+    !!
+    !! To open a file to read:
+    !!
+    !! u = open("somefile.txt")        # The default `mode` is "rt"
+    !! u = open("somefile.txt", "r")
+    !!
+    !! To open a file to write:
+    !!
+    !! u = open("somefile.txt", "w")
+    !!
+    !! To append to the end of the file if it exists:
+    !!
+    !! u = open("somefile.txt", "a")
 
     character(*), intent(in) :: filename
     character(*), intent(in), optional :: mode

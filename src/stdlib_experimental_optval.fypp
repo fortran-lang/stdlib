@@ -22,6 +22,9 @@ module stdlib_experimental_optval
 
 
   interface optval
+    !! Fallback value for optional arguments
+    !!
+    !! __Read the [specification here](../page/specs/stdlib_experimental_optval.html#description)__
     #:for k1, t1 in KINDS_TYPES
       module procedure optval_${t1[0]}$${k1}$
     #:endfor

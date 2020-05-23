@@ -12,6 +12,9 @@ module stdlib_experimental_linalg
   public :: trace
 
   interface diag
+    !! Creates a diagonal array or extract the diagonal elements of an array
+    !!
+    !! __Read the [specification here](../page/specs/stdlib_experimental_linalg.html#description)__
       !
       ! Vector to matrix
       !
@@ -49,6 +52,9 @@ module stdlib_experimental_linalg
 
   ! Matrix trace
   interface trace
+    !! Computes the trace of a matrix
+    !!
+    !! __Read the [specification here](../page/specs/stdlib_experimental_linalg.html#description_2)__
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure trace_${t1[0]}$${k1}$
     #:endfor
@@ -57,6 +63,9 @@ module stdlib_experimental_linalg
 contains
 
     function eye(n) result(res)
+      !! Constructs the identity matrix
+      !!
+      !! __Read the [specification here](../page/specs/stdlib_experimental_linalg.html#description_1)__
       integer, intent(in) :: n
       integer(int8) :: res(n, n)
       integer :: i
