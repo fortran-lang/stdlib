@@ -21,6 +21,7 @@ This is and index/directory of the specifications (specs) for each new module/fe
 ## Missing specs
 
  - [ascii](https://github.com/fortran-lang/stdlib/blob/master/src/stdlib_experimental_ascii.f90)
+ - [kinds](https://github.com/fortran-lang/stdlib/blob/master/src/stdlib_experimental_kinds.f90)
 
 ## Released/Stable Features & Modules
 
