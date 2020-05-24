@@ -55,3 +55,36 @@ The documentation for comment markup in source code, running [FORD] and the [FOR
 [FORD]: https://github.com/Fortran-FOSS-Programmers/ford#readme
 [FORD wiki]: https://github.com/Fortran-FOSS-Programmers/ford/wiki
 [FORD project file]: https://github.com/fortran-lang/stdlib/blob/master/API-doc-FORD-file.md
+
+Goals and Motivation
+====================
+
+The Fortran Standard, as published by the ISO (https://wg5-fortran.org/), does
+not have a Standard Library. The goal of this project is to provide a community
+driven and agreed upon *de facto* "standard" library for Fortran, called a
+Fortran Standard Library (`stdlib`). We have a rigorous process how `stdlib` is
+developed as documented in our [Workflow](page/contributing/Workflow.html). `stdlib` is both a
+specification and a reference implementation. We are cooperating with the
+Fortran Standards Committee (e.g., the effort
+[started](https://github.com/j3-fortran/fortran_proposals/issues/104) at the J3
+committee repository) and the plan is to continue working with the Committee in
+the future (such as in the step 5. in the [Workflow](page/contributing/Workflow.html) document), so
+that if the Committee wants to standardize some feature already available in `stdlib`, it would
+base it on `stdlib`'s implementation.
+
+Scope
+=====
+
+The goal of the Fortran Standard Library is to achieve the following general scope:
+
+* Utilities (containers, strings, files, OS/environment integration, unit
+  testing & assertions, logging,  ...)
+* Algorithms (searching and sorting, merging, ...)
+* Mathematics (linear algebra, sparse matrices, special functions, fast Fourier
+  transform, random numbers, statistics, ordinary differential equations,
+  numerical integration, optimization, ...)
+
+License
+=======
+
+The `stdlib` source code and related files and documentation are distributed under the [MIT license](page/License.html).
