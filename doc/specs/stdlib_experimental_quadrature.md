@@ -6,7 +6,7 @@ title: experimental_quadrature
 
 [TOC]
 
-## `[[stdlib_experimental_quadrature(module):trapz(interface)]]` - integrate sampled values using trapezoidal rule
+## `trapz` - integrate sampled values using trapezoidal rule
 
 ### Description
 
@@ -47,7 +47,7 @@ program demo_trapz
 end program demo_trapz
 ```
 
-## `[[stdlib_experimental_quadrature(module):trapz_weights(interface)]]` - trapezoidal rule weights for given abscissas
+## `trapz_weights` - trapezoidal rule weights for given abscissas
 
 ### Description
 

@@ -6,7 +6,7 @@ title: experimental_IO
 
 [TOC]
 
-## `[[stdlib_experimental_io(module):loadtxt(interface)]]` - load a 2D array from a text file
+## `loadtxt` - load a 2D array from a text file
 
 ### Description
 Loads a rank-2 `array` from a text file.
@@ -37,7 +37,7 @@ end program demo_loadtxt
 ```
 
 
-## `[[stdlib_experimental_io(module):open(function)]]` - open a file
+## `open` - open a file
 
 ### Description
 
@@ -90,7 +90,7 @@ end program demo_open
 ```
 
 
-## `[[stdlib_experimental_io(module):savetxt(interface)]]` - save a 2D array into a text file
+## `savetxt` - save a 2D array into a text file
 
 ### Description
 Saves a rank-2 `array` into a text file.

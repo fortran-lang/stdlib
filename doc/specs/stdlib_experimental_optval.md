@@ -6,7 +6,7 @@ title: experimental_optval
 
 [TOC]
 
-## `[[stdlib_experimental_optval(module):optval(interface)]]` - fallback value for optional arguments
+## `optval` - fallback value for optional arguments
 
 ### Description
 

@@ -6,7 +6,7 @@ title: experimental_linalg
 
 [TOC]
 
-## `[[stdlib_experimental_linalg(module):diag(interface)]]` - Create a diagonal array or extract the diagonal elements of an array
+## `diag` - Create a diagonal array or extract the diagonal elements of an array
 
 ### Description
 
@@ -91,7 +91,7 @@ program demo_diag5
 end program demo_diag5
 ```
 
-## `[[stdlib_experimental_linalg(module):eye(function)]]` - Construct the identity matrix
+## `eye` - Construct the identity matrix
 
 ### Description
 
@@ -128,7 +128,7 @@ program demo_eye2
 end program demo_eye2
 ```
 
-## `[[stdlib_experimental_linalg(module):trace(interface)]]` - Trace of a matrix
+## `trace` - Trace of a matrix
 
 ### Description
 

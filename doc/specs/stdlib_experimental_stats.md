@@ -6,7 +6,7 @@ title: experimental_stats
 
 [TOC]
 
-## `[[stdlib_experimental_stats(module):cov(interface)]]` - covariance of array elements
+## `cov` - covariance of array elements
 
 ### Description
 
@@ -62,7 +62,7 @@ program demo_cov
 end program demo_cov
 ```
 
-## `[[stdlib_experimental_stats(module):mean(interface)]]` - mean of array elements
+## `mean` - mean of array elements
 
 ### Description
 
@@ -106,7 +106,7 @@ program demo_mean
 end program demo_mean
 ```
 
-## `[[stdlib_experimental_stats(module):moment(interface)]]` - central moments of array elements
+## `moment` - central moments of array elements
 
 ### Description
 
@@ -173,7 +173,7 @@ program demo_moment
 end program demo_moment
 ```
 
-## `[[stdlib_experimental_stats(module):var(interface)]]` - variance of array elements
+## `var` - variance of array elements
 
 ### Description
 
