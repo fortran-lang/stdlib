@@ -174,16 +174,22 @@ contains
     !!
     !! To open a file to read:
     !!
-    !! u = open("somefile.txt")        # The default `mode` is "rt"
+    !!```fortran
+    !! u = open("somefile.txt")        ! The default `mode` is "rt"
     !! u = open("somefile.txt", "r")
+    !!```
     !!
     !! To open a file to write:
     !!
+    !!```fortran
     !! u = open("somefile.txt", "w")
+    !!```
     !!
     !! To append to the end of the file if it exists:
     !!
+    !!```fortran
     !! u = open("somefile.txt", "a")
+    !!```
 
     character(*), intent(in) :: filename
     character(*), intent(in), optional :: mode
