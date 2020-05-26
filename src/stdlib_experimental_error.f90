@@ -22,7 +22,7 @@ public :: check, error_stop
 contains
 
 subroutine check(condition, msg, code, warn)
-    !! Checks the value of a logical condition. ([spec](../page/specs/stdlib_experimental_error.html#description))
+    !! Checks the value of a logical condition.
     !!
     !! __Read the [specification here](../page/specs/stdlib_experimental_error.html#description).__
     !!
