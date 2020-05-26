@@ -1,5 +1,5 @@
 ---
-title: Specs, examples & user docs
+title: Contributing and specs
 ---
 
 @warning
