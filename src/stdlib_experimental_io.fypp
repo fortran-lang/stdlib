@@ -41,30 +41,32 @@ contains
 
   #:for k1, t1 in KINDS_TYPES
     subroutine  loadtxt_${t1[0]}$${k1}$(filename, d)
-      ! Loads a 2D array from a text file.
-      !
-      ! Arguments
-      ! ---------
-      !
-      ! Filename to load the array from
+      !! Loads a 2D array from a text file.
+      !!
+      !! Arguments
+      !! ---------
+      !!
+      !! Filename to load the array from
       character(len=*), intent(in) :: filename
-      ! The array 'd' will be automatically allocated with the correct dimensions
+      !! The array 'd' will be automatically allocated with the correct dimensions
       ${t1}$, allocatable, intent(out) :: d(:,:)
-      !
-      ! Example
-      ! -------
-      !
-      ! ${t1}$, allocatable :: data(:, :)
-      ! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
-      !
-      ! Where 'log.txt' contains for example::
-      !
-      !     1 2 3
-      !     2 4 6
-      !     8 9 10
-      !     11 12 13
-      !     ...
-      !
+      !!
+      !! Example
+      !! -------
+      !!
+      !!```fortran
+      !! ${t1}$, allocatable :: data(:, :)
+      !! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
+      !!```
+      !!
+      !! Where 'log.txt' contains for example::
+      !!
+      !!     1 2 3
+      !!     2 4 6
+      !!     8 9 10
+      !!     11 12 13
+      !!     ...
+      !!
       integer :: s
       integer :: nrow, ncol, i
 
@@ -88,19 +90,22 @@ contains
 
   #:for k1, t1 in KINDS_TYPES
     subroutine savetxt_${t1[0]}$${k1}$(filename, d)
-      ! Saves a 2D array into a text file.
-      !
-      ! Arguments
-      ! ---------
-      !
+      !! Saves a 2D array into a text file.
+      !!
+      !! Arguments
+      !! ---------
+      !!
       character(len=*), intent(in) :: filename  ! File to save the array to
       ${t1}$, intent(in) :: d(:,:)           ! The 2D array to save
-      !
-      ! Example
-      ! -------
-      !
-      ! ${t1}$ :: data(3, 2)
-      ! call savetxt("log.txt", data)
+      !!
+      !! Example
+      !! -------
+      !!
+      !!```fortran
+      !! ${t1}$ :: data(3, 2)
+      !! call savetxt("log.txt", data)
+      !!```
+      !!
 
       integer :: s, i
       s = open(filename, "w")
@@ -113,7 +118,7 @@ contains
 
 
   integer function number_of_columns(s)
-    ! determine number of columns
+    !! determine number of columns
     integer,intent(in) :: s
 
     integer :: ios
@@ -135,7 +140,7 @@ contains
 
 
   integer function number_of_rows_numeric(s) result(nrows)
-    ! determine number or rows
+    !! determine number or rows
     integer,intent(in)::s
     integer :: ios
 
