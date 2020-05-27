@@ -14,7 +14,7 @@ Create a diagonal array or extract the diagonal elements of an array
 
 ### Syntax
 
-`d = diag(a [, k])`
+`d = [[stdlib_experimental_linalg(module):diag(interface)]](a [, k])`
 
 ### Arguments
 
@@ -99,7 +99,7 @@ Construct the identity matrix
 
 ## Syntax
 
-`I = eye(n)`
+`I = [[stdlib_experimental_linalg(module):eye(function)]](n)`
 
 ### Arguments
 
@@ -136,7 +136,7 @@ Trace of a matrix (rank-2 array)
 
 ### Syntax
 
-`result = trace(A)`
+`result = [stdlib_experimental_linalg(module):trace(interface)](A)`
 
 ### Arguments
 

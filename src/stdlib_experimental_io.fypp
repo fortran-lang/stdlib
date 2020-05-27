@@ -3,7 +3,9 @@
 #:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES
 
 module stdlib_experimental_io
-  !!Provides a support for file handling.
+  !! Provides a support for file handling
+  !! ([Specification](../page/specs/stdlib_experimental_io.html))
+
   use stdlib_experimental_kinds, only: sp, dp, qp, &
       int8, int16, int32, int64
   use stdlib_experimental_error, only: error_stop
@@ -18,12 +20,16 @@ module stdlib_experimental_io
   public :: parse_mode
 
   interface loadtxt
+    !! Loads a 2D array from a text file
+    !! ([Specification](../page/specs/stdlib_experimental_io.html#description))
     #:for k1, t1 in KINDS_TYPES
       module procedure loadtxt_${t1[0]}$${k1}$
     #:endfor
   end interface loadtxt
 
   interface savetxt
+    !! Saves a 2D array into a text file
+    !! ([Specification](../page/specs/stdlib_experimental_io.html#description_2))
     #:for k1, t1 in KINDS_TYPES
       module procedure savetxt_${t1[0]}$${k1}$
     #:endfor
@@ -33,30 +39,32 @@ contains
 
   #:for k1, t1 in KINDS_TYPES
     subroutine  loadtxt_${t1[0]}$${k1}$(filename, d)
-      ! Loads a 2D array from a text file.
-      !
-      ! Arguments
-      ! ---------
-      !
-      ! Filename to load the array from
+      !! Loads a 2D array from a text file.
+      !!
+      !! Arguments
+      !! ---------
+      !!
+      !! Filename to load the array from
       character(len=*), intent(in) :: filename
-      ! The array 'd' will be automatically allocated with the correct dimensions
+      !! The array 'd' will be automatically allocated with the correct dimensions
       ${t1}$, allocatable, intent(out) :: d(:,:)
-      !
-      ! Example
-      ! -------
-      !
-      ! ${t1}$, allocatable :: data(:, :)
-      ! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
-      !
-      ! Where 'log.txt' contains for example::
-      !
-      !     1 2 3
-      !     2 4 6
-      !     8 9 10
-      !     11 12 13
-      !     ...
-      !
+      !!
+      !! Example
+      !! -------
+      !!
+      !!```fortran
+      !! ${t1}$, allocatable :: data(:, :)
+      !! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
+      !!```
+      !!
+      !! Where 'log.txt' contains for example::
+      !!
+      !!     1 2 3
+      !!     2 4 6
+      !!     8 9 10
+      !!     11 12 13
+      !!     ...
+      !!
       integer :: s
       integer :: nrow, ncol, i
 
@@ -80,19 +88,22 @@ contains
 
   #:for k1, t1 in KINDS_TYPES
     subroutine savetxt_${t1[0]}$${k1}$(filename, d)
-      ! Saves a 2D array into a text file.
-      !
-      ! Arguments
-      ! ---------
-      !
+      !! Saves a 2D array into a text file.
+      !!
+      !! Arguments
+      !! ---------
+      !!
       character(len=*), intent(in) :: filename  ! File to save the array to
       ${t1}$, intent(in) :: d(:,:)           ! The 2D array to save
-      !
-      ! Example
-      ! -------
-      !
-      ! ${t1}$ :: data(3, 2)
-      ! call savetxt("log.txt", data)
+      !!
+      !! Example
+      !! -------
+      !!
+      !!```fortran
+      !! ${t1}$ :: data(3, 2)
+      !! call savetxt("log.txt", data)
+      !!```
+      !!
 
       integer :: s, i
       s = open(filename, "w")
@@ -105,7 +116,7 @@ contains
 
 
   integer function number_of_columns(s)
-    ! determine number of columns
+    !! determine number of columns
     integer,intent(in) :: s
 
     integer :: ios
@@ -127,7 +138,7 @@ contains
 
 
   integer function number_of_rows_numeric(s) result(nrows)
-    ! determine number or rows
+    !! determine number or rows
     integer,intent(in)::s
     integer :: ios
 
@@ -157,20 +168,30 @@ contains
 
 
   integer function open(filename, mode, iostat) result(u)
-    ! Open a file
-    !
-    ! To open a file to read:
-    !
-    ! u = open("somefile.txt")        # The default `mode` is "rt"
-    ! u = open("somefile.txt", "r")
-    !
-    ! To open a file to write:
-    !
-    ! u = open("somefile.txt", "w")
-
-    ! To append to the end of the file if it exists:
-    !
-    ! u = open("somefile.txt", "a")
+    !! Opens a file
+    !! ([Specification](../page/specs/stdlib_experimental_io.html#description_1))
+    !!
+    !!##### Behavior
+    !!
+    !!
+    !! To open a file to read:
+    !!
+    !!```fortran
+    !! u = open("somefile.txt")        ! The default `mode` is "rt"
+    !! u = open("somefile.txt", "r")
+    !!```
+    !!
+    !! To open a file to write:
+    !!
+    !!```fortran
+    !! u = open("somefile.txt", "w")
+    !!```
+    !!
+    !! To append to the end of the file if it exists:
+    !!
+    !!```fortran
+    !! u = open("somefile.txt", "a")
+    !!```
 
     character(*), intent(in) :: filename
     character(*), intent(in), optional :: mode

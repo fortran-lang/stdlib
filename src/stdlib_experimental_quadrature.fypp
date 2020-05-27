@@ -1,6 +1,7 @@
 #:include "common.fypp"
 
 module stdlib_experimental_quadrature
+    !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description))
     use stdlib_experimental_kinds, only: sp, dp, qp
 
     implicit none
@@ -15,6 +16,8 @@ module stdlib_experimental_quadrature
 
 
     interface trapz
+        !! Integrates sampled values using trapezoidal rule
+        !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description))
         #:for KIND in REAL_KINDS
         pure module function trapz_dx_${KIND}$(y, dx) result(integral)
             real(${KIND}$), dimension(:), intent(in) :: y
@@ -33,6 +36,8 @@ module stdlib_experimental_quadrature
 
 
     interface trapz_weights
+        !! Integrates sampled values using trapezoidal rule weights for given abscissas
+        !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description_1))
         #:for KIND in REAL_KINDS
         pure module function trapz_weights_${KIND}$(x) result(w)
             real(${KIND}$), dimension(:), intent(in) :: x
