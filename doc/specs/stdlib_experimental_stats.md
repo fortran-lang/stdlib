@@ -20,7 +20,7 @@ The Pearson correlation between two rows (or columns), say `x` and `y`, of `arra
 
 ### Syntax
 
-`result = corr(array, dim [, mask])`
+`result = [[stdlib_experimental_stats(module):corr(interface)]](array, dim [, mask])`
 
 ### Arguments
 

@@ -15,6 +15,8 @@ module stdlib_experimental_stats
 
 
   interface corr
+    !! Pearson correlation of array elements
+    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description))
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("corr",1, t1, k1)
       module function ${RName}$(x, dim, mask) result(res)
@@ -104,7 +106,7 @@ module stdlib_experimental_stats
 
   interface cov
     !! Covariance of array elements
-    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description))
+    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description_1))
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("cov",1, t1, k1)
       module function ${RName}$(x, dim, mask, corrected) result(res)
@@ -201,7 +203,7 @@ module stdlib_experimental_stats
 
   interface mean
     !! Mean of array elements
-    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description_1))
+    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description_2))
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("mean_all",rank, t1, k1)
@@ -299,7 +301,7 @@ module stdlib_experimental_stats
 
   interface var
     !! Variance of array elements
-    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description_3))
+    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description_4))
 
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
@@ -406,7 +408,7 @@ module stdlib_experimental_stats
 
   interface moment
     !! Central moment of array elements
-    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description_2))
+    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description_3))
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("moment_all",rank, t1, k1)
