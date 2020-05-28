@@ -1,6 +1,8 @@
 #:include "common.fypp"
 #:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
 module stdlib_experimental_linalg
+  !!Provides a support for various linear algebra procedures
+  !! ([Specification](../page/specs/stdlib_experimental_linalg.html))
   use stdlib_experimental_kinds, only: sp, dp, qp, &
     int8, int16, int32, int64
   implicit none
@@ -11,6 +13,8 @@ module stdlib_experimental_linalg
   public :: trace
 
   interface diag
+    !! Creates a diagonal array or extract the diagonal elements of an array
+    !! ([Specification](../page/specs/stdlib_experimental_linalg.html#description))
       !
       ! Vector to matrix
       !
@@ -48,6 +52,8 @@ module stdlib_experimental_linalg
 
   ! Matrix trace
   interface trace
+    !! Computes the trace of a matrix
+    !! ([Specification](../page/specs/stdlib_experimental_linalg.html#description_2))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure trace_${t1[0]}$${k1}$
     #:endfor
@@ -56,6 +62,8 @@ module stdlib_experimental_linalg
 contains
 
     function eye(n) result(res)
+      !! Constructs the identity matrix
+      !! ([Specification](../page/specs/stdlib_experimental_linalg.html#description_1))
       integer, intent(in) :: n
       integer(int8) :: res(n, n)
       integer :: i

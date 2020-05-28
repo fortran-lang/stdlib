@@ -3,6 +3,9 @@
 #:set REDRANKS = range(2, MAXRANK + 1)
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_experimental_stats
+  !! Provides support for various statistical methods. This includes currently
+  !! descriptive statistics
+  !! ([Specification](../page/specs/stdlib_experimental_stats.html))
   use stdlib_experimental_kinds, only: sp, dp, qp, &
       int8, int16, int32, int64
   implicit none
@@ -100,6 +103,8 @@ module stdlib_experimental_stats
 
 
   interface cov
+    !! Covariance of array elements
+    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description))
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("cov",1, t1, k1)
       module function ${RName}$(x, dim, mask, corrected) result(res)
@@ -195,6 +200,8 @@ module stdlib_experimental_stats
 
 
   interface mean
+    !! Mean of array elements
+    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description_1))
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("mean_all",rank, t1, k1)
@@ -291,6 +298,8 @@ module stdlib_experimental_stats
 
 
   interface var
+    !! Variance of array elements
+    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description_3))
 
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
@@ -396,6 +405,8 @@ module stdlib_experimental_stats
 
 
   interface moment
+    !! Central moment of array elements
+    !! ([Specification](../page/specs/stdlib_experimental_stats.html#description_2))
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("moment_all",rank, t1, k1)

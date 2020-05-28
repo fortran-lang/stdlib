@@ -178,52 +178,58 @@ contains
                           , merge(size(x, 1), size(x, 2), mask = 1<dim))
 
       integer :: i, j, n
-      ${t1}$ :: mean_(merge(size(x, 1), size(x, 2), mask = 1<dim))
-      ${t1}$ :: center(size(x, 1),size(x, 2))
+      ${t1}$ :: centeri_(merge(size(x, 2), size(x, 1), mask = 1<dim))
+      ${t1}$ :: centerj_(merge(size(x, 2), size(x, 1), mask = 1<dim))
+      logical :: mask_(merge(size(x, 2), size(x, 1), mask = 1<dim))
 
-      mean_ = mean(x, dim, mask = mask)
       select case(dim)
         case(1)
-          do i = 1, size(x, 1)
-            center(i, :) = merge( x(i, :) - mean_,&
+          do i = 1, size(res, 2)
+            do j = 1, size(res, 1)
+             mask_ = merge(.true., .false., mask(:, i) .and. mask(:, j))
+             centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),&
               #:if t1[0] == 'r'
                 0._${k1}$,&
               #:else
                 cmplx(0,0,kind=${k1}$),&
               #:endif
-                mask(i, :))
-          end do
-          #:if t1[0] == 'r'
-            res = matmul( transpose(center), center)
-          #:else
-            res = matmul( transpose(conjg(center)), center)
-          #:endif
-          do j = 1, size(res, 2)
-            do i = 1, size(res, 1)
-              n = count(merge(.true., .false., mask(:, i) .and. mask(:, j)))
-              res(i, j) = res(i, j) / (n - merge(1, 0,&
+                mask_)
+             centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),&
+              #:if t1[0] == 'r'
+                0._${k1}$,&
+              #:else
+                cmplx(0,0,kind=${k1}$),&
+              #:endif
+                mask_)
+
+              n = count(mask_)
+              res(j, i) = dot_product( centerj_, centeri_)&
+                           / (n - merge(1, 0,&
                             optval(corrected, .true.) .and. n > 0))
             end do
           end do
         case(2)
-          do i = 1, size(x, 2)
-            center(:, i) = merge( x(:, i) - mean_,&
+          do i = 1, size(res, 2)
+            do j = 1, size(res, 1)
+             mask_ = merge(.true., .false., mask(i, :) .and. mask(j, :))
+             centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),&
               #:if t1[0] == 'r'
                 0._${k1}$,&
               #:else
                 cmplx(0,0,kind=${k1}$),&
               #:endif
-                mask(:, i))
-          end do
-          #:if t1[0] == 'r'
-            res = matmul( center, transpose(center))
-          #:else
-            res = matmul( center, transpose(conjg(center)))
-          #:endif
-          do j = 1, size(res, 2)
-            do i = 1, size(res, 1)
-              n = count(merge(.true., .false., mask(i, :) .and. mask(j, :)))
-              res(i, j) = res(i, j) / (n - merge(1, 0,&
+                mask_)
+             centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),&
+              #:if t1[0] == 'r'
+                0._${k1}$,&
+              #:else
+                cmplx(0,0,kind=${k1}$),&
+              #:endif
+                mask_)
+
+              n = count(mask_)
+              res(j, i) = dot_product( centeri_, centerj_)&
+                           / (n - merge(1, 0,&
                             optval(corrected, .true.) .and. n > 0))
             end do
           end do
@@ -246,36 +252,38 @@ contains
                           , merge(size(x, 1), size(x, 2), mask = 1<dim))
 
       integer :: i, j, n
-      real(dp) :: mean_(merge(size(x, 1), size(x, 2), mask = 1<dim))
-      real(dp) :: center(size(x, 1),size(x, 2))
+      real(dp) :: centeri_(merge(size(x, 2), size(x, 1), mask = 1<dim))
+      real(dp) :: centerj_(merge(size(x, 2), size(x, 1), mask = 1<dim))
+      logical :: mask_(merge(size(x, 2), size(x, 1), mask = 1<dim))
 
-      mean_ = mean(x, dim, mask = mask)
       select case(dim)
         case(1)
-          do i = 1, size(x, 1)
-            center(i, :) = merge( x(i, :) - mean_,&
-                0._dp,&
-                mask(i, :))
-          end do
-          res = matmul( transpose(center), center)
-          do j = 1, size(res, 2)
-            do i = 1, size(res, 1)
-              n = count(merge(.true., .false., mask(:, i) .and. mask(:, j)))
-              res(i, j) = res(i, j) / (n - merge(1, 0,&
+          do i = 1, size(res, 2)
+            do j = 1, size(res, 1)
+              mask_ = merge(.true., .false., mask(:, i) .and. mask(:, j))
+              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),&
+                 0._dp, mask_)
+              centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),&
+                 0._dp, mask_)
+
+              n = count(mask_)
+              res(j, i) = dot_product( centerj_, centeri_)&
+                           / (n - merge(1, 0,&
                             optval(corrected, .true.) .and. n > 0))
             end do
           end do
         case(2)
-          do i = 1, size(x, 2)
-            center(:, i) = merge( x(:, i) - mean_,&
-                0._dp,&
-                mask(:, i))
-          end do
-            res = matmul( center, transpose(center))
-          do j = 1, size(res, 2)
-            do i = 1, size(res, 1)
-              n = count(merge(.true., .false., mask(i, :) .and. mask(j, :)))
-              res(i, j) = res(i, j) / (n - merge(1, 0,&
+          do i = 1, size(res, 2)
+            do j = 1, size(res, 1)
+              mask_ = merge(.true., .false., mask(i, :) .and. mask(j, :))
+              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),&
+                 0._dp, mask_)
+              centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),&
+                 0._dp, mask_)
+
+              n = count(mask_)
+              res(j, i) = dot_product( centeri_, centerj_)&
+                           / (n - merge(1, 0,&
                             optval(corrected, .true.) .and. n > 0))
             end do
           end do

@@ -13,7 +13,7 @@ Loads a rank-2 `array` from a text file.
 
 ### Syntax
 
-`call loadtxt(filename, array)`
+`call [[stdlib_experimental_io(module):loadtxt(interface)]](filename, array)`
 
 ### Arguments
 
@@ -45,7 +45,7 @@ Returns the unit number of a file opened to read, to write, or to read and write
 
 ### Syntax
 
-`u = open(filename [, mode] [, iostat])`
+`u = [[stdlib_experimental_io(module):open(function)]](filename [, mode] [, iostat])`
 
 ### Arguments
 
@@ -97,7 +97,7 @@ Saves a rank-2 `array` into a text file.
 
 ### Syntax
 
-`call savetxt(filename, array)`
+`call [[stdlib_experimental_io(module):savetxt(interface)]](filename, array)`
 
 ### Arguments
 

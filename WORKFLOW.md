@@ -28,7 +28,9 @@ experienced contributors will help it through all 5 steps.
    (`stdlib_experimental_*.f90`).  As part of the PR, when submitting a new
    public facing API, please provide the initial draft of the specification
    document as well as the the initial reference implementation of this
-   specification.  The specification is a document that describes the API and
+   specification.  The
+   [specification is a document](https://stdlib.fortran-lang.org/page/specs/index.html)
+   that describes the API and
    the functionality, so that anyone can use it to create an implementation
    from scratch without looking at `stdlib`. The `stdlib` library then provides
    the reference implementation.

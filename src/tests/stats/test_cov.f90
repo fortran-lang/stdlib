@@ -126,6 +126,14 @@ contains
             ) < sptol)&
             , 'sp check 16')
 
+        call check( all( abs( cov(x2, 1, mask = x2 < 1000) - cov(x2, 1))&
+            < sptol)&
+            , 'sp check 17')
+
+        call check( all( abs( cov(x2, 2, mask = x2 < 1000) - cov(x2, 2))&
+            < sptol)&
+            , 'sp check 18')
+
     end subroutine test_sp
 
     subroutine test_dp(x, x2)
@@ -213,6 +221,13 @@ contains
             ) < dptol)&
             , 'dp check 16')
 
+        call check( all( abs( cov(x2, 1, mask = x2 < 1000) - cov(x2, 1))&
+            < dptol)&
+            , 'dp check 17')
+
+        call check( all( abs( cov(x2, 2, mask = x2 < 1000) - cov(x2, 2))&
+            < dptol)&
+            , 'dp check 18')
 
     end subroutine test_dp
 
@@ -301,6 +316,14 @@ contains
             ) < dptol)&
             , 'int32 check 16')
 
+        call check( all( abs( cov(x2, 1, mask = x2 < 1000) - cov(x2, 1))&
+            < dptol)&
+            , 'int32 check 17')
+
+        call check( all( abs( cov(x2, 2, mask = x2 < 1000) - cov(x2, 2))&
+            < dptol)&
+            , 'int32 check 18')
+
     end subroutine test_int32
 
     subroutine test_int64(x, x2)
@@ -388,6 +411,14 @@ contains
             ) < dptol)&
             , 'int64 check 16')
 
+        call check( all( abs( cov(x2, 1, mask = x2 < 1000) - cov(x2, 1))&
+            < dptol)&
+            , 'int64 check 17')
+
+        call check( all( abs( cov(x2, 2, mask = x2 < 1000) - cov(x2, 2))&
+            < dptol)&
+            , 'int64 check 18')
+
     end subroutine test_int64
 
     subroutine test_csp(x, x2)
@@ -459,12 +490,21 @@ contains
 !        call check( ieee_is_nan(real(cd(3,3)))&
 !            , 'csp check 10 bis')
 
+
+        call check( all( abs( cov(x2, 1, mask = aimag(x2) < 8) - cov(x2, 1))&
+            < sptol)&
+            , 'csp check 11')
+
+        call check( all( abs( cov(x2, 2, mask = aimag(x2) < 8) - cov(x2, 2))&
+            < sptol)&
+            , 'csp check 12')
+
         call check( all( abs( cov(x2, 2, mask = aimag(x2) < 6) - reshape([&
              (4._sp,0._sp), (0._sp,2._sp)&
              ,(0._sp,-2._sp), (2._sp,0._sp)]&
             ,[ size(x2, 1), size(x2, 1)])&
             ) < sptol)&
-            , 'csp check 11')
+            , 'csp check 13')
 
         call check( all( abs( cov(x2, 2, mask = aimag(x2) < 6, corrected = .false.) -&
             reshape([&
@@ -472,7 +512,7 @@ contains
              ,(0._sp,-1._sp), (1._sp,0._sp)]&
             ,[ size(x2, 1), size(x2, 1)])&
             ) < sp)&
-            , 'csp check 12')
+            , 'csp check 14')
 
     end subroutine test_csp
 
@@ -546,12 +586,20 @@ contains
 !        call check( ieee_is_nan(real(cd(3,3)))&
 !            , 'cdp check 10 bis')
 
+        call check( all( abs( cov(x2, 1, mask = aimag(x2) < 8) - cov(x2, 1))&
+            < dptol)&
+            , 'cdp check 11')
+
+        call check( all( abs( cov(x2, 2, mask = aimag(x2) < 8) - cov(x2, 2))&
+            < dptol)&
+            , 'cdp check 12')
+
         call check( all( abs( cov(x2, 2, mask = aimag(x2) < 6) - reshape([&
              (4._dp,0._dp), (0._dp,2._dp)&
              ,(0._dp,-2._dp), (2._dp,0._dp)]&
             ,[ size(x2, 1), size(x2, 1)])&
             ) < dptol)&
-            , 'cdp check 11')
+            , 'cdp check 13')
 
         call check( all( abs( cov(x2, 2, mask = aimag(x2) < 6, corrected = .false.) -&
             reshape([&
@@ -559,7 +607,7 @@ contains
              ,(0._dp,-1._dp), (1._dp,0._dp)]&
             ,[ size(x2, 1), size(x2, 1)])&
             ) < dptol)&
-            , 'cdp check 12')
+            , 'cdp check 14')
 
     end subroutine test_cdp
 
