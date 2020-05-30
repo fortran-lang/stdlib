@@ -1,4 +1,5 @@
 #:include "common.fypp"
+#:set RANKS = range(0, MAXRANK + 1)
 
 #:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES + &
   & [('l1','logical')]
@@ -28,7 +29,9 @@ module stdlib_experimental_optval
     !! Fallback value for optional arguments
     !! ([Specification](../page/specs/stdlib_experimental_optval.html#description))
     #:for k1, t1 in KINDS_TYPES
-      module procedure optval_${t1[0]}$${k1}$
+      #:for rank in RANKS
+        module procedure optval_${t1[0]}$${k1}$_${rank}$
+      #:endfor
     #:endfor
     module procedure optval_character
      ! TODO: differentiate ascii & ucs char kinds
@@ -38,20 +41,22 @@ module stdlib_experimental_optval
 contains
 
   #:for k1, t1 in KINDS_TYPES
-    pure elemental function optval_${t1[0]}$${k1}$(x, default) result(y)
-    ${t1}$, intent(in), optional :: x
-    ${t1}$, intent(in) :: default
-    ${t1}$ :: y
+    #:for rank in RANKS
+    pure function optval_${t1[0]}$${k1}$_${rank}$(x, default) result(y)
+      ${t1}$, intent(in), optional :: x${ranksuffix(rank)}$
+      ${t1}$, intent(in) :: default${ranksuffix(rank)}$
+      ${t1}$ :: y${shape('default', rank)}$
 
-    if (present(x)) then
-       y = x
-    else
-       y = default
-    end if
-  end function optval_${t1[0]}$${k1}$
+      if (present(x)) then
+         y = x
+      else
+         y = default
+      end if
+    end function optval_${t1[0]}$${k1}$_${rank}$
+    #:endfor
   #:endfor
 
-  ! Cannot be made elemental
+
   pure function optval_character(x, default) result(y)
     character(len=*), intent(in), optional :: x
     character(len=*), intent(in) :: default

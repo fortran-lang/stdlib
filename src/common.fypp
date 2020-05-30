@@ -71,6 +71,27 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
 #:enddef
 
 
+#! Brace enclosed, comma separated Fortran expressions for a shape.
+#!
+#! Args:
+#!   varname (str): Name of the variable to be used as origin
+#!   origrank (int): Rank of the original variable
+#!
+#! Returns:
+#!   Shape expression enclosed in braces, so that it can be used as suffix to
+#!   define array shapes in declarations.
+#!
+#:def shape(varname, origrank)
+  #:if origrank > 0
+    #:call join_lines(joinstr=", ", prefix="(", suffix=")")
+      #:for i in range(0, origrank)
+        size(${varname}$)
+      #:endfor
+    #:endcall
+  #:endif
+#:enddef
+
+
 #! Brace enclosed, comma separated Fortran expressions for a reduced shape.
 #!
 #! Rank of the original variable will be reduced by one. The routine generates
