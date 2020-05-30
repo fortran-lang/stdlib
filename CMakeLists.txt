@@ -14,7 +14,9 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   add_compile_options(-Wconversion-extra)
   add_compile_options(-std=f2018)
   add_compile_options(-pedantic-errors)
-  add_compile_options(-fallow-invalid-boz) # ToDo: hack for invalid code
+  if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10.0)
+    add_compile_options(-fallow-invalid-boz) # ToDo: hack for invalid code
+  endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   add_compile_options(-warn declarations,general,usage,interfaces,unused)
   add_compile_options(-standard-semantics)
