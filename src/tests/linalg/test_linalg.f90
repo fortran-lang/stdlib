@@ -73,8 +73,8 @@ contains
           msg="sum(rye - diag([(1.0_sp,i=1,6)])) < sptol failed.",warn=warn)
 
     cye = eye(7)
-    call check(abs(trace(cye) - complex(7.0_sp,0.0_sp)) < sptol, &
-          msg="abs(trace(cye) - complex(7.0_sp,0.0_sp)) < sptol failed.",warn=warn)
+    call check(abs(trace(cye) - cmplx(7.0_sp,0.0_sp)) < sptol, &
+          msg="abs(trace(cye) - cmplx(7.0_sp,0.0_sp)) < sptol failed.",warn=warn)
   end subroutine
 
   subroutine test_diag_rsp
@@ -153,7 +153,7 @@ contains
   subroutine test_diag_csp
     integer, parameter :: n = 3
     complex(sp) :: v(n), a(n,n), b(n,n)
-    complex(sp), parameter :: i_ = complex(0,1)
+    complex(sp), parameter :: i_ = cmplx(0,1)
     integer :: i,j
     write(*,*) "test_diag_csp"
     a = diag([(i,i=1,n)]) + diag([(i_,i=1,n)])
@@ -170,7 +170,7 @@ contains
   subroutine test_diag_cdp
     integer, parameter :: n = 3
     complex(dp) :: v(n), a(n,n), b(n,n)
-    complex(dp), parameter :: i_ = complex(0,1)
+    complex(dp), parameter :: i_ = cmplx(0,1)
     integer :: i,j
     write(*,*) "test_diag_cdp"
     a = diag([i_],-2) + diag([i_],2)
@@ -181,7 +181,7 @@ contains
   subroutine test_diag_cqp
     integer, parameter :: n = 3
     complex(qp) :: v(n), a(n,n), b(n,n)
-    complex(qp), parameter :: i_ = complex(0,1)
+    complex(qp), parameter :: i_ = cmplx(0,1)
     integer :: i,j
     write(*,*) "test_diag_cqp"
     a = diag([i_,i_],-1) + diag([i_,i_],1)
@@ -333,7 +333,7 @@ contains
     integer, parameter :: n = 5
     real(sp) :: re(n,n), im(n,n)
     complex(sp) :: a(n,n), b(n,n)
-    complex(sp), parameter :: i_ = complex(0,1)
+    complex(sp), parameter :: i_ = cmplx(0,1)
     write(*,*) "test_trace_csp"
 
     call random_number(re)
@@ -352,12 +352,12 @@ contains
   subroutine test_trace_cdp
     integer, parameter :: n = 3
     complex(dp) :: a(n,n), ans
-    complex(dp), parameter :: i_ = complex(0,1)
+    complex(dp), parameter :: i_ = cmplx(0,1)
     integer :: j
     write(*,*) "test_trace_cdp"
     
     a = reshape([(j + (n**2 - (j-1))*i_,j=1,n**2)],[n,n])
-    ans = complex(15,15) !(1 + 5 + 9) + (9 + 5 + 1)i
+    ans = cmplx(15,15) !(1 + 5 + 9) + (9 + 5 + 1)i
 
     call check(abs(trace(a) - ans) < dptol, &
           msg="abs(trace(a) - ans) < dptol failed.",warn=warn)
@@ -366,7 +366,7 @@ contains
   subroutine test_trace_cqp
     integer, parameter :: n = 3
     complex(qp) :: a(n,n)
-    complex(qp), parameter :: i_ = complex(0,1)
+    complex(qp), parameter :: i_ = cmplx(0,1)
     write(*,*) "test_trace_cqp"
     a = 3*eye(n) + 4*eye(n)*i_ ! pythagorean triple
     call check(abs(trace(a)) - 3*5.0_qp < qptol, &
