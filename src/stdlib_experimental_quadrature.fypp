@@ -25,60 +25,61 @@ module stdlib_experimental_quadrature
 
 
     interface trapz
-        #:for KIND in REAL_KINDS
-        pure module function trapz_dx_${KIND}$(y, dx) result(integral)
-            real(${KIND}$), dimension(:), intent(in) :: y
-            real(${KIND}$), intent(in) :: dx
-            real(${KIND}$) :: integral
-        end function trapz_dx_${KIND}$
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure module function trapz_dx_${k1}$(y, dx) result(integral)
+            ${t1}$, dimension(:), intent(in) :: y
+            ${t1}$, intent(in) :: dx
+            ${t1}$ :: integral
+        end function trapz_dx_${k1}$
         #:endfor
-        #:for KIND in REAL_KINDS
-        pure module function trapz_x_${KIND}$(y, x) result(integral)
-            real(${KIND}$), dimension(:), intent(in) :: y
-            real(${KIND}$), dimension(size(y)), intent(in) :: x
-            real(${KIND}$) :: integral
-        end function trapz_x_${KIND}$
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure module function trapz_x_${k1}$(y, x) result(integral)
+            ${t1}$, dimension(:), intent(in) :: y
+            ${t1}$, dimension(size(y)), intent(in) :: x
+            ${t1}$ :: integral
+        end function trapz_x_${k1}$
         #:endfor
     end interface trapz
 
 
     interface trapz_weights
-        #:for KIND in REAL_KINDS
-        pure module function trapz_weights_${KIND}$(x) result(w)
-            real(${KIND}$), dimension(:), intent(in) :: x
-            real(${KIND}$), dimension(size(x)) :: w
-        end function trapz_weights_${KIND}$
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure module function trapz_weights_${k1}$(x) result(w)
+            ${t1}$, dimension(:), intent(in) :: x
+            ${t1}$, dimension(size(x)) :: w
+        end function trapz_weights_${k1}$
         #:endfor
     end interface trapz_weights
 
 
     interface simps
-        #:for KIND in REAL_KINDS
-        pure module function simps_dx_${KIND}$(y, dx, even) result(integral)
-            real(${KIND}$), dimension(:), intent(in) :: y
-            real(${KIND}$), intent(in) :: dx
+        ! "recursive" is an implementation detail
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure recursive module function simps_dx_${k1}$(y, dx, even) result(integral)
+            ${t1}$, dimension(:), intent(in) :: y
+            ${t1}$, intent(in) :: dx
             integer, intent(in), optional :: even
-            real(${KIND}$) :: integral
-        end function simps_dx_${KIND}$
+            ${t1}$ :: integral
+        end function simps_dx_${k1}$
         #:endfor
-        #:for KIND in REAL_KINDS
-        pure module function simps_x_${KIND}$(y, x, even) result(integral)
-            real(${KIND}$), dimension(:), intent(in) :: y
-            real(${KIND}$), dimension(size(y)), intent(in) :: x
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure recursive module function simps_x_${k1}$(y, x, even) result(integral)
+            ${t1}$, dimension(:), intent(in) :: y
+            ${t1}$, dimension(size(y)), intent(in) :: x
             integer, intent(in), optional :: even
-            real(${KIND}$) :: integral
-        end function simps_x_${KIND}$
+            ${t1}$ :: integral
+        end function simps_x_${k1}$
         #:endfor
     end interface simps
 
 
     interface simps_weights
-        #:for KIND in REAL_KINDS
-        pure module function simps_weights_${KIND}$(x, even) result(w)
-            real(${KIND}$), dimension(:), intent(in) :: x
-            real(${KIND}$), dimension(size(x)) :: w
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure recursive module function simps_weights_${k1}$(x, even) result(w)
+            ${t1}$, dimension(:), intent(in) :: x
             integer, intent(in), optional :: even
-        end function simps_weights_${KIND}$
+            ${t1}$, dimension(size(x)) :: w
+        end function simps_weights_${k1}$
         #:endfor
     end interface simps_weights
 
@@ -87,12 +88,12 @@ module stdlib_experimental_quadrature
     ! Could become fancier as we learn about the performance
     ! ramifications of different ways to do callbacks.
     abstract interface
-        #:for KIND in REAL_KINDS
-        pure function integrand_${KIND}$(x) result(f)
-            import :: ${KIND}$
-            real(${KIND}$), intent(in) :: x
-            real(${KIND}$) :: f
-        end function integrand_${KIND}$
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure function integrand_${k1}$(x) result(f)
+            import :: ${k1}$
+            ${t1}$, intent(in) :: x
+            ${t1}$ :: f
+        end function integrand_${k1}$
         #:endfor
     end interface
 
@@ -119,18 +120,18 @@ module stdlib_experimental_quadrature
 ! PDT bug?
     interface quad
         #:for WFUN in WEIGHT_FUNS
-        #:for KIND in REAL_KINDS
-        module function quad_${WFUN}$_${KIND}$(f, a, b, weight, points, abstol, reltol, delta) result(integral)
-            procedure(integrand_${KIND}$) :: f
-            real(${KIND}$), intent(in) :: a
-            real(${KIND}$), intent(in) :: b
-            type(${WFUN}$_weight_t(${KIND}$)), intent(in) :: weight
-            real(${KIND}$), intent(in), dimension(:) :: points
-            real(${KIND}$), intent(in) :: abstol
-            real(${KIND}$), intent(in) :: reltol
-            real(${KIND}$), intent(out), optional :: delta
-            real(${KIND}$) :: integral
-        end function quad_${WFUN}$_${KIND}$
+        #:for k1, t1 in REAL_KINDS_TYPES
+        module function quad_${WFUN}$_${k1}$(f, a, b, weight, points, abstol, reltol, delta) result(integral)
+            procedure(integrand_${k1}$) :: f
+            ${t1}$, intent(in) :: a
+            ${t1}$, intent(in) :: b
+            type(${WFUN}$_weight_t(${k1}$)), intent(in) :: weight
+            ${t1}$, intent(in), dimension(:) :: points
+            ${t1}$, intent(in) :: abstol
+            ${t1}$, intent(in) :: reltol
+            ${t1}$, intent(out), optional :: delta
+            ${t1}$ :: integral
+        end function quad_${WFUN}$_${k1}$
         #:endfor
         #:endfor
     end interface quad
