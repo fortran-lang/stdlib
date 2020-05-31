@@ -71,8 +71,8 @@ program demo_trapz_weights
     real :: x(5) = [0., 1., 2., 3., 4.]
     real :: y(5) = x**2
     real :: w(5) 
-    w = trapz_weight(x)
-    print *, dot_product(w, y)
+    w = trapz_weights(x)
+    print *, sum(w*y)
 ! 22.0
 end program
 
