@@ -82,7 +82,7 @@ end program
 
 Returns the Simpson's rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`. 
 
-Simpson's rule is defined for odd-length arrays only. For even-length arrays, an optional argument `even` may be used to specify at which index to replace Simpson's rule with Simpson's 3/8 rule. The 3/8 rule will be used for the array section `y(even:even+4)` and the ordinary Simpon's rule will be used elsewhere.
+Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length arrays, Simpson's 3/8 rule is also utilized in a way that depends on the value of `even`. If `even` is negative (positive), the 3/8 rule is used at the beginning (end) of the array. If `even` is zero or not present, the result is as if the 3/8 rule were first used at the beginning of the array, then at the end of the array, and these two results were averaged.
 
 ### Syntax
 
@@ -98,7 +98,7 @@ Simpson's rule is defined for odd-length arrays only. For even-length arrays, an
 
 `dx`: Shall be a scalar of type `real` having the same kind as `y`.
 
-`even`: (Optional) Shall be a scalar integer of default kind. Its default value is `1`.
+`even`: (Optional) Shall be a default-kind `integer`.
 
 ### Return value
 
@@ -106,7 +106,7 @@ The result is a scalar of type `real` having the same kind as `y`.
 
 If the size of `y` is zero or one, the result is zero.
 
-If the size of `y` is two, the result is the same as if `trapz` had been called instead, regardless of the value of `even`.
+If the size of `y` is two, the result is the same as if `trapz` had been called instead.
 
 ### Example
 
@@ -116,7 +116,7 @@ TBD
 
 Given an array of abscissas `x`, computes the array of weights `w` such that if `y` represented function values tabulated at `x`, then `sum(w*y)` produces a Simpson's rule approximation to the integral.
 
-Simpson's rule is defined for odd-length arrays only. For even-length arrays, an optional argument `even` may be used to specify at which index to replace Simpson's rule with Simpson's 3/8 rule. The 3/8 rule will be used for the array section `x(even:even+4)` and the ordinary Simpon's rule will be used elsewhere.
+Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length arrays, Simpson's 3/8 rule is also utilized in a way that depends on the value of `even`. If `even` is negative (positive), the 3/8 rule is used at the beginning (end) of the array and the 1/3 rule used elsewhere. If `even` is zero or not present, the result is as if the 3/8 rule were first used at the beginning of the array, then at the end of the array, and then these two results were averaged.
 
 ### Syntax
 
@@ -126,7 +126,7 @@ Simpson's rule is defined for odd-length arrays only. For even-length arrays, an
 
 `x`: Shall be a rank-one array of type `real`.
 
-`even`: (Optional) Shall be a scalar integer of default kind. Its default value is `1`.
+`even`: (Optional) Shall be a default-kind `integer`.
 
 ### Return value
 
