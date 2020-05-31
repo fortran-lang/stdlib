@@ -28,8 +28,8 @@ endfunction()
 # Preprocesses fortran files with fypp.
 #
 # It assumes that source files have the ".fypp" extension. Target files will be
-# created the extension ".f90". The FYPP variable must contain the path to the
-# fypp-preprocessor.
+# created with the extension ".f90". The FYPP variable must contain the path to
+# the fypp-preprocessor.
 #
 # Args:
 #     fyppopts [in]: Options to pass to fypp.
