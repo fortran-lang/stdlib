@@ -1,17 +1,34 @@
 cmake_minimum_required(VERSION 3.14.0)
+
 project(stdlib Fortran)
 enable_testing()
 
-include(${CMAKE_SOURCE_DIR}/cmake/stdlib.cmake)
+# Add our local modules to the module path
+if(NOT CMAKE_MODULE_PATH)
+  set(CMAKE_MODULE_PATH)
+endif()
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
+# Include the preprocessor options for stdlib
+include(${CMAKE_MODULE_PATH}/stdlib.cmake)
+
+# GNUInstallDirs is used to install libraries into correct locations
+# on all platforms.
+include(GNUInstallDirs)
+
+# Setup the Fortran cmake environment
+# Sets up the flags for compiling shared libraries or static libraries, and returns the libType parameter.
+include("${CMAKE_MODULE_PATH}/FortranEnvironment.cmake")
+
 
 # --- compiler options
-if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  add_compile_options(-fimplicit-none)
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
-  add_compile_options(-warn declarations)
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
-  add_compile_options(-Mdclchk)
-endif()
+#if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
+#  add_compile_options(-fimplicit-none)
+#elseif(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
+#  add_compile_options(-warn declarations)
+#elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
+#  add_compile_options(-Mdclchk)
+#endif()
 
 # --- compiler feature checks
 include(CheckFortranSourceCompiles)
@@ -27,7 +44,8 @@ endif()
 # --- find preprocessor
 find_program(FYPP fypp)
 if(NOT FYPP)
-  message(FATAL_ERROR "Preprocessor fypp not found!")
+  message(FATAL_ERROR "Preprocessor fypp not found!\n"
+	              "fypp is a python package and can be installed via, 'pip install fypp'")
 endif()
 
 add_subdirectory(src)
