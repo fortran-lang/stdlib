@@ -31,7 +31,7 @@ set(SRC
     stdlib_experimental_ascii.f90
     stdlib_experimental_error.f90
     stdlib_experimental_kinds.f90
-    stdlib_experimental_system.F90
+    stdlib_experimental_system.F90 # Captital extension for a reason?
     ${outFiles}
 )
 
@@ -52,6 +52,13 @@ else()
 endif()
 
 add_subdirectory(tests)
+
+# relax standard checks
+if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
+  if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10.0)
+    set_source_files_properties("stdlib_experimental_ascii.f90" PROPERTIES COMPILE_FLAGS "-fallow-invalid-boz")
+  endif()
+endif()
 
 install(TARGETS fortran_stdlib
         RUNTIME DESTINATION bin
