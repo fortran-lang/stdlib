@@ -53,13 +53,6 @@ endif()
 
 add_subdirectory(tests)
 
-# relax standard checks
-if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10.0)
-    set_source_files_properties("stdlib_experimental_ascii.f90" PROPERTIES COMPILE_FLAGS "-fallow-invalid-boz")
-  endif()
-endif()
-
 install(TARGETS fortran_stdlib
         RUNTIME DESTINATION bin
         ARCHIVE DESTINATION lib
