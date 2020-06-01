@@ -3,8 +3,10 @@
 # Create a list of the files to be preprocessed
 set(fppFiles
     stdlib_experimental_io.fypp
+    stdlib_experimental_optval.fypp
     stdlib_experimental_stats.fypp
     stdlib_experimental_stats_mean.fypp
+    stdlib_experimental_stats_var.fypp
     stdlib_experimental_quadrature.fypp
     stdlib_experimental_quadrature_trapz.fypp
     stdlib_experimental_quadrature_simps.fypp
@@ -24,10 +26,8 @@ fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
     stdlib_experimental_ascii.f90
-    stdlib_experimental_io.f90
     stdlib_experimental_error.f90
     stdlib_experimental_kinds.f90
-    stdlib_experimental_optval.f90
     stdlib_experimental_system.F90
     ${outFiles}
 )

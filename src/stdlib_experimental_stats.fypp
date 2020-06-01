@@ -1,106 +1,205 @@
 #:include "common.fypp"
-
 #:set RANKS = range(1, MAXRANK + 1)
-
-
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_experimental_stats
   use stdlib_experimental_kinds, only: sp, dp, qp, &
       int8, int16, int32, int64
   implicit none
   private
   ! Public API
-  public :: mean
+  public :: mean, var
 
   interface mean
-
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
-        module function mean_${rank}$_all_${k1}$_${k1}$(x, mask) result(res)
+        #:set RName = rname("mean_all",rank, t1, k1)
+        module function ${RName}$ (x, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in), optional :: mask
           ${t1}$ :: res
-        end function mean_${rank}$_all_${k1}$_${k1}$
+        end function ${RName}$
       #:endfor
     #:endfor
 
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
-        module function mean_${rank}$_all_${k1}$_dp(x, mask) result(res)
+      #:set RName = rname('mean_all', rank, t1, k1,'dp')
+        module function ${RName}$(x, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in), optional :: mask
           real(dp) :: res
-        end function mean_${rank}$_all_${k1}$_dp
+        end function ${RName}$
       #:endfor
     #:endfor
 
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
-        module function mean_${rank}$_${k1}$_${k1}$(x, dim, mask) result(res)
+      #:set RName = rname("mean",rank, t1, k1)
+        module function ${RName}$(x, dim, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in), optional :: mask
           ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
-        end function mean_${rank}$_${k1}$_${k1}$
+        end function ${RName}$
       #:endfor
     #:endfor
 
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
-        module function mean_${rank}$_${k1}$_dp(x, dim, mask) result(res)
+        #:set RName = rname("mean",rank, t1, k1,'dp')
+        module function ${RName}$(x, dim, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in), optional :: mask
           real(dp) :: res${reduced_shape('x', rank, 'dim')}$
-        end function mean_${rank}$_${k1}$_dp
+        end function ${RName}$
       #:endfor
     #:endfor
 
-
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
-        module function mean_${rank}$_mask_all_${k1}$_${k1}$(x, mask) result(res)
+        #:set RName = rname('mean_mask_all',rank, t1, k1)
+        module function ${RName}$(x, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in) :: mask${ranksuffix(rank)}$
           ${t1}$ :: res
-        end function mean_${rank}$_mask_all_${k1}$_${k1}$
+          end function ${RName}$
       #:endfor
     #:endfor
-
 
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
-        module function mean_${rank}$_mask_all_${k1}$_dp(x, mask) result(res)
+      #:set RName = rname('mean_mask_all',rank, t1, k1, 'dp')
+        module function ${RName}$(x, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in) :: mask${ranksuffix(rank)}$
           real(dp) :: res
-        end function mean_${rank}$_mask_all_${k1}$_dp
+        end function ${RName}$
       #:endfor
     #:endfor
 
-
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
-        module function mean_${rank}$_mask_${k1}$_${k1}$(x, dim, mask) result(res)
+      #:set RName = rname('mean_mask',rank, t1, k1)
+        module function ${RName}$(x, dim, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in) :: mask${ranksuffix(rank)}$
           ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
-        end function mean_${rank}$_mask_${k1}$_${k1}$
+        end function ${RName}$
       #:endfor
     #:endfor
 
-
     #:for k1, t1 in INT_KINDS_TYPES
       #:for rank in RANKS
-        module function mean_${rank}$_mask_${k1}$_dp(x, dim, mask) result(res)
+      #:set RName = rname('mean_mask',rank, t1, k1, 'dp')
+        module function ${RName}$(x, dim, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in) :: mask${ranksuffix(rank)}$
           real(dp) :: res${reduced_shape('x', rank, 'dim')}$
-        end function mean_${rank}$_mask_${k1}$_dp
+        end function ${RName}$
       #:endfor
     #:endfor
 
   end interface mean
+
+
+  interface var
+
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("var_all",rank, t1, k1)
+        module function ${RName}$(x, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          logical, intent(in), optional :: mask
+          real(${k1}$) :: res
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("var_all",rank, t1, k1, 'dp')
+        module function ${RName}$(x, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          logical, intent(in), optional :: mask
+          real(dp) :: res
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("var",rank, t1, k1)
+        module function ${RName}$(x, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: dim
+          logical, intent(in), optional :: mask
+          real(${k1}$) :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("var",rank, t1, k1, 'dp')
+        module function ${RName}$(x, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: dim
+          logical, intent(in), optional :: mask
+          real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("var_mask_all",rank, t1, k1)
+        module function ${RName}$(x, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          real(${k1}$) :: res
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("var_mask_all",rank, t1, k1, 'dp')
+        module function ${RName}$(x, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          real(dp) :: res
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("var_mask",rank, t1, k1)
+        module function ${RName}$(x, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: dim
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          real(${k1}$) :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for rank in RANKS
+        #:set RName = rname("var_mask",rank, t1, k1, 'dp')
+        module function ${RName}$(x, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: dim
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
+    #:endfor
+
+  end interface var
+
 
 end module stdlib_experimental_stats

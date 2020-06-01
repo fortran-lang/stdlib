@@ -5,17 +5,21 @@ use stdlib_experimental_io, only: loadtxt
 use stdlib_experimental_stats, only: mean
 implicit none
 
-real(sp), parameter :: sptol = 1.2e-06_sp
-real(dp), parameter :: dptol = 2.2e-15_dp
+real(sp), parameter :: sptol = 10 * epsilon(1._sp)
+real(dp), parameter :: dptol = 10 * epsilon(1._dp)
 
 real(sp) :: s1(3) = [1.0_sp, 2.0_sp, 3.0_sp]
 
 real(sp), allocatable :: s(:, :)
 real(dp), allocatable :: d(:, :)
 
+complex(dp), allocatable :: cs(:, :)
+complex(dp), allocatable :: cd(:, :)
+
 real(dp), allocatable :: d3(:, :, :)
 real(dp), allocatable :: d4(:, :, :, :)
 
+complex(dp), allocatable :: cd3(:, :, :)
 
 !sp
 call loadtxt("array3.dat", s)
@@ -36,6 +40,23 @@ call assert( abs(mean(d) - sum(d)/real(size(d), dp)) < dptol)
 call assert( sum( abs( mean(d,1) - sum(d,1)/real(size(d,1), dp) )) < dptol)
 call assert( sum( abs( mean(d,2) - sum(d,2)/real(size(d,2), dp) )) < dptol)
 
+!csp
+
+call loadtxt("array3.dat", d)
+cs = cmplx(1._sp, 1._sp)*d
+
+call assert( abs(mean(cs) - sum(cs)/real(size(cs), sp)) < sptol)
+call assert( sum( abs( mean(cs,1) - sum(cs,1)/real(size(cs,1), sp) )) < sptol)
+call assert( sum( abs( mean(cs,2) - sum(cs,2)/real(size(cs,2), sp) )) < sptol)
+
+!cdp
+
+call loadtxt("array3.dat", d)
+cd = cmplx(1._dp, 1._dp)*d
+
+call assert( abs(mean(cd) - sum(cd)/real(size(cd), dp)) < dptol)
+call assert( sum( abs( mean(cd,1) - sum(cd,1)/real(size(cd,1), dp) )) < dptol)
+call assert( sum( abs( mean(cd,2) - sum(cd,2)/real(size(cd,2), dp) )) < dptol)
 
 ! check mask = .false.
 
@@ -74,6 +95,18 @@ call assert( abs(mean(d3) - sum(d3)/real(size(d3), dp)) < dptol)
 call assert( sum( abs( mean(d3,1) - sum(d3,1)/real(size(d3,1), dp) )) < dptol)
 call assert( sum( abs( mean(d3,2) - sum(d3,2)/real(size(d3,2), dp) )) < dptol)
 call assert( sum( abs( mean(d3,3) - sum(d3,3)/real(size(d3,3), dp) )) < dptol)
+
+!cdp rank 3
+allocate(cd3(size(d,1),size(d,2),3))
+cd3(:,:,1)=d;
+cd3(:,:,2)=d*1.5;
+cd3(:,:,3)=d*4;
+cd3 = cmplx(1._sp, 1._sp)*cd3
+
+call assert( abs(mean(cd3) - sum(cd3)/real(size(cd3), dp)) < dptol)
+call assert( sum( abs( mean(cd3,1) - sum(cd3,1)/real(size(cd3,1), dp) )) < dptol)
+call assert( sum( abs( mean(cd3,2) - sum(cd3,2)/real(size(cd3,2), dp) )) < dptol)
+call assert( sum( abs( mean(cd3,3) - sum(cd3,3)/real(size(cd3,3), dp) )) < dptol)
 
 
 !dp rank 4
