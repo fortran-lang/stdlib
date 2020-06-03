@@ -1,6 +1,6 @@
 program test_simps
     use stdlib_experimental_kinds, only: sp, dp, qp
-    use stdlib_experimental_error, only: assert
+    use stdlib_experimental_error, only: check
     use stdlib_experimental_quadrature, only: simps, simps_weights
 
     implicit none
@@ -50,18 +50,18 @@ contains
         val = simps(y, 1.0_sp)
         ans = 576.0_sp
         print *, "  dx=1", val, ans
-        call assert(abs(val - ans) < tol_sp)
+        call check(abs(val - ans) < tol_sp)
 
         val = simps(y, 0.5_sp)
         ans = 288.0_sp
         print *, "  dx=0.5", val, ans
-        call assert(abs(val - ans) < tol_sp)
+        call check(abs(val - ans) < tol_sp)
 
         x = [(0.25_sp*(i-1), i = 1, n)]
         val = simps(y, x)
         ans = 144.0_sp
         print *, "  x=0,0.25,0.5,...", val, ans
-        call assert(abs(val - ans) < tol_sp)
+        call check(abs(val - ans) < tol_sp)
     end subroutine test_simps_sp
 
 
@@ -80,18 +80,18 @@ contains
         val = simps(y, 1.0_dp)
         ans = 576.0_dp
         print *, "  dx=1", val, ans
-        call assert(abs(val - ans) < tol_dp)
+        call check(abs(val - ans) < tol_dp)
 
         val = simps(y, 0.5_dp)
         ans = 288.0_dp
         print *, "  dx=0.5", val, ans
-        call assert(abs(val - ans) < tol_dp)
+        call check(abs(val - ans) < tol_dp)
 
         x = [(0.25_dp*(i-1), i = 1, n)]
         val = simps(y, x)
         ans = 144.0_dp
         print *, "  x=0,0.25,0.5,...", val, ans
-        call assert(abs(val - ans) < tol_dp)
+        call check(abs(val - ans) < tol_dp)
     end subroutine test_simps_dp
 
 
@@ -110,18 +110,18 @@ contains
         val = simps(y, 1.0_qp)
         ans = 576.0_qp
         print *, "  dx=1", val, ans
-        call assert(abs(val - ans) < tol_qp)
+        call check(abs(val - ans) < tol_qp)
 
         val = simps(y, 0.5_qp)
         ans = 288.0_qp
         print *, "  dx=0.5", val, ans
-        call assert(abs(val - ans) < tol_qp)
+        call check(abs(val - ans) < tol_qp)
 
         x = [(0.25_qp*(i-1), i = 1, n)]
         val = simps(y, x)
         ans = 144.0_qp
         print *, "  x=0,0.25,0.5,...", val, ans
-        call assert(abs(val - ans) < tol_qp)
+        call check(abs(val - ans) < tol_qp)
     end subroutine test_simps_qp
 
 
@@ -143,7 +143,7 @@ contains
         val = sum(w*y)
         ans = simps(y, x)
         print *, "  ", val, ans
-        call assert(abs(val - ans) < tol_sp)
+        call check(abs(val - ans) < tol_sp)
     end subroutine test_simps_weights_sp
 
 
@@ -165,7 +165,7 @@ contains
         val = sum(w*y)
         ans = simps(y, x)
         print *, "  ", val, ans
-        call assert(abs(val - ans) < tol_dp)
+        call check(abs(val - ans) < tol_dp)
     end subroutine test_simps_weights_dp
 
 
@@ -187,7 +187,7 @@ contains
         val = sum(w*y)
         ans = simps(y, x)
         print *, "  ", val, ans
-        call assert(abs(val - ans) < tol_qp)
+        call check(abs(val - ans) < tol_qp)
     end subroutine test_simps_weights_qp
 
 
@@ -196,10 +196,10 @@ contains
 
         print *, "test_simps_zero_sp"
 
-        call assert(abs(simps(a, 1.0_sp)) < epsilon(0.0_sp))
-        call assert(abs(simps([1.0_sp], 1.0_sp)) < epsilon(0.0_sp))
-        call assert(abs(simps(a, a)) < epsilon(0.0_sp))
-        call assert(abs(simps([1.0_sp], [1.0_sp])) < epsilon(0.0_sp))
+        call check(abs(simps(a, 1.0_sp)) < epsilon(0.0_sp))
+        call check(abs(simps([1.0_sp], 1.0_sp)) < epsilon(0.0_sp))
+        call check(abs(simps(a, a)) < epsilon(0.0_sp))
+        call check(abs(simps([1.0_sp], [1.0_sp])) < epsilon(0.0_sp))
     end subroutine test_simps_zero_sp
 
 
@@ -208,10 +208,10 @@ contains
 
         print *, "test_simps_zero_dp"
 
-        call assert(abs(simps(a, 1.0_dp)) < epsilon(0.0_dp))
-        call assert(abs(simps([1.0_dp], 1.0_dp)) < epsilon(0.0_dp))
-        call assert(abs(simps(a, a)) < epsilon(0.0_dp))
-        call assert(abs(simps([1.0_dp], [1.0_dp])) < epsilon(0.0_dp))
+        call check(abs(simps(a, 1.0_dp)) < epsilon(0.0_dp))
+        call check(abs(simps([1.0_dp], 1.0_dp)) < epsilon(0.0_dp))
+        call check(abs(simps(a, a)) < epsilon(0.0_dp))
+        call check(abs(simps([1.0_dp], [1.0_dp])) < epsilon(0.0_dp))
     end subroutine test_simps_zero_dp
 
 
@@ -220,10 +220,10 @@ contains
 
         print *, "test_simps_zero_qp"
 
-        call assert(abs(simps(a, 1.0_qp)) < epsilon(0.0_qp))
-        call assert(abs(simps([1.0_qp], 1.0_qp)) < epsilon(0.0_qp))
-        call assert(abs(simps(a, a)) < epsilon(0.0_qp))
-        call assert(abs(simps([1.0_qp], [1.0_qp])) < epsilon(0.0_qp))
+        call check(abs(simps(a, 1.0_qp)) < epsilon(0.0_qp))
+        call check(abs(simps([1.0_qp], 1.0_qp)) < epsilon(0.0_qp))
+        call check(abs(simps(a, a)) < epsilon(0.0_qp))
+        call check(abs(simps([1.0_qp], [1.0_qp])) < epsilon(0.0_qp))
     end subroutine test_simps_zero_qp
 
 
@@ -246,18 +246,18 @@ contains
             val = simps(y, 1.0_sp)
             ans = 1000.0_sp
             print *, "  dx=1", val, ans
-            call assert(abs(val - ans) < tol_sp)
+            call check(abs(val - ans) < tol_sp)
 
             val = simps(y, 0.5_sp)
             ans = 500.0_sp
             print *, "  dx=0.5", val, ans
-            call assert(abs(val - ans) < tol_sp)
+            call check(abs(val - ans) < tol_sp)
 
             x = [(0.25_sp*(i-1), i = 1, n)]
             val = simps(y, x)
             ans = 250.0_sp
             print *, "  x=0,0.25,0.5,...", val, ans
-            call assert(abs(val - ans) < tol_sp)
+            call check(abs(val - ans) < tol_sp)
         end do
     end subroutine test_simps_even_sp
 
@@ -277,18 +277,18 @@ contains
         val = simps(y, 1.0_dp)
         ans = 1000.0_dp
         print *, "  dx=1", val, ans
-        call assert(abs(val - ans) < tol_dp)
+        call check(abs(val - ans) < tol_dp)
 
         val = simps(y, 0.5_dp)
         ans = 500.0_dp
         print *, "  dx=0.5", val, ans
-        call assert(abs(val - ans) < tol_dp)
+        call check(abs(val - ans) < tol_dp)
 
         x = [(0.25_dp*(i-1), i = 1, n)]
         val = simps(y, x)
         ans = 250.0_dp
         print *, "  x=0,0.25,0.5,...", val, ans
-        call assert(abs(val - ans) < tol_dp)
+        call check(abs(val - ans) < tol_dp)
     end subroutine test_simps_even_dp
 
 
@@ -311,18 +311,18 @@ contains
             val = simps(y, 1.0_qp)
             ans = 1000.0_qp
             print *, "  dx=1", val, ans
-            call assert(abs(val - ans) < tol_qp)
+            call check(abs(val - ans) < tol_qp)
 
             val = simps(y, 0.5_qp)
             ans = 500.0_qp
             print *, "  dx=0.5", val, ans
-            call assert(abs(val - ans) < tol_qp)
+            call check(abs(val - ans) < tol_qp)
 
             x = [(0.25_qp*(i-1), i = 1, n)]
             val = simps(y, x)
             ans = 250.0_qp
             print *, "  x=0,0.25,0.5,...", val, ans
-            call assert(abs(val - ans) < tol_qp)
+            call check(abs(val - ans) < tol_qp)
         end do
     end subroutine test_simps_even_qp
 
@@ -347,7 +347,7 @@ contains
             val = sum(w*y)
             ans = simps(y, x)
             print *, "  even=", even, val, ans
-            call assert(abs(val - ans) < tol_sp)
+            call check(abs(val - ans) < tol_sp)
         end do
     end subroutine test_simps_weights_even_sp
 
@@ -372,7 +372,7 @@ contains
             val = sum(w*y)
             ans = simps(y, x)
             print *, "  even=", even, val, ans
-            call assert(abs(val - ans) < tol_dp)
+            call check(abs(val - ans) < tol_dp)
         end do
     end subroutine test_simps_weights_even_dp
 
@@ -398,7 +398,7 @@ contains
             val = sum(w*y)
             ans = simps(y, x)
             print *, "  even=", even, val, ans
-            call assert(abs(val - ans) < tol_qp)
+            call check(abs(val - ans) < tol_qp)
         end do
     end subroutine test_simps_weights_even_qp
 
@@ -422,18 +422,18 @@ contains
             val = simps(y, 1.0_sp)
             ans = 125.0_sp
             print *, "  dx=1", val, ans
-            call assert(abs(val - ans) < tol_sp)
+            call check(abs(val - ans) < tol_sp)
 
             val = simps(y, 0.5_sp)
             ans = 62.5_sp
             print *, "  dx=0.5", val, ans
-            call assert(abs(val - ans) < tol_sp)
+            call check(abs(val - ans) < tol_sp)
 
             x = [(0.25_sp*(i-1), i = 1, n)]
             val = simps(y, x)
             ans = 31.25_sp
             print *, "  x=0,0.25,0.5,...", val, ans
-            call assert(abs(val - ans) < tol_sp)
+            call check(abs(val - ans) < tol_sp)
         end do
     end subroutine test_simps_six_sp
 
@@ -453,18 +453,18 @@ contains
         val = simps(y, 1.0_dp)
         ans = 125.0_dp
         print *, "  dx=1", val, ans
-        call assert(abs(val - ans) < tol_dp)
+        call check(abs(val - ans) < tol_dp)
 
         val = simps(y, 0.5_dp)
         ans = 62.5_dp
         print *, "  dx=0.5", val, ans
-        call assert(abs(val - ans) < tol_dp)
+        call check(abs(val - ans) < tol_dp)
 
         x = [(0.25_dp*(i-1), i = 1, n)]
         val = simps(y, x)
         ans = 31.25_dp
         print *, "  x=0,0.25,0.5,...", val, ans
-        call assert(abs(val - ans) < tol_dp)
+        call check(abs(val - ans) < tol_dp)
     end subroutine test_simps_six_dp
 
 
@@ -487,18 +487,18 @@ contains
             val = simps(y, 1.0_qp)
             ans = 125.0_qp
             print *, "  dx=1", val, ans
-            call assert(abs(val - ans) < tol_qp)
+            call check(abs(val - ans) < tol_qp)
 
             val = simps(y, 0.5_qp)
             ans = 62.5_qp
             print *, "  dx=0.5", val, ans
-            call assert(abs(val - ans) < tol_qp)
+            call check(abs(val - ans) < tol_qp)
 
             x = [(0.25_qp*(i-1), i = 1, n)]
             val = simps(y, x)
             ans = 31.25_qp
             print *, "  x=0,0.25,0.5,...", val, ans
-            call assert(abs(val - ans) < tol_qp)
+            call check(abs(val - ans) < tol_qp)
         end do
     end subroutine test_simps_six_qp
 
