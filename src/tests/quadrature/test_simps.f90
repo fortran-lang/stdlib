@@ -5,9 +5,9 @@ program test_simps
 
     implicit none
 
-    real(sp) :: tol_sp = epsilon(1.0_sp)
-    real(dp) :: tol_dp = epsilon(1.0_dp)
-    real(qp) :: tol_qp = epsilon(1.0_sp)
+    real(sp), parameter :: tol_sp = 1000 * epsilon(1.0_sp)
+    real(dp), parameter :: tol_dp = 1000 * epsilon(1.0_dp)
+    real(qp), parameter :: tol_qp = 1000 *epsilon(1.0_sp)
 
     call test_simps_sp
     call test_simps_dp
