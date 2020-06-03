@@ -40,6 +40,14 @@ git clone https://github.com/fortran-lang/stdlib
 cd stdlib
 ```
 
+### Requirements
+
+The preprocessor ```fypp``` (https://github.com/aradi/fypp) is needed because metaprogramming is used.
+It can be installed using the command line installer ```pip```.
+```sh
+pip install fypp
+```
+
 ### Build with CMake
 
 ```sh
@@ -57,6 +65,16 @@ Alternatively, you can build using provided Makefiles:
 ```
 make -f Makefile.manual
 ```
+
+## Documentation
+
+Documentation is a work in progress (see issue #4) but is currently available at https://stdlib.fortran-lang.org.
+This includes API documentation automatically generated from static analysis and markup comments in the source files
+using the [FORD](https://github.com/Fortran-FOSS-programmers/ford/wiki) tool,
+as well as a specification document or ["spec"](https://stdlib.fortran-lang.org/page/specs/index.html) for each proposed feature.
+
+Some discussions and prototypes of proposed APIs along with a list of popular open source Fortran projects are available on the
+[wiki](https://github.com/fortran-lang/stdlib/wiki).
 
 ## Contributing
 

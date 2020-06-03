@@ -2,6 +2,7 @@
 #:set WEIGHT_FUNS = ["sin", "cos", "pole"]
 #:set QUAD_OK = False
 module stdlib_experimental_quadrature
+    !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description))
     use stdlib_experimental_kinds, only: sp, dp, qp
 
     implicit none
@@ -25,12 +26,14 @@ module stdlib_experimental_quadrature
 
 
     interface trapz
+      !! Integrates sampled values using trapezoidal rule
+      !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description))
         #:for k1, t1 in REAL_KINDS_TYPES
         pure module function trapz_dx_${k1}$(y, dx) result(integral)
-            ${t1}$, dimension(:), intent(in) :: y
-            ${t1}$, intent(in) :: dx
-            ${t1}$ :: integral
-        end function trapz_dx_${k1}$
+          ${t1}$, dimension(:), intent(in) :: y
+          ${t1}$, intent(in) :: dx
+          ${t1}$ :: integral
+        end function trapz_dx_${k1}$      
         #:endfor
         #:for k1, t1 in REAL_KINDS_TYPES
         pure module function trapz_x_${k1}$(y, x) result(integral)
@@ -43,6 +46,8 @@ module stdlib_experimental_quadrature
 
 
     interface trapz_weights
+        !! Integrates sampled values using trapezoidal rule weights for given abscissas
+        !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description_1))
         #:for k1, t1 in REAL_KINDS_TYPES
         pure module function trapz_weights_${k1}$(x) result(w)
             ${t1}$, dimension(:), intent(in) :: x

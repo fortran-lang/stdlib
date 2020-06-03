@@ -7,7 +7,10 @@ module stdlib_experimental_optval
   !!
   !! Provides a generic function `optval`, which can be used to
   !! conveniently implement fallback values for optional arguments
-  !! to subprograms. If `x` is an `optional` parameter of a
+  !! to subprograms
+  !! ([Specification](../page/specs/stdlib_experimental_optval.html))
+  !!
+  !! If `x` is an `optional` parameter of a
   !! subprogram, then the expression `optval(x, default)` inside that
   !! subprogram evaluates to `x` if it is present, otherwise `default`.
   !!
@@ -22,6 +25,8 @@ module stdlib_experimental_optval
 
 
   interface optval
+    !! Fallback value for optional arguments
+    !! ([Specification](../page/specs/stdlib_experimental_optval.html#description))
     #:for k1, t1 in KINDS_TYPES
       module procedure optval_${t1[0]}$${k1}$
     #:endfor

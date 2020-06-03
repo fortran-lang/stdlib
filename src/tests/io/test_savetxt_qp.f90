@@ -1,7 +1,7 @@
 program test_savetxt_qp
 use stdlib_experimental_kinds, only: qp
 use stdlib_experimental_io, only: loadtxt, savetxt
-use stdlib_experimental_error, only: assert
+use stdlib_experimental_error, only: check
 implicit none
 
 character(:), allocatable :: outpath
@@ -33,14 +33,14 @@ contains
     d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
     call savetxt(outpath, d)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [3, 2]))
-    call assert(all(abs(d-d2) < epsilon(1._qp)))
+    call check(all(shape(d2) == [3, 2]))
+    call check(all(abs(d-d2) < epsilon(1._qp)))
 
     e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
     call savetxt(outpath, e)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [2, 3]))
-    call assert(all(abs(e-d2) < epsilon(1._qp)))
+    call check(all(shape(d2) == [2, 3]))
+    call check(all(abs(e-d2) < epsilon(1._qp)))
     end subroutine test_rqp
 
     subroutine test_cqp(outpath)
@@ -50,14 +50,14 @@ contains
     d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
     call savetxt(outpath, d)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [3, 2]))
-    call assert(all(abs(d-d2) < epsilon(1._qp)))
+    call check(all(shape(d2) == [3, 2]))
+    call check(all(abs(d-d2) < epsilon(1._qp)))
 
     e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
     call savetxt(outpath, e)
     call loadtxt(outpath, d2)
-    call assert(all(shape(d2) == [2, 3]))
-    call assert(all(abs(e-d2) < epsilon(1._qp)))
+    call check(all(shape(d2) == [2, 3]))
+    call check(all(abs(e-d2) < epsilon(1._qp)))
     end subroutine test_cqp
 
 end program test_savetxt_qp

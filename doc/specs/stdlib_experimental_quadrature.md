@@ -1,19 +1,22 @@
+---
+title: experimental_quadrature
+---
+
 # Numerical integration
 
-## Implemented
-
-* `trapz`
-* `trapz_weights`
+[TOC]
 
 ## `trapz` - integrate sampled values using trapezoidal rule
+
+### Description
 
 Returns the trapezoidal rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`.
 
 ### Syntax
 
-`result = trapz(y, x)`
+`result = [[stdlib_experimental_quadrature(module):trapz(interface)]](y, x)`
 
-`result = trapz(y, dx)`
+`result = [[stdlib_experimental_quadrature(module):trapz(interface)]](y, dx)`
 
 ### Arguments
 
@@ -41,16 +44,18 @@ program demo_trapz
 ! 22.0
     print *, trapz(y, 0.5) 
 ! 11.0
-end program
+end program demo_trapz
 ```
 
 ## `trapz_weights` - trapezoidal rule weights for given abscissas
+
+### Description
 
 Given an array of abscissas `x`, computes the array of weights `w` such that if `y` represented function values tabulated at `x`, then `sum(w*y)` produces a trapezoidal rule approximation to the integral.
 
 ### Syntax
 
-`result = trapz_weights(x)`
+`result = [[stdlib_experimental_quadrature(module):trapz_weights(interface)]](x)`
 
 ### Arguments
 
@@ -74,11 +79,13 @@ program demo_trapz_weights
     w = trapz_weights(x)
     print *, sum(w*y)
 ! 22.0
-end program
+end program demo_trapz_weights
 
 ```
 
-# `simps` - integrate sampled values using Simpson's rule
+## `simps` - integrate sampled values using Simpson's rule (to be implemented)
+
+### Description
 
 Returns the Simpson's rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`. 
 
@@ -112,7 +119,9 @@ If the size of `y` is two, the result is the same as if `trapz` had been called 
 
 TBD
 
-# `simps_weights` - Simpson's rule weights for given abscissas
+## `simps_weights` - Simpson's rule weights for given abscissas (to be implemented)
+
+### Description
 
 Given an array of abscissas `x`, computes the array of weights `w` such that if `y` represented function values tabulated at `x`, then `sum(w*y)` produces a Simpson's rule approximation to the integral.
 

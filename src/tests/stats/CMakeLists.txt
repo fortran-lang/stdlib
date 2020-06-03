@@ -1,5 +1,9 @@
+ADDTEST(cov)
 ADDTEST(mean)
+ADDTEST(moment)
+ADDTEST(rawmoment)
 ADDTEST(var)
+ADDTEST(varn)
 
 if(DEFINED CMAKE_MAXIMUM_RANK)
     if(${CMAKE_MAXIMUM_RANK} GREATER 7)

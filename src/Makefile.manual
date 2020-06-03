@@ -1,11 +1,16 @@
-SRC = stdlib_experimental_ascii.f90 \
+SRC = f18estop.f90 \
+      stdlib_experimental_ascii.f90 \
       stdlib_experimental_error.f90 \
       stdlib_experimental_io.f90 \
-      stdlib_experimental_optval.f90 \
+      stdlib_experimental_linalg.f90 \
+      stdlib_experimental_linalg_diag.f90 \
       stdlib_experimental_kinds.f90 \
-      f18estop.f90 \
+      stdlib_experimental_optval.f90 \
+      stdlib_experimental_quadrature.f90 \
+      stdlib_experimental_quadrature_trapz.f90 \
       stdlib_experimental_stats.f90 \
       stdlib_experimental_stats_mean.f90 \
+      stdlib_experimental_stats_moment.f90 \
       stdlib_experimental_stats_var.f90
 
 LIB = libstdlib.a
@@ -34,12 +39,19 @@ clean:
 
 # Fortran module dependencies
 f18estop.o: stdlib_experimental_error.o
+stdlib_experimental_error.o: stdlib_experimental_optval.o
 stdlib_experimental_io.o: \
 	stdlib_experimental_error.o \
 	stdlib_experimental_optval.o \
 	stdlib_experimental_kinds.o
+stdlib_experimental_linalg_diag.o: stdlib_experimental_kinds.o
 stdlib_experimental_optval.o: stdlib_experimental_kinds.o
+stdlib_experimental_quadrature.o: stdlib_experimental_kinds.o
 stdlib_experimental_stats_mean.o: \
+	stdlib_experimental_optval.o \
+	stdlib_experimental_kinds.o \
+	stdlib_experimental_stats.o
+stdlib_experimental_stats_moment.o: \
 	stdlib_experimental_optval.o \
 	stdlib_experimental_kinds.o \
 	stdlib_experimental_stats.o
@@ -47,7 +59,13 @@ stdlib_experimental_stats_var.o: \
 	stdlib_experimental_optval.o \
 	stdlib_experimental_kinds.o \
 	stdlib_experimental_stats.o
+
+# Fortran sources that are built from fypp templates
 stdlib_experimental_io.f90: stdlib_experimental_io.fypp
+stdlib_experimental_linalg.f90: stdlib_experimental_linalg.fypp
+stdlib_experimental_linalg_diag.f90: stdlib_experimental_linalg_diag.fypp
+stdlib_experimental_quadrature.f90: stdlib_experimental_quadrature.fypp
 stdlib_experimental_stats.f90: stdlib_experimental_stats.fypp
 stdlib_experimental_stats_mean.f90: stdlib_experimental_stats_mean.fypp
+stdlib_experimental_stats_moment.f90: stdlib_experimental_stats_moment.fypp
 stdlib_experimental_stats_var.f90: stdlib_experimental_stats_var.fypp

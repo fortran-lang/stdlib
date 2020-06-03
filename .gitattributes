@@ -1,6 +1,9 @@
 # Set the default behavior, in case people don't have core.autocrlf set.
 * text=auto
 
+# Override syntax highlighting
+*.fypp linguist-language=fortran
+
 # Explicitly declare text files you want to always be normalized and converted
 # to native line endings on checkout.
 *.c text
@@ -28,4 +31,4 @@ codecov.yml export-ignore
 .github export-ignore
 
 # Perform substitutions when `git export`ing these files
-.VERSION export-subst
+.VERSION export-subst 

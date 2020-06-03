@@ -1,0 +1,65 @@
+name: Build and Deploy Documents
+
+on: [push, pull_request]
+
+env:
+  LANG: "en_US.UTF-8"
+  LC_ALL: "en_US.UTF-8"
+  HOMEBREW_DISPLAY_INSTALL_TIMES: "ON"
+  HOMEBREW_NO_ANALYTICS: "ON"
+  HOMEBREW_NO_AUTO_UPDATE: "ON"
+  HOMEBREW_NO_BOTTLE_SOURCE_FALLBACK: "ON"
+  HOMEBREW_NO_GITHUB_API: "ON"
+  HOMEBREW_NO_INSTALL_CLEANUP: "ON"
+  PIP_DISABLE_PIP_VERSION_CHECK: "ON"
+  PIP_NO_CLEAN: "ON"
+  PIP_PREFER_BINARY: "ON"
+  TZ: "UTC"
+  FORD_FILE: "API-doc-FORD-file.md"
+
+jobs:
+  Build-API-Docs:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Full history to get tag and commit info
+      - name: Install Dependencies
+        run: |
+          pip3 install --prefer-binary --no-clean --disable-pip-version-check --progress-bar off lxml fypp
+          brew install -f --force-bottle --keep-tmp ford
+          type -a ford
+          ford --version
+          gfortran --version
+      - name: Skip graph and search unless deploying
+        if: github.ref != 'refs/heads/master' && ! startsWith( github.ref, 'refs/tags/' )
+        run: |
+            sed -i .bak 's/^[[:blank:]]*graph:  *[Tt]rue/graph: false/' "${FORD_FILE}"
+            echo "::set-env name=MAYBE_SKIP_SEARCH::--no-search"
+      - name: Build Docs
+        run: |
+          git fetch --all --tags
+          ford -r $(git describe --always) --debug ${MAYBE_SKIP_SEARCH} "${FORD_FILE}"
+      - name: Upload Documentation
+        uses: actions/upload-artifact@v2
+        with:
+          name: FORD-API-docs
+          path: ./API-doc/
+      - name: Broken Link Check
+        uses: technote-space/broken-link-checker-action@v1
+        with:
+          TARGET: file://${{ github.workspace }}/API-doc/index.html
+          RECURSIVE: true
+          ASSIGNEES: ${{ github.actor }}
+      - name: Deploy API Docs
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.event_name == 'push' && github.repository == 'fortran-lang/stdlib' && ( startsWith( github.ref, 'refs/tags/' ) || github.ref == 'refs/heads/master' )
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          cname: 'stdlib.fortran-lang.org'
+          external_repository: fortran-lang/stdlib-docs
+          publish_dir: ./API-doc
+          publish_branch: master
+          allow_empty_commit: true
+          force_orphan: false
+          commit_message: "From https://github.com/${{ github.repository }}/commit/${{ github.sha }} ${{ github.ref }}"
