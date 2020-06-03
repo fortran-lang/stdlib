@@ -116,7 +116,7 @@ contains
             integral = a*y(1) + b*y(2) + c*y(3)
         case (4)
             integral = simps38(y, x)
-        ! case (6) unneeded?
+        ! case (6) unneeded; handled by default
         case default
             if (mod(n, 2) == 1) then
                 integral = 0.0_${k1}$
