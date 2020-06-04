@@ -93,9 +93,9 @@ Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length a
 
 ### Syntax
 
-`result = simps(y, x [, even])`
+`result = [[stdlib_experimental_quadrature(module):simps(interface)]](y, x [, even])`
 
-`result = simps(y, dx [, even])`
+`result = [[stdlib_experimental_quadrature(module):simps(interface)]](y, dx [, even])`
 
 ### Arguments
 
@@ -140,7 +140,7 @@ Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length a
 
 ### Syntax
 
-`result = simps_weights(x [, even])`
+`result = [[stdlib_experimental_quadrature(module):simps_weights(interface)]](x [, even])`
 
 ### Arguments
 

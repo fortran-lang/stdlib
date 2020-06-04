@@ -47,6 +47,8 @@ module stdlib_experimental_quadrature
 
 
     interface simps
+        !! Integrates sampled values using Simpson's rule
+        !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description_3))
         ! "recursive" is an implementation detail
         #:for k1, t1 in REAL_KINDS_TYPES
         pure recursive module function simps_dx_${k1}$(y, dx, even) result(integral)
@@ -68,6 +70,8 @@ module stdlib_experimental_quadrature
 
 
     interface simps_weights
+        !! Integrates sampled values using trapezoidal rule weights for given abscissas
+        !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description_3))
         #:for k1, t1 in REAL_KINDS_TYPES
         pure recursive module function simps_weights_${k1}$(x, even) result(w)
             ${t1}$, dimension(:), intent(in) :: x
