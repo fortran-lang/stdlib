@@ -117,7 +117,18 @@ If the size of `y` is two, the result is the same as if `trapz` had been called 
 
 ### Example
 
-TBD
+```fortran
+program demo_simps
+    use stdlib_experimental_quadrature, only: simps
+    implicit none
+    real :: x(5) = [0., 1., 2., 3., 4.]
+    real :: y(5) = 3.*x**2
+    print *, simps(y, x) 
+! 64.0
+    print *, simps(y, 0.5) 
+! 32.0
+end program demo_simps
+```
 
 ## `simps_weights` - Simpson's rule weights for given abscissas
 
@@ -147,4 +158,15 @@ If the size of `x` is two, then the result is the same as if `trapz_weights` had
 
 ### Example
 
-TBD
+```fortran
+program demo_simps_weights
+    use stdlib_experimental_quadrature, only: simps_weights
+    implicit none
+    real :: x(5) = [0., 1., 2., 3., 4.]
+    real :: y(5) = 3.*x**2
+    real :: w(5) 
+    w = simps_weights(x)
+    print *, sum(w*y)
+! 64.0
+end program demo_simps_weights
+```
