@@ -15,39 +15,39 @@ module stdlib_experimental_ascii
     public :: to_lower, to_upper
 
     ! All control characters in the ASCII table (see www.asciitable.com).
-    character(len=1), public, parameter :: NUL = achar(z'00') !! Null
-    character(len=1), public, parameter :: SOH = achar(z'01') !! Start of heading
-    character(len=1), public, parameter :: STX = achar(z'02') !! Start of text
-    character(len=1), public, parameter :: ETX = achar(z'03') !! End of text
-    character(len=1), public, parameter :: EOT = achar(z'04') !! End of transmission
-    character(len=1), public, parameter :: ENQ = achar(z'05') !! Enquiry
-    character(len=1), public, parameter :: ACK = achar(z'06') !! Acknowledge
-    character(len=1), public, parameter :: BEL = achar(z'07') !! Bell
-    character(len=1), public, parameter :: BS  = achar(z'08') !! Backspace
-    character(len=1), public, parameter :: TAB = achar(z'09') !! Horizontal tab
-    character(len=1), public, parameter :: LF  = achar(z'0A') !! NL line feed, new line
-    character(len=1), public, parameter :: VT  = achar(z'0B') !! Vertical tab
-    character(len=1), public, parameter :: FF  = achar(z'0C') !! NP form feed, new page
-    character(len=1), public, parameter :: CR  = achar(z'0D') !! Carriage return
-    character(len=1), public, parameter :: SO  = achar(z'0E') !! Shift out
-    character(len=1), public, parameter :: SI  = achar(z'0F') !! Shift in
-    character(len=1), public, parameter :: DLE = achar(z'10') !! Data link escape
-    character(len=1), public, parameter :: DC1 = achar(z'11') !! Device control 1
-    character(len=1), public, parameter :: DC2 = achar(z'12') !! Device control 2
-    character(len=1), public, parameter :: DC3 = achar(z'13') !! Device control 3
-    character(len=1), public, parameter :: DC4 = achar(z'14') !! Device control 4
-    character(len=1), public, parameter :: NAK = achar(z'15') !! Negative acknowledge
-    character(len=1), public, parameter :: SYN = achar(z'16') !! Synchronous idle
-    character(len=1), public, parameter :: ETB = achar(z'17') !! End of transmission block
-    character(len=1), public, parameter :: CAN = achar(z'18') !! Cancel
-    character(len=1), public, parameter :: EM  = achar(z'19') !! End of medium
-    character(len=1), public, parameter :: SUB = achar(z'1A') !! Substitute
-    character(len=1), public, parameter :: ESC = achar(z'1B') !! Escape
-    character(len=1), public, parameter :: FS  = achar(z'1C') !! File separator
-    character(len=1), public, parameter :: GS  = achar(z'1D') !! Group separator
-    character(len=1), public, parameter :: RS  = achar(z'1E') !! Record separator
-    character(len=1), public, parameter :: US  = achar(z'1F') !! Unit separator
-    character(len=1), public, parameter :: DEL = achar(z'7F') !! Delete
+    character(len=1), public, parameter :: NUL = achar(int(z'00')) !! Null
+    character(len=1), public, parameter :: SOH = achar(int(z'01')) !! Start of heading
+    character(len=1), public, parameter :: STX = achar(int(z'02')) !! Start of text
+    character(len=1), public, parameter :: ETX = achar(int(z'03')) !! End of text
+    character(len=1), public, parameter :: EOT = achar(int(z'04')) !! End of transmission
+    character(len=1), public, parameter :: ENQ = achar(int(z'05')) !! Enquiry
+    character(len=1), public, parameter :: ACK = achar(int(z'06')) !! Acknowledge
+    character(len=1), public, parameter :: BEL = achar(int(z'07')) !! Bell
+    character(len=1), public, parameter :: BS  = achar(int(z'08')) !! Backspace
+    character(len=1), public, parameter :: TAB = achar(int(z'09')) !! Horizontal tab
+    character(len=1), public, parameter :: LF  = achar(int(z'0A')) !! NL line feed, new line
+    character(len=1), public, parameter :: VT  = achar(int(z'0B')) !! Vertical tab
+    character(len=1), public, parameter :: FF  = achar(int(z'0C')) !! NP form feed, new page
+    character(len=1), public, parameter :: CR  = achar(int(z'0D')) !! Carriage return
+    character(len=1), public, parameter :: SO  = achar(int(z'0E')) !! Shift out
+    character(len=1), public, parameter :: SI  = achar(int(z'0F')) !! Shift in
+    character(len=1), public, parameter :: DLE = achar(int(z'10')) !! Data link escape
+    character(len=1), public, parameter :: DC1 = achar(int(z'11')) !! Device control 1
+    character(len=1), public, parameter :: DC2 = achar(int(z'12')) !! Device control 2
+    character(len=1), public, parameter :: DC3 = achar(int(z'13')) !! Device control 3
+    character(len=1), public, parameter :: DC4 = achar(int(z'14')) !! Device control 4
+    character(len=1), public, parameter :: NAK = achar(int(z'15')) !! Negative acknowledge
+    character(len=1), public, parameter :: SYN = achar(int(z'16')) !! Synchronous idle
+    character(len=1), public, parameter :: ETB = achar(int(z'17')) !! End of transmission block
+    character(len=1), public, parameter :: CAN = achar(int(z'18')) !! Cancel
+    character(len=1), public, parameter :: EM  = achar(int(z'19')) !! End of medium
+    character(len=1), public, parameter :: SUB = achar(int(z'1A')) !! Substitute
+    character(len=1), public, parameter :: ESC = achar(int(z'1B')) !! Escape
+    character(len=1), public, parameter :: FS  = achar(int(z'1C')) !! File separator
+    character(len=1), public, parameter :: GS  = achar(int(z'1D')) !! Group separator
+    character(len=1), public, parameter :: RS  = achar(int(z'1E')) !! Record separator
+    character(len=1), public, parameter :: US  = achar(int(z'1F')) !! Unit separator
+    character(len=1), public, parameter :: DEL = achar(int(z'7F')) !! Delete
 
     ! Constant character sequences
     character(len=*), public, parameter :: fullhex_digits = "0123456789ABCDEFabcdef" !! 0 .. 9A .. Fa .. f
@@ -79,7 +79,7 @@ contains
     !  i.e. in the range 0 .. 0x7F.
     pure logical function is_ascii(c)
         character(len=1), intent(in) :: c !! The character to test.
-        is_ascii = iachar(c) <= z'7F'
+        is_ascii = iachar(c) <= int(z'7F')
     end function
 
     !> Checks whether `c` is a control character.
@@ -87,7 +87,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)
-        is_control = ic < z'20' .or. ic == z'7F'
+        is_control = ic < int(z'20') .or. ic == int(z'7F')
     end function
 
     !> Checks whether `c` is a digit (0 .. 9).
@@ -116,7 +116,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c) !       '~'                 '!'
-        is_punctuation = (ic <= z'7E') .and. (ic >= z'21') .and. &
+        is_punctuation = (ic <= int(z'7E')) .and. (ic >= int(z'21')) .and. &
             (.not. is_alphanum(c))
     end function
 
@@ -126,7 +126,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c) !  '!'                     '~'
-        is_graphical = (z'21' <= ic) .and. (ic <= z'7E')
+        is_graphical = (int(z'21') <= ic) .and. (ic <= int(z'7E'))
     end function
 
     !> Checks whether or not `c` is a printable character - including the
@@ -135,7 +135,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)                    ! '~'
-        is_printable = c >= ' ' .and. ic <= z'7E'
+        is_printable = c >= ' ' .and. ic <= int(z'7E')
     end function
 
     !> Checks whether `c` is a lowercase ASCII letter (a .. z).
@@ -157,7 +157,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)             ! TAB, LF, VT, FF, CR
-        is_white = (c == ' ') .or. (ic >= z'09' .and. ic <= z'0D');
+        is_white = (c == ' ') .or. (ic >= int(z'09') .and. ic <= int(z'0D'));
     end function
 
     !> Checks whether or not `c` is a blank character. That includes the
@@ -166,7 +166,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)             ! TAB
-        is_blank = (c == ' ') .or. (ic == z'09');
+        is_blank = (c == ' ') .or. (ic == int(z'09'));
     end function
 
     !> Returns the corresponding lowercase letter, if `c` is an uppercase
