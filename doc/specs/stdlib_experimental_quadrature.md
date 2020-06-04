@@ -83,7 +83,7 @@ end program demo_trapz_weights
 
 ```
 
-## `simps` - integrate sampled values using Simpson's rule (to be implemented)
+## `simps` - integrate sampled values using Simpson's rule
 
 ### Description
 
@@ -119,7 +119,7 @@ If the size of `y` is two, the result is the same as if `trapz` had been called 
 
 TBD
 
-## `simps_weights` - Simpson's rule weights for given abscissas (to be implemented)
+## `simps_weights` - Simpson's rule weights for given abscissas
 
 ### Description
 
