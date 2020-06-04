@@ -14,17 +14,17 @@ program test_cov
                                    2._dp, 4._dp, 6._dp, 8._dp,&
                                    9._dp, 10._dp, 11._dp, 12._dp], [4, 3])
 
-    complex(dp) :: cd1(5) = [ cmplx(0.57706_dp, 0.00000_dp),&
-                            cmplx(0.00000_dp, 1.44065_dp),&
-                            cmplx(1.26401_dp, 0.00000_dp),&
-                            cmplx(0.00000_dp, 0.88833_dp),&
-                            cmplx(1.14352_dp, 0.00000_dp)]
-    complex(dp) :: ds(2,3) = reshape([ cmplx(1._dp, 0._dp),&
-                            cmplx(0._dp, 2._dp),&
-                            cmplx(3._dp, 0._dp),&
-                            cmplx(0._dp, 4._dp),&
-                            cmplx(5._dp, 0._dp),&
-                            cmplx(0._dp, 6._dp)], [2, 3])
+    complex(dp) :: cd1(5) = [ cmplx(0.57706_dp, 0.00000_dp,kind=dp),&
+                            cmplx(0.00000_dp, 1.44065_dp,kind=dp),&
+                            cmplx(1.26401_dp, 0.00000_dp,kind=dp),&
+                            cmplx(0.00000_dp, 0.88833_dp,kind=dp),&
+                            cmplx(1.14352_dp, 0.00000_dp,kind=dp)]
+    complex(dp) :: ds(2,3) = reshape([ cmplx(1._dp, 0._dp,kind=dp),&
+                            cmplx(0._dp, 2._dp,kind=dp),&
+                            cmplx(3._dp, 0._dp,kind=dp),&
+                            cmplx(0._dp, 4._dp,kind=dp),&
+                            cmplx(5._dp, 0._dp,kind=dp),&
+                            cmplx(0._dp, 6._dp,kind=dp)], [2, 3])
 
 
     call test_sp(real(d1, sp), real(d, sp))

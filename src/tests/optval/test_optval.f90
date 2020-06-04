@@ -100,7 +100,7 @@ contains
   subroutine test_optval_cdp
     complex(dp) :: z1
     print *, "test_optval_cdp"
-    z1 = cmplx(1.0_dp, 2.0_dp)
+    z1 = cmplx(1.0_dp, 2.0_dp,kind=dp)
     call check(foo_cdp(z1) == z1)
     call check(foo_cdp() == z1)
   end subroutine test_optval_cdp
