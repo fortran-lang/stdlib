@@ -86,13 +86,13 @@ contains
     character(*), intent(in) :: outpath
     complex(sp) :: d(3, 2), e(2, 3)
     complex(sp), allocatable :: d2(:, :)
-    d = cmplx(1, 1)* reshape([1, 2, 3, 4, 5, 6], [3, 2])
+    d = cmplx(1, 1,kind=sp)* reshape([1, 2, 3, 4, 5, 6], [3, 2])
     call savetxt(outpath, d)
     call loadtxt(outpath, d2)
     call check(all(shape(d2) == [3, 2]))
     call check(all(abs(d-d2) < epsilon(1._sp)))
 
-    e = cmplx(1, 1)* reshape([1, 2, 3, 4, 5, 6], [2, 3])
+    e = cmplx(1, 1,kind=sp)* reshape([1, 2, 3, 4, 5, 6], [2, 3])
     call savetxt(outpath, e)
     call loadtxt(outpath, d2)
     call check(all(shape(d2) == [2, 3]))
@@ -103,13 +103,13 @@ contains
     character(*), intent(in) :: outpath
     complex(dp) :: d(3, 2), e(2, 3)
     complex(dp), allocatable :: d2(:, :)
-    d = cmplx(1._dp, 1._dp)* reshape([1, 2, 3, 4, 5, 6], [3, 2])
+    d = cmplx(1._dp, 1._dp,kind=dp)* reshape([1, 2, 3, 4, 5, 6], [3, 2])
     call savetxt(outpath, d)
     call loadtxt(outpath, d2)
     call check(all(shape(d2) == [3, 2]))
     call check(all(abs(d-d2) < epsilon(1._dp)))
 
-    e = cmplx(1, 1)* reshape([1, 2, 3, 4, 5, 6], [2, 3])
+    e = cmplx(1, 1,kind=dp)* reshape([1, 2, 3, 4, 5, 6], [2, 3])
     call savetxt(outpath, e)
     call loadtxt(outpath, d2)
     call check(all(shape(d2) == [2, 3]))

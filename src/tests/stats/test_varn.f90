@@ -23,11 +23,11 @@ program test_varn
                                    9._dp, 10._dp, 11._dp, 12._dp], [4, 3])
 
 
-    complex(dp) :: cd1(5) = [ cmplx(0.57706_dp, 0.00000_dp),&
-                            cmplx(0.00000_dp, 1.44065_dp),&
-                            cmplx(1.26401_dp, 0.00000_dp),&
-                            cmplx(0.00000_dp, 0.88833_dp),&
-                            cmplx(1.14352_dp, 0.00000_dp)]
+    complex(dp) :: cd1(5) = [ cmplx(0.57706_dp, 0.00000_dp,kind=dp),&
+                            cmplx(0.00000_dp, 1.44065_dp,kind=dp),&
+                            cmplx(1.26401_dp, 0.00000_dp,kind=dp),&
+                            cmplx(0.00000_dp, 0.88833_dp,kind=dp),&
+                            cmplx(1.14352_dp, 0.00000_dp,kind=dp)]
     complex(dp) :: cd(5,3)
 
 
