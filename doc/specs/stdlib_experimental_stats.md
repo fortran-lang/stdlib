@@ -32,7 +32,7 @@ The Pearson correlation between two rows (or columns), say `x` and `y`, of `arra
 
 ### Return value
 
-If `array` is of rank 1 and of type `real` or `complex`, the result is of type `real` corresponding to the type of `array`.
+If `array` is of rank 1 and of type `real` or `complex`, the result is of type `real` and has the same kind as `array`.
 If `array` is of rank 2 and of type `real` or `complex`, the result is of the same type as `array`.
 If `array` is of type `integer`, the result is of type `real(dp)`.
 
@@ -281,4 +281,3 @@ program demo_var
     print *, var(y, 1, y > 3., corrected=.false.)    !returns [NaN, 0., 0.25]
 end program demo_var
 ```
-
