@@ -33,7 +33,7 @@ The Pearson correlation between two rows (or columns), say `x` and `y`, of `arra
 ### Return value
 
 If `array` is of rank 1 and of type `real` or `complex`, the result is of type `real` and has the same kind as `array`.
-If `array` is of rank 2 and of type `real` or `complex`, the result is of the same type as `array`.
+If `array` is of rank 2 and of type `real` or `complex`, the result is of the same type and kind as `array`.
 If `array` is of type `integer`, the result is of type `real(dp)`.
 
 If `array` is of rank 1 and of size larger than 1, a scalar equal to 1 is returned. Otherwise, IEEE `NaN` is returned.
