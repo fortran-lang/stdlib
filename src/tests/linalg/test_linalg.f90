@@ -152,7 +152,7 @@ contains
 
   subroutine test_diag_csp
     integer, parameter :: n = 3
-    complex(sp) :: v(n), a(n,n), b(n,n)
+    complex(sp) :: a(n,n), b(n,n)
     complex(sp), parameter :: i_ = cmplx(0,1,kind=sp)
     integer :: i,j
     write(*,*) "test_diag_csp"
@@ -169,9 +169,8 @@ contains
 
   subroutine test_diag_cdp
     integer, parameter :: n = 3
-    complex(dp) :: v(n), a(n,n), b(n,n)
+    complex(dp) :: a(n,n)
     complex(dp), parameter :: i_ = cmplx(0,1,kind=dp)
-    integer :: i,j
     write(*,*) "test_diag_cdp"
     a = diag([i_],-2) + diag([i_],2)
     call check(a(3,1) == i_ .and. a(1,3) == i_, &
@@ -180,9 +179,8 @@ contains
 
   subroutine test_diag_cqp
     integer, parameter :: n = 3
-    complex(qp) :: v(n), a(n,n), b(n,n)
+    complex(qp) :: a(n,n)
     complex(qp), parameter :: i_ = cmplx(0,1,kind=qp)
-    integer :: i,j
     write(*,*) "test_diag_cqp"
     a = diag([i_,i_],-1) + diag([i_,i_],1)
     call check(all(diag(a,-1) == i_) .and. all(diag(a,1) == i_), &
