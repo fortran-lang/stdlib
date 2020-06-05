@@ -44,7 +44,7 @@ call check( sum( abs( mean(d,2) - sum(d,2)/real(size(d,2), dp) )) < dptol)
 !csp
 
 call loadtxt("array3.dat", d)
-cs = cmplx(1._sp, 1._sp)*d
+cs = cmplx(1._sp, 1._sp,kind=sp)*d
 
 call check( abs(mean(cs) - sum(cs)/real(size(cs), sp)) < sptol)
 call check( sum( abs( mean(cs,1) - sum(cs,1)/real(size(cs,1), sp) )) < sptol)
@@ -53,7 +53,7 @@ call check( sum( abs( mean(cs,2) - sum(cs,2)/real(size(cs,2), sp) )) < sptol)
 !cdp
 
 call loadtxt("array3.dat", d)
-cd = cmplx(1._dp, 1._dp)*d
+cd = cmplx(1._dp, 1._dp,kind=dp)*d
 
 call check( abs(mean(cd) - sum(cd)/real(size(cd), dp)) < dptol)
 call check( sum( abs( mean(cd,1) - sum(cd,1)/real(size(cd,1), dp) )) < dptol)
@@ -102,7 +102,7 @@ allocate(cd3(size(d,1),size(d,2),3))
 cd3(:,:,1)=d;
 cd3(:,:,2)=d*1.5;
 cd3(:,:,3)=d*4;
-cd3 = cmplx(1._sp, 1._sp)*cd3
+cd3 = cmplx(1._sp, 1._sp,kind=sp)*cd3
 
 call check( abs(mean(cd3) - sum(cd3)/real(size(cd3), dp)) < dptol)
 call check( sum( abs( mean(cd3,1) - sum(cd3,1)/real(size(cd3,1), dp) )) < dptol)
