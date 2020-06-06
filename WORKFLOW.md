@@ -40,7 +40,9 @@ experienced contributors will help it through all 5 steps.
    people involved in prior steps of the workflow. Other contributors (not
    explicitly invited) are encouraged to provide reviews and suggestions as
    well. Iterate until all (or most) participants are on the same page.
-   We can merge when there is vast majority approval of the PR.
+   A merge is permitted if there are unit tests for a majority of the possible
+   calling scenarios (with or without optional arguments, with arguments that
+   trigger an error) and if there is vast majority approval of the PR.
 
 5. **Release**: Moving from experimental to release. The experimental
    "namespace" contains new functionality together with its specification. In

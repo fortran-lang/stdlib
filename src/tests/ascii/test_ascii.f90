@@ -486,7 +486,6 @@ contains
     !
     subroutine test_ascii_table
         integer :: i, j
-        character(len=1) :: c
         logical :: table(15,12)
 
         abstract interface
