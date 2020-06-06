@@ -90,7 +90,7 @@ contains
 
     pure recursive module function simps_x_${k1}$(y, x, even) result(integral)
         ${t1}$, dimension(:), intent(in) :: y
-        ${t1}$, dimension(size(y)), intent(in) :: x
+        ${t1}$, dimension(:), intent(in) :: x
         integer, intent(in), optional :: even
         ${t1}$ :: integral
 
@@ -101,6 +101,7 @@ contains
         ${t1}$ :: a, b, c, d
 
         n = size(y)
+        if (size(x) /= n) error stop "simps: Arguments `x` and `y` must be the same size."
 
         select case (n)
         case (0:1)

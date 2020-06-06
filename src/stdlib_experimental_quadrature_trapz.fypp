@@ -32,13 +32,14 @@ contains
     
     pure module function trapz_x_${KIND}$(y, x) result(integral)
         real(${KIND}$), dimension(:), intent(in) :: y
-        real(${KIND}$), dimension(size(y)), intent(in) :: x
+        real(${KIND}$), dimension(:), intent(in) :: x
         real(${KIND}$) :: integral
 
         integer :: i
         integer :: n
 
         n = size(y)
+        if (size(x) /= n) error stop "trapz: Arguments `x` and `y` must be the same size."
 
         select case (n)
         case (0:1)

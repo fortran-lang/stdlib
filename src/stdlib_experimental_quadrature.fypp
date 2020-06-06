@@ -27,7 +27,7 @@ module stdlib_experimental_quadrature
         #:for k1, t1 in REAL_KINDS_TYPES
         pure module function trapz_x_${k1}$(y, x) result(integral)
             ${t1}$, dimension(:), intent(in) :: y
-            ${t1}$, dimension(size(y)), intent(in) :: x
+            ${t1}$, dimension(:), intent(in) :: x
             ${t1}$ :: integral
         end function trapz_x_${k1}$
         #:endfor
@@ -61,7 +61,7 @@ module stdlib_experimental_quadrature
         #:for k1, t1 in REAL_KINDS_TYPES
         pure recursive module function simps_x_${k1}$(y, x, even) result(integral)
             ${t1}$, dimension(:), intent(in) :: y
-            ${t1}$, dimension(size(y)), intent(in) :: x
+            ${t1}$, dimension(:), intent(in) :: x
             integer, intent(in), optional :: even
             ${t1}$ :: integral
         end function simps_x_${k1}$
