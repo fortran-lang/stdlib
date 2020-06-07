@@ -97,8 +97,8 @@ contains
         integer :: i
         integer :: n
 
-        ${t1}$ :: h1, h2, h3
-        ${t1}$ :: a, b, c, d
+        ${t1}$ :: h1, h2
+        ${t1}$ :: a, b, c
 
         n = size(y)
         if (size(x) /= n) error stop "simps: Arguments `x` and `y` must be the same size."
@@ -159,7 +159,7 @@ contains
         ${t1}$, dimension(size(x)) :: w
 
         integer :: i, n
-        ${t1}$ :: h1, h2, h3
+        ${t1}$ :: h1, h2
 
         n = size(x)
 
