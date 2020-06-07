@@ -30,11 +30,11 @@ program test_var
                             cmplx(1.26401_sp, 0.00000_sp),&
                             cmplx(0.00000_sp, 0.88833_sp),&
                             cmplx(1.14352_sp, 0.00000_sp)]
-    complex(dp) :: cd1(5) = [ cmplx(0.57706_dp, 0.00000_dp),&
-                            cmplx(0.00000_dp, 1.44065_dp),&
-                            cmplx(1.26401_dp, 0.00000_dp),&
-                            cmplx(0.00000_dp, 0.88833_dp),&
-                            cmplx(1.14352_dp, 0.00000_dp)]
+    complex(dp) :: cd1(5) = [ cmplx(0.57706_dp, 0.00000_dp,kind=dp),&
+                            cmplx(0.00000_dp, 1.44065_dp,kind=dp),&
+                            cmplx(1.26401_dp, 0.00000_dp,kind=dp),&
+                            cmplx(0.00000_dp, 0.88833_dp,kind=dp),&
+                            cmplx(1.14352_dp, 0.00000_dp,kind=dp)]
     complex(sp) :: cs(5,3)
     complex(dp) :: cd(5,3)
 
