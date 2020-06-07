@@ -1,7 +1,7 @@
 #:include "common.fypp"
 
 submodule (stdlib_experimental_quadrature) stdlib_experimental_quadrature_simps
-
+    use stdlib_experimental_error, only: check
     implicit none
 
     ! internal use only
@@ -88,7 +88,7 @@ contains
 #:endfor
 #:for k1, t1 in REAL_KINDS_TYPES
 
-    pure recursive module function simps_x_${k1}$(y, x, even) result(integral)
+    recursive module function simps_x_${k1}$(y, x, even) result(integral)
         ${t1}$, dimension(:), intent(in) :: y
         ${t1}$, dimension(:), intent(in) :: x
         integer, intent(in), optional :: even
@@ -101,7 +101,7 @@ contains
         ${t1}$ :: a, b, c
 
         n = size(y)
-        if (size(x) /= n) error stop "simps: Arguments `x` and `y` must be the same size."
+        call check(size(x) == n, "simps: Arguments `x` and `y` must be the same size.")
 
         select case (n)
         case (0:1)
