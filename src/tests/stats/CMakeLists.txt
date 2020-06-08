@@ -1,3 +1,4 @@
+ADDTEST(corr)
 ADDTEST(cov)
 ADDTEST(mean)
 ADDTEST(moment)

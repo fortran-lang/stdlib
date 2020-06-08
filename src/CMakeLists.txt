@@ -7,6 +7,7 @@ set(fppFiles
     stdlib_experimental_linalg_diag.fypp
     stdlib_experimental_optval.fypp
     stdlib_experimental_stats.fypp
+    stdlib_experimental_stats_corr.fypp
     stdlib_experimental_stats_cov.fypp
     stdlib_experimental_stats_mean.fypp
     stdlib_experimental_stats_moment.fypp
