@@ -1,5 +1,4 @@
 #:include "common.fypp"
-
 module stdlib_experimental_quadrature
     !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description))
     use stdlib_experimental_kinds, only: sp, dp, qp
@@ -18,19 +17,19 @@ module stdlib_experimental_quadrature
     interface trapz
         !! Integrates sampled values using trapezoidal rule
         !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description))
-        #:for KIND in REAL_KINDS
-        pure module function trapz_dx_${KIND}$(y, dx) result(integral)
-            real(${KIND}$), dimension(:), intent(in) :: y
-            real(${KIND}$), intent(in) :: dx
-            real(${KIND}$) :: integral
-        end function trapz_dx_${KIND}$
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure module function trapz_dx_${k1}$(y, dx) result(integral)
+          ${t1}$, dimension(:), intent(in) :: y
+          ${t1}$, intent(in) :: dx
+          ${t1}$ :: integral
+        end function trapz_dx_${k1}$      
         #:endfor
-        #:for KIND in REAL_KINDS
-        pure module function trapz_x_${KIND}$(y, x) result(integral)
-            real(${KIND}$), dimension(:), intent(in) :: y
-            real(${KIND}$), dimension(size(y)), intent(in) :: x
-            real(${KIND}$) :: integral
-        end function trapz_x_${KIND}$
+        #:for k1, t1 in REAL_KINDS_TYPES
+        module function trapz_x_${k1}$(y, x) result(integral)
+            ${t1}$, dimension(:), intent(in) :: y
+            ${t1}$, dimension(:), intent(in) :: x
+            ${t1}$ :: integral
+        end function trapz_x_${k1}$
         #:endfor
     end interface trapz
 
@@ -38,43 +37,62 @@ module stdlib_experimental_quadrature
     interface trapz_weights
         !! Integrates sampled values using trapezoidal rule weights for given abscissas
         !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description_1))
-        #:for KIND in REAL_KINDS
-        pure module function trapz_weights_${KIND}$(x) result(w)
-            real(${KIND}$), dimension(:), intent(in) :: x
-            real(${KIND}$), dimension(size(x)) :: w
-        end function trapz_weights_${KIND}$
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure module function trapz_weights_${k1}$(x) result(w)
+            ${t1}$, dimension(:), intent(in) :: x
+            ${t1}$, dimension(size(x)) :: w
+        end function trapz_weights_${k1}$
         #:endfor
     end interface trapz_weights
 
 
     interface simps
-        #:for KIND in REAL_KINDS
-        pure module function simps_dx_${KIND}$(y, dx, even) result(integral)
-            real(${KIND}$), dimension(:), intent(in) :: y
-            real(${KIND}$), intent(in) :: dx
+        !! Integrates sampled values using Simpson's rule
+        !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description_3))
+        ! "recursive" is an implementation detail
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure recursive module function simps_dx_${k1}$(y, dx, even) result(integral)
+            ${t1}$, dimension(:), intent(in) :: y
+            ${t1}$, intent(in) :: dx
             integer, intent(in), optional :: even
-            real(${KIND}$) :: integral
-        end function simps_dx_${KIND}$
+            ${t1}$ :: integral
+        end function simps_dx_${k1}$
         #:endfor
-        #:for KIND in REAL_KINDS
-        pure module function simps_x_${KIND}$(y, x, even) result(integral)
-            real(${KIND}$), dimension(:), intent(in) :: y
-            real(${KIND}$), dimension(size(y)), intent(in) :: x
+        #:for k1, t1 in REAL_KINDS_TYPES
+        recursive module function simps_x_${k1}$(y, x, even) result(integral)
+            ${t1}$, dimension(:), intent(in) :: y
+            ${t1}$, dimension(:), intent(in) :: x
             integer, intent(in), optional :: even
-            real(${KIND}$) :: integral
-        end function simps_x_${KIND}$
+            ${t1}$ :: integral
+        end function simps_x_${k1}$
         #:endfor
     end interface simps
 
 
     interface simps_weights
-        #:for KIND in REAL_KINDS
-        pure module function simps_weights_${KIND}$(x, even) result(w)
-            real(${KIND}$), dimension(:), intent(in) :: x
-            real(${KIND}$), dimension(size(x)) :: w
+        !! Integrates sampled values using trapezoidal rule weights for given abscissas
+        !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description_3))
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure recursive module function simps_weights_${k1}$(x, even) result(w)
+            ${t1}$, dimension(:), intent(in) :: x
             integer, intent(in), optional :: even
-        end function simps_weights_${KIND}$
+            ${t1}$, dimension(size(x)) :: w
+        end function simps_weights_${k1}$
         #:endfor
     end interface simps_weights
+
+
+    ! Interface for a simple f(x)-style integrand function.
+    ! Could become fancier as we learn about the performance
+    ! ramifications of different ways to do callbacks.
+    abstract interface
+        #:for k1, t1 in REAL_KINDS_TYPES
+        pure function integrand_${k1}$(x) result(f)
+            import :: ${k1}$
+            ${t1}$, intent(in) :: x
+            ${t1}$ :: f
+        end function integrand_${k1}$
+        #:endfor
+    end interface
 
 end module stdlib_experimental_quadrature

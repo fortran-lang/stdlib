@@ -1,7 +1,7 @@
 #:include "common.fypp"
 
 submodule (stdlib_experimental_quadrature) stdlib_experimental_quadrature_trapz
-
+    use stdlib_experimental_error, only: check
     implicit none
 
 contains
@@ -29,16 +29,17 @@ contains
     
     #:endfor
     #:for KIND in REAL_KINDS
-    
-    pure module function trapz_x_${KIND}$(y, x) result(integral)
+
+    module function trapz_x_${KIND}$(y, x) result(integral)
         real(${KIND}$), dimension(:), intent(in) :: y
-        real(${KIND}$), dimension(size(y)), intent(in) :: x
+        real(${KIND}$), dimension(:), intent(in) :: x
         real(${KIND}$) :: integral
 
         integer :: i
         integer :: n
 
         n = size(y)
+        call check(size(x) == n, "trapz: Arguments `x` and `y` must be the same size.")
 
         select case (n)
         case (0:1)

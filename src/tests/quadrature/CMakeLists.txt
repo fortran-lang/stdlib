@@ -1,2 +1,2 @@
 ADDTEST(trapz)
-
+ADDTEST(simps)
