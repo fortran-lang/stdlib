@@ -1,8 +1,8 @@
 program test_mean
-use stdlib_experimental_error, only: check
-use stdlib_experimental_kinds, only: sp, dp, int32, int64
-use stdlib_experimental_io, only: loadtxt
-use stdlib_experimental_stats, only: mean
+use stdlib_error, only: check
+use stdlib_kinds, only: sp, dp, int32, int64
+use stdlib_io, only: loadtxt
+use stdlib_stats, only: mean
 use,intrinsic :: ieee_arithmetic, only : ieee_is_nan
 implicit none
 

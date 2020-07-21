@@ -1,8 +1,8 @@
 program test_linalg
   
-  use stdlib_experimental_error, only: check
-  use stdlib_experimental_kinds, only: sp, dp, qp, int8, int16, int32, int64
-  use stdlib_experimental_linalg, only: diag, eye, trace
+  use stdlib_error, only: check
+  use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
+  use stdlib_linalg, only: diag, eye, trace
   
   implicit none
   

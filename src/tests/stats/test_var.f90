@@ -1,7 +1,7 @@
 program test_var
-    use stdlib_experimental_error, only: check
-    use stdlib_experimental_kinds, only: sp, dp, int32, int64
-    use stdlib_experimental_stats, only: var
+    use stdlib_error, only: check
+    use stdlib_kinds, only: sp, dp, int32, int64
+    use stdlib_stats, only: var
     use,intrinsic :: ieee_arithmetic, only : ieee_is_nan
     implicit none
 

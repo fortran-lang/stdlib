@@ -1,6 +1,6 @@
 program test_open
-use stdlib_experimental_io, only: open
-use stdlib_experimental_error, only: check
+use stdlib_io, only: open
+use stdlib_error, only: check
 implicit none
 
 character(:), allocatable :: filename
