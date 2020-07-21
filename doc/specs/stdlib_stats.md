@@ -1,5 +1,5 @@
 ---
-title: experimental_stats
+title: stats
 ---
 
 # Descriptive statistics
@@ -7,6 +7,14 @@ title: experimental_stats
 [TOC]
 
 ## `corr` - Pearson correlation of array elements
+
+### Version
+
+Experimental
+
+### Version
+
+Experimental
 
 ### Description
 
@@ -20,7 +28,7 @@ The Pearson correlation between two rows (or columns), say `x` and `y`, of `arra
 
 ### Syntax
 
-`result = [[stdlib_experimental_stats(module):corr(interface)]](array, dim [, mask])`
+`result = [[stdlib_stats(module):corr(interface)]](array, dim [, mask])`
 
 ### Arguments
 
@@ -45,7 +53,7 @@ If `mask` is specified, the result is the Pearson correlation of all elements of
 
 ```fortran
 program demo_corr
-    use stdlib_experimental_stats, only: corr
+    use stdlib_stats, only: corr
     implicit none
     real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
     real :: y(1:2, 1:3) = reshape([ -1., 40., -3., 4., 10., 6. ], [ 2, 3])
@@ -55,6 +63,10 @@ end program demo_corr
 ```
 
 ## `cov` - covariance of array elements
+
+### Version
+
+Experimental
 
 ### Description
 
@@ -73,7 +85,7 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 ### Syntax
 
-`result = [[stdlib_experimental_stats(module):cov(interface)]](array, dim [, mask [, corrected]])`
+`result = [[stdlib_stats(module):cov(interface)]](array, dim [, mask [, corrected]])`
 
 ### Arguments
 
@@ -100,7 +112,7 @@ If `mask` is specified, the result is the covariance of all elements of `array` 
 
 ```fortran
 program demo_cov
-    use stdlib_experimental_stats, only: cov
+    use stdlib_stats, only: cov
     implicit none
     real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
     real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
@@ -112,15 +124,19 @@ end program demo_cov
 
 ## `mean` - mean of array elements
 
+### Version
+
+Experimental
+
 ### Description
 
 Returns the mean of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
 
 ### Syntax
 
-`result = [[stdlib_experimental_stats(module):mean(interface)]](array [, mask])`
+`result = [[stdlib_stats(module):mean(interface)]](array [, mask])`
 
-`result = [[stdlib_experimental_stats(module):mean(interface)]](array, dim [, mask])`
+`result = [[stdlib_stats(module):mean(interface)]](array, dim [, mask])`
 
 ### Arguments
 
@@ -143,7 +159,7 @@ If `mask` is specified, the result is the mean of all elements of `array` corres
 
 ```fortran
 program demo_mean
-    use stdlib_experimental_stats, only: mean
+    use stdlib_stats, only: mean
     implicit none
     real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
     real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
@@ -155,6 +171,10 @@ end program demo_mean
 ```
 
 ## `moment` - central moments of array elements
+
+### Version
+
+Experimental
 
 ### Description
 
@@ -179,9 +199,9 @@ The _k_-th order moment about `center` is defined as :
 
 ### Syntax
 
-`result = [[stdlib_experimental_stats(module):moment(interface)]](array, order [, center [, mask]])`
+`result = [[stdlib_stats(module):moment(interface)]](array, order [, center [, mask]])`
 
-`result = [[stdlib_experimental_stats(module):moment(interface)]](array, order, dim [, center [, mask]])`
+`result = [[stdlib_stats(module):moment(interface)]](array, order, dim [, center [, mask]])`
 
 ### Arguments
 
@@ -208,7 +228,7 @@ If `mask` is specified, the result is the _k_-th  (central) moment of all elemen
 
 ```fortran
 program demo_moment
-    use stdlib_experimental_stats, only: moment
+    use stdlib_stats, only: moment
     implicit none
     real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
     real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
@@ -222,6 +242,10 @@ end program demo_moment
 ```
 
 ## `var` - variance of array elements
+
+### Version
+
+Experimental
 
 ### Description
 
@@ -240,9 +264,9 @@ The use of the term `n-1` for scaling is called Bessel 's correction. The scalin
 
 ### Syntax
 
-`result = [[stdlib_experimental_stats(module):var(interface)]](array [, mask [, corrected]])`
+`result = [[stdlib_stats(module):var(interface)]](array [, mask [, corrected]])`
 
-`result = [[stdlib_experimental_stats(module):var(interface)]](array, dim [, mask [, corrected]])`
+`result = [[stdlib_stats(module):var(interface)]](array, dim [, mask [, corrected]])`
 
 ### Arguments
 
@@ -269,7 +293,7 @@ If the variance is computed with only one single element, then the result is IEE
 
 ```fortran
 program demo_var
-    use stdlib_experimental_stats, only: var
+    use stdlib_stats, only: var
     implicit none
     real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
     real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])

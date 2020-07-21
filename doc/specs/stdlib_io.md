@@ -1,5 +1,5 @@
 ---
-title: experimental_IO
+title: IO
 ---
 
 # IO
@@ -8,12 +8,16 @@ title: experimental_IO
 
 ## `loadtxt` - load a 2D array from a text file
 
+### Version
+
+Experimental
+
 ### Description
 Loads a rank-2 `array` from a text file.
 
 ### Syntax
 
-`call [[stdlib_experimental_io(module):loadtxt(interface)]](filename, array)`
+`call [[stdlib_io(module):loadtxt(interface)]](filename, array)`
 
 ### Arguments
 
@@ -29,7 +33,7 @@ Returns an allocated rank-2 `array` with the content of `filename`.
 
 ```fortran
 program demo_loadtxt
-    use stdlib_experimental_io, only: loadtxt
+    use stdlib_io, only: loadtxt
     implicit none
     real, allocatable :: x(:,:)
     call loadtxt('example.dat', x) 
@@ -39,13 +43,17 @@ end program demo_loadtxt
 
 ## `open` - open a file
 
+### Version
+
+Experimental
+
 ### Description
 
 Returns the unit number of a file opened to read, to write, or to read and write. The file might be a text file or a binary file. All files are opened using a streamed access.
 
 ### Syntax
 
-`u = [[stdlib_experimental_io(module):open(function)]](filename [, mode] [, iostat])`
+`u = [[stdlib_io(module):open(function)]](filename [, mode] [, iostat])`
 
 ### Arguments
 
@@ -80,7 +88,7 @@ The result is a scalar of type `integer`.
 
 ```fortran
 program demo_open
-    use stdlib_experimental_io, only: open
+    use stdlib_io, only: open
     implicit none
     integer :: u
     u = open('example.dat', 'wt')
@@ -92,12 +100,16 @@ end program demo_open
 
 ## `savetxt` - save a 2D array into a text file
 
+### Version
+
+Experimental
+
 ### Description
 Saves a rank-2 `array` into a text file.
 
 ### Syntax
 
-`call [[stdlib_experimental_io(module):savetxt(interface)]](filename, array)`
+`call [[stdlib_io(module):savetxt(interface)]](filename, array)`
 
 ### Arguments
 
@@ -113,7 +125,7 @@ Provides a text file called `filename` that contains the rank-2 `array`.
 
 ```fortran
 program demo_savetxt
-    use stdlib_experimental_io, only: savetxt
+    use stdlib_io, only: savetxt
     implicit none
     real :: x(3,2) = 1
     call savetxt('example.dat', x) 

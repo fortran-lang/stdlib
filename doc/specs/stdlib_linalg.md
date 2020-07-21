@@ -1,5 +1,5 @@
 ---
-title: experimental_linalg
+title: linalg
 ---
 
 # Linear Algebra
@@ -8,13 +8,17 @@ title: experimental_linalg
 
 ## `diag` - Create a diagonal array or extract the diagonal elements of an array
 
+### Version
+
+Experimental
+
 ### Description
 
 Create a diagonal array or extract the diagonal elements of an array
 
 ### Syntax
 
-`d = [[stdlib_experimental_linalg(module):diag(interface)]](a [, k])`
+`d = [[stdlib_linalg(module):diag(interface)]](a [, k])`
 
 ### Arguments
 
@@ -30,7 +34,7 @@ Returns a diagonal array or a vector with the extracted diagonal elements.
 
 ```fortran
 program demo_diag1
-    use stdlib_experimental_linalg, only: diag
+    use stdlib_linalg, only: diag
     implicit none
     real, allocatable :: A(:,:)
     integer :: i
@@ -40,7 +44,7 @@ end program demo_diag1
 
 ```fortran
 program demo_diag2
-    use stdlib_experimental_linalg, only: diag
+    use stdlib_linalg, only: diag
     implicit none
     real :: v(:)
     real, allocatable :: A(:,:)
@@ -52,7 +56,7 @@ end program demo_diag2
 
 ```fortran
 program demo_diag3
-    use stdlib_experimental_linalg, only: diag
+    use stdlib_linalg, only: diag
     implicit none
     integer, parameter :: n = 10
     real :: c(n), ul(n-1)
@@ -66,7 +70,7 @@ end program demo_diag3
 
 ```fortran
 program demo_diag4
-    use stdlib_experimental_linalg, only: diag
+    use stdlib_linalg, only: diag
     implicit none
     integer, parameter :: n = 12
     real :: A(n,n)
@@ -79,7 +83,7 @@ end program demo_diag4
 
 ```fortran
 program demo_diag5
-    use stdlib_experimental_linalg, only: diag
+    use stdlib_linalg, only: diag
     implicit none
     integer, parameter :: n = 3
     real :: A(n,n)
@@ -93,13 +97,17 @@ end program demo_diag5
 
 ## `eye` - Construct the identity matrix
 
+### Version
+
+Experimental
+
 ### Description
 
 Construct the identity matrix
 
 ## Syntax
 
-`I = [[stdlib_experimental_linalg(module):eye(function)]](n)`
+`I = [[stdlib_linalg(module):eye(function)]](n)`
 
 ### Arguments
 
@@ -113,7 +121,7 @@ Returns the identity matrix, i.e. a square matrix with ones on the main diagonal
 
 ```fortran
 program demo_eye1
-    use stdlib_experimental_linalg, only: eye
+    use stdlib_linalg, only: eye
     implicit none
     real :: a(3,3)
     A = eye(3)
@@ -122,7 +130,7 @@ end program demo_eye1
 
 ```fortran
 program demo_eye2
-    use stdlib_experimental_linalg, only: eye, diag
+    use stdlib_linalg, only: eye, diag
     implicit none
     print *, all(eye(4) == diag([1,1,1,1])) ! prints .true.
 end program demo_eye2
@@ -130,13 +138,17 @@ end program demo_eye2
 
 ## `trace` - Trace of a matrix
 
+### Version
+
+Experimental
+
 ### Description
 
 Trace of a matrix (rank-2 array)
 
 ### Syntax
 
-`result = [stdlib_experimental_linalg(module):trace(interface)](A)`
+`result = [stdlib_linalg(module):trace(interface)](A)`
 
 ### Arguments
 
@@ -149,7 +161,7 @@ Returns the trace of the matrix, i.e. the sum of diagonal elements.
 ### Example
 ```fortran
 program demo_trace
-    use stdlib_experimental_linalg, only: trace
+    use stdlib_linalg, only: trace
     implicit none
     real :: A(3,3)
     A = reshape([1,2,3,4,5,6,7,8,9],[3,3])
