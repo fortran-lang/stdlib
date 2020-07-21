@@ -2,15 +2,15 @@
 
 #:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES
 
-module stdlib_experimental_io
+module stdlib_io
   !! Provides a support for file handling
-  !! ([Specification](../page/specs/stdlib_experimental_io.html))
+  !! ([Specification](../page/specs/stdlib_io.html))
 
-  use stdlib_experimental_kinds, only: sp, dp, qp, &
+  use stdlib_kinds, only: sp, dp, qp, &
       int8, int16, int32, int64
-  use stdlib_experimental_error, only: error_stop
-  use stdlib_experimental_optval, only: optval
-  use stdlib_experimental_ascii, only: is_blank
+  use stdlib_error, only: error_stop
+  use stdlib_optval, only: optval
+  use stdlib_ascii, only: is_blank
   implicit none
   private
   ! Public API
@@ -20,16 +20,20 @@ module stdlib_experimental_io
   public :: parse_mode
 
   interface loadtxt
+    !! version: experimental
+    !!
     !! Loads a 2D array from a text file
-    !! ([Specification](../page/specs/stdlib_experimental_io.html#description))
+    !! ([Specification](../page/specs/stdlib_io.html#description))
     #:for k1, t1 in KINDS_TYPES
       module procedure loadtxt_${t1[0]}$${k1}$
     #:endfor
   end interface loadtxt
 
   interface savetxt
+    !! version: experimental
+    !!
     !! Saves a 2D array into a text file
-    !! ([Specification](../page/specs/stdlib_experimental_io.html#description_2))
+    !! ([Specification](../page/specs/stdlib_io.html#description_2))
     #:for k1, t1 in KINDS_TYPES
       module procedure savetxt_${t1[0]}$${k1}$
     #:endfor
@@ -39,6 +43,8 @@ contains
 
   #:for k1, t1 in KINDS_TYPES
     subroutine  loadtxt_${t1[0]}$${k1}$(filename, d)
+      !! version: experimental
+      !!
       !! Loads a 2D array from a text file.
       !!
       !! Arguments
@@ -88,6 +94,8 @@ contains
 
   #:for k1, t1 in KINDS_TYPES
     subroutine savetxt_${t1[0]}$${k1}$(filename, d)
+      !! version: experimental
+      !!
       !! Saves a 2D array into a text file.
       !!
       !! Arguments
@@ -116,6 +124,8 @@ contains
 
 
   integer function number_of_columns(s)
+    !! version: experimental
+    !!
     !! determine number of columns
     integer,intent(in) :: s
 
@@ -138,6 +148,8 @@ contains
 
 
   integer function number_of_rows_numeric(s) result(nrows)
+    !! version: experimental
+    !!
     !! determine number or rows
     integer,intent(in)::s
     integer :: ios
@@ -168,8 +180,10 @@ contains
 
 
   integer function open(filename, mode, iostat) result(u)
+    !! version: experimental
+    !!
     !! Opens a file
-    !! ([Specification](../page/specs/stdlib_experimental_io.html#description_1))
+    !! ([Specification](../page/specs/stdlib_io.html#description_1))
     !!
     !!##### Behavior
     !!

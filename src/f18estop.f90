@@ -1,4 +1,4 @@
-submodule (stdlib_experimental_error) estop
+submodule (stdlib_error) estop
 
 implicit none
 
