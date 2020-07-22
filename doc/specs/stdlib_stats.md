@@ -12,10 +12,6 @@ title: stats
 
 Experimental
 
-### Version
-
-Experimental
-
 ### Description
 
 Returns the Pearson correlation of the elements of `array` along dimension `dim` if the corresponding element in `mask` is `true`.
