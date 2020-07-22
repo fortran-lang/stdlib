@@ -67,5 +67,5 @@ stdlib_linalg_diag.f90: stdlib_linalg_diag.fypp
 stdlib_quadrature.f90: stdlib_quadrature.fypp
 stdlib_stats.f90: stdlib_stats.fypp
 stdlib_stats_mean.f90: stdlib_stats_mean.fypp
-stdlib_stats_moment.f90: stdlib_moment.fypp
+stdlib_stats_moment.f90: stdlib_stats_moment.fypp
 stdlib_stats_var.f90: stdlib_stats_var.fypp
