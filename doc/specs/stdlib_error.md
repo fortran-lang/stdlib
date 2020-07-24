@@ -8,7 +8,7 @@ title: error
 
 ## `check` - Checks the value of a logical condition
 
-### Version
+### Status
 
 Experimental
 
@@ -84,7 +84,7 @@ end program demo_check3
 
 ## `error_stop` - aborts the program
 
-### Version
+### Status
 
 Experimental
 

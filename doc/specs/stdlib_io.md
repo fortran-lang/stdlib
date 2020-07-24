@@ -8,7 +8,7 @@ title: IO
 
 ## `loadtxt` - load a 2D array from a text file
 
-### Version
+### Status
 
 Experimental
 
@@ -43,7 +43,7 @@ end program demo_loadtxt
 
 ## `open` - open a file
 
-### Version
+### Status
 
 Experimental
 
@@ -100,7 +100,7 @@ end program demo_open
 
 ## `savetxt` - save a 2D array into a text file
 
-### Version
+### Status
 
 Experimental
 

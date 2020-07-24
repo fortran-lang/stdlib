@@ -8,7 +8,7 @@ title: stats
 
 ## `corr` - Pearson correlation of array elements
 
-### Version
+### Status
 
 Experimental
 
@@ -60,7 +60,7 @@ end program demo_corr
 
 ## `cov` - covariance of array elements
 
-### Version
+### Status
 
 Experimental
 
@@ -120,7 +120,7 @@ end program demo_cov
 
 ## `mean` - mean of array elements
 
-### Version
+### Status
 
 Experimental
 
@@ -168,7 +168,7 @@ end program demo_mean
 
 ## `moment` - central moments of array elements
 
-### Version
+### Status
 
 Experimental
 
@@ -239,7 +239,7 @@ end program demo_moment
 
 ## `var` - variance of array elements
 
-### Version
+### Status
 
 Experimental
 

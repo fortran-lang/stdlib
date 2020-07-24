@@ -8,7 +8,7 @@ title: quadrature
 
 ## `trapz` - integrate sampled values using trapezoidal rule
 
-### Version
+### Status
 
 Experimental
 
@@ -53,7 +53,7 @@ end program demo_trapz
 
 ## `trapz_weights` - trapezoidal rule weights for given abscissas
 
-### Version
+### Status
 
 Experimental
 
@@ -93,7 +93,7 @@ end program demo_trapz_weights
 
 ## `simps` - integrate sampled values using Simpson's rule
 
-### Version
+### Status
 
 Experimental
 
@@ -144,7 +144,7 @@ end program demo_simps
 
 ## `simps_weights` - Simpson's rule weights for given abscissas
 
-### Version
+### Status
 
 Experimental
 

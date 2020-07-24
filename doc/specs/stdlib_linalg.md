@@ -8,7 +8,7 @@ title: linalg
 
 ## `diag` - Create a diagonal array or extract the diagonal elements of an array
 
-### Version
+### Status
 
 Experimental
 
@@ -97,7 +97,7 @@ end program demo_diag5
 
 ## `eye` - Construct the identity matrix
 
-### Version
+### Status
 
 Experimental
 
@@ -138,7 +138,7 @@ end program demo_eye2
 
 ## `trace` - Trace of a matrix
 
-### Version
+### Status
 
 Experimental
 
