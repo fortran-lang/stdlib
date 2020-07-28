@@ -105,7 +105,7 @@ Experimental
 
 Construct the identity matrix
 
-## Syntax
+### Syntax
 
 `I = [[stdlib_linalg(module):eye(function)]](n)`
 
