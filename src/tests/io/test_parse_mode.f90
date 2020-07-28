@@ -1,6 +1,6 @@
 program test_parse_mode
-use stdlib_experimental_io, only: parse_mode
-use stdlib_experimental_error, only: check
+use stdlib_io, only: parse_mode
+use stdlib_error, only: check
 implicit none
 
 call test_parse_mode_expected_order()

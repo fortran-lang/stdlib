@@ -3,12 +3,12 @@
 #:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES + &
   & [('l1','logical')]
 
-module stdlib_experimental_optval
+module stdlib_optval
   !!
   !! Provides a generic function `optval`, which can be used to
   !! conveniently implement fallback values for optional arguments
   !! to subprograms
-  !! ([Specification](../page/specs/stdlib_experimental_optval.html))
+  !! ([Specification](../page/specs/stdlib_optval.html))
   !!
   !! If `x` is an `optional` parameter of a
   !! subprogram, then the expression `optval(x, default)` inside that
@@ -16,7 +16,7 @@ module stdlib_experimental_optval
   !!
   !! It is an error to call `optval` with a single actual argument.
   !!
-  use stdlib_experimental_kinds, only: sp, dp, qp, int8, int16, int32, int64
+  use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
   implicit none
 
 
@@ -25,8 +25,10 @@ module stdlib_experimental_optval
 
 
   interface optval
+    !! version: experimental
+    !!
     !! Fallback value for optional arguments
-    !! ([Specification](../page/specs/stdlib_experimental_optval.html#description))
+    !! ([Specification](../page/specs/stdlib_optval.html#description))
     #:for k1, t1 in KINDS_TYPES
       module procedure optval_${t1[0]}$${k1}$
     #:endfor
@@ -64,4 +66,4 @@ contains
     end if
   end function optval_character
 
-end module stdlib_experimental_optval
+end module stdlib_optval

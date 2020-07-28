@@ -1,5 +1,5 @@
 ---
-title: experimental_quadrature
+title: quadrature
 ---
 
 # Numerical integration
@@ -8,15 +8,19 @@ title: experimental_quadrature
 
 ## `trapz` - integrate sampled values using trapezoidal rule
 
+### Status
+
+Experimental
+
 ### Description
 
 Returns the trapezoidal rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`.
 
 ### Syntax
 
-`result = [[stdlib_experimental_quadrature(module):trapz(interface)]](y, x)`
+`result = [[stdlib_quadrature(module):trapz(interface)]](y, x)`
 
-`result = [[stdlib_experimental_quadrature(module):trapz(interface)]](y, dx)`
+`result = [[stdlib_quadrature(module):trapz(interface)]](y, dx)`
 
 ### Arguments
 
@@ -36,7 +40,7 @@ If the size of `y` is zero or one, the result is zero.
 
 ```fortran
 program demo_trapz
-    use stdlib_experimental_quadrature, only: trapz
+    use stdlib_quadrature, only: trapz
     implicit none
     real :: x(5) = [0., 1., 2., 3., 4.]
     real :: y(5) = x**2
@@ -49,13 +53,17 @@ end program demo_trapz
 
 ## `trapz_weights` - trapezoidal rule weights for given abscissas
 
+### Status
+
+Experimental
+
 ### Description
 
 Given an array of abscissas `x`, computes the array of weights `w` such that if `y` represented function values tabulated at `x`, then `sum(w*y)` produces a trapezoidal rule approximation to the integral.
 
 ### Syntax
 
-`result = [[stdlib_experimental_quadrature(module):trapz_weights(interface)]](x)`
+`result = [[stdlib_quadrature(module):trapz_weights(interface)]](x)`
 
 ### Arguments
 
@@ -71,7 +79,7 @@ If the size of `x` is one, then the sole element of the result is zero.
 
 ```fortran
 program demo_trapz_weights
-    use stdlib_experimental_quadrature, only: trapz_weights
+    use stdlib_quadrature, only: trapz_weights
     implicit none
     real :: x(5) = [0., 1., 2., 3., 4.]
     real :: y(5) = x**2
@@ -85,6 +93,10 @@ end program demo_trapz_weights
 
 ## `simps` - integrate sampled values using Simpson's rule
 
+### Status
+
+Experimental
+
 ### Description
 
 Returns the Simpson's rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`. 
@@ -93,9 +105,9 @@ Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length a
 
 ### Syntax
 
-`result = [[stdlib_experimental_quadrature(module):simps(interface)]](y, x [, even])`
+`result = [[stdlib_quadrature(module):simps(interface)]](y, x [, even])`
 
-`result = [[stdlib_experimental_quadrature(module):simps(interface)]](y, dx [, even])`
+`result = [[stdlib_quadrature(module):simps(interface)]](y, dx [, even])`
 
 ### Arguments
 
@@ -119,7 +131,7 @@ If the size of `y` is two, the result is the same as if `trapz` had been called 
 
 ```fortran
 program demo_simps
-    use stdlib_experimental_quadrature, only: simps
+    use stdlib_quadrature, only: simps
     implicit none
     real :: x(5) = [0., 1., 2., 3., 4.]
     real :: y(5) = 3.*x**2
@@ -132,6 +144,10 @@ end program demo_simps
 
 ## `simps_weights` - Simpson's rule weights for given abscissas
 
+### Status
+
+Experimental
+
 ### Description
 
 Given an array of abscissas `x`, computes the array of weights `w` such that if `y` represented function values tabulated at `x`, then `sum(w*y)` produces a Simpson's rule approximation to the integral.
@@ -140,7 +156,7 @@ Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length a
 
 ### Syntax
 
-`result = [[stdlib_experimental_quadrature(module):simps_weights(interface)]](x [, even])`
+`result = [[stdlib_quadrature(module):simps_weights(interface)]](x [, even])`
 
 ### Arguments
 
@@ -160,7 +176,7 @@ If the size of `x` is two, then the result is the same as if `trapz_weights` had
 
 ```fortran
 program demo_simps_weights
-    use stdlib_experimental_quadrature, only: simps_weights
+    use stdlib_quadrature, only: simps_weights
     implicit none
     real :: x(5) = [0., 1., 2., 3., 4.]
     real :: y(5) = 3.*x**2

@@ -1,6 +1,6 @@
 program test_loadtxt_qp
-use stdlib_experimental_kinds, only: qp
-use stdlib_experimental_io, only: loadtxt
+use stdlib_kinds, only: qp
+use stdlib_io, only: loadtxt
 implicit none
 
 real(qp), allocatable :: q(:, :)

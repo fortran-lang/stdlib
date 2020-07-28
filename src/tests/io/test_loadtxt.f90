@@ -1,7 +1,7 @@
 program test_loadtxt
-use stdlib_experimental_kinds, only: int32, sp, dp
-use stdlib_experimental_io, only: loadtxt
-use stdlib_experimental_error, only: error_stop
+use stdlib_kinds, only: int32, sp, dp
+use stdlib_io, only: loadtxt
+use stdlib_error, only: error_stop
 implicit none
 
 integer(int32), allocatable :: i(:, :)

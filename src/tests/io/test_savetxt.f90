@@ -1,7 +1,7 @@
 program test_savetxt
-use stdlib_experimental_kinds, only: int32, sp, dp
-use stdlib_experimental_io, only: loadtxt, savetxt
-use stdlib_experimental_error, only: check
+use stdlib_kinds, only: int32, sp, dp
+use stdlib_io, only: loadtxt, savetxt
+use stdlib_error, only: check
 implicit none
 
 character(:), allocatable :: outpath

@@ -1,6 +1,6 @@
 program test_sleep
 use, intrinsic :: iso_fortran_env, only : int64, real64
-use stdlib_experimental_system, only : sleep
+use stdlib_system, only : sleep
 
 implicit none
 

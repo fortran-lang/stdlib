@@ -1,7 +1,7 @@
 #:include "common.fypp"
 
-submodule (stdlib_experimental_quadrature) stdlib_experimental_quadrature_simps
-    use stdlib_experimental_error, only: check
+submodule (stdlib_quadrature) stdlib_quadrature_simps
+    use stdlib_error, only: check
     implicit none
 
     ! internal use only
@@ -275,4 +275,4 @@ contains
 
 #:endfor
 
-end submodule stdlib_experimental_quadrature_simps
+end submodule stdlib_quadrature_simps

@@ -1,7 +1,7 @@
 program test_ascii
 
-    use stdlib_experimental_error, only: check
-    use stdlib_experimental_ascii, only: lowercase, uppercase, digits, &
+    use stdlib_error, only: check
+    use stdlib_ascii, only: lowercase, uppercase, digits, &
         octal_digits, fullhex_digits, hex_digits, lowerhex_digits, &
         whitespace, letters, is_alphanum, is_alpha, is_lower, is_upper, &
         is_digit, is_octal_digit, is_hex_digit, is_white, is_blank, &

@@ -1,4 +1,4 @@
-module stdlib_experimental_ascii
+module stdlib_ascii
 
     implicit none
     private
