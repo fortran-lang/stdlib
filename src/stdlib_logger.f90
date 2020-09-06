@@ -54,20 +54,33 @@ module stdlib_logger
     implicit none
 
     private
+    public :: global_logger, logger_t
 
-    character(*), parameter, private :: module_name = 'STDLIB_LOGGER'
+    !! public constants used as error flags
+    integer, parameter, public :: &
+        success = 0,              &
+        close_failure = 1,        &
+        invalid_index_error = 2,  &
+        non_sequential_error = 3, &
+        open_failure = 4,         &
+        read_only_error = 5,      &
+        unformatted_in_error = 6, &
+        unopened_in_error = 7,    &
+        write_failure = 8
 
-    public :: logger_t
-! Public derived type
+    character(*), parameter :: module_name = 'STDLIB_LOGGER'
 
+    !! Public derived type
     type :: logger_t
 
-        logical, private              :: add_line = .TRUE.
-        logical, private              :: indent_lines = .TRUE.
-        integer, allocatable, private :: log_units(:)
-        integer, private              :: max_width = 80
-        logical, private              :: time_stamp = .TRUE.
-        integer, private              :: units = 0
+        private
+
+        logical              :: add_line = .TRUE.
+        logical              :: indent_lines = .TRUE.
+        integer, allocatable :: log_units(:)
+        integer              :: max_width = 80
+        logical              :: time_stamp = .TRUE.
+        integer              :: units = 0
 
     contains
 
@@ -86,51 +99,10 @@ module stdlib_logger
         procedure, pass(self) :: remove_log_unit
     end type logger_t
 
-    public ::               &
-        add_log_file,       &
-        add_log_unit,       &
-!        assert,             &
-        configuration,      &
-        configure,          &
-        log_error,          &
-        log_information,    &
-        log_io_error,       &
-        log_message,        &
-        log_text_error,     &
-        log_units_assigned, &
-        log_warning,        &
-        remove_log_unit
-!! public procedures
-
-    public ::                 &
-        close_failure,        &
-        invalid_index_error,  &
-        non_sequential_error, &
-        open_failure,         &
-        read_only_error,      &
-        success,              &
-        unformatted_in_error, &
-        unopened_in_error,    &
-        write_failure
-!! public constants
-
-    integer, parameter ::         &
-        success = 0,              &
-        close_failure = 1,        &
-        invalid_index_error = 2,  &
-        non_sequential_error = 3, &
-        open_failure = 4,         &
-        read_only_error = 5,      &
-        unformatted_in_error = 6, &
-        unopened_in_error = 7,    &
-        write_failure = 8
-!! Constants used as error flags
-
-    public :: global_logger
-!! Variable of type LOGGER_T to be used as a global logger
+    !! Variable of type LOGGER_T to be used as a global logger
     type(logger_t) :: global_logger
 
-    character(*), parameter, private ::                                 &
+    character(*), parameter :: &
         invalid_column = 'COLUMN is not a valid index to LINE.'
 
 contains
