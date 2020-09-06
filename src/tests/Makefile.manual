@@ -11,7 +11,7 @@ all:
 test:
 	$(MAKE) -f Makefile.manual --directory=ascii test
 	$(MAKE) -f Makefile.manual --directory=io test
-	$(MAKE) -F Makefile.manual --directory=logger test
+	$(MAKE) -f Makefile.manual --directory=logger test
 	$(MAKE) -f Makefile.manual --directory=optval test
 	$(MAKE) -f Makefile.manual --directory=quadrature test
 	$(MAKE) -f Makefile.manual --directory=stats test
