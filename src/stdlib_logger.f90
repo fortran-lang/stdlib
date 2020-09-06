@@ -49,6 +49,7 @@ module stdlib_logger
         output_unit
 
     use stdlib_ascii, only : to_lower
+    use stdlib_optval, only : optval
 
     implicit none
 
@@ -188,29 +189,9 @@ contains
         integer        :: lun
         integer        :: i
 
-        if ( present(action) ) then
-            aaction = action
-
-        else
-            aaction = 'write'
-
-        end if
-
-        if ( present(position) ) then
-            aposition = position
-
-        else
-            aposition = 'rewind'
-
-        end if
-
-        if ( present(status) ) then
-            astatus = status
-
-        else
-            astatus = 'replace'
-
-        end if
+        aaction = optval(action, 'write')
+        aposition = optval(position, 'rewind')
+        astatus = optval(status, 'replace')
 
         if ( len_trim(aaction) == 4 ) then
             do i=1, 4
@@ -1209,13 +1190,7 @@ contains
         integer                   :: lun
         character(*), parameter   :: procedure_name = 'LOG_TEXT_ERROR'
 
-        if ( present(caret) ) then
-            acaret = caret
-
-        else
-            acaret = '^'
-
-        end if
+        acaret = optval(caret, '^')
 
         if ( column < 0 .or. column > len( line ) + 1 ) then
             if ( present(stat) ) then
