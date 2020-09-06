@@ -3,7 +3,7 @@
 all:
 	$(MAKE) -f Makefile.manual --directory=ascii
 	$(MAKE) -f Makefile.manual --directory=io
-	$(MAKE) -f Makefile,manual --directory=logger
+	$(MAKE) -f Makefile.manual --directory=logger
 	$(MAKE) -f Makefile.manual --directory=optval
 	$(MAKE) -f Makefile.manual --directory=quadrature
 	$(MAKE) -f Makefile.manual --directory=stats
