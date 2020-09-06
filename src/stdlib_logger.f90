@@ -338,8 +338,6 @@ contains
         self % log_units(self % units + 1 ) = unit
         self % units = self % units + 1
 
-        return
-
     contains
 
         subroutine validate_unit()
@@ -418,7 +416,6 @@ contains
 
             if ( present(stat) ) stat = success
 
-            return
         end subroutine validate_unit
 
     end subroutine add_log_unit
@@ -539,7 +536,6 @@ contains
         if ( present(time_stamp) ) time_stamp = self % time_stamp
         if ( present(log_units) ) log_units = self % log_units(1:self % units)
 
-        return
     end subroutine configuration
 
 
@@ -587,7 +583,6 @@ contains
         end if
         if ( present(time_stamp) ) self % time_stamp = time_stamp
 
-        return
     end subroutine configure
 
 
@@ -622,8 +617,6 @@ contains
             end do
 
         end if
-
-        return
 
     contains
 
@@ -923,7 +916,6 @@ contains
                                  module = module,      &
                                  procedure = procedure )
 
-        return
     end subroutine log_information
 
 
@@ -991,7 +983,6 @@ contains
 
         end if
 
-        return
     contains
 
         subroutine write_log_io_error( unit )
@@ -1080,7 +1071,6 @@ contains
             end do
 
         end if
-        return
 
     contains
 
@@ -1222,7 +1212,6 @@ contains
 
         end if
 
-        return
     contains
 
         subroutine write_log_text_error( unit )
@@ -1313,10 +1302,8 @@ contains
 !!       ...
 !!     end module example_mod
 
-
         log_units_assigned = self % units
 
-        return
     end function log_units_assigned
 
 
@@ -1368,7 +1355,6 @@ contains
                                  module = module,        &
                                  procedure = procedure )
 
-        return
     end subroutine log_warning
 
 
@@ -1468,7 +1454,6 @@ contains
         time_stamp(17:17) = ':'
         time_stamp(18:23) = time(5:10)
 
-        return
     end function time_stamp
 
 end module stdlib_logger
