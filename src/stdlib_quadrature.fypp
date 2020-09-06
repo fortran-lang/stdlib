@@ -1,7 +1,7 @@
 #:include "common.fypp"
-module stdlib_experimental_quadrature
-    !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description))
-    use stdlib_experimental_kinds, only: sp, dp, qp
+module stdlib_quadrature
+    !! ([Specification](../page/specs/stdlib_quadrature.html#description))
+    use stdlib_kinds, only: sp, dp, qp
 
     implicit none
 
@@ -15,8 +15,10 @@ module stdlib_experimental_quadrature
 
 
     interface trapz
+	!! version: experimental
+	!!
         !! Integrates sampled values using trapezoidal rule
-        !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description))
+        !! ([Specification](../page/specs/stdlib_quadrature.html#description))
         #:for k1, t1 in REAL_KINDS_TYPES
         pure module function trapz_dx_${k1}$(y, dx) result(integral)
           ${t1}$, dimension(:), intent(in) :: y
@@ -35,8 +37,10 @@ module stdlib_experimental_quadrature
 
 
     interface trapz_weights
+	!! version: experimental
+	!!
         !! Integrates sampled values using trapezoidal rule weights for given abscissas
-        !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description_1))
+        !! ([Specification](../page/specs/stdlib_quadrature.html#description_1))
         #:for k1, t1 in REAL_KINDS_TYPES
         pure module function trapz_weights_${k1}$(x) result(w)
             ${t1}$, dimension(:), intent(in) :: x
@@ -47,8 +51,10 @@ module stdlib_experimental_quadrature
 
 
     interface simps
+	!! version: experimental
+	!!
         !! Integrates sampled values using Simpson's rule
-        !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description_3))
+        !! ([Specification](../page/specs/stdlib_quadrature.html#description_3))
         ! "recursive" is an implementation detail
         #:for k1, t1 in REAL_KINDS_TYPES
         pure recursive module function simps_dx_${k1}$(y, dx, even) result(integral)
@@ -70,8 +76,10 @@ module stdlib_experimental_quadrature
 
 
     interface simps_weights
+	!! version: experimental
+	!!
         !! Integrates sampled values using trapezoidal rule weights for given abscissas
-        !! ([Specification](../page/specs/stdlib_experimental_quadrature.html#description_3))
+        !! ([Specification](../page/specs/stdlib_quadrature.html#description_3))
         #:for k1, t1 in REAL_KINDS_TYPES
         pure recursive module function simps_weights_${k1}$(x, even) result(w)
             ${t1}$, dimension(:), intent(in) :: x
@@ -95,4 +103,4 @@ module stdlib_experimental_quadrature
         #:endfor
     end interface
 
-end module stdlib_experimental_quadrature
+end module stdlib_quadrature

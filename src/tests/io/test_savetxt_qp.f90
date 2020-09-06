@@ -1,7 +1,7 @@
 program test_savetxt_qp
-use stdlib_experimental_kinds, only: qp
-use stdlib_experimental_io, only: loadtxt, savetxt
-use stdlib_experimental_error, only: check
+use stdlib_kinds, only: qp
+use stdlib_io, only: loadtxt, savetxt
+use stdlib_error, only: check
 implicit none
 
 character(:), allocatable :: outpath

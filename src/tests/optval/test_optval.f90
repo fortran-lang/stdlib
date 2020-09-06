@@ -2,8 +2,8 @@ program test_optval
   use, intrinsic :: iso_fortran_env, only: &
        sp => real32, dp => real64, qp => real128, &
        int8, int16, int32, int64
-  use stdlib_experimental_error, only: check
-  use stdlib_experimental_optval, only: optval
+  use stdlib_error, only: check
+  use stdlib_optval, only: optval
 
   implicit none
 

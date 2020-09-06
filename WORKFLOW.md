@@ -25,9 +25,9 @@ experienced contributors will help it through all 5 steps.
    always better than large.  It is OK to implement only a few functions of a
    new module, and continue work on the others in a later PR. All new
    functionality goes into an "experimental" namespace
-   (`stdlib_experimental_*.f90`).  As part of the PR, when submitting a new
+   (`version: experimental`). As part of the PR, when submitting a new
    public facing API, please provide the initial draft of the specification
-   document as well as the the initial reference implementation of this
+   document as well as the initial reference implementation of this
    specification.  The
    [specification is a document](https://stdlib.fortran-lang.org/page/specs/index.html)
    that describes the API and

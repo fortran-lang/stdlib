@@ -1,7 +1,7 @@
 program test_trapz
-    use stdlib_experimental_kinds, only: sp, dp, qp
-    use stdlib_experimental_error, only: check
-    use stdlib_experimental_quadrature, only: trapz, trapz_weights
+    use stdlib_kinds, only: sp, dp, qp
+    use stdlib_error, only: check
+    use stdlib_quadrature, only: trapz, trapz_weights
 
     implicit none
 

@@ -1,11 +1,11 @@
 #:include "common.fypp"
 #:set RANKS = range(1, MAXRANK + 1)
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-submodule (stdlib_experimental_stats) stdlib_experimental_stats_mean
+submodule (stdlib_stats) stdlib_stats_mean
 
   use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
-  use stdlib_experimental_error, only: error_stop
-  use stdlib_experimental_optval, only: optval
+  use stdlib_error, only: error_stop
+  use stdlib_optval, only: optval
   implicit none
 
 contains

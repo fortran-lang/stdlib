@@ -1,7 +1,7 @@
 program test_corr
-    use stdlib_experimental_error, only: check
-    use stdlib_experimental_kinds, only: sp, dp, int32, int64
-    use stdlib_experimental_stats, only: corr
+    use stdlib_error, only: check
+    use stdlib_kinds, only: sp, dp, int32, int64
+    use stdlib_stats, only: corr
     use,intrinsic :: ieee_arithmetic, only : ieee_is_nan
     implicit none
 

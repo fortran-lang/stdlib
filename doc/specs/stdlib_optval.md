@@ -1,5 +1,5 @@
 ---
-title: experimental_optval
+title: optval
 ---
 
 # Default values for optional arguments
@@ -7,6 +7,10 @@ title: experimental_optval
 [TOC]
 
 ## `optval` - fallback value for optional arguments
+
+### Status
+
+Experimental
 
 ### Description
 
@@ -16,7 +20,7 @@ This function is intended to be called in a procedure with one or more `optional
 
 ### Syntax
 
-`result = [[stdlib_experimental_optval(module):optval(interface)]](x, default)`
+`result = [[stdlib_optval(module):optval(interface)]](x, default)`
 
 ### Arguments
 
@@ -32,7 +36,7 @@ If `x` is present, the result is `x`, otherwise the result is `default`.
 
 ```fortran
 program demo_optval
-    use stdlib_experimental_optval, only: optval
+    use stdlib_optval, only: optval
     implicit none
     print *, root(64.0)
 ! 8.0

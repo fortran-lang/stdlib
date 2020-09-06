@@ -1,15 +1,17 @@
-module stdlib_experimental_error
+module stdlib_error
     !! Provides support for catching and handling errors
-    !! ([Specification](../page/specs/stdlib_experimental_error.html))
+    !! ([Specification](../page/specs/stdlib_error.html))
 use, intrinsic :: iso_fortran_env, only: stderr => error_unit
-use stdlib_experimental_optval, only: optval
+use stdlib_optval, only: optval
 implicit none
 private
 
 interface ! f{08,18}estop.f90
     module subroutine error_stop(msg, code)
+        !! version: experimental
+        !!
         !! Provides a call to `error stop` and allows the user to specify a code and message
-        !! ([Specification](..//page/specs/stdlib_experimental_error.html#description_1))
+        !! ([Specification](..//page/specs/stdlib_error.html#description_1))
         character(*), intent(in) :: msg
         integer, intent(in), optional :: code
     end subroutine error_stop
@@ -20,8 +22,10 @@ public :: check, error_stop
 contains
 
 subroutine check(condition, msg, code, warn)
+    !! version: experimental
+    !!
     !! Checks the value of a logical condition
-    !! ([Specification](../page/specs/stdlib_experimental_error.html#description))
+    !! ([Specification](../page/specs/stdlib_error.html#description))
     !!
     !!##### Behavior
     !!
@@ -77,4 +81,4 @@ subroutine check(condition, msg, code, warn)
 
 end subroutine check
 
-end module stdlib_experimental_error
+end module stdlib_error

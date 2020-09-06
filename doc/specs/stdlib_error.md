@@ -1,5 +1,5 @@
 ---
-title: experimental_error
+title: error
 ---
 
 # Catching and handling errors
@@ -7,6 +7,10 @@ title: experimental_error
 [TOC]
 
 ## `check` - Checks the value of a logical condition
+
+### Status
+
+Experimental
 
 ### Description
 
@@ -43,7 +47,7 @@ If `condition` is `.false`., and:
 
 ```fortran
 program demo_check1
-    use stdlib_experimental_error, only: check
+    use stdlib_error, only: check
     implicit none
     integer :: a = 1
     ! If a /= 5, stops the program with exit code 1 and prints 'Check failed.'
@@ -52,7 +56,7 @@ end program demo_check1
 ```
 ```fortran
 program demo_check2
-    use stdlib_experimental_error, only: check
+    use stdlib_error, only: check
     implicit none
     integer :: a = 1
     ! If a /= 5, stops the program with exit code 1 and prints  'a == 5 failed.'
@@ -61,7 +65,7 @@ end program demo_check2
 ```
 ```fortran
 program demo_check3
-    use stdlib_experimental_error, only: check
+    use stdlib_error, only: check
     implicit none
     integer :: a = 1
     ! If a /= 5,  prints 'a == 5 failed.', but doesn't stop the program.
@@ -70,7 +74,7 @@ end program demo_check2
 ```
 ```fortran
 program demo_check3
-    use stdlib_experimental_error, only: check
+    use stdlib_error, only: check
     implicit none
     integer :: a = 1
     ! If a /= 5, stops the program with exit code 77 and prints 'a == 5 failed.'
@@ -80,13 +84,17 @@ end program demo_check3
 
 ## `error_stop` - aborts the program
 
+### Status
+
+Experimental
+
 ### Description
 
 Aborts the program with a message and a nonzero exit code.
 
 ### Syntax
 
-`call [[stdlib_experimental_error(module):error_stop(interface)]](msg, code)`
+`call [[stdlib_error(module):error_stop(interface)]](msg, code)`
 
 ### Arguments
 
@@ -104,7 +112,7 @@ Without error code:
 
 ```fortran
 program demo_error_stop1
-    use stdlib_experimental_error, only: error_stop
+    use stdlib_error, only: error_stop
     implicit none
     call error_stop("Invalid argument")
 end program demo_error_stop1
@@ -114,7 +122,7 @@ With error code:
 
 ```fortran
 program demo_error_stop2
-    use stdlib_experimental_error, only: error_stop
+    use stdlib_error, only: error_stop
     implicit none
     call error_stop("Invalid argument", code = 123)
 end program demo_error_stop2
