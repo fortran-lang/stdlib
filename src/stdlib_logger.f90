@@ -135,7 +135,7 @@ contains
         integer, intent(out), optional     :: stat
 !! The error status on exit with the possible values
 !! * `SUCCESS` - no errors found
-!! * `READ_ONLY_ERROR` - file unopend as ACTION was 'READ' for an output file
+!! * `READ_ONLY_ERROR` - file unopened as ACTION was 'READ' for an output file
 !! * `OPEN_FAILURE` - the OPEN statement failed
 
 
