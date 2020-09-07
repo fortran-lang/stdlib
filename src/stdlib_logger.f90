@@ -519,6 +519,8 @@ contains
 
 
     pure subroutine configure( self, add_line, indent, max_width, time_stamp )
+!! version: experimental
+
 !! Configures the logging process for SELF. The following attributes are
 !! configured:
 !! 1. ADD_LINE is a logical flag with .TRUE. implying that output starts
