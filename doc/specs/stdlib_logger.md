@@ -1,5 +1,5 @@
 ---
-title: STDLIB_LOGGER
+title: stdlib_logger
 ---
 # The module STDLIB_LOGGER
 
