@@ -378,7 +378,7 @@ Pure subroutine.
          ...
 	  end program main
 
-### log_error - Writes the string `message` to `self % log_units`
+### `log_error` - Writes the string `message` to `self % log_units`
 
 #### Status
 
