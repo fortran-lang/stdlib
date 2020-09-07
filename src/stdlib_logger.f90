@@ -68,7 +68,7 @@ module stdlib_logger
         unopened_in_error = 7,    &
         write_failure = 8
 
-    character(*), parameter :: module_name = 'STDLIB_LOGGER'
+    character(*), parameter :: module_name = 'stdlib_logger'
 
     !! Public derived type
     type :: logger_t
