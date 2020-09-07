@@ -95,7 +95,7 @@ application.
 ### Overview of the `logger_t` methods
 
 The module defines twelve public procedures: one function and eleven
-subroutines. All are methods of the `logger_t` derived type. The
+subroutines.  The
 procedures are:
 
 |Procedure|Class|Description|
