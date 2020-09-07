@@ -236,6 +236,8 @@ contains
 
 
     subroutine add_log_unit( self, unit, stat )
+!! version: experimental
+
 !! Adds UNIT to the log file units in LOG_UNITS. UNIT must be an OPEN
 !! file, of FORM FORMATTED, with SEQUENTIAL ACCESS, and an ACTION of
 !! 'WRITE' or 'READWRITE', otherwise either STAT, if preseent, has a
