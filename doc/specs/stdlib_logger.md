@@ -92,7 +92,7 @@ intended to serve as the default logger for use throughout an
 application.
 
 
-### Overview of the `logger_t` methods
+### Public `logger_t` methods
 
 The module defines twelve public procedures: one function and eleven
 subroutines.  The
