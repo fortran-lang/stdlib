@@ -561,6 +561,8 @@ contains
 
     subroutine format_output_string( self, unit, string, procedure_name, &
                                      col_indent )
+!! version: experimental
+
 !! Writes the STRING to UNIT ensuring that the number of characters
 !! does not exceed MAX_WIDTH and that the lines after the first
 !! one are indented four characters.
