@@ -1,7 +1,7 @@
 ---
 title: stdlib_logger
 ---
-# The module STDLIB_LOGGER
+# Loggers
 
 [TOC]
 
