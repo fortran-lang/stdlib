@@ -110,6 +110,8 @@ contains
 
     subroutine add_log_file( self, filename, unit, action, position, status, &
                              stat )
+!! version: experimental
+
 !! Opens a formatted sequential access output file, `filename` using
 !! `newunit` and adds the resulting unit number to the logger's `log_units`
 !! array. `ACTION`, if present, is the `ACTION` specifier of the `OPEN`
