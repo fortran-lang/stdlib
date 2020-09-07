@@ -72,7 +72,8 @@ module stdlib_logger
 
     !! Public derived type
     type :: logger_t
-
+        !! version: experimental
+        
         private
 
         logical              :: add_line = .TRUE.
