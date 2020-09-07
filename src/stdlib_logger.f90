@@ -703,6 +703,8 @@ contains
 
 
     subroutine handle_write_failure( unit, procedure_name, iostat, iomsg )
+!! version: experimental
+
 !! Handles a failure to write to UNIT in PROCEDURE_NAME with IOSTAT and
 !! IOMSG by writing a description of the failure to OUTPUT_UNIT and
 !! stopping.
