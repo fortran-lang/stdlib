@@ -371,12 +371,12 @@ Pure subroutine.
   
 #### Example
 
-     program main
-         use stdlib_logger, global => global_logger
-         ...
-         call global % configure( indent=.false., max_width=72 )
-         ...
-	  end program main
+program demo_configure
+      use stdlib_logger, only: global => global_logger
+      
+      call global % configure( indent=.false., max_width=72 )
+      
+end program demo_configure
 
 ### `log_error` - Writes the string `message` to `self % log_units`
 
