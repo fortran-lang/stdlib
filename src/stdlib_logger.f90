@@ -1141,7 +1141,7 @@ contains
 !! The symbol used to mark the column wher the error was first detected
         integer, intent(out), optional        :: stat
 !! Integer flag that an error has occurred. Has the value SUCCESS if no
-!! error hass occured, INVALID_INDEX if COLUMN is less than zero or
+!! error hass occurred, INVALID_INDEX if COLUMN is less than zero or
 !! greater than LEN(LINE), and WRITE_FAILURE if any of the WRITE statements
 !! has failed.
 
