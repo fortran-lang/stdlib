@@ -290,7 +290,7 @@ contains
             if ( stat /= success ) return
         end if
 
-        do lun=1, self % units
+        do lun = 1, self % units
 ! Check that unit is not already registered
             if (self % log_units(lun) == unit ) return
 
