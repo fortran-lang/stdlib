@@ -12,7 +12,7 @@ constants to be used for the reporting of errors and other
 information. The derived type, `logger_t`, is to be used to define
 both global and local logger variables. The `logger_t` methods serve
 to configure the loggers and use the logger variables to report
-messages to a variable specific list of I/O units, to be termed
+messages to a variable specific list of I/O units termed
 `log_units`. The variable, `global_logger`, of type `logger_t`, is
 intended to serve as the default global logger. The constants serve as
 error flags returned by the optional integer `stat` argument.
