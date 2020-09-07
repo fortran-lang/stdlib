@@ -987,6 +987,8 @@ contains
 
 
     subroutine log_message( self, message, module, procedure )
+!! version: experimental
+
 !! Writes the string MESSAGE to the SELF % LOG_UNITS with optional
 !! additional text.
 !!
