@@ -340,7 +340,7 @@ Configures the logging process for self.
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % configure(interface)]]( [ add_line, indent, max_width, time_stamp ] )
+`call [[stdlib_logger(module):self % configure(interface)]]( [ add_line, indent, max_width, time_stamp ] )`
 
 #### Class
 
