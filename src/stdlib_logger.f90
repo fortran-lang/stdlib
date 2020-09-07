@@ -157,7 +157,7 @@ contains
         character(128) :: iomsg
         integer        :: iostat
         character(16)  :: aaction, aposition, astatus
-        character(*), parameter :: procedure_name = 'ADD_LOG_FILE'
+        character(*), parameter :: procedure_name = 'add_log_file'
         integer, allocatable :: dummy(:)
         integer        :: lun
         integer        :: i
