@@ -186,7 +186,7 @@ an `intent(in)` argument. It shall be the name of the file to be opened.
     end program main
 
 
-### add_log_unit - add a unit to the array `self % log_units`
+### `add_log_unit` - add a unit to the array `self % log_units`
 
 #### Status
 
