@@ -172,6 +172,7 @@ an `intent(in)` argument. It shall be the name of the file to be opened.
 
 #### Example
 
+```fortran
 program demo_global_logger
     use stdlib_logger, global => global_logger
     ...
@@ -184,7 +185,7 @@ program demo_global_logger
     end if
      ...
 end program demo_global_logger
-
+```
 
 ### `add_log_unit` - add a unit to the array `self % log_units`
 
@@ -238,6 +239,7 @@ to `unit`.
 
 #### Example
 
+```fortran
 program demo_add_log_unit
     use stdlib_logger, only: global_logger, read_only_error
      ...
@@ -260,6 +262,7 @@ program demo_add_log_unit
      999 error stop 'Unable to open "error_log.txt".
      ...
 end program demo_add_log_unit
+```
 
 ### `configuration` - report a logger's configuration
 
@@ -308,6 +311,7 @@ Pure subroutine
 
 #### Example
 
+```fortran
     module example_mod
       use stdlib_logger
       ...
@@ -327,6 +331,7 @@ Pure subroutine
       end subroutine example_sub
       ...
     end module example_mod
+```
 
 ### `configure` - configure the logging process
 
@@ -344,7 +349,7 @@ Configures the logging process for self.
 
 #### Class
 
-Pure subroutine.
+Pure subroutine
 
 #### Arguments
 
@@ -371,12 +376,14 @@ Pure subroutine.
   
 #### Example
 
+```fortran
 program demo_configure
       use stdlib_logger, only: global => global_logger
       
       call global % configure( indent=.false., max_width=72 )
       
 end program demo_configure
+```
 
 ### `log_error` - Writes the string `message` to `self % log_units`
 
@@ -390,7 +397,7 @@ Writes the string `message` to `self % log_units` with optional additional text.
 
 #### Syntax
 
-call [[stdlib_logger(module):self % log_error(interface)]]( message [, module, procedure, stat, errmsg ] )
+`call [[stdlib_logger(module):self % log_error(interface)]]( message [, module, procedure, stat, errmsg ] )`
 
 #### Behavior
 
@@ -430,6 +437,7 @@ Subroutine
 
 #### Example
 
+```fortran
     module  example_mod
 	    use stdlib_logger
       ...
@@ -456,6 +464,7 @@ Subroutine
       end subroutine example_sub
       ...
     end module example_mod
+```
 
 ### `log_information` - Writes the string `message` to `self % log_units`
 
@@ -480,7 +489,7 @@ written. Then `message` is written with the prefix
 
 #### Class
 
-Subroutine.
+Subroutine
 
 #### Arguments
 
@@ -500,6 +509,7 @@ Subroutine.
 
 #### Example
 
+```fortran
     module  example_mod
       use stdlib_logger
       ...
@@ -522,6 +532,7 @@ Subroutine.
       end subroutine example_sub
       ...
     end module example_mod
+```
 
 ### `log_io_error` - Write the string `message` to `self % log_units`
 
@@ -576,6 +587,7 @@ Subroutine
 
 #### Example
 
+```fortran
     program example
       use stdlib_logger, global=>global_logger
       ...
@@ -596,6 +608,7 @@ Subroutine
       end if
       ...
     end program example
+```
 
 ### `log_message` - write the string `message` to `self % log_units` 
 
@@ -640,6 +653,7 @@ Subroutine
 
 #### Example
 
+```fortran
     module  example_mod
       use stdlib_logger
       ...
@@ -661,6 +675,7 @@ Subroutine
       end subroutine example_sub
       ...
     end module example_mod
+```
 
 ### `log_text_error` - send a message to `self % log_units` describing an error
 
@@ -729,6 +744,7 @@ Subroutine
 
 #### Example
 
+```fortran
     program example
         use stdlib_logger
         ...
@@ -754,6 +770,7 @@ Subroutine
     900 continue
         ...
     end program example
+```
 
 ### `log_units_assigned` - returns the number of active I/O units
 
@@ -788,6 +805,7 @@ The result is the number of I/O units in
 
 #### Example
 
+```fortran
     module  example_mod
       use stdlib_logger
       ...
@@ -806,6 +824,7 @@ The result is the number of I/O units in
       end subroutine example_sub
       ...
     end module example_mod
+```
 
 ### `log_warning` - write the string `message` to `log_units`
 
@@ -851,6 +870,7 @@ Subroutine
 
 #### Example
 
+```fortran
     module  example_mod
       use stdlib_logger
       ...
@@ -873,6 +893,7 @@ Subroutine
       end subroutine example_sub
       ...
     end module example_mod
+```
 
 ### `remove_log_unit` - remove `unit` from `self % log_units`
 
@@ -919,6 +940,7 @@ modified.
 
 #### Example
 
+```fortran
     module  example_mod
       use stdlib_logger, global => global_logger
       ...
@@ -932,3 +954,4 @@ modified.
       end subroutine example_sub
       ...
     end module example_mod
+```
