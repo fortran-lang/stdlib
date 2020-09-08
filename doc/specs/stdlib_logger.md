@@ -348,7 +348,7 @@ Pure subroutine.
 
 #### Arguments
 
-`self`: shall be a scalar variable of type `logger_t`. It is an `intent(in)` argument. It shall be the logger to be configured.
+`self`: shall be a scalar variable of type `logger_t`. It is an `intent(inout)` argument. It shall be the logger to be configured.
 
 `add_line` (optional): shall be a scalar default logical
   expression. It is an `intent(in)` argument. Set to `.true.` to start
