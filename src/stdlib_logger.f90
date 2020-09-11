@@ -573,7 +573,7 @@ contains
     subroutine final_logger( self )
 !! version: experimental
 
-!! finalizes the logger_t entity sekf by flushing the units
+!! finalizes the logger_t entity self by flushing the units
         type(logger_t), intent(in) :: self
 
         integer        :: iostat
