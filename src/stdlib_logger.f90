@@ -90,6 +90,7 @@ module stdlib_logger
         procedure, pass(self) :: add_log_unit
         procedure, pass(self) :: configuration
         procedure, pass(self) :: configure
+        final                 :: final_logger
         procedure, pass(self) :: log_error
         procedure, pass(self) :: log_information
         procedure, pass(self) :: log_io_error
@@ -565,6 +566,31 @@ contains
         if ( present(time_stamp) ) self % time_stamp = time_stamp
 
     end subroutine configure
+
+
+    subroutine final_logger( self )
+!! finalizes the logger_t entity by flushing the units
+        type(logger_t), intent(in) :: self
+
+        integer        :: iostat
+        character(256) :: message
+        integer        :: unit
+
+        do unit=1, self % units
+            flush( self % log_units(unit), iomsg=message, iostat=iostat )
+            if ( iostat /= 0 ) then
+                write(error_unit, '(a, i0)' ) 'In the logger_t finalizer ' // &
+                    'an error occured in flushing UNIT = ',                   &
+                    self % log_units(unit)
+                write(error_unit, '(a, i0)') 'With IOSTAT = ', iostat
+                write(error_unit, '(a)') 'With IOMSG = ' // trim(message)
+
+            end if
+
+        end do
+
+        return
+    end subroutine final_logger
 
 
     subroutine format_output_string( self, unit, string, procedure_name, &
