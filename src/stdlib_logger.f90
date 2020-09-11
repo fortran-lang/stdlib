@@ -573,7 +573,7 @@ contains
     subroutine final_logger( self )
 !! version: experimental
 
-!! finalizes the logger_t entity self by flushing the units
+!! finalizes the `logger_t` entity `self` by flushing the units
         type(logger_t), intent(in) :: self
 
         integer        :: iostat
@@ -745,8 +745,8 @@ contains
     subroutine handle_write_failure( unit, procedure_name, iostat, iomsg )
 !! version: experimental
 
-!! Handles a failure to write to UNIT in PROCEDURE_NAME with IOSTAT and
-!! IOMSG by writing a description of the failure to OUTPUT_UNIT and
+!! Handles a failure to write to `unit` in `procedure_name` with `iostat` and
+!! `iomsg` by writing a description of the failure to `output_unit` and
 !! stopping.
         integer, intent(in)      :: unit
         character(*), intent(in) :: procedure_name
