@@ -129,7 +129,7 @@ Opens a formatted, sequential access, output file, `filename` using
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % add_log_file(interface)]]( filename, unit [, action, position, status, stat ] )`
+`call [[stdlib_logger(module):self % add_log_file(interface)]]( filename [, unit, action, position, status, stat ] )`
 
 #### Class
 
@@ -142,7 +142,7 @@ Subroutine
 `filename`: shall be a scalar default character expression. It is
 an `intent(in)` argument. It shall be the name of the file to be opened.
 
-`unit`: shall be a scalar default integer variable. It is an
+`unit` (optional): shall be a scalar default integer variable. It is an
 `intent(out)` argument. It will be the unit number returned by the
 `newunit` specifier of the `open` statement for `filename`.
 
