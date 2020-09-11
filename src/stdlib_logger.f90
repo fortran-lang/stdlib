@@ -5,42 +5,42 @@ module stdlib_logger
 !! constants to be used for reporting errors by the Fortran Standard
 !! Library.
 !!
-!! The derived type, LOGGER_T, is to be used to define variables to
+!! The derived type, `logger_t`, is to be used to define variables to
 !! serve as both local and global loggers. A logger directs its messages
 !! to selected I/O units so the user has a record (a log) of major events.
-!! For each entity of LOGGER_T the reports go to a list of I/O units
-!! represented by the private internal array, LOG_UNITS. If LOG_UNITS is
-!! empty then output by default goes to OUTPUT_UNIT. Otherwise reports
-!! go to OUTPUT_UNIT only if it has been explicitly added to LOG_UNITS.
-!! Each entity of type LOGGER_T also maintains an internal state
+!! For each entity of `logger_t` the reports go to a list of I/O units
+!! represented by the private internal array, `log_units`. If `log_units` is
+!! empty then output by default goes to `output_unit`. Otherwise reports
+!! go to `output_unit` only if it has been explicitly added to `log_units`.
+!! Each entity of type `logger_t` also maintains an internal state
 !! controlling the formatting of output.
 !!
 !! The procedures are as follows. The logical function
-!! LOG_UNITS_ASSIGNED returns the number of I/O units in LOG_UNITS. The
-!! subroutines ADD_LOG_FILE and ADD_LOG_UNIT include the specified file
-!! in LOG_UNITS. REMOVE_LOG_UNIT removes the specified logical unit from
-!! the LOG_UNITS array and optionally closes the file. CONFIGURE
-!! configures the details of the logging process. CONFIGURATION
+!! `log_units_assigned` returns the number of I/O units in `log_units`. The
+!! subroutines `add_log_file` and `add_log_unit` include the specified file
+!! in `log_units`. `remove_log_units` removes the specified logical unit from
+!! the `log_units` array and optionally closes the file. `configure`
+!! configures the details of the logging process. `configuration`
 !! reports the details of that configuration. The subroutines
-!! LOG_ERROR, LOG_INFORMATION, LOG_IO_ERROR, LOG_MESSAGE,
-!! LOG_TEXT_ERRROR, and LOG_WARNING send messages to the log units.
+!! `log_error`, `log_information`, `log_io_error`, `log_message`,
+!! `log_text_error`, and `log_warning` send messages to the log units.
 !!
-!! The variable is the entity GLOBAL_LOGGER of type LOGGER_T, to serve
+!! The variable is the entity `global_logger` of type `logger_t`, to serve
 !! as its name suggests, as a global logger to be used as a default
 !! anywhere in the source code.
 !!
 !! The constants are used to report errors by some of the subroutines
-!! in their optional STAT arguments. The constants are as follows.
-!! SUCCESS indicates that no error has occurred. CLOSE_FAILURE
+!! in their optional `stat` arguments. The constants are as follows.
+!! `success` indicates that no error has occurred. `close_failure`
 !! indicates that a `CLOSE` statement for an I/O unit failed.
-!! INVALID_INDEX_ERROR` indicates that `COLUMN` was invalid for
-!! the given `LINE`. OPEN_FAILURE indicates that an `OPEN` statement
-!! failed. READ_ONLY_ERROR indicates that an output unit did not have a
-!! `WRITE` or `READWRITE` action. SEQUENTIAL_ACCESS_ERROR indicates
-!! that the unit did not have `SEQUENTIAL` access. UNFORMATTED_IN_ERROR
-!! indicates that the unit did not have a `FORM` of `FORMATTED`.
-!! UNOPENED_IN_ERROR indicates that the unit was not opened. WRITE_FAILURE
-!! indicates that at least one of the writes to `LOG_UNITS` failed.
+!! `invalid_index_error` indicates that `column` was invalid for
+!! the given `line`. `open_failure` indicates that an `OPEN` statement
+!! failed. `read_only_error` indicates that an output unit did not have a
+!! `"WRITE"` or `"READWRITE"` action. `non_sequential_error` indicates
+!! that the unit did not have `SEQUENTIAL` access. `unformatted_in_error`
+!! indicates that the unit did not have a `FORM` of `"FORMATTED"`.
+!! `unopened_in_error` indicates that the unit was not opened. `write_failure`
+!! indicates that at least one of the writes to `log_units` failed.
 
     use, intrinsic ::           &
         iso_fortran_env, only : &
