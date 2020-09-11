@@ -241,22 +241,22 @@ contains
     subroutine add_log_unit( self, unit, stat )
 !! version: experimental
 
-!! Adds UNIT to the log file units in LOG_UNITS. UNIT must be an OPEN
-!! file, of FORM FORMATTED, with SEQUENTIAL ACCESS, and an ACTION of
-!! 'WRITE' or 'READWRITE', otherwise either STAT, if preseent, has a
-!! value other than SUCCESS and UNIT is not entered into LOG_UNITS,
-!! or, if STAT is not presecn, processing stops.
+!! Adds `unit` to the log file units in `log_units`. `unit` must be an `OPEN`
+!! file, of `FORM` `"FORMATTED"`, with `"SEQUENTIAL"` `ACCESS`, and an `ACTION` of
+!! `"WRITE"` or `"READWRITE"`, otherwise either `stat`, if preseent, has a
+!! value other than `success` and `unit` is not entered into L`log_units`,
+!! or, if `stat` is not presecn, processing stops.
         class(logger_t), intent(inout) :: self
 !! The logger variable to which the I/O unit is to be added
         integer, intent(in)            :: unit
 !! The input logical unit number
         integer, intent(out), optional :: stat
 !! An error code with the possible values
-!! * SUCCESS - no problems were found
-!! * NON_SEQUENTIAL_ERROR - UNIT did not have sequential access
-!! * READ_ONLY_ERROR - UNIT was not writeable
-!! * UNFORMATTED_IN_ERROR - UNIT was an UNFORMATTED file
-!! * UNOPENED_IN_ERROR - UNIT was not opened
+!! * `success` - no problems were found
+!! * `non_sequential_error` - `unit` did not have sequential access
+!! * `read_only_error` - `unit` was not writeable
+!! * `unformatted_in_error` - `unit` was an `"UNFORMATTED'` file
+!! * `unopened_in_error` - `unit` was not opened
 
 !!##### Example
 !!
