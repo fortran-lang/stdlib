@@ -127,7 +127,7 @@ contains
 !! The logger variable to which the file is to be added
         character(*), intent(in)           :: filename
 !! The name of the file to be  added to the logger
-        integer, intent(out)               :: unit
+        integer, intent(out), optional     :: unit
 !! The resulting I/O unit number
         character(*), intent(in), optional :: action
 !! The `ACTION` specifier for the `OPEN` statement
@@ -157,9 +157,10 @@ contains
 !!         ...
 !!     end program main
 
+        character(16)  :: aaction, aposition, astatus
+        integer        :: aunit
         character(128) :: iomsg
         integer        :: iostat
-        character(16)  :: aaction, aposition, astatus
         character(*), parameter :: procedure_name = 'add_log_file'
         integer, allocatable :: dummy(:)
         integer        :: lun
@@ -189,7 +190,7 @@ contains
 
         end if
 
-        open( newunit=unit, file=filename, form='formatted', action=aaction,  &
+        open( newunit=aunit, file=filename, form='formatted', action=aaction, &
               position=aposition, status=astatus, iostat=iostat, iomsg=iomsg, &
               err=999 )
 
@@ -211,8 +212,9 @@ contains
 
         end if
 
-        self % log_units(self % units + 1 ) = unit
+        self % log_units(self % units + 1 ) = aunit
         self % units = self % units + 1
+        if ( present(unit) ) unit = aunit
         if ( present(stat) ) stat = success
 
         return
