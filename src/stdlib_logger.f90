@@ -464,18 +464,18 @@ contains
         time_stamp, log_units )
 !! version: experimental
 
-!! Reports the logging configuration of SELF. The following attributes are
+!! Reports the logging configuration of `self`. The following attributes are
 !! reported:
-!! 1. ADD_LINE is a logical flag with .TRUE. implying that output starts
-!!    with a blank line, and .FALSE. implying no blank line.
-!! 2. INDENT is a logical flag with .TRUE. implying that subsequent columns
-!!    will be indented 4 spaces and .FALSE. implying no indentation.
-!! 3. MAX_WIDTH is the maximum number of columns of output text with
-!!    MAX_WIDTH == 0 => no bounds on output width.
-!! 4. TIME_STAMP is a logical flag with .TRUE. implying that the output
-!!    will have a time stamp, and .FALSE. implying that there will be no
+!! 1. `add_line` is a logical flag with `.true.` implying that output starts
+!!    with a blank line, and `.false.` implying no blank line.
+!! 2. `indent` is a logical flag with `.true.` implying that subsequent columns
+!!    will be indented 4 spaces and `.false.` implying no indentation.
+!! 3. `max_width` is the maximum number of columns of output text with
+!!    `max_width` == 0 => no bounds on output width.
+!! 4. `time_stamp` is a logical flag with `.true.` implying that the output
+!!    will have a time stamp, and `.false.` implying that there will be no
 !!    time stamp.
-!! 5. LOG_UNITS is an array of the logical unit numbers to which log output
+!! 5. `log_units` is an array of the I/O unit numbers to which log output
 !!    will be written
         class(logger_t), intent(in)                 :: self
 !! The logger variable whose configuration is being reported
@@ -526,18 +526,18 @@ contains
 
 !! Configures the logging process for SELF. The following attributes are
 !! configured:
-!! 1. ADD_LINE is a logical flag with .TRUE. implying that output starts
-!!    with a blank line, and .FALSE. implying no blank line. ADD_LINE has a
-!!    default value of .TRUE..
-!! 2. INDENT is a logical flag with .TRUE. implying that subsequent lines
-!!    will be indented 4 spaces and .FALSE. implying no indentation. INDENT
-!!    has a default value of .TRUE..
-!! 3. MAX_WIDTH is the maximum number of columns of output text with
-!!    MAX_WIDTH == 0 => no bounds on output width. MAX_WIDTH has a default
+!! 1. `add_line` is a logical flag with `.true.` implying that output starts
+!!    with a blank line, and `.false.` implying no blank line. `add_line` has a
+!!    startup value of `.true.`.
+!! 2. `indent` is a logical flag with `.true.` implying that subsequent lines
+!!    will be indented 4 spaces and `.false.` implying no indentation. `indent`
+!!    has an startup value of `.true.`.
+!! 3. `max_width` is the maximum number of columns of output text with
+!!    `max_wodth == 0` => no bounds on output width. `max_width` has an startup
 !!    value of 80.
-!! 4. TIME_STAMP is a logical flag with .TRUE. implying that the output
-!!    will have a time stamp, and .FALSE. implying that there will be no
-!!    time stamp. TIME_STAMP has a default value of .TRUE..
+!! 4. `time_stamp` is a logical flag with `.true.` implying that the output
+!!    will have a time stamp, and `.false.` implying that there will be no
+!!    time stamp. `time_stamp` has an startup value of `.true.`.
 
 !!##### Example
 !!
