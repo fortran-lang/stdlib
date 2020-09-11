@@ -580,7 +580,7 @@ contains
             flush( self % log_units(unit), iomsg=message, iostat=iostat )
             if ( iostat /= 0 ) then
                 write(error_unit, '(a, i0)' ) 'In the logger_t finalizer ' // &
-                    'an error occured in flushing UNIT = ',                   &
+                    'an error occurred in flushing UNIT = ',                  &
                     self % log_units(unit)
                 write(error_unit, '(a, i0)') 'With IOSTAT = ', iostat
                 write(error_unit, '(a)') 'With IOMSG = ' // trim(message)
