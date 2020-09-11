@@ -114,14 +114,14 @@ contains
 !! version: experimental
 
 !! Opens a formatted sequential access output file, `filename` using
-!! `newunit` and adds the resulting unit number to the logger's `log_units`
-!! array. `ACTION`, if present, is the `ACTION` specifier of the `OPEN`
-!! statement, and has the default value of 'WRITE'. `POSITION`, if present,
-!! is the `POSITION` specifier, and has the default value of 'REWIND'.
-!! `STATUS`, if present, is the `STATUS` specifier of the OPEN statement, and
-!! has the default value of 'REPLACE'. `STAT`, if present, has the value
-!! `SUCCESS` if `FILENAME` could be opened, `READ_ONLY_ERROR` if `ACTION` is
-!! 'READ", and `OPEN_FAILURE` otherwise.
+!! `newunit` and adds the resulting unit number to `self`'s `log_units`
+!! array. `action`, if present, is the `ACTION` specifier of the `OPEN`
+!! statement, and has the default value of `"WRITE"`. `position`, if present,
+!! is the `POSITION` specifier, and has the default value of `"REWIND"`.
+!! `status`, if present, is the `STATUS` specifier of the `OPEN` statement, and
+!! has the default value of `"REPLACE"`. `stat`, if present, has the value
+!! `success` if `filename` could be opened, `read_only_error` if `ACTION` is
+!! `"READ"`, and `open_failure` otherwise.
 
         class(logger_t), intent(inout)     :: self
 !! The logger variable to which the file is to be added
@@ -130,16 +130,16 @@ contains
         integer, intent(out), optional     :: unit
 !! The resulting I/O unit number
         character(*), intent(in), optional :: action
-!! The `ACTION` specifier for the `OPEN` statement
+!! The `ACTION` specifier for the `OPEN`` statement
         character(*), intent(in), optional :: position
 !! The `POSITION` specifier for the `OPEN` statement
         character(*), intent(in), optional :: status
 !! The `STATUS` specifier for the  `OPEN`  statement
         integer, intent(out), optional     :: stat
 !! The error status on exit with the possible values
-!! * `SUCCESS` - no errors found
-!! * `READ_ONLY_ERROR` - file unopened as ACTION was 'READ' for an output file
-!! * `OPEN_FAILURE` - the OPEN statement failed
+!! * `success` - no errors found
+!! * `Rrea_only_error` - file unopened as `action1 was `"READ"` for an output file
+!! * `open_failure` - the `OPEN` statement failed
 
 
 !!##### Example
