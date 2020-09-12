@@ -85,7 +85,6 @@ module stdlib_logger
 
     contains
 
-!        procedure, pass(self) :: assert
         procedure, pass(self) :: add_log_file
         procedure, pass(self) :: add_log_unit
         procedure, pass(self) :: configuration
@@ -400,65 +399,6 @@ contains
 
     end subroutine add_log_unit
 
-
-!    subroutine assert( self, test, message, module, procedure )
-! Checks the value of TEST and if TEST is .FALSE. writes output to the
-! I/O units in SELF % LOG_UNITS and stops processing, otherwise it returns
-! with no effect.
-!
-! ##### Behavior
-! If TEST is .FALSE. ASSERT will write to the files, otherwise
-! nothing is written. If time stamps are actiVe then the time stamp will
-! be written first. Then if MODULE and PROCEDURE are present then they will
-! be written.Finally MESSAGE, will be written prepended by the
-! string 'ASSERTION FAILURE: '.
-!
-!        class(logger_t), intent(in)            :: self
-!! The logger variabl to report the error
-!        logical, intent(in)                    :: test
-!! A logical condition whose failure indicates an error has occurred.
-!        character(len=*), intent(in)           :: message
-!! Typically the textual representation of TEST
-!        character(len=*), intent(in), optional :: module
-!! The name of the module containing the call of ASSERT
-!        character(len=*), intent(in), optional :: procedure
-!! The name of the procedure containing the call of ASSERT
-!
-!!##### Example
-!!
-!!     function factorial( i )
-!!       use stdlib_logger
-!!       real                :: factorial
-!!       integer, intent(in) :: i
-!!       integer             :: j
-!!       call assert( i >= 0,                  &
-!!                    'i >= 0.',               &
-!!                    procedure = "FACTORIAL" )
-!!       factorial = 1.0
-!!       do j=1, i
-!!           factorial = factorial * j
-!!       end do
-!!
-!!       return
-!!     end function factorial
-!
-!
-!        integer :: status_code
-!
-!        if ( test ) then
-!            return
-!
-!        end if
-!
-!        call self % log_message( 'ASSERTION FAILURE: ' // message, &
-!                                 module = module,                  &
-!                                 procedure = procedure )
-!
-!        error stop 'Failed assertion'
-!
-!        return
-!
-!    end subroutine assert
 
     pure subroutine configuration( self, add_line, indent, max_width, &
         time_stamp, log_units )
