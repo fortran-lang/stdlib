@@ -779,14 +779,14 @@ contains
 
 
     subroutine log_error( self, message, module, procedure, stat, errmsg )
-!! Writes the string MESSAGE to SELF %LOG_UNITS with optional additional
+!! Writes the string `message` to `self % log_units` with optional additional
 !! text.
 !!
 !!##### Behavior
 !!
 !! If time stamps are active, a time stamp is written first. Then if
-!! MODULE or PROCEDURE are present, they are written. Then MESSAGE is
-!! written with the prefix 'ERROR: '. Then if STAT or ERRMSG
+!! `module` or `procedure` are present, they are written. Then `message` is
+!! written with the prefix 'ERROR: '. Then if `stat` or `errmsg`
 !! are present they are written.
 !!
 !!##### Example
@@ -824,13 +824,13 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of REPORT_ERR
+!! The name of the module contining the current invocation of `log_error`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of REPORT_ERR
+!! The name of the procedure contining the current invocation of `log_error`
         integer, intent(in), optional           :: stat
-!! The value of the STAT specifier returned by a Fortran statement
+!! The value of the `STAT` specifier returned by a Fortran statement
         character(len=*), intent(in), optional  :: errmsg
-!! The value of the ERRMSG specifier returned by a Fortran statement
+!! The value of the `ERRMSG` specifier returned by a Fortran statement
 
         integer :: unit
         integer :: iostat
@@ -882,13 +882,13 @@ contains
 
 
     subroutine log_information( self, message, module, procedure )
-!! Writes the string MESSAGE to SELF % LOG_UNITS with optional additional
+!! Writes the string `message` to `self % log_units` with optional additional
 !! text.
 !!
 !!##### Behavior
 !!
 !! If time stamps are active, a time stamp is written first. Then if
-!! MODULE or PROCEDURE are present, they are written. Then MESSAGE is
+!! `module` or `procedure` are present, they are written. Then `message` is
 !! written with the prefix 'INFORMATION: '.
 !!
 !!##### Example
@@ -923,9 +923,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of REPORT_ERR
+!! The name of the module contining the current invocation of `log_information`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of REPORT_ERR
+!! The name of the procedure contining the current invocation of `log_information`
 
         call self % log_message( 'INFORMATION: ' // message, &
                                  module = module,      &
@@ -936,14 +936,14 @@ contains
 
     subroutine log_io_error( self, message, module, procedure, iostat, &
                              iomsg )
-!! Writes the string MESSAGE to the SELF  % LOG_UNITS with optional
+!! Writes the string `message to the `self % log_units` with optional
 !! additional text.
 !!
 !!##### Behavior
 !!
 !! If time stamps are active, a time stamp is written first. Then if
-!! MODULE or PROCEDURE are present, they are written. Then MESSAGE is
-!! written with a prefix 'I/O ERROR: '. Then if IOSTAT or IOMSG
+!! `module` or `procedure` are present, they are written. Then `message` is
+!! written with a prefix 'I/O ERROR: '. Then if `iostat` or `iomsg`
 !! are present they are also written.
 !!
 !!##### Example
@@ -1031,13 +1031,13 @@ contains
     subroutine log_message( self, message, module, procedure )
 !! version: experimental
 
-!! Writes the string MESSAGE to the SELF % LOG_UNITS with optional
+!! Writes the string `message` to the `self % log_units` with optional
 !! additional text.
 !!
 !!##### Behavior
 !!
 !! If time stamps are active, a time stamp is written first. Then if
-!! MODULE or PROCEDURE are present, they are written. Finally MESSAGE is
+!! `module` or `procedure` are present, they are written. Finally `message` is
 !! written
 !!
 !!##### Example
@@ -1069,9 +1069,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of LOG_MESSAGE
+!! The name of the module contining the current invocation of `log_message`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of LOG_MESSAGE
+!! The name of the procedure contining the current invocation of `log_message`
 
         integer :: unit
         integer :: iostat
@@ -1133,15 +1133,17 @@ contains
 
     subroutine log_text_error( self, line, column, summary, filename,  &
                                line_number, caret, stat )
-!! LOG_TEXT_ERROR sends a message to SELF % LOG_UNITS describing an error found
+!! version: experimental
+
+!! `log_text_error` sends a message to `self % log_units` describing an error found
 !! in a line of text.
 !!
 !!##### Behavior
 !!
 !! If time stamps are active first a time stamp is written. Then if
-!! FILENAME or LINE_NUMBER or column are present they are written.
-!! Then LINE is written. Then a caret, '^', is written below LINE at the
-!! column indicated by COLUMN. Then SUMMARY is written.
+!! `filename` or `line_number` or `column` are present they are written.
+!! Then `line` is written. Then the symbol `caret` is written below `line` at the
+!! column indicated by `column`. Then `summary` is written.
 !
 !!##### Example
 !!
@@ -1180,13 +1182,13 @@ contains
         character(*), intent(in), optional    :: filename
 !! The name of the file, if any, in which the error was found.
         integer, intent(in), optional         :: line_number
-!! The one's based line number in the file where LINE was found.
+!! The one's based line number in the file where `line` was found.
         character(1), intent(in), optional    :: caret
 !! The symbol used to mark the column wher the error was first detected
         integer, intent(out), optional        :: stat
-!! Integer flag that an error has occurred. Has the value SUCCESS if no
-!! error hass occurred, INVALID_INDEX if COLUMN is less than zero or
-!! greater than LEN(LINE), and WRITE_FAILURE if any of the WRITE statements
+!! Integer flag that an error has occurred. Has the value `success` if no
+!! error hass occurred, `invalid_index` if `column` is less than zero or
+!! greater than `len(line)`, and `write_failure` if any of the `WRITE` statements
 !! has failed.
 
         character(1)              :: acaret
@@ -1293,7 +1295,7 @@ contains
 
 
     elemental function log_units_assigned(self)
-!! Returns the number of units assigned to SELF % LOG_UNITS
+!! Returns the number of units assigned to `self % log_units`
         class(logger_t), intent(in) :: self
 !! The logger subject to the inquiry
         integer                     :: log_units_assigned
@@ -1325,12 +1327,12 @@ contains
 
 
     subroutine log_warning( self, message, module, procedure )
-!! Writes the string MESSAGE to SELF % LOG_UNITS with optional additional text.
+!! Writes the string `message` to `self % log_units` with optional additional text.
 !!
 !!##### Behavior
 !!
 !! If time stamps are active, a time stamp is written first. Then if
-!! MODULE or PROCEDURE are present, they are written. Then MESSAGE is
+!! `module` or `procedure` are present, they are written. Then `message` is
 !! written with the prefix 'WARNING: '.
 !!
 !!##### Example
@@ -1364,9 +1366,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of REPORT_ERR
+!! The name of the module contining the current invocation of `log_warning`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of REPORT_ERR
+!! The name of the procedure contining the current invocation of `log_warning`
 
         call self % log_message( 'WARNING: ' // message, &
                                  module = module,        &
