@@ -533,7 +533,6 @@ contains
 
         end do
 
-        return
     end subroutine final_logger
 
 
