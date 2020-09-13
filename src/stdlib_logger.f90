@@ -1044,19 +1044,18 @@ contains
 
             if ( present(module) ) then
                 if ( present(procedure) ) then
-                    write( unit,                                     &
-                           "('Module % Procedure: ', a, ' % ', a)",  &
-                           err=999, iostat=iostat, iomsg=iomsg)      &
+                    write( unit, "(a, ' % ', a)", err=999, &
+                           iostat=iostat, iomsg=iomsg)     &
                         trim( module ), trim( procedure )
 
                 else
-                    write( unit, "( 'Module: ', a)", err=999, iostat=iostat, &
+                    write( unit, "(a)", err=999, iostat=iostat, &
                         iomsg=iomsg ) trim( module )
 
                 end if
 
             else if ( present(procedure) ) then
-                write( unit, "( 'Procedure: ', a)", err=999, iostat=iostat, &
+                write( unit, "(a)", err=999, iostat=iostat, &
                     iomsg=iomsg ) trim( procedure )
 
             end if
