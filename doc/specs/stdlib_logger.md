@@ -9,11 +9,11 @@ title: stdlib_logger
 
 This module defines a derived type, its methods, a variable, and
 constants to be used for the reporting of errors and other
-information. The derived type, `logger_t`, is to be used to define
-both global and local logger variables. The `logger_t` methods serve
+information. The derived type, `logger_type`, is to be used to define
+both global and local logger variables. The `logger_type` methods serve
 to configure the loggers and use the logger variables to report
 messages to a variable specific list of I/O units termed
-`log_units`. The variable, `global_logger`, of type `logger_t`, is
+`log_units`. The variable, `global_logger`, of type `logger_type`, is
 intended to serve as the default global logger. The constants serve as
 error flags returned by the optional integer `stat` argument.
 
@@ -34,7 +34,7 @@ The logger variables have the option to:
 * indent subsequent lines of the messages; and
 * format the text to fit within a maximum column width.
 
-Note: Loggers of type `logger_t` normally report their messages to I/O
+Note: Loggers of type `logger_type` normally report their messages to I/O
 units in the internal list termed `log_units`. However if `log_units`
 is empty then the messages go to the `output_unit` of the intrinsic
 module `iso_fortran_env`.
@@ -58,7 +58,7 @@ procedures. The constants, termed error codes, are as follows:
 |`unopened_in_error`| the unit was not opened|
 | `write_fault` | one of the writes to `log_units` failed|
 
-## The derived type: logger_t
+## The derived type: logger_type
 
 ### Status
 
@@ -71,7 +71,7 @@ significant events encountered during the execution of a program.
 
 ### Syntax
 
-type(logger_t) :: variable
+type(logger_type) :: variable
 
 ### Private attributes
 
@@ -87,12 +87,12 @@ type(logger_t) :: variable
 ## The `stdlib_logger` variable
 
 The module defines one public variable, `global_logger`, of type
-`logger_t`. As might be guessed from its name, `global_logger` is
+`logger_type`. As might be guessed from its name, `global_logger` is
 intended to serve as the default logger for use throughout an
 application.
 
 
-### Public `logger_t` methods
+### Public `logger_type` methods
 
 The module defines twelve public procedures: one function and eleven
 subroutines.  The
@@ -113,7 +113,7 @@ procedures are:
 |`log_warning`|Subroutine| sends a message prepended by `'WARNING: '`|
 |`remove_log_unit`|Subroutine| removes the `unit` number from the `log_units` array|
 
-## Specification of the `logger_t` methods
+## Specification of the `logger_type` methods
 
 ### `add_log_file` - open a file and add its unit to `self % log_units`
 
@@ -137,7 +137,8 @@ Subroutine
 
 #### Arguments
 
-`self`: shall be a scalar variable of type `logger_t`. It is an `intent(inout)` argument. It shall be the logger to add the file to its `log_units`.
+`self`: shall be a scalar variable of type `logger_type`. It is an
+`intent(inout)` argument. It shall be the logger to add the file to its `log_units`.
 
 `filename`: shall be a scalar default character expression. It is
 an `intent(in)` argument. It shall be the name of the file to be opened.
@@ -213,7 +214,7 @@ Subroutine.
 
 #### Arguments
 
-`self`: shall be a scalar variable of type `logger_t`. It is an
+`self`: shall be a scalar variable of type `logger_type`. It is an
 `intent(inout)` argument. It shall be the logger to direct its output
 to `unit`.
 
@@ -284,7 +285,8 @@ Pure subroutine
 
 #### Arguments
 
-`self`: shall be a scalar variable of type `logger_t`. It is an `intent(in)` argument. It shall be the logger whose configuration is reported.
+`self`: shall be a scalar variable of type `logger_type`. It is an
+`intent(in)` argument. It shall be the logger whose configuration is reported.
 
 `add_line` (optional): shall be a scalar default logical
   variable. It is an `intent(out)` argument. A value of `.true.`
@@ -315,7 +317,7 @@ Pure subroutine
     module example_mod
       use stdlib_logger
       ...
-      type(logger_t) :: logger
+      type(logger_type) :: logger
     contains
       ...
       subroutine example_sub(unit, ...)
@@ -353,7 +355,8 @@ Pure subroutine
 
 #### Arguments
 
-`self`: shall be a scalar variable of type `logger_t`. It is an `intent(inout)` argument. It shall be the logger to be configured.
+`self`: shall be a scalar variable of type `logger_type`. It is an
+`intent(inout)` argument. It shall be the logger to be configured.
 
 `add_line` (optional): shall be a scalar default logical
   expression. It is an `intent(in)` argument. Set to `.true.` to start
@@ -412,7 +415,8 @@ Subroutine
 
 #### Arguments
 
-`self`: shall be a scalar expression of type `logger_t`. It is an `intent(in)` argument. It is the logger used to send the message.
+`self`: shall be a scalar expression of type `logger_type`. It is an
+`intent(in)` argument. It is the logger used to send the message.
 
 `message`: shall be a scalar default character expression. It is an
   `intent(in)` argument.
@@ -443,7 +447,7 @@ Subroutine
       ...
       real, allocatable :: a(:)
       ...
-      type(logger_t) :: logger
+      type(logger_type) :: logger
       ...
     contains
       ...
@@ -493,7 +497,7 @@ Subroutine
 
 #### Arguments
 
-`self`: shall be a scalar expression of type `logger_t`. It is an
+`self`: shall be a scalar expression of type `logger_type`. It is an
 `intent(in)` argument. It is the logger used to send the message.
 
 `message`: shall be a scalar default character expression. It is an
@@ -515,7 +519,7 @@ Subroutine
       ...
       real, allocatable :: a(:)
       ...
-      type(logger_t) :: logger
+      type(logger_type) :: logger
     contains
       ...
       subroutine example_sub( selection )
@@ -562,7 +566,8 @@ written.
 Subroutine
 
 #### Arguments
-`self`: shall be a scalar expression of type `logger_t`. It is an `intent(in)` argument. It is the logger used to send the message.
+`self`: shall be a scalar expression of type `logger_type`. It is an
+`intent(in)` argument. It is the logger used to send the message.
 
 `message`: shall be a scalar default character expression. It is an
   `intent(in)` argument.
@@ -637,7 +642,7 @@ Subroutine
 
 #### Arguments
 
-`self`: shall be a scalar expression of type `logger_t`. It is an
+`self`: shall be a scalar expression of type `logger_type`. It is an
 `intent(in)` argument. It is the logger used to send the message.
 
 `message`: shall be a scalar default character expression. It is an
@@ -659,7 +664,7 @@ Subroutine
       ...
       real, allocatable :: a(:)
       ...
-      type(logger_t) :: logger
+      type(logger_type) :: logger
     contains
       ...
       subroutine example_sub( selection )
@@ -706,7 +711,7 @@ Subroutine
 
 #### Arguments
 
-`self`: shall be a scalar expression of type `logger_t`. It is an
+`self`: shall be a scalar expression of type `logger_type`. It is an
 `intent(in)` argument. It is the logger used to send the message.
 
 `line`: shall be a scalar default character expression. It is an
@@ -792,7 +797,7 @@ Elemental function
 
 #### Argument
 
-`self`: shall be a scalar expression of type `logger_t`. It is an
+`self`: shall be a scalar expression of type `logger_type`. It is an
 `intent(in)` argument. It is the logger whose state is queried.
 
 #### Result character
@@ -809,7 +814,7 @@ The result is the number of I/O units in
     module  example_mod
       use stdlib_logger
       ...
-      type(logger_t) :: logger
+      type(logger_type) :: logger
     contains
       ...
       subroutine example_sub(unit, ...)
@@ -854,7 +859,7 @@ Subroutine
 
 #### Arguments
 
-`self`: shall be a scalar expression of type `logger_t`. It is an
+`self`: shall be a scalar expression of type `logger_type`. It is an
 `intent(in)` argument. It is the logger used to send the message.
 
 `message`: shall be a scalar default character expression. It is an
@@ -875,7 +880,7 @@ Subroutine
       use stdlib_logger
       ...
       real, allocatable :: a(:)
-      type(logger_t) :: logger
+      type(logger_type) :: logger
       ...
     contains
       ...
@@ -917,7 +922,7 @@ Subroutine
 
 #### Arguments
 
-`self`: shall be a scalar expression of type `logger_t`. It is an
+`self`: shall be a scalar expression of type `logger_type`. It is an
 `intent(inout)` argument. It is the logger whose `log_units` is to be
 modified.
 
