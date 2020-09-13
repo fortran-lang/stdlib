@@ -80,7 +80,7 @@ type(logger_type) :: variable
 | `add_blank_line` | Logical | Flag to precede output with a blank line |`.false.`|
 |`indent_lines` | Logical| Flag to indent subsequent lines by four columns|`.true.`|
 |`log_units`|Integer array| List of I/O units used for output| empty|
-|`max_width`| Integer | Maximum column width of output | 80 |
+|`max_width`| Integer | Maximum column width of output | 0 |
 |`time_stamp`| Logical | Flag to precede output by a time stamp | `.true.` |
 |`units` | Integer | Count of the number of active output units | 0 |
 
