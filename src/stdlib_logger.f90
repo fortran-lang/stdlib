@@ -5,14 +5,14 @@ module stdlib_logger
 !! constants to be used for reporting errors by the Fortran Standard
 !! Library.
 !!
-!! The derived type, `logger_t`, is to be used to define variables to
+!! The derived type, `logger_type`, is to be used to define variables to
 !! serve as both local and global loggers. A logger directs its messages
 !! to selected I/O units so the user has a record (a log) of major events.
-!! For each entity of `logger_t` the reports go to a list of I/O units
+!! For each entity of `logger_type` the reports go to a list of I/O units
 !! represented by the private internal array, `log_units`. If `log_units` is
 !! empty then output by default goes to `output_unit`. Otherwise reports
 !! go to `output_unit` only if it has been explicitly added to `log_units`.
-!! Each entity of type `logger_t` also maintains an internal state
+!! Each entity of type `logger_type` also maintains an internal state
 !! controlling the formatting of output.
 !!
 !! The procedures are as follows. The logical function
@@ -25,7 +25,7 @@ module stdlib_logger
 !! `log_error`, `log_information`, `log_io_error`, `log_message`,
 !! `log_text_error`, and `log_warning` send messages to the log units.
 !!
-!! The variable is the entity `global_logger` of type `logger_t`, to serve
+!! The variable is the entity `global_logger` of type `logger_type`, to serve
 !! as its name suggests, as a global logger to be used as a default
 !! anywhere in the source code.
 !!
@@ -54,7 +54,7 @@ module stdlib_logger
     implicit none
 
     private
-    public :: global_logger, logger_t
+    public :: global_logger, logger_type
 
     !! public constants used as error flags
     integer, parameter, public :: &
@@ -71,7 +71,7 @@ module stdlib_logger
     character(*), parameter :: module_name = 'stdlib_logger'
 
     !! Public derived type
-    type :: logger_t
+    type :: logger_type
         !! version: experimental
         
         private
@@ -98,10 +98,10 @@ module stdlib_logger
         procedure, pass(self) :: log_units_assigned
         procedure, pass(self) :: log_warning
         procedure, pass(self) :: remove_log_unit
-    end type logger_t
+    end type logger_type
 
-    !! Variable of type LOGGER_T to be used as a global logger
-    type(logger_t) :: global_logger
+    !! Variable of type `logger_type` to be used as a global logger
+    type(logger_type) :: global_logger
 
     character(*), parameter :: &
         invalid_column = 'COLUMN is not a valid index to LINE.'
@@ -122,7 +122,7 @@ contains
 !! `success` if `filename` could be opened, `read_only_error` if `ACTION` is
 !! `"READ"`, and `open_failure` otherwise.
 
-        class(logger_t), intent(inout)     :: self
+        class(logger_type), intent(inout)  :: self
 !! The logger variable to which the file is to be added
         character(*), intent(in)           :: filename
 !! The name of the file to be  added to the logger
@@ -245,11 +245,11 @@ contains
 !! `"WRITE"` or `"READWRITE"`, otherwise either `stat`, if preseent, has a
 !! value other than `success` and `unit` is not entered into L`log_units`,
 !! or, if `stat` is not presecn, processing stops.
-        class(logger_t), intent(inout) :: self
+        class(logger_type), intent(inout) :: self
 !! The logger variable to which the I/O unit is to be added
-        integer, intent(in)            :: unit
+        integer, intent(in)               :: unit
 !! The input logical unit number
-        integer, intent(out), optional :: stat
+        integer, intent(out), optional    :: stat
 !! An error code with the possible values
 !! * `success` - no problems were found
 !! * `non_sequential_error` - `unit` did not have sequential access
@@ -417,7 +417,7 @@ contains
 !!    time stamp.
 !! 5. `log_units` is an array of the I/O unit numbers to which log output
 !!    will be written
-        class(logger_t), intent(in)                 :: self
+        class(logger_type), intent(in)                 :: self
 !! The logger variable whose configuration is being reported
         logical, intent(out), optional              :: add_line
 !! A logical flag to add a preceding blank line
@@ -487,11 +487,11 @@ contains
 !!         call global_logger % configure( indent=.false., max_width=72 )
 !!         ...
 
-        class(logger_t), intent(inout) :: self
-        logical, intent(in), optional  :: add_line
-        logical, intent(in), optional  :: indent
-        integer, intent(in), optional  :: max_width
-        logical, intent(in), optional  :: time_stamp
+        class(logger_type), intent(inout) :: self
+        logical, intent(in), optional     :: add_line
+        logical, intent(in), optional     :: indent
+        integer, intent(in), optional     :: max_width
+        logical, intent(in), optional     :: time_stamp
 
         if ( present(add_line) ) self % add_line = add_line
         if ( present(indent) ) self % indent_lines = indent
@@ -513,8 +513,8 @@ contains
     subroutine final_logger( self )
 !! version: experimental
 
-!! finalizes the `logger_t` entity `self` by flushing the units
-        type(logger_t), intent(in) :: self
+!! finalizes the `logger_type` entity `self` by flushing the units
+        type(logger_type), intent(in) :: self
 
         integer        :: iostat
         character(256) :: message
@@ -523,8 +523,8 @@ contains
         do unit=1, self % units
             flush( self % log_units(unit), iomsg=message, iostat=iostat )
             if ( iostat /= 0 ) then
-                write(error_unit, '(a, i0)' ) 'In the logger_t finalizer ' // &
-                    'an error occurred in flushing UNIT = ',                  &
+                write(error_unit, '(a, i0)' ) 'In the logger_type finalizer ' // &
+                    'an error occurred in flushing UNIT = ',                     &
                     self % log_units(unit)
                 write(error_unit, '(a, i0)') 'With IOSTAT = ', iostat
                 write(error_unit, '(a)') 'With IOMSG = ' // trim(message)
@@ -543,11 +543,11 @@ contains
 !! Writes the STRING to UNIT ensuring that the number of characters
 !! does not exceed MAX_WIDTH and that the lines after the first
 !! one are indented four characters.
-        class(logger_t), intent(in) :: self
-        integer, intent(in)         :: unit
-        character(*), intent(in)    :: string
-        character(*), intent(in)    :: procedure_name
-        character(*), intent(in)    :: col_indent
+        class(logger_type), intent(in) :: self
+        integer, intent(in)            :: unit
+        character(*), intent(in)       :: string
+        character(*), intent(in)       :: procedure_name
+        character(*), intent(in)       :: col_indent
 
         integer :: count, indent_len, index, iostat, length, remain
         character(256) :: iomsg
@@ -735,7 +735,7 @@ contains
 !!       ...
 !!       real, allocatable :: a(:)
 !!       ...
-!!       type(logger_t) :: alogger
+!!       type(logger_type) :: alogger
 !!       ...
 !!     contains
 !!       ...
@@ -758,7 +758,7 @@ contains
 !!     end module example_mod
 !!
 
-        class(logger_t), intent(in)             :: self
+        class(logger_type), intent(in)          :: self
 !! The logger to be used in logging the message
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
@@ -837,7 +837,7 @@ contains
 !!       ...
 !!       real, allocatable :: a(:)
 !!       ...
-!!       type(logger_t) :: alogger
+!!       type(logger_type) :: alogger
 !!       ...
 !!     contains
 !!       ...
@@ -857,7 +857,7 @@ contains
 !!     end module example_mod
 !!
 
-        class(logger_t), intent(in)             :: self
+        class(logger_type), intent(in)          :: self
 !! The logger used to send the message
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
@@ -905,7 +905,7 @@ contains
 !!      ...
 !!    end program example
 
-        class(logger_t), intent(in)             :: self
+        class(logger_type), intent(in)          :: self
 !! The logger variable to receivee the message
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
@@ -1003,7 +1003,7 @@ contains
 !!    end module example_mod
 !!
 
-        class(logger_t), intent(in)             :: self
+        class(logger_type), intent(in)          :: self
 !! The logger variable to receive the message
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
@@ -1110,7 +1110,7 @@ contains
 !!      ...
 !!    end program example
 !!
-        class(logger_t), intent(in)           :: self
+        class(logger_type), intent(in)        :: self
 !! The logger variable to receive the message
         character(*), intent(in)              :: line
 !! The line of text in which the error was found.
@@ -1235,15 +1235,15 @@ contains
 
     elemental function log_units_assigned(self)
 !! Returns the number of units assigned to `self % log_units`
-        class(logger_t), intent(in) :: self
+        class(logger_type), intent(in) :: self
 !! The logger subject to the inquiry
-        integer                     :: log_units_assigned
+        integer                        :: log_units_assigned
 !!##### Example
 !!
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
-!!       type(logger_t) :: alogger
+!!       type(logger_type) :: alogger
 !!       ...
 !!     contains
 !!       ...
@@ -1281,7 +1281,7 @@ contains
 !!       ...
 !!       real, allocatable :: a(:)
 !!       ...
-!!       type(logger_t) :: alogger
+!!       type(logger_type) :: alogger
 !!       ...
 !!     contains
 !!       ...
@@ -1300,7 +1300,7 @@ contains
 !!       ...
 !!     end module example_mod
 !!
-        class(logger_t), intent(in)             :: self
+        class(logger_type), intent(in)          :: self
 !! The logger to which the message is written
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
@@ -1323,13 +1323,13 @@ contains
 !! has the value SUCCESS. If closing the UNIT fails, then if STAT is
 !! present it has the value CLOSE_FAILURE, otherwise processing stops
 !! with an informative message.
-        class(logger_t), intent(inout) :: self
+        class(logger_type), intent(inout) :: self
 !! The logger variable whose unit is to be removed
-        integer, intent(in)            :: unit
+        integer, intent(in)               :: unit
 !! The I/O unit to be removed from SELF
-        logical, intent(in), optional  :: close_unit
+        logical, intent(in), optional     :: close_unit
 !! A logical flag to close the unit while removing it from the SELF list
-        integer, intent(out), optional :: stat
+        integer, intent(out), optional    :: stat
 !! An error status with the values
 !! * SUCCESS - no problems found
 !! * CLOSE_FAILURE - the CLOSE statement for UNIT failed
@@ -1339,7 +1339,7 @@ contains
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
-!!       type(logger_t) ::  alogger
+!!       type(logger_type) ::  alogger
 !!     contains
 !!       ...
 !!       subroutine example_sub(unit, ...)
