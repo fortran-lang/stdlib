@@ -76,7 +76,7 @@ module stdlib_logger
         
         private
 
-        logical              :: add_line = .TRUE.
+        logical              :: add_blank_line = .FALSE.
         logical              :: indent_lines = .TRUE.
         integer, allocatable :: log_units(:)
         integer              :: max_width = 80
@@ -400,14 +400,14 @@ contains
     end subroutine add_log_unit
 
 
-    pure subroutine configuration( self, add_line, indent, max_width, &
-        time_stamp, log_units )
+    pure subroutine configuration( self, add_blank_line, indent, &
+        max_width, time_stamp, log_units )
 !! version: experimental
 
 !! Reports the logging configuration of `self`. The following attributes are
 !! reported:
-!! 1. `add_line` is a logical flag with `.true.` implying that output starts
-!!    with a blank line, and `.false.` implying no blank line.
+!! 1. `add_blank_line` is a logical flag with `.true.` implying that output
+!!    starts with a blank line, and `.false.` implying no blank line.
 !! 2. `indent` is a logical flag with `.true.` implying that subsequent columns
 !!    will be indented 4 spaces and `.false.` implying no indentation.
 !! 3. `max_width` is the maximum number of columns of output text with
@@ -419,7 +419,7 @@ contains
 !!    will be written
         class(logger_type), intent(in)                 :: self
 !! The logger variable whose configuration is being reported
-        logical, intent(out), optional              :: add_line
+        logical, intent(out), optional              :: add_blank_line
 !! A logical flag to add a preceding blank line
         logical, intent(out), optional              :: indent
 !! A logical flag to indent subsequent lines
@@ -452,7 +452,8 @@ contains
 !!     end module example_mod
 
 
-        if ( present(add_line) ) add_line = self % add_line
+        if ( present(add_blank_line) ) &
+            add_blank_line = self % add_blank_line
         if ( present(indent) ) indent = self % indent_lines
         if ( present(max_width) ) max_width = self % max_width
         if ( present(time_stamp) ) time_stamp = self % time_stamp
@@ -461,23 +462,24 @@ contains
     end subroutine configuration
 
 
-    pure subroutine configure( self, add_line, indent, max_width, time_stamp )
+    pure subroutine configure( self, add_blank_line, indent, max_width, &
+        time_stamp )
 !! version: experimental
 
 !! Configures the logging process for SELF. The following attributes are
 !! configured:
-!! 1. `add_line` is a logical flag with `.true.` implying that output starts
-!!    with a blank line, and `.false.` implying no blank line. `add_line` has a
-!!    startup value of `.true.`.
+!! 1. `add_blank_line` is a logical flag with `.true.` implying that output
+!!    starts with a blank line, and `.false.` implying no blank line.
+!!    `add_blank_line` has a startup value of `.false.`.
 !! 2. `indent` is a logical flag with `.true.` implying that subsequent lines
 !!    will be indented 4 spaces and `.false.` implying no indentation. `indent`
-!!    has an startup value of `.true.`.
+!!    has a startup value of `.true.`.
 !! 3. `max_width` is the maximum number of columns of output text with
-!!    `max_wodth == 0` => no bounds on output width. `max_width` has an startup
+!!    `max_wodth == 0` => no bounds on output width. `max_width` has a startup
 !!    value of 80.
 !! 4. `time_stamp` is a logical flag with `.true.` implying that the output
 !!    will have a time stamp, and `.false.` implying that there will be no
-!!    time stamp. `time_stamp` has an startup value of `.true.`.
+!!    time stamp. `time_stamp` has a startup value of `.true.`.
 
 !!##### Example
 !!
@@ -488,12 +490,13 @@ contains
 !!         ...
 
         class(logger_type), intent(inout) :: self
-        logical, intent(in), optional     :: add_line
+        logical, intent(in), optional     :: add_blank_line
         logical, intent(in), optional     :: indent
         integer, intent(in), optional     :: max_width
         logical, intent(in), optional     :: time_stamp
 
-        if ( present(add_line) ) self % add_line = add_line
+        if ( present(add_blank_line) ) &
+            self % add_blank_line = add_blank_line
         if ( present(indent) ) self % indent_lines = indent
         if ( present(max_width) ) then
             if ( max_width <= 4 ) then
@@ -1033,8 +1036,8 @@ contains
         subroutine write_log_message( unit )
             integer, intent(in) :: unit
 
-            if ( self % add_line ) write( unit, *, err=999, iostat=iostat, &
-                iomsg=iomsg )
+            if ( self % add_blank_line ) write( unit, *, err=999, &
+                iostat=iostat, iomsg=iomsg )
 
             if ( self % time_stamp ) write( unit, '(a)', err=999, &
                 iostat=iostat, iomsg=iomsg ) time_stamp()
@@ -1175,7 +1178,7 @@ contains
         subroutine write_log_text_error( unit )
             integer, intent(in) :: unit
 
-            if ( self % add_line ) write( unit, * )
+            if ( self % add_blank_line ) write( unit, * )
 
             if ( self % time_stamp ) write( unit, '(a)' ) time_stamp()
 
