@@ -77,7 +77,7 @@ type(logger_type) :: variable
 
 | Attribute | Type | Description | Initial value |
 |-----------|------|-------------|---------| 
-| `add_line` | Logical | Flag to precede output with a blank line |`.true.`|
+| `add_blank_line` | Logical | Flag to precede output with a blank line |`.false.`|
 |`indent_lines` | Logical| Flag to indent subsequent lines by four columns|`.true.`|
 |`log_units`|Integer array| List of I/O units used for output| empty|
 |`max_width`| Integer | Maximum column width of output | 80 |
@@ -277,7 +277,7 @@ Reports the configuration of a logger.
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % configuration(interface)]]( [ add_line, indent, max_width, time_stamp, log_units ] )`
+`call [[stdlib_logger(module):self % configuration(interface)]]( [ add_blankline, indent, max_width, time_stamp, log_units ] )`
 
 #### Class
 
@@ -288,7 +288,7 @@ Pure subroutine
 `self`: shall be a scalar variable of type `logger_type`. It is an
 `intent(in)` argument. It shall be the logger whose configuration is reported.
 
-`add_line` (optional): shall be a scalar default logical
+`add_blank_line` (optional): shall be a scalar default logical
   variable. It is an `intent(out)` argument. A value of `.true.`
   starts output with a blank line, and `.false.` otherwise.
 
@@ -347,7 +347,7 @@ Configures the logging process for self.
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % configure(interface)]]( [ add_line, indent, max_width, time_stamp ] )`
+`call [[stdlib_logger(module):self % configure(interface)]]( [ add_blank_line, indent, max_width, time_stamp ] )`
 
 #### Class
 
@@ -358,7 +358,7 @@ Pure subroutine
 `self`: shall be a scalar variable of type `logger_type`. It is an
 `intent(inout)` argument. It shall be the logger to be configured.
 
-`add_line` (optional): shall be a scalar default logical
+`add_blank_line` (optional): shall be a scalar default logical
   expression. It is an `intent(in)` argument. Set to `.true.` to start
   output with a blank line, and to `.false.` otherwise.
   
