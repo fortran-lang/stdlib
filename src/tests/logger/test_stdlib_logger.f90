@@ -14,7 +14,7 @@ program test_stdlib_logger
     integer, allocatable :: log_units(:)
     integer              :: max_width, stat
     integer              :: unit1, unit2, unit3, unit4, unit5, unit6
-    logical              :: add_line, exist, indent, time_stamp
+    logical              :: add_blank_line, exist, indent, time_stamp
 
     if ( global % log_units_assigned() == 0 ) then
         write(*,*) 'Start off with 0 LOG_UNITS as expected.'
@@ -32,7 +32,7 @@ program test_stdlib_logger
     print *, 'running test of log_error'
     call global % log_error( 'This message should be output to five ' //  &
         'files and not to OUTPUT_UNIT, limited to 72 columns width, ' //  &
-        'preceded by one blank line, then by a time stamp, then by ' //   &
+        'preceded by no blank line, then by a time stamp, then by ' //    &
         'MODULE % PROCEDURE, be prefixed by ERROR and be indented on ' // &
         'subsequent lines by 4 columns, and finish with STAT and.' //     &
         'ERRMSG lines.',                                                  &
@@ -78,15 +78,15 @@ contains
 
         print *, 'running test_logging_configuration'
 
-        call global % configuration( add_line=add_line, &
+        call global % configuration( add_blank_line=add_blank_line, &
             indent=indent, max_width=max_width, time_stamp=time_stamp, &
             log_units=log_units )
 
-        if ( add_line ) then
-            write(*,*) 'ADD_LINE starts off as .TRUE. as expected.'
+        if ( .not. add_blank_line ) then
+            write(*,*) 'ADD_BLANK_LINE starts off as .FALSE. as expected.'
 
         else
-            error stop 'ADD_LINE starts off as .FALSE. contrary to ' // &
+            error stop 'ADD_BLANK_LINE starts off as .TRUE. contrary to ' // &
                 'expectations.'
 
         end if
@@ -134,17 +134,18 @@ contains
             module = 'N/A',                                                &
             procedure = 'TEST_STDLIB_LOGGER' )
 
-        call global % configure( add_line=.false., indent=.false., &
+        call global % configure( add_blank_line=.true., indent=.false., &
             max_width=72, time_stamp=.false. )
 
-        call global % configuration( add_line=add_line, indent=indent,     &
-            max_width=max_width, time_stamp=time_stamp, log_units=log_units )
+        call global % configuration( add_blank_line=add_blank_line,    &
+            indent=indent, max_width=max_width, time_stamp=time_stamp, &
+            log_units=log_units )
 
-        if ( .not. add_line ) then
-            write(*,*) 'ADD_LINE is now .FALSE. as expected.'
+        if ( add_blank_line ) then
+            write(*,*) 'ADD_BLANK_LINE is now .FALSE. as expected.'
 
         else
-            error stop 'ADD_LINE is now .TRUE. contrary to expectations.'
+            error stop 'ADD_BLANKLINE is now .FALSE. contrary to expectations.'
 
         end if
 
@@ -184,18 +185,18 @@ contains
 
         call global % log_message( 'This message should still be output ' // &
             'to OUTPUT_UNIT, limited to 72 columns width, preceded by ' //   &
-            'no blank line, then by no time stamp, then by MODULE % ' //     &
+            'a blank line, then by no time stamp, then by MODULE % ' //     &
             'PROCEDURE, have no prefix, and be unindented on subsequent ' // &
             'lines.', &
             module = 'N/A', &
             procedure = 'TEST_STDLIB_LOGGER' )
 
-        call global % configure( add_line=.true., indent=.true., &
+        call global % configure( add_blank_line=.false., indent=.true., &
             max_width=72, time_stamp=.true. )
 
         call global % log_warning( 'This message should still be ' //     &
             'output to OUTPUT_UNIT, limited to 72 columns width, ' //     &
-            'preceded by a blank line, then by a time stamp, then by ' // &
+            'preceded by no blank line, then by a time stamp, then by ' // &
             'MODULE % PROCEDURE, have a prefix of WARNING, and be ' //    &
             'indented by 4 columns on subsequent lines.',                 &
             module = 'N/A',                                               &
