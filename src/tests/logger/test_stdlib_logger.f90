@@ -99,11 +99,11 @@ contains
 
         end if
 
-        if ( max_width == 80 ) then
-            write(*,*) 'MAX_WIDTH starts off as 80 as expected.'
+        if ( max_width == 0 ) then
+            write(*,*) 'MAX_WIDTH starts off as 0 as expected.'
 
         else
-            error stop 'MAX_WIDTH starts off as not equal to 80 contrary ' // &
+            error stop 'MAX_WIDTH starts off as not equal to 0 contrary ' // &
                 'to expectations.'
 
         end if
@@ -127,8 +127,8 @@ contains
         end if
 
         call global % log_information( 'This message should be output ' // &
-            'to OUTPUT_UNIT, limited to 80 columns width, preceded by ' // &
-            'one blank line, then by a time stamp, then by MODULE % ' //   &
+            'to OUTPUT_UNIT, unlimited in width, not preceded by ' //      &
+            'a blank line, then by a time stamp, then by MODULE % ' //     &
             'PROCEDURE, be prefixed by INFORMARION and be indented on ' // &
             'subsequent lines by 4 columns.',                              &
             module = 'N/A',                                                &
