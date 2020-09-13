@@ -79,7 +79,7 @@ module stdlib_logger
         logical              :: add_blank_line = .FALSE.
         logical              :: indent_lines = .TRUE.
         integer, allocatable :: log_units(:)
-        integer              :: max_width = 80
+        integer              :: max_width = 0
         logical              :: time_stamp = .TRUE.
         integer              :: units = 0
 
@@ -476,7 +476,7 @@ contains
 !!    has a startup value of `.true.`.
 !! 3. `max_width` is the maximum number of columns of output text with
 !!    `max_wodth == 0` => no bounds on output width. `max_width` has a startup
-!!    value of 80.
+!!    value of 0.
 !! 4. `time_stamp` is a logical flag with `.true.` implying that the output
 !!    will have a time stamp, and `.false.` implying that there will be no
 !!    time stamp. `time_stamp` has a startup value of `.true.`.
