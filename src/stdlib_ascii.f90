@@ -151,7 +151,9 @@ contains
     !> Checks whether `c` is a lowercase ASCII letter (a .. z).
     pure logical function is_lower(c)
         character(len=1), intent(in) :: c !! The character to test.
-        is_lower = (c >= 'a') .and. (c <= 'z')
+        integer :: ic
+        ic = iachar(c)
+        is_lower = (ic >= iachar('a')) .and. (ic <= iachar('z'))
     end function
 
     !> Checks whether `c` is an uppercase ASCII letter (A .. Z).
