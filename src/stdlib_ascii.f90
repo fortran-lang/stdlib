@@ -145,7 +145,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)                    ! '~'
-        is_printable = c >= ' ' .and. ic <= int(z'7E')
+        is_printable = ic >= iachar(' ') .and. ic <= int(z'7E')
     end function
 
     !> Checks whether `c` is a lowercase ASCII letter (a .. z).
