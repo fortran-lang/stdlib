@@ -628,13 +628,13 @@ Writes the string `message` to `self % log_units` with
 
 #### Behavior
 
-If time stamps are active, a time stamp is written
-first. Then if `module` or `procedure` are present, they are
-written. Then `message` is written with no prefix.
+If time stamps are active, a time stamp is written,
+then `module` and `procedure` are written if prsent,
+followed by `prefix`, if present, and finally `message`.
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % log_message(interface)]]( message [, module, procedure ] )`
+`call [[stdlib_logger(module):self % log_message(interface)]]( message [, module, procedure, prefix ] )`
 
 #### Class
 
@@ -655,6 +655,10 @@ Subroutine
 `procedure` (optional): shall be a scalar default character
   expression. It is an `intent(in)` argument. It should be the name of
   the procedure containing the `log_message` call.
+  
+`prefix` (optional): shall be a scalar default character expression.
+It is an `intent(in)` argument. It will preceed `message` with an
+`': '` appended.
 
 #### Example
 
@@ -676,7 +680,8 @@ Subroutine
               "The user selected ", selection
         call logger % log_message( message,                   &
                                    module = 'EXAMPLE_MOD',    &
-                                   procedure = 'EXAMPLE_SUB' )
+                                   procedure = 'EXAMPLE_SUB', &
+                                   prefix = `INFO' )
       end subroutine example_sub
       ...
     end module example_mod
