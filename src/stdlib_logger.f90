@@ -970,7 +970,7 @@ contains
     end subroutine log_io_error
 
 
-    subroutine log_message( self, message, module, procedure )
+    subroutine log_message( self, message, module, procedure, prefix )
 !! version: experimental
 
 !! Writes the string `message` to the `self % log_units` with optional
@@ -978,9 +978,9 @@ contains
 !!
 !!##### Behavior
 !!
-!! If time stamps are active, a time stamp is written first. Then if
-!! `module` or `procedure` are present, they are written. Finally `message` is
-!! written
+!! If time stamps are active, a time stamp is written, followed by `module`
+!! or `procedure` if present, followed by `prefix // ': '`, and then
+!!  `message`.
 !!
 !!##### Example
 !!
@@ -1000,7 +1000,8 @@ contains
 !!              "The user selected ", selection
 !!        call global_logger % log_message( message,                   &
 !!                                          module = 'EXAMPLE_MOD',    &
-!!                                          procedure = 'EXAMPLE_SUB' )
+!!                                          procedure = 'EXAMPLE_SUB', &
+!!                                          prefix = 'INFO' )
 !!      end subroutine example_sub
 !!      ...
 !!    end module example_mod
@@ -1014,11 +1015,25 @@ contains
 !! The name of the module contining the current invocation of `log_message`
         character(len=*), intent(in), optional  :: procedure
 !! The name of the procedure contining the current invocation of `log_message`
+        character(len=*), intent(in), optional  :: prefix
+!! To be prepended to message as `prefix // ': ' // message`.
 
         integer :: unit
         integer :: iostat
         character(*), parameter :: procedure_name = 'LOG_MESSAGE'
         character(256) :: iomsg
+        character(:), allocatable :: pref
+
+        write(*,*) 'Got to 2'
+        if ( present(prefix) ) then
+            allocate( character(len=len(prefix)+2):: pref )
+            pref = prefix // ': '
+
+        else
+            allocate( character(len=0):: pref )
+            pref = ''
+
+        end if
 
         if ( self % units == 0 ) then
             call write_log_message( output_unit )
@@ -1060,7 +1075,8 @@ contains
 
             end if
 
-            call format_output_string( self, unit, trim( message ), &
+            call format_output_string( self, unit,              &
+                                       pref // trim( message ), &
                                        procedure_name, '    ' )
 
             return
