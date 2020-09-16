@@ -726,9 +726,9 @@ contains
 !!
 !!##### Behavior
 !!
-!! If time stamps are active, a time stamp is written first. Then if
-!! `module` or `procedure` are present, they are written. Then `message` is
-!! written with the prefix 'ERROR: '. Then if `stat` or `errmsg`
+!! If time stamps are active, a time stamp is written, followed by
+!! `module` and `procedure` if present, then `message` is
+!! written with the prefix 'ERROR: ', and then if `stat` or `errmsg`
 !! are present they are written.
 !!
 !!##### Example
@@ -779,9 +779,10 @@ contains
         character(*), parameter :: procedure_name = 'LOG_ERROR'
         character(256) :: iomsg
 
-        call self % log_message( 'ERROR: ' // message, &
-                                 module = module,      &
-                                 procedure = procedure )
+        call self % log_message( message,               &
+                                 module = module,       &
+                                 procedure = procedure, &
+                                 prefix = 'ERROR')
 
         if ( self % units == 0 ) then
             call write_log_error( output_unit )
@@ -829,9 +830,9 @@ contains
 !!
 !!##### Behavior
 !!
-!! If time stamps are active, a time stamp is written first. Then if
-!! `module` or `procedure` are present, they are written. Then `message` is
-!! written with the prefix 'INFORMATION: '.
+!! If time stamps are active, a time stamp is written, followed by
+!! `module` and `procedure` if present, and then `message` is
+!! written with the prefix 'INFO: '.
 !!
 !!##### Example
 !!
@@ -869,9 +870,10 @@ contains
         character(len=*), intent(in), optional  :: procedure
 !! The name of the procedure contining the current invocation of `log_information`
 
-        call self % log_message( 'INFORMATION: ' // message, &
-                                 module = module,      &
-                                 procedure = procedure )
+        call self % log_message( message,               &
+                                 module = module,       &
+                                 procedure = procedure, &
+                                 prefix = 'INFO' )
 
     end subroutine log_information
 
@@ -883,9 +885,9 @@ contains
 !!
 !!##### Behavior
 !!
-!! If time stamps are active, a time stamp is written first. Then if
-!! `module` or `procedure` are present, they are written. Then `message` is
-!! written with a prefix 'I/O ERROR: '. Then if `iostat` or `iomsg`
+!! If time stamps are active, a time stamp is written, followed by
+!! `module` and `procedure` if present, then `message` is
+!! written with a prefix 'I/O ERROR: ', and then if `iostat` or `iomsg`
 !! are present they are also written.
 !!
 !!##### Example
@@ -926,9 +928,10 @@ contains
         character(*), parameter :: procedure_name = 'LOG_ERROR'
         character(256) :: iomsg2
 
-        call self % log_message( 'I/O ERROR: ' // message, &
-                                 module = module,          &
-                                 procedure = procedure )
+        call self % log_message( message,               &
+                                 module = module,       &
+                                 procedure = procedure, &
+                                 prefix = 'I/O ERROR' )
 
         if ( self % units == 0 ) then
             call write_log_io_error( output_unit )
@@ -979,8 +982,8 @@ contains
 !!##### Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by `module`
-!! or `procedure` if present, followed by `prefix // ': '`, and then
-!!  `message`.
+!! and `procedure` if present, followed by `prefix // ': '` if present,
+!! and then `message`.
 !!
 !!##### Example
 !!
@@ -1288,9 +1291,9 @@ contains
 !!
 !!##### Behavior
 !!
-!! If time stamps are active, a time stamp is written first. Then if
-!! `module` or `procedure` are present, they are written. Then `message` is
-!! written with the prefix 'WARNING: '.
+!! If time stamps are active, a time stamp is written, followed by
+!! `module` and `procedure` if present, then `message` is
+!! written with the prefix 'WARN: '.
 !!
 !!##### Example
 !!
@@ -1327,9 +1330,10 @@ contains
         character(len=*), intent(in), optional  :: procedure
 !! The name of the procedure contining the current invocation of `log_warning`
 
-        call self % log_message( 'WARNING: ' // message, &
-                                 module = module,        &
-                                 procedure = procedure )
+        call self % log_message( message,               &
+                                 module = module,       &
+                                 procedure = procedure, &
+                                 prefix = 'WARN' )
 
     end subroutine log_warning
 
