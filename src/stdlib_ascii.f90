@@ -98,6 +98,7 @@ contains
     pure logical function is_digit(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
+        ic = iachar(c)
         is_digit = (iachar('0') <= ic) .and. (ic <= iachar('9'))
     end function
 
@@ -110,7 +111,7 @@ contains
     end function
 
     !> Checks whether `c` is a digit in base 16 (0 .. 9, A .. F, a .. f).
-    pure logical function is_hex_digit(cin)
+    pure logical function is_hex_digit(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)
@@ -148,7 +149,7 @@ contains
     end function
 
     !> Checks whether `c` is a lowercase ASCII letter (a .. z).
-    pure logical function is_lower(cin)
+    pure logical function is_lower(c)
         character(len=1), intent(in) :: c !! The character to test.
         is_lower = (c >= 'a') .and. (c <= 'z')
     end function
