@@ -656,7 +656,7 @@ Subroutine
   the procedure containing the `log_message` call.
   
 `prefix` (optional): shall be a scalar default character expression.
-It is an `intent(in)` argument. It will preceed `message` with an
+It is an `intent(in)` argument. It will precede `message` with an
 `': '` appended.
 
 #### Example
