@@ -417,7 +417,7 @@ contains
 !!    time stamp.
 !! 5. `log_units` is an array of the I/O unit numbers to which log output
 !!    will be written
-        class(logger_type), intent(in)                 :: self
+        class(logger_type), intent(in)              :: self
 !! The logger variable whose configuration is being reported
         logical, intent(out), optional              :: add_blank_line
 !! A logical flag to add a preceding blank line
