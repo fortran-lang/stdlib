@@ -105,12 +105,12 @@ procedures are:
 |`configure`|Subroutine| configures the details of the logging process|
 |`configuration`|Subroutine| reports the details of the logging configuration|
 |`log_error`| Subroutine|sends a message prepended by `'ERROR: '` optionally followed by a `stat` or `errmsg`|
-|`log_information`|Subroutine| sends a message prepended by `'INFORMATION: '`|
+|`log_information`|Subroutine| sends a message prepended by `'INFO: '`|
 |`log_io_error`|Subroutine|sends a message prepended by `'I/O ERROR: '` optionally followed by an `iostat` or `iomsg`|
 |`log_message`|Subroutine| sends a message|
 |`log_text_error`|Subroutine| sends a message describing an error found in a line of text|
 |`log_units_assigned`|Function| returns the number of active I/O units in `log_units`|
-|`log_warning`|Subroutine| sends a message prepended by `'WARNING: '`|
+|`log_warning`|Subroutine| sends a message prepended by `'WARN: '`|
 |`remove_log_unit`|Subroutine| removes the `unit` number from the `log_units` array|
 
 ## Specification of the `logger_type` methods
@@ -404,9 +404,9 @@ Writes the string `message` to `self % log_units` with optional additional text.
 
 #### Behavior
 
-If time stamps are active for `self`, a time stamp is written
-first. Then if `module` or `procedure` are present, they are
-written. Then `message` is written with the prefix `'ERROR: '`. Then
+If time stamps are active for `self`, a time stamp is written,
+followed by `module` and `procedure` if present, then
+`message` is written with the prefix `'ERROR: '`, and then
 if `stat` or `errmsg` are present they are written.
 
 #### Class
@@ -486,10 +486,9 @@ Writes the string `message` to `self % log_units` with optional additional text.
 
 #### Behavior
 
-If time stamps are active, a time stamp is written
-first. Then if `module` or `procedure` are present, they are
-written. Then `message` is written with the prefix
-`'INFORMATION: '`.
+If time stamps are active, a time stamp is written, followed
+by `module` and `procedure` if present, and then
+`message` is written with the prefix `'INFO: '`.
 
 #### Class
 
@@ -630,7 +629,7 @@ Writes the string `message` to `self % log_units` with
 
 If time stamps are active, a time stamp is written,
 then `module` and `procedure` are written if prsent,
-followed by `prefix`, if present, and finally `message`.
+followed by `prefix \\ ': '`, if present, and finally `message`.
 
 #### Syntax
 
@@ -849,10 +848,9 @@ Writes the string `message` to `log_units` with
 
 #### Behavior
 
-If time stamps are active, a time stamp is written
-first. Then if `module` or `procedure` are present, they are
-written. Then `message` is written with the prefix
-`WARNING: '`.
+If time stamps are active, a time stamp is written,
+then `module` and `procedure` if present, then
+`message` is written with the prefix `WARN: '`.
 
 #### Syntax
 
