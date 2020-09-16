@@ -628,7 +628,7 @@ Writes the string `message` to `self % log_units` with
 #### Behavior
 
 If time stamps are active, a time stamp is written,
-then `module` and `procedure` are written if prsent,
+then `module` and `procedure` are written if present,
 followed by `prefix \\ ': '`, if present, and finally `message`.
 
 #### Syntax
