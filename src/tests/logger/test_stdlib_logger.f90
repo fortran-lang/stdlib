@@ -129,7 +129,7 @@ contains
         call global % log_information( 'This message should be output ' // &
             'to OUTPUT_UNIT, unlimited in width, not preceded by ' //      &
             'a blank line, then by a time stamp, then by MODULE % ' //     &
-            'PROCEDURE, be prefixed by INFORMARION and be indented on ' // &
+            'PROCEDURE, be prefixed by INFO and be indented on ' //        &
             'subsequent lines by 4 columns.',                              &
             module = 'N/A',                                                &
             procedure = 'TEST_STDLIB_LOGGER' )
@@ -185,7 +185,7 @@ contains
 
         call global % log_message( 'This message should still be output ' // &
             'to OUTPUT_UNIT, limited to 72 columns width, preceded by ' //   &
-            'a blank line, then by no time stamp, then by MODULE % ' //     &
+            'a blank line, then by no time stamp, then by MODULE % ' //      &
             'PROCEDURE, have no prefix, and be unindented on subsequent ' // &
             'lines.', &
             module = 'N/A', &
@@ -194,12 +194,12 @@ contains
         call global % configure( add_blank_line=.false., indent=.true., &
             max_width=72, time_stamp=.true. )
 
-        call global % log_warning( 'This message should still be ' //     &
-            'output to OUTPUT_UNIT, limited to 72 columns width, ' //     &
-            'preceded by no blank line, then by a time stamp, then by ' // &
-            'MODULE % PROCEDURE, have a prefix of WARNING, and be ' //    &
-            'indented by 4 columns on subsequent lines.',                 &
-            module = 'N/A',                                               &
+        call global % log_warning( 'This message should still be ' //   &
+            'output to OUTPUT_UNIT, limited to 72 columns width, ' //   &
+            'preceded by no blank line, then by a time stamp, then ' // &
+            'by MODULE % PROCEDURE, have a prefix of WARN, and be ' //  &
+            'indented by 4 columns on subsequent lines.',               &
+            module = 'N/A',                                             &
             procedure = 'TEST_STDLIB_LOGGER' )
 
     end subroutine test_logging_configuration
