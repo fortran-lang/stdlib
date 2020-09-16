@@ -972,7 +972,6 @@ contains
 
     end subroutine log_io_error
 
-
     subroutine log_message( self, message, module, procedure, prefix )
 !! version: experimental
 
@@ -1025,9 +1024,8 @@ contains
         integer :: iostat
         character(*), parameter :: procedure_name = 'LOG_MESSAGE'
         character(256) :: iomsg
-        character(:), allocatable :: pref
+        character(:), allocatable :: d_and_t, m_and_p, pref
 
-        write(*,*) 'Got to 2'
         if ( present(prefix) ) then
             allocate( character(len=len(prefix)+2):: pref )
             pref = prefix // ': '
@@ -1037,6 +1035,38 @@ contains
             pref = ''
 
         end if
+
+        if ( self % time_stamp ) then
+            allocate( character(25) :: d_and_t )
+            d_and_t = time_stamp() // ': '
+
+        else
+            allocate( character(0) :: d_and_t )
+            d_and_t = ''
+
+        end if
+
+        if ( present(module) ) then
+            if ( present(procedure) ) then
+                allocate( character( len_trim(module) + &
+                                     len_trim(procedure) + 5 ) :: m_and_p )
+                m_and_p = trim(module) // ' % ' // trim(procedure) // ': '
+
+                else
+                allocate( character( len_trim(module) + 2 ) :: m_and_p )
+                m_and_p = trim(module) // ': '
+
+                end if
+
+            else if ( present(procedure) ) then
+                allocate( character( len_trim(procedure) + 2 ) :: m_and_p )
+                m_and_p = trim(procedure) // ': '
+
+            else
+                allocate( character( 0 ) :: m_and_p )
+                m_and_p = ''
+
+            end if
 
         if ( self % units == 0 ) then
             call write_log_message( output_unit )
@@ -1057,29 +1087,9 @@ contains
             if ( self % add_blank_line ) write( unit, *, err=999, &
                 iostat=iostat, iomsg=iomsg )
 
-            if ( self % time_stamp ) write( unit, '(a)', err=999, &
-                iostat=iostat, iomsg=iomsg ) time_stamp()
-
-            if ( present(module) ) then
-                if ( present(procedure) ) then
-                    write( unit, "(a, ' % ', a)", err=999, &
-                           iostat=iostat, iomsg=iomsg)     &
-                        trim( module ), trim( procedure )
-
-                else
-                    write( unit, "(a)", err=999, iostat=iostat, &
-                        iomsg=iomsg ) trim( module )
-
-                end if
-
-            else if ( present(procedure) ) then
-                write( unit, "(a)", err=999, iostat=iostat, &
-                    iomsg=iomsg ) trim( procedure )
-
-            end if
-
-            call format_output_string( self, unit,              &
-                                       pref // trim( message ), &
+            call format_output_string( self, unit,                   &
+                                       d_and_t // m_and_p // pref // &
+                                       trim( message ),              &
                                        procedure_name, '    ' )
 
             return
@@ -1089,7 +1099,6 @@ contains
         end subroutine write_log_message
 
     end subroutine log_message
-
 
     subroutine log_text_error( self, line, column, summary, filename,  &
                                line_number, caret, stat )
