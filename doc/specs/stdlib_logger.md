@@ -29,7 +29,7 @@ The logger variables have the option to:
   that prompted the log message;
 * follow a message with the `iostat` and `iomsg` of the I/O error
   report that prompted the log message;
-* label a message with one of `'INFORMATION: '`, `'WARNING: '`,
+* label a message with one of `'INFO: '`, `'WARN: '`,
   `'ERROR: '`, or `'I/O ERROR: '`;
 * indent subsequent lines of the messages; and
 * format the text to fit within a maximum column width.
