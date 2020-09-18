@@ -199,7 +199,7 @@ Experimental
 Adds `unit` to the array of `self % log_units`. The `unit` shall
 be the unit number for an opened, sequential, formatted file with an
 `action` specifier of `'WRITE'` or `'READWRITE'`. Failure of `unit` to meet
-those requirements will result cause `stat`, if present, to not be
+those requirements will cause `stat`, if present, to not be
 `success` and `unit` not to be added to `log_units`, or, if `stat` is
 not present, cause processing to stop with an informative string as
 the stop code.
