@@ -40,7 +40,7 @@ is empty then the messages go to the `output_unit` of the intrinsic
 module `iso_fortran_env`.
 
 
-## The `STDLIB_LOGGER` constants
+## The `stdlib_logger` constants
 
 The module defines nine distinct public integer constants for
 reporting errors in the `stat` arguments of some of the module's
