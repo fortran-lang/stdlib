@@ -169,21 +169,20 @@ contains
         astatus = optval(status, 'replace')
 
         if ( len_trim(aaction) == 4 ) then
+
             do i=1, 4
                 aaction(i:i) = to_lower(aaction(i:i))
             end do
+
             if ( aaction == 'read' ) then
                 if ( present( stat ) ) then
                     stat = read_only_error
                     return
-
                 else
                     error stop 'In ' // module_name // ' % ' //         &
                         procedure_name // ' action is "read" which ' // &
                         'does not allow writes to the file.'
-
                 end if
-
             end if
 
         end if
@@ -197,17 +196,12 @@ contains
                 allocate( dummy(2*self % units) )
                 do lun=1, self % units
                     dummy(lun) = self % log_units(lun)
-
                 end do
                 dummy(self % units+1:) = 0
-
                 call move_alloc( dummy, self % log_units )
-
             end if
-
         else
             allocate( self % log_units(16) )
-
         end if
 
         self % log_units(self % units + 1 ) = aunit
@@ -220,17 +214,14 @@ contains
 999     if (present(stat) ) then
             stat = open_failure
             return
-
         else
             call self % log_io_error( 'Unable to open ' // trim(filename), &
                                       module = module_name,                &
                                       procedure = procedure_name,          &
                                       iostat = iostat,                     &
                                       iomsg = iomsg )
-
             error stop module_name // ' % ' // procedure_name // &
                 ': Unable to open file'
-
         end if
 
     end subroutine add_log_file
@@ -294,23 +285,18 @@ contains
         do lun = 1, self % units
 ! Check that unit is not already registered
             if (self % log_units(lun) == unit ) return
-
         end do
+
         if ( allocated( self % log_units ) ) then
             if ( size(self % log_units) == self % units ) then
                 allocate( dummy(2*self % units) )
                 do lun=1, self % units
                     dummy(lun) = self % log_units(lun)
-
                 end do
-
                 call move_alloc( dummy, self % log_units )
-
             end if
-
         else
             allocate( self % log_units(16) )
-
         end if
 
         self % log_units(self % units + 1 ) = unit
@@ -325,13 +311,10 @@ contains
                 if ( present(stat) ) then
                     stat = read_only_error
                     return
-
                 else
                     error stop 'unit in ' // module_name // ' % ' // &
                         procedure_name // ' must not be input_unit.'
-
                 end if
-
             end if
 
 ! Check that unit is opened
@@ -340,28 +323,22 @@ contains
                 if ( present(stat) ) then
                     stat = unopened_in_error
                     return
-
                 else
                     error stop 'unit in ' // module_name // ' % ' // &
                         procedure_name // ' is not open.'
-
                 end if
-
             end if
 
-! Check that UNIT is writeable
+! Check that unit is writeable
             inquire( unit, write=specifier )
             if ( specifier(1:1) /= 'Y' .and. specifier(1:1) /= 'y' ) then
                 if ( present(stat) ) then
                     stat = read_only_error
                     return
-
                 else
-                    error stop 'UNIT in ' // module_name // ' % ' // &
+                    error stop 'unit in ' // module_name // ' % ' // &
                         procedure_name // ' is not writeable.'
-
                 end if
-
             end if
 
             inquire( unit, sequential=specifier )
@@ -369,13 +346,10 @@ contains
                 if ( present(stat) ) then
                     stat = non_sequential_error
                     return
-
                 else
                     error stop 'unit in ' // module_name // ' % ' // &
                         procedure_name // ' is not "sequential".'
-
                 end if
-
             end if
 
             inquire( unit, formatted=specifier )
@@ -383,13 +357,10 @@ contains
                 if ( present(stat) ) then
                     stat = unformatted_in_error
                     return
-
                 else
                     error stop 'unit in ' // module_name // ' % ' // &
                         procedure_name // ' is not "formatted".'
-
                 end if
-
             end if
 
             if ( present(stat) ) stat = success
@@ -497,12 +468,9 @@ contains
         if ( present(max_width) ) then
             if ( max_width <= 4 ) then
                 self % max_width = 0
-
             else
                 self % max_width = max_width
-
             end if
-
         end if
         if ( present(time_stamp) ) self % time_stamp = time_stamp
 
@@ -527,9 +495,7 @@ contains
                     self % log_units(unit)
                 write(error_unit, '(a, i0)') 'With iostat = ', iostat
                 write(error_unit, '(a)') 'With iomsg = ' // trim(message)
-
             end if
-
         end do
 
     end subroutine final_logger
@@ -558,15 +524,11 @@ contains
         if ( self % indent_lines ) then
             do while( remain > 0 )
                 call indent_format_subsequent_line()
-
             end do
-
         else
             do while( remain > 0 )
                 call format_subsequent_line()
-
             end do
-
         end if
 
     contains
@@ -578,26 +540,24 @@ contains
                     string(1:length)
                 remain = 0
                 return
-
             else
+
                 do index=self % max_width, 1, -1
                     if ( string(index:index) == ' ' ) exit
-
                 end do
+
                 if ( index == 0 ) then
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                         string(1:self % max_width)
                     count = self % max_width
                     remain = length - count
                     return
-
                 else
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                         string(1:index-1)
                     count = index
                     remain = length - count
                     return
-
                 end if
 
             end if
@@ -614,25 +574,24 @@ contains
                 count = length
                 remain = 0
                 return
-
             else
+
                 do index=count+self % max_width, count+1, -1
                     if ( string(index:index) == ' ' ) exit
                 end do
+
                 if ( index == count ) then
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                         string(count+1:count+self % max_width)
                     count = count + self % max_width
                     remain = length - count
                     return
-
                 else
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                         string(count+1:index)
                     count = index
                     remain = length - count
                     return
-
                 end if
 
             end if
@@ -649,11 +608,12 @@ contains
                 count = length
                 remain = 0
                 return
-
             else
+
                 do index=count+self % max_width-indent_len, count+1, -1
                     if ( string(index:index) == ' ' ) exit
                 end do
+
                 if ( index == count ) then
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                         col_indent // &
@@ -661,14 +621,12 @@ contains
                     count = count + self % max_width - indent_len
                     remain = length - count
                     return
-
                 else
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                         col_indent // string(count+1:index)
                     count = index
                     remain = length - count
                     return
-
                 end if
 
             end if
@@ -699,14 +657,14 @@ contains
              ' % ' // trim(procedure_name) // '.'
          write( output_unit, '(a, i0)' ) 'unit = ', unit
          inquire( unit, named=named )
+
          if ( named ) then
              inquire( unit, name=name )
              write( output_unit, '(a, a)' ) 'name = ', trim(name)
-
          else
              write( output_unit, '(a)' ) 'unit is unnamed'
-
          end if
+
          inquire( unit, action=action )
          write( output_unit, '(a, a)' ) 'action = ', trim(action)
          write( output_unit, '(a, i0)' ) 'iostat = ', iostat
@@ -782,12 +740,10 @@ contains
 
         if ( self % units == 0 ) then
             call write_log_error( output_unit )
-
         else
             do unit=1, self % units
                 call write_log_error( self % log_units(unit) )
             end do
-
         end if
 
     contains
@@ -808,7 +764,6 @@ contains
                                                procedure_name,      &
                                                '    ' )
                 end if
-
             end if
 
             return
@@ -931,12 +886,10 @@ contains
 
         if ( self % units == 0 ) then
             call write_log_io_error( output_unit )
-
         else
             do unit=1, self % units
                 call write_log_io_error( self % log_units(unit) )
             end do
-
         end if
 
     contains
@@ -957,7 +910,6 @@ contains
                                                procedure_name,     &
                                                '    ' )
                 end if
-
             end if
 
             return
@@ -1024,46 +976,34 @@ contains
 
         if ( present(prefix) ) then
             pref = prefix // ': '
-
         else
             pref = ''
-
         end if
 
         if ( self % time_stamp ) then
             d_and_t = time_stamp() // ': '
-
         else
             d_and_t = ''
-
         end if
 
         if ( present(module) ) then
             if ( present(procedure) ) then
                 m_and_p = trim(module) // ' % ' // trim(procedure) // ': '
-
             else
                 m_and_p = trim(module) // ': '
-
             end if
-
         else if ( present(procedure) ) then
             m_and_p = trim(procedure) // ': '
-
         else
             m_and_p = ''
-
         end if
 
         if ( self % units == 0 ) then
             call write_log_message( output_unit )
-
         else
             do unit=1, self % units
                 call write_log_message( self % log_units(unit) )
-
             end do
-
         end if
 
     contains
@@ -1161,16 +1101,13 @@ contains
             if ( present(stat) ) then
                 stat = invalid_index_error
                 return
-
             else
                 call self % log_error( invalid_column,           &
                                        module = module_name,     &
                                        procedure = procedure_name )
                 error stop module_name // ' % ' // procedure_name // ': ' // &
                     invalid_column
-
             end if
-
         end if
 
         write(num, '(i0)') column-1
@@ -1178,13 +1115,11 @@ contains
 
         if ( self % units == 0 ) then
             call write_log_text_error( output_unit )
-
         else
             do lun=1, self % units
                 call write_log_text_error( self % log_units(lun) )
 
             end do
-
         end if
 
     contains
@@ -1201,13 +1136,11 @@ contains
                     write( unit, '(a,":", i0, ":", i0)', err=999, &
                            iomsg=iomsg, iostat=iostat )           &
                            trim(filename) , line_number, column
-
                 else
                     write( unit, '(a, i0)', err=999, iomsg=iomsg, &
                            iostat=iostat ) &
                            "Error found in file: '" // trim(filename) // "'" &
                            // ', at column: ', column
-
                 end if
 
             else
@@ -1219,9 +1152,7 @@ contains
                 else
                     write( unit, '("Error found in line at column:", i0)' ) &
                         column
-
                 end if
-
             end if
 
             write( unit, * )
@@ -1376,19 +1307,16 @@ contains
         if ( present(stat) ) stat = success
         do lun=1, self % units
             if ( unit == self % log_units(lun) ) exit
-
         end do
 
         if ( lun == self % units + 1 ) return
 
         if ( present(close_unit) ) then
             if ( close_unit ) close( unit, err=999, iomsg=errmsg )
-
         end if
 
         do lun_old=lun+1, self % units
             self % log_units(lun_old-1) = self % log_units(lun_old)
-
         end do
         self % units = self % units - 1
 
@@ -1397,14 +1325,12 @@ contains
 999     if ( present(stat) ) then
             stat = close_failure
             return
-
         else
             write(*, '(a, i0)') 'In ' // module_name // ' % ' // &
                 procedure_name // ' close_unit failed for unit = ', unit
             write(*, '(a)' ) 'With iomsg = ' // trim(errmsg)
             error stop 'close_unit failed in ' // module_name // ' % ' // &
                 procedure_name // '.'
-
         end if
 
     end subroutine remove_log_unit
