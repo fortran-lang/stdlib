@@ -633,7 +633,7 @@ followed by `prefix \\ ': '`, if present, and finally `message`.
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % log_message(interface)]]( message [, module, procedure, prefix ] )`
+`call self % [[logger_type(type):log_message(bound)]]( message [, module, procedure, prefix ] )`
 
 #### Class
 
