@@ -485,7 +485,7 @@ contains
     subroutine final_logger( self )
 !! version: experimental
 
-!! finalizes the `logger_type` entity `self` by flushing the units
+!! Finalizes the `logger_type` entity `self` by flushing the units
         type(logger_type), intent(in) :: self
 
         integer        :: iostat
@@ -682,7 +682,8 @@ contains
     subroutine log_error( self, message, module, procedure, stat, errmsg )
 !! Writes the string `message` to `self % log_units` with optional additional
 !! text.
-!!
+!! ([Specification](../specs/stdlib_logger.html#log_error-writes-the-string-message-to-self-log_units))
+
 !!##### Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
@@ -783,6 +784,7 @@ contains
     subroutine log_information( self, message, module, procedure )
 !! Writes the string `message` to `self % log_units` with optional additional
 !! text.
+!!([Specification](../page/specs/stdlib_logger.html#log_information-writes-the-string-message-to-self-log_units))
 !!
 !!##### Behavior
 !!
@@ -930,6 +932,7 @@ contains
 
 !! Writes the string `message` to the `self % log_units` with optional
 !! additional text.
+!!([Specification])(../page/specs/stdlib_logger.html#log_message-write-the-string-message-to-self-log_units))
 !!
 !!##### Behavior
 !!
@@ -1038,7 +1041,8 @@ contains
 
 !! Sends a message to `self % log_units` describing an error found
 !! in a line of text.
-!!
+!!([Specification])(../page/specs/stdlib_logger.html#log_text_error-send-a-message-to-self-log_units-describing-an-error))
+
 !!##### Behavior
 !!
 !! If time stamps are active first a time stamp is written. Then if
@@ -1188,6 +1192,8 @@ contains
 
     elemental function log_units_assigned(self)
 !! Returns the number of units assigned to `self % log_units`
+!!([Specification](../page/specs/stdlib_logger.html#log_units_assigned-returns-the-number-of-active-io-units))
+
         class(logger_type), intent(in) :: self
 !! The logger subject to the inquiry
         integer                        :: log_units_assigned
@@ -1220,7 +1226,8 @@ contains
 
     subroutine log_warning( self, message, module, procedure )
 !! Writes the string `message` to `self % log_units` with optional additional text.
-!!
+!!([Specification])(../page/specs/stdlib_logger.html#log_warning-write-the-string-message-to-log_units)
+
 !!##### Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
@@ -1277,6 +1284,8 @@ contains
 !! has the value `success`. If closing the `unit` fails, then if `stat` is
 !! present it has the value `close_failure`, otherwise processing stops
 !! with an informative message.
+!!([Specification])(../page/specs/stdlib_logger.html#remove_log_unit-remove-unit-from-self-log_units))
+
         class(logger_type), intent(inout) :: self
 !! The logger variable whose unit is to be removed
         integer, intent(in)               :: unit
