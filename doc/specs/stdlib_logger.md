@@ -206,7 +206,7 @@ the stop code.
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % add_log_unit(interface)]]( unit [, stat ] )`
+`call self % [[logger_type(type):add_log_unit(bound)]]( unit [, stat ] )`
 
 #### Class. 
 
