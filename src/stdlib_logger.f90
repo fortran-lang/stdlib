@@ -73,6 +73,7 @@ module stdlib_logger
     type :: logger_type
         !! version: experimental
         
+        !! Public derived type ([Specification](../page/specs/stdlib_logger.html#the-derived-type-logger_type))
         private
 
         logical              :: add_blank_line = .false.
@@ -120,7 +121,7 @@ contains
 !! has the default value of `"REPLACE"`. `stat`, if present, has the value
 !! `success` if `filename` could be opened, `read_only_error` if `action` is
 !! `"read"`, and `open_failure` otherwise.
-
+!!([Specification](../page/specs/stdlib_logger.html#add_log_file-open-a-file-and-add-its-unit-to-self-log_units))
         class(logger_type), intent(inout)  :: self
 !! The logger variable to which the file is to be added
         character(*), intent(in)           :: filename
@@ -235,6 +236,8 @@ contains
 !! `"write"` or `"readwrite"`, otherwise either `stat`, if preseent, has a
 !! value other than `success` and `unit` is not entered into `log_units`,
 !! or, if `stat` is not presecn, processing stops.
+!!([Specification](../page/specs/stdlib_logger.html#add_log_unit-add-a-unit-to-the-array-self-log_units))
+
         class(logger_type), intent(inout) :: self
 !! The logger variable to which the I/O unit is to be added
         integer, intent(in)               :: unit
@@ -386,7 +389,9 @@ contains
 !!    will have a time stamp, and `.false.` implying that there will be no
 !!    time stamp.
 !! 5. `log_units` is an array of the I/O unit numbers to which log output
-!!    will be written
+!!    will be written.
+!!([Specification](../page/specs/stdlib_logger.html#configuration-report-a-loggers-configuration))
+
         class(logger_type), intent(in)              :: self
 !! The logger variable whose configuration is being reported
         logical, intent(out), optional              :: add_blank_line
@@ -448,7 +453,7 @@ contains
 !! 4. `time_stamp` is a logical flag with `.true.` implying that the output
 !!    will have a time stamp, and `.false.` implying that there will be no
 !!    time stamp. `time_stamp` has a startup value of `.true.`.
-
+!!([Specification])(../page/specs/stdlib_logger.html#configure-configure-the-logging-process))
 !!##### Example
 !!
 !!     program main
