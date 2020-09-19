@@ -1031,7 +1031,7 @@ contains
                                line_number, caret, stat )
 !! version: experimental
 
-!! `log_text_error` sends a message to `self % log_units` describing an error found
+!! Sends a message to `self % log_units` describing an error found
 !! in a line of text.
 !!
 !!##### Behavior
