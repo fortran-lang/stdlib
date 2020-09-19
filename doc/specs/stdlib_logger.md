@@ -482,7 +482,7 @@ Writes the string `message` to `self % log_units` with optional additional text.
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % log_information(interface)]]( message [, module, procedure ] )`
+`call self % [[logger_type(type):log_information(bound)]]( message [, module, procedure ] )`
 
 #### Behavior
 
