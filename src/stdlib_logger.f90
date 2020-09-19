@@ -453,7 +453,7 @@ contains
 !! 4. `time_stamp` is a logical flag with `.true.` implying that the output
 !!    will have a time stamp, and `.false.` implying that there will be no
 !!    time stamp. `time_stamp` has a startup value of `.true.`.
-!!([Specification])(../page/specs/stdlib_logger.html#configure-configure-the-logging-process))
+!!([Specification](../page/specs/stdlib_logger.html#configure-configure-the-logging-process))
 !!##### Example
 !!
 !!     program main
@@ -932,7 +932,7 @@ contains
 
 !! Writes the string `message` to the `self % log_units` with optional
 !! additional text.
-!!([Specification])(../page/specs/stdlib_logger.html#log_message-write-the-string-message-to-self-log_units))
+!!([Specification](../page/specs/stdlib_logger.html#log_message-write-the-string-message-to-self-log_units))
 !!
 !!##### Behavior
 !!
@@ -1041,7 +1041,7 @@ contains
 
 !! Sends a message to `self % log_units` describing an error found
 !! in a line of text.
-!!([Specification])(../page/specs/stdlib_logger.html#log_text_error-send-a-message-to-self-log_units-describing-an-error))
+!!([Specification](../page/specs/stdlib_logger.html#log_text_error-send-a-message-to-self-log_units-describing-an-error))
 
 !!##### Behavior
 !!
@@ -1226,7 +1226,7 @@ contains
 
     subroutine log_warning( self, message, module, procedure )
 !! Writes the string `message` to `self % log_units` with optional additional text.
-!!([Specification])(../page/specs/stdlib_logger.html#log_warning-write-the-string-message-to-log_units)
+!!([Specification](../page/specs/stdlib_logger.html#log_warning-write-the-string-message-to-log_units))
 
 !!##### Behavior
 !!
@@ -1284,7 +1284,7 @@ contains
 !! has the value `success`. If closing the `unit` fails, then if `stat` is
 !! present it has the value `close_failure`, otherwise processing stops
 !! with an informative message.
-!!([Specification])(../page/specs/stdlib_logger.html#remove_log_unit-remove-unit-from-self-log_units))
+!!([Specification](../page/specs/stdlib_logger.html#remove_log_unit-remove-unit-from-self-log_units))
 
         class(logger_type), intent(inout) :: self
 !! The logger variable whose unit is to be removed
