@@ -129,7 +129,7 @@ Opens a formatted, sequential access, output file, `filename` using
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % add_log_file(interface)]]( filename [, unit, action, position, status, stat ] )`
+`call self % [[logger_type(type):add_log_file(bound)]]( filename [, unit, action, position, status, stat ] )`
 
 #### Class
 
