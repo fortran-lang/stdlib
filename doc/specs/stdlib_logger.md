@@ -46,17 +46,17 @@ The module defines nine distinct public integer constants for
 reporting errors in the `stat` arguments of some of the module's
 procedures. The constants, termed error codes, are as follows:
 
-| Error Code | Description |
-|------------|-------------|
-| `success` | no error was detected|
-| `close_failure` | a `close` statement for an I/O unit failed|
-| `invalid_index_error` | the `column` was invalid for the given `line` |
-| `non_sequential_error` | the I/O unit did not have `SEQUENTIAL` access|
-|`open_failure` | an `open` statement failed |
-| `read_only_error` | an output unit did not have an `access` specifier of `'WRITE'` or `'READWRITE'` |
-| `unformatted_in_error` | the unit did not have a `form` of `'FORMATTED'`|
-|`unopened_in_error`| the unit was not opened|
-| `write_fault` | one of the writes to `log_units` failed|
+Error Code             | Description
+-----------------------|------------
+`success`              | no error was detected
+`close_failure`        | a `close` statement for an I/O unit failed
+`invalid_index_error`  | the `column` was invalid for the given `line`
+`non_sequential_error` | the I/O unit did not have `SEQUENTIAL` access
+`open_failure`         | an `open` statement failed
+`read_only_error`      | an output unit did not have an `access` specifier of `'WRITE'` or `'READWRITE'`
+`unformatted_in_error` | the unit did not have a `form` of `'FORMATTED'`
+`unopened_in_error`    | the unit was not opened
+`write_fault`          | one of the writes to `log_units` failed
 
 ## The derived type: logger_type
 
@@ -75,14 +75,14 @@ type(logger_type) :: variable
 
 ### Private attributes
 
-| Attribute | Type | Description | Initial value |
-|-----------|------|-------------|---------| 
-| `add_blank_line` | Logical | Flag to precede output with a blank line |`.false.`|
-|`indent_lines` | Logical| Flag to indent subsequent lines by four columns|`.true.`|
-|`log_units`|Integer array| List of I/O units used for output| empty|
-|`max_width`| Integer | Maximum column width of output | 0 |
-|`time_stamp`| Logical | Flag to precede output by a time stamp | `.true.` |
-|`units` | Integer | Count of the number of active output units | 0 |
+| Attribute        | Type          | Description                                     | Initial value
+|------------------|---------------|-------------------------------------------------|--------------
+| `add_blank_line` | Logical       | Flag to precede output with a blank line        | `.false.`
+| `indent_lines`   | Logical       | Flag to indent subsequent lines by four columns | `.true.`
+| `log_units`      | Integer array | List of I/O units used for output               | empty
+| `max_width`      | Integer       | Maximum column width of output                  | 0
+| `time_stamp`     | Logical       | Flag to precede output by a time stamp          | `.true.`
+| `units`          | Integer       | Count of the number of active output units      | 0
 
 ## The `stdlib_logger` variable
 
@@ -98,20 +98,20 @@ The module defines twelve public procedures: one function and eleven
 subroutines.  The
 procedures are:
 
-|Procedure|Class|Description|
-|---------|-----|-----------|
-|`add_log_file`|Subroutine|opens a file using `newunit`, and adds the resulting unit to the `log_units` list|
-|`add_log_unit`| Subroutine|adds an existing unit to the `log_units` list|
-|`configure`|Subroutine| configures the details of the logging process|
-|`configuration`|Subroutine| reports the details of the logging configuration|
-|`log_error`| Subroutine|sends a message prepended by `'ERROR: '` optionally followed by a `stat` or `errmsg`|
-|`log_information`|Subroutine| sends a message prepended by `'INFO: '`|
-|`log_io_error`|Subroutine|sends a message prepended by `'I/O ERROR: '` optionally followed by an `iostat` or `iomsg`|
-|`log_message`|Subroutine| sends a message|
-|`log_text_error`|Subroutine| sends a message describing an error found in a line of text|
-|`log_units_assigned`|Function| returns the number of active I/O units in `log_units`|
-|`log_warning`|Subroutine| sends a message prepended by `'WARN: '`|
-|`remove_log_unit`|Subroutine| removes the `unit` number from the `log_units` array|
+Procedure            | Class      | Description
+---------------------|------------|------------
+`add_log_file`       | Subroutine | Opens a file using `newunit`, and adds the resulting unit to the `log_units` list
+`add_log_unit`       | Subroutine | Adds an existing unit to the `log_units` list
+`configure`          | Subroutine | Configures the details of the logging process
+`configuration`      | Subroutine | Reports the details of the logging configuration
+`log_error`          | Subroutine | Sends a message prepended by `'ERROR: '` optionally followed by a `stat` or `errmsg`
+`log_information`    | Subroutine | Sends a message prepended by `'INFO: '`
+`log_io_error`       | Subroutine | Sends a message prepended by `'I/O ERROR: '` optionally followed by an `iostat` or `iomsg`
+`log_message`        | Subroutine | Sends a message
+`log_text_error`     | Subroutine | Sends a message describing an error found in a line of text
+`log_units_assigned` | Function   | Returns the number of active I/O units in `log_units`
+`log_warning`        | Subroutine | Sends a message prepended by `'WARN: '`
+`remove_log_unit`    | Subroutine | Removes the `unit` number from the `log_units` array
 
 ## Specification of the `logger_type` methods
 
