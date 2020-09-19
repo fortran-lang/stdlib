@@ -681,6 +681,8 @@ contains
 
 
     subroutine log_error( self, message, module, procedure, stat, errmsg )
+!! version: experimental
+
 !! Writes the string `message` to `self % log_units` with optional additional
 !! text.
 !! ([Specification](../specs/stdlib_logger.html#log_error-writes-the-string-message-to-self-log_units))
@@ -783,6 +785,8 @@ contains
 
 
     subroutine log_information( self, message, module, procedure )
+!! version: experimental
+
 !! Writes the string `message` to `self % log_units` with optional additional
 !! text.
 !!([Specification](../page/specs/stdlib_logger.html#log_information-writes-the-string-message-to-self-log_units))
@@ -839,8 +843,11 @@ contains
 
     subroutine log_io_error( self, message, module, procedure, iostat, &
                              iomsg )
+!! version: experimental
+
 !! Writes the string `message` to the `self % log_units` with optional
 !! additional text.
+!!([Specification](../page/specs/stdlib_logger.html#log_io_error-write-the-string-message-to-self-log_units))
 !!
 !!##### Behavior
 !!
@@ -1192,6 +1199,8 @@ contains
 
 
     elemental function log_units_assigned(self)
+!! version: experimental
+
 !! Returns the number of units assigned to `self % log_units`
 !!([Specification](../page/specs/stdlib_logger.html#log_units_assigned-returns-the-number-of-active-io-units))
 
@@ -1226,6 +1235,8 @@ contains
 
 
     subroutine log_warning( self, message, module, procedure )
+!! version: experimental
+
 !! Writes the string `message` to `self % log_units` with optional additional text.
 !!([Specification](../page/specs/stdlib_logger.html#log_warning-write-the-string-message-to-log_units))
 
@@ -1279,6 +1290,8 @@ contains
 
 
     subroutine remove_log_unit( self, unit, close_unit, stat )
+!! version: experimental
+
 !! Remove the I/O unit from the self % log_units list. If `close_unit` is
 !! present and `.true.` then the corresponding file is closed. If `unit` is
 !! not in `log_units` then nothing is done. If `stat` is present it, by default,
