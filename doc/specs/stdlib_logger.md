@@ -277,7 +277,7 @@ Reports the configuration of a logger.
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % configuration(interface)]]( [ add_blankline, indent, max_width, time_stamp, log_units ] )`
+`call self % [[logger_type(type):configuration(bound)]]( [ add_blankline, indent, max_width, time_stamp, log_units ] )`
 
 #### Class
 
