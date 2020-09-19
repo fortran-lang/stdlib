@@ -1027,46 +1027,37 @@ contains
         character(:), allocatable :: d_and_t, m_and_p, pref
 
         if ( present(prefix) ) then
-            allocate( character(len=len(prefix)+2):: pref )
             pref = prefix // ': '
 
         else
-            allocate( character(len=0):: pref )
             pref = ''
 
         end if
 
         if ( self % time_stamp ) then
-            allocate( character(25) :: d_and_t )
             d_and_t = time_stamp() // ': '
 
         else
-            allocate( character(0) :: d_and_t )
             d_and_t = ''
 
         end if
 
         if ( present(module) ) then
             if ( present(procedure) ) then
-                allocate( character( len_trim(module) + &
-                                     len_trim(procedure) + 5 ) :: m_and_p )
                 m_and_p = trim(module) // ' % ' // trim(procedure) // ': '
 
-                else
-                allocate( character( len_trim(module) + 2 ) :: m_and_p )
+            else
                 m_and_p = trim(module) // ': '
 
-                end if
-
-            else if ( present(procedure) ) then
-                allocate( character( len_trim(procedure) + 2 ) :: m_and_p )
-                m_and_p = trim(procedure) // ': '
-
-            else
-                allocate( character( 0 ) :: m_and_p )
-                m_and_p = ''
-
             end if
+
+        else if ( present(procedure) ) then
+            m_and_p = trim(procedure) // ': '
+
+        else
+            m_and_p = ''
+
+        end if
 
         if ( self % units == 0 ) then
             call write_log_message( output_unit )
