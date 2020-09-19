@@ -1,9 +1,9 @@
 module stdlib_logger
-!!### Module STDLIB_LOGGER
+!!### Module stdlib_logger
 !!
 !! This module defines a derived type, procedures, a variable, and
-!! constants to be used for reporting errors by the Fortran Standard
-!! Library.
+!! constants to be used for logging information and reporting errors
+!! in Fortran applications.
 !!
 !! The derived type, `logger_type`, is to be used to define variables to
 !! serve as both local and global loggers. A logger directs its messages
@@ -25,20 +25,19 @@ module stdlib_logger
 !! `log_error`, `log_information`, `log_io_error`, `log_message`,
 !! `log_text_error`, and `log_warning` send messages to the log units.
 !!
-!! The variable is the entity `global_logger` of type `logger_type`, to serve
-!! as its name suggests, as a global logger to be used as a default
-!! anywhere in the source code.
+!! The variable `global_logger` of type `logger_type` can be used
+!! as a default global logger anywhere in the source code.
 !!
 !! The constants are used to report errors by some of the subroutines
 !! in their optional `stat` arguments. The constants are as follows.
 !! `success` indicates that no error has occurred. `close_failure`
-!! indicates that a `CLOSE` statement for an I/O unit failed.
+!! indicates that a `close` statement for an I/O unit failed.
 !! `invalid_index_error` indicates that `column` was invalid for
-!! the given `line`. `open_failure` indicates that an `OPEN` statement
+!! the given `line`. `open_failure` indicates that an `open` statement
 !! failed. `read_only_error` indicates that an output unit did not have a
-!! `"WRITE"` or `"READWRITE"` action. `non_sequential_error` indicates
-!! that the unit did not have `SEQUENTIAL` access. `unformatted_in_error`
-!! indicates that the unit did not have a `FORM` of `"FORMATTED"`.
+!! `"write"` or `"readwrite"` action. `non_sequential_error` indicates
+!! that the unit did not have `sequential` access. `unformatted_in_error`
+!! indicates that the unit did not have a `form` of `"formatted"`.
 !! `unopened_in_error` indicates that the unit was not opened. `write_failure`
 !! indicates that at least one of the writes to `log_units` failed.
 
@@ -76,11 +75,11 @@ module stdlib_logger
         
         private
 
-        logical              :: add_blank_line = .FALSE.
-        logical              :: indent_lines = .TRUE.
+        logical              :: add_blank_line = .false.
+        logical              :: indent_lines = .true.
         integer, allocatable :: log_units(:)
         integer              :: max_width = 0
-        logical              :: time_stamp = .TRUE.
+        logical              :: time_stamp = .true.
         integer              :: units = 0
 
     contains
@@ -104,7 +103,7 @@ module stdlib_logger
     type(logger_type) :: global_logger
 
     character(*), parameter :: &
-        invalid_column = 'COLUMN is not a valid index to LINE.'
+        invalid_column = 'column is not a valid index to line.'
 
 contains
 
@@ -114,13 +113,13 @@ contains
 
 !! Opens a formatted sequential access output file, `filename` using
 !! `newunit` and adds the resulting unit number to `self`'s `log_units`
-!! array. `action`, if present, is the `ACTION` specifier of the `OPEN`
-!! statement, and has the default value of `"WRITE"`. `position`, if present,
-!! is the `POSITION` specifier, and has the default value of `"REWIND"`.
-!! `status`, if present, is the `STATUS` specifier of the `OPEN` statement, and
+!! array. `action`, if present, is the `action` specifier of the `open`
+!! statement, and has the default value of `"write"`. `position`, if present,
+!! is the `position` specifier, and has the default value of `"REWIND"`.
+!! `status`, if present, is the `status` specifier of the `open` statement, and
 !! has the default value of `"REPLACE"`. `stat`, if present, has the value
-!! `success` if `filename` could be opened, `read_only_error` if `ACTION` is
-!! `"READ"`, and `open_failure` otherwise.
+!! `success` if `filename` could be opened, `read_only_error` if `action` is
+!! `"read"`, and `open_failure` otherwise.
 
         class(logger_type), intent(inout)  :: self
 !! The logger variable to which the file is to be added
@@ -129,16 +128,16 @@ contains
         integer, intent(out), optional     :: unit
 !! The resulting I/O unit number
         character(*), intent(in), optional :: action
-!! The `ACTION` specifier for the `OPEN`` statement
+!! The `action` specifier for the `open`` statement
         character(*), intent(in), optional :: position
-!! The `POSITION` specifier for the `OPEN` statement
+!! The `position` specifier for the `open` statement
         character(*), intent(in), optional :: status
-!! The `STATUS` specifier for the  `OPEN`  statement
+!! The `status` specifier for the  `open`  statement
         integer, intent(out), optional     :: stat
 !! The error status on exit with the possible values
 !! * `success` - no errors found
-!! * `Rrea_only_error` - file unopened as `action1 was `"READ"` for an output file
-!! * `open_failure` - the `OPEN` statement failed
+!! * `Rrea_only_error` - file unopened as `action1 was `"read"` for an output file
+!! * `open_failure` - the `open` statement failed
 
 
 !!##### Example
@@ -180,7 +179,7 @@ contains
 
                 else
                     error stop 'In ' // module_name // ' % ' //         &
-                        procedure_name // ' ACTION is "READ" which ' // &
+                        procedure_name // ' action is "read" which ' // &
                         'does not allow writes to the file.'
 
                 end if
@@ -240,10 +239,10 @@ contains
     subroutine add_log_unit( self, unit, stat )
 !! version: experimental
 
-!! Adds `unit` to the log file units in `log_units`. `unit` must be an `OPEN`
-!! file, of `FORM` `"FORMATTED"`, with `"SEQUENTIAL"` `ACCESS`, and an `ACTION` of
-!! `"WRITE"` or `"READWRITE"`, otherwise either `stat`, if preseent, has a
-!! value other than `success` and `unit` is not entered into L`log_units`,
+!! Adds `unit` to the log file units in `log_units`. `unit` must be an `open`
+!! file, of `form` `"formatted"`, with `"sequential"` `access`, and an `action` of
+!! `"write"` or `"readwrite"`, otherwise either `stat`, if preseent, has a
+!! value other than `success` and `unit` is not entered into `log_units`,
 !! or, if `stat` is not presecn, processing stops.
         class(logger_type), intent(inout) :: self
 !! The logger variable to which the I/O unit is to be added
@@ -254,7 +253,7 @@ contains
 !! * `success` - no problems were found
 !! * `non_sequential_error` - `unit` did not have sequential access
 !! * `read_only_error` - `unit` was not writeable
-!! * `unformatted_in_error` - `unit` was an `"UNFORMATTED'` file
+!! * `unformatted_in_error` - `unit` was an `'unformatted'` file
 !! * `unopened_in_error` - `unit` was not opened
 
 !!##### Example
@@ -282,7 +281,7 @@ contains
 !!     end program main
 
         integer, allocatable :: dummy(:)
-        character(*), parameter :: procedure_name = 'SET_LOG_UNIT'
+        character(*), parameter :: procedure_name = 'set_log_unit'
         integer :: lun
         character(12) :: specifier
         logical :: question
@@ -321,21 +320,21 @@ contains
 
         subroutine validate_unit()
 
-! Check that UNIT is not INPUT_UNIT
+! Check that unit is not input_unit
             if ( unit == input_unit ) then
                 if ( present(stat) ) then
                     stat = read_only_error
                     return
 
                 else
-                    error stop 'UNIT in ' // module_name // ' % ' // &
-                        procedure_name // ' must not be INPUT_UNIT.'
+                    error stop 'unit in ' // module_name // ' % ' // &
+                        procedure_name // ' must not be input_unit.'
 
                 end if
 
             end if
 
-! Check that UNIT is opened
+! Check that unit is opened
             inquire( unit, opened=question )
             if ( .not. question ) then
                 if ( present(stat) ) then
@@ -343,8 +342,8 @@ contains
                     return
 
                 else
-                    error stop 'UNIT in ' // module_name // ' % ' // &
-                        procedure_name // ' is not OPEN.'
+                    error stop 'unit in ' // module_name // ' % ' // &
+                        procedure_name // ' is not open.'
 
                 end if
 
@@ -372,8 +371,8 @@ contains
                     return
 
                 else
-                    error stop 'UNIT in ' // module_name // ' % ' // &
-                        procedure_name // ' is not "SEQUENTIAL".'
+                    error stop 'unit in ' // module_name // ' % ' // &
+                        procedure_name // ' is not "sequential".'
 
                 end if
 
@@ -386,8 +385,8 @@ contains
                     return
 
                 else
-                    error stop 'UNIT in ' // module_name // ' % ' // &
-                        procedure_name // ' is not "FORMATTED".'
+                    error stop 'unit in ' // module_name // ' % ' // &
+                        procedure_name // ' is not "formatted".'
 
                 end if
 
@@ -451,9 +450,7 @@ contains
 !!       ...
 !!     end module example_mod
 
-
-        if ( present(add_blank_line) ) &
-            add_blank_line = self % add_blank_line
+        if ( present(add_blank_line) ) add_blank_line = self % add_blank_line
         if ( present(indent) ) indent = self % indent_lines
         if ( present(max_width) ) max_width = self % max_width
         if ( present(time_stamp) ) time_stamp = self % time_stamp
@@ -475,7 +472,7 @@ contains
 !!    will be indented 4 spaces and `.false.` implying no indentation. `indent`
 !!    has a startup value of `.true.`.
 !! 3. `max_width` is the maximum number of columns of output text with
-!!    `max_wodth == 0` => no bounds on output width. `max_width` has a startup
+!!    `max_width == 0` => no bounds on output width. `max_width` has a startup
 !!    value of 0.
 !! 4. `time_stamp` is a logical flag with `.true.` implying that the output
 !!    will have a time stamp, and `.false.` implying that there will be no
@@ -495,8 +492,7 @@ contains
         integer, intent(in), optional     :: max_width
         logical, intent(in), optional     :: time_stamp
 
-        if ( present(add_blank_line) ) &
-            self % add_blank_line = add_blank_line
+        if ( present(add_blank_line) ) self % add_blank_line = add_blank_line
         if ( present(indent) ) self % indent_lines = indent
         if ( present(max_width) ) then
             if ( max_width <= 4 ) then
@@ -527,10 +523,10 @@ contains
             flush( self % log_units(unit), iomsg=message, iostat=iostat )
             if ( iostat /= 0 ) then
                 write(error_unit, '(a, i0)' ) 'In the logger_type finalizer ' // &
-                    'an error occurred in flushing UNIT = ',                     &
+                    'an error occurred in flushing unit = ',                     &
                     self % log_units(unit)
-                write(error_unit, '(a, i0)') 'With IOSTAT = ', iostat
-                write(error_unit, '(a)') 'With IOMSG = ' // trim(message)
+                write(error_unit, '(a, i0)') 'With iostat = ', iostat
+                write(error_unit, '(a)') 'With iomsg = ' // trim(message)
 
             end if
 
@@ -699,23 +695,23 @@ contains
         logical :: named
         character(10) :: action
 
-         write( output_unit, '(a)' ) 'WRITE failure in ' // module_name // &
+         write( output_unit, '(a)' ) 'write failure in ' // module_name // &
              ' % ' // trim(procedure_name) // '.'
-         write( output_unit, '(a, i0)' ) 'UNIT = ', unit
+         write( output_unit, '(a, i0)' ) 'unit = ', unit
          inquire( unit, named=named )
          if ( named ) then
              inquire( unit, name=name )
-             write( output_unit, '(a, a)' ) 'NAME = ', trim(name)
+             write( output_unit, '(a, a)' ) 'name = ', trim(name)
 
          else
-             write( output_unit, '(a)' ) 'UNIT is UNNAMED'
+             write( output_unit, '(a)' ) 'unit is unnamed'
 
          end if
          inquire( unit, action=action )
-         write( output_unit, '(a, a)' ) 'ACTION = ', trim(action)
-         write( output_unit, '(a, i0)' ) 'IOSTAT = ', iostat
-         write( output_unit, '(a, a )' ) 'IOMSG = ', trim(iomsg)
-         error stop 'WRITE failure in ' // module_name // '.'
+         write( output_unit, '(a, a)' ) 'action = ', trim(action)
+         write( output_unit, '(a, i0)' ) 'iostat = ', iostat
+         write( output_unit, '(a, a )' ) 'iomsg = ', trim(iomsg)
+         error stop 'write failure in ' // module_name // '.'
 
      end subroutine handle_write_failure
 
@@ -764,19 +760,19 @@ contains
         class(logger_type), intent(in)          :: self
 !! The logger to be used in logging the message
         character(len=*), intent(in)            :: message
-!! A string to be written to LOG_UNIT
+!! A string to be written to log_unit
         character(len=*), intent(in), optional  :: module
 !! The name of the module contining the current invocation of `log_error`
         character(len=*), intent(in), optional  :: procedure
 !! The name of the procedure contining the current invocation of `log_error`
         integer, intent(in), optional           :: stat
-!! The value of the `STAT` specifier returned by a Fortran statement
+!! The value of the `stat` specifier returned by a Fortran statement
         character(len=*), intent(in), optional  :: errmsg
-!! The value of the `ERRMSG` specifier returned by a Fortran statement
+!! The value of the `errmsg` specifier returned by a Fortran statement
 
         integer :: unit
         integer :: iostat
-        character(*), parameter :: procedure_name = 'LOG_ERROR'
+        character(*), parameter :: procedure_name = 'log_error'
         character(256) :: iomsg
 
         call self % log_message( message,               &
@@ -800,14 +796,14 @@ contains
             integer, intent(in) :: unit
 
             if ( present(stat) ) then
-                write( unit, '("With STAT = ", i0)', err=999, &
+                write( unit, '("With stat = ", i0)', err=999, &
                     iostat=iostat, iomsg=iomsg ) stat
             end if
 
             if ( present(errmsg) ) then
                 if ( len_trim(errmsg) > 0 ) then
                     call format_output_string( self, unit,          &
-                                               'With ERRMSG = "' // &
+                                               'With errmsg = "' // &
                                                trim(errmsg) // '"', &
                                                procedure_name,      &
                                                '    ' )
@@ -864,7 +860,7 @@ contains
         class(logger_type), intent(in)          :: self
 !! The logger used to send the message
         character(len=*), intent(in)            :: message
-!! A string to be written to LOG_UNIT
+!! A string to be written to log_unit
         character(len=*), intent(in), optional  :: module
 !! The name of the module contining the current invocation of `log_information`
         character(len=*), intent(in), optional  :: procedure
@@ -925,7 +921,7 @@ contains
 
         integer :: unit
         integer :: iostat2
-        character(*), parameter :: procedure_name = 'LOG_ERROR'
+        character(*), parameter :: procedure_name = 'log_error'
         character(256) :: iomsg2
 
         call self % log_message( message,               &
@@ -949,14 +945,14 @@ contains
             integer, intent(in) :: unit
 
             if ( present(iostat) ) then
-                write( unit, '("With IOSTAT = ", i0)', err=999, &
+                write( unit, '("With iostat = ", i0)', err=999, &
                     iostat=iostat2, iomsg=iomsg2 ) iostat
             end if
 
             if ( present(iomsg) ) then
                 if ( len_trim(iomsg) > 0 ) then
                     call format_output_string( self,  unit,        &
-                                               'With IOMSG = "' // &
+                                               'With iomsg = "' // &
                                                trim(iomsg) // '"', &
                                                procedure_name,     &
                                                '    ' )
@@ -1001,9 +997,9 @@ contains
 !!        write( message, `(a, i0)' )          &
 !!              "The user selected ", selection
 !!        call global_logger % log_message( message,                   &
-!!                                          module = 'EXAMPLE_MOD',    &
-!!                                          procedure = 'EXAMPLE_SUB', &
-!!                                          prefix = 'INFO' )
+!!                                          module = 'example_mod',    &
+!!                                          procedure = 'example_sub', &
+!!                                          prefix = 'info' )
 !!      end subroutine example_sub
 !!      ...
 !!    end module example_mod
@@ -1012,7 +1008,7 @@ contains
         class(logger_type), intent(in)          :: self
 !! The logger variable to receive the message
         character(len=*), intent(in)            :: message
-!! A string to be written to LOG_UNIT
+!! A string to be written to log_unit
         character(len=*), intent(in), optional  :: module
 !! The name of the module contining the current invocation of `log_message`
         character(len=*), intent(in), optional  :: procedure
@@ -1022,7 +1018,7 @@ contains
 
         integer :: unit
         integer :: iostat
-        character(*), parameter :: procedure_name = 'LOG_MESSAGE'
+        character(*), parameter :: procedure_name = 'log_message'
         character(256) :: iomsg
         character(:), allocatable :: d_and_t, m_and_p, pref
 
@@ -1148,7 +1144,7 @@ contains
         integer, intent(out), optional        :: stat
 !! Integer flag that an error has occurred. Has the value `success` if no
 !! error hass occurred, `invalid_index` if `column` is less than zero or
-!! greater than `len(line)`, and `write_failure` if any of the `WRITE` statements
+!! greater than `len(line)`, and `write_failure` if any of the `write` statements
 !! has failed.
 
         character(1)              :: acaret
@@ -1339,22 +1335,22 @@ contains
 
 
     subroutine remove_log_unit( self, unit, close_unit, stat )
-!! Remove the I/O UNIT from the SELF % LOG_UNITS list. If CLOSE_UNIT is
-!! present and .TRUE. then the corresponding file is closed. If UNIT is
-!! not in LOG_UNITS then nothing is done. If STAT is present it, by default,
-!! has the value SUCCESS. If closing the UNIT fails, then if STAT is
-!! present it has the value CLOSE_FAILURE, otherwise processing stops
+!! Remove the I/O unit from the self % log_units list. If `close_unit` is
+!! present and `.true.` then the corresponding file is closed. If `unit` is
+!! not in `log_units` then nothing is done. If `stat` is present it, by default,
+!! has the value `success`. If closing the `unit` fails, then if `stat` is
+!! present it has the value `close_failure`, otherwise processing stops
 !! with an informative message.
         class(logger_type), intent(inout) :: self
 !! The logger variable whose unit is to be removed
         integer, intent(in)               :: unit
-!! The I/O unit to be removed from SELF
+!! The I/O unit to be removed from self
         logical, intent(in), optional     :: close_unit
 !! A logical flag to close the unit while removing it from the SELF list
         integer, intent(out), optional    :: stat
 !! An error status with the values
-!! * SUCCESS - no problems found
-!! * CLOSE_FAILURE - the CLOSE statement for UNIT failed
+!! * success - no problems found
+!! * close_failure - the close statement for unit failed
 !!
 !!##### Example
 !!
@@ -1404,9 +1400,9 @@ contains
 
         else
             write(*, '(a, i0)') 'In ' // module_name // ' % ' // &
-                procedure_name // ' CLOSE_UNIT failed for UNIT = ', unit
-            write(*, '(a)' ) 'With IOMSG = ' // trim(errmsg)
-            error stop 'CLOSE_UNIT failed in ' // module_name // ' % ' // &
+                procedure_name // ' close_unit failed for unit = ', unit
+            write(*, '(a)' ) 'With iomsg = ' // trim(errmsg)
+            error stop 'close_unit failed in ' // module_name // ' % ' // &
                 procedure_name // '.'
 
         end if
