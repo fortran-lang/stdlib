@@ -400,7 +400,7 @@ Writes the string `message` to `self % log_units` with optional additional text.
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % log_error(interface)]]( message [, module, procedure, stat, errmsg ] )`
+`call self % [[logger_type(type):log_error(bound)]]( message [, module, procedure, stat, errmsg ] )`
 
 #### Behavior
 
