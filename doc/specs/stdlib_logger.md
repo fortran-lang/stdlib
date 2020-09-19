@@ -917,7 +917,7 @@ closed. If `unit` is not in `self % log_units` then nothing is done.
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % remove_log_unit(interface)]]( unit [, close_unit, stat ] )`
+`call self % [[logger_type(type):remove_log_unit(bound)]]( unit [, close_unit, stat ] )`
 
 #### Class
 
