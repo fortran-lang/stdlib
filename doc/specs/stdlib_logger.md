@@ -71,7 +71,7 @@ significant events encountered during the execution of a program.
 
 ### Syntax
 
-type(logger_type) :: variable
+`type([[stdlib_logger(module):logger_type(type)]]) :: variable`
 
 ### Private attributes
 
