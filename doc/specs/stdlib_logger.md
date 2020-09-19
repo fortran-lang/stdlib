@@ -793,7 +793,7 @@ Returns the number of active I/O units in `self % log_units`
 
 #### Syntax
 
-`Result = [[stdlib_logger(module):self % log_units_assigned(function)]]()`
+`result = self % [[logger_type(type):log_units_assigned(bound)]]()`
 
 #### Class
 
