@@ -558,7 +558,7 @@ written.
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % log_io_error(interface)]]( message [, module, procedure, iostat, iomsg ] )`
+`call self % [[logger_type(type):log_io_error(bound)]]( message [, module, procedure, iostat, iomsg ] )`
 
 #### Class
 
