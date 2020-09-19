@@ -831,7 +831,7 @@ contains
 
     subroutine log_io_error( self, message, module, procedure, iostat, &
                              iomsg )
-!! Writes the string `message to the `self % log_units` with optional
+!! Writes the string `message` to the `self % log_units` with optional
 !! additional text.
 !!
 !!##### Behavior
