@@ -707,7 +707,7 @@ written below `line` at the column indicated by `column`. Then
 
 #### Syntax
 
-`call self % [[logger_type(bound):log_text_error(bound)]]( line, column, summary [, filename, line_number, caret, stat ] )`
+`call self % [[logger_type(type):log_text_error(bound)]]( line, column, summary [, filename, line_number, caret, stat ] )`
 
 #### Class
 
