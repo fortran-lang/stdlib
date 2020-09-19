@@ -4,7 +4,8 @@ module stdlib_logger
 !! This module defines a derived type, procedures, a variable, and
 !! constants to be used for logging information and reporting errors
 !! in Fortran applications.
-!!
+!!([Specification](../page/specs/stdlib_logger.html))
+
 !! The derived type, `logger_type`, is to be used to define variables to
 !! serve as both local and global loggers. A logger directs its messages
 !! to selected I/O units so the user has a record (a log) of major events.
