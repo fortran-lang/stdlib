@@ -1,5 +1,5 @@
 ---
-title: stdlib_logger
+title: logger
 ---
 # Loggers
 
