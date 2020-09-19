@@ -854,7 +854,7 @@ then `module` and `procedure` if present, then
 
 #### Syntax
 
-`call [[stdlib_logger(module):self % log_warning(interface)]]( message [, module, procedure ] )`
+`call self % [[logger_type(type):log_warning(bound)]]( message [, module, procedure ] )`
 
 #### Class
 
