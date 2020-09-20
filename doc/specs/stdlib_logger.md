@@ -662,15 +662,15 @@ It is an `intent(in)` argument. It will precede `message` with an
 #### Example
 
 ```fortran
-    module  example_mod
-      use stdlib_logger
-      ...
-      real, allocatable :: a(:)
-      ...
-      type(logger_type) :: logger
+module  example_mod
+    use stdlib_logger
+    
+    real, allocatable :: a(:)
+    
+    type(logger_type) :: logger
     contains
-      ...
-      subroutine example_sub( selection )
+    
+    subroutine example_sub( selection )
         integer, intent(out) :: selection
         integer        :: stat
         write(*,'(a)') "Enter an integer to select a widget"
@@ -681,9 +681,9 @@ It is an `intent(in)` argument. It will precede `message` with an
                                    module = 'EXAMPLE_MOD',    &
                                    procedure = 'EXAMPLE_SUB', &
                                    prefix = `INFO' )
-      end subroutine example_sub
-      ...
-    end module example_mod
+    end subroutine example_sub
+    
+end module example_mod
 ```
 
 ### `log_text_error` - send a message to `self % log_units` describing an error
