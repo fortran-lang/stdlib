@@ -949,17 +949,17 @@ modified.
 #### Example
 
 ```fortran
-    module  example_mod
-      use stdlib_logger, global => global_logger
-      ...
+module  example_mod
+    use stdlib_logger, global => global_logger
+    
     contains
-      ...
-      subroutine example_sub(unit, ...)
+    
+    subroutine example_sub(unit, ...)
         integer, intent(in) :: unit
-        ...
+    
         call global % remove_log_unit( unit )
-        ...
-      end subroutine example_sub
-      ...
-    end module example_mod
+    
+    end subroutine example_sub
+    
+end module example_mod
 ```
