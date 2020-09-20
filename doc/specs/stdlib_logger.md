@@ -314,25 +314,25 @@ Pure subroutine
 #### Example
 
 ```fortran
-    module example_mod
-      use stdlib_logger
-      ...
-      type(logger_type) :: logger
+module example_mod
+    use stdlib_logger
+   
+    type(logger_type) :: logger
     contains
-      ...
-      subroutine example_sub(unit, ...)
+  
+    subroutine example_sub(unit, ...)
         integer, intent(in) :: unit
-        ...
+  
         integer, allocatable :: log_units(:)
-        ...
+  
         call logger % configuration( log_units=log_units )
         if ( size(log_units) == 0 ) then
            call add_logger_unit( unit )
         end if
-        ..
-      end subroutine example_sub
-      ...
-    end module example_mod
+  
+    end subroutine example_sub
+  
+end module example_mod
 ```
 
 ### `configure` - configure the logging process
