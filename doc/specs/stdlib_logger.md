@@ -815,24 +815,24 @@ The result is the number of I/O units in
 #### Example
 
 ```fortran
-    module  example_mod
-      use stdlib_logger
-      ...
-      type(logger_type) :: logger
+module  example_mod
+    use stdlib_logger
+    
+    type(logger_type) :: logger
     contains
-      ...
-      subroutine example_sub(unit, ...)
+    
+    subroutine example_sub(unit, ...)
         integer, intent(in) :: unit
-        ...
+        
         integer, allocatable :: log_units(:)
-        ...
+        
         if ( logger % log_units_assigned() == 0 ) then
             call logger % add_log_unit( unit )
         end if
-        ...
-      end subroutine example_sub
-      ...
-    end module example_mod
+        
+    end subroutine example_sub
+    
+end module example_mod
 ```
 
 ### `log_warning` - write the string `message` to `log_units`
