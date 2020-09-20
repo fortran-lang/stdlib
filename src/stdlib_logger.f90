@@ -85,19 +85,23 @@ module stdlib_logger
 
     contains
 
-        procedure, pass(self) :: add_log_file
-        procedure, pass(self) :: add_log_unit
-        procedure, pass(self) :: configuration
-        procedure, pass(self) :: configure
-        final                 :: final_logger
-        procedure, pass(self) :: log_error
-        procedure, pass(self) :: log_information
-        procedure, pass(self) :: log_io_error
-        procedure, pass(self) :: log_message
-        procedure, pass(self) :: log_text_error
-        procedure, pass(self) :: log_units_assigned
-        procedure, pass(self) :: log_warning
-        procedure, pass(self) :: remove_log_unit
+        private
+
+        procedure, public, pass(self) :: add_log_file
+        procedure, public, pass(self) :: add_log_unit
+        procedure, public, pass(self) :: configuration
+        procedure, public, pass(self) :: configure
+        procedure, public, pass(self) :: log_error
+        procedure, public, pass(self) :: log_information
+        procedure, public, pass(self) :: log_io_error
+        procedure, public, pass(self) :: log_message
+        procedure, public, pass(self) :: log_text_error
+        procedure, public, pass(self) :: log_units_assigned
+        procedure, public, pass(self) :: log_warning
+        procedure, public, pass(self) :: remove_log_unit
+
+        final :: final_logger
+
     end type logger_type
 
     !! Variable of type `logger_type` to be used as a global logger
