@@ -98,7 +98,7 @@ The module defines twelve public procedures: one function and eleven
 subroutines.  The
 methods are:
 
-Procedure            | Class      | Description
+Method               | Class      | Description
 ---------------------|------------|------------
 [`add_log_file`](./stdlib_logger.html#add_log_file-open-a-file-and-add-its-unit-to-self-log_units)       | Subroutine | Opens a file using `newunit`, and adds the resulting unit to the `log_units` list
 [`add_log_unit`](./stdlib_logger.html#add_log_unit-add-a-unit-to-the-array-self-log_units)       | Subroutine | Adds an existing unit to the `log_units` list
