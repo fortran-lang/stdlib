@@ -70,7 +70,6 @@ module stdlib_logger
 
     character(*), parameter :: module_name = 'stdlib_logger'
 
-    !! Public derived type
     type :: logger_type
         !! version: experimental
         
