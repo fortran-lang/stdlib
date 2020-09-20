@@ -879,28 +879,28 @@ Subroutine
 #### Example
 
 ```fortran
-    module  example_mod
-      use stdlib_logger
-      ...
-      real, allocatable :: a(:)
-      type(logger_type) :: logger
-      ...
+module  example_mod
+    use stdlib_logger
+    
+    real, allocatable :: a(:)
+    type(logger_type) :: logger
+    
     contains
-      ...
-      subroutine example_sub( size, stat )
+    
+    subroutine example_sub( size, stat )
         integer, intent(in)  :: size
         integer, intent(out) :: stat
         allocate( a(size) )
         if ( stat /= 0 ) then
-          write( message, '(a, i0)' )                    &
+            write( message, '(a, i0)' )                    &
               "Allocation of A failed with SIZE = ", size
-          call logger % log_warning( message,                 &
+            call logger % log_warning( message,                 &
                                      module = 'EXAMPLE_MOD',  &
                                      procedure = 'EXAMPLE_SUB' )
-        end if
-      end subroutine example_sub
-      ...
-    end module example_mod
+          end if
+     end subroutine example_sub
+     
+end module example_mod
 ```
 
 ### `remove_log_unit` - remove `unit` from `self % log_units`
