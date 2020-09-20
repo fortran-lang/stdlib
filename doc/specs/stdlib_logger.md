@@ -100,18 +100,18 @@ procedures are:
 
 Procedure            | Class      | Description
 ---------------------|------------|------------
-`add_log_file`       | Subroutine | Opens a file using `newunit`, and adds the resulting unit to the `log_units` list
-`add_log_unit`       | Subroutine | Adds an existing unit to the `log_units` list
-`configure`          | Subroutine | Configures the details of the logging process
-`configuration`      | Subroutine | Reports the details of the logging configuration
-`log_error`          | Subroutine | Sends a message prepended by `'ERROR: '` optionally followed by a `stat` or `errmsg`
-`log_information`    | Subroutine | Sends a message prepended by `'INFO: '`
-`log_io_error`       | Subroutine | Sends a message prepended by `'I/O ERROR: '` optionally followed by an `iostat` or `iomsg`
-`log_message`        | Subroutine | Sends a message
-`log_text_error`     | Subroutine | Sends a message describing an error found in a line of text
-`log_units_assigned` | Function   | Returns the number of active I/O units in `log_units`
-`log_warning`        | Subroutine | Sends a message prepended by `'WARN: '`
-`remove_log_unit`    | Subroutine | Removes the `unit` number from the `log_units` array
+[`add_log_file`](./stdlib_logger.html#add_log_file-open-a-file-and-add-its-unit-to-self-log_units)       | Subroutine | Opens a file using `newunit`, and adds the resulting unit to the `log_units` list
+[`add_log_unit`](./stdlib_logger.html#add_log_unit-add-a-unit-to-the-array-self-log_units)       | Subroutine | Adds an existing unit to the `log_units` list
+[`configuration`](./stdlib_logger.html#configuration-report-a-loggers-configuration)      | Subroutine | Reports the details of the logging configuration
+[`configure`](./stdlib_logger.html#configure-configure-the-logging-process)          | Subroutine | Configures the details of the logging process
+[`log_error`](./stdlib_logger.html#log_error-writes-the-string-message-to-self-log_units)          | Subroutine | Sends a message prepended by `'ERROR: '` optionally followed by a `stat` or `errmsg`
+[`log_information`](./stdlib_logger.html#log_information-writes-the-string-message-to-self-log_units)    | Subroutine | Sends a message prepended by `'INFO: '`
+[`log_io_error`](./stdlib_logger.html#log_io_error-write-the-string-message-to-self-log_units)       | Subroutine | Sends a message prepended by `'I/O ERROR: '` optionally followed by an `iostat` or `iomsg`
+[`log_message`](./stdlib_logger.html#log_message-write-the-string-message-to-self-log_units)        | Subroutine | Sends a message
+[`log_text_error`](./stdlib_logger.html#log_text_error-send-a-message-to-self-log_units-describing-an-error)     | Subroutine | Sends a message describing an error found in a line of text
+[`log_units_assigned`](./stdlib_logger.html#log_units_assigned-returns-the-number-of-active-io-units) | Function   | Returns the number of active I/O units in `log_units`
+[`log_warning`](./stdlib_logger.html#log_warning-write-the-string-message-to-log_units)        | Subroutine | Sends a message prepended by `'WARN: '`
+[`remove_log_unit`](./stdlib_logger.html#remove_log_unit-remove-unit-from-self-log_units)    | Subroutine | Removes the `unit` number from the `log_units` array
 
 ## Specification of the `logger_type` methods
 
