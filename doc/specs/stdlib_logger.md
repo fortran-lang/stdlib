@@ -96,7 +96,7 @@ application.
 
 The module defines twelve public procedures: one function and eleven
 subroutines.  The
-procedures are:
+methods are:
 
 Procedure            | Class      | Description
 ---------------------|------------|------------
