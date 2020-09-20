@@ -513,15 +513,15 @@ Subroutine
 #### Example
 
 ```fortran
-    module  example_mod
-      use stdlib_logger
-      ...
-      real, allocatable :: a(:)
-      ...
-      type(logger_type) :: logger
+module  example_mod
+    use stdlib_logger
+    
+    real, allocatable :: a(:)
+    
+    type(logger_type) :: logger
     contains
-      ...
-      subroutine example_sub( selection )
+    
+    subroutine example_sub( selection )
         integer, intent(out) :: selection
         character(128) :: errmsg, message
         integer        :: stat
@@ -531,10 +531,10 @@ Subroutine
               "The user selected ", selection
         call logger % log_information( message,               &
             module = 'EXAMPLE_MOD', procedure = 'EXAMPLE_SUB' )
-        ...
-      end subroutine example_sub
-      ...
-    end module example_mod
+        
+    end subroutine example_sub
+    
+end module example_mod
 ```
 
 ### `log_io_error` - Write the string `message` to `self % log_units`
