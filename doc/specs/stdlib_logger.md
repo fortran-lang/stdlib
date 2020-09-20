@@ -592,26 +592,26 @@ Subroutine
 #### Example
 
 ```fortran
-    program example
-      use stdlib_logger, global=>global_logger
-      ...
-      character(*), parameter :: filename = 'dummy.txt'
-      integer                 :: iostat, lun
-      character(128)          :: iomsg
-      character(*), parameter :: message = &
+program demo_log_io_error
+    use stdlib_logger, global=>global_logger
+    
+    character(*), parameter :: filename = 'dummy.txt'
+    integer                 :: iostat, lun
+    character(128)          :: iomsg
+    character(*), parameter :: message = &
 	    'Failure in opening "dummy.txt".'
 
-      open( newunit=lun, file = filename, form='formatted', &
+    open( newunit=lun, file = filename, form='formatted', &
             status='old', iostat=iostat, iomsg=iomsg )
-      if ( iostat /= 0 ) then
+    if ( iostat /= 0 ) then
         call global % log_io_error( message,               &
                                     procedure = 'EXAMPLE', &
                                     iostat=iostat,         &
                                     iomsg = iomsg )
-        error stop 'Error on opening a file'
-      end if
-      ...
-    end program example
+         error stop 'Error on opening a file'
+    end if
+
+end program demo_log_io_error
 ```
 
 ### `log_message` - write the string `message` to `self % log_units` 
