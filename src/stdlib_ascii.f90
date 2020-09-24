@@ -153,7 +153,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)
-        is_lower = (ic >= iachar('a')) .and. (ic <= iachar('z'))
+        is_lower = ic >= iachar('a') .and. ic <= iachar('z')
     end function
 
     !> Checks whether `c` is an uppercase ASCII letter (A .. Z).
