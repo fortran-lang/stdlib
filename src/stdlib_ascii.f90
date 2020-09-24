@@ -144,7 +144,8 @@ contains
     pure logical function is_printable(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
-        ic = iachar(c)                    ! '~'
+        ic = iachar(c)
+        !The character is printable if it's between ' ' and '~' in the ASCII table
         is_printable = ic >= iachar(' ') .and. ic <= int(z'7E')
     end function
 
