@@ -60,6 +60,9 @@ module stdlib_ascii
     character(len=*), public, parameter :: lowercase = letters(27:) !! a .. z
     character(len=*), public, parameter :: whitespace = " "//TAB//VT//CR//LF//FF !! ASCII _whitespace
 
+    character(len=26), parameter, private :: lower_case = 'abcdefghijklmnopqrstuvwxyz'
+    character(len=26), parameter, private :: upper_case = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
 contains
 
     !> Checks whether `c` is an ASCII letter (A .. Z, a .. z).
@@ -135,7 +138,9 @@ contains
     pure logical function is_graphical(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
-        ic = iachar(c) !  '!'                     '~'
+        ic = iachar(c)
+        !The character is graphical if it's between '!' and '~' in the ASCII table,
+        !that is: printable but not a space
         is_graphical = (int(z'21') <= ic) .and. (ic <= int(z'7E'))
     end function
 
@@ -162,7 +167,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)
-        is_upper = (ic >= iachar('A')) .and. (ic <= iachar('Z'))
+        is_upper = ic >= iachar('A') .and. ic <= iachar('Z')
     end function
 
     !> Checks whether or not `c` is a whitespace character. That includes the
@@ -172,7 +177,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)             ! TAB, LF, VT, FF, CR
-        is_white = (ic == iachar(' ')) .or. (ic >= int(z'09') .and. ic <= int(z'0D'));
+        is_white = ic == iachar(' ') .or. (ic >= int(z'09') .and. ic <= int(z'0D'))
     end function
 
     !> Checks whether or not `c` is a blank character. That includes the
@@ -181,31 +186,39 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)             ! TAB
-        is_blank = (ic == iachar(' ')) .or. (ic == int(z'09'));
+        is_blank = ic == iachar(' ') .or. ic == int(z'09')
     end function
 
     !> Returns the corresponding lowercase letter, if `c` is an uppercase
     !  ASCII character, otherwise `c` itself.
     pure function to_lower(c) result(t)
         character(len=1), intent(in) :: c !! A character.
-        character(len=1) :: t
-        integer :: diff
-        diff = iachar('A')-iachar('a')
-        t = c
-        ! if uppercase, make lowercase
-        if (is_upper(t)) t = achar(iachar(t) - diff)
+        character(len=1)             :: t
+        integer :: k
+
+        k = index( upper_case, c )
+
+        if ( k > 0 ) then
+            t = lower_case(k:k)
+        else
+            t = c
+        endif
     end function
 
     !> Returns the corresponding uppercase letter, if `c` is a lowercase
     !  ASCII character, otherwise `c` itself.
     pure function to_upper(c) result(t)
         character(len=1), intent(in) :: c !! A character.
-        character(len=1) :: t
-        integer :: diff
-        diff = iachar('A')-iachar('a')
-        t = c
-        ! if lowercase, make uppercase
-        if (is_lower(t)) t = achar(iachar(t) + diff)
+        character(len=1)             :: t
+        integer :: k
+
+        k = index( lower_case, c )
+
+        if ( k > 0 ) then
+            t = upper_case(k:k)
+        else
+            t = c
+        endif
     end function
 
 end module
