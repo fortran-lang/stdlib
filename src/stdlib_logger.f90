@@ -33,7 +33,7 @@ module stdlib_logger
 !! in their optional `stat` arguments. The constants are as follows.
 !! `success` indicates that no error has occurred. `close_failure`
 !! indicates that a `close` statement for an I/O unit failed.
-!! `invalid_index_error` indicates that `column` was invalid for
+!! `index_invalid_error` indicates that `column` was invalid for
 !! the given `line`. `open_failure` indicates that an `open` statement
 !! failed. `read_only_error` indicates that an output unit did not have a
 !! `"write"` or `"readwrite"` action. `non_sequential_error` indicates
@@ -60,7 +60,7 @@ module stdlib_logger
     integer, parameter, public :: &
         success = 0,              &
         close_failure = 1,        &
-        invalid_index_error = 2,  &
+        index_invalid_error = 2,  &
         non_sequential_error = 3, &
         open_failure = 4,         &
         read_only_error = 5,      &
@@ -1103,7 +1103,7 @@ contains
 !! The symbol used to mark the column wher the error was first detected
         integer, intent(out), optional        :: stat
 !! Integer flag that an error has occurred. Has the value `success` if no
-!! error hass occurred, `invalid_index` if `column` is less than zero or
+!! error hass occurred, `index_invalid_error` if `column` is less than zero or
 !! greater than `len(line)`, and `write_failure` if any of the `write` statements
 !! has failed.
 
@@ -1119,7 +1119,7 @@ contains
 
         if ( column < 0 .or. column > len( line ) + 1 ) then
             if ( present(stat) ) then
-                stat = invalid_index_error
+                stat = index_invalid_error
                 return
             else
                 call self % log_error( invalid_column,           &
