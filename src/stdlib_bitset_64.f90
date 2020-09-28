@@ -82,7 +82,7 @@ contains
     end subroutine assign_64
 
 
-    pure module subroutine assign_log8_64( self, logical_vector )
+    module subroutine assign_log8_64( self, logical_vector )
 !     Used to define assignment from an array of type logical for bitset_64
         type(bitset_64), intent(out) :: self
         logical(int8), intent(in)    :: logical_vector(:)
@@ -94,7 +94,6 @@ contains
         if ( log_size > 64 ) then
             error stop module_name // ' % ' // 'ASSIGNMENT' // " has " // &
                 "SIZE(LOGICAL_VECTOR) > 64 with assignment to a BITSET_64."
-
         end if
         self % num_bits = log_size
         self % block = 0
@@ -108,7 +107,7 @@ contains
     end subroutine assign_log8_64
 
 
-    pure module subroutine assign_log16_64( self, logical_vector )
+    module subroutine assign_log16_64( self, logical_vector )
 !     Used to define assignment from an array of type logical for bitset_64
         type(bitset_64), intent(out) :: self
         logical(int16), intent(in)   :: logical_vector(:)
@@ -120,7 +119,6 @@ contains
         if ( log_size > 64 ) then
             error stop module_name // ' % ' // 'ASSIGNMENT' // " has " // &
                 "SIZE(LOGICAL_VECTOR) > 64 with assignment to a BITSET_64."
-
         end if
         self % num_bits = log_size
         self % block = 0
@@ -134,7 +132,7 @@ contains
     end subroutine assign_log16_64
 
 
-    pure module subroutine assign_log32_64( self, logical_vector )
+    module subroutine assign_log32_64( self, logical_vector )
 !     Used to define assignment from an array of type logical for bitset_64
         type(bitset_64), intent(out) :: self
         logical(int32), intent(in)   :: logical_vector(:)
@@ -159,7 +157,7 @@ contains
     end subroutine assign_log32_64
 
 
-    pure module subroutine assign_log64_64( self, logical_vector )
+    module subroutine assign_log64_64( self, logical_vector )
 !     Used to define assignment from an array of type logical for bitset_64
         type(bitset_64), intent(out) :: self
         logical(int64), intent(in)   :: logical_vector(:)
