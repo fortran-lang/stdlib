@@ -1205,7 +1205,7 @@ module stdlib_bitsets
 !!
 !! Type for bitsets with no more than 64 bits.
         private
-        integer(block_kind), private, allocatable :: block
+        integer(block_kind), private :: block = 0
 
     contains
 
