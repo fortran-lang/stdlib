@@ -50,7 +50,7 @@ Error Code             | Description
 -----------------------|------------
 `success`              | no error was detected
 `close_failure`        | a `close` statement for an I/O unit failed
-`invalid_index_error`  | the `column` was invalid for the given `line`
+`index_invalid_error`  | the `column` was invalid for the given `line`
 `non_sequential_error` | the I/O unit did not have `SEQUENTIAL` access
 `open_failure`         | an `open` statement failed
 `read_only_error`      | an output unit did not have an `access` specifier of `'WRITE'` or `'READWRITE'`
