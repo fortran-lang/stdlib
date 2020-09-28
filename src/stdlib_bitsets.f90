@@ -1512,7 +1512,7 @@ module stdlib_bitsets
             type(bitset_64), intent(in)  :: set2
         end subroutine assign_64
 
-        pure module subroutine assign_log8_64( self, logical_vector )
+        module subroutine assign_log8_64( self, logical_vector )
 !! Version: experimental
 !!
 !! Used to define assignment from an array of type `logical(int8)` to a
@@ -1521,7 +1521,7 @@ module stdlib_bitsets
             logical(int8), intent(in)    :: logical_vector(:)
         end subroutine assign_log8_64
 
-        pure module subroutine assign_log16_64( self, logical_vector )
+        module subroutine assign_log16_64( self, logical_vector )
 !! Version: experimental
 !!
 !! Used to define assignment from an array of type `logical(int16)` to a
@@ -1530,7 +1530,7 @@ module stdlib_bitsets
             logical(int16), intent(in)   :: logical_vector(:)
         end subroutine assign_log16_64
 
-        pure module subroutine assign_log32_64( self, logical_vector )
+        module subroutine assign_log32_64( self, logical_vector )
 !! Version: experimental
 !!
 !! Used to define assignment from an array of type `logical(int32)` to a
@@ -1539,7 +1539,7 @@ module stdlib_bitsets
             logical(int32), intent(in)   :: logical_vector(:)
         end subroutine assign_log32_64
 
-        pure module subroutine assign_log64_64( self, logical_vector )
+        module subroutine assign_log64_64( self, logical_vector )
 !! Version: experimental
 !!
 !! Used to define assignment from an array of type `logical(int64)` to a
