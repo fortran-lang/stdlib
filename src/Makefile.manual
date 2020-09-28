@@ -43,6 +43,8 @@ clean:
 
 # Fortran module dependencies
 f18estop.o: stdlib_error.o
+stdlib_bitset_64.o: stdlib_bitsets.o
+stdlib_bitset_large.o: stdlib_bitsets.o
 stdlib_error.o: stdlib_optval.o
 stdlib_io.o: \
 	stdlib_error.o \
