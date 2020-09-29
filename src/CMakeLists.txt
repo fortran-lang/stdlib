@@ -31,6 +31,9 @@ fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
     stdlib_ascii.f90
+    stdlib_bitsets.f90
+    stdlib_bitset_64.f90
+    stdlib_bitset_large.f90
     stdlib_error.f90
     stdlib_kinds.f90
     stdlib_logger.f90
