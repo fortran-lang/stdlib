@@ -1,0 +1,3 @@
+PROGS_SRC = test_stdlib_bitset_64.f90 test_stdlib_bitset_large.f90
+
+include ../Makefile.manual.test.mk
