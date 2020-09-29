@@ -1,0 +1,1 @@
+ADDTEST(stdlib_logger)

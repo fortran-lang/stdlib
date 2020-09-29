@@ -33,6 +33,7 @@ set(SRC
     stdlib_ascii.f90
     stdlib_error.f90
     stdlib_kinds.f90
+    stdlib_logger.f90
     stdlib_system.F90
     ${outFiles}
 )
