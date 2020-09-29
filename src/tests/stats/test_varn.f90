@@ -1,6 +1,6 @@
 program test_varn
     use stdlib_error, only: check
-    use stdlib_kinds, only: sp, dp, int32, int64
+    use stdlib_kinds, only: sp, dp, int32
     use stdlib_stats, only: var
     use,intrinsic :: ieee_arithmetic, only : ieee_is_nan
     implicit none

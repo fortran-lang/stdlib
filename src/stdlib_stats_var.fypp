@@ -27,7 +27,7 @@ contains
           return
         end if
 
-        n = size(x, kind = int64)
+        n = real(size(x, kind = int64), ${k1}$)
         mean = sum(x) / n
 
         #:if t1[0] == 'r'
@@ -57,7 +57,7 @@ contains
           return
         end if
 
-        n = size(x, kind = int64)
+        n = real(size(x, kind = int64), dp)
         mean = sum(real(x, dp)) / n
 
         res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
@@ -161,7 +161,7 @@ contains
         real(${k1}$) :: n
         ${t1}$ :: mean
 
-        n = count(mask, kind = int64)
+        n = real(count(mask, kind = int64), ${k1}$)
         mean = sum(x, mask) / n
 
         #:if t1[0] == 'r'
@@ -187,7 +187,7 @@ contains
 
         real(dp) :: n, mean
 
-        n = count(mask, kind = int64)
+        n = real(count(mask, kind = int64), dp)
         mean = sum(real(x, dp), mask) / n
 
         res = sum((real(x, dp) - mean)**2, mask) / (n -&
