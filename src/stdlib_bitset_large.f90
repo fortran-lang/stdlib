@@ -41,11 +41,11 @@ contains
         type(bitset_large), intent(inout) :: set1
         type(bitset_large), intent(in)    :: set2
 
-        integer(bits_kind) :: ablock
+        integer(bits_kind) :: block_
 
-        do ablock = 1, size(set1 % blocks)
-            set1 % blocks(ablock) = iand( set1 % blocks(ablock), &
-                                          set2 % blocks(ablock) )
+        do block_ = 1, size(set1 % blocks)
+            set1 % blocks(block_) = iand( set1 % blocks(block_), &
+                                          set2 % blocks(block_) )
         end do
 
     end subroutine and_large
@@ -60,11 +60,11 @@ contains
         type(bitset_large), intent(inout) :: set1
         type(bitset_large), intent(in)    :: set2
 
-        integer(bits_kind) :: ablock
+        integer(bits_kind) :: block_
 
-        do ablock = 1, size( set1 % blocks )
-            set1 % blocks(ablock) =                                      &
-                iand( set1 % blocks(ablock), not( set2 % blocks(ablock) ) )
+        do block_ = 1, size( set1 % blocks )
+            set1 % blocks(block_) =                                      &
+                iand( set1 % blocks(block_), not( set2 % blocks(block_) ) )
         end do
 
     end subroutine and_not_large
@@ -75,10 +75,10 @@ contains
         logical                         :: any
         class(bitset_large), intent(in) :: self
 
-        integer(bits_kind) :: ablock
+        integer(bits_kind) :: block_
 
-        do ablock = 1, size(self % blocks)
-            if ( self % blocks(ablock) /= 0 ) then
+        do block_ = 1, size(self % blocks)
+            if ( self % blocks(block_) /= 0 ) then
                 any = .true.
                 return
             end if
@@ -293,19 +293,19 @@ contains
         integer(bits_kind)              ::  bit_count
         class(bitset_large), intent(in) :: self
 
-        integer(bits_kind) :: ablock, pos
+        integer(bits_kind) :: block_, pos
 
         bit_count = 0
-        do ablock = 1, size(self % blocks) - 1
+        do block_ = 1, size(self % blocks) - 1
             do pos = 0, block_size-1
-                if ( btest( self % blocks(ablock), pos ) ) &
+                if ( btest( self % blocks(block_), pos ) ) &
                     bit_count = bit_count + 1
             end do
 
         end do
 
-        do pos = 0, self % num_bits - (ablock-1)*block_size - 1
-            if ( btest( self % blocks(ablock), pos ) ) bit_count = bit_count + 1
+        do pos = 0, self % num_bits - (block_-1)*block_size - 1
+            if ( btest( self % blocks(block_), pos ) ) bit_count = bit_count + 1
         end do
 
     end function bit_count_large
@@ -339,7 +339,7 @@ contains
         class(bitset_large), intent(inout) :: self
         integer(bits_kind), intent(in)     :: start_pos, stop_pos
 
-        integer(bits_kind) :: bit, ablock, first_block, last_block, &
+        integer(bits_kind) :: bit, block_, first_block, last_block, &
                               true_first, true_last
 
         true_first = max( 0, start_pos )
@@ -375,8 +375,8 @@ contains
                      0 )
 
 !     Do intermediate blocks
-        do ablock = first_block+1, last_block-1
-            self % blocks(ablock) = all_zeros
+        do block_ = first_block+1, last_block-1
+            self % blocks(block_) = all_zeros
         end do
 
     end subroutine clear_range_large
@@ -501,7 +501,7 @@ contains
         class(bitset_large), intent(inout) :: self
         integer(bits_kind), intent(in)     :: start_pos, stop_pos
 
-        integer(bits_kind) :: bit, ablock, end_bit, first_block, last_block, &
+        integer(bits_kind) :: bit, block_, end_bit, first_block, last_block, &
                               start_bit
 
         start_bit = max( 0, start_pos )
@@ -537,8 +537,8 @@ contains
                      0 )
 
 !     Do remaining blocks
-        do ablock = first_block+1, last_block-1
-            self % blocks(ablock) = not( self % blocks(ablock) )
+        do block_ = first_block+1, last_block-1
+            self % blocks(block_) = not( self % blocks(block_) )
         end do
 
     end subroutine flip_range_large
@@ -609,12 +609,12 @@ contains
         logical                        :: ge
         type(bitset_large), intent(in) :: set1, set2
 
-        integer(bits_kind) :: ablock
+        integer(bits_kind) :: block_
 
-        do ablock = size(set1 % blocks), 1, -1
-            if ( set1 % blocks(ablock) == set2 % blocks(ablock) ) then
+        do block_ = size(set1 % blocks), 1, -1
+            if ( set1 % blocks(block_) == set2 % blocks(block_) ) then
                 cycle
-            else if ( bgt(set1 % blocks(ablock), set2 % blocks(ablock) ) ) then
+            else if ( bgt(set1 % blocks(block_), set2 % blocks(block_) ) ) then
                 ge = .true.
                 return
             else
@@ -637,12 +637,12 @@ contains
         logical                        :: gt
         type(bitset_large), intent(in) :: set1, set2
 
-        integer(bits_kind) :: ablock
+        integer(bits_kind) :: block_
 
-        do ablock = size(set1 % blocks), 1, -1
-            if ( set1 % blocks(ablock) == set2 % blocks(ablock) ) then
+        do block_ = size(set1 % blocks), 1, -1
+            if ( set1 % blocks(block_) == set2 % blocks(block_) ) then
                 cycle
-            else if ( bgt( set1 % blocks(ablock), set2 % blocks(ablock) ) ) then
+            else if ( bgt( set1 % blocks(block_), set2 % blocks(block_) ) ) then
                 gt = .true.
                 return
             else
@@ -789,12 +789,12 @@ contains
         logical                        :: le
         type(bitset_large), intent(in) :: set1, set2
 
-        integer(bits_kind) :: ablock
+        integer(bits_kind) :: block_
 
-        do ablock = size(set1 % blocks), 1, -1
-            if ( set1 % blocks(ablock) == set2 % blocks(ablock) ) then
+        do block_ = size(set1 % blocks), 1, -1
+            if ( set1 % blocks(block_) == set2 % blocks(block_) ) then
                 cycle
-            else if ( blt( set1 % blocks(ablock), set2 % blocks(ablock) ) ) then
+            else if ( blt( set1 % blocks(block_), set2 % blocks(block_) ) ) then
                 le = .true.
                 return
             else
@@ -818,12 +818,12 @@ contains
         logical                        :: lt
         type(bitset_large), intent(in) :: set1, set2
 
-        integer(bits_kind) :: ablock
+        integer(bits_kind) :: block_
 
-        do ablock = size(set1 % blocks), 1, -1
-            if ( set1 % blocks(ablock) == set2 % blocks(ablock) ) then
+        do block_ = size(set1 % blocks), 1, -1
+            if ( set1 % blocks(block_) == set2 % blocks(block_) ) then
                 cycle
-            else if ( blt( set1 % blocks(ablock), set2 % blocks(ablock) ) ) then
+            else if ( blt( set1 % blocks(block_), set2 % blocks(block_) ) ) then
                 lt = .true.
                 return
             else
@@ -911,11 +911,11 @@ contains
         type(bitset_large), intent(inout) :: set1
         type(bitset_large), intent(in)    :: set2
 
-        integer(bits_kind) :: ablock
+        integer(bits_kind) :: block_
 
-        do ablock = 1, size( set1 % blocks )
-            set1 % blocks(ablock) = ior( set1 % blocks(ablock), &
-                                         set2 % blocks(ablock) )
+        do block_ = 1, size( set1 % blocks )
+            set1 % blocks(block_) = ior( set1 % blocks(block_), &
+                                         set2 % blocks(block_) )
         end do
 
     end subroutine or_large
@@ -977,7 +977,6 @@ contains
         integer, intent(out), optional  :: status
 
         integer(bits_kind)      :: bit, bits
-        integer(int64)          :: bits_needed
         integer(bits_kind)      :: digits, pos
         character(*), parameter :: procedure = "READ_BITSET"
         integer                 :: stat
@@ -1098,11 +1097,9 @@ contains
         integer(bits_kind)            :: bit, bits, digits
         integer                       :: ierr
         character(len=128)            :: message
-        character(len=:), allocatable :: literal
-        integer(bits_kind)            :: pos
         character(*), parameter       :: procedure = "READ_BITSET"
         integer                       :: stat
-        character(len=1)              :: char, quote
+        character(len=1)              :: char
 
         do
             read( unit,         &
@@ -1262,7 +1259,7 @@ contains
         class(bitset_large), intent(inout) :: self
         integer(bits_kind), intent(in) :: start_pos, stop_pos
 
-        integer(bits_kind) :: bit, ablock, end_bit, first_block, last_block, &
+        integer(bits_kind) :: bit, block_, end_bit, first_block, last_block, &
                               start_bit
 
         start_bit = max( 0, start_pos )
@@ -1298,8 +1295,8 @@ contains
                      0 )
 
 ! Do remaining blocks
-        do ablock = first_block+1, last_block-1
-            self % blocks(ablock) = all_ones
+        do block_ = first_block+1, last_block-1
+            self % blocks(block_) = all_ones
         end do
 
     end subroutine set_range_large
@@ -1409,12 +1406,7 @@ contains
         integer(bits_kind) :: bit,          &
                               bit_count,    &
                               count_digits, &
-                              digit,        &
-                              digits,       &
-                              max_bit,      &
-                              pos,          &
-                              processed,    &
-                              val
+                              pos
         integer :: stat
 
         character(*), parameter :: procedure = 'WRITE_BITSET'
@@ -1567,11 +1559,11 @@ contains
         type(bitset_large), intent(inout) :: set1
         type(bitset_large), intent(in)    :: set2
 
-        integer(bits_kind) :: ablock
+        integer(bits_kind) :: block_
 
-        do ablock = 1, size(set1 % blocks)
-            set1 % blocks(ablock) = ieor( set1 % blocks(ablock), &
-                                          set2 % blocks(ablock) )
+        do block_ = 1, size(set1 % blocks)
+            set1 % blocks(block_) = ieor( set1 % blocks(block_), &
+                                          set2 % blocks(block_) )
         end do
 
     end subroutine xor_large

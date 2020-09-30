@@ -410,7 +410,7 @@ contains
         class(bitset_64), intent(inout) :: self
         integer(bits_kind), intent(in)  :: start_pos, stop_pos
 
-        integer(bits_kind) :: bit, end_bit, start_bit
+        integer(bits_kind) :: end_bit, start_bit
 
         start_bit = max( 0, start_pos )
         end_bit   = min( stop_pos , self % num_bits-1 )
@@ -729,7 +729,6 @@ contains
         integer                 :: ierr
         character(len=120)      :: message
         character(*), parameter :: procedure = "OUTPUT"
-        integer(bits_kind)      :: words
 
         write(unit, iostat=ierr, iomsg=message) self % num_bits
         if (ierr /= 0) go to 999
@@ -766,12 +765,11 @@ contains
 !     CHAR_STRING_TOO_SMALL_ERROR if the string ends before all the bits
 !     are read.
 !
-        class(bitset_64), intent(out) :: self
-        character(len=*), intent(in)    :: string
-        integer, intent(out), optional  :: status
+        class(bitset_64), intent(out)  :: self
+        character(len=*), intent(in)   :: string
+        integer, intent(out), optional :: status
 
         integer(bits_kind)      :: bit, bits
-        integer(int64)          :: bits_needed
         integer(bits_kind)      :: digits, pos
         character(*), parameter :: procedure = "READ_BITSET"
         integer                 :: stat
@@ -888,11 +886,8 @@ contains
         integer(bits_kind)            :: bit, bits, digits
         integer                       :: ierr
         character(len=128)            :: message
-        character(len=:), allocatable :: literal
-        integer(bits_kind)            :: pos
         character(*), parameter       :: procedure = "READ_BITSET"
-        integer                       :: stat
-        character(len=1)              :: char, quote
+        character(len=1)              :: char
 
         do
             read( unit,         &
@@ -1041,8 +1036,6 @@ contains
         class(bitset_64), intent(inout) :: self
         integer(bits_kind), intent(in)  :: pos
 
-        integer(bits_kind) :: set_block, block_bit
-
         if ( pos < 0 .OR. pos > self % num_bits-1 ) return
         self % block = ibset( self % block, pos )
 
@@ -1058,7 +1051,7 @@ contains
         class(bitset_64), intent(inout) :: self
         integer(bits_kind), intent(in) :: start_pos, stop_pos
 
-        integer(bits_kind) :: bit, end_bit, start_bit
+        integer(bits_kind) :: end_bit, start_bit
 
         start_bit = max( 0, start_pos )
         end_bit   = min( stop_pos, self % num_bits-1 )
@@ -1176,12 +1169,7 @@ contains
         integer(bits_kind) :: bit,          &
                               bit_count,    &
                               count_digits, &
-                              digit,        &
-                              digits,       &
-                              max_bit,      &
-                              pos,          &
-                              processed,    &
-                              val
+                              pos
         integer :: stat
 
         character(*), parameter :: procedure = 'WRITE_BITSET'
