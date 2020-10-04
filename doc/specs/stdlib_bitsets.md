@@ -136,7 +136,7 @@ is mapped to a set bit, and `.false.` is mapped to an unset bit.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_assignment
         use stdlib_bitsets
         logical(int8)  :: logical1(64) = .true.
@@ -161,6 +161,7 @@ is mapped to a set bit, and `.false.` is mapped to an unset bit.
             write(*,*) 'Initialization of logical(int32) succeeded.'
         end if
     end program demo_assignment
+```
 
 ### Table of the `bitset_type` methods
 
@@ -263,7 +264,7 @@ otherwise it is `.false.`.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_all
         use stdlib_bitsets
         character(*), parameter :: &
@@ -281,7 +282,7 @@ otherwise it is `.false.`.
                 " into set0."
         end if
     end program demo_all
-
+```
 
 #### `and` - bitwise `and` of the bits of two bitsets.
 
@@ -316,7 +317,7 @@ number of bits as `set1`.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_and
         use stdlib_bitsets
         type(bitset_large) :: set0, set1
@@ -334,6 +335,7 @@ number of bits as `set1`.
         call and( set0, set1 ) ! all all
         if ( all(set0) ) write(*,*) 'Fourth test of AND worked.'
     end program demo_and
+```
 
 ### `and_not` - Bitwise `and` of one bitset with the negation of another
 
@@ -369,7 +371,7 @@ number of bits as `set1` otherwise the result is undefined.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_and_not
         use stdlib_bitsets
         type(bitset_large) :: set0, set1
@@ -388,6 +390,7 @@ number of bits as `set1` otherwise the result is undefined.
         call and_not( set0, set1 ) ! all all
         if ( none(set0) ) write(*,*) 'Fourth test of AND_NOT worked.'
     end program demo_and_not
+```
 
 ### `any` - determine whether any bits are set
 
@@ -423,7 +426,7 @@ is `.false.`.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_any
         use stdlib_bitsets
         character(*), parameter :: &
@@ -439,7 +442,7 @@ is `.false.`.
             write(*,*) "ANY interpreted SET0's value properly."
         end if
     end program demo_any
-
+```
 
 ### `bit_count` - return the number of bits that are set
 
@@ -474,7 +477,7 @@ The result is the number of bits that are set in `self`.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_bit_count
         use stdlib_bitsets
         character(*), parameter :: &
@@ -490,7 +493,7 @@ The result is the number of bits that are set in `self`.
             write(*,*) "BIT_COUNT interpreted SET0's value properly."
         end if
     end program demo_bit_count
-
+```
 
 #### `bits` - returns the number of bits
 
@@ -525,7 +528,7 @@ The result is the number of defined bits in `self`.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_bits
         use stdlib_bitsets
         character(*), parameter :: &
@@ -537,7 +540,7 @@ The result is the number of defined bits in `self`.
                 "BITS_0's size properly."
         end if
     end program demo_bits
-
+```
 
 ### `clear` - clears a sequence of one or more bits.
 
@@ -586,7 +589,7 @@ an `intent(in)` argument.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_clear
         use stdlib_bitsets
         type(bitset_large) :: set0
@@ -598,6 +601,7 @@ an `intent(in)` argument.
         call set0 % clear(0,164)
         if ( set0 % none() ) write(*,*) 'All bits are cleared.'
     end program demo_clear
+```
 
 ### `extract` - create a new bitset from a range in an old bitset
 
@@ -646,7 +650,7 @@ an `intent(out)` argument. If present it shall have one of the values:
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_extract
         use stdlib_bitsets
         type(bitset_large) :: set0, set1
@@ -657,6 +661,7 @@ an `intent(out)` argument. If present it shall have one of the values:
             write(*,*) 'SET1 has the proper size.'
         if ( set1 % all() ) write(*,*) 'SET1 has the proper values.'
     end program demo_extract
+```
 
 ### `flip` - flip the values of a sequence of one or more bits
 
@@ -703,7 +708,7 @@ an `intent(in)` argument.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_flip
         use stdlib_bitsets
         type(bitset_large) :: set0
@@ -714,6 +719,7 @@ an `intent(in)` argument.
         call set0 % flip(0,164)
         if ( set0 % all() ) write(*,*) 'All bits are flipped.'
     end program demo_flip
+```
 
 ### `from_string` - initializes a bitset from a binary literal
 
@@ -751,7 +757,7 @@ informative text as its stop code.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_from_string
         use stdlib_bitsets
         character(*), parameter :: &
@@ -769,6 +775,7 @@ informative text as its stop code.
                 " into set0."
         end if
     end program demo_from_string
+```
 
 ### `init` - `bitset_type` initialization routines.
 
@@ -815,7 +822,7 @@ stop code. It can have any of the following error codes:
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_init
         use stdlib_bitsets
         type(bitset_large) :: set0
@@ -824,6 +831,7 @@ stop code. It can have any of the following error codes:
             write(*,*) `SET0 has the proper size.'
         if ( set0 % none() ) write(*,*) 'SET0 is properly initialized.'
     end program demo_init
+```
 
 ### `input` - reads a bitset from an unformatted file
 
@@ -874,7 +882,7 @@ values for this `status` are:
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_input
         character(*), parameter :: &
             bits_0   = '000000000000000000000000000000000', &
@@ -905,7 +913,7 @@ values for this `status` are:
                 'output and input succeeded.'
         end if
     end program demo_input
-
+```
 
 ### `none` - determines whether no bits are set
 
@@ -941,7 +949,7 @@ The result is `.true.` if no bits in `self` are set, otherwise it is
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_none
         use stdlib_bitsets
         character(*), parameter :: &
@@ -957,7 +965,7 @@ The result is `.true.` if no bits in `self` are set, otherwise it is
             write(*,*) "NONE interpreted SET0's value properly."
         end if
     end program demo_none
-
+```
 
 ### `not` - Performs the logical complement on a bitset
 
@@ -985,7 +993,7 @@ Elemental subroutine.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_not
         use stdlib_bitsets
         type(bitset_large) :: set0
@@ -999,6 +1007,7 @@ Elemental subroutine.
             write(*,*) "ALL interpreted SET0's value properly."
         end if
     end program demo_not
+```
 
 ### `or` - Bitwise OR of the bits of two bitsets.
 
@@ -1033,7 +1042,7 @@ otherwise the results are undefined.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_or
         use stdlib_bitsets
         type(bitset_large) :: set0, set1
@@ -1052,7 +1061,7 @@ otherwise the results are undefined.
         call or( set0, set1 ) ! all all
         if ( all(set0) ) write(*,*) 'Fourth test of OR worked.'
     end program demo_or
-
+```
 
 ### `output` - Writes a binary representation of a bitset to a file
 
@@ -1093,7 +1102,7 @@ code. The two code values have the meaning:
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_output
         character(*), parameter :: &
             bits_0   = '000000000000000000000000000000000', &
@@ -1124,6 +1133,7 @@ code. The two code values have the meaning:
                 'output and input succeeded.'
         end if
     end program demo_output
+```
 
 ### `read_bitset` - initializes `self` with the value of a *bitset_literal*
 
@@ -1197,7 +1207,7 @@ as its error code. The possible error codes are:
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_read_bitset
         character(*), parameter :: &
             bits_0   = 'S33B000000000000000000000000000000000', &
@@ -1231,7 +1241,7 @@ as its error code. The possible error codes are:
             write(*,*) WRITE_BITSET to READ_BITSET through unit worked.'
         end if
     end program demo_read_bitset
-
+```
 
 ### `set` - sets a sequence of one or more bits to 1.
 
@@ -1283,7 +1293,7 @@ Elemental subroutine
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_set
         use stdlib_bitsets
         type(bitset_large) :: set0
@@ -1294,6 +1304,7 @@ Elemental subroutine
         call set0 % set(0,164)
         if ( set0 % all() ) write(*,*) 'All bits are set.'
     end program demo_set
+```
 
 ### `test` - determine whether a bit is set
 
@@ -1334,7 +1345,7 @@ otherwise it is `.false.`. If `pos` is outside the range
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_test
         use stdlib_bitsets
         type(bitset_large) :: set0
@@ -1346,7 +1357,7 @@ otherwise it is `.false.`. If `pos` is outside the range
         call set0 % set(165)
         if ( set0 % test(165) ) write(*,*) 'Bit 165 is set.'
     end program demo_test
-
+```
 
 ### `to_string` - represent a bitset as a binary literal
 
@@ -1388,7 +1399,7 @@ the stop code. The values have the following meanings:
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_to_string
         use stdlib_bitsets
         character(*), parameter :: &
@@ -1403,6 +1414,7 @@ the stop code. The values have the following meanings:
                 " into NEW_STRING."
         end if
     end program demo_to_string
+```
 
 ### `value` - determine the value of a bit
 
@@ -1442,7 +1454,7 @@ is zero.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_value
         use stdlib_bitsets
         type(bitset_large) :: set0
@@ -1454,7 +1466,7 @@ is zero.
         call set0 % set(165)
         if ( set0 % value(165) == 1 ) write(*,*) 'Bit 165 is set.'
     end program demo_value
-
+```
 
 ### `write_bitset` - writes a *bitset-literal*
 
@@ -1519,7 +1531,7 @@ the following error code values:
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_write_bitset
         character(*), parameter :: &
             bits_0   = 'S33B000000000000000000000000000000000', &
@@ -1553,7 +1565,7 @@ the following error code values:
             write(*,*) WRITE_BITSET to READ_BITSET through unit worked.'
         end if
     end program demo_write_bitset
-
+```
 
 ### `xor` - bitwise exclusive `or`
 
@@ -1588,7 +1600,7 @@ samee number of bits, otherwise the result is undefined.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_xor
         use stdlib_bitsets
         type(bitset_large) :: set0, set1
@@ -1607,7 +1619,7 @@ samee number of bits, otherwise the result is undefined.
         call xor( set0, set1 ) ! all all
         if ( none(set0) ) write(*,*) 'Fourth test of XOR worked.'
     end program demo_xor
-
+```
 
 ## Specification of the `stdlib_bitsets` operators
 
@@ -1650,7 +1662,7 @@ The result is `.true.` if the bits in both bitsets are set
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_equality
         use stdlib_bitsets
         type(bitset_64) :: set0, set1, set2
@@ -1667,6 +1679,7 @@ The result is `.true.` if the bits in both bitsets are set
             error stop 'Failed 64 bit equality tests.'
         end if
     end program demo_equality
+```
 
 ### `/=` - compare two bitsets to determine whether any bits differ in value
 
@@ -1708,7 +1721,7 @@ the result is `.false.`.
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_inequality
         use stdlib_bitsets
         type(bitset_64) :: set0, set1, set2
@@ -1725,6 +1738,7 @@ the result is `.false.`.
             error stop 'Failed 64 bit inequality tests.'
         end if
     end program demo_inequality
+```
 
 ### `>=` - compare two bitsets to determine whether the first is greater than or equal to the second
 
@@ -1769,7 +1783,7 @@ or the highest order different bit is set to 1 in `set1` and to 0 in
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_ge
         use stdlib_bitsets
         type(bitset_64) :: set0, set1, set2
@@ -1787,6 +1801,7 @@ or the highest order different bit is set to 1 in `set1` and to 0 in
             error stop 'Failed 64 bit greater than or equals tests.'
         end if
     end program demo_ge
+```
 
 ### `>` - compare two bitsets to determine whether the first is greater than the other
 
@@ -1830,7 +1845,7 @@ highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_gt
         use stdlib_bitsets
         type(bitset_64) :: set0, set1, set2
@@ -1847,7 +1862,7 @@ highest order different bit is set to 1 in `set1` and to 0 in `set2`,
             error stop 'Failed 64 bit greater than tests.'
         end if
     end program demo_gt
-
+```
 
 ### `<=` - compare two bitsets to determine whether the first is less than or equal to the other
 
@@ -1892,7 +1907,7 @@ or the highest order different bit is set to 0 in `set1` and to 1 in
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_le
         use stdlib_bitsets
         type(bitset_64) :: set0, set1, set2
@@ -1910,6 +1925,7 @@ or the highest order different bit is set to 0 in `set1` and to 1 in
             error stop 'Failed 64 bit less than or equal tests.'
         end if
     end program demo_le
+```
 
 ### `<` - compare two bitsets to determine whether the first is less than the other
 
@@ -1954,7 +1970,7 @@ highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 
 #### Example
 
-    ```fortran
+```fortran
     program demo_lt
         use stdlib_bitsets
         type(bitset_64) :: set0, set1, set2
@@ -1971,3 +1987,4 @@ highest order different bit is set to 0 in `set1` and to 1 in `set2`,
             error stop 'Failed 64 bit less than tests.'
         end if
     end program demo_lt
+```
