@@ -1098,7 +1098,7 @@ code. The two code values have the meaning:
 
 * `success` - no problem found
 
-* `write_failure` - a failure occured in a write statement.
+* `write_failure` - a failure occurred in a write statement.
 
 #### Example
 
