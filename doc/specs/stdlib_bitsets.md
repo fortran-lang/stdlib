@@ -4,7 +4,7 @@ title: Bitsets
 
 # The `stdlib_bitsets` module
 
-(TOC)
+[TOC]
 
 ## Introduction
 
