@@ -162,7 +162,6 @@ is mapped to a set bit, and `.false.` is mapped to an unset bit.
         end if
     end program demo_assignment
 
-
 ### Table of the `bitset_type` methods
 
 The `bitset_type` class has a number of methods. All except one, `bits`,
@@ -1972,4 +1971,3 @@ highest order different bit is set to 0 in `set1` and to 1 in `set2`,
             error stop 'Failed 64 bit less than tests.'
         end if
     end program demo_lt
-
