@@ -68,6 +68,9 @@ stdlib_stats_var.o: \
 	stdlib_stats.o
 
 # Fortran sources that are built from fypp templates
+stdlib_bitset_64.f90: stdlib_bitset_64.fypp
+stdlib_bitset_large.f90: stdlib_bitset_large.fypp
+stdlib_bitsets.f90: stdlib_bitsets.fypp
 stdlib_io.f90: stdlib_io.fypp
 stdlib_linalg.f90: stdlib_linalg.fypp
 stdlib_linalg_diag.f90: stdlib_linalg_diag.fypp
