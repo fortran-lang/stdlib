@@ -1125,77 +1125,74 @@ module stdlib_bitsets
             type(bitset_large), intent(in)  :: set2
         end subroutine assign_large
 
-        pure module subroutine assign_log8_large( self, logical_vector )
+        pure module subroutine assign_logint8_large( self, logical_vector )
 !! Version: experimental
 !!
 !! Used to define assignment from an array of type `logical(int8)` to a
 !! `bitset_large`.
             type(bitset_large), intent(out) :: self
             logical(int8), intent(in)       :: logical_vector(:)
-        end subroutine assign_log8_large
+        end subroutine assign_logint8_large
 
-        pure module subroutine assign_log16_large( self, logical_vector )
-!! Version: experimental
-!!
-!! Used to define assignment from an array of type `logical(int16)` to a
-!! `bitset_large`.
-            type(bitset_large), intent(out) :: self
-            logical(int16), intent(in)      :: logical_vector(:)
-        end subroutine assign_log16_large
-
-        pure module subroutine assign_log32_large( self, logical_vector )
-!! Version: experimental
-!!
-!! Used to define assignment from an array of type `logical(int32)` to a
-!! `bitset_large`
-            type(bitset_large), intent(out) :: self
-            logical(int32), intent(in)      :: logical_vector(:)
-        end subroutine assign_log32_large
-
-        pure module subroutine assign_log64_large( self, logical_vector )
-!! Version: experimental
-!!
-!! Used to define assignment from an array of type `logical(int64)` to a
-!! `bitset_large`.
-            type(bitset_large), intent(out) :: self
-            logical(int64), intent(in)      :: logical_vector(:)
-        end subroutine assign_log64_large
-
-        pure module subroutine log8_assign_large( logical_vector, set )
+        pure module subroutine logint8_assign_large( logical_vector, set )
 !! Version: experimental
 !!
 !! Used to define assignment to an array of type `logical(int8)` from a
 !! `bitset_large`.
             logical(int8), intent(out), allocatable :: logical_vector(:)
             type(bitset_large), intent(in)          :: set
-        end subroutine log8_assign_large
-
-        pure module subroutine log16_assign_large( logical_vector, set )
+        end subroutine logint8_assign_large
+        pure module subroutine assign_logint16_large( self, logical_vector )
 !! Version: experimental
 !!
-!! Used to define assignment to an array of type `logical(int16) from a
+!! Used to define assignment from an array of type `logical(int16)` to a
+!! `bitset_large`.
+            type(bitset_large), intent(out) :: self
+            logical(int16), intent(in)       :: logical_vector(:)
+        end subroutine assign_logint16_large
+
+        pure module subroutine logint16_assign_large( logical_vector, set )
+!! Version: experimental
+!!
+!! Used to define assignment to an array of type `logical(int16)` from a
 !! `bitset_large`.
             logical(int16), intent(out), allocatable :: logical_vector(:)
-            type(bitset_large), intent(in)           :: set
-        end subroutine log16_assign_large
+            type(bitset_large), intent(in)          :: set
+        end subroutine logint16_assign_large
+        pure module subroutine assign_logint32_large( self, logical_vector )
+!! Version: experimental
+!!
+!! Used to define assignment from an array of type `logical(int32)` to a
+!! `bitset_large`.
+            type(bitset_large), intent(out) :: self
+            logical(int32), intent(in)       :: logical_vector(:)
+        end subroutine assign_logint32_large
 
-        pure module subroutine log32_assign_large( logical_vector, set )
+        pure module subroutine logint32_assign_large( logical_vector, set )
 !! Version: experimental
 !!
 !! Used to define assignment to an array of type `logical(int32)` from a
-!! `bitset_lsrge`.
+!! `bitset_large`.
             logical(int32), intent(out), allocatable :: logical_vector(:)
-            type(bitset_large), intent(in)           :: set
-        end subroutine log32_assign_large
+            type(bitset_large), intent(in)          :: set
+        end subroutine logint32_assign_large
+        pure module subroutine assign_logint64_large( self, logical_vector )
+!! Version: experimental
+!!
+!! Used to define assignment from an array of type `logical(int64)` to a
+!! `bitset_large`.
+            type(bitset_large), intent(out) :: self
+            logical(int64), intent(in)       :: logical_vector(:)
+        end subroutine assign_logint64_large
 
-        pure module subroutine log64_assign_large( logical_vector, set )
+        pure module subroutine logint64_assign_large( logical_vector, set )
 !! Version: experimental
 !!
 !! Used to define assignment to an array of type `logical(int64)` from a
 !! `bitset_large`.
             logical(int64), intent(out), allocatable :: logical_vector(:)
-            type(bitset_large), intent(in)           :: set
-        end subroutine log64_assign_large
+            type(bitset_large), intent(in)          :: set
+        end subroutine logint64_assign_large
 
     end interface assignment(=)
 
@@ -1512,77 +1509,74 @@ module stdlib_bitsets
             type(bitset_64), intent(in)  :: set2
         end subroutine assign_64
 
-        module subroutine assign_log8_64( self, logical_vector )
+        module subroutine assign_logint8_64( self, logical_vector )
 !! Version: experimental
 !!
 !! Used to define assignment from an array of type `logical(int8)` to a
 !! `bitset_64`.
             type(bitset_64), intent(out) :: self
             logical(int8), intent(in)    :: logical_vector(:)
-        end subroutine assign_log8_64
+        end subroutine assign_logint8_64
 
-        module subroutine assign_log16_64( self, logical_vector )
-!! Version: experimental
-!!
-!! Used to define assignment from an array of type `logical(int16)` to a
-!! `bitset_64`.
-            type(bitset_64), intent(out) :: self
-            logical(int16), intent(in)   :: logical_vector(:)
-        end subroutine assign_log16_64
-
-        module subroutine assign_log32_64( self, logical_vector )
-!! Version: experimental
-!!
-!! Used to define assignment from an array of type `logical(int32)` to a
-!! `bitset_64`.
-            type(bitset_64), intent(out) :: self
-            logical(int32), intent(in)   :: logical_vector(:)
-        end subroutine assign_log32_64
-
-        module subroutine assign_log64_64( self, logical_vector )
-!! Version: experimental
-!!
-!! Used to define assignment from an array of type `logical(int64)` to a
-!! `bitset_64`.
-            type(bitset_64), intent(out) :: self
-            logical(int64), intent(in)   :: logical_vector(:)
-        end subroutine assign_log64_64
-
-        pure module subroutine log8_assign_64( logical_vector, set )
+        pure module subroutine logint8_assign_64( logical_vector, set )
 !! Version: experimental
 !!
 !! Used to define assignment to an array of type `logical(int8)` from a
 !! `bitset_64`.
             logical(int8), intent(out), allocatable :: logical_vector(:)
             type(bitset_64), intent(in)             :: set
-        end subroutine log8_assign_64
-
-        pure module subroutine log16_assign_64( logical_vector, set )
+        end subroutine logint8_assign_64
+        module subroutine assign_logint16_64( self, logical_vector )
 !! Version: experimental
 !!
-!! Used to define assignment to an array of type `logical(int16)` from a
-!! `bitset_64`
+!! Used to define assignment from an array of type `logical(int8)` to a
+!! `bitset_64`.
+            type(bitset_64), intent(out) :: self
+            logical(int16), intent(in)    :: logical_vector(:)
+        end subroutine assign_logint16_64
+
+        pure module subroutine logint16_assign_64( logical_vector, set )
+!! Version: experimental
+!!
+!! Used to define assignment to an array of type `logical(int8)` from a
+!! `bitset_64`.
             logical(int16), intent(out), allocatable :: logical_vector(:)
-            type(bitset_64), intent(in)              :: set
-        end subroutine log16_assign_64
-
-        pure module subroutine log32_assign_64( logical_vector, set )
+            type(bitset_64), intent(in)             :: set
+        end subroutine logint16_assign_64
+        module subroutine assign_logint32_64( self, logical_vector )
 !! Version: experimental
 !!
-!! Used to define assignment to an array of type `logical(int32)` from a
+!! Used to define assignment from an array of type `logical(int8)` to a
+!! `bitset_64`.
+            type(bitset_64), intent(out) :: self
+            logical(int32), intent(in)    :: logical_vector(:)
+        end subroutine assign_logint32_64
+
+        pure module subroutine logint32_assign_64( logical_vector, set )
+!! Version: experimental
+!!
+!! Used to define assignment to an array of type `logical(int8)` from a
 !! `bitset_64`.
             logical(int32), intent(out), allocatable :: logical_vector(:)
-            type(bitset_64), intent(in)              :: set
-        end subroutine log32_assign_64
-
-        pure module subroutine log64_assign_64( logical_vector, set )
+            type(bitset_64), intent(in)             :: set
+        end subroutine logint32_assign_64
+        module subroutine assign_logint64_64( self, logical_vector )
 !! Version: experimental
 !!
-!! Used to define assignment to an array of type `logical(int64)` from a
+!! Used to define assignment from an array of type `logical(int8)` to a
+!! `bitset_64`.
+            type(bitset_64), intent(out) :: self
+            logical(int64), intent(in)    :: logical_vector(:)
+        end subroutine assign_logint64_64
+
+        pure module subroutine logint64_assign_64( logical_vector, set )
+!! Version: experimental
+!!
+!! Used to define assignment to an array of type `logical(int8)` from a
 !! `bitset_64`.
             logical(int64), intent(out), allocatable :: logical_vector(:)
-            type(bitset_64), intent(in)              :: set
-        end subroutine log64_assign_64
+            type(bitset_64), intent(in)             :: set
+        end subroutine logint64_assign_64
 
     end interface assignment(=)
 

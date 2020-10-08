@@ -99,8 +99,7 @@ contains
 
     end subroutine assign_large
 
-
-    pure module subroutine assign_log8_large( self, logical_vector )
+    pure module subroutine assign_logint8_large( self, logical_vector )
 !     Used to define assignment from an array of type logical for bitset_large
         type(bitset_large), intent(out) :: self
         logical(int8), intent(in)       :: logical_vector(:)
@@ -125,94 +124,10 @@ contains
             end if
         end do
 
-    end subroutine assign_log8_large
+    end subroutine assign_logint8_large
 
 
-    pure module subroutine assign_log16_large( self, logical_vector )
-!     Used to define assignment from an array of type logical for bitset_large
-        type(bitset_large), intent(out) :: self
-        logical(int16), intent(in)      :: logical_vector(:)
-
-        integer(bits_kind) :: blocks
-        integer(bits_kind) :: log_size
-        integer(bits_kind) :: index
-
-        log_size = size( logical_vector, kind=bits_kind )
-        self % num_bits = log_size
-        if ( log_size == 0 ) then
-            blocks = 0
-        else
-            blocks = (log_size-1)/block_size + 1
-        end if
-        allocate( self % blocks( blocks ) )
-        self % blocks(:) = 0
-
-        do index=0, log_size-1
-            if ( logical_vector(index+1) ) then
-                call self % set( index )
-            end if
-        end do
-
-    end subroutine assign_log16_large
-
-
-    pure module subroutine assign_log32_large( self, logical_vector )
-!     Used to define assignment from an array of type logical for bitset_large
-        type(bitset_large), intent(out) :: self
-        logical(int32), intent(in)      :: logical_vector(:)
-
-        integer(bits_kind) :: blocks
-        integer(bits_kind) :: log_size
-        integer(bits_kind) :: index
-
-        log_size = size( logical_vector, kind=bits_kind )
-        self % num_bits = log_size
-        if ( log_size == 0 ) then
-            blocks = 0
-        else
-            blocks = (log_size-1)/block_size + 1
-        end if
-        allocate( self % blocks( blocks ) )
-        self % blocks(:) = 0
-
-        do index=0, log_size-1
-            if ( logical_vector(index+1) ) then
-                call self % set( index )
-            end if
-        end do
-
-    end subroutine assign_log32_large
-
-
-    pure module subroutine assign_log64_large( self, logical_vector )
-!     Used to define assignment from an array of type logical for bitset_large
-        type(bitset_large), intent(out) :: self
-        logical(int64), intent(in)      :: logical_vector(:)
-
-        integer(bits_kind) :: blocks
-        integer(bits_kind) :: log_size
-        integer(bits_kind) :: index
-
-        log_size = size( logical_vector, kind=bits_kind )
-        self % num_bits = log_size
-        if ( log_size == 0 ) then
-            blocks = 0
-        else
-            blocks = (log_size-1)/block_size + 1
-        end if
-        allocate( self % blocks( blocks ) )
-        self % blocks(:) = 0
-
-        do index=0, log_size-1
-            if ( logical_vector(index+1) ) then
-                call self % set( index )
-            end if
-        end do
-
-    end subroutine assign_log64_large
-
-
-    pure module subroutine log8_assign_large( logical_vector, set )
+    pure module subroutine logint8_assign_large( logical_vector, set )
 !     Used to define assignment to an array of type logical for bitset_large
         logical(int8), intent(out), allocatable :: logical_vector(:)
         type(bitset_large), intent(in)          :: set
@@ -228,13 +143,39 @@ contains
             end if
         end do
 
-    end subroutine log8_assign_large
+    end subroutine logint8_assign_large
+    pure module subroutine assign_logint16_large( self, logical_vector )
+!     Used to define assignment from an array of type logical for bitset_large
+        type(bitset_large), intent(out) :: self
+        logical(int16), intent(in)       :: logical_vector(:)
+
+        integer(bits_kind) :: blocks
+        integer(bits_kind) :: log_size
+        integer(bits_kind) :: index
+
+        log_size = size( logical_vector, kind=bits_kind )
+        self % num_bits = log_size
+        if ( log_size == 0 ) then
+            blocks = 0
+        else
+            blocks = (log_size-1)/block_size + 1
+        end if
+        allocate( self % blocks( blocks ) )
+        self % blocks(:) = 0
+
+        do index=0, log_size-1
+            if ( logical_vector(index+1) ) then
+                call self % set( index )
+            end if
+        end do
+
+    end subroutine assign_logint16_large
 
 
-    pure module subroutine log16_assign_large( logical_vector, set )
+    pure module subroutine logint16_assign_large( logical_vector, set )
 !     Used to define assignment to an array of type logical for bitset_large
         logical(int16), intent(out), allocatable :: logical_vector(:)
-        type(bitset_large), intent(in)           :: set
+        type(bitset_large), intent(in)          :: set
 
         integer(bits_kind) :: index
 
@@ -247,13 +188,39 @@ contains
             end if
         end do
 
-    end subroutine log16_assign_large
+    end subroutine logint16_assign_large
+    pure module subroutine assign_logint32_large( self, logical_vector )
+!     Used to define assignment from an array of type logical for bitset_large
+        type(bitset_large), intent(out) :: self
+        logical(int32), intent(in)       :: logical_vector(:)
+
+        integer(bits_kind) :: blocks
+        integer(bits_kind) :: log_size
+        integer(bits_kind) :: index
+
+        log_size = size( logical_vector, kind=bits_kind )
+        self % num_bits = log_size
+        if ( log_size == 0 ) then
+            blocks = 0
+        else
+            blocks = (log_size-1)/block_size + 1
+        end if
+        allocate( self % blocks( blocks ) )
+        self % blocks(:) = 0
+
+        do index=0, log_size-1
+            if ( logical_vector(index+1) ) then
+                call self % set( index )
+            end if
+        end do
+
+    end subroutine assign_logint32_large
 
 
-    pure module subroutine log32_assign_large( logical_vector, set )
+    pure module subroutine logint32_assign_large( logical_vector, set )
 !     Used to define assignment to an array of type logical for bitset_large
         logical(int32), intent(out), allocatable :: logical_vector(:)
-        type(bitset_large), intent(in)           :: set
+        type(bitset_large), intent(in)          :: set
 
         integer(bits_kind) :: index
 
@@ -266,13 +233,39 @@ contains
             end if
         end do
 
-    end subroutine log32_assign_large
+    end subroutine logint32_assign_large
+    pure module subroutine assign_logint64_large( self, logical_vector )
+!     Used to define assignment from an array of type logical for bitset_large
+        type(bitset_large), intent(out) :: self
+        logical(int64), intent(in)       :: logical_vector(:)
+
+        integer(bits_kind) :: blocks
+        integer(bits_kind) :: log_size
+        integer(bits_kind) :: index
+
+        log_size = size( logical_vector, kind=bits_kind )
+        self % num_bits = log_size
+        if ( log_size == 0 ) then
+            blocks = 0
+        else
+            blocks = (log_size-1)/block_size + 1
+        end if
+        allocate( self % blocks( blocks ) )
+        self % blocks(:) = 0
+
+        do index=0, log_size-1
+            if ( logical_vector(index+1) ) then
+                call self % set( index )
+            end if
+        end do
+
+    end subroutine assign_logint64_large
 
 
-    pure module subroutine log64_assign_large( logical_vector, set )
+    pure module subroutine logint64_assign_large( logical_vector, set )
 !     Used to define assignment to an array of type logical for bitset_large
         logical(int64), intent(out), allocatable :: logical_vector(:)
-        type(bitset_large), intent(in)           :: set
+        type(bitset_large), intent(in)          :: set
 
         integer(bits_kind) :: index
 
@@ -285,7 +278,7 @@ contains
             end if
         end do
 
-    end subroutine log64_assign_large
+    end subroutine logint64_assign_large
 
 
     elemental module function bit_count_large(self) result(bit_count)

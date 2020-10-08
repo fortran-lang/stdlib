@@ -82,7 +82,7 @@ contains
     end subroutine assign_64
 
 
-    module subroutine assign_log8_64( self, logical_vector )
+    module subroutine assign_logint8_64( self, logical_vector )
 !     Used to define assignment from an array of type logical for bitset_64
         type(bitset_64), intent(out) :: self
         logical(int8), intent(in)    :: logical_vector(:)
@@ -104,85 +104,10 @@ contains
             end if
         end do
 
-    end subroutine assign_log8_64
+    end subroutine assign_logint8_64
 
 
-    module subroutine assign_log16_64( self, logical_vector )
-!     Used to define assignment from an array of type logical for bitset_64
-        type(bitset_64), intent(out) :: self
-        logical(int16), intent(in)   :: logical_vector(:)
-
-        integer(bits_kind) :: log_size
-        integer(bits_kind) :: index
-
-        log_size = size( logical_vector, kind=bits_kind )
-        if ( log_size > 64 ) then
-            error stop module_name // ' % ' // 'ASSIGNMENT' // " has " // &
-                "SIZE(LOGICAL_VECTOR) > 64 with assignment to a BITSET_64."
-        end if
-        self % num_bits = log_size
-        self % block = 0
-
-        do index=0, log_size-1
-            if ( logical_vector(index+1) ) then
-                self % block = ibset( self % block, index )
-            end if
-        end do
-
-    end subroutine assign_log16_64
-
-
-    module subroutine assign_log32_64( self, logical_vector )
-!     Used to define assignment from an array of type logical for bitset_64
-        type(bitset_64), intent(out) :: self
-        logical(int32), intent(in)   :: logical_vector(:)
-
-        integer(bits_kind) :: log_size
-        integer(bits_kind) :: index
-
-        log_size = size( logical_vector, kind=bits_kind )
-        if ( log_size > 64 ) then
-            error stop module_name // ' % ' // 'ASSIGNMENT' // " has " // &
-                "SIZE(LOGICAL_VECTOR) > 64 with assignment to a BITSET_64."
-        end if
-        self % num_bits = log_size
-        self % block = 0
-
-        do index=0, log_size-1
-            if ( logical_vector(index+1) ) then
-                self % block = ibset( self % block, index )
-            end if
-        end do
-
-    end subroutine assign_log32_64
-
-
-    module subroutine assign_log64_64( self, logical_vector )
-!     Used to define assignment from an array of type logical for bitset_64
-        type(bitset_64), intent(out) :: self
-        logical(int64), intent(in)   :: logical_vector(:)
-
-        integer(bits_kind) :: log_size
-        integer(bits_kind) :: index
-
-        log_size = size( logical_vector, kind=bits_kind )
-        if ( log_size > 64 ) then
-            error stop module_name // ' % ' // 'ASSIGNMENT' // " has " // &
-                "SIZE(LOGICAL_VECTOR) > 64 with assignment to a BITSET_64."
-        end if
-        self % num_bits = log_size
-        self % block = 0
-
-        do index=0, log_size-1
-            if ( logical_vector(index+1) ) then
-                self % block = ibset( self % block, index )
-            end if
-        end do
-
-    end subroutine assign_log64_64
-
-
-    pure module subroutine log8_assign_64( logical_vector, set )
+    pure module subroutine logint8_assign_64( logical_vector, set )
 !     Used to define assignment to an array of type logical for bitset_64
         logical(int8), intent(out), allocatable :: logical_vector(:)
         type(bitset_64), intent(in)             :: set
@@ -198,13 +123,36 @@ contains
             end if
         end do
 
-    end subroutine log8_assign_64
+    end subroutine logint8_assign_64
+    module subroutine assign_logint16_64( self, logical_vector )
+!     Used to define assignment from an array of type logical for bitset_64
+        type(bitset_64), intent(out) :: self
+        logical(int16), intent(in)    :: logical_vector(:)
+
+        integer(bits_kind) :: log_size
+        integer(bits_kind) :: index
+
+        log_size = size( logical_vector, kind=bits_kind )
+        if ( log_size > 64 ) then
+            error stop module_name // ' % ' // 'ASSIGNMENT' // " has " // &
+                "SIZE(LOGICAL_VECTOR) > 64 with assignment to a BITSET_64."
+        end if
+        self % num_bits = log_size
+        self % block = 0
+
+        do index=0, log_size-1
+            if ( logical_vector(index+1) ) then
+                self % block = ibset( self % block, index )
+            end if
+        end do
+
+    end subroutine assign_logint16_64
 
 
-    pure module subroutine log16_assign_64( logical_vector, set )
+    pure module subroutine logint16_assign_64( logical_vector, set )
 !     Used to define assignment to an array of type logical for bitset_64
         logical(int16), intent(out), allocatable :: logical_vector(:)
-        type(bitset_64), intent(in)              :: set
+        type(bitset_64), intent(in)             :: set
 
         integer(bits_kind) :: index
 
@@ -217,13 +165,36 @@ contains
             end if
         end do
 
-    end subroutine log16_assign_64
+    end subroutine logint16_assign_64
+    module subroutine assign_logint32_64( self, logical_vector )
+!     Used to define assignment from an array of type logical for bitset_64
+        type(bitset_64), intent(out) :: self
+        logical(int32), intent(in)    :: logical_vector(:)
+
+        integer(bits_kind) :: log_size
+        integer(bits_kind) :: index
+
+        log_size = size( logical_vector, kind=bits_kind )
+        if ( log_size > 64 ) then
+            error stop module_name // ' % ' // 'ASSIGNMENT' // " has " // &
+                "SIZE(LOGICAL_VECTOR) > 64 with assignment to a BITSET_64."
+        end if
+        self % num_bits = log_size
+        self % block = 0
+
+        do index=0, log_size-1
+            if ( logical_vector(index+1) ) then
+                self % block = ibset( self % block, index )
+            end if
+        end do
+
+    end subroutine assign_logint32_64
 
 
-    pure module subroutine log32_assign_64( logical_vector, set )
+    pure module subroutine logint32_assign_64( logical_vector, set )
 !     Used to define assignment to an array of type logical for bitset_64
         logical(int32), intent(out), allocatable :: logical_vector(:)
-        type(bitset_64), intent(in)              :: set
+        type(bitset_64), intent(in)             :: set
 
         integer(bits_kind) :: index
 
@@ -236,13 +207,36 @@ contains
             end if
         end do
 
-    end subroutine log32_assign_64
+    end subroutine logint32_assign_64
+    module subroutine assign_logint64_64( self, logical_vector )
+!     Used to define assignment from an array of type logical for bitset_64
+        type(bitset_64), intent(out) :: self
+        logical(int64), intent(in)    :: logical_vector(:)
+
+        integer(bits_kind) :: log_size
+        integer(bits_kind) :: index
+
+        log_size = size( logical_vector, kind=bits_kind )
+        if ( log_size > 64 ) then
+            error stop module_name // ' % ' // 'ASSIGNMENT' // " has " // &
+                "SIZE(LOGICAL_VECTOR) > 64 with assignment to a BITSET_64."
+        end if
+        self % num_bits = log_size
+        self % block = 0
+
+        do index=0, log_size-1
+            if ( logical_vector(index+1) ) then
+                self % block = ibset( self % block, index )
+            end if
+        end do
+
+    end subroutine assign_logint64_64
 
 
-    pure module subroutine log64_assign_64( logical_vector, set )
+    pure module subroutine logint64_assign_64( logical_vector, set )
 !     Used to define assignment to an array of type logical for bitset_64
         logical(int64), intent(out), allocatable :: logical_vector(:)
-        type(bitset_64), intent(in)              :: set
+        type(bitset_64), intent(in)             :: set
 
         integer(bits_kind) :: index
 
@@ -255,7 +249,7 @@ contains
             end if
         end do
 
-    end subroutine log64_assign_64
+    end subroutine logint64_assign_64
 
 
     elemental module function bit_count_64(self) result(bit_count)
