@@ -291,7 +291,7 @@ contains
 !     `status` may have the values:
 !         `success` - if no problems were found,
 !         `alloc_fault` - if allocation of the bitset failed
-!         `char_string_too_large_error` - if `string` was too large, or 
+!         `char_string_too_large_error` - if `string` was too large, or
 !         `char_string_invalid_error` - if string had an invalid character.
         class(bitset_64), intent(out)  :: self
         character(*), intent(in)       :: string
@@ -610,7 +610,7 @@ contains
 !     in an error stop with an informative stop code. If `status`
 !     is present it has one of the values
 !     * `success` - if no problems occurred,
-!     * `alloc_fault` - if allocation of memory for SELF failed, 
+!     * `alloc_fault` - if allocation of memory for SELF failed,
 !     * `array_size_invalid_error - if `bits(self)` in `string` is greater
 !       than 64 for a `bitset_64`,
 !     * `char_string_invalid_error` - if the bitset literal has an invalid
@@ -618,7 +618,7 @@ contains
 !     * `char_string_too_small_error - if the string ends before all the bits
 !       are read.
 !     * `integer_overflow_error` - if the bitset literal has a `bits(self)`
-!       value too large to be represented, 
+!       value too large to be represented,
 !
         class(bitset_64), intent(out)  :: self
         character(len=*), intent(in)   :: string
