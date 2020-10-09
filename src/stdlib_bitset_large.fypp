@@ -408,9 +408,9 @@ contains
         integer, intent(out), optional   :: status
 
         character(*), parameter :: procedure = 'FROM_STRING'
-        integer(bits_kind) :: bit
-        integer(int64)     :: bits
-        character(1)       :: char
+        integer(int64) :: bit
+        integer(int64) :: bits
+        character(1)   :: char
 
         bits = len(string, kind=int64)
         if ( bits > huge(0_bits_kind) ) then
