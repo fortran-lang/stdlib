@@ -9,6 +9,7 @@ module stdlib_bitsets
         iso_fortran_env, only:   &
             bits_kind  => int32, &
             block_kind => int64, &
+            error_unit,          &
             int8,                &
             int16,               &
             int32,               &
@@ -35,20 +36,22 @@ module stdlib_bitsets
     integer, parameter, public :: alloc_fault = 1
 !! Error flag indicating a memory allocation failure
     integer, parameter, public :: array_size_invalid_error = 2
-!! error flag indicating an invalid bits value
+!! Error flag indicating an invalid bits value
     integer, parameter, public :: char_string_invalid_error = 3
 !! Error flag indicating an invalid character string
-    integer, parameter, public :: char_string_too_small_error = 4
+    integer, parameter, public :: char_string_too_large_error = 4
+!! Error flag indicating a too large character string
+    integer, parameter, public :: char_string_too_small_error = 5
 !! Error flag indicating a too small character string
-    integer, parameter, public :: index_invalid_error = 5
-!! Error flag indicating an invalid index
-    integer, parameter, public :: integer_overflow_error = 6
-!! Error flag indicating integer overflow
-    integer, parameter, public :: read_failure = 7
-!! Error flag indicating failure of a READ statement
-    integer, parameter, public :: eof_failure = 8
+    integer, parameter, public :: eof_failure = 6
 !! Error flag indicating unexpected End-of-File on a READ
-    integer, parameter, public :: write_failure = 9
+    integer, parameter, public :: index_invalid_error = 7
+!! Error flag indicating an invalid index
+    integer, parameter, public :: integer_overflow_error = 8
+!! Error flag indicating integer overflow
+    integer, parameter, public :: read_failure = 9
+!! Error flag indicating failure of a READ statement
+    integer, parameter, public :: write_failure = 10
 !! Error flag indicating a failure on a WRITE statement
 
     public :: bits_kind
@@ -75,7 +78,9 @@ module stdlib_bitsets
         operator(<=),  &
         or,            &
         xor
-! Public procedures
+!! Public procedures
+
+    public :: error_handler
 
     type, abstract :: bitset_type
 !! version: experimental
@@ -292,8 +297,11 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Initializes the bitset `self` treating `string` as a binary literal
-!! `status` may have the values `success`, `alloc_fault`,
-!! `array_size_invalid_error`, or `char_string_invalid`.
+!! `status` may have the values:
+!! * `success` - if no problems were found,
+!! * `alloc_fault` - if allocation of the bitset failed
+!! * `char_string_too_large_error` - if `string` was too large, or 
+!! * `char_string_invalid_error` - if string had an invalid character.
 !!
 !!#### Example
 !!
@@ -326,10 +334,11 @@ module stdlib_bitsets
 !! Creates the bitset, `self`, of size `bits`, with all bits initialized to
 !! zero. `bits` must be non-negative.  If an error occurs and `status` is
 !! absent then processing stops with an informative stop code. `status`
-!! has a default value of `success`. If an error occurs it has the value
-!! `array_size_invalid_error` if `bits` is either negative or larger than 64
-!! if `self` is class `bitset_64`, or the value `alloc_fault` if it failed
-!! during allocation of memory for `self`.
+!! will have one of the values;
+!! * `success` -  if no problems were found,
+!! * `alloc_fault` - if memory allocation failed
+!! * `array_size_invalid_error` - if `bits` is either negative or larger
+!!   than 64 with `self` of class `bitset_64`, or
 !!
 !!#### Example
 !!
@@ -355,12 +364,12 @@ module stdlib_bitsets
 !! Reads the components of the bitset, `self`, from the unformatted I/O
 !! unit, `unit`, assuming that the components were written using `output`.
 !! If an error occurs and `status` is absent then processing stops with
-!! an informative stop code. `status` has a default value of `success`.
-!! If an error occurs it has the value `read_failure` if it failed
-!! during the reads from `unit` or the value `alloc_fault` if it failed
-!! during allocation of memory for `self`, or the value
-!! `array_size_invalid_error` if the `bits(self)` in `unit` is less than 0
-!! or greater than 64 for a `bitset_64` input.
+!! an informative stop code. `status` has one of the values:
+!! * `success` - if no problem was found
+!! * `alloc_fault` - if it failed allocating memory for `self`, or
+!! * `array_size_invalid_error` if the `bits(self)` in `unit` is negative
+!!   or greater than 64 for a `bitset_64` input.
+!! * `read_failure` - if it failed during the reads from `unit`
 !!
 !!#### Example
 !!
@@ -512,13 +521,18 @@ module stdlib_bitsets
 !! Uses the bitset literal in the default character `string`, to define
 !! the bitset, `self`. The literal may be preceded by an an arbitrary
 !! sequence of blank characters. If `status` is absent an error results
-!! in an error stop with an informative stop code. If `status` is
-!! present it has the default value of `success`, the value
-!! `integer_overflow_error` if the bitset literal has a `bits(self)` value
-!! too large to be represented, the value `alloc_fault` if allocation of
-!! memory for `self` failed, or `char_string_invalid_error` if the bitset
-!! literal has an invlaaid character, or `array_size_invalid_error` if
-!! `bits(self)` in `string` is greater than 64 for a `bitset_64`.
+!! in an error stop with an informative stop code. If `status`
+!! is present it has one of the values
+!! * `success` - if no problems occurred,
+!! * `alloc_fault` - if allocation of memory for SELF failed, 
+!! * `array_size_invalid_error - if `bits(self)` in `string` is greater
+!!   than 64 for a `bitset_64`,
+!! * `char_string_invalid_error` - if the bitset literal has an invalid
+!!   character,
+!! * `char_string_too_small_error - if the string ends before all the bits
+!!   are read.
+!! * `integer_overflow_error` - if the bitset literal has a `bits(self)`
+!!   value too large to be represented, 
 !!
 !!#### Example
 !!
@@ -572,15 +586,20 @@ module stdlib_bitsets
 !! If `advance` is present it must be either 'YES' or 'NO'. If absent
 !! it has the default value of 'YES' to determine whether advancing
 !! I/O occurs. If `status` is absent an error results in an error stop
-!! with an informative stop code. If `status` is present it has the
-!! default value of `success`, the value `integer_overflow_error` if the
-!! bitset literal has a `bits(self)` value too large to be
-!! represented, the value `read_failure` if a `read` statement fails,
-!! `eof_failure` if a `read` statement reaches an end-of-file before
-!! completing the read of the bitset literal, or the value
-!! `char_string_invalid_error` if the read of the bitset literal found
-!! an invalid character, or `array_size_invalid_error` if `bits(self)`
-!! in `string` is greater than 64 for a `bitset_64`.
+!! with an informative stop code. If `status` is present it has one of
+!! the values:
+!! * `success` - if no problem occurred,
+!! * `alloc_fault` - if allocation of `self` failed,
+!! * `array_size_invalid_error` - if `bits(self)` in the bitset literal
+!!   is greater than 64 for a `bitset_64`,
+!! * `char_string_invalid_error` - if the read of the bitset literal found
+!!   an invalid character,
+!! * `eof_failure` - if a `read` statement reached an end-of-file before
+!!   completing the read of the bitset literal,
+!! * `integer_overflow_error` - if the bitset literal has a `bits(self)`
+!!   value too large to be represented,
+!! * `read_failure` - if a `read` statement fails,
+!
             import :: bitset_type
             class(bitset_type), intent(out)    :: self
             integer, intent(in)                :: unit
@@ -891,8 +910,11 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Initializes the bitset `self` treating `string` as a binary literal
-!! `status` may have the values `success`, `alloc_fault`,
-!! `array_size_invalid_error`, or `char_string_invalid`.
+!! `status` may have the values:
+!! * `success` - if no problems were found,
+!! * `alloc_fault` - if allocation of the bitset failed
+!! * `char_string_too_large_error` - if `string` was too large, or 
+!! * `char_string_invalid_error` - if string had an invalid character.
             class(bitset_large), intent(out) :: self
             character(*), intent(in)         :: string
             integer, intent(out), optional   :: status
@@ -904,10 +926,11 @@ module stdlib_bitsets
 !! Creates the bitset, `self`, of size `bits`, with all bits initialized to
 !! zero. `bits` must be non-negative.  If an error occurs and `status` is
 !! absent then processing stops with an informative stop code. `status`
-!! has a default value of `success`. If an error occurs it has the value
-!! `array_size_invalid_error` if `bits` is either negative larger than 64
-!! if `self` is of type `bitset_64`, or the value `alloc_fault` if it failed
-!! during allocation of memory for `self`.
+!! will have one of the values;
+!! * `success` -  if no problems were found,
+!! * `alloc_fault` - if memory allocation failed
+!! * `array_size_invalid_error` - if `bits` is either negative or larger
+!!   than 64 with `self` of class `bitset_64`, or
             class(bitset_large), intent(out) :: self
             integer(bits_kind), intent(in)   :: bits
             integer, intent(out), optional   :: status
@@ -919,12 +942,12 @@ module stdlib_bitsets
 !! Reads the components of the bitset, `self`, from the unformatted I/O
 !! unit, `unit`, assuming that the components were written using `output`.
 !! If an error occurs and `status` is absent then processing stops with
-!! an informative stop code. `status` has a default value of `success`.
-!! If an error occurs it has the value `read_failure` if it failed
-!! during the reads from `unit` or the value `alloc_fault` if it failed
-!! during allocation of memory for `self`, or the value
-!! `array_size_invalid_error if the `bits(self) in `unit` is less than 0
-!! or greater than 64 for a `bitset_64` input.
+!! an informative stop code. `status` has one of the values:
+!! * `success` - if no problem was found
+!! * `alloc_fault` - if it failed allocating memory for `self`, or
+!! * `array_size_invalid_error` if the `bits(self)` in `unit` is negative
+!!   or greater than 64 for a `bitset_64` input.
+!! * `read_failure` - if it failed during the reads from `unit`
             class(bitset_large), intent(out) :: self
             integer, intent(in)              :: unit
             integer, intent(out), optional   :: status
@@ -964,15 +987,18 @@ module stdlib_bitsets
 !! Uses the bitset literal in the default character `string`, to define
 !! the bitset, `self`. The literal may be preceded by an an arbitrary
 !! sequence of blank characters. If `status` is absent an error results
-!! in an error stop with an informative stop code. If `status` is
-!! present it has the default value of `success`, the value
-!! `integer_overflow_error` if the bitset literal has a `bits(self)` value
-!! too large to be represented, the value `alloc_fault` if allocation of
-!! memory for `self` failed, or `char_string_invalid_error` if the bitset
-!! literal has an invlaid character, or `array_size_invalid_error` if
-!! `bits(self)` in `string` is greater than 64 for a `bitset_64`, or
-!! `char_string_too_small_error` if the string ends before all the bits
-!! are read.
+!! in an error stop with an informative stop code. If `status`
+!! is present it has one of the values
+!! * `success` - if no problems occurred,
+!! * `alloc_fault` - if allocation of memory for SELF failed, 
+!! * `array_size_invalid_error - if `bits(self)` in `string` is greater
+!!   than 64 for a `bitset_64`,
+!! * `char_string_invalid_error` - if the bitset literal has an invalid
+!!   character,
+!! * `char_string_too_small_error - if the string ends before all the bits
+!!   are read.
+!! * `integer_overflow_error` - if the bitset literal has a `bits(self)`
+!!   value too large to be represented, 
             class(bitset_large), intent(out) :: self
             character(len=*), intent(in)     :: string
             integer, intent(out), optional   :: status
@@ -987,15 +1013,19 @@ module stdlib_bitsets
 !! If `advance` is present it must be either 'YES' or 'NO'. If absent
 !! it has the default value of 'YES' to determine whether advancing
 !! I/O occurs. If `status` is absent an error results in an error stop
-!! with an informative stop code. If `status` is present it has the
-!! default value of `success`, the value `integer_overflow_error` if the
-!! bitset literal has a `bits(self)` value too large to be
-!! represented, the value `read_failure` if a `read` statement fails,
-!! `eof_failure` if a `read` statement reach an end-of-file before
-!! completing the read of the bitset literal, or the value
-!! `char_string_invalid_error` if the read of the bitset literal found
-!! an invalid character, or `array_size_invalid_error` if `bits(self)`
-!! in `string` is greater than 64 for a `bitset_64`.
+!! with an informative stop code. If `status` is present it has one of
+!! the values:
+!! * `success` - if no problem occurred,
+!! * `alloc_fault` - if allocation of `self` failed,
+!! * `array_size_invalid_error` - if `bits(self)` in the bitset literal
+!!   is greater than 64 for a `bitset_64`,
+!! * `char_string_invalid_error` - if the read of the bitset literal found
+!!   an invalid character,
+!! * `eof_failure` - if a `read` statement reached an end-of-file before
+!!   completing the read of the bitset literal,
+!! * `integer_overflow_error` - if the bitset literal has a `bits(self)`
+!!   value too large to be represented,
+!! * `read_failure` - if a `read` statement fails,
             class(bitset_large), intent(out)   :: self
             integer, intent(in)                :: unit
             character(*), intent(in), optional :: advance
@@ -1253,10 +1283,11 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Initializes the bitset `self` treating `string` as a binary literal
-!! `status` has the default value `success`, the value `alloc_fault` if the
-!! allocation of the bits in self failed, `array_size_invalid_error` if the
-!! `len(string)>64` for a `bitset_64`, or `char_string_invalid` if an invalid
-!! character was found in `string`.
+!! `status` may have the values:
+!! * `success` - if no problems were found,
+!! * `alloc_fault` - if allocation of the bitset failed
+!! * `char_string_too_large_error` - if `string` was too large, or 
+!! * `char_string_invalid_error` - if string had an invalid character.
             class(bitset_64), intent(out)  :: self
             character(*), intent(in)       :: string
             integer, intent(out), optional :: status
@@ -1268,10 +1299,11 @@ module stdlib_bitsets
 !! Creates the bitset, `self`, of size `bits`, with all bits initialized to
 !! zero. `bits` must be non-negative.  If an error occurs and `status` is
 !! absent then processing stops with an informative stop code. `status`
-!! has a default value of `success`. If an error occurs it has the value
-!! `array_size_invalid_error` if `bits` is either negative larger than 64
-!! for `self` of type `bitset_64`, or the value `alloc_fault` if it failed
-!! during allocation of memory for `self`.
+!! will have one of the values;
+!! * `success` -  if no problems were found,
+!! * `alloc_fault` - if memory allocation failed
+!! * `array_size_invalid_error` - if `bits` is either negative or larger
+!!   than 64 with `self` of class `bitset_64`, or
             class(bitset_64), intent(out)   :: self
             integer(bits_kind), intent(in) :: bits
             integer, intent(out), optional :: status
@@ -1283,12 +1315,12 @@ module stdlib_bitsets
 !! Reads the components of the bitset, `self`, from the unformatted I/O
 !! unit, `unit`, assuming that the components were written using `output`.
 !! If an error occurs and `status` is absent then processing stops with
-!! an informative stop code. `status` has a default value of `success`.
-!! If an error occurs it has the value `read_failure` if it failed
-!! during the reads from `unit` or the value `alloc_fault` if it failed
-!! during allocation of memory for `self`, or the value
-!! `array_size_invalid_error` if the `bits(self)` in `unit` is less than 0
-!! or greater than 64 for a `bitset_64` input.
+!! an informative stop code. `status` has one of the values:
+!! * `success` - if no problem was found
+!! * `alloc_fault` - if it failed allocating memory for `self`, or
+!! * `array_size_invalid_error` if the `bits(self)` in `unit` is negative
+!!   or greater than 64 for a `bitset_64` input.
+!! * `read_failure` - if it failed during the reads from `unit`
             class(bitset_64), intent(out)  :: self
             integer, intent(in)            :: unit
             integer, intent(out), optional :: status
@@ -1328,15 +1360,18 @@ module stdlib_bitsets
 !! Uses the bitset literal in the default character `string`, to define
 !! the bitset, `self`. The literal may be preceded by an an arbitrary
 !! sequence of blank characters. If `status` is absent an error results
-!! in an error stop with an informative stop code. If `status` is
-!! present it has the default value of `success`, the value
-!! `integer_overflow_error` if the bitset literal has a `bits(self)` value
-!! too large to be represented, the value `alloc_fault` if allocation of
-!! memory for `self` failed, or `char_string_invalid_error` if the bitset
-!! literal has an invlaid character, or `array_size_invalid_error` if
-!! `bits(self)` in `string` is greater than 64 for a `bitset_64`, or
-!! `char_string_too_small_error` if the string ends before all the bits
-!! are read.
+!! in an error stop with an informative stop code. If `status`
+!! is present it has one of the values
+!! * `success` - if no problems occurred,
+!! * `alloc_fault` - if allocation of memory for SELF failed, 
+!! * `array_size_invalid_error - if `bits(self)` in `string` is greater
+!!   than 64 for a `bitset_64`,
+!! * `char_string_invalid_error` - if the bitset literal has an invalid
+!!   character,
+!! * `char_string_too_small_error - if the string ends before all the bits
+!!   are read.
+!! * `integer_overflow_error` - if the bitset literal has a `bits(self)`
+!!   value too large to be represented, 
             class(bitset_64), intent(out)  :: self
             character(len=*), intent(in)   :: string
             integer, intent(out), optional :: status
@@ -1351,15 +1386,19 @@ module stdlib_bitsets
 !! If `advance` is present it must be either 'YES' or 'NO'. If absent
 !! it has the default value of 'YES' to determine whether advancing
 !! I/O occurs. If `status` is absent an error results in an error stop
-!! with an informative stop code. If `status` is present it has the
-!! default value of `success`, the value `integer_overflow_error` if the
-!! bitset literal has a `bits(self)` value too large to be
-!! represented, the value `read_failure` if a `read` statement fails,
-!! `eof_failure` if a `read` statement reach an end-of-file before
-!! completing the read of the bitset literal, or the value
-!! `char_string_invalid_error` if the read of the bitset literal found
-!! an invalid character, or `array_size_invalid_error` if `bits(self)`
-!! in `string` is greater than 64 for a `bitset_64`.
+!! with an informative stop code. If `status` is present it has one of
+!! the values:
+!! * `success` - if no problem occurred,
+!! * `alloc_fault` - if allocation of `self` failed,
+!! * `array_size_invalid_error` - if `bits(self)` in the bitset literal
+!!   is greater than 64 for a `bitset_64`,
+!! * `char_string_invalid_error` - if the read of the bitset literal found
+!!   an invalid character,
+!! * `eof_failure` - if a `read` statement reached an end-of-file before
+!!   completing the read of the bitset literal,
+!! * `integer_overflow_error` - if the bitset literal has a `bits(self)`
+!!   value too large to be represented,
+!! * `read_failure` - if a `read` statement fails,
             class(bitset_64), intent(out)      :: self
             integer, intent(in)                :: unit
             character(*), intent(in), optional :: advance
@@ -1587,7 +1626,7 @@ module stdlib_bitsets
 !! bitset `old`. If 'start_pos` is greater than `stop_pos` the new bitset is
 !! empty. If `start_pos` is less than zero or `stop_pos` is greater than
 !! `bits(old)-1` then if `status` is present it has the value
-!! `index_invalid_error`and `new` is undefined, otherwise processing stops
+!! `index_invalid_error` and `new` is undefined, otherwise processing stops
 !! with an informative message.
 !!
 !!#### Example
@@ -2009,6 +2048,16 @@ module stdlib_bitsets
 
     end interface operator(<=)
 
+    interface error_handler
+        module subroutine error_handler( message, error, status, module, procedure )
+            character(*), intent(in)           :: message
+            integer, intent(in)                :: error
+            integer, intent(out), optional     :: status
+            character(*), intent(in), optional :: module
+            character(*), intent(in), optional :: procedure
+        end subroutine error_handler
+    end interface error_handler
+
 contains
 
     elemental function bits(self)
@@ -2022,6 +2071,56 @@ contains
 
        return
     end function bits
+
+    module subroutine error_handler( message, error, status, module, procedure )
+        character(*), intent(in)           :: message
+        integer, intent(in)                :: error
+        integer, intent(out), optional     :: status
+        character(*), intent(in), optional :: module
+        character(*), intent(in), optional :: procedure
+
+        if ( present(status) ) then
+            status = error
+        else
+            if ( present(module) ) then
+                if ( present(procedure) ) then
+                    write(error_unit, '(a)') trim(module) // ' % ' // &
+                        trim(procedure) // ': ' // trim(message)
+                else
+                    write(error_unit, '(a)') trim(module) // ' % N/A: ' // &
+                        trim(message)
+                end if
+            else if ( present(procedure) ) then
+                write(error_unit, '(a)') trim(procedure) // ': ' // &
+                    trim(message)
+            else
+                write(error_unit, '(a)') trim(message)
+            end if
+            select case(error)
+            case( alloc_fault )
+                error stop 'A memory allocation failed.'
+            case( array_size_invalid_error )
+                error stop "An array size was invalid."
+            case( char_string_invalid_error )
+                error stop "A character string had an invalid character."
+            case( char_string_too_large_error )
+                error stop "A character string was too large."
+            case( char_string_too_small_error )
+                error stop "A character string was too small."
+            case( eof_failure )
+                error stop "An End-Of-File failure occurred on a READ " // &
+                    "statement."
+            case( index_invalid_error )
+                error stop "An index was invalid."
+            case( integer_overflow_error )
+                error stop "An integer overflow error occurred."
+            case( read_failure )
+                error stop "A failure occurred in a READ statement."
+            case( write_failure )
+                error stop "A failure occurRed on a WRITE statement."
+            end select
+        end if
+    end subroutine error_handler
 
 
 end module stdlib_bitsets

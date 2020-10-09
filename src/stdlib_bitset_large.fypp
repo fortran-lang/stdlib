@@ -278,8 +278,18 @@ contains
         integer(bits_kind) :: bits, blocks, ex_block, i, j, k, old_block
         character(*), parameter :: procedure = 'EXTRACT'
 
-        if ( start_pos < 0 ) go to 999
-        if ( stop_pos >= old % num_bits ) go to 998
+        if ( start_pos < 0 ) then
+            call error_handler( 'had a START_POS less than 0.', &
+                                index_invalid_error, status,    &
+                                module_name, procedure )
+            return
+        end if
+        if ( stop_pos >= old % num_bits ) then
+            call error_handler( 'had a STOP_POS greater than BITS(OLD)-1.', &
+                                index_invalid_error, status,                &
+                                module_name, procedure )
+            return
+        end if
         bits = stop_pos - start_pos + 1
 
         if ( bits <= 0 ) then
@@ -305,24 +315,6 @@ contains
         end do
 
         if ( present(status) ) status = success
-
-        return
-
-998     if ( present(status) ) then
-            status = index_invalid_error
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' had a ' // &
-                'STOP_POS greater than BITS(OLD)-1.'
-        end if
-
-999     if ( present(status) ) then
-            status = index_invalid_error
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' had a ' // &
-                'START_POS less than 0.'
-        end if
 
     end subroutine extract_large
 
@@ -405,9 +397,12 @@ contains
     end subroutine flip_range_large
 
     module subroutine from_string_large(self, string, status)
-!     Initializes the bitset SELF treating STRING as a binary literal
-!     STATUS may have the values SUCCESS, ALLOC_FAULT,
-!     ARRAY_SIZE_INVALID_ERROR, or CHAR_STRING_INVALID.
+!     Initializes the bitset `self` treating `string` as a binary literal
+!     `status` may have the values:
+!         `success` - if no problems were found,
+!         `alloc_fault` - if allocation of the bitset failed
+!         `char_string_too_large_error` - if `string` was too large, or 
+!         `char_string_invalid_error` - if string had an invalid character.
         class(bitset_large), intent(out) :: self
         character(*), intent(in)         :: string
         integer, intent(out), optional   :: status
@@ -418,7 +413,13 @@ contains
         character(1)       :: char
 
         bits = len(string, kind=int64)
-        if ( bits > huge(0_bits_kind) ) go to 998
+        if ( bits > huge(0_bits_kind) ) then
+            call error_handler( 'STRING was too long for a ' //      &
+                                'BITSET_LARGE SELF.',                &
+                                char_string_too_large_error, status, &
+                                module_name, procedure )
+            return
+        end if
 
         call init_zero_large( self, int(bits, kind=bits_kind), status )
 
@@ -433,29 +434,17 @@ contains
             else if ( char == '1' ) then
                 call self % set( int(bits, kind=bits_kind)-bit )
             else
-                go to 999
+                call error_handler( 'STRING had a character other than ' // &
+                                    '0 or 1.',                              &
+                                    char_string_invalid_error, status,      &
+                                    module_name, procedure )
+                return
             end if
         end do
 
         if ( present(status) ) status = success
 
         return
-
-998     if ( present(status) ) then
-            status = array_size_invalid_error
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' STRING ' // &
-                'was too long for a BITSET_64 SELF.'
-        end if
-
-999     if ( present(status) ) then
-            status = char_string_invalid_error
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' STRING ' // &
-                'had a character other than "0" or "1",'
-        end if
 
     end subroutine from_string_large
 
@@ -503,7 +492,8 @@ contains
         do block_ = size(set1 % blocks), 1, -1
             if ( set1 % blocks(block_) == set2 % blocks(block_) ) then
                 cycle
-            else if ( bgt( set1 % blocks(block_), set2 % blocks(block_) ) ) then
+            else if ( bgt( set1 % blocks(block_),    &
+                           set2 % blocks(block_) ) ) then
                 gt = .true.
                 return
             else
@@ -518,13 +508,14 @@ contains
 
     module subroutine init_zero_large(self, bits, status)
 !
-!     Creates the bitset, SELF, of size BITS, with all bits initialized to
-!     zero. BITS must be non-negative.  If an error occurs and STATUS is
-!     absent then processing stops with an informative stop code. STATUS
-!     has a default value of SUCCESS. If an error occurs it has the value
-!     ARRAY_SIZE_INVALID_ERROR if BITS is either negative larger than 64
-!     if SELF is of type BITSET_64, or the value ALLOC_FAULT if it failed
-!     during allocation of memory for SELF.
+!  Creates the bitset, `self`, of size `bits`, with all bits initialized to
+!  zero. `bits` must be non-negative.  If an error occurs and `status` is
+!  absent then processing stops with an informative stop code. `status`
+!  will have one of the values;
+!  * `success` -  if no problems were found,
+!  * `array_size_invalid_error` - if `bits` is either negative or larger
+!    than 64 with `self` of class `bitset_64`, or
+!  * `alloc_fault` - if memory allocation failed
 !
         class(bitset_large), intent(out) :: self
         integer(bits_kind), intent(in)   :: bits
@@ -535,7 +526,12 @@ contains
         integer                 :: blocks, ierr
 
         message = ''
-        if ( bits < 0 ) go to 999
+        if ( bits < 0 ) then
+            call error_handler( 'BITS had a negative value.',    &
+                                array_size_invalid_error, status, &
+                                module_name, procedure )
+            return
+        end if
 
         if (bits == 0) then
             self % num_bits = 0
@@ -556,36 +552,24 @@ contains
 
         return
 
-998     if ( present(status) ) then
-            status = alloc_fault
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' allocation ' // &
-                'failure for SELF.'
-        end if
-
-999     if ( present(status) ) then
-            status = array_size_invalid_error
-            return
-        else
-            error stop module_name // ' %' // procedure // ' BITS had ' // &
-                'a negative value.'
-        end if
+998     call error_handler( 'Allocation failure for SELF.', &
+                            alloc_fault, status,            &
+                            module_name, procedure )
 
     end subroutine init_zero_large
 
 
     module subroutine input_large(self, unit, status)
 !
-!     Reads the components of the bitset, SELF, from the unformatted I/O
-!     unit, UNIT, assuming that the components were written using OUTPUT.
-!     If an error occurs and STATUS is absent then processing stops with
-!     an informative stop code. STATUS has a default value of SUCCESS.
-!     If an error occurs it has the value READ_FAILURE if it failed
-!     during the reads from UNIT or the value ALLOC_FAULT if it failed
-!     during allocation of memory for SELF, or the value
-!     ARRAY_SIZE_INVALID_ERROR if the BITS(SELF) in UNIT is less than 0
-!     or greater than 64 for a BITSET_64 input.
+! Reads the components of the bitset, `self`, from the unformatted I/O
+! unit, `unit`, assuming that the components were written using `output`.
+! If an error occurs and `status` is absent then processing stops with
+! an informative stop code. `status` has one of the values:
+! * `success` - if no problem was found
+! * `alloc_fault` - if it failed during allocation of memory for `self`, or
+! * `array_size_invalid_error` if the `bits(self)` in `unit` is negative
+!   or greater than 64 for a `bitset_64` input.
+! * `read_failure` - if it failed during the reads from `unit`
 !
         class(bitset_large), intent(out) :: self
         integer, intent(in)              :: unit
@@ -598,44 +582,36 @@ contains
         integer                 :: stat
 
         read(unit, iostat=ierr, iomsg=message) bits
-        if (ierr /= 0) go to 999
-        if ( bits < 0 ) go to 997
+        if (ierr /= 0) then
+            call error_handler( 'Failure on a READ statement for UNIT.', &
+                                read_failure, status, module_name, procedure )
+            return
+        end if
+
+        if ( bits < 0 ) then
+            call error_handler( 'BITS in UNIT had a negative value.', &
+                                array_size_invalid_error, status,     &
+                                module_name, procedure )
+            return
+        end if
 
         call self % init(bits, stat)
-        if (stat /= success) go to 998
+        if (stat /= success) then
+            call error_handler( 'Allocation failure for SELF.', &
+                                alloc_fault, status, module_name, procedure )
+            return
+        end if
 
         if (bits < 1) return
 
         read(unit, iostat=ierr, iomsg=message) self % blocks(:)
-        if (ierr /= 0) go to 999
+        if (ierr /= 0) then
+            call error_handler( 'Failure on a READ statement for UNIT.', &
+                                read_failure, status, module_name, procedure )
+            return
+        end if
 
         if ( present(status) ) status = success
-
-        return
-
-997     if ( present(status) ) then
-            status = array_size_invalid_error
-            return
-        else
-            error stop module_name // ' %' // procedure // ' BITS in ' // &
-                'UNIT had a negative value.'
-        end if
-
-998     if ( present(status) ) then
-            status = alloc_fault
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' had an ' // &
-                'alloction fault for SELF.'
-        end if
-
-999     if ( present(status) ) then
-            status = read_failure
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' had a ' // &
-                'failure on a READ statement for UNIT.'
-        end if
 
     end subroutine input_large
 
@@ -655,7 +631,8 @@ contains
         do block_ = size(set1 % blocks), 1, -1
             if ( set1 % blocks(block_) == set2 % blocks(block_) ) then
                 cycle
-            else if ( blt( set1 % blocks(block_), set2 % blocks(block_) ) ) then
+            else if ( blt( set1 % blocks(block_), &
+                           set2 % blocks(block_) ) ) then
                 le = .true.
                 return
             else
@@ -684,7 +661,8 @@ contains
         do block_ = size(set1 % blocks), 1, -1
             if ( set1 % blocks(block_) == set2 % blocks(block_) ) then
                 cycle
-            else if ( blt( set1 % blocks(block_), set2 % blocks(block_) ) ) then
+            else if ( blt( set1 % blocks(block_), &
+                           set2 % blocks(block_) ) ) then
                 lt = .true.
                 return
             else
@@ -807,31 +785,29 @@ contains
 
         return
 
-999     if ( present(status) ) then
-            status = write_failure
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' had a ' // &
-                'failure in the write to UNIT.'
-        end if
+999     call error_handler( 'Failure on a WRiTE statement for UNIT.', &
+                            write_failure, status, module_name, procedure )
 
     end subroutine output_large
 
 
     module subroutine read_bitset_string_large(self, string, status)
 !
-!     Uses the bitset literal in the default character STRING, to define
-!     the bitset, SELF. The literal may be preceded by an an arbitrary
-!     sequence of blank characters. If STATUS is absent an error results
-!     in an error stop with an informative stop code. If STATUS
-!     is present it has the default value of SUCCESS, the value
-!     INTEGER_OVERFLOW_ERROR if the bitset literal has a BITS(SELF) value
-!     too large to be represented, the value ALLOC_FAULT if allocation of
-!     memory for SELF failed, or CHAR_STRING_INVALID_ERROR if the bitset
-!     literal has an invalid character, or ARRAY_SIZE_INVALID_ERROR if
-!     BITS(SELF) in STRING is greater than 64 for a BITSET_64, or
-!     CHAR_STRING_TOO_SMALL_ERROR if the string ends before all the bits
-!     are read.
+!     Uses the bitset literal in the default character `string`, to define
+!     the bitset, `self`. The literal may be preceded by an an arbitrary
+!     sequence of blank characters. If `status` is absent an error results
+!     in an error stop with an informative stop code. If `status`
+!     is present it has one of the values
+!     * `success` - if no problems occurred,
+!     * `alloc_fault` - if allocation of memory for SELF failed, 
+!     * `array_size_invalid_error - if `bits(self)` in `string` is greater
+!       than 64 for a `bitset_64`,
+!     * `char_string_invalid_error` - if the bitset literal has an invalid
+!       character,
+!     * `char_string_too_small_error - if the string ends before all the bits
+!       are read.
+!     * `integer_overflow_error` - if the bitset literal has a `bits(self)`
+!       value too large to be represented, 
 !
         class(bitset_large), intent(out) :: self
         character(len=*), intent(in)    :: string
@@ -867,15 +843,29 @@ contains
             case(iachar('b'), iachar('B'))
                 go to 100
             case default
-                go to 999
+                call error_handler( 'There was an invalid character ' // &
+                                    'in STRING',                         &
+                                    char_string_invalid_error, status,   &
+                                    module_name, procedure )
+                return
             end select
 
             pos = pos + 1
         end do
 
-100     if ( bits + pos > len(string) ) go to 994
+100     if ( bits + pos > len(string) ) then
+            call error_handler( 'STRING was too small for the number of ' // &
+                                'bits specified by STRING.',                 &
+                                char_string_too_small_error, status,         &
+                                module_name, procedure )
+            return
+        end if
         call self % init( bits, stat )
-        if (stat /= success) go to 998
+        if (stat /= success) then
+            call error_handler( 'There was an allocation fault for SELF.', &
+                                alloc_fault, status, module_name, procedure )
+            return
+        end if
 
         pos = pos + 1
         bit = bits - 1
@@ -896,38 +886,15 @@ contains
 
         return
 
-994     if ( present(status) ) then
-            status = char_string_too_small_error
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' STRING ' // &
-                'was too small for the BITS specified by the STRING.'
-        end if
+996     call error_handler( 'There was an integer overflow in reading' // &
+                            'size of bitset literal from UNIT',           &
+                            integer_overflow_error, status,               &
+                            module_name, procedure )
+        return
 
-996     if ( present(status) ) then
-            status = integer_overflow_error
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' failed on ' // &
-                'integer overflow in reading size of bitset literal from ' // &
-                'UNIT.'
-        end if
-
-998     if ( present(status) ) then
-            status = alloc_fault
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' failed in ' // &
-                'allocating memory for the bitset.'
-        end if
-
-999     if ( present(status) ) then
-            status = char_string_invalid_error
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' failed due ' // &
-                'to an invalid character in STRING.'
-        end if
+999     call error_handler( 'There was an invalid character in STRING', &
+                            char_string_invalid_error, status,          &
+                            module_name, procedure )
 
     end subroutine read_bitset_string_large
 
@@ -935,20 +902,24 @@ contains
     module subroutine read_bitset_unit_large(self, unit, advance, status)
 !
 !     Uses the bitset literal at the current position in the formatted
-!     file with I/O unit, UNIT, to define the bitset, SELF. The literal
-!     may be preceded by an an arbitrary sequence of blank characters.
-!     If ADVANCE is present it must be either 'YES' or 'NO'. If absent
+!     file with I/O unit, `unit`, to define the bitset, `self`. The literal
+!     may be preceded by an arbitrary sequence of blank characters.
+!     If `advance` is present it must be either 'YES' or 'NO'. If absent
 !     it has the default value of 'YES' to determine whether advancing
-!     I/O occurs. If STATUS is absent an error results in an error stop
-!     with an informative stop code. If STATUS is present it has the
-!     default value of SUCCESS, the value INTEGER_OVERFLOW_ERROR if the
-!     bitset literal has a BITS(SELF) value too large to be
-!     represented, the value READ_FAILURE if a READ statement fails,
-!     EOF_FAILURE if a READ statement reach an end-of-file before
-!     completing the read of the bitset literal, or the value
-!     CHAR_STRING_INVALID_ERROR if the read of the bitset literal found
-!     an invalid character, or ARRAY_SIZE_INVALID_ERROR if BITS(SELF)
-!     in STRING is greater than 64 for a BITSET_64.
+!     I/O occurs. If `status` is absent an error results in an error stop
+!     with an informative stop code. If `status` is present it has one of
+!     the values:
+!     * `success` - if no problem occurred,
+!     * `alloc_fault` - if allocation of `self` failed,
+!     * `array_size_invalid_error` - if `bits(self)` in the bitset literal
+!       is greater than 64 for a `bitset_64`.
+!     * `char_string_invalid_error` - if the read of the bitset literal found
+!       an invalid character,
+!     * `eof_failure` - if a `read` statement reaches an end-of-file before
+!       completing the read of the bitset literal,
+!     * `integer_overflow_error` - if the bitset literal has a `bits(self)`
+!       value too large to be represented,
+!     * `read_failure` - if a `read` statement fails,
 !
         class(bitset_large), intent(out)   :: self
         integer, intent(in)                :: unit
@@ -959,7 +930,6 @@ contains
         integer                       :: ierr
         character(len=128)            :: message
         character(*), parameter       :: procedure = "READ_BITSET"
-        integer                       :: stat
         character(len=1)              :: char
 
         do
@@ -968,7 +938,7 @@ contains
                   FMT='(A1)',   &
                   err=997,      &
                   end=998,      &
-                  iostat=ierr, &
+                  iostat=ierr,  &
                   iomsg=message ) char
             select case( char )
             case( ' ' )
@@ -986,8 +956,8 @@ contains
             read( unit,         &
                   advance='NO', &
                   FMT='(A1)',   &
-                  err=998,      &
-                  end=999,      &
+                  err=997,      &
+                  end=998,      &
                   iostat=ierr,  &
                   iomsg=message ) char
             if ( char == 'b' .or. char == 'B' ) exit
@@ -995,7 +965,6 @@ contains
             case( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' )
                 digits = digits + 1
                 if ( digits == 10 .AND. bits > 2_bits_kind**30/5 ) go to 996
-!! May not be quite right
                 if ( digits > 10 ) go to 996
                 bits = 10*bits + iachar(char) - iachar('0')
                 if ( bits < 0 ) go to 996
@@ -1006,7 +975,12 @@ contains
 
         if ( bits < 0 .OR. digits == 0 .OR. digits > 10 ) go to 999
 
-        call self % init(  bits )
+        call self % init( bits, status )
+        if ( present(status) ) then
+            call error_handler( 'There was an allocation fault for SELF.', &
+                                alloc_fault, status, module_name, procedure )
+            return
+        end if
         do bit = 1, bits-1
             read( unit,         &
                   advance='NO', &
@@ -1054,39 +1028,23 @@ contains
 
         return
 
-996     if ( present(status) ) then
-            status = integer_overflow_error
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' failed on ' // &
-                'integer overflow in reading size of bitset literal from ' // &
-                'UNIT.'
-        end if
+996     call error_handler( 'Integer overflow in reading size of ' // &
+                            'bitset literal from UNIT.',              &
+                            read_failure, status, module_name, procedure )
+        return
 
+997     call error_handler( 'Failure on read of UNIT.',                   &
+                            read_failure, status, module_name, procedure )
+        return
 
-997     if ( present(status) ) then
-            status = read_failure
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' failed on ' // &
-                'read of UNIT.'
-        end if
+998     call error_handler( 'End of File of UNIT before finishing a ' // &
+                            'bitset literal.',                           &
+                            eof_failure, status, module_name, procedure )
+        return
 
-998     if ( present(status) ) then
-            status = eof_failure
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' reached ' // &
-                'End of File of UNIT before finding a bitset literal.'
-        end if
-
-999     if ( present(status) ) then
-            status = char_string_invalid_error
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' found an ' // &
-                'invalid bitset literal in UNIT.'
-        end if
+999     call error_handler( 'Invalid character in bitset literal in UNIT ', &
+                            char_string_invalid_error, status,              &
+                            module_name, procedure )
 
     end subroutine read_bitset_unit_large
 
@@ -1200,7 +1158,11 @@ contains
 
         bit_count = self % num_bits
         allocate( character(len=bit_count)::string, stat=stat )
-        if ( stat > 0 ) go to 999
+        if ( stat > 0 ) then
+            call error_handler( 'There was an allocation fault for STRING.', &
+                                alloc_fault, status, module_name, procedure )
+            return
+        end if
         do bit=0, bit_count-1
             pos = bit_count - bit
             if ( self % test( bit) ) then
@@ -1211,16 +1173,6 @@ contains
         end do
 
         if ( present(status) ) status = success
-
-        return
-
-999     if ( present(status) ) then
-            status = alloc_fault
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' allocation ' // &
-                'of STRING failed.'
-        end if
 
     end subroutine to_string_large
 
@@ -1277,7 +1229,11 @@ contains
         call digit_count( self % num_bits, count_digits )
 
         allocate( character(len=count_digits+bit_count+2)::string, stat=stat )
-        if ( stat > 0 ) go to 999
+        if ( stat > 0 ) then
+            call error_handler( 'There was an allocation fault for STRING.', &
+                                alloc_fault, status, module_name, procedure )
+            return
+        end if
 
         write( string, "('S', i0)" ) self % num_bits
 
@@ -1292,16 +1248,6 @@ contains
         end do
 
         if ( present(status) ) status = success
-
-        return
-
-999     if ( present(status) ) then
-            status = alloc_fault
-            return
-        else
-            error stop module_name // ' % ' // procedure // ' had a ' // &
-                'memory sllocation failure for a string.'
-        end if
 
     contains
 
@@ -1396,17 +1342,11 @@ contains
                    iomsg=message ) &
                    string
         end if
-        if (ierr /= 0) go to 999
-
-        return
-
-999     if ( present(status) ) then
-            status = write_failure
+        if (ierr /= 0) then
+            call error_handler( 'Failure on a WRiTE statement for UNIT.', &
+                                write_failure, status, module_name, procedure )
             return
-        else
-            error stop module_name // ' % ' // procedure // ' had a ' // &
-                'failure on a WRITE statement.'
-        end if
+        endif
 
     end subroutine write_bitset_unit_large
 
