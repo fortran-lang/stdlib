@@ -841,6 +841,8 @@ contains
 
         if ( present(status) ) status = success
 
+        return
+
 996     call error_handler( 'Integer overflow in reading size of ' // &
                             'bitset literal from UNIT.',              &
                             read_failure, status, module_name, procedure )
