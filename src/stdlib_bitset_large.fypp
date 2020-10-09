@@ -785,7 +785,7 @@ contains
 
         return
 
-999     call error_handler( 'Failure on a WRiTE statement for UNIT.', &
+999     call error_handler( 'Failure on a WRITE statement for UNIT.', &
                             write_failure, status, module_name, procedure )
 
     end subroutine output_large
@@ -1343,7 +1343,7 @@ contains
                    string
         end if
         if (ierr /= 0) then
-            call error_handler( 'Failure on a WRiTE statement for UNIT.', &
+            call error_handler( 'Failure on a WRITE statement for UNIT.', &
                                 write_failure, status, module_name, procedure )
             return
         endif
