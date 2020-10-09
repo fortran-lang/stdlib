@@ -34,8 +34,9 @@ bits. The other constants that are error codes are summarized below:
 |----------|-------|
 |`success`|No problems found|
 |`alloc_fault`|Failure with a memory allocation|
-|`array_size_invalid_error`|Attempt to define more than 64 bits in a `bitset_64`|
+|`array_size_invalid_error`|Attempt to define either negative bits or more than 64 bits in a `bitset_64`|
 |`char_string_invalid_error`|Invalid character found in a character string|
+|`char_string_too_large_error`|Character string was too large to be encoded in the bitset|
 |`char_string_too_small_error`|Character string was too small to hold the expected number of bits|
 |`index_invalid_error`|Index to a bitstring was less than zero or greater than the number of bits|
 |`integer_overflow_error`|Attempt to define an integer value bigger than `huge(0_bits_kind`)|
@@ -753,7 +754,17 @@ and "1".
 an `intent(out)` argument. If present, on return its value shall be
 one of the error codes defined in this module. If absent, and its
 value would not have been `success`, then processing will stop with an
-informative text as its stop code.
+informative text as its stop code. It shall have one of the error
+codes:
+
+* `success` - if no problems were found,
+
+* `alloc_fault` - if allocation of the bitset failed
+
+* `char_string_too_large_error` - if `string` was too large, or 
+
+* `char_string_invalid_error` - if string had an invalid character.
+
 
 #### Example
 
@@ -1188,7 +1199,7 @@ value of one of the error codes of this module. If absent and it would
 not have had the value `success` processing will stop with a message
 as its error code. The possible error codes are:
 
-* `success` - no problems detected;
+* `success` - no problems found;
 
 * `alloc_fault` - if `self` is of class `bitset_large` and allocation
   of the bits failed;
@@ -1200,10 +1211,15 @@ as its error code. The possible error codes are:
   character;
 
 * `char_string_too_small_error` - if `string` ends before all the bits
-  are read; or
+  are read;
+
+* `eof_failure` -  if a `read` statement reached an end-of-file before
+   completing the read of the bitset literal,
 
 * `integer_overflow_error` - if the *bitset-literal* has a `bits`
-  value larger than `huge(0_bits_kind)`.
+  value larger than `huge(0_bits_kind)`; or
+
+* `read_failure` - if a read statement failed.
 
 #### Example
 
