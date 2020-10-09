@@ -314,9 +314,9 @@ contains
         do bit = 1, bits
             char = string(bit:bit)
             if ( char == '0' ) then
-                call self % clear( int(bits, kind=bits_kind)-bit )
+                call self % clear( int(bits-bit, kind=bits_kind) )
             else if ( char == '1' ) then
-                call self % set( int(bits, kind=bits_kind)-bit )
+                call self % set( int(bits-bit, kind=bits_kind) )
             else
                 call error_handler( 'STRING had a character other than ' // &
                                     '0 or 1.',                              &
