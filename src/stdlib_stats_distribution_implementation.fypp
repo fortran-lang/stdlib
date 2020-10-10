@@ -1,0 +1,155 @@
+#:include "common.fypp"
+submodule (stdlib_stats_distribution) stdlib_stats_distribution_implementation
+
+    contains
+!---------------------------------------------------------------------------------------------
+!                   Uniform Distribution
+!---------------------------------------------------------------------------------------------
+    #:for k1, t1 in REAL_KINDS_TYPES
+    module procedure unif_dist_rvs_${t1[0]}$${k1}$
+        if(scale == 0.0_${k1}$) call error_stop("Error: scale parameter is zero")
+        res = loc + scale * uni(scale) 
+    end procedure unif_dist_rvs_${t1[0]}$${k1}$
+
+    #:endfor
+    #:for k1, t1 in REAL_KINDS_TYPES
+      #:for k2, t2 in INT_KINDS_TYPES
+      module procedure unif_dist_rvs_array_${t1[0]}$${k1}$_${k2}$
+          ${t2}$ :: i
+
+          if(scale == 0.0_${k1}$) call error_stop("Error: scale parameter is zero")
+          allocate(res(array_size))
+          do i = 1_${k2}$, array_size
+              res(i) = loc + scale * uni(scale)
+          end do
+      end procedure unif_dist_rvs_array_${t1[0]}$${k1}$_${k2}$
+
+      #:endfor
+    #:endfor
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    module procedure unif_dist_pdf_${t1[0]}$${k1}$
+        if(scale == 0.0_${k1}$) then
+            res = 1.0_${k1}$
+        elseif(x < min(loc, loc + scale) .or. x > max(loc, loc + scale)) then
+            res = 0.0_${k1}$
+        else
+            res = 1.0_${k1}$ / scale
+        end if
+    end procedure unif_dist_pdf_${t1[0]}$${k1}$
+
+    #:endfor
+    #:for k1, t1 in REAL_KINDS_TYPES
+    module procedure unif_dist_cdf_${t1[0]}$${k1}$
+        if(scale == 0.0_${k1}$) then
+            res = 1.0_${k1}$
+        elseif(x < min(loc, loc + scale) ) then
+            res = 0.0_${k1}$
+        elseif(x >= min(loc, loc + scale) .and. x <= max(loc, loc + scale)) then
+            res = (x - loc) / scale
+        else
+            res = 1.0_${k1}$
+        end if
+    end procedure unif_dist_cdf_${t1[0]}$${k1}$
+
+    #:endfor
+!---------------------------------------------------------------------------------------------
+!                   Normal Distribution
+!---------------------------------------------------------------------------------------------
+    #:for k1, t1 in REAL_KINDS_TYPES
+    module procedure norm_dist_rvs_${t1[0]}$${k1}$
+        res = rnor(scale) * scale + loc
+    end procedure norm_dist_rvs_${t1[0]}$${k1}$
+
+    #:endfor
+    #:for k1, t1 in REAL_KINDS_TYPES
+      #:for k2, t2 in INT_KINDS_TYPES
+      module procedure norm_dist_rvs_array_${t1[0]}$${k1}$_${k2}$
+          ${t2}$ :: i
+
+          allocate(res(array_size))
+          do i = 1_${k2}$, array_size
+              res(i) = rnor(scale) * scale + loc
+          end do
+      end procedure norm_dist_rvs_array_${t1[0]}$${k1}$_${k2}$
+
+      #:endfor
+    #:endfor
+    #:for k1, t1 in REAL_KINDS_TYPES
+    module procedure norm_dist_pdf_${t1[0]}$${k1}$
+        res = exp(- 0.5_${k1}$ * (x - loc) * (x - loc) / (scale * scale)) / &
+              (sqrt_2_Pi_${t1[0]}$${k1}$ * scale)
+    end procedure norm_dist_pdf_${t1[0]}$${k1}$
+
+    #:endfor
+    #:for k1, t1 in REAL_KINDS_TYPES
+    module procedure norm_dist_cdf_${t1[0]}$${k1}$
+        res = (1.0_${k1}$ + erf((x - loc) / (scale * sqrt_2_${t1[0]}$${k1}$))) &
+              / 2.0_${k1}$
+    end procedure norm_dist_cdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+!---------------------------------------------------------------------------------------------
+!                   Binomial Distribution
+!---------------------------------------------------------------------------------------------
+    #:for k1, t1 in INT_KINDS_TYPES
+    module procedure binom_dist_rvs_${t1[0]}$${k1}$
+
+        if(n * p < 10.0) then
+            res = random_binomial_num1(n, p)
+        else
+            res = random_binomial_num2(n, p)
+        endif
+    end procedure binom_dist_rvs_${t1[0]}$${k1}$
+
+    #:endfor
+    #:for k1, t1 in INT_KINDS_TYPES
+      module procedure binom_dist_rvs_array_${t1[0]}$${k1}$
+          ${t1}$ :: i
+
+          allocate(res(array_size))
+          if(n * p < 10.0) then
+              do i =1_${k1}$, array_size
+                  res(i) = random_binomial_num1(n, p)
+              end do
+          else
+              do i = 1_${k1}$, array_size
+                  res(i) = random_binomial_num2(n, p)
+              end do
+          endif
+      end procedure binom_dist_rvs_array_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+    module procedure binom_dist_pmf_${t1[0]}$${k1}$
+        res = log_factorial(n) -              &
+              log_factorial(k) -              &
+              log_factorial(n - k) +          &
+              k * log(p) + (n - k) * log(1.0 - p)
+        res = exp(res)
+    end procedure binom_dist_pmf_${t1[0]}$${k1}$
+
+    #:endfor
+    #:for k1, t1 in INT_KINDS_TYPES
+    module procedure binom_dist_cdf_${t1[0]}$${k1}$
+        ${t1}$ :: i
+        real(dp) :: coeff, q, logpmf, sum, lq, lpq
+
+        q = 1.0_dp - p
+        lq = log(q)
+        lpq = log(p / q)
+        coeff = 0.0_dp
+        sum = 1.0_dp
+        do i = 1_${k1}$, k
+            coeff = coeff + log(real(n - i + 1, kind=dp)) - log(real(i, kind=dp))
+            logpmf = coeff + i * lpq
+            sum = sum + exp(logpmf)
+        end do
+        res = exp(n * lq) * sum
+    end procedure binom_dist_cdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+end submodule stdlib_stats_distribution_implementation

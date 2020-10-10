@@ -1,0 +1,611 @@
+#:include "common.fypp"
+Module stdlib_stats_distribution_rvs
+    use stdlib_kinds
+    implicit none
+    private
+    real(dp), parameter  :: HALF = 0.5_dp, ONE = 1.0_dp, TWO = 2.0_dp,       &
+                            TWO_PI = TWO * acos(-one)
+    integer(int32), save :: jsr = 123456789, kn(0:127), ke(0:255)
+    real(dp), save       :: wn(0:127), fn(0:127), we(0:255), fe(0:255)
+    logical, save        :: zig_initialized = .false.
+    integer(int32), save :: number_seed
+
+    public :: uni, rnor
+    public :: random_binomial_num1, random_binomial_num2
+    public :: log_factorial, random_distribution_seed
+
+
+    interface uni
+        ! Generation of uniform distributed variates
+        ! Use Fortran's random_number procedure call
+        #:for k1, t1 in REAL_KINDS_TYPES
+        module procedure uni_${t1[0]}$${k1}$
+        #:endfor
+    end interface uni
+
+    interface rnor
+        ! Generate random normals
+        ! Marsaglia & Tsang generator for random normals & random exponentials.
+        ! Translated from C by Alan Miller (amiller@bigpond.net.au)
+        !
+        ! Marsaglia, G. & Tsang, W.W. (2000) `The ziggurat method for generating
+        ! random variables', J. Statist. Software, v5(8).
+        !
+        ! Latest version - 1 January 2001
+        #:for k1, t1 in REAL_KINDS_TYPES
+        module procedure rnor_${t1[0]}$${k1}$
+        #:endfor
+    end interface rnor
+
+    interface rexp
+        ! Generate random exponentials
+        ! Marsaglia & Tsang generator for random normals & random exponentials.
+        ! Translated from C by Alan Miller (amiller@bigpond.net.au)
+        !
+        ! Latest version - 1 January 2001
+        #:for k1, t1 in REAL_KINDS_TYPES
+        module procedure rexp_${t1[0]}$${k1}$
+        #:endfor
+    end interface rexp
+
+    interface random_binomial_num1
+        ! Generation of binomial variates for np < 10
+        ! Inverse transformation of binomial distribution function
+        ! Algorithm BINV
+        #:for k1, t1 in INT_KINDS_TYPES
+        module procedure random_binomial_num1_${t1[0]}$${k1}$
+        #:endfor
+    end interface random_binomial_num1
+
+    interface random_binomial_num2
+        ! Generation of binomial variates for np >=10 and p<=0.5
+        ! Wolfgang Hormann generator for binomial random variates.
+        ! Fortran program  by Jim-215-Fisher
+        !
+        ! Hormann Wolfgang (1993) `The generation of binomial random variates',
+        ! Journal of  Statistical Computation and Simulation, v46(1-2).
+        !
+        ! Article can be found at http://core.ac.uk/download/pdf/11007254.pdf
+        #:for k1, t1 in INT_KINDS_TYPES
+        module procedure random_binomial_num2_${t1[0]}$${k1}$
+        #:endfor
+    end interface random_binomial_num2
+
+    interface fc_stirling
+        ! Table and function for log factorial stirling approximation correction
+        ! term.
+        #:for k1, t1 in INT_KINDS_TYPES
+        module procedure fc_stirling_${t1[0]}$${k1}$
+        #:endfor
+    end interface fc_stirling
+
+    interface log_factorial
+        ! Table and function for log factorial.
+        #:for k1, t1 in INT_KINDS_TYPES
+        module procedure log_factorial_${t1[0]}$${k1}$
+        #:endfor
+    end interface log_factorial
+
+
+    contains
+!-------------------------------------------------------------------------------
+!              ziggurat algorithm setup
+!-------------------------------------------------------------------------------
+    subroutine zigset
+    ! Marsaglia & Tsang generator for random normals & random exponentials.
+    ! Translated from C by Alan Miller (amiller@bigpond.net.au)
+    !
+    ! Marsaglia, G. & Tsang, W.W. (2000) `The ziggurat method for generating
+    ! random variables', J. Statist. Software, v5(8).
+    !
+    ! This is an electronic journal which can be downloaded from:
+    ! http://www.jstatsoft.org/v05/i08
+    !
+    ! N.B. It is assumed that all integers are 32-bit.
+    ! N.B. The value of M2 has been halved to compensate for the lack of
+    !      unsigned integers in Fortran.
+    !
+    ! Latest version - 1 January 2001
+        real(dp), parameter :: M1 = 2147483648.0_dp, M2 = 2147483648.0_dp
+        real(dp)            :: dn = 3.442619855899_dp, tn,                    &
+                               vn = 0.00991256303526217_dp,                   &
+                               de = 7.697117470131487_dp, te,                 &
+                               ve = 0.003949659822581572_dp, q
+        integer(int32) :: i
+
+        tn = dn
+        te = de
+        !  tables for random normals
+        q = vn * exp(HALF * dn * dn)
+        kn(0) = (dn / q) * M1
+        kn(1) = 0
+        wn(0) = q / M1
+        wn(127) = dn / M1
+        fn(0) = 1.0
+        fn(127) = exp( -HALF * dn * dn )
+        do  i = 126, 1, -1
+            dn = sqrt( -TWO * log( vn / dn + exp( -HALF * dn * dn ) ) )
+            kn(i+1) = (dn / tn) * M1
+            tn = dn
+            fn(i) = exp(-HALF * dn * dn)
+            wn(i) = dn / M1
+        end do
+
+        !  tables for random exponetials
+        q = ve * exp( de )
+        ke(0) = (de / q) * M2
+        ke(1) = 0
+        we(0) = q / M2
+        we(255) = de / M2
+        fe(0) = 1.0
+        fe(255) = exp( -de )
+        do  i = 254, 1, -1
+            de = -log( ve / de + exp( -de ) )
+            ke(i+1) = M2 * (de / te)
+            te = de
+            fe(i) = exp( -de )
+            we(i) = de / M2
+        end do
+        zig_initialized = .true.
+        return
+    end subroutine zigset
+
+!-------------------------------------------------------------------------------
+!              random 32bit integer
+!-------------------------------------------------------------------------------
+    function shr3( ) result( ival )
+        !  generate random 32-bit integers
+        integer(int32) ::  ival
+        integer(int32) ::  jz
+
+        jz = jsr
+        jsr = ieor( jsr, ishft( jsr,  13 ) )
+        jsr = ieor( jsr, ishft( jsr, -17 ) )
+        jsr = ieor( jsr, ishft( jsr,   5 ) )
+        ival = jz + jsr
+        return
+    end function shr3
+
+!-------------------------------------------------------------------------------
+!              random distribution seed
+!-------------------------------------------------------------------------------
+    subroutine random_distribution_seed(put, get)
+        integer(int32), intent(in) :: put
+        integer(int32), intent(out) :: get
+        integer(int32), allocatable :: k_in(:), k_out(:)
+        real :: x
+        integer(int32) :: i
+
+        call random_seed(size = number_seed)
+        allocate(k_in(number_seed), k_out(number_seed))
+        jsr = put
+        do i = 1, number_seed
+            k_in(i) = shr3()
+        end do
+        call random_seed(put = k_in)
+        call random_number(x)
+        call random_seed(get = k_out)
+        get = k_out(1)
+        jsr = get
+    end subroutine random_distribution_seed
+
+!-------------------------------------------------------------------------------
+!              uniform random variates
+!-------------------------------------------------------------------------------
+    #:for k1, t1 in REAL_KINDS_TYPES
+    function uni_${t1[0]}$${k1}$( x ) result( fn_val )
+        ${t1}$, intent(in) :: x
+        ${t1}$  ::  fn_val
+
+        call random_number(fn_val)
+        return
+    end function uni_${t1[0]}$${k1}$
+
+    #:endfor
+!-------------------------------------------------------------------------------
+!              normal random variate
+!-------------------------------------------------------------------------------
+    #:for k1, t1 in REAL_KINDS_TYPES
+    function rnor_${t1[0]}$${k1}$( z ) result( fn_val )
+        ${t1}$, intent(in) :: z
+        ${t1}$ ::  fn_val
+        ${t1}$, parameter  ::  r = 3.442619855899_${k1}$
+        ${t1}$ ::  x, y
+        integer(int32) :: hz, iz
+
+        if( .not. zig_initialized ) call zigset
+        hz = shr3( )
+        iz = iand( hz, 127 )
+        if( abs( hz ) < kn(iz) ) then
+            fn_val = hz * wn(iz)
+        else
+            do
+                if( iz == 0 ) then
+                    do
+                        x = -log( uni(z) ) / r
+                        y = -log( uni(z) )
+                        if( y + y >= x * x ) exit
+                    end do
+                    fn_val = r + x
+                    if( hz <= 0 ) fn_val = -fn_val
+                    return
+                end if
+                x = hz * wn(iz)
+                if( fn(iz) + uni(z) * (fn(iz-1) - fn(iz)) < exp(-HALF *       &
+                     x * x) ) then
+                    fn_val = x
+                    return
+                end if
+                hz = shr3( )
+                iz = iand( hz, 127 )
+                if( abs( hz ) < kn(iz) ) then
+                    fn_val = hz * wn(iz)
+                    return
+                end if
+            end do
+        end if
+        return
+    end function rnor_${t1[0]}$${k1}$
+
+    #:endfor
+
+!-------------------------------------------------------------------------------
+!              exponential rvs
+!-------------------------------------------------------------------------------
+    #:for k1, t1 in REAL_KINDS_TYPES
+    function rexp_${t1[0]}$${k1}$( z ) result( fn_val )
+        ${t1}$, intent(in) :: z
+        ${t1}$ :: fn_val, x
+        ${t1}$ :: r = 7.69711747013104972_${k1}$
+        integer(int32) :: jz, iz
+
+        if( .not. zig_initialized ) call zigset
+        jz = shr3( )
+        iz = iand( jz, 255 )
+        if( abs( jz ) < ke(iz) ) then
+            fn_val = abs(jz) * we(iz)
+            return
+        end if
+        do
+            if( iz == 0 ) then
+                fn_val = r - log( uni(z) )
+                return
+            end if
+            x = abs( jz ) * we(iz)
+            if( fe(iz) + uni(z) * (fe(iz-1) - fe(iz)) < exp( -x ) ) then
+                fn_val = x
+                return
+            end if
+            jz = shr3( )
+            iz = iand( jz, 255 )
+            if( abs( jz ) < ke(iz) ) then
+                fn_val = abs( jz ) * we(iz)
+                return
+            end if
+        end do
+        return
+    end function rexp_${t1[0]}$${k1}$
+
+    #:endfor
+!-------------------------------------------------------------------------------
+!               Algorithm BINV for binomial with np<10
+!-------------------------------------------------------------------------------
+    #:for k1, t1 in INT_KINDS_TYPES
+    function random_binomial_num1_${t1[0]}$${k1}$(n, p) result(res)
+        ${t1}$, intent(in) :: n
+        real, intent(in) :: p
+        ${t1}$ :: res, k
+        real :: q, s, a, r, u, pq
+
+        pq = min(p, 1.0 - p)
+        q = 1.0 - pq
+        s = pq / q
+        a = (n + 1) * s
+        r = q ** n
+        k = 0
+        u = uni(q)
+        do
+            if(u <= r) exit
+            u = u - r
+            k = k + 1_${k1}$
+            r = (a / k - s) * r
+        end do
+        if(p > 0.5) then
+            res = n - k
+        else
+            res = k
+        endif
+        return
+    end function random_binomial_num1_${t1[0]}$${k1}$
+
+    #:endfor
+  #:set BTRD=1   
+  #:if BTRD
+!-------------------------------------------------------------------------------
+!              BTRD Algorithm for binomial with np>=10
+!-------------------------------------------------------------------------------
+    #:for k1, t1 in INT_KINDS_TYPES
+    function random_binomial_num2_${t1[0]}$${k1}$(n, p) result(res)
+        real, intent(in) :: p
+        ${t1}$, intent(in) :: n
+        ${t1}$ :: res, m, i, k, km, nm, nk
+        real :: r, nr, npq, a, b, c, alpha, vr, urvr, u, v, us, rho, f, t, h
+
+        m = floor((n + 1) * p)
+        r = p / (1.0 - p)
+        nr = (n + 1) * r
+        npq = n * p * (1.0 - p)
+        b = 1.15 + 2.53 * sqrt(npq)
+        a = -0.0873 + 0.0248 * b + 0.01 * p
+        c = n * p + 0.5
+        alpha = (2.83 + 5.1 / b) * sqrt(npq)
+        vr = 0.92 - 4.2 / b
+        urvr = 0.86 * vr
+
+        do
+    ! Steps 1, 2
+            v = uni(p)
+            if(v <= urvr) then
+                u = v / vr - 0.43
+                res = floor(((2 * a) / (0.5 - abs(u)) + b) * u + c)
+                return
+            endif
+            if(v >= vr) then
+                u = uni(p) - 0.5
+            else
+                u = v / vr - 0.93
+                u = sign(1.0, u) * 0.5 - u
+                v = uni(p) * vr
+            endif
+    !step 3.0
+            us = 0.5 - abs(u)
+            k = floor(((2 * a) / us + b) * u + c)
+            if(k < 0 .or. k > n) cycle
+            v = v * alpha / (b + a / (us * us))
+            km = abs(k - m)
+            if(km <= 15_${k1}$) then
+    !Step 3.1
+                f = 1.0
+                if(m < k) then
+                    do i = m, k
+                        f = f * (nr / i - r)
+                    end do
+                elseif(m > k) then
+                    do i = k, m
+                        v = v * (nr / i -r)
+                    end do
+                endif
+                if(v <= f) then
+                    res = k
+                    return
+                endif
+            else
+    !Step 3.2
+                v = log(v)
+                rho = (km / npq) * (((km / 3.0 + 0.625) * km + 1.0 / 6.0)      &
+                      / npq + 0.5)
+                t = - (km * km) / (2.0 * npq)
+                if(v < t - rho) then
+                    res = k
+                    return
+                endif
+                if(v <= t + rho) then
+    !Step 3.3
+                    nm = n - m + 1_${k1}$
+                    h = (m + 0.5) * log((m + 1.0) / (r * nm)) +            &
+                        fc_stirling(m) + fc_stirling(n - m)
+    !Step 3.4
+                    nk = n - k + 1_${k1}$
+                     h = h + (n + 1) * (log(real(nm)) - log(real(nk))) +    &
+                         (k + 0.5) * log(nk * r / (k + 1)) -                &
+                         fc_stirling(k) - fc_stirling(n - k)
+                    if(v <= h) then
+                        res = k
+                        return
+                    endif
+                endif
+            endif
+        end do
+    end function random_binomial_num2_${t1[0]}$${k1}$
+
+    #:endfor
+  #:else
+    #:for k1, t1 in INT_KINDS_TYPES
+    function random_binomial_num2_${t1[0]}$${k1}$(n, p) result(res)
+	    ! BTPE algorithm
+        real, intent(in) :: p
+        ${t1}$, intent(in) :: n
+        ${t1}$ :: res, m, y, i, k
+        real :: fm, q, r, nrq, p1, p2, p3, p4, xm, xl, xr, c, a, lamdal, lamdar
+        real :: u, v, x, fy, s, rho, t, aa, x1, x2, f1, f2,z, w, z2, w2, cc
+
+        q = 1.0 - p
+        r = min(p, q)
+        fm = (n + 1) * r
+        nrq = n * r * q
+        m = int(fm, kind = ${k1}$)
+        p1 = int(2.195 * sqrt(nrq) - 4.6 * q) + 0.5
+        xm = m + 0.5
+        xl = xm - p1
+        xr = xm + p1
+        c = 0.134 + 20.5 / (15.3 + m)
+        a = (fm - xl)/ (fm - xl * r)
+        lamdal = a * (1 + a / 2)
+        a = (xr - fm) / (xr * q)
+         lamdar = a * ( 1 + a / 2)
+         p2 = p1 * (1 + 2 * c)
+        p3 = p2 + c / lamdal
+        p4 = p3 + c / lamdar
+        do
+!step 1.
+            u = p4 * uni(q)
+            v = uni(q)
+            if(u <= p1) then
+                y=int(xm - p1 * v + u, kind = ${k1}$)
+            else
+!step 2.
+                if(U <= p2) then
+                    x = xl + (u - p1) / c
+                    v = v * c + 1 - abs(m - x + 0.5) / p1
+                    if(v > 1) cycle
+                    y = int(x, kind = ${k1}$)
+                else
+!step 3.
+                    if(u <= p3) then
+                        y = int(xl + log(v) / lamdal, kind = ${k1}$)
+                        if(y < 0) cycle
+                        v = v * (u - p2) * lamdal
+                    else
+!step 4.
+                        y = int(xr - log(v) / lamdar, kind = ${k1}$)
+                        if(y > n) cycle
+                        v = v * (u - p3) * lamdar
+                    endif
+                endif
+!step 5.0
+                k = abs(y - m)
+                if(.not.(k > 20 .and. k < nrq / 2 - 1)) then
+!step 5.1
+                    s = r / q
+                    a = (n + 1) * s
+                    fy = 1.0
+                    if(m < y) then
+                        do i = m, y
+                            fy = fy * (a / i - s)
+                        end do
+                    elseif(m > y) then
+                        do i = y, m
+                            fy = fy / (a / i - s)
+                        end do
+                    endif
+                    if(v > fy) cycle
+                    if(p > 0.5) then
+                        res = n - y
+                    else
+                        res = y
+                    endif
+                    return
+                else
+!step 5.2.
+                    rho = k / nrq
+                    rho = rho * ((k * (k / 3.0 + 0.625) + 1.0 / 6) / nrq + 0.5)
+                    t = - 0.5 * K / nrq * k
+                    aa = log(v)
+                    if(aa < t - rho) then
+                        if(p > 0.5) then
+                            res = n - y
+                        else
+                            res = y
+                        endif
+                        return
+                    endif
+                    if(aa > t + rho) cycle
+                endif
+!step 5.3
+                x1 = y + 1.0
+                f1 = m + 1.0
+                z = n + 1.0 - m
+                w = n - y + 1.0
+                x2 = x1 * x1
+                f2 = f1 * f1
+                z2 = z * z
+                w2 = w * w
+                cc = xm * log(f1 / x1) + (n - m + 0.5) *log(z / w)
+                cc = cc + (y - m) * log(w * r / x1 / q)
+                cc = cc + (13860.0 - (462.0 - (132.0 - (99.0 - 140.0 / f2) &
+                     / f2) / f2) / f2) / f1 / 166320.0
+                cc = cc + (13860.0 - (462.0 - (132.0 - (99.0 - 140.0 / z2) &
+                     / z2) / z2) / z2) / z / 166320.0
+                cc = cc + (13860.0 - (462.0 - (132.0 - (99.0 - 140.0 / x2) &
+                     / x2) / x2) / x2) / x1 / 166320.0
+                cc = cc + (13860.0 - (462.0 - (132.0 - (99.0 - 140.0 / w2) &
+                     / w2) / w2) / w2) / w / 166320.0
+                if(aa > cc) cycle
+            endif
+!step 6.
+            if(p > 0.5) then
+                res = n - y
+            else
+                res = y
+            endif
+            return
+        enddo
+    end function random_binomial_num2_${t1[0]}$${k1}$
+    #:endfor
+  #:endif
+!-------------------------------------------------------------------------------
+!              Table and function for stirling approx correction term
+!-------------------------------------------------------------------------------
+    #:for k1, t1 in INT_KINDS_TYPES
+    elemental module function fc_stirling_${t1[0]}$${k1}$(k) result(x)
+    real(dp) :: x, k1_2
+    ${t1}$, intent(in) :: k
+    ${t1}$ :: k_1
+
+    select case(k)
+    case (0)
+        x = 0.08106146679532726_dp
+    case (1)
+        x = 0.04134069595540929_dp
+    case (2)
+        x = 0.02767792568499834_dp
+    case (3)
+        x = 0.02079067210376509_dp
+    case (4)
+        x = 0.01664469118982119_dp
+    case (5)
+        x = 0.01387612882307075_dp
+    case (6)
+        x = 0.01189670994589177_dp
+    case (7)
+        x = 0.01041126526197209_dp
+    case (8)
+        x = 0.009255462182712733_dp
+    case (9)
+        x = 0.008330563433362871_dp
+    case (10:)
+        k_1 = k + 1
+        k1_2 = real(k_1, kind=dp) * k_1
+        x = ONE / (1260.0_dp * k1_2)
+        x = (ONE / 360.0_dp - x) / k1_2
+        x = (ONE / 12.0_dp - x) / k_1
+    end select
+    end function fc_stirling_${t1[0]}$${k1}$
+    #:endfor
+
+!-------------------------------------------------------------------------------
+!              Table and function for log of factorial
+!-------------------------------------------------------------------------------
+    #:for k1, t1 in INT_KINDS_TYPES
+    elemental module function log_factorial_${t1[0]}$${k1}$(k) result(res)
+    ${t1}$, intent(in) :: k
+    real(dp) :: res
+
+    select case (k)
+    case (0)
+        res = 0.0_dp
+    case (1)
+        res = 0.0_dp
+    case (2)
+        res = 0.6931471805599453_dp
+    case (3)
+        res = 1.791759469228055_dp
+    case (4)
+        res = 3.178053830347946_dp
+    case (5)
+        res = 4.787491742782046_dp
+    case (6)
+        res = 6.579251212010101_dp
+    case (7)
+        res = 8.525161361065415_dp
+    case (8)
+        res = 10.604602902745251_dp
+    case (9)
+        res = 12.801827480081469_dp
+    case (10:)
+        res = HALF * log(TWO_PI) + (k + HALF) * log(k + 1.0_dp) - (k + 1) +   &
+              fc_stirling(k)
+    end select
+    end function log_factorial_${t1[0]}$${k1}$
+    #:endfor
+end module stdlib_stats_distribution_rvs

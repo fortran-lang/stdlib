@@ -1,0 +1,226 @@
+#:include "common.fypp"
+module stdlib_stats_distribution
+    !! Stdlib_stats_distribution
+    !! This module contains a large number of probability distribution and statistical functions
+    !!
+    !! Continuouse Distributions
+    !!     Uniform distribution
+    !!     Normal distribution
+    !!
+    !! Discrete Distribution
+    !!     Binormial distribution
+    !!
+    use stdlib_error, only : error_stop
+    use stdlib_kinds
+    use stdlib_stats_distribution_rvs
+    implicit none
+    private
+    #:for k1, t1 in REAL_KINDS_TYPES
+    ${t1}$, parameter :: sqrt_2_pi_${t1[0]}$${k1}$ = sqrt(2.0_${k1}$ * acos(-1.0_${k1}$))
+    ${t1}$, parameter :: sqrt_2_${t1[0]}$${k1}$ = sqrt(2.0_${k1}$)
+    #:endfor
+
+    public :: random_seed
+    public :: uniform_distribution_rvs, uniform_distribution_pdf, uniform_distribution_cdf
+    public :: normal_distribution_rvs, normal_distribution_pdf, normal_distribution_cdf
+    public :: binomial_distribution_rvs, binomial_distribution_pmf, binomial_distribution_cdf
+!---------------------------------------------------------------------------------------------
+!                   Random seed
+!---------------------------------------------------------------------------------------------
+    interface random_seed
+    !! version: experimental
+    !!
+    !! Set or get seed value of probability distributions for psudorandom bumber generator 
+    !! ([Specification](../page/specs/stdlib_stats_distribution.html#description))
+    !! 
+        procedure random_distribution_seed
+    end interface random_seed
+!---------------------------------------------------------------------------------------------
+!                   Uniform Distribution
+!---------------------------------------------------------------------------------------------
+    interface uniform_distribution_rvs
+    !! version: experimental
+    !!
+    !! Uniform Distribution Random Variates
+    !!
+    !! ([Specification](../page/specs/stdlib_stats_distribution.html#description))
+    !!
+
+        #:for k1, t1 in REAL_KINDS_TYPES
+        module function unif_dist_rvs_${t1[0]}$${k1}$(loc, scale) result(res)
+            ${t1}$ :: res
+            ${t1}$, intent(in) :: loc, scale
+        end  function unif_dist_rvs_${t1[0]}$${k1}$
+
+        #:endfor
+        #:for k1, t1 in REAL_KINDS_TYPES
+          #:for k2, t2 in INT_KINDS_TYPES
+          module function unif_dist_rvs_array_${t1[0]}$${k1}$_${k2}$(loc, scale, &
+                          array_size) result(res)
+              ${t2}$, intent(in) :: array_size
+              ${t1}$, allocatable :: res(:)
+              ${t1}$, intent(in) :: loc, scale
+          end function unif_dist_rvs_array_${t1[0]}$${k1}$_${k2}$
+
+          #:endfor
+        #:endfor
+    end interface uniform_distribution_rvs
+
+    interface uniform_distribution_pdf
+    !! version: experimental
+    !!
+    !! Uniform Distribution Probability Density Function
+    !! ([Specification](../page/specs/stdlib_stats_distribution.html#description))
+    !!
+        #:for k1, t1 in REAL_KINDS_TYPES
+        elemental module function unif_dist_pdf_${t1[0]}$${k1}$(x, loc, scale) result(res)
+            ${t1}$, intent(in) :: x
+            ${t1}$ :: res
+            ${t1}$, intent(in) :: loc, scale
+        end function unif_dist_pdf_${t1[0]}$${k1}$
+
+        #:endfor
+    end interface uniform_distribution_pdf
+
+    interface uniform_distribution_cdf
+    !! version: experimentl
+    !!
+    !! Uniform Distribution Cumulative Distribution Function
+    !! ([Specification](../page/specs/stdlib_stats_distribution.html#description))
+    !!
+        #:for k1, t1 in REAL_KINDS_TYPES
+        elemental module function unif_dist_cdf_${t1[0]}$${k1}$(x, loc, scale) result(res)
+            ${t1}$, intent(in) :: x
+            ${t1}$ :: res
+            ${t1}$, intent(in) :: loc, scale
+        end function unif_dist_cdf_${t1[0]}$${k1}$
+
+        #:endfor
+    end interface uniform_distribution_cdf
+
+!---------------------------------------------------------------------------------------------
+!                   Normal Distribution
+!---------------------------------------------------------------------------------------------
+    interface normal_distribution_rvs
+    !! version: experimental
+    !!
+    !! Normal Distribution Random Variates
+    !!
+    !! ([Specification](../page/specs/stdlib_stats_distribution.html#description))
+    !!
+        #:for k1, t1 in REAL_KINDS_TYPES
+        module function norm_dist_rvs_${t1[0]}$${k1}$(loc, scale) result(res)
+            ${t1}$ :: res
+            ${t1}$, intent(in) :: loc, scale
+        end function norm_dist_rvs_${t1[0]}$${k1}$
+
+        #:endfor
+        #:for k1, t1 in REAL_KINDS_TYPES
+          #:for k2, t2 in INT_KINDS_TYPES
+          module function norm_dist_rvs_array_${t1[0]}$${k1}$_${k2}$(loc, scale, &
+                 array_size) result(res)
+              ${t2}$, intent(in) :: array_size
+              ${t1}$, allocatable :: res(:)
+              ${t1}$, intent(in) :: loc, scale
+          end function norm_dist_rvs_array_${t1[0]}$${k1}$_${k2}$
+
+          #:endfor
+        #:endfor
+    end interface normal_distribution_rvs
+
+    interface normal_distribution_pdf
+    !! version: experimental
+    !!
+    !! Normal Distribution Probability Density Function
+    !! ([Specification](../page/specs/stdlib_stats_distribution.html#description))
+    !!
+        #:for k1, t1 in REAL_KINDS_TYPES
+        elemental module function norm_dist_pdf_${t1[0]}$${k1}$(x, &
+                         loc, scale) result(res)
+            ${t1}$, intent(in) :: x
+            ${t1}$ :: res
+            ${t1}$, intent(in) :: loc, scale
+        end function norm_dist_pdf_${t1[0]}$${k1}$
+
+        #:endfor
+    end interface normal_distribution_pdf
+
+    interface normal_distribution_cdf
+    !! version: experimentl
+    !!
+    !! Normal Distribution Cumulative Distribution Function
+    !! ([Specification](../page/specs/stdlib_stats_distribution.html#description))
+    !!
+        #:for k1, t1 in REAL_KINDS_TYPES
+        elemental module function norm_dist_cdf_${t1[0]}$${k1}$(x, &
+                         loc, scale) result(res)
+            ${t1}$, intent(in) :: x
+            ${t1}$ :: res
+            ${t1}$, intent(in) :: loc, scale
+        end function norm_dist_cdf_${t1[0]}$${k1}$
+
+        #:endfor
+    end interface normal_distribution_cdf
+
+!---------------------------------------------------------------------------------------------
+!                   Binomial Distribution
+!---------------------------------------------------------------------------------------------
+    interface binomial_distribution_rvs
+    !! version: experimental
+    !!
+    !! Binomial Distribution Random Variates
+    !!
+    !! ([Specification](../page/specs/stdlib_stats_distribution.html#description))
+    !!
+        #:for k1, t1 in INT_KINDS_TYPES
+        module function binom_dist_rvs_${t1[0]}$${k1}$(n, p) result(res)
+            ${t1}$, intent(in) :: n
+            ${t1}$ :: res
+            real, intent(in)  :: p
+        end function binom_dist_rvs_${t1[0]}$${k1}$
+
+        #:endfor
+        #:for k1, t1 in INT_KINDS_TYPES
+          module function binom_dist_rvs_array_${t1[0]}$${k1}$(n, p, &
+                 array_size) result(res)
+              ${t1}$, intent(in) :: array_size, n
+              ${t1}$, allocatable :: res(:)
+              real, intent(in) :: p
+          end function binom_dist_rvs_array_${t1[0]}$${k1}$
+
+        #:endfor
+    end interface binomial_distribution_rvs
+
+    interface binomial_distribution_pmf
+    !! version: experimental
+    !!
+    !! Normal Distribution Probability Density Function
+    !! ([Specification](../page/specs/stdlib_stats_distribution.html#description))
+    !!
+        #:for k1, t1 in INT_KINDS_TYPES
+        elemental module function binom_dist_pmf_${t1[0]}$${k1}$(k, n, p) result(res)
+            ${t1}$, intent(in) :: k, n
+            real, intent(in) :: p
+            real :: res
+        end function binom_dist_pmf_${t1[0]}$${k1}$
+
+        #:endfor
+    end interface binomial_distribution_pmf
+
+    interface binomial_distribution_cdf
+    !! version: experimentl
+    !!
+    !! Normal Distribution Cumulative Distribution Function
+    !! ([Specification](../page/specs/stdlib_stats_distribution.html#description))
+    !!
+        #:for k1, t1 in INT_KINDS_TYPES
+        elemental module function binom_dist_cdf_${t1[0]}$${k1}$(k, n, p) result(res)
+            ${t1}$, intent(in) :: k, n
+            real, intent(in) :: p
+            real :: res
+        end function binom_dist_cdf_${t1[0]}$${k1}$
+
+        #:endfor
+    end interface binomial_distribution_cdf
+
+end module stdlib_stats_distribution
