@@ -15,9 +15,9 @@ set(fppFiles
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp
     stdlib_quadrature_simps.fypp
-    stdlib_stats_distributions.fypp
-    stdlib_stats_distributions_rvs.fypp
-    stdlib_stats_distributions_implementation.fypp
+    stdlib_stats_distribution.fypp
+    stdlib_stats_distribution_rvs.fypp
+    stdlib_stats_distribution_implementation.fypp
 )
 
 
