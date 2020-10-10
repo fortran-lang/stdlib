@@ -328,8 +328,6 @@ contains
 
         if ( present(status) ) status = success
 
-        return
-
     end subroutine from_string_64
 
 
