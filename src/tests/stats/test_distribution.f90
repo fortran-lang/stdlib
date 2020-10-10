@@ -17,9 +17,9 @@ program test_distribution
     logical ::  warn = .true.
 
     call test_random_seed
-    call test_uniform_random
-    call test_normal_random
-    call test_binomial_random
+    call test_uniform_random_generator
+    call test_normal_random_generator
+    call test_binomial_random_generator
 
       call test_uni_rvs_sp_int8
       call test_uni_rvs_sp_int16
@@ -93,7 +93,7 @@ program test_distribution
           msg="random seed test failed.",warn=warn)
     end subroutine test_random_seed
 
-    subroutine test_uniform_random
+    subroutine test_uniform_random_generator
         integer :: i, j, freq(0:999), num=10000000
         real(dp) :: chisq, expct
 
@@ -114,10 +114,10 @@ program test_distribution
         write(*,*) "Chi-squared for uniform random generator is : ", chisq
         call check(abs(999-chisq) < 90.0, &
                msg="uniform randomness failed chi-squared test", warn=warn)
-    end subroutine test_uniform_random
+    end subroutine test_uniform_random_generator
 
-    subroutine test_normal_random
-        integer :: i, j, freq(0:999), num=10000000
+    subroutine test_normal_random_generator
+        integer :: i, j, freq(0:1000), num=10000000
         real(dp) :: chisq, expct
 
         print *, ""
@@ -137,9 +137,9 @@ program test_distribution
         write(*,*) "Chi-squared for normal random generator is : ", chisq
         call check(abs(999-chisq) < 90.0, &
                msg="normal randomness failed chi-squared test", warn=warn)
-    end subroutine test_normal_random
+    end subroutine test_normal_random_generator
 
-    subroutine test_binomial_random
+    subroutine test_binomial_random_generator
         integer :: i, j, n, num=10000000
         real(dp) :: chisq, expct
         real :: p
@@ -184,7 +184,7 @@ program test_distribution
         write(*,*) "Chi-squared for binomial random generator is : ", chisq
         call check(abs(chisq) < 27.88, &
              msg="binomial1 randomness failed chi-squared test", warn=warn)
-    end subroutine test_binomial_random
+    end subroutine test_binomial_random_generator
 
       subroutine test_uni_rvs_sp_int8
           real(sp) :: res(20), loc, scale
