@@ -190,7 +190,7 @@ Module stdlib_stats_distribution_rvs
     !
         integer(int64) :: res, t
 
-        res = bit_multiple(rol64(bit_multiple(st(2), 5_int64) , 7), 9_int64)
+        res = rol64(st(2) * 5 , 7) * 9
         t = shiftl(st(2), 17)
         st(3) = ieor(st(3), st(1))
         st(4) = ieor(st(4), st(2))
@@ -227,53 +227,18 @@ Module stdlib_stats_distribution_rvs
     !
         integer(int64) :: res, int01, int02, int03
         integer(int64), intent(in), optional :: s
-!        data  int01, int02, int03/z"9E3779B97f4A7C15", &
-!		                          z"BF58476D1CE4E5B9", &
-!                                  z"94D049BB133111EB"/
         data int01, int02, int03/-7046029254386353131_int64, &
                                  -4658895280553007687_int64, &
                                  -7723592293110705685_int64/ 
 
         if(present(s)) si = s
         res = si
-        si = bit_addition(res, int01)
-        res = bit_multiple(ieor(res, shiftr(res, 30)), int02)
-        res = bit_multiple(ieor(res, shiftr(res, 27)), int03)
+        si = res + int01
+        res = ieor(res, shiftr(res, 30)) * int02
+        res = ieor(res, shiftr(res, 27)) * int03
         res = ieor(res, shiftr(res, 31))
         return
     end function splitmix64
-
-    function bit_addition(x, y) result(res)
-    ! Bitwise addition
-        integer(int64), intent(in) :: x, y
-        integer(int64) :: res, a, b, carry
-
-        a = x
-        b = y
-        do
-            carry = iand(a, b)
-            if(b == 0) exit
-            a = ieor(a, b)
-            b = shiftl(carry, 1)
-        end do
-        res = a
-    end function bit_addition
-
-    function bit_multiple(x, y) result(res)
-    ! Bitwise multiplication
-        integer(int64), intent(in) :: x, y
-        integer(int64) :: res, a, b
-
-        a = x
-        b = y
-        res = 0
-        do
-            if(b == 0) exit
-            if(iand(b, 1_int64) == 1) res = bit_addition(res, a)
-            a = shiftl(a, 1)
-            b = shiftr(b, 1)
-        end do
-    end function bit_multiple
 
     subroutine random_distribution_seed(put, get)
     ! Random seed for distribution
