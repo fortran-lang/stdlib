@@ -182,7 +182,7 @@ summarized below:
 |`clear`|subroutine|sets a sequence of one or more bits to 0|
 |`flip`|subroutine|flips the value of a sequence of one or more bits|
 |`from_string`|subroutine|reads the bitset from a string treating it as a binary literal|
-|`init`|subroutine|creates a new bitset of size `bits`with no bits set|
+|`init`|subroutine|creates a new bitset of size `bits` with no bits set|
 |`input`|subroutine|reads a bitset from an unformatted I/O unit|
 |`none`|function|`.true.` if no bits are 1, `.false.` otherwise|
 |`not`|subroutine|performs a logical `not` operation on all the bits|
@@ -201,7 +201,7 @@ The procedures with two arguments of type `bitset_large` or
 prevents them from being methods. The bitwise "logical" procedures,
 `and`, `and_not`, `or`, and `xor`  also require that the two bitset
 arguments have the same number of bits, otherwise the results are
-undefined, These procedures are summarized in the following table:
+undefined. These procedures are summarized in the following table:
 
 |Procedure name|Class|Summary|
 |--------------|-----|-------|
@@ -368,7 +368,7 @@ corresponding negation of the bits in `set2`.
 
 `set2`: shall be a scalar expression of the same type as `set1`. It is
 an `intent(in)` argument. Note that it should also have the same
-number of bits as `set1` otherwise the result is undefined.
+number of bits as `set1`, otherwise the result is undefined.
 
 #### Example
 
@@ -876,7 +876,7 @@ access positioned at the start of a BITSET value written by a
 
 `status` (optional): shall be a scalar default integer variable. If
 present its value shall be of one of the error codes defined in this
-module. IF absent and it would have had a value other than `success`
+module. If absent and it would have had a value other than `success`
 processing will stop with an informative stop code. Allowed error code
 values for this `status` are:
 
@@ -1030,7 +1030,7 @@ Experimental
 
 Replaces the original bits of `set1` with the bitwise `or` of those
 bits with the bits of `set2`. Note `set1` and `set2` must have the
-samee number of bits, otherwise the result is undefined.
+same number of bits, otherwise the result is undefined.
 
 #### Syntax
 
