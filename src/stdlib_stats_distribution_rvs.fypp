@@ -227,8 +227,12 @@ Module stdlib_stats_distribution_rvs
     !
         integer(int64) :: res, int01, int02, int03
         integer(int64), intent(in), optional :: s
-        data  int01, int02, int03/z"9E3779B97f4A7C15", z"BF58476D1CE4E5B9", &
-                     z"94D049BB133111EB"/
+!        data  int01, int02, int03/z"9E3779B97f4A7C15", &
+!		                          z"BF58476D1CE4E5B9", &
+!                                  z"94D049BB133111EB"/
+        data int01, int02, int03/-7046029254386353131_int64, &
+                                 -4658895280553007687_int64, &
+                                 -7723592293110705685_int64/ 
 
         if(present(s)) si = s
         res = si
