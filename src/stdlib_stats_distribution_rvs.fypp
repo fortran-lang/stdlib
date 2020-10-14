@@ -3,12 +3,19 @@ Module stdlib_stats_distribution_rvs
     use stdlib_kinds
     implicit none
     private
+    type :: binom_table
+        character(100) :: name
+        real(dp), allocatable :: tb(:)
+    end type binom_table
+    real(dp), parameter  :: MESENNE_NUMBER = 1.0_dp / (2.0_dp ** 53 - 1.0_dp)
     real(dp), parameter  :: HALF = 0.5_dp, ONE = 1.0_dp, TWO = 2.0_dp,       &
                             TWO_PI = TWO * acos(-one)
-    integer(int32), save :: jsr = 123456789, kn(0:127), ke(0:255)
+    integer(int32), save :: kn(0:127), ke(0:255)
     real(dp), save       :: wn(0:127), fn(0:127), we(0:255), fe(0:255)
+    integer(int64), save :: st(4), si = 614872703977525537_int64
     logical, save        :: zig_initialized = .false.
-    integer(int32), save :: number_seed
+    integer, save        :: num_binom_tb = 0
+    type(binom_table), allocatable, save :: binom_tb(:)
 
     public :: uni, rnor
     public :: random_binomial_num1, random_binomial_num2
@@ -16,71 +23,74 @@ Module stdlib_stats_distribution_rvs
 
 
     interface uni
-        ! Generation of uniform distributed variates
-        ! Use Fortran's random_number procedure call
+    ! Generation of uniform distributed variates.
+    ! Based on the paper by Frederic Goualard, "Generating Random Floating-
+    ! Point Numbers By Dividing Integers: a Case Study", Proceedings of
+    ! ICCS 2020, June 20202, Amsterdam, Netherlands
+    !
+    ! Fortran 90 by Jim-215-Fisher
+    !
         #:for k1, t1 in REAL_KINDS_TYPES
         module procedure uni_${t1[0]}$${k1}$
         #:endfor
     end interface uni
 
     interface rnor
-        ! Generate random normals
-        ! Marsaglia & Tsang generator for random normals & random exponentials.
-        ! Translated from C by Alan Miller (amiller@bigpond.net.au)
-        !
-        ! Marsaglia, G. & Tsang, W.W. (2000) `The ziggurat method for generating
-        ! random variables', J. Statist. Software, v5(8).
-        !
-        ! Latest version - 1 January 2001
+    ! Generation of normally distributed variates.
+    ! Marsaglia & Tsang generator for random normals & random exponentials.
+    ! Translated from C by Alan Miller (amiller@bigpond.net.au)
+    !
+    ! Marsaglia, G. & Tsang, W.W. (2000) `The ziggurat method for generating
+    ! random variables', J. Statist. Software, v5(8).
+    !
+    ! Latest version - 1 January 2001
+    !
         #:for k1, t1 in REAL_KINDS_TYPES
         module procedure rnor_${t1[0]}$${k1}$
         #:endfor
     end interface rnor
 
     interface rexp
-        ! Generate random exponentials
-        ! Marsaglia & Tsang generator for random normals & random exponentials.
-        ! Translated from C by Alan Miller (amiller@bigpond.net.au)
-        !
-        ! Latest version - 1 January 2001
+    ! Generation of exponentially distributed variates.
+    ! Marsaglia & Tsang generator for random normals & random exponentials.
+    ! Translated from C by Alan Miller (amiller@bigpond.net.au)
+    !
+    ! Latest version - 1 January 2001
+    !
         #:for k1, t1 in REAL_KINDS_TYPES
         module procedure rexp_${t1[0]}$${k1}$
         #:endfor
     end interface rexp
 
     interface random_binomial_num1
-        ! Generation of binomial variates for np < 10
-        ! Inverse transformation of binomial distribution function
-        ! Algorithm BINV
+    ! Generation of binomially distributed variates for np < 10
+    ! Inverse transformation of binomial distribution function
+    ! Algorithm BINV
+    !
         #:for k1, t1 in INT_KINDS_TYPES
         module procedure random_binomial_num1_${t1[0]}$${k1}$
         #:endfor
     end interface random_binomial_num1
 
     interface random_binomial_num2
-        ! Generation of binomial variates for np >=10 and p<=0.5
-        ! Wolfgang Hormann generator for binomial random variates.
-        ! Fortran program  by Jim-215-Fisher
-        !
-        ! Hormann Wolfgang (1993) `The generation of binomial random variates',
-        ! Journal of  Statistical Computation and Simulation, v46(1-2).
-        !
-        ! Article can be found at http://core.ac.uk/download/pdf/11007254.pdf
+    ! Generation of binomially distributed variates for np>=10
         #:for k1, t1 in INT_KINDS_TYPES
         module procedure random_binomial_num2_${t1[0]}$${k1}$
         #:endfor
     end interface random_binomial_num2
 
     interface fc_stirling
-        ! Table and function for log factorial stirling approximation correction
-        ! term.
+    ! Table and function for log factorial stirling approximation correction
+    ! term.
+    !
         #:for k1, t1 in INT_KINDS_TYPES
         module procedure fc_stirling_${t1[0]}$${k1}$
         #:endfor
     end interface fc_stirling
 
     interface log_factorial
-        ! Table and function for log factorial.
+    ! Table and function for log factorial.
+    !
         #:for k1, t1 in INT_KINDS_TYPES
         module procedure log_factorial_${t1[0]}$${k1}$
         #:endfor
@@ -88,9 +98,7 @@ Module stdlib_stats_distribution_rvs
 
 
     contains
-!-------------------------------------------------------------------------------
-!              ziggurat algorithm setup
-!-------------------------------------------------------------------------------
+
     subroutine zigset
     ! Marsaglia & Tsang generator for random normals & random exponentials.
     ! Translated from C by Alan Miller (amiller@bigpond.net.au)
@@ -106,6 +114,7 @@ Module stdlib_stats_distribution_rvs
     !      unsigned integers in Fortran.
     !
     ! Latest version - 1 January 2001
+    !
         real(dp), parameter :: M1 = 2147483648.0_dp, M2 = 2147483648.0_dp
         real(dp)            :: dn = 3.442619855899_dp, tn,                    &
                                vn = 0.00991256303526217_dp,                   &
@@ -117,7 +126,7 @@ Module stdlib_stats_distribution_rvs
         te = de
         !  tables for random normals
         q = vn * exp(HALF * dn * dn)
-        kn(0) = (dn / q) * M1
+        kn(0) = int((dn / q) * M1, kind = int32)
         kn(1) = 0
         wn(0) = q / M1
         wn(127) = dn / M1
@@ -125,7 +134,7 @@ Module stdlib_stats_distribution_rvs
         fn(127) = exp( -HALF * dn * dn )
         do  i = 126, 1, -1
             dn = sqrt( -TWO * log( vn / dn + exp( -HALF * dn * dn ) ) )
-            kn(i+1) = (dn / tn) * M1
+            kn(i+1) = int((dn / tn) * M1, kind = int32)
             tn = dn
             fn(i) = exp(-HALF * dn * dn)
             wn(i) = dn / M1
@@ -133,7 +142,7 @@ Module stdlib_stats_distribution_rvs
 
         !  tables for random exponetials
         q = ve * exp( de )
-        ke(0) = (de / q) * M2
+        ke(0) = int((de / q) * M2, kind = int32)
         ke(1) = 0
         we(0) = q / M2
         we(255) = de / M2
@@ -141,7 +150,7 @@ Module stdlib_stats_distribution_rvs
         fe(255) = exp( -de )
         do  i = 254, 1, -1
             de = -log( ve / de + exp( -de ) )
-            ke(i+1) = M2 * (de / te)
+            ke(i+1) = int(M2 * (de / te), kind = int32)
             te = de
             fe(i) = exp( -de )
             we(i) = de / M2
@@ -150,63 +159,156 @@ Module stdlib_stats_distribution_rvs
         return
     end subroutine zigset
 
-!-------------------------------------------------------------------------------
-!              random 32bit integer
-!-------------------------------------------------------------------------------
-    function shr3( ) result( ival )
-        !  generate random 32-bit integers
-        integer(int32) ::  ival
-        integer(int32) ::  jz
 
-        jz = jsr
-        jsr = ieor( jsr, ishft( jsr,  13 ) )
-        jsr = ieor( jsr, ishft( jsr, -17 ) )
-        jsr = ieor( jsr, ishft( jsr,   5 ) )
-        ival = jz + jsr
+!    function shr3( ) result( ival )
+!        !  generate random 32-bit integers
+!        integer(int32) ::  ival
+!        integer(int32) ::  jz
+!
+!        jz = jsr
+!        jsr = ieor( jsr, ishft( jsr,  13 ) )
+!        jsr = ieor( jsr, ishft( jsr, -17 ) )
+!        jsr = ieor( jsr, ishft( jsr,   5 ) )
+!        ival = jz + jsr
+!        return
+!    end function shr3
+
+    function xoshiro256ss( ) result (res)
+    ! Generate random 64-bit integers
+    ! Written in 2018 by David Blackman and Sebastiano Vigna (vigna@acm.org)
+    !
+    ! This is xoshiro256** 1.0, one of our all-purpose, rock-solid
+    ! generators. It has excellent (sub-ns) speed, a state (256 bits) that is
+    ! large enough for any parallel application, and it passes all tests we
+    ! are aware of.
+    !
+    ! The state must be seeded so that it is not everywhere zero. If you have
+    ! a 64-bit seed, we suggest to seed a splitmix64 generator and use its
+    ! output to fill st.
+    !
+    ! Fortran 90 version translated from C by Jim-215-Fisher
+    !
+        integer(int64) :: res, t
+
+        res = bit_multiple(rol64(bit_multiple(st(2), 5_int64) , 7), 9_int64)
+        t = shiftl(st(2), 17)
+        st(3) = ieor(st(3), st(1))
+        st(4) = ieor(st(4), st(2))
+        st(2) = ieor(st(2), st(3))
+        st(1) = ieor(st(1), st(4))
+        st(3) = ieor(st(3), t)
+        st(4) = rol64(st(4), 45)
         return
-    end function shr3
 
-!-------------------------------------------------------------------------------
-!              random distribution seed
-!-------------------------------------------------------------------------------
+        contains
+
+        function rol64(x, k) result(res)
+            integer(int64), intent(in) :: x
+            integer(int32), intent(in) :: k
+            integer(int64) :: t1, t2, res
+
+            t1 = shiftr(x, (64 - k))
+            t2 = shiftl(x, k)
+            res = ior(t1, t2)
+        end function rol64
+    end function xoshiro256ss
+
+    function splitmix64(s) result(res)
+    ! Written in 2015 by Sebastiano Vigna (vigna@acm.org)
+    ! This is a fixed-increment version of Java 8's SplittableRandom
+    ! generator.
+    ! See http://dx.doi.org/10.1145/2714064.2660195 and
+    ! http://docs.oracle.com/javase/8/docs/api/java/util/SplittableRandom.html
+    !
+    ! It is a very fast generator passing BigCrush, and it can be useful if
+    ! for some reason you absolutely want 64 bits of state.
+    !
+    ! Fortran 90 translated from C by Jim-215-Fisher
+    !
+        integer(int64) :: res, int01, int02, int03
+        integer(int64), intent(in), optional :: s
+        data  int01, int02, int03/z"9E3779B97f4A7C15", z"BF58476D1CE4E5B9", &
+                     z"94D049BB133111EB"/
+
+        if(present(s)) si = s
+        res = si
+        si = bit_addition(res, int01)
+        res = bit_multiple(ieor(res, shiftr(res, 30)), int02)
+        res = bit_multiple(ieor(res, shiftr(res, 27)), int03)
+        res = ieor(res, shiftr(res, 31))
+        return
+    end function splitmix64
+
+    function bit_addition(x, y) result(res)
+    ! Bitwise addition
+        integer(int64), intent(in) :: x, y
+        integer(int64) :: res, a, b, carry
+
+        a = x
+        b = y
+        do
+            carry = iand(a, b)
+            if(b == 0) exit
+            a = ieor(a, b)
+            b = shiftl(carry, 1)
+        end do
+        res = a
+    end function bit_addition
+
+    function bit_multiple(x, y) result(res)
+    ! Bitwise multiplication
+        integer(int64), intent(in) :: x, y
+        integer(int64) :: res, a, b
+
+        a = x
+        b = y
+        res = 0
+        do
+            if(b == 0) exit
+            if(iand(b, 1_int64) == 1) res = bit_addition(res, a)
+            a = shiftl(a, 1)
+            b = shiftr(b, 1)
+        end do
+    end function bit_multiple
+
     subroutine random_distribution_seed(put, get)
+    ! Random seed for distribution
         integer(int32), intent(in) :: put
         integer(int32), intent(out) :: get
-        integer(int32), allocatable :: k_in(:), k_out(:)
-        real :: x
+        integer(int64) :: tmp
         integer(int32) :: i
 
-        call random_seed(size = number_seed)
-        allocate(k_in(number_seed), k_out(number_seed))
-        jsr = put
-        do i = 1, number_seed
-            k_in(i) = shr3()
+        tmp = splitmix64(int(put, kind = int64))
+        do i = 1, 10
+            tmp = splitmix64( )
         end do
-        call random_seed(put = k_in)
-        call random_number(x)
-        call random_seed(get = k_out)
-        get = k_out(1)
-        jsr = get
+        do i = 1, 4
+            tmp = splitmix64( )
+            st(i) = tmp
+        end do
+        get = int(tmp, kind = int32)
     end subroutine random_distribution_seed
 
-!-------------------------------------------------------------------------------
-!              uniform random variates
-!-------------------------------------------------------------------------------
     #:for k1, t1 in REAL_KINDS_TYPES
     function uni_${t1[0]}$${k1}$( x ) result( fn_val )
+    ! Based on the paper by Frederic Goualard, "Generating Random Floating-
+    ! Point Numbers By Dividing Integers: a Case Study", Proceedings of
+    ! ICCS 2020, June 20202, Amsterdam, Netherlands
+    !
         ${t1}$, intent(in) :: x
         ${t1}$  ::  fn_val
+        integer(int64) :: tmp
 
-        call random_number(fn_val)
+        tmp = shiftr(xoshiro256ss( ), 11)
+        fn_val = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
         return
     end function uni_${t1[0]}$${k1}$
 
     #:endfor
-!-------------------------------------------------------------------------------
-!              normal random variate
-!-------------------------------------------------------------------------------
+
     #:for k1, t1 in REAL_KINDS_TYPES
     function rnor_${t1[0]}$${k1}$( z ) result( fn_val )
+    ! Normal random variate
         ${t1}$, intent(in) :: z
         ${t1}$ ::  fn_val
         ${t1}$, parameter  ::  r = 3.442619855899_${k1}$
@@ -214,7 +316,10 @@ Module stdlib_stats_distribution_rvs
         integer(int32) :: hz, iz
 
         if( .not. zig_initialized ) call zigset
-        hz = shr3( )
+
+        ! original algorithm use 32bit
+        hz = shiftr(xoshiro256ss( ), 32)
+
         iz = iand( hz, 127 )
         if( abs( hz ) < kn(iz) ) then
             fn_val = hz * wn(iz)
@@ -236,7 +341,10 @@ Module stdlib_stats_distribution_rvs
                     fn_val = x
                     return
                 end if
-                hz = shr3( )
+
+                !original algorithm use 32bit
+                hz = shiftr(xoshiro256ss( ), 32)
+
                 iz = iand( hz, 127 )
                 if( abs( hz ) < kn(iz) ) then
                     fn_val = hz * wn(iz)
@@ -249,18 +357,20 @@ Module stdlib_stats_distribution_rvs
 
     #:endfor
 
-!-------------------------------------------------------------------------------
-!              exponential rvs
-!-------------------------------------------------------------------------------
+
     #:for k1, t1 in REAL_KINDS_TYPES
     function rexp_${t1[0]}$${k1}$( z ) result( fn_val )
+    ! exponential variate algorithm
         ${t1}$, intent(in) :: z
         ${t1}$ :: fn_val, x
         ${t1}$ :: r = 7.69711747013104972_${k1}$
         integer(int32) :: jz, iz
 
         if( .not. zig_initialized ) call zigset
-        jz = shr3( )
+
+        ! Original algorithm use 32bit
+        jz = shiftr(xoshiro256ss( ), 32)
+
         iz = iand( jz, 255 )
         if( abs( jz ) < ke(iz) ) then
             fn_val = abs(jz) * we(iz)
@@ -276,7 +386,10 @@ Module stdlib_stats_distribution_rvs
                 fn_val = x
                 return
             end if
-            jz = shr3( )
+
+            !original algorithm use 32bit
+            jz = shiftr(xoshiro256ss( ), 32)
+
             iz = iand( jz, 255 )
             if( abs( jz ) < ke(iz) ) then
                 fn_val = abs( jz ) * we(iz)
@@ -287,11 +400,10 @@ Module stdlib_stats_distribution_rvs
     end function rexp_${t1[0]}$${k1}$
 
     #:endfor
-!-------------------------------------------------------------------------------
-!               Algorithm BINV for binomial with np<10
-!-------------------------------------------------------------------------------
+
     #:for k1, t1 in INT_KINDS_TYPES
     function random_binomial_num1_${t1[0]}$${k1}$(n, p) result(res)
+    ! BINV algorithm for n*p < 10
         ${t1}$, intent(in) :: n
         real, intent(in) :: p
         ${t1}$ :: res, k
@@ -319,13 +431,26 @@ Module stdlib_stats_distribution_rvs
     end function random_binomial_num1_${t1[0]}$${k1}$
 
     #:endfor
-  #:set BTRD=1   
+
+  #:set INVF=1
+  #:set BTRD=0
+  #:set BTPE=0
   #:if BTRD
-!-------------------------------------------------------------------------------
-!              BTRD Algorithm for binomial with np>=10
-!-------------------------------------------------------------------------------
+
     #:for k1, t1 in INT_KINDS_TYPES
     function random_binomial_num2_${t1[0]}$${k1}$(n, p) result(res)
+    ! BTRD algorithm, may not pass chi^2 test
+    ! Generation of binomial variates for np >=10 and p<=0.5
+    ! Wolfgang Hormann generator for binomial random variates.
+    !
+    ! Fortran 90 written by Jim-215-Fisher
+    !
+    ! Hormann Wolfgang (1993) `The generation of binomial random variates',
+    ! Journal of  Statistical Computation and Simulation, v46(1-2).
+    !
+    ! Article can be found at http://core.ac.uk/download/pdf/11007254.pdf
+    !
+
         real, intent(in) :: p
         ${t1}$, intent(in) :: n
         ${t1}$ :: res, m, i, k, km, nm, nk
@@ -347,7 +472,7 @@ Module stdlib_stats_distribution_rvs
             v = uni(p)
             if(v <= urvr) then
                 u = v / vr - 0.43
-                res = floor(((2 * a) / (0.5 - abs(u)) + b) * u + c)
+                res = floor(((2 * a) / (0.5 - abs(u)) + b) * u + c) - 1
                 return
             endif
             if(v >= vr) then
@@ -376,7 +501,7 @@ Module stdlib_stats_distribution_rvs
                     end do
                 endif
                 if(v <= f) then
-                    res = k
+                    res = k - 1
                     return
                 endif
             else
@@ -386,7 +511,7 @@ Module stdlib_stats_distribution_rvs
                       / npq + 0.5)
                 t = - (km * km) / (2.0 * npq)
                 if(v < t - rho) then
-                    res = k
+                    res = k - 1
                     return
                 endif
                 if(v <= t + rho) then
@@ -396,11 +521,11 @@ Module stdlib_stats_distribution_rvs
                         fc_stirling(m) + fc_stirling(n - m)
     !Step 3.4
                     nk = n - k + 1_${k1}$
-                     h = h + (n + 1) * (log(real(nm)) - log(real(nk))) +    &
-                         (k + 0.5) * log(nk * r / (k + 1)) -                &
+                    h = h + (n + 1) * (log(real(nm)) - log(real(nk))) +    &
+                         (k + 0.5) * log(nk * r / (k + 1)) -               &
                          fc_stirling(k) - fc_stirling(n - k)
                     if(v <= h) then
-                        res = k
+                        res = k - 1
                         return
                     endif
                 endif
@@ -409,10 +534,12 @@ Module stdlib_stats_distribution_rvs
     end function random_binomial_num2_${t1[0]}$${k1}$
 
     #:endfor
-  #:else
+
+  #:elif BTPE
+
     #:for k1, t1 in INT_KINDS_TYPES
     function random_binomial_num2_${t1[0]}$${k1}$(n, p) result(res)
-	    ! BTPE algorithm
+    ! BTPE algorithm, may not pass chi^2 test.
         real, intent(in) :: p
         ${t1}$, intent(in) :: n
         ${t1}$ :: res, m, y, i, k
@@ -480,9 +607,9 @@ Module stdlib_stats_distribution_rvs
                     endif
                     if(v > fy) cycle
                     if(p > 0.5) then
-                        res = n - y
+                        res = n - y -1
                     else
-                        res = y
+                        res = y - 1
                     endif
                     return
                 else
@@ -493,9 +620,9 @@ Module stdlib_stats_distribution_rvs
                     aa = log(v)
                     if(aa < t - rho) then
                         if(p > 0.5) then
-                            res = n - y
+                            res = n - y - 1
                         else
-                            res = y
+                            res = y - 1
                         endif
                         return
                     endif
@@ -524,18 +651,104 @@ Module stdlib_stats_distribution_rvs
             endif
 !step 6.
             if(p > 0.5) then
-                res = n - y
+                res = n - y - 1
             else
-                res = y
+                res = y - 1
             endif
             return
         enddo
     end function random_binomial_num2_${t1[0]}$${k1}$
     #:endfor
+
+  #:elif INVF
+
+    #:for k1, t1 in INT_KINDS_TYPES
+    function random_binomial_num2_${t1[0]}$${k1}$(n, p) result(res)
+        ${t1}$, intent(in) :: n
+        real, intent(in) :: p
+        real(dp) :: q, lq, lpq, logpmf, coeff, sum, u
+        ${t1}$ :: res, k
+        integer :: i, iz, ix, ik
+        character(100) :: buffer
+        type(binom_table), allocatable :: temp(:)
+        real(dp), allocatable :: tb(:)
+
+
+        if(.not. allocated(binom_tb)) allocate(binom_tb(5))
+        ! convert input n and p into string as index for binomial table
+        write(buffer, '(i0,f6.4)') n, p
+        ik = 0
+        ! Search binomial table, get matched number
+        do i = 1, num_binom_tb
+            if(binom_tb(i) % name == buffer) then
+                ik = i
+                exit
+            endif
+        end do
+        ! If no match, create binomial table
+        if(ik == 0) then
+            num_binom_tb = num_binom_tb + 1
+            ! If already have 5 more tables, extend the table by 1
+            if(num_binom_tb > 5) then
+                allocate(temp(num_binom_tb))
+                temp(1:size(binom_tb))=binom_tb
+                call move_alloc(temp, binom_tb)
+            endif
+            ! Set the table index by string
+            binom_tb(num_binom_tb) % name = buffer
+            allocate(binom_tb(num_binom_tb) % tb(0:n), tb(0:n))
+            ! Calculate the binomial cumulative distribution function
+            q = 1.0 - p
+            lq = log(q)
+            lpq = log(p / q)
+            coeff = 0.0_dp
+            tb(0) = exp(n * lq)
+            sum = tb(0)
+            do i = 1, n
+                coeff = coeff + log(real(n - i + 1, kind=dp)) - log(real(i, kind=dp))
+                logpmf = coeff + i * lpq + n * lq
+                sum = sum + exp(logpmf)
+                tb(i) = sum
+            end do
+            binom_tb(num_binom_tb) % tb = tb
+            ik = num_binom_tb
+            deallocate(tb)
+        endif
+        ! Access possible binomial variate by inverse transformation
+        u = uni(p)
+        ! Approximate position of u in cdf
+        iz = floor(u * n)
+        ix = 0
+        allocate(tb, source = binom_tb(ik) % tb)
+        ! Exact value among n which has closeset cdf value to u
+        if(u < binom_tb(ik) % tb(iz)) then
+            do
+                ix = ix +1
+                if(iz - ix <= 0) then
+                    res = 0
+                    exit
+                elseif(u >= tb(iz - ix)) then
+                    res = iz - ix + 1
+                    exit
+                end if
+            end do
+        else
+            do
+               ix = ix + 1
+               if(iz + ix >= n) then
+                   res = n
+                   exit
+               elseif(u < tb(iz + ix)) then
+                   res = iz + ix
+                   exit
+               endif
+            end do
+        endif
+        return
+    end function random_binomial_num2_${t1[0]}$${k1}$
+    #:endfor
   #:endif
-!-------------------------------------------------------------------------------
-!              Table and function for stirling approx correction term
-!-------------------------------------------------------------------------------
+
     #:for k1, t1 in INT_KINDS_TYPES
     elemental module function fc_stirling_${t1[0]}$${k1}$(k) result(x)
     real(dp) :: x, k1_2
@@ -573,9 +786,7 @@ Module stdlib_stats_distribution_rvs
     end function fc_stirling_${t1[0]}$${k1}$
     #:endfor
 
-!-------------------------------------------------------------------------------
-!              Table and function for log of factorial
-!-------------------------------------------------------------------------------
+
     #:for k1, t1 in INT_KINDS_TYPES
     elemental module function log_factorial_${t1[0]}$${k1}$(k) result(res)
     ${t1}$, intent(in) :: k

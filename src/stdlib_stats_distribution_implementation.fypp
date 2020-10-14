@@ -2,9 +2,7 @@
 submodule (stdlib_stats_distribution) stdlib_stats_distribution_implementation
 
     contains
-!---------------------------------------------------------------------------------------------
-!                   Uniform Distribution
-!---------------------------------------------------------------------------------------------
+
     #:for k1, t1 in REAL_KINDS_TYPES
     module procedure unif_dist_rvs_${t1[0]}$${k1}$
         if(scale == 0.0_${k1}$) call error_stop("Error: scale parameter is zero")
@@ -53,9 +51,7 @@ submodule (stdlib_stats_distribution) stdlib_stats_distribution_implementation
     end procedure unif_dist_cdf_${t1[0]}$${k1}$
 
     #:endfor
-!---------------------------------------------------------------------------------------------
-!                   Normal Distribution
-!---------------------------------------------------------------------------------------------
+
     #:for k1, t1 in REAL_KINDS_TYPES
     module procedure norm_dist_rvs_${t1[0]}$${k1}$
         res = rnor(scale) * scale + loc
@@ -90,9 +86,7 @@ submodule (stdlib_stats_distribution) stdlib_stats_distribution_implementation
 
     #:endfor
 
-!---------------------------------------------------------------------------------------------
-!                   Binomial Distribution
-!---------------------------------------------------------------------------------------------
+
     #:for k1, t1 in INT_KINDS_TYPES
     module procedure binom_dist_rvs_${t1[0]}$${k1}$
 
@@ -141,13 +135,13 @@ submodule (stdlib_stats_distribution) stdlib_stats_distribution_implementation
         lq = log(q)
         lpq = log(p / q)
         coeff = 0.0_dp
-        sum = 1.0_dp
-        do i = 1_${k1}$, k
+        sum = exp(n * lq)
+        do i = 1, k
             coeff = coeff + log(real(n - i + 1, kind=dp)) - log(real(i, kind=dp))
-            logpmf = coeff + i * lpq
+            logpmf = coeff + i * lpq + n * lq
             sum = sum + exp(logpmf)
         end do
-        res = exp(n * lq) * sum
+        res = sum
     end procedure binom_dist_cdf_${t1[0]}$${k1}$
 
     #:endfor

@@ -24,9 +24,7 @@ module stdlib_stats_distribution
     public :: uniform_distribution_rvs, uniform_distribution_pdf, uniform_distribution_cdf
     public :: normal_distribution_rvs, normal_distribution_pdf, normal_distribution_cdf
     public :: binomial_distribution_rvs, binomial_distribution_pmf, binomial_distribution_cdf
-!---------------------------------------------------------------------------------------------
-!                   Random seed
-!---------------------------------------------------------------------------------------------
+
     interface random_seed
     !! version: experimental
     !!
@@ -35,9 +33,7 @@ module stdlib_stats_distribution
     !! 
         procedure random_distribution_seed
     end interface random_seed
-!---------------------------------------------------------------------------------------------
-!                   Uniform Distribution
-!---------------------------------------------------------------------------------------------
+
     interface uniform_distribution_rvs
     !! version: experimental
     !!
@@ -98,9 +94,7 @@ module stdlib_stats_distribution
         #:endfor
     end interface uniform_distribution_cdf
 
-!---------------------------------------------------------------------------------------------
-!                   Normal Distribution
-!---------------------------------------------------------------------------------------------
+
     interface normal_distribution_rvs
     !! version: experimental
     !!
@@ -162,9 +156,7 @@ module stdlib_stats_distribution
         #:endfor
     end interface normal_distribution_cdf
 
-!---------------------------------------------------------------------------------------------
-!                   Binomial Distribution
-!---------------------------------------------------------------------------------------------
+
     interface binomial_distribution_rvs
     !! version: experimental
     !!
