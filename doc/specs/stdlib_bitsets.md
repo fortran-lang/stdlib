@@ -560,7 +560,7 @@ clears the bits with positions from `start_pos` to `end_pos` in `self`.
 * if `start_pos` and `end_pos` are present with `end_pos < start_pos`
 `self` is unmodified.
 
-Note: Positions outside the range 0 to `BITS(SET) -1` are ignored.
+Note: Positions outside the range 0 to `bits(set) -1` are ignored.
 
 #### Syntax
 
@@ -1355,7 +1355,7 @@ The result is a default logical scalar.
 
 #### Result value
 
-The result is `.true.` if the bit at `pos`, in `self` is set,
+The result is `.true.` if the bit at `pos` in `self` is set,
 otherwise it is `.false.`. If `pos` is outside the range
 `0... bits(self)-1` the result is `.false.`.
 
@@ -1387,7 +1387,7 @@ Represents the value of `self` as a binary literal in `string`.
 
 #### Syntax
 
-`call self % [[bitset_type(class):to_string(bound)]](string[, status])
+`call self % [[bitset_type(class):to_string(bound)]](string[, status])`
 
 #### Class
 
@@ -1436,7 +1436,7 @@ the stop code. The values have the following meanings:
 
 #### Status
 
-Experimeental
+Experimental
 
 #### Description
 
@@ -1795,7 +1795,7 @@ The result is a default logical scalar.
 
 The result is `.true.` if the bits in `set1` and `set2` are the same
 or the highest order different bit is set to 1 in `set1` and to 0 in
-`set2`, `.false.`.  otherwise.
+`set2`, `.false.`  otherwise.
 
 #### Example
 
@@ -1829,7 +1829,7 @@ Experimental
 
 Returns `.true.` if the bits in `set1` and `set2` differ and the
 highest order different bit is set to 1 in `set1` and to 0 in `set2`,
-`.false.`.  otherwise. The sets must be the same size otherwise the
+`.false.`  otherwise. The sets must be the same size otherwise the
 results are undefined
 
 #### Syntax
@@ -1890,7 +1890,7 @@ Experimental
 
 Returns `.true.` if the bits in `set1` and `set2` are the same or the
 highest order different bit is set to 0 in `set1` and to 1 in `set2`,
-`.false.`.  otherwise. The sets must be the same size otherwise the
+`.false.`  otherwise. The sets must be the same size otherwise the
 results are undefined
 
 
@@ -1919,7 +1919,7 @@ The result is a default logical scalar.
 
 The result is `.true.` if the bits in `set1` and `set2` are the same
 or the highest order different bit is set to 0 in `set1` and to 1 in
-`set2`, `.false.`.  otherwise.
+`set2`, `.false.`  otherwise.
 
 #### Example
 
@@ -1953,7 +1953,7 @@ Experimental
 
 Returns `.true.` if the bits in `set1` and `set2` differ and the
 highest order different bit is set to 0 in `set1` and to 1 in `set2`,
-`.false.`.  otherwise. The sets must be the same size otherwise the
+`.false.`  otherwise. The sets must be the same size otherwise the
 results are undefined
 
 
