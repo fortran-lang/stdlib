@@ -62,7 +62,8 @@ for each element of the sequence, where `test` is `.true.` if the value
 is 1 and `.false.` otherwise. The number of such values in an entity
 of that type is to be termed, `bits`. The bits are ordered in terms of
 position, that, in turn, is indexed from 0 to `bits-1`. `bitset_type` is
-not used in source code. The syntax for using the types are:
+used only as a `class` to define varibles that can be either a `bitset_64` or
+a `bitset_large`. The syntax for using the types are:
 
 `class([[stdlib_bitset(module):bitset_type(class)]]) :: variable`
 
