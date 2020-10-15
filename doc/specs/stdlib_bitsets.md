@@ -986,7 +986,7 @@ Performs the logical complement on the bits of `self`.
 
 #### Syntax
 
-`result = self % [[bitset_type(class):not(bound)]] ()`
+`call self % [[bitset_type(class):not(bound)]] ()`
 
 #### Class
 
@@ -1648,7 +1648,7 @@ Returns `.true.` if all bits in `set1` and `set2` have the same value,
 
 #### Syntax
 
-`Result = set1 [[stdlib_bitsets(module):==(interface)]] set2
+`result = set1 [[stdlib_bitsets(module):==(interface)]] set2
 
 #### Class
 
@@ -1830,7 +1830,7 @@ results are undefined
 
 #### Syntax
 
-`Result = set1 [[stdlib_bitsets(module):>(interface)]] set2`
+`result = set1 [[stdlib_bitsets(module):>(interface)]] set2`
 
 #### Class
 
@@ -1892,7 +1892,7 @@ results are undefined
 
 #### Syntax
 
-`Result = set1 [[stdlib_bitsets(module):<=(interface)]] set2`
+`result = set1 [[stdlib_bitsets(module):<=(interface)]] set2`
 
 #### Class
 
@@ -1955,7 +1955,7 @@ results are undefined
 
 #### Syntax
 
-`Result = set1 [[stdlib_bitsets(module):<(interface)]] set2`
+`result = set1 [[stdlib_bitsets(module):<(interface)]] set2`
 
 #### Class
 
