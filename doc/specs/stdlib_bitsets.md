@@ -416,8 +416,7 @@ Elemental function.
 
 #### Result value
 
-The result is a default logical scalar.
-The result is `.true.` if any bits in `self` are set, otherwise it
+The result is a default logical scalar. The result is `.true.` if any bits in `self` are set, otherwise it
 is `.false.`.
 
 #### Example
@@ -976,7 +975,7 @@ Performs the logical complement on the bits of `self`.
 
 #### Syntax
 
-`result = self % [[bitset_type(class):not(bound)]] ()`
+`call self % [[bitset_type(class):not(bound)]] ()`
 
 #### Class
 
