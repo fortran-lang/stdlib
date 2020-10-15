@@ -416,13 +416,9 @@ Elemental function.
 `self`: shall be a scalar expression of class `bitset_type`. It is an
 `intent(in)` argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
-The result is `.true.` if any bits in `self` are set, otherwise it
+The result is a default logical scalar. The result is `.true.` if any bits in `self` are set, otherwise it
 is `.false.`.
 
 #### Example
