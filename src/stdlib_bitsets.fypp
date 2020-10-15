@@ -1243,7 +1243,7 @@ module stdlib_bitsets
         elemental module subroutine clear_bit_64(self, pos)
 !! Version: experimental
 !!
-!! Sets to zero the bit at `pos` position in `self`. If 'pos` is less than
+!! Sets to zero the bit at `pos` position in `self`. If `pos` is less than
 !! zero or greater than `bits(self)-1` it is ignored.
             class(bitset_64), intent(inout) :: self
             integer(bits_kind), intent(in)  :: pos
@@ -1529,7 +1529,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Sets the bits in `set1` to the bitwise `and` of the original bits in `set1`
-!! and `set2`. The sets mmust have the same number of bits
+!! and `set2`. The sets must have the same number of bits
 !! otherwise the result is undefined.
 !!
 !!#### Example
@@ -1623,7 +1623,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Creates a new bitset, `new`, from a range, `start_pos` to `stop_pos`, in
-!! bitset `old`. If 'start_pos` is greater than `stop_pos` the new bitset is
+!! bitset `old`. If `start_pos` is greater than `stop_pos` the new bitset is
 !! empty. If `start_pos` is less than zero or `stop_pos` is greater than
 !! `bits(old)-1` then if `status` is present it has the value
 !! `index_invalid_error` and `new` is undefined, otherwise processing stops
@@ -1768,7 +1768,7 @@ module stdlib_bitsets
         elemental module function eqv_large(set1, set2) result(eqv)
 !! Version: experimental
 !!
-!! Returns `.true`. if all bits in `set1` and `set2` have the same value,
+!! Returns `.true.` if all bits in `set1` and `set2` have the same value,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
 !!
@@ -1861,7 +1861,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` differ and the
-!! highest order different bit is set to 1 in `set1` and to 0 in `set2`.
+!! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
 !!
