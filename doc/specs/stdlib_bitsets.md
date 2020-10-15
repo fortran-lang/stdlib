@@ -9,12 +9,14 @@ title: Bitsets
 ## Introduction
 
 The `stdlib_bitsets` module implements bitset types. A bitset is a
-compact representation of a sequence of  binary values, that can
-equivalently be considered a sequence of logical values or a subset of
-the integers 0 ... `bits(bitset)-1`. The bits are indexed from 0 to
-`bits(bitset)-1`. A bitset is used when space savings are critical in applications that require a large number
+compact representation of a sequence of `bits` binary values. It can
+equivalently be considered as a sequence of logical values or as a subset of
+the integers 0 ... `bits-1`. The bits are indexed from 0 to
+`bits(bitset)-1`. A bitset is used when space savings are critical in
+applications that require a large number
 of closely related logical values.
-It may also improve performance by reducing memory traffic. To implement bitsets the module
+It may also improve performance by reducing memory traffic. To implement
+bitsets the module
 defines three bitset types, multiple constants, a character string
 literal that can be read to and from strings and formatted files, a
 simple character string literal that can be read to and from strings,
@@ -24,7 +26,7 @@ assumes two's complement integers, but all current Fortran 95+ processors use su
 
 ## The module's constants
 
-The module defines several public constants all integers, almost all
+The module defines several public integer constants, almost all
 intended to serve as error codes in reporting problems through an
 optional `stat` argument. One constant, `bits_kind` is
 the integer kind value for indexing bits and reporting counts of
@@ -52,7 +54,7 @@ The `stdlib_bitsets` module defines three derived types,
 type that serves as the ancestor of `bitset_64` and
 `bitset_large`. `bitset_type` defines one method, `bits`, all of its
 other methods are deferred to its extensions. `bitset_64` is a bitset
-that can handle up 64 bits. `bitset_large` is a bitset that can handle
+that can handle up to 64 bits. `bitset_large` is a bitset that can handle
 up `huge(0_bits_kind)` bits. All attributes of the bitset types are
 private. The various types each define a sequence of binary values: 0
 or 1. In some cases it is useful to associate a logical value, `test`,
@@ -106,7 +108,7 @@ The *bitset-literal* consists of two parts: a *bitsize-literal* and a
 The *binary-literal* value is interpreted as a sequence of bit
 values and there must be as many binary digits in the literal as there
 are `bits`. The sequence of binary digits are treated as if they were
-an unsigned integer with the i'th digit corresponding to the `bits-i`
+an unsigned integer with the i-th digit corresponding to the `bits-i`
 bit position.
 
 ## The *binary-literal*
@@ -120,49 +122,12 @@ and all characters in the string must be either "0" or "1".
 ## Summary of the module's operations
 
 The `stdlib_bitsets` module defines a number of operations:
-assignments, "unary" methods of class `bitset_type`, "binary"
-procedure overloads of type `bitset_64` or `bitset_large`, and binary
-comparison operators of type `bitset_64` or `bitset_large`. Each
-category will be discussed separately.
+* "unary" methods of class `bitset_type`,
+* "binary" procedure overloads of type `bitset_64` or `bitset_large`,
+* assignments, and
+* "binary" comparison operators of type `bitset_64` or `bitset_large`.
 
-### Assignments
-
-The module defines an assignment operation, `=`, that creates a
-duplicate of an original bitset. It also defines assignments to and
-from rank one arrays of logical type of kinds `int8`, `int16`,
-`int32`, and `int64`. In the assignment to and from logical arrays
-array index, `i`, is mapped to bit position, `pos=i-1`, and `.true.`
-is mapped to a set bit, and `.false.` is mapped to an unset bit.
-
-
-#### Example
-
-```fortran
-    program demo_assignment
-        use stdlib_bitsets
-        logical(int8)  :: logical1(64) = .true.
-        logical(int32), allocatable :: logical2(:)
-        type(bitset_64) :: set0, set1
-        set0 = logical1
-        if ( set0 % bits() /= 64 ) then
-            error stop procedure // &
-                ' initialization with logical(int8) failed to set' // &
-                ' the right size.'
-        else if ( .not. set0 % all() ) then
-            error stop procedure // ' initialization with' // &
-                ' logical(int8) failed to set the right values.'
-        else
-            write(*,*) 'Initialization with logical(int8) succeeded.'
-        end if
-        set1 = set0
-        if ( set1 == set0 ) &
-            write(*,*) 'Initialization by assignment succeeded'
-        logical2 = set1
-        if ( all( logical2 ) ) then
-            write(*,*) 'Initialization of logical(int32) succeeded.'
-        end if
-    end program demo_assignment
-```
+Each category will be discussed separately.
 
 ### Table of the `bitset_type` methods
 
@@ -212,6 +177,45 @@ undefined. These procedures are summarized in the following table:
 |`xor`|elemental subroutine|Sets `self` to the bitwise exclusive `or` of the original bits in `self` and `set2`|
 
 
+### Assignments
+
+The module defines an assignment operation, `=`, that creates a
+duplicate of an original bitset. It also defines assignments to and
+from rank one arrays of logical type of kinds `int8`, `int16`,
+`int32`, and `int64`. In the assignment to and from logical arrays
+array index, `i`, is mapped to bit position, `pos=i-1`, and `.true.`
+is mapped to a set bit, and `.false.` is mapped to an unset bit.
+
+
+#### Example
+
+```fortran
+    program demo_assignment
+        use stdlib_bitsets
+        logical(int8)  :: logical1(64) = .true.
+        logical(int32), allocatable :: logical2(:)
+        type(bitset_64) :: set0, set1
+        set0 = logical1
+        if ( set0 % bits() /= 64 ) then
+            error stop procedure // &
+                ' initialization with logical(int8) failed to set' // &
+                ' the right size.'
+        else if ( .not. set0 % all() ) then
+            error stop procedure // ' initialization with' // &
+                ' logical(int8) failed to set the right values.'
+        else
+            write(*,*) 'Initialization with logical(int8) succeeded.'
+        end if
+        set1 = set0
+        if ( set1 == set0 ) &
+            write(*,*) 'Initialization by assignment succeeded'
+        logical2 = set1
+        if ( all( logical2 ) ) then
+            write(*,*) 'Initialization of logical(int32) succeeded.'
+        end if
+    end program demo_assignment
+```
+
 ### Table of the non-member comparison operations
 The comparison operators with two arguments of type `bitset_large` or
 `bitset_64` must have both arguments of the same known type which
@@ -254,12 +258,9 @@ Elemental function.
 `self`: shall be a scalar expression of class `bitset_type`. It is an
 `intent(in)` argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
+The result is a default logical scalar.
 The result is `.true.` if all bits in `self` are set,
 otherwise it is `.false.`.
 
@@ -272,10 +273,7 @@ otherwise it is `.false.`.
             bits_all = '111111111111111111111111111111111'
         type(bitset_64) :: set0
         call set0 % from_string( bits_all )
-        if ( bits(set0) /= 33 ) then
-            error stop "FROM_STRING failed to interpret " // &
-                'BITS_ALL's size properly."
-        else if ( .not. set0 % all() ) then
+        if ( .not. set0 % all() ) then
             error stop "FROM_STRING failed to interpret" // &
                 "BITS_ALL's value properly."
         else
@@ -416,12 +414,9 @@ Elemental function.
 `self`: shall be a scalar expression of class `bitset_type`. It is an
 `intent(in)` argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
+The result is a default logical scalar.
 The result is `.true.` if any bits in `self` are set, otherwise it
 is `.false.`.
 
@@ -468,13 +463,10 @@ Elemental function.
 `self`: shall be a scalar expression of class `bitset_type`. It is an
 `intent(in)` argument.
 
-#### Result character
-
-The result is an integer scalar of kind `bits_kind`.
-
 #### Result value
 
-The result is the number of bits that are set in `self`.
+The result is an integer scalar of kind `bits_kind`,
+equal to the number of bits that are set in `self`.
 
 #### Example
 
@@ -519,13 +511,10 @@ Elemental function.
 `self`: shall be a scalar expression of class `bitset_type`. It is an
 `intent(in)` argument.
 
-#### Result character
-
-The result is an integer scalar of kind `bits_kind`.
-
 #### Result value
 
-The result is the number of defined bits in `self`.
+The result is an integer scalar of kind `bits_kind`, equal to
+the number of defined bits in `self`.
 
 #### Example
 
@@ -813,8 +802,8 @@ is an `intent(out)` argument.
 
 `bits` (optional): shall be a scalar integer expression of kind
 `bits_kind`. It is an `intent(in)` argument that if present
-specifies the number of bits in `set`. A negative value or a value
-greater than 64 if `self` is of type `bitset_64` is an error.
+specifies the number of bits in `set`. A negative value, or a value
+greater than 64 if `self` is of type `bitset_64`, is an error.
 
 `status` (optional): shall be a scalar default integer variable. It is
 an `intent(out)` argument that, if present, returns an error code
@@ -949,12 +938,9 @@ Elemental function.
 `self`: shall be a scalar expression of class `bitset_type`. It is an
   `intent(in)` argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
+The result is a default logical scalar.
 The result is `.true.` if no bits in `self` are set, otherwise it is
 `.false.`.
 
@@ -1349,12 +1335,9 @@ Elemental function.
 `pos`: shall be a scalar integer expression of kind `bits_kind`. It is
 an `intent(in)` argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
+The result is a default logical scalar.
 The result is `.true.` if the bit at `pos` in `self` is set,
 otherwise it is `.false.`. If `pos` is outside the range
 `0... bits(self)-1` the result is `.false.`.
@@ -1458,12 +1441,9 @@ Elemental function.
 `pos`: shall be a scalar integer expression of kind `bits_kind`. It is
 an `intent(in)` argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
+The result is a default integer scalar.
 The result is one if the bit at `pos` in `self` is set, otherwise it
 is zero. If `pos` is outside the range `0... bits(set)-1` the result
 is zero.
@@ -1652,7 +1632,7 @@ Returns `.true.` if all bits in `set1` and `set2` have the same value,
 
 #### Syntax
 
-`Result = set1 [[stdlib_bitsets(module):==(interface)]] set2
+`result = set1 [[stdlib_bitsets(module):==(interface)]] set2
 
 #### Class
 
@@ -1667,14 +1647,11 @@ is an `intent(in)` argument.
 will have the same number of bits as `set1`. It is an `intent(in)`
 argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
+The result is a default logical scalar.
 The result is `.true.` if the bits in both bitsets are set
-  to the same value, otherwise the result is `.FALSE.`.
+to the same value, otherwise the result is `.FALSE.`.
 
 #### Example
 
@@ -1711,7 +1688,7 @@ Returns `.true.` if any bits in `self` and `set2` differ in value,
 
 #### Syntax
 
-`Result = set1 [[stdlib_bitsets(module):/=(interface)]] set2`
+`result = set1 [[stdlib_bitsets(module):/=(interface)]] set2`
 
 #### Class
 
@@ -1726,12 +1703,9 @@ is an `intent(in)` argument.
 will have the same number of bits as `set1`. It is an `intent(in)`
 argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
+The result is a default logical scalar.
 The result is `.true.` if any bits in both bitsets differ, otherwise
 the result is `.false.`.
 
@@ -1772,7 +1746,7 @@ results are undefined
 
 #### Syntax
 
-`Result = set1 [[stdlib_bitsets(module):>=(interface)]] set2`
+`result = set1 [[stdlib_bitsets(module):>=(interface)]] set2`
 
 #### Class
 
@@ -1787,12 +1761,9 @@ is an `intent(in)` argument.
 will have the same number of bits as `set1`. It is an `intent(in)`
 argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
+The result is a default logical scalar.
 The result is `.true.` if the bits in `set1` and `set2` are the same
 or the highest order different bit is set to 1 in `set1` and to 0 in
 `set2`, `.false.`  otherwise.
@@ -1834,7 +1805,7 @@ results are undefined
 
 #### Syntax
 
-`Result = set1 [[stdlib_bitsets(module):>(interface)]] set2`
+`result = set1 [[stdlib_bitsets(module):>(interface)]] set2`
 
 #### Class
 
@@ -1849,12 +1820,9 @@ is an `intent(in)` argument.
 will have the same number of bits as `set1`. It is an `intent(in)`
 argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
+The result is a default logical scalar.
 The result is `.true.` if the bits in `set1` and `set2` differ and the
 highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 `.false.`.  otherwise.
@@ -1896,7 +1864,7 @@ results are undefined
 
 #### Syntax
 
-`Result = set1 [[stdlib_bitsets(module):<=(interface)]] set2`
+`result = set1 [[stdlib_bitsets(module):<=(interface)]] set2`
 
 #### Class
 
@@ -1911,12 +1879,9 @@ is an `intent(in)` argument.
 will have the same number of bits as `set1`. It is an `intent(in)`
 argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
+The result is a default logical scalar.
 The result is `.true.` if the bits in `set1` and `set2` are the same
 or the highest order different bit is set to 0 in `set1` and to 1 in
 `set2`, `.false.`  otherwise.
@@ -1959,7 +1924,7 @@ results are undefined
 
 #### Syntax
 
-`Result = set1 [[stdlib_bitsets(module):<(interface)]] set2`
+`result = set1 [[stdlib_bitsets(module):<(interface)]] set2`
 
 #### Class
 
@@ -1974,12 +1939,9 @@ is an `intent(in)` argument.
 will have the same number of bits as `set1`. It is an `intent(in)`
 argument.
 
-#### Result character
-
-The result is a default logical scalar.
-
 #### Result value
 
+The result is a default logical scalar.
 The result is `.true.` if the bits in `set1` and `set2` differ and the
 highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 `.false.`  otherwise.
