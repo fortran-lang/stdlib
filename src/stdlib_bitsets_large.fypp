@@ -1254,82 +1254,19 @@ contains
             integer(bits_kind), intent(in)  :: bits
             integer(bits_kind), intent(out) :: digits
 
-            if ( bits_kind == int32 ) then
-                select case ( bits )
-                case ( 0_int32:9_int32 )
-                    digits = 1
-                case ( 10_int32:99_int32 )
-                    digits = 2
-                case ( 100_int32:999_int32 )
-                    digits = 3
-                case ( 1000_int32:9999_int32 )
-                    digits = 4
-                case ( 10000_int32:99999_int32 )
-                    digits = 5
-                case ( 100000_int32:999999_int32 )
-                    digits = 6
-                case ( 1000000_int32:9999999_int32 )
-                    digits = 7
-                case ( 10000000_int32:99999999_int32 )
-                    digits = 8
-                case ( 100000000_int32:999999999_int32 )
-                    digits = 9
-                case ( 1000000000_int32:huge(0_int32) )
-                    digits = 10
-                case default
-                    error stop module_name // ' % ' // procedure //  &
-                        ' internal consistency fault was found.'
-                end select
+            integer(bits_kind) :: factor
 
-            else if ( bits_kind == int64 ) then
-                select case ( bits )
-                case ( 0_int64:9_int64 )
-                    digits = 1
-                case ( 10_int64:99_int64 )
-                    digits = 2
-                case ( 100_int64:999_int64 )
-                    digits = 3
-                case ( 1000_int64:9999_int64 )
-                    digits = 4
-                case ( 10000_int64:99999_int64 )
-                    digits = 5
-                case ( 100000_int64:999999_int64 )
-                    digits = 6
-                case ( 1000000_int64:9999999_int64 )
-                    digits = 7
-                case ( 10000000_int64:99999999_int64 )
-                    digits = 8
-                case ( 100000000_int64:999999999_int64 )
-                    digits = 9
-                case ( 1000000000_int64:9999999999_int64 )
-                    digits = 10
-                case ( 10000000000_int64:99999999999_int64 )
-                    digits = 11
-                case ( 100000000000_int64:999999999999_int64 )
-                    digits = 12
-                case ( 1000000000000_int64:9999999999999_int64 )
-                    digits = 13
-                case ( 10000000000000_int64:99999999999999_int64 )
-                    digits = 14
-                case ( 100000000000000_int64:999999999999999_int64 )
-                    digits = 15
-                case ( 1000000000000000_int64:9999999999999999_int64 )
-                    digits = 16
-                case ( 10000000000000000_int64:99999999999999999_int64 )
-                    digits = 17
-                case ( 100000000000000000_int64:999999999999999999_int64 )
-                    digits = 18
-                case ( 1000000000000000000_int64:huge(0_int64) )
-                    digits = 19
-                case default
-                    error stop module_name // ' % ' // procedure //  &
-                        ' internal consistency fault was found.'
-                end select
+            factor = bits
 
-            else
-                error stop module_name // ' % ' // procedure //  &
-                    ' internal consistency fault was found.'
+            if ( factor <= 0 ) then
+                digits = 1
+                return
             end if
+
+            do digits = 1, 127
+                factor = factor / 10
+                if ( factor == 0 ) return
+            end do
 
         end subroutine digit_count
 
