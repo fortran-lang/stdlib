@@ -134,7 +134,7 @@ module stdlib_bitsets
         elemental function all_abstract( self ) result(all)
 !! Version: experimental
 !!
-!! Returns `.true.` if all bits in `self` are 1, `.false`. otherwise.
+!! Returns `.true.` if all bits in `self` are 1, `.false.` otherwise.
 !!
 !!#### Example
 !!
@@ -1300,7 +1300,7 @@ module stdlib_bitsets
 !! Creates the bitset, `self`, of size `bits`, with all bits initialized to
 !! zero. `bits` must be non-negative.  If an error occurs and `status` is
 !! absent then processing stops with an informative stop code. `status`
-!! will have one of the values;
+!! will have one of the values:
 !! * `success` -  if no problems were found,
 !! * `alloc_fault` - if memory allocation failed
 !! * `array_size_invalid_error` - if `bits` is either negative or larger
@@ -1362,7 +1362,7 @@ module stdlib_bitsets
 !! the bitset, `self`. The literal may be preceded by an an arbitrary
 !! sequence of blank characters. If `status` is absent an error results
 !! in an error stop with an informative stop code. If `status`
-!! is present it has one of the values
+!! is present it has one of the values:
 !! * `success` - if no problems occurred,
 !! * `alloc_fault` - if allocation of memory for SELF failed,
 !! * `array_size_invalid_error - if `bits(self)` in `string` is greater
@@ -1505,7 +1505,7 @@ module stdlib_bitsets
         module subroutine assign_log${k1}$_64( self, logical_vector )
 !! Version: experimental
 !!
-!! Used to define assignment from an array of type `logical(int8)` to a
+!! Used to define assignment from an array of type `logical(${k1}$)` to a
 !! `bitset_64`.
             type(bitset_64), intent(out) :: self
             logical(${k1}$), intent(in)    :: logical_vector(:)
@@ -1514,7 +1514,7 @@ module stdlib_bitsets
         pure module subroutine log${k1}$_assign_64( logical_vector, set )
 !! Version: experimental
 !!
-!! Used to define assignment to an array of type `logical(int8)` from a
+!! Used to define assignment to an array of type `logical(${k1}$)` from a
 !! `bitset_64`.
             logical(${k1}$), intent(out), allocatable :: logical_vector(:)
             type(bitset_64), intent(in)             :: set

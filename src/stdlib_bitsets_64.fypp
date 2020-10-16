@@ -366,7 +366,7 @@ contains
 !  Creates the bitset, `self`, of size `bits`, with all bits initialized to
 !  zero. `bits` must be non-negative.  If an error occurs and `status` is
 !  absent then processing stops with an informative stop code. `status`
-!  will have one of the values;
+!  will have one of the values:
 !  * `success` -  if no problems were found,
 !  * `array_size_invalid_error` - if `bits` is either negative or larger
 !    than 64 with `self` of class `bitset_64`, or
