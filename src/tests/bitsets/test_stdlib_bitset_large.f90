@@ -503,7 +503,7 @@ contains
         end if
 
         set5 = log1
-        call extract( set4, set5, 1, 33 )
+        call extract( set4, set5, 1_bits_kind, 33_bits_kind )
         if ( set4 % bits() /= 33 ) then
             error stop procedure // &
                 ' initialization with extract failed to set' // &
@@ -517,7 +517,7 @@ contains
         end if
 
         set5 = log11
-        call extract( set4, set5, 1, 65 )
+        call extract( set4, set5, 1_bits_kind, 65_bits_kind )
         if ( set4 % bits() /= 65 ) then
             error stop procedure // &
                 ' initialization with extract failed to set' // &
@@ -677,7 +677,7 @@ contains
 
     subroutine test_bitset_inquiry()
         character(*), parameter:: procedure = 'TEST_BITSET_INQUIRY'
-        integer :: i
+        integer(bits_kind) :: i
 
         write(*,*)
         write(*,*) 'Test bitset inquiry: all, any, bits, none, test, and value'
@@ -898,9 +898,9 @@ contains
             error stop procedure // ' set1 is not all set.'
         end if
 
-        call set1 % clear(0)
-        if ( .not. set1 % test(0) ) then
-            if ( set1 % test(1) ) then
+        call set1 % clear(0_bits_kind)
+        if ( .not. set1 % test(0_bits_kind) ) then
+            if ( set1 % test(1_bits_kind) ) then
                 write(*,*) 'Cleared one bit in set1 as expected.'
             else
                 error stop procedure // ' cleared more than one bit in set1.'
@@ -909,7 +909,7 @@ contains
             error stop procedure // ' did not clear the first bit in set1.'
         end if
 
-        call set1 % clear(1, 32)
+        call set1 % clear(1_bits_kind, 32_bits_kind)
         if ( set1 % none() ) then
             write(*,*) 'Cleared remaining bits in set1 as expected.'
         else
@@ -917,9 +917,9 @@ contains
                 'in set1.'
         end if
 
-        call set1 % flip(0)
-        if ( set1 % test(0) ) then
-            if ( .not. set1 % test(1) ) then
+        call set1 % flip(0_bits_kind)
+        if ( set1 % test(0_bits_kind) ) then
+            if ( .not. set1 % test(1_bits_kind) ) then
                 write(*,*) 'Flipped one bit in set1 as expected.'
             else
                 error stop procedure // ' flipped more than one bit in set1.'
@@ -928,7 +928,7 @@ contains
             error stop procedure // ' did not flip the first bit in set1.'
         end if
 
-        call set1 % flip(1, 32)
+        call set1 % flip(1_bits_kind, 32_bits_kind)
         if ( set1 % all() ) then
             write(*,*) 'Flipped remaining bits in set1 as expected.'
         else
@@ -943,9 +943,9 @@ contains
             error stop procedure // ' did not unset bits in set1.'
         end if
 
-        call set1 % set(0)
-        if ( set1 % test(0) ) then
-            if ( .not. set1 % test(1) ) then
+        call set1 % set(0_bits_kind)
+        if ( set1 % test(0_bits_kind) ) then
+            if ( .not. set1 % test(1_bits_kind) ) then
                 write(*,*) 'Set first bit in set1 as expected.'
             else
                 error stop procedure // ' set more than one bit in set1.'
@@ -954,7 +954,7 @@ contains
             error stop procedure // ' did not set the first bit in set1.'
         end if
 
-        call set1 % set(1, 32)
+        call set1 % set(1_bits_kind, 32_bits_kind)
         if ( set1 % all() ) then
             write(*,*) 'Set the remaining bits in set1 as expected.'
         else
@@ -962,15 +962,15 @@ contains
                 'in set1.'
         end if
 
-        call set11 % init( 166 )
+        call set11 % init( 166_bits_kind )
         call set11 % not()
         if ( .not. set11 % all() ) then
             error stop procedure // ' set11 is not all set.'
         end if
 
-        call set11 % clear(0)
-        if ( .not. set11 % test(0) ) then
-            if ( set11 % test(1) ) then
+        call set11 % clear(0_bits_kind)
+        if ( .not. set11 % test(0_bits_kind) ) then
+            if ( set11 % test(1_bits_kind) ) then
                 write(*,*) 'Cleared one bit in set11 as expected.'
             else
                 error stop procedure // ' cleared more than one bit in set11.'
@@ -979,9 +979,9 @@ contains
             error stop procedure // ' did not clear the first bit in set11.'
         end if
 
-        call set11 % clear(165)
-        if ( .not. set11 % test(165) ) then
-            if ( set11 % test(164) ) then
+        call set11 % clear(165_bits_kind)
+        if ( .not. set11 % test(165_bits_kind) ) then
+            if ( set11 % test(164_bits_kind) ) then
                 write(*,*) 'Cleared the last bit in set11 as expected.'
             else
                 error stop procedure // ' cleared more than one bit in set11.'
@@ -990,7 +990,7 @@ contains
             error stop procedure // ' did not clear the last bit in set11.'
         end if
 
-        call set11 % clear(1, 164)
+        call set11 % clear(1_bits_kind, 164_bits_kind)
         if ( set11 % none() ) then
             write(*,*) 'Cleared remaining bits in set11 as expected.'
         else
@@ -998,9 +998,9 @@ contains
                 'in set11.'
         end if
 
-        call set11 % flip(0)
-        if ( set11 % test(0) ) then
-            if ( .not. set11 % test(1) ) then
+        call set11 % flip(0_bits_kind)
+        if ( set11 % test(0_bits_kind) ) then
+            if ( .not. set11 % test(1_bits_kind) ) then
                 write(*,*) 'Flipped one bit in set11 as expected.'
             else
                 error stop procedure // ' flipped more than one bit in set11.'
@@ -1009,9 +1009,9 @@ contains
             error stop procedure // ' did not flip the first bit in set11.'
         end if
 
-        call set11 % flip(165)
-        if ( set11 % test(165) ) then
-            if ( .not. set11 % test(164) ) then
+        call set11 % flip(165_bits_kind)
+        if ( set11 % test(165_bits_kind) ) then
+            if ( .not. set11 % test(164_bits_kind) ) then
                 write(*,*) 'Flipped last bit in set11 as expected.'
             else
                 error stop procedure // ' flipped more than one bit in set11.'
@@ -1020,7 +1020,7 @@ contains
             error stop procedure // ' did not flip the last bit in set11.'
         end if
 
-        call set11 % flip(1, 164)
+        call set11 % flip(1_bits_kind, 164_bits_kind)
         if ( set11 % all() ) then
             write(*,*) 'Flipped remaining bits in set11 as expected.'
         else
@@ -1035,9 +1035,9 @@ contains
             error stop procedure // ' did not unset bits in set11.'
         end if
 
-        call set11 % set(0)
-        if ( set11 % test(0) ) then
-            if ( .not. set11 % test(1) ) then
+        call set11 % set(0_bits_kind)
+        if ( set11 % test(0_bits_kind) ) then
+            if ( .not. set11 % test(1_bits_kind) ) then
                 write(*,*) 'Set first bit in set11 as expected.'
             else
                 error stop procedure // ' set more than one bit in set11.'
@@ -1046,9 +1046,9 @@ contains
             error stop procedure // ' did not set the first bit in set11.'
         end if
 
-        call set11 % set(165)
-        if ( set11 % test(165) ) then
-            if ( .not. set11 % test(164) ) then
+        call set11 % set(165_bits_kind)
+        if ( set11 % test(165_bits_kind) ) then
+            if ( .not. set11 % test(164_bits_kind) ) then
                 write(*,*) 'Set last bit in set11 as expected.'
             else
                 error stop procedure // ' set more than one bit in set11.'
@@ -1057,7 +1057,7 @@ contains
             error stop procedure // ' did not set the last bit in set11.'
         end if
 
-        call set11 % set(1, 164)
+        call set11 % set(1_bits_kind, 164_bits_kind)
         if ( set11 % all() ) then
             write(*,*) 'Set the remaining bits in set11 as expected.'
         else
@@ -1123,15 +1123,15 @@ contains
                 'equal tests.'
         end if
 
-        call set10 % init(166)
-        call set11 % init(166)
+        call set10 % init(166_bits_kind)
+        call set11 % init(166_bits_kind)
         call set11 % not()
-        call set12 % init(166)
-        call set12 % set(165)
-        call set13 % init(166)
-        call set13 % set(65)
-        call set14 % init(166)
-        call set14 % set(0)
+        call set12 % init(166_bits_kind)
+        call set12 % set(165_bits_kind)
+        call set13 % init(166_bits_kind)
+        call set13 % set(65_bits_kind)
+        call set14 % init(166_bits_kind)
+        call set14 % set(0_bits_kind)
         if ( set10 == set10 .and. set11 == set11 .and. set12 == set12 .and. &
              set13 == set13 .and. set14 == set14 .and.                      &
              .not. set13 == set14 .and. .not. set12 == set13 .and.          &
@@ -1337,9 +1337,9 @@ contains
             error stop procedure // ' fourth test of < 64 bit XOR failed.'
         end if
 
-        call set0 % init(166)
+        call set0 % init(166_bits_kind)
         call set0 % not()
-        call set4 % init(166)
+        call set4 % init(166_bits_kind)
         call set4 % not()
         call and( set0, set4 ) ! all all
         if ( set0 % all() ) then
@@ -1348,7 +1348,7 @@ contains
             error stop procedure // ' first test of > 64 bit AND failed.'
         end if
 
-        call set4 % init(166)
+        call set4 % init(166_bits_kind)
         call and( set0, set4 ) ! all none
         if ( set0 % none() ) then
             write(*,*) 'Second test of > 64 bit AND worked.'
@@ -1356,7 +1356,7 @@ contains
             error stop procedure // ' second test of > 64 bit AND failed.'
         end if
 
-        call set3 % init(166)
+        call set3 % init(166_bits_kind)
         call set3 % not()
         call and( set4, set3 ) ! none all
         if ( set4 % none() ) then
@@ -1365,7 +1365,7 @@ contains
             error stop procedure // ' third test of > 64 bit AND failed.'
         end if
 
-        call set3 % init(166)
+        call set3 % init(166_bits_kind)
         call and( set4, set3 ) ! none none
         if ( set4 % none() ) then
             write(*,*) 'Fourth test of > 64 bit AND worked.'
@@ -1404,9 +1404,9 @@ contains
             error stop procedure // ' fourth  test of > 64 bit AND_NOT failed.'
         end if
 
-        call set3 % init(166)
+        call set3 % init(166_bits_kind)
         call set3 % not()
-        call set4 % init(166)
+        call set4 % init(166_bits_kind)
         call set4 % not()
         call or( set3, set4 ) ! all all
         if ( set3 % all() ) then
@@ -1415,7 +1415,7 @@ contains
             error stop procedure // ' first test of > 64 bit OR failed.'
         end if
 
-        call set3 % init(166)
+        call set3 % init(166_bits_kind)
         call or( set4, set3 ) ! all none
         if ( set4 % all() ) then
             write(*,*) 'Second test of > 64 bit OR worked.'
@@ -1430,8 +1430,8 @@ contains
             error stop procedure // ' third test of > 64 bit OR failed.'
         end if
 
-        call set3 % init(166)
-        call set4 % init(166)
+        call set3 % init(166_bits_kind)
+        call set4 % init(166_bits_kind)
         call or( set4, set3 ) !none none
         if ( set4 % none() ) then
             write(*,*) 'Fourth test of > 64 bit OR worked.'

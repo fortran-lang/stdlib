@@ -277,7 +277,7 @@ contains
         end if
 
         set5 = log1
-        call extract( set4, set5, 1, 33 )
+        call extract( set4, set5, 1_bits_kind, 33_bits_kind )
         if ( set4 % bits() /= 33 ) then
             error stop procedure // &
                 ' initialization with extract failed to set' // &
@@ -360,7 +360,7 @@ contains
 
     subroutine test_bitset_inquiry()
         character(*), parameter:: procedure = 'TEST_BITSET_INQUIRY'
-        integer :: i
+        integer(bits_kind) :: i
 
         write(*,*)
         write(*,*) 'Test bitset inquiry: all, any, bits, none, test, and value'
@@ -472,9 +472,9 @@ contains
             error stop procedure // ' set1 is not all set.'
         end if
 
-        call set1 % clear(0)
-        if ( .not. set1 % test(0) ) then
-            if ( set1 % test(1) ) then
+        call set1 % clear(0_bits_kind)
+        if ( .not. set1 % test(0_bits_kind) ) then
+            if ( set1 % test(1_bits_kind) ) then
                 write(*,*) 'Cleared one bit in set1 as expected.'
             else
                 error stop procedure // ' cleared more than one bit in set1.'
@@ -483,7 +483,7 @@ contains
             error stop procedure // ' did not clear the first bit in set1.'
         end if
 
-        call set1 % clear(1, 32)
+        call set1 % clear(1_bits_kind, 32_bits_kind)
         if ( set1 % none() ) then
             write(*,*) 'Cleared remaining bits in set1 as expected.'
         else
@@ -491,9 +491,9 @@ contains
                 'in set1.'
         end if
 
-        call set1 % flip(0)
-        if ( set1 % test(0) ) then
-            if ( .not. set1 % test(1) ) then
+        call set1 % flip(0_bits_kind)
+        if ( set1 % test(0_bits_kind) ) then
+            if ( .not. set1 % test(1_bits_kind) ) then
                 write(*,*) 'Flipped one bit in set1 as expected.'
             else
                 error stop procedure // ' flipped more than one bit in set1.'
@@ -502,7 +502,7 @@ contains
             error stop procedure // ' did not flip the first bit in set1.'
         end if
 
-        call set1 % flip(1, 32)
+        call set1 % flip(1_bits_kind, 32_bits_kind)
         if ( set1 % all() ) then
             write(*,*) 'Flipped remaining bits in set1 as expected.'
         else
@@ -517,9 +517,9 @@ contains
             error stop procedure // ' did not unset bits in set1.'
         end if
 
-        call set1 % set(0)
-        if ( set1 % test(0) ) then
-            if ( .not. set1 % test(1) ) then
+        call set1 % set(0_bits_kind)
+        if ( set1 % test(0_bits_kind) ) then
+            if ( .not. set1 % test(1_bits_kind) ) then
                 write(*,*) 'Set first bit in set1 as expected.'
             else
                 error stop procedure // ' set more than one bit in set1.'
@@ -528,7 +528,7 @@ contains
             error stop procedure // ' did not set the first bit in set1.'
         end if
 
-        call set1 % set(1, 32)
+        call set1 % set(1_bits_kind, 32_bits_kind)
         if ( set1 % all() ) then
             write(*,*) 'Set the remaining bits in set1 as expected.'
         else
