@@ -14,7 +14,7 @@ contains
 
         all = .true.
         full_blocks = bits(self)/block_size
-        do block = 1, full_blocks
+        do block = 1_bits_kind, full_blocks
             if ( self % blocks(block) /= -1_block_kind ) then
                 all = .false.
                 return
@@ -23,7 +23,7 @@ contains
 
         if ( full_blocks == size(self % blocks) ) return
 
-        do pos=0, modulo( bits(self), block_size )-1
+        do pos=0_bits_kind, modulo( bits(self), block_size )-1
             if ( .not. btest(self % blocks(full_blocks+1), pos) ) then
                 all = .false.
                 return
@@ -44,7 +44,7 @@ contains
 
         integer(bits_kind) :: block_
 
-        do block_ = 1, size(set1 % blocks)
+        do block_ = 1_bits_kind, size(set1 % blocks, kind=bits_kind)
             set1 % blocks(block_) = iand( set1 % blocks(block_), &
                                           set2 % blocks(block_) )
         end do
@@ -63,7 +63,7 @@ contains
 
         integer(bits_kind) :: block_
 
-        do block_ = 1, size( set1 % blocks )
+        do block_ = 1_bits_kind, size( set1 % blocks, kind=bits_kind )
             set1 % blocks(block_) =                                      &
                 iand( set1 % blocks(block_), not( set2 % blocks(block_) ) )
         end do
@@ -78,7 +78,7 @@ contains
 
         integer(bits_kind) :: block_
 
-        do block_ = 1, size(self % blocks)
+        do block_ = 1_bits_kind, size(self % blocks, kind=bits_kind)
             if ( self % blocks(block_) /= 0 ) then
                 any = .true.
                 return
@@ -120,7 +120,7 @@ contains
         allocate( self % blocks( blocks ) )
         self % blocks(:) = 0
 
-        do index=0, log_size-1
+        do index=0_bits_kind, log_size-1
             if ( logical_vector(index+1) ) then
                 call self % set( index )
             end if
@@ -137,7 +137,7 @@ contains
         integer(bits_kind) :: index
 
         allocate( logical_vector( set % num_bits ) )
-        do index=0, set % num_bits-1
+        do index=0_bits_kind, set % num_bits-1
             if ( set % value( index ) == 1 ) then
                 logical_vector(index+1) = .true.
             else
@@ -157,7 +157,7 @@ contains
         integer(bits_kind) :: block_, pos
 
         bit_count = 0
-        do block_ = 1, size(self % blocks) - 1
+        do block_ = 1_bits_kind, size(self % blocks, kind=bits_kind) - 1
             do pos = 0, block_size-1
                 if ( btest( self % blocks(block_), pos ) ) &
                     bit_count = bit_count + 1
@@ -165,7 +165,7 @@ contains
 
         end do
 
-        do pos = 0, self % num_bits - (block_-1)*block_size - 1
+        do pos = 0_bits_kind, self % num_bits - (block_-1)*block_size - 1
             if ( btest( self % blocks(block_), pos ) ) bit_count = bit_count + 1
         end do
 
@@ -255,7 +255,7 @@ contains
         integer(bits_kind) :: block, common_blocks
 
         eqv = .false.
-        common_blocks = size(set1 % blocks)
+        common_blocks = size(set1 % blocks, kind=bits_kind)
         do block = 1, common_blocks
             if ( set1 % blocks(block) /= set2 % blocks(block) ) return
         end do
@@ -304,7 +304,7 @@ contains
         allocate( new % blocks(blocks) )
         new % blocks(:) = 0
 
-        do i=0, bits-1
+        do i=0_bits_kind, bits-1
             ex_block = i / block_size + 1
             j = i - (ex_block-1) * block_size
             old_block = (start_pos + i) / block_size + 1
@@ -328,7 +328,7 @@ contains
         class(bitset_large), intent(inout) :: self
         integer(bits_kind), intent(in)     :: pos
 
-        integer :: flip_block, block_bit
+        integer(bits_kind) :: flip_block, block_bit
 
         if ( pos < 0 .OR. pos > self % num_bits-1 ) return
 
@@ -459,7 +459,7 @@ contains
 
         integer(bits_kind) :: block_
 
-        do block_ = size(set1 % blocks), 1, -1
+        do block_ = size(set1 % blocks, kind=bits_kind), 1_bits_kind, -1
             if ( set1 % blocks(block_) == set2 % blocks(block_) ) then
                 cycle
             else if ( bgt(set1 % blocks(block_), set2 % blocks(block_) ) ) then
@@ -487,7 +487,7 @@ contains
 
         integer(bits_kind) :: block_
 
-        do block_ = size(set1 % blocks), 1, -1
+        do block_ = size(set1 % blocks, kind=bits_kind), 1_bits_kind, -1
             if ( set1 % blocks(block_) == set2 % blocks(block_) ) then
                 cycle
             else if ( bgt( set1 % blocks(block_),    &
@@ -626,7 +626,7 @@ contains
 
         integer(bits_kind) :: block_
 
-        do block_ = size(set1 % blocks), 1, -1
+        do block_ = size(set1 % blocks, kind=bits_kind), 1_bits_kind, -1
             if ( set1 % blocks(block_) == set2 % blocks(block_) ) then
                 cycle
             else if ( blt( set1 % blocks(block_), &
@@ -656,7 +656,7 @@ contains
 
         integer(bits_kind) :: block_
 
-        do block_ = size(set1 % blocks), 1, -1
+        do block_ = size(set1 % blocks, kind=bits_kind), 1_bits_kind, -1
             if ( set1 % blocks(block_) == set2 % blocks(block_) ) then
                 cycle
             else if ( blt( set1 % blocks(block_), &
@@ -682,11 +682,11 @@ contains
         logical                        :: neqv
         type(bitset_large), intent(in) :: set1, set2
 
-        integer(bits_kind) :: block
+        integer(bits_kind) :: block_
 
         neqv = .true.
-        do block = 1, size(set1 % blocks)
-            if ( set1 % blocks(block) /= set2 % blocks(block) ) return
+        do block_ = 1_bits_kind, size(set1 % blocks, kind=bits_kind)
+            if ( set1 % blocks(block_) /= set2 % blocks(block_) ) return
         end do
         neqv = .false.
 
@@ -700,10 +700,10 @@ contains
         logical ::  none
         class(bitset_large), intent(in) :: self
 
-        integer :: block
+        integer(bits_kind) :: block
 
         none = .true.
-        do block = 1, size(self % blocks)
+        do block = 1_bits_kind, size(self % blocks, kind=bits_kind)
             if (self % blocks(block) /= 0) then
                 none = .false.
                 return
@@ -719,11 +719,12 @@ contains
 !
         class(bitset_large), intent(inout) :: self
 
-        integer(bits_kind) :: bit, full_blocks, block, remaining_bits
+        integer(bits_kind) :: bit, full_blocks, block
+        integer :: remaining_bits
 
         if ( self % num_bits == 0 ) return
         full_blocks = self % num_bits  / block_size
-        do block = 1, full_blocks
+        do block = 1_bits_kind, full_blocks
             self % blocks(block) = not( self % blocks(block) )
         end do
         remaining_bits = self % num_bits - full_blocks * block_size
@@ -750,7 +751,7 @@ contains
 
         integer(bits_kind) :: block_
 
-        do block_ = 1, size( set1 % blocks )
+        do block_ = 1, size( set1 % blocks, kind=bits_kind )
             set1 % blocks(block_) = ior( set1 % blocks(block_), &
                                          set2 % blocks(block_) )
         end do
@@ -817,7 +818,7 @@ contains
         integer                 :: stat
 
         pos = 1
-        find_start: do pos=1, len(string)
+        find_start: do pos=1_bits_kind, len(string, kind=bits_kind)
             if ( string(pos:pos) /= ' ' ) exit
         end do find_start
 
@@ -1161,7 +1162,7 @@ contains
                                 alloc_fault, status, module_name, procedure )
             return
         end if
-        do bit=0, bit_count-1
+        do bit=0_bits_kind, bit_count-1
             pos = bit_count - bit
             if ( self % test( bit) ) then
                 string( pos:pos ) = '1'
@@ -1236,7 +1237,7 @@ contains
         write( string, "('S', i0)" ) self % num_bits
 
         string( count_digits + 2:count_digits + 2 ) = "B"
-        do bit=0, bit_count-1
+        do bit=0_bits_kind, bit_count-1
             pos = count_digits + 2 + bit_count - bit
             if ( self % test( bit) ) then
                 string( pos:pos ) = '1'
@@ -1253,42 +1254,82 @@ contains
             integer(bits_kind), intent(in)  :: bits
             integer(bits_kind), intent(out) :: digits
 
-            select case ( bits )
-            case ( 0:9 )
-                digits = 1
+            if ( bits_kind == int32 ) then
+                select case ( bits )
+                case ( 0_int32:9_int32 )
+                    digits = 1
+                case ( 10_int32:99_int32 )
+                    digits = 2
+                case ( 100_int32:999_int32 )
+                    digits = 3
+                case ( 1000_int32:9999_int32 )
+                    digits = 4
+                case ( 10000_int32:99999_int32 )
+                    digits = 5
+                case ( 100000_int32:999999_int32 )
+                    digits = 6
+                case ( 1000000_int32:9999999_int32 )
+                    digits = 7
+                case ( 10000000_int32:99999999_int32 )
+                    digits = 8
+                case ( 100000000_int32:999999999_int32 )
+                    digits = 9
+                case ( 1000000000_int32:huge(0_int32) )
+                    digits = 10
+                case default
+                    error stop module_name // ' % ' // procedure //  &
+                        ' internal consistency fault was found.'
+                end select
 
-            case ( 10:99 )
-                digits = 2
+            else if ( bits_kind == int64 ) then
+                select case ( bits )
+                case ( 0_int64:9_int64 )
+                    digits = 1
+                case ( 10_int64:99_int64 )
+                    digits = 2
+                case ( 100_int64:999_int64 )
+                    digits = 3
+                case ( 1000_int64:9999_int64 )
+                    digits = 4
+                case ( 10000_int64:99999_int64 )
+                    digits = 5
+                case ( 100000_int64:999999_int64 )
+                    digits = 6
+                case ( 1000000_int64:9999999_int64 )
+                    digits = 7
+                case ( 10000000_int64:99999999_int64 )
+                    digits = 8
+                case ( 100000000_int64:999999999_int64 )
+                    digits = 9
+                case ( 1000000000_int64:9999999999_int64 )
+                    digits = 10
+                case ( 10000000000_int64:99999999999_int64 )
+                    digits = 11
+                case ( 100000000000_int64:999999999999_int64 )
+                    digits = 12
+                case ( 1000000000000_int64:9999999999999_int64 )
+                    digits = 13
+                case ( 10000000000000_int64:99999999999999_int64 )
+                    digits = 14
+                case ( 100000000000000_int64:999999999999999_int64 )
+                    digits = 15
+                case ( 1000000000000000_int64:9999999999999999_int64 )
+                    digits = 16
+                case ( 10000000000000000_int64:99999999999999999_int64 )
+                    digits = 17
+                case ( 100000000000000000_int64:999999999999999999_int64 )
+                    digits = 18
+                case ( 1000000000000000000_int64:huge(0_int64) )
+                    digits = 19
+                case default
+                    error stop module_name // ' % ' // procedure //  &
+                        ' internal consistency fault was found.'
+                end select
 
-            case ( 100:999 )
-                digits = 3
-
-            case ( 1000:9999 )
-                digits = 4
-
-            case ( 10000:99999 )
-                digits = 5
-
-            case ( 100000:999999 )
-                digits = 6
-
-            case ( 1000000:9999999 )
-                digits = 7
-
-            case ( 10000000:99999999 )
-                digits = 8
-
-            case ( 100000000:999999999 )
-                digits = 9
-
-            case ( 1000000000:min(2147483647, huge( self % num_bits ) ) )
-                digits = 10
-
-            case default
+            else
                 error stop module_name // ' % ' // procedure //  &
                     ' internal consistency fault was found.'
-
-            end select
+            end if
 
         end subroutine digit_count
 
@@ -1314,14 +1355,13 @@ contains
 
         integer                   :: ierr
         character(:), allocatable :: string
-        character(len=120)      :: message
-        character(*), parameter :: procedure = "WRITE_BITSET"
+        character(len=120)        :: message
+        character(*), parameter   :: procedure = "WRITE_BITSET"
 
         call self % write_bitset(string, status)
 
         if ( present(status) ) then
             if (status /= success ) return
-
         end if
 
 
@@ -1360,7 +1400,7 @@ contains
 
         integer(bits_kind) :: block_
 
-        do block_ = 1, size(set1 % blocks)
+        do block_ = 1_bits_kind, size(set1 % blocks, kind=bits_kind)
             set1 % blocks(block_) = ieor( set1 % blocks(block_), &
                                           set2 % blocks(block_) )
         end do

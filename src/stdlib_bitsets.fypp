@@ -5,29 +5,30 @@ module stdlib_bitsets
 !! The code assumes two's complement integers, and treats negative integers as
 !! having the sign bit set.
 
-    use, intrinsic ::            &
-        iso_fortran_env, only:   &
-            bits_kind  => int32, &
-            block_kind => int64, &
-            error_unit,          &
-            int8,                &
-            int16,               &
-            int32,               &
-            int64,               &
-            dp => real64
+    use :: stdlib_kinds, only:  &
+           bits_kind  => int32, &
+           block_kind => int64, &
+           int8,                &
+           int16,               &
+           int32,               &
+           int64
+
+    use, intrinsic ::          &
+        iso_fortran_env, only: &
+        error_unit
 
     implicit none
 
     private
 
-    integer, parameter ::                    &
+    integer(bits_kind), parameter ::        &
         block_size  = bit_size(0_block_kind)
 
-    integer(block_kind), private, parameter :: all_zeros  = 0_block_kind
-    integer(block_kind), private, parameter :: all_ones   = not(all_zeros)
+    integer(block_kind), parameter :: all_zeros  = 0_block_kind
+    integer(block_kind), parameter :: all_ones   = not(all_zeros)
 
-    character(*), parameter, private :: module_name = "STDLIB_BITSETS"
-    integer, parameter, private :: &
+    character(*), parameter :: module_name = "STDLIB_BITSETS"
+    integer, parameter :: &
         ia0   = iachar('0'),       &
         ia9   = iachar('9')
 
@@ -870,7 +871,7 @@ module stdlib_bitsets
         elemental module subroutine clear_bit_large(self, pos)
 !! Version: experimental
 !!
-!! Sets to zero the bit at `pos` position in `self`. If 'pos` is less than
+!! Sets to zero the bit at `pos` position in `self`. If `pos` is less than
 !! zero or greater than `bits(self)-1` it is ignored.
             class(bitset_large), intent(inout) :: self
             integer(bits_kind), intent(in)     :: pos
@@ -1303,7 +1304,7 @@ module stdlib_bitsets
 !! * `success` -  if no problems were found,
 !! * `alloc_fault` - if memory allocation failed
 !! * `array_size_invalid_error` - if `bits` is either negative or larger
-!!   than 64 with `self` of class `bitset_64`, or
+!!   than 64 with `self` of class `bitset_64`.
             class(bitset_64), intent(out)   :: self
             integer(bits_kind), intent(in) :: bits
             integer, intent(out), optional :: status
@@ -1653,7 +1654,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Creates a new bitset, `new`, from a range, `start_pos` to `stop_pos`, in
-!! bitset `old`. If 'start_pos` is greater than `stop_pos` the new bitset is
+!! bitset `old`. If `start_pos` is greater than `stop_pos` the new bitset is
 !! empty. If `start_pos` is less than zero or `stop_pos` is greater than
 !! `bits(old)-1` then if `status` is present it has the value
 !! `index_invalid_error`and `new` is undefined, otherwise processing stops
@@ -1799,7 +1800,7 @@ module stdlib_bitsets
         elemental module function eqv_64(set1, set2) result(eqv)
 !! Version: experimental
 !!
-!! Returns `.true`. if all bits in `set1` and `set2` have the same value,
+!! Returns `.true.` if all bits in `set1` and `set2` have the same value,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
             logical                     :: eqv
@@ -1893,7 +1894,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` differ and the
-!! highest order different bit is set to 1 in `set1` and to 0 in `set2`.
+!! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
             logical                     :: gt
@@ -1909,7 +1910,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` are the same or the
-!! highest order different bit is set to 1 in `set1` and to 0 in `set2`.
+!! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
 !!
@@ -1942,7 +1943,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` are the same or the
-!! highest order different bit is set to 1 in `set1` and to 0 in `set2`.
+!! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
             logical                     :: ge
@@ -1958,7 +1959,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` differ and the
-!! highest order different bit is set to 0 in `set1` and to 1 in `set2`.
+!! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
 !!
@@ -1990,7 +1991,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` differ and the
-!! highest order different bit is set to 0 in `set1` and to 1 in `set2`.
+!! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
             logical                     :: lt
@@ -2006,7 +2007,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` are the same or the
-!! highest order different bit is set to 0 in `set1` and to 1 in `set2`.
+!! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
 !!
@@ -2039,7 +2040,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` are the same or the
-!! highest order different bit is set to 0 in `set1` and to 1 in `set2`.
+!! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
             logical                     :: le
@@ -2049,7 +2050,8 @@ module stdlib_bitsets
     end interface operator(<=)
 
     interface error_handler
-        module subroutine error_handler( message, error, status, module, procedure )
+        module subroutine error_handler( message, error, status, &
+            module, procedure )
             character(*), intent(in)           :: message
             integer, intent(in)                :: error
             integer, intent(out), optional     :: status
