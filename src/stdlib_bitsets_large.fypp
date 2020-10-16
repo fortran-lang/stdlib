@@ -203,7 +203,7 @@ contains
         integer(bits_kind) :: bit, block_, first_block, last_block, &
                               true_first, true_last
 
-        true_first = max( 0, start_pos )
+        true_first = max( 0_bits_kind, start_pos )
         true_last  = min( self % num_bits-1, stop_pos )
         if ( true_last < true_first ) return
 
@@ -357,7 +357,7 @@ contains
         integer(bits_kind) :: bit, block_, end_bit, first_block, last_block, &
                               start_bit
 
-        start_bit = max( 0, start_pos )
+        start_bit = max( 0_bits_kind, start_pos )
         end_bit   = min( stop_pos , self % num_bits-1 )
         if ( end_bit < start_bit ) return
 
@@ -1080,7 +1080,7 @@ contains
         integer(bits_kind) :: bit, block_, end_bit, first_block, last_block, &
                               start_bit
 
-        start_bit = max( 0, start_pos )
+        start_bit = max( 0_bits_kind, start_pos )
         end_bit   = min( stop_pos, self % num_bits-1 )
         if ( end_bit < start_bit ) return
 

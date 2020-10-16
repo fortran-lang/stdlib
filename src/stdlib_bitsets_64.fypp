@@ -171,7 +171,7 @@ contains
 
         integer(bits_kind) :: true_first, true_last
 
-        true_first = max( 0, start_pos )
+        true_first = max( 0_bits_kind, start_pos )
         true_last  = min( self % num_bits-1, stop_pos )
         if ( true_last < true_first ) return
 
@@ -275,7 +275,7 @@ contains
 
         integer(bits_kind) :: end_bit, start_bit
 
-        start_bit = max( 0, start_pos )
+        start_bit = max( 0_bits_kind, start_pos )
         end_bit   = min( stop_pos , self % num_bits-1 )
         call mvbits( not(self % block),       &
                      start_bit,               &
@@ -888,7 +888,7 @@ contains
 
         integer(bits_kind) :: end_bit, start_bit
 
-        start_bit = max( 0, start_pos )
+        start_bit = max( 0_bits_kind, start_pos )
         end_bit   = min( stop_pos, self % num_bits-1 )
         if ( end_bit < start_bit ) return
 
@@ -1030,42 +1030,19 @@ contains
             integer(bits_kind), intent(in)  :: bits
             integer(bits_kind), intent(out) :: digits
 
-            select case ( bits )
-            case ( 0:9 )
+            integer(bits_kind) :: factor
+
+            factor = bits
+
+            if ( factor <= 0 ) then
                 digits = 1
+                return
+            end if
 
-            case ( 10:99 )
-                digits = 2
-
-            case ( 100:999 )
-                digits = 3
-
-            case ( 1000:9999 )
-                digits = 4
-
-            case ( 10000:99999 )
-                digits = 5
-
-            case ( 100000:999999 )
-                digits = 6
-
-            case ( 1000000:9999999 )
-                digits = 7
-
-            case ( 10000000:99999999 )
-                digits = 8
-
-            case ( 100000000:999999999 )
-                digits = 9
-
-            case ( 1000000000:min(2147483647, huge( self % num_bits ) ) )
-                digits = 10
-
-            case default
-                error stop module_name // ' % ' // procedure //  &
-                    ' internal consistency fault was found.'
-
-            end select
+            do digits = 1, 127
+                factor = factor / 10
+                if ( factor == 0 ) return
+            end do
 
         end subroutine digit_count
 
