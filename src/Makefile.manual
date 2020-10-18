@@ -69,7 +69,7 @@ stdlib_stats_distribution.o: \
     stdlib_error.o \
 	stdlib_kinds.o \
 	stdlib_stats_distribution_rvs.o \
-stdlib_stats_distribution_implementation.o: \
+stdlib_stats_distribution_imp.o: \
     stdlib_stats_distribution.o
 # Fortran sources that are built from fypp templates
 stdlib_io.f90: stdlib_io.fypp
