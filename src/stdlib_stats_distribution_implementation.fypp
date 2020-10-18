@@ -1,5 +1,5 @@
 #:include "common.fypp"
-submodule (stdlib_stats_distribution) stdlib_stats_distribution_implementation
+submodule (stdlib_stats_distribution) stdlib_stats_distribution_imp
 
     contains
 
@@ -146,4 +146,4 @@ submodule (stdlib_stats_distribution) stdlib_stats_distribution_implementation
 
     #:endfor
 
-end submodule stdlib_stats_distribution_implementation
+end submodule stdlib_stats_distribution_imp
