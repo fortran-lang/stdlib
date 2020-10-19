@@ -24,7 +24,7 @@ assignments, procedures, methods, and operators. Note that the module
 assumes two's complement integers, but all current Fortran 95+
 processors use such integers.
 
-Note that the module defines a number of "binary" procedure,
+Note that the module defines a number of "binary" procedures,
 procedures with two bitset arguments. These arguments must be of the
 same type and should have the same number of `bits`. For reasons of
 performance the module does not enforce the `bits` constraint, but
