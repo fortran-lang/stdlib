@@ -10,18 +10,30 @@ title: Bitsets
 
 The `stdlib_bitsets` module implements bitset types. A bitset is a
 compact representation of a sequence of `bits` binary values. It can
-equivalently be considered as a sequence of logical values or as a subset of
-the integers 0 ... `bits-1`. The bits are indexed from 0 to
+equivalently be considered as a sequence of logical values or as a
+subset of the integers 0 ... `bits-1`. The bits are indexed from 0 to
 `bits(bitset)-1`. A bitset is used when space savings are critical in
 applications that require a large number
 of closely related logical values.
-It may also improve performance by reducing memory traffic. To implement
-bitsets the module
+It may also improve performance by reducing memory traffic. To
+implement bitsets the module
 defines three bitset types, multiple constants, a character string
 literal that can be read to and from strings and formatted files, a
 simple character string literal that can be read to and from strings,
 assignments, procedures, methods, and operators. Note that the module
-assumes two's complement integers, but all current Fortran 95+ processors use such integers.
+assumes two's complement integers, but all current Fortran 95+
+processors use such integers.
+
+Note that the module defines a number of "binary" procedure,
+procedures with two bitset arguments. These arguments must be of the
+same type and should have the same number of `bits`. For reasons of
+performance the module does not enforce the `bits` constraint, but
+failure to obey that constraint results in undefined behavior. This
+undefined behavior includes undefined values for those bits that
+exceed the defined number of `bits` in the smaller bitset. The
+undefined behavior may also include a "segmentation fault" for
+attempting to address bits in the smaller bitset, beyond the defined
+number of `bits`. Other problems are also possible.
 
 
 ## The module's constants
