@@ -2,7 +2,7 @@
 title: stats_distribution
 ---
 
-# Statistical Distribution
+# Statistical Distributions
 
 [TOC]
 
