@@ -14,7 +14,7 @@ Experimental
 
 ### Description
 
-Must set the seed value before calling random distribution for variates. 
+Sets the seed value before calling random distribution for variates. 
 
 ### Syntax
 
