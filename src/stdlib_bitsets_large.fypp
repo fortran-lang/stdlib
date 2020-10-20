@@ -840,7 +840,7 @@ contains
                 bits = bits*10 + iachar( string(pos:pos) ) - ia0
                 if ( bits < 0 ) go to 996
             case(iachar('b'), iachar('B'))
-                go to 100
+                exit
             case default
                 call error_handler( 'There was an invalid character ' // &
                                     'in STRING',                         &
@@ -852,7 +852,7 @@ contains
             pos = pos + 1
         end do
 
-100     if ( bits + pos > len(string) ) then
+        if ( bits + pos > len(string) ) then
             call error_handler( 'STRING was too small for the number of ' // &
                                 'bits specified by STRING.',                 &
                                 char_string_too_small_error, status,         &

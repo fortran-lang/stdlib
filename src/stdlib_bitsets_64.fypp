@@ -651,7 +651,7 @@ contains
                 bits = bits*10 + iachar( string(pos:pos) ) - ia0
                 if ( bits < 0 ) go to 996
             case(iachar('b'), iachar('B'))
-                go to 100
+                exit
             case default
                 go to 999
             end select
@@ -660,7 +660,7 @@ contains
 
         end do
 
-100     if ( bits > 64 ) then
+        if ( bits > 64 ) then
             call error_handler( 'BITS in STRING was greater than 64.', &
                                 char_string_too_large_error, status,   &
                                 module_name, procedure )
