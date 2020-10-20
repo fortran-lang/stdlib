@@ -80,7 +80,7 @@ program demo_uniform_rvs
 
     loc = 0.0
     scale = 1.0
-    print *, uniform(loc, scale)            ! single standard uniform random variate in [0, 1)
+    print *, uniform(loc, scale)            ! single standard uniform random variate in [0, 1]
     rv = uniform(loc, scale, 10)            ! an array of 10 uniform random variates in [0, 1)
     loc = -1.0
     scale = 2.0
