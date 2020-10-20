@@ -18,13 +18,13 @@ Sets the seed value before calling random distribution for variates.
 
 ### Syntax
 
-`call random_seed(put [, get])`
+`call random_seed(put, get)`
 
 ### Arguments
 
 `put`: argument has intent `in` and may be a scalar of type `integer` with kind of `int32`.
 
-`get` (optional): argument has intent `out` and is a scalar of type `integer` with kind of `int32`.
+`get`: argument has intent `out` and is a scalar of type `integer` with kind of `int32`.
 
 ### Return value
 
@@ -40,8 +40,7 @@ program demo_norm_seed
     integer(int32) :: seed, seed_value
 
     seed = 1234567
-    call random_seed(seed)                   ! reset the value of seed
-    call random_seed(seed, seed_value)       ! get current value of seed
+    call random_seed(seed, seed_value)       ! set and get current value of seed
 end program demo_norm_seed
 ```
 
@@ -275,7 +274,7 @@ program demo_normal_pdf
     print *, norm_pdf(2.0,-1.0, 2.0)          ! a probability density at 2.0 with \mu=-1.0 \sigma=2.0
     x = reshape(norm(0.0, 1.0, 12),[3,4])     ! standard normal random variates array
     print *, norm_pdf(x, 0.0, 1.0)            ! standard normal probability density array
-end program demo_norm_pdf
+end program demo_normal_pdf
 ```
 
 ## `normal_distribution_cdf` - normal cumulative distribution function
@@ -363,7 +362,7 @@ program demo_binomial_rvs
     p = 0.3
     print *, binom(n, p)                      ! single binomial random variate
     rv = binom(n, p, 10)                      ! an array of 10 standard binomial random variates 
-end program demo_normal_rvs
+end program demo_binomial_rvs
 ```
 
 ## `binomial_distribution_pmf` - Binomial probability mass function
