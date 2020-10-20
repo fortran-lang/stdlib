@@ -87,7 +87,7 @@ program demo_uniform_rvs
     print *, uniform(loc, scale)            ! single uniform random variate in [-1,1)
     loc = -0.5
     scale = 1.0
-    rv = uniform(loc, scale, 10)            ! an array of 10 uniform variates in [-0.5, 0.5)
+    rv = uniform(loc, scale, 10)            ! an array of 10 uniform variates in [-0.5, 0.5]
 end program demo_uniform_rvs
 ```
 
