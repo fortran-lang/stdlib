@@ -834,9 +834,9 @@ contains
             select case( iachar( string(pos:pos) ) )
             case(ia0:ia9)
                 digits = digits + 1
-                if ( digits == 10 .AND. bits > 2_bits_kind**30/5 ) go to 996
+                if ( digits == max_digits .AND. bits > overflow_bits ) go to 996
 !! May not be quite right
-                if ( digits > 10 ) go to 996
+                if ( digits > max_digits ) go to 996
                 bits = bits*10 + iachar( string(pos:pos) ) - ia0
                 if ( bits < 0 ) go to 996
             case(iachar('b'), iachar('B'))
@@ -963,8 +963,9 @@ contains
             select case( char )
             case( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' )
                 digits = digits + 1
-                if ( digits == 10 .AND. bits > 2_bits_kind**30/5 ) go to 996
-                if ( digits > 10 ) go to 996
+                if (  digits == max_digits .AND. bits > overflow_bits ) &
+                    go to 996
+                if ( digits > max_digits ) go to 996
                 bits = 10*bits + iachar(char) - iachar('0')
                 if ( bits < 0 ) go to 996
             case default
@@ -972,7 +973,7 @@ contains
             end select
         end do
 
-        if ( bits < 0 .OR. digits == 0 .OR. digits > 10 ) go to 999
+        if ( bits < 0 .OR. digits == 0 .OR. digits > max_digits ) go to 999
 
         call self % init( bits, status )
         if ( present(status) ) then

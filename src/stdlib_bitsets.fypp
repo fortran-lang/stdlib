@@ -6,8 +6,8 @@ module stdlib_bitsets
 !! having the sign bit set.
 
     use :: stdlib_kinds, only:  &
-           bits_kind  => int32, &
-           block_kind => int64, &
+           bits_kind  => int32, & ! If changed change also max_digits, and
+           block_kind => int64, & ! overflow_bits
            int8,                &
            int16,               &
            int32,               &
@@ -24,12 +24,21 @@ module stdlib_bitsets
     integer(bits_kind), parameter ::        &
         block_size  = bit_size(0_block_kind)
 
+    public :: max_digits, overflow_bits
+    integer, parameter ::                   &
+        max_digits = 10 ! bits_kind == int32
+!        max_digits = 20 ! bits_kind == int64
+
+    integer(bits_kind), parameter ::     &
+        overflow_bits = 2_bits_kind**30/5 ! bits_kind == int32
+!        overflow_bits = 2_bits_kind**62/5 ! bits_kind == int64
+
     integer(block_kind), parameter :: all_zeros  = 0_block_kind
     integer(block_kind), parameter :: all_ones   = not(all_zeros)
 
     character(*), parameter :: module_name = "STDLIB_BITSETS"
-    integer, parameter :: &
-        ia0   = iachar('0'),       &
+    integer, parameter ::    &
+        ia0   = iachar('0'), &
         ia9   = iachar('9')
 
     integer, parameter, public :: success = 0
