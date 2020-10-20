@@ -28,6 +28,7 @@ Sets the seed value before calling random distribution for variates.
 
 ### Return value
 
+Return a scalar of type `integer` with kind of `int32`
 
 ### Example
 
@@ -287,6 +288,7 @@ Experimental
 
 Cumulative distribution function of the normal continuous distribution
 
+\[F(X)=\frac{1}{2}\left&space;[&space;1&space;&plus;&space;erf(\frac{x-\mu}{\sqrt{2}&space;\sigma})&space;\right&space;]]\
 ![equation](https://latex.codecogs.com/gif.latex?F(X)=\frac{1}{2}\left&space;[&space;1&space;&plus;&space;erf(\frac{x-\mu}{\sqrt{2}&space;\sigma})&space;\right&space;])
 
 ### Syntax
