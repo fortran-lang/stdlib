@@ -6,7 +6,7 @@ title: stats_distribution
 
 [TOC]
 
-## `random_seed` - set or get a value of seed to the random distribution psudorandom number generator
+## `random_seed` - set or get a value of seed to the random distribution pseudorandom number generator
 
 ### Status
 
