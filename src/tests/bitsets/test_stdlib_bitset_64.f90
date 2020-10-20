@@ -1,5 +1,5 @@
 program test_stdlib_bitset_64
-    use, intrinsic :: iso_fortran_env, only : int8, int16, int32, int64
+    use :: stdlib_kinds, only : int8, int16, int32, int64
     use stdlib_bitsets
     character(*), parameter :: &
         bitstring_0   = '000000000000000000000000000000000', &
