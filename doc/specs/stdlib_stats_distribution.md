@@ -178,10 +178,10 @@ program demo_uniform_cdf
 
 loc = 0.0
     scale = 1.0
-    print *, uniform_cdf(0.5, loc, scale)             ! a cumulative at 0.5 in [0,1)
-    print *, uniform_cdf(0.7, -1.0, 2.0)              ! a cumulative at 0.7 in [-1,1)
-    x = reshape(uniform(loc, scale, 12),[3,4])        ! uniform random variates array in [0,1)
-    print *, uniform_cdf(x, loc, scale)               ! cumulative array in [0,1)
+    print *, uniform_cdf(0.5, loc, scale)             ! a cumulative at 0.5 in [0,1]
+    print *, uniform_cdf(0.7, -1.0, 2.0)              ! a cumulative at 0.7 in [-1,1]
+    x = reshape(uniform(loc, scale, 12),[3,4])        ! uniform random variates array in [0,1]
+    print *, uniform_cdf(x, loc, scale)               ! cumulative array in [0,1]
 end program demo_uniform_cdf
 
 ```
