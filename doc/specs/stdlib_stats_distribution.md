@@ -22,7 +22,7 @@ Sets the seed value before calling random distribution for variates.
 
 ### Arguments
 
-`put`: argument has intent `in` and may be a scalar of type `integer` with kind of int32.
+`put`: argument has intent `in` and may be a scalar of type `integer` with kind of `int32`.
 
 `get`: optional argument has intent `out` and is a scalar of type `integer` with kind of int32.
 
