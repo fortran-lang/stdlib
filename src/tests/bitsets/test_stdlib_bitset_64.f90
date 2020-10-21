@@ -28,9 +28,8 @@ contains
     subroutine test_string_operations()
         character(*), parameter:: procedure = 'TEST_STRING_OPERATIONS'
 
-        write(*,*)
-        write(*,*) 'Test string operations: from_string, read_bitset, ' // &
-            'to_string, and write_bitset'
+        write(*,'(/a)') 'Test string operations: from_string, ' // &
+            'read_bitset, to_string, and write_bitset'
 
         call set0 % from_string( bitstring_0 )
         if ( bits(set0) /= 33 ) then
@@ -67,6 +66,9 @@ contains
         call set3 % read_bitset( bitstring_0, status )
         if ( status /= success ) then
             write(*,*) 'read_bitset_string failed with bitstring_0 as expected.'
+        else
+            error stop procedure // ' read_bitset_string did not fail ' // &
+                'with bitstring_0 as expected.'
         end if
 
         call set3 % read_bitset( 's33b' // bitstring_0, status )
@@ -207,6 +209,27 @@ contains
         else
             write(*,*) 'Transfer to and from units using ' // &
                 'output and input succeeded.'
+        end if
+
+        open( newunit=unit, file='test.bin', status='replace', &
+            form='unformatted', access='stream', action='write' )
+        call set2 % output(unit)
+        call set1 % output(unit)
+        call set0 % output(unit)
+        close( unit )
+        open( newunit=unit, file='test.bin', status='old', &
+            form='unformatted', access='stream', action='read' )
+        call set5 % input(unit)
+        call set4 % input(unit)
+        call set3 % input(unit)
+        close( unit )
+
+        if ( set3 /= set0 .or. set4 /= set1 .or. set5 /= set2 ) then
+            error stop procedure // ' transfer to and from units using ' // &
+                ' stream output and input failed.'
+        else
+            write(*,*) 'Transfer to and from units using ' // &
+                'stream output and input succeeded.'
         end if
 
     end subroutine test_io
@@ -404,55 +427,40 @@ contains
 
         call set0 % not()
         do i=0, set0 % bits() - 1
-            if ( set0 % test(i) ) go to 100
+            if ( set0 % test(i) ) then
+                error stop procedure // ' against expectations set0 has ' // &
+                    'at least 1 bit set.'
+            end if
         end do
 
         write(*,*) 'As expected set0 had no bits set.'
 
-        go to 110
-
-100     error stop procedure // ' against expectations set0 has ' // &
-                    'at least 1 bit set.'
-
-110     continue
-
         do i=0, set1 % bits() - 1
-            if ( .not. set1 % test(i) ) go to 200
+            if ( .not. set1 % test(i) ) then
+                error stop procedure // ' against expectations set1 has ' // &
+                    'at least 1 bit unset.'
+            end if
         end do
 
         write(*,*) 'As expected set1 had all bits set.'
-
-        go to 210
-
-200     error stop procedure // ' against expectations set1 has ' // &
-                   'at least 1 bit unset.'
-210     continue
 
         do i=0, set0 % bits() - 1
-            if ( set0 % value(i) /= 0 ) go to 300
+            if ( set0 % value(i) /= 0 ) then
+                error stop procedure // ' against expectations set0 has ' // &
+                    'at least 1 bit set.'
+            end if
         end do
 
         write(*,*) 'As expected set0 had no bits set.'
 
-        go to 310
-
-300     error stop procedure // ' against expectations set0 has ' // &
-                    'at least 1 bit set.'
-
-310     continue
-
         do i=0, set1 % bits() - 1
-            if ( set1 % value(i) /= 1 ) go to 400
+            if ( set1 % value(i) /= 1 ) then
+                error stop procedure // ' against expectations set1 has ' // &
+                    'at least 1 bit unset.'
+            end if
         end do
 
         write(*,*) 'As expected set1 had all bits set.'
-
-        go to 410
-
-400     error stop procedure // ' against expectations set1 has ' // &
-                   'at least 1 bit unset.'
-
-410     continue
 
         if ( set0 % bits() == 33 ) then
             write(*,*) 'set0 has 33 bits as expected.'

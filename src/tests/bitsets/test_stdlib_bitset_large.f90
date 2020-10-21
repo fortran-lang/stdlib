@@ -30,9 +30,8 @@ contains
     subroutine test_string_operations()
         character(*), parameter:: procedure = 'TEST_STRING_OPERATIONS'
 
-        write(*,*)
-        write(*,*) 'Test string operations: from_string, read_bitset, ' // &
-            'to_string, and write_bitset'
+        write(*,'(/a)') 'Test string operations: from_string, ' // &
+            'read_bitset, to_string, and write_bitset'
 
         call set0 % from_string( bitstring_0 )
         if ( bits(set0) /= 33 ) then
@@ -101,6 +100,9 @@ contains
         call set3 % read_bitset( bitstring_0, status )
         if ( status /= success ) then
             write(*,*) 'read_bitset_string failed with bitstring_0 as expected.'
+        else
+            error stop procedure // ' read_bitset_string did not fail ' // &
+                'with bitstring_0 as expected.'
         end if
 
         call set13 % read_bitset( bitstring_0 // bitstring_0, status )
@@ -359,6 +361,27 @@ contains
         close( unit )
 
         open( newunit=unit, file='test.bin', status='replace', &
+            form='unformatted', access='stream', action='write' )
+        call set2 % output(unit)
+        call set1 % output(unit)
+        call set0 % output(unit)
+        close( unit )
+        open( newunit=unit, file='test.bin', status='old', &
+            form='unformatted', access='stream', action='read' )
+        call set5 % input(unit)
+        call set4 % input(unit)
+        call set3 % input(unit)
+        if ( set3 /= set0 .or. set4 /= set1 .or. set5 /= set2 ) then
+            error stop procedure // ' transfer to and from units using ' // &
+                ' stream output and input failed.'
+        else
+            write(*,*) 'Transfer to and from units using ' // &
+                'stream output and input succeeded.'
+        end if
+
+        close( unit )
+
+        open( newunit=unit, file='test.bin', status='replace', &
             form='unformatted', action='write' )
         call set12 % output(unit)
         call set11 % output(unit)
@@ -376,6 +399,27 @@ contains
             write(*,*) 'Transfer to and from units using ' // &
                 'output and input succeeded for bits > 64.'
         end if
+        close(unit)
+
+        open( newunit=unit, file='test.bin', status='replace', &
+            form='unformatted', access='stream', action='write' )
+        call set12 % output(unit)
+        call set11 % output(unit)
+        call set10 % output(unit)
+        close( unit )
+        open( newunit=unit, file='test.bin', status='old', &
+            form='unformatted', access='stream', action='read' )
+        call set15 % input(unit)
+        call set14 % input(unit)
+        call set13 % input(unit)
+        if ( set13 /= set10 .or. set14 /= set11 .or. set15 /= set12 ) then
+            error stop procedure // ' transfer to and from units using ' // &
+                ' stream output and input failed for bits . 64.'
+        else
+            write(*,*) 'Transfer to and from units using ' // &
+                'stream output and input succeeded for bits > 64.'
+        end if
+        close(unit)
 
     end subroutine test_io
 
