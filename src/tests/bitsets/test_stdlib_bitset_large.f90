@@ -851,56 +851,40 @@ contains
 
         call set10 % not()
         do i=0, set10 % bits() - 1
-            if ( set10 % test(i) ) go to 500
+            if ( set10 % test(i) ) then
+                error stop procedure // ' against expectations set10 has ' // &
+                    'at least 1 bit set.'
+            end if
         end do
 
         write(*,*) 'As expected set10 had no bits set.'
 
-        go to 510
-
-500     error stop procedure // ' against expectations set10 has ' // &
-            'at least 1 bit set.'
-
-510     continue
-
         do i=0, set11 % bits() - 1
-            if ( .not. set11 % test(i) ) go to 600
+            if ( .not. set11 % test(i) ) then
+                error stop procedure // ' against expectations set11 has ' // &
+                    'at least 1 bit unset.'
+            end if
         end do
 
         write(*,*) 'As expected set11 had all bits set.'
-
-        go to 610
-
-600     error stop procedure // ' against expectations set11 has ' // &
-            'at least 1 bit unset.'
-
-610     continue
 
         do i=0, set10 % bits() - 1
-            if ( set10 % value(i) /= 0 ) go to 700
+            if ( set10 % value(i) /= 0 ) then
+                error stop procedure // ' against expectations set10 has ' // &
+                    'at least 1 bit set.'
+            end if
         end do
 
         write(*,*) 'As expected set10 had no bits set.'
 
-        go to 710
-
-700     error stop procedure // ' against expectations set10 has ' // &
-                    'at least 1 bit set.'
-
-710     continue
-
         do i=0, set11 % bits() - 1
-            if ( set11 % value(i) /= 1 ) go to 800
+            if ( set11 % value(i) /= 1 ) then
+                error stop procedure // ' against expectations set11 has ' // &
+                    'at least 1 bit unset.'
+            end if
         end do
 
         write(*,*) 'As expected set11 had all bits set.'
-
-        go to 810
-
-800     error stop procedure // ' against expectations set11 has ' // &
-                    'at least 1 bit unset.'
-
-810     continue
 
         if ( set0 % bits() == 33 ) then
             write(*,*) 'set0 has 33 bits as expected.'
