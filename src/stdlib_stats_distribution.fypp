@@ -28,7 +28,7 @@ module stdlib_stats_distribution
     interface random_seed
     !! version: experimental
     !!
-    !! Set or get seed value of probability distributions for psudorandom bumber generator 
+    !! Set or get seed value of probability distributions for pseudorandom bumber generator 
     !! ([Specification](../page/specs/stdlib_stats_distribution.html#description))
     !! 
         procedure random_distribution_seed
