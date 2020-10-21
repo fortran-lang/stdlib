@@ -646,7 +646,6 @@ contains
                 digits = digits + 1
                 if (  digits == max_digits .AND. bits > overflow_bits ) &
                     go to 996
-!! May not be quite right
                 if ( digits > max_digits ) go to 996
                 bits = bits*10 + iachar( string(pos:pos) ) - ia0
                 if ( bits < 0 ) go to 996
@@ -779,7 +778,6 @@ contains
                 digits = digits + 1
                 if (  digits == max_digits .AND. bits > overflow_bits ) &
                     go to 996
-!! May not be quite right
                 if ( digits > max_digits ) go to 996
                 bits = 10*bits + iachar(char) - iachar('0')
                 if ( bits < 0 ) go to 996

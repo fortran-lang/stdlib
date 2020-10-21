@@ -27,7 +27,7 @@ module stdlib_bitsets
     public :: max_digits, overflow_bits
     integer, parameter ::                   &
         max_digits = 10 ! bits_kind == int32
-!        max_digits = 20 ! bits_kind == int64
+!        max_digits = 19 ! bits_kind == int64
 
     integer(bits_kind), parameter ::     &
         overflow_bits = 2_bits_kind**30/5 ! bits_kind == int32
@@ -2128,7 +2128,7 @@ contains
             case( read_failure )
                 error stop "A failure occurred in a READ statement."
             case( write_failure )
-                error stop "A failure occurRed on a WRITE statement."
+                error stop "A failure occurred on a WRITE statement."
             end select
         end if
     end subroutine error_handler
