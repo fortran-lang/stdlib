@@ -238,12 +238,12 @@ are summarized in the following table:
 
 |Operator|Description|
 |--------|-----------|
-|`==`|`.true.` if all bits in `set1` and `set2` have the same value, `.false.` otherwise|
-|`/=`|`.true.` if any bits in `set1` and `set2` differ in value, `.false.` otherwise|
-|`>`|`.true.` if the bits in `set1` and `set2` differ in value and the highest order differing bit is 1 in `set1` and 0 in `set2`, `.false.` otherwise|
-|`>=`|`.true.` if the bits in `set1` and `set2` are the same or the highest order differing bit is 1 in `set1` and 0 in `set2`, `.false.` otherwise|
-|`<`|`.true.` if the bits in `set1` and `set2` differ in value and the highest order differing bit is 0 in `set1` and 1 in `set2`, `.false.` otherwise|
-|`<=`|`.true.` if the bits in `set1` and `set2` are the same or the highest order differing bit is 0 in `set1` and 1 in `set2`, `.false.` otherwise|
+|`==`, `.EQ.`|`.true.` if all bits in `set1` and `set2` have the same value, `.false.` otherwise|
+|`/=`, `.NE.`|`.true.` if any bits in `set1` and `set2` differ in value, `.false.` otherwise|
+|`>`, `.GT.`|`.true.` if the bits in `set1` and `set2` differ in value and the highest order differing bit is 1 in `set1` and 0 in `set2`, `.false.` otherwise|
+|`>=`, `.GE.`|`.true.` if the bits in `set1` and `set2` are the same or the highest order differing bit is 1 in `set1` and 0 in `set2`, `.false.` otherwise|
+|`<`, `.LT.`|`.true.` if the bits in `set1` and `set2` differ in value and the highest order differing bit is 0 in `set1` and 1 in `set2`, `.false.` otherwise|
+|`<=`, `.LE.`|`.true.` if the bits in `set1` and `set2` are the same or the highest order differing bit is 0 in `set1` and 1 in `set2`, `.false.` otherwise|
 
 
 ## Specification of the `stdlib_bitsets` methods and procedures
@@ -1646,6 +1646,11 @@ Returns `.true.` if all bits in `set1` and `set2` have the same value,
 
 `result = set1 [[stdlib_bitsets(module):==(interface)]] set2
 
+or
+
+`result = set1 [[stdlib_bitsets(module):.EQ.(interface)]] set2
+
+
 #### Class
 
 Elemental operator
@@ -1701,6 +1706,10 @@ Returns `.true.` if any bits in `self` and `set2` differ in value,
 #### Syntax
 
 `result = set1 [[stdlib_bitsets(module):/=(interface)]] set2`
+
+or
+
+`result = set1 [[stdlib_bitsets(module):.NE.(interface)]] set2`
 
 #### Class
 
@@ -1759,6 +1768,10 @@ results are undefined
 #### Syntax
 
 `result = set1 [[stdlib_bitsets(module):>=(interface)]] set2`
+
+or
+
+`result = set1 [[stdlib_bitsets(module):.GE.(interface)]] set2`
 
 #### Class
 
@@ -1819,6 +1832,10 @@ results are undefined
 
 `result = set1 [[stdlib_bitsets(module):>(interface)]] set2`
 
+or
+
+`result = set1 [[stdlib_bitsets(module):.GT.(interface)]] set2`
+
 #### Class
 
 Elemental operator
@@ -1877,6 +1894,10 @@ results are undefined
 #### Syntax
 
 `result = set1 [[stdlib_bitsets(module):<=(interface)]] set2`
+
+or
+
+`result = set1 [[stdlib_bitsets(module):.LE.(interface)]] set2`
 
 #### Class
 
@@ -1937,6 +1958,10 @@ results are undefined
 #### Syntax
 
 `result = set1 [[stdlib_bitsets(module):<(interface)]] set2`
+
+or
+
+`result = set1 [[stdlib_bitsets(module):.LT.(interface)]] set2
 
 #### Class
 
