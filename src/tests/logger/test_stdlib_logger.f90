@@ -191,6 +191,13 @@ contains
             module = 'N/A', &
             procedure = 'TEST_STDLIB_LOGGER' )
 
+        call global % log_message( 'The last word of the first line ' //      &
+            new_line('a')//'should be "line". "Line"' // new_line('a') //     &
+            'is also the last word for the second line. The following ' //    &
+            'lines should be limited to 72 columns width.' , &
+            module = 'N/A', &
+            procedure = 'TEST_STDLIB_LOGGER' )
+
         call global % configure( add_blank_line=.false., indent=.true., &
             max_width=72, time_stamp=.true. )
 
@@ -200,6 +207,14 @@ contains
             'by MODULE % PROCEDURE, have a prefix of WARN, and be ' //  &
             'indented by 4 columns on subsequent lines.',               &
             module = 'N/A',                                             &
+            procedure = 'TEST_STDLIB_LOGGER' )
+
+        call global % log_message( 'The last word of the first line ' //      &
+            new_line('a')//'should be "the". "Line"' // new_line('a') //      &
+            'should be the last word for the second line. The following ' //  &
+            'lines should be limited to 72 columns width. From the second ' //&
+            'line, all lines should be indented by 4 columns.' ,&
+            module = 'N/A', &
             procedure = 'TEST_STDLIB_LOGGER' )
 
     end subroutine test_logging_configuration
