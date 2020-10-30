@@ -597,7 +597,7 @@ contains
                     return
                 else
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                        string(count+1:index)
+                        string(count+1:index-1)
                     count = index
                     remain = length - count
                     return
@@ -632,7 +632,7 @@ contains
                     return
                 else
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                        col_indent // string(count+1:index)
+                        col_indent // string(count+1:index-1)
                     count = index
                     remain = length - count
                     return
