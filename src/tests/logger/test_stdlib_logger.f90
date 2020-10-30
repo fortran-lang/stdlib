@@ -134,6 +134,14 @@ contains
             module = 'N/A',                                                &
             procedure = 'TEST_STDLIB_LOGGER' )
 
+        call global % log_information( 'This message should be output ' // &
+            'to OUTPUT_UNIT, unlimited in width, not preceded by ' //      &
+            'a blank line, then by a time stamp, then by MODULE % ' //     &
+            'PROCEDURE, be prefixed by INFO. ' // new_line('a') //         &
+            'This is a new line of the same log message.',                  &
+            module = 'N/A',                                                &
+            procedure = 'TEST_STDLIB_LOGGER' )
+
         call global % configure( add_blank_line=.true., indent=.false., &
             max_width=72, time_stamp=.false. )
 
@@ -142,7 +150,7 @@ contains
             log_units=log_units )
 
         if ( add_blank_line ) then
-            write(*,*) 'ADD_BLANK_LINE is now .FALSE. as expected.'
+            write(*,*) 'ADD_BLANK_LINE is now .TRUE. as expected.'
 
         else
             error stop 'ADD_BLANKLINE is now .FALSE. contrary to expectations.'
