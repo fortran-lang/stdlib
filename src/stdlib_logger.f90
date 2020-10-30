@@ -523,7 +523,7 @@ contains
         character(*), intent(in)       :: procedure_name
         character(*), intent(in)       :: col_indent
 
-        integer :: count, indent_len, index, iostat, length, remain
+        integer :: count, indent_len, index_, iostat, length, remain
         character(256) :: iomsg
 
         length = len_trim(string)
@@ -551,11 +551,14 @@ contains
                 return
             else
 
-                do index=self % max_width, 1, -1
-                    if ( string(index:index) == ' ' ) exit
-                end do
+                index_ = index( string(1:self % max_width), new_line('a'))
+                if ( index_ == 0 ) then
+                    do index_=self % max_width, 1, -1
+                        if ( string(index_:index_) == ' ' ) exit
+                    end do
+                end if
 
-                if ( index == 0 ) then
+                if ( index_ == 0 ) then
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                         string(1:self % max_width)
                     count = self % max_width
@@ -563,8 +566,8 @@ contains
                     return
                 else
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                        string(1:index-1)
-                    count = index
+                        string(1:index_-1)
+                    count = index_
                     remain = length - count
                     return
                 end if
@@ -585,11 +588,15 @@ contains
                 return
             else
 
-                do index=count+self % max_width, count+1, -1
-                    if ( string(index:index) == ' ' ) exit
-                end do
+                index_ = count + index( string(count+1:count+self % max_width), &
+                    new_line('a'))
+                if(index_ == count) then
+                    do index_=count+self % max_width, count+1, -1
+                        if ( string(index_:index_) == ' ' ) exit
+                    end do
+                end if
 
-                if ( index == count ) then
+                if ( index_ == count ) then
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                         string(count+1:count+self % max_width)
                     count = count + self % max_width
@@ -597,8 +604,8 @@ contains
                     return
                 else
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                        string(count+1:index-1)
-                    count = index
+                        string(count+1:index_-1)
+                    count = index_
                     remain = length - count
                     return
                 end if
@@ -611,7 +618,8 @@ contains
 
         subroutine indent_format_subsequent_line()
 
-            if ( remain <= self % max_width - indent_len ) then
+            if ( index( string(count+1:length), new_line('a')) == 0 .and. &
+                remain <= self % max_width - indent_len ) then
                 write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                     col_indent // string(count+1:length)
                 count = length
@@ -619,11 +627,15 @@ contains
                 return
             else
 
-                do index=count+self % max_width-indent_len, count+1, -1
-                    if ( string(index:index) == ' ' ) exit
-                end do
+                index_ = count + index( string(count+1:count+self % max_width &
+                    - indent_len), new_line('a'))
+                if(index_ == count) then
+                    do index_=count+self % max_width-indent_len, count+1, -1
+                        if ( string(index_:index_) == ' ' ) exit
+                    end do
+                end if
 
-                if ( index == count ) then
+                if ( index_ == count ) then
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                         col_indent // &
                         string(count+1:count+self % max_width-indent_len)
@@ -632,8 +644,8 @@ contains
                     return
                 else
                     write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                        col_indent // string(count+1:index-1)
-                    count = index
+                        col_indent // string(count+1:index_-1)
+                    count = index_
                     remain = length - count
                     return
                 end if
