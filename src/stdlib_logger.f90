@@ -544,14 +544,17 @@ contains
 
         subroutine format_first_line()
 
-            if ( length <= self % max_width .or. self % max_width == 0 ) then
+            if ( self % max_width == 0 .or. &
+                ( length <= self % max_width .and. &
+                index( string(1:min(length, self % max_width)), new_line('a')) == 0 &
+                )) then
                 write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                     string(1:length)
                 remain = 0
                 return
             else
 
-                index_ = index( string(1:self % max_width), new_line('a'))
+                index_ = index( string(1:min(length, self % max_width)), new_line('a'))
                 if ( index_ == 0 ) then
                     do index_=self % max_width, 1, -1
                         if ( string(index_:index_) == ' ' ) exit
@@ -627,8 +630,9 @@ contains
                 return
             else
 
-                index_ = count + index( string(count+1:count+self % max_width &
-                    - indent_len), new_line('a'))
+                index_ = count + index( string(count+1: &
+                    min ( length, count+self % max_width - indent_len) ), &
+                    new_line('a'))
                 if(index_ == count) then
                     do index_=count+self % max_width-indent_len, count+1, -1
                         if ( string(index_:index_) == ' ' ) exit
