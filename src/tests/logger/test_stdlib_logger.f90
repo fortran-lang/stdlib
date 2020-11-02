@@ -138,7 +138,7 @@ contains
             'to OUTPUT_UNIT, unlimited in width, not preceded by ' //      &
             'a blank line, then by a time stamp, then by MODULE % ' //     &
             'PROCEDURE, be prefixed by INFO. ' // new_line('a') //         &
-            'This is a new line of the same log message.',                  &
+            'This is a new line of the same log message.',                 &
             module = 'N/A',                                                &
             procedure = 'TEST_STDLIB_LOGGER' )
 

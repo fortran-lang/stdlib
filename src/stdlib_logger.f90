@@ -546,8 +546,7 @@ contains
 
             if ( self % max_width == 0 .or.                                         &
                 ( length <= self % max_width .and.                                  &
-                index( string(1:min(length, self % max_width)), new_line('a')) == 0 &
-                )) then
+                index( string(1:length), new_line('a')) == 0 ) ) then
                 write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                     string(1:length)
                 remain = 0
