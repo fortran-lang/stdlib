@@ -11,10 +11,11 @@ title: Bitsets
 The `stdlib_bitsets` module implements bitset types. A bitset is a
 compact representation of a sequence of `bits` binary values. It can
 equivalently be considered as a sequence of logical values or as a
-subset of the integers 0 ... `bits-1`. The bits are indexed from 0 to
-`bits(bitset)-1`. A bitset is used when space savings are critical in
-applications that require a large number
-of closely related logical values.
+subset of the integers 0 ... `bits-1`. For example, the value `1110`
+can be considered as defining the subset of integers [1, 2, 3].
+The bits are indexed from 0 to `bits(bitset)-1`.
+A bitset is used when space savings are critical in applications
+that require a large number of closely related logical values.
 It may also improve performance by reducing memory traffic. To
 implement bitsets the module
 defines three bitset types, multiple constants, a character string
