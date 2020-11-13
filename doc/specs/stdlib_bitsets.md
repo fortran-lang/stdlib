@@ -21,7 +21,7 @@ defines three bitset types, multiple constants, a character string
 literal that can be read to and from strings and formatted files, a
 simple character string literal that can be read to and from strings,
 assignments, procedures, methods, and operators. Note that the module
-assumes two's complement integers, but all current Fortran 95+
+assumes two's complement integers, but all current Fortran 95 and later
 processors use such integers.
 
 Note that the module defines a number of "binary" procedures,
@@ -64,7 +64,7 @@ bits. The other constants that are error codes are summarized below:
 The `stdlib_bitsets` module defines three derived types,
 `bitset_type`, `bitset_64`, and `bitset_large`. `bitset_type` is an abstract
 type that serves as the ancestor of `bitset_64` and
-`bitset_large`. `bitset_type` defines one method, `bits`, all of its
+`bitset_large`. `bitset_type` defines one method, `bits`, and all of its
 other methods are deferred to its extensions. `bitset_64` is a bitset
 that can handle up to 64 bits. `bitset_large` is a bitset that can handle
 up `huge(0_bits_kind)` bits. All attributes of the bitset types are
@@ -238,12 +238,12 @@ are summarized in the following table:
 
 |Operator|Description|
 |--------|-----------|
-|`==`, `.EQ.`|`.true.` if all bits in `set1` and `set2` have the same value, `.false.` otherwise|
-|`/=`, `.NE.`|`.true.` if any bits in `set1` and `set2` differ in value, `.false.` otherwise|
-|`>`, `.GT.`|`.true.` if the bits in `set1` and `set2` differ in value and the highest order differing bit is 1 in `set1` and 0 in `set2`, `.false.` otherwise|
-|`>=`, `.GE.`|`.true.` if the bits in `set1` and `set2` are the same or the highest order differing bit is 1 in `set1` and 0 in `set2`, `.false.` otherwise|
-|`<`, `.LT.`|`.true.` if the bits in `set1` and `set2` differ in value and the highest order differing bit is 0 in `set1` and 1 in `set2`, `.false.` otherwise|
-|`<=`, `.LE.`|`.true.` if the bits in `set1` and `set2` are the same or the highest order differing bit is 0 in `set1` and 1 in `set2`, `.false.` otherwise|
+|`==`, `.eq.`|`.true.` if all bits in `set1` and `set2` have the same value, `.false.` otherwise|
+|`/=`, `.ne.`|`.true.` if any bits in `set1` and `set2` differ in value, `.false.` otherwise|
+|`>`, `.gt.`|`.true.` if the bits in `set1` and `set2` differ in value and the highest order differing bit is 1 in `set1` and 0 in `set2`, `.false.` otherwise|
+|`>=`, `.ge.`|`.true.` if the bits in `set1` and `set2` are the same or the highest order differing bit is 1 in `set1` and 0 in `set2`, `.false.` otherwise|
+|`<`, `.lt.`|`.true.` if the bits in `set1` and `set2` differ in value and the highest order differing bit is 0 in `set1` and 1 in `set2`, `.false.` otherwise|
+|`<=`, `.le.`|`.true.` if the bits in `set1` and `set2` are the same or the highest order differing bit is 0 in `set1` and 1 in `set2`, `.false.` otherwise|
 
 
 ## Specification of the `stdlib_bitsets` methods and procedures
@@ -256,7 +256,7 @@ Experimental
 
 #### Description
 
-Determines whether all bits are set to 1 in self.
+Determines whether all bits are set to 1 in `self`.
 
 #### Syntax
 
@@ -744,7 +744,7 @@ Subroutine
 
 #### Arguments
 
-`self`: shall be a scalar  class `bitset_type` variable. It is an
+`self`: shall be a scalar class `bitset_type` variable. It is an
 `intent(out)` argument.
 
 `string`: shall be a scalar default character expression. It is an
@@ -871,8 +871,8 @@ Subroutine
 
 `unit`: shall be a scalar default integer expression. It is an
 `intent(in)` argument. Its value must be that of a logical unit
-number for an open unformatted file with `READ` or `READWRITE`
-access positioned at the start of a BITSET value written by a
+number for an open unformatted file with `read` or `readwrite`
+access positioned at the start of a bitset value written by a
 `bitset_type` `output` subroutine by the same processor.
 
 `status` (optional): shall be a scalar default integer variable. If
@@ -997,8 +997,8 @@ Elemental subroutine.
 #### Argument
 
 `self` shall be a scalar variable of class `bitset_type`. It is an
-  `intent(inout)` argument. On return its bits shall be the logical
-  complement of their values on input.
+`intent(inout)` argument. On return its bits shall be the logical
+complement of their values on input.
 
 #### Example
 
@@ -1041,9 +1041,9 @@ Elemental subroutine.
 #### Arguments
 
 `set1`: shall be a scalar `bitset_64` or `bitset_large` variable. It
- is an `intent(inout)` argument. On return the values of the bits in
- `setf` are the bitwise `or` of the original bits in `set1` with the
- corresponding bits in `set2`.
+is an `intent(inout)` argument. On return the values of the bits in
+`setf` are the bitwise `or` of the original bits in `set1` with the
+corresponding bits in `set2`.
 
 `set2`: shall be a scalar expression of the same type as `set1`. It is
 an `intent(in)` argument. Note `bits(set2)` must equal `bits(set1)`
@@ -1097,7 +1097,7 @@ Subroutine.
 
 `unit`: shall be a scalar default integer expression. It is an
 `intent(in)` argument. Its value must be that of an I/O unit number
-for an open unformatted file with `WRITE` or `READWRITE` access.
+for an open unformatted file with `write` or `readwrite` access.
 
 `status` (optional): shall be a scalar default integer variable. It is
 an `intent(out)` argument. If present on return it will have the value
@@ -1182,7 +1182,7 @@ or a blank.
 
 `unit` (optional): shall be a scalar default integer expression. It is
 an `intent(in)` argument. Its value must be that of an I/O unit number
-for an open formatted file with `READ` or `READWRITE` access
+for an open formatted file with `read` or `readwrite` access
 positioned at the start of a *bitset-literal*.
 
 `advance` (optional): shall be a scalar default character
@@ -1394,7 +1394,7 @@ Subroutine
 `intent(in)` argument.
 
 `string`: shall be a scalar default character variable of allocatable
-length. It is an `intent(out)` argument. On return it shall hav a
+length. It is an `intent(out)` argument. On return it shall have a
 *binary-literal* representation of the bitset `self`.
 
 `status` (optional): shall be a scalar default integer variable. It is
@@ -1644,12 +1644,11 @@ Returns `.true.` if all bits in `set1` and `set2` have the same value,
 
 #### Syntax
 
-`result = set1 [[stdlib_bitsets(module):==(interface)]] set2
+`result = set1 [[stdlib_bitsets(module):==(interface)]] set2`
 
 or
 
-`result = set1 [[stdlib_bitsets(module):.EQ.(interface)]] set2
-
+`result = set1 [[stdlib_bitsets(module):.EQ.(interface)]] set2`
 
 #### Class
 
@@ -1668,7 +1667,7 @@ argument.
 
 The result is a default logical scalar.
 The result is `.true.` if the bits in both bitsets are set
-to the same value, otherwise the result is `.FALSE.`.
+to the same value, otherwise the result is `.false.`.
 
 #### Example
 
@@ -1701,7 +1700,6 @@ Experimental
 
 Returns `.true.` if any bits in `self` and `set2` differ in value,
 `.false.`  otherwise.
-
 
 #### Syntax
 
@@ -1762,8 +1760,7 @@ Experimental
 Returns `.true.` if the bits in `set1` and `set2` are the same or the
 highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 `.false.`.  otherwise. The sets must be the same size otherwise the
-results are undefined
-
+results are undefined.
 
 #### Syntax
 
@@ -1825,8 +1822,8 @@ Experimental
 
 Returns `.true.` if the bits in `set1` and `set2` differ and the
 highest order different bit is set to 1 in `set1` and to 0 in `set2`,
-`.false.`  otherwise. The sets must be the same size otherwise the
-results are undefined
+`.false.` otherwise. The sets must be the same size otherwise the
+results are undefined.
 
 #### Syntax
 
@@ -1854,7 +1851,7 @@ argument.
 The result is a default logical scalar.
 The result is `.true.` if the bits in `set1` and `set2` differ and the
 highest order different bit is set to 1 in `set1` and to 0 in `set2`,
-`.false.`.  otherwise.
+`.false.` otherwise.
 
 #### Example
 
@@ -1887,9 +1884,8 @@ Experimental
 
 Returns `.true.` if the bits in `set1` and `set2` are the same or the
 highest order different bit is set to 0 in `set1` and to 1 in `set2`,
-`.false.`  otherwise. The sets must be the same size otherwise the
-results are undefined
-
+`.false.` otherwise. The sets must be the same size otherwise the
+results are undefined.
 
 #### Syntax
 
@@ -1917,7 +1913,7 @@ argument.
 The result is a default logical scalar.
 The result is `.true.` if the bits in `set1` and `set2` are the same
 or the highest order different bit is set to 0 in `set1` and to 1 in
-`set2`, `.false.`  otherwise.
+`set2`, `.false.` otherwise.
 
 #### Example
 
@@ -1952,8 +1948,7 @@ Experimental
 Returns `.true.` if the bits in `set1` and `set2` differ and the
 highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 `.false.`  otherwise. The sets must be the same size otherwise the
-results are undefined
-
+results are undefined.
 
 #### Syntax
 
@@ -1981,7 +1976,7 @@ argument.
 The result is a default logical scalar.
 The result is `.true.` if the bits in `set1` and `set2` differ and the
 highest order different bit is set to 0 in `set1` and to 1 in `set2`,
-`.false.`  otherwise.
+`.false.` otherwise.
 
 #### Example
 
