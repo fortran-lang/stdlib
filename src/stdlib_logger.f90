@@ -121,8 +121,8 @@ contains
 !! array. `action`, if present, is the `action` specifier of the `open`
 !! statement, and has the default value of `"write"`. `position`, if present,
 !! is the `position` specifier, and has the default value of `"REWIND"`.
-!! `status`, if present, is the `status` specifier of the `open` statement, and
-!! has the default value of `"REPLACE"`. `stat`, if present, has the value
+!! `status`, if present, is the `status` specifier of the `open` statement,
+!! and has the default value of `"REPLACE"`. `stat`, if present, has the value
 !! `success` if `filename` could be opened, `read_only_error` if `action` is
 !! `"read"`, and `open_failure` otherwise.
 !!([Specification](../page/specs/stdlib_logger.html#add_log_file-open-a-file-and-add-its-unit-to-self-log_units))
@@ -141,7 +141,8 @@ contains
         integer, intent(out), optional     :: stat
 !! The error status on exit with the possible values
 !! * `success` - no errors found
-!! * `Rrea_only_error` - file unopened as `action1 was `"read"` for an output file
+!! * `read_only_error` - file unopened as `action1 was `"read"` for an output
+!!   file
 !! * `open_failure` - the `open` statement failed
 
 
@@ -236,8 +237,8 @@ contains
 !! version: experimental
 
 !! Adds `unit` to the log file units in `log_units`. `unit` must be an `open`
-!! file, of `form` `"formatted"`, with `"sequential"` `access`, and an `action` of
-!! `"write"` or `"readwrite"`, otherwise either `stat`, if preseent, has a
+!! file, of `form` `"formatted"`, with `"sequential"` `access`, and an `action`
+!! of `"write"` or `"readwrite"`, otherwise either `stat`, if preseent, has a
 !! value other than `success` and `unit` is not entered into `log_units`,
 !! or, if `stat` is not presecn, processing stops.
 !!([Specification](../page/specs/stdlib_logger.html#add_log_unit-add-a-unit-to-the-array-self-log_units))
@@ -263,7 +264,7 @@ contains
 !!         integer :: iostat, unit, stat
 !!         ...
 !!         open( newunit=unit, 'error_log.txt', form='formatted', &
-!!               status='replace', position='rewind', err=999,  &
+!!               status='replace', position='rewind', err=999,    &
 !!               action='read', iostat=iostat, iomsg=iomsg )
 !!         ...
 !!         call global_logger % add_log_unit( unit, stat )
@@ -544,8 +545,8 @@ contains
 
         subroutine format_first_line()
 
-            if ( self % max_width == 0 .or.                                         &
-                ( length <= self % max_width .and.                                  &
+            if ( self % max_width == 0 .or.                     &
+                ( length <= self % max_width .and.              &
                 index( string(1:length), new_line('a')) == 0 ) ) then
                 write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
                     string(1:length)
@@ -553,7 +554,8 @@ contains
                 return
             else
 
-                index_ = index( string(1:min(length, self % max_width)), new_line('a'))
+                index_ = index( string(1:min(length, self % max_width)), &
+                                new_line('a') )
                 if ( index_ == 0 ) then
                     do index_=self % max_width, 1, -1
                         if ( string(index_:index_) == ' ' ) exit
@@ -590,7 +592,7 @@ contains
                 return
             else
 
-                index_ = count + index( string(count+1:count+self % max_width), &
+                index_ = count + index( string(count+1:count+self % max_width),&
                     new_line('a'))
                 if(index_ == count) then
                     do index_=count+self % max_width, count+1, -1
@@ -849,7 +851,8 @@ contains
         character(len=*), intent(in), optional  :: module
 !! The name of the module contining the current invocation of `log_information`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of `log_information`
+!! The name of the procedure contining the current invocation of
+!! `log_information`
 
         call self % log_message( message,               &
                                  module = module,       &
@@ -1073,8 +1076,8 @@ contains
 !!
 !! If time stamps are active first a time stamp is written. Then if
 !! `filename` or `line_number` or `column` are present they are written.
-!! Then `line` is written. Then the symbol `caret` is written below `line` at the
-!! column indicated by `column`. Then `summary` is written.
+!! Then `line` is written. Then the symbol `caret` is written below `line`
+!! at the column indicated by `column`. Then `summary` is written.
 !
 !!##### Example
 !!
@@ -1119,8 +1122,8 @@ contains
         integer, intent(out), optional        :: stat
 !! Integer flag that an error has occurred. Has the value `success` if no
 !! error hass occurred, `index_invalid_error` if `column` is less than zero or
-!! greater than `len(line)`, and `write_failure` if any of the `write` statements
-!! has failed.
+!! greater than `len(line)`, and `write_failure` if any of the `write`
+!! statements has failed.
 
         character(1)              :: acaret
         character(5)              :: num
@@ -1255,7 +1258,8 @@ contains
     subroutine log_warning( self, message, module, procedure )
 !! version: experimental
 
-!! Writes the string `message` to `self % log_units` with optional additional text.
+!! Writes the string `message` to `self % log_units` with optional additional
+!! text.
 !!([Specification](../page/specs/stdlib_logger.html#log_warning-write-the-string-message-to-log_units))
 
 !!##### Behavior
@@ -1312,10 +1316,10 @@ contains
 
 !! Remove the I/O unit from the self % log_units list. If `close_unit` is
 !! present and `.true.` then the corresponding file is closed. If `unit` is
-!! not in `log_units` then nothing is done. If `stat` is present it, by default,
-!! has the value `success`. If closing the `unit` fails, then if `stat` is
-!! present it has the value `close_failure`, otherwise processing stops
-!! with an informative message.
+!! not in `log_units` then nothing is done. If `stat` is present it, by
+!! default, has the value `success`. If closing the `unit` fails, then if
+!! `stat` is present it has the value `close_failure`, otherwise processing
+!! stops with an informative message.
 !!([Specification](../page/specs/stdlib_logger.html#remove_log_unit-remove-unit-from-self-log_units))
 
         class(logger_type), intent(inout) :: self
