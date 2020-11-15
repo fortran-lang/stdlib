@@ -76,12 +76,14 @@ module stdlib_logger
         !! Public derived type ([Specification](../page/specs/stdlib_logger.html#the-derived-type-logger_type))
         private
 
-        logical              :: add_blank_line = .false.
-        logical              :: indent_lines = .true.
-        integer, allocatable :: log_units(:)
-        integer              :: max_width = 0
-        logical              :: time_stamp = .true.
-        integer              :: units = 0
+        logical                   :: add_blank_line = .false.
+        character(:), allocatable :: buffer
+        logical                   :: indent_lines = .true.
+        integer                   :: len_buffer = 0
+        integer, allocatable      :: log_units(:)
+        integer                   :: max_width = 0
+        logical                   :: time_stamp = .true.
+        integer                   :: units = 0
 
     contains
 
@@ -500,8 +502,8 @@ contains
         do unit=1, self % units
             flush( self % log_units(unit), iomsg=message, iostat=iostat )
             if ( iostat /= 0 ) then
-                write(error_unit, '(a, i0)' ) 'In the logger_type finalizer ' // &
-                    'an error occurred in flushing unit = ',                     &
+                write(error_unit, '(a, i0)' ) 'In the logger_type ' // &
+                    'finalizer an error occurred in flushing unit = ', &
                     self % log_units(unit)
                 write(error_unit, '(a, i0)') 'With iostat = ', iostat
                 write(error_unit, '(a)') 'With iomsg = ' // trim(message)
@@ -511,23 +513,23 @@ contains
     end subroutine final_logger
 
 
-    subroutine format_output_string( self, unit, string, procedure_name, &
-                                     col_indent )
+    subroutine format_output_string( self, string, col_indent )
 !! version: experimental
 
 !! Writes the STRING to UNIT ensuring that the number of characters
 !! does not exceed MAX_WIDTH and that the lines after the first
 !! one are indented four characters.
-        class(logger_type), intent(in) :: self
-        integer, intent(in)            :: unit
-        character(*), intent(in)       :: string
-        character(*), intent(in)       :: procedure_name
-        character(*), intent(in)       :: col_indent
+        class(logger_type), intent(inout) :: self
+        character(*), intent(in)          :: string
+        character(*), intent(in)          :: col_indent
 
         integer :: count, indent_len, index_, iostat, length, remain
         character(256) :: iomsg
+        integer, parameter :: new_len = len(new_line('a'))
 
         length = len_trim(string)
+        allocate( character(2*length) :: self % buffer )
+        self % len_buffer = 0
         indent_len = len(col_indent)
         call format_first_line()
 
@@ -548,8 +550,8 @@ contains
             if ( self % max_width == 0 .or.                     &
                 ( length <= self % max_width .and.              &
                 index( string(1:length), new_line('a')) == 0 ) ) then
-                write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                    string(1:length)
+                self % buffer(1:length) = string(1:length)
+                self % len_buffer = length
                 remain = 0
                 return
             else
@@ -563,14 +565,15 @@ contains
                 end if
 
                 if ( index_ == 0 ) then
-                    write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
+                    self % buffer(1:self % max_width) = &
                         string(1:self % max_width)
+                    self % len_buffer = self % max_width
                     count = self % max_width
                     remain = length - count
                     return
                 else
-                    write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                        string(1:index_-1)
+                    self % buffer(1:index_-1) = string(1:index_-1)
+                    self % len_buffer = index_-1
                     count = index_
                     remain = length - count
                     return
@@ -578,21 +581,28 @@ contains
 
             end if
 
-999         call handle_write_failure( unit, procedure_name, iostat, iomsg )
-
         end subroutine format_first_line
 
         subroutine format_subsequent_line()
+            integer :: new_len_buffer
+            character(:), allocatable :: dummy
 
             if ( remain <= self % max_width ) then
-                write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                    string(count+1:length)
+                new_len_buffer = self % len_buffer + length - count + new_len
+                if ( new_len_buffer > len( self % buffer ) ) then
+                    allocate( character( 2*len( self % buffer ) ) :: dummy )
+                    dummy = self % buffer
+                    call move_alloc( dummy, self % buffer )
+                end if
+                self % buffer( self % len_buffer+1:new_len_buffer ) = &
+                    new_line('a') // string(count+1:length)
+                self % len_buffer = new_len_buffer
                 count = length
                 remain = 0
                 return
             else
 
-                index_ = count + index( string(count+1:count+self % max_width),&
+                index_ = count + index(string(count+1:count+self % max_width),&
                     new_line('a'))
                 if(index_ == count) then
                     do index_=count+self % max_width, count+1, -1
@@ -601,14 +611,30 @@ contains
                 end if
 
                 if ( index_ == count ) then
-                    write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                        string(count+1:count+self % max_width)
+                    new_len_buffer = self % len_buffer + self % max_width + &
+                        new_len
+                    if ( new_len_buffer > len( self % buffer ) ) then
+                        allocate( character( 2*len( self % buffer ) ) :: dummy )
+                        dummy = self % buffer
+                        call move_alloc( dummy, self % buffer )
+                    end if
+                    self % buffer( self % len_buffer+1:new_len_buffer ) = &
+                        new_line('a') // string(count+1:count+self % max_width)
+                    self % len_buffer = new_len_buffer
                     count = count + self % max_width
                     remain = length - count
                     return
                 else
-                    write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                        string(count+1:index_-1)
+                    new_len_buffer = self % len_buffer + index_ - 1 &
+                        - count + new_len
+                    if ( new_len_buffer > len( self % buffer ) ) then
+                        allocate( character( 2*len( self % buffer ) ) :: dummy )
+                        dummy = self % buffer
+                        call move_alloc( dummy, self % buffer )
+                    end if
+                    self % buffer( self % len_buffer+1:new_len_buffer ) = &
+                        new_line('a') // string(count+1:index_-1)
+                    self % len_buffer = new_len_buffer
                     count = index_
                     remain = length - count
                     return
@@ -616,16 +642,26 @@ contains
 
             end if
 
-999         call handle_write_failure( unit, procedure_name, iostat, iomsg )
-
         end subroutine format_subsequent_line
 
         subroutine indent_format_subsequent_line()
+            integer :: new_len_buffer
+            character(:), allocatable :: dummy
 
             if ( index( string(count+1:length), new_line('a')) == 0 .and. &
                 remain <= self % max_width - indent_len ) then
-                write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                    col_indent // string(count+1:length)
+                new_len_buffer = self % len_buffer + index_ - 1 &
+                    - count + new_len + indent_len
+                if ( new_len_buffer > len( self % buffer ) ) then
+                    allocate( character( 2*len( self % buffer ) ) :: dummy )
+                    dummy = self % buffer
+                    call move_alloc( dummy, self % buffer )
+                end if
+                self % buffer( self % len_buffer+1: &
+                    self % len_buffer + length - count + new_len &
+                    + indent_len ) = &
+                    new_line('a') // col_indent // string(count+1:index_-1)
+                self % len_buffer = new_len_buffer
                 count = length
                 remain = 0
                 return
@@ -641,23 +677,37 @@ contains
                 end if
 
                 if ( index_ == count ) then
-                    write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                        col_indent //                                         &
+                    new_len_buffer = self % len_buffer + self % max_width &
+                        + new_len 
+                    if ( new_len_buffer > len( self % buffer ) ) then
+                        allocate( character( 2*len( self % buffer ) ) :: dummy )
+                        dummy = self % buffer
+                        call move_alloc( dummy, self % buffer )
+                    end if
+                    self % buffer( self % len_buffer+1: new_len_buffer ) = &
+                        new_line('a') // col_indent // &
                         string(count+1:count+self % max_width-indent_len)
+                    self % len_buffer = new_len_buffer
                     count = count + self % max_width - indent_len
                     remain = length - count
                     return
                 else
-                    write( unit, '(a)', err=999, iostat=iostat, iomsg=iomsg ) &
-                        col_indent // string(count+1:index_-1)
+                    new_len_buffer = self % len_buffer + index_ - count - 1 &
+                        + new_len + indent_len
+                    if ( new_len_buffer > len( self % buffer ) ) then
+                        allocate( character( 2*len( self % buffer ) ) :: dummy )
+                        dummy = self % buffer
+                        call move_alloc( dummy, self % buffer )
+                    end if
+                    self % buffer( self % len_buffer+1: new_len_buffer ) = &
+                        new_line('a') // col_indent // string(count+1:index_-1)
+                    self % len_buffer = new_len_buffer
                     count = index_
                     remain = length - count
                     return
                 end if
 
             end if
-
-999         call handle_write_failure( unit, procedure_name, iostat, iomsg )
 
         end subroutine indent_format_subsequent_line
 
@@ -681,18 +731,22 @@ contains
 
          write( output_unit, '(a)' ) 'write failure in ' // module_name // &
              ' % ' // trim(procedure_name) // '.'
-         write( output_unit, '(a, i0)' ) 'unit = ', unit
-         inquire( unit, named=named )
-
-         if ( named ) then
-             inquire( unit, name=name )
-             write( output_unit, '(a, a)' ) 'name = ', trim(name)
+         if ( unit == -999 ) then
+             write( output_unit, '(a, i0)' ) 'unit = internal file'
          else
-             write( output_unit, '(a)' ) 'unit is unnamed'
+             write( output_unit, '(a, i0)' ) 'unit = ', unit
+             inquire( unit, named=named )
+
+             if ( named ) then
+                 inquire( unit, name=name )
+                 write( output_unit, '(a, a)' ) 'name = ', trim(name)
+             else
+                 write( output_unit, '(a)' ) 'unit is unnamed'
+             end if
+             inquire( unit, action=action )
+             write( output_unit, '(a, a)' ) 'action = ', trim(action)
          end if
 
-         inquire( unit, action=action )
-         write( output_unit, '(a, a)' ) 'action = ', trim(action)
          write( output_unit, '(a, i0)' ) 'iostat = ', iostat
          write( output_unit, '(a, a )' ) 'iomsg = ', trim(iomsg)
          error stop 'write failure in ' // module_name // '.'
@@ -744,7 +798,7 @@ contains
 !!     end module example_mod
 !!
 
-        class(logger_type), intent(in)          :: self
+        class(logger_type), intent(inout)       :: self
 !! The logger to be used in logging the message
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
@@ -760,46 +814,29 @@ contains
         integer :: unit
         integer :: iostat
         character(*), parameter :: procedure_name = 'log_error'
-        character(256) :: iomsg
+        character(256) :: iomsg, suffix
 
-        call self % log_message( message,               &
-                                 module = module,       &
-                                 procedure = procedure, &
-                                 prefix = 'ERROR')
-
-        if ( self % units == 0 ) then
-            call write_log_error( output_unit )
-        else
-            do unit=1, self % units
-                call write_log_error( self % log_units(unit) )
-            end do
+        if ( present(stat) ) then
+            write( suffix, '(a, i0)', err=999, iostat=iostat, iomsg=iomsg ) &
+                new_line('a') // "With stat = ", stat
         end if
 
-    contains
-
-        subroutine write_log_error( unit )
-            integer, intent(in) :: unit
-
-            if ( present(stat) ) then
-                write( unit, '("With stat = ", i0)', err=999, &
-                    iostat=iostat, iomsg=iomsg ) stat
+        if ( present(errmsg) ) then
+            if ( len_trim(errmsg) > 0 ) then
+                suffix( len_trim(suffix)+1: ) = &
+                    new_line('a') // 'With errmsg = "' // trim(errmsg) // '"'
             end if
+        end if
 
-            if ( present(errmsg) ) then
-                if ( len_trim(errmsg) > 0 ) then
-                    call format_output_string( self, unit,          &
-                                               'With errmsg = "' // &
-                                               trim(errmsg) // '"', &
-                                               procedure_name,      &
-                                               '    ' )
-                end if
-            end if
+        call self % log_message( trim(message) // trim(suffix), &
+                                 module = module,               &
+                                 procedure = procedure,         &
+                                 prefix = 'ERROR')
 
-            return
+        return
 
-999         call handle_write_failure( unit, procedure_name, iostat, iomsg )
-
-        end subroutine write_log_error
+        unit = -999
+999     call handle_write_failure( unit, procedure_name, iostat, iomsg )
 
     end subroutine log_error
 
@@ -844,7 +881,7 @@ contains
 !!     end module example_mod
 !!
 
-        class(logger_type), intent(in)          :: self
+        class(logger_type), intent(inout)       :: self
 !! The logger used to send the message
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
@@ -897,7 +934,7 @@ contains
 !!      ...
 !!    end program example
 
-        class(logger_type), intent(in)          :: self
+        class(logger_type), intent(inout)       :: self
 !! The logger variable to receivee the message
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
@@ -913,46 +950,29 @@ contains
         integer :: unit
         integer :: iostat2
         character(*), parameter :: procedure_name = 'log_error'
-        character(256) :: iomsg2
+        character(256) :: iomsg2, suffix
 
-        call self % log_message( message,               &
-                                 module = module,       &
-                                 procedure = procedure, &
-                                 prefix = 'I/O ERROR' )
-
-        if ( self % units == 0 ) then
-            call write_log_io_error( output_unit )
-        else
-            do unit=1, self % units
-                call write_log_io_error( self % log_units(unit) )
-            end do
+        if ( present(iostat) ) then
+            write( suffix, '(a, i0)', err=999, iostat=iostat2, iomsg=iomsg2 ) &
+                new_line('a') // "With iostat = ", iostat
         end if
 
-    contains
-
-        subroutine write_log_io_error( unit )
-            integer, intent(in) :: unit
-
-            if ( present(iostat) ) then
-                write( unit, '("With iostat = ", i0)', err=999, &
-                    iostat=iostat2, iomsg=iomsg2 ) iostat
+        if ( present(iomsg) ) then
+            if ( len_trim(iomsg) > 0 ) then
+                suffix( len_trim(suffix)+1: ) = &
+                    new_line('a') // 'With iomsg = "' // trim(iomsg) // '"'
             end if
+        end if
 
-            if ( present(iomsg) ) then
-                if ( len_trim(iomsg) > 0 ) then
-                    call format_output_string( self,  unit,        &
-                                               'With iomsg = "' // &
-                                               trim(iomsg) // '"', &
-                                               procedure_name,     &
-                                               '    ' )
-                end if
-            end if
+        call self % log_message( trim(message) // trim(suffix), &
+                                 module = module,               &
+                                 procedure = procedure,         &
+                                 prefix = 'I/O ERROR' )
 
-            return
+        return
 
-999         call handle_write_failure( unit, procedure_name, iostat, iomsg )
-
-        end subroutine write_log_io_error
+        unit = -999
+999     call handle_write_failure( unit, procedure_name, iostat, iomsg )
 
     end subroutine log_io_error
 
@@ -994,7 +1014,7 @@ contains
 !!    end module example_mod
 !!
 
-        class(logger_type), intent(in)          :: self
+        class(logger_type), intent(inout)       :: self
 !! The logger variable to receive the message
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
@@ -1035,32 +1055,43 @@ contains
             m_and_p = ''
         end if
 
+        call format_output_string( self,                         &
+                                   d_and_t // m_and_p // pref // &
+                                   trim( message ),              &
+                                   '    ' )
+
         if ( self % units == 0 ) then
-            call write_log_message( output_unit )
+            if ( self % add_blank_line ) then
+                write( output_unit, '(a)', err=999, iostat=iostat, &
+                        iomsg=iomsg) &
+                    new_line('a') // self % buffer(0:self % len_buffer)
+            else
+                write( output_unit, '(a)', err=999, iostat=iostat, &
+                        iomsg=iomsg ) &
+                    self % buffer(0:self % len_buffer)
+            end if
         else
-            do unit=1, self % units
-                call write_log_message( self % log_units(unit) )
-            end do
+            if ( self % add_blank_line ) then
+                do unit=1, self % units
+                    write( output_unit, '(a)', err=999, iostat=iostat, &
+                        iomsg=iomsg ) &
+                        new_line('a') // self % buffer(0:self % len_buffer)
+                end do
+            else
+                do unit=1, self % units
+                    write( output_unit, '(a)', err=999, iostat=iostat, &
+                        iomsg=iomsg ) &
+                        self % buffer(0:self % len_buffer)
+                end do
+            end if
         end if
 
-    contains
+        deallocate( self % buffer )
+        self % len_buffer = 0
 
-        subroutine write_log_message( unit )
-            integer, intent(in) :: unit
+        return
 
-            if ( self % add_blank_line ) write( unit, *, err=999, &
-                iostat=iostat, iomsg=iomsg )
-
-            call format_output_string( self, unit,                   &
-                                       d_and_t // m_and_p // pref // &
-                                       trim( message ),              &
-                                       procedure_name, '    ' )
-
-            return
-
-999         call handle_write_failure( unit, procedure_name, iostat, iomsg )
-
-        end subroutine write_log_message
+999     call handle_write_failure( unit, procedure_name, iostat, iomsg )
 
     end subroutine log_message
 
@@ -1105,7 +1136,7 @@ contains
 !!      ...
 !!    end program example
 !!
-        class(logger_type), intent(in)        :: self
+        class(logger_type), intent(inout)     :: self
 !! The logger variable to receive the message
         character(*), intent(in)              :: line
 !! The line of text in which the error was found.
@@ -1294,7 +1325,7 @@ contains
 !!       ...
 !!     end module example_mod
 !!
-        class(logger_type), intent(in)          :: self
+        class(logger_type), intent(inout)       :: self
 !! The logger to which the message is written
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
