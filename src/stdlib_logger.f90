@@ -523,8 +523,7 @@ contains
         character(*), intent(in)          :: string
         character(*), intent(in)          :: col_indent
 
-        integer :: count, indent_len, index_, iostat, length, remain
-        character(256) :: iomsg
+        integer :: count, indent_len, index_, length, remain
         integer, parameter :: new_len = len(new_line('a'))
 
         length = len_trim(string)
@@ -1064,24 +1063,24 @@ contains
             if ( self % add_blank_line ) then
                 write( output_unit, '(a)', err=999, iostat=iostat, &
                         iomsg=iomsg) &
-                    new_line('a') // self % buffer(0:self % len_buffer)
+                    new_line('a') // self % buffer(1:self % len_buffer)
             else
                 write( output_unit, '(a)', err=999, iostat=iostat, &
                         iomsg=iomsg ) &
-                    self % buffer(0:self % len_buffer)
+                    self % buffer(1:self % len_buffer)
             end if
         else
             if ( self % add_blank_line ) then
                 do unit=1, self % units
                     write( output_unit, '(a)', err=999, iostat=iostat, &
-                        iomsg=iomsg ) &
-                        new_line('a') // self % buffer(0:self % len_buffer)
+                        iomsg=iomsg ) new_line('a') // &
+                        self % buffer(1:self % len_buffer)
                 end do
             else
                 do unit=1, self % units
                     write( output_unit, '(a)', err=999, iostat=iostat, &
                         iomsg=iomsg ) &
-                        self % buffer(0:self % len_buffer)
+                        self % buffer(1:self % len_buffer)
                 end do
             end if
         end if
@@ -1157,8 +1156,6 @@ contains
 !! statements has failed.
 
         character(1)              :: acaret
-        character(5)              :: num
-        character(:), allocatable :: fmt
         character(128)            :: iomsg
         integer                   :: iostat
         integer                   :: lun
