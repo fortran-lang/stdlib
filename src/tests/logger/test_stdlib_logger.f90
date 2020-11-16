@@ -47,7 +47,7 @@ program test_stdlib_logger
     print *
     print *, 'running log_text_error'
     call global % log_text_error( 'This text should be written to UNIT1' // &
-                                  'and UNIT3 and not to OUTPUT_UNIT.',      &
+                                  ' and UNIT3 and not to OUTPUT_UNIT.',     &
                                   column = 25,                              &
                                   summary = 'There is no real error here.', &
                                   filename = 'dummy.txt',                   &
