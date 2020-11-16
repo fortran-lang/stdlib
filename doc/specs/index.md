@@ -14,6 +14,7 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [error](./stdlib_error.html) - Catching and handling errors
  - [IO](./stdlib_io.html) - Input/output helper & convenience
  - [linalg](./stdlib_linalg.html) - Linear Algebra
+ - [logger](./stdlib_logger.html) - Runtime logging system
  - [optval](./stdlib_optval.html) - Fallback value for optional arguments
  - [quadrature](./stdlib_quadrature.html) - Numerical integration
  - [stats](./stdlib_stats.html) - Descriptive Statistics
