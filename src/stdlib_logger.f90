@@ -649,17 +649,15 @@ contains
 
             if ( index( string(count+1:length), new_line('a')) == 0 .and. &
                 remain <= self % max_width - indent_len ) then
-                new_len_buffer = self % len_buffer + index_ - 1 &
+                new_len_buffer = self % len_buffer + length &
                     - count + new_len + indent_len
                 if ( new_len_buffer > len( self % buffer ) ) then
                     allocate( character( 2*len( self % buffer ) ) :: dummy )
                     dummy = self % buffer
                     call move_alloc( dummy, self % buffer )
                 end if
-                self % buffer( self % len_buffer+1: &
-                    self % len_buffer + length - count + new_len &
-                    + indent_len ) = &
-                    new_line('a') // col_indent // string(count+1:index_-1)
+                self % buffer( self % len_buffer+1:new_len_buffer ) = &
+                    new_line('a') // col_indent // string(count+1:length)
                 self % len_buffer = new_len_buffer
                 count = length
                 remain = 0
