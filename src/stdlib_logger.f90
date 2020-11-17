@@ -240,7 +240,7 @@ contains
 
 !! Adds `unit` to the log file units in `log_units`. `unit` must be an `open`
 !! file, of `form` `"formatted"`, with `"sequential"` `access`, and an `action`
-!! of `"write"` or `"readwrite"`, otherwise either `stat`, if preseent, has a
+!! of `"write"` or `"readwrite"`, otherwise either `stat`, if present, has a
 !! value other than `success` and `unit` is not entered into `log_units`,
 !! or, if `stat` is not presecn, processing stops.
 !!([Specification](../page/specs/stdlib_logger.html#add_log_unit-add-a-unit-to-the-array-self-log_units))
