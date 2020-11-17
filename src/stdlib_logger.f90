@@ -1072,13 +1072,13 @@ contains
         else
             if ( self % add_blank_line ) then
                 do unit=1, self % units
-                    write( output_unit, '(a)', err=999, iostat=iostat, &
+                    write( self % log_units(unit), '(a)', err=999, iostat=iostat, &
                         iomsg=iomsg ) new_line('a') // &
                         self % buffer(1:self % len_buffer)
                 end do
             else
                 do unit=1, self % units
-                    write( output_unit, '(a)', err=999, iostat=iostat, &
+                    write( self % log_units(unit), '(a)', err=999, iostat=iostat, &
                         iomsg=iomsg ) &
                         self % buffer(1:self % len_buffer)
                 end do
