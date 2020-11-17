@@ -808,32 +808,38 @@ contains
         character(len=*), intent(in), optional  :: errmsg
 !! The value of the `errmsg` specifier returned by a Fortran statement
 
-        integer :: unit
         integer :: iostat
+        character(28) :: dummy
+        character(256) :: iomsg
         character(*), parameter :: procedure_name = 'log_error'
-        character(256) :: iomsg, suffix
+        character(:), allocatable :: suffix
 
         if ( present(stat) ) then
-            write( suffix, '(a, i0)', err=999, iostat=iostat, iomsg=iomsg ) &
+            write( dummy, '(a, i0)', err=999, iostat=iostat, iomsg=iomsg ) &
                 new_line('a') // "With stat = ", stat
+        else
+            dummy = ' '
         end if
 
         if ( present(errmsg) ) then
             if ( len_trim(errmsg) > 0 ) then
-                suffix( len_trim(suffix)+1: ) = &
+                suffix = trim(dummy) // &
                     new_line('a') // 'With errmsg = "' // trim(errmsg) // '"'
+            else
+                suffix = dummy
             end if
+        else
+            suffix = dummy
         end if
 
-        call self % log_message( trim(message) // trim(suffix), &
-                                 module = module,               &
-                                 procedure = procedure,         &
+        call self % log_message( trim(message) // suffix, &
+                                 module = module,         &
+                                 procedure = procedure,   &
                                  prefix = 'ERROR')
 
         return
 
-        unit = -999
-999     call handle_write_failure( unit, procedure_name, iostat, iomsg )
+999     call handle_write_failure( -999, procedure_name, iostat, iomsg )
 
     end subroutine log_error
 
@@ -944,32 +950,38 @@ contains
         character(len=*), intent(in), optional  :: iomsg
 !! The value of the IOMSG specifier returned by a Fortran I/O statement
 
-        integer :: unit
+        character(28) :: dummy
+        character(256) :: iomsg2
         integer :: iostat2
-        character(*), parameter :: procedure_name = 'log_error'
-        character(256) :: iomsg2, suffix
+        character(*), parameter :: procedure_name = 'log_io_error'
+        character(:), allocatable :: suffix
 
         if ( present(iostat) ) then
-            write( suffix, '(a, i0)', err=999, iostat=iostat2, iomsg=iomsg2 ) &
+            write( dummy, '(a, i0)', err=999, iostat=iostat2, iomsg=iomsg2 ) &
                 new_line('a') // "With iostat = ", iostat
+        else
+            dummy = ' '
         end if
 
         if ( present(iomsg) ) then
             if ( len_trim(iomsg) > 0 ) then
-                suffix( len_trim(suffix)+1: ) = &
+                suffix = trim(dummy) // &
                     new_line('a') // 'With iomsg = "' // trim(iomsg) // '"'
+            else
+                suffix = trim(dummy)
             end if
+        else
+            suffix = trim(dummy)
         end if
 
-        call self % log_message( trim(message) // trim(suffix), &
-                                 module = module,               &
-                                 procedure = procedure,         &
+        call self % log_message( trim(message) // suffix, &
+                                 module = module,         &
+                                 procedure = procedure,   &
                                  prefix = 'I/O ERROR' )
 
         return
 
-        unit = -999
-999     call handle_write_failure( unit, procedure_name, iostat, iomsg )
+999     call handle_write_failure( -999, procedure_name, iostat2, iomsg2 )
 
     end subroutine log_io_error
 
