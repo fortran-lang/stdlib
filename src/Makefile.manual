@@ -1,5 +1,8 @@
 SRC = f18estop.f90 \
       stdlib_ascii.f90 \
+      stdlib_bitsets.f90 \
+      stdlib_bitsets_64.f90 \
+      stdlib_bitsets_large.f90 \
       stdlib_error.f90 \
       stdlib_io.f90 \
       stdlib_kinds.f90 \
@@ -40,6 +43,9 @@ clean:
 
 # Fortran module dependencies
 f18estop.o: stdlib_error.o
+stdlib_bitsets.o: stdlib_kinds.o
+stdlib_bitsets_64.o: stdlib_bitsets.o
+stdlib_bitsets_large.o: stdlib_bitsets.o
 stdlib_error.o: stdlib_optval.o
 stdlib_io.o: \
 	stdlib_error.o \
@@ -63,6 +69,9 @@ stdlib_stats_var.o: \
 	stdlib_stats.o
 
 # Fortran sources that are built from fypp templates
+stdlib_bitsets_64.f90: stdlib_bitsets_64.fypp
+stdlib_bitsets_large.f90: stdlib_bitsets_large.fypp
+stdlib_bitsets.f90: stdlib_bitsets.fypp
 stdlib_io.f90: stdlib_io.fypp
 stdlib_linalg.f90: stdlib_linalg.fypp
 stdlib_linalg_diag.f90: stdlib_linalg_diag.fypp

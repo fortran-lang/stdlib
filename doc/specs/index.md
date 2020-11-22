@@ -11,6 +11,7 @@ This is and index/directory of the specifications (specs) for each new module/fe
 
 ## Experimental Features & Modules
 
+ - [bitsets](./stdlib_bitsets.html) - Bitset data types and procedures
  - [error](./stdlib_error.html) - Catching and handling errors
  - [IO](./stdlib_io.html) - Input/output helper & convenience
  - [linalg](./stdlib_linalg.html) - Linear Algebra
