@@ -54,7 +54,9 @@ jobs:
 
     - name: Install GFortran macOS
       if: contains( matrix.os, 'macos')
-      run: brew install gcc@${GCC_V} || brew upgrade gcc@${GCC_V} || brew link gcc@${GCC_V} || true
+      run: |
+          brew install gcc@${GCC_V} || brew upgrade gcc@${GCC_V} || true
+          brew link gcc@${GCC_V}
 
     - name: Configure with CMake
       run: cmake -Wdev -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAXIMUM_RANK=4 -S . -B build
