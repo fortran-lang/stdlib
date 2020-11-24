@@ -298,7 +298,7 @@ otherwise it is `.false.`.
     end program demo_all
 ```
 
-#### `and` - bitwise `and` of the bits of two bitsets.
+### `and` - bitwise `and` of the bits of two bitsets.
 
 #### Status
 
