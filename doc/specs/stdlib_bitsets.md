@@ -250,7 +250,7 @@ are summarized in the following table:
 
 ## Specification of the `stdlib_bitsets` methods and procedures
 
-### `all` - determine whether all bits are set in `self`.
+### `all` - determine whether all bits are set in `self`
 
 #### Status
 
@@ -298,7 +298,7 @@ otherwise it is `.false.`.
     end program demo_all
 ```
 
-### `and` - bitwise `and` of the bits of two bitsets.
+### `and` - bitwise `and` of the bits of two bitsets
 
 #### Status
 
@@ -546,7 +546,7 @@ the number of defined bits in `self`.
     end program demo_bits
 ```
 
-### `clear` - clears a sequence of one or more bits.
+### `clear` - clears a sequence of one or more bits
 
 #### Status
 
@@ -1023,7 +1023,7 @@ complement of their values on input.
     end program demo_not
 ```
 
-### `or` - Bitwise OR of the bits of two bitsets.
+### `or` - Bitwise OR of the bits of two bitsets
 
 #### Status
 
@@ -1262,7 +1262,7 @@ as its error code. The possible error codes are:
     end program demo_read_bitset
 ```
 
-### `set` - sets a sequence of one or more bits to 1.
+### `set` - sets a sequence of one or more bits to 1
 
 #### Status
 
