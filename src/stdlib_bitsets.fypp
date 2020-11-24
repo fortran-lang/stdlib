@@ -4,6 +4,7 @@ module stdlib_bitsets
 !! The current code uses 64 bit integers to store the bits and uses all 64 bits.
 !! The code assumes two's complement integers, and treats negative integers as
 !! having the sign bit set.
+!!([Specification](../page/specs/stdlib_bitsets.html))
 
     use :: stdlib_kinds, only:  &
            bits_kind  => int32, & ! If changed change also max_digits, and
@@ -95,7 +96,8 @@ module stdlib_bitsets
     type, abstract :: bitset_type
 !! version: experimental
 !!
-!! Parent type for bitset_64 and bitset_large
+!! Parent type for bitset_64 and bitset_large ([Specification](../page/specs/stdlib_bitsets.html#the-stdlib_bitsets-derived-types))
+
         private
         integer(bits_kind) :: num_bits
 
@@ -817,7 +819,8 @@ module stdlib_bitsets
     type, extends(bitset_type) :: bitset_large
 !! Version: experimental
 !!
-!! Type for bitsets with more than 64 bits.
+!! Type for bitsets with more than 64 bits ([Specification](../page/specs/stdlib_bitsets.html#the-stdlib_bitsets-derived-types))
+
         private
         integer(block_kind), private, allocatable :: blocks(:)
 
@@ -1128,6 +1131,10 @@ module stdlib_bitsets
 
 
     interface assignment(=)
+!! Version: experimental
+!!
+!! Used to define assignment for `bitset_large`.
+!! ([Specification](../page/specs/stdlib_bitsets.html#-compare-two-bitsets-to-determine-whether-the-bits-have-the-same-value))
 !!
 !!#### Example
 !!
@@ -1192,7 +1199,7 @@ module stdlib_bitsets
     type, extends(bitset_type) :: bitset_64
 !! Version: experimental
 !!
-!! Type for bitsets with no more than 64 bits.
+!! Type for bitsets with no more than 64 bits ([Specification](../page/specs/stdlib_bitsets.html#the-stdlib_bitsets-derived-types))
         private
         integer(block_kind), private :: block = 0
 
@@ -1534,13 +1541,12 @@ module stdlib_bitsets
 
 
     interface and
-
-        elemental module subroutine and_large(set1, set2)
 !! Version: experimental
 !!
 !! Sets the bits in `set1` to the bitwise `and` of the original bits in `set1`
 !! and `set2`. The sets must have the same number of bits
 !! otherwise the result is undefined.
+!! ([Specification](../page/specs/stdlib_bitsets.html#and-bitwise-and-of-the-bits-of-two-bitsets))
 !!
 !!#### Example
 !!
@@ -1563,16 +1569,12 @@ module stdlib_bitsets
 !!        if ( all(set0) ) write(*,*) 'Fourth test of AND worked.'
 !!    end program demo_and
 !!```
+        elemental module subroutine and_large(set1, set2)
             type(bitset_large), intent(inout) :: set1
             type(bitset_large), intent(in)    :: set2
         end subroutine and_large
 
         elemental module subroutine and_64(set1, set2)
-!! Version: experimental
-!!
-!! Sets the bits in `set1` to the bitwise `and` of the original bits in `set1`
-!! and `set2`. The sets must have the same number of bits
-!! otherwise the result is undefined.
             type(bitset_64), intent(inout) :: set1
             type(bitset_64), intent(in)    :: set2
         end subroutine and_64
@@ -1581,13 +1583,13 @@ module stdlib_bitsets
 
 
     interface and_not
-
-        elemental module subroutine and_not_large(set1, set2)
 !! Version: experimental
 !!
 !! Sets the bits in `set1` to the bitwise and of the original bits in `set1`
 !! with the bitwise negation of `set2`. The sets must have the same
 !! number of bits otherwise the result is undefined.
+!!
+!! ([Specification](../page/specs/stdlib_bitsets.html#and_not-bitwise-and-of-one-bitset-with-the-negation-of-another))
 !!
 !!#### Example
 !!
@@ -1611,16 +1613,13 @@ module stdlib_bitsets
 !!        if ( none(set0) ) write(*,*) 'Fourth test of AND_NOT worked.'
 !!    end program demo_and_not
 !!```
+
+        elemental module subroutine and_not_large(set1, set2)
             type(bitset_large), intent(inout) :: set1
             type(bitset_large), intent(in)    :: set2
         end subroutine and_not_large
 
         elemental module subroutine and_not_64(set1, set2)
-!! Version: experimental
-!!
-!! Sets the bits in `set1` to the bitwise and of the original bits in `set1`
-!! with the bitwise negation of `set2`. The sets must have the same
-!! number of bits otherwise the result is undefined.
             type(bitset_64), intent(inout) :: set1
             type(bitset_64), intent(in)    :: set2
         end subroutine and_not_64
@@ -1628,8 +1627,6 @@ module stdlib_bitsets
     end interface and_not
 
     interface extract
-
-        module subroutine extract_large(new, old, start_pos, stop_pos, status)
 !! Version: experimental
 !!
 !! Creates a new bitset, `new`, from a range, `start_pos` to `stop_pos`, in
@@ -1638,6 +1635,7 @@ module stdlib_bitsets
 !! `bits(old)-1` then if `status` is present it has the value
 !! `index_invalid_error` and `new` is undefined, otherwise processing stops
 !! with an informative message.
+!! ([Specification](../page/specs/stdlib_bitsets.html#extract-create-a-new-bitset-from-a-range-in-an-old-bitset))
 !!
 !!#### Example
 !!
@@ -1653,6 +1651,8 @@ module stdlib_bitsets
 !!        if ( set1 % all() ) write(*,*) 'SET1 has the proper values.'
 !!    end program demo_extract
 !!```
+
+        module subroutine extract_large(new, old, start_pos, stop_pos, status)
             type(bitset_large), intent(out) :: new
             type(bitset_large), intent(in)  :: old
             integer(bits_kind), intent(in)  :: start_pos, stop_pos
@@ -1660,14 +1660,6 @@ module stdlib_bitsets
         end subroutine extract_large
 
        module subroutine extract_64(new, old, start_pos, stop_pos, status)
-!! Version: experimental
-!!
-!! Creates a new bitset, `new`, from a range, `start_pos` to `stop_pos`, in
-!! bitset `old`. If `start_pos` is greater than `stop_pos` the new bitset is
-!! empty. If `start_pos` is less than zero or `stop_pos` is greater than
-!! `bits(old)-1` then if `status` is present it has the value
-!! `index_invalid_error`and `new` is undefined, otherwise processing stops
-!! with an informative message.
             type(bitset_64), intent(out)   :: new
             type(bitset_64), intent(in)    :: old
             integer(bits_kind), intent(in) :: start_pos, stop_pos
@@ -1678,13 +1670,12 @@ module stdlib_bitsets
 
 
     interface or
-
-        elemental module subroutine or_large(set1, set2)
 !! Version: experimental
 !!
 !! Sets the bits in `set1` to the bitwise `or` of the original bits in `set1`
 !! and `set2`. The sets must have the same number of bits otherwise
 !! the result is undefined.
+!! ([Specification](../page/specs/stdlib_bitsets.html#or-bitwise-or-of-the-bits-of-two-bitsets))
 !!
 !!#### Example
 !!
@@ -1708,16 +1699,12 @@ module stdlib_bitsets
 !!        if ( all(set0) ) write(*,*) 'Fourth test of OR worked.'
 !!    end program demo_or
 !!```
+        elemental module subroutine or_large(set1, set2)
             type(bitset_large), intent(inout) :: set1
             type(bitset_large), intent(in)    :: set2
         end subroutine or_large
 
         elemental module subroutine or_64(set1, set2)
-!! Version: experimental
-!!
-!! Sets the bits in `set1` to the bitwise `or` of the original bits in `set1`
-!! and `set2`. The sets must have the same number of bits otherwise
-!! the result is undefined.
             type(bitset_64), intent(inout) :: set1
             type(bitset_64), intent(in)    :: set2
         end subroutine or_64
@@ -1726,13 +1713,12 @@ module stdlib_bitsets
 
 
     interface xor
-
-        elemental module subroutine xor_large(set1, set2)
 !! Version: experimental
 !!
 !! Sets the bits in `set1` to the bitwise `xor` of the original bits in `set1`
-!! and `set2`. The sets must have the same number of bits otherwise
-!! the result is undefined.
+!! and `set2`. The sets must have the same number of bits
+!! otherwise the result is undefined.
+!!([Specification](../page/specs/stdlib_bitsets.html#xor-bitwise-exclusive-or))
 !!
 !!#### Example
 !!
@@ -1756,16 +1742,12 @@ module stdlib_bitsets
 !!        if ( none(set0) ) write(*,*) 'Fourth test of XOR worked.'
 !!    end program demo_xor
 !!```
+        elemental module subroutine xor_large(set1, set2)
             type(bitset_large), intent(inout) :: set1
             type(bitset_large), intent(in)    :: set2
         end subroutine xor_large
 
         elemental module subroutine xor_64(set1, set2)
-!! Version: experimental
-!!
-!! Sets the bits in `set1` to the bitwise `xor` of the original bits in `set1`
-!! and `set2`. The sets must have the same number of bits
-!! otherwise the result is undefined.
             type(bitset_64), intent(inout) :: set1
             type(bitset_64), intent(in)    :: set2
         end subroutine xor_64
@@ -1774,13 +1756,12 @@ module stdlib_bitsets
 
 
     interface operator(==)
-
-        elemental module function eqv_large(set1, set2) result(eqv)
 !! Version: experimental
 !!
 !! Returns `.true.` if all bits in `set1` and `set2` have the same value,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
+!!([Specification](../page/specs/stdlib_bitsets.html#-compare-two-bitsets-to-determine-whether-the-bits-have-the-same-value))
 !!
 !!#### Example
 !!
@@ -1802,16 +1783,12 @@ module stdlib_bitsets
 !!        end if
 !!    end program demo_equality
 !!```
+        elemental module function eqv_large(set1, set2) result(eqv)
             logical                        :: eqv
             type(bitset_large), intent(in) :: set1, set2
         end function eqv_large
 
         elemental module function eqv_64(set1, set2) result(eqv)
-!! Version: experimental
-!!
-!! Returns `.true.` if all bits in `set1` and `set2` have the same value,
-!! `.false.`  otherwise. The sets must have the same number of bits
-!! otherwise the result is undefined.
             logical                     :: eqv
             type(bitset_64), intent(in) :: set1, set2
         end function eqv_64
@@ -1820,13 +1797,12 @@ module stdlib_bitsets
 
 
     interface operator(/=)
-
-        elemental module function neqv_large(set1, set2) result(neqv)
 !! Version: experimental
 !!
 !! Returns `.true.` if not all bits in `set1` and `set2` have the same value,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
+!!([Specification](../page/specs/stdlib_bitsets.html#-compare-two-bitsets-to-determine-whether-any-bits-differ-in-value))
 !!
 !!#### Example
 !!
@@ -1848,16 +1824,12 @@ module stdlib_bitsets
 !!        end if
 !!    end program demo_inequality
 !!```
+        elemental module function neqv_large(set1, set2) result(neqv)
             logical                        :: neqv
             type(bitset_large), intent(in) :: set1, set2
         end function neqv_large
 
         elemental module function neqv_64(set1, set2) result(neqv)
-!! Version: experimental
-!!
-!! Returns `.true.` if not all bits in `set1` and `set2 have the same value,
-!! `.false.`  otherwise. The sets must have the same number of bits
-!! otherwise the result is undefined.
             logical                     :: neqv
             type(bitset_64), intent(in) :: set1, set2
         end function neqv_64
@@ -1866,14 +1838,13 @@ module stdlib_bitsets
 
 
     interface operator(>)
-
-        elemental module function gt_large(set1, set2) result(gt)
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` differ and the
 !! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
+!!([Specification](../page/specs/stdlib_bitsets.html#gt-compare-two-bitsets-to-determine-whether-the-first-is-greater-than-the-other))
 !!
 !!#### Example
 !!
@@ -1895,17 +1866,12 @@ module stdlib_bitsets
 !!        end if
 !!    end program demo_gt
 !!```
+        elemental module function gt_large(set1, set2) result(gt)
             logical                        :: gt
             type(bitset_large), intent(in) :: set1, set2
         end function gt_large
 
         elemental module function gt_64(set1, set2) result(gt)
-!! Version: experimental
-!!
-!! Returns `.true.` if the bits in `set1` and `set2` differ and the
-!! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
-!! `.false.`  otherwise. The sets must have the same number of bits
-!! otherwise the result is undefined.
             logical                     :: gt
             type(bitset_64), intent(in) :: set1, set2
         end function gt_64
@@ -1914,14 +1880,13 @@ module stdlib_bitsets
 
 
     interface operator(>=)
-
-        elemental module function ge_large(set1, set2) result(ge)
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` are the same or the
 !! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
+!! ([Specification](../page/specs/stdlib_bitsets.html#gt-compare-two-bitsets-to-determine-whether-the-first-is-greater-than-or-equal-to-the-second))
 !!
 !!#### Example
 !!
@@ -1944,17 +1909,12 @@ module stdlib_bitsets
 !!        end if
 !!    end program demo_ge
 !!```
+        elemental module function ge_large(set1, set2) result(ge)
             logical                        :: ge
             type(bitset_large), intent(in) :: set1, set2
         end function ge_large
 
         elemental module function ge_64(set1, set2) result(ge)
-!! Version: experimental
-!!
-!! Returns `.true.` if the bits in `set1` and `set2` are the same or the
-!! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
-!! `.false.`  otherwise. The sets must have the same number of bits
-!! otherwise the result is undefined.
             logical                     :: ge
             type(bitset_64), intent(in) :: set1, set2
         end function ge_64
@@ -1963,14 +1923,13 @@ module stdlib_bitsets
 
 
     interface operator(<)
-
-        elemental module function lt_large(set1, set2) result(lt)
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` differ and the
 !! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
+!!([Specification](../page/specs/stdlib_bitsets.html#lt-compare-two-bitsets-to-determine-whether-the-first-is-less-than-the-other))
 !!
 !!#### Example
 !!
@@ -1992,17 +1951,12 @@ module stdlib_bitsets
 !!        end if
 !!    end program demo_lt
 !!```
+        elemental module function lt_large(set1, set2) result(lt)
             logical                        :: lt
             type(bitset_large), intent(in) :: set1, set2
         end function lt_large
 
         elemental module function lt_64(set1, set2) result(lt)
-!! Version: experimental
-!!
-!! Returns `.true.` if the bits in `set1` and `set2` differ and the
-!! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
-!! `.false.`  otherwise. The sets must have the same number of bits
-!! otherwise the result is undefined.
             logical                     :: lt
             type(bitset_64), intent(in) :: set1, set2
         end function lt_64
@@ -2011,14 +1965,13 @@ module stdlib_bitsets
 
 
     interface operator(<=)
-
-        elemental module function le_large(set1, set2) result(le)
 !! Version: experimental
 !!
 !! Returns `.true.` if the bits in `set1` and `set2` are the same or the
 !! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
+!!([Specification](../page/specs/stdlib_bitsets.html#lt-compare-two-bitsets-to-determine-whether-the-first-is-less-than-or-equal-to-the-other))
 !!
 !!#### Example
 !!
@@ -2041,17 +1994,12 @@ module stdlib_bitsets
 !!        end if
 !!    end program demo_le
 !!```
+        elemental module function le_large(set1, set2) result(le)
             logical                        :: le
             type(bitset_large), intent(in) :: set1, set2
         end function le_large
 
         elemental module function le_64(set1, set2) result(le)
-!! Version: experimental
-!!
-!! Returns `.true.` if the bits in `set1` and `set2` are the same or the
-!! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
-!! `.false.`  otherwise. The sets must have the same number of bits
-!! otherwise the result is undefined.
             logical                     :: le
             type(bitset_64), intent(in) :: set1, set2
         end function le_64
