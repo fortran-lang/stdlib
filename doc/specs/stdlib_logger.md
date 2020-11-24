@@ -34,9 +34,11 @@ The logger variables have the option to:
 * indent subsequent lines of the messages; and
 * format the text to fit within a maximum column width.
 
-While every effort has been made to make the code thread and
+While every effort has been made to make the code process and
 asynchronous I/O safe, it is always best to have each process write to
 its own dedicated logger file.
+For thread parallelism (e.g., with OpenMP), it is advised to put the
+logger call in a guarding region (e.g., in an OpenMP critical region).
 
 Note: Loggers of type `logger_type` normally report their messages to I/O
 units in the internal list termed `log_units`. However if `log_units`
