@@ -434,7 +434,11 @@ contains
         if ( present(indent) ) indent = self % indent_lines
         if ( present(max_width) ) max_width = self % max_width
         if ( present(time_stamp) ) time_stamp = self % time_stamp
-        if ( present(log_units) ) log_units = self % log_units(1:self % units)
+        if ( present(log_units) .and. self % units .gt. 0 ) then
+            log_units = self % log_units(1:self % units)
+        else
+            allocate(log_units(0))
+        end if
 
     end subroutine configuration
 
