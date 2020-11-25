@@ -317,7 +317,8 @@ Pure subroutine
 `log_units` (optional): shall be a rank one allocatable array
   variable of type default integer. It is an `intent(out)`
   argument. On return it shall be the elements of the `self`'s `log_units`
-  array.
+  array. If there were no elements in `self`'s `log_units`, a
+  zero-sized array is returned.
 
 #### Example
 
