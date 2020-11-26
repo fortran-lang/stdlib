@@ -77,9 +77,7 @@ module stdlib_logger
         private
 
         logical                   :: add_blank_line = .false.
-        character(:), allocatable :: buffer
         logical                   :: indent_lines = .true.
-        integer                   :: len_buffer = 0
         integer, allocatable      :: log_units(:)
         integer                   :: max_width = 0
         logical                   :: time_stamp = .true.
@@ -517,22 +515,24 @@ contains
     end subroutine final_logger
 
 
-    subroutine format_output_string( self, string, col_indent )
+    subroutine format_output_string( self, string, col_indent, len_buffer, buffer )
 !! version: experimental
 
 !! Writes the STRING to UNIT ensuring that the number of characters
 !! does not exceed MAX_WIDTH and that the lines after the first
 !! one are indented four characters.
-        class(logger_type), intent(inout) :: self
-        character(*), intent(in)          :: string
-        character(*), intent(in)          :: col_indent
+        class(logger_type), intent(inout)          :: self
+        integer, intent(out)                       :: len_buffer
+        character(*), intent(in)                   :: string
+        character(*), intent(in)                   :: col_indent
+        character(len=:), allocatable, intent(out) :: buffer
 
         integer :: count, indent_len, index_, length, remain
         integer, parameter :: new_len = len(new_line('a'))
 
         length = len_trim(string)
-        allocate( character(2*length) :: self % buffer )
-        self % len_buffer = 0
+        allocate( character(2*length) :: buffer )
+        len_buffer = 0
         indent_len = len(col_indent)
         call format_first_line()
 
@@ -553,8 +553,8 @@ contains
             if ( self % max_width == 0 .or.                     &
                 ( length <= self % max_width .and.              &
                 index( string(1:length), new_line('a')) == 0 ) ) then
-                self % buffer(1:length) = string(1:length)
-                self % len_buffer = length
+                buffer(1:length) = string(1:length)
+                len_buffer = length
                 remain = 0
                 return
             else
@@ -568,15 +568,15 @@ contains
                 end if
 
                 if ( index_ == 0 ) then
-                    self % buffer(1:self % max_width) = &
+                    buffer(1:self % max_width) = &
                         string(1:self % max_width)
-                    self % len_buffer = self % max_width
+                    len_buffer = self % max_width
                     count = self % max_width
                     remain = length - count
                     return
                 else
-                    self % buffer(1:index_-1) = string(1:index_-1)
-                    self % len_buffer = index_-1
+                    buffer(1:index_-1) = string(1:index_-1)
+                    len_buffer = index_-1
                     count = index_
                     remain = length - count
                     return
@@ -591,15 +591,15 @@ contains
             character(:), allocatable :: dummy
 
             if ( remain <= self % max_width ) then
-                new_len_buffer = self % len_buffer + length - count + new_len
-                if ( new_len_buffer > len( self % buffer ) ) then
-                    allocate( character( 2*len( self % buffer ) ) :: dummy )
-                    dummy = self % buffer
-                    call move_alloc( dummy, self % buffer )
+                new_len_buffer = len_buffer + length - count + new_len
+                if ( new_len_buffer > len( buffer ) ) then
+                    allocate( character( 2*len( buffer ) ) :: dummy )
+                    dummy = buffer
+                    call move_alloc( dummy, buffer )
                 end if
-                self % buffer( self % len_buffer+1:new_len_buffer ) = &
+                buffer( len_buffer+1:new_len_buffer ) = &
                     new_line('a') // string(count+1:length)
-                self % len_buffer = new_len_buffer
+                len_buffer = new_len_buffer
                 count = length
                 remain = 0
                 return
@@ -614,30 +614,30 @@ contains
                 end if
 
                 if ( index_ == count ) then
-                    new_len_buffer = self % len_buffer + self % max_width + &
+                    new_len_buffer = len_buffer + self % max_width + &
                         new_len
-                    if ( new_len_buffer > len( self % buffer ) ) then
-                        allocate( character( 2*len( self % buffer ) ) :: dummy )
-                        dummy = self % buffer
-                        call move_alloc( dummy, self % buffer )
+                    if ( new_len_buffer > len( buffer ) ) then
+                        allocate( character( 2*len( buffer ) ) :: dummy )
+                        dummy = buffer
+                        call move_alloc( dummy, buffer )
                     end if
-                    self % buffer( self % len_buffer+1:new_len_buffer ) = &
+                    buffer( len_buffer+1:new_len_buffer ) = &
                         new_line('a') // string(count+1:count+self % max_width)
-                    self % len_buffer = new_len_buffer
+                    len_buffer = new_len_buffer
                     count = count + self % max_width
                     remain = length - count
                     return
                 else
-                    new_len_buffer = self % len_buffer + index_ - 1 &
+                    new_len_buffer = len_buffer + index_ - 1 &
                         - count + new_len
-                    if ( new_len_buffer > len( self % buffer ) ) then
-                        allocate( character( 2*len( self % buffer ) ) :: dummy )
-                        dummy = self % buffer
-                        call move_alloc( dummy, self % buffer )
+                    if ( new_len_buffer > len( buffer ) ) then
+                        allocate( character( 2*len( buffer ) ) :: dummy )
+                        dummy = buffer
+                        call move_alloc( dummy, buffer )
                     end if
-                    self % buffer( self % len_buffer+1:new_len_buffer ) = &
+                    buffer( len_buffer+1:new_len_buffer ) = &
                         new_line('a') // string(count+1:index_-1)
-                    self % len_buffer = new_len_buffer
+                    len_buffer = new_len_buffer
                     count = index_
                     remain = length - count
                     return
@@ -653,16 +653,16 @@ contains
 
             if ( index( string(count+1:length), new_line('a')) == 0 .and. &
                 remain <= self % max_width - indent_len ) then
-                new_len_buffer = self % len_buffer + length &
+                new_len_buffer = len_buffer + length &
                     - count + new_len + indent_len
-                if ( new_len_buffer > len( self % buffer ) ) then
-                    allocate( character( 2*len( self % buffer ) ) :: dummy )
-                    dummy = self % buffer
-                    call move_alloc( dummy, self % buffer )
+                if ( new_len_buffer > len( buffer ) ) then
+                    allocate( character( 2*len( buffer ) ) :: dummy )
+                    dummy = buffer
+                    call move_alloc( dummy, buffer )
                 end if
-                self % buffer( self % len_buffer+1:new_len_buffer ) = &
+                buffer( len_buffer+1:new_len_buffer ) = &
                     new_line('a') // col_indent // string(count+1:length)
-                self % len_buffer = new_len_buffer
+                len_buffer = new_len_buffer
                 count = length
                 remain = 0
                 return
@@ -678,31 +678,31 @@ contains
                 end if
 
                 if ( index_ == count ) then
-                    new_len_buffer = self % len_buffer + self % max_width &
+                    new_len_buffer = len_buffer + self % max_width &
                         + new_len 
-                    if ( new_len_buffer > len( self % buffer ) ) then
-                        allocate( character( 2*len( self % buffer ) ) :: dummy )
-                        dummy = self % buffer
-                        call move_alloc( dummy, self % buffer )
+                    if ( new_len_buffer > len( buffer ) ) then
+                        allocate( character( 2*len( buffer ) ) :: dummy )
+                        dummy = buffer
+                        call move_alloc( dummy, buffer )
                     end if
-                    self % buffer( self % len_buffer+1: new_len_buffer ) = &
+                    buffer( len_buffer+1: new_len_buffer ) = &
                         new_line('a') // col_indent // &
                         string(count+1:count+self % max_width-indent_len)
-                    self % len_buffer = new_len_buffer
+                    len_buffer = new_len_buffer
                     count = count + self % max_width - indent_len
                     remain = length - count
                     return
                 else
-                    new_len_buffer = self % len_buffer + index_ - count - 1 &
+                    new_len_buffer = len_buffer + index_ - count - 1 &
                         + new_len + indent_len
-                    if ( new_len_buffer > len( self % buffer ) ) then
-                        allocate( character( 2*len( self % buffer ) ) :: dummy )
-                        dummy = self % buffer
-                        call move_alloc( dummy, self % buffer )
+                    if ( new_len_buffer > len( buffer ) ) then
+                        allocate( character( 2*len( buffer ) ) :: dummy )
+                        dummy = buffer
+                        call move_alloc( dummy, buffer )
                     end if
-                    self % buffer( self % len_buffer+1: new_len_buffer ) = &
+                    buffer( len_buffer+1: new_len_buffer ) = &
                         new_line('a') // col_indent // string(count+1:index_-1)
-                    self % len_buffer = new_len_buffer
+                    len_buffer = new_len_buffer
                     count = index_
                     remain = length - count
                     return
@@ -1040,9 +1040,11 @@ contains
 
         integer :: unit
         integer :: iostat
+        integer :: len_buffer
         character(*), parameter :: procedure_name = 'log_message'
         character(256) :: iomsg
         character(:), allocatable :: d_and_t, m_and_p, pref
+        character(:), allocatable :: buffer
 
         if ( present(prefix) ) then
             pref = prefix // ': '
@@ -1071,36 +1073,38 @@ contains
         call format_output_string( self,                         &
                                    d_and_t // m_and_p // pref // &
                                    trim( message ),              &
-                                   '    ' )
+                                   '    ',                       &
+                                   len_buffer,                   &
+                                   buffer)
 
         if ( self % units == 0 ) then
             if ( self % add_blank_line ) then
                 write( output_unit, '(a)', err=999, iostat=iostat, &
                         iomsg=iomsg) &
-                    new_line('a') // self % buffer(1:self % len_buffer)
+                    new_line('a') // buffer(1:len_buffer)
             else
                 write( output_unit, '(a)', err=999, iostat=iostat, &
                         iomsg=iomsg ) &
-                    self % buffer(1:self % len_buffer)
+                    buffer(1:len_buffer)
             end if
         else
             if ( self % add_blank_line ) then
                 do unit=1, self % units
                     write( self % log_units(unit), '(a)', err=999, iostat=iostat, &
                         iomsg=iomsg ) new_line('a') // &
-                        self % buffer(1:self % len_buffer)
+                        buffer(1:len_buffer)
                 end do
             else
                 do unit=1, self % units
                     write( self % log_units(unit), '(a)', err=999, iostat=iostat, &
                         iomsg=iomsg ) &
-                        self % buffer(1:self % len_buffer)
+                        buffer(1:len_buffer)
                 end do
             end if
         end if
 
-        deallocate( self % buffer )
-        self % len_buffer = 0
+        deallocate( buffer )
+        len_buffer = 0
 
         return
 
@@ -1169,11 +1173,12 @@ contains
 !! greater than `len(line)`, and `write_failure` if any of the `write`
 !! statements has failed.
 
-        character(1)              :: acaret
-        character(128)            :: iomsg
-        integer                   :: iostat
-        integer                   :: lun
-        character(*), parameter   :: procedure_name = 'LOG_TEXT_ERROR'
+        character(1)                  :: acaret
+        character(128)                :: iomsg
+        integer                       :: iostat
+        integer                       :: lun
+        character(*), parameter       :: procedure_name = 'LOG_TEXT_ERROR'
+        character(len=:), allocatable :: buffer
 
         acaret = optval(caret, '^')
 
@@ -1192,14 +1197,13 @@ contains
 
         call write_log_text_error_buffer( )
         if ( self % units == 0 ) then
-            write( output_unit, '(a)' ) self % buffer
+            write( output_unit, '(a)' ) buffer
         else
             do lun=1, self % units
-                write( self % log_units(lun), '(a)' ) self % buffer
+                write( self % log_units(lun), '(a)' ) buffer
             end do
         end if
-        deallocate( self % buffer )
-        self % len_buffer = 0
+        deallocate( buffer )
 
     contains
 
@@ -1243,26 +1247,26 @@ contains
             marker(column:column) = acaret
             if ( self % add_blank_line ) then
                 if ( self % time_stamp ) then
-                    self % buffer = new_line('a') // time_stamp() // &
+                    buffer = new_line('a') // time_stamp() // &
                         new_line('a') // trim(location) // &
                         new_line('a') // new_line('a') // trim(line) // &
                         new_line('a') // marker // &
                         new_line('a') // 'Error: ' // trim(summary)
                 else
-                    self % buffer = new_line('a') // trim(location) // &
+                    buffer = new_line('a') // trim(location) // &
                         new_line('a') // new_line('a') // trim(line) // &
                         new_line('a') // marker // &
                         new_line('a') // 'Error: ' // trim(summary)
                 end if
             else
                 if ( self % time_stamp ) then
-                    self % buffer = time_stamp() // &
+                    buffer = time_stamp() // &
                         new_line('a') // trim(location) // &
                         new_line('a') // new_line('a') // trim(line) // &
                         new_line('a') // marker // &
                         new_line('a') // 'Error: ' // trim(summary)
                 else
-                    self % buffer = trim(location) // &
+                    buffer = trim(location) // &
                         new_line('a') // new_line('a') // trim(line) // &
                         new_line('a') // marker // &
                         new_line('a') // 'Error: ' // trim(summary)
