@@ -84,9 +84,7 @@ significant events encountered during the execution of a program.
 | Attribute        | Type          | Description                                     | Initial value |
 |------------------|---------------|-------------------------------------------------|--------------|
 | `add_blank_line` | Logical       | Flag to precede output with a blank line        | `.false.`    |
-| `buffer`         | Character(:)  | Buffer to build output string                   | Unallocated  |
 | `indent_lines`   | Logical       | Flag to indent subsequent lines by four columns | `.true.`     |
-| `len_buffer`     | Integer       | Number of valid characters in buffer            | 0            |
 | `log_units`      | Integer array | List of I/O units used for output               | Unallocated  |
 | `max_width`      | Integer       | Maximum column width of output                  | 0            |
 | `time_stamp`     | Logical       | Flag to precede output by a time stamp          | `.true.`     |
@@ -425,7 +423,7 @@ Subroutine
 #### Arguments
 
 `self`: shall be a scalar variable of type `logger_type`. It is an
-`intent(inout)` argument. It is the logger used to send the message.
+`intent(in)` argument. It is the logger used to send the message.
 
 `message`: shall be a scalar default character expression. It is an
 `intent(in)` argument.
@@ -508,7 +506,7 @@ Subroutine
 #### Arguments
 
 `self`: shall be a scalar variable of type `logger_type`. It is an
-`intent(inout)` argument. It is the logger used to send the message.
+`intent(in)` argument. It is the logger used to send the message.
 
 `message`: shall be a scalar default character expression. It is an
   `intent(in)` argument.
@@ -579,7 +577,7 @@ Subroutine
 
 #### Arguments
 `self`: shall be a scalar variable of type `logger_type`. It is an
-`intent(inout)` argument. It is the logger used to send the message.
+`intent(in)` argument. It is the logger used to send the message.
 
 `message`: shall be a scalar default character expression. It is an
   `intent(in)` argument.
@@ -657,7 +655,7 @@ Subroutine
 #### Arguments
 
 `self`: shall be a scalar variable of type `logger_type`. It is an
-`intent(inout)` argument. It is the logger used to send the message.
+`intent(in)` argument. It is the logger used to send the message.
 
 `message`: shall be a scalar default character expression. It is an
   `intent(in)` argument.
@@ -733,7 +731,7 @@ Subroutine
 #### Arguments
 
 `self`: shall be a scalar variable of type `logger_type`. It is an
-`intent(inout)` argument. It is the logger used to send the message.
+`intent(in)` argument. It is the logger used to send the message.
 
 `line`: shall be a scalar default character expression. It is an
   `intent(in)` argument. It should be the line of text in which the
@@ -879,7 +877,7 @@ Subroutine
 #### Arguments
 
 `self`: shall be a scalar variable of type `logger_type`. It is an
-`intent(inout)` argument. It is the logger used to send the message.
+`intent(in)` argument. It is the logger used to send the message.
 
 `message`: shall be a scalar default character expression. It is an
   `intent(in)` argument.
