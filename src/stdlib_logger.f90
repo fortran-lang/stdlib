@@ -521,10 +521,10 @@ contains
 !! Writes the STRING to UNIT ensuring that the number of characters
 !! does not exceed MAX_WIDTH and that the lines after the first
 !! one are indented four characters.
-        class(logger_type), intent(inout)          :: self
-        integer, intent(out)                       :: len_buffer
+        class(logger_type), intent(in)             :: self
         character(*), intent(in)                   :: string
         character(*), intent(in)                   :: col_indent
+        integer, intent(out)                       :: len_buffer
         character(len=:), allocatable, intent(out) :: buffer
 
         integer :: count, indent_len, index_, length, remain
@@ -799,7 +799,7 @@ contains
 !!     end module example_mod
 !!
 
-        class(logger_type), intent(inout)       :: self
+        class(logger_type), intent(in)          :: self
 !! The logger to be used in logging the message
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
@@ -888,7 +888,7 @@ contains
 !!     end module example_mod
 !!
 
-        class(logger_type), intent(inout)       :: self
+        class(logger_type), intent(in)          :: self
 !! The logger used to send the message
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
@@ -941,7 +941,7 @@ contains
 !!      ...
 !!    end program example
 
-        class(logger_type), intent(inout)       :: self
+        class(logger_type), intent(in)          :: self
 !! The logger variable to receivee the message
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
@@ -1027,7 +1027,7 @@ contains
 !!    end module example_mod
 !!
 
-        class(logger_type), intent(inout)       :: self
+        class(logger_type), intent(in)          :: self
 !! The logger variable to receive the message
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
@@ -1151,7 +1151,7 @@ contains
 !!      ...
 !!    end program example
 !!
-        class(logger_type), intent(inout)     :: self
+        class(logger_type), intent(in)        :: self
 !! The logger variable to receive the message
         character(*), intent(in)              :: line
 !! The line of text in which the error was found.
@@ -1362,7 +1362,7 @@ contains
 !!       ...
 !!     end module example_mod
 !!
-        class(logger_type), intent(inout)       :: self
+        class(logger_type), intent(in)          :: self
 !! The logger to which the message is written
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
