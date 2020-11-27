@@ -1103,8 +1103,6 @@ contains
             end if
         end if
 
-        deallocate( buffer )
-        len_buffer = 0
 
         return
 
@@ -1203,7 +1201,6 @@ contains
                 write( self % log_units(lun), '(a)' ) buffer
             end do
         end if
-        deallocate( buffer )
 
     contains
 
