@@ -69,13 +69,20 @@ module stdlib_logger
         write_failure = 8
 
     integer, parameter, public ::      &
+        stdlib_all_level = 0,          &
         stdlib_debug_level = 10,       &
         stdlib_information_level = 20, &
         stdlib_warning_level = 30,     &
         stdlib_error_level = 40,       &
         stdlib_io_error_level = 40,    &
-        stdlib_text_error_level = 40
-
+        stdlib_text_error_level = 40,  &
+        stdlib_none_level = 10 + max(  &
+            stdlib_debug_level,        &
+            stdlib_information_level,  &
+            stdlib_warning_level,      &
+            stdlib_error_level,        &
+            stdlib_io_error_level,     &
+            stdlib_text_error_level)
 
     character(*), parameter :: module_name = 'stdlib_logger'
 
@@ -389,7 +396,7 @@ contains
     end subroutine add_log_unit
 
 
-    pure subroutine configuration( self, add_blank_line, indent, &
+    pure subroutine configuration( self, add_blank_line, indent, level, &
         max_width, time_stamp, log_units )
 !! version: experimental
 
@@ -399,12 +406,13 @@ contains
 !!    starts with a blank line, and `.false.` implying no blank line.
 !! 2. `indent` is a logical flag with `.true.` implying that subsequent columns
 !!    will be indented 4 spaces and `.false.` implying no indentation.
-!! 3. `max_width` is the maximum number of columns of output text with
+!! 3. `level` is the lowest level for printing a message
+!! 4. `max_width` is the maximum number of columns of output text with
 !!    `max_width` == 0 => no bounds on output width.
-!! 4. `time_stamp` is a logical flag with `.true.` implying that the output
+!! 5. `time_stamp` is a logical flag with `.true.` implying that the output
 !!    will have a time stamp, and `.false.` implying that there will be no
 !!    time stamp.
-!! 5. `log_units` is an array of the I/O unit numbers to which log output
+!! 6. `log_units` is an array of the I/O unit numbers to which log output
 !!    will be written.
 !!([Specification](../page/specs/stdlib_logger.html#configuration-report-a-loggers-configuration))
 
@@ -414,6 +422,8 @@ contains
 !! A logical flag to add a preceding blank line
         logical, intent(out), optional              :: indent
 !! A logical flag to indent subsequent lines
+        integer, intent(out), optional              :: level
+!! The mimimum level for printing a message
         integer, intent(out), optional              :: max_width
 !! The maximum number of columns for most outputs
         logical, intent(out), optional              :: time_stamp
@@ -444,6 +454,7 @@ contains
 
         if ( present(add_blank_line) ) add_blank_line = self % add_blank_line
         if ( present(indent) ) indent = self % indent_lines
+        if ( present(level) ) level = self % level
         if ( present(max_width) ) max_width = self % max_width
         if ( present(time_stamp) ) time_stamp = self % time_stamp
         if ( present(log_units) .and. self % units .gt. 0 ) then
@@ -455,7 +466,7 @@ contains
     end subroutine configuration
 
 
-    pure subroutine configure( self, add_blank_line, indent, max_width, &
+    pure subroutine configure( self, add_blank_line, indent, level, max_width, &
         time_stamp )
 !! version: experimental
 
@@ -467,10 +478,11 @@ contains
 !! 2. `indent` is a logical flag with `.true.` implying that subsequent lines
 !!    will be indented 4 spaces and `.false.` implying no indentation. `indent`
 !!    has a startup value of `.true.`.
-!! 3. `max_width` is the maximum number of columns of output text with
+!! 3. `level` is the lowest level for printing a message
+!! 4. `max_width` is the maximum number of columns of output text with
 !!    `max_width == 0` => no bounds on output width. `max_width` has a startup
 !!    value of 0.
-!! 4. `time_stamp` is a logical flag with `.true.` implying that the output
+!! 5. `time_stamp` is a logical flag with `.true.` implying that the output
 !!    will have a time stamp, and `.false.` implying that there will be no
 !!    time stamp. `time_stamp` has a startup value of `.true.`.
 !!([Specification](../page/specs/stdlib_logger.html#configure-configure-the-logging-process))
@@ -485,10 +497,12 @@ contains
         class(logger_type), intent(inout) :: self
         logical, intent(in), optional     :: add_blank_line
         logical, intent(in), optional     :: indent
+        integer, intent(in), optional     :: level
         integer, intent(in), optional     :: max_width
         logical, intent(in), optional     :: time_stamp
 
         if ( present(add_blank_line) ) self % add_blank_line = add_blank_line
+        if ( present(level) ) self % level = level
         if ( present(indent) ) self % indent_lines = indent
         if ( present(max_width) ) then
             if ( max_width <= 4 ) then
