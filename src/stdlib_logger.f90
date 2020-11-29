@@ -69,13 +69,19 @@ module stdlib_logger
         write_failure = 8
 
     integer, parameter, public ::      &
-        stdlib_all_level = 0,          &
         stdlib_debug_level = 10,       &
         stdlib_information_level = 20, &
         stdlib_warning_level = 30,     &
         stdlib_error_level = 40,       &
         stdlib_io_error_level = 40,    &
         stdlib_text_error_level = 40,  &
+        stdlib_all_level = -10 + min(  &
+            stdlib_debug_level,        &
+            stdlib_information_level,  &
+            stdlib_warning_level,      &
+            stdlib_error_level,        &
+            stdlib_io_error_level,     &
+            stdlib_text_error_level),  &
         stdlib_none_level = 10 + max(  &
             stdlib_debug_level,        &
             stdlib_information_level,  &
