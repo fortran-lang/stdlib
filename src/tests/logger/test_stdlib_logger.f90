@@ -142,6 +142,22 @@ contains
             module = 'N/A',                                                &
             procedure = 'TEST_STDLIB_LOGGER' )
 
+        call global % log_debug( 'This message should be output ' //       &
+            'to OUTPUT_UNIT, unlimited in width, not preceded by ' //      &
+            'a blank line, then by a time stamp, then by MODULE % ' //     &
+            'PROCEDURE, be prefixed by DEBUG and be indented on ' //       &
+            'subsequent lines by 4 columns.',                              &
+            module = 'N/A',                                                &
+            procedure = 'TEST_STDLIB_LOGGER' )
+
+        call global % log_debug( 'This message should be output ' //       &
+            'to OUTPUT_UNIT, unlimited in width, not preceded by ' //      &
+            'a blank line, then by a time stamp, then by MODULE % ' //     &
+            'PROCEDURE, be prefixed by DEBUG. ' // new_line('a') //        &
+            'This is a new line of the same log message.',                 &
+            module = 'N/A',                                                &
+            procedure = 'TEST_STDLIB_LOGGER' )
+
         call global % configure( add_blank_line=.true., indent=.false., &
             max_width=72, time_stamp=.false. )
 

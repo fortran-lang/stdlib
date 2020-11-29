@@ -29,7 +29,7 @@ The logger variables have the option to:
   that prompted the log message;
 * follow a message with the `iostat` and `iomsg` of the I/O error
   report that prompted the log message;
-* label a message with one of `'INFO: '`, `'WARN: '`,
+* label a message with one of `'DEBUG: '`, `'INFO: '`, `'WARN: '`,
   `'ERROR: '`, or `'I/O ERROR: '`;
 * indent subsequent lines of the messages; and
 * format the text to fit within a maximum column width.
@@ -110,6 +110,7 @@ Method               | Class      | Description
 [`add_log_unit`](./stdlib_logger.html#add_log_unit-add-a-unit-to-the-array-self-log_units)       | Subroutine | Adds an existing unit to the `log_units` list
 [`configuration`](./stdlib_logger.html#configuration-report-a-loggers-configuration)      | Subroutine | Reports the details of the logging configuration
 [`configure`](./stdlib_logger.html#configure-configure-the-logging-process)          | Subroutine | Configures the details of the logging process
+[`log_debug`](./stdlib_logger.html#log_debug-writes-the-string-message-to-self-log_units)    | Subroutine | Sends a message prepended by `'DEBUG: '`
 [`log_error`](./stdlib_logger.html#log_error-writes-the-string-message-to-self-log_units)          | Subroutine | Sends a message prepended by `'ERROR: '` optionally followed by a `stat` or `errmsg`
 [`log_information`](./stdlib_logger.html#log_information-writes-the-string-message-to-self-log_units)    | Subroutine | Sends a message prepended by `'INFO: '`
 [`log_io_error`](./stdlib_logger.html#log_io_error-write-the-string-message-to-self-log_units)       | Subroutine | Sends a message prepended by `'I/O ERROR: '` optionally followed by an `iostat` or `iomsg`
@@ -393,6 +394,75 @@ program demo_configure
     call global % configure( indent=.false., max_width=72 )
       
 end program demo_configure
+```
+
+### `log_debug` - Writes the string `message` to `self % log_units`
+
+#### Status
+
+Experimental
+
+#### Description
+
+Writes the string `message` to `self % log_units` with optional additional text.
+
+#### Syntax
+
+`call self % [[logger_type(type):log_debug(bound)]]( message [, module, procedure ] )`
+
+#### Behavior
+
+If time stamps are active, a time stamp is written, followed
+by `module` and `procedure` if present, and then
+`message` is written with the prefix `'DEBUG: '`.
+
+#### Class
+
+Subroutine
+
+#### Arguments
+
+`self`: shall be a scalar variable of type `logger_type`. It is an
+`intent(in)` argument. It is the logger used to send the message.
+
+`message`: shall be a scalar default character expression. It is an
+  `intent(in)` argument.
+
+* Note `message` may have embedded new_line calls. 
+
+`module` (optional): shall be a scalar default character
+  expression. It is an `intent(in)` argument. It should be the name of
+  the module containing the `log_information` call.
+
+`procedure` (optional): shall be a scalar default character
+  expression. It is an `intent(in)` argument. It should be the name of
+  the procedure containing the `log_information` call.
+
+#### Example
+
+```fortran
+module  example_mod
+    use stdlib_logger
+    
+    real, allocatable :: a(:)
+    
+    type(logger_type) :: logger
+    contains
+    
+    subroutine example_sub( selection )
+        integer, intent(out) :: selection
+        character(128) :: errmsg, message
+        integer        :: stat
+        write(*,'(a)') "Enter an integer to select a widget"
+        read(*,'(i0)') selection
+        write( message, '(a, i0)' )                     &
+              "The user selected ", selection
+        call logger % log_DEBUG( message,               &
+            module = 'EXAMPLE_MOD', procedure = 'EXAMPLE_SUB' )
+        
+    end subroutine example_sub
+    
+end module example_mod
 ```
 
 ### `log_error` - Writes the string `message` to `self % log_units`
