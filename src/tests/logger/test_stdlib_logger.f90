@@ -12,7 +12,7 @@ program test_stdlib_logger
     implicit none
 
     integer, allocatable :: log_units(:)
-    integer              :: max_width, stat
+    integer              :: level, max_width, stat
     integer              :: unit1, unit2, unit3, unit4, unit5, unit6
     logical              :: add_blank_line, exist, indent, time_stamp
 
@@ -71,6 +71,7 @@ program test_stdlib_logger
                                   caret = '^',                              &
                                   stat = stat )
 
+    call test_level()
 
 contains
 
@@ -648,5 +649,34 @@ contains
 
         return
     end subroutine test_adding_log_units
+
+    subroutine test_level()
+
+        print *, 'running test_level'
+
+        call global % configure( level = stdlib_none_level )
+
+        call global % configuration( level = level )
+
+        if ( level == stdlib_none_level ) then
+            write(*,*) 'LEVEL is none as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to none contrary ' // &
+                'to expectations.'
+
+        end if
+
+        call global % log_message('log_message printed')
+
+        call global % log_debug( 'This message should not be printed')
+        call global % log_information( 'This message should not be printed')
+        call global % log_error( 'This message should not be printed')
+        call global % log_io_error( 'This message should not be printed')
+
+
+
+
+    end subroutine test_level
 
 end program test_stdlib_logger
