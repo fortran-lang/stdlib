@@ -68,6 +68,15 @@ module stdlib_logger
         unopened_in_error = 7,    &
         write_failure = 8
 
+    integer, parameter, public ::      &
+        stdlib_debug_level = 10,       &
+        stdlib_information_level = 20, &
+        stdlib_warning_level = 30,     &
+        stdlib_error_level = 40,       &
+        stdlib_io_error_level = 40,    &
+        stdlib_text_error_level = 40
+
+
     character(*), parameter :: module_name = 'stdlib_logger'
 
     type :: logger_type
@@ -78,6 +87,7 @@ module stdlib_logger
 
         logical                   :: add_blank_line = .false.
         logical                   :: indent_lines = .true.
+        integer                   :: level = stdlib_information_level
         integer, allocatable      :: log_units(:)
         integer                   :: max_width = 0
         logical                   :: time_stamp = .true.
@@ -806,6 +816,8 @@ contains
 !! The name of the procedure contining the current invocation of
 !! `log_information`
 
+        if ( self % level > stdlib_debug_level) return
+
         call self % log_message( message,               &
                                  module = module,       &
                                  procedure = procedure, &
@@ -876,6 +888,8 @@ contains
         character(256) :: iomsg
         character(*), parameter :: procedure_name = 'log_error'
         character(:), allocatable :: suffix
+
+        if ( self % level > stdlib_error_level) return
 
         if ( present(stat) ) then
             write( dummy, '(a, i0)', err=999, iostat=iostat, iomsg=iomsg ) &
@@ -957,6 +971,8 @@ contains
 !! The name of the procedure contining the current invocation of
 !! `log_information`
 
+        if ( self % level > stdlib_information_level) return
+
         call self % log_message( message,               &
                                  module = module,       &
                                  procedure = procedure, &
@@ -1018,6 +1034,8 @@ contains
         integer :: iostat2
         character(*), parameter :: procedure_name = 'log_io_error'
         character(:), allocatable :: suffix
+
+        if ( self % level > stdlib_io_error_level) return
 
         if ( present(iostat) ) then
             write( dummy, '(a, i0)', err=999, iostat=iostat2, iomsg=iomsg2 ) &
@@ -1236,6 +1254,8 @@ contains
         integer                       :: lun
         character(*), parameter       :: procedure_name = 'LOG_TEXT_ERROR'
         character(len=:), allocatable :: buffer
+
+        if ( self % level > stdlib_text_error_level) return
 
         acaret = optval(caret, '^')
 
