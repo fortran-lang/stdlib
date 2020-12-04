@@ -654,14 +654,14 @@ contains
 
         print *, 'running test_level'
 
-        call global % configure( level = stdlib_all_level )
+        call global % configure( level = all_level )
 
         call global % configuration( level = level )
-        if ( level == stdlib_all_level ) then
-            write(*,*) 'LEVEL is stdlib_all_level as expected.'
+        if ( level == all_level ) then
+            write(*,*) 'LEVEL is all_level as expected.'
 
         else
-            error stop 'LEVEL starts off as not equal to stdlib_all_level ' //&
+            error stop 'LEVEL starts off as not equal to all_level ' //&
             'contrary to expectations.'
 
         end if
@@ -674,14 +674,14 @@ contains
         call global % log_error( 'This message should be printed')
         call global % log_io_error( 'This message should be printed')
 
-        call global % configure( level = stdlib_debug_level )
+        call global % configure( level = debug_level )
 
         call global % configuration( level = level )
-        if ( level == stdlib_debug_level ) then
-            write(*,*) 'LEVEL is stdlib_debug_level as expected.'
+        if ( level == debug_level ) then
+            write(*,*) 'LEVEL is debug_level as expected.'
 
         else
-            error stop 'LEVEL starts off as not equal to stdlib_debug_level ' //&
+            error stop 'LEVEL starts off as not equal to debug_level ' //&
             'contrary to expectations.'
 
         end if
@@ -694,14 +694,14 @@ contains
         call global % log_error( 'This message should be printed')
         call global % log_io_error( 'This message should be printed')
 
-        call global % configure( level = stdlib_information_level )
+        call global % configure( level = information_level )
 
         call global % configuration( level = level )
-        if ( level == stdlib_information_level ) then
-            write(*,*) 'LEVEL is stdlib_information_level as expected.'
+        if ( level == information_level ) then
+            write(*,*) 'LEVEL is information_level as expected.'
 
         else
-            error stop 'LEVEL starts off as not equal to stdlib_information_level ' //&
+            error stop 'LEVEL starts off as not equal to information_level ' //&
             'contrary to expectations.'
 
         end if
@@ -714,14 +714,14 @@ contains
         call global % log_error( 'This message should be printed')
         call global % log_io_error( 'This message should be printed')
 
-        call global % configure( level = stdlib_warning_level )
+        call global % configure( level = warning_level )
 
         call global % configuration( level = level )
-        if ( level == stdlib_warning_level ) then
-            write(*,*) 'LEVEL is stdlib_warning_level as expected.'
+        if ( level == warning_level ) then
+            write(*,*) 'LEVEL is warning_level as expected.'
 
         else
-            error stop 'LEVEL starts off as not equal to stdlib_warning_level ' //&
+            error stop 'LEVEL starts off as not equal to warning_level ' //&
             'contrary to expectations.'
 
         end if
@@ -734,14 +734,14 @@ contains
         call global % log_error( 'This message should be printed')
         call global % log_io_error( 'This message should be printed')
 
-        call global % configure( level = stdlib_error_level )
+        call global % configure( level = error_level )
 
         call global % configuration( level = level )
-        if ( level == stdlib_error_level ) then
-            write(*,*) 'LEVEL is stdlib_error_level as expected.'
+        if ( level == error_level ) then
+            write(*,*) 'LEVEL is error_level as expected.'
 
         else
-            error stop 'LEVEL starts off as not equal to stdlib_error_level ' //&
+            error stop 'LEVEL starts off as not equal to error_level ' //&
             'contrary to expectations.'
 
         end if
@@ -754,14 +754,14 @@ contains
         call global % log_error( 'This message should be printed')
         call global % log_io_error( 'This message should be printed')
 
-        call global % configure( level = stdlib_none_level )
+        call global % configure( level = none_level )
 
         call global % configuration( level = level )
-        if ( level == stdlib_none_level ) then
-            write(*,*) 'LEVEL is stdlib_none_level as expected.'
+        if ( level == none_level ) then
+            write(*,*) 'LEVEL is none_level as expected.'
 
         else
-            error stop 'LEVEL starts off as not equal to stdlib_none_level ' //&
+            error stop 'LEVEL starts off as not equal to none_level ' //&
             'contrary to expectations.'
 
         end if
