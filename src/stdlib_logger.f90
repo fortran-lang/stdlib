@@ -69,26 +69,26 @@ module stdlib_logger
         write_failure = 8
 
     integer, parameter, public ::      &
-        stdlib_debug_level = 10,       &
-        stdlib_information_level = 20, &
-        stdlib_warning_level = 30,     &
-        stdlib_error_level = 40,       &
-        stdlib_io_error_level = 40,    &
-        stdlib_text_error_level = 40,  &
-        stdlib_all_level = -10 + min(  &
-            stdlib_debug_level,        &
-            stdlib_information_level,  &
-            stdlib_warning_level,      &
-            stdlib_error_level,        &
-            stdlib_io_error_level,     &
-            stdlib_text_error_level),  &
-        stdlib_none_level = 10 + max(  &
-            stdlib_debug_level,        &
-            stdlib_information_level,  &
-            stdlib_warning_level,      &
-            stdlib_error_level,        &
-            stdlib_io_error_level,     &
-            stdlib_text_error_level)
+        debug_level = 10,       &
+        information_level = 20, &
+        warning_level = 30,     &
+        error_level = 40,       &
+        io_error_level = 40,    &
+        text_error_level = 40,  &
+        all_level = -10 + min(  &
+            debug_level,        &
+            information_level,  &
+            warning_level,      &
+            error_level,        &
+            io_error_level,     &
+            text_error_level),  &
+        none_level = 10 + max(  &
+            debug_level,        &
+            information_level,  &
+            warning_level,      &
+            error_level,        &
+            io_error_level,     &
+            text_error_level)
 
     character(*), parameter :: module_name = 'stdlib_logger'
 
@@ -100,7 +100,7 @@ module stdlib_logger
 
         logical                   :: add_blank_line = .false.
         logical                   :: indent_lines = .true.
-        integer                   :: level = stdlib_information_level
+        integer                   :: level = information_level
         integer, allocatable      :: log_units(:)
         integer                   :: max_width = 0
         logical                   :: time_stamp = .true.
@@ -838,7 +838,7 @@ contains
 !! The name of the procedure contining the current invocation of
 !! `log_information`
 
-        if ( self % level > stdlib_debug_level) return
+        if ( self % level > debug_level ) return
 
         call self % log_message( message,               &
                                  module = module,       &
@@ -911,7 +911,7 @@ contains
         character(*), parameter :: procedure_name = 'log_error'
         character(:), allocatable :: suffix
 
-        if ( self % level > stdlib_error_level) return
+        if ( self % level > error_level ) return
 
         if ( present(stat) ) then
             write( dummy, '(a, i0)', err=999, iostat=iostat, iomsg=iomsg ) &
@@ -993,7 +993,7 @@ contains
 !! The name of the procedure contining the current invocation of
 !! `log_information`
 
-        if ( self % level > stdlib_information_level) return
+        if ( self % level > information_level ) return
 
         call self % log_message( message,               &
                                  module = module,       &
@@ -1057,7 +1057,7 @@ contains
         character(*), parameter :: procedure_name = 'log_io_error'
         character(:), allocatable :: suffix
 
-        if ( self % level > stdlib_io_error_level) return
+        if ( self % level > io_error_level ) return
 
         if ( present(iostat) ) then
             write( dummy, '(a, i0)', err=999, iostat=iostat2, iomsg=iomsg2 ) &
@@ -1277,7 +1277,7 @@ contains
         character(*), parameter       :: procedure_name = 'LOG_TEXT_ERROR'
         character(len=:), allocatable :: buffer
 
-        if ( self % level > stdlib_text_error_level) return
+        if ( self % level > text_error_level ) return
 
         acaret = optval(caret, '^')
 
