@@ -127,6 +127,62 @@ contains
 
         end if
 
+        !testing all calls independently
+        call global % configuration( add_blank_line=add_blank_line )
+
+        if ( .not. add_blank_line ) then
+            write(*,*) 'ADD_BLANK_LINE starts off as .FALSE. as expected.'
+
+        else
+            error stop 'ADD_BLANK_LINE starts off as .TRUE. contrary to ' // &
+                'expectations.'
+
+        end if
+
+        call global % configuration( indent=indent )
+
+        if ( indent ) then
+            write(*,*) 'INDENT starts off as .TRUE. as expected.'
+
+        else
+            error stop 'INDENT starts off as .FALSE. contrary to expectations.'
+
+        end if
+
+        call global % configuration( max_width=max_width )
+
+        if ( max_width == 0 ) then
+            write(*,*) 'MAX_WIDTH starts off as 0 as expected.'
+
+        else
+            error stop 'MAX_WIDTH starts off as not equal to 0 contrary ' // &
+                'to expectations.'
+
+        end if
+
+        call global % configuration( time_stamp=time_stamp )
+
+        if ( time_stamp ) then
+            write(*,*) 'TIME_STAMP starts off as .TRUE. as expected.'
+
+        else
+            error stop 'TIME_STAMP starts off as .FALSE. contrary to ' // &
+                'expectations.'
+
+        end if
+
+        call global % configuration( log_units=log_units )
+
+        if ( size(log_units) == 0 ) then
+            write(*,*) 'SIZE(LOG_UNITS) starts off as 0 as expected.'
+
+        else
+            error stop 'SIZE(LOG_UNITS) starts off as non-zero contrary ' // &
+                'to expectations.'
+
+        end if
+
+
         call global % log_information( 'This message should be output ' // &
             'to OUTPUT_UNIT, unlimited in width, not preceded by ' //      &
             'a blank line, then by a time stamp, then by MODULE % ' //     &
