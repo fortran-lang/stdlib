@@ -1472,6 +1472,8 @@ contains
         character(len=*), intent(in), optional  :: procedure
 !! The name of the procedure contining the current invocation of `log_warning`
 
+        if ( self % level > warning_level ) return
+
         call self % log_message( message,               &
                                  module = module,       &
                                  procedure = procedure, &

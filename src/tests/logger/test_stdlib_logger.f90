@@ -722,7 +722,8 @@ contains
 
         end if
 
-        call global % log_message('log_message printed')
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
 
         call global % log_debug( 'This message should be printed')
         call global % log_information( 'This message should be printed')
@@ -742,7 +743,8 @@ contains
 
         end if
 
-        call global % log_message('log_message printed')
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
 
         call global % log_debug( 'This message should be printed')
         call global % log_information( 'This message should be printed')
@@ -762,7 +764,8 @@ contains
 
         end if
 
-        call global % log_message('log_message printed')
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
 
         call global % log_debug( 'This message should NOT be printed')
         call global % log_information( 'This message should be printed')
@@ -782,7 +785,8 @@ contains
 
         end if
 
-        call global % log_message('log_message printed')
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
 
         call global % log_debug( 'This message should NOT be printed')
         call global % log_information( 'This message should NOT be printed')
@@ -802,7 +806,8 @@ contains
 
         end if
 
-        call global % log_message('log_message printed')
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
 
         call global % log_debug( 'This message should NOT be printed')
         call global % log_information( 'This message should NOT be printed')
@@ -822,7 +827,8 @@ contains
 
         end if
 
-        call global % log_message('log_message printed')
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
 
         call global % log_debug( 'This message should NOT be printed')
         call global % log_information( 'This message should NOT be printed')
