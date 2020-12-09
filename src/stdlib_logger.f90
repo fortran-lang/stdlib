@@ -91,6 +91,7 @@ module stdlib_logger
         procedure, public, pass(self) :: add_log_unit
         procedure, public, pass(self) :: configuration
         procedure, public, pass(self) :: configure
+        procedure, public, pass(self) :: log_debug
         procedure, public, pass(self) :: log_error
         procedure, public, pass(self) :: log_information
         procedure, public, pass(self) :: log_io_error
@@ -755,6 +756,64 @@ contains
          error stop 'write failure in ' // module_name // '.'
 
      end subroutine handle_write_failure
+
+
+    subroutine log_debug( self, message, module, procedure )
+!! version: experimental
+
+!! Writes the string `message` to `self % log_units` with optional additional
+!! text.
+!!([Specification](../page/specs/stdlib_logger.html#log_debug-writes-the-string-message-to-self-log_units))
+!!
+!!##### Behavior
+!!
+!! If time stamps are active, a time stamp is written, followed by
+!! `module` and `procedure` if present, and then `message` is
+!! written with the prefix 'DEBUG: '.
+!!
+!!##### Example
+!!
+!!     module  example_mod
+!!       use stdlib_logger
+!!       ...
+!!       real, allocatable :: a(:)
+!!       ...
+!!       type(logger_type) :: alogger
+!!       ...
+!!     contains
+!!       ...
+!!       subroutine example_sub( selection )
+!!         integer, intent(out) :: selection
+!!         integer        :: stat
+!!         write(*,'(a)') "Enter an integer to select a widget"
+!!         read(*,'(i0)') selection
+!!         write( message, `(a, i0)' )           &
+!!               "The user selected ", selection
+!!         call alogger % log_debug( message,                   &
+!!                                   module = 'EXAMPLE_MOD',    &
+!!                                   procedure = 'EXAMPLE_SUB' )
+!!         ...
+!!       end subroutine example_sub
+!!       ...
+!!     end module example_mod
+!!
+
+        class(logger_type), intent(in)          :: self
+!! The logger used to send the message
+        character(len=*), intent(in)            :: message
+!! A string to be written to log_unit
+        character(len=*), intent(in), optional  :: module
+!! The name of the module contining the current invocation of `log_information`
+        character(len=*), intent(in), optional  :: procedure
+!! The name of the procedure contining the current invocation of
+!! `log_information`
+
+        call self % log_message( message,               &
+                                 module = module,       &
+                                 procedure = procedure, &
+                                 prefix = 'DEBUG' )
+
+    end subroutine log_debug
 
 
     subroutine log_error( self, message, module, procedure, stat, errmsg )
