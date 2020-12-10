@@ -244,17 +244,25 @@ contains
             'write_bitset'
 
         call set2 % from_string( bitstring_33 )
-        open( newunit=unit, file='test.txt', status='replace', &
+        open( newunit=unit, file='test123.txt', status='replace', &
             form='formatted', action='write' )
         call set2 % write_bitset(unit)
         call set1 % write_bitset(unit)
         call set0 % write_bitset(unit)
         close( unit )
-        open( newunit=unit, file='test.txt', status='old', &
+
+        ! Wait 10 seconds, in the hope that the file gets saved before we open it
+        call sleep(10)
+
+        open( newunit=unit, file='test123.txt', status='old', &
             form='formatted', action='read' )
+        print *, "1"
         call set3 % read_bitset(unit)
+        print *, "2"
         call set5 % read_bitset(unit)
+        print *, "3"
         call set4 % read_bitset(unit)
+        print *, "4"
         if ( set4 /= set0 .or. set5 /= set1 .or. set3 /= set2 ) then
             error stop procedure // ' transfer to and from units using ' // &
                 ' bitset literals failed.'
