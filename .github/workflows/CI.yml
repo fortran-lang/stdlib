@@ -121,7 +121,7 @@ jobs:
     - name: Install Intel oneAPI compiler
       if: contains(matrix.os, 'ubuntu')
       run: |
-        sudo apt-get install intel-oneapi-ifort
+        sudo apt-get install intel-oneapi-compiler-fortran
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
 
