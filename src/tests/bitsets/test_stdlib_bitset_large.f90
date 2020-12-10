@@ -238,6 +238,7 @@ contains
         character(*), parameter:: procedure = 'TEST_IO'
 
         integer :: unit
+        integer :: j, i
 
         write(*,*)
         write(*,*) 'Test bitset I/O: input, read_bitset, output, and ' // &
@@ -251,8 +252,13 @@ contains
         call set0 % write_bitset(unit)
         close( unit )
 
-        ! Wait 10 seconds, in the hope that the file gets saved before we open it
-        call sleep(10)
+        ! Sleep
+        print *, "sleeping"
+        i = 0
+        do j = 1, 1000000000
+            i = i + 1
+        end do
+        print *, "up"
 
         open( newunit=unit, file='test123.txt', status='old', &
             form='formatted', action='read' )
