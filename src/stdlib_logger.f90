@@ -429,7 +429,7 @@ contains
         logical, intent(out), optional              :: indent
 !! A logical flag to indent subsequent lines
         integer, intent(out), optional              :: level
-!! The mimimum level for printing a message
+!! The minimum level for printing a message
         integer, intent(out), optional              :: max_width
 !! The maximum number of columns for most outputs
         logical, intent(out), optional              :: time_stamp
