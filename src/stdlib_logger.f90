@@ -74,7 +74,7 @@ module stdlib_logger
         warning_level = 30,     &
         error_level = 40,       &
         io_error_level = 40,    &
-        text_error_level = 40,  &
+        text_error_level = 50,  &
         all_level = -10 + min(  &
             debug_level,        &
             information_level,  &

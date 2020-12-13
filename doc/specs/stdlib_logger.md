@@ -72,8 +72,8 @@ filtering the log messages. These constants, termed severity levels, are
 `io_error_level`, `text_error_level`, and `none_level`.
 All log messages with a level (e.g., `debug_level`) lower than a
 specified severity level (e.g., `information_level`) will be ignored.
-The levels `error_level`, `io_error_level`, and `text_error_level`
-have the same severity. The default severity level is `information_level`.
+The levels `error_level` and `io_error_level` have the same severity.
+The default severity level is `information_level`.
 
 
 ## The derived type: logger_type
