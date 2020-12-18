@@ -8,20 +8,20 @@ title: logger
 ## Introduction
 
 This module defines a derived type, its methods, a variable, and
-constants to be used for the reporting of errors, for filtering the 
-log messages, and other information. The derived type, `logger_type`,
-is to be used to define both global and local logger variables. The 
-`logger_type` methods serve to configure the loggers and use the logger
-variables to report messages to a variable specific list of I/O units
-termed `log_units`. The variable, `global_logger`, of type `logger_type`,
-is intended to serve as the default global logger. The constants serve as
-error flags returned by the optional integer `stat` argument.
+constants to be used for the reporting of errors, displaying messages,
+and other information. The derived type, `logger_type`, is to be used
+to define both global and local logger variables. The `logger_type`
+methods serve to configure the loggers and use the logger variables to
+report messages to a variable specific list of I/O units termed
+`log_units`. The variable, `global_logger`, of type `logger_type`,
+is intended to serve as the default global logger. The constants serve
+as error flags returned by the optional integer `stat` argument.
 
 The logger variables have the option to:
 
 * change which units receive the log messages;
 * report which units receive the log messages;
-* change the level for filtering the log messages;
+* select which types of messages are logged;
 * precede messages by a blank line;
 * precede messages by a time stamp of the form
   `yyyy-mm-dd hh:mm:ss.sss`;
@@ -66,10 +66,11 @@ Error Code             | Description
 `write_fault`          | one of the writes to `log_units` failed
 
 The module also defines eight distinct public integer constants for
-filtering the log messages. These constants, termed severity levels, are
-(sorted following their increasing order of severity): `all_level`, 
-`debug_level`, `information_level`, `warning_level`, `error_level`, 
-`io_error_level`, `text_error_level`, and `none_level`.
+selecting the messages that are logged. These constants, termed
+severity levels, are (sorted following their increasing order of
+severity): `all_level`, `debug_level`, `information_level`,
+`warning_level`, `error_level`, `io_error_level`, `text_error_level`,
+and `none_level`.
 All log messages with a level (e.g., `debug_level`) lower than a
 specified severity level (e.g., `information_level`) will be ignored.
 The levels `error_level` and `io_error_level` have the same severity.
