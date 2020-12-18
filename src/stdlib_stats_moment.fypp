@@ -28,7 +28,7 @@ contains
           return
         end if
 
-        n = size(x, kind = int64)
+        n = real(size(x, kind = int64), ${k1}$)
 
         if (present(center)) then
          res = sum((x - center)**order) / n
@@ -58,7 +58,7 @@ contains
           return
         end if
 
-        n = size(x, kind = int64)
+        n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
          res = sum((real(x, dp) - center)**order) / n
@@ -118,7 +118,7 @@ contains
           return
         end if
 
-        n = size(x, dim)
+        n = real(size(x, dim), ${k1}$)
 
         res = 0
         select case(dim)
@@ -193,7 +193,7 @@ contains
           return
         end if
 
-        n = size(x, dim)
+        n = real(size(x, dim), dp)
 
         res = 0
         select case(dim)
@@ -234,7 +234,7 @@ contains
 
         real(${k1}$) :: n
 
-        n = count(mask, kind = int64)
+        n = real(count(mask, kind = int64), ${k1}$)
 
         if (present(center)) then
          res = sum((x - center)**order, mask) / n
@@ -259,7 +259,7 @@ contains
 
         real(dp) :: n
 
-        n = count(mask, kind = int64)
+        n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
          res = sum((real(x, dp) - center)**order, mask) / n
@@ -309,7 +309,7 @@ contains
         real(${k1}$) :: n${reduced_shape('x', rank, 'dim')}$
         ${t1}$, allocatable :: mean_${ranksuffix(rank-1)}$
 
-        n = count(mask, dim)
+        n = real(count(mask, dim), ${k1}$)
 
         res = 0
         select case(dim)
@@ -387,7 +387,7 @@ contains
         real(dp) :: n${reduced_shape('x', rank, 'dim')}$
         real(dp), allocatable :: mean_${ranksuffix(rank-1)}$
 
-        n = count(mask, dim)
+        n = real(count(mask, dim), dp)
 
         res = 0
         select case(dim)

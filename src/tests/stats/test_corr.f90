@@ -233,7 +233,7 @@ contains
             , 'int64 check 1')
         call check( ieee_is_nan(corr(x, 1, .false.))&
             , 'int64 check 2')
-        call check( ieee_is_nan(corr(x, 1, x == 1.)), 'int64 check 3')
+        call check( ieee_is_nan(corr(x, 1, x == 1)), 'int64 check 3')
         call check( abs(corr(x, 1, x < 5) - 1._dp) < dptol, 'int64 check 4')
         call check( ieee_is_nan(corr(x, 1, x < -999)), 'int64 check 5')
 
