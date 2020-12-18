@@ -833,9 +833,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of `log_information`
+!! The name of the module containing the current invocation of `log_information`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of
+!! The name of the procedure containing the current invocation of
 !! `log_information`
 
         if ( self % level > debug_level ) return
@@ -897,9 +897,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of `log_error`
+!! The name of the module containing the current invocation of `log_error`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of `log_error`
+!! The name of the procedure containing the current invocation of `log_error`
         integer, intent(in), optional           :: stat
 !! The value of the `stat` specifier returned by a Fortran statement
         character(len=*), intent(in), optional  :: errmsg
@@ -988,9 +988,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of `log_information`
+!! The name of the module containing the current invocation of `log_information`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of
+!! The name of the procedure containing the current invocation of
 !! `log_information`
 
         if ( self % level > information_level ) return
@@ -1043,9 +1043,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of REPORT_ERROR
+!! The name of the module containing the current invocation of REPORT_ERROR
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of REPORT_ERROR
+!! The name of the procedure containing the current invocation of REPORT_ERROR
         integer, intent(in), optional           :: iostat
 !! The value of the IOSTAT specifier returned by a Fortran I/O statement
         character(len=*), intent(in), optional  :: iomsg
@@ -1131,9 +1131,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of `log_message`
+!! The name of the module containing the current invocation of `log_message`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of `log_message`
+!! The name of the procedure containing the current invocation of `log_message`
         character(len=*), intent(in), optional  :: prefix
 !! To be prepended to message as `prefix // ': ' // message`.
 
@@ -1468,9 +1468,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of `log_warning`
+!! The name of the module containing the current invocation of `log_warning`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of `log_warning`
+!! The name of the procedure containing the current invocation of `log_warning`
 
         if ( self % level > warning_level ) return
 
