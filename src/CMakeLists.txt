@@ -37,6 +37,7 @@ set(SRC
     stdlib_error.f90
     stdlib_kinds.f90
     stdlib_logger.f90
+    stdlib_stringlist.f90
     stdlib_system.F90
     ${outFiles}
 )
