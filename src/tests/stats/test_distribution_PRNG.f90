@@ -2,7 +2,7 @@ program test_distribution_PRNG
     use stdlib_error, only : check
     use stdlib_kinds
     use stdlib_stats_distribution_PRNG, only :                                  &
-	    random_seed => random_distribution_seed, random_rand => rand
+	    random_seed => random_distribution_seed, random_rand => dist_rand
 	
     implicit none
     logical ::  warn = .true.
@@ -44,7 +44,8 @@ program test_distribution_PRNG
 		do i = 1, 5
 		    res(i) = random_rand(1_int8)
 		end do
-        call check(all(res == ans), msg="random seed test failed.",warn=warn)
+        call check(all(res == ans), msg="random_rand with kind int8 test"     &
+		                             //" failed.", warn=warn)
 	end subroutine test_random_rand_iint8
 
     subroutine test_random_rand_iint16
@@ -60,7 +61,8 @@ program test_distribution_PRNG
 		do i = 1, 5
 		    res(i) = random_rand(1_int16)
 		end do
-        call check(all(res == ans), msg="random seed test failed.",warn=warn)
+        call check(all(res == ans), msg="random_rand with kind int16 test"     &
+		                             //" failed.", warn=warn)
 	end subroutine test_random_rand_iint16
 
     subroutine test_random_rand_iint32
@@ -77,7 +79,8 @@ program test_distribution_PRNG
 		do i = 1, 5
 		    res(i) = random_rand(1_int32)
 		end do
-        call check(all(res == ans), msg="random seed test failed.",warn=warn)
+        call check(all(res == ans), msg="random_rand with kind int32 test"     &
+		                             //" failed.", warn=warn)
 	end subroutine test_random_rand_iint32
 
     subroutine test_random_rand_iint64
@@ -97,7 +100,8 @@ program test_distribution_PRNG
 		do i = 1, 5
 		    res(i) = random_rand(1_int64)
 		end do
-        call check(all(res == ans), msg="random seed test failed.",warn=warn)
+        call check(all(res == ans), msg="random_rand with kind int64 test"     &
+		                             //" failed.", warn=warn)
 	end subroutine test_random_rand_iint64
 
 end program test_distribution_PRNG
