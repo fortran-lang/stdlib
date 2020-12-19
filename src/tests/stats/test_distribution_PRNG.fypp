@@ -1,0 +1,66 @@
+#:include "common.fypp"
+program test_distribution_PRNG
+    use stdlib_error, only : check
+    use stdlib_kinds
+    use stdlib_stats_distribution_PRNG, only :                                  &
+	    random_seed => random_distribution_seed, random_rand => rand
+	
+    implicit none
+    logical ::  warn = .true.
+
+    call test_random_seed
+	#:for k1, t1 in INT_KINDS_TYPES
+	call test_random_rand_${t1[0]}$${k1}$
+    #:endfor
+    contains
+
+    subroutine test_random_seed
+        integer :: put, get, res(5)
+        integer :: ans(5) = [-1859553078, -1933696596,  -642834430, &
+                                    1711399314,  1548311463]
+        integer :: i
+
+        print *, ""
+        print *, "Test random_seed"
+        put = 135792468
+        do i = 1, 5
+            call random_seed(put,get)
+            res(i) = get
+            put = get
+        end do
+        call check(all(res == ans), msg="random seed test failed.",warn=warn)
+    end subroutine test_random_seed
+
+    #:for k1, t1 in INT_KINDS_TYPES
+    subroutine test_random_rand_${t1[0]}$${k1}$
+	    integer :: put, get, i
+		
+		#:if k1 == "int8"
+		${t1}$ :: res(5), ans(5)=[118, -15, -72, 101, 70]
+		#:elif k1 == "int16"
+        ${t1}$ :: res(5), ans(5)=[30286, -3799, -18204, 25947, 18148]
+		#:elif k1 == "int32"
+        ${t1}$ :: res(5), ans(5)=[1984865646, -248954393, -1192993267,          &
+		                          1700514835, 1189401802]
+		#:else
+		${t1}$ :: res(5), ans(5)=[8524933037632333570_int64,                    &
+		                          -1069250973542918798_int64,                   &
+		                          -5123867065024149335_int64,                   &
+								  7303655603304982073_int64,                    &
+								  5108441843522503546_int64]
+		#:endif
+
+
+		print *, ""
+		print *, "Test random_rand with kind ${k1}$"
+        put = 12345678
+		call random_seed(put, get)
+		do i = 1, 5
+		    res(i) = random_rand(1_${k1}$)
+		end do
+        call check(all(res == ans), msg="random_rand with kind ${k1}$ test"     &
+		                             //" failed.", warn=warn)
+	end subroutine test_random_rand_${t1[0]}$${k1}$
+
+    #:endfor
+end program test_distribution_PRNG
