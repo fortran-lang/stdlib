@@ -7,23 +7,23 @@ module stdlib_stats_distribution_PRNG
     integer(int64), save :: st(4), si = 614872703977525537_int64
     logical, save :: seed_initialized = .false.
 
-	public :: random_distribution_seed
-	
+    public :: random_distribution_seed
+
     ! distribution internal use
     public :: rand, jump, long_jump
 
 
     interface rand
     ! Generation of random integers with different kinds
-	!
+    !
         #:for k1, t1 in INT_KINDS_TYPES
         module procedure rand_${t1[0]}$${k1}$
-        #:endfor		
+        #:endfor
     end interface rand
 
     interface random_distribution_seed
-	! Set seed of PRNG for statistical distributions
-	!
+    ! Set seed of PRNG for statistical distributions
+    !
         #:for k1, t1 in INT_KINDS_TYPES
         module procedure random_distribution_seed_${t1[0]}$${k1}$
         #:endfor
@@ -34,19 +34,19 @@ module stdlib_stats_distribution_PRNG
 
     #:for k1, t1 in INT_KINDS_TYPES
     module function rand_${t1[0]}$${k1}$(n) result(res)
-	! Random integer generation for various kinds
-	! result = [0, 2^k - 1], k = 8, 16, 32, 64, depending on input kind
-	!
+    ! Random integer generation for various kinds
+    ! result = [0, 2^k - 1], k = 8, 16, 32, 64, depending on input kind
+    !
         ${t1}$, intent(in) :: n
         ${t1}$ :: res
         integer :: k
-        
+
         k = MAX_INT_BIT_SIZE - bit_size(n)
         res = shiftr(xoshiro256ss( ), k)
     end function rand_${t1[0]}$${k1}$
-	
+
     #:endfor
-    
+
     function xoshiro256ss( ) result (res)
     ! Generate random 64-bit integers
     ! Written in 2018 by David Blackman and Sebastiano Vigna (vigna@acm.org)
@@ -63,7 +63,7 @@ module stdlib_stats_distribution_PRNG
     ! Fortran 90 version translated from C by Jim-215-Fisher
     !
         integer(int64) :: res, t
-        
+
         if(.not. seed_initialized) call random_distribution_seed_iint64(si,t)
         res = rol64(st(2) * 5 , 7) * 9
         t = shiftl(st(2), 17)
@@ -120,9 +120,9 @@ module stdlib_stats_distribution_PRNG
     end subroutine jump
 
     subroutine long_jump
-    ! This is the long-jump function for the xoshiro256ss generator. It is 
-    ! equivalent to 2^192 calls to xoshiro256ss(); it can be used to generate 
-    ! 2^64 starting points, from each of which jump() will generate 2^64 
+    ! This is the long-jump function for the xoshiro256ss generator. It is
+    ! equivalent to 2^192 calls to xoshiro256ss(); it can be used to generate
+    ! 2^64 starting points, from each of which jump() will generate 2^64
     ! non-overlapping subsequences for parallel distributed computations
     ! Written in 2018 by David Blackman and Sebastiano Vigna (vigna@acm.org)
     !
@@ -130,7 +130,7 @@ module stdlib_stats_distribution_PRNG
     integer(int64) :: jp(4) = [8566230491382795199_int64,                       &
                                -4251311993797857357_int64,                      &
                                8606660816089834049_int64,                       &
-                               4111957640723818037_int64] 
+                               4111957640723818037_int64]
     integer(int64) :: s1 = 0, s2 = 0, s3 = 0, s4 = 0, c = 1_int64
     integer(int32) :: i, j, k
 
@@ -150,7 +150,7 @@ module stdlib_stats_distribution_PRNG
     st(3) = s3
     st(4) = s4
     end subroutine long_jump
-    
+
     function splitmix64(s) result(res)
     ! Written in 2015 by Sebastiano Vigna (vigna@acm.org)
     ! This is a fixed-increment version of Java 8's SplittableRandom
@@ -167,7 +167,7 @@ module stdlib_stats_distribution_PRNG
         integer(int64), intent(in), optional :: s
         data int01, int02, int03/-7046029254386353131_int64, &
                                  -4658895280553007687_int64, &
-                                 -7723592293110705685_int64/ 
+                                 -7723592293110705685_int64/
 
         if(present(s)) si = s
         res = si
@@ -197,6 +197,6 @@ module stdlib_stats_distribution_PRNG
         get = int(tmp, kind = ${k1}$)
         seed_initialized = .true.
     end subroutine random_distribution_seed_${t1[0]}$${k1}$
-    
+
     #:endfor
 end module stdlib_stats_distribution_PRNG
