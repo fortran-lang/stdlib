@@ -33,7 +33,7 @@ module stdlib_stats_distribution_PRNG
     contains
 
     #:for k1, t1 in INT_KINDS_TYPES
-    module function dist_rand_${t1[0]}$${k1}$(n) result(res)
+    function dist_rand_${t1[0]}$${k1}$(n) result(res)
     ! Random integer generation for various kinds
     ! result = [0, 2^k - 1], k = 8, 16, 32, 64, depending on input kind
     !
@@ -78,7 +78,7 @@ module stdlib_stats_distribution_PRNG
 
     function rol64(x, k) result(res)
         integer(int64), intent(in) :: x
-        integer(int32), intent(in) :: k
+        integer, intent(in) :: k
         integer(int64) :: t1, t2, res
 
         t1 = shiftr(x, (64 - k))
@@ -100,7 +100,7 @@ module stdlib_stats_distribution_PRNG
                                -6244198995065845334_int64,                      &
                                4155657270789760540_int64]
     integer(int64) :: s1 = 0, s2 = 0, s3 = 0, s4 = 0, c = 1_int64
-    integer(int32) :: i, j, k
+    integer :: i, j, k
 
     do i = 1, 4
         do j = 1, 64
