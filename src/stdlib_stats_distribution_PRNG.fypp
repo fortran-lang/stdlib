@@ -10,16 +10,16 @@ module stdlib_stats_distribution_PRNG
     public :: random_distribution_seed
 
     ! distribution internal use
-    public :: rand, jump, long_jump
+    public :: dist_rand, jump, long_jump
 
 
-    interface rand
+    interface dist_rand
     ! Generation of random integers with different kinds
     !
         #:for k1, t1 in INT_KINDS_TYPES
-        module procedure rand_${t1[0]}$${k1}$
+        module procedure dist_rand_${t1[0]}$${k1}$
         #:endfor
-    end interface rand
+    end interface dist_rand
 
     interface random_distribution_seed
     ! Set seed of PRNG for statistical distributions
@@ -33,7 +33,7 @@ module stdlib_stats_distribution_PRNG
     contains
 
     #:for k1, t1 in INT_KINDS_TYPES
-    module function rand_${t1[0]}$${k1}$(n) result(res)
+    module function dist_rand_${t1[0]}$${k1}$(n) result(res)
     ! Random integer generation for various kinds
     ! result = [0, 2^k - 1], k = 8, 16, 32, 64, depending on input kind
     !
@@ -43,7 +43,7 @@ module stdlib_stats_distribution_PRNG
 
         k = MAX_INT_BIT_SIZE - bit_size(n)
         res = shiftr(xoshiro256ss( ), k)
-    end function rand_${t1[0]}$${k1}$
+    end function dist_rand_${t1[0]}$${k1}$
 
     #:endfor
 
