@@ -1,6 +1,6 @@
 #:include "common.fypp"
 module stdlib_stats_distribution_PRNG
-    use stdlib_kinds
+    use stdlib_kinds, only: int8, int16, int32, int64
     implicit none
     private
     integer, parameter :: MAX_INT_BIT_SIZE = 64
