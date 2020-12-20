@@ -18,7 +18,7 @@ Set or get the seed value before calling probability distribution for variates.
 
 ### Syntax
 
-`call random_seed(put, get)`
+`call [[stdlib_stats_distribution_PRNG(module):random_seed(interface)]](put, get)`
 
 ### Arguments
 
@@ -55,7 +55,7 @@ Generate a integer random number in a specific range [-2^k, 2^k - 1] according t
 
 ### Syntax
 
-`result = dist_rand(n)`
+`result = [[stdlib_stats_distribution_PRNG(module):dist_rand(interface)]](n)`
 
 ### Arguments
 
