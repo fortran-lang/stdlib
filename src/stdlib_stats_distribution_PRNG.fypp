@@ -81,7 +81,6 @@ module stdlib_stats_distribution_PRNG
         st(1) = ieor(st(1), st(4))
         st(3) = ieor(st(3), t)
         st(4) = rol64(st(4), 45)
-        return
     end function xoshiro256ss
 
     function rol64(x, k) result(res)
