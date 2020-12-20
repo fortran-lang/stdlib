@@ -1,8 +1,7 @@
 program test_distribution_PRNG
     use stdlib_error, only : check
     use stdlib_kinds
-    use stdlib_stats_distribution_PRNG, only :                                  &
-        random_seed => random_distribution_seed, random_rand => dist_rand
+    use stdlib_stats_distribution_PRNG, only : random_seed, dist_rand
 
     implicit none
     logical ::  warn = .true.
@@ -44,7 +43,7 @@ program test_distribution_PRNG
         put = 12345678
         call random_seed(put, get)
         do i = 1, 5
-            res(i) = random_rand(1_int8)
+            res(i) = dist_rand(1_int8)
         end do
         call check(all(res == ans), msg="random_rand with kind int8 test"     &
                                      //" failed.", warn=warn)
@@ -61,7 +60,7 @@ program test_distribution_PRNG
         put = 12345678
         call random_seed(put, get)
         do i = 1, 5
-            res(i) = random_rand(1_int16)
+            res(i) = dist_rand(1_int16)
         end do
         call check(all(res == ans), msg="random_rand with kind int16 test"     &
                                      //" failed.", warn=warn)
@@ -79,7 +78,7 @@ program test_distribution_PRNG
         put = 12345678
         call random_seed(put, get)
         do i = 1, 5
-            res(i) = random_rand(1_int32)
+            res(i) = dist_rand(1_int32)
         end do
         call check(all(res == ans), msg="random_rand with kind int32 test"     &
                                      //" failed.", warn=warn)
@@ -100,7 +99,7 @@ program test_distribution_PRNG
         put = 12345678
         call random_seed(put, get)
         do i = 1, 5
-            res(i) = random_rand(1_int64)
+            res(i) = dist_rand(1_int64)
         end do
         call check(all(res == ans), msg="random_rand with kind int64 test"     &
                                      //" failed.", warn=warn)
