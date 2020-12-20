@@ -22,7 +22,7 @@ Set or get the seed value before calling the probability distribution pseudorand
 
 ### Arguments
 
-`put`: argument has intent `in` and may be a scalar of type `integer`.
+`put`: argument has `intent(in)` and may be a scalar of type `integer`.
 
 `get`: argument has intent `out` and is a scalar of type `integer`.
 
