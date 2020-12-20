@@ -59,7 +59,7 @@ Generate a integer random number in a specific range [-2^k, 2^k - 1] according t
 
 ### Arguments
 
-`n`: argument has intent `in` is a scalar of type `integer`.
+`n`: argument has `intent(in)` is a scalar of type `integer`.
 
 ### Return value
 
