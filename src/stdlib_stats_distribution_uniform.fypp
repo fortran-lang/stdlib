@@ -153,7 +153,7 @@ Module stdlib_stats_distribution_uniform
         ${t1}$, intent(in) :: scale
         ${t1}$  ::  res
 
-        if(scale == 0_${k1}$) call error_stop("Error: Uniform distribution"     &
+        if(scale == 0._${k1}$) call error_stop("Error: Uniform distribution"    &
                               //" scale parameter must be non-zero")
         res = scale * unif_dist_rvs_0_${t1[0]}$${k1}$( )
         return
@@ -169,7 +169,7 @@ Module stdlib_stats_distribution_uniform
         ${t1}$, intent(in) :: loc, scale
         ${t1}$  ::  res
 
-        if(scale == 0_${k1}$) call error_stop("Error: Uniform distribution"     &
+        if(scale == 0._${k1}$) call error_stop("Error: Uniform distribution"    &
                               //" scale parameter must be non-zero")
         res = loc + scale * unif_dist_rvs_0_${t1[0]}$${k1}$( )
         return
@@ -186,22 +186,23 @@ Module stdlib_stats_distribution_uniform
         ${t1}$, intent(in) :: scale
         ${t1}$ :: res
         integer(int64) :: tmp
-        real(${k1}$) :: r1, r2
+        real(${k1}$) :: r1, r2, tr, ti
 
         if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error: Uniform"  &
                     //" distribution scale parameter must be non-zero")
         r1 = unif_dist_rvs_0_r${k1}$( )
-        if(scale%re == 0.0_${k1}$) then
-            res%im = scale%im * r1
-            res%re = 0.0_${k1}$
-        elseif(scale%im == 0.0_${k1}$) then
-            res%re = scale%re * r1
-            res%im = 0.0_${k1}$
+        if(real(scale) == 0.0_${k1}$) then
+            ti = aimag(scale) * r1
+            tr = 0.0_${k1}$
+        elseif(aimag(scale) == 0.0_${k1}$) then
+            tr = real(scale) * r1
+            ti = 0.0_${k1}$
         else
             r2 = unif_dist_rvs_0_r${k1}$( )
-            res%re = scale%re * r1
-            res%im = scale%im * r2
+            tr = real(scale) * r1
+            ti = aimag(scale) * r2
         endif
+		res = cmplx(tr, ti)
         return
     end function unif_dist_rvs_1_${t1[0]}$${k1}$
 
@@ -218,22 +219,23 @@ Module stdlib_stats_distribution_uniform
         ${t1}$, intent(in) :: loc, scale
         ${t1}$ :: res
         integer(int64) :: tmp
-        real(${k1}$) :: r1, r2
+        real(${k1}$) :: r1, r2, tr, ti
 
         if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error: Uniform"  &
                     //" distribution scale parameter must be non-zero")
         r1 = unif_dist_rvs_0_r${k1}$( )
-        if(scale%re == 0.0_${k1}$) then
-            res%re = loc%re
-            res%im = loc%im + scale%im * r1
-        elseif(scale%im == 0.0_${k1}$) then
-            res%re = loc%re + scale%re * r1
-            res%im = loc%im
+        if(real(scale) == 0.0_${k1}$) then
+            tr = real(loc)
+            ti = aimag(loc) + aimag(scale) * r1
+        elseif(aimag(scale) == 0.0_${k1}$) then
+            tr = real(loc) + real(scale) * r1
+            ti = aimag(loc)
         else
             r2 = unif_dist_rvs_0_r${k1}$( )
-            res%re = loc%re + scale%re * r1
-            res%im = loc%im + scale%im * r2
+            tr = real(loc) + real(scale) * r1
+            ti = aimag(loc) + aimag(scale) * r2
         endif
+		res = cmplx(tr, ti)
         return
     end function unif_dist_rvs_${t1[0]}$${k1}$
 
@@ -287,7 +289,7 @@ Module stdlib_stats_distribution_uniform
         integer :: i
 
 
-        if(scale == 0_${k1}$) call error_stop("Error: Uniform distribution"     &
+        if(scale == 0._${k1}$) call error_stop("Error: Uniform distribution"    &
                               //" scale parameter must be non-zero")
         allocate(res(array_size))
         do i = 1, array_size
@@ -305,8 +307,7 @@ Module stdlib_stats_distribution_uniform
              result(res)
         ${t1}$, intent(in) :: loc, scale
         ${t1}$, allocatable :: res(:)
-        ${t1}$ :: t
-        real(${k1}$) :: r1, r2
+        real(${k1}$) :: r1, r2, tr, ti
         integer, intent(in) :: array_size
         integer(int64) :: tmp
         integer :: i
@@ -318,19 +319,19 @@ Module stdlib_stats_distribution_uniform
         do i = 1, array_size
             tmp = shiftr(dist_rand(INT_ONE), 11)
             r1 = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
-            if(scale%re == 0.0_${k1}$) then
-                t%re = loc%re
-                t%im = loc%im + scale%im * r1
-            elseif(scale%im == 0.0_${k1}$) then
-                t%re = loc%re + scale%re * r1
-                t%im = loc%im
+            if(real(scale) == 0.0_${k1}$) then
+                tr = real(loc)
+                ti = aimag(loc) + aimag(scale) * r1
+            elseif(aimag(scale) == 0.0_${k1}$) then
+                tr = real(loc) + real(scale) * r1
+                ti = aimag(loc)
             else
                 tmp = shiftr(dist_rand(INT_ONE), 11)
                 r2 = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
-                t%re = loc%re + scale%re * r1
-                t%im = loc%im + scale%im * r2
+                tr = real(loc) + real(scale) * r1
+                ti = aimag(loc) + aimag(scale) * r2
             endif
-            res(i) = t
+            res(i) = cmplx(tr, ti)
         enddo
         return
     end function unif_dist_rvs_array_${t1[0]}$${k1}$
@@ -375,12 +376,14 @@ Module stdlib_stats_distribution_uniform
     elemental function unif_dist_pdf_${t1[0]}$${k1}$(x, loc, scale) result(res)
         ${t1}$, intent(in) :: x, loc, scale
         real :: res
+        real(${k1}$) :: tr, ti
 
+        tr = real(loc) + real(scale); ti = aimag(loc) + aimag(scale)
         if(scale == (0.0_${k1}$,0.0_${k1}$)) then
             res = 0.0
-        elseif((x%re >= loc%re .and. x%re <= loc%re + scale%re) .and.           &
-               (x%im >= loc%im .and. x%im <= loc%im + scale%im)) then
-            res = 1.0 / (scale%re * scale%im)
+        elseif((real(x) >= real(loc) .and. real(x) <= tr) .and.                 &
+               (aimag(x) >= aimag(loc) .and. aimag(x) <= ti)) then
+            res = 1.0 / (real(scale) * aimag(scale))
         else
             res = 0.0
         end if
@@ -437,19 +440,20 @@ Module stdlib_stats_distribution_uniform
             res = 0.0
             return
         endif
-        r1 = x%re < loc%re
-        r2 = x%re > (loc%re + scale%re)
-        i1 = x%im < loc%im
-        i2 = x%im > (loc%im + scale%im)
+        r1 = real(x) < real(loc)
+        r2 = real(x) > (real(loc) + real(scale))
+        i1 = aimag(x) < aimag(loc)
+        i2 = aimag(x) > (aimag(loc) + aimag(scale))
         if(r1 .or. i1) then
             res = 0.0
         elseif((.not. r1) .and. (.not. r2) .and. i2) then
-            res = (x%re - loc%re) / scale%re
+            res = (real(x) - real(loc)) / real(scale)
         elseif((.not. i1) .and. (.not. i2) .and. r2) then
-            res = (x%im - loc%im) / scale%im
+            res = (aimag(x) - aimag(loc)) / aimag(scale)
         elseif((.not. r1) .and. (.not. r2) .and. (.not. i1) .and. (.not. i2))   &
              then
-             res = (x%re - loc%re) * (x%im - loc%im) / (scale%re * scale%im)
+             res = (real(x) - real(loc)) * (aimag(x) - aimag(loc)) /            &
+			       (real(scale) * aimag(scale))
         elseif(r2 .and. i2)then
              res = 1.0
         end if
