@@ -1,5 +1,8 @@
 SRC = f18estop.f90 \
       stdlib_ascii.f90 \
+      stdlib_bitsets.f90 \
+      stdlib_bitsets_64.f90 \
+      stdlib_bitsets_large.f90 \
       stdlib_error.f90 \
       stdlib_io.f90 \
       stdlib_kinds.f90 \
@@ -13,10 +16,9 @@ SRC = f18estop.f90 \
       stdlib_stats_mean.f90 \
       stdlib_stats_moment.f90 \
       stdlib_stats_var.f90 \
-      stdlib_stats_distribution.f90 \
-      stdlib_stats_distribution_rvs.f90 \
-      stdlib_stats_distribution_implementation.f90 \ 
-
+      stdlib_stats_distribution_PRNG.f90\
+      stdlib_stats_distribution_uniform.f90
+	  
 LIB = libstdlib.a
 
 
@@ -43,6 +45,9 @@ clean:
 
 # Fortran module dependencies
 f18estop.o: stdlib_error.o
+stdlib_bitsets.o: stdlib_kinds.o
+stdlib_bitsets_64.o: stdlib_bitsets.o
+stdlib_bitsets_large.o: stdlib_bitsets.o
 stdlib_error.o: stdlib_optval.o
 stdlib_io.o: \
 	stdlib_error.o \
@@ -64,14 +69,16 @@ stdlib_stats_var.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
 	stdlib_stats.o
-stdlib_stats_distribution_rvs.o: stdlib_kinds.o
-stdlib_stats_distribution.o: \
-    stdlib_error.o \
-	stdlib_kinds.o \
-	stdlib_stats_distribution_rvs.o \
-stdlib_stats_distribution_imp.o: \
-    stdlib_stats_distribution.o
+stdlib_stats_distribution_PRNG.o: stdlib_kinds.o
+stdlib_stats_distribution_uniform.o: \
+    stdlib_kinds.o \
+	stdlib_error.o \
+	stdlib_stats_distribution_PRNG.o
+
 # Fortran sources that are built from fypp templates
+stdlib_bitsets_64.f90: stdlib_bitsets_64.fypp
+stdlib_bitsets_large.f90: stdlib_bitsets_large.fypp
+stdlib_bitsets.f90: stdlib_bitsets.fypp
 stdlib_io.f90: stdlib_io.fypp
 stdlib_linalg.f90: stdlib_linalg.fypp
 stdlib_linalg_diag.f90: stdlib_linalg_diag.fypp
@@ -80,7 +87,5 @@ stdlib_stats.f90: stdlib_stats.fypp
 stdlib_stats_mean.f90: stdlib_stats_mean.fypp
 stdlib_stats_moment.f90: stdlib_stats_moment.fypp
 stdlib_stats_var.f90: stdlib_stats_var.fypp
-stdlib_stats_distribution_rvs.f90: stdlib_stats_distribution_rvs.fypp
-stdlib_stats_distribution.f90: stdlib_stats_distribution.fypp
-stdlib_stats_distribution_implementation.f90: \
-    stdlib_stats_distribution_implementation.fypp
+stdlib_stats_distribution_PRNG.f90: stdlib_stats_distribution_PRNG.fypp
+stdlib_stats_distribution_uniform.f90: stdlib_stats_distribution_uniform.fypp
