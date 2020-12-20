@@ -20,19 +20,24 @@ env:
 jobs:
   Build-API-Docs:
     runs-on: macos-latest
+    env:
+      GCC_V: 10
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0 # Full history to get tag and commit info
       - name: Install GFortran macOS
-        run: brew install gcc || brew upgrade gcc || true
+        run: |
+          brew install gcc@${GCC_V} || brew upgrade gcc@${GCC_V} || true
+          brew link gcc@${GCC_V}
+          gfortran-${GCC_V} --version
       - name: Install Dependencies
         run: |
           pip3 install --prefer-binary --no-clean --disable-pip-version-check --progress-bar off lxml fypp
           brew install -f --force-bottle --keep-tmp ford
           type -a ford
           ford --version
-          gfortran --version
+          gfortran-${GCC_V} --version
       - name: Skip graph and search unless deploying
         if: github.ref != 'refs/heads/master' && ! startsWith( github.ref, 'refs/tags/' )
         run: |
