@@ -90,8 +90,8 @@ Module stdlib_stats_distribution_uniform
         integer :: zeros, bits_left, bits
 
         n = scale
-        if(n == 0_${k1}$) call error_stop("Error: Uniform distribution scale"   &
-                          //" parameter must be non-zero")
+        if(n <= 0_${k1}$) call error_stop("Error: Uniform distribution scale"   &
+                          //" parameter must be positive")
         zeros = leadz(n)
         bits = bit_size(n) - zeros
         mask = shiftr(not(0_${k1}$), zeros)
