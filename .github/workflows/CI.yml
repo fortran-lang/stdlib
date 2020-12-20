@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        gcc_v: [7, 8, 9] # Version of GFortran we want to use.
+        gcc_v: [7, 8, 9, 10] # Version of GFortran we want to use.
     env:
       FC: gfortran-${{ matrix.gcc_v }}
       GCC_V: ${{ matrix.gcc_v }}
@@ -73,14 +73,14 @@ jobs:
       working-directory: build
 
     - name: Test in-tree builds
-      if: contains( matrix.gcc_v, '9') # Only test one compiler on each platform
+      if: contains( matrix.gcc_v, '10') # Only test one compiler on each platform
       run: |
           cmake -DCMAKE_MAXIMUM_RANK=4 .
           cmake --build .
           cmake --build . --target test
 
     - name: Test manual makefiles
-      if: contains(matrix.os, 'ubuntu') && contains(matrix.gcc_v, '9')
+      if: contains(matrix.os, 'ubuntu') && contains(matrix.gcc_v, '10')
       run: |
         make -f Makefile.manual FYPPFLAGS="-DMAXRANK=4"
         make -f Makefile.manual test
@@ -121,7 +121,7 @@ jobs:
     - name: Install Intel oneAPI compiler
       if: contains(matrix.os, 'ubuntu')
       run: |
-        sudo apt-get install intel-oneapi-ifort
+        sudo apt-get install intel-oneapi-compiler-fortran
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
 

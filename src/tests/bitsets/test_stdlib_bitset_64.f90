@@ -147,13 +147,13 @@ contains
             'write_bitset'
 
         call set2 % from_string( bitstring_33 )
-        open( newunit=unit, file='test.txt', status='replace', &
+        open( newunit=unit, file='test64_1.txt', status='replace', &
             form='formatted', action='write' )
         call set2 % write_bitset(unit)
         call set1 % write_bitset(unit)
         call set0 % write_bitset(unit)
         close( unit )
-        open( newunit=unit, file='test.txt', status='old', &
+        open( newunit=unit, file='test64_1.txt', status='old', &
             form='formatted', action='read' )
         call set3 % read_bitset(unit)
         call set5 % read_bitset(unit)
@@ -169,13 +169,13 @@ contains
 
         close( unit )
 
-        open( newunit=unit, file='test.txt', status='replace', &
+        open( newunit=unit, file='test64_2.txt', status='replace', &
             form='formatted', action='write' )
         call set2 % write_bitset(unit, advance='no')
         call set1 % write_bitset(unit, advance='no')
         call set0 % write_bitset(unit)
         close( unit )
-        open( newunit=unit, file='test.txt', status='old', &
+        open( newunit=unit, file='test64_2.txt', status='old', &
             form='formatted', action='read' )
         call set3 % read_bitset(unit, advance='no')
         call set4 % read_bitset(unit, advance='no')
