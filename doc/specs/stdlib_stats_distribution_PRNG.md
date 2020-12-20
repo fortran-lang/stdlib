@@ -6,7 +6,7 @@ title: stats_distribution
 
 [TOC]
 
-## `random_seed` - set or get a value of seed to the random distribution pseudorandom number generator
+## `random_seed` - set or get a value of seed to the probability distribution pseudorandom number generator
 
 ### Status
 
@@ -14,7 +14,7 @@ Experimental
 
 ### Description
 
-Set or get the seed value before calling random distribution for variates.
+Set or get the seed value before calling probability distribution for variates.
 
 ### Syntax
 
