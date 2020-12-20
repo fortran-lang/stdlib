@@ -27,9 +27,47 @@ module stdlib_stringlists
         procedure :: insert => insert_string
         procedure :: get    => get_string
         procedure :: length => length_list
+        procedure :: sort   => sort_list
     end type t_stringlist
 
+
+    interface operator(<)
+        module procedure string_lower
+    end interface
+
+    interface operator(>)
+        module procedure string_greater
+    end interface
+
+    interface operator(==)
+        module procedure string_equal
+    end interface
+
 contains
+
+! compare t_string derived types
+!     Required by sorting functions
+!
+elemental logical function string_lower( string1, string2 )
+     type(t_string), intent(in) :: string1
+     type(t_string), intent(in) :: string2
+
+     string_lower = string1%value < string2%value
+end function string_lower
+
+elemental logical function string_greater( string1, string2 )
+     type(t_string), intent(in) :: string1
+     type(t_string), intent(in) :: string2
+
+     string_greater = string1%value > string2%value
+end function string_greater
+
+elemental logical function string_equal( string1, string2 )
+     type(t_string), intent(in) :: string1
+     type(t_string), intent(in) :: string2
+
+     string_equal = string1%value == string2%value
+end function string_equal
 
 ! length_list --
 !     Return the size (length) of the list
@@ -119,7 +157,6 @@ function get_string( list, idx )
     character(len=:), allocatable      :: get_string
 
     integer                            :: idxnew
-    type(t_string)                     :: new_element
 
     !
     ! Examine the actual index:
@@ -144,5 +181,69 @@ function get_string( list, idx )
         endif
     endif
 end function get_string
+
+! sort_list --
+!     Sort the list and return the result as a new list
+!
+! Arguments:
+!     list                   The list of strings to retrieve the string from
+!     ascending              Whether to sort as ascending (true) or not (false)
+!
+function sort_list( list, ascending )
+    class(t_stringlist), intent(in)    :: list
+    logical, intent(in)                :: ascending
+
+    integer                            :: i
+    integer, dimension(:), allocatable :: idx
+    class(t_stringlist), allocatable   :: sort_list
+
+    !
+    ! Allocate and fill the index array, then sort the indices
+    ! based on the strings
+    !
+    idx = [ (i ,i=1,list%size) ]
+
+    if ( ascending ) then
+        idx = sort_ascending( idx )
+    else
+        idx = sort_descending( idx )
+    endif
+
+    allocate( sort_list )
+    allocate( sort_list%string(list%size) )
+
+    do i = 1,list%size
+        sort_list%string(i) = list%string(idx(i))
+    enddo
+    sort_list%size = list%size
+
+contains
+recursive function sort_ascending( idx ) result(idxnew)
+    integer, dimension(:) :: idx
+    integer, dimension(size(idx)) :: idxnew
+
+    if ( size(idx) > 1 ) then
+        idxnew = [ sort_ascending( pack( idx, list%string(idx) < list%string(idx(1)) ) ), &
+                   pack( idx, list%string(idx) == list%string(idx(1)) )                 , &
+                   sort_ascending( pack( idx, list%string(idx) > list%string(idx(1)) ) ) ]
+    else
+        idxnew = idx
+    endif
+end function sort_ascending
+
+recursive function sort_descending( idx ) result(idxnew)
+    integer, dimension(:) :: idx
+    integer, dimension(size(idx)) :: idxnew
+
+    if ( size(idx) > 1 ) then
+        idxnew = [ sort_descending( pack( idx, list%string(idx) > list%string(idx(1)) ) ), &
+                   pack( idx, list%string(idx) == list%string(idx(1)) )                  , &
+                   sort_descending( pack( idx, list%string(idx) < list%string(idx(1)) ) ) ]
+    else
+        idxnew = idx
+    endif
+end function sort_descending
+
+end function sort_list
 
 end module stdlib_stringlists

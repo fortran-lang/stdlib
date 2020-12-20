@@ -9,6 +9,7 @@ program test_stringlists
     implicit none
 
     type(t_stringlist) :: list
+    type(t_stringlist) :: list_sorted
     integer            :: i
 
     !
@@ -59,5 +60,13 @@ program test_stringlists
     write(*,*) '40', '>', list%get(40), '<'
     write(*,*) '41', '>', list%get(41), '<'
     write(*,*) list%length()
+
+    !
+    ! Sort the list and print the result
+    !
+    list_sorted = list%sort( .false. )
+    do i = 1,list_sorted%length()
+        write(*,*) i, '>', list_sorted%get(i), '<'
+    enddo
 
 end program test_stringlists
