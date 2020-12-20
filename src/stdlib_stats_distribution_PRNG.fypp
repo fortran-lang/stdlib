@@ -182,7 +182,6 @@ module stdlib_stats_distribution_PRNG
         res = ieor(res, shiftr(res, 30)) * int02
         res = ieor(res, shiftr(res, 27)) * int03
         res = ieor(res, shiftr(res, 31))
-        return
     end function splitmix64
 
     #:for k1, t1 in INT_KINDS_TYPES
