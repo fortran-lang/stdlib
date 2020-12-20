@@ -7,36 +7,44 @@ module stdlib_stats_distribution_PRNG
     integer(int64), save :: st(4), si = 614872703977525537_int64
     logical, save :: seed_initialized = .false.
 
-    public :: random_distribution_seed
-
-    ! distribution internal use
-    public :: dist_rand, jump, long_jump
+    public :: random_seed
+    public :: dist_rand
+    public :: jump
+    public :: long_jump
 
 
     interface dist_rand
-    ! Generation of random integers with different kinds
-    !
+    !! Version experimental
+    !!
+    !! Generation of random integers with different kinds
+    !! ([Specification](../page/specs/stdlib_stats_distribution_PRNG.html#
+    !! description))
         #:for k1, t1 in INT_KINDS_TYPES
         module procedure dist_rand_${t1[0]}$${k1}$
         #:endfor
     end interface dist_rand
 
-    interface random_distribution_seed
-    ! Set seed of PRNG for statistical distributions
-    !
+    interface random_seed
+    !! Version experimental
+    !!
+    !! Set seed value for random number generator
+    !! ([Specification](../page/specs/stdlib_stats_distribution_PRNG.html#
+    !! description))
+    !!
         #:for k1, t1 in INT_KINDS_TYPES
         module procedure random_distribution_seed_${t1[0]}$${k1}$
         #:endfor
-    end interface random_distribution_seed
+    end interface random_seed
 
 
     contains
 
     #:for k1, t1 in INT_KINDS_TYPES
     function dist_rand_${t1[0]}$${k1}$(n) result(res)
-    ! Random integer generation for various kinds
-    ! result = [0, 2^k - 1], k = 8, 16, 32, 64, depending on input kind
-    !
+    !! Random integer generation for various kinds
+    !! result = [-2^k, 2^k - 1], k = 7, 15, 31, 63, depending on input kind
+    !! Result is used as bit model number instead of regular arithmetic number
+    !!
         ${t1}$, intent(in) :: n
         ${t1}$ :: res
         integer :: k
@@ -180,7 +188,8 @@ module stdlib_stats_distribution_PRNG
 
     #:for k1, t1 in INT_KINDS_TYPES
     subroutine random_distribution_seed_${t1[0]}$${k1}$(put, get)
-    ! Random seed for distribution
+    !! Set seed value for random number generator
+    !!
         ${t1}$, intent(in) :: put
         ${t1}$, intent(out) :: get
         integer(int64) :: tmp
