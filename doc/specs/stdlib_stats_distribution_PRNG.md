@@ -14,7 +14,7 @@ Experimental
 
 ### Description
 
-Set or get the seed value before calling probability distribution for variates.
+Set or get the seed value before calling the probability distribution pseudorandom number generator for variates.
 
 ### Syntax
 
