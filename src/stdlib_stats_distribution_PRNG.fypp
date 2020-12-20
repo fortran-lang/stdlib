@@ -3,7 +3,7 @@ module stdlib_stats_distribution_PRNG
     use stdlib_kinds, only: int8, int16, int32, int64
     implicit none
     private
-    integer, parameter :: MAX_INT_BIT_SIZE = 64
+    integer, parameter :: MAX_INT_BIT_SIZE = bit_size(1_int64)
     integer(int64), save :: st(4), si = 614872703977525537_int64
     logical, save :: seed_initialized = .false.
 
