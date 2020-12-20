@@ -202,7 +202,7 @@ Module stdlib_stats_distribution_uniform
             tr = real(scale) * r1
             ti = aimag(scale) * r2
         endif
-		res = cmplx(tr, ti)
+        res = cmplx(tr, ti)
         return
     end function unif_dist_rvs_1_${t1[0]}$${k1}$
 
@@ -235,7 +235,7 @@ Module stdlib_stats_distribution_uniform
             tr = real(loc) + real(scale) * r1
             ti = aimag(loc) + aimag(scale) * r2
         endif
-		res = cmplx(tr, ti)
+        res = cmplx(tr, ti)
         return
     end function unif_dist_rvs_${t1[0]}$${k1}$
 
@@ -453,7 +453,7 @@ Module stdlib_stats_distribution_uniform
         elseif((.not. r1) .and. (.not. r2) .and. (.not. i1) .and. (.not. i2))   &
              then
              res = (real(x) - real(loc)) * (aimag(x) - aimag(loc)) /            &
-			       (real(scale) * aimag(scale))
+                   (real(scale) * aimag(scale))
         elseif(r2 .and. i2)then
              res = 1.0
         end if
