@@ -100,6 +100,7 @@ module stdlib_stats_distribution_PRNG
     ! to 2^128 calls to xoshiro256ss(); it can be used to generate 2^128
     ! non-overlapping subsequences for parallel computations.
     ! Written in 2018 by David Blackman and Sebastiano Vigna (vigna@acm.org)
+    ! http://prng.di.unimi.it/xoshiro256starstar.c
     !
     ! Fortran 90 version translated from C by Jim-215-Fisher
     integer(int64) :: jp(4) = [1733541517147835066_int64,                       &
@@ -132,6 +133,7 @@ module stdlib_stats_distribution_PRNG
     ! 2^64 starting points, from each of which jump() will generate 2^64
     ! non-overlapping subsequences for parallel distributed computations
     ! Written in 2018 by David Blackman and Sebastiano Vigna (vigna@acm.org)
+    ! http://prng.di.unimi.it/xoshiro256starstar.c
     !
     ! Fortran 90 version translated from C by Jim-215-Fisher
     integer(int64) :: jp(4) = [8566230491382795199_int64,                       &
