@@ -25,7 +25,7 @@ Module stdlib_stats_distribution_normal
     !!([Specification](../page/specs/stdlib_stats_distribution_normal.html#
     !! description))
     !!
-        module procedure norm_dist_rvs_0_rsp                  !0 dummy varaible
+        module procedure norm_dist_rvs_0_rsp                  !0 dummy variable
 
         #:for k1, t1 in RC_KINDS_TYPES
         module procedure norm_dist_rvs_${t1[0]}$${k1}$        !2 dummy variables
