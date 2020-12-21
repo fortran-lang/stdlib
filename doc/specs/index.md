@@ -20,7 +20,7 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [stats_distribution_PRNG](./stdlib_stats_distribution_PRNG.html) - Probability Distributions random number generator
  - [stats_distribution_uniform](./stdlib_stats_distribution_uniform.html) - Uniform probability distribution
  - [stats_distribution_normal](./stdlib_stats_distribution_normal.html) - Normal probability distribution
-
+ - [stats_distribution_exponential](./stdlib_stats_distribution_exponential.html) - Exponential probability distribution
  
 ## Missing specs
 
