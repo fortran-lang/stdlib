@@ -59,7 +59,7 @@ program demo_normal_rvs
 ! 0.563655198
 
     print *, norm(1.0, 2.0)
-    !normal random variate \(\mu\)=1.0, \(\sigma\)=2.0
+    !normal random variate miu=1.0, sigma=2.0
 
 ! -0.633261681
 
@@ -81,7 +81,7 @@ program demo_normal_rvs
     loc = (-1.0, 2.0)
     scale = (2.0, 1.0)
     print *, norm(loc, scale)
-    !single complex normal random variate with real part of \(\mu\)=-1, \(\sigma\)=2; imagainary part of \(\mu\)=2.0 and \(\sigma\)=1.0
+    !single complex normal random variate with real part of mu=-1, sigma=2; imagainary part of mu=2.0 and sigma=1.0
 
 ! (1.22566295,2.12518454)
 
@@ -140,7 +140,7 @@ program demo_normal_pdf
 ! 0.241970733
 
     print *, norm_pdf(2.0,-1.0, 2.0)
-    !a probability density at 2.0 with \(\mu\)=-1.0 \(\sigma\)=2.0
+    !a probability density at 2.0 with mu=-1.0 sigma=2.0
 
 !6.47588000E-02
 
@@ -160,7 +160,7 @@ program demo_normal_pdf
     loc = (1.0, -0.5)
     scale = (1.0, 2.)
     print *, norm_pdf((1.5,1.0), loc, scale)
-    ! a complex normal probability density function at (1.5,1.0) with real part of \(\mu\)=1.0, \(\sigma\)=1.0 and imaginary part of \(\mu\)=-0.5, \(\sigma\)=2.0
+    ! a complex normal probability density function at (1.5,1.0) with real part of mu=1.0, sigma=1.0 and imaginary part of mu=-0.5, sigma=2.0
 
 ! 5.30100204E-02
 
@@ -219,7 +219,7 @@ program demo_norm_cdf
 ! 0.841344714
 
     print *, norm_cdf(2.0, -1.0, 2.0)
-    ! a cumulative at 2.0 with \(\mu\)=-1 \(\sigma\)=2
+    ! a cumulative at 2.0 with mu=-1 sigma=2
 
 ! 0.933192849
 
@@ -239,7 +239,7 @@ program demo_norm_cdf
     loc = (1.0,0.0)
     scale = (0.5,1.0)
     print *, norm_cdf((0.5,-0.5),loc,scale)
-    !complex normal cumulative distribution at (0.5,-0.5) with real part of \(\mu\)=1.0, \(\sigma\)=0.5 and imaginary part of \(\mu\)=0.0, \(\sigma\)=1.0
+    !complex normal cumulative distribution at (0.5,-0.5) with real part of mu=1.0, sigma=0.5 and imaginary part of mu=0.0, sigma=1.0
 
 !4.89511043E-02
 
