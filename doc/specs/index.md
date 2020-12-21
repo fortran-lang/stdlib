@@ -18,7 +18,7 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [quadrature](./stdlib_quadrature.html) - Numerical integration
  - [stats](./stdlib_stats.html) - Descriptive Statistics
  - [stats_distribution_PRNG](./stdlib_stats_distribution_PRNG.html) - Probability Distributions random number generator
-
+ - [stats_distribution_uniform](./stdlib_stats_distribution_uniform.html) - Uniform probability distribution
 ## Missing specs
 
  - [ascii](https://github.com/fortran-lang/stdlib/blob/master/src/stdlib_ascii.f90)
