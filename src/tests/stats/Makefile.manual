@@ -1,5 +1,5 @@
 
 PROGS_SRC = test_mean.f90 test_moment.f90 test_var.f90 \
-			test_distribution_normal.f90
+			test_distribution_exponential.f90
 
 include ../Makefile.manual.test.mk
