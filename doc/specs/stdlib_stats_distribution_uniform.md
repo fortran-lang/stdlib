@@ -22,7 +22,7 @@ Applying Fisher-Yates algorithm to generate an unbiased permutation for any list
 
 ### Arguments
 
-`list`: argument has intent `in` and is a rank one array of integer, real, or complx type.
+`list`: argument has `intent(in)` and is a rank one array of integer, real, or complx type.
 
 ### Return value
 
@@ -81,11 +81,11 @@ With triple auguments `loc`, `scale` and `array_size` the function returns a ran
 
 ### Arguments
 
-`loc`: optional argument has intent `in` and is a scalar of type `integer`, `real` or `complx`.
+`loc`: optional argument has `intent(in)` and is a scalar of type `integer`, `real` or `complx`.
 
-`scale`: optional argument has intent `in` and is a scalar of type `integer`, `real` or `complx`.
+`scale`: optional argument has `intent(in)` and is a scalar of type `integer`, `real` or `complx`.
 
-`array_size`: optional argument has intent `in` and is a scalar of type `integer`.
+`array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
 
 `loc` and `scale` must have the same type when both are present.
 
@@ -118,15 +118,15 @@ program demo_uniform_rvs
 ! 0.486900032
 
     print *, uni(-1.0,2.0,10) !an array of 10 uniform random variates in [-1., 1.]
-![0.884182811, -0.771520197, 0.560377002, 0.709313750, -7.12267756E-02, !-0.431066573, 0.497536063, -0.396331906, -0.325983286, 0.137686729]
+![0.884182811, -0.771520197, 0.560377002, 0.709313750, -7.12267756E-02, -0.431066573, 0.497536063, -0.396331906, -0.325983286, 0.137686729]
 
     print *, uni(20)          !a random integer variate in [0, 20]
 ! 17
 
-    print *, uni(5,13)        !a random integer variate in [5, 13]
+    print *, uni(5,13)        !a random integer variate in [5, 18]
 ! 15
 
-    print *, uni(3,19,10)     !an array of 10 integer variates in [3,19]
+    print *, uni(3,19,10)     !an array of 10 integer variates in [3,22]
 ! [7, 16, 16, 12, 9, 21, 19, 4, 3, 19]
 
     loc = (-0.5, -0.5)
@@ -190,11 +190,11 @@ f(x) = 1 / (scale%re * scale%im);  for complx uniform distribution
 
 ### Arguments
 
-`x`: has intent `in` and is a scalar of type `integer`, `real` or `complx`.
+`x`: has `intent(in)` and is a scalar of type `integer`, `real` or `complx`.
 
-`loc`: has intent `in` and is a scalar of type `integer`, `real` or `complx`.
+`loc`: has `intent(in)` and is a scalar of type `integer`, `real` or `complx`.
 
-`scale`: has intent `in` and is a scalar of type `integer`, `real` or `complx`.
+`scale`: has `intent(in)` and is a scalar of type `integer`, `real` or `complx`.
 
 The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type.
 
@@ -278,11 +278,11 @@ F(x) = (x%re - loc%re)(x%im - loc%im) / (scale%re * scale%im); for complx unifor
 
 ### Arguments
 
-`x`: has intent `in` and is a scalar of type `integer`, `real` or `complx`.
+`x`: has `intent(in)` and is a scalar of type `integer`, `real` or `complx`.
 
-`loc`: has intent `in` and is a scalar of type `integer`, `real` or `complx`.
+`loc`: has `intent(in)` and is a scalar of type `integer`, `real` or `complx`.
 
-`scale`: has intent `in` and is a scalar of type `integer`, `real` or `complx`.
+`scale`: has `intent(in)` and is a scalar of type `integer`, `real` or `complx`.
 
 The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type.
 
@@ -294,9 +294,9 @@ The result is a scalar or an array, with a shape conformable to auguments, of ty
 
 ```fortran
 program demo_uniform_cdf
-    use stdlib_stats_distribution, only : uni_cdf => uniform_distribution_cdf,  &
-                                          uni => uniform_distribution_rvs,      &
-                                          random_seed
+    use stdlib_stats_distribution_uniform, only : uni_cdf => uniform_distribution_cdf,  &
+                                                  uni => uniform_distribution_rvs,      &
+    use stdlib_stats_distribution_PRNG, only : random_seed
     implicit none
     real :: x(3,4,5), a(3,4,5), b(3,4,5)
     complx :: loc, scale
