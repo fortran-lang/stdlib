@@ -18,7 +18,7 @@ SRC = f18estop.f90 \
       stdlib_stats_var.f90 \
       stdlib_stats_distribution_PRNG.f90\
       stdlib_stats_distribution_uniform.f90 \
-	  stdlib_stats_distribution_normal.f90
+      stdlib_stats_distribution_normal.f90
 	  
 LIB = libstdlib.a
 
@@ -77,9 +77,9 @@ stdlib_stats_distribution_uniform.o: \
 	stdlib_stats_distribution_PRNG.o
 stdlib_stats_distribution_normal.o \
     stdlib_kinds.o
-	stdlib_error.o \
-	stdlib_stats_distribution.PRNG.o \
-	stdlib_stats_distribution.uniform.o
+    stdlib_error.o \
+    stdlib_stats_distribution.PRNG.o \
+    stdlib_stats_distribution.uniform.o
 
 # Fortran sources that are built from fypp templates
 stdlib_bitsets_64.f90: stdlib_bitsets_64.fypp
