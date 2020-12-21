@@ -51,7 +51,7 @@ Experimental
 
 ### Description
 
-Generate a integer random number in a specific range [-2^k, 2^k - 1] according to the input integer kind n. This random number will be operated by bit opeartors instead of normal arithmetic operators.
+Generate an integer pseudorandom number in a specific range [-2^k, 2^k - 1] according to the input integer kind n. This pseudorandom number will be operated by bit opeartors instead of normal arithmetic operators.
 
 ### Syntax
 
