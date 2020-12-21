@@ -58,6 +58,7 @@ module stdlib_stats_distribution_PRNG
     function xoshiro256ss( ) result (res)
     ! Generate random 64-bit integers
     ! Written in 2018 by David Blackman and Sebastiano Vigna (vigna@acm.org)
+    ! http://prng.di.unimi.it/xoshiro256starstar.c
     !
     ! This is xoshiro256** 1.0, one of our all-purpose, rock-solid
     ! generators. It has excellent (sub-ns) speed, a state (256 bits) that is
