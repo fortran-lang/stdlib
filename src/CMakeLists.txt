@@ -20,7 +20,7 @@ set(fppFiles
     stdlib_quadrature_simps.fypp
     stdlib_stats_distribution_PRNG.fypp
     stdlib_stats_distribution_uniform.fypp
-	  stdlib_stats_distribution_normal.fypp
+    stdlib_stats_distribution_normal.fypp
 )
 
 
