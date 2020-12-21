@@ -43,7 +43,8 @@ module stdlib_stats_distribution_PRNG
     function dist_rand_${t1[0]}$${k1}$(n) result(res)
     !! Random integer generation for various kinds
     !! result = [-2^k, 2^k - 1], k = 7, 15, 31, 63, depending on input kind
-    !! Result is used as bit model number instead of regular arithmetic number
+    !! Result will be operated by bitwise operators to generate desired integer
+    !! and real pseudorandom numbers
     !!
         ${t1}$, intent(in) :: n
         ${t1}$ :: res
