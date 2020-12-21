@@ -71,6 +71,7 @@ program demo_normal_rvs
     a(:,:,:) = 1.0
     b(:,:,:) = 1.0
     print *, norm(a,b)         ! a rank 3 random variates array
+    
 ![0.152776539, -7.51764774E-02, 1.47208166, 0.180561781, 1.32407105,
 ! 1.20383692, 0.123445868, -0.455737948, -0.469808221, 1.60750175,
 ! 1.05748117, 0.720934749, 0.407810807, 1.48165631, 2.31749439,
@@ -127,7 +128,7 @@ program demo_normal_pdf
         norm => normal_distribution_rvs
 
     implicit none
-    real :: x(3,4,5),a(3,4,5),b(3,4,5)
+    real :: x(2,3,4),a(2,3,4),b(2,3,4)
     complx :: loc, scale
     integer :: seed_put, seed_get
 
@@ -143,7 +144,7 @@ program demo_normal_pdf
 
 !6.47588000E-02
 
-    x = reshape(norm(0.0, 1.0, 60),[3,4,5])
+    x = reshape(norm(0.0, 1.0, 24),[2,3,4])
     ! standard normal random variates array
 
     a(:,:,:) = 0.0
