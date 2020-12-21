@@ -1,98 +1,24 @@
-SRC = f18estop.f90 \
-      stdlib_ascii.f90 \
-      stdlib_bitsets.f90 \
-      stdlib_bitsets_64.f90 \
-      stdlib_bitsets_large.f90 \
-      stdlib_error.f90 \
-      stdlib_io.f90 \
-      stdlib_kinds.f90 \
-      stdlib_linalg.f90 \
-      stdlib_linalg_diag.f90 \
-      stdlib_logger.f90 \
-      stdlib_optval.f90 \
-      stdlib_quadrature.f90 \
-      stdlib_quadrature_trapz.f90 \
-      stdlib_stats.f90 \
-      stdlib_stats_mean.f90 \
-      stdlib_stats_moment.f90 \
-      stdlib_stats_var.f90 \
-      stdlib_stats_distribution_PRNG.f90\
-      stdlib_stats_distribution_uniform.f90 \
-	  stdlib_stats_distribution_normal.f90
-	  
-LIB = libstdlib.a
+# Fortran stdlib Makefile
 
+FC = gfortran
+FFLAGS = -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all
+FYPPFLAGS=
 
+export FC
+export FFLAGS
+export FYPPFLAGS
 
-OBJS = $(SRC:.f90=.o)
-MODS = $(OBJS:.o=.mod)
-SMODS = $(OBJS:.o=*.smod)
+.PHONY: all clean test
 
-.PHONY: all clean
+all:
+	$(MAKE) -f Makefile.manual --directory=src
+	$(MAKE) -f Makefile.manual --directory=src/tests
 
-all: $(LIB)
-
-$(LIB): $(OBJS)
-	ar rcs $@ $(OBJS)
+test:
+	$(MAKE) -f Makefile.manual --directory=src/tests test
+	@echo
+	@echo "All tests passed."
 
 clean:
-	$(RM) $(LIB) $(OBJS) $(MODS) $(SMODS)
-
-%.o: %.f90
-	$(FC) $(FFLAGS) -c $<
-
-%.f90: %.fypp
-	fypp $(FYPPFLAGS) $< $@
-
-# Fortran module dependencies
-f18estop.o: stdlib_error.o
-stdlib_bitsets.o: stdlib_kinds.o
-stdlib_bitsets_64.o: stdlib_bitsets.o
-stdlib_bitsets_large.o: stdlib_bitsets.o
-stdlib_error.o: stdlib_optval.o
-stdlib_io.o: \
-	stdlib_error.o \
-	stdlib_optval.o \
-	stdlib_kinds.o
-stdlib_linalg_diag.o: stdlib_kinds.o
-stdlib_logger.o: stdlib_ascii.o stdlib_optval.o
-stdlib_optval.o: stdlib_kinds.o
-stdlib_quadrature.o: stdlib_kinds.o
-stdlib_stats_mean.o: \
-	stdlib_optval.o \
-	stdlib_kinds.o \
-	stdlib_stats.o
-stdlib_stats_moment.o: \
-	stdlib_optval.o \
-	stdlib_kinds.o \
-	stdlib_stats.o
-stdlib_stats_var.o: \
-	stdlib_optval.o \
-	stdlib_kinds.o \
-	stdlib_stats.o
-stdlib_stats_distribution_PRNG.o: stdlib_kinds.o
-stdlib_stats_distribution_uniform.o: \
-    stdlib_kinds.o \
-	stdlib_error.o \
-	stdlib_stats_distribution_PRNG.o
-stdlib_stats_distribution_normal.o \
-    stdlib_kinds.o
-	stdlib_error.o \
-	stdlib_stats_distribution.PRNG.o \
-	stdlib_stats_distribution.uniform.o
-
-# Fortran sources that are built from fypp templates
-stdlib_bitsets_64.f90: stdlib_bitsets_64.fypp
-stdlib_bitsets_large.f90: stdlib_bitsets_large.fypp
-stdlib_bitsets.f90: stdlib_bitsets.fypp
-stdlib_io.f90: stdlib_io.fypp
-stdlib_linalg.f90: stdlib_linalg.fypp
-stdlib_linalg_diag.f90: stdlib_linalg_diag.fypp
-stdlib_quadrature.f90: stdlib_quadrature.fypp
-stdlib_stats.f90: stdlib_stats.fypp
-stdlib_stats_mean.f90: stdlib_stats_mean.fypp
-stdlib_stats_moment.f90: stdlib_stats_moment.fypp
-stdlib_stats_var.f90: stdlib_stats_var.fypp
-stdlib_stats_distribution_PRNG.f90: stdlib_stats_distribution_PRNG.fypp
-stdlib_stats_distribution_uniform.f90: stdlib_stats_distribution_uniform.fypp
-stdlib_stats_distribution_normal.f90: stdlib_stats_distribution_normal.fypp
+	$(MAKE) -f Makefile.manual clean --directory=src
+	$(MAKE) -f Makefile.manual clean --directory=src/tests
