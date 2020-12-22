@@ -1,0 +1,319 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+Module stdlib_stats_distribution_gamma
+    use stdlib_kinds
+    use stdlib_error, only : error_stop
+    use stdlib_stats_distribution_PRNG, only : dist_rand
+    use stdlib_stats_distribution_uniform, only : uni=>uniform_distribution_rvs
+    use stdlib_stats_distribution_normal, only : rnor=>normal_distribution_rvs
+    use stdlib_stats_distribution_special, only : ingamma=>ingamma_low, log_gamma
+
+    implicit none
+    private
+    integer(int64), parameter :: INT_ONE = 1_int64
+    real, parameter :: tol = 1.0E-5, sq = 0.0331
+    real, save :: alpha = 0., d, c
+
+    public :: gamma_distribution_rvs
+    public :: gamma_distribution_pdf
+    public :: gamma_distribution_cdf
+
+    interface gamma_distribution_rvs
+    !! Version experimental
+    !!
+    !! Gamma Distribution Random Variates
+    !! ([Specification](../page/specs/stdlib_stats_distribution_gamma.html#
+    !! description))
+    !!
+        #:for k1, t1 in RC_KINDS_TYPES
+        module procedure gamma_dist_rvs_1_${t1[0]}$${k1}$     ! 1 argument
+        #:endfor
+
+        #:for k1, t1 in RC_KINDS_TYPES
+        module procedure gamma_dist_rvs_${t1[0]}$${k1}$       ! 2 arguments
+        #:endfor
+
+        #:for k1, t1 in RC_KINDS_TYPES
+        module procedure gamma_dist_rvs_array_${t1[0]}$${k1}$ ! 3 arguments
+        #:endfor
+    end interface gamma_distribution_rvs
+
+    interface gamma_distribution_pdf
+    !! Version experimental
+    !!
+    !! Gamma Distribution Probability Density Function
+    !! ([Specification](../page/specs/stdlib_stats_distribution_gamma.html#
+    !! description))
+    !!
+    #:for k1, t1 in RC_KINDS_TYPES
+        module procedure gamma_dist_pdf_${t1[0]}$${k1}$
+        #:endfor
+    end interface gamma_distribution_pdf
+
+    interface gamma_distribution_cdf
+    !! Version experimental
+    !!
+    !! Gamma Distribution Cumulative Distribution Function
+    !! ([Specification](../page/specs/stdlib_stats_distribution_gamma.html#
+    !! description))
+    !!
+        #:for k1, t1 in RC_KINDS_TYPES
+        module procedure gamma_dist_cdf_${t1[0]}$${k1}$
+        #:endfor
+    end interface gamma_distribution_cdf
+
+
+    contains
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    impure elemental function gamma_dist_rvs_1_${t1[0]}$${k1}$(shape) result(res)
+    ! Gamma random variate
+    !
+        ${t1}$, intent(in) :: shape
+        ${t1}$ :: res
+        ${t1}$ :: x, v, u, zz
+
+        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
+                                //" shape parameter must be greater than zero")
+        zz = shape
+        if(zz < 1._${k1}$) zz = 1._${k1}$ + zz
+        if(abs(real(zz) - alpha) > tol) then
+            alpha = real(zz)
+            d = alpha - 1. / 3.
+            c = 1. / (3. * sqrt(d))
+        endif
+        do
+            do
+                x = rnor( )
+                v = 1._${k1}$ + c * x
+                v = v * v * v
+                if(v > 0.) exit
+            end do
+            x = x * x
+            u = uni( )
+            if(u < (1._${k1}$ - sq * x * x)) exit
+            if(log(u) < 0.5_${k1}$ * x + d * (1._${k1}$ - v + log(v))) exit
+        end do
+        res = d * v
+        if(shape < 1.) then
+            u = uni( )
+            res = res * u ** (1._${k1}$ / shape)
+        endif
+        return
+    end function gamma_dist_rvs_1_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    impure elemental function gamma_dist_rvs_1_${t1[0]}$${k1}$(shape) result(res)
+    ! Gamma distributed complex. The real part and imaginary part are
+    ! independent of each other.
+    !
+        ${t1}$, intent(in) :: shape
+        ${t1}$ :: res
+        real(${k1}$) :: tr, ti
+
+        tr = gamma_dist_rvs_1_r${k1}$(real(shape))
+        ti = gamma_dist_rvs_1_r${k1}$(aimag(shape))
+        res = cmplx(tr,ti)
+        return
+    end function gamma_dist_rvs_1_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    impure elemental function gamma_dist_rvs_${t1[0]}$${k1}$(shape, rate)       &
+                     result(res)
+        ${t1}$, intent(in) :: shape, rate
+        ${t1}$ :: res
+        ${t1}$ :: x, v, u, zz
+
+        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
+                                //" shape parameter must be greater than zero")
+        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
+                                //" rate parameter must be greater than zero")
+        zz = shape
+        if(zz < 1._${k1}$) zz = 1._${k1}$ + zz
+        if(abs(real(zz) - alpha) > tol) then
+            alpha = real(zz)
+            d = alpha - 1. / 3.
+            c = 1. / (3. * sqrt(d))
+        endif
+        do
+            do
+                x = rnor( )
+                v = 1._${k1}$ + c * x
+                v = v * v * v
+                if(v > 0) exit
+            end do
+            x = x * x
+            u = uni( )
+            if(u < (1._${k1}$ - sq * x * x)) exit
+            if(log(u) < 0.5_${k1}$ * x + d * (1._${k1}$ - v + log(v))) exit
+        end do
+        res = d * v
+        if(shape < 1._${k1}$) then
+            u = uni( )
+            res = res * u ** (1._${k1}$ / shape)
+        endif
+        res = res / rate
+        return
+    end function gamma_dist_rvs_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    impure elemental function gamma_dist_rvs_${t1[0]}$${k1}$(shape, rate)       &
+                     result(res)
+    ! Gamma distributed complex. The real part and imaginary part are           &
+    ! independent of each other.
+    !
+        ${t1}$, intent(in) :: shape, rate
+        ${t1}$ :: res
+        real(${k1}$) :: tr, ti
+
+        tr = gamma_dist_rvs_r${k1}$(real(shape), real(rate))
+        ti = gamma_dist_rvs_r${k1}$(aimag(shape), aimag(rate))
+        res = cmplx(tr, ti)
+        return
+    end function gamma_dist_rvs_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    function gamma_dist_rvs_array_${t1[0]}$${k1}$(shape, rate, array_size)      &
+             result(res)
+        ${t1}$, intent(in) :: shape, rate
+        ${t1}$, allocatable :: res(:)
+        integer, intent(in) :: array_size
+        ${t1}$ :: x, v, u, zz, re
+        integer :: i
+
+        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
+                                //" shape parameter must be greater than zero")
+        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
+                                //" rate parameter must be greater than zero")
+        allocate(res(array_size))
+        zz = shape
+        if(zz < 1._${k1}$) zz = 1._${k1}$ + zz
+        if(abs(real(zz) - alpha) > tol) then
+            alpha = real(zz)
+            d = alpha - 1. / 3.
+            c = 1. / (3. * sqrt(d))
+        endif
+        do i = 1, array_size
+            do
+                do
+                    x = rnor( )
+                    v = 1._${k1}$ + c * x
+                    v = v * v * v
+                    if(v > 0) exit
+                end do
+                x = x * x
+                u = uni( )
+                if(u < (1._${k1}$ - sq * x * x)) exit
+                if(log(u) < 0.5_${k1}$ * x + d * (1._${k1}$ - v + log(v))) exit
+            end do
+            re = d * v
+            if(shape < 1._${k1}$) then
+                u = uni( )
+                re = re * u ** (1._${k1}$ / shape)
+            endif
+            res(i) = re / rate
+        end do
+        return
+    end function gamma_dist_rvs_array_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    function gamma_dist_rvs_array_${t1[0]}$${k1}$(shape, rate, array_size)      &
+             result(res)
+        ${t1}$, intent(in) :: shape, rate
+        ${t1}$, allocatable :: res(:)
+        integer, intent(in) :: array_size
+        integer :: i
+        real(${k1}$) :: tr, ti
+
+        allocate(res(array_size))
+        do i = 1, array_size
+            tr = gamma_dist_rvs_r${k1}$(real(shape), real(rate))
+            ti = gamma_dist_rvs_r${k1}$(aimag(shape), aimag(rate))
+            res(i) = cmplx(tr, ti)
+        end do
+        return
+    end function gamma_dist_rvs_array_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    impure elemental function gamma_dist_pdf_${t1[0]}$${k1}$(x, shape, rate)    &
+               result(res)
+    ! Gamma distributed probability function
+    !
+        ${t1}$, intent(in) :: x, shape, rate
+        real :: res
+
+        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
+                           //" rate parameter must be greaeter than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
+                           //" shape parameter must be greater than zero")
+        if(x == 0.0_${k1}$) then
+            if(shape <= 1.0_${k1}$) then
+                res = huge(1.0) + 1.0
+            else
+                res = 0.0_${k1}$
+            endif
+        else
+            res = exp((shape - 1._${k1}$) * log(x) - x * rate + shape *         &
+              log(rate) - log_gamma(shape))
+        endif
+        return
+    end function gamma_dist_pdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    impure elemental function gamma_dist_pdf_${t1[0]}$${k1}$(x, shape, rate)    &
+                     result(res)
+        ${t1}$, intent(in) :: x, shape, rate
+        real :: res
+
+        res = gamma_dist_pdf_r${k1}$(real(x), real(shape), real(rate))
+        res = res * gamma_dist_pdf_r${k1}$(aimag(x), aimag(shape), aimag(rate))
+        return
+    end function gamma_dist_pdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    impure elemental function gamma_dist_cdf_${t1[0]}$${k1}$(x, shape, rate)    &
+                     result(res)
+    ! Gamma random cumulative distribution function
+    !
+        ${t1}$, intent(in) :: x, shape, rate
+        real :: res
+
+        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
+                           //" rate parameter must be greaeter than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
+                           //" shape parameter must be greater than zero")
+        res = ingamma(shape, rate * x) / gamma(shape)
+        return
+    end function gamma_dist_cdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    impure elemental function gamma_dist_cdf_${t1[0]}$${k1}$(x, shape, rate)    &
+                     result(res)
+        ${t1}$, intent(in) :: x, shape, rate
+        real :: res
+
+        res = gamma_dist_cdf_r${k1}$(real(x), real(shape), real(rate))
+        res = res * gamma_dist_cdf_r${k1}$(aimag(x), aimag(shape), aimag(rate))
+    end function gamma_dist_cdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+end module stdlib_stats_distribution_gamma
