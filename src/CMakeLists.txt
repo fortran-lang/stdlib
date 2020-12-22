@@ -2,6 +2,9 @@
 
 # Create a list of the files to be preprocessed
 set(fppFiles
+    stdlib_bitsets.fypp
+    stdlib_bitsets_64.fypp
+    stdlib_bitsets_large.fypp
     stdlib_io.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
