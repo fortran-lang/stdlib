@@ -2,7 +2,7 @@
 title: stats_distribution
 ---
 
-# Statistical Distributions -- Pseudorandom Number Generator module
+# Statistical Distributions -- Pseudorandom Number Generator Module
 
 [TOC]
 
