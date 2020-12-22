@@ -185,7 +185,6 @@ Module stdlib_stats_distribution_uniform
     !
         ${t1}$, intent(in) :: scale
         ${t1}$ :: res
-        integer(int64) :: tmp
         real(${k1}$) :: r1, r2, tr, ti
 
         if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error: Uniform"  &
@@ -218,7 +217,6 @@ Module stdlib_stats_distribution_uniform
     !
         ${t1}$, intent(in) :: loc, scale
         ${t1}$ :: res
-        integer(int64) :: tmp
         real(${k1}$) :: r1, r2, tr, ti
 
         if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error: Uniform"  &
