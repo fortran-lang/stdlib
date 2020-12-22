@@ -24,18 +24,18 @@ Module stdlib_stats_distribution_special
 
      ! for stdlib_distribution internal use
 
-     public :: log_gamma, log_factorial
+     public :: loggamma, log_factorial
      public :: ingamma_low, log_ingamma_low, ingamma_up, log_ingamma_up
      public :: regamma_p, regamma_q
      public :: beta, log_beta, inbeta
 
-     interface log_gamma
+     interface loggamma
      ! Logrithm of gamma function with real variable
      !
          #:for k1, t1 in REAL_KINDS_TYPES
          module procedure l_gamma_${t1[0]}$${k1}$
          #:endfor
-     end interface log_gamma
+     end interface loggamma
 
      interface log_factorial
      ! Logrithm of factorial n!, integer variable
@@ -173,15 +173,15 @@ Module stdlib_stats_distribution_special
          real(qp) :: q, sum
          integer :: i
 
-         if(x <= 0) call error_stop("Error: Gamma function augument must be"    &
-                    //" greater than 0")
+         if(x <= 0._${k1}$) call error_stop("Error: Gamma function augument"    &
+                            //" must be greater than 0")
          if(x == 1.0_${k1}$ .or. x == 2.0_${k1}$) then
              res = 0.0_${k1}$
          else
-             q = x - HALF
+             q = real(x, qp) - HALF
              sum = D(0)
              do i=1, 10
-                 sum = sum + D(i) / (x - 1.0_qp + i)
+                 sum = sum + D(i) / (real(x, qp) - 1.0_qp + real(i, qp))
              end do
              res = real(sqep + log(sum) - q + q * log(q + R), kind=${k1}$)
          endif
@@ -205,7 +205,7 @@ Module stdlib_stats_distribution_special
          case (1)
              res = 0.0
          case (2:)
-             res = log_gamma(real(n+1))
+             res = loggamma(real(n+1, dp))
          end select
          return
      end function l_factorial_1_${t1[0]}$${k1}$
@@ -229,7 +229,7 @@ Module stdlib_stats_distribution_special
          case (1)
              res = 0.0_${k2}$
          case (2:)
-             res = log_gamma(real((n+1), kind=${k2}$))
+             res = loggamma(real(n + 1, kind=${k2}$))
          end select
          return
      end function l_factorial_${t1[0]}$${k1}$${k2}$
@@ -243,34 +243,36 @@ Module stdlib_stats_distribution_special
      ! Accurate Evaluation of a Generalized Incomplete Gamma Function", ACM
      ! Transactions on Mathematical Software, March 2020.
      !
+     ! Fortran 90 program by Jim-215-Fisher
+     !
          ${t1}$, intent(in) :: x, s
          real(dp) :: res
          real(dp) :: a, b, g, c, d, y
          integer :: n
 
-         if(x < 0) then
+         if(x < 0._${k1}$) then
              call error_stop("Error: Incomplete gamma function with negative x" &
                   //" must come with integer of s")
          elseif(s >= x) then
-             a = s
-             g = 1.0_${k1}$ / a
+             a = real(s, dp)
+             g = 1.0_dp / a
              c = g
              do
-                 a = a + 1.0_${k1}$
-                 c = c * x / a
+                 a = a + 1.0_dp
+                 c = c * real(x, dp) / a
                  g = g + c
                  if(abs(c) < ep_machine) exit
              end do
          else
              a = 1.0_dp
-             b = real(x + 1 - s, kind=dp)
+             b = real(x + 1 - s, dp)
              g = a / b
              c = a / dm
              d = 1.0_dp / b
              n = 2
              do
-                 a = -(n - 1) * (n - s - 1)
-                 b = x + 2 * n - 1.0_dp - s
+                 a = -(n - 1) * real((n - 1 - s), dp)
+                 b = real(x - s, dp) + 2 * n - 1.0_dp
                  d = d * a + b
                  if(d == 0.0_dp) d = dm
                  c = b + a / c
@@ -303,33 +305,33 @@ Module stdlib_stats_distribution_special
          real(dp) :: a, b, g, c, d, y
          integer :: n
 
-         if(x < -9) then
+         if(x < -9._${k2}$) then
              p_lim = 5.0_${k2}$ * (sqrt(abs(x)) - 1.0_${k2}$)
-         elseif(x >= -9 .and. x <= 0) then
+         elseif(x >= -9.0_${k2}$ .and. x <= 0.0_${k2}$) then
              p_lim = 0.0_${k2}$
          else
              p_lim = x
          endif
-         if(s >= p_lim) then
-             a = s
-             g = 1.0_${k2}$ / a
+         if(real(s, ${k2}$) >= p_lim) then
+             a = real(s, dp)
+             g = 1.0_dp / a
              c = g
              do
-                 a = a + 1.0_${k2}$
+                 a = a + 1.0_dp
                  c = c * x / a
                  g = g + c
                  if(abs(c) < ep_machine) exit
              end do
          elseif(x >= 0.0_${k2}$) then
              a = 1.0_dp
-             b = real(x + 1 - s, kind=dp)
+             b = real(x, dp) + (1 - s)
              g = a / b
              c = a / dm
              d = 1.0_dp / b
              n = 2
              do
-                 a = -(n - 1) * (n - s - 1)
-                 b = x + 2 * n - 1.0_dp - s
+                 a = -(n - 1) * real((n - s - 1), dp)
+                 b = real(x - s, dp) + 2 * n - 1.0_dp
                  d = d * a + b
                  if(d == 0.0_dp) d = dm
                  c = b + a / c
@@ -340,22 +342,23 @@ Module stdlib_stats_distribution_special
                  n = n + 1
                  if(abs(y - 1.0_dp) < ep_machine) exit
              end do
-         elseif(abs(x) > max(1, s - 1)) then
-             a = -x
+         elseif(abs(x) > real(max(1_${k1}$, s - 1), ${k2}$)) then
+             a = real(-x, dp)
              c = 1.0_dp / a
-             d = real(s - 1, kind=dp)
+             d = real(s - 1, dp)
              b = c * (a - d)
              n = 1
              do
-                 c = d * (d - 1) / (a * a)
-                 d = d - 2
+                 c = d * (d - 1.0_dp) / (a * a)
+                 d = d - 2.0_dp
                  y = c * ( a - d)
                  b = b + y
                  n = n + 1
-                 if(n > (s - 2) / 2 .or. y < b * ep_machine) exit
+                 if(int(n, ${k1}$) > (s - 2) / 2 .or. y < b * ep_machine) exit
              end do
-             if(y >= b * ep_machine .and. mod(s, 2) /= 0) b = b + d * c / a
-             g = ((-1) ** s * exp(-a + log_gamma(real(s, kind=dp)) - (s - 1) *  &
+             if(y >= b * ep_machine .and. mod(s, 2_${k1}$) /= 0_${k1}$)         &
+                        b = b + d * c / a
+             g = ((-1) ** s * exp(-a + loggamma(real(s, dp)) - (s - 1) *        &
                  log(a)) + b ) / a
          endif
          res = g
@@ -375,21 +378,27 @@ Module stdlib_stats_distribution_special
          ${t1}$, intent(in) :: s
          ${t2}$, intent(in) :: x
          ${t2}$ :: res
-         real(dp) :: s1, y
+         real(dp) :: s1, y, xx, ss
 
-         if(s < 0) call error_stop("Error: Lower incomplete gamma function"     &
-                   //" input s value must be greater than 0")
-         if(x == 0.0_dp) then
-             res = real(0.0, kind=${k2}$)
-         elseif(x > 0.0_dp .and. x <= s) then
-             s1 = -x + s * log(x)
+         #:if t1[0] == "i"
+         if(s < 0_${k1}$) call error_stop("Error: Lower incomplete gamma"       &
+                          //" function input s value must be greater than 0")
+         #:else
+         if(s < 0._${k1}$) call error_stop("Error: Lower incomplete gamma"      &
+                          //" function input s value must be greater than 0")
+         #:endif
+         xx = real(x, dp); ss = real(s, dp)
+         if(x == 0.0_${k2}$) then
+             res = 0.0_${k2}$
+         elseif(x > 0.0_${k2}$ .and. x <= real(s, ${k2}$)) then
+             s1 = -xx + ss * log(xx)
              res = real(gpx(s,x) * exp(s1), kind=${k2}$)
-         elseif(x > s) then
-             s1 = log_gamma(real(s, kind=dp))
-             y = 1.0_dp - exp(-x + s * log(x) - s1) * gpx(s,x)
+         elseif(x > real(s, ${k2}$)) then
+             s1 = loggamma(ss)
+             y = 1.0_dp - exp(-xx + ss * log(xx) - s1) * gpx(s,x)
              res = real(y * exp(s1), kind=${k2}$)
          else
-             s1 = -x + s * log(-x)
+             s1 = -xx + ss * log(-xx)
              res = real((-1)**s * gpx(s,x) * exp(s1), kind=${k2}$)
          endif
          return
@@ -425,7 +434,7 @@ Module stdlib_stats_distribution_special
          ${t2}$, intent(in) :: x
          ${t2}$ :: res
 
-         res = exp(log_gamma(real(s, kind=${k2}$))) - ingamma_low(s,x)
+         res = exp(loggamma(real(s, kind=${k2}$))) - ingamma_low(s,x)
          return
      end function ingamma_up_${t1[0]}$${k1}$${k2}$
 
@@ -458,16 +467,22 @@ Module stdlib_stats_distribution_special
          ${t1}$, intent(in) :: s
          ${t2}$, intent(in) :: x
          ${t2}$ :: res
-         real(dp) :: s1
+         real(dp) :: s1, xx, ss
 
-         if(s < 0) call error_stop("Error: Regularized incomplete gamma"        &
-                   //" function P input s value must be greater than 0")
-         s1 = -x + s * log(abs(x)) - log_gamma(real(s, kind=${k2}$))
-         if(x == 0.0_dp) then
-             res = real(0.0, kind=${k2}$)
-         elseif(x > 0.0_dp .and. x <= s) then
+         #:if t1[0] == "i"
+         if(s < 0_${k1}$) call error_stop("Error: Lower incomplete gamma"       &
+                          //" function input s value must be greater than 0")
+         #:else
+         if(s < 0._${k1}$) call error_stop("Error: Lower incomplete gamma"      &
+                          //" function input s value must be greater than 0")
+         #:endif
+         xx = real(x, dp); ss = real(s, dp)
+         s1 = -xx + ss * log(abs(xx)) - loggamma(ss)
+         if(x == 0.0_${k2}$) then
+             res = 0.0_${k2}$
+         elseif(x > 0.0_${k2}$ .and. x <= real(s, ${k2}$)) then
              res = real(gpx(s,x) * exp(s1), kind=${k2}$)
-         elseif(x > s) then
+         elseif(x > real(s, ${k2}$)) then
              res = 1.0_dp - exp(s1) * gpx(s,x)
          else
              res = real((-1)**s * gpx(s,x) * exp(s1), kind=${k2}$)
@@ -490,7 +505,7 @@ Module stdlib_stats_distribution_special
          ${t2}$, intent(in) :: x
          ${t2}$ :: res
 
-         res = real(1.0_dp - regamma_p_${t1[0]}$${k1}$${k2}$(s,x), kind=${k2}$)
+         res = real(1.0_dp - regamma_p(s,x), kind=${k2}$)
          return
      end function regamma_q_${t1[0]}$${k1}$${k2}$
 
@@ -505,9 +520,9 @@ Module stdlib_stats_distribution_special
          ${t1}$, intent(in) :: a, b
          ${t1}$ :: res
 
-         if(a <= 0 .or. b <= 0) call error_stop("Error: Beta function auguments"&
-                                //" a, b values must be greater than 0")
-         res = exp(log_gamma(a) + log_gamma(b) - log_gamma(a+b))
+         if(a <= 0._${k1}$ .or. b <= 0._${k1}$) call error_stop("Error: Beta"   &
+                      //" function auguments a, b values must be greater than 0")
+         res = exp(loggamma(a) + loggamma(b) - loggamma(a+b))
          return
      end function beta_${t1[0]}$${k1}$
 
@@ -520,9 +535,9 @@ Module stdlib_stats_distribution_special
          ${t1}$, intent(in) :: a, b
          ${t1}$ :: res
 
-         if(a <= 0 .or. b <= 0) call error_stop("Error: Logrithm of Beta"       &
-               //" function auguments a, b values must be greater than 0")
-         res = log_gamma(a) + log_gamma(b) - log_gamma(a+b)
+         if(a <= 0._${k1}$ .or. b <= 0._${k1}$) call error_stop("Error: Beta"   &
+                      //" function auguments a, b values must be greater than 0")
+         res = loggamma(a) + loggamma(b) - loggamma(a+b)
          return
      end function l_beta_${t1[0]}$${k1}$
 
@@ -535,27 +550,27 @@ Module stdlib_stats_distribution_special
      !
          ${t1}$, intent(in) :: x, a, b
          ${t1}$ :: res
-         real :: s0, ak, ak2
          integer :: n, k
-         real(dp) :: an, bn, g, c, d, y
+         real(dp) :: an, bn, g, c, d, y, s0, ak, ak2
 
-         if(a <= 0 .or. b <= 0) call error_stop("Error: Incomplete beta"        &
-         //" function auguments a, b values must be greater than 0")
+         if(a <= 0._${k1}$ .or. b <= 0._${k1}$) call error_stop("Error:"        &
+             //" Incomplete beta function auguments a, b values must be"        &
+             //" greater than 0")
          s0 = (a + 1) / (a + b + 2)
          an = 1.0_dp
          bn = 1.0_dp
-         g = a / b
-         c = a / dm
-         d = 1.0_dp / b
+         g = an / bn
+         c = an / dm
+         d = 1.0_dp / bn
          n = 1
-         if(x < s0) then
+         if(x < real(s0, ${k1}$)) then
              do
                  if(mod(n, 2) == 0) then
-                     k = n / 2; ak = a + 2 * k
-                     an = k * x * (b - k) / (ak * ak - ak)
+                     k = n / 2; ak = real(a + 2 * k, dp)
+                     an = k * real(x, dp) * (b - k) / (ak * ak - ak)
                  else
-                     k = (n - 1) / 2; ak = a + k; ak2 = ak + k
-                     an = - (ak + b) * ak * x / (ak2 * ak2 + ak2)
+                     k = (n - 1) / 2; ak = real(a + k, dp); ak2 = ak + k
+                     an = - (ak + b) * ak * real(x, dp) / (ak2 * ak2 + ak2)
                  endif
                  d = d * an + bn
                  if(d == 0.0_dp) d = dm
@@ -571,8 +586,8 @@ Module stdlib_stats_distribution_special
          else
              do
                  if(mod(n, 2) == 0) then
-                     k = n / 2; ak = b + 2 * k
-                     an = k * (1.0_dp - x) * (a - k)
+                     k = n / 2; ak = real(b + 2 * k, dp)
+                     an = k * (1.0_dp - x) * (a - k) / (ak * ak - ak)
                  else
                      k = (n - 1) / 2; ak = b + k; ak2 = ak + k
                      an = - ak * (1.0_dp - x) * (a + ak) / (ak2 * ak2 + ak2)
