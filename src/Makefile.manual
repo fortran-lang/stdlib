@@ -84,7 +84,7 @@ stdlib_stats_distribution_normal.o: \
 stdlib_stats_distribution_exponential.o: \
 	stdlib_kinds.o \
 	stdlib_error.o \
-	stdlib_stats_distribtuion_PRNG.o \
+	stdlib_stats_distribution_PRNG.o \
 	stdlib_stats_distribution_uniform.o
 	
 # Fortran sources that are built from fypp templates
