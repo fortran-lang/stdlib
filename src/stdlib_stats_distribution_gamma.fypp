@@ -3,10 +3,9 @@
 Module stdlib_stats_distribution_gamma
     use stdlib_kinds
     use stdlib_error, only : error_stop
-    use stdlib_stats_distribution_PRNG, only : dist_rand
     use stdlib_stats_distribution_uniform, only : uni=>uniform_distribution_rvs
     use stdlib_stats_distribution_normal, only : rnor=>normal_distribution_rvs
-    use stdlib_stats_distribution_special, only : ingamma=>ingamma_low, log_gamma
+    use stdlib_stats_distribution_special, only : ingamma=>ingamma_low, loggamma
 
     implicit none
     private
@@ -266,7 +265,7 @@ Module stdlib_stats_distribution_gamma
             endif
         else
             res = exp((shape - 1._${k1}$) * log(x) - x * rate + shape *         &
-              log(rate) - log_gamma(shape))
+              log(rate) - loggamma(shape))
         endif
         return
     end function gamma_dist_pdf_${t1[0]}$${k1}$

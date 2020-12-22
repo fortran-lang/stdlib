@@ -342,7 +342,7 @@ Module stdlib_stats_distribution_special
                  n = n + 1
                  if(abs(y - 1.0_dp) < ep_machine) exit
              end do
-         elseif(abs(x) > real(max(1_${k1}$, s - 1), ${k2}$)) then
+         elseif(abs(x) > real(max(1_${k1}$, s - 1_${k1}$), ${k2}$)) then
              a = real(-x, dp)
              c = 1.0_dp / a
              d = real(s - 1, dp)
@@ -354,7 +354,8 @@ Module stdlib_stats_distribution_special
                  y = c * ( a - d)
                  b = b + y
                  n = n + 1
-                 if(int(n, ${k1}$) > (s - 2) / 2 .or. y < b * ep_machine) exit
+                 if(int(n, ${k1}$) > (s - 2_${k1}$) / 2_${k1}$ .or. y < b *     &
+				                     ep_machine) exit
              end do
              if(y >= b * ep_machine .and. mod(s, 2_${k1}$) /= 0_${k1}$)         &
                         b = b + d * c / a
