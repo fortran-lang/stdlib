@@ -2,7 +2,7 @@
 title: stats_distribution
 ---
 
-# Statistical Distributions -- Exponential Module
+# Statistical Distributions -- Exponential Distribution Module
 
 [TOC]
 
