@@ -355,7 +355,7 @@ Module stdlib_stats_distribution_special
                  b = b + y
                  n = n + 1
                  if(int(n, ${k1}$) > (s - 2_${k1}$) / 2_${k1}$ .or. y < b *     &
-				                     ep_machine) exit
+                                     ep_machine) exit
              end do
              if(y >= b * ep_machine .and. mod(s, 2_${k1}$) /= 0_${k1}$)         &
                         b = b + d * c / a
