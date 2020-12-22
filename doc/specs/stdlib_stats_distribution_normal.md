@@ -2,7 +2,7 @@
 title: stats_distribution
 ---
 
-# Statistical Distributions Normal Module
+# Statistical Distributions -- Normal Distribution Module
 
 [TOC]
 
