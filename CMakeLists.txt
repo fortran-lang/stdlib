@@ -1,70 +1,54 @@
-### Pre-process: .fpp -> .f90 via Fypp
+cmake_minimum_required(VERSION 3.14.0)
+project(stdlib Fortran)
+enable_testing()
 
-# Create a list of the files to be preprocessed
-set(fppFiles
-    stdlib_bitsets.fypp
-    stdlib_bitsets_64.fypp
-    stdlib_bitsets_large.fypp
-    stdlib_io.fypp
-    stdlib_linalg.fypp
-    stdlib_linalg_diag.fypp
-    stdlib_optval.fypp
-    stdlib_stats.fypp
-    stdlib_stats_corr.fypp
-    stdlib_stats_cov.fypp
-    stdlib_stats_mean.fypp
-    stdlib_stats_moment.fypp
-    stdlib_stats_var.fypp
-    stdlib_quadrature.fypp
-    stdlib_quadrature_trapz.fypp
-    stdlib_quadrature_simps.fypp
-    stdlib_stats_distribution_PRNG.fypp
-    stdlib_stats_distribution_uniform.fypp
-	stdlib_stats_distribution_normal.fypp
-)
+include(${CMAKE_SOURCE_DIR}/cmake/stdlib.cmake)
 
+# --- compiler options
+if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
+  add_compile_options(-fimplicit-none)
+  add_compile_options(-ffree-line-length-132)
+  add_compile_options(-Wall)
+  add_compile_options(-Wextra)
+  add_compile_options(-Wimplicit-procedure)
+  add_compile_options(-Wconversion-extra)
+  # -pedantic-errors triggers a false positive for optional arguments of elemental functions,
+  # see test_optval and https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95446
+  add_compile_options(-pedantic-errors)
+  if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0)
+    add_compile_options(-std=f2018)
+  else()
+    add_compile_options(-std=f2008ts)
+  endif()
+elseif(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
+  add_compile_options(-warn declarations,general,usage,interfaces,unused)
+  if(NOT CMAKE_Fortran_COMPILER_VERSION VERSION_EQUAL 20.2.1.20200827)
+    add_compile_options(-standard-semantics)
+  endif()
+  if(CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 18.0)
+    add_compile_options(-stand f15)
+  else()
+    add_compile_options(-stand f18)
+  endif()
+elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
+  add_compile_options(-Mdclchk)
+endif()
 
-# Custom preprocessor flags
+# --- compiler feature checks
+include(CheckFortranSourceCompiles)
+include(CheckFortranSourceRuns)
+check_fortran_source_runs("i=0; error stop i; end" f18errorstop SRC_EXT f90)
+check_fortran_source_compiles("real, allocatable :: array(:, :, :, :, :, :, :, :, :, :); end" f03rank SRC_EXT f90)
+check_fortran_source_runs("use, intrinsic :: iso_fortran_env, only : real128; real(real128) :: x; x = x+1; end" f03real128)
+
 if(DEFINED CMAKE_MAXIMUM_RANK)
-  set(fyppFlags "-DMAXRANK=${CMAKE_MAXIMUM_RANK}")
-elseif(f03rank)
-  set(fyppFlags)
-else()
-  set(fyppFlags "-DVERSION90")
+  set(CMAKE_MAXIMUM_RANK ${CMAKE_MAXIMUM_RANK})
 endif()
 
-fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
-
-set(SRC
-    stdlib_ascii.f90
-    stdlib_error.f90
-    stdlib_kinds.f90
-    stdlib_logger.f90
-    stdlib_system.F90
-    ${outFiles}
-)
-
-add_library(fortran_stdlib ${SRC})
-
-set(LIB_MOD_DIR ${CMAKE_CURRENT_BINARY_DIR}/mod_files/)
-set_target_properties(fortran_stdlib PROPERTIES
-    Fortran_MODULE_DIRECTORY ${LIB_MOD_DIR})
-target_include_directories(fortran_stdlib PUBLIC
-    $<BUILD_INTERFACE:${LIB_MOD_DIR}>
-    $<INSTALL_INTERFACE:include>
-)
-
-if(f18errorstop)
-  target_sources(fortran_stdlib PRIVATE f18estop.f90)
-else()
-  target_sources(fortran_stdlib PRIVATE f08estop.f90)
+# --- find preprocessor
+find_program(FYPP fypp)
+if(NOT FYPP)
+  message(FATAL_ERROR "Preprocessor fypp not found!")
 endif()
 
-add_subdirectory(tests)
-
-install(TARGETS fortran_stdlib
-        RUNTIME DESTINATION bin
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-    )
-install(DIRECTORY ${LIB_MOD_DIR} DESTINATION include)
+add_subdirectory(src)
