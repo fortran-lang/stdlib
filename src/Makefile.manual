@@ -102,4 +102,4 @@ stdlib_stats_var.f90: stdlib_stats_var.fypp
 stdlib_stats_distribution_PRNG.f90: stdlib_stats_distribution_PRNG.fypp
 stdlib_stats_distribution_uniform.f90: stdlib_stats_distribution_uniform.fypp
 stdlib_stats_distribution_normal.f90: stdlib_stats_distribution_normal.fypp
-stdlib_stats_distribution_exponential.f90: stdlib_stats_distribution.exponential.fypp
+stdlib_stats_distribution_exponential.f90: stdlib_stats_distribution_exponential.fypp
