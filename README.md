@@ -58,8 +58,6 @@ cmake --build build
 cmake --build build --target test
 ```
 
-
-
 ### Build with make
 
 Alternatively, you can build using provided Makefiles:
