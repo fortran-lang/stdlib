@@ -134,7 +134,7 @@ Module stdlib_stats_distribution_uniform
     ! Uniformly distributed float in [0,1]
     ! Based on the paper by Frederic Goualard, "Generating Random Floating-
     ! Point Numbers By Dividing Integers: a Case Study", Proceedings of
-    ! ICCS 2020, June 20202, Amsterdam, Netherlands
+    ! ICCS 2020, June 2020, Amsterdam, Netherlands
     !
         ${t1}$  ::  res
         integer(int64) :: tmp
@@ -201,7 +201,7 @@ Module stdlib_stats_distribution_uniform
             tr = real(scale) * r1
             ti = aimag(scale) * r2
         endif
-        res = cmplx(tr, ti)
+        res = cmplx(tr, ti, kind=${k1}$)
         return
     end function unif_dist_rvs_1_${t1[0]}$${k1}$
 
@@ -233,7 +233,7 @@ Module stdlib_stats_distribution_uniform
             tr = real(loc) + real(scale) * r1
             ti = aimag(loc) + aimag(scale) * r2
         endif
-        res = cmplx(tr, ti)
+        res = cmplx(tr, ti, kind=${k1}$)
         return
     end function unif_dist_rvs_${t1[0]}$${k1}$
 
@@ -329,7 +329,7 @@ Module stdlib_stats_distribution_uniform
                 tr = real(loc) + real(scale) * r1
                 ti = aimag(loc) + aimag(scale) * r2
             endif
-            res(i) = cmplx(tr, ti)
+            res(i) = cmplx(tr, ti, kind=${k1}$)
         enddo
         return
     end function unif_dist_rvs_array_${t1[0]}$${k1}$
@@ -343,10 +343,10 @@ Module stdlib_stats_distribution_uniform
 
         if(scale == 0) then
             res = 0.0
-        elseif(x < loc .or. x >loc + scale) then
+        elseif(x < loc .or. x > (loc + scale)) then
             res = 0.0
         else
-            res = 1. / (scale + 1)
+            res = 1. / (scale + 1_${k1}$)
         end if
         return
     end function unif_dist_pdf_${t1[0]}$${k1}$
@@ -400,7 +400,7 @@ Module stdlib_stats_distribution_uniform
         elseif(x < loc) then
             res = 0.0
         elseif(x >= loc .and. x <= (loc + scale)) then
-            res = real((x - loc + 1)) / real((scale + 1))
+            res = real((x - loc + 1_${k1}$)) / real((scale + 1_${k1}$))
         else
             res = 1.0
         end if
