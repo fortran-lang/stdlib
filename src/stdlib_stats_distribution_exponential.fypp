@@ -21,7 +21,7 @@ Module stdlib_stats_distribution_expon
     !! Version experimental
     !!
     !! Exponential Distribution Random Variates
-    !!([Specification](../page/specs/stdlib_stats_distribution_expon.html#
+    !!([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
     !! description))
     !!
         module procedure exp_dist_rvs_0_rsp                 !0 dummy variable
@@ -39,7 +39,7 @@ Module stdlib_stats_distribution_expon
     !! Version experimental
     !!
     !! Exponential Distribution Probability Density Function
-    !!([Specification](../page/specs/stdlib_stats_distribution_expon.html#
+    !!([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
     !! description))
     !!
         #:for k1, t1 in RC_KINDS_TYPES
@@ -51,7 +51,7 @@ Module stdlib_stats_distribution_expon
     !! Version experimental
     !!
     !! Exponential Distribution Cumulative Distribution Function
-    !! ([Specification](../page/specs/stdlib_stats_distribution_expon.html#
+    !! ([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
     !! description))
     !!
         #:for k1, t1 in RC_KINDS_TYPES
@@ -77,6 +77,8 @@ Module stdlib_stats_distribution_expon
     !      unsigned integers in Fortran.
     !
     ! Latest version - 1 January 2001
+    !
+    ! Fotran 90 program translated from C by Jim-215-Fisher
     !
         real(dp), parameter :: M2 = 2147483648.0_dp
         real(dp)            :: de = 7.697117470131487_dp, te,                   &
@@ -115,7 +117,7 @@ Module stdlib_stats_distribution_expon
 
         ! Original algorithm use 32bit
         iz = 0
-        jz = dist_rand(iz)
+        jz = dist_rand(1_int32)
 
         iz = iand( jz, 255 )
         if( abs( jz ) < ke(iz) ) then
@@ -123,17 +125,17 @@ Module stdlib_stats_distribution_expon
         else
             L1: do
                 if( iz == 0 ) then
-                    res = r - log( uni( ) )
+                    res = r - log( uni(1.0_${k1}$) )
                     exit L1
                 end if
                 x = abs( jz ) * we(iz)
-                if( fe(iz) + uni( ) * (fe(iz-1) - fe(iz)) < exp( -x ) ) then
+                if(fe(iz) + uni(1.0_${k1}$) * (fe(iz-1) - fe(iz)) < exp(-x)) then
                     res = x
                     exit L1
                 end if
 
                 !original algorithm use 32bit
-                jz = dist_rand(iz)
+                jz = dist_rand(1_int32)
                 iz = iand( jz, 255 )
                 if( abs( jz ) < ke(iz) ) then
                     res = abs( jz ) * we(iz)
@@ -161,7 +163,7 @@ Module stdlib_stats_distribution_expon
 
         ! Original algorithm use 32bit
         iz = 0
-        jz = dist_rand(iz)
+        jz = dist_rand(1_int32)
 
         iz = iand( jz, 255 )
         if( abs( jz ) < ke(iz) ) then
@@ -169,17 +171,17 @@ Module stdlib_stats_distribution_expon
         else
             L1: do
                 if( iz == 0 ) then
-                    res = r - log( uni( ) )
+                    res = r - log( uni(1.0_${k1}$) )
                     exit L1
                 end if
                 x = abs( jz ) * we(iz)
-                if( fe(iz) + uni( ) * (fe(iz-1) - fe(iz)) < exp( -x ) ) then
+                if(fe(iz) + uni(1.0_${k1}$) * (fe(iz-1) - fe(iz)) < exp(-x)) then
                     res = x
                     exit L1
                 end if
 
                 !original algorithm use 32bit
-                jz = dist_rand(iz)
+                jz = dist_rand(1_int32)
                 iz = iand( jz, 255 )
                 if( abs( jz ) < ke(iz) ) then
                     res = abs( jz ) * we(iz)
@@ -201,7 +203,7 @@ Module stdlib_stats_distribution_expon
 
         tr = exp_dist_rvs_r${k1}$(real(lamda))
         ti = exp_dist_rvs_r${k1}$(aimag(lamda))
-        res = cmplx(tr, ti)
+        res = cmplx(tr, ti, kind=${k1}$)
         return
     end function exp_dist_rvs_${t1[0]}$${k1}$
 
@@ -223,7 +225,7 @@ Module stdlib_stats_distribution_expon
         do i =1, array_size
             ! Original algorithm use 32bit
             iz = 0
-            jz = dist_rand(iz)
+            jz = dist_rand(1_int32)
 
             iz = iand( jz, 255 )
             if( abs( jz ) < ke(iz) ) then
@@ -231,17 +233,17 @@ Module stdlib_stats_distribution_expon
             else
                 L1: do
                     if( iz == 0 ) then
-                        re = r - log( uni( ) )
+                        re = r - log( uni(1.0_${k1}$) )
                         exit L1
                     end if
                     x = abs( jz ) * we(iz)
-                    if( fe(iz) + uni( ) * (fe(iz-1) - fe(iz)) < exp( -x ) ) then
+                    if(fe(iz) + uni(1.0_${k1}$)*(fe(iz-1)-fe(iz)) < exp(-x)) then
                         re = x
                         exit L1
                     end if
 
                     !original algorithm use 32bit
-                    jz = dist_rand(iz)
+                    jz = dist_rand(1_int32)
                     iz = iand( jz, 255 )
                     if( abs( jz ) < ke(iz) ) then
                         re = abs( jz ) * we(iz)
@@ -268,7 +270,7 @@ Module stdlib_stats_distribution_expon
         do i = 1, array_size
             tr = exp_dist_rvs_r${k1}$(real(lamda))
             ti = exp_dist_rvs_r${k1}$(aimag(lamda))
-            res(i) = cmplx(tr, ti)
+            res(i) = cmplx(tr, ti, kind=${k1}$)
         end do
         return
     end function exp_dist_rvs_array_${t1[0]}$${k1}$
@@ -284,6 +286,8 @@ Module stdlib_stats_distribution_expon
 
         if(lamda <= 0.0_${k1}$) call error_stop("Error: Exponential"            &
                  //" distribution lamda parameter must be greaeter than zero")
+        if(x < 0.0_${k1}$) call error_stop("Error: Exponential distribution"    &
+                 //"  variate x must be non-negative")
         res = exp(- x * lamda) * lamda
         return
     end function exp_dist_pdf_${t1[0]}$${k1}$
@@ -311,6 +315,8 @@ Module stdlib_stats_distribution_expon
 
         if(lamda <= 0.0_${k1}$) call error_stop("Error: Exponential"            &
                  //" distribution lamda parameter must be greaeter than zero")
+        if(x < 0.0_${k1}$) call error_stop("Error: Exponential distribution"    &
+                 //" variate x must be non-negative")
         res = (1.0 - exp(- x * lamda))
         return
     end function exp_dist_cdf_${t1[0]}$${k1}$
