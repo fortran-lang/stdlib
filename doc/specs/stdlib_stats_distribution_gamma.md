@@ -119,7 +119,7 @@ The result is a scalar or an array, with a shape conformable to auguments, of ty
 
 ```fortran
 program demo_gamma_pdf
-    use stdlib_stats_distribution_PRNG, onyl : random_seed
+    use stdlib_stats_distribution_PRNG, only : random_seed
     use stdlib_stats_distribution_gamma, only: rgamma => gamma_distribution_rvs,&
                                              gamma_pdf => gamma_distribution_pdf
 
@@ -191,7 +191,7 @@ The result is a scalar of type `real` with a shape conformable to auguments.
 
 ```fortran
 program demo_gamma_cdf
-    use stdlib_stats_distribution_PRNG, onyl : random_seed
+    use stdlib_stats_distribution_PRNG, only : random_seed
     use stdlib_stats_distribution_gamma, only: rgamma => gamma_distribution_rvs,&
                                              gamma_cdf => gamma_distribution_cdf
 
