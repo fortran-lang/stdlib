@@ -2,7 +2,7 @@
 #:set RANKS = range(1, MAXRANK + 1)
 #:set REDRANKS = range(2, MAXRANK + 1)
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-submodule (stdlib_stats) stdlib_stats_moment
+submodule (stdlib_stats) stdlib_stats_moment_mask
 
   use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
   use stdlib_error, only: error_stop
@@ -13,25 +13,20 @@ contains
 
   #:for k1, t1 in RC_KINDS_TYPES
     #:for rank in RANKS
-      #:set RName = rname("moment",rank, t1, k1)
+      #:set RName = rname("moment_mask",rank, t1, k1)
       module function ${RName}$(x, order, dim, center, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: order
         integer, intent(in) :: dim
         ${t1}$, intent(in), optional :: center${reduced_shape('x', rank, 'dim')}$
-        logical, intent(in), optional :: mask
+        logical, intent(in) :: mask${ranksuffix(rank)}$
         ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
 
         integer :: i
-        real(${k1}$) :: n
+        real(${k1}$) :: n${reduced_shape('x', rank, 'dim')}$
         ${t1}$, allocatable :: mean_${ranksuffix(rank-1)}$
 
-        if (.not.optval(mask, .true.)) then
-          res = ieee_value(1._${k1}$, ieee_quiet_nan)
-          return
-        end if
-
-        n = real(size(x, dim), ${k1}$)
+        n = real(count(mask, dim), ${k1}$)
 
         res = 0
         select case(dim)
@@ -39,12 +34,25 @@ contains
           case(${fi}$)
             if (present(center)) then
               do i = 1, size(x, ${fi}$)
-                res = res + (x${select_subarray(rank, [(fi, 'i')])}$ - center)**order
+                res = res + merge( (x${select_subarray(rank, [(fi, 'i')])}$ -&
+                  center)**order,&
+                  #:if t1[0] == 'r'
+                    0._${k1}$,&
+                  #:else
+                    cmplx(0,0,kind=${k1}$),&
+                  #:endif
+                    mask${select_subarray(rank, [(fi, 'i')])}$)
               end do
             else
-              allocate(mean_, source = mean(x, ${fi}$))
+              allocate(mean_, source = mean(x, ${fi}$, mask))
               do i = 1, size(x, ${fi}$)
-                res = res + (x${select_subarray(rank, [(fi, 'i')])}$ - mean_)**order
+                res = res + merge( (x${select_subarray(rank, [(fi, 'i')])}$ - mean_)**order,&
+                  #:if t1[0] == 'r'
+                    0._${k1}$,&
+                  #:else
+                    cmplx(0,0,kind=${k1}$),&
+                  #:endif
+                    mask${select_subarray(rank, [(fi, 'i')])}$)
               end do
               deallocate(mean_)
             end if
@@ -61,25 +69,20 @@ contains
 
   #:for k1, t1 in INT_KINDS_TYPES
     #:for rank in RANKS
-      #:set RName = rname("moment",rank, t1, k1, 'dp')
+      #:set RName = rname("moment_mask",rank, t1, k1, 'dp')
       module function ${RName}$(x, order, dim, center, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         integer, intent(in) :: order
         integer, intent(in) :: dim
-        real(dp),intent(in), optional :: center${reduced_shape('x', rank, 'dim')}$
-        logical, intent(in), optional :: mask
+        real(dp), intent(in), optional :: center${reduced_shape('x', rank, 'dim')}$
+        logical, intent(in) :: mask${ranksuffix(rank)}$
         real(dp) :: res${reduced_shape('x', rank, 'dim')}$
 
         integer :: i
-        real(dp) :: n
+        real(dp) :: n${reduced_shape('x', rank, 'dim')}$
         real(dp), allocatable :: mean_${ranksuffix(rank-1)}$
 
-        if (.not.optval(mask, .true.)) then
-          res = ieee_value(1._dp, ieee_quiet_nan)
-          return
-        end if
-
-        n = real(size(x, dim), dp)
+        n = real(count(mask, dim), dp)
 
         res = 0
         select case(dim)
@@ -87,13 +90,16 @@ contains
           case(${fi}$)
             if (present(center)) then
               do i = 1, size(x, ${fi}$)
-                res = res + (real(x${select_subarray(rank, [(fi, 'i')])}$, dp) -&
-                  center)**order
+                res = res + merge((real(x${select_subarray(rank, [(fi, 'i')])}$, dp) -&
+                                    center)**order,&
+                                    0._dp, mask${select_subarray(rank, [(fi, 'i')])}$)
               end do
             else
-              allocate(mean_, source = mean(x, ${fi}$))
+              allocate(mean_, source = mean(x, ${fi}$, mask))
               do i = 1, size(x, ${fi}$)
-                res = res + (real(x${select_subarray(rank, [(fi, 'i')])}$, dp) - mean_)**order
+                res = res + merge((real(x${select_subarray(rank, [(fi, 'i')])}$, dp) - mean_)&
+                                    **order,&
+                                    0._dp, mask${select_subarray(rank, [(fi, 'i')])}$)
               end do
               deallocate(mean_)
             end if

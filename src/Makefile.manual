@@ -16,6 +16,7 @@ SRC = f18estop.f90 \
       stdlib_stats_mean.f90 \
       stdlib_stats_moment.f90 \
       stdlib_stats_moment_all.f90 \
+      stdlib_stats_moment_mask.f90 \
       stdlib_stats_moment_scalar.f90 \
       stdlib_stats_var.f90
 
@@ -82,5 +83,6 @@ stdlib_stats.f90: stdlib_stats.fypp
 stdlib_stats_mean.f90: stdlib_stats_mean.fypp
 stdlib_stats_moment.f90: stdlib_stats_moment.fypp
 stdlib_stats_moment_all.f90: stdlib_stats_moment_all.fypp
+stdlib_stats_moment_mask.f90: stdlib_stats_moment_mask.fypp
 stdlib_stats_moment_scalar.f90: stdlib_stats_moment_scalar.fypp
 stdlib_stats_var.f90: stdlib_stats_var.fypp
