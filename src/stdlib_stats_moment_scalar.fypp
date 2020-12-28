@@ -1,0 +1,110 @@
+#:include "common.fypp"
+#:set RANKS = range(1, MAXRANK + 1)
+#:set REDRANKS = range(2, MAXRANK + 1)
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+submodule (stdlib_stats) stdlib_stats_moment_scalar
+
+  use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
+  use stdlib_error, only: error_stop
+  use stdlib_optval, only: optval
+  implicit none
+
+contains
+
+  #:for k1, t1 in RC_KINDS_TYPES
+    #:for rank in REDRANKS
+      #:set RName = rname("moment_scalar",rank, t1, k1)
+      module function ${RName}$(x, order, dim, center, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: order
+        integer, intent(in) :: dim
+        ${t1}$, intent(in) :: center
+        logical, intent(in), optional :: mask
+        ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._${k1}$, ieee_quiet_nan)
+          return
+        end if
+
+        if (dim >= 1 .and. dim <= ${rank}$) then
+          res = sum((x - center)**order, dim) / size(x, dim)
+        else
+          call error_stop("ERROR (moment): wrong dimension")
+        end if
+
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:for rank in REDRANKS
+      #:set RName = rname("moment_scalar",rank, t1, k1, 'dp')
+      module function ${RName}$(x, order, dim, center, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: order
+        integer, intent(in) :: dim
+        real(dp),intent(in) :: center
+        logical, intent(in), optional :: mask
+        real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        if (dim >= 1 .and. dim <= ${rank}$) then
+          res = sum( (real(x, dp) - center)**order, dim) / size(x, dim)
+        else
+          call error_stop("ERROR (moment): wrong dimension")
+        end if
+
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+
+  #:for k1, t1 in RC_KINDS_TYPES
+    #:for rank in REDRANKS
+      #:set RName = rname("moment_mask_scalar",rank, t1, k1)
+      module function ${RName}$(x, order, dim, center, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: order
+        integer, intent(in) :: dim
+        ${t1}$, intent(in) :: center
+        logical, intent(in) :: mask${ranksuffix(rank)}$
+        ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+
+        if (dim >= 1 .and. dim <= ${rank}$) then
+          res = sum((x - center)**order, dim, mask) / count(mask, dim)
+        else
+          call error_stop("ERROR (moment): wrong dimension")
+        end if
+
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:for rank in REDRANKS
+      #:set RName = rname("moment_mask_scalar",rank, t1, k1, 'dp')
+      module function ${RName}$(x, order, dim, center, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: order
+        integer, intent(in) :: dim
+        real(dp), intent(in) :: center
+        logical, intent(in) :: mask${ranksuffix(rank)}$
+        real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+
+        if (dim >= 1 .and. dim <= ${rank}$) then
+          res = sum(( real(x, dp) - center)**order, dim, mask) / count(mask, dim)
+        else
+          call error_stop("ERROR (moment): wrong dimension")
+        end if
+
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+end submodule
