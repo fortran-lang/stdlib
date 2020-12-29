@@ -35,6 +35,8 @@ The parameters shape and rate must be greater than 0.
 
 `array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
 
+`shape` and `rate` must be the same type.
+
 ### Return value
 
 The result is a scalar or rank one array, with a size of `array_size`, of type `real` or `complx`.
@@ -111,7 +113,7 @@ x is supported in (0, \infty)
 
 `x`: has `intent(in)` and is a scalar of type `real` or `complx`.
 
-`shape` has `intent(in)` and is a scalar of type real` or `complx`.
+`shape` has `intent(in)` and is a scalar of type `real` or `complx`.
 
 `rate`: has `intent(in)` and is a scalar of type `real` or `complx`.
 
