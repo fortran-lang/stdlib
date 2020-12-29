@@ -62,9 +62,11 @@ endif()
 
 add_subdirectory(tests)
 
-install(TARGETS fortran_stdlib
-        RUNTIME DESTINATION bin
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-    )
-install(DIRECTORY ${LIB_MOD_DIR} DESTINATION include)
+if(NOT IS_SUBPROJECT OR BUILD_SHARED_LIBS)
+  install(TARGETS fortran_stdlib
+          RUNTIME DESTINATION bin
+          ARCHIVE DESTINATION lib
+          LIBRARY DESTINATION lib
+  )
+  install(DIRECTORY ${LIB_MOD_DIR} DESTINATION include)
+endif()

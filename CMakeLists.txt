@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.14.0)
 project(stdlib Fortran)
 enable_testing()
+get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 
 include(${PROJECT_SOURCE_DIR}/cmake/stdlib.cmake)
 
