@@ -8,19 +8,20 @@ title: logger
 ## Introduction
 
 This module defines a derived type, its methods, a variable, and
-constants to be used for the reporting of errors and other
-information. The derived type, `logger_type`, is to be used to define
-both global and local logger variables. The `logger_type` methods serve
-to configure the loggers and use the logger variables to report
-messages to a variable specific list of I/O units termed
-`log_units`. The variable, `global_logger`, of type `logger_type`, is
-intended to serve as the default global logger. The constants serve as
-error flags returned by the optional integer `stat` argument.
+constants to be used for the reporting of errors, displaying messages,
+and other information. The derived type, `logger_type`, is to be used
+to define both global and local logger variables. The `logger_type`
+methods serve to configure the loggers and use the logger variables to
+report messages to a variable specific list of I/O units termed
+`log_units`. The variable, `global_logger`, of type `logger_type`,
+is intended to serve as the default global logger. The constants serve
+as error flags returned by the optional integer `stat` argument.
 
 The logger variables have the option to:
 
 * change which units receive the log messages;
 * report which units receive the log messages;
+* select which types of messages are logged;
 * precede messages by a blank line;
 * precede messages by a time stamp of the form
   `yyyy-mm-dd hh:mm:ss.sss`;
@@ -64,6 +65,18 @@ Error Code             | Description
 `unopened_in_error`    | the unit was not opened
 `write_fault`          | one of the writes to `log_units` failed
 
+The module also defines eight distinct public integer constants for
+selecting the messages that are logged. These constants, termed
+severity levels, are (sorted following their increasing order of
+severity): `all_level`, `debug_level`, `information_level`,
+`warning_level`, `error_level`, `io_error_level`, `text_error_level`,
+and `none_level`.
+All log messages with a level (e.g., `debug_level`) lower than a
+specified severity level (e.g., `information_level`) will be ignored.
+The levels `error_level` and `io_error_level` have the same severity.
+The default severity level is `information_level`.
+
+
 ## The derived type: logger_type
 
 ### Status
@@ -81,14 +94,15 @@ significant events encountered during the execution of a program.
 
 ### Private attributes
 
-| Attribute        | Type          | Description                                     | Initial value |
-|------------------|---------------|-------------------------------------------------|--------------|
-| `add_blank_line` | Logical       | Flag to precede output with a blank line        | `.false.`    |
-| `indent_lines`   | Logical       | Flag to indent subsequent lines by four columns | `.true.`     |
-| `log_units`      | Integer array | List of I/O units used for output               | Unallocated  |
-| `max_width`      | Integer       | Maximum column width of output                  | 0            |
-| `time_stamp`     | Logical       | Flag to precede output by a time stamp          | `.true.`     |
-| `units`          | Integer       | Count of the number of active output units      | 0            |
+| Attribute        | Type          | Description                                     | Initial value       |
+|------------------|---------------|-------------------------------------------------|---------------------|
+| `add_blank_line` | Logical       | Flag to precede output with a blank line        | `.false.`           |
+| `indent_lines`   | Logical       | Flag to indent subsequent lines by four columns | `.true.`            |
+| `level`          | Integer       | Severity level                                  | `information_level` |
+| `log_units`      | Integer array | List of I/O units used for output               | Unallocated         |
+| `max_width`      | Integer       | Maximum column width of output                  | 0                   |
+| `time_stamp`     | Logical       | Flag to precede output by a time stamp          | `.true.`            |
+| `units`          | Integer       | Count of the number of active output units      | 0                   |
 
 ## The `stdlib_logger` variable
 
@@ -284,7 +298,7 @@ Reports the configuration of a logger.
 
 #### Syntax
 
-`call self % [[logger_type(type):configuration(bound)]]( [ add_blankline, indent, max_width, time_stamp, log_units ] )`
+`call self % [[logger_type(type):configuration(bound)]]( [ add_blankline, indent, level, max_width, time_stamp, log_units ] )`
 
 #### Class
 
@@ -302,6 +316,10 @@ Pure subroutine
 `indent` (optional): shall be a scalar default logical variable. It
   is an `intent(out)` argument. A value of `.true.` indents subsequent
   lines by four spaces, and `.false.` otherwise.
+
+`level` (optional): shall be a scalar default integer variable. It is an
+  `intent(out)` argument. The value corresponds to the severity level for
+  ignoring a message.
 
 `max_width` (optional): shall be a scalar default integer
   variable. It is an `intent(out)` argument. A positive value bigger
@@ -355,7 +373,7 @@ Configures the logging process for self.
 
 #### Syntax
 
-`call self % [[logger_type(type):configure(bound)]]( [ add_blank_line, indent, max_width, time_stamp ] )`
+`call self % [[logger_type(type):configure(bound)]]( [ add_blank_line, indent, level, max_width, time_stamp ] )`
 
 #### Class
 
@@ -374,6 +392,10 @@ Pure subroutine
   expression. It is an `intent(in)` argument. Set to `.true.` to
   indent subsequent lines by four spaces, and to `.false.` to
   not indent.
+
+`level` (optional): shall be a scalar default integer expression. It is
+  an `intent(in)` argument. Set the severity level for ignoring a log
+  message.
 
 `max_width` (optional): shall be a scalar default integer
   expression. It is an `intent(in)` argument. Set to a positive value
@@ -415,6 +437,8 @@ Writes the string `message` to `self % log_units` with optional additional text.
 If time stamps are active, a time stamp is written, followed
 by `module` and `procedure` if present, and then
 `message` is written with the prefix `'DEBUG: '`.
+
+It is ignored if the `level` of `self` is higher than `debug_level`.
 
 #### Class
 
@@ -485,6 +509,8 @@ If time stamps are active for `self`, a time stamp is written,
 followed by `module` and `procedure` if present, then
 `message` is written with the prefix `'ERROR: '`, and then
 if `stat` or `errmsg` are present they are written.
+
+It is ignored if the `level` of `self` is higher than `error_level`.
 
 #### Class
 
@@ -569,6 +595,8 @@ If time stamps are active, a time stamp is written, followed
 by `module` and `procedure` if present, and then
 `message` is written with the prefix `'INFO: '`.
 
+It is ignored if the `level` of `self` is higher than `information_level`.
+
 #### Class
 
 Subroutine
@@ -636,6 +664,8 @@ first. Then if `module` or `procedure` are present, they are
 written. Then `message` is written with the prefix
 `'I/O ERROR: '`. Then if `iostat` or `iomsg` are present they are
 written.
+
+It is ignored if the `level` of `self` is higher than `io_error_level`.
 
 #### Syntax
 
@@ -714,6 +744,8 @@ If time stamps are active, a time stamp is written,
 then `module` and `procedure` are written if present,
 followed by `prefix \\ ': '`, if present, and finally `message`.
 
+No severity level is applied to `log_message`.
+
 #### Syntax
 
 `call self % [[logger_type(type):log_message(bound)]]( message [, module, procedure, prefix ] )`
@@ -789,6 +821,8 @@ written. Then if `filename` or `line_number` are present they are
 written with `column`. Then `line` is written. Then a caret, '^', is
 written below `line` at the column indicated by `column`. Then
 `summary` is written below the caret.
+
+It is ignored if the `level` of `self` is higher than `text_error_level`.
 
 #### Syntax
 
