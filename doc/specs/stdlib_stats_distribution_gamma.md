@@ -61,7 +61,7 @@ program demo_gamma_rvs
 
     g(:,:,:) = 0.5
     print *, rgamma(g)
-    !a rank 3 array of 60 standard gamma random variates with rate=0.5
+    !a rank 3 array of 24 standard gamma random variates with rate=0.5
 
 ! [1.03841162, 1.33044529, 0.912742674, 0.131288037, 0.638593793,
 !  1.03565669E-02, 0.624804378, 1.12179172, 4.91380468E-02, 6.69969944E-03,
