@@ -97,6 +97,8 @@ The probability density function of the continuous gamma distribution.
 
 $$ f(x)= \frac{scale^{shape}}{\Gamma (shape)}x^{shape-1}e^{-scale \times x} , for \;\;  x>0, shape, scale>0$$
 
+x is supported in (0, \infty)
+
 ### Syntax
 
 `result = [[stdlib_stats_distribution_gamma(module):gamma_distribution_pdf(interface)]](x, shape, rate)`
@@ -168,6 +170,8 @@ Experimental
 Cumulative distribution function of the gamma continuous distribution
 
 $$ F(x)= \frac{\gamma (shape, scale \times x)}{\Gamma (shape)}, for \;\;  x>0, shape, scale>0} $$
+
+x is supported in (0, \infty)
 
 ### Syntax
 
