@@ -14,7 +14,9 @@ SRC = f18estop.f90 \
       stdlib_quadrature_trapz.f90 \
       stdlib_stats.f90 \
       stdlib_stats_mean.f90 \
-      stdlib_stats_moment.f90 \
+      stdlib_stats_moment_all.f90 \
+      stdlib_stats_moment_mask.f90 \
+      stdlib_stats_moment_scalar.f90 \
       stdlib_stats_var.f90 \
       stdlib_stats_distribution_PRNG.f90\
       stdlib_stats_distribution_uniform.f90
