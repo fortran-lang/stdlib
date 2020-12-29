@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14.0)
 project(stdlib Fortran)
 enable_testing()
 
-include(${CMAKE_SOURCE_DIR}/cmake/stdlib.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/stdlib.cmake)
 
 # --- compiler options
 if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
