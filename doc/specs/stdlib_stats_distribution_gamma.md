@@ -17,7 +17,11 @@ Experimental
 
 With one augument for shape parameter, the function returns a standard gamma distributed random variate \(\gamma\)(shape) with `rate = 1.0`. The function is elemental. For complex auguments, the real and imaginary parts are independent of each other.
 
-With two auguments, the function return a scalar gamma distributed random variate \(\gamma\)(shape, rate).
+With two auguments, the function returns a scalar gamma distributed random variate \(\gamma\)(shape, rate) and is elemental.
+
+With three auguments, the function returns a rank one array of gamma distribution random variates.
+
+The parameters shape and rate must be greater than 0.
 
 ### Syntax
 
