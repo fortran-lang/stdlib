@@ -22,6 +22,8 @@ With single argument, the function returns an exponential distributed random var
 
 With two auguments the function returns a rank one array of random variates.
 
+The rate parameter `lamda` must be greater than 0.
+
 ### Syntax
 
 `result = [[stdlib_stats_distribution_expon(module):exponential_distribution_rvs(interface)]]([lamda] [[, array_size]])`
@@ -93,6 +95,8 @@ Experimental
 The probability density function of the continuous exponential distribution.
 
 $$ f(x)=\begin{cases}lamda \times e^{-lamda \times x} &x\geqslant 0 \\\\ 0 &x< 0\end{} $$
+
+x is supported on [0, \infty)
 
 ### Syntax
 
@@ -166,6 +170,7 @@ Cumulative distribution function of the exponential continuous distribution
 
 $$ F(x)=\begin{cases}1 - e^{-lamda \times x} &x\geqslant 0 \\\\ 0 &x< 0\end{} $$
 
+x is supported on [0, \infty)
 
 ### Syntax
 
