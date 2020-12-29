@@ -7,7 +7,7 @@ use,intrinsic :: ieee_arithmetic, only : ieee_is_nan
 implicit none
 
 real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
-real(dp), parameter :: dptol = 1000 * epsilon(1._dp)
+real(dp), parameter :: dptol = 2000 * epsilon(1._dp)
 
 real(sp) :: s1(3) = [1.0_sp, 2.0_sp, 3.0_sp]
 
