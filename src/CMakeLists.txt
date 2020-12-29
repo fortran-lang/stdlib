@@ -18,6 +18,12 @@ set(fppFiles
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp
     stdlib_quadrature_simps.fypp
+    stdlib_stats_distribution_PRNG.fypp
+    stdlib_stats_distribution_uniform.fypp
+    stdlib_stats_distribution_normal.fypp
+    stdlib_stats_distribution_special.fypp
+    stdlib_stats_distribution_gamma.fypp
+    stdlib_stats_distribution_beta.fypp
 )
 
 
