@@ -22,7 +22,7 @@ Applying Fisher-Yates algorithm to generate an unbiased permutation for any list
 
 ### Arguments
 
-`list`: argument has `intent(in)` and is a rank one array of integer, real, or complx type.
+`list`: argument has `intent(in)` and is a rank one array of integer, real, or complex type.
 
 ### Return value
 
@@ -69,11 +69,13 @@ Without augument the function returns a scalar standard uniformly distributed va
 
 With single augument `scale` of integer type the function returns a scalar uniformly distributed variate of integer type on [0,scale]. This is the standard Rectangular distribtuion. Function is elemental.
 
-With single augument `scale` of real or complx type the function returns a scalar uniformly distributed variate of real or complx type on [0, scale]. The real part and imaginary part of a complx type are independent of each other. Function is elemental.
+With single augument `scale` of real or complex type the function returns a scalar uniformly distributed variate of real or complex type on [0, scale]. The real part and imaginary part of a complex type are independent of each other. Function is elemental.
 
 With double auguments `loc` and `scale` the function returns a scalar uniformly distributed random variates of integer, real or complx type on [loc, loc + scale] dependent of input type. If it is complex augument, the real part and imaginary part are independent of each other. Function is elemental.
 
 With triple auguments `loc`, `scale` and `array_size` the function returns a rank one array of uniformly distributed variates of integer, real or complx type with an array size of `array_size`.
+
+`scale` must be greater than 0.
 
 ### Syntax
 
