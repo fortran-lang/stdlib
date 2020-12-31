@@ -14,6 +14,9 @@ set(fppFiles
     stdlib_stats_cov.fypp
     stdlib_stats_mean.fypp
     stdlib_stats_moment.fypp
+    stdlib_stats_moment_all.fypp
+    stdlib_stats_moment_mask.fypp
+    stdlib_stats_moment_scalar.fypp
     stdlib_stats_var.fypp
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp

@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        gcc_v: [7, 8, 9] # Version of GFortran we want to use.
+        gcc_v: [7, 8, 9, 10] # Version of GFortran we want to use.
     env:
       FC: gfortran-${{ matrix.gcc_v }}
       GCC_V: ${{ matrix.gcc_v }}
@@ -54,7 +54,9 @@ jobs:
 
     - name: Install GFortran macOS
       if: contains( matrix.os, 'macos')
-      run: brew install gcc@${GCC_V} || brew upgrade gcc@${GCC_V} || true
+      run: |
+          brew install gcc@${GCC_V} || brew upgrade gcc@${GCC_V} || true
+          brew link gcc@${GCC_V}
 
     - name: Configure with CMake
       run: cmake -Wdev -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAXIMUM_RANK=4 -S . -B build
@@ -71,15 +73,71 @@ jobs:
       working-directory: build
 
     - name: Test in-tree builds
-      if: contains( matrix.gcc_v, '9') # Only test one compiler on each platform
+      if: contains( matrix.gcc_v, '10') # Only test one compiler on each platform
       run: |
           cmake -DCMAKE_MAXIMUM_RANK=4 .
           cmake --build .
           cmake --build . --target test
 
     - name: Test manual makefiles
-      if: contains(matrix.os, 'ubuntu') && contains(matrix.gcc_v, '9')
+      if: contains(matrix.os, 'ubuntu') && contains(matrix.gcc_v, '10')
       run: |
         make -f Makefile.manual FYPPFLAGS="-DMAXRANK=4"
         make -f Makefile.manual test
         make -f Makefile.manual clean
+
+  intel-build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04]
+        fc: [ifort]
+    env:
+      FC: ${{ matrix.fc }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v1
+
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.x
+
+    - name: Install CMake Linux
+      if: contains(matrix.os, 'ubuntu')
+      run: ci/install_cmake.sh
+
+    - name: Add Intel repository
+      if: contains(matrix.os, 'ubuntu')
+      run: |
+        wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+        sudo apt-get update
+
+    - name: Install Intel oneAPI compiler
+      if: contains(matrix.os, 'ubuntu')
+      run: |
+        sudo apt-get install intel-oneapi-compiler-fortran
+        source /opt/intel/oneapi/setvars.sh
+        printenv >> $GITHUB_ENV
+
+    - name: Install fypp
+      run: pip install --upgrade fypp
+
+    - name: Configure with CMake
+      run: cmake -Wdev -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAXIMUM_RANK=4 -S . -B build
+
+    - name: Build and compile
+      run: cmake --build build
+
+    - name: catch build fail
+      run: cmake --build build --verbose --parallel 1
+      if: failure()
+
+    - name: test
+      run: ctest --parallel --output-on-failure
+      working-directory: build
