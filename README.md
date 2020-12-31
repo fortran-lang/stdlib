@@ -66,6 +66,25 @@ Alternatively, you can build using provided Makefiles:
 make -f Makefile.manual
 ```
 
+## Limiting the maximum rank of generated procedures
+
+Stdlib's preprocessor (fypp) by default generates specific procedures for arrays of all ranks, up to rank 15.
+This can result in long compilation times and, on some computers, exceeding available memory.
+If you know that you won't need all 15 ranks, you can specify the maximum rank for which the specific procedures will be generated.
+For example, with CMake:
+
+```sh
+cmake -B build -DCMAKE_MAXIMUM_RANK=4
+cmake --build build
+￼cmake --build build --target test
+```
+or as follows with `make`:
+
+```sh
+make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
+```
+Note that currently the minimum value for maximum rank is 4.
+
 ## Documentation
 
 Documentation is a work in progress (see issue #4) but is currently available at https://stdlib.fortran-lang.org.
