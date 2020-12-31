@@ -19,6 +19,7 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [optval](./stdlib_optval.html) - Fallback value for optional arguments
  - [quadrature](./stdlib_quadrature.html) - Numerical integration
  - [stats](./stdlib_stats.html) - Descriptive Statistics
+ - [stringlist](./stdlib_stringlist.html) - Handling lists of strings
 
 ## Missing specs
 
