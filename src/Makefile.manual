@@ -18,7 +18,7 @@ SRC = f18estop.f90 \
       stdlib_stats_moment_all.f90 \
       stdlib_stats_moment_mask.f90 \
       stdlib_stats_moment_scalar.f90 \
-      stdlib_stats_var.f90 \
+      stdlib_stats_var.f90
 
 LIB = libstdlib.a
 
