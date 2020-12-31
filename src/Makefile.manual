@@ -71,7 +71,6 @@ stdlib_stats_var.o: \
 	stdlib_kinds.o \
 	stdlib_stats.o
 
-
 # Fortran sources that are built from fypp templates
 stdlib_bitsets_64.f90: stdlib_bitsets_64.fypp
 stdlib_bitsets_large.f90: stdlib_bitsets_large.fypp
@@ -84,4 +83,3 @@ stdlib_stats.f90: stdlib_stats.fypp
 stdlib_stats_mean.f90: stdlib_stats_mean.fypp
 stdlib_stats_moment.f90: stdlib_stats_moment.fypp
 stdlib_stats_var.f90: stdlib_stats_var.fypp
-
