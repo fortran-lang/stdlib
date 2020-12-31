@@ -12,7 +12,7 @@ program test_stdlib_logger
     implicit none
 
     integer, allocatable :: log_units(:)
-    integer              :: max_width, stat
+    integer              :: level, max_width, stat
     integer              :: unit1, unit2, unit3, unit4, unit5, unit6
     logical              :: add_blank_line, exist, indent, time_stamp
 
@@ -71,6 +71,7 @@ program test_stdlib_logger
                                   caret = '^',                              &
                                   stat = stat )
 
+    call test_level()
 
 contains
 
@@ -704,5 +705,139 @@ contains
 
         return
     end subroutine test_adding_log_units
+
+    subroutine test_level()
+
+        print *, 'running test_level'
+
+        call global % configure( level = all_level )
+
+        call global % configuration( level = level )
+        if ( level == all_level ) then
+            write(*,*) 'LEVEL is all_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to all_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should be printed')
+        call global % log_information( 'This message should be printed')
+        call global % log_warning( 'This message should be printed')
+        call global % log_error( 'This message should be printed')
+        call global % log_io_error( 'This message should be printed')
+
+        call global % configure( level = debug_level )
+
+        call global % configuration( level = level )
+        if ( level == debug_level ) then
+            write(*,*) 'LEVEL is debug_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to debug_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should be printed')
+        call global % log_information( 'This message should be printed')
+        call global % log_warning( 'This message should be printed')
+        call global % log_error( 'This message should be printed')
+        call global % log_io_error( 'This message should be printed')
+
+        call global % configure( level = information_level )
+
+        call global % configuration( level = level )
+        if ( level == information_level ) then
+            write(*,*) 'LEVEL is information_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to information_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should NOT be printed')
+        call global % log_information( 'This message should be printed')
+        call global % log_warning( 'This message should be printed')
+        call global % log_error( 'This message should be printed')
+        call global % log_io_error( 'This message should be printed')
+
+        call global % configure( level = warning_level )
+
+        call global % configuration( level = level )
+        if ( level == warning_level ) then
+            write(*,*) 'LEVEL is warning_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to warning_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should NOT be printed')
+        call global % log_information( 'This message should NOT be printed')
+        call global % log_warning( 'This message should be printed')
+        call global % log_error( 'This message should be printed')
+        call global % log_io_error( 'This message should be printed')
+
+        call global % configure( level = error_level )
+
+        call global % configuration( level = level )
+        if ( level == error_level ) then
+            write(*,*) 'LEVEL is error_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to error_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should NOT be printed')
+        call global % log_information( 'This message should NOT be printed')
+        call global % log_warning( 'This message should NOT be printed')
+        call global % log_error( 'This message should be printed')
+        call global % log_io_error( 'This message should be printed')
+
+        call global % configure( level = none_level )
+
+        call global % configuration( level = level )
+        if ( level == none_level ) then
+            write(*,*) 'LEVEL is none_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to none_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should NOT be printed')
+        call global % log_information( 'This message should NOT be printed')
+        call global % log_warning( 'This message should NOT be printed')
+        call global % log_error( 'This message should NOT be printed')
+        call global % log_io_error( 'This message should NOT be printed')
+
+        print *, 'end of test_level'
+
+    end subroutine test_level
 
 end program test_stdlib_logger

@@ -68,6 +68,28 @@ module stdlib_logger
         unopened_in_error = 7,    &
         write_failure = 8
 
+    integer, parameter, public ::      &
+        debug_level = 10,       &
+        information_level = 20, &
+        warning_level = 30,     &
+        error_level = 40,       &
+        io_error_level = 40,    &
+        text_error_level = 50,  &
+        all_level = -10 + min(  &
+            debug_level,        &
+            information_level,  &
+            warning_level,      &
+            error_level,        &
+            io_error_level,     &
+            text_error_level),  &
+        none_level = 10 + max(  &
+            debug_level,        &
+            information_level,  &
+            warning_level,      &
+            error_level,        &
+            io_error_level,     &
+            text_error_level)
+
     character(*), parameter :: module_name = 'stdlib_logger'
 
     type :: logger_type
@@ -78,6 +100,7 @@ module stdlib_logger
 
         logical                   :: add_blank_line = .false.
         logical                   :: indent_lines = .true.
+        integer                   :: level = information_level
         integer, allocatable      :: log_units(:)
         integer                   :: max_width = 0
         logical                   :: time_stamp = .true.
@@ -379,7 +402,7 @@ contains
     end subroutine add_log_unit
 
 
-    pure subroutine configuration( self, add_blank_line, indent, &
+    pure subroutine configuration( self, add_blank_line, indent, level, &
         max_width, time_stamp, log_units )
 !! version: experimental
 
@@ -389,12 +412,13 @@ contains
 !!    starts with a blank line, and `.false.` implying no blank line.
 !! 2. `indent` is a logical flag with `.true.` implying that subsequent columns
 !!    will be indented 4 spaces and `.false.` implying no indentation.
-!! 3. `max_width` is the maximum number of columns of output text with
+!! 3. `level` is the lowest level for printing a message
+!! 4. `max_width` is the maximum number of columns of output text with
 !!    `max_width` == 0 => no bounds on output width.
-!! 4. `time_stamp` is a logical flag with `.true.` implying that the output
+!! 5. `time_stamp` is a logical flag with `.true.` implying that the output
 !!    will have a time stamp, and `.false.` implying that there will be no
 !!    time stamp.
-!! 5. `log_units` is an array of the I/O unit numbers to which log output
+!! 6. `log_units` is an array of the I/O unit numbers to which log output
 !!    will be written.
 !!([Specification](../page/specs/stdlib_logger.html#configuration-report-a-loggers-configuration))
 
@@ -404,6 +428,8 @@ contains
 !! A logical flag to add a preceding blank line
         logical, intent(out), optional              :: indent
 !! A logical flag to indent subsequent lines
+        integer, intent(out), optional              :: level
+!! The minimum level for printing a message
         integer, intent(out), optional              :: max_width
 !! The maximum number of columns for most outputs
         logical, intent(out), optional              :: time_stamp
@@ -434,6 +460,7 @@ contains
 
         if ( present(add_blank_line) ) add_blank_line = self % add_blank_line
         if ( present(indent) ) indent = self % indent_lines
+        if ( present(level) ) level = self % level
         if ( present(max_width) ) max_width = self % max_width
         if ( present(time_stamp) ) time_stamp = self % time_stamp
         if ( present(log_units) ) then
@@ -447,7 +474,7 @@ contains
     end subroutine configuration
 
 
-    pure subroutine configure( self, add_blank_line, indent, max_width, &
+    pure subroutine configure( self, add_blank_line, indent, level, max_width, &
         time_stamp )
 !! version: experimental
 
@@ -459,10 +486,11 @@ contains
 !! 2. `indent` is a logical flag with `.true.` implying that subsequent lines
 !!    will be indented 4 spaces and `.false.` implying no indentation. `indent`
 !!    has a startup value of `.true.`.
-!! 3. `max_width` is the maximum number of columns of output text with
+!! 3. `level` is the lowest level for printing a message
+!! 4. `max_width` is the maximum number of columns of output text with
 !!    `max_width == 0` => no bounds on output width. `max_width` has a startup
 !!    value of 0.
-!! 4. `time_stamp` is a logical flag with `.true.` implying that the output
+!! 5. `time_stamp` is a logical flag with `.true.` implying that the output
 !!    will have a time stamp, and `.false.` implying that there will be no
 !!    time stamp. `time_stamp` has a startup value of `.true.`.
 !!([Specification](../page/specs/stdlib_logger.html#configure-configure-the-logging-process))
@@ -477,10 +505,12 @@ contains
         class(logger_type), intent(inout) :: self
         logical, intent(in), optional     :: add_blank_line
         logical, intent(in), optional     :: indent
+        integer, intent(in), optional     :: level
         integer, intent(in), optional     :: max_width
         logical, intent(in), optional     :: time_stamp
 
         if ( present(add_blank_line) ) self % add_blank_line = add_blank_line
+        if ( present(level) ) self % level = level
         if ( present(indent) ) self % indent_lines = indent
         if ( present(max_width) ) then
             if ( max_width <= 4 ) then
@@ -803,10 +833,12 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of `log_information`
+!! The name of the module containing the current invocation of `log_information`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of
+!! The name of the procedure containing the current invocation of
 !! `log_information`
+
+        if ( self % level > debug_level ) return
 
         call self % log_message( message,               &
                                  module = module,       &
@@ -865,9 +897,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of `log_error`
+!! The name of the module containing the current invocation of `log_error`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of `log_error`
+!! The name of the procedure containing the current invocation of `log_error`
         integer, intent(in), optional           :: stat
 !! The value of the `stat` specifier returned by a Fortran statement
         character(len=*), intent(in), optional  :: errmsg
@@ -878,6 +910,8 @@ contains
         character(256) :: iomsg
         character(*), parameter :: procedure_name = 'log_error'
         character(:), allocatable :: suffix
+
+        if ( self % level > error_level ) return
 
         if ( present(stat) ) then
             write( dummy, '(a, i0)', err=999, iostat=iostat, iomsg=iomsg ) &
@@ -954,10 +988,12 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of `log_information`
+!! The name of the module containing the current invocation of `log_information`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of
+!! The name of the procedure containing the current invocation of
 !! `log_information`
+
+        if ( self % level > information_level ) return
 
         call self % log_message( message,               &
                                  module = module,       &
@@ -1007,9 +1043,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of REPORT_ERROR
+!! The name of the module containing the current invocation of REPORT_ERROR
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of REPORT_ERROR
+!! The name of the procedure containing the current invocation of REPORT_ERROR
         integer, intent(in), optional           :: iostat
 !! The value of the IOSTAT specifier returned by a Fortran I/O statement
         character(len=*), intent(in), optional  :: iomsg
@@ -1020,6 +1056,8 @@ contains
         integer :: iostat2
         character(*), parameter :: procedure_name = 'log_io_error'
         character(:), allocatable :: suffix
+
+        if ( self % level > io_error_level ) return
 
         if ( present(iostat) ) then
             write( dummy, '(a, i0)', err=999, iostat=iostat2, iomsg=iomsg2 ) &
@@ -1093,9 +1131,9 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to log_unit
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of `log_message`
+!! The name of the module containing the current invocation of `log_message`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of `log_message`
+!! The name of the procedure containing the current invocation of `log_message`
         character(len=*), intent(in), optional  :: prefix
 !! To be prepended to message as `prefix // ': ' // message`.
 
@@ -1238,6 +1276,8 @@ contains
         integer                       :: lun
         character(*), parameter       :: procedure_name = 'LOG_TEXT_ERROR'
         character(len=:), allocatable :: buffer
+
+        if ( self % level > text_error_level ) return
 
         acaret = optval(caret, '^')
 
@@ -1428,9 +1468,11 @@ contains
         character(len=*), intent(in)            :: message
 !! A string to be written to LOG_UNIT
         character(len=*), intent(in), optional  :: module
-!! The name of the module contining the current invocation of `log_warning`
+!! The name of the module containing the current invocation of `log_warning`
         character(len=*), intent(in), optional  :: procedure
-!! The name of the procedure contining the current invocation of `log_warning`
+!! The name of the procedure containing the current invocation of `log_warning`
+
+        if ( self % level > warning_level ) return
 
         call self % log_message( message,               &
                                  module = module,       &
