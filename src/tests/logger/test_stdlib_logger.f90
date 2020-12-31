@@ -12,7 +12,7 @@ program test_stdlib_logger
     implicit none
 
     integer, allocatable :: log_units(:)
-    integer              :: max_width, stat
+    integer              :: level, max_width, stat
     integer              :: unit1, unit2, unit3, unit4, unit5, unit6
     logical              :: add_blank_line, exist, indent, time_stamp
 
@@ -47,7 +47,7 @@ program test_stdlib_logger
     print *
     print *, 'running log_text_error'
     call global % log_text_error( 'This text should be written to UNIT1' // &
-                                  'and UNIT3 and not to OUTPUT_UNIT.',      &
+                                  ' and UNIT3 and not to OUTPUT_UNIT.',     &
                                   column = 25,                              &
                                   summary = 'There is no real error here.', &
                                   filename = 'dummy.txt',                   &
@@ -71,6 +71,7 @@ program test_stdlib_logger
                                   caret = '^',                              &
                                   stat = stat )
 
+    call test_level()
 
 contains
 
@@ -126,11 +127,91 @@ contains
 
         end if
 
+        !testing all calls independently
+        call global % configuration( add_blank_line=add_blank_line )
+
+        if ( .not. add_blank_line ) then
+            write(*,*) 'ADD_BLANK_LINE starts off as .FALSE. as expected.'
+
+        else
+            error stop 'ADD_BLANK_LINE starts off as .TRUE. contrary to ' // &
+                'expectations.'
+
+        end if
+
+        call global % configuration( indent=indent )
+
+        if ( indent ) then
+            write(*,*) 'INDENT starts off as .TRUE. as expected.'
+
+        else
+            error stop 'INDENT starts off as .FALSE. contrary to expectations.'
+
+        end if
+
+        call global % configuration( max_width=max_width )
+
+        if ( max_width == 0 ) then
+            write(*,*) 'MAX_WIDTH starts off as 0 as expected.'
+
+        else
+            error stop 'MAX_WIDTH starts off as not equal to 0 contrary ' // &
+                'to expectations.'
+
+        end if
+
+        call global % configuration( time_stamp=time_stamp )
+
+        if ( time_stamp ) then
+            write(*,*) 'TIME_STAMP starts off as .TRUE. as expected.'
+
+        else
+            error stop 'TIME_STAMP starts off as .FALSE. contrary to ' // &
+                'expectations.'
+
+        end if
+
+        call global % configuration( log_units=log_units )
+
+        if ( size(log_units) == 0 ) then
+            write(*,*) 'SIZE(LOG_UNITS) starts off as 0 as expected.'
+
+        else
+            error stop 'SIZE(LOG_UNITS) starts off as non-zero contrary ' // &
+                'to expectations.'
+
+        end if
+
+
         call global % log_information( 'This message should be output ' // &
             'to OUTPUT_UNIT, unlimited in width, not preceded by ' //      &
             'a blank line, then by a time stamp, then by MODULE % ' //     &
             'PROCEDURE, be prefixed by INFO and be indented on ' //        &
             'subsequent lines by 4 columns.',                              &
+            module = 'N/A',                                                &
+            procedure = 'TEST_STDLIB_LOGGER' )
+
+        call global % log_information( 'This message should be output ' // &
+            'to OUTPUT_UNIT, unlimited in width, not preceded by ' //      &
+            'a blank line, then by a time stamp, then by MODULE % ' //     &
+            'PROCEDURE, be prefixed by INFO. ' // new_line('a') //         &
+            'This is a new line of the same log message.',                 &
+            module = 'N/A',                                                &
+            procedure = 'TEST_STDLIB_LOGGER' )
+
+        call global % log_debug( 'This message should be output ' //       &
+            'to OUTPUT_UNIT, unlimited in width, not preceded by ' //      &
+            'a blank line, then by a time stamp, then by MODULE % ' //     &
+            'PROCEDURE, be prefixed by DEBUG and be indented on ' //       &
+            'subsequent lines by 4 columns.',                              &
+            module = 'N/A',                                                &
+            procedure = 'TEST_STDLIB_LOGGER' )
+
+        call global % log_debug( 'This message should be output ' //       &
+            'to OUTPUT_UNIT, unlimited in width, not preceded by ' //      &
+            'a blank line, then by a time stamp, then by MODULE % ' //     &
+            'PROCEDURE, be prefixed by DEBUG. ' // new_line('a') //        &
+            'This is a new line of the same log message.',                 &
             module = 'N/A',                                                &
             procedure = 'TEST_STDLIB_LOGGER' )
 
@@ -142,7 +223,7 @@ contains
             log_units=log_units )
 
         if ( add_blank_line ) then
-            write(*,*) 'ADD_BLANK_LINE is now .FALSE. as expected.'
+            write(*,*) 'ADD_BLANK_LINE is now .TRUE. as expected.'
 
         else
             error stop 'ADD_BLANKLINE is now .FALSE. contrary to expectations.'
@@ -191,6 +272,13 @@ contains
             module = 'N/A', &
             procedure = 'TEST_STDLIB_LOGGER' )
 
+        call global % log_message( 'The last word of the first line ' //      &
+            new_line('a')//'should be "line". "Line"' // new_line('a') //     &
+            'is also the last word for the second line. The following ' //    &
+            'lines should be limited to 72 columns width.' , &
+            module = 'N/A', &
+            procedure = 'TEST_STDLIB_LOGGER' )
+
         call global % configure( add_blank_line=.false., indent=.true., &
             max_width=72, time_stamp=.true. )
 
@@ -200,6 +288,14 @@ contains
             'by MODULE % PROCEDURE, have a prefix of WARN, and be ' //  &
             'indented by 4 columns on subsequent lines.',               &
             module = 'N/A',                                             &
+            procedure = 'TEST_STDLIB_LOGGER' )
+
+        call global % log_message( 'The last word of the first line ' //      &
+            new_line('a')//'should be "the". "Line"' // new_line('a') //      &
+            'should be the last word for the second line. The following ' //  &
+            'lines should be limited to 72 columns width. From the second ' //&
+            'line, all lines should be indented by 4 columns.' ,&
+            module = 'N/A', &
             procedure = 'TEST_STDLIB_LOGGER' )
 
     end subroutine test_logging_configuration
@@ -609,5 +705,139 @@ contains
 
         return
     end subroutine test_adding_log_units
+
+    subroutine test_level()
+
+        print *, 'running test_level'
+
+        call global % configure( level = all_level )
+
+        call global % configuration( level = level )
+        if ( level == all_level ) then
+            write(*,*) 'LEVEL is all_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to all_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should be printed')
+        call global % log_information( 'This message should be printed')
+        call global % log_warning( 'This message should be printed')
+        call global % log_error( 'This message should be printed')
+        call global % log_io_error( 'This message should be printed')
+
+        call global % configure( level = debug_level )
+
+        call global % configuration( level = level )
+        if ( level == debug_level ) then
+            write(*,*) 'LEVEL is debug_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to debug_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should be printed')
+        call global % log_information( 'This message should be printed')
+        call global % log_warning( 'This message should be printed')
+        call global % log_error( 'This message should be printed')
+        call global % log_io_error( 'This message should be printed')
+
+        call global % configure( level = information_level )
+
+        call global % configuration( level = level )
+        if ( level == information_level ) then
+            write(*,*) 'LEVEL is information_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to information_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should NOT be printed')
+        call global % log_information( 'This message should be printed')
+        call global % log_warning( 'This message should be printed')
+        call global % log_error( 'This message should be printed')
+        call global % log_io_error( 'This message should be printed')
+
+        call global % configure( level = warning_level )
+
+        call global % configuration( level = level )
+        if ( level == warning_level ) then
+            write(*,*) 'LEVEL is warning_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to warning_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should NOT be printed')
+        call global % log_information( 'This message should NOT be printed')
+        call global % log_warning( 'This message should be printed')
+        call global % log_error( 'This message should be printed')
+        call global % log_io_error( 'This message should be printed')
+
+        call global % configure( level = error_level )
+
+        call global % configuration( level = level )
+        if ( level == error_level ) then
+            write(*,*) 'LEVEL is error_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to error_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should NOT be printed')
+        call global % log_information( 'This message should NOT be printed')
+        call global % log_warning( 'This message should NOT be printed')
+        call global % log_error( 'This message should be printed')
+        call global % log_io_error( 'This message should be printed')
+
+        call global % configure( level = none_level )
+
+        call global % configuration( level = level )
+        if ( level == none_level ) then
+            write(*,*) 'LEVEL is none_level as expected.'
+
+        else
+            error stop 'LEVEL starts off as not equal to none_level ' //&
+            'contrary to expectations.'
+
+        end if
+
+        call global % log_message('This message should be always printed, &
+             & irrespective of the severity level')
+
+        call global % log_debug( 'This message should NOT be printed')
+        call global % log_information( 'This message should NOT be printed')
+        call global % log_warning( 'This message should NOT be printed')
+        call global % log_error( 'This message should NOT be printed')
+        call global % log_io_error( 'This message should NOT be printed')
+
+        print *, 'end of test_level'
+
+    end subroutine test_level
 
 end program test_stdlib_logger
