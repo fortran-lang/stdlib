@@ -19,7 +19,7 @@ SRC = f18estop.f90 \
       stdlib_stats_moment_mask.f90 \
       stdlib_stats_moment_scalar.f90 \
       stdlib_stats_var.f90
-	  
+
 LIB = libstdlib.a
 
 
@@ -70,7 +70,7 @@ stdlib_stats_var.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
 	stdlib_stats.o
-	
+
 # Fortran sources that are built from fypp templates
 stdlib_bitsets_64.f90: stdlib_bitsets_64.fypp
 stdlib_bitsets_large.f90: stdlib_bitsets_large.fypp
