@@ -21,7 +21,6 @@ set(fppFiles
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp
     stdlib_quadrature_simps.fypp
-    stdlib_stats_distribution_PRNG.fypp
 )
 
 
