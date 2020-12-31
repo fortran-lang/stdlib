@@ -70,6 +70,16 @@ stdlib_stats_var.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
 	stdlib_stats.o
+stdlib_stats_distribution_PRNG.o: stdlib_kinds.o
+stdlib_stats_distribution_uniform.o: \
+	stdlib_kinds.o \
+	stdlib_error.o \
+	stdlib_stats_distribution_PRNG.o
+stdlib_stats_distribution_exponential.o: \
+	stdlib_kinds.o \
+	stdlib_error.o \
+	stdlib_stats_distribution_PRNG.o \
+	stdlib_stats_distribution_uniform.o
 
 # Fortran sources that are built from fypp templates
 stdlib_bitsets_64.f90: stdlib_bitsets_64.fypp
@@ -86,3 +96,6 @@ stdlib_stats_moment_all.f90: stdlib_stats_moment_all.fypp
 stdlib_stats_moment_mask.f90: stdlib_stats_moment_mask.fypp
 stdlib_stats_moment_scalar.f90: stdlib_stats_moment_scalar.fypp
 stdlib_stats_var.f90: stdlib_stats_var.fypp
+stdlib_stats_distribution_PRNG.f90: stdlib_stats_distribution_PRNG.fypp
+stdlib_stats_distribution_uniform.f90: stdlib_stats_distribution_uniform.fypp
+stdlib_stats_distribution_exponential.f90: stdlib_stats_distribution_exponential.fypp
