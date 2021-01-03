@@ -67,7 +67,7 @@ Experimental
 
 Without augument the function returns a scalar standard uniformly distributed variate U(0,1) of real type with single precision on [0,1].
 
-With single augument `scale` of integer type the function returns a scalar uniformly distributed variate of integer type on [0,scale]. This is the standard Rectangular distribtuion. Function is elemental.
+With single augument `scale` of integer type the function returns a scalar uniformly distributed variate of integer type on [0,scale]. This is the standard Rectangular distribution. The function is elemental.
 
 With single augument `scale` of real or complex type the function returns a scalar uniformly distributed variate of real or complex type on [0, scale]. The real part and imaginary part of a complex type are independent of each other. Function is elemental.
 
