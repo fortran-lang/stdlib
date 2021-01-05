@@ -63,8 +63,9 @@ endif()
 add_subdirectory(tests)
 
 install(TARGETS fortran_stdlib
+        EXPORT fortran_stdlib-targets
         RUNTIME DESTINATION bin
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
-    )
+)
 install(DIRECTORY ${LIB_MOD_DIR} DESTINATION include)
