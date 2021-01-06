@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14.0)
-project(stdlib Fortran)
+project(fortran_stdlib Fortran)
 enable_testing()
 
 # Follow GNU conventions for installation directories
@@ -56,7 +56,7 @@ endif()
 
 add_subdirectory(src)
 
-install(EXPORT fortran_stdlib-targets
-        NAMESPACE fortran_stdlib::
-        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/fortran_stdlib"
+install(EXPORT ${PROJECT_NAME}-targets
+        NAMESPACE ${PROJECT_NAME}::
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )

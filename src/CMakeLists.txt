@@ -44,26 +44,26 @@ set(SRC
     ${outFiles}
 )
 
-add_library(fortran_stdlib ${SRC})
+add_library(${PROJECT_NAME} ${SRC})
 
 set(LIB_MOD_DIR ${CMAKE_CURRENT_BINARY_DIR}/mod_files/)
-set_target_properties(fortran_stdlib PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     Fortran_MODULE_DIRECTORY ${LIB_MOD_DIR})
-target_include_directories(fortran_stdlib PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${LIB_MOD_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
 if(f18errorstop)
-  target_sources(fortran_stdlib PRIVATE f18estop.f90)
+  target_sources(${PROJECT_NAME} PRIVATE f18estop.f90)
 else()
-  target_sources(fortran_stdlib PRIVATE f08estop.f90)
+  target_sources(${PROJECT_NAME} PRIVATE f08estop.f90)
 endif()
 
 add_subdirectory(tests)
 
-install(TARGETS fortran_stdlib
-        EXPORT fortran_stdlib-targets
+install(TARGETS ${PROJECT_NAME}
+        EXPORT ${PROJECT_NAME}-targets
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
         ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
