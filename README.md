@@ -40,54 +40,101 @@ git clone https://github.com/fortran-lang/stdlib
 cd stdlib
 ```
 
+
 ### Requirements
 
-The preprocessor ```fypp``` (https://github.com/aradi/fypp) is needed because metaprogramming is used.
-It can be installed using the command line installer ```pip```.
+To build the Fortran standard library you need
+
+- a Fortran 2008 compliant compiler, better a Fortran 2018 compliant compiler
+  (GCC Fortran or Intel Fortran compilers are known to work for stdlib)
+- CMake version 3.14 or newer (alternatively make can be used)
+- a build backend for CMake, like make or ninja (the latter is recommended on Windows)
+- the [``fypp``](https://github.com/aradi/fypp) preprocessor (used as meta-programming tool)
+
+If your system package manager does not provide the required build tools, all build dependencies can be installed with the Python command line installer ``pip``:
+
 ```sh
-pip install fypp
+pip install fypp cmake ninja
 ```
+
+Alternatively, you can install the build tools from the conda-forge channel with the conda package manager:
+
+```sh
+conda config --add channels conda-forge
+conda create -n stdlib-tools fypp cmake ninja
+conda activate stdlib-tools
+```
+
+You can install conda from using the [miniforge installer](https://github.com/conda-forge/miniforge/releases).
+Also, you can install a Fortran compiler from conda-forge by installing the ``fortran-compiler`` package, which installs ``gfortran``.
+
 
 ### Build with CMake
 
+Configure the build with
+
 ```sh
 cmake -B build
+```
 
+you can pass additional options to CMake to customize the build.
+Important options are
+
+- `-G Ninja` to use the ninja backend instead of the default make backend, other build backends are available with a similar syntax
+- `-DCMAKE_INSTALL_PREFIX` is used to provide the install location for the library.
+- `-DCMAKE_MAXIMUM_RANK` the maximum array rank procedures should be generated for.
+  The default is 15 for Fortran 2003 compliant compilers, otherwise 7 for compilers not supporting Fortran 2003 completely yet.
+  The minimum required rank to compile this project is 4.
+  Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
+- `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
+
+For example, to configure a build using the ninja backend and generating procedures up to rank 7, which is installed to your home directory use
+
+```sh
+cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local
+```
+
+To build the standard library run
+
+```sh
 cmake --build build
+```
 
+To test your build setup run the projects testsuite after the build has finished with
+
+```sh
 cmake --build build --target test
 ```
+
+Please report failing tests on our [issue tracker](https://github.com/fortran-lang/stdlib/issues/new/choose) including details on the compiler used, the operating system and platform architecture.
+
+To install the project to the declared prefix run
+
+```sh
+cmake --install build
+```
+
+Now you have a working version of stdlib you can use for your project.
+
 
 ### Build with make
 
 Alternatively, you can build using provided Makefiles:
 
-```
+```sh
 make -f Makefile.manual
 ```
 
-## Limiting the maximum rank of generated procedures
-
-Stdlib's preprocessor (fypp) by default generates specific procedures for arrays of all ranks, up to rank 15.
-This can result in long compilation times and, on some computers, exceeding available memory.
-If you know that you won't need all 15 ranks, you can specify the maximum rank for which the specific procedures will be generated.
-For example, with CMake:
-
-```sh
-cmake -B build -DCMAKE_MAXIMUM_RANK=4
-cmake --build build
-￼cmake --build build --target test
-```
-or as follows with `make`:
+You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS`` environment variable:
 
 ```sh
 make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 ```
-Note that currently the minimum value for maximum rank is 4.
+
 
 ## Documentation
 
-Documentation is a work in progress (see issue #4) but is currently available at https://stdlib.fortran-lang.org.
+Documentation is a work in progress (see issue [#4](https://github.com/fortran-lang/stdlib/issues/4)) but alrealy available at https://stdlib.fortran-lang.org.
 This includes API documentation automatically generated from static analysis and markup comments in the source files
 using the [FORD](https://github.com/Fortran-FOSS-programmers/ford/wiki) tool,
 as well as a specification document or ["spec"](https://stdlib.fortran-lang.org/page/specs/index.html) for each proposed feature.
