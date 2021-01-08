@@ -45,16 +45,16 @@ cd stdlib
 
 To build the Fortran standard library you need
 
-- a Fortran 2008 compliant compiler, better a Fortran 2018 compliant compiler
-  (GCC Fortran or Intel Fortran compilers are known to work for stdlib)
-- CMake version 3.14 or newer (alternatively make can be used)
-- a build backend for CMake, like make or ninja (the latter is recommended on Windows)
-- the [``fypp``](https://github.com/aradi/fypp) preprocessor (used as meta-programming tool)
+- a Fortran 2008 compliant compiler, or better, a Fortran 2018 compliant compiler
+  (GCC Fortran and Intel Fortran compilers are known to work for stdlib)
+- CMake version 3.14 or newer (alternatively Make can be used)
+- a build backend for CMake, like Make or Ninja (the latter is recommended on Windows)
+- the [fypp](https://github.com/aradi/fypp) preprocessor (used as meta-programming tool)
 
 If your system package manager does not provide the required build tools, all build dependencies can be installed with the Python command line installer ``pip``:
 
 ```sh
-pip install fypp cmake ninja
+pip install --user fypp cmake ninja
 ```
 
 Alternatively, you can install the build tools from the conda-forge channel with the conda package manager:
@@ -65,8 +65,8 @@ conda create -n stdlib-tools fypp cmake ninja
 conda activate stdlib-tools
 ```
 
-You can install conda from using the [miniforge installer](https://github.com/conda-forge/miniforge/releases).
-Also, you can install a Fortran compiler from conda-forge by installing the ``fortran-compiler`` package, which installs ``gfortran``.
+You can install conda using the [miniforge installer](https://github.com/conda-forge/miniforge/releases).
+Also, you can install a Fortran compiler from conda-forge by installing the ``fortran-compiler`` package, which installs GFortran.
 
 
 ### Build with CMake
@@ -77,10 +77,10 @@ Configure the build with
 cmake -B build
 ```
 
-you can pass additional options to CMake to customize the build.
+You can pass additional options to CMake to customize the build.
 Important options are
 
-- `-G Ninja` to use the ninja backend instead of the default make backend, other build backends are available with a similar syntax
+- `-G Ninja` to use the Ninja backend instead of the default Make backend. Other build backends are available with a similar syntax.
 - `-DCMAKE_INSTALL_PREFIX` is used to provide the install location for the library.
 - `-DCMAKE_MAXIMUM_RANK` the maximum array rank procedures should be generated for.
   The default is 15 for Fortran 2003 compliant compilers, otherwise 7 for compilers not supporting Fortran 2003 completely yet.
@@ -88,7 +88,7 @@ Important options are
   Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
 
-For example, to configure a build using the ninja backend and generating procedures up to rank 7, which is installed to your home directory use
+For example, to configure a build using the Ninja backend and generating procedures up to rank 7, which is installed to your home directory use
 
 ```sh
 cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local
@@ -100,7 +100,7 @@ To build the standard library run
 cmake --build build
 ```
 
-To test your build setup run the projects testsuite after the build has finished with
+To test your build, run the test suite after the build has finished with
 
 ```sh
 cmake --build build --target test
@@ -134,7 +134,7 @@ make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 
 ## Documentation
 
-Documentation is a work in progress (see issue [#4](https://github.com/fortran-lang/stdlib/issues/4)) but alrealy available at https://stdlib.fortran-lang.org.
+Documentation is a work in progress (see issue [#4](https://github.com/fortran-lang/stdlib/issues/4)) but already available at [stdlib.fortran-lang.org](https://stdlib.fortran-lang.org).
 This includes API documentation automatically generated from static analysis and markup comments in the source files
 using the [FORD](https://github.com/Fortran-FOSS-programmers/ford/wiki) tool,
 as well as a specification document or ["spec"](https://stdlib.fortran-lang.org/page/specs/index.html) for each proposed feature.
