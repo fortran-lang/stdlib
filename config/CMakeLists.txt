@@ -19,12 +19,12 @@ configure_package_config_file(
   "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
   INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
-if(BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS OR PROJECT_VERSION_MAJOR EQUAL 0)
   # Due to the uncertain ABI compatibility of Fortran shared libraries
   # limit compatibility for dynamic linking to same minor version.
   set(COMPATIBILITY SameMinorVersion)
 else()
-  # Require API compatibility via semantic versioning for static linking,
+  # Require API compatibility via semantic versioning for static linking.
   set(COMPATIBILITY SameMajorVersion)
 endif()
 write_basic_package_version_file(
