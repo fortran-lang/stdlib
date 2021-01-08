@@ -82,7 +82,7 @@ jobs:
     - name: Test manual makefiles
       if: contains(matrix.os, 'ubuntu') && contains(matrix.gcc_v, '10')
       run: |
-        make -f Makefile.manual FYPPFLAGS="-DMAXRANK=4"
+        make -f Makefile.manual FYPPFLAGS="-DMAXRANK=4" -j
         make -f Makefile.manual test
         make -f Makefile.manual clean
 

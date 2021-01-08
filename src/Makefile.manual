@@ -54,10 +54,16 @@ stdlib_io.o: \
 	stdlib_error.o \
 	stdlib_optval.o \
 	stdlib_kinds.o
-stdlib_linalg_diag.o: stdlib_kinds.o
+stdlib_linalg_diag.o: \
+	stdlib_linalg.o \
+	stdlib_kinds.o
 stdlib_logger.o: stdlib_ascii.o stdlib_optval.o
 stdlib_optval.o: stdlib_kinds.o
 stdlib_quadrature.o: stdlib_kinds.o
+stdlib_quadrature_trapzd.o: \
+	stdlib_error.o \
+	stdlib_quadrature.o \
+	stdlib_kinds.o
 stdlib_stats_mean.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
@@ -66,6 +72,12 @@ stdlib_stats_moment.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
 	stdlib_stats.o
+stdlib_stats_moment_all.o: \
+	stdlib_stats_moment.o
+stdlib_stats_moment_mask.o: \
+	stdlib_stats_moment.o
+stdlib_stats_moment_scalar.o: \
+	stdlib_stats_moment.o
 stdlib_stats_var.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
