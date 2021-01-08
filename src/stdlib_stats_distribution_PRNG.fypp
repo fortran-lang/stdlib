@@ -50,8 +50,8 @@ module stdlib_stats_distribution_PRNG
         integer :: k
 
         k = MAX_INT_BIT_SIZE - bit_size(n)
-        if(k < 0) call error_stop("Error: Integer bit size is greater than 64'  &
-                  //"  bit"
+        if(k < 0) call error_stop("Error: Integer bit size is greater than 64"  &
+                  //"  bit")
         res = shiftr(xoshiro256ss( ), k)
     end function dist_rand_${t1[0]}$${k1}$
 
