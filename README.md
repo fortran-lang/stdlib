@@ -69,6 +69,31 @@ You can install conda using the [miniforge installer](https://github.com/conda-f
 Also, you can install a Fortran compiler from conda-forge by installing the ``fortran-compiler`` package, which installs GFortran.
 
 
+### Supported Compilers
+
+The following combinations are tested on the default branch of stdlib:
+
+Name | Version | Platform | Architecture
+--- | --- | --- | ---
+GCC Fortran | 7, 8, 9, 10 | Ubuntu 18.04 | x86_64
+GCC Fortran | 7, 8, 9, 10 | MacOS Catalina 10.15 | x86_64
+GCC Fortran | 8 | Windows Server 2019 | x86_64
+GCC Fortran (MSYS) | 10 | Windows Server 2019 | x86_64
+GCC Fortran (MinGW) | 10 | Windows Server 2019 | x86_64, i686
+Intel oneAPI classic | 2021.1 | Ubuntu 20.04 | x86_64
+
+We try to test as many available compilers and platforms as possible.
+A list of tested compilers which are currently not working and the respective issue are listed below.
+
+Name | Version | Platform | Architecture | Status
+--- | --- | --- | --- | ---
+NVIDIA HPC SDK | 20.7, 20.9, 20.11 | Manjaro Linux 20 | x86_64 | [#107](https://github.com/fortran-lang/stdlib/issues/107)
+NAG | 7.0 | RHEL | x86_64 | [#108](https://github.com/fortran-lang/stdlib/issues/108)
+Intel Parallel Studio XE | 16, 17, 18 | OpenSUSE | x86_64 | failed to compile
+
+Please share your experience with successful and failing builds for compiler/platform/architecture combinations not covered above.
+
+
 ### Build with CMake
 
 Configure the build with
