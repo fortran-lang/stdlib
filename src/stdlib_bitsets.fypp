@@ -2006,7 +2006,7 @@ module stdlib_bitsets
 
     end interface operator(<=)
 
-    interface error_handler
+    interface
         module subroutine error_handler( message, error, status, &
             module, procedure )
             character(*), intent(in)           :: message
@@ -2015,7 +2015,7 @@ module stdlib_bitsets
             character(*), intent(in), optional :: module
             character(*), intent(in), optional :: procedure
         end subroutine error_handler
-    end interface error_handler
+    end interface
 
 contains
 
