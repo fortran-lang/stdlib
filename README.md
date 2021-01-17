@@ -161,7 +161,7 @@ make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 
 ## Using stdlib in your project
 
-The stdlib projects exports CMake package files and pkg-config files to make stdlib usable for other projects.
+The stdlib project exports CMake package files and pkg-config files to make stdlib usable for other projects.
 The package files are located in the library directory in the installation prefix.
 
 For CMake builds of stdlib you can find a local installation with
@@ -176,7 +176,7 @@ target_link_libraries(
 )
 ```
 
-to make the installed stdlib project discoverable add the stdlib directory to the ``CMAKE_PREFIX_PATH``.
+To make the installed stdlib project discoverable add the stdlib directory to the ``CMAKE_PREFIX_PATH``.
 The usual install localtion of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
 
 For non-CMake build systems (like make) you can use the exported pkg-config file by setting ``PKG_CONFIG_PATH`` to include the directory containing the exported pc-file.
