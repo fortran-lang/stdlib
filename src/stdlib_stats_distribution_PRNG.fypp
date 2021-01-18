@@ -1,16 +1,16 @@
 #:include "common.fypp"
 module stdlib_stats_distribution_PRNG
-    use stdlib_kinds
+    use stdlib_kinds, only: int8, int16, int32, int64
+    use stdlib_error
     implicit none
     private
-    integer, parameter :: MAX_INT_BIT_SIZE = 64
-    integer(int64), save :: st(4), si = 614872703977525537_int64
+    integer, parameter :: MAX_INT_BIT_SIZE = bit_size(1_int64)
+    integer(int64), save :: st(4)  ! internal states for xoshiro256ss function
+    integer(int64), save :: si = 614872703977525537_int64 ! default seed value
     logical, save :: seed_initialized = .false.
 
     public :: random_seed
     public :: dist_rand
-    public :: jump
-    public :: long_jump
 
 
     interface dist_rand
@@ -43,13 +43,16 @@ module stdlib_stats_distribution_PRNG
     function dist_rand_${t1[0]}$${k1}$(n) result(res)
     !! Random integer generation for various kinds
     !! result = [-2^k, 2^k - 1], k = 7, 15, 31, 63, depending on input kind
-    !! Result is used as bit model number instead of regular arithmetic number
+    !! Result will be operated by bitwise operators to generate desired integer
+    !! and real pseudorandom numbers
     !!
         ${t1}$, intent(in) :: n
         ${t1}$ :: res
         integer :: k
 
         k = MAX_INT_BIT_SIZE - bit_size(n)
+        if(k < 0) call error_stop("Error(dist_rand): Integer bit size is"       &
+                  //" greater than 64bit")
         res = shiftr(xoshiro256ss( ), k)
     end function dist_rand_${t1[0]}$${k1}$
 
@@ -58,6 +61,7 @@ module stdlib_stats_distribution_PRNG
     function xoshiro256ss( ) result (res)
     ! Generate random 64-bit integers
     ! Written in 2018 by David Blackman and Sebastiano Vigna (vigna@acm.org)
+    ! http://prng.di.unimi.it/xoshiro256starstar.c
     !
     ! This is xoshiro256** 1.0, one of our all-purpose, rock-solid
     ! generators. It has excellent (sub-ns) speed, a state (256 bits) that is
@@ -81,7 +85,6 @@ module stdlib_stats_distribution_PRNG
         st(1) = ieor(st(1), st(4))
         st(3) = ieor(st(3), t)
         st(4) = rol64(st(4), 45)
-        return
     end function xoshiro256ss
 
     function rol64(x, k) result(res)
@@ -92,72 +95,8 @@ module stdlib_stats_distribution_PRNG
         t1 = shiftr(x, (64 - k))
         t2 = shiftl(x, k)
         res = ior(t1, t2)
-        return
     end function rol64
 
-
-    subroutine jump
-    ! This is the jump function for the xoshiro256ss generator. It is equivalent
-    ! to 2^128 calls to xoshiro256ss(); it can be used to generate 2^128
-    ! non-overlapping subsequences for parallel computations.
-    ! Written in 2018 by David Blackman and Sebastiano Vigna (vigna@acm.org)
-    !
-    ! Fortran 90 version translated from C by Jim-215-Fisher
-    integer(int64) :: jp(4) = [1733541517147835066_int64,                       &
-                               -3051731464161248980_int64,                      &
-                               -6244198995065845334_int64,                      &
-                               4155657270789760540_int64]
-    integer(int64) :: s1 = 0, s2 = 0, s3 = 0, s4 = 0, c = 1_int64
-    integer :: i, j, k
-
-    do i = 1, 4
-        do j = 1, 64
-            if(iand(jp(i), shiftl(c, j - 1)) /= 0) then
-                s1 = ieor(s1, st(1))
-                s2 = ieor(s2, st(2))
-                s3 = ieor(s3, st(3))
-                s4 = ieor(s4, st(4))
-            end if
-            k = xoshiro256ss( )
-        end do
-    end do
-    st(1) = s1
-    st(2) = s2
-    st(3) = s3
-    st(4) = s4
-    end subroutine jump
-
-    subroutine long_jump
-    ! This is the long-jump function for the xoshiro256ss generator. It is
-    ! equivalent to 2^192 calls to xoshiro256ss(); it can be used to generate
-    ! 2^64 starting points, from each of which jump() will generate 2^64
-    ! non-overlapping subsequences for parallel distributed computations
-    ! Written in 2018 by David Blackman and Sebastiano Vigna (vigna@acm.org)
-    !
-    ! Fortran 90 version translated from C by Jim-215-Fisher
-    integer(int64) :: jp(4) = [8566230491382795199_int64,                       &
-                               -4251311993797857357_int64,                      &
-                               8606660816089834049_int64,                       &
-                               4111957640723818037_int64]
-    integer(int64) :: s1 = 0, s2 = 0, s3 = 0, s4 = 0, c = 1_int64
-    integer(int32) :: i, j, k
-
-    do i = 1, 4
-        do j = 1, 64
-            if(iand(jp(i), shiftl(c, j - 1)) /= 0) then
-                s1 = ieor(s1, st(1))
-                s2 = ieor(s2, st(2))
-                s3 = ieor(s3, st(3))
-                s4 = ieor(s4, st(4))
-            end if
-            k = xoshiro256ss()
-        end do
-    end do
-    st(1) = s1
-    st(2) = s2
-    st(3) = s3
-    st(4) = s4
-    end subroutine long_jump
 
     function splitmix64(s) result(res)
     ! Written in 2015 by Sebastiano Vigna (vigna@acm.org)
@@ -176,6 +115,8 @@ module stdlib_stats_distribution_PRNG
         data int01, int02, int03/-7046029254386353131_int64, &
                                  -4658895280553007687_int64, &
                                  -7723592293110705685_int64/
+    ! Values are converted from C unsigned integer of 0x9e3779b97f4a7c15,
+    ! 0xbf58476d1ce4e5b9, 0x94d049bb133111eb
 
         if(present(s)) si = s
         res = si
@@ -183,7 +124,6 @@ module stdlib_stats_distribution_PRNG
         res = ieor(res, shiftr(res, 30)) * int02
         res = ieor(res, shiftr(res, 27)) * int03
         res = ieor(res, shiftr(res, 31))
-        return
     end function splitmix64
 
     #:for k1, t1 in INT_KINDS_TYPES
