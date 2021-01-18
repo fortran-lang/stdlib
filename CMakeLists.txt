@@ -1,11 +1,18 @@
 cmake_minimum_required(VERSION 3.14.0)
-project(fortran_stdlib Fortran)
+project(fortran_stdlib
+        LANGUAGES Fortran
+        VERSION 0
+        DESCRIPTION "Community driven and agreed upon de facto standard library for Fortran"
+)
 enable_testing()
 
 # Follow GNU conventions for installation directories
 include(GNUInstallDirs)
 
 include(${PROJECT_SOURCE_DIR}/cmake/stdlib.cmake)
+
+# --- CMake specific configuration and package data export
+add_subdirectory(config)
 
 # --- compiler options
 if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
