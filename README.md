@@ -80,8 +80,13 @@ GCC Fortran | 7, 8, 9, 10 | MacOS Catalina 10.15 | x86_64
 GCC Fortran | 8 | Windows Server 2019 | x86_64
 GCC Fortran (MSYS) | 10 | Windows Server 2019 | x86_64
 GCC Fortran (MinGW) | 10 | Windows Server 2019 | x86_64, i686
-GCC Fortran (MinGW) | 8, 9, 10 | Windows 10 | x86_64, i686
 Intel oneAPI classic | 2021.1 | Ubuntu 20.04 | x86_64
+
+The following combinations are known to work, but they are not tested in the CI:
+
+Name | Version | Platform | Architecture
+--- | --- | --- | ---
+GCC Fortran (MinGW) | 8.4.0, 9.3.0, 10.2.0 | Windows 10 | x86_64, i686
 
 We try to test as many available compilers and platforms as possible.
 A list of tested compilers which are currently not working and the respective issue are listed below.
