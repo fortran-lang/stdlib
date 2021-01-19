@@ -80,6 +80,7 @@ GCC Fortran | 7, 8, 9, 10 | MacOS Catalina 10.15 | x86_64
 GCC Fortran | 8 | Windows Server 2019 | x86_64
 GCC Fortran (MSYS) | 10 | Windows Server 2019 | x86_64
 GCC Fortran (MinGW) | 10 | Windows Server 2019 | x86_64, i686
+GCC Fortran (MinGW) | 8, 9, 10 | Windows 10 | x86_64, i686
 Intel oneAPI classic | 2021.1 | Ubuntu 20.04 | x86_64
 
 We try to test as many available compilers and platforms as possible.
