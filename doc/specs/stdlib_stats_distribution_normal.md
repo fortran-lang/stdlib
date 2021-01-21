@@ -2,7 +2,7 @@
 title: stats_distribution
 ---
 
-# Statistical Distributions -- Normal Distribution Module
+# Statistical Distributions Normal Module
 
 [TOC]
 
@@ -30,22 +30,23 @@ With three auguments, the function returns a rank one array of normal distribute
 
 `array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
 
-`loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complx`.
+`loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`scale`: optional argument has `intent(in)` and is a scalar of type `real` or `complx`.
+`scale`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
 
 `loc` and `scale` arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or rank one array, with a size of `array_size`, of type `real` or `complx`.
+The result is a scalar or rank one array, with a size of `array_size`, of type `real` or `complex`.
 
 ### Example
 
 ```fortran
 program demo_normal_rvs
-    use stdlib_stats_distribution_normal, only: norm => normal_distribution_rvs
     use stdlib_stats_distribution_PRNG, only: random_seed
+    use stdlib_stats_distribution_normal, only: norm => normal_distribution_rvs
+
     implicit none
     real ::  a(2,3,4), b(2,3,4)
     complx :: loc, scale
@@ -65,23 +66,24 @@ program demo_normal_rvs
 
     print *, norm(0.,1.0,10)       !an array of 10 standard norml random variates
 
-! [-3.38123664E-02, -0.190365672, 0.220678389, -0.424612164, -0.249541596,
-!  0.865260184, 1.11086845, -0.328349441, 1.10873628, 1.27049923]
+! -3.38123664E-02  -0.190365672  0.220678389  -0.424612164  -0.249541596
+!  0.865260184  1.11086845  -0.328349441  1.10873628  1.27049923
 
     a(:,:,:) = 1.0
     b(:,:,:) = 1.0
     print *, norm(a,b)         ! a rank 3 random variates array
-    
-![0.152776539, -7.51764774E-02, 1.47208166, 0.180561781, 1.32407105,
-! 1.20383692, 0.123445868, -0.455737948, -0.469808221, 1.60750175,
-! 1.05748117, 0.720934749, 0.407810807, 1.48165631, 2.31749439,
-! 0.414566994, 3.06084275, 1.86505437, 1.36338580, 7.26878643E-02,
-! 0.178585172, 1.39557445, 0.828021586, 0.872084975]
+
+!0.152776539  -7.51764774E-02  1.47208166  0.180561781  1.32407105
+! 1.20383692  0.123445868  -0.455737948  -0.469808221  1.60750175
+! 1.05748117  0.720934749  0.407810807  1.48165631  2.31749439
+! 0.414566994  3.06084275  1.86505437  1.36338580  7.26878643E-02
+! 0.178585172  1.39557445  0.828021586  0.872084975
 
     loc = (-1.0, 2.0)
     scale = (2.0, 1.0)
     print *, norm(loc, scale)
-    !single complex normal random variate with real part of mu=-1, sigma=2; imagainary part of mu=2.0 and sigma=1.0
+    !single complex normal random variate with real part of miu=-1, sigma=2;
+	!imagainary part of miu=2.0 and sigma=1.0
 
 ! (1.22566295,2.12518454)
 
@@ -106,11 +108,11 @@ $$f(x)=\frac{1}{\sigma&space;\sqrt{2&space;\pi}}&space;e^{-\frac{1}{2}(\frac{x-\
 
 ### Arguments
 
-`x`: has `intent(in)` and is a scalar of type `real` or `complx`.
+`x`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`loc`: has `intent(in)` and is a scalar of type `real` or `complx`.
+`loc`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`scale`: has `intent(in)` and is a scalar of type `real` or `complx`.
+`scale`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
 The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type.
 
@@ -123,12 +125,12 @@ The result is a scalar or an array, with a shape conformable to auguments, of ty
 ```fortran
 program demo_normal_pdf
     use stdlib_stats_distribution_PRNG, only : random_seed
-    use stdlib_stats_distribution_normal, only : &
-        norm_pdf=>normal_distribution_pdf,&
-        norm => normal_distribution_rvs
+    use stdlib_stats_distribution_normal, only :                                &
+                                             norm_pdf=>normal_distribution_pdf, &
+                                             norm => normal_distribution_rvs
 
     implicit none
-    real :: x(2,3,4),a(2,3,4),b(2,3,4)
+    real :: x(3,4,5),a(3,4,5),b(3,4,5)
     complx :: loc, scale
     integer :: seed_put, seed_get
 
@@ -140,27 +142,28 @@ program demo_normal_pdf
 ! 0.241970733
 
     print *, norm_pdf(2.0,-1.0, 2.0)
-    !a probability density at 2.0 with mu=-1.0 sigma=2.0
+    !a probability density at 2.0 with miu=-1.0 sigma=2.0
 
 !6.47588000E-02
 
-    x = reshape(norm(0.0, 1.0, 24),[2,3,4])
+    x = reshape(norm(0.0, 1.0, 60),[3,4,5])
     ! standard normal random variates array
 
     a(:,:,:) = 0.0
     b(:,:,:) = 1.0
     print *, norm_pdf(x, a, b)  ! standard normal probability density array
 
-! [0.340346158, 0.285823315, 0.398714304, 0.391778737, 0.389345556,
-!  0.364551932, 0.386712372, 0.274370432, 0.215250477, 0.378006011,
-!  0.215760440, 0.177990928, 0.278640658, 0.223813817, 0.356875211,
-!  0.285167664, 0.378533930, 0.390739858, 0.271684974, 0.138273031,
-!  0.135456234, 0.331718773, 0.398283750, 0.383706540]
+!  0.340346158  0.285823315  0.398714304  0.391778737  0.389345556
+!  0.364551932  0.386712372  0.274370432  0.215250477  0.378006011
+!  0.215760440  0.177990928  0.278640658  0.223813817  0.356875211
+!  0.285167664  0.378533930  0.390739858  0.271684974  0.138273031
+!  0.135456234  0.331718773  0.398283750  0.383706540
 
     loc = (1.0, -0.5)
     scale = (1.0, 2.)
     print *, norm_pdf((1.5,1.0), loc, scale)
-    ! a complex normal probability density function at (1.5,1.0) with real part of mu=1.0, sigma=1.0 and imaginary part of mu=-0.5, sigma=2.0
+    ! a complex normal probability density function at (1.5,1.0) with real part
+	! of miu=1.0, sigma=1.0 and imaginary part of miu=-0.5, sigma=2.0
 
 ! 5.30100204E-02
 
@@ -185,11 +188,11 @@ $$F(X)=\frac{1}{2}\left&space;[&space;1&space;&plus;&space;erf(\frac{x-\mu}{\sqr
 
 ### Arguments
 
-`x`: has `intent(in)` and is a scalar of type `real` or `complx`.
+`x`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`loc`: has `intent(in)` and is a scalar of type `real` or `complx`.
+`loc`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`scale`: has `intent(in)` and is a scalar of type `real` or `complx`.
+`scale`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
 The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type.
 
@@ -202,9 +205,9 @@ The result is a scalar or an array, with a shape conformable to auguments, of ty
 ```fortran
 program demo_norm_cdf
     use stdlib_stats_distribution_PRNG, only : random_seed
-    use stdlib_stats_distribution_normal, only : &
-        norm_cdf => normal_distribution_cdf,  &
-        norm => normal_distribution_rvs
+    use stdlib_stats_distribution_normal, only :                                &
+                                          norm_cdf => normal_distribution_cdf,  &
+                                          norm => normal_distribution_rvs
 
     implicit none
     real :: x(2,3,4),a(2,3,4),b(2,3,4)
@@ -219,7 +222,7 @@ program demo_norm_cdf
 ! 0.841344714
 
     print *, norm_cdf(2.0, -1.0, 2.0)
-    ! a cumulative at 2.0 with mu=-1 sigma=2
+    ! a cumulative at 2.0 with miu=-1 sigma=2
 
 ! 0.933192849
 
@@ -230,16 +233,17 @@ program demo_norm_cdf
     b(:,:,:) = 1.0
     print *, norm_cdf(x, a, b)        ! standard normal cumulative array
 
-! [0.713505626, 0.207069695, 0.486513376, 0.424511284, 0.587328553,
-!  0.335559726, 0.401470929, 0.806552052, 0.866687536, 0.371323735,
-!  0.866228044, 0.898046613, 0.198435277, 0.141147852, 0.681565762,
-!  0.206268221, 0.627057910, 0.580759525, 0.190364420, 7.27325380E-02,
-!  7.08068311E-02, 0.728241026, 0.522919059, 0.390097380]
+!  0.713505626  0.207069695  0.486513376  0.424511284  0.587328553
+!  0.335559726  0.401470929  0.806552052  0.866687536  0.371323735
+!  0.866228044  0.898046613  0.198435277  0.141147852  0.681565762
+!  0.206268221  0.627057910  0.580759525  0.190364420  7.27325380E-02
+!  7.08068311E-02  0.728241026  0.522919059  0.390097380
 
     loc = (1.0,0.0)
     scale = (0.5,1.0)
     print *, norm_cdf((0.5,-0.5),loc,scale)
-    !complex normal cumulative distribution at (0.5,-0.5) with real part of mu=1.0, sigma=0.5 and imaginary part of mu=0.0, sigma=1.0
+    !complex normal cumulative distribution at (0.5,-0.5) with real part of
+	!miu=1.0, sigma=0.5 and imaginary part of miu=0.0, sigma=1.0
 
 !4.89511043E-02
 
