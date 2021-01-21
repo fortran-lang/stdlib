@@ -103,3 +103,4 @@ stdlib_stats_moment_scalar.o: \
 stdlib_stats_var.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
+	stdlib_stats.o
