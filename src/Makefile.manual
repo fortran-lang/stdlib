@@ -17,7 +17,9 @@ SRCFYPP =\
         stdlib_stats_moment_all.fypp \
         stdlib_stats_moment_mask.fypp \
         stdlib_stats_moment_scalar.fypp \
-        stdlib_stats_var.fypp	
+        stdlib_stats_var.fypp \
+        stdlib_stats_distribution_PRNG.fypp \
+        stdlib_stats_distribution_uniform.fypp
 
 SRC = f18estop.f90 \
       stdlib_ascii.f90 \
@@ -104,3 +106,10 @@ stdlib_stats_var.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
 	stdlib_stats.o
+stdlib_stats_distribution_PRNG.o: \
+        stdlib_kinds.o \
+	stdlib_error.o
+stdlib_stats_distribution_uniform.o: \
+        stdlib_kinds.o \
+	stdlib_error.o \
+	stdlib_stats_distribution_PRNG.o
