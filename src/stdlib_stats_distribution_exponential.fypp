@@ -1,6 +1,6 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-Module stdlib_stats_distribution_expon
+Module stdlib_stats_distribution_exponential
     use stdlib_kinds
     use stdlib_error, only : error_stop
     use stdlib_stats_distribution_PRNG, only : dist_rand
@@ -157,8 +157,9 @@ Module stdlib_stats_distribution_expon
         ${t1}$ :: r = 7.69711747013104972_${k1}$
         integer(int32) :: jz, iz
 
-        if(lamda <= 0.0_${k1}$) call error_stop("Error: Exponential"            &
-                 //" distribution lamda parameter must be greaeter than zero")
+        if(lamda <= 0.0_${k1}$) call error_stop("Error(exp_dist_rvs):"          &
+        //" Exponential distribution lamda parameter must be greater than zero")
+
         if( .not. zig_exp_initialized ) call zigset
 
         ! Original algorithm use 32bit
@@ -218,8 +219,9 @@ Module stdlib_stats_distribution_expon
         ${t1}$ :: r = 7.69711747013104972_${k1}$
         integer :: jz, iz, i
 
-        if(lamda <= 0.0_${k1}$) call error_stop("Error: Exponential"            &
-                 //" distribution lamda parameter must be greaeter than zero")
+        if(lamda <= 0.0_${k1}$) call error_stop("Error(exp_dist_rvs_array):"    &
+        //" Exponential distribution lamda parameter must be greater than zero")
+
         if( .not. zig_exp_initialized ) call zigset
         allocate(res(array_size))
         do i =1, array_size
@@ -284,10 +286,10 @@ Module stdlib_stats_distribution_expon
         ${t1}$, intent(in) :: x, lamda
         real :: res
 
-        if(lamda <= 0.0_${k1}$) call error_stop("Error: Exponential"            &
-                 //" distribution lamda parameter must be greaeter than zero")
-        if(x < 0.0_${k1}$) call error_stop("Error: Exponential distribution"    &
-                 //"  variate x must be non-negative")
+        if(lamda <= 0.0_${k1}$) call error_stop("Error(exp_dist_pdf):"          &
+        //" Exponential distribution lamda parameter must be greater than zero")
+        if(x < 0.0_${k1}$) call error_stop("Error(exp_dist_pdf): Exponential"   &
+        //" distribution variate x must be non-negative")
         res = exp(- x * lamda) * lamda
         return
     end function exp_dist_pdf_${t1[0]}$${k1}$
@@ -313,10 +315,10 @@ Module stdlib_stats_distribution_expon
         ${t1}$, intent(in) :: x, lamda
         real :: res
 
-        if(lamda <= 0.0_${k1}$) call error_stop("Error: Exponential"            &
-                 //" distribution lamda parameter must be greaeter than zero")
-        if(x < 0.0_${k1}$) call error_stop("Error: Exponential distribution"    &
-                 //" variate x must be non-negative")
+        if(lamda <= 0.0_${k1}$) call error_stop("Error(exp_dist_cdf):"          &
+        //" Exponential distribution lamda parameter must be greater than zero")
+        if(x < 0.0_${k1}$) call error_stop("Error(exp_dist_cdf): Exponential"   &
+        //" distribution variate x must be non-negative")
         res = (1.0 - exp(- x * lamda))
         return
     end function exp_dist_cdf_${t1[0]}$${k1}$
@@ -334,4 +336,4 @@ Module stdlib_stats_distribution_expon
     end function exp_dist_cdf_${t1[0]}$${k1}$
 
     #:endfor
-end module stdlib_stats_distribution_expon
+end module stdlib_stats_distribution_exponential
