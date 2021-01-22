@@ -42,7 +42,8 @@ Module stdlib_stats_distribution_uniform
     interface uniform_distribution_pdf
     !! Version experiment
     !!
-    !! Get uniform distribution probability density (pdf) for integer, real and complex variables
+    !! Get uniform distribution probability density (pdf) for integer, real and
+    !! complex variables
     !! ([Specification](../page/specs/stdlib_stats_distribution_uniform.html#
     !! description))
 
@@ -54,7 +55,8 @@ Module stdlib_stats_distribution_uniform
     interface uniform_distribution_cdf
     !! Version experimental
     !!
-    !! Get uniform distribution cumulative distribution function (cdf) for integer, real and complex variables
+    !! Get uniform distribution cumulative distribution function (cdf) for
+    !! integer, real and complex variables
     !! ([Specification](../page/specs/stdlib_stats_distribution_uniform.html#
     !! description))
     !!
@@ -66,7 +68,8 @@ Module stdlib_stats_distribution_uniform
     interface shuffle
     !! Version experimental
     !!
-    !! Fisher-Yates shuffle algorithm for a rank one array of integer, real and complex variables
+    !! Fisher-Yates shuffle algorithm for a rank one array of integer, real and
+    !! complex variables
     !! ([Specification](../page/specs/stdlib_stats_distribution_uniform.html#
     !! description))
     !!
@@ -85,13 +88,14 @@ Module stdlib_stats_distribution_uniform
     ! https://www.pcg-random.org/posts/bounded-rands.html
     !
     ! Fortran 90 translated from c by Jim-215-fisher
+    !
         ${t1}$, intent(in) :: scale
         ${t1}$ ::  res, u, mask, n
         integer :: zeros, bits_left, bits
 
         n = scale
-        if(n <= 0_${k1}$) call error_stop("Error: Uniform distribution scale"   &
-                          //" parameter must be positive")
+        if(n <= 0_${k1}$) call error_stop("Error(unif_dist_rvs_1): Uniform"     &
+                         //" distribution scale parameter must be positive")
         zeros = leadz(n)
         bits = bit_size(n) - zeros
         mask = shiftr(not(0_${k1}$), zeros)
@@ -121,8 +125,8 @@ Module stdlib_stats_distribution_uniform
         ${t1}$, intent(in) :: loc, scale
         ${t1}$  ::  res
 
-        if(scale == 0_${k1}$) call error_stop("Error: Uniform distribution"     &
-                                    //" scale parameter must be non-zero")
+        if(scale <= 0_${k1}$) call error_stop("Error(unif_dist_rvs): Uniform"   &
+                         //" distribution scale parameter must be positive")
         res = loc + unif_dist_rvs_1_${t1[0]}$${k1}$(scale)
         return
     end function unif_dist_rvs_${t1[0]}$${k1}$
@@ -153,8 +157,8 @@ Module stdlib_stats_distribution_uniform
         ${t1}$, intent(in) :: scale
         ${t1}$  ::  res
 
-        if(scale == 0._${k1}$) call error_stop("Error: Uniform distribution"    &
-                              //" scale parameter must be non-zero")
+        if(scale == 0._${k1}$) call error_stop("Error(unif_dist_rvs_1): "       &
+                      //"Uniform distribution scale parameter must be non-zero")
         res = scale * unif_dist_rvs_0_${t1[0]}$${k1}$( )
         return
     end function unif_dist_rvs_1_${t1[0]}$${k1}$
@@ -169,8 +173,8 @@ Module stdlib_stats_distribution_uniform
         ${t1}$, intent(in) :: loc, scale
         ${t1}$  ::  res
 
-        if(scale == 0._${k1}$) call error_stop("Error: Uniform distribution"    &
-                              //" scale parameter must be non-zero")
+        if(scale == 0._${k1}$) call error_stop("Error(unif_dist_rvs): "         &
+                      //"Uniform distribution scale parameter must be non-zero")
         res = loc + scale * unif_dist_rvs_0_${t1[0]}$${k1}$( )
         return
     end function unif_dist_rvs_${t1[0]}$${k1}$
@@ -187,8 +191,8 @@ Module stdlib_stats_distribution_uniform
         ${t1}$ :: res
         real(${k1}$) :: r1, r2, tr, ti
 
-        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error: Uniform"  &
-                    //" distribution scale parameter must be non-zero")
+        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(uni_dist_" &
+              //"rvs_1): Uniform distribution scale parameter must be non-zero")
         r1 = unif_dist_rvs_0_r${k1}$( )
         if(real(scale) == 0.0_${k1}$) then
             ti = aimag(scale) * r1
@@ -219,8 +223,8 @@ Module stdlib_stats_distribution_uniform
         ${t1}$ :: res
         real(${k1}$) :: r1, r2, tr, ti
 
-        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error: Uniform"  &
-                    //" distribution scale parameter must be non-zero")
+        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(uni_dist_" &
+              //"rvs): Uniform distribution scale parameter must be non-zero")
         r1 = unif_dist_rvs_0_r${k1}$( )
         if(real(scale) == 0.0_${k1}$) then
             tr = real(loc)
@@ -249,8 +253,8 @@ Module stdlib_stats_distribution_uniform
         integer :: i, zeros, bits_left, bits
 
         n = scale
-        if(n == 0_${k1}$) call error_stop("Error: Uniform distribution"         &
-                          //" scale parameter must be non-zero")
+        if(n == 0_${k1}$) call error_stop("Error(unif_dist_rvs_array): Uniform" &
+                            //" distribution scale parameter must be non-zero")
         allocate(res(array_size))
         zeros = leadz(n)
         bits = bit_size(n) - zeros
@@ -287,8 +291,8 @@ Module stdlib_stats_distribution_uniform
         integer :: i
 
 
-        if(scale == 0._${k1}$) call error_stop("Error: Uniform distribution"    &
-                              //" scale parameter must be non-zero")
+        if(scale == 0._${k1}$) call error_stop("Error(unif_dist_rvs_array):"    &
+                    //" Uniform distribution scale parameter must be non-zero")
         allocate(res(array_size))
         do i = 1, array_size
             tmp = shiftr(dist_rand(INT_ONE), 11)
@@ -311,8 +315,8 @@ Module stdlib_stats_distribution_uniform
         integer :: i
 
 
-        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error: Uniform"  &
-                    //" distribution scale parameter must be non-zero")
+        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(unif_dist_"&
+           //"rvs_array): Uniform distribution scale parameter must be non-zero")
         allocate(res(array_size))
         do i = 1, array_size
             tmp = shiftr(dist_rand(INT_ONE), 11)

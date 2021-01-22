@@ -67,8 +67,8 @@ Module stdlib_stats_distribution_beta
         ${t1}$ :: res, x, y, xx(2)
         ${t1}$, parameter :: z = 0.0_${k1}$, one = 1.0_${k1}$
 
-        if(a <= z .or. b <= z) call error_stop("Error: Beta distribution"       &
-                 //" paramters a, b must be greater than zero")
+        if(a <= z .or. b <= z) call error_stop("Error(beta_dist_rvs): Beta"     &
+        //" distribution paramters a, b must be greater than zero")
         if( a < one .or. b < one) then
             do
                 xx = uni(z, one, 2)
@@ -117,9 +117,11 @@ Module stdlib_stats_distribution_beta
         ${t1}$ :: x, y, xx(2)
         real(${k1}$), parameter :: z = 0.0_${k1}$, one = 1.0_${k1}$
 
+        if(a <= z .or. b <= z) call error_stop("Error(beta_dist_rvs_array):"    &
+        //" Beta distribution paramters a, b must be greater than zero")
+
         allocate(res(array_size))
-        if(a <= 0._${k1}$ .or. b <= 0._${k1}$) call error_stop("Error: Beta"    &
-                //" distribution  paramters a, b must be greater than zero")
+
         if( a < one .or. b < one) then
             do i = 1, array_size
                 do
@@ -171,8 +173,8 @@ Module stdlib_stats_distribution_beta
         real :: res
         ${t1}$ :: z = 0.0_${k1}$, one = 1.0_${k1}$
 
-        if(a <= z .or. b <= z) call error_stop("Error: Beta distribution"       &
-                           //" parameters a, b must be greater than zero")
+        if(a <= z .or. b <= z) call error_stop("Error(beta_dist_pdf): Beta"     &
+        //" distribution parameters a, b must be greater than zero")
         if(x == z) then
             if(a <= one) then
                 res = huge(1.0)
@@ -213,8 +215,8 @@ Module stdlib_stats_distribution_beta
         real :: res
         ${t1}$ :: z = 0.0_${k1}$, one = 1.0_${k1}$
 
-        if(a <= z .or. b <= z) call error_stop("Error: Beta distribution"       &
-                    //" parameters a, b must be greater than zero")
+        if(a <= z .or. b <= z) call error_stop("Error(beta_dist_cdf): Beta"     &
+        //" distribution parameters a, b must be greater than zero")
         if(x == z) then
             res = 0.0
         elseif(x == one) then

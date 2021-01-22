@@ -163,8 +163,8 @@ Module stdlib_stats_distribution_normal
         ${t1}$ ::  x, y
         integer :: hz, iz
 
-        if(scale==0._${k1}$) call error_stop("Error: Normal distribution scale" &
-                              //" parameter must be non-zero")
+        if(scale==0._${k1}$) call error_stop("Error(norm_dist_rvs): Normal"     &
+                        //" distribution scale parameter must be non-zero")
         if( .not. zig_norm_initialized ) call zigset
         iz = 0
         ! original algorithm use 32bit
@@ -235,8 +235,8 @@ Module stdlib_stats_distribution_normal
         ${t1}$ ::  x, y, re
         integer :: hz, iz, i
 
-        if(scale==0._${k1}$) call error_stop("Error: Normal distribution scale" &
-                              //" parameter must be non-zero")
+        if(scale==0._${k1}$) call error_stop("Error(norm_dist_rvs_array):"      &
+                    //" Normal distribution scale parameter must be non-zero")
         if( .not. zig_norm_initialized ) call zigset
         allocate(res(array_size))
         do i = 1, array_size
@@ -311,8 +311,8 @@ Module stdlib_stats_distribution_normal
         real :: res
         ${t1}$, parameter :: sqrt_2_pi = sqrt(2.0_${k1}$ * acos(-1.0_${k1}$))
 
-        if(scale==0._${k1}$) call error_stop("Error: Normal distribution scale" &
-                              //" parameter must be non-zero")
+        if(scale==0._${k1}$) call error_stop("Error(norm_dist_pdf):"            &
+                    //" Normal distribution scale parameter must be non-zero")
         res = exp(- 0.5_${k1}$ * (x - loc) * (x - loc) / (scale * scale)) /     &
               (sqrt_2_Pi * scale)
         return
@@ -342,8 +342,8 @@ Module stdlib_stats_distribution_normal
         real :: res
         ${t1}$, parameter :: sqrt_2 = sqrt(2.0_${k1}$)
 
-        if(scale==0._${k1}$) call error_stop("Error: Normal distribution scale" &
-                              //" parameter must be non-zero")
+        if(scale==0._${k1}$) call error_stop("Error(norm_dist_cdf):"            &
+                    //" Normal distribution scale parameter must be non-zero")
         res = (1.0_${k1}$ + erf((x - loc) / (scale * sqrt_2))) / 2.0_${k1}$
         return
     end function norm_dist_cdf_${t1[0]}$${k1}$

@@ -42,7 +42,7 @@ Module stdlib_stats_distribution_gamma
     !! ([Specification](../page/specs/stdlib_stats_distribution_gamma.html#
     !! description))
     !!
-    #:for k1, t1 in RC_KINDS_TYPES
+        #:for k1, t1 in RC_KINDS_TYPES
         module procedure gamma_dist_pdf_${t1[0]}$${k1}$
         #:endfor
     end interface gamma_distribution_pdf
@@ -71,8 +71,9 @@ Module stdlib_stats_distribution_gamma
         ${t1}$ :: x, v, u, zz, tol = 1000 * epsilon(1.0_${k1}$)
         ${t1}$, save :: alpha = 0._${k1}$, d, c, sq = 0.0331_${k1}$
 
-        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
-                                //" shape parameter must be greater than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs): Gamma"  &
+        //" distribution shape parameter must be greater than zero")
+
         zz = shape
         if(zz < 1._${k1}$) zz = 1._${k1}$ + zz
         if(abs(zz - alpha) > tol) then
@@ -127,10 +128,12 @@ Module stdlib_stats_distribution_gamma
         ${t1}$ :: x, v, u, zz, tol = 1000 * epsilon(1.0_${k1}$)
         ${t1}$, save :: alpha = 0._${k1}$, d, c, sq = 0.0331_${k1}$
 
-        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
-                                //" shape parameter must be greater than zero")
-        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
-                                //" rate parameter must be greater than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs): Gamma"  &
+        //" distribution shape parameter must be greater than zero")
+
+        if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs): Gamma"   &
+        //" distribution rate parameter must be greater than zero")
+
         zz = shape
         if(zz < 1._${k1}$) zz = 1._${k1}$ + zz
         if(abs(zz - alpha) > tol) then
@@ -189,10 +192,12 @@ Module stdlib_stats_distribution_gamma
         ${t1}$, save :: alpha = 0._${k1}$, d, c, sq = 0.0331_${k1}$
         integer :: i
 
-        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
-                                //" shape parameter must be greater than zero")
-        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
-                                //" rate parameter must be greater than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs_array):"  &
+        //" Gamma distribution shape parameter must be greater than zero")
+
+        if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs_array):"   &
+        //" Gamma distribution rate parameter must be greater than zero")
+
         allocate(res(array_size))
         zz = shape
         if(zz < 1._${k1}$) zz = 1._${k1}$ + zz
@@ -254,12 +259,12 @@ Module stdlib_stats_distribution_gamma
         ${t1}$, intent(in) :: x, shape, rate
         real :: res
 
-        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
-                           //" rate parameter must be greaeter than zero")
-        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
-                           //" shape parameter must be greater than zero")
-        if(x <= 0.0_${k1}$) call error_stop("Error: Gamma distribution variate" &
-                           //" x must be greater than zero")
+        if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"   &
+                 //" distribution rate parameter must be greaeter than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"  &
+                 //" distribution shape parameter must be greater than zero")
+        if(x <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"      &
+                //" distribution variate x must be greater than zero")
         if(x == 0.0_${k1}$) then
             if(shape <= 1.0_${k1}$) then
                 res = huge(1.0) + 1.0
@@ -296,12 +301,12 @@ Module stdlib_stats_distribution_gamma
         ${t1}$, intent(in) :: x, shape, rate
         real :: res
 
-        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
-                           //" rate parameter must be greaeter than zero")
-        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
-                           //" shape parameter must be greater than zero")
-        if(x <= 0.0_${k1}$) call error_stop("Error: Gamma distribution variate" &
-                           //" x must be greater than zero")
+        if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"   &
+                 //" distribution rate parameter must be greaeter than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"  &
+                 //" distribution shape parameter must be greater than zero")
+        if(x <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"      &
+                //" distribution variate x must be greater than zero")
         res = ingamma(shape, rate * x) / gamma(shape)
         return
     end function gamma_dist_cdf_${t1[0]}$${k1}$

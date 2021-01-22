@@ -173,8 +173,8 @@ Module stdlib_stats_distribution_special
          real(qp) :: q, sum
          integer :: i
 
-         if(x <= 0._${k1}$) call error_stop("Error: Gamma function augument"    &
-                            //" must be greater than 0")
+         if(x <= 0._${k1}$) call error_stop("Error(l_gamma): Gamma function"    &
+                            //" augument must be greater than 0")
          if(x == 1.0_${k1}$ .or. x == 2.0_${k1}$) then
              res = 0.0_${k1}$
          else
@@ -197,8 +197,8 @@ Module stdlib_stats_distribution_special
          ${t1}$, intent(in) :: n
          real :: res
 
-         if(n < 0) call error_stop("Error: Factorial function augument must"    &
-                    //" be no less than 0")
+         if(n < 0) call error_stop("Error(l_factorial): Factorial function"     &
+                   //" augument must be no less than 0")
          select case(n)
          case (0)
              res = 0.0
@@ -221,8 +221,8 @@ Module stdlib_stats_distribution_special
          ${t2}$, intent(in) :: x
          ${t2}$ :: res
 
-         if(n < 0) call error_stop("Error: factorial function augument must"    &
-                    //" be no less than 0")
+         if(n < 0) call error_stop("Error(l_factorial): Factorial function"     &
+                   //" augument must be no less than 0")
          select case(n)
          case (0)
              res = 0.0_${k2}$
@@ -251,8 +251,8 @@ Module stdlib_stats_distribution_special
          integer :: n
 
          if(x < 0._${k1}$) then
-             call error_stop("Error: Incomplete gamma function with negative x" &
-                  //" must come with integer of s")
+             call error_stop("Error(gpx): Incomplete gamma function with"       &
+             //" negative x must come with integer of s")
          elseif(s >= x) then
              a = real(s, dp)
              g = 1.0_dp / a
@@ -382,11 +382,11 @@ Module stdlib_stats_distribution_special
          real(dp) :: s1, y, xx, ss
 
          #:if t1[0] == "i"
-         if(s < 0_${k1}$) call error_stop("Error: Lower incomplete gamma"       &
-                          //" function input s value must be greater than 0")
+         if(s < 0_${k1}$) call error_stop("Error(ingamma_low): Lower"           &
+           //" incomplete gamma function input s value must be greater than 0")
          #:else
-         if(s < 0._${k1}$) call error_stop("Error: Lower incomplete gamma"      &
-                          //" function input s value must be greater than 0")
+         if(s < 0._${k1}$) call error_stop("Error(ingamma_low): Lower"          &
+         //" incomplete gamma function input s value must be greater than 0")
          #:endif
          xx = real(x, dp); ss = real(s, dp)
          if(x == 0.0_${k2}$) then
@@ -471,11 +471,11 @@ Module stdlib_stats_distribution_special
          real(dp) :: s1, xx, ss
 
          #:if t1[0] == "i"
-         if(s < 0_${k1}$) call error_stop("Error: Lower incomplete gamma"       &
-                          //" function input s value must be greater than 0")
+         if(s < 0_${k1}$) call error_stop("Error(regamma_p): Lower incomplete"  &
+         //" gamma function input s value must be greater than 0")
          #:else
-         if(s < 0._${k1}$) call error_stop("Error: Lower incomplete gamma"      &
-                          //" function input s value must be greater than 0")
+         if(s < 0._${k1}$) call error_stop("Error(regamma_p): Lower incomplete" &
+         //" gamma function input s value must be greater than 0")
          #:endif
          xx = real(x, dp); ss = real(s, dp)
          s1 = -xx + ss * log(abs(xx)) - loggamma(ss)
@@ -521,8 +521,8 @@ Module stdlib_stats_distribution_special
          ${t1}$, intent(in) :: a, b
          ${t1}$ :: res
 
-         if(a <= 0._${k1}$ .or. b <= 0._${k1}$) call error_stop("Error: Beta"   &
-                      //" function auguments a, b values must be greater than 0")
+         if(a <= 0._${k1}$ .or. b <= 0._${k1}$) call error_stop("Error(beta):"  &
+         //" Beta function auguments a, b values must be greater than 0")
          res = exp(loggamma(a) + loggamma(b) - loggamma(a+b))
          return
      end function beta_${t1[0]}$${k1}$
@@ -536,8 +536,8 @@ Module stdlib_stats_distribution_special
          ${t1}$, intent(in) :: a, b
          ${t1}$ :: res
 
-         if(a <= 0._${k1}$ .or. b <= 0._${k1}$) call error_stop("Error: Beta"   &
-                      //" function auguments a, b values must be greater than 0")
+         if(a <= 0._${k1}$ .or. b <= 0._${k1}$) call error_stop("Error(l_beta):"&
+         //" Beta function auguments a, b values must be greater than 0")
          res = loggamma(a) + loggamma(b) - loggamma(a+b)
          return
      end function l_beta_${t1[0]}$${k1}$
@@ -554,9 +554,9 @@ Module stdlib_stats_distribution_special
          integer :: n, k
          real(dp) :: an, bn, g, c, d, y, s0, ak, ak2
 
-         if(a <= 0._${k1}$ .or. b <= 0._${k1}$) call error_stop("Error:"        &
-             //" Incomplete beta function auguments a, b values must be"        &
-             //" greater than 0")
+         if(a <= 0._${k1}$ .or. b <= 0._${k1}$) call error_stop("Error(inbeta):"&
+         //" Incomplete beta function auguments a, b values must be greater"    &
+         //" than 0")
          s0 = (a + 1) / (a + b + 2)
          an = 1.0_dp
          bn = 1.0_dp
