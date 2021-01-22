@@ -99,6 +99,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Debug
         -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
         -DCMAKE_MAXIMUM_RANK=4
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
       env:
         FC: gfortran
         CC: gcc
@@ -120,3 +121,6 @@ jobs:
       with:
         name: WindowsCMakeTestlog
         path: build/Testing/Temporary/LastTest.log
+
+    - name: Install project
+      run: cmake --install build

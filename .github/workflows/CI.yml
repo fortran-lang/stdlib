@@ -59,7 +59,12 @@ jobs:
           brew link gcc@${GCC_V}
 
     - name: Configure with CMake
-      run: cmake -Wdev -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAXIMUM_RANK=4 -S . -B build
+      run: >-
+        cmake -Wdev
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_MAXIMUM_RANK=4
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -S . -B build
 
     - name: Build and compile
       run: cmake --build build
@@ -72,6 +77,9 @@ jobs:
       run: ctest --parallel --output-on-failure
       working-directory: build
 
+    - name: Install project
+      run: cmake --install build
+
     - name: Test in-tree builds
       if: contains( matrix.gcc_v, '10') # Only test one compiler on each platform
       run: |
@@ -82,7 +90,7 @@ jobs:
     - name: Test manual makefiles
       if: contains(matrix.os, 'ubuntu') && contains(matrix.gcc_v, '10')
       run: |
-        make -f Makefile.manual FYPPFLAGS="-DMAXRANK=4"
+        make -f Makefile.manual FYPPFLAGS="-DMAXRANK=4" -j
         make -f Makefile.manual test
         make -f Makefile.manual clean
 
@@ -129,7 +137,12 @@ jobs:
       run: pip install --upgrade fypp
 
     - name: Configure with CMake
-      run: cmake -Wdev -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAXIMUM_RANK=4 -S . -B build
+      run: >-
+         cmake -Wdev
+         -DCMAKE_BUILD_TYPE=Release
+         -DCMAKE_MAXIMUM_RANK=4
+         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+         -S . -B build
 
     - name: Build and compile
       run: cmake --build build
@@ -141,3 +154,6 @@ jobs:
     - name: test
       run: ctest --parallel --output-on-failure
       working-directory: build
+
+    - name: Install project
+      run: cmake --install build
