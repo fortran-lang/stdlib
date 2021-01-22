@@ -68,18 +68,14 @@ contains
     !> Checks whether `c` is an ASCII letter (A .. Z, a .. z).
     pure logical function is_alpha(c)
         character(len=1), intent(in) :: c !! The character to test.
-        integer :: ic
-        ic = iachar(c)
-        is_alpha = (ic >= iachar('A') .and. ic <= iachar('Z')) .or. (ic >= iachar('a') .and. ic <= iachar('z'))
+        is_alpha = (c >= 'A' .and. c <= 'Z') .or. (c >= 'a' .and. c <= 'z')
     end function
 
     !> Checks whether `c` is a letter or a number (0 .. 9, a .. z, A .. Z).
     pure logical function is_alphanum(c)
         character(len=1), intent(in) :: c !! The character to test.
-        integer :: ic
-        ic = iachar(c)
-        is_alphanum = (ic >= iachar('0') .and. ic <= iachar('9')) .or. (ic >= iachar('a') .and. ic <= iachar('z')) &
-            .or. (ic >= iachar('A') .and. ic <= iachar('Z'))
+        is_alphanum = (c >= '0' .and. c <= '9') .or. (c >= 'a' .and. c <= 'z') &
+            .or. (c >= 'A' .and. c <= 'Z')
     end function
 
     !> Checks whether or not `c` is in the ASCII character set -
@@ -100,26 +96,20 @@ contains
     !> Checks whether `c` is a digit (0 .. 9).
     pure logical function is_digit(c)
         character(len=1), intent(in) :: c !! The character to test.
-        integer :: ic
-        ic = iachar(c)
-        is_digit = (iachar('0') <= ic) .and. (ic <= iachar('9'))
+        is_digit = ('0' <= c) .and. (c <= '9')
     end function
 
     !> Checks whether `c` is a digit in base 8 (0 .. 7).
     pure logical function is_octal_digit(c)
         character(len=1), intent(in) :: c !! The character to test.
-        integer :: ic
-        ic = iachar(c)
-        is_octal_digit = (ic >= iachar('0')) .and. (ic <= iachar('7'))
+        is_octal_digit = (c >= '0') .and. (c <= '7');
     end function
 
     !> Checks whether `c` is a digit in base 16 (0 .. 9, A .. F, a .. f).
     pure logical function is_hex_digit(c)
         character(len=1), intent(in) :: c !! The character to test.
-        integer :: ic
-        ic = iachar(c)
-        is_hex_digit = (ic >= iachar('0') .and. ic <= iachar('9')) .or. (ic >= iachar('a') .and. ic <= iachar('f')) &
-            .or. (ic >= iachar('A') .and. ic <= iachar('F')) .or. (ic >= iachar('a') .and. ic <= iachar('f'))
+        is_hex_digit = (c >= '0' .and. c <= '9') .or. (c >= 'a' .and. c <= 'f') &
+            .or. (c >= 'A' .and. c <= 'F')
     end function
 
     !> Checks whether or not `c` is a punctuation character. That includes
@@ -165,9 +155,7 @@ contains
     !> Checks whether `c` is an uppercase ASCII letter (A .. Z).
     pure logical function is_upper(c)
         character(len=1), intent(in) :: c !! The character to test.
-        integer :: ic
-        ic = iachar(c)
-        is_upper = ic >= iachar('A') .and. ic <= iachar('Z')
+        is_upper = (c >= 'A') .and. (c <= 'Z')
     end function
 
     !> Checks whether or not `c` is a whitespace character. That includes the
@@ -177,7 +165,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)             ! TAB, LF, VT, FF, CR
-        is_white = ic == iachar(' ') .or. (ic >= int(z'09') .and. ic <= int(z'0D'))
+        is_white = (c == ' ') .or. (ic >= int(z'09') .and. ic <= int(z'0D'));
     end function
 
     !> Checks whether or not `c` is a blank character. That includes the
@@ -186,7 +174,7 @@ contains
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
         ic = iachar(c)             ! TAB
-        is_blank = ic == iachar(' ') .or. ic == int(z'09')
+        is_blank = (c == ' ') .or. (ic == int(z'09'));
     end function
 
     !> Returns the corresponding lowercase letter, if `c` is an uppercase
