@@ -1,32 +1,35 @@
+SRCFYPP =\
+        stdlib_bitsets_64.fypp \
+        stdlib_bitsets_large.fypp \
+        stdlib_bitsets.fypp \
+        stdlib_io.fypp \
+        stdlib_linalg.fypp \
+        stdlib_linalg_diag.fypp \
+        stdlib_optval.fypp \
+        stdlib_quadrature.fypp \
+        stdlib_quadrature_trapz.fypp \
+        stdlib_quadrature_simps.fypp \
+        stdlib_stats.fypp \
+        stdlib_stats_corr.fypp \
+        stdlib_stats_cov.fypp \
+        stdlib_stats_mean.fypp \
+        stdlib_stats_moment.fypp \
+        stdlib_stats_moment_all.fypp \
+        stdlib_stats_moment_mask.fypp \
+        stdlib_stats_moment_scalar.fypp \
+        stdlib_stats_var.fypp	
+
 SRC = f18estop.f90 \
       stdlib_ascii.f90 \
-      stdlib_bitsets.f90 \
-      stdlib_bitsets_64.f90 \
-      stdlib_bitsets_large.f90 \
       stdlib_error.f90 \
-      stdlib_io.f90 \
       stdlib_kinds.f90 \
-      stdlib_linalg.f90 \
-      stdlib_linalg_diag.f90 \
       stdlib_logger.f90 \
-      stdlib_optval.f90 \
-      stdlib_quadrature.f90 \
-      stdlib_quadrature_trapz.f90 \
-      stdlib_stats.f90 \
-      stdlib_stats_mean.f90 \
-      stdlib_stats_moment.f90 \
-      stdlib_stats_moment_all.f90 \
-      stdlib_stats_moment_mask.f90 \
-      stdlib_stats_moment_scalar.f90 \
-      stdlib_stats_var.f90 \
-      stdlib_stats_distribution_PRNG.f90 \
-      stdlib_stats_distribution_uniform.f90 \
-      stdlib_stats_distribution_exponential.f90
+      $(SRCGEN)
 
 LIB = libstdlib.a
 
 
-
+SRCGEN = $(SRCFYPP:.fypp=.f90)
 OBJS = $(SRC:.f90=.o)
 MODS = $(OBJS:.o=.mod)
 SMODS = $(OBJS:.o=*.smod)
@@ -39,12 +42,12 @@ $(LIB): $(OBJS)
 	ar rcs $@ $(OBJS)
 
 clean:
-	$(RM) $(LIB) $(OBJS) $(MODS) $(SMODS)
+	$(RM) $(LIB) $(OBJS) $(MODS) $(SMODS) $(SRCGEN)
 
 %.o: %.f90
 	$(FC) $(FFLAGS) -c $<
 
-%.f90: %.fypp
+$(SRCGEN): %.f90: %.fypp common.fypp
 	fypp $(FYPPFLAGS) $< $@
 
 # Fortran module dependencies
@@ -57,10 +60,32 @@ stdlib_io.o: \
 	stdlib_error.o \
 	stdlib_optval.o \
 	stdlib_kinds.o
-stdlib_linalg_diag.o: stdlib_kinds.o
+stdlib_linalg.o: \
+	stdlib_kinds.o
+stdlib_linalg_diag.o: \
+	stdlib_linalg.o \
+	stdlib_kinds.o
 stdlib_logger.o: stdlib_ascii.o stdlib_optval.o
 stdlib_optval.o: stdlib_kinds.o
 stdlib_quadrature.o: stdlib_kinds.o
+stdlib_quadrature_simps.o: \
+	stdlib_quadrature.o \
+	stdlib_error.o \
+	stdlib_kinds.o
+stdlib_quadrature_trapz.o: \
+	stdlib_quadrature.o \
+	stdlib_error.o \
+	stdlib_kinds.o
+stdlib_stats.o: \
+	stdlib_kinds.o
+stdlib_stats_corr.o: \
+	stdlib_optval.o \
+	stdlib_kinds.o \
+	stdlib_stats.o
+stdlib_stats_cov.o: \
+	stdlib_optval.o \
+	stdlib_kinds.o \
+	stdlib_stats.o
 stdlib_stats_mean.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
@@ -69,36 +94,13 @@ stdlib_stats_moment.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
 	stdlib_stats.o
+stdlib_stats_moment_all.o: \
+	stdlib_stats_moment.o
+stdlib_stats_moment_mask.o: \
+	stdlib_stats_moment.o
+stdlib_stats_moment_scalar.o: \
+	stdlib_stats_moment.o
 stdlib_stats_var.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
 	stdlib_stats.o
-stdlib_stats_distribution_PRNG.o: stdlib_kinds.o
-stdlib_stats_distribution_uniform.o: \
-	stdlib_kinds.o \
-	stdlib_error.o \
-	stdlib_stats_distribution_PRNG.o
-stdlib_stats_distribution_exponential.o: \
-	stdlib_kinds.o \
-	stdlib_error.o \
-	stdlib_stats_distribution_PRNG.o \
-	stdlib_stats_distribution_uniform.o
-
-# Fortran sources that are built from fypp templates
-stdlib_bitsets_64.f90: stdlib_bitsets_64.fypp
-stdlib_bitsets_large.f90: stdlib_bitsets_large.fypp
-stdlib_bitsets.f90: stdlib_bitsets.fypp
-stdlib_io.f90: stdlib_io.fypp
-stdlib_linalg.f90: stdlib_linalg.fypp
-stdlib_linalg_diag.f90: stdlib_linalg_diag.fypp
-stdlib_quadrature.f90: stdlib_quadrature.fypp
-stdlib_stats.f90: stdlib_stats.fypp
-stdlib_stats_mean.f90: stdlib_stats_mean.fypp
-stdlib_stats_moment.f90: stdlib_stats_moment.fypp
-stdlib_stats_moment_all.f90: stdlib_stats_moment_all.fypp
-stdlib_stats_moment_mask.f90: stdlib_stats_moment_mask.fypp
-stdlib_stats_moment_scalar.f90: stdlib_stats_moment_scalar.fypp
-stdlib_stats_var.f90: stdlib_stats_var.fypp
-stdlib_stats_distribution_PRNG.f90: stdlib_stats_distribution_PRNG.fypp
-stdlib_stats_distribution_uniform.f90: stdlib_stats_distribution_uniform.fypp
-stdlib_stats_distribution_exponential.f90: stdlib_stats_distribution_exponential.fypp
