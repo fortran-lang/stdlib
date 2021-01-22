@@ -10,8 +10,6 @@ Module stdlib_stats_distribution_gamma
     implicit none
     private
     integer(int64), parameter :: INT_ONE = 1_int64
-    real, parameter :: tol = 1.0E-5, sq = 0.0331
-    real, save :: alpha = 0., d, c
 
     public :: gamma_distribution_rvs
     public :: gamma_distribution_pdf
@@ -44,7 +42,7 @@ Module stdlib_stats_distribution_gamma
     !! ([Specification](../page/specs/stdlib_stats_distribution_gamma.html#
     !! description))
     !!
-    #:for k1, t1 in RC_KINDS_TYPES
+        #:for k1, t1 in RC_KINDS_TYPES
         module procedure gamma_dist_pdf_${t1[0]}$${k1}$
         #:endfor
     end interface gamma_distribution_pdf
@@ -70,32 +68,34 @@ Module stdlib_stats_distribution_gamma
     !
         ${t1}$, intent(in) :: shape
         ${t1}$ :: res
-        ${t1}$ :: x, v, u, zz
+        ${t1}$ :: x, v, u, zz, tol = 1000 * epsilon(1.0_${k1}$)
+        ${t1}$, save :: alpha = 0._${k1}$, d, c, sq = 0.0331_${k1}$
 
-        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
-                                //" shape parameter must be greater than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs): Gamma"  &
+        //" distribution shape parameter must be greater than zero")
+
         zz = shape
         if(zz < 1._${k1}$) zz = 1._${k1}$ + zz
-        if(abs(real(zz) - alpha) > tol) then
-            alpha = real(zz)
-            d = alpha - 1. / 3.
-            c = 1. / (3. * sqrt(d))
+        if(abs(zz - alpha) > tol) then
+            alpha = zz
+            d = alpha - 1._${k1}$ / 3._${k1}$
+            c = 1._${k1}$ / (3._${k1}$ * sqrt(d))
         endif
         do
             do
-                x = rnor( )
+                x = rnor(0.0_${k1}$, 1.0_${k1}$)
                 v = 1._${k1}$ + c * x
                 v = v * v * v
-                if(v > 0.) exit
+                if(v > 0._${k1}$) exit
             end do
             x = x * x
-            u = uni( )
+            u = uni(1.0_${k1}$)
             if(u < (1._${k1}$ - sq * x * x)) exit
             if(log(u) < 0.5_${k1}$ * x + d * (1._${k1}$ - v + log(v))) exit
         end do
         res = d * v
-        if(shape < 1.) then
-            u = uni( )
+        if(shape < 1._${k1}$) then
+            u = uni(1.0_${k1}$)
             res = res * u ** (1._${k1}$ / shape)
         endif
         return
@@ -114,7 +114,7 @@ Module stdlib_stats_distribution_gamma
 
         tr = gamma_dist_rvs_1_r${k1}$(real(shape))
         ti = gamma_dist_rvs_1_r${k1}$(aimag(shape))
-        res = cmplx(tr,ti)
+        res = cmplx(tr,ti, kind=${k1}$)
         return
     end function gamma_dist_rvs_1_${t1[0]}$${k1}$
 
@@ -125,34 +125,37 @@ Module stdlib_stats_distribution_gamma
                      result(res)
         ${t1}$, intent(in) :: shape, rate
         ${t1}$ :: res
-        ${t1}$ :: x, v, u, zz
+        ${t1}$ :: x, v, u, zz, tol = 1000 * epsilon(1.0_${k1}$)
+        ${t1}$, save :: alpha = 0._${k1}$, d, c, sq = 0.0331_${k1}$
 
-        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
-                                //" shape parameter must be greater than zero")
-        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
-                                //" rate parameter must be greater than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs): Gamma"  &
+        //" distribution shape parameter must be greater than zero")
+
+        if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs): Gamma"   &
+        //" distribution rate parameter must be greater than zero")
+
         zz = shape
         if(zz < 1._${k1}$) zz = 1._${k1}$ + zz
-        if(abs(real(zz) - alpha) > tol) then
-            alpha = real(zz)
-            d = alpha - 1. / 3.
-            c = 1. / (3. * sqrt(d))
+        if(abs(zz - alpha) > tol) then
+            alpha = zz
+            d = alpha - 1._${k1}$ / 3._${k1}$
+            c = 1._${k1}$ / (3._${k1}$ * sqrt(d))
         endif
         do
             do
-                x = rnor( )
+                x = rnor(0.0_${k1}$, 1.0_${k1}$)
                 v = 1._${k1}$ + c * x
                 v = v * v * v
-                if(v > 0) exit
+                if(v > 0._${k1}$) exit
             end do
             x = x * x
-            u = uni( )
+            u = uni(1.0_${k1}$)
             if(u < (1._${k1}$ - sq * x * x)) exit
             if(log(u) < 0.5_${k1}$ * x + d * (1._${k1}$ - v + log(v))) exit
         end do
         res = d * v
         if(shape < 1._${k1}$) then
-            u = uni( )
+            u = uni(1.0_${k1}$)
             res = res * u ** (1._${k1}$ / shape)
         endif
         res = res / rate
@@ -173,7 +176,7 @@ Module stdlib_stats_distribution_gamma
 
         tr = gamma_dist_rvs_r${k1}$(real(shape), real(rate))
         ti = gamma_dist_rvs_r${k1}$(aimag(shape), aimag(rate))
-        res = cmplx(tr, ti)
+        res = cmplx(tr, ti, kind=${k1}$)
         return
     end function gamma_dist_rvs_${t1[0]}$${k1}$
 
@@ -185,37 +188,40 @@ Module stdlib_stats_distribution_gamma
         ${t1}$, intent(in) :: shape, rate
         ${t1}$, allocatable :: res(:)
         integer, intent(in) :: array_size
-        ${t1}$ :: x, v, u, zz, re
+        ${t1}$ :: x, v, u, zz, tol = 1000 * epsilon(1.0_${k1}$), re
+        ${t1}$, save :: alpha = 0._${k1}$, d, c, sq = 0.0331_${k1}$
         integer :: i
 
-        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
-                                //" shape parameter must be greater than zero")
-        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
-                                //" rate parameter must be greater than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs_array):"  &
+        //" Gamma distribution shape parameter must be greater than zero")
+
+        if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs_array):"   &
+        //' Gamma distribution rate parameter must be greater than zero")
+
         allocate(res(array_size))
         zz = shape
         if(zz < 1._${k1}$) zz = 1._${k1}$ + zz
-        if(abs(real(zz) - alpha) > tol) then
-            alpha = real(zz)
-            d = alpha - 1. / 3.
-            c = 1. / (3. * sqrt(d))
+        if(abs(zz - alpha) > tol) then
+            alpha = zz
+            d = alpha - 1._${k1}$ / 3._${k1}$
+            c = 1._${k1}$ / (3._${k1}$ * sqrt(d))
         endif
         do i = 1, array_size
             do
                 do
-                    x = rnor( )
+                    x = rnor(0.0_${k1}$, 1.0_${k1}$)
                     v = 1._${k1}$ + c * x
                     v = v * v * v
-                    if(v > 0) exit
+                    if(v > 0._${k1}$) exit
                 end do
                 x = x * x
-                u = uni( )
+                u = uni(1.0_${k1}$)
                 if(u < (1._${k1}$ - sq * x * x)) exit
                 if(log(u) < 0.5_${k1}$ * x + d * (1._${k1}$ - v + log(v))) exit
             end do
             re = d * v
             if(shape < 1._${k1}$) then
-                u = uni( )
+                u = uni(1.0_${k1}$)
                 re = re * u ** (1._${k1}$ / shape)
             endif
             res(i) = re / rate
@@ -238,7 +244,7 @@ Module stdlib_stats_distribution_gamma
         do i = 1, array_size
             tr = gamma_dist_rvs_r${k1}$(real(shape), real(rate))
             ti = gamma_dist_rvs_r${k1}$(aimag(shape), aimag(rate))
-            res(i) = cmplx(tr, ti)
+            res(i) = cmplx(tr, ti, kind=${k1}$)
         end do
         return
     end function gamma_dist_rvs_array_${t1[0]}$${k1}$
@@ -253,10 +259,12 @@ Module stdlib_stats_distribution_gamma
         ${t1}$, intent(in) :: x, shape, rate
         real :: res
 
-        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
-                           //" rate parameter must be greaeter than zero")
-        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
-                           //" shape parameter must be greater than zero")
+        if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"   &
+                 //" distribution rate parameter must be greaeter than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"  &
+                 //" distribution shape parameter must be greater than zero")
+        if(x <= 0.0_${k1}$) call error_stop("Error)gamma_dist_pdf): Gamma"      &
+                //" distribution variate x must be greater than zero")
         if(x == 0.0_${k1}$) then
             if(shape <= 1.0_${k1}$) then
                 res = huge(1.0) + 1.0
@@ -293,10 +301,12 @@ Module stdlib_stats_distribution_gamma
         ${t1}$, intent(in) :: x, shape, rate
         real :: res
 
-        if(rate <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"      &
-                           //" rate parameter must be greaeter than zero")
-        if(shape <= 0.0_${k1}$) call error_stop("Error: Gamma distribution"     &
-                           //" shape parameter must be greater than zero")
+        if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"   &
+                 //" distribution rate parameter must be greaeter than zero")
+        if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"  &
+                 //" distribution shape parameter must be greater than zero")
+        if(x <= 0.0_${k1}$) call error_stop("Error)gamma_dist_pdf): Gamma"      &
+                //" distribution variate x must be greater than zero")
         res = ingamma(shape, rate * x) / gamma(shape)
         return
     end function gamma_dist_cdf_${t1[0]}$${k1}$

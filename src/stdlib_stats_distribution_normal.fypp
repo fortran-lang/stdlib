@@ -114,7 +114,7 @@ Module stdlib_stats_distribution_normal
         if( .not. zig_norm_initialized ) call zigset
         iz = 0
         ! original algorithm use 32bit
-        hz = dist_rand(iz)
+        hz = dist_rand(1_int32)
 
         iz = iand( hz, 127 )
         if( abs( hz ) < kn(iz) ) then
@@ -123,8 +123,8 @@ Module stdlib_stats_distribution_normal
             L1: do
                 L2: if( iz == 0 ) then
                     do
-                        x = -log( uni( ) ) * rr
-                        y = -log( uni( ) )
+                        x = -log( uni(1.0_${k1}$) ) * rr
+                        y = -log( uni(1.0_${k1}$) )
                         if( y + y >= x * x ) exit
                     end do
                     res = r + x
@@ -132,14 +132,14 @@ Module stdlib_stats_distribution_normal
                     exit L1
                 end if L2
                 x = hz * wn(iz)
-                if( fn(iz) + uni( ) * (fn(iz-1) - fn(iz)) <                     &
+                if( fn(iz) + uni(1.0_${k1}$) * (fn(iz-1) - fn(iz)) <            &
                     exp(-HALF * x * x) ) then
                     res = x
                     exit L1
                 end if
 
                 !original algorithm use 32bit
-                hz = dist_rand(iz)
+                hz = dist_rand(1_int32)
                 iz = iand( hz, 127 )
                 if( abs( hz ) < kn(iz) ) then
                     res = hz * wn(iz)
@@ -163,12 +163,12 @@ Module stdlib_stats_distribution_normal
         ${t1}$ ::  x, y
         integer :: hz, iz
 
-        if(scale==0._${k1}$) call error_stop("Error: Normal distribution scale" &
-                              //" parameter must be non-zero")
+        if(scale==0._${k1}$) call error_stop("Error(norm_dist_rvs): Normal"     &
+                        //" distribution scale parameter must be non-zero")
         if( .not. zig_norm_initialized ) call zigset
         iz = 0
         ! original algorithm use 32bit
-        hz = dist_rand(iz)
+        hz = dist_rand(1_int32)
 
         iz = iand( hz, 127 )
         if( abs( hz ) < kn(iz) ) then
@@ -177,8 +177,8 @@ Module stdlib_stats_distribution_normal
             L1: do
                 L2: if( iz == 0 ) then
                     do
-                        x = -log( uni( ) ) * rr
-                        y = -log( uni( ) )
+                        x = -log( uni(1.0_${k1}$) ) * rr
+                        y = -log( uni(1.0_${k1}$) )
                         if( y + y >= x * x ) exit
                     end do
                     res = r + x
@@ -186,14 +186,14 @@ Module stdlib_stats_distribution_normal
                     exit L1
                 end if L2
                 x = hz * wn(iz)
-                if( fn(iz) + uni( ) * (fn(iz-1) - fn(iz)) <                     &
+                if( fn(iz) + uni(1.0_${k1}$) * (fn(iz-1) - fn(iz)) <            &
                     exp(-HALF * x * x) ) then
                     res = x
                     exit L1
                 end if
 
                 !original algorithm use 32bit
-                hz = dist_rand(iz)
+                hz = dist_rand(1_int32)
                 iz = iand( hz, 127 )
                 if( abs( hz ) < kn(iz) ) then
                     res = hz * wn(iz)
@@ -219,7 +219,7 @@ Module stdlib_stats_distribution_normal
 
         tr = norm_dist_rvs_r${k1}$(real(loc), real(scale))
         ti = norm_dist_rvs_r${k1}$(aimag(loc), aimag(scale))
-        res = cmplx(tr, ti)
+        res = cmplx(tr, ti, kind=${k1}$)
         return
     end function norm_dist_rvs_${t1[0]}$${k1}$
 
@@ -235,14 +235,14 @@ Module stdlib_stats_distribution_normal
         ${t1}$ ::  x, y, re
         integer :: hz, iz, i
 
-        if(scale==0._${k1}$) call error_stop("Error: Normal distribution scale" &
-                              //" parameter must be non-zero")
+        if(scale==0._${k1}$) call error_stop("Error(norm_dist_rvs_array):"      &
+                    //" Normal distribution scale parameter must be non-zero")
         if( .not. zig_norm_initialized ) call zigset
         allocate(res(array_size))
         do i = 1, array_size
             iz = 0
             ! original algorithm use 32bit
-            hz = dist_rand(iz)
+            hz = dist_rand(1_int32)
 
             iz = iand( hz, 127 )
             if( abs( hz ) < kn(iz) ) then
@@ -251,8 +251,8 @@ Module stdlib_stats_distribution_normal
                 L1: do
                     L2: if( iz == 0 ) then
                         do
-                            x = -log( uni( ) ) * rr
-                            y = -log( uni( ) )
+                            x = -log( uni(1.0_${k1}$) ) * rr
+                            y = -log( uni(1.0_${k1}$) )
                             if( y + y >= x * x ) exit
                         end do
                         re = r + x
@@ -260,14 +260,14 @@ Module stdlib_stats_distribution_normal
                         exit L1
                     end if L2
                     x = hz * wn(iz)
-                    if( fn(iz) + uni( ) * (fn(iz-1) - fn(iz)) <                 &
+                    if( fn(iz) + uni(1.0_${k1}$) * (fn(iz-1) - fn(iz)) <        &
                         exp(-HALF * x * x) ) then
                         re = x
                         exit L1
                     end if
 
                     !original algorithm use 32bit
-                    hz = dist_rand(iz)
+                    hz = dist_rand(1_int32)
                     iz = iand( hz, 127 )
                     if( abs( hz ) < kn(iz) ) then
                         re = hz * wn(iz)
@@ -295,7 +295,7 @@ Module stdlib_stats_distribution_normal
         do i = 1, array_size
             tr = norm_dist_rvs_r${k1}$(real(loc), real(scale))
             ti = norm_dist_rvs_r${k1}$(aimag(loc), aimag(scale))
-            res(i) = cmplx(tr, ti)
+            res(i) = cmplx(tr, ti, kind=${k1}$)
         end do
         return
     end function norm_dist_rvs_array_${t1[0]}$${k1}$
@@ -311,8 +311,8 @@ Module stdlib_stats_distribution_normal
         real :: res
         ${t1}$, parameter :: sqrt_2_pi = sqrt(2.0_${k1}$ * acos(-1.0_${k1}$))
 
-        if(scale==0._${k1}$) call error_stop("Error: Normal distribution scale" &
-                              //" parameter must be non-zero")
+        if(scale==0._${k1}$) call error_stop("Error(norm_dist_pdf):"            &
+                    //" Normal distribution scale parameter must be non-zero")
         res = exp(- 0.5_${k1}$ * (x - loc) * (x - loc) / (scale * scale)) /     &
               (sqrt_2_Pi * scale)
         return
@@ -342,8 +342,8 @@ Module stdlib_stats_distribution_normal
         real :: res
         ${t1}$, parameter :: sqrt_2 = sqrt(2.0_${k1}$)
 
-        if(scale==0._${k1}$) call error_stop("Error: Normal distribution scale" &
-                              //" parameter must be non-zero")
+        if(scale==0._${k1}$) call error_stop("Error(norm_dist_cdf):"            &
+                    //" Normal distribution scale parameter must be non-zero")
         res = (1.0_${k1}$ + erf((x - loc) / (scale * sqrt_2))) / 2.0_${k1}$
         return
     end function norm_dist_cdf_${t1[0]}$${k1}$
