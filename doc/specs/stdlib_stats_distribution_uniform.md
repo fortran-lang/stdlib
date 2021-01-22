@@ -2,7 +2,7 @@
 title: stats_distribution
 ---
 
-# Statistical Distributions Uniform Module
+# Statistical Distributions -- Uniform Module
 
 [TOC]
 
