@@ -121,7 +121,7 @@ stdlib_stats_distribution_normal.o: \
 	stdlib_error.o \
 	stdlib_stats_distribution_PRNG.o \
 	stdlib_stats_distribution_uniform.o
-stdlib_stats_distribution_special.o: \ 
+stdlib_stats_distribution_special.o: \
 	stdlib_kinds.o \
 	stdlib_error.o
 stdlib_stats_distribution_gamma.o: \
