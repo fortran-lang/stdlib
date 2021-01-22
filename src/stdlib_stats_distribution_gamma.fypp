@@ -196,7 +196,7 @@ Module stdlib_stats_distribution_gamma
         //" Gamma distribution shape parameter must be greater than zero")
 
         if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs_array):"   &
-        //' Gamma distribution rate parameter must be greater than zero")
+        //" Gamma distribution rate parameter must be greater than zero")
 
         allocate(res(array_size))
         zz = shape
@@ -263,7 +263,7 @@ Module stdlib_stats_distribution_gamma
                  //" distribution rate parameter must be greaeter than zero")
         if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"  &
                  //" distribution shape parameter must be greater than zero")
-        if(x <= 0.0_${k1}$) call error_stop("Error)gamma_dist_pdf): Gamma"      &
+        if(x <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"      &
                 //" distribution variate x must be greater than zero")
         if(x == 0.0_${k1}$) then
             if(shape <= 1.0_${k1}$) then
@@ -305,7 +305,7 @@ Module stdlib_stats_distribution_gamma
                  //" distribution rate parameter must be greaeter than zero")
         if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"  &
                  //" distribution shape parameter must be greater than zero")
-        if(x <= 0.0_${k1}$) call error_stop("Error)gamma_dist_pdf): Gamma"      &
+        if(x <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"      &
                 //" distribution variate x must be greater than zero")
         res = ingamma(shape, rate * x) / gamma(shape)
         return
