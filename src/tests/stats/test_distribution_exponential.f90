@@ -2,7 +2,7 @@ program test_distribution_expon
     use stdlib_kinds
     use stdlib_error, only : check
     use stdlib_stats_distribution_PRNG, only : random_seed
-    use stdlib_stats_distribution_expon, only :                                 &
+    use stdlib_stats_distribution_exponential, only :                           &
         expon_rvs => exponential_distribution_rvs,                              &
         expon_pdf => exponential_distribution_pdf,                              &
         expon_cdf => exponential_distribution_cdf
