@@ -145,12 +145,12 @@ function stringlist_index_add( index, offset )
     stringlist_index_add%offset = stringlist_index_add%offset + offset
 end function stringlist_index_add
 
-! stringlist_index_substract --
+! stringlist_index_subtract --
 !     Subtract an integer offset to the special index
 !
 ! Arguments:
 !     index                 Special index
-!     offset                Offset to be substracted
+!     offset                Offset to be subtracted
 !
 function stringlist_index_subtract( index, offset )
     type(stringlist_index_type), intent(in) :: index
