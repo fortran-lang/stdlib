@@ -12,7 +12,7 @@ module stdlib_ascii
     public :: is_lower, is_upper
 
     ! Character conversion functions
-    public :: to_lower, to_upper
+    public :: to_lower, to_upper, to_title, reverse
 
     ! All control characters in the ASCII table (see www.asciitable.com).
     character(len=1), public, parameter :: NUL = achar(int(z'00')) !! Null
@@ -59,9 +59,6 @@ module stdlib_ascii
     character(len=*), public, parameter :: uppercase = letters(1:26) !! A .. Z
     character(len=*), public, parameter :: lowercase = letters(27:) !! a .. z
     character(len=*), public, parameter :: whitespace = " "//TAB//VT//CR//LF//FF !! ASCII _whitespace
-
-    character(len=26), parameter, private :: lower_case = 'abcdefghijklmnopqrstuvwxyz'
-    character(len=26), parameter, private :: upper_case = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 contains
 
@@ -179,34 +176,94 @@ contains
 
     !> Returns the corresponding lowercase letter, if `c` is an uppercase
     !  ASCII character, otherwise `c` itself.
-    pure function to_lower(c) result(t)
+    pure function char_to_lower(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
         integer :: k
 
-        k = index( upper_case, c )
+        k = index( uppercase, c )
 
         if ( k > 0 ) then
-            t = lower_case(k:k)
+            t = lowercase(k:k)
         else
             t = c
         endif
-    end function
+    end function char_to_lower
 
     !> Returns the corresponding uppercase letter, if `c` is a lowercase
     !  ASCII character, otherwise `c` itself.
-    pure function to_upper(c) result(t)
+    pure function char_to_upper(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
         integer :: k
 
-        k = index( lower_case, c )
+        k = index( lowercase, c )
 
         if ( k > 0 ) then
-            t = upper_case(k:k)
+            t = uppercase(k:k)
         else
             t = c
         endif
-    end function
+    end function char_to_upper
 
-end module
+    !> Convert character variable to lower case
+    pure function to_lower(string) result(lower_string)
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: lower_string
+        integer :: i
+
+        do i = 1, len(string)
+            lower_string(i:i) = char_to_lower(string(i:i))
+        end do
+
+    end function to_lower
+
+    !> Convert character variable to upper case
+    pure function to_upper(string) result(upper_string)
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: upper_string
+        integer :: i
+
+        do i = 1, len(string)
+            upper_string(i:i) = char_to_upper(string(i:i))
+        end do
+
+    end function to_upper
+
+    !> Convert character variable to title case
+    pure function to_title(string) result(title_string)
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: title_string
+        integer :: i, n
+
+        n = len(string)
+        do i = 1, len(string)
+            if (is_alphanum(string(i:i))) then
+                title_string(i:i) = char_to_upper(string(i:i))
+                n = i
+                exit
+            else
+                title_string(i:i) = string(i:i)
+            end if
+        end do
+
+        do i = n + 1, len(string)
+            title_string(i:i) = char_to_lower(string(i:i))
+        end do
+
+    end function to_title
+
+    !> Reverse the character order in the input character variable
+    pure function reverse(string) result(reverse_string)
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: reverse_string
+        integer :: i, n
+
+        n = len(string)
+        do i = 1, n
+            reverse_string(n-i+1:n-i+1) = string(i:i)
+        end do
+
+    end function reverse
+
+end module stdlib_ascii
