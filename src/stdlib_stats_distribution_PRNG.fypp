@@ -6,8 +6,8 @@ module stdlib_stats_distribution_PRNG
     private
     integer, parameter :: MAX_INT_BIT_SIZE = bit_size(1_int64)
     integer(int64) :: st(4) ! internal states for xoshiro256ss function
-￼   integer(int64) :: si = 614872703977525537_int64 ! default seed value
-￼   logical :: seed_initialized = .false.
+    integer(int64) :: si = 614872703977525537_int64 ! default seed value
+    logical :: seed_initialized = .false.
 
     public :: random_seed
     public :: dist_rand
