@@ -5,6 +5,7 @@ ADDTEST(moment)
 ADDTEST(rawmoment)
 ADDTEST(var)
 ADDTEST(varn)
+ADDTEST(distribution_normal)
 
 if(DEFINED CMAKE_MAXIMUM_RANK)
     if(${CMAKE_MAXIMUM_RANK} GREATER 7)
