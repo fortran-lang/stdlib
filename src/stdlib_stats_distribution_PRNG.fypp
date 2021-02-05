@@ -110,11 +110,11 @@ module stdlib_stats_distribution_PRNG
     !
     ! Fortran 90 translated from C by Jim-215-Fisher
     !
-        integer(int64) :: res, int01, int02, int03
+        integer(int64) :: res
         integer(int64), intent(in), optional :: s
-        data int01, int02, int03/-7046029254386353131_int64, &
-                                 -4658895280553007687_int64, &
-                                 -7723592293110705685_int64/
+        integer(int64) :: int01 = -7046029254386353131_int64,                  &
+                          int02 = -4658895280553007687_int64,                  &
+                          int03 = -7723592293110705685_int64
     ! Values are converted from C unsigned integer of 0x9e3779b97f4a7c15,
     ! 0xbf58476d1ce4e5b9, 0x94d049bb133111eb
 
