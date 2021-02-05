@@ -87,7 +87,7 @@ module stdlib_stats_distribution_PRNG
         st(4) = rol64(st(4), 45)
     end function xoshiro256ss
 
-    function rol64(x, k) result(res)
+    pure function rol64(x, k) result(res)
         integer(int64), intent(in) :: x
         integer, intent(in) :: k
         integer(int64) :: t1, t2, res
