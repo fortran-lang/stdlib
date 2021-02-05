@@ -17,7 +17,7 @@ program test_distribution_PRNG
 
     subroutine test_random_seed
         integer :: put, get, res(5)
-        integer :: ans(5) = [-1859553078, -1933696596,  -642834430,             &
+        integer :: ans(5) = [-1859553078, -1933696596, -642834430, &
                              1711399314,  1548311463]
         integer :: i
 
@@ -45,7 +45,7 @@ program test_distribution_PRNG
         do i = 1, 5
             res(i) = dist_rand(1_int8)
         end do
-        call check(all(res == ans), msg="random_rand with kind int8 test"     &
+        call check(all(res == ans), msg="random_rand with kind int8 test" &
                                      //" failed.", warn=warn)
     end subroutine test_random_rand_iint8
 
@@ -62,14 +62,14 @@ program test_distribution_PRNG
         do i = 1, 5
             res(i) = dist_rand(1_int16)
         end do
-        call check(all(res == ans), msg="random_rand with kind int16 test"     &
+        call check(all(res == ans), msg="random_rand with kind int16 test" &
                                      //" failed.", warn=warn)
     end subroutine test_random_rand_iint16
 
     subroutine test_random_rand_iint32
         integer :: put, get, i
 
-        integer(int32) :: res(5), ans(5)=[1984865646, -248954393, -1192993267,          &
+        integer(int32) :: res(5), ans(5)=[1984865646, -248954393, -1192993267, &
                                   1700514835, 1189401802]
 
 
@@ -80,17 +80,17 @@ program test_distribution_PRNG
         do i = 1, 5
             res(i) = dist_rand(1_int32)
         end do
-        call check(all(res == ans), msg="random_rand with kind int32 test"     &
+        call check(all(res == ans), msg="random_rand with kind int32 test" &
                                      //" failed.", warn=warn)
     end subroutine test_random_rand_iint32
 
     subroutine test_random_rand_iint64
         integer :: put, get, i
 
-        integer(int64) :: res(5), ans(5)=[8524933037632333570_int64,                    &
-                                  -1069250973542918798_int64,                   &
-                                  -5123867065024149335_int64,                   &
-                                  7303655603304982073_int64,                    &
+        integer(int64) :: res(5), ans(5)=[8524933037632333570_int64, &
+                                  -1069250973542918798_int64,        &
+                                  -5123867065024149335_int64,        &
+                                  7303655603304982073_int64,         &
                                   5108441843522503546_int64]
 
 
@@ -101,7 +101,7 @@ program test_distribution_PRNG
         do i = 1, 5
             res(i) = dist_rand(1_int64)
         end do
-        call check(all(res == ans), msg="random_rand with kind int64 test"     &
+        call check(all(res == ans), msg="random_rand with kind int64 test" &
                                      //" failed.", warn=warn)
     end subroutine test_random_rand_iint64
 
