@@ -20,6 +20,7 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [quadrature](./stdlib_quadrature.html) - Numerical integration
  - [stats](./stdlib_stats.html) - Descriptive Statistics
  - [stats_distribution_PRNG](./stdlib_stats_distribution_PRNG.html) - Probability Distributions random number generator
+ - [string\_type](./stdlib_string_type.html) - Basic string support
 
 ## Missing specs
 

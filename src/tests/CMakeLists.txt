@@ -13,6 +13,7 @@ add_subdirectory(linalg)
 add_subdirectory(logger)
 add_subdirectory(optval)
 add_subdirectory(stats)
+add_subdirectory(string)
 add_subdirectory(system)
 add_subdirectory(quadrature)
 
