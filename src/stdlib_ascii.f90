@@ -1,3 +1,7 @@
+!> The `stdlib_ascii` module provides procedures for handling and manipulating
+!> intrinsic character variables and constants.
+!>
+!> The specification of this module is available [here](../page/specs/stdlib_ascii.html).
 module stdlib_ascii
 
     implicit none
@@ -76,7 +80,7 @@ contains
     end function
 
     !> Checks whether or not `c` is in the ASCII character set -
-    !  i.e. in the range 0 .. 0x7F.
+    !> i.e. in the range 0 .. 0x7F.
     pure logical function is_ascii(c)
         character(len=1), intent(in) :: c !! The character to test.
         is_ascii = iachar(c) <= int(z'7F')
@@ -110,8 +114,8 @@ contains
     end function
 
     !> Checks whether or not `c` is a punctuation character. That includes
-    !  all ASCII characters which are not control characters, letters,
-    !  digits, or whitespace.
+    !> all ASCII characters which are not control characters, letters,
+    !> digits, or whitespace.
     pure logical function is_punctuation(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
@@ -121,7 +125,7 @@ contains
     end function
 
     !> Checks whether or not `c` is a printable character other than the
-    !  space character.
+    !> space character.
     pure logical function is_graphical(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
@@ -132,7 +136,7 @@ contains
     end function
 
     !> Checks whether or not `c` is a printable character - including the
-    !  space character.
+    !> space character.
     pure logical function is_printable(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
@@ -156,8 +160,8 @@ contains
     end function
 
     !> Checks whether or not `c` is a whitespace character. That includes the
-    !  space, tab, vertical tab, form feed, carriage return, and linefeed
-    !  characters.
+    !> space, tab, vertical tab, form feed, carriage return, and linefeed
+    !> characters.
     pure logical function is_white(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
@@ -166,7 +170,7 @@ contains
     end function
 
     !> Checks whether or not `c` is a blank character. That includes the
-    !  only the space and tab characters
+    !> only the space and tab characters
     pure logical function is_blank(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
@@ -175,7 +179,7 @@ contains
     end function
 
     !> Returns the corresponding lowercase letter, if `c` is an uppercase
-    !  ASCII character, otherwise `c` itself.
+    !> ASCII character, otherwise `c` itself.
     pure function char_to_lower(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
@@ -191,7 +195,7 @@ contains
     end function char_to_lower
 
     !> Returns the corresponding uppercase letter, if `c` is a lowercase
-    !  ASCII character, otherwise `c` itself.
+    !> ASCII character, otherwise `c` itself.
     pure function char_to_upper(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
@@ -207,6 +211,8 @@ contains
     end function char_to_upper
 
     !> Convert character variable to lower case
+    !>
+    !> Version: experimental
     pure function to_lower(string) result(lower_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: lower_string
@@ -219,6 +225,8 @@ contains
     end function to_lower
 
     !> Convert character variable to upper case
+    !>
+    !> Version: experimental
     pure function to_upper(string) result(upper_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: upper_string
@@ -231,6 +239,8 @@ contains
     end function to_upper
 
     !> Convert character variable to title case
+    !>
+    !> Version: experimental
     pure function to_title(string) result(title_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: title_string
@@ -254,6 +264,8 @@ contains
     end function to_title
 
     !> Reverse the character order in the input character variable
+    !>
+    !> Version: experimental
     pure function reverse(string) result(reverse_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: reverse_string
