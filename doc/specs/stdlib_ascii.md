@@ -34,9 +34,7 @@ Converts input character variable to all lowercase.
 
 #### Syntax
 
-```f90
-res = [stdlib_asciii(module):to_lower(function)]](string)
-```
+`res = [[stdlib_asciii(module):to_lower(function)]] (string)`
 
 #### Class
 
@@ -72,9 +70,7 @@ Converts input character variable to all uppercase.
 
 #### Syntax
 
-```fortran
-res = [[stdlib_ascii(module):to_upper(function)]](string)
-```
+`res = [[stdlib_ascii(module):to_upper(function)]] (string)`
 
 #### Class
 
@@ -112,9 +108,7 @@ All following characters will become lowercase.
 
 #### Syntax
 
-```
-res = [[stdlib_ascii(module):to_title(interface)]](string)
-```
+`res = [[stdlib_ascii(module):to_title(interface)]] (string)`
 
 #### Class
 
@@ -152,9 +146,7 @@ Reverses the order of all characters in the input character type.
 
 #### Syntax
 
-```f90
-res = [[stdlib_ascii(module):reverse(function)]](string)
-```
+`res = [[stdlib_ascii(module):reverse(function)]] (string)`
 
 #### Class
 
@@ -176,3 +168,4 @@ program demo_reverse
     implicit none
     print'(a)', reverse("Hello, World!") ! returns "!dlroW ,olleH"
 end program demo_reverse
+```
