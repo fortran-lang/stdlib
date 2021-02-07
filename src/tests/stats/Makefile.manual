@@ -1,4 +1,0 @@
-PROGS_SRC = test_mean.f90 test_moment.f90 test_var.f90 \
-            test_distribution_PRNG.f90
-
-include ../Makefile.manual.test.mk
