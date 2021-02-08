@@ -109,7 +109,7 @@ stdlib_stats_var.o: \
 stdlib_stats_distribution_PRNG.o: \
         stdlib_kinds.o \
 	stdlib_error.o
-stdlib_stats_distribution_uniform.0: \
+stdlib_stats_distribution_uniform.o: \
         stdlib_kinds.o \
 	stdlib_error.o \
 	stdlib_stats_distribution_PRNG.o
