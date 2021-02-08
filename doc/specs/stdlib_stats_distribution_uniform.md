@@ -93,7 +93,7 @@ With triple auguments `loc`, `scale` and `array_size` the function returns a ran
 
 `array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
 
-`loc` and `scale` must have the same type when both are present.
+`loc` and `scale` must have the same type and kind when both are present.
 
 ### Return value
 
@@ -208,7 +208,7 @@ f(x) = 1 / (scale%re * scale%im);  for complex uniform distribution
 
 `scale`: has `intent(in)` and is a scalar of type `integer`, `real` or `complex`.
 
-The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type.
+The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type and kind.
 
 ### Return value
 
@@ -296,7 +296,7 @@ F(x) = (x%re - loc%re)(x%im - loc%im) / (scale%re * scale%im); for complex unifo
 
 `scale`: has `intent(in)` and is a scalar of type `integer`, `real` or `complex`.
 
-The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type.
+The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type and kind.
 
 ### Return value
 
