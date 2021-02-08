@@ -26,7 +26,7 @@ contains
                 integer :: i,j
                 real(dp) :: leg, dleg, delta
 
-                do i = 0, int(floor((N+1)/2._dp)-1)
+                do i = 0, (N+1)/2-1
                     x(i+1) = -cos((2*i+1)/(2._dp*N+2._dp) * PI)
                     do j = 0, newton_iters-1
                         leg  = legendre(N+1,x(i+1))
