@@ -4,6 +4,8 @@ SRC = f18estop.f90 \
       stdlib_bitsets_64.f90 \
       stdlib_bitsets_large.f90 \
       stdlib_error.f90 \
+      stdlib_functions.f90 \
+      stdlib_functions_legendre.f90 \
       stdlib_io.f90 \
       stdlib_kinds.f90 \
       stdlib_linalg.f90 \
@@ -12,6 +14,7 @@ SRC = f18estop.f90 \
       stdlib_optval.f90 \
       stdlib_quadrature.f90 \
       stdlib_quadrature_trapz.f90 \
+      stdlib_quadrature_gauss.f90 \
       stdlib_stats.f90 \
       stdlib_stats_mean.f90 \
       stdlib_stats_moment.f90 \
@@ -50,6 +53,8 @@ stdlib_bitsets.o: stdlib_kinds.o
 stdlib_bitsets_64.o: stdlib_bitsets.o
 stdlib_bitsets_large.o: stdlib_bitsets.o
 stdlib_error.o: stdlib_optval.o
+stdlib_functions.o: stdlib_kinds.o
+stdlib_functions_legendre.o: stdlib_kinds.o
 stdlib_io.o: \
 	stdlib_error.o \
 	stdlib_optval.o \
@@ -58,6 +63,7 @@ stdlib_linalg_diag.o: stdlib_kinds.o
 stdlib_logger.o: stdlib_ascii.o stdlib_optval.o
 stdlib_optval.o: stdlib_kinds.o
 stdlib_quadrature.o: stdlib_kinds.o
+stdlib_quadrature_gauss.o: stdlib_kinds.o
 stdlib_stats_mean.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
