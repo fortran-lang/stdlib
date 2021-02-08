@@ -4,65 +4,65 @@ submodule (stdlib_functions) stdlib_functions_legendre
 
 contains
 
-    ! derivatives of Legendre polynomials
-    ! unspecified behaviour if N is negative
-    pure elemental module function dlegendre_fp64(N,x) result(DL)
-        integer, intent(in) :: N
+    ! derivatives of legegendre polynomials
+    ! unspecified behaviour if n is negative
+    pure elemental module function dlegendre_fp64(n,x) result(dleg)
+        integer, intent(in) :: n
         real(dp), intent(in) :: x
-        real(dp) :: DL
+        real(dp) :: dleg
 
-        select case(N)
+        select case(n)
             case(0)
-                DL = 0
+                dleg = 0
             case(1)
-                DL = 1
+                dleg = 1
             case default
                 block
-                    real(dp) :: L_down1, L_down2, L
-                    real(dp) :: DL_down1, DL_down2
+                    real(dp) :: leg_down1, leg_down2, leg
+                    real(dp) :: dleg_down1, dleg_down2
                     integer :: i 
 
-                    L_down1  = x
-                    DL_down1 = 1
+                    leg_down1  = x
+                    dleg_down1 = 1
 
-                    L_down2  = 1
-                    DL_down2 = 0
+                    leg_down2  = 1
+                    dleg_down2 = 0
 
-                    do i = 2, N
-                        L = (2*i-1)*x*L_down1/i - (i-1)*L_down2/i
-                        DL = DL_down2 + (2*i-1)*L_down1
-                        L_down2 = L_down1
-                        L_down1 = L
-                        DL_down2 = DL_down1
-                        DL_down1 = DL
+                    do i = 2, n
+                        leg = (2*i-1)*x*leg_down1/i - (i-1)*leg_down2/i
+                        dleg = dleg_down2 + (2*i-1)*leg_down1
+                        leg_down2 = leg_down1
+                        leg_down1 = leg
+                        dleg_down2 = dleg_down1
+                        dleg_down1 = dleg
                     end do
                 end block
         end select
     end function
 
-    ! Legendre polynomials
-    ! unspecified behaviour if N is negative
-    pure elemental module function legendre_fp64(N,x) result(L)
-        integer, intent(in) :: N
+    ! legegendre polynomials
+    ! unspecified behaviour if n is negative
+    pure elemental module function legendre_fp64(n,x) result(leg)
+        integer, intent(in) :: n
         real(dp), intent(in) :: x
-        real(dp) :: L
-        select case(N)
+        real(dp) :: leg
+        select case(n)
             case(0)
-                L  = 1
+                leg  = 1
             case(1)
-                L  = x
+                leg  = x
             case default
                 block
-                    real(dp) :: L_down1, L_down2
+                    real(dp) :: leg_down1, leg_down2
                     integer :: i 
 
-                    L_down1  = x
-                    L_down2  = 1
+                    leg_down1  = x
+                    leg_down2  = 1
 
-                    do i = 2, N
-                        L = (2*i-1)*x*L_down1/i - (i-1)*L_down2/i
-                        L_down2 = L_down1
-                        L_down1 = L
+                    do i = 2, n
+                        leg = (2*i-1)*x*leg_down1/i - (i-1)*leg_down2/i
+                        leg_down2 = leg_down1
+                        leg_down1 = leg
                     end do
                 end block
         end select

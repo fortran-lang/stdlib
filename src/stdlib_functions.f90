@@ -13,10 +13,10 @@ module stdlib_functions
         !! version: experimental
         !! 
         !! Legendre polynomial
-        pure elemental module function legendre_fp64(N,x) result(L)
-            integer, intent(in) :: N
+        pure elemental module function legendre_fp64(n,x) result(leg)
+            integer, intent(in) :: n
             real(dp), intent(in) :: x
-            real(dp) :: L
+            real(dp) :: leg
         end function
     end interface
 
@@ -24,10 +24,10 @@ module stdlib_functions
         !! version: experimental
         !! 
         !! First derivative Legendre polynomial
-        pure elemental module function dlegendre_fp64(N,x) result(DL)
-            integer, intent(in) :: N
+        pure elemental module function dlegendre_fp64(n,x) result(dleg)
+            integer, intent(in) :: n
             real(dp), intent(in) :: x
-            real(dp) :: DL
+            real(dp) :: dleg
         end function
     end interface
 

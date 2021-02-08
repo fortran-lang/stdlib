@@ -3,7 +3,7 @@ submodule (stdlib_quadrature) stdlib_quadrature_gauss
     use stdlib_functions, only: legendre, dlegendre
     implicit none
 
-    real(dp), parameter :: PI = acos(-1._dp)
+    real(dp), parameter :: pi = acos(-1._dp)
     real(dp), parameter :: tolerance = 4._dp * epsilon(1._dp)
     integer, parameter :: newton_iters = 100
 
@@ -13,40 +13,41 @@ contains
         real(dp), intent(out) :: x(:), w(:)
         real(dp), intent(in), optional :: interval(2)
 
-        associate (N => size(x)-1 )
-        select case (N)
+        associate (n => size(x)-1 )
+        select case (n)
             case (0)
-                x = 0._dp
-                w = 2._dp
+                x = 0
+                w = 2
             case (1)
-                x = [-sqrt(1._dp/3._dp), sqrt(1._dp/3._dp)]
-                w = [1._dp, 1._dp]
+                x(1) = -sqrt(1._dp/3._dp)
+                x(2) = -x(1)
+                w = 1
             case default
                 block
                 integer :: i,j
                 real(dp) :: leg, dleg, delta
 
-                do i = 0, int(floor((N+1)/2._dp)-1)
-                    x(i+1) = -cos((2*i+1)/(2._dp*N+2._dp) * PI)
+                do i = 0, (n+1)/2 - 1
+                    x(i+1) = -cos((2*i+1)/(2._dp*n+2._dp) * pi)
                     do j = 0, newton_iters-1
-                        leg  = legendre(N+1,x(i+1))
-                        dleg = dlegendre(N+1,x(i+1))
+                        leg  = legendre(n+1,x(i+1))
+                        dleg = dlegendre(n+1,x(i+1))
                         delta = -leg/dleg
                         x(i+1) = x(i+1) + delta
                         if ( abs(delta) <= tolerance * abs(x(i+1)) )  exit
                     end do
-                    x(N-i+1) = -x(i+1)
+                    x(n-i+1) = -x(i+1)
 
-                    dleg = dlegendre(N+1,x(i+1))
+                    dleg = dlegendre(n+1,x(i+1))
                     w(i+1)   = 2._dp/((1-x(i+1)**2)*dleg**2) 
-                    w(N-i+1) = w(i+1)
+                    w(n-i+1) = w(i+1)
                 end do
 
-                if (mod(N,2) == 0) then
-                    x(N/2+1) = 0.0
+                if (mod(n,2) == 0) then
+                    x(n/2+1) = 0
 
-                    dleg = dlegendre(N+1, 0.0_dp)
-                    w(N/2+1) = 2._dp/(dleg**2) 
+                    dleg = dlegendre(n+1, 0.0_dp)
+                    w(n/2+1) = 2._dp/(dleg**2) 
                 end if
                 end block
         end select
@@ -54,8 +55,10 @@ contains
 
         if (present(interval)) then
             associate ( a => interval(1) , b => interval(2) )
-            x = 0.5*(b-a)*x+0.5*(b+a)
-            w = 0.5*(b-a)*w
+            x = 0.5_dp*(b-a)*x+0.5_dp*(b+a)
+            x(1)       = interval(1)
+            x(size(x)) = interval(2)
+            w = 0.5_dp*(b-a)*w
             end associate
         end if
     end subroutine
@@ -64,42 +67,43 @@ contains
         real(dp), intent(out) :: x(:), w(:)
         real(dp), intent(in), optional :: interval(2)
 
-        associate (N => size(x)-1)
-        select case (N)
+        associate (n => size(x)-1)
+        select case (n)
             case (1)
-                x = [-1._dp, 1._dp]
-                w = [ 1._dp, 1._dp]
+                x(1) = -1
+                x(2) =  1
+                w = 1
             case default
                 block
                 integer :: i,j
                 real(dp) :: leg, dleg, delta
 
                 x(1)   = -1._dp
-                x(N+1) =  1._dp
-                w(1)   =  2._dp/(N*(N+1._dp))
-                w(N+1) =  2._dp/(N*(N+1._dp))
+                x(n+1) =  1._dp
+                w(1)   =  2._dp/(n*(n+1._dp))
+                w(n+1) =  2._dp/(n*(n+1._dp))
 
-                do i = 1, int(floor((N+1)/2._dp)-1)
-                    x(i+1) = -cos( (i+0.25_dp)*PI/N  - 3/(8*N*PI*(i+0.25_dp)))
+                do i = 1, (n+1)/2 - 1
+                    x(i+1) = -cos( (i+0.25_dp)*pi/n  - 3/(8*n*pi*(i+0.25_dp)))
                     do j = 0, newton_iters-1
-                        leg  = legendre(N+1,x(i+1)) - legendre(N-1,x(i+1))
-                        dleg = dlegendre(N+1,x(i+1)) - dlegendre(N-1,x(i+1))
+                        leg  = legendre(n+1,x(i+1)) - legendre(n-1,x(i+1))
+                        dleg = dlegendre(n+1,x(i+1)) - dlegendre(n-1,x(i+1))
                         delta = -leg/dleg
                         x(i+1) = x(i+1) + delta
                         if ( abs(delta) <= tolerance * abs(x(i+1)) )  exit
                     end do
-                    x(N-i+1) = -x(i+1)
+                    x(n-i+1) = -x(i+1)
 
-                    leg = legendre(N, x(i+1))
-                    w(i+1)   = 2._dp/(N*(N+1._dp)*leg**2) 
-                    w(N-i+1) = w(i+1)
+                    leg = legendre(n, x(i+1))
+                    w(i+1)   = 2._dp/(n*(n+1._dp)*leg**2) 
+                    w(n-i+1) = w(i+1)
                 end do
 
-                if (mod(N,2) == 0) then
-                    x(N/2+1) = 0.0
+                if (mod(n,2) == 0) then
+                    x(n/2+1) = 0
 
-                    leg = legendre(N, 0.0_dp)
-                    w(N/2+1)   = 2._dp/(N*(N+1._dp)*leg**2) 
+                    leg = legendre(n, 0.0_dp)
+                    w(n/2+1)   = 2._dp/(n*(n+1._dp)*leg**2) 
                 end if
                 end block
         end select
@@ -107,8 +111,10 @@ contains
         
         if (present(interval)) then
             associate ( a => interval(1) , b => interval(2) )
-            x = 0.5*(b-a)*x+0.5*(b+a)
-            w = 0.5*(b-a)*w
+            x = 0.5_dp*(b-a)*x+0.5_dp*(b+a)
+            x(1)       = interval(1)
+            x(size(x)) = interval(2)
+            w = 0.5_dp*(b-a)*w
             end associate
         end if
     end subroutine
