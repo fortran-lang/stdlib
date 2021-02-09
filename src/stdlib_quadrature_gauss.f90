@@ -1,6 +1,6 @@
 submodule (stdlib_quadrature) stdlib_quadrature_gauss
     use stdlib_kinds, only: sp, dp, qp
-    use stdlib_functions, only: legendre, dlegendre
+    use stdlib_specialfunctions, only: legendre, dlegendre
     implicit none
 
     real(dp), parameter :: pi = acos(-1._dp)
@@ -84,6 +84,7 @@ contains
                 w(n+1) =  2._dp/(n*(n+1._dp))
 
                 do i = 1, (n+1)/2 - 1
+                    ! initial guess from an approximate form given by SV Parter (1999)
                     x(i+1) = -cos( (i+0.25_dp)*pi/n  - 3/(8*n*pi*(i+0.25_dp)))
                     do j = 0, newton_iters-1
                         leg  = legendre(n+1,x(i+1)) - legendre(n-1,x(i+1))

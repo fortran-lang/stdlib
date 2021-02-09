@@ -1,4 +1,4 @@
-module stdlib_functions
+module stdlib_specialfunctions
     use stdlib_kinds, only: sp, dp, qp
 
     implicit none
@@ -31,4 +31,4 @@ module stdlib_functions
         end function
     end interface
 
-end module stdlib_functions
+end module stdlib_specialfunctions
