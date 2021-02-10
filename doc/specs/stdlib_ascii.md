@@ -103,8 +103,8 @@ Experimental
 #### Description
 
 Returns a capitalized version of an input character variable.
-Only the first alphanumeric character is capitalized.
-All following characters will become lowercase.
+The first alphabetical character is transformed to uppercase unless it follows a numeral.
+The rest of the character sequence is transformed to lowercase.
 
 #### Syntax
 
