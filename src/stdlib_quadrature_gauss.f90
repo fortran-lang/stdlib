@@ -28,6 +28,7 @@ contains
                 real(dp) :: leg, dleg, delta
 
                 do i = 0, (n+1)/2 - 1
+                    ! use Gauss-Chebyshev points as an initial guess
                     x(i+1) = -cos((2*i+1)/(2._dp*n+2._dp) * pi)
                     do j = 0, newton_iters-1
                         leg  = legendre(n+1,x(i+1))
