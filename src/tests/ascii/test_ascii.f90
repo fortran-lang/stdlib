@@ -559,8 +559,6 @@ contains
 
         dlc = to_lower("0123456789ABCDE")
         call check(dlc == "0123456789abcde")
-
-        call check(all(to_lower(["ABC", "DEF"]) == ["abc", "def"]))
     end subroutine test_to_lower_string
 
     subroutine test_to_upper_string
@@ -577,8 +575,6 @@ contains
 
         dlc = to_upper("0123456789abcde")
         call check(dlc == "0123456789ABCDE")
-
-        call check(all(to_upper(["abc", "def"]) == ["ABC", "DEF"]))
     end subroutine test_to_upper_string
 
     subroutine test_to_title_string
@@ -601,8 +597,6 @@ contains
 
         dlc = to_title("""quOTed""")
         call check(dlc == """Quoted""")
-
-        call check(all(to_title(["abc", "def"]) == ["Abc", "Def"]))
     end subroutine test_to_title_string
 
     subroutine test_reverse_string
@@ -617,8 +611,6 @@ contains
         call check(len_trim(dlc) == 32)
         call check(trim(dlc) == "                        desrever")
         call check(trim(adjustl(dlc)) == "desrever")
-
-        call check(all(reverse(["abc", "def"]) == ["cba", "fed"]))
     end subroutine test_reverse_string
 
 end program test_ascii
