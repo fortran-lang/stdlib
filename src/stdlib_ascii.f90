@@ -213,7 +213,7 @@ contains
     !> Convert character variable to lower case
     !>
     !> Version: experimental
-    pure function to_lower(string) result(lower_string)
+    elemental function to_lower(string) result(lower_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: lower_string
         integer :: i
@@ -227,7 +227,7 @@ contains
     !> Convert character variable to upper case
     !>
     !> Version: experimental
-    pure function to_upper(string) result(upper_string)
+    elemental function to_upper(string) result(upper_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: upper_string
         integer :: i
@@ -241,7 +241,7 @@ contains
     !> Convert character variable to title case
     !>
     !> Version: experimental
-    pure function to_title(string) result(title_string)
+    elemental function to_title(string) result(title_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: title_string
         integer :: i, n
@@ -266,7 +266,7 @@ contains
     !> Reverse the character order in the input character variable
     !>
     !> Version: experimental
-    pure function reverse(string) result(reverse_string)
+    elemental function reverse(string) result(reverse_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: reverse_string
         integer :: i, n

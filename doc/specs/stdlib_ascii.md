@@ -38,7 +38,7 @@ Converts input character variable to all lowercase.
 
 #### Class
 
-Pure function.
+Elemental function.
 
 #### Argument
 
@@ -74,7 +74,7 @@ Converts input character variable to all uppercase.
 
 #### Class
 
-Pure function.
+Elemental function.
 
 #### Argument
 
@@ -112,7 +112,7 @@ The rest of the character sequence is transformed to lowercase.
 
 #### Class
 
-Pure function.
+Elemental function.
 
 #### Argument
 
@@ -150,7 +150,7 @@ Reverses the order of all characters in the input character type.
 
 #### Class
 
-Pure function.
+Elemental function.
 
 #### Argument
 
