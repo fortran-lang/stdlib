@@ -30,7 +30,7 @@ contains
                 do i = 0, (n+1)/2 - 1
                     ! use Gauss-Chebyshev points as an initial guess
                     x(i+1) = -cos((2*i+1)/(2._dp*n+2._dp) * pi)
-                    do j = 0, newton_iters-1
+                    do j = 1, newton_iters
                         leg  = legendre(n+1,x(i+1))
                         dleg = dlegendre(n+1,x(i+1))
                         delta = -leg/dleg
@@ -87,7 +87,7 @@ contains
                 do i = 1, (n+1)/2 - 1
                     ! initial guess from an approximate form given by SV Parter (1999)
                     x(i+1) = -cos( (i+0.25_dp)*pi/n  - 3/(8*n*pi*(i+0.25_dp)))
-                    do j = 0, newton_iters-1
+                    do j = 1, newton_iters
                         leg  = legendre(n+1,x(i+1)) - legendre(n-1,x(i+1))
                         dleg = dlegendre(n+1,x(i+1)) - dlegendre(n-1,x(i+1))
                         delta = -leg/dleg
