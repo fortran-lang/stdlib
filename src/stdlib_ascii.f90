@@ -1,3 +1,7 @@
+!> The `stdlib_ascii` module provides procedures for handling and manipulating
+!> intrinsic character variables and constants.
+!>
+!> The specification of this module is available [here](../page/specs/stdlib_ascii.html).
 module stdlib_ascii
 
     implicit none
@@ -12,7 +16,7 @@ module stdlib_ascii
     public :: is_lower, is_upper
 
     ! Character conversion functions
-    public :: to_lower, to_upper
+    public :: to_lower, to_upper, to_title, reverse
 
     ! All control characters in the ASCII table (see www.asciitable.com).
     character(len=1), public, parameter :: NUL = achar(int(z'00')) !! Null
@@ -60,9 +64,6 @@ module stdlib_ascii
     character(len=*), public, parameter :: lowercase = letters(27:) !! a .. z
     character(len=*), public, parameter :: whitespace = " "//TAB//VT//CR//LF//FF !! ASCII _whitespace
 
-    character(len=26), parameter, private :: lower_case = 'abcdefghijklmnopqrstuvwxyz'
-    character(len=26), parameter, private :: upper_case = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
 contains
 
     !> Checks whether `c` is an ASCII letter (A .. Z, a .. z).
@@ -79,7 +80,7 @@ contains
     end function
 
     !> Checks whether or not `c` is in the ASCII character set -
-    !  i.e. in the range 0 .. 0x7F.
+    !> i.e. in the range 0 .. 0x7F.
     pure logical function is_ascii(c)
         character(len=1), intent(in) :: c !! The character to test.
         is_ascii = iachar(c) <= int(z'7F')
@@ -113,8 +114,8 @@ contains
     end function
 
     !> Checks whether or not `c` is a punctuation character. That includes
-    !  all ASCII characters which are not control characters, letters,
-    !  digits, or whitespace.
+    !> all ASCII characters which are not control characters, letters,
+    !> digits, or whitespace.
     pure logical function is_punctuation(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
@@ -124,7 +125,7 @@ contains
     end function
 
     !> Checks whether or not `c` is a printable character other than the
-    !  space character.
+    !> space character.
     pure logical function is_graphical(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
@@ -135,7 +136,7 @@ contains
     end function
 
     !> Checks whether or not `c` is a printable character - including the
-    !  space character.
+    !> space character.
     pure logical function is_printable(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
@@ -159,8 +160,8 @@ contains
     end function
 
     !> Checks whether or not `c` is a whitespace character. That includes the
-    !  space, tab, vertical tab, form feed, carriage return, and linefeed
-    !  characters.
+    !> space, tab, vertical tab, form feed, carriage return, and linefeed
+    !> characters.
     pure logical function is_white(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
@@ -169,7 +170,7 @@ contains
     end function
 
     !> Checks whether or not `c` is a blank character. That includes the
-    !  only the space and tab characters
+    !> only the space and tab characters
     pure logical function is_blank(c)
         character(len=1), intent(in) :: c !! The character to test.
         integer :: ic
@@ -178,35 +179,107 @@ contains
     end function
 
     !> Returns the corresponding lowercase letter, if `c` is an uppercase
-    !  ASCII character, otherwise `c` itself.
-    pure function to_lower(c) result(t)
+    !> ASCII character, otherwise `c` itself.
+    pure function char_to_lower(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
         integer :: k
 
-        k = index( upper_case, c )
+        k = index( uppercase, c )
 
         if ( k > 0 ) then
-            t = lower_case(k:k)
+            t = lowercase(k:k)
         else
             t = c
         endif
-    end function
+    end function char_to_lower
 
     !> Returns the corresponding uppercase letter, if `c` is a lowercase
-    !  ASCII character, otherwise `c` itself.
-    pure function to_upper(c) result(t)
+    !> ASCII character, otherwise `c` itself.
+    pure function char_to_upper(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
         integer :: k
 
-        k = index( lower_case, c )
+        k = index( lowercase, c )
 
         if ( k > 0 ) then
-            t = upper_case(k:k)
+            t = uppercase(k:k)
         else
             t = c
         endif
-    end function
+    end function char_to_upper
 
-end module
+    !> Convert character variable to lower case
+    !> ([Specification](../page/specs/stdlib_ascii.html#to_lower))
+    !>
+    !> Version: experimental
+    pure function to_lower(string) result(lower_string)
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: lower_string
+        integer :: i
+
+        do i = 1, len(string)
+            lower_string(i:i) = char_to_lower(string(i:i))
+        end do
+
+    end function to_lower
+
+    !> Convert character variable to upper case
+    !> ([Specification](../page/specs/stdlib_ascii.html#to_upper))
+    !>
+    !> Version: experimental
+    pure function to_upper(string) result(upper_string)
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: upper_string
+        integer :: i
+
+        do i = 1, len(string)
+            upper_string(i:i) = char_to_upper(string(i:i))
+        end do
+
+    end function to_upper
+
+    !> Convert character variable to title case
+    !> ([Specification](../page/specs/stdlib_ascii.html#to_title))
+    !>
+    !> Version: experimental
+    pure function to_title(string) result(title_string)
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: title_string
+        integer :: i, n
+
+        n = len(string)
+        do i = 1, len(string)
+            if (is_alphanum(string(i:i))) then
+                title_string(i:i) = char_to_upper(string(i:i))
+                n = i
+                exit
+            else
+                title_string(i:i) = string(i:i)
+            end if
+        end do
+
+        do i = n + 1, len(string)
+            title_string(i:i) = char_to_lower(string(i:i))
+        end do
+
+    end function to_title
+
+    !> Reverse the character order in the input character variable
+    !> ([Specification](../page/specs/stdlib_ascii.html#reverse))
+    !>
+    !> Version: experimental
+    pure function reverse(string) result(reverse_string)
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: reverse_string
+        integer :: i, n
+
+        n = len(string)
+        do i = 1, n
+            reverse_string(n-i+1:n-i+1) = string(i:i)
+        end do
+
+    end function reverse
+
+end module stdlib_ascii
