@@ -211,6 +211,7 @@ contains
     end function char_to_upper
 
     !> Convert character variable to lower case
+    !> ([Specification](../page/specs/stdlib_ascii.html#to_lower))
     !>
     !> Version: experimental
     pure function to_lower(string) result(lower_string)
@@ -225,6 +226,7 @@ contains
     end function to_lower
 
     !> Convert character variable to upper case
+    !> ([Specification](../page/specs/stdlib_ascii.html#to_upper))
     !>
     !> Version: experimental
     pure function to_upper(string) result(upper_string)
@@ -239,6 +241,7 @@ contains
     end function to_upper
 
     !> Convert character variable to title case
+    !> ([Specification](../page/specs/stdlib_ascii.html#to_title))
     !>
     !> Version: experimental
     pure function to_title(string) result(title_string)
@@ -264,6 +267,7 @@ contains
     end function to_title
 
     !> Reverse the character order in the input character variable
+    !> ([Specification](../page/specs/stdlib_ascii.html#reverse))
     !>
     !> Version: experimental
     pure function reverse(string) result(reverse_string)

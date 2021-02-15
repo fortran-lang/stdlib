@@ -34,7 +34,7 @@ Converts input character variable to all lowercase.
 
 #### Syntax
 
-`res = [[stdlib_asciii(module):to_lower(function)]] (string)`
+`res = [[stdlib_ascii(module):to_lower(function)]] (string)`
 
 #### Class
 
@@ -108,7 +108,7 @@ The rest of the character sequence is transformed to lowercase.
 
 #### Syntax
 
-`res = [[stdlib_ascii(module):to_title(interface)]] (string)`
+`res = [[stdlib_ascii(module):to_title(function)]] (string)`
 
 #### Class
 
