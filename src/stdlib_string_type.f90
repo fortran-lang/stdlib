@@ -30,6 +30,8 @@ module stdlib_string_type
 
     !> String type holding an arbitrary sequence of characters.
     type :: string_type
+        ! Use the sequence statement below as a hack to prevent extending this type.
+        ! It is not used for storage association.
         sequence
         private
         character(len=:), allocatable :: raw
