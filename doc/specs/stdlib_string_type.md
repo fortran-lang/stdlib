@@ -67,12 +67,13 @@ The result is an instance of `string_type` with zero length.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-string = string_type()
-! len(string) == 0
-end
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  string = string_type()
+  ! len(string) == 0
+end program demo
 ```
 
 
@@ -111,14 +112,15 @@ The result is an instance of `string_type`.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-string = string_type("Sequence")
-! len(string) == 8
-string = string_type(" S p a c e d ")
-! len(string) == 13
-end
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  string = string_type("Sequence")
+  ! len(string) == 8
+  string = string_type(" S p a c e d ")
+  ! len(string) == 13
+end program demo
 ```
 
 
@@ -147,13 +149,14 @@ Elemntal subroutine, `assignment(=)`.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-! len(string) == 0
-string = "Sequence"
-! len(string) == 8
-end
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  ! len(string) == 0
+  string = "Sequence"
+  ! len(string) == 8
+end program demo
 ```
 
 
@@ -187,19 +190,20 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-integer :: length
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: length
 
-string = "Some longer sentence for this example."
-length = len(string)
-! length == 38
+  string = "Some longer sentence for this example."
+  length = len(string)
+  ! length == 38
 
-string = "Whitespace                            "
-length = len(string)
-! length == 38
-end
+  string = "Whitespace                            "
+  length = len(string)
+  ! length == 38
+end program demo
 ```
 
 
@@ -234,19 +238,20 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-integer :: length
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: length
 
-string = "Some longer sentence for this example."
-length = len_trim(string)
-! length == 38
+  string = "Some longer sentence for this example."
+  length = len_trim(string)
+  ! length == 38
 
-string = "Whitespace                            "
-length = len_trim(string)
-! length == 10
-end
+  string = "Whitespace                            "
+  length = len_trim(string)
+  ! length == 10
+end program demo
 ```
 
 
@@ -281,14 +286,15 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
 
-string = "Whitespace                            "
-string = trim(string)
-! len(string) == 10
-end
+  string = "Whitespace                            "
+  string = trim(string)
+  ! len(string) == 10
+end program demo
 ```
 
 
@@ -323,14 +329,15 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
 
-string = "                            Whitespace"
-string = adjustl(string)
-! char(string) == "Whitespace                            "
-end
+  string = "                            Whitespace"
+  string = adjustl(string)
+  ! char(string) == "Whitespace                            "
+end program demo
 ```
 
 
@@ -365,14 +372,15 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
 
-string = "Whitespace                            "
-string = adjustr(string)
-! char(string) == "                            Whitespace"
-end
+  string = "Whitespace                            "
+  string = adjustr(string)
+  ! char(string) == "                            Whitespace"
+end program demo
 ```
 
 
@@ -408,14 +416,15 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
 
-string = "What? "
-string = repeat(string, 3)
-! string == "What? What? What? "
-end
+  string = "What? "
+  string = repeat(string, 3)
+  ! string == "What? What? What? "
+end program demo
 ```
 
 
@@ -449,15 +458,16 @@ The result is a scalar character value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-character(len=:), allocatable :: dlc
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  character(len=:), allocatable :: dlc
 
-string = "Character sequence"
-dlc = char(string)
-! dlc == "Character sequence"
-end
+  string = "Character sequence"
+  dlc = char(string)
+  ! dlc == "Character sequence"
+end program demo
 ```
 
 
@@ -492,18 +502,19 @@ The result is a scalar character value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-character(len=:), allocatable :: dlc
-character(len=1), allocatable :: chars(:)
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  character(len=:), allocatable :: dlc
+  character(len=1), allocatable :: chars(:)
 
-string = "Character sequence"
-dlc = char(string, 3)
-! dlc == "a"
-chars = char(string, [3, 5, 8, 12, 14, 15, 18])
-! chars == ["a", "a", "e", "e", "u", "e", "e"]
-end
+  string = "Character sequence"
+  dlc = char(string, 3)
+  ! dlc == "a"
+  chars = char(string, [3, 5, 8, 12, 14, 15, 18])
+  ! chars == ["a", "a", "e", "e", "u", "e", "e"]
+end program demo
 ```
 
 
@@ -539,15 +550,16 @@ The result is a scalar character value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-character(len=:), allocatable :: dlc
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  character(len=:), allocatable :: dlc
 
-string = "Fortran"
-dlc = char(string, 1, 4)
-! dlc == "Fort"
-end
+  string = "Fortran"
+  dlc = char(string, 1, 4)
+  ! dlc == "Fort"
+end program demo
 ```
 
 
@@ -584,14 +596,15 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-integer :: code
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: code
 
-string = "Fortran"
-code = ichar(string)
-end
+  string = "Fortran"
+  code = ichar(string)
+end program demo
 ```
 
 
@@ -628,14 +641,15 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-integer :: code
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: code
 
-string = "Fortran"
-code = iachar(string)
-end
+  string = "Fortran"
+  code = iachar(string)
+end program demo
 ```
 
 
@@ -675,21 +689,22 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-integer :: pos
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: pos
 
-string = "Search this string for this expression"
-pos = index(string, "this")
-! pos == 8
+  string = "Search this string for this expression"
+  pos = index(string, "this")
+  ! pos == 8
 
-pos = index(string, "this", back=.true.)
-! pos == 24
+  pos = index(string, "this", back=.true.)
+  ! pos == 24
 
-pos = index(string, "This")
-! pos == 0
-end
+  pos = index(string, "This")
+  ! pos == 0
+end program demo
 ```
 
 
@@ -731,21 +746,22 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-integer :: pos
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: pos
 
-string = "fortran"
-pos = scan(string, "ao")
-! pos == 2
+  string = "fortran"
+  pos = scan(string, "ao")
+  ! pos == 2
 
-pos = scan(string, "ao", .true.)
-! pos == 6
+  pos = scan(string, "ao", .true.)
+  ! pos == 6
 
-pos = scan(string, "c++")
-! pos == 0
-end
+  pos = scan(string, "c++")
+  ! pos == 0
+end program demo
 ```
 
 
@@ -787,27 +803,28 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-integer :: pos
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: pos
 
-string = "fortran"
-pos = verify(string, "ao")
-! pos == 1
+  string = "fortran"
+  pos = verify(string, "ao")
+  ! pos == 1
 
-pos = verify(string, "fo")
-! pos == 3
+  pos = verify(string, "fo")
+  ! pos == 3
 
-pos = verify(string, "c++")
-! pos == 1
+  pos = verify(string, "c++")
+  ! pos == 1
 
-pos = verify(string, "c++", back=.true.)
-! pos == 7
+  pos = verify(string, "c++", back=.true.)
+  ! pos == 7
 
-pos = verify(string, string)
-! pos == 0
-end
+  pos = verify(string, string)
+  ! pos == 0
+end program demo
 ```
 
 
@@ -846,21 +863,22 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-logical :: res
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  logical :: res
 
-string = "bcd"
-res = lgt(string, "abc")
-! res .eqv. .true.
+  string = "bcd"
+  res = lgt(string, "abc")
+  ! res .eqv. .true.
 
-res = lgt(string, "bcd")
-! res .eqv. .false.
+  res = lgt(string, "bcd")
+  ! res .eqv. .false.
 
-res = lgt(string, "cde")
-! res .eqv. .false.
-end
+  res = lgt(string, "cde")
+  ! res .eqv. .false.
+end program demo
 ```
 
 
@@ -899,21 +917,22 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-logical :: res
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  logical :: res
 
-string = "bcd"
-res = llt(string, "abc")
-! res .eqv. .false.
+  string = "bcd"
+  res = llt(string, "abc")
+  ! res .eqv. .false.
 
-res = llt(string, "bcd")
-! res .eqv. .false.
+  res = llt(string, "bcd")
+  ! res .eqv. .false.
 
-res = llt(string, "cde")
-! res .eqv. .true.
-end
+  res = llt(string, "cde")
+  ! res .eqv. .true.
+end program demo
 ```
 
 
@@ -953,21 +972,22 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-logical :: res
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  logical :: res
 
-string = "bcd"
-res = lge(string, "abc")
-! res .eqv. .true.
+  string = "bcd"
+  res = lge(string, "abc")
+  ! res .eqv. .true.
 
-res = lge(string, "bcd")
-! res .eqv. .true.
+  res = lge(string, "bcd")
+  ! res .eqv. .true.
 
-res = lge(string, "cde")
-! res .eqv. .false.
-end
+  res = lge(string, "cde")
+  ! res .eqv. .false.
+end program demo
 ```
 
 
@@ -1007,21 +1027,22 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-logical :: res
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  logical :: res
 
-string = "bcd"
-res = lle(string, "abc")
-! res .eqv. .false.
+  string = "bcd"
+  res = lle(string, "abc")
+  ! res .eqv. .false.
 
-res = lle(string, "bcd")
-! res .eqv. .true.
+  res = lle(string, "bcd")
+  ! res .eqv. .true.
 
-res = lle(string, "cde")
-! res .eqv. .true.
-end
+  res = lle(string, "cde")
+  ! res .eqv. .true.
+end program demo
 ```
 
 
@@ -1063,21 +1084,22 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-logical :: res
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  logical :: res
 
-string = "bcd"
-res = string > "abc"
-! res .eqv. .true.
+  string = "bcd"
+  res = string > "abc"
+  ! res .eqv. .true.
 
-res = string > "bcd"
-! res .eqv. .false.
+  res = string > "bcd"
+  ! res .eqv. .false.
 
-res = string > "cde"
-! res .eqv. .false.
-end
+  res = string > "cde"
+  ! res .eqv. .false.
+end program demo
 ```
 
 
@@ -1119,21 +1141,22 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-logical :: res
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  logical :: res
 
-string = "bcd"
-res = string < "abc"
-! res .eqv. .false.
+  string = "bcd"
+  res = string < "abc"
+  ! res .eqv. .false.
 
-res = string < "bcd"
-! res .eqv. .false.
+  res = string < "bcd"
+  ! res .eqv. .false.
 
-res = string < "cde"
-! res .eqv. .true.
-end
+  res = string < "cde"
+  ! res .eqv. .true.
+end program demo
 ```
 
 
@@ -1175,21 +1198,22 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-logical :: res
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  logical :: res
 
-string = "bcd"
-res = string >= "abc"
-! res .eqv. .true.
+  string = "bcd"
+  res = string >= "abc"
+  ! res .eqv. .true.
 
-res = string >= "bcd"
-! res .eqv. .true.
+  res = string >= "bcd"
+  ! res .eqv. .true.
 
-res = string >= "cde"
-! res .eqv. .false.
-end
+  res = string >= "cde"
+  ! res .eqv. .false.
+end program demo
 ```
 
 
@@ -1231,21 +1255,22 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-logical :: res
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  logical :: res
 
-string = "bcd"
-res = string <= "abc"
-! res .eqv. .false.
+  string = "bcd"
+  res = string <= "abc"
+  ! res .eqv. .false.
 
-res = string <= "bcd"
-! res .eqv. .true.
+  res = string <= "bcd"
+  ! res .eqv. .true.
 
-res = string <= "cde"
-! res .eqv. .true.
-end
+  res = string <= "cde"
+  ! res .eqv. .true.
+end program demo
 ```
 
 
@@ -1287,21 +1312,22 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-logical :: res
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  logical :: res
 
-string = "bcd"
-res = string == "abc"
-! res .eqv. .false.
+  string = "bcd"
+  res = string == "abc"
+  ! res .eqv. .false.
 
-res = string == "bcd"
-! res .eqv. .true.
+  res = string == "bcd"
+  ! res .eqv. .true.
 
-res = string == "cde"
-! res .eqv. .false.
-end
+  res = string == "cde"
+  ! res .eqv. .false.
+end program demo
 ```
 
 
@@ -1343,21 +1369,22 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-logical :: res
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  logical :: res
 
-string = "bcd"
-res = string /= "abc"
-! res .eqv. .true.
+  string = "bcd"
+  res = string /= "abc"
+  ! res .eqv. .true.
 
-res = string /= "bcd"
-! res .eqv. .false.
+  res = string /= "bcd"
+  ! res .eqv. .false.
 
-res = string /= "cde"
-! res .eqv. .true.
-end
+  res = string /= "cde"
+  ! res .eqv. .true.
+end program demo
 ```
 
 
@@ -1396,14 +1423,15 @@ The result is an instance of `string_type`.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
 
-string = "Hello, "
-string = string // "World!"
-! len(string) == 13
-end
+  string = "Hello, "
+  string = string // "World!"
+  ! len(string) == 13
+end program demo
 ```
 
 
@@ -1440,20 +1468,21 @@ Unformatted user defined derived type output.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-integer :: io
-string = "Important saved value"
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: io
+  string = "Important saved value"
 
-open(newunit=io, form="unformatted", status="scratch")
-write(io) string
+  open(newunit=io, form="unformatted", status="scratch")
+  write(io) string
 
-rewind(io)
+  rewind(io)
 
-read(io) string
-close(io)
-end
+  read(io) string
+  close(io)
+end program demo
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -1496,21 +1525,22 @@ Formatted user defined derived type output.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-integer :: io
-string = "Important saved value"
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: io
+  string = "Important saved value"
 
-open(newunit=io, form="formatted", status="scratch")
-write(io, *) string
-write(io, *)
+  open(newunit=io, form="formatted", status="scratch")
+  write(io, *) string
+  write(io, *)
 
-rewind(io)
+  rewind(io)
 
-read(io, *) string
-close(io)
-end
+  read(io, *) string
+  close(io)
+end program demo
 ```
 
 
@@ -1549,20 +1579,21 @@ Unformatted derived type input.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-integer :: io
-string = "Important saved value"
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: io
+  string = "Important saved value"
 
-open(newunit=io, form="unformatted", status="scratch")
-write(io) string
+  open(newunit=io, form="unformatted", status="scratch")
+  write(io) string
 
-rewind(io)
+  rewind(io)
 
-read(io) string
-close(io)
-end
+  read(io) string
+  close(io)
+end program demo
 ```
 
 
@@ -1609,19 +1640,20 @@ Formatted derived type input.
 #### Example
 
 ```fortran
-use stdlib_string_type
-implicit none
-type(string_type) :: string
-integer :: io
-string = "Important saved value"
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: io
+  string = "Important saved value"
 
-open(newunit=io, form="formatted", status="scratch")
-write(io, *) string
-write(io, *)
+  open(newunit=io, form="formatted", status="scratch")
+  write(io, *) string
+  write(io, *)
 
-rewind(io)
+  rewind(io)
 
-read(io, *) string
-close(io)
-end
+  read(io, *) string
+  close(io)
+end program demo
 ```
