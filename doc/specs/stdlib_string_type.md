@@ -19,7 +19,7 @@ well as operators for working with character variables and constants.
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### The `string_type` derived type
 
-The `string_type` is defined as a non-extenable derived type representing a
+The `string_type` is defined as a non-extendible derived type representing a
 sequence of characters. The internal representation of the character sequence
 is implementation dependent and not visible for the user of the module.
 
@@ -30,7 +30,7 @@ Experimental
 
 ## Procedures and methods provided
 
-Procedures returning `string_type` instances can usually used in elemental
+Procedures returning `string_type` instances can usually be used in elemental
 context, while procedures returning scalar character values can only be
 used in a pure way.
 
@@ -62,7 +62,7 @@ None.
 
 #### Result value
 
-The result is an instance of `string_type`.
+The result is an instance of `string_type` with zero length.
 
 #### Example
 
@@ -117,7 +117,7 @@ type(string_type) :: string
 string = string_type("Sequence")
 ! len(string) == 8
 string = string_type(" S p a c e d ")
-! len(string) == 9
+! len(string) == 13
 end
 ```
 
@@ -752,8 +752,8 @@ end
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Verify function
 
-Scan a string for the absence of a set of characters. Verifies that all
-the characters in string belong to the set of characters in set.
+Scan a *string* for the absence of a *set* of characters. Verifies that all
+the characters in *string* belong to the set of characters in *set*.
 
 #### Description
 
@@ -812,9 +812,9 @@ end
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### Lgt function (lexical greater)
+### Lgt function (lexical greater than)
 
-Lexically compare the order of two character sequences being greater.
+Lexically compare the order of two character sequences being greater than.
 
 #### Description
 
@@ -865,9 +865,9 @@ end
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### Llt function (lexical less)
+### Llt function (lexical less than)
 
-Lexically compare the order of two character sequences being less.
+Lexically compare the order of two character sequences being less than.
 
 #### Description
 
@@ -918,9 +918,10 @@ end
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### Lge function (lexical greater or equal)
+### Lge function (lexical greater than or equal)
 
-Lexically compare the order of two character sequences being greater or equal.
+Lexically compare the order of two character sequences being greater than
+or equal.
 
 #### Description
 
@@ -971,9 +972,10 @@ end
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### Lle function (lexical less or equal)
+### Lle function (lexical less than or equal)
 
-Lexically compare the order of two character sequences being less or equal.
+Lexically compare the order of two character sequences being less than
+or equal.
 
 #### Description
 
@@ -1032,11 +1034,14 @@ Compare the order of two character sequences being greater.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
-This defines three procedures overloading the intrinsic `operator(.gt.)`.
+This defines three procedures overloading the intrinsic `operator(>)`
+and `operator(.gt.)`.
 
 #### Syntax
 
 `res = lhs > rhs`
+
+`res = lhs .gt. rhs`
 
 #### Status
 
@@ -1044,7 +1049,7 @@ Experimental
 
 #### Class
 
-Elemental function, `operator(.gt.)`.
+Elemental function, `operator(>)` and `operator(.gt.)`.
 
 #### Argument
 
@@ -1085,11 +1090,14 @@ Compare the order of two character sequences being less.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
-This defines three procedures overloading the intrinsic `operator(.lt.)`.
+This defines three procedures overloading the intrinsic `operator(<)`
+and `operator(.lt.)`.
 
 #### Syntax
 
 `res = lhs < rhs`
+
+`res = lhs .lt. rhs`
 
 #### Status
 
@@ -1097,7 +1105,7 @@ Experimental
 
 #### Class
 
-Elemental function, `operator(.lt.)`.
+Elemental function, `operator(<)` and `operator(.lt.)`.
 
 #### Argument
 
@@ -1138,11 +1146,14 @@ Compare the order of two character sequences being greater or equal.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
-This defines three procedures overloading the intrinsic `operator(.ge.)`.
+This defines three procedures overloading the intrinsic `operator(>=)`
+and `operator(.ge.)`.
 
 #### Syntax
 
 `res = lhs >= rhs`
+
+`res = lhs .ge. rhs`
 
 #### Status
 
@@ -1150,7 +1161,7 @@ Experimental
 
 #### Class
 
-Elemental function, `operator(.ge.)`.
+Elemental function, `operator(>=)` and `operator(.ge.)`.
 
 #### Argument
 
@@ -1191,11 +1202,14 @@ Compare the order of two character sequences being less or equal.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
-This defines three procedures overloading the intrinsic `operator(.le.)`.
+This defines three procedures overloading the intrinsic `operator(<=)`
+and `operator(.le.)`.
 
 #### Syntax
 
 `res = lhs <= rhs`
+
+`res = lhs .le. rhs`
 
 #### Status
 
@@ -1203,7 +1217,7 @@ Experimental
 
 #### Class
 
-Elemental function, `operator(.le.)`.
+Elemental function, `operator(<=)` and `operator(.le.)`.
 
 #### Argument
 
@@ -1244,11 +1258,14 @@ Compare two character sequences for equality.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
-This defines three procedures overloading the intrinsic `operator(.eq.)`.
+This defines three procedures overloading the intrinsic `operator(==)`
+and `operator(.eq.)`.
 
 #### Syntax
 
 `res = lhs == rhs`
+
+`res = lhs .eq. rhs`
 
 #### Status
 
@@ -1256,7 +1273,7 @@ Experimental
 
 #### Class
 
-Elemental function, `operator(.eq.)`.
+Elemental function, `operator(==)` and `operator(.eq.)`.
 
 #### Argument
 
@@ -1297,11 +1314,14 @@ Compare two character sequences for inequality.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
-This defines three procedures overloading the intrinsic `operator(.ne.)`.
+This defines three procedures overloading the intrinsic `operator(/=)`
+and `operator(.ne.)`.
 
 #### Syntax
 
 `res = lhs /= rhs`
+
+`res = lhs .ne. rhs`
 
 #### Status
 
@@ -1309,7 +1329,7 @@ Experimental
 
 #### Class
 
-Elemental function, `operator(.ne.)`.
+Elemental function, `operator(/=)` and `operator(.ne.)`.
 
 #### Argument
 
