@@ -38,9 +38,9 @@ used in a pure way.
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Constructor for empty string
 
-The module defines a default constructor to create an empty string type.
-
 #### Description
+
+The module defines a default constructor to create an empty string type.
 
 Creates a string instance representing an empty string.
 
@@ -80,10 +80,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Constructor from character scalar
 
+#### Description
+
 The module defines a default constructor to create a string type
 from a character scalar.
-
-#### Description
 
 Creates a string instance representing the input character scalar value.
 The constructor shall create an empty string if an unallocated deferred-length
@@ -127,10 +127,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Assignment of character scalar
 
+#### Description
+
 The module defines an assignment operations, `=`, to create a string type
 from a character scalar.
-
-#### Description
 
 Creates a string instance representing the right-hand-side character scalar value.
 
@@ -566,9 +566,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Ichar function
 
-Character-to-integer conversion function.
-
 #### Description
+
+Character-to-integer conversion function.
 
 Returns the code for the character in the first character position of the
 character sequence in the system's native character set.
@@ -611,9 +611,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Iachar function
 
-Code in ASCII collating sequence.
-
 #### Description
+
+Code in ASCII collating sequence.
 
 Returns the code for the ASCII character in the first character position of
 the character sequences represent by the string.
@@ -656,9 +656,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Index function
 
-Position of a *substring* within a *string*.
-
 #### Description
+
+Position of a *substring* within a *string*.
 
 Returns the position of the start of the leftmost or rightmost occurrence
 of string *substring* in *string*, counting from one. If *substring* is not
@@ -711,10 +711,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Scan function
 
+#### Description
+
 Scan a *string* for the presence of a *set* of characters. Scans a *string* for
 any of the characters in a *set* of characters.
-
-#### Description
 
 If *back* is either absent or *false*, this function returns the position
 of the leftmost character of *string* that is in *set*. If *back* is *true*,
@@ -768,10 +768,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Verify function
 
+#### Description
+
 Scan a *string* for the absence of a *set* of characters. Verifies that all
 the characters in *string* belong to the set of characters in *set*.
-
-#### Description
 
 If *back* is either absent or *false*, this function returns the position
 of the leftmost character of *string* that is not in *set*. If *back* is *true*,
@@ -831,9 +831,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Lgt function (lexical greater than)
 
-Lexically compare the order of two character sequences being greater than.
-
 #### Description
+
+Lexically compare the order of two character sequences being greater than.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
@@ -885,9 +885,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Llt function (lexical less than)
 
-Lexically compare the order of two character sequences being less than.
-
 #### Description
+
+Lexically compare the order of two character sequences being less than.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
@@ -939,10 +939,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Lge function (lexical greater than or equal)
 
+#### Description
+
 Lexically compare the order of two character sequences being greater than
 or equal.
-
-#### Description
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
@@ -994,10 +994,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Lle function (lexical less than or equal)
 
+#### Description
+
 Lexically compare the order of two character sequences being less than
 or equal.
-
-#### Description
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
@@ -1049,9 +1049,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator greater
 
-Compare the order of two character sequences being greater.
-
 #### Description
+
+Compare the order of two character sequences being greater.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
@@ -1106,9 +1106,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator less
 
-Compare the order of two character sequences being less.
-
 #### Description
+
+Compare the order of two character sequences being less.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
@@ -1163,9 +1163,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator greater or equal
 
-Compare the order of two character sequences being greater or equal.
-
 #### Description
+
+Compare the order of two character sequences being greater or equal.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
@@ -1220,9 +1220,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator less or equal
 
-Compare the order of two character sequences being less or equal.
-
 #### Description
+
+Compare the order of two character sequences being less or equal.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
@@ -1277,9 +1277,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator equal
 
-Compare two character sequences for equality.
-
 #### Description
+
+Compare two character sequences for equality.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
@@ -1334,9 +1334,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator not equal
 
-Compare two character sequences for inequality.
-
 #### Description
+
+Compare two character sequences for inequality.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
@@ -1391,9 +1391,9 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Concatenation operator
 
-Concatenate two character sequences.
-
 #### Description
+
+Concatenate two character sequences.
 
 The left-hand side, the right-hand side or both character sequences can
 be represented by a string type.
