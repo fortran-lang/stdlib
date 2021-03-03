@@ -19,8 +19,8 @@ module stdlib_string_type
     public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl
     public :: lgt, lge, llt, lle, char, ichar, iachar
     public :: assignment(=)
-    public :: operator(.gt.), operator(.ge.), operator(.lt.), operator(.le.)
-    public :: operator(.eq.), operator(.ne.), operator(//)
+    public :: operator(>), operator(>=), operator(<), operator(<=)
+    public :: operator(==), operator(/=), operator(//)
     public :: write(formatted), write(unformatted)
     public :: read(formatted), read(unformatted)
 
@@ -209,66 +209,66 @@ module stdlib_string_type
     !> a string.
     !>
     !> This operator is elemental and returns a default logical scalar value.
-    interface operator(.gt.)
+    interface operator(>)
         module procedure :: gt_string_string
         module procedure :: gt_string_char
         module procedure :: gt_char_string
-    end interface operator(.gt.)
+    end interface operator(>)
 
     !> Compare two character sequences for being less, the left-hand side,
     !> the right-hand side or both character sequences can be represented by
     !> a string.
     !>
     !> This operator is elemental and returns a default logical scalar value.
-    interface operator(.lt.)
+    interface operator(<)
         module procedure :: lt_string_string
         module procedure :: lt_string_char
         module procedure :: lt_char_string
-    end interface operator(.lt.)
+    end interface operator(<)
 
     !> Compare two character sequences for being greater than, the left-hand side,
     !> the right-hand side or both character sequences can be represented by
     !> a string.
     !>
     !> This operator is elemental and returns a default logical scalar value.
-    interface operator(.ge.)
+    interface operator(>=)
         module procedure :: ge_string_string
         module procedure :: ge_string_char
         module procedure :: ge_char_string
-    end interface operator(.ge.)
+    end interface operator(>=)
 
     !> Compare two character sequences for being less than, the left-hand side,
     !> the right-hand side or both character sequences can be represented by
     !> a string.
     !>
     !> This operator is elemental and returns a default logical scalar value.
-    interface operator(.le.)
+    interface operator(<=)
         module procedure :: le_string_string
         module procedure :: le_string_char
         module procedure :: le_char_string
-    end interface operator(.le.)
+    end interface operator(<=)
 
     !> Compare two character sequences for equality, the left-hand side,
     !> the right-hand side or both character sequences can be represented by
     !> a string.
     !>
     !> This operator is elemental and returns a default logical scalar value.
-    interface operator(.eq.)
+    interface operator(==)
         module procedure :: eq_string_string
         module procedure :: eq_string_char
         module procedure :: eq_char_string
-    end interface operator(.eq.)
+    end interface operator(==)
 
     !> Compare two character sequences for inequality, the left-hand side,
     !> the right-hand side or both character sequences can be represented by
     !> a string.
     !>
     !> This operator is elemental and returns a default logical scalar value.
-    interface operator(.ne.)
+    interface operator(/=)
         module procedure :: ne_string_string
         module procedure :: ne_string_char
         module procedure :: ne_char_string
-    end interface operator(.ne.)
+    end interface operator(/=)
 
     !> Concatenate two character sequences, the left-hand side, the right-hand side
     !> or both character sequences can be represented by a string.

@@ -3,7 +3,7 @@ module test_string_derivedtype_io
     use stdlib_error, only : check
     use stdlib_string_type, only : string_type, assignment(=), len, &
         write(formatted), read(formatted), write(unformatted), read(unformatted), &
-        operator(.eq.)
+        operator(==)
     implicit none
 
 contains

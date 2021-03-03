@@ -2,8 +2,8 @@
 module test_string_operator
     use stdlib_error, only : check
     use stdlib_string_type, only : string_type, assignment(=), len, &
-        operator(.gt.), operator(.lt.), operator(.ge.), operator(.le.), &
-        operator(.ne.), operator(.eq.), operator(//)
+        operator(>), operator(<), operator(>=), operator(<=), &
+        operator(/=), operator(==), operator(//)
     implicit none
 
 contains
