@@ -40,7 +40,7 @@ used in a pure way.
 
 #### Description
 
-The module defines a default constructor to create an empty string type.
+The module defines a constructor to create an empty string type.
 
 Creates a string instance representing an empty string.
 
@@ -82,8 +82,7 @@ end program demo
 
 #### Description
 
-The module defines a default constructor to create a string type
-from a character scalar.
+The module defines a constructor to create a string type from a character scalar.
 
 Creates a string instance representing the input character scalar value.
 The constructor shall create an empty string if an unallocated deferred-length
