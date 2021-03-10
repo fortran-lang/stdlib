@@ -165,7 +165,7 @@ end program demo
 
 #### Description
 
-Returns the length of the character sequence represented by the string.
+Returns the length of the string.
 
 #### Syntax
 
@@ -476,7 +476,7 @@ end program demo
 
 #### Description
 
-Return the character sequence represented by the string.
+Return the character at a certain position in the string.
 
 #### Syntax
 
@@ -523,7 +523,7 @@ end program demo
 
 #### Description
 
-Return the character sequence represented by the string.
+Return a substring from the character sequence of the string.
 
 #### Syntax
 
@@ -713,9 +713,7 @@ end program demo
 
 #### Description
 
-Scan a *string* for the presence of a *set* of characters. Scans a *string* for
-any of the characters in a *set* of characters.
-
+Scans a *string* for the  presence any of the characters in a *set* of characters.
 If *back* is either absent or *false*, this function returns the position
 of the leftmost character of *string* that is in *set*. If *back* is *true*,
 the rightmost position is returned. If no character of *set* is found in
@@ -770,9 +768,7 @@ end program demo
 
 #### Description
 
-Scan a *string* for the absence of a *set* of characters. Verifies that all
-the characters in *string* belong to the set of characters in *set*.
-
+Verifies that all the characters in *string* belong to the set of characters in *set*.
 If *back* is either absent or *false*, this function returns the position
 of the leftmost character of *string* that is not in *set*. If *back* is *true*,
 the rightmost position is returned. If all characters of *string* are found
