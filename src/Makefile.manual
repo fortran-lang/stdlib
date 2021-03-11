@@ -25,6 +25,7 @@ SRC = f18estop.f90 \
       stdlib_error.f90 \
       stdlib_kinds.f90 \
       stdlib_logger.f90 \
+      stdlib_string_type.f90 \
       $(SRCGEN)
 
 LIB = libstdlib.a
