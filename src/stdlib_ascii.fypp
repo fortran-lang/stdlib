@@ -347,7 +347,7 @@ contains
         n = abs(val)
         buffer = ""
 
-        pos = buffer_len+1
+        pos = buffer_len + 1
         do while (n > 0_ik)
             pos = pos - 1
             buffer(pos:pos) = numbers(mod(n, 10_ik))
