@@ -1,4 +1,5 @@
 SRCFYPP =\
+        stdlib_ascii.fypp \
         stdlib_bitsets_64.fypp \
         stdlib_bitsets_large.fypp \
         stdlib_bitsets.fypp \
@@ -21,7 +22,6 @@ SRCFYPP =\
 	stdlib_stats_distribution_PRNG.fypp
 
 SRC = f18estop.f90 \
-      stdlib_ascii.f90 \
       stdlib_error.f90 \
       stdlib_kinds.f90 \
       stdlib_logger.f90 \

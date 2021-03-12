@@ -6,7 +6,9 @@ program test_ascii
         whitespace, letters, is_alphanum, is_alpha, is_lower, is_upper, &
         is_digit, is_octal_digit, is_hex_digit, is_white, is_blank, &
         is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
-        to_lower, to_upper, to_title, reverse, LF, TAB, NUL, DEL
+        to_lower, to_upper, to_title, reverse, LF, TAB, NUL, DEL, &
+        char_value
+     use stdlib_kinds, only : int8, int16, int32, int64
 
     implicit none
 
@@ -72,6 +74,8 @@ program test_ascii
     call test_to_lower_string
     call test_to_title_string
     call test_reverse_string
+
+    call test_char_value
 
 contains
 
@@ -612,5 +616,48 @@ contains
         call check(trim(dlc) == "                        desrever")
         call check(trim(adjustl(dlc)) == "desrever")
     end subroutine test_reverse_string
+
+    subroutine test_char_value
+       character(len=128) :: flc
+
+       write(flc, '(g0)') 1026192
+       call check(char_value(1026192) == trim(flc))
+
+       write(flc, '(g0)') -124784
+       call check(char_value(-124784) == trim(flc))
+
+       write(flc, '(g0)') 1_int8
+       call check(char_value(1_int8) == trim(flc))
+
+       write(flc, '(g0)') -3_int8
+       call check(char_value(-3_int8) == trim(flc))
+
+       write(flc, '(g0)') 80_int16
+       call check(char_value(80_int16) == trim(flc))
+
+       write(flc, '(g0)') 8924890_int32
+       call check(char_value(8924890_int32) == trim(flc))
+
+       write(flc, '(g0)') -2378401_int32
+       call check(char_value(-2378401_int32) == trim(flc))
+
+       write(flc, '(g0)') -921092378401_int64
+       call check(char_value(-921092378401_int64) == trim(flc))
+
+       write(flc, '(g0)') 1272835771_int64
+       call check(char_value(1272835771_int64) == trim(flc))
+
+       write(flc, '(g0)') .true.
+       call check(char_value(.true.) == trim(flc))
+
+       write(flc, '(g0)') .false.
+       call check(char_value(.false.) == trim(flc))
+
+       write(flc, '(g0)') .true._int8
+       call check(char_value(.true._int8) == trim(flc))
+
+       write(flc, '(g0)') .false._int64
+       call check(char_value(.false._int64) == trim(flc))
+    end subroutine test_char_value
 
 end program test_ascii
