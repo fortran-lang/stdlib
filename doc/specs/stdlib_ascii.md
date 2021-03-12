@@ -171,7 +171,7 @@ end program demo_reverse
 ```
 
 
-### `char_value`
+### `to_char`
 
 #### Status
 
@@ -183,7 +183,7 @@ Create a character string representing the value of the provided variable.
 
 #### Syntax
 
-`res = [[stdlib_ascii(module):char_value(interface)]] (string)`
+`res = [[stdlib_ascii(module):to_char(interface)]] (string)`
 
 #### Class
 
@@ -201,10 +201,10 @@ The result is an intrinsic character type.
 
 ```fortran
 program demo_char_value
-    use stdlib_ascii, only : char_value
+    use stdlib_ascii, only : to_char
     implicit none
-    print'(a)', char_value(-3) ! returns "-3"
-    print'(a)', char_value(.true.) ! returns "T"
-    print'(a)', char_value(42) ! returns "42"
+    print'(a)', to_char(-3) ! returns "-3"
+    print'(a)', to_char(.true.) ! returns "T"
+    print'(a)', to_char(42) ! returns "42"
 end program demo_char_value
 ```

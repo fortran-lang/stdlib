@@ -20,17 +20,17 @@ module stdlib_ascii
 
     ! Character conversion functions
     public :: to_lower, to_upper, to_title, reverse
-    public :: char_value
+    public :: to_char
 
     !> Version: experimental
     !>
     !> Create a character string representing the value of the provided variable.
-    interface char_value
+    interface to_char
     #:for kind in INT_KINDS
         module procedure :: integer_${kind}$_to_char
         module procedure :: logical_${kind}$_to_char
     #:endfor
-    end interface char_value
+    end interface to_char
 
     ! All control characters in the ASCII table (see www.asciitable.com).
     character(len=1), public, parameter :: NUL = achar(int(z'00')) !! Null
