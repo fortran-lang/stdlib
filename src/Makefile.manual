@@ -55,6 +55,7 @@ $(SRCGEN): %.f90: %.fypp common.fypp
 
 # Fortran module dependencies
 f18estop.o: stdlib_error.o
+stdlib_ascii.o: stdlib_kinds.o
 stdlib_bitsets.o: stdlib_kinds.o
 stdlib_bitsets_64.o: stdlib_bitsets.o
 stdlib_bitsets_large.o: stdlib_bitsets.o
