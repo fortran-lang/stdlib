@@ -16,7 +16,7 @@ module stdlib_string_type
     private
 
     public :: string_type
-    public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl
+    public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl, upper, lower
     public :: lgt, lge, llt, lle, char, ichar, iachar
     public :: assignment(=)
     public :: operator(>), operator(>=), operator(<), operator(<=)
@@ -80,6 +80,23 @@ module stdlib_string_type
     interface adjustr
         module procedure :: adjustr_string
     end interface adjustr
+    
+    !> Upper case the character sequence represented by the string.
+    !> The length of the character sequence remains unchanged.
+    !>
+    !> This method is elemental and returns a scalar character value.
+    interface upper
+        module procedure :: upper_string
+    end interface upper
+    
+    
+    !> Lower case the character sequence represented by the string.
+    !> The length of the character sequence remains unchanged.
+    !>
+    !> This method is elemental and returns a scalar character value.
+    interface lower
+        module procedure :: lower_string
+    end interface lower
 
     !> Repeats the character sequence hold by the string by the number of
     !> specified copies.
@@ -433,6 +450,44 @@ contains
         adjusted_string = adjustr(maybe(string))
 
     end function adjustr_string
+    
+    
+    !> Upper case the character sequence represented by the string.
+    !> The length of the character sequence remains unchanged.
+    elemental function upper_string(string) result(upper_case_string)
+        type(string_type), intent(in) :: string
+        type(string_type) :: upper_case_string
+        integer :: a,b
+        
+        do a = 1, len(string)
+            b = iachar(string(a:a))
+            if(b >= iachar("a") .and. b<=iachar("z")) then 
+                upper_case_string(a:a) = achar(iachar(string(a:a))-32)
+            else
+                upper_case_string(a:a) = string(a:a)
+            end if
+        end do
+
+    end function upper_string
+    
+    
+    !> Lower case the character sequence represented by the string.
+    !> The length of the character sequence remains unchanged.
+    elemental function lower_string(string) result(lower_case_string)
+        type(string_type), intent(in) :: string
+        type(string_type) :: lower_case_string
+        integer :: a,b
+        
+        do a = 1, len(string)
+            b = iachar(string(a:a))
+            if(b >= iachar("A") .and. b<=iachar("Z")) then 
+                lower_case_string(a:a) = achar(iachar(string(a:a))+32)
+            else
+                lower_case_string(a:a) = string(a:a)
+            end if
+        end do
+
+    end function lower_string
 
 
     !> Repeats the character sequence hold by the string by the number of
