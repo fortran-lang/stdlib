@@ -12,11 +12,13 @@
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_string_type.html).
 module stdlib_string_type
+    use stdlib_ascii, only: to_lower, to_upper, to_title, reverse
+
     implicit none
     private
-
+    
     public :: string_type
-    public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl
+    public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl, to_lower, to_upper, to_title, reverse
     public :: lgt, lge, llt, lle, char, ichar, iachar
     public :: assignment(=)
     public :: operator(>), operator(>=), operator(<), operator(<=)
@@ -88,6 +90,34 @@ module stdlib_string_type
     interface repeat
         module procedure :: repeat_string
     end interface repeat
+
+    !> 
+    !>
+    !>
+    interface to_lower
+        module procedure :: to_lower_string
+    end interface to_lower
+
+    !>
+    !>
+    !>
+    interface to_upper
+        module procedure :: to_upper_string
+    end interface to_upper
+
+    !>
+    !>
+    !>
+    interface to_title
+        module procedure :: to_title_string
+    end interface to_title
+
+    !>
+    !>
+    !>
+    interface reverse
+        module procedure :: reverse_string
+    end interface reverse
 
     !> Return the character sequence represented by the string.
     !>
@@ -445,6 +475,42 @@ contains
         repeated_string = repeat(maybe(string), ncopies)
 
     end function repeat_string
+
+
+    elemental function to_lower_string(string) result(lowered_string)
+        type(string_type), intent(in) :: string
+        type(string_type) :: lowered_string
+
+        lowered_string%raw = to_lower(string%raw)
+
+    end function to_lower_string
+
+
+    elemental function to_upper_string(string) result(uppered_string)
+        type(string_type), intent(in) :: string
+        type(string_type) :: uppered_string
+
+        uppered_string%raw = to_upper(string%raw)
+
+    end function to_upper_string
+
+
+    elemental function to_title_string(string) result(titled_string)
+        type(string_type), intent(in) :: string
+        type(string_type) :: titled_string
+
+        titled_string%raw = to_title(string%raw)
+
+    end function to_title_string
+
+
+    elemental function reverse_string(string) result(reversed_string)
+        type(string_type), intent(in) :: string
+        type(string_type) :: reversed_string
+
+        reversed_string%raw = reverse(string%raw)
+
+    end function reverse_string
 
 
     !> Position of a sequence of character within a character sequence.

@@ -64,6 +64,36 @@ module stdlib_ascii
     character(len=*), public, parameter :: lowercase = letters(27:) !! a .. z
     character(len=*), public, parameter :: whitespace = " "//TAB//VT//CR//LF//FF !! ASCII _whitespace
 
+
+    !> Convert character variable to lower case
+    !>
+    !> This method is pure and returns a character sequence
+    interface to_lower
+        module procedure :: to_lower
+    end interface to_lower
+
+    !> Convert character variable to upper case
+    !>
+    !> This method is pure and returns a character sequence
+    interface to_upper
+        module procedure :: to_upper
+    end interface to_upper
+
+    !> Convert character variable to title case
+    !>
+    !> This method is pure and returns a character sequence
+    interface to_title
+        module procedure :: to_title
+    end interface to_title
+
+    !> Reverse the character order in the input character variable
+    !>
+    !> This method is pure and returns a character sequence
+    interface reverse
+        module procedure :: reverse
+    end interface reverse
+    
+
 contains
 
     !> Checks whether `c` is an ASCII letter (A .. Z, a .. z).
