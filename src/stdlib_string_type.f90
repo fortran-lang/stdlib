@@ -16,7 +16,7 @@ module stdlib_string_type
 
     implicit none
     private
-    
+
     public :: string_type
     public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl, to_lower, to_upper, to_title, reverse
     public :: lgt, lge, llt, lle, char, ichar, iachar
