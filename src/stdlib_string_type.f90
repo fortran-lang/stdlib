@@ -480,31 +480,31 @@ contains
 
 
     !> Convert the character sequence hold by the input string to lower case
-    elemental function to_lower_string(string) result(lowered_string)
+    elemental function to_lower_string(string) result(lowercase_string)
         type(string_type), intent(in) :: string
-        type(string_type) :: lowered_string
+        type(string_type) :: lowercase_string
 
-        lowered_string%raw = to_lower_(maybe(string))
+        lowercase_string%raw = to_lower_(maybe(string))
 
     end function to_lower_string
 
 
     !> Convert the character sequence hold by the input string to upper case
-    elemental function to_upper_string(string) result(uppered_string)
+    elemental function to_upper_string(string) result(uppercase_string)
         type(string_type), intent(in) :: string
-        type(string_type) :: uppered_string
+        type(string_type) :: uppercase_string
 
-        uppered_string%raw = to_upper_(maybe(string))
+        uppercase_string%raw = to_upper_(maybe(string))
 
     end function to_upper_string
 
 
     !> Convert the character sequence hold by the input string to title case
-    elemental function to_title_string(string) result(titled_string)
+    elemental function to_title_string(string) result(titlecase_string)
         type(string_type), intent(in) :: string
-        type(string_type) :: titled_string
+        type(string_type) :: titlecase_string
 
-        titled_string%raw = to_title_(maybe(string))
+        titlecase_string%raw = to_title_(maybe(string))
 
     end function to_title_string
 
