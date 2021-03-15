@@ -12,13 +12,15 @@
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_string_type.html).
 module stdlib_string_type
-    use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, to_title_ => to_title, reverse_ => reverse
+    use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, &
+                            to_title_ => to_title, reverse_ => reverse
 
     implicit none
     private
 
     public :: string_type
-    public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl, to_lower, to_upper, to_title, reverse
+    public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, &
+              adjustl, to_lower, to_upper, to_title, reverse
     public :: lgt, lge, llt, lle, char, ichar, iachar
     public :: assignment(=)
     public :: operator(>), operator(>=), operator(<), operator(<=)
