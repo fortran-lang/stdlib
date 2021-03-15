@@ -12,7 +12,7 @@
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_string_type.html).
 module stdlib_string_type
-    use stdlib_ascii, only: to_lower, to_upper, to_title, reverse
+    use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, to_title_ => to_title, reverse_ => reverse
 
     implicit none
     private
@@ -482,7 +482,7 @@ contains
         type(string_type), intent(in) :: string
         type(string_type) :: lowered_string
 
-        lowered_string%raw = to_lower(string%raw)
+        lowered_string%raw = to_lower_(maybe(string))
 
     end function to_lower_string
 
@@ -492,7 +492,7 @@ contains
         type(string_type), intent(in) :: string
         type(string_type) :: uppered_string
 
-        uppered_string%raw = to_upper(string%raw)
+        uppered_string%raw = to_upper_(maybe(string))
 
     end function to_upper_string
 
@@ -502,7 +502,7 @@ contains
         type(string_type), intent(in) :: string
         type(string_type) :: titled_string
 
-        titled_string%raw = to_title(string%raw)
+        titled_string%raw = to_title_(maybe(string))
 
     end function to_title_string
 
@@ -512,7 +512,7 @@ contains
         type(string_type), intent(in) :: string
         type(string_type) :: reversed_string
 
-        reversed_string%raw = reverse(string%raw)
+        reversed_string%raw = reverse_(maybe(string))
 
     end function reverse_string
 
