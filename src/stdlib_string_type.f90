@@ -91,30 +91,30 @@ module stdlib_string_type
         module procedure :: repeat_string
     end interface repeat
 
-    !> 
+    !> Convert the character sequence hold by the input string to lower case
     !>
-    !>
+    !> Elemental or pure ???? Does not return anything
     interface to_lower
         module procedure :: to_lower_string
     end interface to_lower
 
+    !> Convert the character sequence hold by the input string to upper case
     !>
-    !>
-    !>
+    !> Elemental or pure ???? Does not return anything
     interface to_upper
         module procedure :: to_upper_string
     end interface to_upper
 
+    !> Convert the character sequence hold by the input string to title case
     !>
-    !>
-    !>
+    !> Elemental or pure ???? Does not return anything
     interface to_title
         module procedure :: to_title_string
     end interface to_title
 
-    !>
-    !>
-    !>
+    !> Reverse the character sequence hold by the input string
+    !> 
+    !> Elemental or pure ???? Does not return anything
     interface reverse
         module procedure :: reverse_string
     end interface reverse
@@ -477,6 +477,7 @@ contains
     end function repeat_string
 
 
+    !> Convert the character sequence hold by the input string to lower case
     elemental function to_lower_string(string) result(lowered_string)
         type(string_type), intent(in) :: string
         type(string_type) :: lowered_string
@@ -486,6 +487,7 @@ contains
     end function to_lower_string
 
 
+    !> Convert the character sequence hold by the input string to upper case
     elemental function to_upper_string(string) result(uppered_string)
         type(string_type), intent(in) :: string
         type(string_type) :: uppered_string
@@ -495,6 +497,7 @@ contains
     end function to_upper_string
 
 
+    !> Convert the character sequence hold by the input string to title case
     elemental function to_title_string(string) result(titled_string)
         type(string_type), intent(in) :: string
         type(string_type) :: titled_string
@@ -504,6 +507,7 @@ contains
     end function to_title_string
 
 
+    !> Reverse the character sequence hold by the input string
     elemental function reverse_string(string) result(reversed_string)
         type(string_type), intent(in) :: string
         type(string_type) :: reversed_string
