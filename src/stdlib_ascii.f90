@@ -65,29 +65,29 @@ module stdlib_ascii
     character(len=*), public, parameter :: whitespace = " "//TAB//VT//CR//LF//FF !! ASCII _whitespace
 
 
-    !> Convert character variable to lower case
-    !>
+    !> Returns a new character sequence which is the lower case 
+    !> version of the input character sequence
     !> This method is pure and returns a character sequence
     interface to_lower
         module procedure :: to_lower
     end interface to_lower
 
-    !> Convert character variable to upper case
-    !>
+    !> Returns a new character sequence which is the upper case
+    !> version of the input character sequence
     !> This method is pure and returns a character sequence
     interface to_upper
         module procedure :: to_upper
     end interface to_upper
 
-    !> Convert character variable to title case
-    !>
+    !> Returns a new character sequence which is the titled
+    !> version of the input character sequence
     !> This method is pure and returns a character sequence
     interface to_title
         module procedure :: to_title
     end interface to_title
 
-    !> Reverse the character order in the input character variable
-    !>
+    !> Returns a new character sequence which is the reversed
+    !> version of the input charater sequence
     !> This method is pure and returns a character sequence
     interface reverse
         module procedure :: reverse
