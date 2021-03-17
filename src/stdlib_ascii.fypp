@@ -27,8 +27,8 @@ module stdlib_ascii
     !> Create a character string representing the value of the provided variable.
     interface to_char
     #:for kind in INT_KINDS
-        module procedure :: integer_${kind}$_to_char
-        module procedure :: logical_${kind}$_to_char
+        module procedure :: to_char_integer_${kind}$
+        module procedure :: to_char_logical_${kind}$
     #:endfor
     end interface to_char
 
@@ -328,7 +328,7 @@ contains
 
     #:for kind in INT_KINDS
     !> Represent an integer of kind ${kind}$ as character sequence
-    pure function integer_${kind}$_to_char(val) result(string)
+    pure function to_char_integer_${kind}$(val) result(string)
         integer, parameter :: ik = ${kind}$
         integer(ik), intent(in) :: val
         character(len=:), allocatable :: string
@@ -359,18 +359,18 @@ contains
         end if
 
         string = buffer(pos:)
-    end function integer_${kind}$_to_char
+    end function to_char_integer_${kind}$
     #:endfor
 
     #:for kind in INT_KINDS
     !> Represent an logical of kind ${kind}$ as character sequence
-    pure function logical_${kind}$_to_char(val) result(string)
+    pure function to_char_logical_${kind}$(val) result(string)
         integer, parameter :: ik = ${kind}$
         logical(ik), intent(in) :: val
         character(len=1) :: string
 
         string = merge("T", "F", val)
-    end function logical_${kind}$_to_char
+    end function to_char_logical_${kind}$
     #:endfor
 
 end module stdlib_ascii
