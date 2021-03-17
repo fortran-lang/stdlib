@@ -14,7 +14,7 @@
 !> The specification of this module is available [here](../page/specs/stdlib_string_type.html).
 module stdlib_string_type
     use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, &
-       & to_title_ => to_title, reverse_ => reverse, to_char
+       & to_title_ => to_title, reverse_ => reverse, to_string
     use stdlib_kinds, only : int8, int16, int32, int64
     implicit none
     private
@@ -361,7 +361,7 @@ contains
     elemental function new_string_from_integer_${kind}$(val) result(new)
         integer(${kind}$), intent(in) :: val
         type(string_type) :: new
-        new%raw = to_char(val)
+        new%raw = to_string(val)
     end function new_string_from_integer_${kind}$
   #:endfor
 
@@ -370,7 +370,7 @@ contains
     elemental function new_string_from_logical_${kind}$(val) result(new)
         logical(${kind}$), intent(in) :: val
         type(string_type) :: new
-        new%raw = to_char(val)
+        new%raw = to_string(val)
     end function new_string_from_logical_${kind}$
   #:endfor
 
