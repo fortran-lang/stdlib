@@ -138,7 +138,7 @@ To test your build, run the test suite after the build has finished with
 cmake --build build --target test
 ```
 
-Please report failing tests on our [issue tracker](https://github.com/fortran-lang/stdlib/issues/new/choose) including details on the compiler used, the operating system and platform architecture.
+Please report failing tests on our [issue tracker](https://github.com/fortran-lang/stdlib/issues/new/choose) including details of the compiler used, the operating system and platform architecture.
 
 To install the project to the declared prefix run
 
