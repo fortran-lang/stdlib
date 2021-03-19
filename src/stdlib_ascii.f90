@@ -79,15 +79,15 @@ module stdlib_ascii
         module procedure :: to_upper
     end interface to_upper
 
-    !> Returns a new character sequence which is the titled
+    !> Returns a new character sequence which is the title case
     !> version of the input character sequence
     !> This method is pure and returns a character sequence
     interface to_title
         module procedure :: to_title
     end interface to_title
 
-    !> Returns a new character sequence which is the reversed
-    !> version of the input charater sequence
+    !> Returns a new character sequence which is reverse of
+    !> the input charater sequence
     !> This method is pure and returns a character sequence
     interface reverse
         module procedure :: reverse

@@ -1136,7 +1136,9 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the titlecase version of the character sequence hold by the input string.
+Returns a new string_type instance which holds the titlecase (or capitalized) version of the character sequence hold by the input string.
+Capitalized version: The first alphabetical character of the input character sequence is transformed to uppercase unless it 
+follows a numeral and the rest of the characters in the sequence are transformed to lowercase.
 
 #### Syntax
 
