@@ -93,34 +93,34 @@ module stdlib_string_type
         module procedure :: repeat_string
     end interface repeat
 
-    !> Convert the character sequence hold by the input string to lower case
+    !> Returns the lowercase version of the character sequence hold by the input string
     !>
-    !> This method is Elemental and returns a new string_type instance which holds lowercase
-    !> version of the character sequence hold by the input string
+    !> This method is Elemental and returns a new string_type instance which holds this
+    !> lowercase character sequence
     interface to_lower
         module procedure :: to_lower_string
     end interface to_lower
 
-    !> Convert the character sequence hold by the input string to upper case
+    !> Returns the uppercase version of the character sequence hold by the input string
     !>
-    !> This method is Elemental and returns a new string_type instance which holds uppercase
-    !> version of the character sequence hold by the input string
+    !> This method is Elemental and returns a new string_type instance which holds this
+    !> uppercase character sequence
     interface to_upper
         module procedure :: to_upper_string
     end interface to_upper
 
-    !> Convert the character sequence hold by the input string to title case
+    !> Returns the titlecase version of the character sequence hold by the input string
     !>
-    !> This method is Elemental and returns a new string_type instance which holds titlecase
-    !> version of the character sequence hold by the input string
+    !> This method is Elemental and returns a new string_type instance which holds this
+    !> titlecase character sequence
     interface to_title
         module procedure :: to_title_string
     end interface to_title
 
-    !> Reverse the character sequence hold by the input string
+    !> Reverses the character sequence hold by the input string
     !> 
-    !> This method is Elemental and returns a new string_type instance which holds reversed
-    !> sequence of the character sequence hold by the input string
+    !> This method is Elemental and returns a new string_type instance which holds this
+    !> reverse character sequence
     interface reverse
         module procedure :: reverse_string
     end interface reverse

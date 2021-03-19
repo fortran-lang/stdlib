@@ -1042,6 +1042,185 @@ end program demo
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### To\_lower function
+
+#### Description
+
+Returns a new string_type instance which holds the lowercase version of the character sequence hold by the input string.
+
+#### Syntax
+
+`lowercase_string = [[stdlib_string_type(module): to_lower(interface)]] (string)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument
+
+`string`: Instance of `string_type`. This argument is `intent(in)`.
+
+#### Result Value
+
+The Result is a scalar `string_type` value.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string, lowercase_string
+
+  string = "Lowercase This String"
+  ! string <-- "Lowercase This String"
+
+  lowercase_string = to_lower(string)
+  ! string <-- "Lowercase This String"
+  ! lowercase_string <-- "lowercase this string"
+end program demo
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### To\_upper function
+
+#### Description
+
+Returns a new string_type instance which holds the uppercase version of the character sequence hold by the input string.
+
+#### Syntax
+
+`uppercase_string = [[stdlib_string_type(module): to_upper(interface)]] (string)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument
+
+`string`: Instance of `string_type`. This argument is `intent(in)`.
+
+#### Result Value
+
+The Result is a scalar `string_type` value.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string, uppercase_string
+
+  string = "Uppercase This String"
+  ! string <-- "Uppercase This String"
+
+  uppercase_string = to_upper(string)
+  ! string <-- "Uppercase This String"
+  ! uppercase_string <-- "UPPERCASE THIS STRING"
+end program demo
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### To\_title function
+
+#### Description
+
+Returns a new string_type instance which holds the titlecase version of the character sequence hold by the input string.
+
+#### Syntax
+
+`titlecase_string = [[stdlib_string_type(module): to_title(interface)]] (string)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument
+
+`string`: Instance of `string_type`. This argument is `intent(in)`.
+
+#### Result Value
+
+The Result is a scalar `string_type` value.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string, titlecase_string
+
+  string = "Titlecase This String"
+  ! string <-- "Titlecase This String"
+
+  titlecase_string = to_title(string)
+  ! string <-- "Titlecase This String"
+  ! titlecase_string <-- "Titlecase this string"
+end program demo
+```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### Reverse function
+
+#### Description
+
+Returns a new string_type instance which holds the reversed version of the character sequence hold by the input string.
+
+#### Syntax
+
+`reverse_string = [[stdlib_string_type(module): reverse(interface)]] (string)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument
+
+`string`: Instance of `string_type`. This argument is `intent(in)`.
+
+#### Result Value
+
+The Result is a scalar `string_type` value.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string, reverse_string
+  
+  string = "Reverse This String"
+  ! string <-- "Reverse This String"
+
+  reverse_string = reverse(string)
+  ! string <-- "Reverse This String"
+  ! reverse_string <-- "gnirtS sihT esreveR"
+end program demo
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator greater
 
 #### Description
