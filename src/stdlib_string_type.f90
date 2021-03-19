@@ -19,9 +19,9 @@ module stdlib_string_type
     private
 
     public :: string_type
-    public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, &
-              adjustl, to_lower, to_upper, to_title, reverse
+    public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl
     public :: lgt, lge, llt, lle, char, ichar, iachar
+    public :: to_lower, to_upper, to_title, reverse
     public :: assignment(=)
     public :: operator(>), operator(>=), operator(<), operator(<=)
     public :: operator(==), operator(/=), operator(//)
