@@ -9,6 +9,7 @@ all:
 	$(MAKE) -f Makefile.manual --directory=quadrature
 	$(MAKE) -f Makefile.manual --directory=stats
 	$(MAKE) -f Makefile.manual --directory=string
+	$(MAKE) -f Makefile.manual --directory=tolerant
 
 test:
 	$(MAKE) -f Makefile.manual --directory=ascii test
@@ -19,6 +20,7 @@ test:
 	$(MAKE) -f Makefile.manual --directory=quadrature test
 	$(MAKE) -f Makefile.manual --directory=stats test
 	$(MAKE) -f Makefile.manual --directory=string test
+	$(MAKE) -f Makefile.manual --directory=tolerant test
 
 clean:
 	$(MAKE) -f Makefile.manual --directory=ascii clean
@@ -28,3 +30,4 @@ clean:
 	$(MAKE) -f Makefile.manual --directory=optval clean
 	$(MAKE) -f Makefile.manual --directory=stats clean
 	$(MAKE) -f Makefile.manual --directory=string clean
+	$(MAKE) -f Makefile.manual --directory=tolerant clean
