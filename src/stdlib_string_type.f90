@@ -12,12 +12,16 @@
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_string_type.html).
 module stdlib_string_type
+    use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, &
+                            to_title_ => to_title, reverse_ => reverse
+
     implicit none
     private
 
     public :: string_type
     public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl
     public :: lgt, lge, llt, lle, char, ichar, iachar
+    public :: to_lower, to_upper, to_title, reverse
     public :: assignment(=)
     public :: operator(>), operator(>=), operator(<), operator(<=)
     public :: operator(==), operator(/=), operator(//)
@@ -88,6 +92,38 @@ module stdlib_string_type
     interface repeat
         module procedure :: repeat_string
     end interface repeat
+
+    !> Returns the lowercase version of the character sequence hold by the input string
+    !>
+    !> This method is Elemental and returns a new string_type instance which holds this
+    !> lowercase character sequence
+    interface to_lower
+        module procedure :: to_lower_string
+    end interface to_lower
+
+    !> Returns the uppercase version of the character sequence hold by the input string
+    !>
+    !> This method is Elemental and returns a new string_type instance which holds this
+    !> uppercase character sequence
+    interface to_upper
+        module procedure :: to_upper_string
+    end interface to_upper
+
+    !> Returns the titlecase version of the character sequence hold by the input string
+    !>
+    !> This method is Elemental and returns a new string_type instance which holds this
+    !> titlecase character sequence
+    interface to_title
+        module procedure :: to_title_string
+    end interface to_title
+
+    !> Reverses the character sequence hold by the input string
+    !> 
+    !> This method is Elemental and returns a new string_type instance which holds this
+    !> reverse character sequence
+    interface reverse
+        module procedure :: reverse_string
+    end interface reverse
 
     !> Return the character sequence represented by the string.
     !>
@@ -445,6 +481,46 @@ contains
         repeated_string = repeat(maybe(string), ncopies)
 
     end function repeat_string
+
+
+    !> Convert the character sequence hold by the input string to lower case
+    elemental function to_lower_string(string) result(lowercase_string)
+        type(string_type), intent(in) :: string
+        type(string_type) :: lowercase_string
+
+        lowercase_string%raw = to_lower_(maybe(string))
+
+    end function to_lower_string
+
+
+    !> Convert the character sequence hold by the input string to upper case
+    elemental function to_upper_string(string) result(uppercase_string)
+        type(string_type), intent(in) :: string
+        type(string_type) :: uppercase_string
+
+        uppercase_string%raw = to_upper_(maybe(string))
+
+    end function to_upper_string
+
+
+    !> Convert the character sequence hold by the input string to title case
+    elemental function to_title_string(string) result(titlecase_string)
+        type(string_type), intent(in) :: string
+        type(string_type) :: titlecase_string
+
+        titlecase_string%raw = to_title_(maybe(string))
+
+    end function to_title_string
+
+
+    !> Reverse the character sequence hold by the input string
+    elemental function reverse_string(string) result(reversed_string)
+        type(string_type), intent(in) :: string
+        type(string_type) :: reversed_string
+
+        reversed_string%raw = reverse_(maybe(string))
+
+    end function reverse_string
 
 
     !> Position of a sequence of character within a character sequence.
