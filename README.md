@@ -3,6 +3,18 @@
 [![Actions Status](https://github.com/fortran-lang/stdlib/workflows/CI/badge.svg)](https://github.com/fortran-lang/stdlib/actions)
 [![Actions Status](https://github.com/fortran-lang/stdlib/workflows/CI_windows/badge.svg)](https://github.com/fortran-lang/stdlib/actions)
 
+* [Goals and Motivation](#goals-and-motivation)
+* [Scope](#scope)
+* [Getting started](#getting-started)
+  - [Get the code](#get-the-code)
+  - [Requirements](#requirements)
+  - [Supported compilers](#supported-compilers)
+  - [Build with CMake](#build-with-cmake)
+  - [Build with make](#build-with-make)
+* [Using stdlib in your project](#using-stdlib-in-your-project)
+* [Documentation](#documentation)
+* [Contributing](#contributing)
+* [Links](#links)
 
 ## Goals and Motivation
 
