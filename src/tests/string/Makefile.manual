@@ -1,5 +1,6 @@
 PROGS_SRC = test_string_assignment.f90 \
             test_string_derivedtype_io.f90 \
+            test_string_functions.f90 \
             test_string_intrinsic.f90 \
             test_string_operator.f90
 

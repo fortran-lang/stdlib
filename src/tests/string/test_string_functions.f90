@@ -28,7 +28,7 @@ contains
     subroutine test_to_title_string
         type(string_type) :: test_string, compare_string
         test_string = "_#To tiTlE !$%-az09AZ"
-        compare_string = "_#To title !$%-a09az"
+        compare_string = "_#To title !$%-az09az"
 
         call check(to_title(test_string) == compare_string)
 
