@@ -43,6 +43,7 @@ set(SRC
     stdlib_logger.f90
     stdlib_string_type.f90
     stdlib_system.F90
+    stdlib_tolerant.f90
     ${outFiles}
 )
 
