@@ -79,16 +79,16 @@ Both build types are explicitly supported and tested, the latter strategy
 is recommended for local development.
 
 Sources for the main library target are added in ``src/CMakeLists.txt``
-relative to their the library target, *i.e.* no absolute paths are required.
+relative to the library target, *i.e.* no absolute paths are required.
 
-To add tests the macro ``ADDTEST`` should be used in instead of the CMake function
-``add_test``, it hides creation of the executable target, linking against the
+To add tests, the macro ``ADDTEST`` should be used instead of the CMake function
+``add_test``, the macro hides creation of the executable target, linking against the 
 main library target and registering the test.
 The tests themselves are defined as standalone executables in the subdirectories
-in ``src/tests``, a new subdirectory with tests has to registred in
+in ``src/tests``, a new subdirectory with tests has to be registred in
 ``src/tests/CMakeLists.txt``.
 
-The source tree should be considered read-only, references to ``PROJECT_SOURCE_DIR``
+The source tree should be considered read-only. References to ``PROJECT_SOURCE_DIR``
 and ``CMAKE_CURRENT_SOURCE_DIR`` should only be used for accessing source files,
 never to write build outputs, use ``PROJECT_BINARY_DIR`` and ``CMAKE_CURRENT_BINARY_DIR``
 to write build artifacts instead.
@@ -97,9 +97,9 @@ source files to avoid accidentally overwriting them, *e.g.* when preprocessing o
 configuring a file.
 
 The ``CMAKE_INSTALL_PREFIX`` should only be written to on install, never in the build
-process. To install generated files, create an build output in the build tree and
-install it with the correct ``install`` function.
-This project follows the GNU install conventions, this means the variables
+process. To install generated files, create a build output in the build tree and
+install it with the ``install`` function.
+This project follows the GNU install conventions, this means that the variables
 ``CMAKE_INSTALL_BINDIR``, ``CMAKE_INSTALL_LIBDIR``, and ``CMAKE_INSTALL_INCLUDEDIR``
 must be used instead of ``bin``, ``lib``, and ``include``, respectively.
 Library targets should be exported on install to allow correct inclusion of the
@@ -108,7 +108,7 @@ Prefer dashes as in ``project-config`` or ``project-targets`` over camel-case as
 ``projectConfig`` or ``projectTarget`` for file names as the former allows easier
 construction from the ``PROJECT_NAME`` variable by concatenation.
 
-The project is usable as CMake subproject, explicit references to
+The project is usable as CMake subproject. Explicit references to
 ``CMAKE_SOURCE_DIR`` and ``CMAKE_BINARY_DIR`` must be avoided to not
 break subproject builds.
 An example project is available [here](https://github.com/fortran-lang/stdlib-cmake-example)
@@ -117,7 +117,7 @@ to test the CMake subproject integration.
 
 ### Make build files
 
-The build files for make are using the name ``Makefile.manual`` to
+The build files for ``make`` are using the name ``Makefile.manual`` to
 not conflict with the in-tree build of CMake.
 This project uses recursive make to transverse the subdirectory structure
 from the top-level makefile, called ``Makefile.manual``, and the build
