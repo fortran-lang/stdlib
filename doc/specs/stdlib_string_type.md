@@ -1221,6 +1221,50 @@ program demo
 end program demo
 ```
 
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### Sort function
+
+#### Description
+
+Returns a new string_type instance which holds the sorted version of the character sequence hold by the input string.
+
+#### Syntax
+
+`sorted_string = [[stdlib_string_type(module): sort(interface)]] (string)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument
+
+`string`: Instance of `string_type`. This argument is `intent(in)`.
+
+#### Result Value
+
+The Result is a scalar `string_type` value.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string, sorted_string
+  
+  string = "Sort This String"
+  ! string <-- "Sort This String"
+
+  sorted_string = sort(string)
+  ! string <-- "Sort This String"
+  ! sorted_string <-- "  SSTghiinorrstt"
+end program demo
+```
+
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator greater

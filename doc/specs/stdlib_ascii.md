@@ -169,3 +169,39 @@ program demo_reverse
     print'(a)', reverse("Hello, World!") ! returns "!dlroW ,olleH"
 end program demo_reverse
 ```
+
+### `sort`
+
+#### Status
+
+Experimental
+
+#### Description
+
+Sorts all the characters in the input character type according to their ascii values.
+
+#### Syntax
+
+`res = [[stdlib_ascii(module):sort(function)]] (string)`
+
+#### Class
+
+Pure function.
+
+#### Argument
+
+`string`: shall be an intrinsic character type. It is an `intent(in)` argument.
+
+#### Result value
+
+The result is an intrinsic character type of the same length as `string`.
+
+#### Example
+
+```fortran
+program demo_sort
+    use stdlib_ascii, only : sort
+    implicit none
+    print'(a)', sort("Sort This String") ! returns "  SSTghiinorrstt"
+end program demo_sort
+```
