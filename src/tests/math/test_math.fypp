@@ -1,0 +1,80 @@
+! SPDX-Identifier: MIT
+
+#:set INT_KINDS_TYPES = [("int8", "integer"), ("int16", "integer"), ("int32", "integer"), ("int64", "integer")]
+#:set REAL_KINDS_TYPES = [("sp", "real"), ("dp", "real"), ("qp", "real")]
+#:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
+
+module test_math
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
+    use stdlib_error, only : check
+    use stdlib_math
+
+    implicit none
+
+    contains
+    #:for k1, t1 in IR_KINDS_TYPES
+        subroutine test_clip_${t1}$_${k1}$(x, xmin, xmax, compare)
+            ${t1}$(${k1}$), intent(in) :: x, xmin, xmax, compare
+
+            call check(clip(x, xmin, xmax) == compare)
+        
+        end subroutine test_clip_${t1}$_${k1}$
+
+    #:endfor
+
+end module test_math
+
+
+program tester
+    use test_math
+    implicit none
+
+    ! test case format: (x, xmin, xmax, correct answer)
+    ! valid case: xmin is not greater than xmax
+    ! invalid case: xmin is greater than xmax
+    #:set valid_cases = [ [(2, -2, 5, 2), (127, -127, 0, 0), (-57, -57, 57, -57)], &
+                        [(2, -2, 5, 2), (32767, -32767, 0, 0), (-598, -32, 676, -32)], &
+                        [(2, -2, 5, 2), (-2147483647, 0, 2147483647, 0), (45732, -385769, 57642, 45732)], &
+                        [(2, -2, 5, 2), (-922337203, -10, 25, -10), (97683, -200, 513788324, 97683)], &
+                        [(3.025, -5.77, 3.025, 3.025), (0.0, -1578.025, -59.68, -59.68), (5.6, -97854.25, 2.3666, 2.3666)], &
+                        [(3.025, -5.77, 3.025, 3.025), (-7.0, 0.059668, 1.00268, 0.059668), (-12.3358, 8.55759, 8.55759, 8.55759)], &
+                        [(3.025, -5.77, 3.025, 3.025), (-55891546.2, -8958133457.23, -689712245.23, -689712245.23), (58.7, -2352.335, -189.58, -189.58)] ]
+
+    #:set invalid_cases = [ [(2, 5, -2, 5), (127, 0, -127, 0), (-57, 57, -57, 57)], &
+                        [(2, 5, -2, 5), (32767, 0, -32767, 0), (-598, 676, -32, 676)], &
+                        [(2, 5, -2, 5), (-2147483647, 2147483647, 0, 2147483647), (45732, 57642, -385769, 57642)], &
+                        [(2, 5, -2, 5), (-922337203, 25, -10, 25), (97683, 513788324, -200, 513788324)], &
+                        [(3.025, 3.025, -5.77, 3.025), (0.0, -59.68, -1578.025, -59.68), (5.6, 2.3666, -97854.25, 2.3666)], &
+                        [(3.025, 3.025, -5.77, 3.025), (-7.0, 1.00268, 0.059668, 1.00268), (-12.3358, 8.55759, 8.55759, 8.55759)], &
+                        [(3.025, 3.025, -5.77, 3.025), (-55891546.2, -689712245.23, -8958133457.23, -689712245.23), (58.7, -189.58, -2352.335, -189.58)] ]
+
+    #:set checking_function = 0
+    ! data declaration
+    #:for k1, t1 in IR_KINDS_TYPES
+        ${t1}$(${k1}$) :: x_${t1}$_${k1}$, xmin_${t1}$_${k1}$, xmax_${t1}$_${k1}$, compare_${t1}$_${k1}$
+    #:endfor
+
+    #:for k1, t1 in IR_KINDS_TYPES
+        ! type: ${t1}$, kind: ${k1}$
+            ! valid test cases
+        #:for case in valid_cases[checking_function]
+            x_${t1}$_${k1}$ = ${case[0]}$
+            xmin_${t1}$_${k1}$ = ${case[1]}$
+            xmax_${t1}$_${k1}$ = ${case[2]}$
+            compare_${t1}$_${k1}$ = ${case[3]}$
+            call test_clip_${t1}$_${k1}$(x_${t1}$_${k1}$, xmin_${t1}$_${k1}$, xmax_${t1}$_${k1}$, compare_${t1}$_${k1}$)
+
+        #:endfor
+            ! invalid test cases
+        #:for case in invalid_cases[checking_function]
+            x_${t1}$_${k1}$ = ${case[0]}$
+            xmin_${t1}$_${k1}$ = ${case[1]}$
+            xmax_${t1}$_${k1}$ = ${case[2]}$
+            compare_${t1}$_${k1}$ = ${case[3]}$
+            call test_clip_${t1}$_${k1}$(x_${t1}$_${k1}$, xmin_${t1}$_${k1}$, xmax_${t1}$_${k1}$, compare_${t1}$_${k1}$)
+
+        #:endfor
+        #:set checking_function = checking_function + 1
+    #:endfor
+
+end program tester
