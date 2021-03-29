@@ -55,15 +55,11 @@ contains
     end subroutine test_chomp_string
 
     subroutine test_chomp_set_char
-        call check(chomp("hello", [character(len=1)::]) == "hello")
-        call check(chomp("hello", set=[character(len=1)::]) == "hello")
         call check(chomp("hello", ["l", "o"]) == "he")
         call check(chomp("hello", set=["l", "o"]) == "he")
     end subroutine test_chomp_set_char
 
     subroutine test_chomp_set_string
-        call check(chomp(string_type("hello"), [character(len=1)::]) == "hello")
-        call check(chomp(string_type("hello"), set=[character(len=1)::]) == "hello")
         call check(chomp(string_type("hello"), ["l", "o"]) == "he")
         call check(chomp(string_type("hello"), set=["l", "o"]) == "he")
         call check(chomp("hellooooo", ["o", "o"]) == "hell")
