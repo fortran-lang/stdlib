@@ -63,12 +63,12 @@ end program demo
 
 #### Description
 
-Remove trailing characters in *set* from *string*.
-If no character *set* is provided trailing whitespace is removed.
+Remove trailing characters in *set* or *substring* from *string*.
+If no character *set* or *substring* is provided trailing whitespace is removed.
 
 #### Syntax
 
-`string = [[stdlib_strings(module):chomp(interface)]] (string[, set])`
+`string = [[stdlib_strings(module):chomp(interface)]] (string[, set|substring])`
 
 #### Status
 
@@ -82,7 +82,8 @@ Pure function.
 
 - `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
   This argument is intent(in).
-- `set`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+- `set`: Array of length one character. This argument is intent(in).
+- `substring`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
   This argument is intent(in).
 
 #### Result value
@@ -101,6 +102,9 @@ program demo
   print'(a)', chomp(" "//TAB//LF//VT//FF//CR)  ! ""
   print'(a)', chomp("  !  ")//"!"              ! "  !!"
   print'(a)', chomp("Hello")                   ! "Hello"
-  print'(a)', chomp("hello", set="lo")         ! "he"
+  print'(a)', chomp("hello", ["l", "o"])       ! "he"
+  print'(a)', chomp("hello", set=["l", "o"])   ! "he"
+  print'(a)', chomp("hello", "lo")             ! "hel"
+  print'(a)', chomp("hello", substring="lo")   ! "hel"
 end program demo
 ```
