@@ -289,14 +289,14 @@ contains
                     title_string(i:i) = char_to_upper(string(i:i))
                     capitalize_flag = .FALSE.
                 else
-                    title_string(i:i) = string(i:i)
+                    title_string(i:i) = char_to_lower(string(i:i))
                 end if
             else
                 if(string(i:i)==" ") then
-                    title_string(i:i) = string(i:i)
+                    title_string(i:i) = char_to_lower(string(i:i))
                     capitalize_flag = .TRUE.
                 else
-                    title_string(i:i) = string(i:i)
+                    title_string(i:i) = char_to_lower(string(i:i))
                 end if
             end if
         end do
