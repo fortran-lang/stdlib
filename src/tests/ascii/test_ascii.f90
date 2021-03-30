@@ -590,7 +590,7 @@ contains
         call check(trim(dlc) == "Title")
 
         dlc = to_title(" s P a C e D !")
-        call check(dlc == " S p a c e d !")
+        call check(dlc == " S P A C E D !")
 
         dlc = to_title("1st, 2nd, 3rd")
         call check(dlc == "1st, 2nd, 3rd")

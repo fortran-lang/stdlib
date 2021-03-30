@@ -277,21 +277,28 @@ contains
     pure function to_title(string) result(title_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: title_string
+        logical:: capitalize_flag
         integer :: i, n
 
         n = len(string)
+        capitalize_flag = .TRUE.
         do i = 1, len(string)
-            if (is_alphanum(string(i:i))) then
-                title_string(i:i) = char_to_upper(string(i:i))
-                n = i
-                exit
-            else
-                title_string(i:i) = string(i:i)
-            end if
-        end do
 
-        do i = n + 1, len(string)
-            title_string(i:i) = char_to_lower(string(i:i))
+            if(capitalize_flag) then
+                if (is_alphanum(string(i:i))) then
+                    title_string(i:i) = char_to_upper(string(i:i))
+                    capitalize_flag = .FALSE.
+                else
+                    title_string(i:i) = string(i:i)
+                end if
+            else
+                if(string(i:i)==" ") then
+                    title_string(i:i) = string(i:i)
+                    capitalize_flag = .TRUE.
+                else
+                    title_string(i:i) = string(i:i)
+                end if
+            end if
         end do
 
     end function to_title
