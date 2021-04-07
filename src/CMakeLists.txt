@@ -21,6 +21,7 @@ set(fppFiles
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp
     stdlib_quadrature_simps.fypp
+    stdlib_stats_distribution_PRNG.fypp
 )
 
 
@@ -40,6 +41,7 @@ set(SRC
     stdlib_error.f90
     stdlib_kinds.f90
     stdlib_logger.f90
+    stdlib_string_type.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90

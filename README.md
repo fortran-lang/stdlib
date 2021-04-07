@@ -3,6 +3,18 @@
 [![Actions Status](https://github.com/fortran-lang/stdlib/workflows/CI/badge.svg)](https://github.com/fortran-lang/stdlib/actions)
 [![Actions Status](https://github.com/fortran-lang/stdlib/workflows/CI_windows/badge.svg)](https://github.com/fortran-lang/stdlib/actions)
 
+* [Goals and Motivation](#goals-and-motivation)
+* [Scope](#scope)
+* [Getting started](#getting-started)
+  - [Get the code](#get-the-code)
+  - [Requirements](#requirements)
+  - [Supported compilers](#supported-compilers)
+  - [Build with CMake](#build-with-cmake)
+  - [Build with make](#build-with-make)
+* [Using stdlib in your project](#using-stdlib-in-your-project)
+* [Documentation](#documentation)
+* [Contributing](#contributing)
+* [Links](#links)
 
 ## Goals and Motivation
 
@@ -82,6 +94,12 @@ GCC Fortran (MSYS) | 10 | Windows Server 2019 | x86_64
 GCC Fortran (MinGW) | 10 | Windows Server 2019 | x86_64, i686
 Intel oneAPI classic | 2021.1 | Ubuntu 20.04 | x86_64
 
+The following combinations are known to work, but they are not tested in the CI:
+
+Name | Version | Platform | Architecture
+--- | --- | --- | ---
+GCC Fortran (MinGW) | 8.4.0, 9.3.0, 10.2.0 | Windows 10 | x86_64, i686
+
 We try to test as many available compilers and platforms as possible.
 A list of tested compilers which are currently not working and the respective issue are listed below.
 
@@ -132,7 +150,7 @@ To test your build, run the test suite after the build has finished with
 cmake --build build --target test
 ```
 
-Please report failing tests on our [issue tracker](https://github.com/fortran-lang/stdlib/issues/new/choose) including details on the compiler used, the operating system and platform architecture.
+Please report failing tests on our [issue tracker](https://github.com/fortran-lang/stdlib/issues/new/choose) including details of the compiler used, the operating system and platform architecture.
 
 To install the project to the declared prefix run
 
@@ -157,6 +175,36 @@ You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS
 make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 ```
 
+
+
+## Using stdlib in your project
+
+The stdlib project exports CMake package files and pkg-config files to make stdlib usable for other projects.
+The package files are located in the library directory in the installation prefix.
+
+For CMake builds of stdlib you can find a local installation with
+
+```cmake
+find_package(fortran_stdlib REQUIRED)
+...
+target_link_libraries(
+  ${PROJECT_NAME}
+  PRIVATE
+  fortran_stdlib::fortran_stdlib
+)
+```
+
+To make the installed stdlib project discoverable add the stdlib directory to the ``CMAKE_PREFIX_PATH``.
+The usual install localtion of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
+
+For non-CMake build systems (like make) you can use the exported pkg-config file by setting ``PKG_CONFIG_PATH`` to include the directory containing the exported pc-file.
+The usual install location of the pc-file is ``$PREFIX/lib/pkgconfig``.
+In make you can obtain the required compile and link arguments with
+
+```make
+STDLIB_CFLAGS := $(shell pkg-config --cflags fortran_stdlib)
+STDLIB_LIBS := $(shell pkg-config --libs fortran_stdlib)
+```
 
 ## Documentation
 
