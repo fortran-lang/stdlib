@@ -4,7 +4,7 @@ Thank you for considering contributing to the Fortran standard library (*stdlib*
 Please review and follow these guidelines to make the contribution process
 simple and effective for all involved. It will help communicate that you
 respect the time of the community developers. In return, the community will
-help address your problem, evaluate changes, and guide you through your pull
+help to address your problem, evaluate changes, and guide you through your pull
 requests.
 
 By contributing to *stdlib*, you certify that you own or are allowed to share the
@@ -24,7 +24,7 @@ content of your contribution under the
 Please follow the
 [Fortran stdlib style guide](https://github.com/fortran-lang/stdlib/blob/master/STYLE_GUIDE.md)
 for any Fortran code that you contribute.
-This allows us to focus on substance rather than style.
+This allows the community to focus on substance rather than style.
 
 The style guide is a living document.
 You are welcome to propose changes to the style guide by
@@ -35,7 +35,7 @@ You are welcome to propose changes to the style guide by
 ## Reporting a bug
 
 A bug is a *demonstrable problem* caused by the code in this repository.
-Good bug reports are extremely valuable to us—thank you!
+Good bug reports are extremely valuable to the community—thank you!
 
 Before opening a bug report:
 
@@ -49,14 +49,14 @@ A good bug report should include all information needed to reproduce the bug.
 Please be as detailed as possible:
 
 1. Which version of *stdlib* are you using?
-   What compiler version are you using?
-   Which platform and architecture are on?
+   Which compiler version are you using?
+   Which platform and architecture are you on?
    Please be specific.
 2. What are the steps to reproduce the issue?
 3. What is the expected outcome?
 4. What happens instead?
 
-This information will help the community diagnose the issue quickly and with
+This information will help the community to diagnose the issue quickly and with
 minimal back-and-forth.
 
 
@@ -65,7 +65,7 @@ minimal back-and-forth.
 Before suggesting a new feature, take a moment to find out if it fits the scope
 of the project, or if it has already been discussed. It is up to you to provide
 a strong argument to convince the community of the benefits of this feature.
-Please provide as much detail and context as possible. If applicable, include a
+Please provide as much details and context as possible. If applicable, include a
 mocked-up snippet of what the output or behavior would look like with this
 feature implemented. “Crazy,” out-of-the-box ideas are especially welcome.
 It’s quite possible that we are not considering an unusually creative solution.
@@ -87,8 +87,8 @@ You are welcome to propose changes to the workflow by
 * A PR should implement *only one* feature or bug fix.
 * Do not commit changes to files that are irrelevant to your feature or bug fix.
 * Smaller PRs are better than large PRs, and will lead to a shorter review and
-  merge cycle
-* Add tests for your feature or bug fix to be sure that it stays functional and useful
+  merge cycle.
+* Add tests for your feature or bug fix to be sure that it stays functional and useful.
 * Be open to constructive criticism and requests for improving your code.
 * Again, please follow the
   [Fortran stdlib style guide](https://github.com/fortran-lang/stdlib/blob/master/STYLE_GUIDE.md).
