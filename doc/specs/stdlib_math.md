@@ -48,7 +48,7 @@ Note: All arguments must have same `type` and same `kind`.
 
 Output is a scalar of either `integer` or `real` depending on the arguments. The output value will have `type` and `kind` same as to that of the arguments.
 
-#### Example(s) of usage
+#### Examples
 
 ##### Example 1:
 
