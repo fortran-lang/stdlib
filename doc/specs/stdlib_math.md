@@ -8,7 +8,7 @@ title: math
 
 ## Introduction
 
-`stdlib_math` module provides with general purpose mathematical functions.
+`stdlib_math` module provides general purpose mathematical functions.
 
 
 ## Procedures and Methods provided
