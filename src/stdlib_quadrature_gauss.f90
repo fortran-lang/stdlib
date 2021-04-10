@@ -1,5 +1,4 @@
 submodule (stdlib_quadrature) stdlib_quadrature_gauss
-    use stdlib_kinds, only: sp, dp, qp
     use stdlib_specialfunctions, only: legendre, dlegendre
     implicit none
 
