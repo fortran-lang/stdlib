@@ -42,6 +42,7 @@ set(SRC
     stdlib_kinds.f90
     stdlib_logger.f90
     stdlib_string_type.f90
+    stdlib_strings.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90

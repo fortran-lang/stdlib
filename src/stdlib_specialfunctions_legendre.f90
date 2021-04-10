@@ -1,5 +1,4 @@
 submodule (stdlib_specialfunctions) stdlib_specialfunctions_legendre
-    use stdlib_kinds, only: sp, dp, qp
     implicit none
 
 contains
