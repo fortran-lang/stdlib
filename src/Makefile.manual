@@ -25,6 +25,7 @@ SRC = f18estop.f90 \
       stdlib_error.f90 \
       stdlib_kinds.f90 \
       stdlib_logger.f90 \
+      stdlib_strings.f90 \
       stdlib_string_type.f90 \
       $(SRCGEN)
 
@@ -110,3 +111,4 @@ stdlib_stats_distribution_PRNG.o: \
         stdlib_kinds.o \
 	stdlib_error.o
 stdlib_string_type.o: stdlib_ascii.o
+stdlib_strings.o: stdlib_ascii.o stdlib_string_type.o
