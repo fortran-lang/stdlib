@@ -1,5 +1,5 @@
 ! SPDX-Identifier: MIT
-module test_trim
+module test_strip_chomp
     use stdlib_ascii, only : TAB, VT, NUL, LF, CR, FF
     use stdlib_error, only : check
     use stdlib_strings, only : strip, chomp
@@ -92,10 +92,10 @@ contains
         call check(chomp(string_type("hellooooo"), substring=string_type("oo")) == "hello")
     end subroutine test_chomp_substring_string
 
-end module test_trim
+end module test_strip_chomp
 
 program tester
-    use test_trim
+    use test_strip_chomp
     implicit none
 
     call test_strip_char
