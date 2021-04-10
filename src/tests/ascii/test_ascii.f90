@@ -6,7 +6,7 @@ program test_ascii
         whitespace, letters, is_alphanum, is_alpha, is_lower, is_upper, &
         is_digit, is_octal_digit, is_hex_digit, is_white, is_blank, &
         is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
-        to_lower, to_upper, to_title, reverse, LF, TAB, NUL, DEL
+        to_lower, to_upper, to_title, reverse, LF, TAB, NUL, DEL, sort
 
     implicit none
 
@@ -72,6 +72,7 @@ program test_ascii
     call test_to_lower_string
     call test_to_title_string
     call test_reverse_string
+    call test_sort_string
 
 contains
 
@@ -612,5 +613,19 @@ contains
         call check(trim(dlc) == "                        desrever")
         call check(trim(adjustl(dlc)) == "desrever")
     end subroutine test_reverse_string
+
+    subroutine test_sort_string
+        character(len=:), allocatable :: dlc
+        character(len=32), parameter :: input = "This is to be sorted"
+
+        dlc = sort("This is to be sorted")
+        call check(dlc == "    Tbdeehiioorssstt")
+
+        dlc = sort(input)
+        call check(len(dlc) == 32)
+        call check(len_trim(dlc) == 32)
+        call check(trim(dlc) == "                Tbdeehiioorssstt")
+        call check(trim(adjustl(dlc)) == "Tbdeehiioorssstt")
+    end subroutine test_sort_string
 
 end program test_ascii

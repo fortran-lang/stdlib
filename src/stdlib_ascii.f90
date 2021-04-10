@@ -16,7 +16,7 @@ module stdlib_ascii
     public :: is_lower, is_upper
 
     ! Character conversion functions
-    public :: to_lower, to_upper, to_title, reverse
+    public :: to_lower, to_upper, to_title, reverse, sort
 
     ! All control characters in the ASCII table (see www.asciitable.com).
     character(len=1), public, parameter :: NUL = achar(int(z'00')) !! Null
@@ -92,6 +92,13 @@ module stdlib_ascii
     interface reverse
         module procedure :: reverse
     end interface reverse
+
+    !> Returns a new character sequence which sorted version of
+    !> the input charater sequence
+    !> This method is pure and returns a character sequence
+    interface sort
+        module procedure :: sort
+    end interface sort
     
 
 contains
@@ -311,5 +318,31 @@ contains
         end do
 
     end function reverse
+
+
+    !> Sort the character order in the input character variable
+    !> Version: experimental
+    pure function sort(string) result(sorted_string)
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: sorted_string
+        integer, dimension(128) :: count
+        integer :: i,j
+        !implementation
+        do i = 1, 128
+            count(i) = 0
+        end do
+
+        do i = 1, len(string)
+            count(iachar(string(i:i))) = count(iachar(string(i:i))) + 1
+        end do
+        j = 1
+        do i = 1, 128
+            do while (count(i)>0)
+                sorted_string(j:j) = achar(i)
+                j = j+1
+                count(i) = count(i) - 1;
+            end do
+        end do
+    end function sort
 
 end module stdlib_ascii

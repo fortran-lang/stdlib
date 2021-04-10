@@ -13,7 +13,7 @@
 !> The specification of this module is available [here](../page/specs/stdlib_string_type.html).
 module stdlib_string_type
     use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, &
-                            to_title_ => to_title, reverse_ => reverse
+                            to_title_ => to_title, reverse_ => reverse, sort_ => sort
 
     implicit none
     private
@@ -21,7 +21,7 @@ module stdlib_string_type
     public :: string_type
     public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl
     public :: lgt, lge, llt, lle, char, ichar, iachar
-    public :: to_lower, to_upper, to_title, reverse
+    public :: to_lower, to_upper, to_title, reverse, sort
     public :: assignment(=)
     public :: operator(>), operator(>=), operator(<), operator(<=)
     public :: operator(==), operator(/=), operator(//)
@@ -124,6 +124,14 @@ module stdlib_string_type
     interface reverse
         module procedure :: reverse_string
     end interface reverse
+
+    !> Sorts the character sequence hold by the input string
+    !> 
+    !> This method is Elemental and returns a new string_type instance which holds this
+    !> sorted character sequence
+    interface sort
+        module procedure :: sort_string
+    end interface sort
 
     !> Return the character sequence represented by the string.
     !>
@@ -522,6 +530,14 @@ contains
 
     end function reverse_string
 
+    !> Sorts the character sequence hold by the input string
+    elemental function sort_string(string) result(sorted_string)
+        type(string_type), intent(in) :: string
+        type(string_type) :: sorted_string
+
+        sorted_string%raw = sort_(maybe(string))
+
+    end function sort_string
 
     !> Position of a sequence of character within a character sequence.
     !> In this version both character sequences are represented by a string.

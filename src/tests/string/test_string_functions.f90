@@ -2,7 +2,7 @@
 module test_string_functions
     use stdlib_error, only : check
     use stdlib_string_type, only : string_type, assignment(=), operator(==), &
-                                    to_lower, to_upper, to_title, reverse
+                                    to_lower, to_upper, to_title, reverse, sort
     implicit none
 
 contains
@@ -43,6 +43,15 @@ contains
 
     end subroutine test_reverse_string
 
+    subroutine test_sort_string
+        type(string_type) :: test_string, compare_string
+        test_string = "Sort my Life"
+        compare_string = "  LSefimorty"
+
+        call check(sort(test_string) == compare_string)
+
+    end subroutine test_sort_string
+
 end module test_string_functions
 
 
@@ -54,5 +63,6 @@ program tester
     call test_to_upper_string
     call test_to_title_string
     call test_reverse_string
+    call test_sort_string
 
 end program tester
