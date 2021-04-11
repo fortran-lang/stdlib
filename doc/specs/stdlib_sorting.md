@@ -47,8 +47,8 @@ data:
 * `ORD_SORTING` is intended to provide indices for sorting arrays of
   derived type data, based on the ordering of an intrinsic component
   of the derived type.
-* `UNORD_SORT` is intended to sort simple arrays of intrinsic data 
-  that are effectively unordered before the sort; 
+* `UNORD_SORT` is intended to sort simple arrays of intrinsic data
+  that are effectively unordered before the sort;
 
 #### The `ORD_SORT` subroutine
 
@@ -143,21 +143,21 @@ housekeeping it has slower runtime performance than `ORD_SORT`.
 provided as optional `work` and `iwork` arguments or allocated
 internally on the stack.
 
-#### The `UNORD_SORT` subroutines 
+#### The `UNORD_SORT` subroutines
 
 `UNORD_SORT` uses the [`introsort` sorting algorithm of David Musser]
-(http://www.cs.rpi.edu/~musser/gp/introsort.ps). `introsort` is a hybrid 
+(http://www.cs.rpi.edu/~musser/gp/introsort.ps). `introsort` is a hybrid
 unstable comparison algorithm combining `quicksort`, `insertion sort`,
 and `heap sort`. While this algorithm's runtime performance is always
 O(N Ln(N)), it is relatively fast on randomly ordered data, but
 inconsistent in performance on partly sorted data. David Musser has
 given permission to include a variant of `introsort` in the Fortran
-Standard Library under the MIT license provided we cite: 
+Standard Library under the MIT license provided we cite:
 
     Musser, D.R., “Introspective Sorting and Selection Algorithms,”
-    Software—Practice and Experience, Vol. 27(8), 983–993 (August 1997). 
+    Software—Practice and Experience, Vol. 27(8), 983–993 (August 1997).
 
-as the official source of the algorithm. 
+as the official source of the algorithm.
 
 As with `introsort`, `UNORD_SORT` is an unstable hybrid algorithm.
 First it examines the array and estimates the depth of recursion a
@@ -440,14 +440,14 @@ We have performed benchmarks of the procedures on nine different
 arrays each of size `2**20`:
 
 * Blocks - the array is divided into siz blocks, each of distinct
-  uniformly increasing integers. 
-* Decreasing - values decrease uniformly from `2**20-1` to `0`. 
+  uniformly increasing integers.
+* Decreasing - values decrease uniformly from `2**20-1` to `0`.
 * Identical - all integers have the same value of 10.
 * Increasing - values increase uniformly from `0` to `2**20-1`.
-* Random dense - the integers are generated randomly from a set of 
-  values from `0` to `2**18-1` so duplicates are dense. 
-* Random order - a set of integers from `0` to `2**20 - 1` in random 
-  order. 
+* Random dense - the integers are generated randomly from a set of
+  values from `0` to `2**18-1` so duplicates are dense.
+* Random order - a set of integers from `0` to `2**20 - 1` in random
+  order.
 * Random sparse - the integers are generated randomly from a set of
   values from `0` to `2**22-1` so duplicates are sparse.
 * Random-3 - the increasing array has 3 random exchanges of individual
