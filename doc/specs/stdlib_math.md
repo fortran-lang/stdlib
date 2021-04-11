@@ -22,8 +22,6 @@ title: math
 Limits the input value `x` to the given interval [`xmin`, `xmax`] (interval is `xmin` and `xmax` inclusive). Returns a value which lies in the given interval and is closest to the input value `x`.  
 If the input value `x` already lies in the given interval, then the output value will be equal to the input value.
 
-Note: A valid input must **NOT** have `xmin` value greater than `xmax` value.
-
 #### Syntax
 
 `res = [[stdlib_math(module):clip(interface)]] (x, xmin, xmax)`
@@ -40,7 +38,7 @@ Elemental function.
 
 `x`: scalar of either `integer` or `real`. This argument is `intent(in)`.  
 `xmin`: scalar of either `integer` or `real`. This argument is `intent(in)`.  
-`xmax`: scalar of either `integer` or `real`. This argument is `intent(in)`.
+`xmax`: scalar of either `integer` or `real`, which must be greater than or equal to `xmin`. This argument is `intent(in)`.
 
 Note: All arguments must have same `type` and same `kind`.
 
