@@ -11,25 +11,23 @@ module stdlib_math
     private
     public :: clip
 
-
     interface clip
     #:for k1, t1 in IR_KINDS_TYPES
         module procedure clip_${t1}$_${k1}$
     #:endfor
     end interface clip
 
-
-    contains
+contains
     
-        #:for k1, t1 in IR_KINDS_TYPES
-        elemental function clip_${t1}$_${k1}$(x, xmin, xmax) result(res)
-            ${t1}$(${k1}$), intent(in) :: x
-            ${t1}$(${k1}$), intent(in) :: xmin
-            ${t1}$(${k1}$), intent(in) :: xmax
-            ${t1}$(${k1}$) :: res
-            res = max(min(x, xmax), xmin)
-        end function clip_${t1}$_${k1}$
+    #:for k1, t1 in IR_KINDS_TYPES
+    elemental function clip_${t1}$_${k1}$(x, xmin, xmax) result(res)
+        ${t1}$(${k1}$), intent(in) :: x
+        ${t1}$(${k1}$), intent(in) :: xmin
+        ${t1}$(${k1}$), intent(in) :: xmax
+        ${t1}$(${k1}$) :: res
+        res = max(min(x, xmax), xmin)
+    end function clip_${t1}$_${k1}$
 
-        #:endfor
+    #:endfor
 
 end module stdlib_math
