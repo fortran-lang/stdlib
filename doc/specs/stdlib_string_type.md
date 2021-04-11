@@ -124,6 +124,90 @@ end program demo
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### Constructor from integer scalar
+
+#### Description
+
+The module defines a constructor to create a string type from an integer scalar.
+
+#### Syntax
+
+`res = [[stdlib_string_type(module):string_type(interface)]] (string)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument
+
+`val`: shall be a scalar integer value. It is an `intent(in)` argument.
+
+#### Result value
+
+The result is an instance of `string_type`.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  string = string_type(42)
+  ! len(string) == 2
+  string = string_type(-289)
+  ! len(string) == 4
+end program demo
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### Constructor from logical scalar
+
+#### Description
+
+The module defines a constructor to create a string type from a logical scalar.
+
+#### Syntax
+
+`res = [[stdlib_string_type(module):string_type(interface)]] (string)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument
+
+`val`: shall be a scalar logical value. It is an `intent(in)` argument.
+
+#### Result value
+
+The result is an instance of `string_type`.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  string = string_type(.true.)
+  ! len(string) == 1
+  string = string_type(.false.)
+  ! len(string) == 1
+end program demo
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Assignment of character scalar
 
 #### Description
@@ -143,7 +227,7 @@ Experimental
 
 #### Class
 
-Elemntal subroutine, `assignment(=)`.
+Elemental subroutine, `assignment(=)`.
 
 #### Example
 
