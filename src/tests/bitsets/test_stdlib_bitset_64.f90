@@ -183,20 +183,20 @@ contains
 
         if ( set5 /= set0 .or. set4 /= set1 .or. set3 /= set2 ) then
             error stop procedure // ' transfer to and from units using ' // &
-                ' bitset literals with advance == "no" failed.'
+                'bitset literals with advance == "no" failed.'
         else
             write(*,*) 'Transfer to and from units using ' // &
                 'write_bitset_unit and read_bitset_unit with ' // &
                 'advance=="no" succeeded.'
         end if
 
-        open( newunit=unit, file='test.bin', status='replace', &
+        open( newunit=unit, file='test64.bin', status='replace', &
             form='unformatted', action='write' )
         call set2 % output(unit)
         call set1 % output(unit)
         call set0 % output(unit)
         close( unit )
-        open( newunit=unit, file='test.bin', status='old', &
+        open( newunit=unit, file='test64.bin', status='old', &
             form='unformatted', action='read' )
         call set5 % input(unit)
         call set4 % input(unit)
@@ -205,19 +205,19 @@ contains
 
         if ( set3 /= set0 .or. set4 /= set1 .or. set5 /= set2 ) then
             error stop procedure // ' transfer to and from units using ' // &
-                ' output and input failed.'
+                'output and input failed.'
         else
             write(*,*) 'Transfer to and from units using ' // &
                 'output and input succeeded.'
         end if
 
-        open( newunit=unit, file='test.bin', status='replace', &
+        open( newunit=unit, file='test64.bin', status='replace', &
             form='unformatted', access='stream', action='write' )
         call set2 % output(unit)
         call set1 % output(unit)
         call set0 % output(unit)
         close( unit )
-        open( newunit=unit, file='test.bin', status='old', &
+        open( newunit=unit, file='test64.bin', status='old', &
             form='unformatted', access='stream', action='read' )
         call set5 % input(unit)
         call set4 % input(unit)
@@ -226,7 +226,7 @@ contains
 
         if ( set3 /= set0 .or. set4 /= set1 .or. set5 /= set2 ) then
             error stop procedure // ' transfer to and from units using ' // &
-                ' stream output and input failed.'
+                'stream output and input failed.'
         else
             write(*,*) 'Transfer to and from units using ' // &
                 'stream output and input succeeded.'
