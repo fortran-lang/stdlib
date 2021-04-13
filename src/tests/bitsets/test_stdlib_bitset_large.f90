@@ -254,14 +254,12 @@ contains
             'write_bitset'
 
         call set2 % from_string( bitstring_33 )
-        open( newunit=unit, file='test_large_1.txt', status='replace', &
-            form='formatted', action='write' )
+        open( newunit=unit, status='scratch', form='formatted', &
+              action='readwrite' )
         call set2 % write_bitset(unit)
         call set1 % write_bitset(unit)
         call set0 % write_bitset(unit)
-        close( unit )
-        open( newunit=unit, file='test_large_1.txt', status='old', &
-            form='formatted', action='read' )
+        rewind( unit )
         call set3 % read_bitset(unit)
         call set5 % read_bitset(unit)
         call set4 % read_bitset(unit)
@@ -273,17 +271,13 @@ contains
                 'plain write_bitset_unit and read_bitset_unit succeeded.'
         end if
 
-        close( unit )
+        rewind( unit )
 
         call set12 % from_string( bitstring_33 // bitstring_33 )
-        open( newunit=unit, file='test_large_2.txt', status='replace', &
-            form='formatted', action='write' )
         call set12 % write_bitset(unit)
         call set11 % write_bitset(unit)
         call set10 % write_bitset(unit)
-        close( unit )
-        open( newunit=unit, file='test_large_2.txt', status='old', &
-            form='formatted', action='read' )
+        rewind( unit )
         call set13 % read_bitset(unit)
         call set15 % read_bitset(unit)
         call set14 % read_bitset(unit)
@@ -295,16 +289,12 @@ contains
                 'plain write_bitset_unit and read_bitset_unit succeeded.'
         end if
 
-        close( unit )
+        rewind( unit )
 
-        open( newunit=unit, file='test_large_3.txt', status='replace', &
-            form='formatted', action='write' )
         call set2 % write_bitset(unit, advance='no')
         call set1 % write_bitset(unit, advance='no')
         call set0 % write_bitset(unit)
-        close( unit )
-        open( newunit=unit, file='test_large_3.txt', status='old', &
-            form='formatted', action='read' )
+        rewind( unit )
         call set3 % read_bitset(unit, advance='no')
         call set4 % read_bitset(unit, advance='no')
         call set5 % read_bitset(unit)
@@ -317,16 +307,12 @@ contains
                 'advance=="no" succeeded.'
         end if
 
-        close( unit )
+        rewind( unit )
 
-        open( newunit=unit, file='test_large_4.txt', status='replace', &
-            form='formatted', action='write' )
         call set12 % write_bitset(unit, advance='no')
         call set11 % write_bitset(unit, advance='no')
         call set10 % write_bitset(unit)
-        close( unit )
-        open( newunit=unit, file='test_large_4.txt', status='old', &
-            form='formatted', action='read' )
+        rewind( unit )
         call set13 % read_bitset(unit, advance='no')
         call set14 % read_bitset(unit, advance='no')
         call set15 % read_bitset(unit)
@@ -339,14 +325,14 @@ contains
                 'advance=="no" succeeded.'
         end if
 
-        open( newunit=unit, file='test_large.bin', status='replace', &
-            form='unformatted', action='write' )
+        close(unit)
+
+        open( newunit=unit, form='unformatted', status='scratch', &
+              action='readwrite' )
         call set2 % output(unit)
         call set1 % output(unit)
         call set0 % output(unit)
-        close( unit )
-        open( newunit=unit, file='test_large.bin', status='old', &
-            form='unformatted', action='read' )
+        rewind( unit )
         call set5 % input(unit)
         call set4 % input(unit)
         call set3 % input(unit)
@@ -360,14 +346,12 @@ contains
 
         close( unit )
 
-        open( newunit=unit, file='test_large.bin', status='replace', &
-            form='unformatted', access='stream', action='write' )
+        open( newunit=unit, form='unformatted', access='stream', &
+              status='scratch', action='readwrite' )
         call set2 % output(unit)
         call set1 % output(unit)
         call set0 % output(unit)
-        close( unit )
-        open( newunit=unit, file='test_large.bin', status='old', &
-            form='unformatted', access='stream', action='read' )
+        rewind( unit )
         call set5 % input(unit)
         call set4 % input(unit)
         call set3 % input(unit)
@@ -381,14 +365,12 @@ contains
 
         close( unit )
 
-        open( newunit=unit, file='test_large.bin', status='replace', &
-            form='unformatted', action='write' )
+        open( newunit=unit, form='unformatted', status='scratch', &
+              action='readwrite' )
         call set12 % output(unit)
         call set11 % output(unit)
         call set10 % output(unit)
-        close( unit )
-        open( newunit=unit, file='test_large.bin', status='old', &
-            form='unformatted', action='read' )
+        rewind( unit )
         call set15 % input(unit)
         call set14 % input(unit)
         call set13 % input(unit)
@@ -401,14 +383,12 @@ contains
         end if
         close(unit)
 
-        open( newunit=unit, file='test_large.bin', status='replace', &
-            form='unformatted', access='stream', action='write' )
+        open( newunit=unit, form='unformatted', access='stream', &
+              status='scratch', action='readwrite' )
         call set12 % output(unit)
         call set11 % output(unit)
         call set10 % output(unit)
-        close( unit )
-        open( newunit=unit, file='test_large.bin', status='old', &
-            form='unformatted', access='stream', action='read' )
+        rewind( unit )
         call set15 % input(unit)
         call set14 % input(unit)
         call set13 % input(unit)

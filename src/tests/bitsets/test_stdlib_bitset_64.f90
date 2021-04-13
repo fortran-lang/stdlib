@@ -147,14 +147,12 @@ contains
             'write_bitset'
 
         call set2 % from_string( bitstring_33 )
-        open( newunit=unit, file='test64_1.txt', status='replace', &
-            form='formatted', action='write' )
+        open( newunit=unit, status='scratch', form='formatted', &
+              action='readwrite' )
         call set2 % write_bitset(unit)
         call set1 % write_bitset(unit)
         call set0 % write_bitset(unit)
-        close( unit )
-        open( newunit=unit, file='test64_1.txt', status='old', &
-            form='formatted', action='read' )
+        rewind( unit )
         call set3 % read_bitset(unit)
         call set5 % read_bitset(unit)
         call set4 % read_bitset(unit)
@@ -167,16 +165,12 @@ contains
                 'plain write_bitset_unit and read_bitset_unit succeeded.'
         end if
 
-        close( unit )
+        rewind( unit )
 
-        open( newunit=unit, file='test64_2.txt', status='replace', &
-            form='formatted', action='write' )
         call set2 % write_bitset(unit, advance='no')
         call set1 % write_bitset(unit, advance='no')
         call set0 % write_bitset(unit)
-        close( unit )
-        open( newunit=unit, file='test64_2.txt', status='old', &
-            form='formatted', action='read' )
+        rewind( unit )
         call set3 % read_bitset(unit, advance='no')
         call set4 % read_bitset(unit, advance='no')
         call set5 % read_bitset(unit)
@@ -189,15 +183,14 @@ contains
                 'write_bitset_unit and read_bitset_unit with ' // &
                 'advance=="no" succeeded.'
         end if
+        close(unit)
 
-        open( newunit=unit, file='test64.bin', status='replace', &
-            form='unformatted', action='write' )
+        open( newunit=unit, form='unformatted', status='scratch', &
+              action='readwrite' )
         call set2 % output(unit)
         call set1 % output(unit)
         call set0 % output(unit)
-        close( unit )
-        open( newunit=unit, file='test64.bin', status='old', &
-            form='unformatted', action='read' )
+        rewind( unit )
         call set5 % input(unit)
         call set4 % input(unit)
         call set3 % input(unit)
@@ -211,14 +204,12 @@ contains
                 'output and input succeeded.'
         end if
 
-        open( newunit=unit, file='test64.bin', status='replace', &
-            form='unformatted', access='stream', action='write' )
+        open( newunit=unit, form='unformatted', access='stream', &
+              status='scratch', action='readwrite' )
         call set2 % output(unit)
         call set1 % output(unit)
         call set0 % output(unit)
-        close( unit )
-        open( newunit=unit, file='test64.bin', status='old', &
-            form='unformatted', access='stream', action='read' )
+        rewind( unit )
         call set5 % input(unit)
         call set4 % input(unit)
         call set3 % input(unit)
