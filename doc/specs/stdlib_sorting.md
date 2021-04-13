@@ -32,9 +32,7 @@ versions corresponding to differend types of array arguments.
 
 The `int_size` parameter is used to specify the kind of integer used
 in indexing the various arrays. Currently the module sets `int_size`
-to the value of `int64` from the intrinsic `ISO_FORTRAN_ENV` module.
-For many applications a value of `INT32` would be sufficient for
-addressing and would save some stack space for the subroutines,
+to the value of `int64` from the `stdlib_kinds` module.
 
 ### The module subroutines
 
@@ -43,29 +41,26 @@ subroutines intended to sort three different kinds of arrays of
 data:
 * `ORD_SORT` is intended to sort simple arrays of intrinsic data
   that have significant sections that were partially ordered before
-  the sort; and
+  the sort;
 * `ORD_SORTING` is intended to provide indices for sorting arrays of
   derived type data, based on the ordering of an intrinsic component
-  of the derived type.
+  of the derived type; and
 * `UNORD_SORT` is intended to sort simple arrays of intrinsic data
-  that are effectively unordered before the sort;
+  that are effectively unordered before the sort.
 
-#### The `ORD_SORT` subroutine
+#### Licensing
 
-`ORD_SORT` is a translation of the [`rust sort` sorting algorithm]
-(https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs)
-which in turn is inspired by the [`timsort` algorithm of Tim Peters]
-(http://svn.python.org/projects/python/trunk/Objects/listsort.txt).
-`ORD_SORT` is a hybrid stable comparison algorithm combining `merge sort`,
-and `insertion sort`. It has always at worst O(N Ln(N)) runtime
-performance in sorting random data, having a performance about 15-25%
-slower than `UNORD_SORT` on such data. However it has much better
-performance than `UNORD_SORT` on partially sorted data, having O(N)
-performance on uniformly increasing or decreasing data.
+The Fortran Standard Library is distributed under the MIT
+License. However components of the library may be based on code with
+additional licensing restriction. In particular `ORD_SORT`,
+`ORD_SORTING`, and `UNORD_SORT` are translations of codes with their
+own distribution restrictions.
 
-The [`rust sort` implementation]
-(https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs)
-is distributed with the header:
+The `ORD_SORT` and `ORD_SORTING` subroutines are essentially
+translations to Fortran 2008 of the `"rust" sort` of the Rust Lsnguage
+distributed as part of
+[`slice.rs`](https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs).
+The header of the `slice.rs` file has as its licensing requirements:
 
     Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT
     file at the top-level directory of this distribution and at
@@ -77,19 +72,48 @@ is distributed with the header:
     option. This file may not be copied, modified, or distributed
     except according to those terms.
 
-so the license for the original code is compatible with the use of
+so the license for the `slice.rs` code is compatible with the use of
 modified versions of the code in the Fortran Standard Library under
 the MIT license.
 
-As with `timsort`, `ORD_SORT` is a stable hybrid algorithm.
-It begins by traversing the array starting in its tail attempting to
-identify `runs` in the array, where a run is either a uniformly
-decreasing sequence, `ARRAY(i-1) > ARRAY(i)`, or non-decreasing,
-`ARRAY(i-1) <= ARRAY(i)`, sequence. Decreasing sequences are reversed.
-Then, if the sequence has less than `MIN_RUN` elements, previous
-elements in the array are added to the run using `insertion sort`
-until the run contains `MIN_RUN` elements or the array is completely
-processed. As each run is identified the start and length of the run
+The `UNORD_SORT` subroutine is essentially a translation to Fortran
+2008 of the
+[`introsort`]((http://www.cs.rpi.edu/~musser/gp/introsort.ps) of David
+Musser.  David Musser has given permission to include a variant of
+`introsort` in the Fortran Standard Library under the MIT license
+provided we cite:
+
+    Musser, D.R., “Introspective Sorting and Selection Algorithms,”
+    Software—Practice and Experience, Vol. 27(8), 983–993 (August 1997).
+
+as the official source of the algorithm.
+
+
+#### The `ORD_SORT` subroutine
+
+`ORD_SORT` is a translation of the `"Rust" sort` sorting algorithm
+contained in [`slice.rs`]
+(https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs).
+`"Rust" sort`, in turn, is inspired by the [`timsort` algorithm]
+(http://svn.python.org/projects/python/trunk/Objects/listsort.txt)
+that Tim Peters created for the Python Language.
+`ORD_SORT` is a hybrid stable comparison algorithm combining `merge sort`,
+and `insertion sort`. It has always at worst O(N Ln(N)) runtime
+performance in sorting random data, having a performance about 15-25%
+slower than `UNORD_SORT` on such data. However it has much better
+performance than `UNORD_SORT` on partially sorted data, having O(N)
+performance on uniformly increasing or decreasing data.
+
+
+`ORD_SORt` begins by traversing the array starting in its tail
+attempting to identify `runs` in the array, where a run is either a
+uniformly decreasing sequence, `ARRAY(i-1) > ARRAY(i)`, or a
+non-decreasing, `ARRAY(i-1) <= ARRAY(i)`, sequence. Once deliminated
+decreasing sequences are reversed in their order. Then, if the
+sequence has less than `MIN_RUN` elements, previous elements in the
+array are added to the run using `insertion sort` until the run
+contains `MIN_RUN` elements or the array is completely processed. As
+each run is identified the start and length of the run 
 is then pushed onto a stack and the stack is then processed using
 `merge` until it obeys the stack invariants:
 
@@ -101,39 +125,22 @@ Ln(N))`. However, because of the identification of decreasing and
 non-decreasing runs, processing of structured data can be much faster,
 with processing of uniformly decreasing or non-decreasing arrays being
 of order O(N). The result in our tests is that `ORD_SORT` is about
-15-25% slower than `UNORD_SORT` on purely random data, depending on
-the compiler, but can be more than an order of magnitude faster than
-`UNORD_SORT` on highly structured data. As a modified `merge sort`,
-`ORD_SORT` requires the use of a "scratch" array, that may be provided
-as an optional `work` argument or allocated internally on the stack.
+25% slower than `UNORD_SORT` on purely random data, depending on
+the compiler, but can be `Ln(N)` faster than `UNORD_SORT` on highly
+structured data. As a modified `merge sort`, `ORD_SORT` requires the
+use of a "scratch" array, that may be provided as an optional `work`
+argument or allocated internally on the stack.
 
 #### The `ORD_SORTING` subroutine
 
-The `UNORD_SORT` and `ORD_SORT` subroutines can sort isolated arrays
-of intrinsic types, but do nothing for the sorting of arrays of
-derived types. For arrays of derived types what is useful is an array
-of indices that maps the original array to an array sorted based on the
-value of a component of the derived type. For such a sort, a stable
-sort is useful, therefore the module provides a subroutine,
-`ORD_SORTING`, that generates such an array of indices based on
-the `ORD_SORT` algorithm.
-
-As `ORD_SORT` is also based on the `rust sort` algorithm the `rust
-sort` license must be acknowledged:
-
-    Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT
-    file at the top-level directory of this distribution and at
-    http://rust-lang.org/COPYRIGHT.
-
-    Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
-    http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
-    <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
-    option. This file may not be copied, modified, or distributed
-    except according to those terms.
-
-noting that the Fortran Standard Library is released under the MIT
-license so that incorporation of the `rust sort` algorithm is
-compatible with its license.
+The `UNORD_SORT` and `ORD_SORT` subroutines can sort rank 1 isolated
+arrays of intrinsic types, but do nothing for the coordinated sorting
+of related data, e.g., multiple related rank 1 arrays, higher rank
+arrays, or arrays of derived types. For such related data, what is
+useful is an array of indices that maps a rank 1 array to its sorted
+form. For such a sort, a stable sort is useful, therefore the module
+provides a subroutine, `ORD_SORTING`, that generates such an array of
+indices based on the `ORD_SORT` algorithm.
 
 The logic of `ORD_SORTING` parallels that of `ORD_SORT`, with
 additional housekeeping to keep the array of indices consistent with
@@ -145,19 +152,12 @@ internally on the stack.
 
 #### The `UNORD_SORT` subroutines
 
-`UNORD_SORT` uses the [`introsort` sorting algorithm of David Musser]
-(http://www.cs.rpi.edu/~musser/gp/introsort.ps). `introsort` is a hybrid
-unstable comparison algorithm combining `quicksort`, `insertion sort`,
-and `heap sort`. While this algorithm's runtime performance is always
-O(N Ln(N)), it is relatively fast on randomly ordered data, but
-inconsistent in performance on partly sorted data. David Musser has
-given permission to include a variant of `introsort` in the Fortran
-Standard Library under the MIT license provided we cite:
-
-    Musser, D.R., “Introspective Sorting and Selection Algorithms,”
-    Software—Practice and Experience, Vol. 27(8), 983–993 (August 1997).
-
-as the official source of the algorithm.
+`UNORD_SORT` uses the `introsort` sorting algorithm of David Musser.
+`introsort` is a hybrid unstable comparison algorithm combining
+`quicksort`, `insertion sort`, and `heap sort`. While this algorithm's
+runtime performance is always O(N Ln(N)), it is relatively fast on
+randomly ordered data, but inconsistent in performance on partly
+sorted data.as the official source of the algorithm.
 
 As with `introsort`, `UNORD_SORT` is an unstable hybrid algorithm.
 First it examines the array and estimates the depth of recursion a
@@ -260,7 +260,7 @@ element of `array` is a `NaN`.
 	...
 ```
 
-#### `ord_sorting` - creates an arry of sorting indices for an input array.
+#### `ord_sorting` - creates an array of sorting indices for an input array.
 
 ##### Status
 
@@ -329,8 +329,52 @@ is a `NaN`. It should be emphasized that the order of `array` will
 typically be different on return.
 
 
-##### Example
+##### Examples
 
+Sorting a related rank one array:
+
+```Fortran
+	subroutine sort_related_data( a, b, work, index, iwork )
+	    ! Sort `b` in terms or its related array `a`
+	    integer, intent(inout)           :: a(:)
+		integer(int32), intent(inout)    :: b(:) ! The same size as a
+		integer(int32), intent(inout)    :: work(:)
+		integer(int_size), intent(inout) :: index(:)
+		integer(int_size), intent(inout) :: iwork(:)
+		! Find the indices to sort a
+		call ord_sorting(a, index(1:size(a)),&
+		    work(1:size(a)/2), iwork(1:size(a)/2))
+		! Sort b based on the sorting of a
+		b(:) = b( index(1:size(a)) )
+	end subroutine sort_related_data
+```
+
+Sorting a rank 2 array based on the data in a column
+
+```Fortran
+	subroutine sort_related_data( array, column, work, index, iwork )
+	    ! Sort `a_data` in terms or its component `a`
+	    integer, intent(inout)           :: a(:,:)
+		integer(int32), intent(in)       :: column
+		integer(int32), intent(inout)    :: work(:)
+		integer(int_size), intent(inout) :: index(:)
+		integer(int_size), intent(inout) :: iwork(:)
+		integer, allocatable             :: dummy(:)
+		integer :: i
+		allocate(dummy(size(a, dim=1)))
+		! Extract a component of `a_data`
+		dummy(:) = a(:, column)
+		! Find the indices to sort the column
+		call ord_sorting(dummy, index(1:size(dummy)),&
+		    work(1:size(dummy)/2), iwork(1:size(dummy)/2))
+		! Sort a based on the sorting of its column
+		do i=1, size(a, dim=2)
+		    a(:, i) = a(index(1:size(a, dim=1)), i)
+		end do
+	end subroutine sort_related_data
+```
+
+Sorting an array of a derived type based on the dsta in one component
 ```Fortran
 	subroutine sort_a_data( a_data, a, work, index, iwork )
 	    ! Sort `a_data` in terms or its component `a`
@@ -455,9 +499,9 @@ arrays each of size `2**20`:
 * Random-10 - the final ten elements of the increasing array are
   replaced by random values.
 
-These benchmarks have been performed on two different processors, both
+These benchmarks have been performed on two different compilers, both
 on a MacBook Pro, featuring a 2.3 GHz Quad-Core Intel Core i5, with 8
-GB 2133 MHz LPDDR3 memory. The first processor was GNU Fortran
+GB 2133 MHz LPDDR3 memory. The first compiler was GNU Fortran
 (GCC) 10.2.0, with the following results:
 
 |   Type  | Elements |   Order       |    Method     | Time (s)  |
@@ -490,7 +534,7 @@ GB 2133 MHz LPDDR3 memory. The first processor was GNU Fortran
 | Integer | 1048576  |      Random 3 |    Unord_Sort |   0.13826 |
 | Integer | 1048576  |     Random 10 |    Unord_Sort |   0.35356 |
 
-The second processor was ifort (IFORT) 18.0.3 20180410, with the
+The second compiler was ifort (IFORT) 18.0.3 20180410, with the
 following results:
 
 |   Type  | Elements |   Order       |    Method     | Time (s)  |
