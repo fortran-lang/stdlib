@@ -108,3 +108,87 @@ program demo
   print'(a)', chomp("hello", substring="lo")   ! "hel"
 end program demo
 ```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `starts_with`
+
+#### Description
+
+Check if a *string* starts with a given *substring*.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):starts_with(interface)]] (string, substring)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `substring`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+
+#### Result value
+
+The result is of scalar logical type.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_strings, only : starts_with
+  implicit none
+  print'(a)', starts_with("pattern", "pat")  ! T
+  print'(a)', starts_with("pattern", "ern")  ! F
+end program demo
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `ends_with`
+
+#### Description
+
+Check if a *string* ends with a given *substring*.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):ends_with(interface)]] (string, substring)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `substring`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+
+#### Result value
+
+The result is of scalar logical type.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_strings, only : ends_with
+  implicit none
+  print'(a)', ends_with("pattern", "ern")  ! T
+  print'(a)', ends_with("pattern", "pat")  ! F
+end program demo
+```
