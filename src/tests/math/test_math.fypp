@@ -1,7 +1,5 @@
 ! SPDX-Identifier: MIT
-
-#:set INT_KINDS_TYPES = [("int8", "integer"), ("int16", "integer"), ("int32", "integer"), ("int64", "integer")]
-#:set REAL_KINDS_TYPES = [("sp", "real"), ("dp", "real"), ("qp", "real")]
+#:include "common.fypp"
 #:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
 
 module test_math
@@ -11,17 +9,17 @@ module test_math
 
     implicit none
 
-    contains
-    #:for k1, t1 in IR_KINDS_TYPES
-        subroutine test_clip_${t1}$_${k1}$(x, xmin, xmax, compare)
-            ${t1}$(${k1}$), intent(in) :: x, xmin, xmax, compare
+contains
 
-            call check(clip(x, xmin, xmax) == compare)
-        
-        end subroutine test_clip_${t1}$_${k1}$
+    #:for k1, t1 in IR_KINDS_TYPES
+    subroutine test_clip_${k1}$(x, xmin, xmax, compare)
+        ${t1}$, intent(in) :: x, xmin, xmax, compare
+
+        call check(clip(x, xmin, xmax) == compare)
+    
+    end subroutine test_clip_${k1}$
 
     #:endfor
-
 end module test_math
 
 
@@ -49,19 +47,17 @@ program tester
                         [('3.025_qp', '3.025_qp', '-5.77_qp', '3.025_qp'), ('-55891546.2_qp', '-689712245.23_qp', '-8958133457.23_qp', '-689712245.23_qp')] ]
 
     #:set checking_function = 0
-
     #:for k1, t1 in IR_KINDS_TYPES
-        ! type: ${t1}$, kind: ${k1}$
-            ! valid test cases
-        #:for case in valid_cases[checking_function]
-            call test_clip_${t1}$_${k1}$(${case[0]}$, ${case[1]}$, ${case[2]}$, ${case[3]}$)
-        #:endfor
-
-            ! invalid test cases
-        #:for case in invalid_cases[checking_function]
-            call test_clip_${t1}$_${k1}$(${case[0]}$, ${case[1]}$, ${case[2]}$, ${case[3]}$)
-        #:endfor
-        #:set checking_function = checking_function + 1
+    ! type: ${t1}$, kind: ${k1}$
+        ! valid test cases
+    #:for case in valid_cases[checking_function]
+        call test_clip_${k1}$(${case[0]}$, ${case[1]}$, ${case[2]}$, ${case[3]}$)
+    #:endfor
+        ! invalid test cases
+    #:for case in invalid_cases[checking_function]
+        call test_clip_${k1}$(${case[0]}$, ${case[1]}$, ${case[2]}$, ${case[3]}$)
     #:endfor
 
+    #:set checking_function = checking_function + 1
+    #:endfor
 end program tester
