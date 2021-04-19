@@ -15,8 +15,8 @@ module stdlib_quadrature
 
 
     interface trapz
-	!! version: experimental
-	!!
+        !! version: experimental
+        !!
         !! Integrates sampled values using trapezoidal rule
         !! ([Specification](../page/specs/stdlib_quadrature.html#description))
         #:for k1, t1 in REAL_KINDS_TYPES
@@ -24,7 +24,7 @@ module stdlib_quadrature
           ${t1}$, dimension(:), intent(in) :: y
           ${t1}$, intent(in) :: dx
           ${t1}$ :: integral
-        end function trapz_dx_${k1}$      
+        end function trapz_dx_${k1}$
         #:endfor
         #:for k1, t1 in REAL_KINDS_TYPES
         module function trapz_x_${k1}$(y, x) result(integral)
@@ -37,8 +37,8 @@ module stdlib_quadrature
 
 
     interface trapz_weights
-	!! version: experimental
-	!!
+        !! version: experimental
+        !!
         !! Integrates sampled values using trapezoidal rule weights for given abscissas
         !! ([Specification](../page/specs/stdlib_quadrature.html#description_1))
         #:for k1, t1 in REAL_KINDS_TYPES
@@ -51,8 +51,8 @@ module stdlib_quadrature
 
 
     interface simps
-	!! version: experimental
-	!!
+        !! version: experimental
+        !!
         !! Integrates sampled values using Simpson's rule
         !! ([Specification](../page/specs/stdlib_quadrature.html#description_3))
         ! "recursive" is an implementation detail
@@ -76,8 +76,8 @@ module stdlib_quadrature
 
 
     interface simps_weights
-	!! version: experimental
-	!!
+        !! version: experimental
+        !!
         !! Integrates sampled values using trapezoidal rule weights for given abscissas
         !! ([Specification](../page/specs/stdlib_quadrature.html#description_3))
         #:for k1, t1 in REAL_KINDS_TYPES

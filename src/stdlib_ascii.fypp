@@ -1,8 +1,11 @@
+#:include "common.fypp"
+
 !> The `stdlib_ascii` module provides procedures for handling and manipulating
 !> intrinsic character variables and constants.
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_ascii.html).
 module stdlib_ascii
+    use stdlib_kinds, only : int8, int16, int32, int64
 
     implicit none
     private
@@ -17,6 +20,17 @@ module stdlib_ascii
 
     ! Character conversion functions
     public :: to_lower, to_upper, to_title, reverse
+    public :: to_string
+
+    !> Version: experimental
+    !>
+    !> Create a character string representing the value of the provided variable.
+    interface to_string
+    #:for kind in INT_KINDS
+        module procedure :: to_string_integer_${kind}$
+        module procedure :: to_string_logical_${kind}$
+    #:endfor
+    end interface to_string
 
     ! All control characters in the ASCII table (see www.asciitable.com).
     character(len=1), public, parameter :: NUL = achar(int(z'00')) !! Null
@@ -63,6 +77,36 @@ module stdlib_ascii
     character(len=*), public, parameter :: uppercase = letters(1:26) !! A .. Z
     character(len=*), public, parameter :: lowercase = letters(27:) !! a .. z
     character(len=*), public, parameter :: whitespace = " "//TAB//VT//CR//LF//FF !! ASCII _whitespace
+
+
+    !> Returns a new character sequence which is the lower case 
+    !> version of the input character sequence
+    !> This method is pure and returns a character sequence
+    interface to_lower
+        module procedure :: to_lower
+    end interface to_lower
+
+    !> Returns a new character sequence which is the upper case
+    !> version of the input character sequence
+    !> This method is pure and returns a character sequence
+    interface to_upper
+        module procedure :: to_upper
+    end interface to_upper
+
+    !> Returns a new character sequence which is the title case
+    !> version of the input character sequence
+    !> This method is pure and returns a character sequence
+    interface to_title
+        module procedure :: to_title
+    end interface to_title
+
+    !> Returns a new character sequence which is reverse of
+    !> the input charater sequence
+    !> This method is pure and returns a character sequence
+    interface reverse
+        module procedure :: reverse
+    end interface reverse
+    
 
 contains
 
@@ -281,5 +325,52 @@ contains
         end do
 
     end function reverse
+
+    #:for kind in INT_KINDS
+    !> Represent an integer of kind ${kind}$ as character sequence
+    pure function to_string_integer_${kind}$(val) result(string)
+        integer, parameter :: ik = ${kind}$
+        integer(ik), intent(in) :: val
+        character(len=:), allocatable :: string
+        integer, parameter :: buffer_len = range(val)+2
+        character(len=buffer_len) :: buffer
+        integer :: pos
+        integer(ik) :: n
+        character(len=1), parameter :: numbers(0:9) = &
+            ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+        if (val == 0_ik) then
+            string = numbers(0)
+            return
+        end if
+
+        n = abs(val)
+        buffer = ""
+
+        pos = buffer_len + 1
+        do while (n > 0_ik)
+            pos = pos - 1
+            buffer(pos:pos) = numbers(mod(n, 10_ik))
+            n = n/10_ik
+        end do
+        if (val < 0_ik) then
+            pos = pos - 1
+            buffer(pos:pos) = '-'
+        end if
+
+        string = buffer(pos:)
+    end function to_string_integer_${kind}$
+    #:endfor
+
+    #:for kind in INT_KINDS
+    !> Represent an logical of kind ${kind}$ as character sequence
+    pure function to_string_logical_${kind}$(val) result(string)
+        integer, parameter :: ik = ${kind}$
+        logical(ik), intent(in) :: val
+        character(len=1) :: string
+
+        string = merge("T", "F", val)
+    end function to_string_logical_${kind}$
+    #:endfor
 
 end module stdlib_ascii

@@ -2,6 +2,7 @@
 
 # Create a list of the files to be preprocessed
 set(fppFiles
+    stdlib_ascii.fypp
     stdlib_bitsets.fypp
     stdlib_bitsets_64.fypp
     stdlib_bitsets_large.fypp
@@ -23,6 +24,7 @@ set(fppFiles
     stdlib_quadrature_simps.fypp
     stdlib_stats_distribution_PRNG.fypp
     stdlib_math.fypp
+    stdlib_string_type.fypp
 )
 
 
@@ -38,11 +40,10 @@ endif()
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
-    stdlib_ascii.f90
     stdlib_error.f90
     stdlib_kinds.f90
     stdlib_logger.f90
-    stdlib_string_type.f90
+    stdlib_strings.f90
     stdlib_system.F90
     ${outFiles}
 )
