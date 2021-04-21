@@ -5,7 +5,7 @@ labels: bug
 ---
 
 <!-- Thanks for taking the time to report a bug -->
-<!-- Fill in all entries in this template to make the process as efficent as possible for everyone involved -->
+<!-- Fill in all entries in this template to make the process as efficient as possible for everyone involved -->
 
 **Describe the issue**
 <!-- Please include steps to reproduce your issue, provide example code snippets if possible -->
