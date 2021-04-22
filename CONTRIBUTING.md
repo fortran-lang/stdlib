@@ -65,7 +65,7 @@ minimal back-and-forth.
 Before suggesting a new feature, take a moment to find out if it fits the scope
 of the project, or if it has already been discussed. It is up to you to provide
 a strong argument to convince the community of the benefits of this feature.
-Please provide as much details and context as possible. If applicable, include a
+Please provide as many details and context as possible. If applicable, include a
 mocked-up snippet of what the output or behavior would look like with this
 feature implemented. “Crazy,” out-of-the-box ideas are especially welcome.
 It is quite possible we have not considered such solutions yet.
