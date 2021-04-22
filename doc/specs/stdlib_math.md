@@ -52,8 +52,8 @@ The output is a scalar of `type` and `kind` same as to that of the arguments.
 Here inputs are of type `integer` and kind `int32`
 ```fortran
 program demo_clip_integer
-  use stdlib_math
-  use stdlib_kinds
+  use stdlib_math, only: clip
+  use stdlib_kinds, only: int32
   implicit none
   integer(int32) :: x
   integer(int32) :: xmin
@@ -77,8 +77,8 @@ end program demo_clip_integer
 Here inputs are of type `real` and kind `sp`
 ```fortran
 program demo_clip_real
-  use stdlib_math
-  use stdlib_kinds
+  use stdlib_math, only: clip
+  use stdlib_kinds, only: sp
   implicit none
   real(sp) :: x
   real(sp) :: xmin
