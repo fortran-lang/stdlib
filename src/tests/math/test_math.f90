@@ -9,52 +9,52 @@ module test_math
 
 contains
 
-    subroutine test_clip_int8(x, xmin, xmax, compare)
-        integer(int8), intent(in) :: x, xmin, xmax, compare
+    subroutine test_clip_int8(x, xmin, xmax, answer)
+        integer(int8), intent(in) :: x, xmin, xmax, answer
 
-        call check(clip(x, xmin, xmax) == compare)
+        call check(clip(x, xmin, xmax) == answer, 'test_clip_int8 failed.', warn=.true.)
     
     end subroutine test_clip_int8
 
-    subroutine test_clip_int16(x, xmin, xmax, compare)
-        integer(int16), intent(in) :: x, xmin, xmax, compare
+    subroutine test_clip_int16(x, xmin, xmax, answer)
+        integer(int16), intent(in) :: x, xmin, xmax, answer
 
-        call check(clip(x, xmin, xmax) == compare)
+        call check(clip(x, xmin, xmax) == answer, 'test_clip_int16 failed.', warn=.true.)
     
     end subroutine test_clip_int16
 
-    subroutine test_clip_int32(x, xmin, xmax, compare)
-        integer(int32), intent(in) :: x, xmin, xmax, compare
+    subroutine test_clip_int32(x, xmin, xmax, answer)
+        integer(int32), intent(in) :: x, xmin, xmax, answer
 
-        call check(clip(x, xmin, xmax) == compare)
+        call check(clip(x, xmin, xmax) == answer, 'test_clip_int32 failed.', warn=.true.)
     
     end subroutine test_clip_int32
 
-    subroutine test_clip_int64(x, xmin, xmax, compare)
-        integer(int64), intent(in) :: x, xmin, xmax, compare
+    subroutine test_clip_int64(x, xmin, xmax, answer)
+        integer(int64), intent(in) :: x, xmin, xmax, answer
 
-        call check(clip(x, xmin, xmax) == compare)
+        call check(clip(x, xmin, xmax) == answer, 'test_clip_int64 failed.', warn=.true.)
     
     end subroutine test_clip_int64
 
-    subroutine test_clip_sp(x, xmin, xmax, compare)
-        real(sp), intent(in) :: x, xmin, xmax, compare
+    subroutine test_clip_sp(x, xmin, xmax, answer)
+        real(sp), intent(in) :: x, xmin, xmax, answer
 
-        call check(clip(x, xmin, xmax) == compare)
+        call check(clip(x, xmin, xmax) == answer, 'test_clip_sp failed.', warn=.true.)
     
     end subroutine test_clip_sp
 
-    subroutine test_clip_dp(x, xmin, xmax, compare)
-        real(dp), intent(in) :: x, xmin, xmax, compare
+    subroutine test_clip_dp(x, xmin, xmax, answer)
+        real(dp), intent(in) :: x, xmin, xmax, answer
 
-        call check(clip(x, xmin, xmax) == compare)
+        call check(clip(x, xmin, xmax) == answer, 'test_clip_dp failed.', warn=.true.)
     
     end subroutine test_clip_dp
 
-    subroutine test_clip_qp(x, xmin, xmax, compare)
-        real(qp), intent(in) :: x, xmin, xmax, compare
+    subroutine test_clip_qp(x, xmin, xmax, answer)
+        real(qp), intent(in) :: x, xmin, xmax, answer
 
-        call check(clip(x, xmin, xmax) == compare)
+        call check(clip(x, xmin, xmax) == answer, 'test_clip_qp failed.', warn=.true.)
     
     end subroutine test_clip_qp
 

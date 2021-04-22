@@ -19,7 +19,7 @@ SRCFYPP =\
         stdlib_stats_moment_mask.fypp \
         stdlib_stats_moment_scalar.fypp \
         stdlib_stats_var.fypp \
-		    stdlib_math.fypp \
+		stdlib_math.fypp \
         stdlib_stats_distribution_PRNG.fypp \
         stdlib_string_type.fypp
 

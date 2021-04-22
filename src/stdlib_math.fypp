@@ -25,5 +25,6 @@ contains
 
         res = max(min(x, xmax), xmin)
     end function clip_${k1}$
+    
     #:endfor
 end module stdlib_math
