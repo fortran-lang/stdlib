@@ -99,9 +99,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-latest, macos-latest]
         fc: [ifort]
     env:
+      MACOS_HPCKIT_URL: >-
+        https://registrationcenter-download.intel.com/akdlm/irc_nas/17398/m_HPCKit_p_2021.1.0.2681_offline.dmg
+      MACOS_FORTRAN_COMPONENTS: >-
+        intel.oneapi.mac.ifort-compiler
       FC: ${{ matrix.fc }}
 
     steps:
@@ -117,7 +121,21 @@ jobs:
       if: contains(matrix.os, 'ubuntu')
       run: ci/install_cmake.sh
 
-    - name: Add Intel repository
+    - name: Prepare for cache restore (OSX)
+      if: contains(matrix.os, 'macos')
+      run: |
+        sudo mkdir -p /opt/intel
+        sudo chown $USER /opt/intel
+
+    - name: Cache Intel install (OSX)
+      if: contains(matrix.os, 'macos')
+      id: cache-install
+      uses: actions/cache@v2
+      with:
+        path: /opt/intel/oneapi
+        key: install-${{ env.MACOS_HPCKIT_URL }}-${{ env.MACOS_FORTRAN_COMPONENTS }}
+
+    - name: Add Intel repository (Linux)
       if: contains(matrix.os, 'ubuntu')
       run: |
         wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
@@ -126,10 +144,31 @@ jobs:
         echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
         sudo apt-get update
 
-    - name: Install Intel oneAPI compiler
+    - name: Install Intel oneAPI compiler (Linux)
       if: contains(matrix.os, 'ubuntu')
       run: |
         sudo apt-get install intel-oneapi-compiler-fortran
+
+    - name: Install Intel oneAPI compiler (OSX)
+      if: contains(matrix.os, 'macos') && steps.cache-install.outputs.cache-hit != 'true'
+      run: |
+        curl --output webimage.dmg --url "$URL" --retry 5 --retry-delay 5
+        hdiutil attach webimage.dmg
+        if [ -z "$COMPONENTS" ]; then
+          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --eula=accept --continue-with-optional-error=yes --log-dir=.
+          installer_exit_code=$?
+        else
+          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$COMPONENTS" --eula=accept --continue-with-optional-error=yes --log-dir=.
+          installer_exit_code=$?
+        fi
+        hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
+        exit $installer_exit_code
+      env:
+        URL: ${{ env.MACOS_HPCKIT_URL }}
+        COMPONENTS: ${{ env.MACOS_FORTRAN_COMPONENTS }}
+
+    - name: Setup Intel oneAPI environment
+      run: |
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
 
