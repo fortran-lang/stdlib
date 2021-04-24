@@ -414,8 +414,8 @@ contains
                     end if
                 end do merge_lower
             else ! The right run is shorter
-                buf(0:array_len-mid) = array(mid:array_len-1)
-                ibuf(0:array_len-mid) = index(mid:array_len-1)
+                buf(0:array_len-mid-1) = array(mid:array_len-1)
+                ibuf(0:array_len-mid-1) = index(mid:array_len-1)
                 i = mid - 1
                 j = array_len - mid -1
                 merge_upper: do k = array_len-1, 0, -1
@@ -822,8 +822,8 @@ contains
                     end if
                 end do merge_lower
             else ! The right run is shorter
-                buf(0:array_len-mid) = array(mid:array_len-1)
-                ibuf(0:array_len-mid) = index(mid:array_len-1)
+                buf(0:array_len-mid-1) = array(mid:array_len-1)
+                ibuf(0:array_len-mid-1) = index(mid:array_len-1)
                 i = mid - 1
                 j = array_len - mid -1
                 merge_upper: do k = array_len-1, 0, -1
@@ -1228,8 +1228,8 @@ contains
                     end if
                 end do merge_lower
             else ! The right run is shorter
-                buf(0:array_len-mid) = array(mid:array_len-1)
-                ibuf(0:array_len-mid) = index(mid:array_len-1)
+                buf(0:array_len-mid-1) = array(mid:array_len-1)
+                ibuf(0:array_len-mid-1) = index(mid:array_len-1)
                 i = mid - 1
                 j = array_len - mid -1
                 merge_upper: do k = array_len-1, 0, -1
@@ -1631,8 +1631,8 @@ contains
                     end if
                 end do merge_lower
             else ! The right run is shorter
-                buf(0:array_len-mid) = array(mid:array_len-1)
-                ibuf(0:array_len-mid) = index(mid:array_len-1)
+                buf(0:array_len-mid-1) = array(mid:array_len-1)
+                ibuf(0:array_len-mid-1) = index(mid:array_len-1)
                 i = mid - 1
                 j = array_len - mid -1
                 merge_upper: do k = array_len-1, 0, -1
