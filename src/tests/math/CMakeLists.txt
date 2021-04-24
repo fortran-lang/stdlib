@@ -1,1 +1,1 @@
-ADDTEST(math)
+ADDTEST(stdlib_math)

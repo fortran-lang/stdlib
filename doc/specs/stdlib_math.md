@@ -61,11 +61,8 @@ program demo_clip_integer
   integer(int32) :: clipped_value
 
   xmin = -5_int32
-  ! xmin <- -5
   xmax = 5_int32
-  ! xmax <- 5
   x = 12_int32
-  ! x <- 12
 
   clipped_value = clip(x, xmin, xmax)
   ! clipped_value <- 5
@@ -86,11 +83,8 @@ program demo_clip_real
   real(sp) :: clipped_value
 
   xmin = -5.769_sp
-  ! xmin <-  -5.76900005
   xmax = 3.025_sp
-  ! xmax <- 3.02500010
   x = 3.025_sp
-  ! x <- 3.02500010
 
   clipped_value = clip(x, xmin, xmax)
   ! clipped_value <- 3.02500010
