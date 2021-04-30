@@ -433,7 +433,7 @@ Sorting a rank 2 array based on the data in a column
 	end subroutine sort_related_data
 ```
 
-Sorting an array of a derived type based on the dsta in one component
+Sorting an array of a derived type based on the data in one component
 
 ```fortran
 	subroutine sort_a_data( a_data, a, work, index, iwork )
