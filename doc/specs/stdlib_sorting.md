@@ -152,14 +152,14 @@ housekeeping it has slower runtime performance than `ORD_SORT`.
 provided as optional `work` and `iwork` arguments or allocated
 internally on the stack.
 
-#### The `SORT` subroutines
+#### The `SORT` subroutine
 
 `SORT` uses the `introsort` sorting algorithm of David Musser.
 `introsort` is a hybrid unstable comparison algorithm combining
 `quicksort`, `insertion sort`, and `heap sort`. While this algorithm's
 runtime performance is always O(N Ln(N)), it is relatively fast on
-randomly ordered data, but inconsistent in performance on partly
-sorted data.as the official source of the algorithm.
+randomly ordered data, but does not show the improvement in
+performance on partly sorted data found for `ORD_SORT`.
 
 As with `introsort`, `SORT` is an unstable hybrid algorithm.
 First it examines the array and estimates the depth of recursion a
@@ -182,14 +182,16 @@ calls `introsort` proper. `introsort` proper then:
     * Calls `introsort` proper on the rightmost partition, and then
       returns.
 
-The resulting algorithm is of order O(N Ln(N)) run time
-performance for all inputs. Because it relies on `quicksort`, the
-coefficient of the O(N Ln(N)) behavior is typically small compared to
-other sorting algorithms on random data. On partially sorted data it
-can show either slower `heap sort` performance, or enhanced
-performance by up to a factor of six. Still, even when it shows
-enhanced performance, its performance on partially sorted data is
-typically an order of magnitude slower than `ORD_SORT`.
+The resulting algorithm is of order O(N Ln(N)) run time performance
+for all inputs. Because it relies on `quicksort`, the coefficient of
+the O(N Ln(N)) behavior is typically small compared to other sorting
+algorithms on random data. On partially sorted data it can show either
+slower `heap sort` performance, or enhanced performance by up to a
+factor of six. Still, even when it shows enhanced performance, its
+performance on partially sorted data is typically an order of
+magnitude slower than `ORD_SORT`. Its memory requirements are also
+low, being of order O(Ln(N)), while the memory requirements of
+`ORD_SORT` and `SORT_INDEX` are of order O(N).
 
 ### Tentative specifications of the `stdlib_sorting` procedures
 
@@ -255,9 +257,7 @@ function `LGT`.
     call read_sorted_file( 'dummy_file1', array1 )
     call read_sorted_file( 'dummy_file2', array2 )
     ! Concatenate the arrays
-    allocate( array( size(array1) + size(array2) ) )
-    array( 1:size(array1) ) = array1(:)
-    array( size(array1)+1:size(array1)+size(array2) ) = array2(:)
+	array = [ array1, array2 ]
     ! Sort the resulting array
     call ord_sort( array, work )
     ! Process the sorted array
@@ -318,7 +318,7 @@ element of `array` is a `NaN`.  Sorting of `CHARACTER(*)` and
     ...
 ```
 
-#### `sort_index` - creates an array of sorting indices for an input array.
+#### `sort_index` - creates an array of sorting indices for an input array, while also sorting the array.
 
 ##### Status
 
@@ -326,8 +326,9 @@ Experimental
 
 ##### Description
 
-Returns an integer array whose elements would sort the input array in
-the specified direction retaining order stability.
+Returns the input `array` sorted in the direction requested while
+retaining order stability, and an integer array whose elements would
+sort the input `array` to produce the output `array`.
 
 ##### Syntax
 
@@ -381,9 +382,10 @@ replace "scratch" memory that would otherwise be allocated on the
 stack. If `array` is of any kind of `REAL` the order of the elements in
 `index` and `array` on return are undefined if any element of `array`
 is a `NaN`. Sorting of `CHARACTER(*)` and `STRING_TYPE` arrays are
-based on the operator `>`, and not on the function `LGT`. It should be
-emphasized that the order of `array` will typically be different on
-return.
+based on the operator `>`, and not on the function `LGT`.
+
+It should be emphasized that the order of `array` will typically be
+different on return
 
 
 ##### Examples
@@ -392,15 +394,15 @@ Sorting a related rank one array:
 
 ```Fortran
     subroutine sort_related_data( a, b, work, index, iwork )
-        ! Sort `b` in terms or its related array `a`
+        ! Sort `a`, and  also  sort `b` to be reorderd the same way as `a`
         integer, intent(inout)           :: a(:)
         integer(int32), intent(inout)    :: b(:) ! The same size as a
 		integer(int32), intent(inout)    :: work(:)
 		integer(int_size), intent(inout) :: index(:)
 		integer(int_size), intent(inout) :: iwork(:)
 		! Find the indices to sort a
-		call sort_index(a, index(1:size(a)),&
-		    work(1:size(a)/2), iwork(1:size(a)/2))
+        call sort_index(a, index(1:size(a)),&
+            work(1:size(a)/2), iwork(1:size(a)/2))
 		! Sort b based on the sorting of a
 		b(:) = b( index(1:size(a)) )
 	end subroutine sort_related_data
@@ -410,23 +412,23 @@ Sorting a rank 2 array based on the data in a column
 
 ```Fortran
 	subroutine sort_related_data( array, column, work, index, iwork )
-	    ! Sort `a_data` in terms or its component `a`
-	    integer, intent(inout)           :: a(:,:)
+	    ! Reorder rows of `array` such that `array(:, column)` is  sorted
+	    integer, intent(inout)           :: array(:,:)
 		integer(int32), intent(in)       :: column
 		integer(int32), intent(inout)    :: work(:)
 		integer(int_size), intent(inout) :: index(:)
 		integer(int_size), intent(inout) :: iwork(:)
 		integer, allocatable             :: dummy(:)
 		integer :: i
-		allocate(dummy(size(a, dim=1)))
-		! Extract a component of `a_data`
-		dummy(:) = a(:, column)
+		allocate(dummy(size(array, dim=1)))
+		! Extract a column of `array`
+		dummy(:) = array(:, column)
 		! Find the indices to sort the column
 		call sort_index(dummy, index(1:size(dummy)),&
 		    work(1:size(dummy)/2), iwork(1:size(dummy)/2))
 		! Sort a based on the sorting of its column
-		do i=1, size(a, dim=2)
-		    a(:, i) = a(index(1:size(a, dim=1)), i)
+		do i=1, size(array, dim=2)
+		    array(:, i) = array(index(1:size(array, dim=1)), i)
 		end do
 	end subroutine sort_related_data
 ```

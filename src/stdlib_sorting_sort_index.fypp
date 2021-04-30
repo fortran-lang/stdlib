@@ -63,7 +63,8 @@ contains
 
     module subroutine ${k1}$_sort_index( array, index, work, iwork, reverse )
 ! A modification of `${k1}$_ord_sort` to return an array of indices that
-! would provide a stable sort of the `ARRAY` input. The indices by default
+! would perform a stable sort of the `ARRAY` as input, and also sort `ARRAY`
+! as desired. The indices by default
 ! correspond to a non-decreasing sort, but if the optional argument
 ! `REVERSE` is present with a value of `.TRUE.` the indices correspond to
 ! a non-increasing sort. The logic of the determination of indexing largely
@@ -471,7 +472,8 @@ contains
 
     module subroutine ${k1}$_sort_index( array, index, work, iwork, reverse )
 ! A modification of `${k1}$_ord_sort` to return an array of indices that
-! would provide a stable sort of the `ARRAY` input. The indices by default
+! would perform a stable sort of the `ARRAY` as input, and also sort `ARRAY`
+! as desired. The indices by default
 ! correspond to a non-decreasing sort, but if the optional argument
 ! `REVERSE` is present with a value of `.TRUE.` the indices correspond to
 ! a non-increasing sort. The logic of the determination of indexing largely
@@ -876,7 +878,8 @@ contains
 
     module subroutine char_sort_index( array, index, work, iwork, reverse )
 ! A modification of `char_ord_sort` to return an array of indices that
-! would provide a stable sort of the `ARRAY` input. The indices by default
+! would perform a stable sort of the `ARRAY` as input, and also sort `ARRAY`
+! as desired. The indices by default
 ! correspond to a non-decreasing sort, but if the optional argument
 ! `REVERSE` is present with a value of `.TRUE.` the indices correspond to
 ! a non-increasing sort. The logic of the determination of indexing largely
@@ -1280,7 +1283,8 @@ contains
 
     module subroutine string_sort_index( array, index, work, iwork, reverse )
 ! A modification of `string_ord_sort` to return an array of indices that
-! would provide a stable sort of the `ARRAY` input. The indices by default
+! would perform a stable sort of the `ARRAY` as input, and also sort `ARRAY`
+! as desired. The indices by default
 ! correspond to a non-decreasing sort, but if the optional argument
 ! `REVERSE` is present with a value of `.TRUE.` the indices correspond to
 ! a non-increasing sort. The logic of the determination of indexing largely
