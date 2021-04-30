@@ -50,7 +50,7 @@
 !!   option. This file may not be copied, modified, or distributed
 !!   except according to those terms.
 !!
-!! so the licence for the original`slice.rs` code is compatible with the use
+!! so the license for the original`slice.rs` code is compatible with the use
 !! of modified versions of the code in the Fortran Standard Library under
 !! the MIT license.
 !!
@@ -221,7 +221,7 @@ module stdlib_sorting
 !!
 !! The generic subroutine implementing the `SORT_INDEX` algorithm to
 !! return an index array whose elements would sort the input array in the
-!! desired direction. It is primarilly intended to be used to sort a
+!! desired direction. It is primarily intended to be used to sort a
 !! derived type array based on the values of a component of the array.
 !! Its use has the syntax:
 !!

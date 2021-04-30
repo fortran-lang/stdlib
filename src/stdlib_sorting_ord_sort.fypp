@@ -49,7 +49,7 @@
 !!   option. This file may not be copied, modified, or distributed
 !!   except according to those terms.
 !!
-!! so the licence for the original`slice.rs` code is compatible with the use
+!! so the license for the original`slice.rs` code is compatible with the use
 !! of modified versions of the code in the Fortran Standard Library under
 !! the MIT license.
 
@@ -73,7 +73,7 @@ contains
 ! a hybrid sorting algorithm combining an iterative Merge sort controlled
 ! by a stack of `RUNS` identified by regions of uniformly decreasing or
 ! non-decreasing sequences that may be expanded to a minimum run size and
-! initialy processed by an insertion sort.
+! initially processed by an insertion sort.
 !
 ! Note the Fortran implementation simplifies the logic as it only has to
 ! deal with Fortran arrays of intrinsic types and not the full generality
@@ -414,7 +414,7 @@ contains
 ! a hybrid sorting algorithm combining an iterative Merge sort controlled
 ! by a stack of `RUNS` identified by regions of uniformly decreasing or
 ! non-decreasing sequences that may be expanded to a minimum run size and
-! initialy processed by an insertion sort.
+! initially processed by an insertion sort.
 !
 ! Note the Fortran implementation simplifies the logic as it only has to
 ! deal with Fortran arrays of intrinsic types and not the full generality
@@ -753,7 +753,7 @@ contains
 ! a hybrid sorting algorithm combining an iterative Merge sort controlled
 ! by a stack of `RUNS` identified by regions of uniformly decreasing or
 ! non-decreasing sequences that may be expanded to a minimum run size and
-! initialy processed by an insertion sort.
+! initially processed by an insertion sort.
 !
 ! Note the Fortran implementation simplifies the logic as it only has to
 ! deal with Fortran arrays of intrinsic types and not the full generality
@@ -1091,7 +1091,7 @@ contains
 ! a hybrid sorting algorithm combining an iterative Merge sort controlled
 ! by a stack of `RUNS` identified by regions of uniformly decreasing or
 ! non-decreasing sequences that may be expanded to a minimum run size and
-! initialy processed by an insertion sort.
+! initially processed by an insertion sort.
 !
 ! Note the Fortran implementation simplifies the logic as it only has to
 ! deal with Fortran arrays of intrinsic types and not the full generality
