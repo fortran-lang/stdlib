@@ -219,6 +219,7 @@ Some discussions and prototypes of proposed APIs along with a list of popular op
 
 ## Contributing
 
+* [Guidelines](CONTRIBUTING.md)
 * [Issues](https://github.com/fortran-lang/stdlib/issues)
 * [Workflow](WORKFLOW.md)
 * [Style guide](STYLE_GUIDE.md)
