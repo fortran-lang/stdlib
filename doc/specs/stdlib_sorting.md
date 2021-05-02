@@ -44,9 +44,10 @@ data:
 * `ORD_SORT` is intended to sort simple arrays of intrinsic data
   that have significant sections that were partially ordered before
   the sort;
-* `SORT_INDEX` is intended to provide indices for sorting arrays of
-  derived type data, based on the ordering of an intrinsic component
-  of the derived type; and
+* `SORT_INDEX` is based on ORD_SORT, but in addition to sorting the
+  input array, it returns indices that map the original array to its
+  sorted version. This enables related arrays to be re-ordered in the
+  same way; and
 * `SORT` is intended to sort simple arrays of intrinsic data
   that are effectively unordered before the sort.
 
@@ -142,7 +143,8 @@ arrays, or arrays of derived types. For such related data, what is
 useful is an array of indices that maps a rank 1 array to its sorted
 form. For such a sort, a stable sort is useful, therefore the module
 provides a subroutine, `SORT_INDEX`, that generates such an array of
-indices based on the `ORD_SORT` algorithm.
+indices based on the `ORD_SORT` algorithm, in addition to sorting
+the input array.
 
 The logic of `SORT_INDEX` parallels that of `ORD_SORT`, with
 additional housekeeping to keep the array of indices consistent with
