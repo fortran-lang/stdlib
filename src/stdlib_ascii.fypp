@@ -19,7 +19,7 @@ module stdlib_ascii
     public :: is_lower, is_upper
 
     ! Character conversion functions
-    public :: to_lower, to_upper, to_title, reverse
+    public :: to_lower, to_upper, to_title, to_sentence, reverse
     public :: to_string
 
     !> Version: experimental
@@ -99,6 +99,13 @@ module stdlib_ascii
     interface to_title
         module procedure :: to_title
     end interface to_title
+
+    !> Returns a new character sequence which is the sentence case
+    !> version of the input character sequence
+    !> This method is pure and returns a character sequence
+    interface to_sentence
+        module procedure :: to_sentence
+    end interface to_sentence
 
     !> Returns a new character sequence which is reverse of
     !> the input charater sequence
@@ -284,31 +291,58 @@ contains
 
     end function to_upper
 
-    !> Convert character variable to title case
+    !> Converts character sequence to title case
     !> ([Specification](../page/specs/stdlib_ascii.html#to_title))
     !>
     !> Version: experimental
     pure function to_title(string) result(title_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: title_string
+        integer :: i
+        logical :: capitalize_switch
+
+        capitalize_switch = .true.
+        do i = 1, len(string)
+            if (is_alpha(string(i:i))) then
+                if (capitalize_switch) then
+                    title_string(i:i) = char_to_upper(string(i:i))
+                    capitalize_switch = .false.
+                else
+                    title_string(i:i) = char_to_lower(string(i:i))
+                end if
+            else
+                title_string(i:i) = string(i:i)
+                capitalize_switch = .true.
+            end if
+        end do
+
+    end function to_title
+
+    !> Converts character sequence to sentence case
+    !> ([Specification](../page/specs/stdlib_ascii.html#to_sentence))
+    !>
+    !> Version: experimental
+    pure function to_sentence(string) result(sentence_string)
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: sentence_string
         integer :: i, n
 
         n = len(string)
         do i = 1, len(string)
             if (is_alphanum(string(i:i))) then
-                title_string(i:i) = char_to_upper(string(i:i))
+                sentence_string(i:i) = char_to_upper(string(i:i))
                 n = i
                 exit
             else
-                title_string(i:i) = string(i:i)
+                sentence_string(i:i) = string(i:i)
             end if
         end do
 
         do i = n + 1, len(string)
-            title_string(i:i) = char_to_lower(string(i:i))
+            sentence_string(i:i) = char_to_lower(string(i:i))
         end do
 
-    end function to_title
+    end function to_sentence
 
     !> Reverse the character order in the input character variable
     !> ([Specification](../page/specs/stdlib_ascii.html#reverse))
