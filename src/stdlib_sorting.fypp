@@ -84,7 +84,7 @@ module stdlib_sorting
 !!
 !! `SORT_INDEX` is a modification of `ORD_SORT` so that in addition to
 !! sorting the input array, it returns the indices that map to a
-!! stable sort of the original array. These indices are intended to be
+!! stable sort of the original array. These indices are
 !! intended to be used to sort data that is correlated with the input
 !! array, e.g., different arrays in a database, different columns of a
 !! rank 2 array, different elements of a derived type. It is less
