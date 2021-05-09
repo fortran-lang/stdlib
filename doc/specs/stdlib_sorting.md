@@ -4,7 +4,7 @@ title: Sorting Procedures
 
 # The `stdlib_sorting` module
 
-(TOC)
+[TOC]
 
 ## Overview of sorting
 
@@ -24,7 +24,7 @@ module's `string_type` type.
 
 ## Overview of the module
 
-The module `stdlib_sorting` defines several public entities one
+The module `stdlib_sorting` defines several public entities, one
 default integer parameter, `int_size`, and three overloaded
 subroutines: `ORD_SORT`, `SORT`, and `SORT_INDEX`. The
 overloaded subroutines also each have seven specific names for
@@ -44,7 +44,7 @@ data:
 * `ORD_SORT` is intended to sort simple arrays of intrinsic data
   that have significant sections that were partially ordered before
   the sort;
-* `SORT_INDEX` is based on ORD_SORT, but in addition to sorting the
+* `SORT_INDEX` is based on `ORD_SORT`, but in addition to sorting the
   input array, it returns indices that map the original array to its
   sorted version. This enables related arrays to be re-ordered in the
   same way; and
@@ -111,13 +111,13 @@ performance on uniformly increasing or decreasing data.
 `ORD_SORT` begins by traversing the array starting in its tail
 attempting to identify `runs` in the array, where a run is either a
 uniformly decreasing sequence, `ARRAY(i-1) > ARRAY(i)`, or a
-non-decreasing, `ARRAY(i-1) <= ARRAY(i)`, sequence. Once delimitated
+non-decreasing, `ARRAY(i-1) <= ARRAY(i)`, sequence. First delimitated
 decreasing sequences are reversed in their order. Then, if the
 sequence has less than `MIN_RUN` elements, previous elements in the
 array are added to the run using `insertion sort` until the run
 contains `MIN_RUN` elements or the array is completely processed. As
 each run is identified the start and length of the run 
-is then pushed onto a stack and the stack is then processed using
+are then pushed onto a stack and the stack is then processed using
 `merge` until it obeys the stack invariants:
 
 1. len(i-2) > len(i-1) + len(i)
@@ -163,7 +163,6 @@ runtime performance is always O(N Ln(N)), it is relatively fast on
 randomly ordered data, but does not show the improvement in
 performance on partly sorted data found for `ORD_SORT`.
 
-As with `introsort`, `SORT` is an unstable hybrid algorithm.
 First it examines the array and estimates the depth of recursion a
 quick sort would require for ideal (random) data, `D =
 Ceiling(Ln(N)/Ln(2))`. It then defines a limit to the number of
@@ -195,7 +194,7 @@ magnitude slower than `ORD_SORT`. Its memory requirements are also
 low, being of order O(Ln(N)), while the memory requirements of
 `ORD_SORT` and `SORT_INDEX` are of order O(N).
 
-### Tentative specifications of the `stdlib_sorting` procedures
+### Specifications of the `stdlib_sorting` procedures
 
 #### `ord_sort` - sorts an input array
 
@@ -267,6 +266,19 @@ function `LGT`.
     ...
 ```
 
+```fortran
+    program demo_ord_sort
+      use stdlib_sorting, only: ord_sort
+      implicit none
+      integer, allocatable :: array1(:), work(:)
+    
+      array1 = [ 5, 4, 3, 1, 10, 4, 9]
+      allocate(work, mold = array1)
+      call ord_sort(array1, work)
+      print*, array1   !print [1, 3, 4, 4, 5, 9, 10]
+    end program demo_ord_sort
+```
+
 #### `sort` - sorts an input array
 
 ##### Status
@@ -318,6 +330,18 @@ element of `array` is a `NaN`.  Sorting of `CHARACTER(*)` and
     ! Process the sorted data
     call array_search( array, values )
     ...
+```
+
+```fortran
+    program demo_sort
+      use stdlib_sorting, only: sort
+      implicit none
+      integer, allocatable :: array(:)
+    
+      array = [ 5, 4, 3, 1, 10, 4, 9]
+      call sort(array)
+      print*, array   !print [1, 3, 4, 4, 5, 9, 10]
+    end program demo_sort
 ```
 
 #### `sort_index` - creates an array of sorting indices for an input array, while also sorting the array.
