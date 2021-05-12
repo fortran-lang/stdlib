@@ -1,8 +1,4 @@
-#! Integer kinds to be considered during templating
-#:set INT_KINDS = ["int8", "int16", "int32", "int64"]
-
-#! Real kinds to be considered during templating
-#:set REAL_KINDS = ["sp", "dp", "qp"]
+#:include "common.fypp"
 
 !! Licensing:
 !!
@@ -88,7 +84,7 @@ module stdlib_sorting
 !!
 !! `SORT_INDEX` is a modification of `ORD_SORT` so that in addition to
 !! sorting the input array, it returns the indices that map to a
-!! stable sort of the original array. These indices are intended to be
+!! stable sort of the original array. These indices are
 !! intended to be used to sort data that is correlated with the input
 !! array, e.g., different arrays in a database, different columns of a
 !! rank 2 array, different elements of a derived type. It is less
@@ -132,10 +128,10 @@ module stdlib_sorting
                                log(1.6180339887_dp) ) )
 
     type run_type
-! Version: experimental
-!
-! Used to pass state around in a stack among helper functions for the
-! `ORD_SORT` and `SORT_INDEX` algorithms
+!! Version: experimental
+!!
+!! Used to pass state around in a stack among helper functions for the
+!! `ORD_SORT` and `SORT_INDEX` algorithms
         integer(int_size) :: base = 0
         integer(int_size) :: len = 0
     end type run_type
