@@ -303,7 +303,7 @@ contains
 
         capitalize_switch = .true.
         do i = 1, len(string)
-            if (is_alpha(string(i:i))) then
+            if (is_alphanum(string(i:i))) then
                 if (capitalize_switch) then
                     title_string(i:i) = char_to_upper(string(i:i))
                     capitalize_switch = .false.
