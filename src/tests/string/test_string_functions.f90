@@ -27,8 +27,8 @@ contains
 
     subroutine test_to_title_string
         type(string_type) :: test_string, compare_string
-        test_string = "_tO t8iTLE_th!s p#ra$e"
-        compare_string = "_To T8Itle_Th!S P#Ra$E"
+        test_string = "tO t!TL3 7h1S p#ra$e"
+        compare_string = "To T!Tl3 7h1s P#Ra$E"
 
         call check(to_title(test_string) == compare_string)
 

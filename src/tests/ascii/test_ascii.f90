@@ -597,8 +597,8 @@ contains
         dlc = to_title(" s P a C e D !")
         call check(dlc == " S P A C E D !")
 
-        dlc = to_title("1st, 2nd, 3rD, 4TH")
-        call check(dlc == "1St, 2Nd, 3Rd, 4Th")
+        dlc = to_title("1st, 2nD, 3RD")
+        call check(dlc == "1st, 2nd, 3rd")
 
         dlc = to_title("""quOTed""")
         call check(dlc == """Quoted""")
