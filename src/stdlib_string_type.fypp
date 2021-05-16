@@ -124,7 +124,7 @@ module stdlib_string_type
 
     !> Returns the sentencecase version of the character sequence hold by the input string
     !>
-    !> This method is Elemental and returns a new string_type instance which holds this
+    !> This method is elemental and returns a new string_type instance which holds this
     !> sentencecase character sequence
     interface to_sentence
         module procedure :: to_sentence_string
@@ -132,7 +132,7 @@ module stdlib_string_type
 
     !> Reverses the character sequence hold by the input string
     !> 
-    !> This method is Elemental and returns a new string_type instance which holds this
+    !> This method is elemental and returns a new string_type instance which holds this
     !> reverse character sequence
     interface reverse
         module procedure :: reverse_string
