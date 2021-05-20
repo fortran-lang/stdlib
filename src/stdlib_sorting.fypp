@@ -1,5 +1,4 @@
 #:include "common.fypp"
-#:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
 #:set IRS_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + STRING_KINDS_TYPES
 
 !! Licensing:
@@ -328,11 +327,11 @@ module stdlib_sorting
 
     public char_sort_index
 
-    public string_ord_sort
+    public string_type_ord_sort
 
-    public string_sort
+    public string_type_sort
 
-    public string_sort_index
+    public string_type_sort_index
 
     interface ord_sort
 !! Version: experimental
@@ -348,7 +347,7 @@ module stdlib_sorting
 !! sorted data, having O(N) performance on uniformly non-increasing or
 !! non-decreasing data.
 
-#:for k1, t1 in IR_KINDS_TYPES
+#:for k1, t1 in IRS_KINDS_TYPES
         module subroutine ${k1}$_ord_sort( array, work )
 !! Version: experimental
 !!
@@ -368,15 +367,6 @@ module stdlib_sorting
             character(len=*), intent(inout)                    :: array(0:)
             character(len=len(array)), intent(inout), optional :: work(0:)
         end subroutine char_ord_sort
-
-        module subroutine string_ord_sort( array, work )
-!! Version: experimental
-!!
-!! `char_ord_sort( array )` sorts the input `ARRAY` of type `CHARACTER(*)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-            type(string_type), intent(inout)           :: array(0:)
-            type(string_type), intent(inout), optional :: work(0:)
-        end subroutine string_ord_sort
 
     end interface ord_sort
 
