@@ -434,7 +434,6 @@ module stdlib_sorting
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
 !! with a value of `.TRUE.` the indices correspond to a non-increasing sort.
 
-#:for k1 in INT_KINDS
 #:for k1, t1 in IR_KINDS_TYPES
         module subroutine ${k1}$_sort_index( array, index, work, iwork, &
             reverse )
