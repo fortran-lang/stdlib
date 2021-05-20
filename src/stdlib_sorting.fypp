@@ -1,5 +1,5 @@
 #:include "common.fypp"
-#:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + STRING_KINDS_TYPES
+#:set IRS_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + STRING_KINDS_TYPES
 
 !! Licensing:
 !!
@@ -385,7 +385,7 @@ module stdlib_sorting
 !! The generic subroutine interface implementing the `SORT` algorithm, based
 !! on the `introsort` of David Musser.
 
-#:for k1, t1 in IR_KINDS_TYPES
+#:for k1, t1 in IRS_KINDS_TYPES
         pure module subroutine ${k1}$_sort( array )
 !! Version: experimental
 !!
@@ -409,17 +409,6 @@ module stdlib_sorting
 !! behavior is small for random data compared to other sorting algorithms.
             character(len=*), intent(inout) :: array(0:)
         end subroutine char_sort
-
-        pure module subroutine string_sort( array )
-!! Version: experimental
-!!
-!! `string_sort( array )` sorts the input `ARRAY` of type `STRING_TYPE`
-!! using a hybrid sort based on the `introsort` of David Musser.
-!! The algorithm is of order O(N Ln(N)) for all inputs.
-!! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
-!! behavior is small for random data compared to other sorting algorithms.
-            type(string_type), intent(inout) :: array(0:)
-        end subroutine string_sort
 
     end interface sort
 
