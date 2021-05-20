@@ -479,45 +479,6 @@ Sorting an array of a derived type based on the data in one component
 	end subroutine sort_a_data
 ```
 
-#### Specific procedures
-
-Usually the name of a generic procedure is the most convenient way of
-invoking it. However sometimes it is necessary to pass a procedure as
-an argument to another procedure. In that case it is usually necessary
-to know the name of the specific procedure desired. The following
-table lists the specific subroutines and the corresponding types of
-their `array` arguments.
-
-| Generic Subroutine | Specific Subroutine | Array type      |
-|--------------------|---------------------|-----------------|
-| `ORD_SORT`         | `INT8_ORD_SORT`     | `INTEGER(INT8)` |
-|                    | `INT16_ORD_SORT`    | `INTEGER(INT16)` |
-|                    | `INT32_ORD_SORT`    | `INTEGER(INT32)` |
-|                    | `INT64_ORD_SORT`    | `INTEGER(INT64)` |
-|                    | `SP_ORD_SORT`    | `REAL(SP)` |
-|                    | `DP_ORD_SORT`    | `REAL(DP)` |
-|                    | `QP_ORD_SORT`    | `REAL(QP)` |
-|                    | `CHAR_ORD_SORT`  | `CHARACTER(*)`  |
-|                    | `STRING_ORD_SORT`  | `STRING_TYPE`  |
-| `SORT`         | `INT8_SORT`     | `INTEGER(INT8)` |
-|                    | `INT16_SORT`    | `INTEGER(INT16)` |
-|                    | `INT32_SORT`    | `INTEGER(INT32)` |
-|                    | `INT64_SORT`    | `INTEGER(INT64)` |
-|                    | `SP_SORT`    | `REAL(SP)` |
-|                    | `DP_SORT`    | `REAL(DP)` |
-|                    | `QP_SORT`    | `REAL(QP)` |
-|                    | `CHAR_SORT`  | `CHARACTER(*)` |
-|                    | `STRING_SORT`  | `STRING_TYPE` |
-| `SORT_INDEX`      | `INT8_SORT_INDEX`     | `INTEGER(INT8)` |
-|                    | `INT16_SORT_INDEX`    | `INTEGER(INT16)` |
-|                    | `INT32_SORT_INDEX`    | `INTEGER(INT32)` |
-|                    | `INT64_SORT_INDEX`    | `INTEGER(INT64)` |
-|                    | `SP_SORT_INDEX`    | `REAL(SP)` |
-|                    | `DP_SORT_INDEX`    | `REAL(DP)` |
-|                    | `QP_SORT_INDEX`    | `REAL(QP)` |
-|                    | `CHAR_SORT_INDEX`    | `CHARACTER(*)` |
-|                    | `STRING_SORT_INDEX`    | `STRING_TYPE` |
-
 
 ### Performance benchmarks
 

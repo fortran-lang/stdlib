@@ -115,9 +115,7 @@ module stdlib_sorting
     implicit none
     private
 
-    public :: int_size
-
-    integer, parameter :: int_size = int64 !! Integer kind for indexing
+    integer, parameter, public :: int_size = int64 !! Integer kind for indexing
 
 ! Constants for use by tim_sort
     integer, parameter :: &
@@ -321,48 +319,6 @@ module stdlib_sorting
 !!        a_data(:) = a_data( index(1:size(a_data)) )
 !!    end subroutine sort_a_data
 !!```
-
-#:for k1 in INT_KINDS
-    public ${k1}$_ord_sort
-!! Version: experimental
-!!
-!! `${k1}$_ord_sort` is the specific `ORD_SORT` subroutine for an `array`
-!! argument of type `integer(${k1}$)`.
-
-    public ${k1}$_sort
-!! Version: experimental
-!!
-!! `${k1}$_sort` is the specific `SORT` subroutine for an `array`
-!! argument of type `integer(${k1}$)`.
-
-    public ${k1}$_sort_index
-!! Version: experimental
-!!
-!! `${k1}$_sort_index` is the specific `SORT_INDEX` subroutine for an `array`
-!! argument of type `integer(${k1}$)`.
-
-#:endfor
-
-#:for k1 in REAL_KINDS
-    public ${k1}$_ord_sort
-!! Version: experimental
-!!
-!! `${k1}$_ord_sort` is the specific `ORD_SORT` subroutine for an `array`
-!! argument of type `real(${k1}$)`.
-
-    public ${k1}$_sort
-!! Version: experimental
-!!
-!! `${k1}$_sort` is the specific `SORT` subroutine for an `array`
-!! argument of type `real(${k1}$)`.
-
-    public ${k1}$_sort_index
-!! Version: experimental
-!!
-!! `${k1}$_sort_index` is the specific `SORT_INDEX` subroutine for an `array`
-!! argument of type `real(${k1}$)`.
-
-#:endfor
 
     public char_ord_sort
 

@@ -1,8 +1,4 @@
-#! Integer kinds to be considered during templating
-#:set INT_KINDS = ["int8", "int16", "int32", "int64"]
-
-#! Real kinds to be considered during templating
-#:set REAL_KINDS = ["sp", "dp", "qp"]
+#:include "common.fypp"
 
 !! Licensing:
 !!
@@ -95,7 +91,7 @@ contains
 ! Allocate a buffer to use as scratch memory.
             array_size = size( array, kind=int_size )
             allocate( buf(0:array_size/2-1), stat=stat )
-            if ( stat /= 0 ) error stop "Allocation of buffer failed."
+            if ( stat /= 0 ) error stop "${k1}$_ord_sort: Allocation of buffer failed."
             call merge_sort( array, buf )
         end if
 
@@ -436,7 +432,7 @@ contains
 ! Allocate a buffer to use as scratch memory.
             array_size = size( array, kind=int_size )
             allocate( buf(0:array_size/2-1), stat=stat )
-            if ( stat /= 0 ) error stop "Allocation of buffer failed."
+            if ( stat /= 0 ) error stop "${k1}$_ord_sort: Allocation of buffer failed."
             call merge_sort( array, buf )
         end if
 
@@ -776,7 +772,7 @@ contains
             array_size = size( array, kind=int_size )
             allocate( character(len=len(array)) :: buf(0:array_size/2-1), &
                       stat=stat )
-            if ( stat /= 0 ) error stop "Allocation of buffer failed."
+            if ( stat /= 0 ) error stop "${k1}$_ord_sort: Allocation of buffer failed."
             call merge_sort( array, buf )
         end if
 
@@ -1113,7 +1109,7 @@ contains
 ! Allocate a buffer to use as scratch memory.
             array_size = size( array, kind=int_size )
             allocate( buf(0:array_size/2-1), stat=stat )
-            if ( stat /= 0 ) error stop "Allocation of buffer failed."
+            if ( stat /= 0 ) error stop "${k1}$_ord_sort: Allocation of buffer failed."
             call merge_sort( array, buf )
         end if
 

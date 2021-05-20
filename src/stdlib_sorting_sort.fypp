@@ -1,8 +1,4 @@
-#! Integer kinds to be considered during templating
-#:set INT_KINDS = ["int8", "int16", "int32", "int64"]
-
-#! Real kinds to be considered during templating
-#:set REAL_KINDS = ["sp", "dp", "qp"]
+#:include "common.fypp"
 
 !! Licensing:
 !!
