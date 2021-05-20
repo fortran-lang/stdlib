@@ -385,30 +385,16 @@ module stdlib_sorting
 !! The generic subroutine interface implementing the `SORT` algorithm, based
 !! on the `introsort` of David Musser.
 
-#:for k1 in INT_KINDS
+#:for k1, t1 in IR_KINDS_TYPES
         pure module subroutine ${k1}$_sort( array )
 !! Version: experimental
 !!
-!! `${k1}$_sort( array )` sorts the input `ARRAY` of type `INTEGER(${k1}$)`
+!! `${k1}$_sort( array )` sorts the input `ARRAY` of type `${t1}$`
 !! using a hybrid sort based on the `introsort` of David Musser.
 !! The algorithm is of order O(N Ln(N)) for all inputs.
 !! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
 !! behavior is small for random data compared to other sorting algorithms.
-            integer(${k1}$), intent(inout) :: array(0:)
-        end subroutine ${k1}$_sort
-
-#:endfor
-
-#:for k1 in REAL_KINDS
-        pure module subroutine ${k1}$_sort( array )
-!! Version: experimental
-!!
-!! `${k1}$_sort( array )` sorts the input `ARRAY` of type `REAL(${k1}$)`
-!! using a hybrid sort based on the `introsort` of David Musser.
-!! The algorithm is of order O(N Ln(N)) for all inputs.
-!! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
-!! behavior is small for random data compared to other sorting algorithms.
-            real(${k1}$), intent(inout) :: array(0:)
+            ${t1}$, intent(inout) :: array(0:)
         end subroutine ${k1}$_sort
 
 #:endfor
