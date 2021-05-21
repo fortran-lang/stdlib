@@ -1130,7 +1130,8 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the lowercase version of the character sequence hold by the input string.
+Returns a new string_type instance which holds the lowercase version of the 
+character sequence hold by the input string.
 
 #### Syntax
 
@@ -1150,7 +1151,7 @@ Elemental function.
 
 #### Result Value
 
-The Result is a scalar `string_type` value.
+The result is a scalar `string_type` value.
 
 #### Example
 
@@ -1175,7 +1176,8 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the uppercase version of the character sequence hold by the input string.
+Returns a new string_type instance which holds the uppercase version of the 
+character sequence hold by the input string.
 
 #### Syntax
 
@@ -1195,7 +1197,7 @@ Elemental function.
 
 #### Result Value
 
-The Result is a scalar `string_type` value.
+The result is a scalar `string_type` value.
 
 #### Example
 
@@ -1220,9 +1222,13 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the titlecase (or capitalized) version of the character sequence hold by the input string.
-Capitalized version: The first alphabetical character of the input character sequence is transformed to uppercase unless it 
-follows a numeral and the rest of the characters in the sequence are transformed to lowercase.
+Returns a new string_type instance which holds the titlecase version 
+of the character sequence hold by the input string.  
+Title case: First character of every word in the sentence is converted to 
+uppercase and the rest of the characters are converted to lowercase.  
+A word is a contiguous sequence of character(s) which consists of alphabetical 
+character(s) and numeral(s) only and doesn't exclude any alphabetical character 
+or numeral present next to either of its 2 ends.
 
 #### Syntax
 
@@ -1242,23 +1248,71 @@ Elemental function.
 
 #### Result Value
 
-The Result is a scalar `string_type` value.
+The result is a scalar `string_type` value.
 
 #### Example
 
 ```fortran
-program demo
+program demo_to_title
   use stdlib_string_type
   implicit none
   type(string_type) :: string, titlecase_string
 
-  string = "Titlecase This String"
-  ! string <-- "Titlecase This String"
+  string = "titlecase this string."
+  ! string <-- "titlecase this string."
 
   titlecase_string = to_title(string)
-  ! string <-- "Titlecase This String"
-  ! titlecase_string <-- "Titlecase this string"
-end program demo
+  ! string <-- "titlecase this string."
+  ! titlecase_string <-- "Titlecase This String."
+end program demo_to_title
+```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### To\_sentence function
+
+#### Description
+
+Returns a new string_type instance which holds the sentencecase 
+version of the character sequence hold by the input string.  
+Sentencecase version: The first alphabetical character of the input character sequence 
+is transformed to uppercase unless it follows a numeral and the rest of the 
+characters in the sequence are transformed to lowercase.
+
+#### Syntax
+
+`sentencecase_string = [[stdlib_string_type(module): to_sentence(interface)]] (string)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument
+
+`string`: Instance of `string_type`. This argument is `intent(in)`.
+
+#### Result Value
+
+The result is a scalar `string_type` value.
+
+#### Example
+
+```fortran
+program demo_to_sentence
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string, sentencecase_string
+
+  string = "sentencecase this string."
+  ! string <-- "sentencecase this string."
+
+  sentencecase_string = to_sentence(string)
+  ! string <-- "sentencecase this string."
+  ! sentencecase_string <-- "Sentencecase this string."
+end program demo_to_sentence
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -1266,7 +1320,8 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the reversed version of the character sequence hold by the input string.
+Returns a new string_type instance which holds the reversed version of the 
+character sequence hold by the input string.
 
 #### Syntax
 
@@ -1286,7 +1341,7 @@ Elemental function.
 
 #### Result Value
 
-The Result is a scalar `string_type` value.
+The result is a scalar `string_type` value.
 
 #### Example
 
