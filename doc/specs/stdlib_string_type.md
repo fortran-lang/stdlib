@@ -1254,7 +1254,7 @@ The result is a scalar `string_type` value.
 
 ```fortran
 program demo_to_title
-  use stdlib_string_type
+  use stdlib_string_type, only: string_type, to_title
   implicit none
   type(string_type) :: string, titlecase_string
 
@@ -1302,7 +1302,7 @@ The result is a scalar `string_type` value.
 
 ```fortran
 program demo_to_sentence
-  use stdlib_string_type
+  use stdlib_string_type, only: string_type, to_sentence
   implicit none
   type(string_type) :: string, sentencecase_string
 
