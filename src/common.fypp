@@ -3,7 +3,7 @@
 #! Real kinds to be considered during templating
 #:set REAL_KINDS = ["sp", "dp", "qp"]
 
-#! Real types to be considere during templating
+#! Real types to be considered during templating
 #:set REAL_TYPES = ["real({})".format(k) for k in REAL_KINDS]
 
 #! Collected (kind, type) tuples for real types
@@ -12,7 +12,7 @@
 #! Complex kinds to be considered during templating
 #:set CMPLX_KINDS = ["sp", "dp", "qp"]
 
-#! Complex types to be considere during templating
+#! Complex types to be considered during templating
 #:set CMPLX_TYPES = ["complex({})".format(k) for k in CMPLX_KINDS]
 
 #! Collected (kind, type) tuples for complex types
@@ -21,11 +21,20 @@
 #! Integer kinds to be considered during templating
 #:set INT_KINDS = ["int8", "int16", "int32", "int64"]
 
-#! Integer types to be considere during templating
+#! Integer types to be considered during templating
 #:set INT_TYPES = ["integer({})".format(k) for k in INT_KINDS]
 
 #! Collected (kind, type) tuples for integer types
 #:set INT_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES))
+
+#! Derived type string_type
+#:set STRING_KINDS = ["string_type"]
+
+#! String types to be considered during templating
+#:set STRING_TYPES = ["type({})".format(k) for k in STRING_KINDS]
+
+#! Collected (kind, type) tuples for string derived types
+#:set STRING_KINDS_TYPES = list(zip(STRING_KINDS, STRING_TYPES))
 
 
 #! Whether Fortran 90 compatible code should be generated
