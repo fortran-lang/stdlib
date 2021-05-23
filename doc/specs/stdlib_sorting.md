@@ -321,16 +321,6 @@ element of `array` is a `NaN`.  Sorting of `CHARACTER(*)` and
 
 ##### Example
 
-```fortran
-    ...
-    ! Read random data from a file
-    call read_file( 'dummy_file', array )
-    ! Sort the random data
-    call sort( array )
-    ! Process the sorted data
-    call array_search( array, values )
-    ...
-```
 
 ```fortran
     program demo_sort
@@ -625,5 +615,4 @@ for applications running on Intel(R) 64, Version 2021.2.0 Build
 | String_type |   17576  | String Decrease |  Sort_Index |   0.01878 |
 | String_type |   17576  | String Increase |  Sort_Index |   0.00543 |
 | String_type |   17576  |   String Random |  Sort_Index |   0.37748 |
-
 
