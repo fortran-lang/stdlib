@@ -248,7 +248,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int64 ),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size ),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
