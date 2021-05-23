@@ -6,6 +6,7 @@
 !> The specification of this module is available [here](../page/specs/stdlib_ascii.html).
 module stdlib_ascii
     use stdlib_kinds, only : int8, int16, int32, int64
+    use stdlib_math, only: clip
 
     implicit none
     private
@@ -20,7 +21,7 @@ module stdlib_ascii
 
     ! Character conversion functions
     public :: to_lower, to_upper, to_title, to_sentence, reverse
-    public :: to_string
+    public :: to_string, slice
 
     !> Version: experimental
     !>
@@ -359,6 +360,59 @@ contains
         end do
 
     end function reverse
+
+    pure function slice(string, start, end, stride, include_end) result(sliced_string)
+        character(len=*), intent(in) :: string
+        integer, intent(in), optional :: start, end, stride
+        logical, intent(in), optional :: include_end
+        integer :: start_index, end_index, stride_vector, n, i, j
+        character(len=:), allocatable :: sliced_string
+
+        start_index = 1
+        end_index = len(string)
+        stride_vector = 1
+        if (len(string) > 0) then
+            if (present(stride)) then
+                if (stride /= 0) then
+                    if (stride < 0) then
+                        start_index = len(string)
+                        end_index = 1
+                    end if
+                    stride_vector = stride
+                end if
+            else
+                if (present(start) .and. present(end)) then
+                    if (end < start) then
+                        stride_vector = -1
+                    end if
+                end if
+            end if
+
+            if (present(start)) then
+                start_index =  clip(start, 1, len(string))
+            end if
+            if (present(end)) then
+                end_index = clip(end, 1, len(string))
+            end if
+
+            n = int((end_index - start_index) / stride_vector)
+            allocate(character(len=max(0, n + 1)) :: sliced_string)
+            
+            if (present(include_end)) then
+                if (include_end) then
+                    start_index = end_index - (n * stride_vector)
+                end if
+            end if
+
+            j = 1
+            do i = start_index, end_index, stride_vector
+                sliced_string(j:j) = string(i:i)
+                j = j + 1
+            end do
+        else
+            sliced_string = ''
+        end if
+    end function slice
 
     #:for kind in INT_KINDS
     !> Represent an integer of kind ${kind}$ as character sequence
