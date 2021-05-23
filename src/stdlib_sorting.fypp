@@ -321,18 +321,6 @@ module stdlib_sorting
 !!    end subroutine sort_a_data
 !!```
 
-    public char_ord_sort
-
-    public char_sort
-
-    public char_sort_index
-
-    public string_type_ord_sort
-
-    public string_type_sort
-
-    public string_type_sort_index
-
     interface ord_sort
 !! Version: experimental
 !!
