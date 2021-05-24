@@ -78,8 +78,8 @@ contains
 ! estimation of the optimal `run size` as suggested in Tim Peters'
 ! original `listsort.txt`, and an optional `work` array to be used as
 ! scratch memory.
-        ${t1}$, intent(inout)           :: array(0:)
-        ${t1}$, intent(inout), optional :: work(0:)
+        ${t1}$, intent(inout)         :: array(0:)
+        ${t1}$, intent(out), optional :: work(0:)
 
         ${t1}$, allocatable :: buf(:)
         integer(int_size) :: array_size
@@ -417,8 +417,8 @@ contains
 ! estimation of the optimal `run size` as suggested in Tim Peters'
 ! original `listsort.txt`, and an optional `work` array to be used as
 ! scratch memory.
-        character(len=*), intent(inout)                    :: array(0:)
-        character(len=len(array)), intent(inout), optional :: work(0:)
+        character(len=*), intent(inout)                  :: array(0:)
+        character(len=len(array)), intent(out), optional :: work(0:)
 
         character(len=:), allocatable :: buf(:)
         integer(int_size) :: array_size

@@ -83,11 +83,11 @@ contains
 ! original listsort.txt, and the optional `work` and `iwork` arraya to be
 ! used as scratch memory.
 
-        ${t1}$, intent(inout)                      :: array(0:)
-        integer(int_size), intent(inout)           :: index(0:)
-        ${t1}$, intent(inout), optional            :: work(0:)
-        integer(int_size), intent(inout), optional :: iwork(0:)
-        logical, intent(in), optional              :: reverse
+        ${t1}$, intent(inout)                    :: array(0:)
+        integer(int_size), intent(out)           :: index(0:)
+        ${t1}$, intent(out), optional            :: work(0:)
+        integer(int_size), intent(out), optional :: iwork(0:)
+        logical, intent(in), optional            :: reverse
 
         integer(int_size) :: array_size, i, stat
         ${t1}$, allocatable :: buf(:)
@@ -490,11 +490,11 @@ contains
 ! original listsort.txt, and the optional `work` and `iwork` arraya to be
 ! used as scratch memory.
 
-        character(len=*), intent(inout)                      :: array(0:)
-        integer(int_size), intent(inout)                     :: index(0:)
-        character(len=len(array)), intent(inout), optional   :: work(0:)
-        integer(int_size), intent(inout), optional           :: iwork(0:)
-        logical, intent(in), optional                        :: reverse
+        character(len=*), intent(inout)                    :: array(0:)
+        integer(int_size), intent(out)                     :: index(0:)
+        character(len=len(array)), intent(out), optional   :: work(0:)
+        integer(int_size), intent(out), optional           :: iwork(0:)
+        logical, intent(in), optional                      :: reverse
 
         integer(int_size) :: array_size, i, stat
         character(len=:), allocatable :: buf(:)
