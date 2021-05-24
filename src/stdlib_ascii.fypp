@@ -361,51 +361,51 @@ contains
 
     end function reverse
 
-    pure function slice(string, start, end, stride, include_end) result(sliced_string)
+    pure function slice(string, start, last, stride, include_last) result(sliced_string)
         character(len=*), intent(in) :: string
-        integer, intent(in), optional :: start, end, stride
-        logical, intent(in), optional :: include_end
-        integer :: start_index, end_index, stride_vector, n, i, j
+        integer, intent(in), optional :: first, last, stride
+        logical, intent(in), optional :: include_last
+        integer :: first_index, last_index, stride_vector, n, i, j
         character(len=:), allocatable :: sliced_string
 
-        start_index = 1
-        end_index = len(string)
+        first_index = 1
+        last_index = len(string)
         stride_vector = 1
         if (len(string) > 0) then
             if (present(stride)) then
                 if (stride /= 0) then
                     if (stride < 0) then
-                        start_index = len(string)
-                        end_index = 1
+                        first_index = len(string)
+                        last_index = 1
                     end if
                     stride_vector = stride
                 end if
             else
-                if (present(start) .and. present(end)) then
-                    if (end < start) then
+                if (present(first) .and. present(last)) then
+                    if (last < first) then
                         stride_vector = -1
                     end if
                 end if
             end if
 
-            if (present(start)) then
-                start_index =  clip(start, 1, len(string))
+            if (present(first)) then
+                first_index =  clip(first, 1, len(string))
             end if
-            if (present(end)) then
-                end_index = clip(end, 1, len(string))
+            if (present(last)) then
+                last_index = clip(last, 1, len(string))
             end if
 
-            n = int((end_index - start_index) / stride_vector)
+            n = int((last_index - first_index) / stride_vector)
             allocate(character(len=max(0, n + 1)) :: sliced_string)
             
-            if (present(include_end)) then
-                if (include_end) then
-                    start_index = end_index - (n * stride_vector)
+            if (present(include_last)) then
+                if (include_last) then
+                    first_index = last_index - (n * stride_vector)
                 end if
             end if
 
             j = 1
-            do i = start_index, end_index, stride_vector
+            do i = first_index, last_index, stride_vector
                 sliced_string(j:j) = string(i:i)
                 j = j + 1
             end do
