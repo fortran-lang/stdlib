@@ -361,7 +361,7 @@ contains
 
     end function reverse
 
-    pure function slice(string, start, last, stride, include_last) result(sliced_string)
+    pure function slice(string, first, last, stride, include_last) result(sliced_string)
         character(len=*), intent(in) :: string
         integer, intent(in), optional :: first, last, stride
         logical, intent(in), optional :: include_last
