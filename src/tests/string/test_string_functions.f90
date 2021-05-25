@@ -3,6 +3,7 @@ module test_string_functions
     use stdlib_error, only : check
     use stdlib_string_type, only : string_type, assignment(=), operator(==), &
                                     to_lower, to_upper, to_title, to_sentence, reverse
+    use stdlib_strings, only: slice                                    
     implicit none
 
 contains
@@ -52,6 +53,41 @@ contains
 
     end subroutine test_reverse_string
 
+    subroutine test_slice_string
+        type(string_type) :: test_string
+        test_string = "abcdefghijklmnopqrstuvwxyz"
+
+        call check(slice(test_string, 2, 16, 3) == "behkn", &
+                    'function slice failed', warn=.false.)
+        call check(slice(test_string, 15, stride=-1) == "onmlkjihgfedcba", &
+                    'function slice failed', warn=.false.)
+        call check(slice(test_string, last=22, stride=-1) == "zyxwv", &
+                    'function slice failed', warn=.false.)
+        call check(slice(test_string, 7, 2) == "gfedcb", &
+                    'function slice failed', warn=.false.)
+        call check(slice(test_string, 7, 2, 1) == "", &
+                    'function slice failed', warn=.false.)
+        call check(slice(test_string, 2, 6, -1) == "", &
+                    'function slice failed', warn=.false.)
+        call check(slice(test_string, stride=-1) == "zyxwvutsrqponmlkjihgfedcba", &
+                    'function slice failed', warn=.false.)
+        call check(slice(test_string, 7, 7, -4) == "g", &
+                    'function slice failed', warn=.false.)
+        call check(slice(test_string, 7, 7, 3) == "g", &
+                    'function slice failed', warn=.false.)
+        call check(slice(test_string, 7, 7, 3) == "g", &
+                    'function slice failed', warn=.false.)
+        call check(slice(test_string, 7, -10) == "gfedcba", &
+                    'function slice failed', warn=.false.)
+        call check(slice(test_string, 500, 22) == "zyxwv", &
+                    'function slice failed', warn=.false.)
+
+        test_string = ""
+        call check(slice(test_string, 2, 16, 3) == "", &
+                    'function slice failed', warn=.false.)
+
+    end subroutine test_slice_string
+
 end module test_string_functions
 
 
@@ -64,5 +100,6 @@ program tester
     call test_to_title_string
     call test_to_sentence_string
     call test_reverse_string
+    call test_slice_string
 
 end program tester
