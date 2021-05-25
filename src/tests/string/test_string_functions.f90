@@ -55,36 +55,41 @@ contains
 
     subroutine test_slice_string
         type(string_type) :: test_string
+        character(len=:), allocatable :: test_char
         test_string = "abcdefghijklmnopqrstuvwxyz"
+        test_char = "abcdefghijklmnopqrstuvwxyz"
 
         call check(slice(test_string, 2, 16, 3) == "behkn", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, 15, stride=-1) == "onmlkjihgfedcba", &
-                    'function slice failed', warn=.false.)
+                    'function slice failed', warn=.true.)
+        call check(slice(test_char, 15, stride=-1) == "onmlkjihgfedcba", &
+                    'function slice failed', warn=.true.)
         call check(slice(test_string, last=22, stride=-1) == "zyxwv", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, 7, 2) == "gfedcb", &
-                    'function slice failed', warn=.false.)
+                    'function slice failed', warn=.true.)
+        call check(slice(test_char, 7, 2) == "gfedcb", &
+                    'function slice failed', warn=.true.)
         call check(slice(test_string, 7, 2, 1) == "", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, 2, 6, -1) == "", &
-                    'function slice failed', warn=.false.)
+                    'function slice failed', warn=.true.)
+        call check(slice(test_char, 2, 6, -1) == "", &
+                    'function slice failed', warn=.true.)
         call check(slice(test_string, stride=-1) == "zyxwvutsrqponmlkjihgfedcba", &
-                    'function slice failed', warn=.false.)
+                    'function slice failed', warn=.true.)
         call check(slice(test_string, 7, 7, -4) == "g", &
-                    'function slice failed', warn=.false.)
+                    'function slice failed', warn=.true.)
+        call check(slice(test_char, 7, 7, 3) == "g", &
+                    'function slice failed', warn=.true.)
         call check(slice(test_string, 7, 7, 3) == "g", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, 7, 7, 3) == "g", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, 7, -10) == "gfedcba", &
-                    'function slice failed', warn=.false.)
+                    'function slice failed', warn=.true.)
+        call check(slice(test_char, 7, -10) == "gfedcba", &
+                    'function slice failed', warn=.true.)
         call check(slice(test_string, 500, 22) == "zyxwv", &
-                    'function slice failed', warn=.false.)
+                    'function slice failed', warn=.true.)
 
         test_string = ""
+        test_char = ""
         call check(slice(test_string, 2, 16, 3) == "", &
-                    'function slice failed', warn=.false.)
+                    'function slice failed', warn=.true.)
+        call check(slice(test_char, 2, 16, 3) == "", &
+                    'function slice failed', warn=.true.)
 
     end subroutine test_slice_string
 
