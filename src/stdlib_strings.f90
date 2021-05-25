@@ -58,9 +58,11 @@ module stdlib_strings
         module procedure :: ends_with_string_char
         module procedure :: ends_with_char_string
         module procedure :: ends_with_char_char
-    end interface 
+    end interface ends_with
     
+    !> Slices the input string to return a new string
     !> 
+    !> Version: experimental
     interface slice
         module procedure :: slice_string
         module procedure :: slice_char
@@ -298,31 +300,32 @@ contains
 
     end function ends_with_string_string
 
-    !> Slices the region between first and last indexes of the input
-    !> string by taking strides of length stride
-    elemental function slice_string(string, first, last, stride, include_last) result(sliced_string)
+    !> Slices the region between the input 'first' and 'last' index (both inclusive)
+    !> of the input 'string' by taking strides of length 'stride'
+    !> Returns a new string_type object
+    elemental function slice_string(string, first, last, stride) result(sliced_string)
         type(string_type), intent(in) :: string
         integer, intent(in), optional :: first, last, stride
-        logical, intent(in), optional :: include_last
         type(string_type) :: sliced_string
 
-        sliced_string = string_type(slice(char(string), first, last, stride, include_last))
+        sliced_string = string_type(slice(char(string), first, last, stride))
 
     end function slice_string
 
-    !> Slices the region between first and last indexes of the input
-    !> character sequence by taking strides of length stride
-    pure function slice_char(string, first, last, stride, include_last) result(sliced_string)
+    !> Slices the region between the input 'first' and 'last' index (both inclusive)
+    !> of the input 'string' by taking strides of length 'stride'
+    !> Returns a new string
+    pure function slice_char(string, first, last, stride) result(sliced_string)
         character(len=*), intent(in) :: string
         integer, intent(in), optional :: first, last, stride
-        logical, intent(in), optional :: include_last
         integer :: first_index, last_index, stride_vector, n, i, j
         character(len=:), allocatable :: sliced_string
 
-        first_index = 1
-        last_index = len(string)
-        stride_vector = 1
         if (len(string) > 0) then
+            first_index = 1
+            last_index = len(string)
+            stride_vector = 1
+
             if (present(stride)) then
                 if (stride /= 0) then
                     if (stride < 0) then
@@ -348,12 +351,6 @@ contains
 
             n = int((last_index - first_index) / stride_vector)
             allocate(character(len=max(0, n + 1)) :: sliced_string)
-            
-            if (present(include_last)) then
-                if (include_last) then
-                    first_index = last_index - (n * stride_vector)
-                end if
-            end if
 
             j = 1
             do i = first_index, last_index, stride_vector
@@ -361,7 +358,7 @@ contains
                 j = j + 1
             end do
         else
-            sliced_string = ''
+            sliced_string = ""
         end if
     end function slice_char
 
