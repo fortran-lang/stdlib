@@ -192,3 +192,64 @@ program demo
   print'(a)', ends_with("pattern", "pat")  ! F
 end program demo
 ```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `slice`
+
+#### Description
+
+Extracts the characters from the defined region of the input string.  
+Argument `first` and `last` defines the region for the function `slice` to operate.  
+Extraction starts from the index `first` and takes stride of length `stride`.  
+Argument `stride` cannot take the value 0.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):slice(interface)]] (string, first, last, stride)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]]
+  This argument is intent(in).
+- `first`: integer
+  This argument is intent(in) and optional.
+- `last`: integer
+  This argument is intent(in) and optional.
+- `stride`: integer
+  This argument is intent(in) and optional.
+
+#### Result value
+
+The result is of the same type as `string`.
+
+#### Example
+
+```fortran
+program demo_slice
+  use stdlib_string_type
+  use stdlib_strings, only : slice
+  implicit none
+  type(string_type) :: string
+  character(len=10) :: char
+
+  string = "abcdefghij"
+  ! string <-- "abcdefghij"
+
+  char = "abcdefghij"
+  ! char <-- "abcdefghij"
+
+  print'(a)', slice("abcdefghij", 2, 6, 2)   ! "bdf"
+  print'(a)', slice(string, 2, 6, 2)         ! "bdf"
+  print'(a)', slice(char, 2, 6, 2)           ! "bdf"
+  
+end program demo_slice
+```
