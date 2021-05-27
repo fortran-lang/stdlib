@@ -318,18 +318,19 @@ contains
     pure function slice_char(string, first, last, stride) result(sliced_string)
         character(len=*), intent(in) :: string
         integer, intent(in), optional :: first, last, stride
-        integer :: first_index, last_index, stride_vector, n, i, j
+        integer :: first_index, last_index, stride_vector, strides_taken, length_string, i, j
         character(len=:), allocatable :: sliced_string
 
-        if (len(string) > 0) then
+        length_string = len(string)
+        if (length_string > 0) then
             first_index = 1
-            last_index = len(string)
+            last_index = length_string
             stride_vector = 1
 
             if (present(stride)) then
                 if (stride /= 0) then
                     if (stride < 0) then
-                        first_index = len(string)
+                        first_index = length_string
                         last_index = 1
                     end if
                     stride_vector = stride
@@ -343,20 +344,32 @@ contains
             end if
 
             if (present(first)) then
-                first_index =  clip(first, 1, len(string))
+                first_index =  first
             end if
             if (present(last)) then
-                last_index = clip(last, 1, len(string))
+                last_index = last
             end if
 
-            n = int((last_index - first_index) / stride_vector)
-            allocate(character(len=max(0, n + 1)) :: sliced_string)
+            strides_taken = floor( real(last_index - first_index) / real(stride_vector) )
 
-            j = 1
-            do i = first_index, last_index, stride_vector
-                sliced_string(j:j) = string(i:i)
-                j = j + 1
-            end do
+            if (strides_taken < 0 .or. &
+                ((first_index < 1 .and. last_index < 1) .or. &
+                (first_index > length_string .and. last_index > length_string))) then
+                
+                    sliced_string = ""
+            else
+                first_index = clip(first_index, 1, length_string)
+                last_index = clip(last_index, 1, length_string)
+
+                strides_taken = (last_index - first_index) / stride_vector
+                allocate(character(len=strides_taken + 1) :: sliced_string)
+
+                j = 1
+                do i = first_index, last_index, stride_vector
+                    sliced_string(j:j) = string(i:i)
+                    j = j + 1
+                end do
+            end if
         else
             sliced_string = ""
         end if
