@@ -417,6 +417,8 @@ contains
     subroutine test_removing_log_units()
 
         logical :: opened
+        integer :: istat
+        character(len=80) :: msgtxt
 
         print *
         print *, 'running test_removing_log_units'
@@ -462,7 +464,8 @@ contains
 
         end if
 
-        inquire( unit4, opened=opened )
+        inquire( unit4, opened=opened ,iostat=istat,iomsg=msgtxt)
+        if(istat/=0) opened=.false.
         if ( opened ) then
             error stop 'UNIT4 is opened contrary to expectations.'
 

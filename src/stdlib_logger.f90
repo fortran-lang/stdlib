@@ -308,6 +308,8 @@ contains
         integer :: lun
         character(12) :: specifier
         logical :: question
+        integer :: istat
+        character(len=80) :: msgtxt
 
         call validate_unit()
         if ( present(stat) ) then
@@ -350,7 +352,8 @@ contains
             end if
 
 ! Check that unit is opened
-            inquire( unit, opened=question )
+            inquire( unit, opened=question, iostat=istat, iomsg=msgtxt)
+            if(istat/=0) question=.false.
             if ( .not. question ) then
                 if ( present(stat) ) then
                     stat = unopened_in_error
