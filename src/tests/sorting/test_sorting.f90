@@ -287,6 +287,8 @@ contains
         integer(int64) :: i
         logical        :: valid
 
+        ltest = .true.
+
         tdiff = 0
         do i = 1, repeat
             char_dummy = a
@@ -494,6 +496,8 @@ contains
 
         logical :: ldummy
 
+        ltest = .true.
+
         call test_char_sort( char_decrease, "Char. Decrease", ldummy )
         ltest = (ltest .and. ldummy)
 
@@ -514,6 +518,8 @@ contains
         real(dp)       :: rate
         integer(int64) :: i
         logical        :: valid
+
+        ltest = .true.
 
         tdiff = 0
         do i = 1, repeat
