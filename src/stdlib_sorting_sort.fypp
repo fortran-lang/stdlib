@@ -86,7 +86,7 @@ contains
 #:for sname, signt, signoppt in SIGN_NAME_TYPE
 #:for k1, t1 in IRS_KINDS_TYPES
 
-    pure module subroutine ${k1}$_${sname}$_sort( array )
+    pure subroutine ${k1}$_${sname}$_sort( array )
 ! `${k1}$_sort( array )` sorts the input `ARRAY` of type `${t1}$`
 ! using a hybrid sort based on the `introsort` of David Musser. As with
 ! `introsort`, `${k1}$_sort( array )` is an unstable hybrid comparison
@@ -274,7 +274,7 @@ contains
 
 
 #:for sname, signt, signoppt in SIGN_NAME_TYPE
-    pure module subroutine char_${sname}$_sort( array )
+    pure subroutine char_${sname}$_sort( array )
 ! `char_sort( array )` sorts the input `ARRAY` of type `CHARACTER(*)`
 ! using a hybrid sort based on the `introsort` of David Musser. As with
 ! `introsort`, `char_sort( array )` is an unstable hybrid comparison

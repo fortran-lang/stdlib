@@ -84,7 +84,7 @@ contains
 #:for sname, signt, signoppt in SIGN_NAME_TYPE
 #:for k1, t1 in IRS_KINDS_TYPES
 
-    module subroutine ${k1}$_${sname}$_ord_sort( array, work )
+    subroutine ${k1}$_${sname}$_ord_sort( array, work )
 ! A translation to Fortran 2008, of the `"Rust" sort` algorithm found in
 ! `slice.rs`
 ! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
@@ -443,7 +443,7 @@ contains
 
 
 #:for sname, signt, signoppt in SIGN_NAME_TYPE
-    module subroutine char_${sname}$_ord_sort( array, work )
+    subroutine char_${sname}$_ord_sort( array, work )
 ! A translation to Fortran 2008, of the `"Rust" sort` algorithm found in
 ! `slice.rs`
 ! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
