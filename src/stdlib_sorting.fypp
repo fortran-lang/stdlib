@@ -365,7 +365,7 @@ module stdlib_sorting
 !! on the `introsort` of David Musser.
 
 #:for k1, t1 in IRS_KINDS_TYPES
-        pure module subroutine ${k1}$_sort( array )
+        pure module subroutine ${k1}$_sort( array, reverse )
 !! Version: experimental
 !!
 !! `${k1}$_sort( array )` sorts the input `ARRAY` of type `${t1}$`
@@ -373,12 +373,13 @@ module stdlib_sorting
 !! The algorithm is of order O(N Ln(N)) for all inputs.
 !! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
 !! behavior is small for random data compared to other sorting algorithms.
-            ${t1}$, intent(inout) :: array(0:)
+            ${t1}$, intent(inout)         :: array(0:)
+            logical, intent(in), optional :: reverse
         end subroutine ${k1}$_sort
 
 #:endfor
 
-        pure module subroutine char_sort( array )
+        pure module subroutine char_sort( array, reverse )
 !! Version: experimental
 !!
 !! `char_sort( array )` sorts the input `ARRAY` of type `CHARACTER(*)`
@@ -387,6 +388,7 @@ module stdlib_sorting
 !! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
 !! behavior is small for random data compared to other sorting algorithms.
             character(len=*), intent(inout) :: array(0:)
+            logical, intent(in), optional   :: reverse
         end subroutine char_sort
 
     end interface sort
