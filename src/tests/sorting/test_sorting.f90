@@ -153,23 +153,23 @@ program test_sorting
 ! test the sorting routines on the test arrays
     ltest = .true.
 
-    call test_int_ord_sorts( ldummy );    ltest = (ltest .and. ldummy)
+    call test_int_ord_sorts( ldummy );       ltest = (ltest .and. ldummy)
 
-    call test_char_ord_sorts(ldummy );    ltest = (ltest .and. ldummy)
+    call test_char_ord_sorts(ldummy );       ltest = (ltest .and. ldummy)
 
-    call test_string_ord_sorts( ldummy ); ltest = (ltest .and. ldummy)
+    call test_string_ord_sorts( ldummy );    ltest = (ltest .and. ldummy)
 
-    call test_int_sorts( ldummy );        ltest = (ltest .and. ldummy)
+    call test_int_sorts( ldummy );           ltest = (ltest .and. ldummy)
 
-    call test_char_sorts( ldummy );       ltest = (ltest .and. ldummy)
+    call test_char_sorts( ldummy );          ltest = (ltest .and. ldummy)
 
-    call test_string_sorts( ldummy );     ltest = (ltest .and. ldummy)
+    call test_string_sorts( ldummy );        ltest = (ltest .and. ldummy)
 
-    call test_int_sort_indexes( )
+    call test_int_sort_indexes( ldummy );    ltest = (ltest .and. ldummy)
 
-    call test_char_sort_indexes( )
+    call test_char_sort_indexes( ldummy );   ltest = (ltest .and. ldummy)
 
-    call test_string_sort_indexes( )
+    call test_string_sort_indexes( ldummy ); ltest = (ltest .and. ldummy)
 
 
     call check(ltest)
@@ -207,7 +207,7 @@ contains
 
     subroutine test_int_ord_sort( a, a_name, ltest )
         integer(int32), intent(in) :: a(:)
-        character(*), intent(in)   :: a_name 
+        character(*), intent(in)   :: a_name
         logical, intent(out)       :: ltest
 
         integer(int64) :: t0, t1, tdiff
@@ -397,7 +397,7 @@ contains
             write(*,'(a, 2(1x,a))') 'string_dummy(i-1:i) = ', &
                 string_dummy(i-1:i)
         end if
- 
+
         string_dummy = a
         call ord_sort( string_dummy, reverse = .true. )
 
@@ -546,7 +546,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
-   
+
     end subroutine test_char_sort
 
     subroutine test_string_sorts( ltest )
@@ -614,28 +614,45 @@ contains
 
     end subroutine test_string_sort
 
-    subroutine test_int_sort_indexes( )
+    subroutine test_int_sort_indexes( ltest )
+        logical, intent(out) :: ltest
 
-        call test_int_sort_index( blocks, "Blocks" )
-        call test_int_sort_index( decrease, "Decreasing" )
-        call test_int_sort_index( identical, "Identical" )
-        call test_int_sort_index( increase, "Increasing" )
-        call test_int_sort_index( rand1, "Random dense" )
-        call test_int_sort_index( rand2, "Random order" )
-        call test_int_sort_index( rand0, "Random sparse" )
-        call test_int_sort_index( rand3, "Random 3" )
-        call test_int_sort_index( rand10, "Random 10" )
+        logical :: ldummy
+
+        ltest = .true.
+
+        call test_int_sort_index( blocks, "Blocks", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_int_sort_index( decrease, "Decreasing", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_int_sort_index( identical, "Identical", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_int_sort_index( increase, "Increasing", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_int_sort_index( rand1, "Random dense", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_int_sort_index( rand2, "Random order", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_int_sort_index( rand0, "Random sparse", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_int_sort_index( rand3, "Random 3", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_int_sort_index( rand10, "Random 10", ldummy )
+        ltest = (ltest .and. ldummy)
 
     end subroutine test_int_sort_indexes
 
-    subroutine test_int_sort_index( a, a_name )
+    subroutine test_int_sort_index( a, a_name, ltest )
         integer(int32), intent(inout) :: a(:)
         character(*), intent(in)      :: a_name
+        logical, intent(out)          :: ltest
 
         integer(int64)                 :: t0, t1, tdiff
         real(dp)                       :: rate
         integer(int64)                 :: i
         logical                        :: valid
+
+        ltest = .true.
 
         tdiff = 0
         do i = 1, repeat
@@ -649,6 +666,7 @@ contains
 
         dummy = a(index)
         call verify_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
         if ( .not. valid ) then
             write( *, * ) "SORT_INDEX did not sort " // a_name // "."
             write(*,*) 'i = ', i
@@ -662,6 +680,7 @@ contains
         call sort_index( dummy, index, work, iwork, reverse=.true. )
         dummy = a(index)
         call verify_reverse_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
         if ( .not. valid ) then
             write( *, * ) "SORT_INDEX did not reverse sort " // &
                 a_name // "."
@@ -671,22 +690,33 @@ contains
 
     end subroutine test_int_sort_index
 
-    subroutine test_char_sort_indexes( )
+    subroutine test_char_sort_indexes( ltest )
+        logical, intent(out) :: ltest
 
-        call test_char_sort_index( char_decrease, "Char. Decrease" )
-        call test_char_sort_index( char_increase, "Char. Increase" )
-        call test_char_sort_index( char_rand, "Char. Random" )
+        logical :: ldummy
+
+        ltest = .true.
+
+        call test_char_sort_index( char_decrease, "Char. Decrease", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_char_sort_index( char_increase, "Char. Increase", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_char_sort_index( char_rand, "Char. Random", ldummy )
+        ltest = (ltest .and. ldummy)
 
     end subroutine test_char_sort_indexes
 
-    subroutine test_char_sort_index( a, a_name )
+    subroutine test_char_sort_index( a, a_name, ltest )
         character(len=4), intent(in) :: a(0:)
         character(*), intent(in) :: a_name
+        logical, intent(out)     :: ltest
 
         integer(int64) :: t0, t1, tdiff
         real(dp)       :: rate
         integer(int64) :: i
         logical        :: valid
+
+        ltest = .true.
 
         tdiff = 0
         do i = 1, repeat
@@ -699,6 +729,7 @@ contains
         tdiff = tdiff/repeat
 
         call verify_char_sort( char_dummy, valid, i )
+        ltest = (ltest .and. valid)
         if ( .not. valid ) then
             write( *, * ) "SORT_INDEX did not sort " // a_name // "."
             write(*,*) 'i = ', i
@@ -710,22 +741,33 @@ contains
 
     end subroutine test_char_sort_index
 
-    subroutine test_string_sort_indexes( )
+    subroutine test_string_sort_indexes( ltest )
+        logical, intent(out) :: ltest
 
-        call test_string_sort_index( string_decrease, "String Decrease" )
-        call test_string_sort_index( string_increase, "String Increase" )
-        call test_string_sort_index( string_rand, "String Random" )
+        logical :: ldummy
+
+        ltest = .true.
+
+        call test_string_sort_index( string_decrease, "String Decrease", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_string_sort_index( string_increase, "String Increase", ldummy )
+        ltest = (ltest .and. ldummy)
+        call test_string_sort_index( string_rand, "String Random", ldummy )
+        ltest = (ltest .and. ldummy)
 
     end subroutine test_string_sort_indexes
 
-    subroutine test_string_sort_index( a, a_name )
+    subroutine test_string_sort_index( a, a_name, ltest )
         type(string_type), intent(in) :: a(0:)
         character(*), intent(in) :: a_name
+        logical, intent(out) :: ltest
 
         integer(int64) :: t0, t1, tdiff
         real(dp)       :: rate
         integer(int64) :: i
         logical        :: valid
+
+        ltest = .true.
 
         tdiff = 0
         do i = 1, repeat
@@ -738,6 +780,7 @@ contains
         tdiff = tdiff/repeat
 
         call verify_string_sort( string_dummy, valid, i )
+        ltest = (ltest .and. valid)
         if ( .not. valid ) then
             write( *, * ) "SORT_INDEX did not sort " // a_name // "."
             write(*,*) 'i = ', i
