@@ -349,27 +349,23 @@ contains
             if (present(last)) then
                 last_index = last
             end if
-
-            strides_taken = floor( real(last_index - first_index) / real(stride_vector) )
-
-            if (strides_taken < 0 .or. &
-                ((first_index < 1 .and. last_index < 1) .or. &
-                (first_index > length_string .and. last_index > length_string))) then
-                
-                    sliced_string = ""
+            
+            if (stride_vector > 0) then
+                first_index = max(first_index, 1)
+                last_index = min(last_index, length_string)
             else
-                first_index = clip(first_index, 1, length_string)
-                last_index = clip(last_index, 1, length_string)
-
-                strides_taken = (last_index - first_index) / stride_vector
-                allocate(character(len=strides_taken + 1) :: sliced_string)
-
-                j = 1
-                do i = first_index, last_index, stride_vector
-                    sliced_string(j:j) = string(i:i)
-                    j = j + 1
-                end do
+                first_index = min(first_index, length_string)
+                last_index = max(last_index, 1)
             end if
+            
+            strides_taken = floor( real(last_index - first_index)/real(stride_vector) )
+            allocate(character(len=max(0, strides_taken + 1)) :: sliced_string)
+            
+            j = 1
+            do i = first_index, last_index, stride_vector
+                sliced_string(j:j) = string(i:i)
+                j = j + 1
+            end do
         else
             sliced_string = ""
         end if
