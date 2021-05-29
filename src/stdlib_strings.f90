@@ -6,7 +6,6 @@
 module stdlib_strings
     use stdlib_ascii, only : whitespace
     use stdlib_string_type, only : string_type, char, verify
-    use stdlib_math, only: clip
     implicit none
     private
 
@@ -321,7 +320,7 @@ contains
         integer :: first_index, last_index, stride_vector, strides_taken, length_string, i, j
         character(len=:), allocatable :: sliced_string
         length_string = len(string)
-        
+
         first_index = 1
         last_index = length_string
         stride_vector = 1
