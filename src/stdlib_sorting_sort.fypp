@@ -1,6 +1,11 @@
 #:include "common.fypp"
 #:set IRS_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + STRING_KINDS_TYPES
 
+#:set SIGN_NAME = ["increase", "decrease"]
+#:set SIGN_TYPE = [">", "<"]
+#:set SIGN_OPP_TYPE = ["<", ">"]
+#:set SIGN_NAME_TYPE = list(zip(SIGN_NAME, SIGN_TYPE, SIGN_OPP_TYPE))
+
 !! Licensing:
 !!
 !! This file is subjec† both to the Fortran Standard Library license, and
@@ -60,10 +65,28 @@ submodule(stdlib_sorting) stdlib_sorting_sort
 
 contains
 
+#:for k1, t1 in IRS_KINDS_TYPES
+    pure module subroutine ${k1}$_sort( array, reverse )
+            ${t1}$, intent(inout) :: array(0:)
+            logical, intent(in), optional            :: reverse
 
+            logical :: reverse_
+
+            reverse_ = .false.
+            if(present(reverse)) reverse_ = reverse
+
+            if(reverse_)then
+             call ${k1}$_decrease_sort(array)
+            else
+             call ${k1}$_increase_sort(array)
+            endif
+    end subroutine ${k1}$_sort
+#:endfor
+
+#:for sname, signt, signoppt in SIGN_NAME_TYPE
 #:for k1, t1 in IRS_KINDS_TYPES
 
-    pure module subroutine ${k1}$_sort( array )
+    pure subroutine ${k1}$_${sname}$_sort( array )
 ! `${k1}$_sort( array )` sorts the input `ARRAY` of type `${t1}$`
 ! using a hybrid sort based on the `introsort` of David Musser. As with
 ! `introsort`, `${k1}$_sort( array )` is an unstable hybrid comparison
@@ -126,12 +149,12 @@ contains
             u = array( 0 )
             v = array( size(array, kind=int_size)/2-1 )
             w = array( size(array, kind=int_size)-1 )
-            if ( (u > v) .neqv. (u > w) ) then
+            if ( (u ${signt}$ v) .neqv. (u ${signt}$ w) ) then
                 x = u
                 y = array(0)
                 array(0) = array( size( array, kind=int_size ) - 1 )
                 array( size( array, kind=int_size ) - 1 ) = y
-            else if ( (v < u) .neqv. (v < w) ) then
+            else if ( (v ${signoppt}$ u) .neqv. (v ${signoppt}$ w) ) then
                 x = v
                 y = array(size( array, kind=int_size )/2-1)
                 array( size( array, kind=int_size )/2-1 ) = &
@@ -143,7 +166,7 @@ contains
 ! Partition the array.
             i = -1_int_size
             do j = 0_int_size, size(array, kind=int_size)-2
-                if ( array(j) <= x ) then
+                if ( array(j) ${signoppt}$= x ) then
                     i = i + 1
                     y = array(i)
                     array(i) = array(j)
@@ -168,7 +191,7 @@ contains
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
-                    if ( array(i) <= key ) exit
+                    if ( array(i) ${signoppt}$= key ) exit
                     array(i+1) = array(i)
                     i = i - 1
                 end do
@@ -212,10 +235,10 @@ contains
             l = 2_int_size * i + 1_int_size
             r = l + 1_int_size
             if ( l < heap_size ) then
-                if ( array(l) > array(largest) ) largest = l
+                if ( array(l) ${signt}$ array(largest) ) largest = l
             end if
             if ( r < heap_size ) then
-                if ( array(r) > array(largest) ) largest = r
+                if ( array(r) ${signt}$ array(largest) ) largest = r
             end if
             if ( largest /= i ) then
                 y = array(i)
@@ -226,14 +249,32 @@ contains
 
         end subroutine max_heapify
 
-    end subroutine ${k1}$_sort
+    end subroutine ${k1}$_${sname}$_sort
 
+#:endfor
 #:endfor
 
 
+    pure module subroutine char_sort( array, reverse )
+        character(len=*), intent(inout) :: array(0:)
+        logical, intent(in), optional   :: reverse
+
+        logical :: reverse_
+
+        reverse_ = .false.
+        if(present(reverse)) reverse_ = reverse
+
+        if(reverse_)then
+            call char_decrease_sort(array)
+        else
+            call char_increase_sort(array)
+        endif
+    end subroutine char_sort
 
 
-    pure module subroutine char_sort( array )
+
+#:for sname, signt, signoppt in SIGN_NAME_TYPE
+    pure subroutine char_${sname}$_sort( array )
 ! `char_sort( array )` sorts the input `ARRAY` of type `CHARACTER(*)`
 ! using a hybrid sort based on the `introsort` of David Musser. As with
 ! `introsort`, `char_sort( array )` is an unstable hybrid comparison
@@ -296,12 +337,12 @@ contains
             u = array( 0 )
             v = array( size(array, kind=int_size)/2-1 )
             w = array( size(array, kind=int_size)-1 )
-            if ( (u > v) .neqv. (u > w) ) then
+            if ( (u ${signt}$ v) .neqv. (u ${signt}$ w) ) then
                 x = u
                 y = array(0)
                 array(0) = array( size( array, kind=int_size ) - 1 )
                 array( size( array, kind=int_size ) - 1 ) = y
-            else if ( (v < u) .neqv. (v < w) ) then
+            else if ( (v ${signoppt}$ u) .neqv. (v ${signoppt}$ w) ) then
                 x = v
                 y = array(size( array, kind=int_size )/2-1)
                 array( size( array, kind=int_size )/2-1 ) = &
@@ -313,7 +354,7 @@ contains
 ! Partition the array.
             i = -1_int_size
             do j = 0_int_size, size(array, kind=int_size)-2
-                if ( array(j) <= x ) then
+                if ( array(j) ${signoppt}$= x ) then
                     i = i + 1
                     y = array(i)
                     array(i) = array(j)
@@ -338,7 +379,7 @@ contains
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
-                    if ( array(i) <= key ) exit
+                    if ( array(i) ${signoppt}$= key ) exit
                     array(i+1) = array(i)
                     i = i - 1
                 end do
@@ -382,10 +423,10 @@ contains
             l = 2_int_size * i + 1_int_size
             r = l + 1_int_size
             if ( l < heap_size ) then
-                if ( array(l) > array(largest) ) largest = l
+                if ( array(l) ${signt}$ array(largest) ) largest = l
             end if
             if ( r < heap_size ) then
-                if ( array(r) > array(largest) ) largest = r
+                if ( array(r) ${signt}$ array(largest) ) largest = r
             end if
             if ( largest /= i ) then
                 y = array(i)
@@ -396,6 +437,7 @@ contains
 
         end subroutine max_heapify
 
-    end subroutine char_sort
+    end subroutine char_${sname}$_sort
+#:endfor
 
 end submodule stdlib_sorting_sort

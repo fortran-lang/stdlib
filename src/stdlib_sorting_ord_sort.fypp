@@ -1,6 +1,11 @@
 #:include "common.fypp"
 #:set IRS_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + STRING_KINDS_TYPES
 
+#:set SIGN_NAME = ["increase", "decrease"]
+#:set SIGN_TYPE = [">", "<"]
+#:set SIGN_OPP_TYPE = ["<", ">"]
+#:set SIGN_NAME_TYPE = list(zip(SIGN_NAME, SIGN_TYPE, SIGN_OPP_TYPE))
+
 !! Licensing:
 !!
 !! This file is subjec† both to the Fortran Standard Library license, and
@@ -57,8 +62,29 @@ submodule(stdlib_sorting) stdlib_sorting_ord_sort
 contains
 
 #:for k1, t1 in IRS_KINDS_TYPES
+    module subroutine ${k1}$_ord_sort( array, work, reverse )
+        ${t1}$, intent(inout)         :: array(0:)
+        ${t1}$, intent(out), optional :: work(0:)
+        logical, intent(in), optional :: reverse
 
-    module subroutine ${k1}$_ord_sort( array, work )
+        logical :: reverse_
+
+        reverse_ = .false.
+        if(present(reverse)) reverse_ = reverse
+
+        if (reverse_) then
+            call ${k1}$_decrease_ord_sort(array, work)
+        else
+            call ${k1}$_increase_ord_sort(array, work)
+        endif
+
+    end subroutine ${k1}$_ord_sort
+#:endfor
+
+#:for sname, signt, signoppt in SIGN_NAME_TYPE
+#:for k1, t1 in IRS_KINDS_TYPES
+
+    subroutine ${k1}$_${sname}$_ord_sort( array, work )
 ! A translation to Fortran 2008, of the `"Rust" sort` algorithm found in
 ! `slice.rs`
 ! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
@@ -92,7 +118,7 @@ contains
 ! Allocate a buffer to use as scratch memory.
             array_size = size( array, kind=int_size )
             allocate( buf(0:array_size/2-1), stat=stat )
-            if ( stat /= 0 ) error stop "${k1}$_ord_sort: Allocation of buffer failed."
+            if ( stat /= 0 ) error stop "${k1}$_${sname}$_ord_sort: Allocation of buffer failed."
             call merge_sort( array, buf )
         end if
 
@@ -129,7 +155,7 @@ contains
             do j=1, size(array, kind=int_size)-1
                 key = array(j)
                 i = j - 1
-                do while( i >= 0 .and. array(i) > key )
+                do while( i >= 0 .and. array(i) ${signt}$ key )
                     array(i+1) = array(i)
                     i = i - 1
                 end do
@@ -204,7 +230,7 @@ contains
 
             tmp = array(0)
             find_hole: do i=1, size(array, kind=int_size)-1
-                if ( array(i) >= tmp ) exit find_hole
+                if ( array(i) ${signt}$= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
             array(i-1) = tmp
@@ -263,16 +289,16 @@ contains
                 start = finish
                 if ( start > 0 ) then
                     start = start - 1
-                    if ( array(start+1) < array(start) ) then
+                    if ( array(start+1) ${signoppt}$ array(start) ) then
                         Descending: do while ( start > 0 )
-                            if ( array(start) >= array(start-1) ) &
+                            if ( array(start) ${signt}$= array(start-1) ) &
                                 exit Descending
                             start = start - 1
                         end do Descending
                         call reverse_segment( array(start:finish) )
                     else
                         Ascending: do while( start > 0 )
-                            if ( array(start) < array(start-1) ) exit Ascending
+                            if ( array(start) ${signoppt}$ array(start-1) ) exit Ascending
                             start = start - 1
                         end do Ascending
                     end if
@@ -338,7 +364,7 @@ contains
                 i = 0
                 j = mid
                 merge_lower: do k = 0, array_len-1
-                    if ( buf(i) <= array(j) ) then
+                    if ( buf(i) ${signoppt}$= array(j) ) then
                         array(k) = buf(i)
                         i = i + 1
                         if ( i >= mid ) exit merge_lower
@@ -356,7 +382,7 @@ contains
                 i = mid - 1
                 j = array_len - mid -1
                 merge_upper: do k = array_len-1, 0, -1
-                    if ( buf(j) >= array(i) ) then
+                    if ( buf(j) ${signt}$= array(i) ) then
                         array(k) = buf(j)
                         j = j - 1
                         if ( j < 0 ) exit merge_upper
@@ -392,12 +418,32 @@ contains
 
         end subroutine reverse_segment
 
-    end subroutine ${k1}$_ord_sort
+    end subroutine ${k1}$_${sname}$_ord_sort
 
 #:endfor
+#:endfor
+
+    module subroutine char_ord_sort( array, work, reverse )
+        character(len=*), intent(inout)                  :: array(0:)
+        character(len=len(array)), intent(out), optional :: work(0:)
+        logical, intent(in), optional                    :: reverse
+
+        logical :: reverse_
+
+        reverse_ = .false.
+        if(present(reverse)) reverse_ = reverse
+
+        if (reverse_) then
+            call char_decrease_ord_sort(array, work)
+        else
+            call char_increase_ord_sort(array, work)
+        endif
+
+    end subroutine char_ord_sort
 
 
-    module subroutine char_ord_sort( array, work )
+#:for sname, signt, signoppt in SIGN_NAME_TYPE
+    subroutine char_${sname}$_ord_sort( array, work )
 ! A translation to Fortran 2008, of the `"Rust" sort` algorithm found in
 ! `slice.rs`
 ! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
@@ -432,7 +478,7 @@ contains
             array_size = size( array, kind=int_size )
             allocate( character(len=len(array)) :: buf(0:array_size/2-1), &
                       stat=stat )
-            if ( stat /= 0 ) error stop "${k1}$_ord_sort: Allocation of buffer failed."
+            if ( stat /= 0 ) error stop "${k1}$_${sname}$_ord_sort: Allocation of buffer failed."
             call merge_sort( array, buf )
         end if
 
@@ -469,7 +515,7 @@ contains
             do j=1, size(array, kind=int_size)-1
                 key = array(j)
                 i = j - 1
-                do while( i >= 0 .and. array(i) > key )
+                do while( i >= 0 .and. array(i) ${signt}$ key )
                     array(i+1) = array(i)
                     i = i - 1
                 end do
@@ -544,7 +590,7 @@ contains
 
             tmp = array(0)
             find_hole: do i=1, size(array, kind=int_size)-1
-                if ( array(i) >= tmp ) exit find_hole
+                if ( array(i) ${signt}$= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
             array(i-1) = tmp
@@ -603,16 +649,16 @@ contains
                 start = finish
                 if ( start > 0 ) then
                     start = start - 1
-                    if ( array(start+1) < array(start) ) then
+                    if ( array(start+1) ${signoppt}$ array(start) ) then
                         Descending: do while ( start > 0 )
-                            if ( array(start) >= array(start-1) ) &
+                            if ( array(start) ${signt}$= array(start-1) ) &
                                 exit Descending
                             start = start - 1
                         end do Descending
                         call reverse_segment( array(start:finish) )
                     else
                         Ascending: do while( start > 0 )
-                            if ( array(start) < array(start-1) ) exit Ascending
+                            if ( array(start) ${signoppt}$ array(start-1) ) exit Ascending
                             start = start - 1
                         end do Ascending
                     end if
@@ -678,7 +724,7 @@ contains
                 i = 0
                 j = mid
                 merge_lower: do k = 0, array_len-1
-                    if ( buf(i) <= array(j) ) then
+                    if ( buf(i) ${signoppt}$= array(j) ) then
                         array(k) = buf(i)
                         i = i + 1
                         if ( i >= mid ) exit merge_lower
@@ -696,7 +742,7 @@ contains
                 i = mid - 1
                 j = array_len - mid -1
                 merge_upper: do k = array_len-1, 0, -1
-                    if ( buf(j) >= array(i) ) then
+                    if ( buf(j) ${signt}$= array(i) ) then
                         array(k) = buf(j)
                         j = j - 1
                         if ( j < 0 ) exit merge_upper
@@ -732,7 +778,8 @@ contains
 
         end subroutine reverse_segment
 
-    end subroutine char_ord_sort
+    end subroutine char_${sname}$_ord_sort
+#:endfor
 
 end submodule stdlib_sorting_ord_sort
 
