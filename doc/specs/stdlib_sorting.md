@@ -55,12 +55,12 @@ data:
 
 The Fortran Standard Library is distributed under the MIT
 License. However components of the library may be based on code with
-additional licensing restriction. In particular `ORD_SORT`,
+additional licensing restrictions. In particular `ORD_SORT`,
 `SORT_INDEX`, and `SORT` are translations of codes with their
 own distribution restrictions.
 
 The `ORD_SORT` and `SORT_INDEX` subroutines are essentially
-translations to Fortran 2008 of the `"rust" sort` of the Rust Language
+translations to Fortran 2008 of the `"Rust" sort` of the Rust Language
 distributed as part of
 [`slice.rs`](https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs).
 The header of the `slice.rs` file has as its licensing requirements:
@@ -75,7 +75,7 @@ The header of the `slice.rs` file has as its licensing requirements:
     option. This file may not be copied, modified, or distributed
     except according to those terms.
 
-so the license for the `slice.rs` code is compatible with the use of
+So the license for the `slice.rs` code is compatible with the use of
 modified versions of the code in the Fortran Standard Library under
 the MIT license.
 
@@ -108,17 +108,16 @@ performance than `SORT` on partially sorted data, having O(N)
 performance on uniformly increasing or decreasing data.
 
 
-`ORD_SORT` begins by traversing the array starting in its tail
-attempting to identify `runs` in the array, where a run is either a
-uniformly decreasing sequence, `ARRAY(i-1) > ARRAY(i)`, or a
-non-decreasing, `ARRAY(i-1) <= ARRAY(i)`, sequence. First delimitated
-decreasing sequences are reversed in their order. Then, if the
-sequence has less than `MIN_RUN` elements, previous elements in the
-array are added to the run using `insertion sort` until the run
-contains `MIN_RUN` elements or the array is completely processed. As
-each run is identified the start and length of the run 
-are then pushed onto a stack and the stack is then processed using
-`merge` until it obeys the stack invariants:
+When sorting in an increasing order, `ORD_SORT` begins by traversing the array
+starting in its tail attempting to identify `runs` in the array, where a run is
+either a uniformly decreasing sequence, `ARRAY(i-1) > ARRAY(i)`, or a
+non-decreasing, `ARRAY(i-1) <= ARRAY(i)`, sequence. First delimited decreasing
+sequences are reversed in their order. Then, if the sequence has less than
+`MIN_RUN` elements, previous elements in the array are added to the run using
+`insertion sort` until the run contains `MIN_RUN` elements or the array is
+completely processed. As each run is identified the start and length of the run
+are then pushed onto a stack and the stack is then processed using `merge` until
+it obeys the stack invariants:
 
 1. len(i-2) > len(i-1) + len(i)
 2. len(i-1) > len(i)
@@ -133,6 +132,12 @@ the compiler, but can be `Ln(N)` faster than `SORT` on highly
 structured data. As a modified `merge sort`, `ORD_SORT` requires the
 use of a "scratch" array, that may be provided as an optional `work`
 argument or allocated internally on the stack.
+
+Arrays can be also sorted in a decreasing order by providing the argument `reverse
+= .true.`.
+
+**QUESTION: is the `reverse` mode still a stable comparison algorithm?**
+
 
 #### The `SORT_INDEX` subroutine
 
@@ -205,11 +210,11 @@ Experimental
 ##### Description
 
 Returns an input `array` with the elements sorted in order of
-increasing value.
+increasing, or decreasing, value.
 
 ##### Syntax
 
-`call [[stdlib_sorting(module):ord_sort(subroutine)]]ord_sort ( array[, work ] )`
+`call [[stdlib_sorting(module):ord_sort(subroutine)]]ord_sort ( array[, work, reverse ] )`
 
 ##### Class
 
@@ -233,6 +238,12 @@ memory for internal record keeping. If associated with an array in
 static storage, its use can significantly reduce the stack memory
 requirements for the code. Its contents on return are undefined.
 
+`reverse` (optional): shall be a scalar of type default logical. It
+is an `intent(in)` argument. If present with a value of `.true.` then
+`array` will be sorted in order of non-increasing values in stable
+order **(stable order: is it still true?)**. Otherwise index will sort `array` in order of non-decreasing
+values in stable order.
+
 ##### Notes
 
 `ORD_SORT` implements a hybrid sorting algorithm combining
@@ -246,25 +257,11 @@ non-decreasing arrays. The optional `work` array replaces "scratch"
 memory that would otherwise be allocated on the stack. If `array` is of
 any type `REAL` the order of its elements on return undefined if any
 element of `array` is a `NaN`.  Sorting of `CHARACTER(*)` and
-`STRING_TYPE` arrays are based on the operator `>`, and not on the
+`STRING_TYPE` arrays are based on the operators `>` and `<`, and not on the
 function `LGT`.
 
 
 ##### Example
-
-```fortran
-    ...
-    ! Read arrays from sorted files
-    call read_sorted_file( 'dummy_file1', array1 )
-    call read_sorted_file( 'dummy_file2', array2 )
-    ! Concatenate the arrays
-	array = [ array1, array2 ]
-    ! Sort the resulting array
-    call ord_sort( array, work )
-    ! Process the sorted array
-    call array_search( array, values )
-    ...
-```
 
 ```fortran
     program demo_ord_sort
@@ -287,12 +284,12 @@ Experimental
 
 ##### Description
 
-Returns an input array with the elements sorted in order of increasing
-value.
+Returns an input array with the elements sorted in order of increasing, or
+decreasing, value.
 
 ##### Syntax
 
-`call [[stdlib_sorting(module):sort(subroutine)]]sort ( array )`
+`call [[stdlib_sorting(module):sort(subroutine)]]sort ( array, reverse )`
 
 ##### Class
 
@@ -305,6 +302,13 @@ Pure generic subroutine.
 `real(sp)`, `real(dp)`, `real(qp)`. `character(*)`, or
 `type(string_type)`. It is an `intent(inout)` argument. On return its
 input elements will be sorted in order of non-decreasing value.
+
+
+`reverse` (optional): shall be a scalar of type default logical. It
+is an `intent(in)` argument. If present with a value of `.true.` then
+`array` will be sorted in order of non-increasing values in unstable
+order. Otherwise index will sort `array` in order of non-decreasing
+values in unstable order.
 
 ##### Notes
 
