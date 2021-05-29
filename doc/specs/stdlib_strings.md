@@ -201,8 +201,17 @@ end program demo
 
 Extracts the characters from the defined region of the input string.  
 Argument `first` and `last` defines the region for the function `slice` to operate.  
-Extraction starts from the index `first` and takes stride of length `stride`.  
-Argument `stride` cannot take the value 0.
+If the defined region is invalid (user provides atleast one invalid index), `first` and 
+`last` indexes are converted to first and last valid indexes in this defined region respectively, 
+if no valid index exists in this region an empty string is returned.  
+
+Extraction starts from `first` index and takes stride of length `stride`.  
+Extraction is active until `last` index is crossed.  
+Extraction starts only if `last` index is crossable from `first` index taking 
+stride of length `stride`.  
+`stride` can attain both negative or positive values but when the invalid value 
+0 is given, it is converted to 1.  
+Function automatically deduces the arguments which are not provided by the user.
 
 #### Syntax
 
@@ -248,8 +257,10 @@ program demo_slice
   ! char <-- "abcdefghij"
 
   print'(a)', slice("abcdefghij", 2, 6, 2)   ! "bdf"
-  print'(a)', slice(string, 2, 6, 2)         ! "bdf"
   print'(a)', slice(char, 2, 6, 2)           ! "bdf"
   
+  string = slice(string, 2, 6, 2)
+  ! string <-- "bdf"
+
 end program demo_slice
 ```

@@ -320,55 +320,51 @@ contains
         integer, intent(in), optional :: first, last, stride
         integer :: first_index, last_index, stride_vector, strides_taken, length_string, i, j
         character(len=:), allocatable :: sliced_string
-
         length_string = len(string)
-        if (length_string > 0) then
-            first_index = 1
-            last_index = length_string
-            stride_vector = 1
+        
+        first_index = 1
+        last_index = length_string
+        stride_vector = 1
 
-            if (present(stride)) then
-                if (stride /= 0) then
-                    if (stride < 0) then
-                        first_index = length_string
-                        last_index = 1
-                    end if
-                    stride_vector = stride
+        if (present(stride)) then
+            if (stride /= 0) then
+                if (stride < 0) then
+                    first_index = length_string
+                    last_index = 1
                 end if
-            else
-                if (present(first) .and. present(last)) then
-                    if (last < first) then
-                        stride_vector = -1
-                    end if
-                end if
+                stride_vector = stride
             end if
-
-            if (present(first)) then
-                first_index =  first
-            end if
-            if (present(last)) then
-                last_index = last
-            end if
-            
-            if (stride_vector > 0) then
-                first_index = max(first_index, 1)
-                last_index = min(last_index, length_string)
-            else
-                first_index = min(first_index, length_string)
-                last_index = max(last_index, 1)
-            end if
-            
-            strides_taken = floor( real(last_index - first_index)/real(stride_vector) )
-            allocate(character(len=max(0, strides_taken + 1)) :: sliced_string)
-            
-            j = 1
-            do i = first_index, last_index, stride_vector
-                sliced_string(j:j) = string(i:i)
-                j = j + 1
-            end do
         else
-            sliced_string = ""
+            if (present(first) .and. present(last)) then
+                if (last < first) then
+                    stride_vector = -1
+                end if
+            end if
         end if
+
+        if (present(first)) then
+            first_index =  first
+        end if
+        if (present(last)) then
+            last_index = last
+        end if
+        
+        if (stride_vector > 0) then
+            first_index = max(first_index, 1)
+            last_index = min(last_index, length_string)
+        else
+            first_index = min(first_index, length_string)
+            last_index = max(last_index, 1)
+        end if
+        
+        strides_taken = floor( real(last_index - first_index)/real(stride_vector) )
+        allocate(character(len=max(0, strides_taken + 1)) :: sliced_string)
+        
+        j = 1
+        do i = first_index, last_index, stride_vector
+            sliced_string(j:j) = string(i:i)
+            j = j + 1
+        end do
     end function slice_char
 
 
