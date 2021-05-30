@@ -421,7 +421,11 @@ contains
         type(string_type), intent(in) :: string
         integer :: ich
 
-        ich = merge(ichar(string%raw(1:1)), 0, allocated(string%raw))
+        if (allocated(string%raw) .and. len_trim(string%raw) > 0) then
+          ich = ichar(string%raw(1:1))
+        else
+          ich = 0
+        end if
 
     end function ichar_string
 
@@ -431,7 +435,11 @@ contains
         type(string_type), intent(in) :: string
         integer :: ich
 
-        ich = merge(iachar(string%raw(1:1)), 0, allocated(string%raw))
+        if (allocated(string%raw) .and. len_trim(string%raw) > 0) then
+          ich = iachar(string%raw(1:1))
+        else
+          ich = 0
+        end if
 
     end function iachar_string
 
