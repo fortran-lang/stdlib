@@ -20,7 +20,7 @@ call check( sum( abs( mean(d,1) - sum(d,1)/real(size(d,1), dp) )) < dptol)
 call check( sum( abs( mean(d,2) - sum(d,2)/real(size(d,2), dp) )) < dptol)
 
 !dp rank 8
-allocate(d8(size(d,1), size(d,2), 3, 4, 5, 6, 7, 8),source=0.0_dp)
+allocate(d8(size(d,1), size(d,2), 3, 4, 5, 6, 7, 8), source=0.0_dp)
 d8(:, :, 1, 4, 5 ,6 ,7 ,8)=d;
 d8(:, :, 2, 4, 5 ,6 ,7 ,8)=d * 1.5_dp;
 d8(:, :, 3, 4, 5 ,6 ,7 ,8)=d * 4._dp;

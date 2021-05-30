@@ -464,8 +464,8 @@ contains
 
         end if
 
-        inquire( unit4, opened=opened ,iostat=istat,iomsg=msgtxt)
-        if(istat/=0) opened=.false.
+        inquire( unit4, opened=opened, iostat=istat, iomsg=msgtxt )
+        if(istat /= 0) opened = .false.
         if ( opened ) then
             error stop 'UNIT4 is opened contrary to expectations.'
 

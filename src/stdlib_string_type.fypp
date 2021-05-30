@@ -571,11 +571,11 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if(present(back))then
-          pos = index(maybe(string), maybe(substring),back)
+        if (present(back)) then
+          pos = index(maybe(string), maybe(substring), back)
         else
-          pos = index(maybe(string), maybe(substring),.false.)
-        endif
+          pos = index(maybe(string), maybe(substring), .false.)
+        end if
 
     end function index_string_string
 
@@ -587,11 +587,11 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if(present(back))then
-          pos = index(maybe(string), substring,back)
+        if (present(back)) then
+          pos = index(maybe(string), substring, back)
         else
-          pos = index(maybe(string), substring,.false.)
-        endif
+          pos = index(maybe(string), substring, .false.)
+        end if
 
     end function index_string_char
 
@@ -603,11 +603,11 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if(present(back))then
-          pos = index(string, maybe(substring),back)
+        if (present(back)) then
+          pos = index(string, maybe(substring), back)
         else
-          pos = index(string, maybe(substring),.false.)
-        endif
+          pos = index(string, maybe(substring), .false.)
+        end if
 
     end function index_char_string
 
@@ -621,11 +621,11 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if(present(back))then
-          pos = scan(maybe(string), maybe(set),back)
+        if (present(back)) then
+          pos = scan(maybe(string), maybe(set), back)
         else
-          pos = scan(maybe(string), maybe(set),.false.)
-        endif
+          pos = scan(maybe(string), maybe(set), .false.)
+        end if
 
     end function scan_string_string
 
@@ -637,11 +637,11 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if(present(back))then
-          pos = scan(maybe(string), set,back)
+        if (present(back)) then
+          pos = scan(maybe(string), set, back)
         else
-          pos = scan(maybe(string), set,.false.)
-        endif
+          pos = scan(maybe(string), set, .false.)
+        end if
 
     end function scan_string_char
 
@@ -653,11 +653,11 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if(present(back))then
-          pos = scan(string, maybe(set),back)
+        if (present(back)) then
+          pos = scan(string, maybe(set), back)
         else
-          pos = scan(string, maybe(set),.false.)
-        endif
+          pos = scan(string, maybe(set), .false.)
+        end if
 
     end function scan_char_string
 
@@ -671,11 +671,11 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if(present(back))then
-          pos = verify(maybe(string), maybe(set),back)
+        if (present(back)) then
+          pos = verify(maybe(string), maybe(set), back)
         else
-          pos = verify(maybe(string), maybe(set),.false.)
-        endif
+          pos = verify(maybe(string), maybe(set), .false.)
+        end if
 
     end function verify_string_string
 
@@ -688,11 +688,11 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if(present(back))then
-          pos = verify(maybe(string), set,back)
+        if (present(back)) then
+          pos = verify(maybe(string), set, back)
         else
-          pos = verify(maybe(string), set,.false.)
-        endif
+          pos = verify(maybe(string), set, .false.)
+        end if
 
     end function verify_string_char
 
@@ -705,11 +705,11 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if(present(back))then
-          pos = verify(string, maybe(set),back)
+        if (present(back)) then
+          pos = verify(string, maybe(set), back)
         else
-          pos = verify(string, maybe(set),.false.)
-        endif
+          pos = verify(string, maybe(set), .false.)
+        end if
 
     end function verify_char_string
 
