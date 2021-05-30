@@ -421,7 +421,7 @@ contains
         type(string_type), intent(in) :: string
         integer :: ich
 
-        if (allocated(string%raw) .and. len_trim(string%raw) > 0) then
+        if (allocated(string%raw) .and. len(string) > 0) then
           ich = ichar(string%raw(1:1))
         else
           ich = 0
@@ -435,7 +435,7 @@ contains
         type(string_type), intent(in) :: string
         integer :: ich
 
-        if (allocated(string%raw) .and. len_trim(string%raw) > 0) then
+        if (allocated(string%raw) .and. len(string) > 0) then
           ich = iachar(string%raw(1:1))
         else
           ich = 0
