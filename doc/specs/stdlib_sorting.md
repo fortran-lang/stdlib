@@ -136,9 +136,6 @@ argument or allocated internally on the stack.
 Arrays can be also sorted in a decreasing order by providing the argument `reverse
 = .true.`.
 
-**QUESTION: is the `reverse` mode still a stable comparison algorithm?**
-
-
 #### The `SORT_INDEX` subroutine
 
 The `SORT` and `ORD_SORT` subroutines can sort rank 1 isolated
@@ -241,7 +238,7 @@ requirements for the code. Its contents on return are undefined.
 `reverse` (optional): shall be a scalar of type default logical. It
 is an `intent(in)` argument. If present with a value of `.true.` then
 `array` will be sorted in order of non-increasing values in stable
-order **(stable order: is it still true?)**. Otherwise index will sort `array` in order of non-decreasing
+order. Otherwise index will sort `array` in order of non-decreasing
 values in stable order.
 
 ##### Notes
