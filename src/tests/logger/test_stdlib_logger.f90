@@ -418,7 +418,6 @@ contains
 
         logical :: opened
         integer :: istat
-        character(len=80) :: msgtxt
 
         print *
         print *, 'running test_removing_log_units'
@@ -464,7 +463,7 @@ contains
 
         end if
 
-        inquire( unit4, opened=opened, iostat=istat, iomsg=msgtxt )
+        inquire( unit4, opened=opened, iostat=istat )
         if(istat /= 0) opened = .false.
         if ( opened ) then
             error stop 'UNIT4 is opened contrary to expectations.'
