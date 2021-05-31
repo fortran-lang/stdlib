@@ -1,2 +1,3 @@
 ADDTEST(linalg)
+ADDTEST(linspace)
 

@@ -1,0 +1,51 @@
+#:include "common.fypp"
+#:set RANKS = range(1, MAXRANK + 1)
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+submodule (stdlib_linalg) stdlib_linalg_linspace
+
+  implicit none
+
+  integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
+
+contains
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:set RName = rname("linspace_default", 1, t1, k1)
+    module function ${RName}$(start, end) result(res)
+      ${t1}$, intent(in) :: start
+      ${t1}$, intent(in) :: end  
+        
+      ${t1}$ :: res(DEFAULT_LINSPACE_LENGTH)
+
+      res = linspace(start, end, DEFAULT_LINSPACE_LENGTH)
+
+    end function ${RName}$
+  #:endfor
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:set RName = rname("linspace_n", 1, t1, k1)
+    module function ${RName}$(start, end, n) result(res)
+      ${t1}$, intent(in) :: start
+      ${t1}$, intent(in) :: end  
+      integer, intent(in) :: n
+        
+      ${t1}$ :: res(n)
+
+      integer :: i    ! Looping index
+      ${t1}$ :: interval ! Difference between adjacent elements
+
+
+      if(n <= 0) return ! If passed length is less than or equal to 0, return an empty (allocated with length 0) array
+
+      interval = (end - start) / real((n - 1), ${k1}$)
+
+      do i = 1, n
+
+        res(i) = real((i-1), ${k1}$) * interval + start
+
+      end do
+
+    end function ${RName}$
+  #:endfor
+
+end submodule
