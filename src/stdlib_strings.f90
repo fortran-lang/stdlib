@@ -4,14 +4,15 @@
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_strings.html).
 module stdlib_strings
-    use stdlib_ascii, only : whitespace
-    use stdlib_string_type, only : string_type, char, verify
+    use stdlib_ascii, only: whitespace
+    use stdlib_string_type, only: string_type, char, verify
+    use stdlib_optval, only: optval
     implicit none
-    private
+    private :: compute_LPS
 
     public :: strip, chomp
     public :: starts_with, ends_with
-    public :: slice
+    public :: slice, find
 
 
     !> Remove leading and trailing whitespace characters.
@@ -67,6 +68,15 @@ module stdlib_strings
         module procedure :: slice_char
     end interface slice
 
+    !> Finds the starting index of substring 'pattern' in the input 'string'
+    !> 
+    !> Version: experimental
+    interface find
+        module procedure :: find_string_string
+        module procedure :: find_string_char
+        module procedure :: find_char_string
+        module procedure :: find_char_char
+    end interface find
 
 contains
 
@@ -365,6 +375,74 @@ contains
             j = j + 1
         end do
     end function slice_char
+
+    pure function find_char_char(string, pattern, occurrence, consider_overlapping) result(res)
+        character(len=*), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        integer, intent(in), optional :: occurrence
+        logical, intent(in), optional :: consider_overlapping
+        integer :: LPS_array(len(pattern))
+        integer :: res, i, j, length_string, length_pattern, occurrence_
+        logical :: consider_overlapping_
+
+        consider_overlapping_ = optval(consider_overlapping, .false.)
+        occurrence_ = max(1, optval(occurrence, 1))
+        res = -1
+        length_string = len(string)
+        length_pattern = len(pattern)
+
+        if (length_pattern > 0 .and. length_pattern <= length_string) then
+            LPS_array = compute_LPS(pattern)
+
+            i = 1
+            j = 1
+            do while(i <= length_string)
+                if (string(i:i) == pattern(j:j)) then
+                    if (j == length_pattern) then
+                        occurrence_ = occurrence_ - 1
+                        if (occurrence_ == 0) then
+                            res = i - length_pattern + 1
+                            exit
+                        else if (consider_overlapping_) then
+                            i = i - length_pattern + 1
+                        end if
+                        j = 0
+                    end if
+                    i = i + 1
+                    j = j + 1
+                else if (j > 1) then
+                    j = LPS_array(j - 1) + 1
+                else
+                    i = i + 1
+                end if
+            end do
+        end if
+    
+    end function find_char_char
+
+    pure function compute_LPS(string) result(LPS_array)
+        character(len=*), intent(in) :: string
+        integer :: LPS_array(len(string))
+        integer :: i, j, length_string
+        
+        length_string = len(string)
+        LPS_array = 0
+
+        i = 2
+        j = 1
+        do while (i <= length_string)
+            if (string(j:j) == string(i:i)) then
+                LPS_array(i) = j
+                i = i + 1
+                j = j + 1
+            else if (j > 1) then
+                j = LPS_array(j - 1) + 1
+            else
+                i = i + 1
+            end if
+        end do
+    
+    end function compute_LPS
 
 
 end module stdlib_strings
