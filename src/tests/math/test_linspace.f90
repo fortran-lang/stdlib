@@ -6,6 +6,13 @@ program test_linspace
     implicit none
     logical :: warn = .false.
 
+    ! Testing linspace.
+    !
+    ! For single and double precision, check if the beginning and end values are properly calculated
+    ! and make sure that the size of the result is as expected.
+    !
+    !
+
     call test_linspace_sp
     call test_linspace_dp
     call test_linspace_neg_index ! Make sure that when passed a negative index the result is an empty array

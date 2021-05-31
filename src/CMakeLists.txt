@@ -25,6 +25,8 @@ set(fppFiles
     stdlib_stats_distribution_PRNG.fypp
     stdlib_math.fypp
     stdlib_math_linspace.fypp
+    stdlib_math_logspace.fypp
+    stdlib_math_lnspace.fypp
     stdlib_string_type.fypp
 )
 

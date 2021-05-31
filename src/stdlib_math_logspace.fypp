@@ -1,0 +1,64 @@
+#:include "common.fypp"
+#:set RANKS = range(1, MAXRANK + 1)
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
+
+submodule (stdlib_math) stdlib_math_logspace
+
+implicit none
+
+contains 
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:set RName = rname("logspace_default", 1, t1, k1)
+    module function ${RName}$(start, end) result(res)
+      ${t1}$, intent(in) :: start
+      ${t1}$, intent(in) :: end  
+
+      ${t1}$ :: res(DEFAULT_LOGSPACE_LENGTH)        
+
+      res = logspace(start, end, DEFAULT_LOGSPACE_LENGTH, DEFAULT_LOGSPACE_BASE)
+      
+
+    end function ${RName}$
+  #:endfor
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:set RName = rname("logspace_n", 1, t1, k1)
+    module function ${RName}$(start, end, n) result(res)
+      ${t1}$, intent(in) :: start
+      ${t1}$, intent(in) :: end  
+      integer, intent(in) :: n
+          
+      ${t1}$ :: res(n)
+
+      res = logspace(start, end, n, DEFAULT_LOGSPACE_BASE)
+
+    end function ${RName}$
+  #:endfor
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k2, t2 in IR_KINDS_TYPES
+      #! k2, t2 correspond to the kind/type of the base that is passed
+      #:set RName = rname("logspace_n_base", 1, k1, k2)
+      ! Need another function where base is not optional, otherwise the compiler can not differentiate between
+      ! generic calls to logspace_n where a base is not present
+      module function ${RName}$(start, end, n, base) result(res)
+        ${t1}$, intent(in) :: start
+        ${t1}$, intent(in) :: end  
+        integer, intent(in) :: n
+        ${t2}$, intent(in) :: base
+    
+        ${t1}$ :: res(n)
+
+        ${t1}$ :: lin(n) ! Linspace of exponents
+
+        lin = linspace(start, end, n)
+  
+        res = real(base, ${k1}$) ** lin ! Convert base to the proper kind
+
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+end submodule

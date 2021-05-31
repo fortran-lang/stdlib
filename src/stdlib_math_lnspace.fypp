@@ -1,0 +1,41 @@
+#:include "common.fypp"
+#:set RANKS = range(1, MAXRANK + 1)
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
+
+submodule (stdlib_math) stdlib_math_lnspace
+
+implicit none
+
+contains 
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+        #:set RName = rname("lnspace_default", 1, t1, k1)
+        module function ${RName}$(start, end) result(res)
+        ${t1}$, intent(in) :: start
+        ${t1}$, intent(in) :: end  
+
+        ${t1}$ :: res(DEFAULT_LOGSPACE_LENGTH)        
+
+        res = logspace(start, end, DEFAULT_LOGSPACE_LENGTH, EULERS_NUMBER_${k1}$)
+        
+
+        end function ${RName}$
+    #:endfor
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+        #:set RName = rname("lnspace_n", 1, t1, k1)
+        module function ${RName}$(start, end, n) result(res)
+        ${t1}$, intent(in) :: start
+        ${t1}$, intent(in) :: end  
+        integer, intent(in) :: n
+            
+        ${t1}$ :: res(n)
+
+        res = logspace(start, end, n, EULERS_NUMBER_${k1}$)
+
+        end function ${RName}$
+    #:endfor
+
+
+end submodule

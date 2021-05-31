@@ -6,9 +6,16 @@ module stdlib_math
 
     implicit none
     private
-    public :: clip, linspace
+    public :: clip, linspace, logspace, lnspace, EULERS_NUMBER_DP, EULERS_NUMBER_SP
 
     integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
+    integer, parameter :: DEFAULT_LOGSPACE_LENGTH = 50
+    real(dp), parameter :: DEFAULT_LOGSPACE_BASE = 10
+
+    ! Useful constants for lnspace 
+    real(sp), parameter :: EULERS_NUMBER_DP = 2.71828182845904523536028747135266249775724709369995_sp
+    real(dp), parameter :: EULERS_NUMBER_SP = 2.71828182845904523536028747135266249775724709369995_dp
+    real(qp), parameter :: EULERS_NUMBER_QP = 2.71828182845904523536028747135266249775724709369995_qp
 
     interface clip
     #:for k1, t1 in IR_KINDS_TYPES
@@ -21,7 +28,7 @@ module stdlib_math
     !!
     !! Create rank 1 array of linearly spaced elements
     !! If the number of elements is not specified, create an array with size 100. If n is a negative value,
-    !! return an array with size 0.
+    !! return an array with size 0. If n = 1, return end
     #:for k1, t1 in REAL_KINDS_TYPES
       #:set RName = rname("linspace_default", 1, t1, k1)
       module function ${RName}$(start, end) result(res)
@@ -43,6 +50,87 @@ module stdlib_math
       end function ${RName}$
     #:endfor
   end interface
+
+  interface logspace 
+  !! Version: Experimental
+  !!
+  !! Create rank 1 array of logarithmically spaced elements from base**start to base**end.
+  !! If the number of elements is not specified, create an array with size 50. If n is a negative value,
+  !! return an array with size 0. If n = 1, return base**end. If no base is specified, logspace will default to using a base of 
+  !! 10
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:set RName = rname("logspace_default", 1, t1, k1)
+    module function ${RName}$(start, end) result(res)
+
+      ${t1}$, intent(in) :: start
+      ${t1}$, intent(in) :: end  
+
+      ${t1}$ :: res(DEFAULT_LOGSPACE_LENGTH)        
+
+    end function ${RName}$
+  #:endfor
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:set RName = rname("logspace_n", 1, t1, k1)
+    module function ${RName}$(start, end, n) result(res)
+      ${t1}$, intent(in) :: start
+      ${t1}$, intent(in) :: end  
+      integer, intent(in) :: n
+  
+      ${t1}$ :: res(n)
+    end function ${RName}$
+  #:endfor
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k2, t2 in IR_KINDS_TYPES
+      #! k2, t2 correspond to the kind/type of the base that is passed
+      #:set RName = rname("logspace_n_base", 1, k1, k2)
+      ! Need another function where base is not optional, otherwise the compiler can not differentiate between
+      ! generic calls to logspace_n where a base is not present
+      module function ${RName}$(start, end, n, base) result(res)
+        ${t1}$, intent(in) :: start
+        ${t1}$, intent(in) :: end  
+        integer, intent(in) :: n
+        ${t2}$, intent(in) :: base
+    
+        ${t1}$ :: res(n)
+      end function ${RName}$
+    #:endfor
+  #:endfor
+end interface
+
+interface lnspace 
+!! Version: Experimental
+!!
+!! Create rank 1 array of **natural** logarithmically spaced elements from e**start to e**end.
+!! If the number of elements is not specified, create an array with size 50. If n is a negative value,
+!! return an array with size 0. If n = 1, return e**end.
+#:for k1, t1 in REAL_KINDS_TYPES
+  #:set RName = rname("lnspace_default", 1, t1, k1)
+  module function ${RName}$(start, end) result(res)
+
+    ${t1}$, intent(in) :: start
+    ${t1}$, intent(in) :: end  
+
+    ${t1}$ :: res(DEFAULT_LOGSPACE_LENGTH)        
+
+  end function ${RName}$
+#:endfor
+
+#:for k1, t1 in REAL_KINDS_TYPES
+  #:set RName = rname("lnspace_n", 1, t1, k1)
+  module function ${RName}$(start, end, n) result(res)
+    ${t1}$, intent(in) :: start
+    ${t1}$, intent(in) :: end  
+    integer, intent(in) :: n
+
+    ${t1}$ :: res(n)
+  end function ${RName}$
+#:endfor
+
+end interface
+
+
 
 contains
     

@@ -21,6 +21,8 @@ SRCFYPP =\
         stdlib_stats_var.fypp \
         stdlib_math.fypp \
 		stdlib_math_linspace.fypp \
+		stdlib_math_logspace.fypp \
+		stdlib_math_lnspace.fypp \
         stdlib_stats_distribution_PRNG.fypp \
         stdlib_string_type.fypp
 
@@ -118,5 +120,15 @@ stdlib_strings.o: stdlib_ascii.o stdlib_string_type.o
 stdlib_math.o: stdlib_kinds.o
 stdlib_math_linspace.o: \
 	stdlib_math.o \
+	stdlib_kinds.o
+stdlib_math_logspace.o: \
+	stdlib_math.o \
+	stdlib_linspace.o \
+	stdlib_kinds.o \
+	stdlib_optval.o
+stdlib_math_lnspace.o: \
+	stdlib_math.o \
+	stdlib_linspace.o \
+	stdlib_logspace.o \
 	stdlib_kinds.o
 
