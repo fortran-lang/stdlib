@@ -24,7 +24,9 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   add_compile_options(-Wconversion-extra)
   # -pedantic-errors triggers a false positive for optional arguments of elemental functions,
   # see test_optval and https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95446
-  add_compile_options(-pedantic-errors)
+  if(CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 11.0)
+    add_compile_options(-pedantic-errors)
+  endif()
   if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0)
     add_compile_options(-std=f2018)
   else()
