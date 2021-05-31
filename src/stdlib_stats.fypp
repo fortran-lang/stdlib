@@ -11,7 +11,7 @@ module stdlib_stats
   implicit none
   private
   ! Public API
-  public :: corr, cov, mean, moment, var, linspace
+  public :: corr, cov, mean, moment, var
 
 
   interface corr
@@ -583,24 +583,6 @@ module stdlib_stats
       #:endfor
     #:endfor
   end interface moment
-
-  interface linspace 
-    !! Version: Experimental
-    !!
-    !! Create rank 1 array of linearly spaced elements
-    !! If the number of elements is not specified, create an array with size 100. If n is a negative value,
-    !! return an array with size 0.
-    #:for k1, t1 in REAL_KINDS_TYPES
-      #:set RName = rname("linspace", 1, t1, k1)
-      module function ${RName}$(start, end, n) result(res)
-        ${t1}$, intent(in) :: start
-        ${t1}$, intent(in) :: end  
-        integer, intent(in), optional :: n
-        
-        ${t1}$, dimension(:), allocatable :: res
-      end function ${RName}$
-    #:endfor
-  end interface
 
 
 end module stdlib_stats
