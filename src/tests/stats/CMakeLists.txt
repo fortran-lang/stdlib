@@ -6,6 +6,7 @@ ADDTEST(rawmoment)
 ADDTEST(var)
 ADDTEST(varn)
 ADDTEST(distribution_PRNG)
+ADDTEST(linspace)
 
 if(DEFINED CMAKE_MAXIMUM_RANK)
     if(${CMAKE_MAXIMUM_RANK} GREATER 7)
