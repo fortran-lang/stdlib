@@ -34,6 +34,10 @@ contains
 
 
       if(n <= 0) return ! If passed length is less than or equal to 0, return an empty (allocated with length 0) array
+      if(n == 1) then
+        res(1) = end
+        return
+      end if
 
       interval = (end - start) / real((n - 1), ${k1}$)
 
