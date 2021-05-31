@@ -31,11 +31,11 @@ contains
 
       if(len <= 0) return ! If passed length is less than or equal to 0, return an empty (allocated with length 0) array
 
-      interval = (end - start) / (len - 1)
+      interval = (end - start) / real((len - 1), ${k1}$)
 
       do i = 1, len
 
-        res(i) = (i-1)*interval + start
+        res(i) = real((i-1), ${k1}$) * interval + start
 
       end do
 
