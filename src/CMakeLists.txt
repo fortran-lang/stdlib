@@ -9,7 +9,6 @@ set(fppFiles
     stdlib_io.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
-    stdlib_linalg_linspace.fypp
     stdlib_optval.fypp
     stdlib_stats.fypp
     stdlib_stats_corr.fypp
@@ -25,6 +24,7 @@ set(fppFiles
     stdlib_quadrature_simps.fypp
     stdlib_stats_distribution_PRNG.fypp
     stdlib_math.fypp
+    stdlib_math_linspace.fypp
     stdlib_string_type.fypp
 )
 

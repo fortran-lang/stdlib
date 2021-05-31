@@ -11,9 +11,7 @@ module stdlib_linalg
   public :: diag
   public :: eye
   public :: trace
-  public :: linspace
 
-  integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
 
   interface diag
     !! version: experimental
@@ -66,33 +64,6 @@ module stdlib_linalg
     #:endfor
   end interface
     
-  interface linspace 
-    !! Version: Experimental
-    !!
-    !! Create rank 1 array of linearly spaced elements
-    !! If the number of elements is not specified, create an array with size 100. If n is a negative value,
-    !! return an array with size 0.
-    #:for k1, t1 in REAL_KINDS_TYPES
-      #:set RName = rname("linspace_default", 1, t1, k1)
-      module function ${RName}$(start, end) result(res)
-        ${t1}$, intent(in) :: start
-        ${t1}$, intent(in) :: end  
-  
-        ${t1}$ :: res(DEFAULT_LINSPACE_LENGTH)        
-      end function ${RName}$
-    #:endfor
-  
-    #:for k1, t1 in REAL_KINDS_TYPES
-      #:set RName = rname("linspace_n", 1, t1, k1)
-      module function ${RName}$(start, end, n) result(res)
-        ${t1}$, intent(in) :: start
-        ${t1}$, intent(in) :: end  
-        integer, intent(in) :: n
-      
-        ${t1}$ :: res(n)
-      end function ${RName}$
-    #:endfor
-  end interface
 
 contains
 

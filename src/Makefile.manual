@@ -6,7 +6,6 @@ SRCFYPP =\
         stdlib_io.fypp \
         stdlib_linalg.fypp \
         stdlib_linalg_diag.fypp \
-		stdlib_linalg_linspace.fypp \
         stdlib_optval.fypp \
         stdlib_quadrature.fypp \
         stdlib_quadrature_trapz.fypp \
@@ -21,6 +20,7 @@ SRCFYPP =\
         stdlib_stats_moment_scalar.fypp \
         stdlib_stats_var.fypp \
         stdlib_math.fypp \
+		stdlib_math_linspace.fypp \
         stdlib_stats_distribution_PRNG.fypp \
         stdlib_string_type.fypp
 
@@ -71,9 +71,6 @@ stdlib_linalg.o: \
 stdlib_linalg_diag.o: \
 	stdlib_linalg.o \
 	stdlib_kinds.o
-stdlib_linalg_linspace.o: \
-	stdlib_linalg.o \
-	stdlib_kinds.o 
 stdlib_logger.o: stdlib_ascii.o stdlib_optval.o
 stdlib_optval.o: stdlib_kinds.o
 stdlib_quadrature.o: stdlib_kinds.o
@@ -119,3 +116,7 @@ stdlib_stats_distribution_PRNG.o: \
 stdlib_string_type.o: stdlib_ascii.o stdlib_kinds.o
 stdlib_strings.o: stdlib_ascii.o stdlib_string_type.o
 stdlib_math.o: stdlib_kinds.o
+stdlib_math_linspace.o: \
+	stdlib_math.o \
+	stdlib_kinds.o
+
