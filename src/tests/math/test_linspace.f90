@@ -1,7 +1,7 @@
 program test_linspace
     use stdlib_error, only: check
     use stdlib_kinds, only: sp, dp
-    use stdlib_linalg, only: linspace 
+    use stdlib_math, only: linspace 
 
     implicit none
     logical :: warn = .false.
