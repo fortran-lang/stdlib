@@ -93,6 +93,7 @@ stdlib_stats_cov.o: \
 	stdlib_kinds.o \
 	stdlib_stats.o
 stdlib_stats_linspace.o: \
+	stdlib_error.o \
 	stdlib_optval.o \
 	stdlib_kinds.o \
 	stdlib_stats.o
