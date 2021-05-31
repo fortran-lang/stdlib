@@ -286,7 +286,7 @@ decreasing, value.
 
 ##### Syntax
 
-`call [[stdlib_sorting(module):sort(subroutine)]]sort ( array, reverse )`
+`call [[stdlib_sorting(module):sort(subroutine)]]sort ( array[, reverse] )`
 
 ##### Class
 

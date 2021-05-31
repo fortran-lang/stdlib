@@ -139,10 +139,10 @@ module stdlib_sorting
 !! Version: experimental
 !!
 !! The generic subroutine implementing the `ORD_SORT` algorithm to return
-!! an input array with its elements sorted in order of non-decreasing
+!! an input array with its elements sorted in order of (non-)decreasing
 !! value. Its use has the syntax:
 !!
-!!     call ord_sort( array[, work] )
+!!     call ord_sort( array[, work, reverse] )
 !!
 !! with the arguments:
 !!
@@ -160,6 +160,12 @@ module stdlib_sorting
 !!   for internal record keeping. If associated with an array in static
 !!   storage, its use can significantly reduce the stack memory requirements
 !!   for the code. Its value on return is undefined.
+!!
+!! * `reverse` (optional): shall be a scalar of type default logical. It
+!!   is an `intent(in)` argument. If present with a value of `.true.` then
+!!   `array` will be sorted in order of non-increasing values in stable
+!!   order. Otherwise index will sort `array` in order of non-decreasing
+!!   values in stable order.
 !!
 !!#### Example
 !!
@@ -183,10 +189,10 @@ module stdlib_sorting
 !! Version: experimental
 !!
 !! The generic subroutine implementing the `SORT` algorithm to return
-!! an input array with its elements sorted in order of non-decreasing
+!! an input array with its elements sorted in order of (non-)decreasing
 !! value. Its use has the syntax:
 !!
-!!     call sort( array )
+!!     call sort( array[, reverse] )
 !!
 !! with the arguments:
 !!
@@ -197,6 +203,11 @@ module stdlib_sorting
 !!   real and at least one of the elements is a `NaN`, then the ordering
 !!   of the result is undefined. Otherwise it is defined to be the
 !!   original elements in non-decreasing order.
+!! * `reverse` (optional): shall be a scalar of type default logical. It
+!!   is an `intent(in)` argument. If present with a value of `.true.` then
+!!   `array` will be sorted in order of non-increasing values in unstable
+!!   order. Otherwise index will sort `array` in order of non-decreasing
+!!   values in unstable order.
 !!
 !!#### Example
 !!
@@ -351,7 +362,7 @@ module stdlib_sorting
         module subroutine char_ord_sort( array, work, reverse )
 !! Version: experimental
 !!
-!! `char_ord_sort( array )` sorts the input `ARRAY` of type `CHARACTER(*)`
+!! `char_ord_sort( array[, work, reverse] )` sorts the input `ARRAY` of type `CHARACTER(*)`
 !! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
             character(len=*), intent(inout)                  :: array(0:)
             character(len=len(array)), intent(out), optional :: work(0:)
@@ -370,7 +381,7 @@ module stdlib_sorting
         pure module subroutine ${k1}$_sort( array, reverse )
 !! Version: experimental
 !!
-!! `${k1}$_sort( array )` sorts the input `ARRAY` of type `${t1}$`
+!! `${k1}$_sort( array[, reverse] )` sorts the input `ARRAY` of type `${t1}$`
 !! using a hybrid sort based on the `introsort` of David Musser.
 !! The algorithm is of order O(N Ln(N)) for all inputs.
 !! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
@@ -384,7 +395,7 @@ module stdlib_sorting
         pure module subroutine char_sort( array, reverse )
 !! Version: experimental
 !!
-!! `char_sort( array )` sorts the input `ARRAY` of type `CHARACTER(*)`
+!! `char_sort( array[, reverse] )` sorts the input `ARRAY` of type `CHARACTER(*)`
 !! using a hybrid sort based on the `introsort` of David Musser.
 !! The algorithm is of order O(N Ln(N)) for all inputs.
 !! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
@@ -411,7 +422,8 @@ module stdlib_sorting
             reverse )
 !! Version: experimental
 !!
-!! `${k1}$_sort_index( array )` sorts an input `ARRAY` of type `${t1}$`
+!! `${k1}$_sort_index( array, index[, work, iwork, reverse] )` sorts
+!! an input `ARRAY` of type `${t1}$`
 !! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
@@ -428,7 +440,8 @@ module stdlib_sorting
             reverse )
 !! Version: experimental
 !!
-!! `char_sort_index( array )` sorts an input `ARRAY` of type `CHARACTER(*)`
+!! `char_sort_index( array, index[, work, iwork, reverse] )` sorts
+!! an input `ARRAY` of type `CHARACTER(*)`
 !! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
