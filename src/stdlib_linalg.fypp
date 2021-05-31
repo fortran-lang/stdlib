@@ -11,6 +11,9 @@ module stdlib_linalg
   public :: diag
   public :: eye
   public :: trace
+  public :: linspace
+
+  integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
 
   interface diag
     !! version: experimental
@@ -75,7 +78,7 @@ module stdlib_linalg
           ${t1}$, intent(in) :: start
           ${t1}$, intent(in) :: end  
     
-          ${t1}$ :: res(100)        
+          ${t1}$ :: res(DEFAULT_LINSPACE_LENGTH)        
         end function ${RName}$
       #:endfor
     
