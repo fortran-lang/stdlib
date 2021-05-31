@@ -87,11 +87,11 @@ contains
 #:for k1, t1 in IRS_KINDS_TYPES
 
     pure subroutine ${k1}$_${sname}$_sort( array )
-! `${k1}$_sort( array )` sorts the input `ARRAY` of type `${t1}$`
+! `${k1}$_${name}$_sort( array )` sorts the input `ARRAY` of type `${t1}$`
 ! using a hybrid sort based on the `introsort` of David Musser. As with
-! `introsort`, `${k1}$_sort( array )` is an unstable hybrid comparison
+! `introsort`, `${k1}$_${name}$_sort( array )` is an unstable hybrid comparison
 ! algorithm using `quicksort` for the main body of the sort tree,
-! supplemented by `insertion sort` for the outer brances, but if
+! supplemented by `insertion sort` for the outer branches, but if
 ! `quicksort` is converging too slowly the algorithm resorts
 ! to `heapsort`. The algorithm is of order O(N Ln(N)) for all inputs.
 ! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
@@ -275,11 +275,11 @@ contains
 
 #:for sname, signt, signoppt in SIGN_NAME_TYPE
     pure subroutine char_${sname}$_sort( array )
-! `char_sort( array )` sorts the input `ARRAY` of type `CHARACTER(*)`
+! `char_${name}$_sort( array )` sorts the input `ARRAY` of type `CHARACTER(*)`
 ! using a hybrid sort based on the `introsort` of David Musser. As with
-! `introsort`, `char_sort( array )` is an unstable hybrid comparison
+! `introsort`, `char_${name}$_sort( array )` is an unstable hybrid comparison
 ! algorithm using `quicksort` for the main body of the sort tree,
-! supplemented by `insertion sort` for the outer brances, but if
+! supplemented by `insertion sort` for the outer branches, but if
 ! `quicksort` is converging too slowly the algorithm resorts
 ! to `heapsort`. The algorithm is of order O(N Ln(N)) for all inputs.
 ! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
