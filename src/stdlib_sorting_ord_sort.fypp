@@ -111,12 +111,15 @@ contains
         integer(int_size) :: array_size
         integer :: stat
 
+        array_size = size( array, kind=int_size )
         if ( present(work) ) then
+            if ( size( work, kind=int_size) < array_size/2 ) then
+                error stop "${k1}$_${sname}$_ord_sort: work array too small."
+            endif
 ! Use the work array as scratch memory
             call merge_sort( array, work )
         else
 ! Allocate a buffer to use as scratch memory.
-            array_size = size( array, kind=int_size )
             allocate( buf(0:array_size/2-1), stat=stat )
             if ( stat /= 0 ) error stop "${k1}$_${sname}$_ord_sort: Allocation of buffer failed."
             call merge_sort( array, buf )
