@@ -77,7 +77,7 @@ program test_logspace
             ! call global_logger%log_message("x = logspace(0.0_sp, 2.0_sp, 20)")
             ! 99 format(G11.5, X)
     
-            write(unit=9, fmt=*) "logspace(0.0_dp, 1.0_dp, 10): "
+            write(unit=9, fmt=*) "logspace(1.0_dp, 0.0_dp, 10): "
             write(unit=9,fmt=99)
             write(unit=9,fmt="(10(F7.3, 2X))") x
             write(9,*)
@@ -89,8 +89,8 @@ program test_logspace
     
         subroutine test_logspace_default
     
-            real(dp) :: start = 1.0_dp
-            real(dp) :: end = 0.0_dp
+            real(dp) :: start = 0.0_dp
+            real(dp) :: end = 1.0_dp
             
             real(dp), allocatable :: x(:)
         
@@ -136,7 +136,7 @@ program test_logspace
             ! call global_logger%log_message("x = logspace(0.0_sp, 2.0_sp, 20)")
             ! 99 format(G11.5, X)
     
-            write(unit=9, fmt=*) "logspace(0.0_dp, 1.0_dp, 10, 2): "
+            write(unit=9, fmt=*) "logspace(1.0_dp, 10.0_dp, 10, 2): "
             write(unit=9,fmt=99)
             write(unit=9,fmt="(10(F9.3, 2X))") x
             write(9,*)

@@ -80,7 +80,7 @@ contains
         ! call global_logger%log_message("x = lnspace(0.0_sp, 2.0_sp, 20)")
         ! 99 format(G11.5, X)
 
-        write(unit=9, fmt=*) "lnspace(0.0_dp, 1.0_dp, 10): "
+        write(unit=9, fmt=*) "lnspace(1.0_dp, 0.0_dp, 10): "
         write(unit=9,fmt=99)
         write(unit=9,fmt="(10(F7.3, 2X))") x
         write(9,*)
@@ -92,8 +92,8 @@ contains
 
     subroutine test_linspace_default
 
-        real(dp) :: start = 1.0_dp
-        real(dp) :: end = 0.0_dp
+        real(dp) :: start = 0.0_dp
+        real(dp) :: end = 1.0_dp
         
         real(dp), allocatable :: x(:)
 
