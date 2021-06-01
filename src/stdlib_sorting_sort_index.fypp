@@ -108,11 +108,11 @@ contains
 ! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_size) < array_size/2 ) then
-                error stop "work array too small."
+                error stop "work array is too small."
             end if
             if ( present(iwork) ) then
                 if ( size(iwork, kind=int_size) < array_size/2 ) then
-                    error stop "work array too small."
+                    error stop "iwork array is too small."
                 endif
                 call merge_sort( array, index, work, iwork )
             else
@@ -125,7 +125,7 @@ contains
             if ( stat /= 0 ) error stop "Allocation of array buffer failed."
             if ( present(iwork) ) then
                 if ( size(iwork, kind=int_size) < array_size/2 ) then
-                    error stop "work array too small."
+                    error stop "iwork array is too small."
                 endif
                 call merge_sort( array, index, buf, iwork )
             else

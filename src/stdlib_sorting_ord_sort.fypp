@@ -114,7 +114,7 @@ contains
         array_size = size( array, kind=int_size )
         if ( present(work) ) then
             if ( size( work, kind=int_size) < array_size/2 ) then
-                error stop "${k1}$_${sname}$_ord_sort: work array too small."
+                error stop "${k1}$_${sname}$_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
             call merge_sort( array, work )
