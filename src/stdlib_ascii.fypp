@@ -1,8 +1,11 @@
+#:include "common.fypp"
+
 !> The `stdlib_ascii` module provides procedures for handling and manipulating
 !> intrinsic character variables and constants.
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_ascii.html).
 module stdlib_ascii
+    use stdlib_kinds, only : int8, int16, int32, int64
 
     implicit none
     private
@@ -16,7 +19,18 @@ module stdlib_ascii
     public :: is_lower, is_upper
 
     ! Character conversion functions
-    public :: to_lower, to_upper, to_title, reverse
+    public :: to_lower, to_upper, to_title, to_sentence, reverse
+    public :: to_string
+
+    !> Version: experimental
+    !>
+    !> Create a character string representing the value of the provided variable.
+    interface to_string
+    #:for kind in INT_KINDS
+        module procedure :: to_string_integer_${kind}$
+        module procedure :: to_string_logical_${kind}$
+    #:endfor
+    end interface to_string
 
     ! All control characters in the ASCII table (see www.asciitable.com).
     character(len=1), public, parameter :: NUL = achar(int(z'00')) !! Null
@@ -85,6 +99,13 @@ module stdlib_ascii
     interface to_title
         module procedure :: to_title
     end interface to_title
+
+    !> Returns a new character sequence which is the sentence case
+    !> version of the input character sequence
+    !> This method is pure and returns a character sequence
+    interface to_sentence
+        module procedure :: to_sentence
+    end interface to_sentence
 
     !> Returns a new character sequence which is reverse of
     !> the input charater sequence
@@ -270,31 +291,58 @@ contains
 
     end function to_upper
 
-    !> Convert character variable to title case
+    !> Converts character sequence to title case
     !> ([Specification](../page/specs/stdlib_ascii.html#to_title))
     !>
     !> Version: experimental
     pure function to_title(string) result(title_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: title_string
+        integer :: i
+        logical :: capitalize_switch
+
+        capitalize_switch = .true.
+        do i = 1, len(string)
+            if (is_alphanum(string(i:i))) then
+                if (capitalize_switch) then
+                    title_string(i:i) = char_to_upper(string(i:i))
+                    capitalize_switch = .false.
+                else
+                    title_string(i:i) = char_to_lower(string(i:i))
+                end if
+            else
+                title_string(i:i) = string(i:i)
+                capitalize_switch = .true.
+            end if
+        end do
+
+    end function to_title
+
+    !> Converts character sequence to sentence case
+    !> ([Specification](../page/specs/stdlib_ascii.html#to_sentence))
+    !>
+    !> Version: experimental
+    pure function to_sentence(string) result(sentence_string)
+        character(len=*), intent(in) :: string
+        character(len=len(string)) :: sentence_string
         integer :: i, n
 
         n = len(string)
         do i = 1, len(string)
             if (is_alphanum(string(i:i))) then
-                title_string(i:i) = char_to_upper(string(i:i))
+                sentence_string(i:i) = char_to_upper(string(i:i))
                 n = i
                 exit
             else
-                title_string(i:i) = string(i:i)
+                sentence_string(i:i) = string(i:i)
             end if
         end do
 
         do i = n + 1, len(string)
-            title_string(i:i) = char_to_lower(string(i:i))
+            sentence_string(i:i) = char_to_lower(string(i:i))
         end do
 
-    end function to_title
+    end function to_sentence
 
     !> Reverse the character order in the input character variable
     !> ([Specification](../page/specs/stdlib_ascii.html#reverse))
@@ -311,5 +359,52 @@ contains
         end do
 
     end function reverse
+
+    #:for kind in INT_KINDS
+    !> Represent an integer of kind ${kind}$ as character sequence
+    pure function to_string_integer_${kind}$(val) result(string)
+        integer, parameter :: ik = ${kind}$
+        integer(ik), intent(in) :: val
+        character(len=:), allocatable :: string
+        integer, parameter :: buffer_len = range(val)+2
+        character(len=buffer_len) :: buffer
+        integer :: pos
+        integer(ik) :: n
+        character(len=1), parameter :: numbers(0:9) = &
+            ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+        if (val == 0_ik) then
+            string = numbers(0)
+            return
+        end if
+
+        n = abs(val)
+        buffer = ""
+
+        pos = buffer_len + 1
+        do while (n > 0_ik)
+            pos = pos - 1
+            buffer(pos:pos) = numbers(mod(n, 10_ik))
+            n = n/10_ik
+        end do
+        if (val < 0_ik) then
+            pos = pos - 1
+            buffer(pos:pos) = '-'
+        end if
+
+        string = buffer(pos:)
+    end function to_string_integer_${kind}$
+    #:endfor
+
+    #:for kind in INT_KINDS
+    !> Represent an logical of kind ${kind}$ as character sequence
+    pure function to_string_logical_${kind}$(val) result(string)
+        integer, parameter :: ik = ${kind}$
+        logical(ik), intent(in) :: val
+        character(len=1) :: string
+
+        string = merge("T", "F", val)
+    end function to_string_logical_${kind}$
+    #:endfor
 
 end module stdlib_ascii

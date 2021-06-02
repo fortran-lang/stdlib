@@ -124,6 +124,90 @@ end program demo
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### Constructor from integer scalar
+
+#### Description
+
+The module defines a constructor to create a string type from an integer scalar.
+
+#### Syntax
+
+`res = [[stdlib_string_type(module):string_type(interface)]] (string)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument
+
+`val`: shall be a scalar integer value. It is an `intent(in)` argument.
+
+#### Result value
+
+The result is an instance of `string_type`.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  string = string_type(42)
+  ! len(string) == 2
+  string = string_type(-289)
+  ! len(string) == 4
+end program demo
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### Constructor from logical scalar
+
+#### Description
+
+The module defines a constructor to create a string type from a logical scalar.
+
+#### Syntax
+
+`res = [[stdlib_string_type(module):string_type(interface)]] (string)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument
+
+`val`: shall be a scalar logical value. It is an `intent(in)` argument.
+
+#### Result value
+
+The result is an instance of `string_type`.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  string = string_type(.true.)
+  ! len(string) == 1
+  string = string_type(.false.)
+  ! len(string) == 1
+end program demo
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Assignment of character scalar
 
 #### Description
@@ -143,7 +227,7 @@ Experimental
 
 #### Class
 
-Elemntal subroutine, `assignment(=)`.
+Elemental subroutine, `assignment(=)`.
 
 #### Example
 
@@ -1046,7 +1130,8 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the lowercase version of the character sequence hold by the input string.
+Returns a new string_type instance which holds the lowercase version of the 
+character sequence hold by the input string.
 
 #### Syntax
 
@@ -1066,7 +1151,7 @@ Elemental function.
 
 #### Result Value
 
-The Result is a scalar `string_type` value.
+The result is a scalar `string_type` value.
 
 #### Example
 
@@ -1091,7 +1176,8 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the uppercase version of the character sequence hold by the input string.
+Returns a new string_type instance which holds the uppercase version of the 
+character sequence hold by the input string.
 
 #### Syntax
 
@@ -1111,7 +1197,7 @@ Elemental function.
 
 #### Result Value
 
-The Result is a scalar `string_type` value.
+The result is a scalar `string_type` value.
 
 #### Example
 
@@ -1136,9 +1222,13 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the titlecase (or capitalized) version of the character sequence hold by the input string.
-Capitalized version: The first alphabetical character of the input character sequence is transformed to uppercase unless it 
-follows a numeral and the rest of the characters in the sequence are transformed to lowercase.
+Returns a new string_type instance which holds the titlecase version 
+of the character sequence hold by the input string.  
+Title case: First character of every word in the sentence is converted to 
+uppercase and the rest of the characters are converted to lowercase.  
+A word is a contiguous sequence of character(s) which consists of alphabetical 
+character(s) and numeral(s) only and doesn't exclude any alphabetical character 
+or numeral present next to either of its 2 ends.
 
 #### Syntax
 
@@ -1158,23 +1248,71 @@ Elemental function.
 
 #### Result Value
 
-The Result is a scalar `string_type` value.
+The result is a scalar `string_type` value.
 
 #### Example
 
 ```fortran
-program demo
-  use stdlib_string_type
+program demo_to_title
+  use stdlib_string_type, only: string_type, to_title
   implicit none
   type(string_type) :: string, titlecase_string
 
-  string = "Titlecase This String"
-  ! string <-- "Titlecase This String"
+  string = "titlecase this string."
+  ! string <-- "titlecase this string."
 
   titlecase_string = to_title(string)
-  ! string <-- "Titlecase This String"
-  ! titlecase_string <-- "Titlecase this string"
-end program demo
+  ! string <-- "titlecase this string."
+  ! titlecase_string <-- "Titlecase This String."
+end program demo_to_title
+```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### To\_sentence function
+
+#### Description
+
+Returns a new string_type instance which holds the sentencecase 
+version of the character sequence hold by the input string.  
+Sentencecase version: The first alphabetical character of the input character sequence 
+is transformed to uppercase unless it follows a numeral and the rest of the 
+characters in the sequence are transformed to lowercase.
+
+#### Syntax
+
+`sentencecase_string = [[stdlib_string_type(module): to_sentence(interface)]] (string)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument
+
+`string`: Instance of `string_type`. This argument is `intent(in)`.
+
+#### Result Value
+
+The result is a scalar `string_type` value.
+
+#### Example
+
+```fortran
+program demo_to_sentence
+  use stdlib_string_type, only: string_type, to_sentence
+  implicit none
+  type(string_type) :: string, sentencecase_string
+
+  string = "sentencecase this string."
+  ! string <-- "sentencecase this string."
+
+  sentencecase_string = to_sentence(string)
+  ! string <-- "sentencecase this string."
+  ! sentencecase_string <-- "Sentencecase this string."
+end program demo_to_sentence
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -1182,7 +1320,8 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the reversed version of the character sequence hold by the input string.
+Returns a new string_type instance which holds the reversed version of the 
+character sequence hold by the input string.
 
 #### Syntax
 
@@ -1202,7 +1341,7 @@ Elemental function.
 
 #### Result Value
 
-The Result is a scalar `string_type` value.
+The result is a scalar `string_type` value.
 
 #### Example
 

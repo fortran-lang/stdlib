@@ -1,0 +1,30 @@
+#:include "common.fypp"
+#:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
+
+module stdlib_math
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
+
+    implicit none
+    private
+    public :: clip
+
+    interface clip
+    #:for k1, t1 in IR_KINDS_TYPES
+        module procedure clip_${k1}$
+    #:endfor
+    end interface clip
+
+contains
+    
+    #:for k1, t1 in IR_KINDS_TYPES
+    elemental function clip_${k1}$(x, xmin, xmax) result(res)
+        ${t1}$, intent(in) :: x
+        ${t1}$, intent(in) :: xmin
+        ${t1}$, intent(in) :: xmax
+        ${t1}$ :: res
+
+        res = max(min(x, xmax), xmin)
+    end function clip_${k1}$
+    
+    #:endfor
+end module stdlib_math

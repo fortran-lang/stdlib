@@ -10,6 +10,7 @@ module stdlib_strings
     private
 
     public :: strip, chomp
+    public :: starts_with, ends_with
 
 
     !> Remove leading and trailing whitespace characters.
@@ -34,6 +35,28 @@ module stdlib_strings
         module procedure :: chomp_substring_string_char
         module procedure :: chomp_substring_char_char
     end interface chomp
+
+
+    !> Check whether a string starts with substring or not
+    !>
+    !> Version: experimental
+    interface starts_with
+        module procedure :: starts_with_string_string
+        module procedure :: starts_with_string_char
+        module procedure :: starts_with_char_string
+        module procedure :: starts_with_char_char
+    end interface starts_with
+
+
+    !> Check whether a string ends with substring or not
+    !>
+    !> Version: experimental
+    interface ends_with
+        module procedure :: ends_with_string_string
+        module procedure :: ends_with_string_char
+        module procedure :: ends_with_char_string
+        module procedure :: ends_with_char_char
+    end interface ends_with
 
 
 contains
@@ -171,6 +194,101 @@ contains
 
         string = transfer(set, string)
     end function set_to_string
+
+
+    !> Check whether a string starts with substring or not
+    pure function starts_with_char_char(string, substring) result(match)
+        character(len=*), intent(in) :: string
+        character(len=*), intent(in) :: substring
+        logical :: match
+        integer :: nsub
+
+        nsub = len(substring)
+        if (len(string) < nsub) then
+            match = .false.
+            return
+        end if
+        match = string(1:nsub) == substring
+
+    end function starts_with_char_char
+
+    !> Check whether a string starts with substring or not
+    elemental function starts_with_string_char(string, substring) result(match)
+        type(string_type), intent(in) :: string
+        character(len=*), intent(in) :: substring
+        logical :: match
+
+        match = starts_with(char(string), substring)
+
+    end function starts_with_string_char
+
+    !> Check whether a string starts with substring or not
+    elemental function starts_with_char_string(string, substring) result(match)
+        character(len=*), intent(in) :: string
+        type(string_type), intent(in) :: substring
+        logical :: match
+
+        match = starts_with(string, char(substring))
+
+    end function starts_with_char_string
+
+    !> Check whether a string starts with substring or not
+    elemental function starts_with_string_string(string, substring) result(match)
+        type(string_type), intent(in) :: string
+        type(string_type), intent(in) :: substring
+        logical :: match
+
+        match = starts_with(char(string), char(substring))
+
+    end function starts_with_string_string
+
+
+    !> Check whether a string ends with substring or not
+    pure function ends_with_char_char(string, substring) result(match)
+        character(len=*), intent(in) :: string
+        character(len=*), intent(in) :: substring
+        logical :: match
+        integer :: last, nsub
+
+        last = len(string)
+        nsub = len(substring)
+        if (last < nsub) then
+            match = .false.
+            return
+        end if
+        match = string(last-nsub+1:last) == substring
+
+    end function ends_with_char_char
+
+    !> Check whether a string ends with substring or not
+    elemental function ends_with_string_char(string, substring) result(match)
+        type(string_type), intent(in) :: string
+        character(len=*), intent(in) :: substring
+        logical :: match
+
+        match = ends_with(char(string), substring)
+
+    end function ends_with_string_char
+
+    !> Check whether a string ends with substring or not
+    elemental function ends_with_char_string(string, substring) result(match)
+        character(len=*), intent(in) :: string
+        type(string_type), intent(in) :: substring
+        logical :: match
+
+        match = ends_with(string, char(substring))
+
+    end function ends_with_char_string
+
+    !> Check whether a string ends with substring or not
+    elemental function ends_with_string_string(string, substring) result(match)
+        type(string_type), intent(in) :: string
+        type(string_type), intent(in) :: substring
+        logical :: match
+
+        match = ends_with(char(string), char(substring))
+
+    end function ends_with_string_string
 
 
 end module stdlib_strings
