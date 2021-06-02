@@ -123,12 +123,12 @@ stdlib_math_linspace.o: \
 	stdlib_kinds.o
 stdlib_math_logspace.o: \
 	stdlib_math.o \
-	stdlib_linspace.o \
+	stdlib_math_linspace.o \
 	stdlib_kinds.o \
 	stdlib_optval.o
 stdlib_math_lnspace.o: \
 	stdlib_math.o \
-	stdlib_linspace.o \
-	stdlib_logspace.o \
+	stdlib_math_linspace.o \
+	stdlib_math_logspace.o \
 	stdlib_kinds.o
 
