@@ -12,10 +12,17 @@ program test_linspace
     ! and make sure that the size of the result is as expected.
     !
     !
+    open(unit=9, file="test_linspace_log.txt", status="unknown") ! Log the results of the functio
 
     call test_linspace_sp
     call test_linspace_dp
     call test_linspace_neg_index ! Make sure that when passed a negative index the result is an empty array
+    call test_linspace_cmplx
+    call test_linspace_cmplx_2
+    call test_linspace_cmplx_3
+
+    close(unit=9)    
+
 
 contains
 
@@ -60,6 +67,75 @@ contains
         x = linspace(start, end, -15)
 
         call check(size(x) == 0, msg="Allocated array is not empty", warn=warn)
+
+    end subroutine
+
+    subroutine test_linspace_cmplx
+
+        complex(dp) :: start = (0.0_dp, 10.0_dp)
+        complex(dp) :: end = (1.0_dp, 0.0_dp)
+
+        complex(dp) :: z(10)
+
+        integer :: i
+
+        z = linspace(start, end, 10)
+
+        write(unit=9, fmt=*) "linspace((0.0_dp, 10.0_dp), (1.0_dp, 0.0_dp), 10): "
+        write(unit=9,fmt=99)
+        do i = 1, 10
+            write(unit=9,fmt=*) z(i)
+        end do
+        write(9,*)
+        write(9,*)
+              
+        99 format(70("="))      
+
+    end subroutine
+
+    subroutine test_linspace_cmplx_2
+
+        complex(dp) :: start = (10.0_dp, 10.0_dp)
+        complex(dp) :: end = (1.0_dp, 1.0_dp)
+
+        complex(dp) :: z(5)
+
+        integer :: i
+
+        z = linspace(start, end, 5)
+
+        write(unit=9, fmt=*) "linspace((10.0_dp, 10.0_dp), (1.0_dp, 1.0_dp), 5): "
+        write(unit=9,fmt=99)
+        do i = 1, 5
+            write(unit=9,fmt=*) z(i)
+        end do
+        write(9,*)
+        write(9,*)
+              
+        99 format(70("="))      
+
+    end subroutine
+
+    subroutine test_linspace_cmplx_3
+
+        complex(dp) :: start = (-5.0_dp, 100.0_dp)
+        complex(dp) :: end = (20.0_dp, 13.0_dp)
+
+        complex(dp) :: z(20)
+
+        integer :: i
+
+        z = linspace(start, end, 20)
+
+        write(unit=9, fmt=*) "linspace((-5.0_dp, 100.0_dp), (20.0_dp, 13.0_dp), 20): "
+        write(unit=9,fmt=99)
+        do i = 1, 20
+            write(unit=9,fmt=*) z(i)
+        end do
+        write(9,*)
+        write(9,*)
+              
+        99 format(70("="))      
 
     end subroutine
 

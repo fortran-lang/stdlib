@@ -49,6 +49,29 @@ module stdlib_math
         ${t1}$ :: res(n)
       end function ${RName}$
     #:endfor
+
+    ! Add support for complex linspace
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+      #:set RName = rname("clinspace_default", 1, t1, k1)
+      module function ${RName}$(start, end) result(res)
+        ${t1}$, intent(in) :: start
+        ${t1}$, intent(in) :: end
+
+        ${t1}$ :: res(DEFAULT_LINSPACE_LENGTH)
+      end function ${RName}$
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+      #:set RName = rname("clinspace_n", 1, t1, k1)
+      module function ${RName}$(start, end, n) result(res)
+        ${t1}$, intent(in) :: start
+        ${t1}$, intent(in) :: end
+        integer, intent(in) :: n
+
+        ${t1}$ :: res(n)
+      end function ${RName}$
+    #:endfor
+
   end interface
 
   interface logspace 

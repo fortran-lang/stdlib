@@ -50,4 +50,29 @@ contains
     end function ${RName}$
   #:endfor
 
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+      #:set RName = rname("clinspace_default", 1, t1, k1)
+      module procedure ${RName}$
+
+        res = linspace(start, end, DEFAULT_LINSPACE_LENGTH)
+
+      end procedure ${RName}$
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+      #:set RName = rname("clinspace_n", 1, t1, k1)
+      module procedure ${RName}$
+
+        real(${k1}$) :: x(n) ! array of the real part of complex number
+        real(${k1}$) :: y(n) ! array of the imaginary part of the complex number
+
+        x = linspace(real(start), real(end), n)
+        y = linspace(aimag(start), aimag(end), n)
+
+        res = cmplx(x, y, kind=${k1}$)
+
+      end procedure ${RName}$
+    #:endfor
+
 end submodule
