@@ -64,16 +64,16 @@
 
 module stdlib_sorting
 !! This module implements overloaded sorting subroutines named `ORD_SORT`,
-!! `SORT_INDEX`, and `SORT`, that each can be used to sort arrays of assumed 
-!! length characters, of `sdtlib_string_type` module `string_type`,
-!! of four kinds of `INTEGER` and of three kinds of `REAL`.
+!! `SORT_INDEX`, and `SORT`, that each can be used to sort four kinds
+!! of `INTEGER` arrays, three kinds of `REAL` arrays, `character(len=*)` arrays,
+!! and arrays of `type(string_type)`.
 !! ([Specification](../page/specs/stdlib_sorting.html))
 !!
-!!By default, sorting
-!! is in order of increasing value, though all subroutines have the option of
-!! sorting in order of decresasing value. All the subroutines have worst
-!! case run time performance of `O(N Ln(N))`, but on largely sorted data
-!! `ORD_SORT` and `SORT_INDEX` can have a run time performance of `O(N)`.
+!! By default sorting is in order of 
+!! increasing value, but there is an option to sort in decreasing order. 
+!! All the subroutines have worst case run time performance of `O(N Ln(N))`, 
+!! but on largely sorted data `ORD_SORT` and `SORT_INDEX` can have a run time 
+!! performance of `O(N)`.
 !!
 !! `ORD_SORT` is a translation of the `"Rust" sort` sorting algorithm in
 !! `slice.rs`:
@@ -153,10 +153,10 @@ module stdlib_sorting
 !! * array: the rank 1 array to be sorted. It is an `intent(inout)`
 !!   argument of any of the types `integer(int8)`, `integer(int16)`,
 !!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
-!!   `real(real128)`, or `character(*)`. If both the type of `array` is
-!!   real and at least one of the elements is a `NaN`, then the ordering
-!!   of the result is undefined. Otherwise it is defined to be the
-!!   original elements in non-decreasing order.
+!!   `real(real128)`, `character(*)`, `type(string_type)`. If both the 
+!!   type of `array` is real and at least one of the elements is a 
+!!   `NaN`, then the ordering of the result is undefined. Otherwise it 
+!!   is defined to be the original elements in non-decreasing order.
 !!
 !! * work (optional): shall be a rank 1 array of the same type as
 !!   `array`, and shall have at least `size(array)/2` elements. It is an
@@ -203,9 +203,9 @@ module stdlib_sorting
 !! * array: the rank 1 array to be sorted. It is an `intent(inout)`
 !!   argument of any of the types `integer(int8)`, `integer(int16)`,
 !!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
-!!   `real(real128)`, or `character(*)`. If both the type of `array` is
-!!   real and at least one of the elements is a `NaN`, then the ordering
-!!   of the result is undefined. Otherwise it is defined to be the
+!!   `real(real128)`, `character(*)`, `type(string_type)`. If both the type
+!!   of `array` is real and at least one of the elements is a `NaN`, then
+!!   the ordering of the result is undefined. Otherwise it is defined to be the
 !!   original elements in non-decreasing order.
 !! * `reverse` (optional): shall be a scalar of type default logical. It
 !!   is an `intent(in)` argument. If present with a value of `.true.` then
@@ -242,10 +242,10 @@ module stdlib_sorting
 !! * array: the rank 1 array to be sorted. It is an `intent(inout)`
 !!   argument of any of the types `integer(int8)`, `integer(int16)`,
 !!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
-!!   `real(real128)`, or `character(*)`. If both the type of `array` is
-!!   real and at least one of the elements is a `NaN`, then the ordering
-!!   of the `array` and `index` results is undefined. Otherwise it is
-!!   defined to be as specified by reverse.
+!!   `real(real128)`, `character(*)`, `type(string_type)`. If both the 
+!!   type of `array` is real and at least one of the elements is a `NaN`, 
+!!   then the ordering of the `array` and `index` results is undefined. 
+!!   Otherwise it is defined to be as specified by reverse.
 !!
 !! * index: a rank 1 array of sorting indices. It is an `intent(out)`
 !!   argument of the type `integer(int_size)`. Its size shall be the
