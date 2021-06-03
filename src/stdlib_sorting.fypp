@@ -65,8 +65,8 @@
 module stdlib_sorting
 !! This module implements overloaded sorting subroutines named `ORD_SORT`,
 !! `SORT_INDEX`, and `SORT`, that each can be used to sort arrays of assumed 
-!! length characters, of `sdtlib_string_type`, four kinds of `INTEGER` arrays
-!! and three kinds of `REAL` arrays.
+!! length characters, of `sdtlib_string_type` module `string_type`,
+!! of four kinds of `INTEGER` and of three kinds of `REAL`.
 !! ([Specification](../page/specs/stdlib_sorting.html))
 !!
 !!By default, sorting
