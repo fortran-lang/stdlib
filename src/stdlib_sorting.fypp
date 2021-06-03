@@ -64,8 +64,9 @@
 
 module stdlib_sorting
 !! This module implements overloaded sorting subroutines named `ORD_SORT`,
-!! `SORT_INDEX`, and `SORT`, that each can be used to sort four kinds
-!! of `INTEGER` arrays and three kinds of `REAL` arrays.
+!! `SORT_INDEX`, and `SORT`, that each can be used to sort arrays of assumed 
+!! length characters, of `sdtlib_string_type`, four kinds of `INTEGER` arrays
+!! and three kinds of `REAL` arrays.
 !! ([Specification](../page/specs/stdlib_sorting.html))
 !!
 !!By default, sorting
@@ -421,7 +422,7 @@ module stdlib_sorting
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! but modified to return an array of indices that would provide a stable
 !! sort of the rank one `ARRAY` input.
-!! ([Specification](../page/specs/stdlib_sorting.html#sort_index-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array)
+!! ([Specification](../page/specs/stdlib_sorting.html#sort_index-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array))
 !!
 !! The indices by default correspond to a
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
