@@ -3,7 +3,7 @@
 
 !! Licensing:
 !!
-!! This file is subjec† both to the Fortran Standard Library license, and
+!! This file is subject both to the Fortran Standard Library license, and
 !! to additional licensing requirements as it contains translations of
 !! other software.
 !!
@@ -65,8 +65,11 @@
 module stdlib_sorting
 !! This module implements overloaded sorting subroutines named `ORD_SORT`,
 !! `SORT_INDEX`, and `SORT`, that each can be used to sort four kinds
-!! of `INTEGER` arrays, three kinds of `REAL` arrays, character(len=*) arrays,
-!! and arrays of type(string_type). By default sorting is in order of 
+!! of `INTEGER` arrays, three kinds of `REAL` arrays, `character(len=*)` arrays,
+!! and arrays of `type(string_type)`.
+!! ([Specification](../page/specs/stdlib_sorting.html))
+!!
+!! By default sorting is in order of 
 !! increasing value, but there is an option to sort in decreasing order. 
 !! All the subroutines have worst case run time performance of `O(N Ln(N))`, 
 !! but on largely sorted data `ORD_SORT` and `SORT_INDEX` can have a run time 
@@ -341,7 +344,10 @@ module stdlib_sorting
 !! `slice.rs`
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! `ORD_SORT` is a hybrid stable comparison algorithm combining `merge sort`,
-!! and `insertion sort`. It is always at worst O(N Ln(N)) in sorting random
+!! and `insertion sort`.
+!! ([Specification](../page/specs/stdlib_sorting.html#ord_sort-sorts-an-input-array))
+!!
+!! It is always at worst O(N Ln(N)) in sorting random
 !! data, having a performance about 25% slower than `SORT` on such
 !! data, but has much better performance than `SORT` on partially
 !! sorted data, having O(N) performance on uniformly non-increasing or
@@ -377,6 +383,7 @@ module stdlib_sorting
 !!
 !! The generic subroutine interface implementing the `SORT` algorithm, based
 !! on the `introsort` of David Musser.
+!! ([Specification](../page/specs/stdlib_sorting.html#sort-sorts-an-input-array))
 
 #:for k1, t1 in IRS_KINDS_TYPES
         pure module subroutine ${k1}$_sort( array, reverse )
@@ -414,7 +421,10 @@ module stdlib_sorting
 !! based on the `"Rust" sort` algorithm found in `slice.rs`
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! but modified to return an array of indices that would provide a stable
-!! sort of the rank one `ARRAY` input. The indices by default correspond to a
+!! sort of the rank one `ARRAY` input.
+!! ([Specification](../page/specs/stdlib_sorting.html#sort_index-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array))
+!!
+!! The indices by default correspond to a
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
 !! with a value of `.TRUE.` the indices correspond to a non-increasing sort.
 
