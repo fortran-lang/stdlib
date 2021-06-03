@@ -3,7 +3,7 @@
 
 !! Licensing:
 !!
-!! This file is subjec† both to the Fortran Standard Library license, and
+!! This file is subject both to the Fortran Standard Library license, and
 !! to additional licensing requirements as it contains translations of
 !! other software.
 !!
@@ -65,8 +65,11 @@
 module stdlib_sorting
 !! This module implements overloaded sorting subroutines named `ORD_SORT`,
 !! `SORT_INDEX`, and `SORT`, that each can be used to sort four kinds
-!! of `INTEGER` arrays and three kinds of `REAL` arrays. By default, sorting
-!! is in order of increasing value, though `SORT_INDEX` has the option of
+!! of `INTEGER` arrays and three kinds of `REAL` arrays.
+!! ([Specification](../page/specs/stdlib_sorting.html))
+!!
+!!By default, sorting
+!! is in order of increasing value, though all subroutines have the option of
 !! sorting in order of decresasing value. All the subroutines have worst
 !! case run time performance of `O(N Ln(N))`, but on largely sorted data
 !! `ORD_SORT` and `SORT_INDEX` can have a run time performance of `O(N)`.
@@ -140,7 +143,10 @@ module stdlib_sorting
 !!
 !! The generic subroutine implementing the `ORD_SORT` algorithm to return
 !! an input array with its elements sorted in order of (non-)decreasing
-!! value. Its use has the syntax:
+!! value.
+!! ([Specification](../page/specs/stdlib_sorting.html#ord_sort-sorts-an-input-array))
+!!
+!! Its use has the syntax:
 !!
 !!     call ord_sort( array[, work, reverse] )
 !!
@@ -190,7 +196,10 @@ module stdlib_sorting
 !!
 !! The generic subroutine implementing the `SORT` algorithm to return
 !! an input array with its elements sorted in order of (non-)decreasing
-!! value. Its use has the syntax:
+!! value.
+!! ([Specification](../page/specs/stdlib_sorting.html#sort-sorts-an-input-array))
+!!
+!!Its use has the syntax:
 !!
 !!     call sort( array[, reverse] )
 !!
@@ -229,6 +238,8 @@ module stdlib_sorting
 !! return an index array whose elements would sort the input array in the
 !! desired direction. It is primarily intended to be used to sort a
 !! derived type array based on the values of a component of the array.
+!! ([Specification](../page/specs/stdlib_sorting.html#sort_index-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array)
+!!
 !! Its use has the syntax:
 !!
 !!     call sort_index( array, index[, work, iwork, reverse ] )
