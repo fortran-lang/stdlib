@@ -143,10 +143,7 @@ module stdlib_sorting
 !!
 !! The generic subroutine implementing the `ORD_SORT` algorithm to return
 !! an input array with its elements sorted in order of (non-)decreasing
-!! value.
-!! ([Specification](../page/specs/stdlib_sorting.html#ord_sort-sorts-an-input-array))
-!!
-!! Its use has the syntax:
+!! value. Its use has the syntax:
 !!
 !!     call ord_sort( array[, work, reverse] )
 !!
@@ -196,10 +193,7 @@ module stdlib_sorting
 !!
 !! The generic subroutine implementing the `SORT` algorithm to return
 !! an input array with its elements sorted in order of (non-)decreasing
-!! value.
-!! ([Specification](../page/specs/stdlib_sorting.html#sort-sorts-an-input-array))
-!!
-!!Its use has the syntax:
+!! value. Its use has the syntax:
 !!
 !!     call sort( array[, reverse] )
 !!
@@ -238,8 +232,6 @@ module stdlib_sorting
 !! return an index array whose elements would sort the input array in the
 !! desired direction. It is primarily intended to be used to sort a
 !! derived type array based on the values of a component of the array.
-!! ([Specification](../page/specs/stdlib_sorting.html#sort_index-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array)
-!!
 !! Its use has the syntax:
 !!
 !!     call sort_index( array, index[, work, iwork, reverse ] )
@@ -351,7 +343,10 @@ module stdlib_sorting
 !! `slice.rs`
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! `ORD_SORT` is a hybrid stable comparison algorithm combining `merge sort`,
-!! and `insertion sort`. It is always at worst O(N Ln(N)) in sorting random
+!! and `insertion sort`.
+!! ([Specification](../page/specs/stdlib_sorting.html#ord_sort-sorts-an-input-array))
+!!
+!! It is always at worst O(N Ln(N)) in sorting random
 !! data, having a performance about 25% slower than `SORT` on such
 !! data, but has much better performance than `SORT` on partially
 !! sorted data, having O(N) performance on uniformly non-increasing or
@@ -387,6 +382,7 @@ module stdlib_sorting
 !!
 !! The generic subroutine interface implementing the `SORT` algorithm, based
 !! on the `introsort` of David Musser.
+!! ([Specification](../page/specs/stdlib_sorting.html#sort-sorts-an-input-array))
 
 #:for k1, t1 in IRS_KINDS_TYPES
         pure module subroutine ${k1}$_sort( array, reverse )
@@ -424,7 +420,10 @@ module stdlib_sorting
 !! based on the `"Rust" sort` algorithm found in `slice.rs`
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! but modified to return an array of indices that would provide a stable
-!! sort of the rank one `ARRAY` input. The indices by default correspond to a
+!! sort of the rank one `ARRAY` input.
+!! ([Specification](../page/specs/stdlib_sorting.html#sort_index-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array)
+!!
+!! The indices by default correspond to a
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
 !! with a value of `.TRUE.` the indices correspond to a non-increasing sort.
 
