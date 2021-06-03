@@ -1,0 +1,188 @@
+#:include "common.fypp"
+#:set RANKS = range(1, MAXRANK + 1)
+submodule (stdlib_stats) stdlib_stats_median
+
+  use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
+  use stdlib_error, only: error_stop
+  use stdlib_optval, only: optval
+  use stdlib_sorting, only: sort
+  implicit none
+
+contains
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:for rank in RANKS
+      #:set RName = rname("median_all",rank, t1, k1)
+      module function ${RName}$ (x, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        logical, intent(in), optional :: mask
+        ${t1}$ :: res
+        
+        integer :: c, n
+        ${t1}$, allocatable :: x_tmp(:)
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._${k1}$, ieee_quiet_nan)
+          return
+        end if
+
+        x_tmp = reshape(x, [size(x)])
+
+        n = size(x_tmp)
+        c = floor( (n + 1) / 2._${k1}$ )
+
+        call sort(x_tmp)
+
+        if (mod(n, 2) == 0) then
+            res = sum(x_tmp(c:c+1)) / 2
+        else
+            res = x_tmp(c)
+        endif
+
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:for rank in RANKS
+      #:set RName = rname("median_all",rank, t1, k1,'dp')
+      module function ${RName}$ (x, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        logical, intent(in), optional :: mask
+        real(dp) :: res
+        
+        integer :: c, n
+        ${t1}$, allocatable :: x_tmp(:)
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        x_tmp = reshape(x, [size(x)])
+
+        n = size(x_tmp)
+        c = floor( (n + 1) / 2.)
+
+        call sort(x_tmp)
+
+        if (mod(n, 2) == 0) then
+            res = sum(real(x_tmp(c:c+1), kind=dp)) / 2._dp
+        else
+            res = x_tmp(c)
+        endif
+
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:for rank in RANKS
+      #:set RName = rname("median",rank, t1, k1)
+      module function ${RName}$(x, dim, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+
+        integer :: c, n
+        #:for fj in range(1, rank+1)
+        integer :: j${"_" * fj}$
+        #:endfor
+        ${t1}$, allocatable :: x_tmp(:)
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._${k1}$, ieee_quiet_nan)
+          return
+        end if
+
+        n = size(x, dim)
+        c = floor( (n + 1) / 2._${k1}$ )
+
+        allocate(x_tmp(n))
+
+        select case(dim)
+          #:for fi in range(1, rank+1)
+          case(${fi}$)
+            #:for fj in range(1, fi)
+              do j${"_" * fj}$ = 1, size(x, ${fj}$)
+            #:endfor
+              #:for fj in range(fi+1, rank+1)
+                do j${"_" * fj}$ = 1, size(x, ${fj}$)
+              #:endfor
+                  x_tmp(:) = x${select_subvector(rank, fi)}$
+                  call sort(x_tmp)
+
+                  if (mod(n, 2) == 0) then
+                      res${reduce_subvector(rank, fi)}$ = sum(x_tmp(c:c+1)) / 2._${k1}$
+                  else
+                      res${reduce_subvector(rank, fi)}$ = x_tmp(c)
+                  endif
+            #:for fj in range(1, rank)
+              end do
+            #:endfor
+          #:endfor
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:for rank in RANKS
+      #:set RName = rname("median",rank, t1, k1,'dp')
+      module function ${RName}$(x, dim, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+
+        integer :: c, n
+        #:for fj in range(1, rank+1)
+        integer :: j${"_" * fj}$
+        #:endfor
+        ${t1}$, allocatable :: x_tmp(:)
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = size(x, dim)
+        c = floor( (n + 1) / 2._dp )
+
+        allocate(x_tmp(n))
+
+        select case(dim)
+          #:for fi in range(1, rank+1)
+          case(${fi}$)
+            #:for fj in range(1, fi)
+              do j${"_" * fj}$ = 1, size(x, ${fj}$)
+            #:endfor
+              #:for fj in range(fi+1, rank+1)
+                do j${"_" * fj}$ = 1, size(x, ${fj}$)
+              #:endfor
+                  x_tmp(:) = x${select_subvector(rank, fi)}$
+                  call sort(x_tmp)
+
+                  if (mod(n, 2) == 0) then
+                      res${reduce_subvector(rank, fi)}$ = sum(x_tmp(c:c+1)) / 2._dp
+                  else
+                      res${reduce_subvector(rank, fi)}$ = x_tmp(c)
+                  endif
+            #:for fj in range(1, rank)
+              end do
+            #:endfor
+          #:endfor
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+
+end submodule

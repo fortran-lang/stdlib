@@ -11,7 +11,7 @@ module stdlib_stats
   implicit none
   private
   ! Public API
-  public :: corr, cov, mean, moment, var
+  public :: corr, cov, mean, median, moment, var
 
 
   interface corr
@@ -303,6 +303,62 @@ module stdlib_stats
     #:endfor
 
   end interface mean
+
+  interface median
+    !! version: experimental
+    !!
+    !! Median of array elements
+    !! ([Specification](../page/specs/stdlib_stats.html#median))
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:for rank in RANKS
+      #:set RName = rname("median_all",rank, t1, k1)
+      module function ${RName}$ (x, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        logical, intent(in), optional :: mask
+        ${t1}$ :: res
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:for rank in RANKS
+      #:set RName = rname("median_all",rank, t1, k1,'dp')
+      module function ${RName}$ (x, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        logical, intent(in), optional :: mask
+        real(dp) :: res
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:for rank in RANKS
+      #:set RName = rname("median",rank, t1, k1)
+      module function ${RName}$(x, dim, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:for rank in RANKS
+      #:set RName = rname("median",rank, t1, k1,'dp')
+      module function ${RName}$(x, dim, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+      end function ${RName}$
+    #:endfor
+  #:endfor
+
+
+
+
+  end interface
 
 
   interface var

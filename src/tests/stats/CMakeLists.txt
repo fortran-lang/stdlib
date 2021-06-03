@@ -1,6 +1,7 @@
 ADDTEST(corr)
 ADDTEST(cov)
 ADDTEST(mean)
+ADDTEST(median)
 ADDTEST(moment)
 ADDTEST(rawmoment)
 ADDTEST(var)
