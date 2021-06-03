@@ -10,6 +10,10 @@ SRCFYPP =\
         stdlib_quadrature.fypp \
         stdlib_quadrature_trapz.fypp \
         stdlib_quadrature_simps.fypp \
+        stdlib_sorting.fypp \
+        stdlib_sorting_ord_sort.fypp \
+        stdlib_sorting_sort.fypp \
+        stdlib_sorting_sort_index.fypp \
         stdlib_stats.fypp \
         stdlib_stats_corr.fypp \
         stdlib_stats_cov.fypp \
@@ -81,6 +85,15 @@ stdlib_quadrature_trapz.o: \
 	stdlib_quadrature.o \
 	stdlib_error.o \
 	stdlib_kinds.o
+stdlib_sorting.o: \
+	stdlib_kinds.o \
+	stdlib_string_type.o
+stdlib_sorting_ord_sort.o: \
+	stdlib_sorting.o
+stdlib_sorting_sort.o: \
+	stdlib_sorting.o
+stdlib_sorting_sort_index.o: \
+	stdlib_sorting.o
 stdlib_stats.o: \
 	stdlib_kinds.o
 stdlib_stats_corr.o: \
