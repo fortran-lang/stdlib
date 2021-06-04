@@ -12,7 +12,6 @@ module stdlib_linalg
   public :: eye
   public :: trace
 
-
   interface diag
     !! version: experimental
     !!
