@@ -26,6 +26,10 @@ The Pearson correlation between two rows (or columns), say `x` and `y`, of `arra
 
 `result = [[stdlib_stats(module):corr(interface)]](array, dim [, mask])`
 
+### Class
+
+Generic subroutine
+
 ### Arguments
 
 `array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`.
@@ -83,6 +87,10 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 `result = [[stdlib_stats(module):cov(interface)]](array, dim [, mask [, corrected]])`
 
+### Class
+
+Generic subroutine
+
 ### Arguments
 
 `array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`.
@@ -134,6 +142,10 @@ Returns the mean of all the elements of `array`, or of the elements of `array` a
 
 `result = [[stdlib_stats(module):mean(interface)]](array, dim [, mask])`
 
+### Class
+
+Generic subroutine
+
 ### Arguments
 
 `array`: Shall be an array of type `integer`, `real`, or `complex`.
@@ -164,6 +176,75 @@ program demo_mean
     print *, mean(y, 1)                               !returns [ 1.5, 3.5, 5.5 ]
     print *, mean(y, 1,y > 3.)                        !returns [ NaN, 4.0, 5.5 ]
 end program demo_mean
+```
+
+## `median` - median of array elements
+
+### Status
+
+Experimental
+
+### Description
+
+Returns the median of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
+
+After that the elements are sorted in an increasing order, e.g. `array_sorted =
+sort(array)`, the median of the elements of `array` are defined as, if
+`n = size(array)` is an even number:
+
+```
+median(array) = array_sorted( floor( (n + 1) / 2.))
+```
+
+or as if `n` is an odd number:
+
+```
+median(array) = mean( array_sorted( floor( (n + 1) / 2.):floor( (n + 1) / 2.) + 1 ) )
+```
+
+The array is sorted using the subroutine `sort` provided by the `stdlib_sorting`
+module.
+
+### Syntax
+
+`result = [[stdlib_stats(module):median(interface)]](array [, mask])`
+
+`result = [[stdlib_stats(module):median(interface)]](array, dim [, mask])`
+
+### Class
+
+Generic subroutine
+
+### Arguments
+
+`array`: Shall be an array of type `integer` or  `real`.
+
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
+
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`.
+
+### Return value
+
+If `array` is of type `real`, the result is of the same type as `array`.
+If `array` is of type `integer`, the result is of type `real(dp)`.
+
+If `dim` is absent, a scalar with the median of all elements in `array` is returned. Otherwise, an array of rank `n-1`, where `n` equals the rank of `array`, and a shape similar to that of `array` with dimension `dim` dropped is returned.
+
+If `mask` is specified, the result is the median of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
+
+### Example
+
+```fortran
+program demo_median
+    use stdlib_stats, only: median
+    implicit none
+    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
+    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
+    print *, median(x)                                  !returns 3.5
+    print *, median(y)                                  !returns 3.5
+    print *, median(y, 1)                               !returns [ 1.5, 3.5, 5.5 ]
+    print *, median(y, 1,y > 3.)                        !returns [ NaN, 4.0, 5.5 ]
+end program demo_median
 ```
 
 ## `moment` - central moments of array elements
@@ -198,6 +279,10 @@ The _k_-th order moment about `center` is defined as :
 `result = [[stdlib_stats(module):moment(interface)]](array, order [, center [, mask]])`
 
 `result = [[stdlib_stats(module):moment(interface)]](array, order, dim [, center [, mask]])`
+
+### Class
+
+Generic subroutine
 
 ### Arguments
 
@@ -263,6 +348,10 @@ The use of the term `n-1` for scaling is called Bessel 's correction. The scalin
 `result = [[stdlib_stats(module):var(interface)]](array [, mask [, corrected]])`
 
 `result = [[stdlib_stats(module):var(interface)]](array, dim [, mask [, corrected]])`
+
+### Class
+
+Generic subroutine
 
 ### Arguments
 
