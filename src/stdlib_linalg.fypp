@@ -62,7 +62,6 @@ module stdlib_linalg
       module procedure trace_${t1[0]}$${k1}$
     #:endfor
   end interface
-    
 
 contains
 
