@@ -8,7 +8,7 @@ use iso_c_binding, only: c_bool
 !use iso_c_binding, only: int8=>c_int8_t, int16=>c_int16_t, int32=>c_int32_t, int64=>c_int64_t
 implicit none
 private
-public sp, dp, qp, int8, int16, int32, int64, lp, c_bool
+public sp, dp, qp, int8, int16, int32, int64, lk, c_bool
 
-integer, parameter :: lp = kind(.true.)
+integer, parameter :: lk = kind(.true.)
 end module stdlib_kinds

@@ -49,7 +49,7 @@ Reexported intrinsic named constant `int32` from `iso_fortran_env`.
 Reexported intrinsic named constant `int64` from `iso_fortran_env`.
 
 
-### `lp`
+### `lk`
 
 Kind parameter of the default logical data type.
 

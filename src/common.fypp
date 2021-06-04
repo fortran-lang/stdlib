@@ -28,7 +28,7 @@
 #:set INT_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES))
 
 #! Integer kinds to be considered during templating
-#:set LOG_KINDS = ["lp", "c_bool"]
+#:set LOG_KINDS = ["lk", "c_bool"]
 
 #! Integer types to be considered during templating
 #:set LOG_TYPES = ["logical({})".format(k) for k in LOG_KINDS]

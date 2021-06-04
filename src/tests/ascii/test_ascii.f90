@@ -8,7 +8,7 @@ program test_ascii
         is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
         to_lower, to_upper, to_title, to_sentence, reverse, LF, TAB, NUL, DEL, &
         to_string
-    use stdlib_kinds, only : int8, int16, int32, int64, lp, c_bool
+    use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
 
     implicit none
 
@@ -679,8 +679,8 @@ contains
        write(flc, '(g0)') .true._c_bool
        call check(to_string(.true._c_bool) == trim(flc))
 
-       write(flc, '(g0)') .false._lp
-       call check(to_string(.false._lp) == trim(flc))
+       write(flc, '(g0)') .false._lk
+       call check(to_string(.false._lk) == trim(flc))
     end subroutine test_to_string
 
 end program test_ascii

@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 module test_string_assignment
     use stdlib_error, only : check
-    use stdlib_kinds, only : int8, int16, int32, int64
+    use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
     use stdlib_string_type, only : string_type, assignment(=), operator(==), len
     implicit none
 
@@ -52,11 +52,11 @@ contains
        write(flc, '(g0)') .false.
        call check(string_type(.false.) == trim(flc))
 
-       write(flc, '(g0)') .false._int8
-       call check(string_type(.false._int8) == trim(flc))
+       write(flc, '(g0)') .false._c_bool
+       call check(string_type(.false._c_bool) == trim(flc))
 
-       write(flc, '(g0)') .true._int64
-       call check(string_type(.true._int64) == trim(flc))
+       write(flc, '(g0)') .true._lk
+       call check(string_type(.true._lk) == trim(flc))
     end subroutine test_char_value
 
 end module test_string_assignment
