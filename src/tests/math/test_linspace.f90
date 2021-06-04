@@ -4,6 +4,8 @@ program test_linspace
     use stdlib_math, only: linspace 
 
     implicit none
+
+    integer :: iunit
     logical :: warn = .false.
 
     ! Testing linspace.
@@ -12,7 +14,11 @@ program test_linspace
     ! and make sure that the size of the result is as expected.
     !
     !
-    open(unit=9, file="test_linspace_log.txt", status="unknown") ! Log the results of the functio
+
+
+    open(newunit=iunit, file="test_linspace_log.txt", status="unknown") ! Log the results of the functio
+
+    write(iunit,*) "Writing to unit #: ", iunit
 
     call test_linspace_sp
     call test_linspace_dp
@@ -23,7 +29,7 @@ program test_linspace
     call test_linspace_cmplx_sp
     call test_linspace_cmplx_sp_2
 
-    close(unit=9)    
+    close(unit=iunit)    
 
 
 contains
@@ -83,13 +89,13 @@ contains
 
         z = linspace(start, end, 10)
 
-        write(unit=9, fmt=*) "linspace((0.0_dp, 10.0_dp), (1.0_dp, 0.0_dp), 10): "
-        write(unit=9,fmt=99)
+        write(unit=iunit, fmt=*) "linspace((0.0_dp, 10.0_dp), (1.0_dp, 0.0_dp), 10): "
+        write(unit=iunit,fmt=99)
         do i = 1, 10
-            write(unit=9,fmt=*) z(i)
+            write(unit=iunit,fmt=*) z(i)
         end do
-        write(9,*)
-        write(9,*)
+        write(iunit,*)
+        write(iunit,*)
               
         99 format(70("="))      
 
@@ -106,13 +112,13 @@ contains
 
         z = linspace(start, end, 5)
 
-        write(unit=9, fmt=*) "linspace((10.0_dp, 10.0_dp), (1.0_dp, 1.0_dp), 5): "
-        write(unit=9,fmt=99)
+        write(unit=iunit, fmt=*) "linspace((10.0_dp, 10.0_dp), (1.0_dp, 1.0_dp), 5): "
+        write(unit=iunit,fmt=99)
         do i = 1, 5
-            write(unit=9,fmt=*) z(i)
+            write(unit=iunit,fmt=*) z(i)
         end do
-        write(9,*)
-        write(9,*)
+        write(iunit,*)
+        write(iunit,*)
               
         99 format(70("="))      
 
@@ -129,13 +135,13 @@ contains
 
         z = linspace(start, end, 20)
 
-        write(unit=9, fmt=*) "linspace((-5.0_dp, 100.0_dp), (20.0_dp, 13.0_dp), 20): "
-        write(unit=9,fmt=99)
+        write(unit=iunit, fmt=*) "linspace((-5.0_dp, 100.0_dp), (20.0_dp, 13.0_dp), 20): "
+        write(unit=iunit,fmt=99)
         do i = 1, 20
-            write(unit=9,fmt=*) z(i)
+            write(unit=iunit,fmt=*) z(i)
         end do
-        write(9,*)
-        write(9,*)
+        write(iunit,*)
+        write(iunit,*)
               
         99 format(70("="))      
 
@@ -152,13 +158,13 @@ contains
 
         z = linspace(start, end, 10)
 
-        write(unit=9, fmt=*) "linspace((0.5_sp, 5.0_sp), (1.0_sp, -30.0_sp), 10): "
-        write(unit=9,fmt=99)
+        write(unit=iunit, fmt=*) "linspace((0.5_sp, 5.0_sp), (1.0_sp, -30.0_sp), 10): "
+        write(unit=iunit,fmt=99)
         do i = 1, 10
-            write(unit=9,fmt=*) z(i)
+            write(unit=iunit,fmt=*) z(i)
         end do
-        write(9,*)
-        write(9,*)
+        write(iunit,*)
+        write(iunit,*)
               
         99 format(70("="))      
 
@@ -175,13 +181,13 @@ contains
 
         z = linspace(start, end, 100)
 
-        write(unit=9, fmt=*) "linspace((50.0_sp, 500.0_sp), (-100.0_sp, 2000.0_sp)): "
-        write(unit=9,fmt=99)
+        write(unit=iunit, fmt=*) "linspace((50.0_sp, 500.0_sp), (-100.0_sp, 2000.0_sp)): "
+        write(unit=iunit,fmt=99)
         do i = 1, 100
-            write(unit=9,fmt=*) z(i)
+            write(unit=iunit,fmt=*) z(i)
         end do
-        write(9,*)
-        write(9,*)
+        write(iunit,*)
+        write(iunit,*)
               
         99 format(70("="))      
 

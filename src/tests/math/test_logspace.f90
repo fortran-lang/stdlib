@@ -7,6 +7,8 @@ program test_logspace
     implicit none
     
         logical :: warn = .false. 
+
+        integer :: iunit
     
         ! Testing logspace
         !
@@ -14,14 +16,16 @@ program test_logspace
         ! from the base**start to base**end, using Euler's number e as the base. If no length
         ! is specified, return a rank 1 array with 50 elements.
     
-        open(unit=9, file="test_logspace_log.txt", status="unknown") ! Log the results of the function
+        open(newunit=iunit, file="test_logspace_log.txt", status="unknown") ! Log the results of the function
     
+        write(iunit,*) "Writing to unit #: ", iunit
+
         call test_logspace_sp
         call test_logspace_dp
         call test_logspace_default
         call test_logspace_base_2
     
-        close(unit=9)    
+        close(unit=iunit)    
     
     contains
     
@@ -46,11 +50,11 @@ program test_logspace
             ! call global_logger%log_message("x = logspace(0.0_sp, 2.0_sp, 20)")
             ! 99 format(G11.5, X)
     
-            write(unit=9, fmt=*) "logspace(0.0_sp, 2.0_sp, 20): "
-            write(unit=9,fmt=99)
-            write(unit=9,fmt="(20(F7.3, 2X))") x
-            write(9,*)
-            write(9,*)
+            write(unit=iunit, fmt=*) "logspace(0.0_sp, 2.0_sp, 20): "
+            write(unit=iunit,fmt=99)
+            write(unit=iunit,fmt="(20(F7.3, 2X))") x
+            write(iunit,*)
+            write(iunit,*)
                   
             99 format(70("="))
     
@@ -77,11 +81,11 @@ program test_logspace
             ! call global_logger%log_message("x = logspace(0.0_sp, 2.0_sp, 20)")
             ! 99 format(G11.5, X)
     
-            write(unit=9, fmt=*) "logspace(1.0_dp, 0.0_dp, 10): "
-            write(unit=9,fmt=99)
-            write(unit=9,fmt="(10(F7.3, 2X))") x
-            write(9,*)
-            write(9,*)
+            write(unit=iunit, fmt=*) "logspace(1.0_dp, 0.0_dp, 10): "
+            write(unit=iunit,fmt=99)
+            write(unit=iunit,fmt="(10(F7.3, 2X))") x
+            write(iunit,*)
+            write(iunit,*)
                   
             99 format(70("="))
     
@@ -104,11 +108,11 @@ program test_logspace
             ! call global_logger%log_message("x = logspace(0.0_sp, 2.0_sp, 20)")
             ! 99 format(G11.5, X)
     
-            write(unit=9, fmt=*) "logspace(0.0_dp, 1.0_dp): "
-            write(unit=9,fmt=99)
-            write(unit=9,fmt="(50(F7.3, 2X))") x
-            write(9,*)
-            write(9,*)
+            write(unit=iunit, fmt=*) "logspace(0.0_dp, 1.0_dp): "
+            write(unit=iunit,fmt=99)
+            write(unit=iunit,fmt="(50(F7.3, 2X))") x
+            write(iunit,*)
+            write(iunit,*)
                   
             99 format(70("="))
     
@@ -136,11 +140,11 @@ program test_logspace
             ! call global_logger%log_message("x = logspace(0.0_sp, 2.0_sp, 20)")
             ! 99 format(G11.5, X)
     
-            write(unit=9, fmt=*) "logspace(1.0_dp, 10.0_dp, 10, 2): "
-            write(unit=9,fmt=99)
-            write(unit=9,fmt="(10(F9.3, 2X))") x
-            write(9,*)
-            write(9,*)
+            write(unit=iunit, fmt=*) "logspace(1.0_dp, 10.0_dp, 10, 2): "
+            write(unit=iunit,fmt=99)
+            write(unit=iunit,fmt="(10(F9.3, 2X))") x
+            write(iunit,*)
+            write(iunit,*)
                   
             99 format(70("="))
     

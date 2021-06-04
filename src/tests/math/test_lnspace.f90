@@ -13,14 +13,17 @@ implicit none
     ! lnspace should return a rank 1 array of values equally logarithmically spaced 
     ! from the base**start to base**end, using Euler's number e as the base. If no length
     ! is specified, return a rank 1 array with 50 elements.
+    integer :: iunit
 
-    open(unit=9, file="test_lnspace_log.txt", status="unknown") ! Log the results of the function
+    open(newunit=iunit, file="test_lnspace_log.txt", status="unknown") ! Log the results of the function
+
+    write(iunit,*) "Writing to unit #: ", iunit
 
     call test_linspace_sp
     call test_linspace_dp
     call test_linspace_default
 
-    close(unit=9)    
+    close(unit=iunit)    
 
 contains
 
@@ -47,11 +50,11 @@ contains
         ! call global_logger%log_message("x = lnspace(0.0_sp, 2.0_sp, 20)")
         ! 99 format(G11.5, X)
 
-        write(unit=9, fmt=*) "lnspace(0.0_sp, 2.0_sp, 20): "
-        write(unit=9,fmt=99)
-        write(unit=9,fmt="(20(F7.3, 2X))") x
-        write(9,*)
-        write(9,*)
+        write(unit=iunit, fmt=*) "lnspace(0.0_sp, 2.0_sp, 20): "
+        write(unit=iunit,fmt=99)
+        write(unit=iunit,fmt="(20(F7.3, 2X))") x
+        write(iunit,*)
+        write(iunit,*)
               
         99 format(70("="))
 
@@ -80,11 +83,11 @@ contains
         ! call global_logger%log_message("x = lnspace(0.0_sp, 2.0_sp, 20)")
         ! 99 format(G11.5, X)
 
-        write(unit=9, fmt=*) "lnspace(1.0_dp, 0.0_dp, 10): "
-        write(unit=9,fmt=99)
-        write(unit=9,fmt="(10(F7.3, 2X))") x
-        write(9,*)
-        write(9,*)
+        write(unit=iunit, fmt=*) "lnspace(1.0_dp, 0.0_dp, 10): "
+        write(unit=iunit,fmt=99)
+        write(unit=iunit,fmt="(10(F7.3, 2X))") x
+        write(iunit,*)
+        write(iunit,*)
               
         99 format(70("="))
 
@@ -112,11 +115,11 @@ contains
         ! call global_logger%log_message("x = lnspace(0.0_sp, 2.0_sp, 20)")
         ! 99 format(G11.5, X)
 
-        write(unit=9, fmt=*) "lnspace(0.0_dp, 1.0_dp): "
-        write(unit=9,fmt=99)
-        write(unit=9,fmt="(50(F7.3, 2X))") x
-        write(9,*)
-        write(9,*)
+        write(unit=iunit, fmt=*) "lnspace(0.0_dp, 1.0_dp): "
+        write(unit=iunit,fmt=99)
+        write(unit=iunit,fmt="(50(F7.3, 2X))") x
+        write(iunit,*)
+        write(iunit,*)
               
         99 format(70("="))
 
