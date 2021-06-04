@@ -18,7 +18,6 @@ contains
       ${t1}$ :: res(DEFAULT_LOGSPACE_LENGTH)        
 
       res = logspace(start, end, DEFAULT_LOGSPACE_LENGTH, DEFAULT_LOGSPACE_BASE)
-      
 
     end function ${RName}$
   #:endfor
