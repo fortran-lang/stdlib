@@ -584,5 +584,4 @@ module stdlib_stats
     #:endfor
   end interface moment
 
-
 end module stdlib_stats
