@@ -18,7 +18,6 @@ contains
         ${t1}$ :: res(DEFAULT_LOGSPACE_LENGTH)        
 
         res = logspace(start, end, DEFAULT_LOGSPACE_LENGTH, EULERS_NUMBER_${k1}$)
-        
 
         end function ${RName}$
     #:endfor
