@@ -14,7 +14,7 @@ program test_sorting
     integer(int32), parameter :: char_size = 26**4
     integer(int32), parameter :: string_size = 26**3
     integer(int32), parameter :: block_size = test_size/6
-    integer, parameter        :: repeat = 8
+    integer, parameter        :: repeat = 1
 
     integer(int32) ::             &
         blocks(0:test_size-1),    &
@@ -201,6 +201,17 @@ contains
         ltest = (ltest .and. ldummy)
         call test_int_ord_sort( rand10, "Random 10", ldummy )
         ltest = (ltest .and. ldummy)
+
+
+        block
+        integer(int64) :: i
+        integer, allocatable :: d1(:)
+        d1 = [10, 2, -3, -4, 6, -6, 7, -8, 9, 0, 1, 20]
+        call ord_sort( d1)
+        call verify_sort( d1, ldummy, i )
+        ltest = (ltest .and. ldummy)
+        end block
+
 
     end subroutine test_int_ord_sorts
 
