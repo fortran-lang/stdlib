@@ -2,6 +2,7 @@
 #:set RANKS = range(1, MAXRANK + 1)
 #:set REDRANKS = range(2, MAXRANK + 1)
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set IR_KINDS_TYPES_OUTPUT = list(zip(REAL_KINDS, REAL_TYPES, REAL_KINDS)) + list(zip(INT_KINDS,INT_TYPES, ['dp']*len(INT_KINDS)))
 module stdlib_stats
   !! Provides support for various statistical methods. This includes currently
   !! descriptive statistics
@@ -309,102 +310,51 @@ module stdlib_stats
     !!
     !! Median of array elements
     !! ([Specification](../page/specs/stdlib_stats.html#median))
-  #:for k1, t1 in REAL_KINDS_TYPES
-    #:for rank in RANKS
-      #:set RName = rname("median_all",rank, t1, k1)
-      module function ${RName}$ (x, mask) result(res)
-        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-        logical, intent(in), optional :: mask
-        ${t1}$ :: res
-      end function ${RName}$
+    #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+      #:for rank in RANKS
+        #:set RName = rname("median_all",rank, t1, k1, o1)
+        module function ${RName}$ (x, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          logical, intent(in), optional :: mask
+          real(${o1}$) :: res
+        end function ${RName}$
+      #:endfor
     #:endfor
-  #:endfor
-
-  #:for k1, t1 in INT_KINDS_TYPES
-    #:for rank in RANKS
-      #:set RName = rname("median_all",rank, t1, k1,'dp')
-      module function ${RName}$ (x, mask) result(res)
-        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-        logical, intent(in), optional :: mask
-        real(dp) :: res
-      end function ${RName}$
+  
+    #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+      #:for rank in RANKS
+        #:set RName = rname("median",rank, t1, k1, o1)
+        module function ${RName}$(x, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: dim
+          logical, intent(in), optional :: mask
+          real(${o1}$) :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
     #:endfor
-  #:endfor
-
-  #:for k1, t1 in REAL_KINDS_TYPES
-    #:for rank in RANKS
-      #:set RName = rname("median",rank, t1, k1)
-      module function ${RName}$(x, dim, mask) result(res)
-        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-        integer, intent(in) :: dim
-        logical, intent(in), optional :: mask
-        ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
-      end function ${RName}$
+  
+    #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+      #:for rank in RANKS
+        #:set RName = rname('median_mask_all',rank, t1, k1, o1)
+        module function ${RName}$(x, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          real(${o1}$) :: res
+        end function ${RName}$
+      #:endfor
     #:endfor
-  #:endfor
-
-  #:for k1, t1 in INT_KINDS_TYPES
-    #:for rank in RANKS
-      #:set RName = rname("median",rank, t1, k1,'dp')
-      module function ${RName}$(x, dim, mask) result(res)
-        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-        integer, intent(in) :: dim
-        logical, intent(in), optional :: mask
-        real(dp) :: res${reduced_shape('x', rank, 'dim')}$
-      end function ${RName}$
+  
+    #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+      #:for rank in RANKS
+        #:set RName = rname('median_mask',rank, t1, k1, o1)
+        module function  ${RName}$(x, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: dim
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          real(${o1}$) :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${RName}$
+      #:endfor
     #:endfor
-  #:endfor
-
-  #:for k1, t1 in REAL_KINDS_TYPES
-    #:for rank in RANKS
-      #:set RName = rname('median_mask_all',rank, t1, k1)
-      module function ${RName}$(x, mask) result(res)
-        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-        logical, intent(in) :: mask${ranksuffix(rank)}$
-        ${t1}$ :: res
-      end function ${RName}$
-    #:endfor
-  #:endfor
-
-  #:for k1, t1 in INT_KINDS_TYPES
-    #:for rank in RANKS
-      #:set RName = rname('median_mask_all',rank, t1, k1,'dp')
-      module function ${RName}$(x, mask) result(res)
-        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-        logical, intent(in) :: mask${ranksuffix(rank)}$
-        real(dp) :: res
-      end function ${RName}$
-    #:endfor
-  #:endfor
-
-
-
-  #:for k1, t1 in REAL_KINDS_TYPES
-    #:for rank in RANKS
-      #:set RName = rname('median_mask',rank, t1, k1)
-      module function  ${RName}$(x, dim, mask) result(res)
-        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-        integer, intent(in) :: dim
-        logical, intent(in) :: mask${ranksuffix(rank)}$
-        ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
-      end function ${RName}$
-    #:endfor
-  #:endfor
-
-
-  #:for k1, t1 in INT_KINDS_TYPES
-    #:for rank in RANKS
-      #:set RName = rname('median_mask',rank, t1, k1, 'dp')
-      module function ${RName}$(x, dim, mask) result(res)
-        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
-        integer, intent(in) :: dim
-        logical, intent(in) :: mask${ranksuffix(rank)}$
-        real(dp) :: res${reduced_shape('x', rank, 'dim')}$
-      end function ${RName}$
-    #:endfor
-  #:endfor
-
-
 
   end interface
 
