@@ -8,7 +8,7 @@ submodule (stdlib_stats) stdlib_stats_median
   use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
-  use stdlib_sorting, only: sort => ord_sort
+  use stdlib_sorting, only: sort => sort
   implicit none
 
 contains
