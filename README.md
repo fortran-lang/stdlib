@@ -87,9 +87,8 @@ The following combinations are tested on the default branch of stdlib:
 
 Name | Version | Platform | Architecture
 --- | --- | --- | ---
-GCC Fortran | 7, 8, 9, 10, 11 | Ubuntu 20.04 | x86_64
-GCC Fortran | 7, 8, 9, 10, 11 | MacOS Catalina 10.15 | x86_64
-GCC Fortran | 8 | Windows Server 2019 | x86_64
+GCC Fortran | 9, 10, 11 | Ubuntu 20.04 | x86_64
+GCC Fortran | 9, 10, 11 | MacOS Catalina 10.15 | x86_64
 GCC Fortran (MSYS) | 10 | Windows Server 2019 | x86_64
 GCC Fortran (MinGW) | 10 | Windows Server 2019 | x86_64, i686
 Intel oneAPI classic | 2021.1 | Ubuntu 20.04 | x86_64
@@ -106,7 +105,7 @@ A list of tested compilers which are currently not working and the respective is
 
 Name | Version | Platform | Architecture | Status
 --- | --- | --- | --- | ---
-GCC Fortran | 7.4 | Windows 10 | i686 | [#296](https://github.com/fortran-lang/stdlib/issues/296)
+GCC Fortran | <9 | any | any | [#296](https://github.com/fortran-lang/stdlib/issues/296), [#430](https://github.com/fortran-lang/stdlib/pull/430)
 NVIDIA HPC SDK | 20.7, 20.9, 20.11 | Manjaro Linux 20 | x86_64 | [#107](https://github.com/fortran-lang/stdlib/issues/107)
 NAG | 7.0 | RHEL | x86_64 | [#108](https://github.com/fortran-lang/stdlib/issues/108)
 Intel Parallel Studio XE | 16, 17, 18 | OpenSUSE | x86_64 | failed to compile
