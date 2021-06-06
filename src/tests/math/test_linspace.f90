@@ -1,6 +1,6 @@
 program test_linspace
     use stdlib_error, only: check
-    use stdlib_kinds, only: sp, dp
+    use stdlib_kinds, only: sp, dp, int16, int8
     use stdlib_math, only: linspace 
 
     implicit none
@@ -28,6 +28,8 @@ program test_linspace
     call test_linspace_cmplx_3
     call test_linspace_cmplx_sp
     call test_linspace_cmplx_sp_2
+    call test_linspace_int16
+    call test_linspace_int8
 
     close(unit=iunit)    
 
@@ -184,6 +186,52 @@ contains
         write(unit=iunit, fmt=*) "linspace((50.0_sp, 500.0_sp), (-100.0_sp, 2000.0_sp)): "
         write(unit=iunit,fmt=99)
         do i = 1, 100
+            write(unit=iunit,fmt=*) z(i)
+        end do
+        write(iunit,*)
+        write(iunit,*)
+              
+        99 format(70("="))      
+
+    end subroutine
+
+    subroutine test_linspace_int16
+
+        integer(int16) :: start = 5
+        integer(int16) :: end = 10
+
+        integer(int16) :: z(6)
+
+        integer :: i
+
+        z = linspace(start, end, 6)
+
+        write(unit=iunit, fmt=*) "linspace(5_int16, 10_int16, 10): "
+        write(unit=iunit,fmt=99)
+        do i = 1, 6
+            write(unit=iunit,fmt=*) z(i)
+        end do
+        write(iunit,*)
+        write(iunit,*)
+              
+        99 format(70("="))      
+
+    end subroutine
+
+    subroutine test_linspace_int8
+
+        integer(int8) :: start = 20
+        integer(int8) :: end = 50
+
+        integer(int8) :: z(10)
+
+        integer :: i
+
+        z = linspace(start, end, 10)
+
+        write(unit=iunit, fmt=*) "linspace(5_int16, 10_int16, 10): "
+        write(unit=iunit,fmt=99)
+        do i = 1, 10
             write(unit=iunit,fmt=*) z(i)
         end do
         write(iunit,*)
