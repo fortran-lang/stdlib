@@ -1,7 +1,6 @@
 #:include "common.fypp"
 #:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-! #:set ICR_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
 
 module stdlib_math
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
@@ -31,6 +30,7 @@ module stdlib_math
     !! Create rank 1 array of linearly spaced elements
     !! If the number of elements is not specified, create an array with size 100. If n is a negative value,
     !! return an array with size 0. If n = 1, return end
+    !!([Specification](../page/specs/stdlib_math.html#description))
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("linspace_default", 1, t1, k1)
       module function ${RName}$(start, end) result(res)
@@ -60,8 +60,12 @@ module stdlib_math
     !! If the number of elements is not specified, create an array with size 100. If n is a negative value,
     !! return an array with size 0. If n = 1, return end. When dealing with integers as the `start` and `end` 
     !! paramaters, the return type is always a double precision real.
+    !!
+    !!([Specification](../page/specs/stdlib_math.html#description))
     #:for k1, t1 in INT_KINDS_TYPES
       #:set RName = rname("linspace_default", 1, t1, k1)
+      #! The interface for INT_KINDS_TYPES cannot be combined with RC_KINDS_TYPES
+      #! because the output for integer types is always a real with dp.
       module function ${RName}$(start, end) result(res)
         ${t1}$, intent(in) :: start
         ${t1}$, intent(in) :: end  
