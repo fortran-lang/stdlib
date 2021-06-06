@@ -90,3 +90,69 @@ program demo_clip_real
   ! clipped_value <- 3.02500010
 end program demo_clip_real
 ```
+
+### `linspace` function
+
+#### Description
+
+Returns a linearly spaced rank 1 array from [`start`, `end`]. Optionally, you can specify the length of the returned array by passing `n`.
+
+#### Syntax
+
+`res = [[stdlib_math(module):linspace(interface)]] (start, end [, n])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+function.
+
+#### Argument(s)
+
+`start`: scalar of any numeric type. This argument is `intent(in)`.  
+`end`: same `type` and `kind` as `start`. This argument is `intent(in)`.  
+`n`: Integer parameter specifying the length of the output. This argument is `intent(in)`.
+
+#### Output value or Result value
+
+The output is a rank 1 array of `type` and `kind`, whose length is either 100 (default value) or `n`.
+
+#### Examples
+
+##### Example 1:
+
+Here inputs are of type `complex` and kind `dp`
+```fortran
+program demo_linspace_complex
+  use stdlib_math, only: linspace
+  use stdlib_kinds, only: dp
+  implicit none
+  
+  complex(dp) :: start = complex(10.0_dp, 5.0_dp)
+  complex(dp) :: end = complex(-10.0_dp, 15.0_dp)
+
+  complex(dp) :: z(11)
+
+  z = linspace(start, end, 11)
+end program demo_linspace_complex
+```
+
+##### Example 2:
+
+Here inputs are of type `integer` and kind `int16`
+```fortran
+program demo_linspace_int16
+  use stdlib_math, only: linspace
+  use stdlib_kinds, only: int16
+  implicit none
+  
+  integer(int16) :: start = 10_int16
+  integer(int16) :: end = 23_int16
+
+  integer(int16) :: r(15)
+
+  r = linspace(start, end, 15)
+end program demo_linspace_int16
+```
