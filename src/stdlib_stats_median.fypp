@@ -20,7 +20,7 @@ contains
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in), optional :: mask
         real(${o1}$) :: res
-        
+
         integer(kind = int64) :: c, n
         ${t1}$, allocatable :: x_tmp(:)
 
@@ -28,7 +28,7 @@ contains
           res = ieee_value(1._${o1}$, ieee_quiet_nan)
           return
         end if
-        
+
         n = size(x, kind=int64)
         c = floor( (n + 1) / 2._${o1}$, kind=int64 )
 
