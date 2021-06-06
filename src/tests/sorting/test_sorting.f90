@@ -14,7 +14,7 @@ program test_sorting
     integer(int32), parameter :: char_size = 26**4
     integer(int32), parameter :: string_size = 26**3
     integer(int32), parameter :: block_size = test_size/6
-    integer, parameter        :: repeat = 1
+    integer, parameter        :: repeat = 8
 
     integer(int32) ::             &
         blocks(0:test_size-1),    &
