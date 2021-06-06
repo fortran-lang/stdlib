@@ -447,9 +447,7 @@ contains
     !> Return the character sequence represented by the string.
     pure function char_string(string) result(character_string)
         type(string_type), intent(in) :: string
-        ! GCC 8 and older cannot evaluate pure derived type procedures here
-        !character(len=len(string)) :: character_string
-        character(len=:), allocatable :: character_string
+        character(len=len(string)) :: character_string
 
         character_string = maybe(string)
 
@@ -1241,9 +1239,7 @@ contains
     !> Safely return the character sequences represented by the string
     pure function maybe(string) result(maybe_string)
         type(string_type), intent(in) :: string
-        ! GCC 8 and older cannot evaluate pure derived type procedures here
-        !character(len=len(string)) :: maybe_string
-        character(len=:), allocatable :: maybe_string
+        character(len=len(string)) :: maybe_string
         if (allocated(string%raw)) then
             maybe_string = string%raw
         else
