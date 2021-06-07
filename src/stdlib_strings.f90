@@ -59,7 +59,7 @@ module stdlib_strings
         module procedure :: ends_with_char_char
     end interface ends_with
     
-    !> Slices the input string to return a new string
+    !> Extracts characters from the input string to return a new string
     !> 
     !> Version: experimental
     interface slice
@@ -299,9 +299,9 @@ contains
 
     end function ends_with_string_string
 
-    !> Slices the region between the input 'first' and 'last' index (both inclusive)
+    !> Extract the characters from the region between 'first' and 'last' index (both inclusive)
     !> of the input 'string' by taking strides of length 'stride'
-    !> Returns a new string_type object
+    !> Returns a new string
     elemental function slice_string(string, first, last, stride) result(sliced_string)
         type(string_type), intent(in) :: string
         integer, intent(in), optional :: first, last, stride
@@ -311,7 +311,7 @@ contains
 
     end function slice_string
 
-    !> Slices the region between the input 'first' and 'last' index (both inclusive)
+    !> Extract the characters from the region between 'first' and 'last' index (both inclusive)
     !> of the input 'string' by taking strides of length 'stride'
     !> Returns a new string
     pure function slice_char(string, first, last, stride) result(sliced_string)

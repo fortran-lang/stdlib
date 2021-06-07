@@ -205,13 +205,12 @@ If the defined region is invalid (user provides atleast one invalid index), `fir
 `last` indexes are converted to first and last valid indexes in this defined region respectively, 
 if no valid index exists in this region an empty string is returned.  
 
-Extraction starts from `first` index and takes stride of length `stride`.  
-Extraction is active until `last` index is crossed.  
-Extraction starts only if `last` index is crossable from `first` index taking 
-stride of length `stride`.  
 `stride` can attain both negative or positive values but when the invalid value 
 0 is given, it is converted to 1.  
-Function automatically deduces the arguments which are not provided by the user.
+Extraction starts from `first` index and takes stride of length `stride`.  
+Extraction starts only if `last` index is crossable from `first` index by taking 
+stride of length `stride`and is active until `last` index is crossed.  
+Function automatically deduces the optional arguments that are not provided by the user.
 
 #### Syntax
 
