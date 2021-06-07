@@ -27,13 +27,13 @@
 #! Collected (kind, type) tuples for integer types
 #:set INT_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES))
 
-#! Integer kinds to be considered during templating
+#! Logical kinds to be considered during templating
 #:set LOG_KINDS = ["lk", "c_bool"]
 
-#! Integer types to be considered during templating
+#! Logical types to be considered during templating
 #:set LOG_TYPES = ["logical({})".format(k) for k in LOG_KINDS]
 
-#! Collected (kind, type) tuples for integer types
+#! Collected (kind, type) tuples for logical types
 #:set LOG_KINDS_TYPES = list(zip(LOG_KINDS, LOG_TYPES))
 
 #! Derived type string_type
