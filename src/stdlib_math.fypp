@@ -54,7 +54,7 @@ module stdlib_math
     #:endfor
 
 
-    ! Add suport for integer linspace    
+    ! Add support for integer linspace    
     !! Version: Experimental
     !!
     !! Create rank 1 array of linearly spaced elements from start to end.
