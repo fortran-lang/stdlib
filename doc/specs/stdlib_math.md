@@ -91,7 +91,7 @@ program demo_clip_real
 end program demo_clip_real
 ```
 
-### `linspace` function
+### `linspace` - Create a linearly spaced rank one array
 
 #### Description
 
