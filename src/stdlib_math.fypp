@@ -8,7 +8,7 @@ module stdlib_math
     implicit none
     private
     public :: clip, linspace, logspace
-    public :: EULERS_NUMBER_DP, EULERS_NUMBER_SP
+    public :: EULERS_NUMBER_SP, EULERS_NUMBER_DP, EULERS_NUMBER_QP
 
     integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
     integer, parameter :: DEFAULT_LOGSPACE_LENGTH = 50
