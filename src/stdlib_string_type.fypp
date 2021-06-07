@@ -15,7 +15,7 @@
 module stdlib_string_type
     use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, &
        & to_title_ => to_title, to_sentence_ => to_sentence, reverse_ => reverse, to_string
-    use stdlib_kinds, only : int8, int16, int32, int64
+    use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
     implicit none
     private
 
@@ -47,6 +47,8 @@ module stdlib_string_type
         module procedure :: new_string
       #:for kind in INT_KINDS
         module procedure :: new_string_from_integer_${kind}$
+      #:endfor
+      #:for kind in LOG_KINDS
         module procedure :: new_string_from_logical_${kind}$
       #:endfor
     end interface string_type
@@ -373,7 +375,7 @@ contains
     end function new_string_from_integer_${kind}$
   #:endfor
 
-  #:for kind in INT_KINDS
+  #:for kind in LOG_KINDS
     !> Constructor for new string instances from a logical of kind ${kind}$.
     elemental function new_string_from_logical_${kind}$(val) result(new)
         logical(${kind}$), intent(in) :: val

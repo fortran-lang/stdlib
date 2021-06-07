@@ -5,7 +5,7 @@
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_ascii.html).
 module stdlib_ascii
-    use stdlib_kinds, only : int8, int16, int32, int64
+    use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
 
     implicit none
     private
@@ -28,6 +28,8 @@ module stdlib_ascii
     interface to_string
     #:for kind in INT_KINDS
         module procedure :: to_string_integer_${kind}$
+    #:endfor
+    #:for kind in LOG_KINDS
         module procedure :: to_string_logical_${kind}$
     #:endfor
     end interface to_string
@@ -396,7 +398,7 @@ contains
     end function to_string_integer_${kind}$
     #:endfor
 
-    #:for kind in INT_KINDS
+    #:for kind in LOG_KINDS
     !> Represent an logical of kind ${kind}$ as character sequence
     pure function to_string_logical_${kind}$(val) result(string)
         integer, parameter :: ik = ${kind}$
