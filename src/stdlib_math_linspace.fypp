@@ -9,8 +9,8 @@ contains
     #:set RName = rname("linspace_default", 1, t1, k1)
     module function ${RName}$(start, end) result(res)
       ${t1}$, intent(in) :: start
-      ${t1}$, intent(in) :: end  
-        
+      ${t1}$, intent(in) :: end
+
       ${t1}$ :: res(DEFAULT_LINSPACE_LENGTH)
 
       res = linspace(start, end, DEFAULT_LINSPACE_LENGTH)
@@ -22,9 +22,9 @@ contains
     #:set RName = rname("linspace_n", 1, t1, k1)
     module function ${RName}$(start, end, n) result(res)
       ${t1}$, intent(in) :: start
-      ${t1}$, intent(in) :: end  
+      ${t1}$, intent(in) :: end
       integer, intent(in) :: n
-        
+
       ${t1}$ :: res(n)
 
       integer :: i    ! Looping index

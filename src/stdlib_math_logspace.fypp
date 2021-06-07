@@ -5,15 +5,15 @@ submodule (stdlib_math) stdlib_math_logspace
 
 implicit none
 
-contains 
+contains
 
   #:for k1, t1 in REAL_KINDS_TYPES
     #:set RName = rname("logspace_default", 1, t1, k1)
     module function ${RName}$(start, end) result(res)
       ${t1}$, intent(in) :: start
-      ${t1}$, intent(in) :: end  
+      ${t1}$, intent(in) :: end
 
-      ${t1}$ :: res(DEFAULT_LOGSPACE_LENGTH)        
+      ${t1}$ :: res(DEFAULT_LOGSPACE_LENGTH)
 
       res = logspace(start, end, DEFAULT_LOGSPACE_LENGTH, DEFAULT_LOGSPACE_BASE)
 
@@ -24,9 +24,9 @@ contains
     #:set RName = rname("logspace_n", 1, t1, k1)
     module function ${RName}$(start, end, n) result(res)
       ${t1}$, intent(in) :: start
-      ${t1}$, intent(in) :: end  
+      ${t1}$, intent(in) :: end
       integer, intent(in) :: n
-          
+
       ${t1}$ :: res(n)
 
       res = logspace(start, end, n, DEFAULT_LOGSPACE_BASE)
@@ -42,16 +42,16 @@ contains
       ! generic calls to logspace_n where a base is not present
       module function ${RName}$(start, end, n, base) result(res)
         ${t1}$, intent(in) :: start
-        ${t1}$, intent(in) :: end  
+        ${t1}$, intent(in) :: end
         integer, intent(in) :: n
         ${t2}$, intent(in) :: base
-    
+
         ${t1}$ :: res(n)
 
         ${t1}$ :: lin(n) ! Linspace of exponents
 
         lin = linspace(start, end, n)
-  
+
         res = real(base, ${k1}$) ** lin ! Convert base to the proper kind
 
       end function ${RName}$

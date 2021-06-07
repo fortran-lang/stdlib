@@ -19,7 +19,7 @@ title: math
 
 #### Description
 
-Returns a value which lies in the given interval [`xmin`, `xmax`] (interval is `xmin` and `xmax` inclusive) and is closest to the input value `x`.  
+Returns a value which lies in the given interval [`xmin`, `xmax`] (interval is `xmin` and `xmax` inclusive) and is closest to the input value `x`.
 
 #### Syntax
 
@@ -35,8 +35,8 @@ Elemental function.
 
 #### Argument(s)
 
-`x`: scalar of either `integer` or `real` type. This argument is `intent(in)`.  
-`xmin`: scalar of either `integer` or `real` type. This argument is `intent(in)`.  
+`x`: scalar of either `integer` or `real` type. This argument is `intent(in)`.
+`xmin`: scalar of either `integer` or `real` type. This argument is `intent(in)`.
 `xmax`: scalar of either `integer` or `real` type, which must be greater than or equal to `xmin`. This argument is `intent(in)`.
 
 Note: All arguments must have same `type` and same `kind`.
@@ -111,8 +111,8 @@ function.
 
 #### Argument(s)
 
-`start`: Shall be scalar of any numeric type. This argument is `intent(in)`.  
-`end`: Shall be the same `type` and `kind` as `start`. This argument is `intent(in)`.  
+`start`: Shall be scalar of any numeric type. This argument is `intent(in)`.
+`end`: Shall be the same `type` and `kind` as `start`. This argument is `intent(in)`.
 `n`: Shall be an integer specifying the length of the output. This argument is `intent(in)`.
 
 #### Output value or Result value
@@ -129,7 +129,7 @@ program demo_linspace_complex
   use stdlib_math, only: linspace
   use stdlib_kinds, only: dp
   implicit none
-  
+
   complex(dp) :: start = complex(10.0_dp, 5.0_dp)
   complex(dp) :: end = complex(-10.0_dp, 15.0_dp)
 
@@ -147,7 +147,7 @@ program demo_linspace_int16
   use stdlib_math, only: linspace
   use stdlib_kinds, only: int16
   implicit none
-  
+
   integer(int16) :: start = 10_int16
   integer(int16) :: end = 23_int16
 

@@ -14,7 +14,7 @@ module stdlib_math
     integer, parameter :: DEFAULT_LOGSPACE_LENGTH = 50
     real(dp), parameter :: DEFAULT_LOGSPACE_BASE = 10
 
-    ! Useful constants for lnspace 
+    ! Useful constants for lnspace
     real(sp), parameter :: EULERS_NUMBER_DP = 2.71828182845904523536028747135266249775724709369995_sp
     real(dp), parameter :: EULERS_NUMBER_SP = 2.71828182845904523536028747135266249775724709369995_dp
     real(qp), parameter :: EULERS_NUMBER_QP = 2.71828182845904523536028747135266249775724709369995_qp
@@ -25,7 +25,7 @@ module stdlib_math
     #:endfor
     end interface clip
 
-    interface linspace 
+    interface linspace
     !! Version: Experimental
     !!
     !! Create rank 1 array of linearly spaced elements
@@ -36,30 +36,30 @@ module stdlib_math
       #:set RName = rname("linspace_default", 1, t1, k1)
       module function ${RName}$(start, end) result(res)
         ${t1}$, intent(in) :: start
-        ${t1}$, intent(in) :: end  
-  
-        ${t1}$ :: res(DEFAULT_LINSPACE_LENGTH)        
+        ${t1}$, intent(in) :: end
+
+        ${t1}$ :: res(DEFAULT_LINSPACE_LENGTH)
       end function ${RName}$
     #:endfor
-  
+
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("linspace_n", 1, t1, k1)
       module function ${RName}$(start, end, n) result(res)
         ${t1}$, intent(in) :: start
-        ${t1}$, intent(in) :: end  
+        ${t1}$, intent(in) :: end
         integer, intent(in) :: n
-      
+
         ${t1}$ :: res(n)
       end function ${RName}$
     #:endfor
 
 
-    ! Add support for integer linspace    
+    ! Add support for integer linspace
     !! Version: Experimental
     !!
     !! Create rank 1 array of linearly spaced elements from start to end.
     !! If the number of elements is not specified, create an array with size 100. If n is a negative value,
-    !! return an array with size 0. If n = 1, return end. When dealing with integers as the `start` and `end` 
+    !! return an array with size 0. If n = 1, return end. When dealing with integers as the `start` and `end`
     !! parameters, the return type is always a double precision real.
     !!
     !!([Specification](../page/specs/stdlib_math.html#description))
@@ -69,40 +69,40 @@ module stdlib_math
       #! because the output for integer types is always a real with dp.
       module function ${RName}$(start, end) result(res)
         ${t1}$, intent(in) :: start
-        ${t1}$, intent(in) :: end  
-  
-        real(dp) :: res(DEFAULT_LINSPACE_LENGTH)        
+        ${t1}$, intent(in) :: end
+
+        real(dp) :: res(DEFAULT_LINSPACE_LENGTH)
       end function ${RName}$
     #:endfor
-  
+
     #:for k1, t1 in INT_KINDS_TYPES
       #:set RName = rname("linspace_n", 1, t1, k1)
       module function ${RName}$(start, end, n) result(res)
         ${t1}$, intent(in) :: start
-        ${t1}$, intent(in) :: end  
+        ${t1}$, intent(in) :: end
         integer, intent(in) :: n
-      
+
         real(dp) :: res(n)
       end function ${RName}$
     #:endfor
 
   end interface
 
-  interface logspace 
+  interface logspace
   !! Version: Experimental
   !!
   !! Create rank 1 array of logarithmically spaced elements from base**start to base**end.
   !! If the number of elements is not specified, create an array with size 50. If n is a negative value,
-  !! return an array with size 0. If n = 1, return base**end. If no base is specified, logspace will default to using a base of 
+  !! return an array with size 0. If n = 1, return base**end. If no base is specified, logspace will default to using a base of
   !! 10
   #:for k1, t1 in REAL_KINDS_TYPES
     #:set RName = rname("logspace_default", 1, t1, k1)
     module function ${RName}$(start, end) result(res)
 
       ${t1}$, intent(in) :: start
-      ${t1}$, intent(in) :: end  
+      ${t1}$, intent(in) :: end
 
-      ${t1}$ :: res(DEFAULT_LOGSPACE_LENGTH)        
+      ${t1}$ :: res(DEFAULT_LOGSPACE_LENGTH)
 
     end function ${RName}$
   #:endfor
@@ -111,9 +111,9 @@ module stdlib_math
     #:set RName = rname("logspace_n", 1, t1, k1)
     module function ${RName}$(start, end, n) result(res)
       ${t1}$, intent(in) :: start
-      ${t1}$, intent(in) :: end  
+      ${t1}$, intent(in) :: end
       integer, intent(in) :: n
-  
+
       ${t1}$ :: res(n)
     end function ${RName}$
   #:endfor
@@ -123,7 +123,7 @@ module stdlib_math
       #! k2, t2 correspond to the kind/type of the base that is passed
       #:set RName = rname("logspace_n_base", 1, k1, k2)
       #! ================================================================ !#
-      #! Need another function where base is not optional, otherwise the 
+      #! Need another function where base is not optional, otherwise the
       #! compiler can not differentiate between
       #! generic calls to logspace_n where a base is not present
       #! ================================================================ !#
@@ -131,10 +131,10 @@ module stdlib_math
       ! Generate logarithmically spaced sequence from ${k2}$ base to the powers
       ! of ${k1}$ start and end. [base^start, ... , base^end]
         ${t1}$, intent(in) :: start
-        ${t1}$, intent(in) :: end  
+        ${t1}$, intent(in) :: end
         integer, intent(in) :: n
         ${t2}$, intent(in) :: base
-    
+
         ${t1}$ :: res(n)
 
       end function ${RName}$
@@ -144,7 +144,7 @@ module stdlib_math
   end interface
 
 contains
-    
+
     #:for k1, t1 in IR_KINDS_TYPES
     elemental function clip_${k1}$(x, xmin, xmax) result(res)
         ${t1}$, intent(in) :: x
@@ -154,6 +154,6 @@ contains
 
         res = max(min(x, xmax), xmin)
     end function clip_${k1}$
-    
+
     #:endfor
 end module stdlib_math
