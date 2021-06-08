@@ -1,5 +1,7 @@
 #:include "common.fypp"
 #:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set IRC_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 
 submodule (stdlib_math) stdlib_math_logspace
 
@@ -7,7 +9,10 @@ implicit none
 
 contains
 
-  #:for k1, t1 in REAL_KINDS_TYPES
+  #!========================================================
+  #!     Real and Complex Implementations
+  #!========================================================
+  #:for k1, t1 in RC_KINDS_TYPES
     #:set RName = rname("logspace_default", 1, t1, k1)
     module function ${RName}$(start, end) result(res)
       ${t1}$, intent(in) :: start
@@ -20,7 +25,7 @@ contains
     end function ${RName}$
   #:endfor
 
-  #:for k1, t1 in REAL_KINDS_TYPES
+  #:for k1, t1 in RC_KINDS_TYPES
     #:set RName = rname("logspace_n", 1, t1, k1)
     module function ${RName}$(start, end, n) result(res)
       ${t1}$, intent(in) :: start
@@ -34,8 +39,25 @@ contains
     end function ${RName}$
   #:endfor
 
-  #:for k1, t1 in REAL_KINDS_TYPES
-    #:for k2, t2 in IR_KINDS_TYPES
+  #!========================================================
+  #!     Real and Complex Implementations
+  #!========================================================
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:set RName = rname("logspace_n", 1, t1, k1)
+    module function ${RName}$(start, end, n) result(res)
+      ${t1}$, intent(in) :: start
+      ${t1}$, intent(in) :: end
+      integer, intent(in) :: n
+
+      real(dp) :: res(n)
+
+      res = logspace(start, end, n, DEFAULT_LOGSPACE_BASE)
+
+    end function ${RName}$
+  #:endfor
+
+  #:for k1, t1 in RC_KINDS_TYPES
+    #:for k2, t2 in IRC_KINDS_TYPES
       #! k2, t2 correspond to the kind/type of the base that is passed
       #:set RName = rname("logspace_n_base", 1, k1, k2)
       ! Need another function where base is not optional, otherwise the compiler can not differentiate between

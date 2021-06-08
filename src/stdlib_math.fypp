@@ -1,6 +1,7 @@
 #:include "common.fypp"
 #:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set IRC_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 
 module stdlib_math
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
@@ -95,7 +96,7 @@ module stdlib_math
   !! If the number of elements is not specified, create an array with size 50. If n is a negative value,
   !! return an array with size 0. If n = 1, return base**end. If no base is specified, logspace will default to using a base of
   !! 10
-  #:for k1, t1 in REAL_KINDS_TYPES
+  #:for k1, t1 in IRC_KINDS_TYPES
     #:set RName = rname("logspace_default", 1, t1, k1)
     module function ${RName}$(start, end) result(res)
 
@@ -107,7 +108,7 @@ module stdlib_math
     end function ${RName}$
   #:endfor
 
-  #:for k1, t1 in REAL_KINDS_TYPES
+  #:for k1, t1 in IRC_KINDS_TYPES
     #:set RName = rname("logspace_n", 1, t1, k1)
     module function ${RName}$(start, end, n) result(res)
       ${t1}$, intent(in) :: start
@@ -118,8 +119,8 @@ module stdlib_math
     end function ${RName}$
   #:endfor
 
-  #:for k1, t1 in REAL_KINDS_TYPES
-    #:for k2, t2 in IR_KINDS_TYPES
+  #:for k1, t1 in IRC_KINDS_TYPES
+    #:for k2, t2 in IRC_KINDS_TYPES
       #! k2, t2 correspond to the kind/type of the base that is passed
       #:set RName = rname("logspace_n_base", 1, k1, k2)
       #! ================================================================ !#
