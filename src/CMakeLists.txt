@@ -9,6 +9,7 @@ set(fppFiles
     stdlib_io.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
+    stdlib_linalg_outer_product.fypp
     stdlib_optval.fypp
     stdlib_sorting.fypp
     stdlib_sorting_ord_sort.fypp
