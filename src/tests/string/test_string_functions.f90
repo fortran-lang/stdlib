@@ -4,7 +4,7 @@ module test_string_functions
     use stdlib_error, only : check
     use stdlib_string_type, only : string_type, assignment(=), operator(==), &
                                     to_lower, to_upper, to_title, to_sentence, reverse
-    use stdlib_strings, only: slice                                    
+    use stdlib_strings, only: slice, find                                    
     use stdlib_optval, only: optval
     use stdlib_ascii, only : to_string
     implicit none
@@ -56,7 +56,7 @@ contains
 
     end subroutine test_reverse_string
 
-    subroutine test_slice_string
+    subroutine test_slice
         type(string_type) :: test_string
         test_string = "abcdefghijklmnopqrstuvwxyz"
 
@@ -160,7 +160,20 @@ contains
         call check(slice(test_string) == "", &
                     "Slice, Empty string: no arguments provided")
 
-    end subroutine test_slice_string
+    end subroutine test_slice
+
+    subroutine test_find
+        type(string_type) :: test_string, test_pattern
+        test_string = "qwqwqwqwqwqwqw"
+        test_pattern = "qwq"
+        call check(find(test_string, test_pattern, 4) == 7)
+        call check(find(test_string, test_pattern, 3, .false.) == 9)
+        call check(find(test_string, test_pattern, 7) == 0)
+        call check(find("qwqwqwqwqwqwqw", test_pattern) == 1)
+        call check(find(test_string, "qwq", 2) == 3)
+        call check(find("qwqwqwqwqwqwqw", "qwq", 2, .false.) == 5)
+
+    end subroutine test_find
 
     subroutine test_slice_gen
         character(len=*), parameter :: test = &
@@ -300,5 +313,6 @@ program tester
     call test_reverse_string
     call test_slice_string
     call test_slice_gen
+    call test_find
 
 end program tester
