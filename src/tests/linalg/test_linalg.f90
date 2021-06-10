@@ -2,7 +2,7 @@ program test_linalg
   
   use stdlib_error, only: check
   use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
-  use stdlib_linalg, only: diag, eye, trace
+  use stdlib_linalg, only: diag, eye, trace, outer_product
   
   implicit none
   
@@ -55,6 +55,24 @@ program test_linalg
   call test_trace_int16
   call test_trace_int32
   call test_trace_int64
+
+  !
+  ! outer product
+  !
+  !commented until outer_product compiles
+  !call test_outer_product_rsp
+  !call test_outer_product_rsp_k
+  !call test_outer_product_rdp
+  !call test_outer_product_rqp
+
+  !call test_outer_product_csp
+  !call test_outer_product_cdp
+  !call test_outer_product_cqp
+
+  !call test_outer_product_int8
+  !call test_outer_product_int16
+  !call test_outer_product_int32
+  !call test_outer_product_int64
 
 
 contains
