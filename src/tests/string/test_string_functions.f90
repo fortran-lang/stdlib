@@ -62,62 +62,103 @@ contains
 
         ! Only one argument is given
           ! Valid
-          call check(slice(test_string, first=10) == "jklmnopqrstuvwxyz") ! last=+inf
-          call check(slice(test_string, last=10) == "abcdefghij") ! first=-inf
-          call check(slice(test_string, stride=3) == "adgjmpsvy") ! first=-inf, last=+inf
-          call check(slice(test_string, stride=-3) == "zwtqnkheb") ! first=+inf, last=-inf
+          call check(slice(test_string, first=10) == "jklmnopqrstuvwxyz", &
+                    "Slice, Valid arguments: first=10") ! last=+inf
+          call check(slice(test_string, last=10) == "abcdefghij", &
+                    "Slice, Valid arguments: last=10") ! first=-inf
+          call check(slice(test_string, stride=3) == "adgjmpsvy", &
+                    "Slice, Valid arguments: stride=3") ! first=-inf, last=+inf
+          call check(slice(test_string, stride=-3) == "zwtqnkheb", &
+                    "Slice, Valid arguments: stride=-3") ! first=+inf, last=-inf
 
           ! Invalid
-          call check(slice(test_string, first=27) == "") ! last=+inf
-          call check(slice(test_string, first=-10) == "abcdefghijklmnopqrstuvwxyz") ! last=+inf
-          call check(slice(test_string, last=-2) == "") ! first=-inf
-          call check(slice(test_string, last=30) == "abcdefghijklmnopqrstuvwxyz") ! first=-inf
-          call check(slice(test_string, stride=0) == "abcdefghijklmnopqrstuvwxyz") ! stride=1
+          call check(slice(test_string, first=27) == "", &
+                    "Slice, Invalid arguments: first=27") ! last=+inf
+          call check(slice(test_string, first=-10) == "abcdefghijklmnopqrstuvwxyz", &
+                    "Slice, Invalid arguments: first=-10") ! last=+inf
+          call check(slice(test_string, last=-2) == "", &
+                    "Slice, Invalid arguments: last=-2") ! first=-inf
+          call check(slice(test_string, last=30) == "abcdefghijklmnopqrstuvwxyz", &
+                    "Slice, Invalid arguments: last=30") ! first=-inf
+          call check(slice(test_string, stride=0) == "abcdefghijklmnopqrstuvwxyz", &
+                    "Slice, Invalid arguments: stride=0") ! stride=1
         
         ! Only two arguments are given
           ! Valid
-          call check(slice(test_string, first=10, last=20) == "jklmnopqrst")
-          call check(slice(test_string, first=7, last=2) == "gfedcb") ! stride=-1
-          call check(slice(test_string, first=10, stride=-2) == "jhfdb") ! last=-inf
-          call check(slice(test_string, last=21, stride=-2) == "zxv") ! first=+inf
+          call check(slice(test_string, first=10, last=20) == "jklmnopqrst", &
+                    "Slice, Valid arguments: first=10, last=20")
+          call check(slice(test_string, first=7, last=2) == "gfedcb", &
+                    "Slice, Valid arguments: first=7, last=2") ! stride=-1
+          call check(slice(test_string, first=10, stride=-2) == "jhfdb", &
+                    "Slice, Valid arguments: first=10, stride=-2") ! last=-inf
+          call check(slice(test_string, last=21, stride=-2) == "zxv", &
+                    "Slice, Valid arguments: last=21, stride=-2") ! first=+inf
 
           ! Atleast one argument is invalid
-          call check(slice(test_string, first=30, last=-3) == "zyxwvutsrqponmlkjihgfedcba")
-          call check(slice(test_string, first=1, last=-20) == "a")
-          call check(slice(test_string, first=7, last=-10) == "gfedcba")
-          call check(slice(test_string, first=500, last=22) == "zyxwv")
-          call check(slice(test_string, first=50, last=27) == "")
-          call check(slice(test_string, first=-20, last=0) == "")
-          call check(slice(test_string, last=-3, stride=-2) == "zxvtrpnljhfdb") ! first=+inf
-          call check(slice(test_string, last=10, stride=0) == "abcdefghij") ! stride=1
-          call check(slice(test_string, first=-2, stride=-2) == "") ! last=-inf
-          call check(slice(test_string, first=27, stride=2) == "") ! last=+inf
-          call check(slice(test_string, last=27, stride=-1) == "") ! first=+inf
+          call check(slice(test_string, first=30, last=-3) == "zyxwvutsrqponmlkjihgfedcba", &
+                    "Slice, Invalid arguments: first=30, last=-3")
+          call check(slice(test_string, first=1, last=-20) == "a", &
+                    "Slice, Invalid arguments: first=1, last=-20")
+          call check(slice(test_string, first=7, last=-10) == "gfedcba", &
+                    "Slice, Invalid arguments: first=7, last=-10")
+          call check(slice(test_string, first=500, last=22) == "zyxwv", &
+                    "Slice, Invalid arguments: first=500, last=22")
+          call check(slice(test_string, first=50, last=27) == "", &
+                    "Slice, Invalid arguments: first=50, last=27")
+          call check(slice(test_string, first=-20, last=0) == "", &
+                    "Slice, Invalid arguments: first=-20, last=0")
+          call check(slice(test_string, last=-3, stride=-2) == "zxvtrpnljhfdb", &
+                    "Slice, Invalid arguments: last=-3, stride=-2") ! first=+inf
+          call check(slice(test_string, last=10, stride=0) == "abcdefghij", &
+                    "Slice, Invalid arguments: last=10, stride=0") ! stride=1
+          call check(slice(test_string, first=-2, stride=-2) == "", &
+                    "Slice, Invalid arguments: first=-2, stride=-2") ! last=-inf
+          call check(slice(test_string, first=27, stride=2) == "", &
+                    "Slice, Invalid arguments: first=27, stride=2") ! last=+inf
+          call check(slice(test_string, last=27, stride=-1) == "", &
+                    "Slice, Invalid arguments: last=27, stride=-1") ! first=+inf
 
         ! All three arguments are given
           ! Valid
-          call check(slice(test_string, first=2, last=16, stride=3) == "behkn")
-          call check(slice(test_string, first=16, last=2, stride=-3) == "pmjgd")
-          call check(slice(test_string, first=7, last=7, stride=-4) == "g")
-          call check(slice(test_string, first=7, last=7, stride=3) == "g")
-          call check(slice(test_string, first=2, last=6, stride=-1) == "")
-          call check(slice(test_string, first=20, last=10, stride=2) == "")
+          call check(slice(test_string, first=2, last=16, stride=3) == "behkn", &
+                    "Slice, Valid arguments: first=2, last=16, stride=3")
+          call check(slice(test_string, first=16, last=2, stride=-3) == "pmjgd", &
+                    "Slice, Valid arguments: first=16, last=2, stride=-3")
+          call check(slice(test_string, first=7, last=7, stride=-4) == "g", &
+                    "Slice, Valid arguments: first=7, last=7, stride=-4")
+          call check(slice(test_string, first=7, last=7, stride=3) == "g", &
+                    "Slice, Valid arguments: first=7, last=7, stride=3")
+          call check(slice(test_string, first=2, last=6, stride=-1) == "", &
+                    "Slice, Valid arguments: first=2, last=6, stride=-1")
+          call check(slice(test_string, first=20, last=10, stride=2) == "", &
+                    "Slice, Valid arguments: first=20, last=10, stride=2")
 
           ! Atleast one argument is invalid
-          call check(slice(test_string, first=20, last=30, stride=2) == "tvxz")
-          call check(slice(test_string, first=-20, last=30, stride=2) == "acegikmoqsuwy")
-          call check(slice(test_string, first=26, last=30, stride=1) == "z")
-          call check(slice(test_string, first=1, last=-20, stride=-1) == "a")
-          call check(slice(test_string, first=26, last=20, stride=1) == "")
-          call check(slice(test_string, first=1, last=20, stride=-1) == "")
+          call check(slice(test_string, first=20, last=30, stride=2) == "tvxz", &
+                    "Slice, Invalid arguments: first=20, last=30, stride=2")
+          call check(slice(test_string, first=-20, last=30, stride=2) == "acegikmoqsuwy", &
+                    "Slice, Invalid arguments: first=-20, last=30, stride=2")
+          call check(slice(test_string, first=26, last=30, stride=1) == "z", &
+                    "Slice, Invalid arguments: first=26, last=30, stride=1")
+          call check(slice(test_string, first=1, last=-20, stride=-1) == "a", &
+                    "Slice, Invalid arguments: first=1, last=-20, stride=-1")
+          call check(slice(test_string, first=26, last=20, stride=1) == "", &
+                    "Slice, Invalid arguments: first=26, last=20, stride=1")
+          call check(slice(test_string, first=1, last=20, stride=-1) == "", &
+                    "Slice, Invalid arguments: first=1, last=20, stride=-1")
         
         test_string = ""
         ! Empty string input
-        call check(slice(test_string, first=-2, last=6) == "")
-        call check(slice(test_string, first=6, last=-2) == "")
-        call check(slice(test_string, first=-10) == "") ! last=+inf
-        call check(slice(test_string, last=10) == "") ! first=-inf
-        call check(slice(test_string) == "")
+        call check(slice(test_string, first=-2, last=6) == "", &
+                    "Slice, Empty string: first=-2, last=6")
+        call check(slice(test_string, first=6, last=-2) == "", &
+                    "Slice, Empty string: first=6, last=-2")
+        call check(slice(test_string, first=-10) == "", &
+                    "Slice, Empty string: first=-10") ! last=+inf
+        call check(slice(test_string, last=10) == "", &
+                    "Slice, Empty string: last=10") ! first=-inf
+        call check(slice(test_string) == "", &
+                    "Slice, Empty string: no arguments provided")
 
     end subroutine test_slice_string
 
