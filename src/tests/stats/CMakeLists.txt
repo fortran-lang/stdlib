@@ -1,3 +1,21 @@
+### Pre-process: .fpp -> .f90 via Fypp
+
+# Create a list of the files to be preprocessed
+set(fppFiles
+    test_median.fypp
+)
+
+# Custom preprocessor flags
+if(DEFINED CMAKE_MAXIMUM_RANK)
+  set(fyppFlags "-DMAXRANK=${CMAKE_MAXIMUM_RANK}")
+elseif(f03rank)
+  set(fyppFlags)
+else()
+  set(fyppFlags "-DVERSION90")
+endif()
+
+fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
+
 ADDTEST(corr)
 ADDTEST(cov)
 ADDTEST(mean)
