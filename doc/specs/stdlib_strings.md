@@ -199,18 +199,25 @@ end program demo
 
 #### Description
 
-Extracts the characters from the defined region of the input string.  
-Argument `first` and `last` defines the region for the function `slice` to operate.  
-If the defined region is invalid (user provides atleast one invalid index), `first` and 
-`last` indexes are converted to first and last valid indexes in this defined region respectively, 
-if no valid index exists in this region an empty string is returned.  
+Extracts the characters from the defined region of the input string by taking strides.
 
-`stride` can attain both negative or positive values but when the invalid value 
-0 is given, it is converted to 1.  
-Extraction starts from `first` index and takes stride of length `stride`.  
-Extraction starts only if `last` index is crossable from `first` index by taking 
-stride of length `stride`and is active until `last` index is crossed.  
-Function automatically deduces the optional arguments that are not provided by the user.
+Deduction Process:
+Function first automatically deduces the optional arguments that are not provided by the user.  
+This process is independent of both input `string` and permitted indexes of Fortran.  
+Deduced `first` and `last` argument take +infinity or -infinity value whereas deduced `stride` argument takes +1 or -1 value.
+
+Validation Process:
+Argument `first` and `last` defines this region for extraction by function `slice`.  
+If the defined region is invalid i.e. region contains atleast one invalid index, `first` and 
+`last` are converted to first and last valid indexes in this defined region respectively, 
+if no valid index exists in this region an empty string is returned.  
+`stride` can attain both negative or positive values but when the only invalid value 
+0 is given, it is converted to 1.
+
+Extraction Process:
+After all this, extraction starts from `first` index and takes stride of length `stride`.  
+Extraction starts only if `last` index is crossable from `first` index with stride `stride` 
+and remains active until `last` index is crossed.  
 
 #### Syntax
 

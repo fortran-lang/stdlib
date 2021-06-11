@@ -103,7 +103,7 @@ contains
           call check(slice(test_string, first=2, last=6, stride=-1) == "")
           call check(slice(test_string, first=20, last=10, stride=2) == "")
 
-          ! Invalid
+          ! Atleast one argument is invalid
           call check(slice(test_string, first=20, last=30, stride=2) == "tvxz")
           call check(slice(test_string, first=-20, last=30, stride=2) == "acegikmoqsuwy")
           call check(slice(test_string, first=26, last=30, stride=1) == "z")
