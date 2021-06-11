@@ -16,7 +16,7 @@ contains
   #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
     #:for rank in RANKS
       #:set RName = rname("median_all",rank, t1, k1, o1)
-      module function ${RName}$ (x, mask) result(res)
+      pure module function ${RName}$ (x, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in), optional :: mask
         real(${o1}$) :: res
