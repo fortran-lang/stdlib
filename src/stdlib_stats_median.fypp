@@ -123,6 +123,11 @@ contains
         integer(kind = int64) :: c, n
         ${t1}$, allocatable   :: x_tmp(:)
 
+        if (any(shape(x) .ne. shape(mask))) then
+            call error_stop("ERROR (median): shapes of x and mask are different")
+            error stop
+        end if
+
         x_tmp = pack(x, mask)
 
         call sort(x_tmp)
@@ -162,6 +167,11 @@ contains
         #:endfor
         #:endif
         ${t1}$, allocatable :: x_tmp(:)
+
+        if (any(shape(x) .ne. shape(mask))) then
+            call error_stop("ERROR (median): shapes of x and mask are different")
+            error stop
+        end if
 
         select case(dim)
           #:for fi in range(1, rank+1)
