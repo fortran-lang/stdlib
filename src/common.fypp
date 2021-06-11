@@ -147,7 +147,20 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
   #:endcall
 #:enddef
 
-
+#!
+#! Generates an array rank suffix for subarrays along a dimension
+#!
+#! Args:
+#!   rank (int): Rank of the original variable
+#!   dim (int): Dimension of the variable
+#!
+#! Returns:
+#!   Array rank suffix string enclosed in braces
+#!
+#! E.g.,
+#!  select_subvector(5, 2)
+#!   -> (j_, :, j___, j____, j_____)
+#!
 #:def select_subvector(rank, idim)
   #:assert rank > 0
   #:call join_lines(joinstr=", ", prefix="(", suffix=")")
@@ -161,6 +174,20 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
   #:endcall
 #:enddef
 
+#!
+#! Generates an array rank suffix for arrays
+#!
+#! Args:
+#!   rank (int): Rank of the original variable
+#!   idim (int): Dimension of the variable
+#!
+#! Returns:
+#!   Array rank suffix string enclosed in braces
+#!
+#! E.g.,
+#!  select_subvector(5, 2)
+#!   -> (j_, j___, j____, j_____)
+#!
 #:def reduce_subvector(rank, idim)
   #:assert rank > 0
   #:if rank > 1
@@ -174,7 +201,5 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
     #:endcall
   #:endif
 #:enddef
-
-
 
 #:endmute
