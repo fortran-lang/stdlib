@@ -169,7 +169,6 @@ contains
 
         if (any(shape(x) .ne. shape(mask))) then
             call error_stop("ERROR (median): shapes of x and mask are different")
-            error stop
         end if
 
         select case(dim)
