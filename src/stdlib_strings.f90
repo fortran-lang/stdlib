@@ -321,15 +321,15 @@ contains
         character(len=:), allocatable :: sliced_string
         length_string = len(string)
 
-        first_index = 1
-        last_index = length_string
+        first_index = 0                 ! first_index = -infinity
+        last_index = length_string + 1  ! last_index = +infinity
         stride_vector = 1
 
         if (present(stride)) then
             if (stride /= 0) then
                 if (stride < 0) then
-                    first_index = length_string
-                    last_index = 1
+                    first_index = length_string + 1     ! first_index = +infinity
+                    last_index = 0                      ! last_index = -infinity
                 end if
                 stride_vector = stride
             end if

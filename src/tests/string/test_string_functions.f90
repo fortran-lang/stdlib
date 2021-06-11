@@ -58,53 +58,66 @@ contains
 
     subroutine test_slice_string
         type(string_type) :: test_string
-        character(len=:), allocatable :: test_char
         test_string = "abcdefghijklmnopqrstuvwxyz"
-        test_char = "abcdefghijklmnopqrstuvwxyz"
 
-        call check(slice(test_string, 2, 16, 3) == "behkn", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_char, first=15, stride=-1) == "onmlkjihgfedcba", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, last=22, stride=-1) == "zyxwv", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_char, 7, 2) == "gfedcb", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, 7, 2, 1) == "", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_char, 2, 6, -1) == "", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, stride=-1) == "zyxwvutsrqponmlkjihgfedcba", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, 7, 7, -4) == "g", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_char, 7, 7, 3) == "g", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, 7, 7, 3) == "g", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_char, 7, -10) == "gfedcba", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, 500, 22) == "zyxwv", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_char, 50, 27) == "", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, -20, -200) == "", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_char, first=0, stride=-1) == "", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, last=27, stride=-2) == "", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_char, first=27, stride=2) == "", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_string, -500, 500) == "abcdefghijklmnopqrstuvwxyz", &
-                    'function slice failed', warn=.false.)
+        ! Only one argument is given
+          ! Valid
+          call check(slice(test_string, first=10) == "jklmnopqrstuvwxyz") ! last=+inf
+          call check(slice(test_string, last=10) == "abcdefghij") ! first=-inf
+          call check(slice(test_string, stride=3) == "adgjmpsvy") ! first=-inf, last=+inf
+          call check(slice(test_string, stride=-3) == "zwtqnkheb") ! first=+inf, last=-inf
 
+          ! Invalid
+          call check(slice(test_string, first=27) == "") ! last=+inf
+          call check(slice(test_string, first=-10) == "abcdefghijklmnopqrstuvwxyz") ! last=+inf
+          call check(slice(test_string, last=-2) == "") ! first=-inf
+          call check(slice(test_string, last=30) == "abcdefghijklmnopqrstuvwxyz") ! first=-inf
+          call check(slice(test_string, stride=0) == "abcdefghijklmnopqrstuvwxyz") ! stride=1
+        
+        ! Only two arguments are given
+          ! Valid
+          call check(slice(test_string, first=10, last=20) == "jklmnopqrst")
+          call check(slice(test_string, first=7, last=2) == "gfedcb") ! stride=-1
+          call check(slice(test_string, first=10, stride=-2) == "jhfdb") ! last=-inf
+          call check(slice(test_string, last=21, stride=-2) == "zxv") ! first=+inf
+
+          ! Atleast one argument is invalid
+          call check(slice(test_string, first=30, last=-3) == "zyxwvutsrqponmlkjihgfedcba")
+          call check(slice(test_string, first=1, last=-20) == "a")
+          call check(slice(test_string, first=7, last=-10) == "gfedcba")
+          call check(slice(test_string, first=500, last=22) == "zyxwv")
+          call check(slice(test_string, first=50, last=27) == "")
+          call check(slice(test_string, first=-20, last=0) == "")
+          call check(slice(test_string, last=-3, stride=-2) == "zxvtrpnljhfdb") ! first=+inf
+          call check(slice(test_string, last=10, stride=0) == "abcdefghij") ! stride=1
+          call check(slice(test_string, first=-2, stride=-2) == "") ! last=-inf
+          call check(slice(test_string, first=27, stride=2) == "") ! last=+inf
+          call check(slice(test_string, last=27, stride=-1) == "") ! first=+inf
+
+        ! All three arguments are given
+          ! Valid
+          call check(slice(test_string, first=2, last=16, stride=3) == "behkn")
+          call check(slice(test_string, first=16, last=2, stride=-3) == "pmjgd")
+          call check(slice(test_string, first=7, last=7, stride=-4) == "g")
+          call check(slice(test_string, first=7, last=7, stride=3) == "g")
+          call check(slice(test_string, first=2, last=6, stride=-1) == "")
+          call check(slice(test_string, first=20, last=10, stride=2) == "")
+
+          ! Invalid
+          call check(slice(test_string, first=20, last=30, stride=2) == "tvxz")
+          call check(slice(test_string, first=-20, last=30, stride=2) == "acegikmoqsuwy")
+          call check(slice(test_string, first=26, last=30, stride=1) == "z")
+          call check(slice(test_string, first=1, last=-20, stride=-1) == "a")
+          call check(slice(test_string, first=26, last=20, stride=1) == "")
+          call check(slice(test_string, first=1, last=20, stride=-1) == "")
+        
         test_string = ""
-        test_char = ""
-        call check(slice(test_string, 2, 16, 3) == "", &
-                    'function slice failed', warn=.false.)
-        call check(slice(test_char, 2, 16, 3) == "", &
-                    'function slice failed', warn=.false.)
+        ! Empty string input
+        call check(slice(test_string, first=-2, last=6) == "")
+        call check(slice(test_string, first=6, last=-2) == "")
+        call check(slice(test_string, first=-10) == "") ! last=+inf
+        call check(slice(test_string, last=10) == "") ! first=-inf
+        call check(slice(test_string) == "")
 
     end subroutine test_slice_string
 
