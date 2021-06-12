@@ -437,7 +437,7 @@ contains
         length_pattern = len(pattern)
 
         if (length_pattern > 0 .and. length_pattern <= length_string & 
-        .and. occurrence_ > 0) then
+            & .and. occurrence_ > 0) then
             lps_array = compute_lps(pattern)
 
             s_i = 1
