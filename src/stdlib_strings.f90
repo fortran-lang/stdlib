@@ -8,7 +8,7 @@ module stdlib_strings
     use stdlib_string_type, only: string_type, char, verify
     use stdlib_optval, only: optval
     implicit none
-    private :: compute_lps
+    private
 
     public :: strip, chomp
     public :: starts_with, ends_with
