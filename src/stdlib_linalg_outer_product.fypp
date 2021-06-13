@@ -11,7 +11,7 @@ contains
        ${t1}$, intent(in) :: u(:), v(:)
        ${t1}$ :: res(size(u),size(v))
        integer :: col
-       do col=1,size(v)
+       do col = 1, size(v)
            res(:,col) = v(col) * u
        end do
       end function outer_product_${t1[0]}$${k1}$
