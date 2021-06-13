@@ -179,7 +179,9 @@ contains
     subroutine test_int_ord_sorts( ltest )
         logical, intent(out) :: ltest
 
-        logical :: ldummy
+        integer(int64)       :: i
+        integer, allocatable :: d1(:)
+        logical              :: ldummy
 
         ltest = .true.
 
@@ -201,6 +203,13 @@ contains
         ltest = (ltest .and. ldummy)
         call test_int_ord_sort( rand10, "Random 10", ldummy )
         ltest = (ltest .and. ldummy)
+
+        !triggered an issue in insertion_sort
+        d1 = [10, 2, -3, -4, 6, -6, 7, -8, 9, 0, 1, 20]
+        call ord_sort( d1 )
+        call verify_sort( d1, ldummy, i )
+        ltest = (ltest .and. ldummy)
+
 
     end subroutine test_int_ord_sorts
 
@@ -418,7 +427,9 @@ contains
     subroutine test_int_sorts( ltest )
         logical, intent(out) :: ltest
 
-        logical :: ldummy
+        integer(int64)       :: i
+        integer, allocatable :: d1(:)
+        logical              :: ldummy
 
         ltest = .true.
 
@@ -439,6 +450,12 @@ contains
         call test_int_sort( rand3, "Random 3", ldummy )
         ltest = (ltest .and. ldummy)
         call test_int_sort( rand10, "Random 10", ldummy )
+        ltest = (ltest .and. ldummy)
+
+        !triggered an issue in  insertion
+        d1 = [10, 2, -3, -4, 6, -6, 7, -8, 9, 0, 1, 20]
+        call sort( d1 )
+        call verify_sort( d1, ldummy, i )
         ltest = (ltest .and. ldummy)
 
     end subroutine test_int_sorts
@@ -623,7 +640,10 @@ contains
     subroutine test_int_sort_indexes( ltest )
         logical, intent(out) :: ltest
 
-        logical :: ldummy
+        integer(int64)              :: i
+        integer(int32), allocatable :: d1(:)
+        integer(int64), allocatable :: index(:)
+        logical                     :: ldummy
 
         ltest = .true.
 
@@ -644,6 +664,12 @@ contains
         call test_int_sort_index( rand3, "Random 3", ldummy )
         ltest = (ltest .and. ldummy)
         call test_int_sort_index( rand10, "Random 10", ldummy )
+        ltest = (ltest .and. ldummy)
+
+        d1 = [10, 2, -3, -4, 6, -6, 7, -8, 9, 0, 1, 20]
+        allocate( index(size(d1)) )
+        call sort_index( d1, index )
+        call verify_sort( d1, ldummy, i )
         ltest = (ltest .and. ldummy)
 
     end subroutine test_int_sort_indexes
