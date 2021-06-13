@@ -76,7 +76,6 @@ module stdlib_linalg
       module function outer_product_${t1[0]}$${k1}$(u, v) result(res)
         ${t1}$, intent(in) :: u(:), v(:)
         ${t1}$ :: res(size(u),size(v))
-        integer :: col
       end function outer_product_${t1[0]}$${k1}$
     #:endfor
   end interface outer_product
