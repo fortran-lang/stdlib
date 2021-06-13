@@ -1,9 +1,10 @@
 prefix=@CMAKE_INSTALL_PREFIX@
 libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
 includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+moduledir=${prefix}/@CMAKE_INSTALL_MODULEDIR@
 
 Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
 Libs: -L${libdir} -l@PROJECT_NAME@
-Cflags: -I${includedir}
+Cflags: -I${includedir} -I${moduledir}
