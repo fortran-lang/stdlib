@@ -69,8 +69,8 @@ program test_linalg
 
   call test_outer_product_int8
   call test_outer_product_int16
-  !call test_outer_product_int32
-  !call test_outer_product_int64
+  call test_outer_product_int32
+  call test_outer_product_int64
 
 
 contains
