@@ -233,13 +233,13 @@ Pure function.
 
 #### Argument
 
-- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]]
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
   This argument is intent(in).
-- `first`: integer
+- `first`: integer.
   This argument is intent(in) and optional.
-- `last`: integer
+- `last`: integer.
   This argument is intent(in) and optional.
-- `stride`: integer
+- `stride`: integer.
   This argument is intent(in) and optional.
 
 #### Result value
@@ -298,13 +298,13 @@ Pure function
 
 #### Argument
 
-- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]]
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
   This argument is intent(in).
-- `pattern`: Character scalar or [[stdlib_string_type(module):string_type(type)]]
+- `pattern`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
   This argument is intent(in).
-- `occurrence`: integer
+- `occurrence`: integer.
   This argument is intent(in) and optional.
-- `consider_overlapping`: logical
+- `consider_overlapping`: logical.
   This argument is intent(in) and optional.
 
 #### Result value

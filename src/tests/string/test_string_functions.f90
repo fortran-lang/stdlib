@@ -166,15 +166,24 @@ contains
         type(string_type) :: test_string, test_pattern
         test_string = "qwqwqwqwqwqwqw"
         test_pattern = "qwq"
-        call check(find(test_string, test_pattern, 4) == 7)
-        call check(find(test_string, test_pattern, 3, .false.) == 9)
-        call check(find(test_string, test_pattern, 7) == 0)
-        call check(find("qwqwqwqwqwqwqw", test_pattern) == 1)
-        call check(find(test_string, "qwq", 2) == 3)
-        call check(find("qwqwqwqwqwqwqw", "qwq", 2, .false.) == 5)
-        call check(find("", "") == 0)
-        call check(find("", test_pattern) == 0)
-        call check(find(test_string, "") == 0)
+        call check(find(test_string, test_pattern, 4) == 7, &
+            & 'Find: test_string, test_pattern, 4')
+        call check(find(test_string, test_pattern, 3, .false.) == 9, &
+            & 'Find: test_string, test_pattern, 3')
+        call check(find(test_string, test_pattern, 7) == 0, &
+            & 'Find: test_string, test_pattern, 7')
+        call check(find("qwqwqwqwqwqwqw", test_pattern) == 1, &
+            & 'Find: "qwqwqwqwqwqwqw", test_pattern')
+        call check(find(test_string, "qwq", 2) == 3, &
+            & 'Find: test_string, "qwq", 2')
+        call check(find("qwqwqwqwqwqwqw", "qwq", 2, .false.) == 5, &
+            & 'Find: "qwqwqwqwqwqwqw", "qwq", 2, .false.')
+        call check(find("", "") == 0, &
+            & 'Find: "", ""')
+        call check(find("", test_pattern) == 0, &
+            & 'Find: "", test_pattern')
+        call check(find(test_string, "") == 0, &
+            & 'Find: test_string, ""')
 
     end subroutine test_find
 
