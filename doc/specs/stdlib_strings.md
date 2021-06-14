@@ -280,7 +280,7 @@ end program demo_slice
 Returns the starting index of the `occurrence`th occurrence of the substring `pattern` 
 in the input string `string`.  
 Default value of `occurrence` is set to `1`. 
-If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurences of substring as two different occurrences.  
+If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurrences of substring as two different occurrences.  
 If `occurrence`th occurrence is not found, function returns `0`.
 
 
