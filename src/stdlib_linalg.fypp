@@ -70,7 +70,7 @@ module stdlib_linalg
   interface outer_product
     !! version: experimental
     !!
-    !! Computes outer product of two vectors, returning a matrix
+    !! Computes the outer product of two vectors, returning a matrix
     !! ([Specification](../page/specs/stdlib_linalg.html#description_3))
     #:for k1, t1 in RCI_KINDS_TYPES
       module function outer_product_${t1[0]}$${k1}$(u, v) result(res)
