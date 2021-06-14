@@ -177,7 +177,7 @@ Experimental
 
 ### Description
 
-Create a diagonal array or extract the diagonal elements of an array
+Computes the outer product of two vectors
 
 ### Syntax
 
@@ -191,7 +191,7 @@ Create a diagonal array or extract the diagonal elements of an array
 
 ### Return value
 
-Returns a rank-2 array equal to `u v^T` (assuming `u, v` are column vectors). The dimensions of the returned array are `[size(u), size(v)]`
+Returns a rank-2 array equal to `u v^T` (assuming `u, v` are column vectors). The shape of the returned array is `[size(u), size(v)]`.
 
 ### Example
 
@@ -200,9 +200,9 @@ program demo_outer_product
     use stdlib_linalg, only: outer_product
     implicit none
     real, allocatable :: A(:,:), u(:), v(:)
-    u = [1.,2.,3.]
+    u = [1. ,2. ,3. ]
     v = [3., 4.]
-    A=outer_product(u,v)
-    !A = transpose(reshape([3., 4., 6., 8., 9., 12.], [3,2]))
+    A = outer_product(u,v)
+    !A = reshape([3., 6., 9., 4., 8., 12.], [3,2])
 end program demo_outer_product
 ```
