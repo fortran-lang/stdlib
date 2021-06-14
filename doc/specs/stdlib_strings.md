@@ -270,3 +270,62 @@ program demo_slice
 
 end program demo_slice
 ```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `find`
+
+#### Description
+
+Returns the starting index of the `occurrence`th occurrence of the substring `pattern` 
+in the input string `string`.  
+Default value of `occurrence` is set to `1`. 
+If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurences of substring as two different occurrences.  
+If `occurrence`th occurrence is not found, function returns `0`.
+
+
+#### Syntax
+
+`string = [[stdlib_strings(module):find(interface)]] (string, pattern, occurrence, consider_overlapping)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]]
+  This argument is intent(in).
+- `pattern`: Character scalar or [[stdlib_string_type(module):string_type(type)]]
+  This argument is intent(in).
+- `occurrence`: integer
+  This argument is intent(in) and optional.
+- `consider_overlapping`: logical
+  This argument is intent(in) and optional.
+
+#### Result value
+
+The result is of scalar integer type.
+
+#### Example
+
+```fortran
+program demo_find
+  use stdlib_string_type
+  use stdlib_strings, only : find
+  implicit none
+  string_type :: string
+
+  string = "needle in this character-stack"
+
+  print *, find(string, "needle")   ! 1
+  print *, find(string, "a", 3)     ! 28
+  print *, find("qwqwqwq", "qwq", 3, .false.)  ! 0
+  print *, find("qwqwqwq", "qwq", 3, .true.)   ! 5
+
+end program demo_find
+```
