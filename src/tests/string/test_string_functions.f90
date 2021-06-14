@@ -56,7 +56,7 @@ contains
 
     end subroutine test_reverse_string
 
-    subroutine test_slice
+    subroutine test_slice_string
         type(string_type) :: test_string
         test_string = "abcdefghijklmnopqrstuvwxyz"
 
@@ -160,7 +160,7 @@ contains
         call check(slice(test_string) == "", &
                     "Slice, Empty string: no arguments provided")
 
-    end subroutine test_slice
+    end subroutine test_slice_string
 
     subroutine test_find
         type(string_type) :: test_string, test_pattern
@@ -172,6 +172,9 @@ contains
         call check(find("qwqwqwqwqwqwqw", test_pattern) == 1)
         call check(find(test_string, "qwq", 2) == 3)
         call check(find("qwqwqwqwqwqwqw", "qwq", 2, .false.) == 5)
+        call check(find("", "") == 0)
+        call check(find("", test_pattern) == 0)
+        call check(find(test_string, "") == 0)
 
     end subroutine test_find
 
