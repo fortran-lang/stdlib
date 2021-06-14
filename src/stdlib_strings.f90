@@ -450,9 +450,10 @@ contains
                             res = s_i - length_pattern + 1
                             exit
                         else if (consider_overlapping_) then
-                            s_i = s_i - length_pattern + 1
+                            p_i = lps_array(p_i)
+                        else
+                            p_i = 0
                         end if
-                        p_i = 0
                     end if
                     s_i = s_i + 1
                     p_i = p_i + 1
