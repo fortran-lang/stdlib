@@ -12,7 +12,7 @@ module stdlib_strings
 
     public :: strip, chomp
     public :: starts_with, ends_with
-    public :: slice, find
+    public :: slice, find, replace_all
 
 
     !> Remove leading and trailing whitespace characters.
@@ -78,6 +78,20 @@ module stdlib_strings
         module procedure :: find_char_string
         module procedure :: find_char_char
     end interface find
+
+    !> Replaces all the occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Version: experimental
+    interface replace_all
+        !module procedure :: replace_all_string_string_string
+        !module procedure :: replace_all_string_string_char
+        !module procedure :: replace_all_string_char_string
+        !module procedure :: replace_all_char_string_string
+        !module procedure :: replace_all_string_char_char
+        !module procedure :: replace_all_char_string_char
+        !module procedure :: replace_all_char_char_string
+        module procedure :: replace_all_char_char_char
+    end interface replace_all
 
 contains
 
@@ -499,5 +513,55 @@ contains
     
     end function compute_lps
 
+    !> Replaces all the occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_char_char_char(string, pattern, replacement, replace_overlapping) result(res)
+        character(len=*), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        character(len=*), intent(in) :: replacement
+        logical, intent(in), optional :: replace_overlapping
+        character(:), allocatable :: res
+        integer :: lps_array(len(pattern))
+        integer :: s_i, p_i, last, length_string, length_pattern
+        logical :: replace_overlapping_
+
+        res = ""
+        replace_overlapping_ = optval(replace_overlapping, .false.)
+        length_string = len(string)
+        length_pattern = len(pattern)
+        last = 1
+        
+        if (length_pattern > 0 .and. length_pattern <= length_string) then
+            lps_array = compute_lps(pattern)
+
+            s_i = 1
+            p_i = 1
+            do while(s_i <= length_string)
+                if (string(s_i:s_i) == pattern(p_i:p_i)) then
+                    if (p_i == length_pattern) then
+                        res = res // &
+                                & slice(string, first=last, last=s_i - length_pattern, stride=1) // &
+                                & replacement
+                        last = s_i + 1
+                        if (replace_overlapping_) then
+                            p_i = lps_array(p_i)
+                        else
+                            p_i = 0
+                        end if
+                    end if
+                    s_i = s_i + 1
+                    p_i = p_i + 1
+                else if (p_i > 1) then
+                    p_i = lps_array(p_i - 1) + 1
+                else
+                    s_i = s_i + 1
+                end if
+            end do
+        end if
+        
+        res = res // slice(string, first=last)
+
+    end function replace_all_char_char_char
 
 end module stdlib_strings

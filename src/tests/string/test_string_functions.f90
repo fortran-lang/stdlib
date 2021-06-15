@@ -4,7 +4,7 @@ module test_string_functions
     use stdlib_error, only : check
     use stdlib_string_type, only : string_type, assignment(=), operator(==), &
                                     to_lower, to_upper, to_title, to_sentence, reverse
-    use stdlib_strings, only: slice, find                                    
+    use stdlib_strings, only: slice, find, replace_all                                   
     use stdlib_optval, only: optval
     use stdlib_ascii, only : to_string
     implicit none
@@ -318,6 +318,17 @@ contains
         string = transfer(carray, string)
     end function carray_to_string
 
+    subroutine test_replace_all
+        character(len=:), allocatable :: test_string
+        test_string = "qwqwqwqwqwqwqwqwpqr"
+        call check(replace_all(test_string, "qwq", "wqw", .true.) == "wqwwqwwqwwqwwqwwqwwqwwpqr")
+        call check(replace_all(test_string, "qwq", "abcd") == "abcdwabcdwabcdwabcdwpqr")
+        call check(replace_all(test_string, "", "abcd") == test_string)
+
+        call check(replace_all("", "qwq", "abcd") == "")
+
+    end subroutine test_replace_all
+
 end module test_string_functions
 
 
@@ -333,5 +344,6 @@ program tester
     call test_slice_string
     call test_slice_gen
     call test_find
+    call test_replace_all
 
 end program tester
