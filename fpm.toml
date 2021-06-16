@@ -1,5 +1,5 @@
 name = "stdlib"
-version = "fpm version 0.0.1"
+version = "0.0.1"
 license = "MIT"
 author = "stdlib contributors"
 maintainer = "https://github.com/fortran-lang/stdlib"
@@ -8,7 +8,7 @@ description = "Fortran Standard Library"
 categories = ["numerical"]
 keywords = ["numerical", "stdlib"]
 
-# cd stdlib && make && fpm build
+# cd stdlib && make dev -f Makefile.manual && fpm build
 [library]
 source-dir="src/fpm"
 

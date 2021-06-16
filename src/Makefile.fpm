@@ -20,8 +20,10 @@ clean:
 
 # GEN F90 files to `fpm/` from FYPP files
 $(SRCGEN): %.f90: %.fypp
+	@mkdir -p fpm
 	fypp $(FYPPFLAGS) $< $(FPMSRCDIR)$@
 
 # COPY F90 files to `fpm/`
 CPF90: $(SRCF90)
+	@mkdir -p fpm
 	cp -u $^ $(FPMSRCDIR)

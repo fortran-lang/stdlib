@@ -180,13 +180,15 @@ make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 ### Build with [fpm](https://github.com/fortran-lang/fpm)
 You can build using provided `fpm.toml`:
 ```bash
+make -f Makefile.manual
+---
 fpm build
 fpm test
 ```
-To use `stdlib` within your fpm project, add the following to fpm.toml file:
+To use `stdlib` within your fpm project, add the following to `fpm.toml` file:
 ```toml
 [dependencies]
-forlab = { git = "https://github.com/zoziha/stdlib.git" }
+forlab = { git = "https://github.com/fortran-lang/stdlib.git" }
 ```
 
 
