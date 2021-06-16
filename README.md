@@ -180,7 +180,7 @@ make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 ### Build with [fpm](https://github.com/fortran-lang/fpm)
 You can build using provided `fpm.toml`:
 ```bash
-make -f Makefile.manual
+make dev -f Makefile.manual
 ---
 fpm build
 fpm test
