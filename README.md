@@ -183,7 +183,6 @@ You can build using provided `fpm.toml`:
 make dev -f Makefile.manual
 ---
 fpm build
-fpm test
 ```
 To use `stdlib` within your fpm project, add the following to `fpm.toml` file:
 ```toml
