@@ -129,5 +129,5 @@ stdlib_string_type.o: stdlib_ascii.o \
     stdlib_kinds.o
 stdlib_strings.o: stdlib_ascii.o \
     stdlib_string_type.o \
-	stdlib_optval
+	stdlib_optval.o
 stdlib_math.o: stdlib_kinds.o
