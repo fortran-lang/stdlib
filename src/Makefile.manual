@@ -131,6 +131,8 @@ stdlib_stats_var.o: \
 stdlib_stats_distribution_PRNG.o: \
         stdlib_kinds.o \
 	stdlib_error.o
-stdlib_string_type.o: stdlib_ascii.o stdlib_kinds.o
-stdlib_strings.o: stdlib_ascii.o stdlib_string_type.o
+stdlib_string_type.o: stdlib_ascii.o \
+	stdlib_kinds.o
+stdlib_strings.o: stdlib_ascii.o \
+	stdlib_string_type.o
 stdlib_math.o: stdlib_kinds.o

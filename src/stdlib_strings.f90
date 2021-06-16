@@ -11,6 +11,7 @@ module stdlib_strings
 
     public :: strip, chomp
     public :: starts_with, ends_with
+    public :: slice
 
 
     !> Remove leading and trailing whitespace characters.
@@ -57,6 +58,14 @@ module stdlib_strings
         module procedure :: ends_with_char_string
         module procedure :: ends_with_char_char
     end interface ends_with
+    
+    !> Extracts characters from the input string to return a new string
+    !> 
+    !> Version: experimental
+    interface slice
+        module procedure :: slice_string
+        module procedure :: slice_char
+    end interface slice
 
 
 contains
@@ -289,6 +298,73 @@ contains
         match = ends_with(char(string), char(substring))
 
     end function ends_with_string_string
+
+    !> Extract the characters from the region between 'first' and 'last' index (both inclusive)
+    !> of the input 'string' by taking strides of length 'stride'
+    !> Returns a new string
+    elemental function slice_string(string, first, last, stride) result(sliced_string)
+        type(string_type), intent(in) :: string
+        integer, intent(in), optional :: first, last, stride
+        type(string_type) :: sliced_string
+
+        sliced_string = string_type(slice(char(string), first, last, stride))
+
+    end function slice_string
+
+    !> Extract the characters from the region between 'first' and 'last' index (both inclusive)
+    !> of the input 'string' by taking strides of length 'stride'
+    !> Returns a new string
+    pure function slice_char(string, first, last, stride) result(sliced_string)
+        character(len=*), intent(in) :: string
+        integer, intent(in), optional :: first, last, stride
+        integer :: first_index, last_index, stride_vector, strides_taken, length_string, i, j
+        character(len=:), allocatable :: sliced_string
+        length_string = len(string)
+
+        first_index = 0                 ! first_index = -infinity
+        last_index = length_string + 1  ! last_index = +infinity
+        stride_vector = 1
+
+        if (present(stride)) then
+            if (stride /= 0) then
+                if (stride < 0) then
+                    first_index = length_string + 1     ! first_index = +infinity
+                    last_index = 0                      ! last_index = -infinity
+                end if
+                stride_vector = stride
+            end if
+        else
+            if (present(first) .and. present(last)) then
+                if (last < first) then
+                    stride_vector = -1
+                end if
+            end if
+        end if
+
+        if (present(first)) then
+            first_index =  first
+        end if
+        if (present(last)) then
+            last_index = last
+        end if
+        
+        if (stride_vector > 0) then
+            first_index = max(first_index, 1)
+            last_index = min(last_index, length_string)
+        else
+            first_index = min(first_index, length_string)
+            last_index = max(last_index, 1)
+        end if
+        
+        strides_taken = floor( real(last_index - first_index)/real(stride_vector) )
+        allocate(character(len=max(0, strides_taken + 1)) :: sliced_string)
+        
+        j = 1
+        do i = first_index, last_index, stride_vector
+            sliced_string(j:j) = string(i:i)
+            j = j + 1
+        end do
+    end function slice_char
 
 
 end module stdlib_strings

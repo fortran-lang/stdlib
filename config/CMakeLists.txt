@@ -1,5 +1,11 @@
 # SPDX-Identifier: MIT
 
+option(
+  CMAKE_INSTALL_MODULEDIR
+  "Directory in prefix to install generated module files"
+  "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/${CMAKE_Fortran_COMPILER_ID}-${CMAKE_Fortran_COMPILER_VERSION}"
+)
+
 # Export a pkg-config file
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/template.pc"

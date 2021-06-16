@@ -192,3 +192,81 @@ program demo
   print'(a)', ends_with("pattern", "pat")  ! F
 end program demo
 ```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `slice`
+
+#### Description
+
+Extracts the characters from the defined region of the input string by taking strides.
+
+Deduction Process:
+Function first automatically deduces the optional arguments that are not provided by the user.  
+This process is independent of both input `string` and permitted indexes of Fortran.  
+Deduced `first` and `last` argument take +infinity or -infinity value whereas deduced `stride` argument takes +1 or -1 value.
+
+Validation Process:
+Argument `first` and `last` defines this region for extraction by function `slice`.  
+If the defined region is invalid i.e. region contains atleast one invalid index, `first` and 
+`last` are converted to first and last valid indexes in this defined region respectively, 
+if no valid index exists in this region an empty string is returned.  
+`stride` can attain both negative or positive values but when the only invalid value 
+0 is given, it is converted to 1.
+
+Extraction Process:
+After all this, extraction starts from `first` index and takes stride of length `stride`.  
+Extraction starts only if `last` index is crossable from `first` index with stride `stride` 
+and remains active until `last` index is crossed.  
+
+#### Syntax
+
+`string = [[stdlib_strings(module):slice(interface)]] (string, first, last, stride)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]]
+  This argument is intent(in).
+- `first`: integer
+  This argument is intent(in) and optional.
+- `last`: integer
+  This argument is intent(in) and optional.
+- `stride`: integer
+  This argument is intent(in) and optional.
+
+#### Result value
+
+The result is of the same type as `string`.
+
+#### Example
+
+```fortran
+program demo_slice
+  use stdlib_string_type
+  use stdlib_strings, only : slice
+  implicit none
+  type(string_type) :: string
+  character(len=10) :: char
+
+  string = "abcdefghij"
+  ! string <-- "abcdefghij"
+
+  char = "abcdefghij"
+  ! char <-- "abcdefghij"
+
+  print'(a)', slice("abcdefghij", 2, 6, 2)   ! "bdf"
+  print'(a)', slice(char, 2, 6, 2)           ! "bdf"
+  
+  string = slice(string, 2, 6, 2)
+  ! string <-- "bdf"
+
+end program demo_slice
+```
