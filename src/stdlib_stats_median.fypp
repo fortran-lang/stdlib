@@ -8,7 +8,7 @@ submodule (stdlib_stats) stdlib_stats_median
   use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
-  use stdlib_sorting, only: sort => sort
+  use stdlib_sorting, only:sort => ord_sort
   implicit none
 
 contains
@@ -16,7 +16,7 @@ contains
   #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
     #:for rank in RANKS
       #:set RName = rname("median_all",rank, t1, k1, o1)
-      pure module function ${RName}$ (x, mask) result(res)
+      module function ${RName}$ (x, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in), optional :: mask
         real(${o1}$) :: res
