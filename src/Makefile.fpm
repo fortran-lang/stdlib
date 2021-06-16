@@ -1,0 +1,27 @@
+
+SRCFYPP := $(wildcard *.fypp)						# Get all fypp files
+SRCFYPP := $(filter-out common.fypp, $(SRCFYPP))	# Filter some individual files
+
+SRCF90 := $(wildcard *.f90 *.F90)							# Get all f90  files
+SRCF90 := $(filter-out f08estop.f90, $(SRCF90))		# Filter some individual files
+
+# FPMSRCDIR: Output source files path 
+FPMSRCDIR = fpm/
+VPATH = $(FPMSRCDIR)
+
+SRCGEN := $(SRCFYPP:.fypp=.f90)
+
+.PHONY: all clean
+
+all: $(SRCGEN) CPF90
+
+clean:
+	cd $(FPMSRCDIR); $(RM) $(SRCGEN) $(SRCF90)
+
+# GEN F90 files to `fpm/` from FYPP files
+$(SRCGEN): %.f90: %.fypp
+	fypp $(FYPPFLAGS) $< $(FPMSRCDIR)$@
+
+# COPY F90 files to `fpm/`
+CPF90: $(SRCF90)
+	cp -u $^ $(FPMSRCDIR)
