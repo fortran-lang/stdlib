@@ -3,18 +3,20 @@
 [![Actions Status](https://github.com/fortran-lang/stdlib/workflows/CI/badge.svg)](https://github.com/fortran-lang/stdlib/actions)
 [![Actions Status](https://github.com/fortran-lang/stdlib/workflows/CI_windows/badge.svg)](https://github.com/fortran-lang/stdlib/actions)
 
-* [Goals and Motivation](#goals-and-motivation)
-* [Scope](#scope)
-* [Getting started](#getting-started)
-  - [Get the code](#get-the-code)
-  - [Requirements](#requirements)
-  - [Supported compilers](#supported-compilers)
-  - [Build with CMake](#build-with-cmake)
-  - [Build with make](#build-with-make)
-* [Using stdlib in your project](#using-stdlib-in-your-project)
-* [Documentation](#documentation)
-* [Contributing](#contributing)
-* [Links](#links)
+- [Fortran Standard Library](#fortran-standard-library)
+  - [Goals and Motivation](#goals-and-motivation)
+  - [Scope](#scope)
+  - [Getting started](#getting-started)
+    - [Get the code](#get-the-code)
+    - [Requirements](#requirements)
+    - [Supported Compilers](#supported-compilers)
+    - [Build with CMake](#build-with-cmake)
+    - [Build with make](#build-with-make)
+    - [Build with fpm](#build-with-fpm)
+  - [Using stdlib in your project](#using-stdlib-in-your-project)
+  - [Documentation](#documentation)
+  - [Contributing](#contributing)
+  - [Links](#links)
 
 ## Goals and Motivation
 
@@ -175,6 +177,17 @@ You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS
 make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 ```
 
+### Build with [fpm](https://github.com/fortran-lang/fpm)
+You can build using provided `fpm.toml`:
+```bash
+fpm build
+fpm test
+```
+To use `stdlib` within your fpm project, add the following to fpm.toml file:
+```toml
+[dependencies]
+forlab = { git = "https://github.com/zoziha/stdlib.git" }
+```
 
 
 ## Using stdlib in your project
