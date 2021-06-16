@@ -187,7 +187,7 @@ fpm build
 To use `stdlib` within your fpm project, add the following to `fpm.toml` file:
 ```toml
 [dependencies]
-forlab = { git = "https://github.com/fortran-lang/stdlib.git" }
+stdlib = { git = "https://github.com/fortran-lang/stdlib.git" }
 ```
 
 
