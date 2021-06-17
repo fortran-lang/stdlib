@@ -379,7 +379,7 @@ contains
     !> Returns the starting index of the 'occurrence'th occurrence of substring 'pattern'
     !> in input 'string'
     !> Returns an integer
-    pure function find_string_string(string, pattern, occurrence, consider_overlapping) result(res)
+    elemental function find_string_string(string, pattern, occurrence, consider_overlapping) result(res)
         type(string_type), intent(in) :: string
         type(string_type), intent(in) :: pattern
         integer, intent(in), optional :: occurrence
@@ -393,7 +393,7 @@ contains
     !> Returns the starting index of the 'occurrence'th occurrence of substring 'pattern'
     !> in input 'string'
     !> Returns an integer
-    pure function find_string_char(string, pattern, occurrence, consider_overlapping) result(res)
+    elemental function find_string_char(string, pattern, occurrence, consider_overlapping) result(res)
         type(string_type), intent(in) :: string
         character(len=*), intent(in) :: pattern
         integer, intent(in), optional :: occurrence
@@ -407,7 +407,7 @@ contains
     !> Returns the starting index of the 'occurrence'th occurrence of substring 'pattern'
     !> in input 'string'
     !> Returns an integer
-    pure function find_char_string(string, pattern, occurrence, consider_overlapping) result(res)
+    elemental function find_char_string(string, pattern, occurrence, consider_overlapping) result(res)
         character(len=*), intent(in) :: string
         type(string_type), intent(in) :: pattern
         integer, intent(in), optional :: occurrence
@@ -421,7 +421,7 @@ contains
     !> Returns the starting index of the 'occurrence'th occurrence of substring 'pattern'
     !> in input 'string'
     !> Returns an integer
-    pure function find_char_char(string, pattern, occurrence, consider_overlapping) result(res)
+    elemental function find_char_char(string, pattern, occurrence, consider_overlapping) result(res)
         character(len=*), intent(in) :: string
         character(len=*), intent(in) :: pattern
         integer, intent(in), optional :: occurrence

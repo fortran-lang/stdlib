@@ -163,27 +163,34 @@ contains
     end subroutine test_slice_string
 
     subroutine test_find
-        type(string_type) :: test_string, test_pattern
-        test_string = "qwqwqwqwqwqwqw"
-        test_pattern = "qwq"
-        call check(find(test_string, test_pattern, 4) == 7, &
-            & 'Find: test_string, test_pattern, 4')
-        call check(find(test_string, test_pattern, 3, .false.) == 9, &
-            & 'Find: test_string, test_pattern, 3')
-        call check(find(test_string, test_pattern, 7) == 0, &
-            & 'Find: test_string, test_pattern, 7')
-        call check(find("qwqwqwqwqwqwqw", test_pattern) == 1, &
-            & 'Find: "qwqwqwqwqwqwqw", test_pattern')
-        call check(find(test_string, "qwq", 2) == 3, &
-            & 'Find: test_string, "qwq", 2')
+        type(string_type) :: test_string_1, test_string_2, test_pattern_1, test_pattern_2
+        test_string_1 = "qwqwqwqwqwqwqw"
+        test_string_2 = "abccbabccbabc"
+        test_pattern_1 = "qwq"
+        test_pattern_2 = "abccbabc"
+
+        call check(all(find([test_string_1, test_string_2], test_pattern_1, 4) == [7, 0]), &
+            & 'Find: [test_string_1, test_string_2], test_pattern_1, 4')
+        call check(all(find(test_string_1, [test_pattern_1, test_pattern_2], 3, .false.) == [9, 0]), &
+            & 'Find: test_string_1, [test_pattern_1, test_pattern_2], 3, .false.')
+        call check(find(test_string_1, test_pattern_1, 7) == 0, &
+            & 'Find: test_string_1, test_pattern_1, 7')
+        call check(all(find([test_string_1, test_string_2, test_string_2], [test_pattern_1, &
+            & test_pattern_2, test_pattern_2], [7, 2, 2], [.true., .false., .true.]) == [0, 0, 6]), &
+            & 'Find: [test_string_1, test_string_2, test_string_2], [test_pattern_1, &
+            & test_pattern_2, test_pattern_2], [7, 2, 2], [.true., .false., .true.]')
+        call check(find("qwqwqwqwqwqwqw", test_pattern_1) == 1, &
+            & 'Find: "qwqwqwqwqwqwqw", test_pattern_1')
+        call check(all(find(test_string_1, ["qwq", "wqw"], 2) == [3, 4]), &
+            & 'Find: test_string_1, ["qwq", "wqw"], 2')
         call check(find("qwqwqwqwqwqwqw", "qwq", 2, .false.) == 5, &
             & 'Find: "qwqwqwqwqwqwqw", "qwq", 2, .false.')
         call check(find("", "") == 0, &
             & 'Find: "", ""')
-        call check(find("", test_pattern) == 0, &
-            & 'Find: "", test_pattern')
-        call check(find(test_string, "") == 0, &
-            & 'Find: test_string, ""')
+        call check(find("", test_pattern_1) == 0, &
+            & 'Find: "", test_pattern_1')
+        call check(find(test_string_1, "") == 0, &
+            & 'Find: test_string_1, ""')
 
     end subroutine test_find
 

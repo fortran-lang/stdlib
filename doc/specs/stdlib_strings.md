@@ -294,7 +294,7 @@ Experimental
 
 #### Class
 
-Pure function
+Elemental function
 
 #### Argument
 
@@ -309,7 +309,7 @@ Pure function
 
 #### Result value
 
-The result is of scalar integer type.
+The result is a scalar of integer type or integer array of rank equal to the highest rank among all dummy arguments.
 
 #### Example
 
@@ -320,12 +320,11 @@ program demo_find
   implicit none
   string_type :: string
 
-  string = "needle in this character-stack"
+  string = "needle in the character-stack"
 
-  print *, find(string, "needle")   ! 1
-  print *, find(string, "a", 3)     ! 28
-  print *, find("qwqwqwq", "qwq", 3, .false.)  ! 0
-  print *, find("qwqwqwq", "qwq", 3, .true.)   ! 5
+  print *, find(string, "needle")                       ! 1
+  print *, find(string, ["a", "c"], [3, 2])             ! [27, 20]
+  print *, find("qwqwqwq", "qwq", 3, [.false., .true.]) ! [0, 5]
 
 end program demo_find
 ```
