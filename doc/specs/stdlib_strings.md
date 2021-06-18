@@ -286,7 +286,7 @@ If `occurrence`th occurrence is not found, function returns `0`.
 
 #### Syntax
 
-`string = [[stdlib_strings(module):find(interface)]] (string, pattern, occurrence, consider_overlapping)`
+`string = [[stdlib_strings(module):find(interface)]] (string, pattern [, occurrence, consider_overlapping])`
 
 #### Status
 
