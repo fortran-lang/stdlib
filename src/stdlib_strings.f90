@@ -69,6 +69,7 @@ module stdlib_strings
     end interface slice
 
     !> Finds the starting index of substring 'pattern' in the input 'string'
+    !> [Specifications](link to the specs - to be completed)
     !> 
     !> Version: experimental
     interface find
