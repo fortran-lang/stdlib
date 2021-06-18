@@ -315,7 +315,7 @@ The result is a scalar of integer type or integer array of rank equal to the hig
 
 ```fortran
 program demo_find
-  use stdlib_string_type
+  use stdlib_string_type, only: string_type, assignment(=)
   use stdlib_strings, only : find
   implicit none
   string_type :: string
