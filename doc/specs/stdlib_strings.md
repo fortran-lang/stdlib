@@ -221,7 +221,7 @@ and remains active until `last` index is crossed.
 
 #### Syntax
 
-`string = [[stdlib_strings(module):slice(interface)]] (string, first, last, stride)`
+`string = [[stdlib_strings(module):slice(interface)]] (string [, first, last, stride])`
 
 #### Status
 
