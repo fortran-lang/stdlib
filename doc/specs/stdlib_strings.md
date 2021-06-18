@@ -221,7 +221,7 @@ and remains active until `last` index is crossed.
 
 #### Syntax
 
-`string = [[stdlib_strings(module):slice(interface)]] (string, first, last, stride)`
+`string = [[stdlib_strings(module):slice(interface)]] (string [, first, last, stride])`
 
 #### Status
 
@@ -233,13 +233,13 @@ Pure function.
 
 #### Argument
 
-- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]]
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
   This argument is intent(in).
-- `first`: integer
+- `first`: integer.
   This argument is intent(in) and optional.
-- `last`: integer
+- `last`: integer.
   This argument is intent(in) and optional.
-- `stride`: integer
+- `stride`: integer.
   This argument is intent(in) and optional.
 
 #### Result value
@@ -269,4 +269,62 @@ program demo_slice
   ! string <-- "bdf"
 
 end program demo_slice
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `find`
+
+#### Description
+
+Returns the starting index of the `occurrence`th occurrence of the substring `pattern` 
+in the input string `string`.  
+Default value of `occurrence` is set to `1`. 
+If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurrences of substring as two different occurrences.  
+If `occurrence`th occurrence is not found, function returns `0`.
+
+
+#### Syntax
+
+`string = [[stdlib_strings(module):find(interface)]] (string, pattern [, occurrence, consider_overlapping])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `pattern`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `occurrence`: integer.
+  This argument is intent(in) and optional.
+- `consider_overlapping`: logical.
+  This argument is intent(in) and optional.
+
+#### Result value
+
+The result is a scalar of integer type or integer array of rank equal to the highest rank among all dummy arguments.
+
+#### Example
+
+```fortran
+program demo_find
+  use stdlib_string_type, only: string_type, assignment(=)
+  use stdlib_strings, only : find
+  implicit none
+  string_type :: string
+
+  string = "needle in the character-stack"
+
+  print *, find(string, "needle")                       ! 1
+  print *, find(string, ["a", "c"], [3, 2])             ! [27, 20]
+  print *, find("qwqwqwq", "qwq", 3, [.false., .true.]) ! [0, 5]
+
+end program demo_find
 ```

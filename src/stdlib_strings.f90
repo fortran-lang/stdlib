@@ -4,14 +4,15 @@
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_strings.html).
 module stdlib_strings
-    use stdlib_ascii, only : whitespace
-    use stdlib_string_type, only : string_type, char, verify
+    use stdlib_ascii, only: whitespace
+    use stdlib_string_type, only: string_type, char, verify
+    use stdlib_optval, only: optval
     implicit none
     private
 
     public :: strip, chomp
     public :: starts_with, ends_with
-    public :: slice
+    public :: slice, find
 
 
     !> Remove leading and trailing whitespace characters.
@@ -67,6 +68,16 @@ module stdlib_strings
         module procedure :: slice_char
     end interface slice
 
+    !> Finds the starting index of substring 'pattern' in the input 'string'
+    !> [Specifications](link to the specs - to be completed)
+    !> 
+    !> Version: experimental
+    interface find
+        module procedure :: find_string_string
+        module procedure :: find_string_char
+        module procedure :: find_char_string
+        module procedure :: find_char_char
+    end interface find
 
 contains
 
@@ -365,6 +376,128 @@ contains
             j = j + 1
         end do
     end function slice_char
+
+    !> Returns the starting index of the 'occurrence'th occurrence of substring 'pattern'
+    !> in input 'string'
+    !> Returns an integer
+    elemental function find_string_string(string, pattern, occurrence, consider_overlapping) result(res)
+        type(string_type), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        integer, intent(in), optional :: occurrence
+        logical, intent(in), optional :: consider_overlapping
+        integer :: res
+
+        res = find(char(string), char(pattern), occurrence, consider_overlapping)
+
+    end function find_string_string
+
+    !> Returns the starting index of the 'occurrence'th occurrence of substring 'pattern'
+    !> in input 'string'
+    !> Returns an integer
+    elemental function find_string_char(string, pattern, occurrence, consider_overlapping) result(res)
+        type(string_type), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        integer, intent(in), optional :: occurrence
+        logical, intent(in), optional :: consider_overlapping
+        integer :: res
+
+        res = find(char(string), pattern, occurrence, consider_overlapping)
+
+    end function find_string_char
+
+    !> Returns the starting index of the 'occurrence'th occurrence of substring 'pattern'
+    !> in input 'string'
+    !> Returns an integer
+    elemental function find_char_string(string, pattern, occurrence, consider_overlapping) result(res)
+        character(len=*), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        integer, intent(in), optional :: occurrence
+        logical, intent(in), optional :: consider_overlapping
+        integer :: res
+
+        res = find(string, char(pattern), occurrence, consider_overlapping)
+
+    end function find_char_string
+
+    !> Returns the starting index of the 'occurrence'th occurrence of substring 'pattern'
+    !> in input 'string'
+    !> Returns an integer
+    elemental function find_char_char(string, pattern, occurrence, consider_overlapping) result(res)
+        character(len=*), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        integer, intent(in), optional :: occurrence
+        logical, intent(in), optional :: consider_overlapping
+        integer :: lps_array(len(pattern))
+        integer :: res, s_i, p_i, length_string, length_pattern, occurrence_
+        logical :: consider_overlapping_
+
+        consider_overlapping_ = optval(consider_overlapping, .true.)
+        occurrence_ = optval(occurrence, 1)
+        res = 0
+        length_string = len(string)
+        length_pattern = len(pattern)
+
+        if (length_pattern > 0 .and. length_pattern <= length_string & 
+            & .and. occurrence_ > 0) then
+            lps_array = compute_lps(pattern)
+
+            s_i = 1
+            p_i = 1
+            do while(s_i <= length_string)
+                if (string(s_i:s_i) == pattern(p_i:p_i)) then
+                    if (p_i == length_pattern) then
+                        occurrence_ = occurrence_ - 1
+                        if (occurrence_ == 0) then
+                            res = s_i - length_pattern + 1
+                            exit
+                        else if (consider_overlapping_) then
+                            p_i = lps_array(p_i)
+                        else
+                            p_i = 0
+                        end if
+                    end if
+                    s_i = s_i + 1
+                    p_i = p_i + 1
+                else if (p_i > 1) then
+                    p_i = lps_array(p_i - 1) + 1
+                else
+                    s_i = s_i + 1
+                end if
+            end do
+        end if
+    
+    end function find_char_char
+
+    !> Computes longest prefix suffix for each index of the input 'string'
+    !> 
+    !> Returns an array of integers
+    pure function compute_lps(string) result(lps_array)
+        character(len=*), intent(in) :: string
+        integer :: lps_array(len(string))
+        integer :: i, j, length_string
+        
+        length_string = len(string)
+
+        if (length_string > 0) then
+            lps_array(1) = 0
+
+            i = 2
+            j = 1
+            do while (i <= length_string)
+                if (string(j:j) == string(i:i)) then
+                    lps_array(i) = j
+                    i = i + 1
+                    j = j + 1
+                else if (j > 1) then
+                    j = lps_array(j - 1) + 1
+                else
+                    lps_array(i) = 0
+                    i = i + 1
+                end if
+            end do
+        end if
+    
+    end function compute_lps
 
 
 end module stdlib_strings
