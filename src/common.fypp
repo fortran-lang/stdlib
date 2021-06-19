@@ -52,7 +52,7 @@
 
 #! Ranks to be generated when templates are created
 #:if not defined('MAXRANK')
-  #:if VERSION90
+  #:if defined('VERSION90')
     #:set MAXRANK = 7
   #:else
     #:set MAXRANK = 15
