@@ -253,7 +253,8 @@ contains
         call verify_reverse_sort( dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
-            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // "."
+            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
+                "."
             write(*,*) 'i = ', i
             write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
         end if
@@ -326,7 +327,8 @@ contains
         call verify_char_reverse_sort( char_dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
-            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // "."
+            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
+                "."
             write(*,*) 'i = ', i
             write(*,'(a, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
@@ -337,7 +339,8 @@ contains
         call verify_char_reverse_sort( char_dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
-            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // "."
+            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
+                "."
             write(*,*) 'i = ', i
             write(*,'(a, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
@@ -403,7 +406,8 @@ contains
         call verify_string_reverse_sort( string_dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
-            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // "."
+            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
+                "."
             write(*,*) 'i = ', i
             write(*,'(a, 2(1x,a))') 'string_dummy(i-1:i) = ', &
                 string_dummy(i-1:i)
@@ -784,9 +788,11 @@ contains
 
         ltest = .true.
 
-        call test_string_sort_index( string_decrease, "String Decrease", ldummy )
+        call test_string_sort_index( string_decrease, "String Decrease", &
+            ldummy )
         ltest = (ltest .and. ldummy)
-        call test_string_sort_index( string_increase, "String Increase", ldummy )
+        call test_string_sort_index( string_increase, "String Increase", &
+            ldummy )
         ltest = (ltest .and. ldummy)
         call test_string_sort_index( string_rand, "String Random", ldummy )
         ltest = (ltest .and. ldummy)
