@@ -474,42 +474,42 @@ Sorting an array of a derived type based on the data in one component
 ### Performance benchmarks
 
 We have performed benchmarks of the procedures on nine different
-integer arrays each of size `2**20`:
+integer arrays each of size `2**16`:
 
 * Blocks - the array is divided into six blocks, each of distinct
   uniformly increasing integers.
-* Decreasing - values decrease uniformly from `2**20-1` to `0`.
+* Decreasing - values decrease uniformly from `2**16-1` to `0`.
 * Identical - all integers have the same value of 10.
-* Increasing - values increase uniformly from `0` to `2**20-1`.
+* Increasing - values increase uniformly from `0` to `2**16-1`.
 * Random dense - the integers are generated randomly from a set of
-  values from `0` to `2**18-1` so duplicates are dense.
-* Random order - a set of integers from `0` to `2**20 - 1` in random
+  values from `0` to `2**14-1` so duplicates are dense.
+* Random order - a set of integers from `0` to `2**16 - 1` in random
   order.
 * Random sparse - the integers are generated randomly from a set of
-  values from `0` to `2**22-1` so duplicates are sparse.
+  values from `0` to `2**18-1` so duplicates are sparse.
 * Random-3 - the increasing array has 3 random exchanges of individual
   elements.
 * Random-10 - the final ten elements of the increasing array are
   replaced by random values.
 
 On three different default character arrays, each of length 4 and of
-size `26**4`:
+size `20**4, with characters drawn from the set a-p:
 
-* Char. Decreasing - values decrease uniformly from `"zzzz"` to
+* Char. Decreasing - values decrease uniformly from `"pppp"` to
   `"aaaa"`.
 * Char. Increasing - values decrease uniformly from `"aaaa"` to
-  `"zzzz"`.
-* Char. Random - the set of strings from `"aaaa"` to `"zzzz"` in
+  `"pppp"`.
+* Char. Random - the set of strings from `"aaaa"` to `"pppp"` in
   random order.
 
 On three different `string_type` arrays, each of length 4 elements and
-of size `26**3`:
+of size `16**3`, with characters drawn from the set a-p:
 
-* String Decreasing - values decrease uniformly from `"zzz"` to
+* String Decreasing - values decrease uniformly from `"ppp"` to
   `"aaa"`.
 * String Increasing - values decrease uniformly from `"aaa"` to
-  `"zzz"`.
-* String Random - the set of strings from `"aaa"` to `"zzz"` in
+  `"ppp"`.
+* String Random - the set of strings from `"aaa"` to `"ppp"` in
   random order.
 
 These benchmarks have been performed on two different compilers, both
@@ -519,101 +519,101 @@ GB 2133 MHz LPDDR3 memory. The first compiler was GNU Fortran
 
 |    Type     | Elements |    Array Name   |    Method   |  Time (s) |
 |-------------|----------|-----------------|-------------|-----------|
-|     Integer | 1048576  |          Blocks |    Ord_Sort |   0.00738 |
-|     Integer | 1048576  |      Decreasing |    Ord_Sort |   0.00380 |
-|     Integer | 1048576  |       Identical |    Ord_Sort |   0.00220 |
-|     Integer | 1048576  |      Increasing |    Ord_Sort |   0.00209 |
-|     Integer | 1048576  |    Random dense |    Ord_Sort |   0.17972 |
-|     Integer | 1048576  |    Random order |    Ord_Sort |   0.17503 |
-|     Integer | 1048576  |   Random sparse |    Ord_Sort |   0.17340 |
-|     Integer | 1048576  |        Random 3 |    Ord_Sort |   0.00847 |
-|     Integer | 1048576  |       Random 10 |    Ord_Sort |   0.00484 |
-|   Character |  456976  |  Char. Decrease |    Ord_Sort |   0.00763 |
-|   Character |  456976  |  Char. Increase |    Ord_Sort |   0.00414 |
-|   Character |  456976  |    Char. Random |    Ord_Sort |   0.23746 |
-| String_type |   17576  | String Decrease |    Ord_Sort |   0.00543 |
-| String_type |   17576  | String Increase |    Ord_Sort |   0.00347 |
-| String_type |   17576  |   String Random |    Ord_Sort |   0.09461 |
-|     Integer | 1048576  |          Blocks |        Sort |   0.10556 |
-|     Integer | 1048576  |      Decreasing |        Sort |   0.13348 |
-|     Integer | 1048576  |       Identical |        Sort |   0.15719 |
-|     Integer | 1048576  |      Increasing |        Sort |   0.05316 |
-|     Integer | 1048576  |    Random dense |        Sort |   0.15047 |
-|     Integer | 1048576  |    Random order |        Sort |   0.15176 |
-|     Integer | 1048576  |   Random sparse |        Sort |   0.15767 |
-|     Integer | 1048576  |        Random 3 |        Sort |   0.19907 |
-|     Integer | 1048576  |       Random 10 |        Sort |   0.34244 |
-|   Character |  456976  |  Char. Decrease |        Sort |   0.30723 |
-|   Character |  456976  |  Char. Increase |        Sort |   0.10984 |
-|   Character |  456976  |    Char. Random |        Sort |   0.20642 |
-| String_type |   17576  | String Decrease |        Sort |   0.15101 |
-| String_type |   17576  | String Increase |        Sort |   0.05569 |
-| String_type |   17576  |   String Random |        Sort |   0.08499 |
-|     Integer | 1048576  |          Blocks |  Sort_Index |   0.01163 |
-|     Integer | 1048576  |      Decreasing |  Sort_Index |   0.00720 |
-|     Integer | 1048576  |       Identical |  Sort_Index |   0.00451 |
-|     Integer | 1048576  |      Increasing |  Sort_Index |   0.00452 |
-|     Integer | 1048576  |    Random dense |  Sort_Index |   0.20295 |
-|     Integer | 1048576  |    Random order |  Sort_Index |   0.20190 |
-|     Integer | 1048576  |   Random sparse |  Sort_Index |   0.20221 |
-|     Integer | 1048576  |        Random 3 |  Sort_Index |   0.01406 |
-|     Integer | 1048576  |       Random 10 |  Sort_Index |   0.00765 |
-|   Character |  456976  |  Char. Decrease |  Sort_Index |   0.00912 |
-|   Character |  456976  |  Char. Increase |  Sort_Index |   0.00515 |
-|   Character |  456976  |    Char. Random |  Sort_Index |   0.24693 |
-| String_type |   17576  | String Decrease |  Sort_Index |   0.00528 |
-| String_type |   17576  | String Increase |  Sort_Index |   0.00341 |
-| String_type |   17576  |   String Random |  Sort_Index |   0.09554 |
+|     Integer |   65536  |          Blocks |    Ord_Sort |  0.000579 |
+|     Integer |   65536  |      Decreasing |    Ord_Sort |  0.000212 |
+|     Integer |   65536  |       Identical |    Ord_Sort |  0.000165 |
+|     Integer |   65536  |      Increasing |    Ord_Sort |  0.000131 |
+|     Integer |   65536  |    Random dense |    Ord_Sort |  0.009991 |
+|     Integer |   65536  |    Random order |    Ord_Sort |  0.008574 |
+|     Integer |   65536  |   Random sparse |    Ord_Sort |  0.010504 |
+|     Integer |   65536  |        Random 3 |    Ord_Sort |  0.000532 |
+|     Integer |   65536  |       Random 10 |    Ord_Sort |  0.000315 |
+|   Character |   65536  |  Char. Decrease |    Ord_Sort |  0.001041 |
+|   Character |   65536  |  Char. Increase |    Ord_Sort |  0.000584 |
+|   Character |   65536  |    Char. Random |    Ord_Sort |  0.026273 |
+| String_type |    4096  | String Decrease |    Ord_Sort |  0.001202 |
+| String_type |    4096  | String Increase |    Ord_Sort |  0.000758 |
+| String_type |    4096  |   String Random |    Ord_Sort |  0.018180 |
+|     Integer |   65536  |          Blocks |        Sort |  0.005073 |
+|     Integer |   65536  |      Decreasing |        Sort |  0.005830 |
+|     Integer |   65536  |       Identical |        Sort |  0.007372 |
+|     Integer |   65536  |      Increasing |        Sort |  0.002421 |
+|     Integer |   65536  |    Random dense |        Sort |  0.007006 |
+|     Integer |   65536  |    Random order |        Sort |  0.007211 |
+|     Integer |   65536  |   Random sparse |        Sort |  0.007109 |
+|     Integer |   65536  |        Random 3 |        Sort |  0.012232 |
+|     Integer |   65536  |       Random 10 |        Sort |  0.017345 |
+|   Character |   65536  |  Char. Decrease |        Sort |  0.031350 |
+|   Character |   65536  |  Char. Increase |        Sort |  0.011606 |
+|   Character |   65536  |    Char. Random |        Sort |  0.022440 |
+| String_type |    4096  | String Decrease |        Sort |  0.026539 |
+| String_type |    4096  | String Increase |        Sort |  0.009755 |
+| String_type |    4096  |   String Random |        Sort |  0.016218 |
+|     Integer |   65536  |          Blocks |  Sort_Index |  0.000953 |
+|     Integer |   65536  |      Decreasing |  Sort_Index |  0.000418 |
+|     Integer |   65536  |       Identical |  Sort_Index |  0.000264 |
+|     Integer |   65536  |      Increasing |  Sort_Index |  0.000262 |
+|     Integer |   65536  |    Random dense |  Sort_Index |  0.009563 |
+|     Integer |   65536  |    Random order |  Sort_Index |  0.009592 |
+|     Integer |   65536  |   Random sparse |  Sort_Index |  0.009691 |
+|     Integer |   65536  |        Random 3 |  Sort_Index |  0.000781 |
+|     Integer |   65536  |       Random 10 |  Sort_Index |  0.000455 |
+|   Character |   65536  |  Char. Decrease |  Sort_Index |  0.001189 |
+|   Character |   65536  |  Char. Increase |  Sort_Index |  0.000752 |
+|   Character |   65536  |    Char. Random |  Sort_Index |  0.025767 |
+| String_type |    4096  | String Decrease |  Sort_Index |  0.001411 |
+| String_type |    4096  | String Increase |  Sort_Index |  0.000761 |
+| String_type |    4096  |   String Random |  Sort_Index |  0.018202 |
 
 The second compiler was Intel(R) Fortran Intel(R) 64 Compiler Classic
 for applications running on Intel(R) 64, Version 2021.2.0 Build
 20210228_000000, with the following results:
 
-|    Type     | Elements |   Array Name    |    Method   |  Time (s) |
+|    Type     | Elements |    Array Name   |    Method   |  Time (s) |
 |-------------|----------|-----------------|-------------|-----------|
-|     Integer | 1048576  |          Blocks |    Ord_Sort |   0.00320 |
-|     Integer | 1048576  |      Decreasing |    Ord_Sort |   0.00142 |
-|     Integer | 1048576  |       Identical |    Ord_Sort |   0.00102 |
-|     Integer | 1048576  |      Increasing |    Ord_Sort |   0.00158 |
-|     Integer | 1048576  |    Random dense |    Ord_Sort |   0.09859 |
-|     Integer | 1048576  |    Random order |    Ord_Sort |   0.09704 |
-|     Integer | 1048576  |   Random sparse |    Ord_Sort |   0.09599 |
-|     Integer | 1048576  |        Random 3 |    Ord_Sort |   0.00396 |
-|     Integer | 1048576  |       Random 10 |    Ord_Sort |   0.00183 |
-|   Character |  456976  |  Char. Decrease |    Ord_Sort |   0.00763 |
-|   Character |  456976  |  Char. Increase |    Ord_Sort |   0.00341 |
-|   Character |  456976  |    Char. Random |    Ord_Sort |   0.21991 |
-| String_type |   17576  | String Decrease |    Ord_Sort |   0.01957 |
-| String_type |   17576  | String Increase |    Ord_Sort |   0.00573 |
-| String_type |   17576  |   String Random |    Ord_Sort |   0.37850 |
-|     Integer | 1048576  |          Blocks |        Sort |   0.03668 |
-|     Integer | 1048576  |      Decreasing |        Sort |   0.04073 |
-|     Integer | 1048576  |       Identical |        Sort |   0.03884 |
-|     Integer | 1048576  |      Increasing |        Sort |   0.01279 |
-|     Integer | 1048576  |    Random dense |        Sort |   0.06945 |
-|     Integer | 1048576  |    Random order |        Sort |   0.07151 |
-|     Integer | 1048576  |   Random sparse |        Sort |   0.07224 |
-|     Integer | 1048576  |        Random 3 |        Sort |   0.07954 |
-|     Integer | 1048576  |       Random 10 |        Sort |   0.14395 |
-|   Character |  456976  |  Char. Decrease |        Sort |   0.30367 |
-|   Character |  456976  |  Char. Increase |        Sort |   0.11316 |
-|   Character |  456976  |    Char. Random |        Sort |   0.20233 |
-| String_type |   17576  | String Decrease |        Sort |   0.64479 |
-| String_type |   17576  | String Increase |        Sort |   0.23737 |
-| String_type |   17576  |   String Random |        Sort |   0.31361 |
-|     Integer | 1048576  |          Blocks |  Sort_Index |   0.00643 |
-|     Integer | 1048576  |      Decreasing |  Sort_Index |   0.00219 |
-|     Integer | 1048576  |       Identical |  Sort_Index |   0.00126 |
-|     Integer | 1048576  |      Increasing |  Sort_Index |   0.00130 |
-|     Integer | 1048576  |    Random dense |  Sort_Index |   0.12911 |
-|     Integer | 1048576  |    Random order |  Sort_Index |   0.13024 |
-|     Integer | 1048576  |   Random sparse |  Sort_Index |   0.12956 |
-|     Integer | 1048576  |        Random 3 |  Sort_Index |   0.00781 |
-|     Integer | 1048576  |       Random 10 |  Sort_Index |   0.00281 |
-|   Character |  456976  |  Char. Decrease |  Sort_Index |   0.00779 |
-|   Character |  456976  |  Char. Increase |  Sort_Index |   0.00393 |
-|   Character |  456976  |    Char. Random |  Sort_Index |   0.22561 |
-| String_type |   17576  | String Decrease |  Sort_Index |   0.01878 |
-| String_type |   17576  | String Increase |  Sort_Index |   0.00543 |
-| String_type |   17576  |   String Random |  Sort_Index |   0.37748 |
+|     Integer |   65536  |          Blocks |    Ord_Sort |  0.000267 |
+|     Integer |   65536  |      Decreasing |    Ord_Sort |  0.000068 |
+|     Integer |   65536  |       Identical |    Ord_Sort |  0.000056 |
+|     Integer |   65536  |      Increasing |    Ord_Sort |  0.000056 |
+|     Integer |   65536  |    Random dense |    Ord_Sort |  0.004615 |
+|     Integer |   65536  |    Random order |    Ord_Sort |  0.006325 |
+|     Integer |   65536  |   Random sparse |    Ord_Sort |  0.004601 |
+|     Integer |   65536  |        Random 3 |    Ord_Sort |  0.000193 |
+|     Integer |   65536  |       Random 10 |    Ord_Sort |  0.000101 |
+|   Character |   65536  |  Char. Decrease |    Ord_Sort |  0.001009 |
+|   Character |   65536  |  Char. Increase |    Ord_Sort |  0.000529 |
+|   Character |   65536  |    Char. Random |    Ord_Sort |  0.024547 |
+| String_type |    4096  | String Decrease |    Ord_Sort |  0.003381 |
+| String_type |    4096  | String Increase |    Ord_Sort |  0.000133 |
+| String_type |    4096  |   String Random |    Ord_Sort |  0.051985 |
+|     Integer |   65536  |          Blocks |        Sort |  0.001614 |
+|     Integer |   65536  |      Decreasing |        Sort |  0.001783 |
+|     Integer |   65536  |       Identical |        Sort |  0.002111 |
+|     Integer |   65536  |      Increasing |        Sort |  0.000674 |
+|     Integer |   65536  |    Random dense |        Sort |  0.003574 |
+|     Integer |   65536  |    Random order |        Sort |  0.003296 |
+|     Integer |   65536  |   Random sparse |        Sort |  0.003380 |
+|     Integer |   65536  |        Random 3 |        Sort |  0.003623 |
+|     Integer |   65536  |       Random 10 |        Sort |  0.006839 |
+|   Character |   65536  |  Char. Decrease |        Sort |  0.032564 |
+|   Character |   65536  |  Char. Increase |        Sort |  0.012346 |
+|   Character |   65536  |    Char. Random |        Sort |  0.022932 |
+| String_type |    4096  | String Decrease |        Sort |  0.082140 |
+| String_type |    4096  | String Increase |        Sort |  0.029591 |
+| String_type |    4096  |   String Random |        Sort |  0.043078 |
+|     Integer |   65536  |          Blocks |  Sort_Index |  0.000848 |
+|     Integer |   65536  |      Decreasing |  Sort_Index |  0.000103 |
+|     Integer |   65536  |       Identical |  Sort_Index |  0.000102 |
+|     Integer |   65536  |      Increasing |  Sort_Index |  0.000066 |
+|     Integer |   65536  |    Random dense |  Sort_Index |  0.006434 |
+|     Integer |   65536  |    Random order |  Sort_Index |  0.005941 |
+|     Integer |   65536  |   Random sparse |  Sort_Index |  0.005957 |
+|     Integer |   65536  |        Random 3 |  Sort_Index |  0.000326 |
+|     Integer |   65536  |       Random 10 |  Sort_Index |  0.000175 |
+|   Character |   65536  |  Char. Decrease |  Sort_Index |  0.001082 |
+|   Character |   65536  |  Char. Increase |  Sort_Index |  0.000468 |
+|   Character |   65536  |    Char. Random |  Sort_Index |  0.023100 |
+| String_type |    4096  | String Decrease |  Sort_Index |  0.003292 |
+| String_type |    4096  | String Increase |  Sort_Index |  0.000122 |
+| String_type |    4096  |   String Random |  Sort_Index |  0.049155 |
 
