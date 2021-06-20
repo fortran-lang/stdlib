@@ -493,7 +493,7 @@ integer arrays each of size `2**16`:
   replaced by random values.
 
 On three different default character arrays, each of length 4 and of
-size `20**4, with characters drawn from the set a-p:
+size `20**4, with characters drawn from the set "a"-"p":
 
 * Char. Decreasing - values decrease uniformly from `"pppp"` to
   `"aaaa"`.
@@ -503,7 +503,7 @@ size `20**4, with characters drawn from the set a-p:
   random order.
 
 On three different `string_type` arrays, each of length 4 elements and
-of size `16**3`, with characters drawn from the set a-p:
+of size `16**3`, with characters drawn from the set "a"-"p":
 
 * String Decreasing - values decrease uniformly from `"ppp"` to
   `"aaa"`.
