@@ -10,9 +10,11 @@ program test_sorting
 
     implicit none
 
-    integer(int32), parameter :: test_size = 2_int32**16
-    integer(int32), parameter :: char_size = 16**4
-    integer(int32), parameter :: string_size = 16**3
+    integer(int32), parameter :: test_power = 16
+    integer(int32), parameter :: char_set_size = 16
+    integer(int32), parameter :: test_size = 2_int32**test_power
+    integer(int32), parameter :: char_size = char_set_size**4
+    integer(int32), parameter :: string_size = char_set_size**3
     integer(int32), parameter :: block_size = test_size/6
     integer, parameter        :: repeat = 1
 
@@ -92,10 +94,10 @@ program test_sorting
     end do
 
     count = 0
-    do i=0, 15
-        do j=0, 15
-            do k=0, 15
-                do l=0, 15
+    do i=0, char_set_size-1
+        do j=0, char_set_size-1
+            do k=0, char_set_size-1
+                do l=0, char_set_size-1
                     char_increase(count) = achar(97+i) // achar(97+j) // &
                         achar(97+k) // achar(97+l)
                     count = count + 1
@@ -118,9 +120,9 @@ program test_sorting
     end do
 
     count = 0
-    do i=0, 15
-        do j=0, 15
-            do k=0, 15
+    do i=0, char_set_size-1
+        do j=0, char_set_size-1
+            do k=0, char_set_size-1
                 string_increase(count) = achar(97+i) // achar(97+j) // &
                     achar(97+k)
                 count = count + 1
