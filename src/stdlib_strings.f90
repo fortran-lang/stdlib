@@ -675,7 +675,7 @@ contains
     pure function padl_string_string(string, output_length, pad_with) result(res)
         type(string_type), intent(in) :: string
         integer, intent(in) :: output_length
-        type(string_type), intent(in), optional :: pad_with
+        type(string_type), intent(in) :: pad_with
         type(string_type) :: res
 
         res = string_type(padl_char_char(char(string), output_length, char(pad_with)))
@@ -687,7 +687,7 @@ contains
     pure function padl_string_char(string, output_length, pad_with) result(res)
         type(string_type), intent(in) :: string
         integer, intent(in) :: output_length
-        character(len=1), intent(in), optional :: pad_with
+        character(len=1), intent(in) :: pad_with
         type(string_type) :: res
 
         res = string_type(padl_char_char(char(string), output_length, pad_with))
@@ -699,7 +699,7 @@ contains
     pure function padl_char_string(string, output_length, pad_with) result(res)
         character(len=*), intent(in) :: string
         integer, intent(in) :: output_length
-        type(string_type), intent(in), optional :: pad_with
+        type(string_type), intent(in) :: pad_with
         character(len=max(len(string), output_length)) :: res
 
         res = padl_char_char(string, output_length, char(pad_with))
@@ -711,14 +711,11 @@ contains
     pure function padl_char_char(string, output_length, pad_with) result(res)
         character(len=*), intent(in) :: string
         integer, intent(in) :: output_length
-        character(len=1), intent(in), optional :: pad_with
+        character(len=1), intent(in) :: pad_with
+        character(len=max(len(string), output_length)) :: res
         integer :: string_length
-        character(len=max(string_length, output_length)) :: res
     
         string_length = len(string)
-        if (.not. present(pad_with)) then
-            pad_with = ' '
-        end if
     
         if (string_length < output_length) then
             res = repeat(pad_with, output_length - string_length)
@@ -735,7 +732,7 @@ contains
     pure function padr_string_string(string, output_length, pad_with) result(res)
         type(string_type), intent(in) :: string
         integer, intent(in) :: output_length
-        type(string_type), intent(in), optional :: pad_with
+        type(string_type), intent(in) :: pad_with
         type(string_type) :: res
 
         res = string_type(padr_char_char(char(string), output_length, char(pad_with)))
@@ -747,7 +744,7 @@ contains
     pure function padr_string_char(string, output_length, pad_with) result(res)
         type(string_type), intent(in) :: string
         integer, intent(in) :: output_length
-        character(len=1), intent(in), optional :: pad_with
+        character(len=1), intent(in) :: pad_with
         type(string_type) :: res
 
         res = string_type(padr_char_char(char(string), output_length, pad_with))
@@ -759,7 +756,7 @@ contains
     pure function padr_char_string(string, output_length, pad_with) result(res)
         character(len=*), intent(in) :: string
         integer, intent(in) :: output_length
-        type(string_type), intent(in), optional :: pad_with
+        type(string_type), intent(in) :: pad_with
         character(len=max(len(string), output_length)) :: res
 
         res = padr_char_char(string, output_length, char(pad_with))
@@ -771,14 +768,11 @@ contains
     pure function padr_char_char(string, output_length, pad_with) result(res)
         character(len=*), intent(in) :: string
         integer, intent(in) :: output_length
-        character(len=1), intent(in), optional :: pad_with
+        character(len=1), intent(in) :: pad_with
+        character(len=max(len(string), output_length)) :: res
         integer :: string_length
-        character(len=max(string_length, output_length)) :: res
 
         string_length = len(string)
-        if (.not. present(pad_with)) then
-            pad_with = ' '
-        end if
     
         res = string
         if (string_length < output_length) then
