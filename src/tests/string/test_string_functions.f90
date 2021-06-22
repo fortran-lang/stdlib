@@ -319,13 +319,62 @@ contains
     end function carray_to_string
 
     subroutine test_replace_all
-        character(len=:), allocatable :: test_string
-        test_string = "qwqwqwqwqwqwqwqwpqr"
-        call check(replace_all(test_string, "qwq", "wqw", .true.) == "wqwwqwwqwwqwwqwwqwwqwwpqr")
-        call check(replace_all(test_string, "qwq", "abcd") == "abcdwabcdwabcdwabcdwpqr")
-        call check(replace_all(test_string, "", "abcd") == test_string)
+        type(string_type) :: test_string_1, test_pattern_1, test_replacement_1
+        type(string_type) :: test_string_2, test_pattern_2, test_replacement_2
+        test_string_1 = "mutate DNA sequence: GTTATCGTATGCCGTAATTAT"
+        test_pattern_1 = "TAT"
+        test_replacement_1 = "ATA"
+        test_string_2 = "mutate DNA sequence: AGAGAGCCTAGAGAGAG"
+        test_pattern_2 = "AGA"
+        test_replacement_2 = "aga"
 
-        call check(replace_all("", "qwq", "abcd") == "")
+        ! all 3 as string_type
+          call check(replace_all(test_string_1, test_pattern_1, test_replacement_1) == & 
+                    & "mutate DNA sequence: GTATACGATAGCCGTAATATA", &
+                    & "Replace_all: all 3 string_type, test case 1")
+          call check(replace_all(test_string_2, test_pattern_2, test_replacement_2) == &
+                    & "mutate DNA sequence: agaGAGCCTagaGagaG", &
+                    & "Replace_all: all 3 string_type, test case 2")
+          call check(replace_all(test_string_2, test_pattern_2, test_replacement_1) == &
+                    & "mutate DNA sequence: ATAGAGCCTATAGATAG", &
+                    & "Replace_all: all 3 string_type, test case 3")
+        
+        ! 2 as string_type and 1 as character scalar
+          call check(replace_all(test_string_1, "tat", test_replacement_1) == &
+                    & "muATAe DNA sequence: GTTATCGTATGCCGTAATTAT", &
+                    & "Replace_all: 2 string_type & 1 character scalar, test case 1")
+          call check(replace_all(test_string_2, test_pattern_2, "GC") == &
+                    & "mutate DNA sequence: GCGAGCCTGCGGCG", &
+                    & "Replace_all: 2 string_type & 1 character scalar, test case 2")
+          call check(replace_all("mutate DNA sequence: AGAGAGCCTAGAGAGAG", test_pattern_2, &
+                    & test_replacement_2) == "mutate DNA sequence: agaGAGCCTagaGagaG", &
+                    & "Replace_all: 2 string_type & 1 character scalar, test case 3")
+
+        
+        ! 1 as string_type and 2 as character scalar
+          call check(replace_all(test_string_1, "TAT", "ATA") == &
+                    & "mutate DNA sequence: GTATACGATAGCCGTAATATA", &
+                    & "Replace_all: 1 string_type & 2 character scalar, test case 1")
+          call check(replace_all("mutate DNA sequence: AGAGAGCCTAGAGAGAG", test_pattern_2, &
+                    & "GC") == "mutate DNA sequence: GCGAGCCTGCGGCG", &
+                    & "Replace_all: 1 string_type & 2 character scalar, test case 2")
+          call check(replace_all("mutate DNA sequence: GTTATCGTATGCCGTAATTAT", "TA", &
+                    & test_replacement_2) == "mutate DNA sequence: GTagaTCGagaTGCCGagaATagaT", &
+                    & "Replace_all: 1 string_type & 2 character scalar, test case 3")
+          call check(replace_all("mutate DNA sequence: GTTATCGTATGCCGTAATTAT", &
+                    & test_pattern_1, "") == "mutate DNA sequence: GTCGGCCGTAAT", &
+                    & "Replace_all: 1 string_type & 2 character scalar, test case 4")
+          call check(replace_all(test_string_1, "", "anything here") == test_string_1, &
+                    & "Replace_all: 1 string_type & 2 character scalar, test case 5")
+          call check(replace_all("", test_pattern_2, "anything here") == "", &
+                    & "Replace_all: 1 string_type & 2 character scalar, test case 6")
+        
+        ! all 3 as character scalar
+          call check(replace_all("mutate DNA sequence: GTTATCGTATGCCGTAATTAT", &
+                    & "GT", "gct") == "mutate DNA sequence: gctTATCgctATGCCgctAATTAT", &
+                    & "Replace_all: all 3 character scalar, test case 1")
+          call check(replace_all("", "anything here", "anything here") == "", &
+                    & "Replace_all: all 3 character scalar, test case 2")
 
     end subroutine test_replace_all
 
