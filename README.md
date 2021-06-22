@@ -127,7 +127,8 @@ Important options are
 - `-G Ninja` to use the Ninja backend instead of the default Make backend. Other build backends are available with a similar syntax.
 - `-DCMAKE_INSTALL_PREFIX` is used to provide the install location for the library.
 - `-DCMAKE_MAXIMUM_RANK` the maximum array rank procedures should be generated for.
-  The default is 15 for Fortran 2003 compliant compilers, otherwise 7 for compilers not supporting Fortran 2003 completely yet.
+  The default value is chosen as 4.
+  The maximum is 15 for Fortran 2003 compliant compilers, otherwise 7 for compilers not supporting Fortran 2003 completely yet.
   The minimum required rank to compile this project is 4.
   Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
