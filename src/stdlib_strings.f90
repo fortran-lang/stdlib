@@ -83,13 +83,13 @@ module stdlib_strings
     !> with the replacement 'replacement'
     !> Version: experimental
     interface replace_all
-        !module procedure :: replace_all_string_string_string
-        !module procedure :: replace_all_string_string_char
-        !module procedure :: replace_all_string_char_string
-        !module procedure :: replace_all_char_string_string
-        !module procedure :: replace_all_string_char_char
-        !module procedure :: replace_all_char_string_char
-        !module procedure :: replace_all_char_char_string
+        module procedure :: replace_all_string_string_string
+        module procedure :: replace_all_string_string_char
+        module procedure :: replace_all_string_char_string
+        module procedure :: replace_all_char_string_string
+        module procedure :: replace_all_string_char_char
+        module procedure :: replace_all_char_string_char
+        module procedure :: replace_all_char_char_string
         module procedure :: replace_all_char_char_char
     end interface replace_all
 
@@ -513,21 +513,110 @@ contains
     
     end function compute_lps
 
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_string_string_string(string, pattern, replacement) result(res)
+        type(string_type), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        type(string_type), intent(in) :: replacement
+        type(string_type) :: res
+
+        res = string_type(replace_all_char_char_char(char(string), & 
+                & char(pattern), char(replacement)))
+
+    end function replace_all_string_string_string
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_string_string_char(string, pattern, replacement) result(res)
+        type(string_type), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        character(len=*), intent(in) :: replacement
+        type(string_type) :: res
+
+        res = string_type(replace_all_char_char_char(char(string), char(pattern), replacement))
+
+    end function replace_all_string_string_char
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_string_char_string(string, pattern, replacement) result(res)
+        type(string_type), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        type(string_type), intent(in) :: replacement
+        type(string_type) :: res
+
+        res = string_type(replace_all_char_char_char(char(string), pattern, char(replacement)))
+
+    end function replace_all_string_char_string
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_char_string_string(string, pattern, replacement) result(res)
+        character(len=*), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        type(string_type), intent(in) :: replacement
+        character(len=:), allocatable :: res
+
+        res = replace_all_char_char_char(string, char(pattern), char(replacement))
+
+    end function replace_all_char_string_string
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_string_char_char(string, pattern, replacement) result(res)
+        type(string_type), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        character(len=*), intent(in) :: replacement
+        type(string_type) :: res
+
+        res = string_type(replace_all_char_char_char(char(string), pattern, replacement))
+
+    end function replace_all_string_char_char
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_char_string_char(string, pattern, replacement) result(res)
+        character(len=*), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        character(len=*), intent(in) :: replacement
+        character(len=:), allocatable :: res
+
+        res = replace_all_char_char_char(string, char(pattern), replacement)
+
+    end function replace_all_char_string_char
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_char_char_string(string, pattern, replacement) result(res)
+        character(len=*), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        type(string_type), intent(in) :: replacement
+        character(len=:), allocatable :: res
+
+        res = replace_all_char_char_char(string, pattern, char(replacement))
+
+    end function replace_all_char_char_string
+
     !> Replaces all the occurrences of substring 'pattern' in the input 'string'
     !> with the replacement 'replacement'
     !> Returns a new string
-    pure function replace_all_char_char_char(string, pattern, replacement, replace_overlapping) result(res)
+    pure function replace_all_char_char_char(string, pattern, replacement) result(res)
         character(len=*), intent(in) :: string
         character(len=*), intent(in) :: pattern
         character(len=*), intent(in) :: replacement
-        logical, intent(in), optional :: replace_overlapping
         character(:), allocatable :: res
         integer :: lps_array(len(pattern))
         integer :: s_i, p_i, last, length_string, length_pattern
-        logical :: replace_overlapping_
 
         res = ""
-        replace_overlapping_ = optval(replace_overlapping, .false.)
         length_string = len(string)
         length_pattern = len(pattern)
         last = 1
@@ -544,11 +633,7 @@ contains
                                 & slice(string, first=last, last=s_i - length_pattern, stride=1) // &
                                 & replacement
                         last = s_i + 1
-                        if (replace_overlapping_) then
-                            p_i = lps_array(p_i)
-                        else
-                            p_i = 0
-                        end if
+                        p_i = 0
                     end if
                     s_i = s_i + 1
                     p_i = p_i + 1
