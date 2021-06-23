@@ -97,20 +97,20 @@ module stdlib_strings
     !> [Specifications](link to the specs - to be completed)
     !> Version: experimental
     interface padl
-        module procedure :: padl_string_string
-        module procedure :: padl_string_char
-        module procedure :: padl_char_string
-        module procedure :: padl_char_char
+        module procedure :: padl_string_default
+        module procedure :: padl_string_pad_with
+        module procedure :: padl_char_default
+        module procedure :: padl_char_pad_with
     end interface padl
 
     !> Right pad the input string
     !> [Specifications](link to the specs - to be completed)
     !> Version: experimental
     interface padr
-        module procedure :: padr_string_string
-        module procedure :: padr_string_char
-        module procedure :: padr_char_string
-        module procedure :: padr_char_char
+        module procedure :: padr_string_default
+        module procedure :: padr_string_pad_with
+        module procedure :: padr_char_default
+        module procedure :: padr_char_pad_with
     end interface padr
 
 contains
@@ -672,38 +672,48 @@ contains
     !> Left pad the input string with the 'pad_with' string
     !>
     !> Returns a new string
-    pure function padl_string_string(string, output_length, pad_with) result(res)
+    pure function padl_string_default(string, output_length) result(res)
         type(string_type), intent(in) :: string
         integer, intent(in) :: output_length
-        type(string_type), intent(in) :: pad_with
         type(string_type) :: res
 
-        res = string_type(padl_char_char(char(string), output_length, char(pad_with)))
-    end function padl_string_string
+        res = string_type(padl_char_char(char(string), output_length, " "))
+    end function padl_string_default
 
     !> Left pad the input string with the 'pad_with' string
     !>
     !> Returns a new string
-    pure function padl_string_char(string, output_length, pad_with) result(res)
+    pure function padl_string_pad_with(string, output_length, pad_with) result(res)
         type(string_type), intent(in) :: string
         integer, intent(in) :: output_length
         character(len=1), intent(in) :: pad_with
         type(string_type) :: res
 
         res = string_type(padl_char_char(char(string), output_length, pad_with))
-    end function padl_string_char
+    end function padl_string_pad_with
 
     !> Left pad the input string with the 'pad_with' string
     !>
     !> Returns a new string
-    pure function padl_char_string(string, output_length, pad_with) result(res)
+    pure function padl_char_default(string, output_length) result(res)
         character(len=*), intent(in) :: string
         integer, intent(in) :: output_length
-        type(string_type), intent(in) :: pad_with
         character(len=max(len(string), output_length)) :: res
 
-        res = padl_char_char(string, output_length, char(pad_with))
-    end function padl_char_string
+        res = padl_char_char(string, output_length, " ")
+    end function padl_char_default
+
+    !> Left pad the input string with the 'pad_with' string
+    !>
+    !> Returns a new string
+    pure function padl_char_pad_with(string, output_length, pad_with) result(res)
+        character(len=*), intent(in) :: string
+        integer, intent(in) :: output_length
+        character(len=1), intent(in) :: pad_with
+        character(len=max(len(string), output_length)) :: res
+
+        res = padl_char_char(string, output_length, pad_with)
+    end function padl_char_pad_with
 
     !> Left pad the input string with the 'pad_with' string
     !>
@@ -729,38 +739,48 @@ contains
     !> Right pad the input string with the 'pad_with' string
     !>
     !> Returns a new string
-    pure function padr_string_string(string, output_length, pad_with) result(res)
+    pure function padr_string_default(string, output_length) result(res)
         type(string_type), intent(in) :: string
         integer, intent(in) :: output_length
-        type(string_type), intent(in) :: pad_with
         type(string_type) :: res
 
-        res = string_type(padr_char_char(char(string), output_length, char(pad_with)))
-    end function padr_string_string
+        res = string_type(padr_char_char(char(string), output_length, " "))
+    end function padr_string_default
 
     !> Right pad the input string with the 'pad_with' string
     !>
     !> Returns a new string
-    pure function padr_string_char(string, output_length, pad_with) result(res)
+    pure function padr_string_pad_with(string, output_length, pad_with) result(res)
         type(string_type), intent(in) :: string
         integer, intent(in) :: output_length
         character(len=1), intent(in) :: pad_with
         type(string_type) :: res
 
         res = string_type(padr_char_char(char(string), output_length, pad_with))
-    end function padr_string_char
+    end function padr_string_pad_with
 
     !> Right pad the input string with the 'pad_with' string
     !>
     !> Returns a new string
-    pure function padr_char_string(string, output_length, pad_with) result(res)
+    pure function padr_char_default(string, output_length) result(res)
         character(len=*), intent(in) :: string
         integer, intent(in) :: output_length
-        type(string_type), intent(in) :: pad_with
         character(len=max(len(string), output_length)) :: res
 
-        res = padr_char_char(string, output_length, char(pad_with))
-    end function padr_char_string
+        res = padr_char_char(string, output_length, " ")
+    end function padr_char_default
+
+    !> Right pad the input string with the 'pad_with' string
+    !>
+    !> Returns a new string
+    pure function padr_char_pad_with(string, output_length, pad_with) result(res)
+        character(len=*), intent(in) :: string
+        integer, intent(in) :: output_length
+        character(len=1), intent(in) :: pad_with
+        character(len=max(len(string), output_length)) :: res
+
+        res = padr_char_char(string, output_length, pad_with)
+    end function padr_char_pad_with
 
     !> Right pad the input string with the 'pad_with' character
     !>
