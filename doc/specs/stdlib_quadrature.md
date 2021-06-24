@@ -224,7 +224,7 @@ If not specified, the default integral is -1 to 1.
 ```fortran
 program integrate
 	use iso_fortran_env, dp => real64
-	implict none
+	implicit none
 
 	integer, parameter :: N = 6
 	real(dp), dimension(N) :: x,w
