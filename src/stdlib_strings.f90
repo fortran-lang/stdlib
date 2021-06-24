@@ -367,7 +367,7 @@ contains
         end if
 
         if (present(first)) then
-            first_index =  first
+            first_index = first
         end if
         if (present(last)) then
             last_index = last
@@ -522,7 +522,7 @@ contains
         type(string_type), intent(in) :: replacement
         type(string_type) :: res
 
-        res = string_type(replace_all_char_char_char(char(string), & 
+        res = string_type(replace_all(char(string), & 
                 & char(pattern), char(replacement)))
 
     end function replace_all_string_string_string
@@ -536,7 +536,7 @@ contains
         character(len=*), intent(in) :: replacement
         type(string_type) :: res
 
-        res = string_type(replace_all_char_char_char(char(string), char(pattern), replacement))
+        res = string_type(replace_all(char(string), char(pattern), replacement))
 
     end function replace_all_string_string_char
 
@@ -549,7 +549,7 @@ contains
         type(string_type), intent(in) :: replacement
         type(string_type) :: res
 
-        res = string_type(replace_all_char_char_char(char(string), pattern, char(replacement)))
+        res = string_type(replace_all(char(string), pattern, char(replacement)))
 
     end function replace_all_string_char_string
 
@@ -562,7 +562,7 @@ contains
         type(string_type), intent(in) :: replacement
         character(len=:), allocatable :: res
 
-        res = replace_all_char_char_char(string, char(pattern), char(replacement))
+        res = replace_all(string, char(pattern), char(replacement))
 
     end function replace_all_char_string_string
 
@@ -575,7 +575,7 @@ contains
         character(len=*), intent(in) :: replacement
         type(string_type) :: res
 
-        res = string_type(replace_all_char_char_char(char(string), pattern, replacement))
+        res = string_type(replace_all(char(string), pattern, replacement))
 
     end function replace_all_string_char_char
 
@@ -588,7 +588,7 @@ contains
         character(len=*), intent(in) :: replacement
         character(len=:), allocatable :: res
 
-        res = replace_all_char_char_char(string, char(pattern), replacement)
+        res = replace_all(string, char(pattern), replacement)
 
     end function replace_all_char_string_char
 
@@ -601,7 +601,7 @@ contains
         type(string_type), intent(in) :: replacement
         character(len=:), allocatable :: res
 
-        res = replace_all_char_char_char(string, pattern, char(replacement))
+        res = replace_all(string, pattern, char(replacement))
 
     end function replace_all_char_char_string
 
