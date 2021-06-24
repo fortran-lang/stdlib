@@ -7,7 +7,7 @@ submodule (stdlib_linalg) stdlib_linalg_outer_product
 contains
 
   #:for k1, t1 in RCI_KINDS_TYPES
-    module function outer_product_${t1[0]}$${k1}$(u, v) result(res)
+    pure module function outer_product_${t1[0]}$${k1}$(u, v) result(res)
       ${t1}$, intent(in) :: u(:), v(:)
       ${t1}$ :: res(size(u),size(v))
       integer :: col

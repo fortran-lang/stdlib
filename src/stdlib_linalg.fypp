@@ -73,7 +73,7 @@ module stdlib_linalg
     !! Computes the outer product of two vectors, returning a rank-2 array
     !! ([Specification](../page/specs/stdlib_linalg.html#description_3))
     #:for k1, t1 in RCI_KINDS_TYPES
-      module function outer_product_${t1[0]}$${k1}$(u, v) result(res)
+      pure module function outer_product_${t1[0]}$${k1}$(u, v) result(res)
         ${t1}$, intent(in) :: u(:), v(:)
         ${t1}$ :: res(size(u),size(v))
       end function outer_product_${t1[0]}$${k1}$

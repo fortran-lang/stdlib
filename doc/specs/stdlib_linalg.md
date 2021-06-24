@@ -191,7 +191,7 @@ Computes the outer product of two vectors
 
 ### Return value
 
-Returns a rank-2 array equal to `u v^T` (assuming `u, v` are column vectors). The shape of the returned array is `[size(u), size(v)]`.
+Returns a rank-2 array equal to `u v^T` (where `u, v` are considered column vectors). The shape of the returned array is `[size(u), size(v)]`.
 
 ### Example
 
