@@ -50,7 +50,7 @@ This is an `elemental` function.
 
 ### Syntax
 
-`result = [[stdlib_specialfunctions(module):dlegendre(interface)]](n, x)`
+`result = [[stdlib_specialfunctions(module):dlegendre(interface)]] (n, x)`
 
 ### Arguments
 
@@ -61,4 +61,3 @@ This is an `elemental` function.
 ### Return value
 
 The function result will be the value of the first derivative of the `n`-th Legendre polynomial, evaluated at `x`.
-
