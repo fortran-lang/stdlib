@@ -206,7 +206,7 @@ Accuracy has been validated up to N=64 by comparing computed results to tablulat
 
 ### Syntax
 
-`subroutine [[stdlib_quadrature(module):gauss_legendre(interface)]](x, w [, interval])`
+`subroutine [[stdlib_quadrature(module):gauss_legendre(interface)]] (x, w[, interval])`
 
 ### Arguments
 
@@ -268,5 +268,4 @@ real(dp), dimension(N) :: x,w
 call gauss_legendre_lobatto(x,w)
 integral = sum(x**2 * w)
 ```
-
 
