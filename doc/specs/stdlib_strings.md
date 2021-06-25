@@ -328,3 +328,63 @@ program demo_find
 
 end program demo_find
 ```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `format_string`
+
+#### Description
+
+Format or transfer a integer/real/complex/logical variable as a character sequence.
+
+
+#### Syntax
+
+`format_string = [[stdlib_strings(module):format_string(interface)]] (value, [, format])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `value`: Integer/real/complex/logical scalar.
+  This argument is intent(in).
+- `format`: Character scalar like `'(F6.2)'`.
+  This argument is intent(in) and optional.
+
+#### Result value
+
+The result is a allocatable length Character scalar.
+
+#### Example
+
+```fortran
+program demo_strings_format_string
+    use, non_intrinsic :: stdlib_strings, only: format_string
+    implicit none
+    print *, 'format_string(complex) : '
+        print *, format_string((1, 1))              ! (1.00000000,1.00000000)
+        print *, format_string((1, 1), '(F6.2)')    ! (1.00,1.00)
+        print *, format_string((1, 1), '(F6.2)'), format_string((2, 2), '(F7.3)')   ! (1.00,1.00)(2.000,2.000)
+    print *, 'format_string(integer) : '
+        print *, format_string(100)                 ! 100
+        print *, format_string(100, '(I6)')         ! 100
+        print *, format_string(100, '(I6)'), format_string(1000, '(I7)')            ! 1001000
+    print *, 'format_string(real) : '
+        print *, format_string(100.)                ! 100.000000
+        print *, format_string(100., '(F6.2)')      ! 100.00 
+        print *, format_string(100., '(F6.2)'), &
+                    format_string(1000., '(F7.3)'), format_string(1000, '(F7.3)')   ! 100.00********
+                        !! Wrong demonstration
+    print *, 'format_string(logical) : '
+        print *, format_string(.true.)              ! T
+        print *, format_string(.true., '(L2)')      ! T
+        print *, format_string(.false., '(L2)'), format_string(.true., '(L5)'), &
+                    format_string(.false., '(I5)')  ! FT*
+                        !! Wrong demonstration
+end program demo_strings_format_string
+```

@@ -29,6 +29,8 @@ set(fppFiles
     stdlib_stats_distribution_PRNG.fypp
     stdlib_math.fypp
     stdlib_string_type.fypp
+    stdlib_strings_format_string.fypp
+    stdlib_strings.fypp
 )
 
 
@@ -47,7 +49,6 @@ set(SRC
     stdlib_error.f90
     stdlib_kinds.f90
     stdlib_logger.f90
-    stdlib_strings.f90
     stdlib_system.F90
     ${outFiles}
 )
