@@ -131,3 +131,98 @@ program demo_savetxt
     call savetxt('example.dat', x) 
 end program demo_savetxt
 ```
+
+## `disp` - quickly display your data to the screen (or the default output location)
+
+### Status
+
+Experimental
+
+### Description
+Quickly display strings, scalars and low-dimensional arrays to the screen (or the default output location).
+
+### Syntax
+
+For 3D arrays:
+`call [[stdlib_io(module):disp(interface)]](value, dim [, string])`  
+For null:
+`call [[stdlib_io(module):disp(interface)]]()`  
+For others:
+`call [[stdlib_io(module):disp(interface)]](value [, string])`
+
+### Arguments
+
+`value`: Shall be any type of scalar or (<= 3)D `array`.
+
+`dim`: Shall be a scalar of type `integer` with a value: 1, 2 or 3.
+
+`string`: Shall be a scalar of type `character` with any length(Usually used to mark data information).
+
+### Output
+
+The result is to print your data `value` and comments `string` on the screen (or the default output location).
+
+### Example
+
+```fortran
+program demo_io_disp
+    use, non_intrinsic :: stdlib_io, only: disp
+    implicit none
+    real :: r(2, 3)
+    complex :: c(2, 3), c_3d(2, 3, 2)
+    integer :: i(2, 3)
+    logical :: l(2, 3)
+
+    r = 1.; c = 1.; c_3d = 2.; i = 1; l = .true.
+    r(1, 1) = (1.e-11, 1.0e-4)
+    c(2, 2) = 10.e5
+    c_3d(1,3,1) = (1000, 0.001)
+        call disp('string', 'disp(string):')
+        call disp('It is a note.')
+        call disp()
+
+        call disp(r, 'disp(r):')
+        call disp(c, 'disp(c):')
+        call disp(i, 'disp(i):')
+        call disp(l, 'disp(l):')
+
+        call disp(c_3d, 3, 'disp(c_3d, 3):')
+        call disp(c_3d, 2, 'disp(c_3d, 2):')
+end program demo_io_disp
+```
+**Result:**
+```fortran
+ disp(string):
+ string
+ It is a note.
+
+ disp(r):
+ 0.1000E-10   1.000       1.000
+  1.000       1.000       1.000
+ disp(c):
+          (1.000,0.000)           (1.000,0.000)           (1.000,0.000)
+          (1.000,0.000)      (0.1000E+07,0.000)           (1.000,0.000)
+ disp(i):
+          1           1           1
+          1           1           1
+ disp(l):
+          T           T           T
+          T           T           T
+ disp(c_3d, 3):
+ Slice (:,:,1):
+          (2.000,0.000)           (2.000,0.000)      (1000.,0.1000E-02)
+          (2.000,0.000)           (2.000,0.000)           (2.000,0.000)
+ Slice (:,:,2):
+          (2.000,0.000)           (2.000,0.000)           (2.000,0.000)
+          (2.000,0.000)           (2.000,0.000)           (2.000,0.000)
+ disp(c_3d, 2):
+ Slice (:,1,:):
+          (2.000,0.000)           (2.000,0.000)
+          (2.000,0.000)           (2.000,0.000)
+ Slice (:,2,:):
+          (2.000,0.000)           (2.000,0.000)
+          (2.000,0.000)           (2.000,0.000)
+ Slice (:,3,:):
+     (1000.,0.1000E-02)           (2.000,0.000)
+          (2.000,0.000)           (2.000,0.000)
+```

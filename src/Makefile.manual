@@ -27,7 +27,8 @@ SRCFYPP =\
         stdlib_stats_distribution_PRNG.fypp \
         stdlib_string_type.fypp \
         stdlib_strings.fypp \
-        stdlib_strings_format_string.fypp
+        stdlib_strings_format_string.fypp \
+        stdlib_io_disp.fypp
 
 SRC = f18estop.f90 \
       stdlib_error.f90 \
@@ -69,7 +70,8 @@ stdlib_error.o: stdlib_optval.o
 stdlib_io.o: \
 	stdlib_error.o \
 	stdlib_optval.o \
-	stdlib_kinds.o
+	stdlib_kinds.o \
+    stdlib_ascii.o
 stdlib_linalg.o: \
 	stdlib_kinds.o
 stdlib_linalg_diag.o: \
@@ -134,3 +136,6 @@ stdlib_strings.o: stdlib_ascii.o \
     stdlib_kinds.o
 stdlib_math.o: stdlib_kinds.o
 stdlib_strings_format_string.o: stdlib_strings.o
+stdlib_io_disp.o: stdlib_error.o \
+    stdlib_strings.o \
+    stdlib_io.o

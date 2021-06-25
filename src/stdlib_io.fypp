@@ -7,17 +7,44 @@ module stdlib_io
   !! ([Specification](../page/specs/stdlib_io.html))
 
   use stdlib_kinds, only: sp, dp, qp, &
-      int8, int16, int32, int64
+      int8, int16, int32, int64, lk, c_bool
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
   use stdlib_ascii, only: is_blank
   implicit none
   private
   ! Public API
-  public :: loadtxt, savetxt, open
+  public :: loadtxt, savetxt, open, disp
 
   ! Private API that is exposed so that we can test it in tests
   public :: parse_mode
+
+  interface disp
+    !!
+    #:set DISP_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES &
+        & + CMPLX_KINDS_TYPES + LOG_KINDS_TYPES
+    #:set DISP_RANKS = range(0, 4)
+    #:for kind, type in DISP_KINDS_TYPES
+    #:for rank in DISP_RANKS
+    #:if rank != 3
+    impure module subroutine disp_${rank}$_${type[0]}$${kind}$(val, string)
+        ${type}$, intent(in) :: val${ranksuffix(rank)}$
+        character(len=*), intent(in), optional :: string
+    end subroutine disp_${rank}$_${type[0]}$${kind}$
+    #:else
+    impure module subroutine disp_${rank}$_${type[0]}$${kind}$(val, dim, string)
+        ${type}$, intent(in) :: val${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        character(len=*), intent(in), optional :: string
+    end subroutine disp_${rank}$_${type[0]}$${kind}$
+    #:endif
+    #:endfor
+    #:endfor
+    impure module subroutine disp_str(val, string)
+        character(len=*), intent(in), optional :: val
+        character(len=*), intent(in), optional :: string
+    end subroutine disp_str
+  end interface disp
 
   interface loadtxt
     !! version: experimental
