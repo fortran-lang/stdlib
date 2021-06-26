@@ -56,8 +56,8 @@ program test_strings_format_string
         & " F    T", &
         & "Multiple formatters for logical values")
     ! Wrong demonstration
-    call check_formatter(format_string(.false., '(I5)'), "*", &
-        & "Integer formatter for logical value", partial=.true.)
+    call check_formatter(format_string(.false., '(1x)'), "*", &
+        & "Invalid formatter for logical value", partial=.true.)
 
 contains
     subroutine check_formatter(actual, expected, description, partial)
