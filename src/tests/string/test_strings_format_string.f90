@@ -4,8 +4,8 @@ program test_strings_format_string
     use stdlib_optval, only: optval
     implicit none
     print *, 'format_string(complex) : '
-    call check_formatter(format_string((1, 1)), "(1.00000000,1.00000000)", &
-        & "Default formatter for complex number")
+    call check_formatter(format_string((1, 1)), "(1.0", &
+        & "Default formatter for complex number", partial=.true.)
     call check_formatter(format_string((1, 1), '(F6.2)'), "(  1.00,  1.00)", &
         & "Formatter for complex number")
     call check_formatter(format_string((-1, -1), '(F6.2)'), "( -1.00, -1.00)", &
@@ -32,8 +32,8 @@ program test_strings_format_string
     call check_formatter(format_string(34, '(Z3)'), " 22", &
         & "Hexadecimal formatter for integer number")
     print *, 'format_string(real) : '
-    call check_formatter(format_string(100.), "100.000000", &
-        & "Default formatter for real number")
+    call check_formatter(format_string(100.), "100.0", &
+        & "Default formatter for real number", partial=.true.)
     call check_formatter(format_string(100., '(F6.2)'), "100.00", &
         & "Formatter for real number")
     call check_formatter(format_string(289., '(E7.2)'), ".29E+03", &
