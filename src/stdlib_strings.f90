@@ -767,7 +767,7 @@ contains
         integer, intent(in) :: output_length
         character(len=max(len(string), output_length)) :: res
 
-        res = padr_char_char(string, output_length, " ")
+        res = string
     end function padr_char_default
 
     !> Right pad the input string with the 'pad_with' string
