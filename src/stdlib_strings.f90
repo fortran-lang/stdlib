@@ -12,7 +12,7 @@ module stdlib_strings
 
     public :: strip, chomp
     public :: starts_with, ends_with
-    public :: slice, find, replace_all
+    public :: slice, find, replace_all, padl, padr
 
 
     !> Remove leading and trailing whitespace characters.
@@ -669,7 +669,7 @@ contains
 
     end function replace_all_char_char_char
 
-    !> Left pad the input string with the 'pad_with' string
+    !> Left pad the input string with " " (1 whitespace)
     !>
     !> Returns a new string
     pure function padl_string_default(string, output_length) result(res)
@@ -677,10 +677,11 @@ contains
         integer, intent(in) :: output_length
         type(string_type) :: res
 
-        res = string_type(padl_char_char(char(string), output_length, " "))
+        res = string_type(padl(char(string), output_length, " "))
+
     end function padl_string_default
 
-    !> Left pad the input string with the 'pad_with' string
+    !> Left pad the input string with the 'pad_with' character
     !>
     !> Returns a new string
     pure function padl_string_pad_with(string, output_length, pad_with) result(res)
@@ -689,10 +690,11 @@ contains
         character(len=1), intent(in) :: pad_with
         type(string_type) :: res
 
-        res = string_type(padl_char_char(char(string), output_length, pad_with))
+        res = string_type(padl(char(string), output_length, pad_with))
+
     end function padl_string_pad_with
 
-    !> Left pad the input string with the 'pad_with' string
+    !> Left pad the input string with " " (1 whitespace)
     !>
     !> Returns a new string
     pure function padl_char_default(string, output_length) result(res)
@@ -700,10 +702,11 @@ contains
         integer, intent(in) :: output_length
         character(len=max(len(string), output_length)) :: res
 
-        res = padl_char_char(string, output_length, " ")
+        res = padl(string, output_length, " ")
+
     end function padl_char_default
 
-    !> Left pad the input string with the 'pad_with' string
+    !> Left pad the input string with the 'pad_with' character
     !>
     !> Returns a new string
     pure function padl_char_pad_with(string, output_length, pad_with) result(res)
@@ -711,43 +714,34 @@ contains
         integer, intent(in) :: output_length
         character(len=1), intent(in) :: pad_with
         character(len=max(len(string), output_length)) :: res
-
-        res = padl_char_char(string, output_length, pad_with)
-    end function padl_char_pad_with
-
-    !> Left pad the input string with the 'pad_with' string
-    !>
-    !> Returns a new string
-    pure function padl_char_char(string, output_length, pad_with) result(res)
-        character(len=*), intent(in) :: string
-        integer, intent(in) :: output_length
-        character(len=1), intent(in) :: pad_with
-        character(len=max(len(string), output_length)) :: res
         integer :: string_length
-    
+
         string_length = len(string)
-    
+
         if (string_length < output_length) then
             res = repeat(pad_with, output_length - string_length)
             res(output_length - string_length + 1 : output_length) = string
         else
             res = string
         end if
-    
-    end function padl_char_char
 
-    !> Right pad the input string with the 'pad_with' string
+    end function padl_char_pad_with
+
+    !> Right pad the input string with " " (1 whitespace)
     !>
     !> Returns a new string
     pure function padr_string_default(string, output_length) result(res)
         type(string_type), intent(in) :: string
         integer, intent(in) :: output_length
+        character(len=max(len(string), output_length)) :: char_output
         type(string_type) :: res
 
-        res = string_type(padr_char_char(char(string), output_length, " "))
+        char_output = char(string)
+        res = string_type(char_output)
+
     end function padr_string_default
 
-    !> Right pad the input string with the 'pad_with' string
+    !> Right pad the input string with the 'pad_with' character
     !>
     !> Returns a new string
     pure function padr_string_pad_with(string, output_length, pad_with) result(res)
@@ -756,10 +750,11 @@ contains
         character(len=1), intent(in) :: pad_with
         type(string_type) :: res
 
-        res = string_type(padr_char_char(char(string), output_length, pad_with))
+        res = string_type(padr(char(string), output_length, pad_with))
+
     end function padr_string_pad_with
 
-    !> Right pad the input string with the 'pad_with' string
+    !> Right pad the input string with " " (1 whitespace)
     !>
     !> Returns a new string
     pure function padr_char_default(string, output_length) result(res)
@@ -768,9 +763,10 @@ contains
         character(len=max(len(string), output_length)) :: res
 
         res = string
+
     end function padr_char_default
 
-    !> Right pad the input string with the 'pad_with' string
+    !> Right pad the input string with the 'pad_with' character
     !>
     !> Returns a new string
     pure function padr_char_pad_with(string, output_length, pad_with) result(res)
@@ -778,29 +774,17 @@ contains
         integer, intent(in) :: output_length
         character(len=1), intent(in) :: pad_with
         character(len=max(len(string), output_length)) :: res
-
-        res = padr_char_char(string, output_length, pad_with)
-    end function padr_char_pad_with
-
-    !> Right pad the input string with the 'pad_with' character
-    !>
-    !> Returns a new string
-    pure function padr_char_char(string, output_length, pad_with) result(res)
-        character(len=*), intent(in) :: string
-        integer, intent(in) :: output_length
-        character(len=1), intent(in) :: pad_with
-        character(len=max(len(string), output_length)) :: res
         integer :: string_length
 
         string_length = len(string)
-    
+
         res = string
         if (string_length < output_length) then
             res(string_length + 1 : output_length) = repeat(pad_with, &
             & output_length - string_length)
         end if
-    
-    end function padr_char_char
+
+    end function padr_char_pad_with
 
 
 end module stdlib_strings
