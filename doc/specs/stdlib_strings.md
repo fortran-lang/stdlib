@@ -339,7 +339,7 @@ Format or transfer a integer/real/complex/logical variable as a character sequen
 
 #### Syntax
 
-`format_string = [[stdlib_strings(module):format_string(interface)]] (value[, format])`
+`format_string = [[stdlib_strings(module):format_string(interface)]] (value [, format])`
 
 #### Status
 
@@ -367,24 +367,43 @@ program demo_strings_format_string
     use, non_intrinsic :: stdlib_strings, only: format_string
     implicit none
     print *, 'format_string(complex) : '
-        print *, format_string((1, 1))              ! (1.00000000,1.00000000)
-        print *, format_string((1, 1), '(F6.2)')    ! (1.00,1.00)
-        print *, format_string((1, 1), '(F6.2)'), format_string((2, 2), '(F7.3)')   ! (1.00,1.00)(2.000,2.000)
+        print *, format_string((1, 1))
+        print *, format_string((1, 1), '(F6.2)')
+        print *, format_string((1, 1), '(F6.2)'), format_string((2, 2), '(F7.3)')
     print *, 'format_string(integer) : '
-        print *, format_string(100)                 ! 100
-        print *, format_string(100, '(I6)')         ! 100
-        print *, format_string(100, '(I6)'), format_string(1000, '(I7)')            ! 1001000
+        print *, format_string(100)
+        print *, format_string(100, '(I6)')
+        print *, format_string(100, '(I6)'), format_string(1000, '(I7)')
     print *, 'format_string(real) : '
-        print *, format_string(100.)                ! 100.000000
-        print *, format_string(100., '(F6.2)')      ! 100.00 
+        print *, format_string(100.)
+        print *, format_string(100., '(F12.2)')
         print *, format_string(100., '(F6.2)'), &
-                    format_string(1000., '(F7.3)'), format_string(1000, '(F7.3)')   ! 100.00********
+                    format_string(1000., '(F7.3)'), format_string(1000, '(F7.3)')
                         !! Wrong demonstration
     print *, 'format_string(logical) : '
-        print *, format_string(.true.)              ! T
-        print *, format_string(.true., '(L2)')      ! T
+        print *, format_string(.true.)
+        print *, format_string(.true., '(L2)')
         print *, format_string(.false., '(L2)'), format_string(.true., '(L5)'), &
-                    format_string(.false., '(I5)')  ! FT*
+                    format_string(.false., '(I5)')
                         !! Wrong demonstration
 end program demo_strings_format_string
+```
+**Results**
+```fortran
+ format_string(complex) :
+  (1.00000000,1.00000000)
+  (  1.00,  1.00)
+  (  1.00,  1.00) (  2.000,  2.000)
+ format_string(integer) :
+ 100
+    100
+    100   1000
+ format_string(real) :
+ 100.000000
+       100.00
+ 100.00********
+ format_string(logical) :
+ T
+  T
+  F    T*
 ```

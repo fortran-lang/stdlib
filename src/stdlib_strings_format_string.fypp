@@ -2,7 +2,6 @@
 #:set RIL_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + LOG_KINDS_TYPES
 submodule (stdlib_strings) stdlib_strings_format_string
 
-    use stdlib_optval, only: optval
     implicit none
     integer, parameter :: buffer_len = 512
 
@@ -14,7 +13,7 @@ contains
         character(len=buffer_len) :: buffer
         integer :: stat
 
-        write(buffer, optval(fmt, "g0"), iostat=stat) val
+        write(buffer, optval(fmt, "(g0)"), iostat=stat) val
         if (stat == 0) then
             string = trim(buffer)
         else

@@ -11,7 +11,7 @@ program test_strings_format_string
         print *, format_string(100, '(I6)'), format_string(1000, '(I7)')
     print *, 'format_string(real) : '
         print *, format_string(100.)
-        print *, format_string(100., '(F6.2)')
+        print *, format_string(100., '(F12.2)')
         print *, format_string(100., '(F6.2)'), &
                     format_string(1000., '(F7.3)'), format_string(1000, '(F7.3)')
                         !! Wrong demonstration

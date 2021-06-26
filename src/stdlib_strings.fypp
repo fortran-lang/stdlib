@@ -21,8 +21,8 @@ module stdlib_strings
     interface format_string
         !! version: experimental
         !!
-        !! Format ${type}$ variable as character sequence
-        !! ([Specification](../page/specs/stdlib_string.html#description))
+        !! Format other types as character sequence.
+        !! ([Specification](../page/specs/stdlib_strings.html#description))
         #:for kind, type in KINDS_TYPES
         pure module function format_string_${type[0]}$${kind}$(val, fmt) result(string)
             character(len=:), allocatable :: string
