@@ -410,8 +410,8 @@ program test_strings_format_string
         & "Too narrow formatter for signed real number", partial=.true.)
     call check_formatter(format_string(1000., '(F6.3)'), "*", &
         & "Too narrow formatter for real number", partial=.true.)
-    call check_formatter(format_string(1000, '(F7.3)'), "*", &
-        & "Real formatter for integer number", partial=.true.)
+    call check_formatter(format_string(1000., '(7.3)'), "*", &
+        & "Invalid formatter for real number", partial=.true.)
     print *, 'format_string(logical) : '
     call check_formatter(format_string(.true.), "T", &
         & "Default formatter for logcal value")
@@ -488,7 +488,7 @@ end program test_strings_format_string
    Result: '******'
  - Too narrow formatter for real number
    Result: '******'
- - Real formatter for integer number
+ - Invalid formatter for real number
    Result: '*'
  format_string(logical) :
  - Default formatter for logcal value
