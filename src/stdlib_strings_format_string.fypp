@@ -29,11 +29,8 @@ contains
         !! Format ${type}$ variable as character sequence
         character(len=buffer_len) :: buffer
 
-        write(buffer, *) '('//&
-                        format_string_r${kind}$(val%re, fmt)//','// &
-                        format_string_r${kind}$(val%im, fmt)//')'
-
-        string = trim(buffer)
+        string = '('//format_string_r${kind}$(val%re, fmt)//','// &
+            format_string_r${kind}$(val%im, fmt)//')'
 
     end procedure format_string_${type[0]}$${kind}$
     #:endfor
