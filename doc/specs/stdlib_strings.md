@@ -339,7 +339,7 @@ Format or transfer a integer/real/complex/logical variable as a character sequen
 
 #### Syntax
 
-`format_string = [[stdlib_strings(module):format_string(interface)]] (value, [, format])`
+`format_string = [[stdlib_strings(module):format_string(interface)]] (value[, format])`
 
 #### Status
 

@@ -2,6 +2,7 @@
 #:set RIL_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + LOG_KINDS_TYPES
 submodule (stdlib_strings) stdlib_strings_format_string
 
+    use stdlib_optval, only: optval
     implicit none
     integer, parameter :: buffer_len = 512
 
@@ -12,23 +13,15 @@ contains
         !! Format ${type}$ variable as character sequence
         character(len=buffer_len) :: buffer
         integer :: stat
-        if(present(fmt)) then
-            write(buffer, fmt, iostat=stat) val
-            if(stat == 0) then
-                string = trim(adjustl(buffer))
-            else
-                string = '*'
-                    !!\TODO: *?
-            end if
+
+        write(buffer, optval(fmt, "g0"), iostat=stat) val
+        if (stat == 0) then
+            string = trim(buffer)
         else
-            write(buffer, *, iostat=stat) val
-            if(stat == 0) then
-                string = trim(adjustl(buffer))
-            else
-                string = '*'
-                    !!\TODO: *?
-            end if
+            string = '*'
+                !!\TODO: *?
         end if
+
     end procedure format_string_${type[0]}$${kind}$
     #:endfor
 
@@ -36,16 +29,13 @@ contains
     module procedure format_string_${type[0]}$${kind}$
         !! Format ${type}$ variable as character sequence
         character(len=buffer_len) :: buffer
-        if(present(fmt)) then
-            write(buffer, *) '('//&
-                        format_string_r${kind}$(real(val), fmt)//','// &
-                        format_string_r${kind}$(aimag(val), fmt)//')'
-        else
-            write(buffer, *) '('//&
-                        format_string_r${kind}$(real(val))//','// &
-                        format_string_r${kind}$(aimag(val))//')'
-        end if
-        string = trim(adjustl(buffer))
+
+        write(buffer, *) '('//&
+                        format_string_r${kind}$(val%re, fmt)//','// &
+                        format_string_r${kind}$(val%im, fmt)//')'
+
+        string = trim(buffer)
+
     end procedure format_string_${type[0]}$${kind}$
     #:endfor
 
