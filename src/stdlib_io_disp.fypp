@@ -3,37 +3,39 @@
 
 submodule (stdlib_io) stdlib_io_disp
 
-    use, non_intrinsic :: stdlib_strings, only: format_string
+    use stdlib_ascii, only: to_string
+    use stdlib_strings, only: format_string
     implicit none
-    character(len=*), parameter :: fmt_r = '(*(g11.4, 1x))'
-    character(len=*), parameter :: fmt_c = '(*(g23.4, 1x))'
+    character(len=*), parameter :: fmt_r = '(*(g12.4, 1x))'
+    character(len=*), parameter :: fmt_c = '(*(g25.0, 1x))'
     
 contains
     
     #:for kind, type in RIL_KINDS_TYPES
     module procedure disp_0_${type[0]}$${kind}$
+        !! Disp ${type}$ variable to default output_unit
         if(present(string)) print *, trim(string)
         print fmt_r, val
     end procedure disp_0_${type[0]}$${kind}$
 
     module procedure disp_1_${type[0]}$${kind}$
-        integer :: i, m
-        m = size(val)
+        !! Disp ${type}$ vector variable to default output_unit
         if(present(string)) print *, trim(string)
-        print fmt_r, (val(i), i=1,m)
+        print fmt_r, val(:)
     end procedure disp_1_${type[0]}$${kind}$
 
     module procedure disp_2_${type[0]}$${kind}$
-        integer :: i, j, m, n
+        !! Disp ${type}$ 2D array variable to default output_unit
+        integer :: i, m
         m = size(val, 1)
-        n = size(val, 2)
         if(present(string)) print *, trim(string)
         do i = 1, m
-            print fmt_r, (val(i,j), j=1, n)
+            print fmt_r, val(i,:)
         end do
     end procedure disp_2_${type[0]}$${kind}$
 
     module procedure disp_3_${type[0]}$${kind}$
+        !! Disp ${type}$ 3D array variable to default output_unit
         integer :: i, dim1, dim2, dim3
         dim1 = size(val, 1)
         dim2 = size(val, 2)
@@ -41,17 +43,17 @@ contains
         if(present(string)) print *, trim(string)
         if(dim == 1) then
             do i = 1, dim1
-                print *, 'Slice ('//format_string(i)//',:,:):'
+                print *, 'Slice ('//to_string(i)//',:,:):'
                 call disp_2_${type[0]}$${kind}$(val(i, :, :))
             end do
         elseif(dim == 2) then
             do i = 1, dim2
-                print *, 'Slice (:,'//format_string(i)//',:):'
+                print *, 'Slice (:,'//to_string(i)//',:):'
                 call disp_2_${type[0]}$${kind}$(val(:, i, :))
             end do
         elseif (dim == 3) then
             do i = 1, dim3
-                print *, 'Slice (:,:,'//format_string(i)//'):'
+                print *, 'Slice (:,:,'//to_string(i)//'):'
                 call disp_2_${type[0]}$${kind}$(val(:, :, i))
             end do
         else
@@ -62,31 +64,32 @@ contains
 
     #:for kind, type in CMPLX_KINDS_TYPES
     module procedure disp_0_${type[0]}$${kind}$
+        !! Disp ${type}$ variable to default output_unit
         if(present(string)) print *, trim(string)
-        print fmt_c, format_string(cmplx(real(val), &
-                                         aimag(val)), '(g11,4)')
+        print fmt_c, format_string(val, '(g0.4)')
     end procedure disp_0_${type[0]}$${kind}$
 
     module procedure disp_1_${type[0]}$${kind}$
+        !! Disp ${type}$ vector variable to default output_unit
         integer :: i, m
         m = size(val)
         if(present(string)) print *, trim(string)
-        print fmt_c, (format_string(cmplx(real(val(i)), &
-                        aimag(val(i))), '(g11.4)'), i=1, m)
+        print fmt_c, (format_string(val(i), '(g0.4)'), i=1, m)
     end procedure disp_1_${type[0]}$${kind}$
 
     module procedure disp_2_${type[0]}$${kind}$
+        !! Disp ${type}$ 2D array variable to default output_unit
         integer :: i, j, m, n
         m = size(val, 1)
         n = size(val, 2)
         if(present(string)) print *, trim(string)
         do i = 1, m
-            print fmt_c, (format_string(cmplx(real(val(i, j)), &
-                            aimag(val(i, j))), '(g11.4)'), j=1, n)
+            print fmt_c, (format_string(val(i, j), '(g0.4)'), j=1, n)
         end do
     end procedure disp_2_${type[0]}$${kind}$
 
     module procedure disp_3_${type[0]}$${kind}$
+        !! Disp ${type}$ 3D array variable to default output_unit
         integer :: i, dim1, dim2, dim3
         dim1 = size(val, 1)
         dim2 = size(val, 2)
@@ -94,17 +97,17 @@ contains
         if(present(string)) print *, trim(string)
         if(dim == 1) then
             do i = 1, dim1
-                print *, 'Slice ('//format_string(i)//',:,:):'
+                print *, 'Slice ('//to_string(i)//',:,:):'
                 call disp_2_${type[0]}$${kind}$(val(i, :, :))
             end do
         elseif(dim == 2) then
             do i = 1, dim2
-                print *, 'Slice (:,'//format_string(i)//',:):'
+                print *, 'Slice (:,'//to_string(i)//',:):'
                 call disp_2_${type[0]}$${kind}$(val(:, i, :))
             end do
         elseif (dim == 3) then
             do i = 1, dim3
-                print *, 'Slice (:,:,'//format_string(i)//'):'
+                print *, 'Slice (:,:,'//to_string(i)//'):'
                 call disp_2_${type[0]}$${kind}$(val(:, :, i))
             end do
         else
@@ -114,6 +117,7 @@ contains
     #:endfor
 
     module procedure disp_str
+        !! Disp character variable to default output_unit
         if(present(string)) print *, trim(string)
         if(present(val)) then
             print *, trim(val)

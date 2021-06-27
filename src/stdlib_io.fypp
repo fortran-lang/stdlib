@@ -20,19 +20,22 @@ module stdlib_io
   public :: parse_mode
 
   interface disp
+    !! version: experimental
     !!
+    !! Quickly display strings, scalars and low-dimensional arrays to the default output_unit
+    !! ([Specification](../page/specs/stdlib_io.html#description))
     #:set DISP_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES &
         & + CMPLX_KINDS_TYPES + LOG_KINDS_TYPES
     #:set DISP_RANKS = range(0, 4)
     #:for kind, type in DISP_KINDS_TYPES
     #:for rank in DISP_RANKS
     #:if rank != 3
-    impure module subroutine disp_${rank}$_${type[0]}$${kind}$(val, string)
+    module subroutine disp_${rank}$_${type[0]}$${kind}$(val, string)
         ${type}$, intent(in) :: val${ranksuffix(rank)}$
         character(len=*), intent(in), optional :: string
     end subroutine disp_${rank}$_${type[0]}$${kind}$
     #:else
-    impure module subroutine disp_${rank}$_${type[0]}$${kind}$(val, dim, string)
+    module subroutine disp_${rank}$_${type[0]}$${kind}$(val, dim, string)
         ${type}$, intent(in) :: val${ranksuffix(rank)}$
         integer, intent(in) :: dim
         character(len=*), intent(in), optional :: string
@@ -40,7 +43,7 @@ module stdlib_io
     #:endif
     #:endfor
     #:endfor
-    impure module subroutine disp_str(val, string)
+    module subroutine disp_str(val, string)
         character(len=*), intent(in), optional :: val
         character(len=*), intent(in), optional :: string
     end subroutine disp_str
