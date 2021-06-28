@@ -630,7 +630,7 @@ contains
                 if (string(s_i:s_i) == pattern(p_i:p_i)) then
                     if (p_i == length_pattern) then
                         res = res // &
-                                & slice(string, first=last, last=s_i - length_pattern, stride=1) // &
+                                & string(last : s_i - length_pattern) // &
                                 & replacement
                         last = s_i + 1
                         p_i = 0
@@ -645,7 +645,7 @@ contains
             end do
         end if
         
-        res = res // slice(string, first=last)
+        res = res // string(last : length_string)
 
     end function replace_all_char_char_char
 
