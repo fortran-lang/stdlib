@@ -283,7 +283,6 @@ Default value of `occurrence` is set to `1`.
 If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurrences of substring as two different occurrences.  
 If `occurrence`th occurrence is not found, function returns `0`.
 
-
 #### Syntax
 
 `string = [[stdlib_strings(module):find(interface)]] (string, pattern [, occurrence, consider_overlapping])`
@@ -336,10 +335,9 @@ end program demo_find
 
 Format or transfer a integer/real/complex/logical variable as a character sequence.
 
-
 #### Syntax
 
-`format_string = [[stdlib_strings(module):format_string(interface)]] (value [, format])`
+`format_string = [[stdlib_strings(module):format_string(interface)]] (val [, fmt])`
 
 #### Status
 
@@ -358,33 +356,38 @@ Pure function
 
 #### Result value
 
-The result is a allocatable length Character scalar.
+The result is an allocatable length Character scalar.
 
 #### Example
 
 ```fortran
-program demo_strings_format_string
+program demo_format_string
     use, non_intrinsic :: stdlib_strings, only: format_string
     implicit none
+
     print *, 'format_string(complex) : '
         print *, format_string((1, 1))              ! (1.00000000,1.00000000)
         print *, format_string((1, 1), '(F6.2)')    ! (  1.00,  1.00)
         print *, format_string((1000, 1), '(ES0.2)'), format_string((1000, 1), '(SP,F6.3)')     ! (1.00E+3,1.00)(******,+1.000)
                         !! Too narrow formatter for real number
                         !! Normal demonstration(`******` from Fortran Standard)
+
     print *, 'format_string(integer) : '
         print *, format_string(1)                   ! 1
         print *, format_string(1, '(I4)')           !     1
         print *, format_string(1, '(I0.4)'), format_string(2, '(B4)')           ! 0001  10  
+
     print *, 'format_string(real) : '
         print *, format_string(1.)                  ! 1.00000000
         print *, format_string(1., '(F6.2)')        !   1.00 
         print *, format_string(1., '(SP,ES9.2)'), format_string(1, '(F7.3)')    ! +1.00E+00*
                         !! 1 wrong demonstration(`*` from `format_string`)
+
     print *, 'format_string(logical) : '
         print *, format_string(.true.)              ! T
         print *, format_string(.true., '(L2)')      !  T
         print *, format_string(.true., 'L2'), format_string(.false., '(I5)')    ! **
                         !! 2 wrong demonstrations(`*` from `format_string`)
-end program demo_strings_format_string
+
+end program demo_format_string
 ```

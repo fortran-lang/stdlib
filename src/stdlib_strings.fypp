@@ -18,17 +18,18 @@ module stdlib_strings
     public :: starts_with, ends_with
     public :: slice, find
 
+    !> Format other types as character sequence.
+    !> ([Specification](../page/specs/stdlib_strings.html#description))
+    !> Version: experimental
     interface format_string
-        !! version: experimental
-        !!
-        !! Format other types as character sequence.
-        !! ([Specification](../page/specs/stdlib_strings.html#description))
         #:for kind, type in KINDS_TYPES
-        pure module function format_string_${type[0]}$${kind}$(val, fmt) result(string)
-            character(len=:), allocatable :: string
+        !> Format ${type}$ variable as character sequence
+        pure module function format_string_${type[0]}$_${kind}$(val, fmt) result(string)
             ${type}$, intent(in) :: val
             character(len=*), intent(in), optional :: fmt
-        end function format_string_${type[0]}$${kind}$
+            character(len=:), allocatable :: string
+        end function format_string_${type[0]}$_${kind}$
+
         #:endfor
     end interface format_string
 

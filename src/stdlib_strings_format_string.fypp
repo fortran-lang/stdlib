@@ -7,9 +7,11 @@ submodule (stdlib_strings) stdlib_strings_format_string
 
 contains
 
-    #:for kind, type in RIL_KINDS_TYPES
-    module procedure format_string_${type[0]}$${kind}$
-        !! Format ${type}$ variable as character sequence
+
+  #:for kind, type in RIL_KINDS_TYPES
+    !> Format ${type}$ variable as character sequence
+    module procedure format_string_${type[0]}$_${kind}$
+        
         character(len=buffer_len) :: buffer
         integer :: stat
 
@@ -21,17 +23,19 @@ contains
                 !!\TODO: *?
         end if
 
-    end procedure format_string_${type[0]}$${kind}$
-    #:endfor
+    end procedure format_string_${type[0]}$_${kind}$
 
-    #:for kind, type in CMPLX_KINDS_TYPES
-    module procedure format_string_${type[0]}$${kind}$
-        !! Format ${type}$ variable as character sequence
+  #:endfor
 
-        string = '('//format_string_r${kind}$(val%re, fmt)//','// &
-            format_string_r${kind}$(val%im, fmt)//')'
+  #:for kind, type in CMPLX_KINDS_TYPES
+    !> Format ${type}$ variable as character sequence
+    module procedure format_string_${type[0]}$_${kind}$
 
-    end procedure format_string_${type[0]}$${kind}$
-    #:endfor
+        string = '(' // format_string_r_${kind}$(val%re, fmt) // ',' // &
+                    & format_string_r_${kind}$(val%im, fmt) // ')'
+
+    end procedure format_string_${type[0]}$_${kind}$
+
+  #:endfor
 
 end submodule stdlib_strings_format_string
