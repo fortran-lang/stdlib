@@ -20,7 +20,7 @@ module stdlib_strings
 
     !> Format other types as character sequence.
     !> ([Specification](../page/specs/stdlib_strings.html#description))
-    !> version: experimental
+    !> Version: experimental
     interface format_string
         #:for kind, type in KINDS_TYPES
         !> Format ${type}$ variable as character sequence
