@@ -5,7 +5,7 @@
 !> The specification of this module is available [here](../page/specs/stdlib_strings.html).
 module stdlib_strings
     use stdlib_ascii, only: whitespace
-    use stdlib_string_type, only: string_type, char, verify, repeat
+    use stdlib_string_type, only: string_type, char, verify, repeat, len
     use stdlib_optval, only: optval
     implicit none
     private

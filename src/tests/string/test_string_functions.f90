@@ -4,7 +4,7 @@ module test_string_functions
     use stdlib_error, only : check
     use stdlib_string_type, only : string_type, assignment(=), operator(==), &
                                     to_lower, to_upper, to_title, to_sentence, reverse
-    use stdlib_strings, only: slice, find, replace_all                                   
+    use stdlib_strings, only: slice, find, replace_all, padl, padr
     use stdlib_optval, only: optval
     use stdlib_ascii, only : to_string
     implicit none
@@ -378,6 +378,81 @@ contains
 
     end subroutine test_replace_all
 
+    subroutine test_padl
+        type(string_type) :: test_string
+        character(len=:), allocatable :: test_char
+
+        test_string = "left pad this string"
+        test_char = "  left pad this string  "
+
+      ! output_length > len(string)
+        call check(padl(test_string, 25, "#") == "#####left pad this string", &
+                    & 'padl: output_length > len(string), test_case 1')
+        call check(padl(test_string, 22, "$") == "$$left pad this string", &
+                    & 'padl: output_length > len(string), test_case 2')
+        call check(padl(test_string, 23) == "   left pad this string", &
+                    & 'padl: output_length > len(string), test_case 3')
+        call check(padl(test_char, 26) == "    left pad this string  ", &
+                    & 'padl: output_length > len(string), test_case 4')
+        call check(padl(test_char, 26, "&") == "&&  left pad this string  ", &
+                    & 'padl: output_length > len(string), test_case 5')
+        call check(padl("", 10, "!") == "!!!!!!!!!!", &
+                    & 'padl: output_length > len(string), test_case 6')
+
+      ! output_length <= len(string)
+        call check(padl(test_string, 18, "#") == "left pad this string", &
+                    & 'padl: output_length <= len(string), test_case 1')
+        call check(padl(test_string, -4, "@") == "left pad this string", &
+                    & 'padl: output_length <= len(string), test_case 2')
+        call check(padl(test_char, 20, "0") == "  left pad this string  ", &
+                    & 'padl: output_length <= len(string), test_case 3')
+        call check(padl(test_char, 17) == "  left pad this string  ", &
+                    & 'padl: output_length <= len(string), test_case 4')
+        call check(padl("", 0, "!") == "", &
+                    & 'padl: output_length <= len(string), test_case 5')
+        call check(padl("", -12, "!") == "", &
+                    & 'padl: output_length <= len(string), test_case 6')
+    
+    end subroutine test_padl
+
+    subroutine test_padr
+        type(string_type) :: test_string
+        character(len=:), allocatable :: test_char
+
+        test_string = "right pad this string"
+        test_char = "  right pad this string  "
+
+      ! output_length > len(string)
+        call check(padr(test_string, 25, "#") == "right pad this string####", &
+                    & 'padr: output_length > len(string), test_case 1')
+        call check(padr(test_string, 22, "$") == "right pad this string$", &
+                    & 'padr: output_length > len(string), test_case 2')
+        call check(padr(test_string, 24) == "right pad this string   ", &
+                    & 'padr: output_length > len(string), test_case 3')
+        call check(padr(test_char, 27) == "  right pad this string    ", &
+                    & 'padr: output_length > len(string), test_case 4')
+        call check(padr(test_char, 27, "&") == "  right pad this string  &&", &
+                    & 'padr: output_length > len(string), test_case 5')
+        call check(padr("", 10, "!") == "!!!!!!!!!!", &
+                    & 'padr: output_length > len(string), test_case 6')
+
+      ! output_length <= len(string)
+        call check(padr(test_string, 18, "#") == "right pad this string", &
+                    & 'padr: output_length <= len(string), test_case 1')
+        call check(padr(test_string, -4, "@") == "right pad this string", &
+                    & 'padr: output_length <= len(string), test_case 2')
+        call check(padr(test_char, 20, "0") == "  right pad this string  ", &
+                    & 'padr: output_length <= len(string), test_case 3')
+        call check(padr(test_char, 17) == "  right pad this string  ", &
+                    & 'padr: output_length <= len(string), test_case 4')
+        call check(padr("", 0, "!") == "", &
+                    & 'padr: output_length <= len(string), test_case 5')
+        call check(padr("", -12, "!") == "", &
+                    & 'padr: output_length <= len(string), test_case 6')
+    
+    end subroutine test_padr
+
+
 end module test_string_functions
 
 
@@ -394,5 +469,7 @@ program tester
     call test_slice_gen
     call test_find
     call test_replace_all
+    call test_padl
+    call test_padr
 
 end program tester
