@@ -1,0 +1,20 @@
+#:include "common.fypp"
+#:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
+submodule (stdlib_linalg) stdlib_linalg_outer_product
+
+  implicit none
+
+contains
+
+  #:for k1, t1 in RCI_KINDS_TYPES
+    pure module function outer_product_${t1[0]}$${k1}$(u, v) result(res)
+      ${t1}$, intent(in) :: u(:), v(:)
+      ${t1}$ :: res(size(u),size(v))
+      integer :: col
+      do col = 1, size(v)
+        res(:,col) = v(col) * u
+      end do
+    end function outer_product_${t1[0]}$${k1}$
+  #:endfor
+
+end submodule
