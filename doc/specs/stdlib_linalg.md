@@ -168,3 +168,41 @@ program demo_trace
     print *, trace(A) ! 1 + 5 + 9
 end program demo_trace
 ```
+
+## `outer_product` - Computes the outer product of two vectors
+
+### Status
+
+Experimental
+
+### Description
+
+Computes the outer product of two vectors
+
+### Syntax
+
+`d = [[stdlib_linalg(module):outer_product(interface)]](u, v)`
+
+### Arguments
+
+`u`: Shall be a rank-1 array
+
+`v`: Shall be a rank-1 array
+
+### Return value
+
+Returns a rank-2 array equal to `u v^T` (where `u, v` are considered column vectors). The shape of the returned array is `[size(u), size(v)]`.
+
+### Example
+
+```fortran
+program demo_outer_product
+    use stdlib_linalg, only: outer_product
+    implicit none
+    real, allocatable :: A(:,:), u(:), v(:)
+    u = [1., 2., 3. ]
+    v = [3., 4.]
+    A = outer_product(u,v)
+    !A = reshape([3., 6., 9., 4., 8., 12.], [3,2])
+end program demo_outer_product
+```

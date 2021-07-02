@@ -4,17 +4,19 @@ program test_sorting
         compiler_version
     use stdlib_kinds, only: int32, int64, dp, sp
     use stdlib_sorting
-    use stdlib_string_type, only: string_type, assignment(=), operator(>), operator(<), &
-        write(formatted)
+    use stdlib_string_type, only: string_type, assignment(=), operator(>), &
+        operator(<), write(formatted)
     use stdlib_error, only: check
 
     implicit none
 
-    integer(int32), parameter :: test_size = 2_int32**20
-    integer(int32), parameter :: char_size = 26**4
-    integer(int32), parameter :: string_size = 26**3
+    integer(int32), parameter :: test_power = 16
+    integer(int32), parameter :: char_set_size = 16
+    integer(int32), parameter :: test_size = 2_int32**test_power
+    integer(int32), parameter :: char_size = char_set_size**4
+    integer(int32), parameter :: string_size = char_set_size**3
     integer(int32), parameter :: block_size = test_size/6
-    integer, parameter        :: repeat = 8
+    integer, parameter        :: repeat = 1
 
     integer(int32) ::             &
         blocks(0:test_size-1),    &
@@ -38,11 +40,12 @@ program test_sorting
     integer(int32)          :: dummy(0:test_size-1)
     character(len=4)        :: char_dummy(0:char_size-1)
     type(string_type)       :: string_dummy(0:string_size-1)
-    integer(int_size)       :: index(0:test_size-1)
+    integer(int_size)       :: index(0:max(test_size, char_size, string_size)-1)
     integer(int32)          :: work(0:test_size/2-1)
     character(len=4)        :: char_work(0:char_size/2-1)
     type(string_type)       :: string_work(0:string_size/2-1)
-    integer(int_size)       :: iwork(0:test_size/2-1)
+    integer(int_size)       :: iwork(0:max(test_size, char_size, &
+                                     string_size)/2-1)
     integer                 :: count, i, index1, index2, j, k, l, temp
     real(sp)                :: arand, brand
     character(*), parameter :: filename = 'test_sorting.txt'
@@ -91,10 +94,10 @@ program test_sorting
     end do
 
     count = 0
-    do i=0, 25
-        do j=0, 25
-            do k=0, 25
-                do l=0, 25
+    do i=0, char_set_size-1
+        do j=0, char_set_size-1
+            do k=0, char_set_size-1
+                do l=0, char_set_size-1
                     char_increase(count) = achar(97+i) // achar(97+j) // &
                         achar(97+k) // achar(97+l)
                     count = count + 1
@@ -117,9 +120,9 @@ program test_sorting
     end do
 
     count = 0
-    do i=0, 25
-        do j=0, 25
-            do k=0, 25
+    do i=0, char_set_size-1
+        do j=0, char_set_size-1
+            do k=0, char_set_size-1
                 string_increase(count) = achar(97+i) // achar(97+j) // &
                     achar(97+k)
                 count = count + 1
@@ -170,7 +173,6 @@ program test_sorting
     call test_char_sort_indexes( ldummy );   ltest = (ltest .and. ldummy)
 
     call test_string_sort_indexes( ldummy ); ltest = (ltest .and. ldummy)
-
 
     call check(ltest)
 
@@ -244,7 +246,7 @@ contains
             write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
         end if
         write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
-            'a12, " |",  F10.5, " |" )' ) &
+            'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Ord_Sort", tdiff/rate
 
         !reverse
@@ -253,7 +255,8 @@ contains
         call verify_reverse_sort( dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
-            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // "."
+            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
+                "."
             write(*,*) 'i = ', i
             write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
         end if
@@ -316,7 +319,7 @@ contains
             write(*,'(a, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
         write( lun, '("|   Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
-            'a12, " |",  F10.5, " |" )' ) &
+            'a12, " |",  F10.6, " |" )' ) &
             char_size, a_name, "Ord_Sort", tdiff/rate
 
         !reverse
@@ -326,7 +329,8 @@ contains
         call verify_char_reverse_sort( char_dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
-            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // "."
+            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
+                "."
             write(*,*) 'i = ', i
             write(*,'(a, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
@@ -337,7 +341,8 @@ contains
         call verify_char_reverse_sort( char_dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
-            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // "."
+            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
+                "."
             write(*,*) 'i = ', i
             write(*,'(a, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
@@ -393,7 +398,7 @@ contains
                 string_dummy(i-1:i)
         end if
         write( lun, '("| String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
-            'a12, " |",  F10.5, " |" )' ) &
+            'a12, " |",  F10.6, " |" )' ) &
             string_size, a_name, "Ord_Sort", tdiff/rate
 
         !reverse
@@ -403,7 +408,8 @@ contains
         call verify_string_reverse_sort( string_dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
-            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // "."
+            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
+                "."
             write(*,*) 'i = ', i
             write(*,'(a, 2(1x,a))') 'string_dummy(i-1:i) = ', &
                 string_dummy(i-1:i)
@@ -491,7 +497,7 @@ contains
             write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
         end if
         write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
-            'a12, " |",  F10.5, " |" )' ) &
+            'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Sort", tdiff/rate
 
 
@@ -556,7 +562,7 @@ contains
             write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
         write( lun, '("|   Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
-            'a12, " |",  F10.5, " |" )' ) &
+            'a12, " |",  F10.6, " |" )' ) &
             char_size, a_name, "Sort", tdiff/rate
 
         !reverse
@@ -619,7 +625,7 @@ contains
                 string_dummy(i-1:i)
         end if
         write( lun, '("| String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
-            'a12, " |",  F10.5, " |" )' ) &
+            'a12, " |",  F10.6, " |" )' ) &
             string_size, a_name, "Sort", tdiff/rate
 
         ! reverse
@@ -696,7 +702,7 @@ contains
         end do
         tdiff = tdiff/repeat
 
-        dummy = a(index)
+        dummy = a(index(0:size(a)-1))
         call verify_sort( dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
@@ -705,12 +711,12 @@ contains
             write(*,'(a18, 2i7)') 'a(index(i-1:i)) = ', a(index(i-1:i))
         end if
         write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
-            'a12, " |",  F10.5, " |" )' ) &
+            'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Sort_Index", tdiff/rate
 
         dummy = a
         call sort_index( dummy, index, work, iwork, reverse=.true. )
-        dummy = a(index)
+        dummy = a(index(size(a)-1))
         call verify_reverse_sort( dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
@@ -754,13 +760,17 @@ contains
         do i = 1, repeat
             char_dummy = a
             call system_clock( t0, rate )
+
             call sort_index( char_dummy, index, char_work, iwork )
+
             call system_clock( t1, rate )
+
             tdiff = tdiff + t1 - t0
         end do
         tdiff = tdiff/repeat
 
         call verify_char_sort( char_dummy, valid, i )
+
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
             write( *, * ) "SORT_INDEX did not sort " // a_name // "."
@@ -768,7 +778,7 @@ contains
             write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
         write( lun, '("|   Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
-            'a12, " |",  F10.5, " |" )' ) &
+            'a12, " |",  F10.6, " |" )' ) &
             char_size, a_name, "Sort_Index", tdiff/rate
 
     end subroutine test_char_sort_index
@@ -780,9 +790,11 @@ contains
 
         ltest = .true.
 
-        call test_string_sort_index( string_decrease, "String Decrease", ldummy )
+        call test_string_sort_index( string_decrease, "String Decrease", &
+            ldummy )
         ltest = (ltest .and. ldummy)
-        call test_string_sort_index( string_increase, "String Increase", ldummy )
+        call test_string_sort_index( string_increase, "String Increase", &
+            ldummy )
         ltest = (ltest .and. ldummy)
         call test_string_sort_index( string_rand, "String Random", ldummy )
         ltest = (ltest .and. ldummy)
@@ -820,7 +832,7 @@ contains
                 string_dummy(i-1:i)
         end if
         write( lun, '("| String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
-            'a12, " |",  F10.5, " |" )' ) &
+            'a12, " |",  F10.6, " |" )' ) &
             string_size, a_name, "Sort_Index", tdiff/rate
 
     end subroutine test_string_sort_index

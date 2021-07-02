@@ -9,6 +9,7 @@ set(fppFiles
     stdlib_io.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
+    stdlib_linalg_outer_product.fypp
     stdlib_optval.fypp
     stdlib_sorting.fypp
     stdlib_sorting_ord_sort.fypp
@@ -50,6 +51,9 @@ set(SRC
     stdlib_kinds.f90
     stdlib_logger.f90
     stdlib_system.F90
+    stdlib_specialfunctions.f90
+    stdlib_specialfunctions_legendre.f90
+    stdlib_quadrature_gauss.f90
     ${outFiles}
 )
 

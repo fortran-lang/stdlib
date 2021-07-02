@@ -1,3 +1,5 @@
 PROGS_SRC = test_trapz.f90
+PROGS_SRC += test_simps.f90
+PROGS_SRC += test_gauss.f90
 
 include ../Makefile.manual.test.mk
