@@ -612,7 +612,7 @@ contains
         character(len=*), intent(in) :: string
         character(len=*), intent(in) :: pattern
         character(len=*), intent(in) :: replacement
-        character(:), allocatable :: res
+        character(len=:), allocatable :: res
         integer :: lps_array(len(pattern))
         integer :: s_i, p_i, last, length_string, length_pattern
 
@@ -626,7 +626,7 @@ contains
 
             s_i = 1
             p_i = 1
-            do while(s_i <= length_string)
+            do while (s_i <= length_string)
                 if (string(s_i:s_i) == pattern(p_i:p_i)) then
                     if (p_i == length_pattern) then
                         res = res // &
