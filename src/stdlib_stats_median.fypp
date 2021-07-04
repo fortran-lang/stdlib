@@ -8,6 +8,9 @@ submodule (stdlib_stats) stdlib_stats_median
   use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
+  ! Use "ord_sort" rather than "sort" because the former can be much faster for arrays
+  ! that are already partly sorted. While it is slightly slower for random arrays,
+  ! ord_sort seems a better overall choice.
   use stdlib_sorting, only:sort => ord_sort
   implicit none
 
