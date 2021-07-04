@@ -4,7 +4,7 @@ module test_string_functions
     use stdlib_error, only : check
     use stdlib_string_type, only : string_type, assignment(=), operator(==), &
                                     to_lower, to_upper, to_title, to_sentence, reverse
-    use stdlib_strings, only: slice, find, replace_all, padl, padr
+    use stdlib_strings, only: slice, find, replace_all, padl, padr, count
     use stdlib_optval, only: optval
     use stdlib_ascii, only : to_string
     implicit none
@@ -355,8 +355,8 @@ contains
           call check(replace_all(test_string_1, "TAT", "ATA") == &
                     & "mutate DNA sequence: GTATACGATAGCCGTAATATA", &
                     & "replace_all: 1 string_type & 2 character scalar, test case 1")
-          call check(replace_all("mutate DNA sequence: AGAGAGCCTAGAGAGAG", test_pattern_2, &
-                    & "GC") == "mutate DNA sequence: GCGAGCCTGCGGCG", &
+          call check(replace_all("mutate DNA sequence: AGAGAGCCTAGAGAGAG", test_pattern_2, "GC") == &
+                    & "mutate DNA sequence: GCGAGCCTGCGGCG", &
                     & "replace_all: 1 string_type & 2 character scalar, test case 2")
           call check(replace_all("mutate DNA sequence: GTTATCGTATGCCGTAATTAT", "TA", &
                     & test_replacement_2) == "mutate DNA sequence: GTagaTCGagaTGCCGagaATagaT", &
@@ -452,6 +452,48 @@ contains
     
     end subroutine test_padr
 
+    subroutine test_count
+        type(string_type) :: test_string_1, test_string_2, test_pattern_1, test_pattern_2
+        test_string_1 = "DNA sequence: AGAGAGAGTCCTGTCGAGA"
+        test_string_2 = "DNA sequence: GTCCTGTCCTGTCAGA"
+        test_pattern_1 = "AGA"
+        test_pattern_2 = "GTCCTGTC"
+
+        ! all 2 as string_type
+          call check(all(count([test_string_1, test_string_2], test_pattern_1) == [4, 1]), &
+                & 'count: all 2 as string_type, test case 1')
+          call check(all(count(test_string_1, [test_pattern_1, test_pattern_2], .false.) == [3, 1]), &
+                & 'count: all 2 as string_type, test case 2')
+          call check(count(test_string_2, test_pattern_1, .false.) == 1, &
+                & 'count: all 2 as string_type, test case 3')
+          call check(all(count([test_string_2, test_string_2, test_string_1], &
+                & [test_pattern_2, test_pattern_2, test_pattern_1], [.true., .false., .false.]) == &
+                & [2, 1, 3]), 'count: all 2 as string_type, test case 4')
+          call check(all(count([[test_string_1, test_string_2], [test_string_1, test_string_2]], &
+                & [[test_pattern_1, test_pattern_2], [test_pattern_2, test_pattern_1]], .true.) == &
+                & [[4, 2], [1, 1]]), 'count: all 2 as string_type, test case 5')
+        
+        ! 1 string_type and 1 character scalar
+          call check(all(count(test_string_1, ["AGA", "GTC"], [.true., .false.]) == [4, 2]), &
+                & 'count: 1 string_type and 1 character scalar, test case 1')
+          call check(all(count([test_string_1, test_string_2], ["CTC", "GTC"], [.true., .false.]) == &
+                & [0, 3]), 'count: 1 string_type and 1 character scalar, test case 2')
+          call check(all(count(["AGAGAGAGTCCTGTCGAGA", "AGAGAGAGTCCTGTCGAGA"], &
+                & test_pattern_1, [.false., .true.]) == [3, 4]), &
+                & 'count: 1 string_type and 1 character scalar, test case 3')
+          call check(count(test_string_1, "GAG") == 4, &
+                & 'count: 1 string_type and 1 character scalar, test case 4')
+          call check(count("DNA sequence: GTCCTGTCCTGTCAGA", test_pattern_2, .false.) == 1, &
+                & 'count: 1 string_type and 1 character scalar, test case 5')
+        
+        ! all 2 character scalar
+          call check(all(count("", ["mango", "trees"], .true.) == [0, 0]), &
+                & 'count: all 2 character scalar, test case 1')
+          call check(count("", "", .true.) == 0, 'count: all 2 character scalar, test case 2')
+          call check(all(count(["mango", "trees"], "", .true.) == [0, 0]), &
+                & 'count: all 2 character scalar, test case 3')
+
+    end subroutine test_count
 
 end module test_string_functions
 
@@ -471,5 +513,6 @@ program tester
     call test_replace_all
     call test_padl
     call test_padr
+    call test_count
 
 end program tester

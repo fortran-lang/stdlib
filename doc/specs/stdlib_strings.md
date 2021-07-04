@@ -280,7 +280,7 @@ end program demo_slice
 Returns the starting index of the `occurrence`th occurrence of the substring `pattern` 
 in the input string `string`.  
 Default value of `occurrence` is set to `1`. 
-If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurrences of substring as two different occurrences.  
+If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurrences of substring `pattern` as two different occurrences.  
 If `occurrence`th occurrence is not found, function returns `0`.
 
 #### Syntax
@@ -308,7 +308,7 @@ Elemental function
 
 #### Result value
 
-The result is a scalar of integer type or integer array of rank equal to the highest rank among all dummy arguments.
+The result is a scalar of integer type or an integer array of rank equal to the highest rank among all dummy arguments.
 
 #### Example
 
@@ -489,4 +489,56 @@ program demo_padr
   ! string <-- "right pad this string    "
 
 end program demo_padr
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `count`
+
+#### Description
+
+Returns the number of times the substring `pattern` has occurred in the input string `string`.  
+If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurrences of substring `pattern` as two different occurrences.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):count(interface)]] (string, pattern [, consider_overlapping])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `pattern`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `consider_overlapping`: logical.
+  This argument is intent(in) and optional.
+
+#### Result value
+
+The result is a scalar of integer type or an integer array of rank equal to the highest rank among all dummy arguments.
+
+#### Example
+
+```fortran
+program demo_count
+  use stdlib_string_type, only: string_type, assignment(=)
+  use stdlib_strings, only : count
+  implicit none
+  type(string_type) :: string
+
+  string = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?"
+
+  print *, count(string, "wood")                                  ! 4
+  print *, count(string, ["would", "chuck", "could"])             ! [1, 4, 1]
+  print *, count("a long queueueueue", "ueu", [.false., .true.])  ! [2, 4]
+
+end program demo_count
 ```
