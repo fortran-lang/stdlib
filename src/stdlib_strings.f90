@@ -454,9 +454,7 @@ contains
         logical, intent(in), optional :: consider_overlapping
         integer :: lps_array(len(pattern))
         integer :: res, s_i, p_i, length_string, length_pattern, occurrence_
-        logical :: consider_overlapping_
 
-        consider_overlapping_ = optval(consider_overlapping, .true.)
         occurrence_ = optval(occurrence, 1)
         res = 0
         length_string = len(string)
@@ -475,7 +473,7 @@ contains
                         if (occurrence_ == 0) then
                             res = s_i - length_pattern + 1
                             exit
-                        else if (consider_overlapping_) then
+                        else if (optval(consider_overlapping, .true.)) then
                             p_i = lps_array(p_i)
                         else
                             p_i = 0
@@ -708,9 +706,7 @@ contains
         logical, intent(in), optional :: consider_overlapping
         integer :: lps_array(len(pattern))
         integer :: res, s_i, p_i, length_string, length_pattern
-        logical :: consider_overlapping_
 
-        consider_overlapping_ = optval(consider_overlapping, .true.)
         res = 0
         length_string = len(string)
         length_pattern = len(pattern)
@@ -724,7 +720,7 @@ contains
                 if (string(s_i:s_i) == pattern(p_i:p_i)) then
                     if (p_i == length_pattern) then
                         res = res + 1
-                        if (consider_overlapping_) then
+                        if (optval(consider_overlapping, .true.)) then
                             p_i = lps_array(p_i)
                         else
                             p_i = 0
