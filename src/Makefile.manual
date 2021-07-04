@@ -29,12 +29,17 @@ SRCFYPP =\
         stdlib_string_type.fypp
 
 SRC = f18estop.f90 \
+      stdlib_container.f90 \
       stdlib_error.f90 \
+      stdlib_hash.f90 \
       stdlib_specialfunctions.f90 \
       stdlib_specialfunctions_legendre.f90 \
       stdlib_io.f90 \
       stdlib_kinds.f90 \
       stdlib_logger.f90 \
+      stdlib_map.f90 \
+      stdlib_map_class.f90 \
+      stdlib_map_cuckoohash.f90 \
       stdlib_quadrature_gauss.f90 \
       stdlib_strings.f90 \
       $(SRCGEN)
@@ -142,3 +147,7 @@ stdlib_strings.o: stdlib_ascii.o \
 	stdlib_optval.o
 stdlib_math.o: stdlib_kinds.o
 stdlib_linalg_outer_product.o: stdlib_linalg.o
+stdlib_hash.o: stdlib_kinds.o
+stdlib_map.o: stdlib_map_class.o stdlib_map_cuckoohash.o
+stdlib_map_class.o: stdlib_container.o
+stdlib_map_cuckoohash.o: stdlib_map_class.o stdlib_container.o stdlib_hash.o stdlib_optval.o
