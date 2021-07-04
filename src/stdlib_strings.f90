@@ -720,7 +720,7 @@ contains
 
             s_i = 1
             p_i = 1
-            do while(s_i <= length_string)
+            do while (s_i <= length_string)
                 if (string(s_i:s_i) == pattern(p_i:p_i)) then
                     if (p_i == length_pattern) then
                         res = res + 1
