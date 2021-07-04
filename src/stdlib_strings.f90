@@ -93,10 +93,11 @@ module stdlib_strings
         module procedure :: replace_all_char_char_char
     end interface replace_all
 
+    !> Version: experimental
+    !>
     !> Returns the number of times substring 'pattern' has appeared in the
     !> input string 'string'
     !> [Specifications](../page/specs/stdlib_strings.html#count)
-    !> Version: experimental
     interface count
         module procedure :: count_string_string
         module procedure :: count_string_char

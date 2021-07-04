@@ -389,7 +389,7 @@ end program demo_replace_all
 
 #### Description
 
-Returns the number of times substring `pattern` has occurred in the input string `string`.  
+Returns the number of times the substring `pattern` has occurred in the input string `string`.  
 If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurrences of substring `pattern` as two different occurrences.
 
 #### Syntax
