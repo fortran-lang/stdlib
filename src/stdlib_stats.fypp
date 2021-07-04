@@ -19,7 +19,7 @@ module stdlib_stats
     !! version: experimental
     !!
     !! Pearson correlation of array elements
-    !! ([Specification](../page/specs/stdlib_stats.html#description))
+    !! ([Specification](../page/specs/stdlib_stats.html#corr-pearson-correlation-of-array-elements))
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("corr",1, t1, k1)
       module function ${RName}$(x, dim, mask) result(res)
@@ -111,7 +111,7 @@ module stdlib_stats
     !! version: experimental
     !!
     !! Covariance of array elements
-    !! ([Specification](../page/specs/stdlib_stats.html#description_1))
+    !! ([Specification](../page/specs/stdlib_stats.html#cov-covariance-of-array-elements))
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("cov",1, t1, k1)
       module function ${RName}$(x, dim, mask, corrected) result(res)
@@ -210,7 +210,7 @@ module stdlib_stats
     !! version: experimental
     !!
     !! Mean of array elements
-    !! ([Specification](../page/specs/stdlib_stats.html#description_2))
+    !! ([Specification](../page/specs/stdlib_stats.html#mean-mean-of-array-elements))
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("mean_all",rank, t1, k1)
@@ -305,11 +305,12 @@ module stdlib_stats
 
   end interface mean
 
+
   interface median
     !! version: experimental
     !!
     !! Median of array elements
-    !! ([Specification](../page/specs/stdlib_stats.html#median))
+    !! ([Specification](../page/specs/stdlib_stats.html#median-median-of-array-elements))
     #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
       #:for rank in RANKS
         #:set RName = rname("median_all",rank, t1, k1, o1)
@@ -363,7 +364,7 @@ module stdlib_stats
     !! version: experimental
     !!
     !! Variance of array elements
-    !! ([Specification](../page/specs/stdlib_stats.html#description_4))
+    !! ([Specification](../page/specs/stdlib_stats.html#var-variance-of-array-elements))
 
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
@@ -472,7 +473,7 @@ module stdlib_stats
     !! version: experimental
     !!
     !! Central moment of array elements
-    !! ([Specification](../page/specs/stdlib_stats.html#description_3))
+    !! ([Specification](../page/specs/stdlib_stats.html#moment-central-moments-of-array-elements))
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("moment_all",rank, t1, k1)
