@@ -93,9 +93,10 @@ module stdlib_strings
         module procedure :: replace_all_char_char_char
     end interface replace_all
 
-    !> Left pad the input string
-    !> [Specifications](link to the specs - to be completed)
     !> Version: experimental
+    !>
+    !> Left pad the input string
+    !> [Specifications](../page/specs/stdlib_strings.html#padl)
     interface padl
         module procedure :: padl_string_default
         module procedure :: padl_string_pad_with
@@ -103,9 +104,10 @@ module stdlib_strings
         module procedure :: padl_char_pad_with
     end interface padl
 
-    !> Right pad the input string
-    !> [Specifications](link to the specs - to be completed)
     !> Version: experimental
+    !>
+    !> Right pad the input string
+    !> [Specifications](../page/specs/stdlib_strings.html#padr)
     interface padr
         module procedure :: padr_string_default
         module procedure :: padr_string_pad_with
