@@ -95,7 +95,7 @@ module stdlib_strings
 
     !> Returns the number of times substring 'pattern' has appeared in the
     !> input string 'string'
-    !> [Specifications](link to the specs - to be completed)
+    !> [Specifications](../page/specs/stdlib_strings.html#count)
     !> Version: experimental
     interface count
         module procedure :: count_string_string
