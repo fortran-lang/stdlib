@@ -160,6 +160,7 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
 #! Generates an array rank suffix for subarrays along a dimension
 #!
 #! Args:
+#!   varname (str): Name of the variable to be used as origin
 #!   rank (int): Rank of the original variable
 #!   dim (int): Dimension of the variable
 #!
@@ -167,18 +168,18 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
 #!   Array rank suffix string enclosed in braces
 #!
 #! E.g.,
-#!  select_subvector(5, 2)
+#!  select_subvector('j', 5, 2)
 #!   -> (j_, :, j___, j____, j_____)
 #!
-#:def select_subvector(rank, idim)
+#:def select_subvector(varname, rank, idim)
   #:assert rank > 0
   #:call join_lines(joinstr=", ", prefix="(", suffix=")")
     #:for i in range(1, idim)
-      ${"j" + "_" * (i) }$
+      ${varname}$${ "_" * (i) }$
     #:endfor
     :
     #:for i in range(idim + 1, rank + 1)
-      ${"j" + "_" * (i) }$
+      ${varname}$${ "_" * (i) }$
     #:endfor
   #:endcall
 #:enddef
@@ -187,6 +188,7 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
 #! Generates an array rank suffix for arrays
 #!
 #! Args:
+#!   varname (str): Name of the variable to be used as origin
 #!   rank (int): Rank of the original variable
 #!   idim (int): Dimension of the variable
 #!
@@ -194,18 +196,18 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
 #!   Array rank suffix string enclosed in braces
 #!
 #! E.g.,
-#!  select_subvector(5, 2)
+#!  reduce_subvector('j', 5, 2)
 #!   -> (j_, j___, j____, j_____)
 #!
-#:def reduce_subvector(rank, idim)
+#:def reduce_subvector(varname, rank, idim)
   #:assert rank > 0
   #:if rank > 1
     #:call join_lines(joinstr=", ", prefix="(", suffix=")")
       #:for i in range(1, idim)
-        ${"j" + "_" * (i) }$
+        ${varname}$${ "_" * (i) }$
       #:endfor
       #:for i in range(idim + 1, rank + 1)
-        ${"j" + "_" * (i) }$
+        ${varname}$${ "_" * (i) }$
       #:endfor
     #:endcall
   #:endif
