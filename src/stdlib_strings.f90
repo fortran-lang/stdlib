@@ -12,7 +12,7 @@ module stdlib_strings
 
     public :: strip, chomp
     public :: starts_with, ends_with
-    public :: slice, find, replace_all
+    public :: slice, find, replace_all, count
 
 
     !> Remove leading and trailing whitespace characters.
@@ -92,6 +92,18 @@ module stdlib_strings
         module procedure :: replace_all_char_char_string
         module procedure :: replace_all_char_char_char
     end interface replace_all
+
+    !> Version: experimental
+    !>
+    !> Returns the number of times substring 'pattern' has appeared in the
+    !> input string 'string'
+    !> [Specifications](../page/specs/stdlib_strings.html#count)
+    interface count
+        module procedure :: count_string_string
+        module procedure :: count_string_char
+        module procedure :: count_char_string
+        module procedure :: count_char_char
+    end interface count
 
 contains
 
@@ -443,9 +455,7 @@ contains
         logical, intent(in), optional :: consider_overlapping
         integer :: lps_array(len(pattern))
         integer :: res, s_i, p_i, length_string, length_pattern, occurrence_
-        logical :: consider_overlapping_
 
-        consider_overlapping_ = optval(consider_overlapping, .true.)
         occurrence_ = optval(occurrence, 1)
         res = 0
         length_string = len(string)
@@ -464,7 +474,7 @@ contains
                         if (occurrence_ == 0) then
                             res = s_i - length_pattern + 1
                             exit
-                        else if (consider_overlapping_) then
+                        else if (optval(consider_overlapping, .true.)) then
                             p_i = lps_array(p_i)
                         else
                             p_i = 0
@@ -648,5 +658,86 @@ contains
         res = res // string(last : length_string)
 
     end function replace_all_char_char_char
+
+    !> Returns the number of times substring 'pattern' has appeared in the
+    !> input string 'string'
+    !> Returns an integer
+    elemental function count_string_string(string, pattern, consider_overlapping) result(res)
+        type(string_type), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        logical, intent(in), optional :: consider_overlapping
+        integer :: res
+
+        res = count(char(string), char(pattern), consider_overlapping)
+
+    end function count_string_string
+
+    !> Returns the number of times substring 'pattern' has appeared in the
+    !> input string 'string'
+    !> Returns an integer
+    elemental function count_string_char(string, pattern, consider_overlapping) result(res)
+        type(string_type), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        logical, intent(in), optional :: consider_overlapping
+        integer :: res
+
+        res = count(char(string), pattern, consider_overlapping)
+
+    end function count_string_char
+
+    !> Returns the number of times substring 'pattern' has appeared in the
+    !> input string 'string'
+    !> Returns an integer
+    elemental function count_char_string(string, pattern, consider_overlapping) result(res)
+        character(len=*), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        logical, intent(in), optional :: consider_overlapping
+        integer :: res
+
+        res = count(string, char(pattern), consider_overlapping)
+
+    end function count_char_string
+
+    !> Returns the number of times substring 'pattern' has appeared in the
+    !> input string 'string'
+    !> Returns an integer
+    elemental function count_char_char(string, pattern, consider_overlapping) result(res)
+        character(len=*), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        logical, intent(in), optional :: consider_overlapping
+        integer :: lps_array(len(pattern))
+        integer :: res, s_i, p_i, length_string, length_pattern
+
+        res = 0
+        length_string = len(string)
+        length_pattern = len(pattern)
+
+        if (length_pattern > 0 .and. length_pattern <= length_string) then
+            lps_array = compute_lps(pattern)
+
+            s_i = 1
+            p_i = 1
+            do while (s_i <= length_string)
+                if (string(s_i:s_i) == pattern(p_i:p_i)) then
+                    if (p_i == length_pattern) then
+                        res = res + 1
+                        if (optval(consider_overlapping, .true.)) then
+                            p_i = lps_array(p_i)
+                        else
+                            p_i = 0
+                        end if
+                    end if
+                    s_i = s_i + 1
+                    p_i = p_i + 1
+                else if (p_i > 1) then
+                    p_i = lps_array(p_i - 1) + 1
+                else
+                    s_i = s_i + 1
+                end if
+            end do
+        end if
+    
+    end function count_char_char
+    
 
 end module stdlib_strings
