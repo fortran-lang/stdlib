@@ -355,8 +355,8 @@ contains
           call check(replace_all(test_string_1, "TAT", "ATA") == &
                     & "mutate DNA sequence: GTATACGATAGCCGTAATATA", &
                     & "replace_all: 1 string_type & 2 character scalar, test case 1")
-          call check(replace_all("mutate DNA sequence: AGAGAGCCTAGAGAGAG", test_pattern_2, &
-                    & "GC") == "mutate DNA sequence: GCGAGCCTGCGGCG", &
+          call check(replace_all("mutate DNA sequence: AGAGAGCCTAGAGAGAG", test_pattern_2, "GC") == &
+                    & "mutate DNA sequence: GCGAGCCTGCGGCG", &
                     & "replace_all: 1 string_type & 2 character scalar, test case 2")
           call check(replace_all("mutate DNA sequence: GTTATCGTATGCCGTAATTAT", "TA", &
                     & test_replacement_2) == "mutate DNA sequence: GTagaTCGagaTGCCGagaATagaT", &
@@ -392,20 +392,20 @@ contains
                 & 'count: all 2 as string_type, test case 2')
           call check(count(test_string_2, test_pattern_1, .false.) == 1, &
                 & 'count: all 2 as string_type, test case 3')
-          call check(all(count([test_string_2, test_string_2, test_string_1], [test_pattern_2, &
-                & test_pattern_2, test_pattern_1], [.true., .false., .false.]) == [2, 1, 3]), &
-                & 'count: all 2 as string_type, test case 4')
-          call check(all(count([[test_string_1, test_string_2], [test_string_1, test_string_2]], [[test_pattern_1, &
-                & test_pattern_2], [test_pattern_2, test_pattern_1]], .true.) == [[4, 2], [1, 1]]), &
-                & 'count: all 2 as string_type, test case 5')
+          call check(all(count([test_string_2, test_string_2, test_string_1], &
+                & [test_pattern_2, test_pattern_2, test_pattern_1], [.true., .false., .false.]) == &
+                & [2, 1, 3]), 'count: all 2 as string_type, test case 4')
+          call check(all(count([[test_string_1, test_string_2], [test_string_1, test_string_2]], &
+                & [[test_pattern_1, test_pattern_2], [test_pattern_2, test_pattern_1]], .true.) == &
+                & [[4, 2], [1, 1]]), 'count: all 2 as string_type, test case 5')
         
         ! 1 string_type and 1 character scalar
           call check(all(count(test_string_1, ["AGA", "GTC"], [.true., .false.]) == [4, 2]), &
                 & 'count: 1 string_type and 1 character scalar, test case 1')
-          call check(all(count([test_string_1, test_string_2], ["CTC", "GTC"], [.true., .false.]) &
-                & == [0, 3]), 'count: 1 string_type and 1 character scalar, test case 2')
-          call check(all(count(["AGAGAGAGTCCTGTCGAGA", "AGAGAGAGTCCTGTCGAGA"], test_pattern_1, &
-                & [.false., .true.]) == [3, 4]), &
+          call check(all(count([test_string_1, test_string_2], ["CTC", "GTC"], [.true., .false.]) == &
+                & [0, 3]), 'count: 1 string_type and 1 character scalar, test case 2')
+          call check(all(count(["AGAGAGAGTCCTGTCGAGA", "AGAGAGAGTCCTGTCGAGA"], &
+                & test_pattern_1, [.false., .true.]) == [3, 4]), &
                 & 'count: 1 string_type and 1 character scalar, test case 3')
           call check(count(test_string_1, "GAG") == 4, &
                 & 'count: 1 string_type and 1 character scalar, test case 4')
