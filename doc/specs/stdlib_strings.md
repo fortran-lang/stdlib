@@ -283,7 +283,6 @@ Default value of `occurrence` is set to `1`.
 If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurrences of substring as two different occurrences.  
 If `occurrence`th occurrence is not found, function returns `0`.
 
-
 #### Syntax
 
 `string = [[stdlib_strings(module):find(interface)]] (string, pattern [, occurrence, consider_overlapping])`
@@ -318,7 +317,7 @@ program demo_find
   use stdlib_string_type, only: string_type, assignment(=)
   use stdlib_strings, only : find
   implicit none
-  string_type :: string
+  type(string_type) :: string
 
   string = "needle in the character-stack"
 
@@ -327,4 +326,59 @@ program demo_find
   print *, find("qwqwqwq", "qwq", 3, [.false., .true.]) ! [0, 5]
 
 end program demo_find
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `replace_all`
+
+#### Description
+
+Replaces all occurrences of substring `pattern` in the input `string` with the replacement `replacement`.  
+Occurrences overlapping on a base occurrence will not be replaced.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):replace_all(interface)]] (string, pattern, replacement)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `pattern`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `replacement`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+
+#### Result value
+
+The result is of the same type as `string`.
+
+#### Example
+
+```fortran
+program demo_replace_all
+  use stdlib_string_type, only: string_type, assignment(=)
+  use stdlib_strings, only : replace_all
+  implicit none
+  type(string_type) :: string
+
+  string = "hurdles here, hurdles there, hurdles everywhere"
+  ! string <-- "hurdles here, hurdles there, hurdles everywhere"
+
+  print'(a)', replace_all(string, "hurdles", "learn from")
+  ! "learn from here, learn from there, learn from everywhere"
+
+  string = replace_all(string, "hurdles", "technology")
+  ! string <-- "technology here, technology there, technology everywhere"
+
+end program demo_replace_all
 ```

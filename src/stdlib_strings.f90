@@ -12,7 +12,7 @@ module stdlib_strings
 
     public :: strip, chomp
     public :: starts_with, ends_with
-    public :: slice, find
+    public :: slice, find, replace_all
 
 
     !> Remove leading and trailing whitespace characters.
@@ -78,6 +78,20 @@ module stdlib_strings
         module procedure :: find_char_string
         module procedure :: find_char_char
     end interface find
+
+    !> Replaces all the occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Version: experimental
+    interface replace_all
+        module procedure :: replace_all_string_string_string
+        module procedure :: replace_all_string_string_char
+        module procedure :: replace_all_string_char_string
+        module procedure :: replace_all_char_string_string
+        module procedure :: replace_all_string_char_char
+        module procedure :: replace_all_char_string_char
+        module procedure :: replace_all_char_char_string
+        module procedure :: replace_all_char_char_char
+    end interface replace_all
 
 contains
 
@@ -353,7 +367,7 @@ contains
         end if
 
         if (present(first)) then
-            first_index =  first
+            first_index = first
         end if
         if (present(last)) then
             last_index = last
@@ -499,5 +513,140 @@ contains
     
     end function compute_lps
 
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_string_string_string(string, pattern, replacement) result(res)
+        type(string_type), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        type(string_type), intent(in) :: replacement
+        type(string_type) :: res
+
+        res = string_type(replace_all(char(string), & 
+                & char(pattern), char(replacement)))
+
+    end function replace_all_string_string_string
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_string_string_char(string, pattern, replacement) result(res)
+        type(string_type), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        character(len=*), intent(in) :: replacement
+        type(string_type) :: res
+
+        res = string_type(replace_all(char(string), char(pattern), replacement))
+
+    end function replace_all_string_string_char
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_string_char_string(string, pattern, replacement) result(res)
+        type(string_type), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        type(string_type), intent(in) :: replacement
+        type(string_type) :: res
+
+        res = string_type(replace_all(char(string), pattern, char(replacement)))
+
+    end function replace_all_string_char_string
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_char_string_string(string, pattern, replacement) result(res)
+        character(len=*), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        type(string_type), intent(in) :: replacement
+        character(len=:), allocatable :: res
+
+        res = replace_all(string, char(pattern), char(replacement))
+
+    end function replace_all_char_string_string
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_string_char_char(string, pattern, replacement) result(res)
+        type(string_type), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        character(len=*), intent(in) :: replacement
+        type(string_type) :: res
+
+        res = string_type(replace_all(char(string), pattern, replacement))
+
+    end function replace_all_string_char_char
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_char_string_char(string, pattern, replacement) result(res)
+        character(len=*), intent(in) :: string
+        type(string_type), intent(in) :: pattern
+        character(len=*), intent(in) :: replacement
+        character(len=:), allocatable :: res
+
+        res = replace_all(string, char(pattern), replacement)
+
+    end function replace_all_char_string_char
+
+    !> Replaces all occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_char_char_string(string, pattern, replacement) result(res)
+        character(len=*), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        type(string_type), intent(in) :: replacement
+        character(len=:), allocatable :: res
+
+        res = replace_all(string, pattern, char(replacement))
+
+    end function replace_all_char_char_string
+
+    !> Replaces all the occurrences of substring 'pattern' in the input 'string'
+    !> with the replacement 'replacement'
+    !> Returns a new string
+    pure function replace_all_char_char_char(string, pattern, replacement) result(res)
+        character(len=*), intent(in) :: string
+        character(len=*), intent(in) :: pattern
+        character(len=*), intent(in) :: replacement
+        character(len=:), allocatable :: res
+        integer :: lps_array(len(pattern))
+        integer :: s_i, p_i, last, length_string, length_pattern
+
+        res = ""
+        length_string = len(string)
+        length_pattern = len(pattern)
+        last = 1
+        
+        if (length_pattern > 0 .and. length_pattern <= length_string) then
+            lps_array = compute_lps(pattern)
+
+            s_i = 1
+            p_i = 1
+            do while (s_i <= length_string)
+                if (string(s_i:s_i) == pattern(p_i:p_i)) then
+                    if (p_i == length_pattern) then
+                        res = res // &
+                                & string(last : s_i - length_pattern) // &
+                                & replacement
+                        last = s_i + 1
+                        p_i = 0
+                    end if
+                    s_i = s_i + 1
+                    p_i = p_i + 1
+                else if (p_i > 1) then
+                    p_i = lps_array(p_i - 1) + 1
+                else
+                    s_i = s_i + 1
+                end if
+            end do
+        end if
+        
+        res = res // string(last : length_string)
+
+    end function replace_all_char_char_char
 
 end module stdlib_strings

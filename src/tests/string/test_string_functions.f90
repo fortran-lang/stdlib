@@ -4,7 +4,7 @@ module test_string_functions
     use stdlib_error, only : check
     use stdlib_string_type, only : string_type, assignment(=), operator(==), &
                                     to_lower, to_upper, to_title, to_sentence, reverse
-    use stdlib_strings, only: slice, find                                    
+    use stdlib_strings, only: slice, find, replace_all                                   
     use stdlib_optval, only: optval
     use stdlib_ascii, only : to_string
     implicit none
@@ -63,102 +63,102 @@ contains
         ! Only one argument is given
           ! Valid
           call check(slice(test_string, first=10) == "jklmnopqrstuvwxyz", &
-                    "Slice, Valid arguments: first=10") ! last=+inf
+                    "slice, Valid arguments: first=10") ! last=+inf
           call check(slice(test_string, last=10) == "abcdefghij", &
-                    "Slice, Valid arguments: last=10") ! first=-inf
+                    "slice, Valid arguments: last=10") ! first=-inf
           call check(slice(test_string, stride=3) == "adgjmpsvy", &
-                    "Slice, Valid arguments: stride=3") ! first=-inf, last=+inf
+                    "slice, Valid arguments: stride=3") ! first=-inf, last=+inf
           call check(slice(test_string, stride=-3) == "zwtqnkheb", &
-                    "Slice, Valid arguments: stride=-3") ! first=+inf, last=-inf
+                    "slice, Valid arguments: stride=-3") ! first=+inf, last=-inf
 
           ! Invalid
           call check(slice(test_string, first=27) == "", &
-                    "Slice, Invalid arguments: first=27") ! last=+inf
+                    "slice, Invalid arguments: first=27") ! last=+inf
           call check(slice(test_string, first=-10) == "abcdefghijklmnopqrstuvwxyz", &
-                    "Slice, Invalid arguments: first=-10") ! last=+inf
+                    "slice, Invalid arguments: first=-10") ! last=+inf
           call check(slice(test_string, last=-2) == "", &
-                    "Slice, Invalid arguments: last=-2") ! first=-inf
+                    "slice, Invalid arguments: last=-2") ! first=-inf
           call check(slice(test_string, last=30) == "abcdefghijklmnopqrstuvwxyz", &
-                    "Slice, Invalid arguments: last=30") ! first=-inf
+                    "slice, Invalid arguments: last=30") ! first=-inf
           call check(slice(test_string, stride=0) == "abcdefghijklmnopqrstuvwxyz", &
-                    "Slice, Invalid arguments: stride=0") ! stride=1
+                    "slice, Invalid arguments: stride=0") ! stride=1
         
         ! Only two arguments are given
           ! Valid
           call check(slice(test_string, first=10, last=20) == "jklmnopqrst", &
-                    "Slice, Valid arguments: first=10, last=20")
+                    "slice, Valid arguments: first=10, last=20")
           call check(slice(test_string, first=7, last=2) == "gfedcb", &
-                    "Slice, Valid arguments: first=7, last=2") ! stride=-1
+                    "slice, Valid arguments: first=7, last=2") ! stride=-1
           call check(slice(test_string, first=10, stride=-2) == "jhfdb", &
-                    "Slice, Valid arguments: first=10, stride=-2") ! last=-inf
+                    "slice, Valid arguments: first=10, stride=-2") ! last=-inf
           call check(slice(test_string, last=21, stride=-2) == "zxv", &
-                    "Slice, Valid arguments: last=21, stride=-2") ! first=+inf
+                    "slice, Valid arguments: last=21, stride=-2") ! first=+inf
 
           ! Atleast one argument is invalid
           call check(slice(test_string, first=30, last=-3) == "zyxwvutsrqponmlkjihgfedcba", &
-                    "Slice, Invalid arguments: first=30, last=-3")
+                    "slice, Invalid arguments: first=30, last=-3")
           call check(slice(test_string, first=1, last=-20) == "a", &
-                    "Slice, Invalid arguments: first=1, last=-20")
+                    "slice, Invalid arguments: first=1, last=-20")
           call check(slice(test_string, first=7, last=-10) == "gfedcba", &
-                    "Slice, Invalid arguments: first=7, last=-10")
+                    "slice, Invalid arguments: first=7, last=-10")
           call check(slice(test_string, first=500, last=22) == "zyxwv", &
-                    "Slice, Invalid arguments: first=500, last=22")
+                    "slice, Invalid arguments: first=500, last=22")
           call check(slice(test_string, first=50, last=27) == "", &
-                    "Slice, Invalid arguments: first=50, last=27")
+                    "slice, Invalid arguments: first=50, last=27")
           call check(slice(test_string, first=-20, last=0) == "", &
-                    "Slice, Invalid arguments: first=-20, last=0")
+                    "slice, Invalid arguments: first=-20, last=0")
           call check(slice(test_string, last=-3, stride=-2) == "zxvtrpnljhfdb", &
-                    "Slice, Invalid arguments: last=-3, stride=-2") ! first=+inf
+                    "slice, Invalid arguments: last=-3, stride=-2") ! first=+inf
           call check(slice(test_string, last=10, stride=0) == "abcdefghij", &
-                    "Slice, Invalid arguments: last=10, stride=0") ! stride=1
+                    "slice, Invalid arguments: last=10, stride=0") ! stride=1
           call check(slice(test_string, first=-2, stride=-2) == "", &
-                    "Slice, Invalid arguments: first=-2, stride=-2") ! last=-inf
+                    "slice, Invalid arguments: first=-2, stride=-2") ! last=-inf
           call check(slice(test_string, first=27, stride=2) == "", &
-                    "Slice, Invalid arguments: first=27, stride=2") ! last=+inf
+                    "slice, Invalid arguments: first=27, stride=2") ! last=+inf
           call check(slice(test_string, last=27, stride=-1) == "", &
-                    "Slice, Invalid arguments: last=27, stride=-1") ! first=+inf
+                    "slice, Invalid arguments: last=27, stride=-1") ! first=+inf
 
         ! All three arguments are given
           ! Valid
           call check(slice(test_string, first=2, last=16, stride=3) == "behkn", &
-                    "Slice, Valid arguments: first=2, last=16, stride=3")
+                    "slice, Valid arguments: first=2, last=16, stride=3")
           call check(slice(test_string, first=16, last=2, stride=-3) == "pmjgd", &
-                    "Slice, Valid arguments: first=16, last=2, stride=-3")
+                    "slice, Valid arguments: first=16, last=2, stride=-3")
           call check(slice(test_string, first=7, last=7, stride=-4) == "g", &
-                    "Slice, Valid arguments: first=7, last=7, stride=-4")
+                    "slice, Valid arguments: first=7, last=7, stride=-4")
           call check(slice(test_string, first=7, last=7, stride=3) == "g", &
-                    "Slice, Valid arguments: first=7, last=7, stride=3")
+                    "slice, Valid arguments: first=7, last=7, stride=3")
           call check(slice(test_string, first=2, last=6, stride=-1) == "", &
-                    "Slice, Valid arguments: first=2, last=6, stride=-1")
+                    "slice, Valid arguments: first=2, last=6, stride=-1")
           call check(slice(test_string, first=20, last=10, stride=2) == "", &
-                    "Slice, Valid arguments: first=20, last=10, stride=2")
+                    "slice, Valid arguments: first=20, last=10, stride=2")
 
           ! Atleast one argument is invalid
           call check(slice(test_string, first=20, last=30, stride=2) == "tvxz", &
-                    "Slice, Invalid arguments: first=20, last=30, stride=2")
+                    "slice, Invalid arguments: first=20, last=30, stride=2")
           call check(slice(test_string, first=-20, last=30, stride=2) == "acegikmoqsuwy", &
-                    "Slice, Invalid arguments: first=-20, last=30, stride=2")
+                    "slice, Invalid arguments: first=-20, last=30, stride=2")
           call check(slice(test_string, first=26, last=30, stride=1) == "z", &
-                    "Slice, Invalid arguments: first=26, last=30, stride=1")
+                    "slice, Invalid arguments: first=26, last=30, stride=1")
           call check(slice(test_string, first=1, last=-20, stride=-1) == "a", &
-                    "Slice, Invalid arguments: first=1, last=-20, stride=-1")
+                    "slice, Invalid arguments: first=1, last=-20, stride=-1")
           call check(slice(test_string, first=26, last=20, stride=1) == "", &
-                    "Slice, Invalid arguments: first=26, last=20, stride=1")
+                    "slice, Invalid arguments: first=26, last=20, stride=1")
           call check(slice(test_string, first=1, last=20, stride=-1) == "", &
-                    "Slice, Invalid arguments: first=1, last=20, stride=-1")
+                    "slice, Invalid arguments: first=1, last=20, stride=-1")
         
         test_string = ""
         ! Empty string input
         call check(slice(test_string, first=-2, last=6) == "", &
-                    "Slice, Empty string: first=-2, last=6")
+                    "slice, Empty string: first=-2, last=6")
         call check(slice(test_string, first=6, last=-2) == "", &
-                    "Slice, Empty string: first=6, last=-2")
+                    "slice, Empty string: first=6, last=-2")
         call check(slice(test_string, first=-10) == "", &
-                    "Slice, Empty string: first=-10") ! last=+inf
+                    "slice, Empty string: first=-10") ! last=+inf
         call check(slice(test_string, last=10) == "", &
-                    "Slice, Empty string: last=10") ! first=-inf
+                    "slice, Empty string: last=10") ! first=-inf
         call check(slice(test_string) == "", &
-                    "Slice, Empty string: no arguments provided")
+                    "slice, Empty string: no arguments provided")
 
     end subroutine test_slice_string
 
@@ -170,27 +170,27 @@ contains
         test_pattern_2 = "abccbabc"
 
         call check(all(find([test_string_1, test_string_2], test_pattern_1, 4) == [7, 0]), &
-            & 'Find: [test_string_1, test_string_2], test_pattern_1, 4')
+            & 'find: [test_string_1, test_string_2], test_pattern_1, 4')
         call check(all(find(test_string_1, [test_pattern_1, test_pattern_2], 3, .false.) == [9, 0]), &
-            & 'Find: test_string_1, [test_pattern_1, test_pattern_2], 3, .false.')
+            & 'find: test_string_1, [test_pattern_1, test_pattern_2], 3, .false.')
         call check(find(test_string_1, test_pattern_1, 7) == 0, &
-            & 'Find: test_string_1, test_pattern_1, 7')
+            & 'find: test_string_1, test_pattern_1, 7')
         call check(all(find([test_string_1, test_string_2, test_string_2], [test_pattern_1, &
             & test_pattern_2, test_pattern_2], [7, 2, 2], [.true., .false., .true.]) == [0, 0, 6]), &
-            & 'Find: [test_string_1, test_string_2, test_string_2], [test_pattern_1, &
+            & 'find: [test_string_1, test_string_2, test_string_2], [test_pattern_1, &
             & test_pattern_2, test_pattern_2], [7, 2, 2], [.true., .false., .true.]')
         call check(find("qwqwqwqwqwqwqw", test_pattern_1) == 1, &
-            & 'Find: "qwqwqwqwqwqwqw", test_pattern_1')
+            & 'find: "qwqwqwqwqwqwqw", test_pattern_1')
         call check(all(find(test_string_1, ["qwq", "wqw"], 2) == [3, 4]), &
-            & 'Find: test_string_1, ["qwq", "wqw"], 2')
+            & 'find: test_string_1, ["qwq", "wqw"], 2')
         call check(find("qwqwqwqwqwqwqw", "qwq", 2, .false.) == 5, &
-            & 'Find: "qwqwqwqwqwqwqw", "qwq", 2, .false.')
+            & 'find: "qwqwqwqwqwqwqw", "qwq", 2, .false.')
         call check(find("", "") == 0, &
-            & 'Find: "", ""')
+            & 'find: "", ""')
         call check(find("", test_pattern_1) == 0, &
-            & 'Find: "", test_pattern_1')
+            & 'find: "", test_pattern_1')
         call check(find(test_string_1, "") == 0, &
-            & 'Find: test_string_1, ""')
+            & 'find: test_string_1, ""')
 
     end subroutine test_find
 
@@ -318,6 +318,66 @@ contains
         string = transfer(carray, string)
     end function carray_to_string
 
+    subroutine test_replace_all
+        type(string_type) :: test_string_1, test_pattern_1, test_replacement_1
+        type(string_type) :: test_string_2, test_pattern_2, test_replacement_2
+        test_string_1 = "mutate DNA sequence: GTTATCGTATGCCGTAATTAT"
+        test_pattern_1 = "TAT"
+        test_replacement_1 = "ATA"
+        test_string_2 = "mutate DNA sequence: AGAGAGCCTAGAGAGAG"
+        test_pattern_2 = "AGA"
+        test_replacement_2 = "aga"
+
+        ! all 3 as string_type
+          call check(replace_all(test_string_1, test_pattern_1, test_replacement_1) == & 
+                    & "mutate DNA sequence: GTATACGATAGCCGTAATATA", &
+                    & "replace_all: all 3 string_type, test case 1")
+          call check(replace_all(test_string_2, test_pattern_2, test_replacement_2) == &
+                    & "mutate DNA sequence: agaGAGCCTagaGagaG", &
+                    & "replace_all: all 3 string_type, test case 2")
+          call check(replace_all(test_string_2, test_pattern_2, test_replacement_1) == &
+                    & "mutate DNA sequence: ATAGAGCCTATAGATAG", &
+                    & "replace_all: all 3 string_type, test case 3")
+        
+        ! 2 as string_type and 1 as character scalar
+          call check(replace_all(test_string_1, "tat", test_replacement_1) == &
+                    & "muATAe DNA sequence: GTTATCGTATGCCGTAATTAT", &
+                    & "replace_all: 2 string_type & 1 character scalar, test case 1")
+          call check(replace_all(test_string_2, test_pattern_2, "GC") == &
+                    & "mutate DNA sequence: GCGAGCCTGCGGCG", &
+                    & "replace_all: 2 string_type & 1 character scalar, test case 2")
+          call check(replace_all("mutate DNA sequence: AGAGAGCCTAGAGAGAG", test_pattern_2, &
+                    & test_replacement_2) == "mutate DNA sequence: agaGAGCCTagaGagaG", &
+                    & "replace_all: 2 string_type & 1 character scalar, test case 3")
+
+        
+        ! 1 as string_type and 2 as character scalar
+          call check(replace_all(test_string_1, "TAT", "ATA") == &
+                    & "mutate DNA sequence: GTATACGATAGCCGTAATATA", &
+                    & "replace_all: 1 string_type & 2 character scalar, test case 1")
+          call check(replace_all("mutate DNA sequence: AGAGAGCCTAGAGAGAG", test_pattern_2, &
+                    & "GC") == "mutate DNA sequence: GCGAGCCTGCGGCG", &
+                    & "replace_all: 1 string_type & 2 character scalar, test case 2")
+          call check(replace_all("mutate DNA sequence: GTTATCGTATGCCGTAATTAT", "TA", &
+                    & test_replacement_2) == "mutate DNA sequence: GTagaTCGagaTGCCGagaATagaT", &
+                    & "replace_all: 1 string_type & 2 character scalar, test case 3")
+          call check(replace_all("mutate DNA sequence: GTTATCGTATGCCGTAATTAT", &
+                    & test_pattern_1, "") == "mutate DNA sequence: GTCGGCCGTAAT", &
+                    & "replace_all: 1 string_type & 2 character scalar, test case 4")
+          call check(replace_all(test_string_1, "", "anything here") == test_string_1, &
+                    & "replace_all: 1 string_type & 2 character scalar, test case 5")
+          call check(replace_all("", test_pattern_2, "anything here") == "", &
+                    & "replace_all: 1 string_type & 2 character scalar, test case 6")
+        
+        ! all 3 as character scalar
+          call check(replace_all("mutate DNA sequence: GTTATCGTATGCCGTAATTAT", &
+                    & "GT", "gct") == "mutate DNA sequence: gctTATCgctATGCCgctAATTAT", &
+                    & "replace_all: all 3 character scalar, test case 1")
+          call check(replace_all("", "anything here", "anything here") == "", &
+                    & "replace_all: all 3 character scalar, test case 2")
+
+    end subroutine test_replace_all
+
 end module test_string_functions
 
 
@@ -333,5 +393,6 @@ program tester
     call test_slice_string
     call test_slice_gen
     call test_find
+    call test_replace_all
 
 end program tester
