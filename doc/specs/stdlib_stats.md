@@ -189,14 +189,14 @@ Experimental
 Returns the median of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
 
 After that the elements are sorted in an increasing order, e.g. `array_sorted =
-sort(array)`, the median of the elements of `array` are defined as, if
-`n = size(array)` is an even number:
+sort(array)`, the median of the elements of `array` is defined as the "middle"
+element. If `n = size(array)` is an even number, the median is:
 
 ```
 median(array) = array_sorted( floor( (n + 1) / 2.))
 ```
 
-or as if `n` is an odd number:
+and if `n` is an odd number, the median is:
 
 ```
 median(array) = mean( array_sorted( floor( (n + 1) / 2.):floor( (n + 1) / 2.) + 1 ) )
@@ -217,7 +217,7 @@ Generic subroutine
 
 ### Arguments
 
-`array`: Shall be an array of type `integer` or  `real`.
+`array`: Shall be an array of type `integer` or `real`.
 
 `dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
 
@@ -225,7 +225,7 @@ Generic subroutine
 
 ### Return value
 
-If `array` is of type `real`, the result is of the same type as `array`.
+If `array` is of type `real`, the result is of type `real` with the same kind as `array`.
 If `array` is of type `integer`, the result is of type `real(dp)`.
 
 If `dim` is absent, a scalar with the median of all elements in `array` is returned. Otherwise, an array of rank `n-1`, where `n` equals the rank of `array`, and a shape similar to that of `array` with dimension `dim` dropped is returned.
