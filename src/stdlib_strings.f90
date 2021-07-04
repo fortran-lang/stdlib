@@ -736,6 +736,10 @@ contains
         character(len=max(len(string), output_length)) :: char_output
         type(string_type) :: res
 
+        ! We're taking advantage of `char_output` being longer than `string` and
+        ! initialized with whitespaces. By casting `string` to a `character`
+        ! type and back to `string_type`, we're effectively right-padding
+        ! `string` with spaces, so we don't need to pad explicitly.
         char_output = char(string)
         res = string_type(char_output)
 
@@ -780,8 +784,8 @@ contains
 
         res = string
         if (string_length < output_length) then
-            res(string_length + 1 : output_length) = repeat(pad_with, &
-            & output_length - string_length)
+            res(string_length + 1 : output_length) = &
+              repeat(pad_with, output_length - string_length)
         end if
 
     end function padr_char_pad_with
