@@ -10,6 +10,7 @@ set(fppFiles
     stdlib_io_disp.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
+    stdlib_linalg_outer_product.fypp
     stdlib_optval.fypp
     stdlib_sorting.fypp
     stdlib_sorting_ord_sort.fypp
@@ -30,7 +31,7 @@ set(fppFiles
     stdlib_stats_distribution_PRNG.fypp
     stdlib_math.fypp
     stdlib_string_type.fypp
-    stdlib_strings_format_string.fypp
+    stdlib_string_format_to_string.fypp
     stdlib_strings.fypp
 )
 
@@ -51,6 +52,9 @@ set(SRC
     stdlib_kinds.f90
     stdlib_logger.f90
     stdlib_system.F90
+    stdlib_specialfunctions.f90
+    stdlib_specialfunctions_legendre.f90
+    stdlib_quadrature_gauss.f90
     ${outFiles}
 )
 
