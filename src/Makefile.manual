@@ -26,7 +26,9 @@ SRCFYPP =\
         stdlib_stats_var.fypp \
         stdlib_math.fypp \
         stdlib_stats_distribution_PRNG.fypp \
-        stdlib_string_type.fypp
+        stdlib_string_type.fypp \
+        stdlib_strings.fypp \
+        stdlib_string_format_to_string.fypp
 
 SRC = f18estop.f90 \
       stdlib_error.f90 \
@@ -36,7 +38,6 @@ SRC = f18estop.f90 \
       stdlib_kinds.f90 \
       stdlib_logger.f90 \
       stdlib_quadrature_gauss.f90 \
-      stdlib_strings.f90 \
       $(SRCGEN)
 
 LIB = libstdlib.a
@@ -75,7 +76,8 @@ stdlib_specialfunctions_legendre.o: stdlib_kinds.o stdlib_specialfunctions.o
 stdlib_io.o: \
 	stdlib_error.o \
 	stdlib_optval.o \
-	stdlib_kinds.o
+	stdlib_kinds.o \
+    stdlib_ascii.o
 stdlib_linalg.o: \
 	stdlib_kinds.o
 stdlib_linalg_diag.o: \
@@ -139,6 +141,8 @@ stdlib_string_type.o: stdlib_ascii.o \
     stdlib_kinds.o
 stdlib_strings.o: stdlib_ascii.o \
     stdlib_string_type.o \
-	stdlib_optval.o
+	stdlib_optval.o \
+    stdlib_kinds.o
 stdlib_math.o: stdlib_kinds.o
+stdlib_string_format_to_string.o: stdlib_strings.o
 stdlib_linalg_outer_product.o: stdlib_linalg.o

@@ -1,5 +1,7 @@
 ! SPDX-Identifier: MIT
-
+#:include "common.fypp"
+#:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + LOG_KINDS_TYPES &
+    & + CMPLX_KINDS_TYPES
 !> This module implements basic string handling routines.
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_strings.html).
@@ -7,13 +9,30 @@ module stdlib_strings
     use stdlib_ascii, only: whitespace
     use stdlib_string_type, only: string_type, char, verify
     use stdlib_optval, only: optval
+    use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64, lk, c_bool
     implicit none
     private
 
+    public :: format_to_string
     public :: strip, chomp
     public :: starts_with, ends_with
     public :: slice, find, replace_all, count
 
+    !> Format or transfer other types as a string.
+    !> ([Specification](../page/specs/stdlib_strings.html#description))
+    !>
+    !> Version: experimental
+    interface format_to_string
+        #:for kind, type in KINDS_TYPES
+        !> Format or transfer a ${type}$ scalar as a string.
+        pure module function format_to_string_${type[0]}$_${kind}$(value, format) result(string)
+            ${type}$, intent(in) :: value
+            character(len=*), intent(in), optional :: format
+            character(len=:), allocatable :: string
+        end function format_to_string_${type[0]}$_${kind}$
+
+        #:endfor
+    end interface format_to_string
 
     !> Remove leading and trailing whitespace characters.
     !>

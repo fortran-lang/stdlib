@@ -434,3 +434,68 @@ program demo_count
 
 end program demo_count
 ```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `format_to_string`
+
+#### Description
+
+Format or transfer a `integer/real/complex/logical` scalar as a string.  
+Input a wrong `format` that cause the internal-IO to fail, the result value is a string of `[*]`.
+
+#### Syntax
+
+`format_to_string = [[stdlib_strings(module):format_to_string(interface)]] (value [, format])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `value`: Shall be an `integer/real/complex/logical` scalar.
+  This is an `intent(in)` argument.
+- `format`: Shall be a `character` scalar like `'(F6.2)'`.
+  This is an `intent(in)` and `optional` argument.
+
+#### Result value
+
+The result is an allocatable length `character` scalar with up to 512 `character` length.
+
+#### Example
+
+```fortran
+program demo_format_to_string
+    use :: stdlib_strings, only: format_to_string
+    implicit none
+
+    print *, 'format_to_string(complex) : '
+        print *, format_to_string((1, 1))              ! (1.00000000,1.00000000)
+        print *, format_to_string((1, 1), '(F6.2)')    ! (  1.00,  1.00)
+        print *, format_to_string((1000, 1), '(ES0.2)'), format_to_string((1000, 1), '(SP,F6.3)')     ! (1.00E+3,1.00)(******,+1.000)
+                        !! Too narrow formatter for real number
+                        !! Normal demonstration(`******` from Fortran Standard)
+
+    print *, 'format_to_string(integer) : '
+        print *, format_to_string(1)                   ! 1
+        print *, format_to_string(1, '(I4)')           !     1
+        print *, format_to_string(1, '(I0.4)'), format_to_string(2, '(B4)')           ! 0001  10  
+
+    print *, 'format_to_string(real) : '
+        print *, format_to_string(1.)                  ! 1.00000000
+        print *, format_to_string(1., '(F6.2)')        !   1.00 
+        print *, format_to_string(1., '(SP,ES9.2)'), format_to_string(1, '(F7.3)')    ! +1.00E+00[*]
+                        !! 1 wrong demonstration(`*` from `format_to_string`)
+
+    print *, 'format_to_string(logical) : '
+        print *, format_to_string(.true.)              ! T
+        print *, format_to_string(.true., '(L2)')      !  T
+        print *, format_to_string(.true., 'L2'), format_to_string(.false., '(I5)')    ! [*][*]
+                        !! 2 wrong demonstrations(`*` from `format_to_string`)
+
+end program demo_format_to_string
+```

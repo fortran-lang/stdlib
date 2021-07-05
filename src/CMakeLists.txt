@@ -30,6 +30,8 @@ set(fppFiles
     stdlib_stats_distribution_PRNG.fypp
     stdlib_math.fypp
     stdlib_string_type.fypp
+    stdlib_string_format_to_string.fypp
+    stdlib_strings.fypp
 )
 
 
@@ -48,7 +50,6 @@ set(SRC
     stdlib_error.f90
     stdlib_kinds.f90
     stdlib_logger.f90
-    stdlib_strings.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90
