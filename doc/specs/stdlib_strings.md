@@ -280,7 +280,7 @@ end program demo_slice
 Returns the starting index of the `occurrence`th occurrence of the substring `pattern` 
 in the input string `string`.  
 Default value of `occurrence` is set to `1`. 
-If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurrences of substring as two different occurrences.  
+If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurrences of substring `pattern` as two different occurrences.  
 If `occurrence`th occurrence is not found, function returns `0`.
 
 #### Syntax
@@ -308,7 +308,7 @@ Elemental function
 
 #### Result value
 
-The result is a scalar of integer type or integer array of rank equal to the highest rank among all dummy arguments.
+The result is a scalar of integer type or an integer array of rank equal to the highest rank among all dummy arguments.
 
 #### Example
 
@@ -317,7 +317,7 @@ program demo_find
   use stdlib_string_type, only: string_type, assignment(=)
   use stdlib_strings, only : find
   implicit none
-  string_type :: string
+  type(string_type) :: string
 
   string = "needle in the character-stack"
 
@@ -326,6 +326,113 @@ program demo_find
   print *, find("qwqwqwq", "qwq", 3, [.false., .true.]) ! [0, 5]
 
 end program demo_find
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `replace_all`
+
+#### Description
+
+Replaces all occurrences of substring `pattern` in the input `string` with the replacement `replacement`.  
+Occurrences overlapping on a base occurrence will not be replaced.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):replace_all(interface)]] (string, pattern, replacement)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `pattern`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `replacement`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+
+#### Result value
+
+The result is of the same type as `string`.
+
+#### Example
+
+```fortran
+program demo_replace_all
+  use stdlib_string_type, only: string_type, assignment(=)
+  use stdlib_strings, only : replace_all
+  implicit none
+  type(string_type) :: string
+
+  string = "hurdles here, hurdles there, hurdles everywhere"
+  ! string <-- "hurdles here, hurdles there, hurdles everywhere"
+
+  print'(a)', replace_all(string, "hurdles", "learn from")
+  ! "learn from here, learn from there, learn from everywhere"
+
+  string = replace_all(string, "hurdles", "technology")
+  ! string <-- "technology here, technology there, technology everywhere"
+
+end program demo_replace_all
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `count`
+
+#### Description
+
+Returns the number of times the substring `pattern` has occurred in the input string `string`.  
+If `consider_overlapping` is not provided or is set to `.true.` the function counts two overlapping occurrences of substring `pattern` as two different occurrences.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):count(interface)]] (string, pattern [, consider_overlapping])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `pattern`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `consider_overlapping`: logical.
+  This argument is intent(in) and optional.
+
+#### Result value
+
+The result is a scalar of integer type or an integer array of rank equal to the highest rank among all dummy arguments.
+
+#### Example
+
+```fortran
+program demo_count
+  use stdlib_string_type, only: string_type, assignment(=)
+  use stdlib_strings, only : count
+  implicit none
+  type(string_type) :: string
+
+  string = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?"
+
+  print *, count(string, "wood")                                  ! 4
+  print *, count(string, ["would", "chuck", "could"])             ! [1, 4, 1]
+  print *, count("a long queueueueue", "ueu", [.false., .true.])  ! [2, 4]
+
+end program demo_count
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->

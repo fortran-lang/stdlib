@@ -18,6 +18,7 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [kinds](./stdlib_kinds.html) - Kind parameters
  - [linalg](./stdlib_linalg.html) - Linear Algebra
  - [logger](./stdlib_logger.html) - Runtime logging system
+ - [math](./stdlib_math.html) - General purpose mathematical functions
  - [optval](./stdlib_optval.html) - Fallback value for optional arguments
  - [quadrature](./stdlib_quadrature.html) - Numerical integration
  - [sorting](./stdlib_sorting.html) - Sorting of rank one arrays
