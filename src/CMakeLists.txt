@@ -30,7 +30,7 @@ set(fppFiles
     stdlib_stats_distribution_PRNG.fypp
     stdlib_math.fypp
     stdlib_string_type.fypp
-    stdlib_string_format_string.fypp
+    stdlib_string_format_to_string.fypp
     stdlib_strings.fypp
 )
 

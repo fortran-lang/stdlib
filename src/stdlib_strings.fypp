@@ -13,25 +13,26 @@ module stdlib_strings
     implicit none
     private
 
-    public :: format_string
+    public :: format_to_string
     public :: strip, chomp
     public :: starts_with, ends_with
     public :: slice, find
 
-    !> Format other types as character sequence.
+    !> Format or transfer other types as a string.
     !> ([Specification](../page/specs/stdlib_strings.html#description))
+    !>
     !> Version: experimental
-    interface format_string
+    interface format_to_string
         #:for kind, type in KINDS_TYPES
-        !> Format ${type}$ variable as character sequence
-        pure module function format_string_${type[0]}$_${kind}$(val, fmt) result(string)
-            ${type}$, intent(in) :: val
-            character(len=*), intent(in), optional :: fmt
+        !> Format or transfer a ${type}$ scalar as a string.
+        pure module function format_to_string_${type[0]}$_${kind}$(value, format) result(string)
+            ${type}$, intent(in) :: value
+            character(len=*), intent(in), optional :: format
             character(len=:), allocatable :: string
-        end function format_string_${type[0]}$_${kind}$
+        end function format_to_string_${type[0]}$_${kind}$
 
         #:endfor
-    end interface format_string
+    end interface format_to_string
 
     !> Remove leading and trailing whitespace characters.
     !>
