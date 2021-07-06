@@ -8,6 +8,7 @@ endmacro(ADDTEST)
 
 add_subdirectory(ascii)
 add_subdirectory(bitsets)
+add_subdirectory(hash)
 add_subdirectory(io)
 add_subdirectory(linalg)
 add_subdirectory(logger)

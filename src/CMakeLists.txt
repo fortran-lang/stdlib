@@ -53,6 +53,8 @@ fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
     stdlib_error.f90
+    stdlib_hash.f90
+    stdlib_hash_waterhash.f90
     stdlib_kinds.f90
     stdlib_logger.f90
     stdlib_system.F90

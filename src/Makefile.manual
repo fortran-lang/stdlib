@@ -37,6 +37,8 @@ SRCFYPP = \
 
 SRC = f18estop.f90 \
       stdlib_error.f90 \
+      stdlib_hash.f90 \
+      stdlib_hash_waterhash.f90 \
       stdlib_specialfunctions.f90 \
       stdlib_specialfunctions_legendre.f90 \
       stdlib_io.f90 \
@@ -170,3 +172,5 @@ stdlib_linalg_outer_product.o: stdlib_linalg.o
 stdlib_stringlist_type.o: stdlib_string_type.o \
     stdlib_math.o \
 	stdlib_optval.o
+stdlib_hash.o: stdlib_kinds.o stdlib_string_type.o
+stdlib_hash_waterhash.o: stdlib_hash.o
