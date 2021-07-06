@@ -385,6 +385,114 @@ end program demo_replace_all
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `padl`
+
+#### Description
+
+Returns a string of length `output_length` left padded with `pad_with` character if it is provided, otherwise with `" "` (1 whitespace).  
+If `output_length` is less than or equal to the length of `string`, padding is not performed.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):padl(interface)]] (string, output_length [, pad_with])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `output_length`: integer.
+  This argument is intent(in).
+- `pad_with`: Character scalar of length 1.
+  This argument is intent(in) and optional.
+
+#### Result value
+
+The result is of the same type as `string`.
+
+#### Example
+
+```fortran
+program demo_padl
+  use stdlib_string_type, only: string_type, assignment(=)
+  use stdlib_strings, only : padl
+  implicit none
+  string_type :: string
+
+  string = "left pad this string"
+  ! string <-- "left pad this string"
+
+  print *, padl(string, 25, "$") ! "$$$$$left pad this string"
+
+  string = padl(string, 25)
+  ! string <-- "     left pad this string"
+
+end program demo_padl
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `padr`
+
+#### Description
+
+Returns a string of length `output_length` right padded with `pad_with` character if it is provided, otherwise with `" "` (1 whitespace).  
+If `output_length` is less than or equal to the length of `string`, padding is not performed.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):padr(interface)]] (string, output_length [, pad_with])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `output_length`: integer.
+  This argument is intent(in).
+- `pad_with`: Character scalar of length 1.
+  This argument is intent(in) and optional.
+
+#### Result value
+
+The result is of the same type as `string`.
+
+#### Example
+
+```fortran
+program demo_padr
+  use stdlib_string_type, only: string_type, assignment(=)
+  use stdlib_strings, only : padr
+  implicit none
+  string_type :: string
+
+  string = "right pad this string"
+  ! string <-- "right pad this string"
+
+  print *, padr(string, 25, "$") ! "right pad this string$$$$"
+
+  string = padr(string, 25)
+  ! string <-- "right pad this string    "
+
+end program demo_padr
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### `count`
 
 #### Description
