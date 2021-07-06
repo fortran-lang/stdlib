@@ -132,62 +132,81 @@ program demo_savetxt
 end program demo_savetxt
 ```
 
-## `disp` - quickly display your data to the screen (or the default output location)
+## `disp` - display your data to the screen (or the default `output_unit`)
 
 ### Status
 
 Experimental
 
 ### Description
-Quickly display strings, scalars and low-dimensional arrays to the screen (or the default output location).
+Display any type of scalar or `array` with up to 3 dimensions to the screen (or the default `output_unit`).  
+
+Make good use of similar to the following usage, can help you understand the data information in the `array`.
+```fortran
+call disp( A(i, j, 2, :, :) [, string] )    !! `i, j, ...` can be determined by `do` loop.
+```
+
+Generally, except for `complex` type, any other type of scalar or single element of the `array` will be printed out with a width of 12 characters and a space separator.  
+For `complex` type, scalar or single element of the `array` will be printed out with a width of 25 characters and a space separator.
 
 ### Syntax
 
-For 3D arrays:
-`call [[stdlib_io(module):disp(interface)]](value, dim [, string])`  
+General API:
+`call [[stdlib_io(module):disp(interface)]](value [, string])`
+
+Except, for 3D arrays:
+`call [[stdlib_io(module):disp(interface)]](value, dim [, string])` 
+
 For null:
 `call [[stdlib_io(module):disp(interface)]]()`  
-For others:
-`call [[stdlib_io(module):disp(interface)]](value [, string])`
 
 ### Arguments
 
-`value`: Shall be any type of scalar or (<= 3)D `array`.
+`value`: Shall be any type of scalar or `array` with up to 3 dimensions.
+    This is an `intent(in)` argument.
 
 `dim`: Shall be a scalar of type `integer` with a value: 1, 2 or 3.
+    This is an `intent(in)` argument.
 
-`string`: Shall be a scalar of type `character` with any length(Usually used to mark data information).
+`string`: Shall be a scalar of type `character` with any length (usually used to comment data information).
+    This is an `intent(in)` and `optional` argument.
 
 ### Output
 
-The result is to print your data `value` and comments `string` on the screen (or the default output location).
+The result is to print `string` and `value` on the screen (or the default `output_unit`) in this order.
 
 ### Example
 
 ```fortran
 program demo_io_disp
-    use, non_intrinsic :: stdlib_io, only: disp
+
+    use :: stdlib_io, only: disp
     implicit none
-    real :: r(2, 3)
+    real(8) :: r(2, 3)
     complex :: c(2, 3), c_3d(2, 3, 2)
     integer :: i(2, 3)
     logical :: l(2, 3)
 
     r = 1.; c = 1.; c_3d = 2.; i = 1; l = .true.
-    r(1, 1) = (1.e-11, 1.0e-4)
-    c(2, 2) = 10.e5
+    r(1, 1) = -1.e-11
+    r(1, 2) = -1.e10
+    c(2, 2) = (-1.e10,-1.e10)
     c_3d(1,3,1) = (1000, 0.001)
-        call disp('string', 'disp(string):')
-        call disp('It is a note.')
-        call disp()
+    c_3d(1,3,2) = (1.e4, 100.)
 
-        call disp(r, 'disp(r):')
-        call disp(c, 'disp(c):')
-        call disp(i, 'disp(i):')
-        call disp(l, 'disp(l):')
+    call disp('string', 'disp(string):')
+    call disp('It is a note.')
+    call disp()
 
-        call disp(c_3d, 3, 'disp(c_3d, 3):')
-        call disp(c_3d, 2, 'disp(c_3d, 2):')
+    call disp(r, 'disp(r):')
+    call disp(c, 'disp(c):')
+    call disp(i(1,:), 'disp(i):')
+    call disp(l(:,2), 'disp(l):')
+
+    call disp(c_3d, 3, 'disp(c_3d, 3):')
+
+    call disp(c_3d(1,:,:), 'disp(c_3d(1,:,:)):')
+    
 end program demo_io_disp
 ```
 **Result:**
@@ -197,32 +216,24 @@ end program demo_io_disp
  It is a note.
 
  disp(r):
- 0.1000E-10   1.000       1.000
-  1.000       1.000       1.000
+ -0.1000E-10  -0.1000E+11    1.000
+   1.000        1.000        1.000
  disp(c):
-          (1.000,0.000)           (1.000,0.000)           (1.000,0.000)
-          (1.000,0.000)      (0.1000E+07,0.000)           (1.000,0.000)
+            (1.000,0.000)             (1.000,0.000)             (1.000,0.000)
+            (1.000,0.000) (-0.1000E+11,-0.1000E+11)             (1.000,0.000)
  disp(i):
-          1           1           1
-          1           1           1
+           1            1            1
  disp(l):
-          T           T           T
-          T           T           T
+           T            T
  disp(c_3d, 3):
  Slice (:,:,1):
-          (2.000,0.000)           (2.000,0.000)      (1000.,0.1000E-02)
-          (2.000,0.000)           (2.000,0.000)           (2.000,0.000)
+            (2.000,0.000)             (2.000,0.000)         (1000.,0.1000E-2)
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)
  Slice (:,:,2):
-          (2.000,0.000)           (2.000,0.000)           (2.000,0.000)
-          (2.000,0.000)           (2.000,0.000)           (2.000,0.000)
- disp(c_3d, 2):
- Slice (:,1,:):
-          (2.000,0.000)           (2.000,0.000)
-          (2.000,0.000)           (2.000,0.000)
- Slice (:,2,:):
-          (2.000,0.000)           (2.000,0.000)
-          (2.000,0.000)           (2.000,0.000)
- Slice (:,3,:):
-     (1000.,0.1000E-02)           (2.000,0.000)
-          (2.000,0.000)           (2.000,0.000)
+            (2.000,0.000)             (2.000,0.000)         (0.1000E+5,100.0)
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)
+ disp(c_3d(1,:,:)):
+            (2.000,0.000)             (2.000,0.000)
+            (2.000,0.000)             (2.000,0.000)
+        (1000.,0.1000E-2)         (0.1000E+5,100.0)
 ```

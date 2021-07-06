@@ -22,29 +22,22 @@ module stdlib_io
   interface disp
     !! version: experimental
     !!
-    !! Quickly display strings, scalars and low-dimensional arrays to the default output_unit
-    !! ([Specification](../page/specs/stdlib_io.html#description))
+    !! Display any type of scalar and `array` with up to 3 dimensions to the default `output_unit`
+    !! ([Specification](../page/specs/stdlib_io.html#description_4))
     #:set DISP_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES &
         & + CMPLX_KINDS_TYPES + LOG_KINDS_TYPES
     #:set DISP_RANKS = range(0, 4)
     #:for kind, type in DISP_KINDS_TYPES
     #:for rank in DISP_RANKS
-    #:if rank != 3
-    module subroutine disp_${rank}$_${type[0]}$${kind}$(val, string)
-        ${type}$, intent(in) :: val${ranksuffix(rank)}$
+    module subroutine disp_${rank}$_${type[0]}$${kind}$(value, #{if rank == 3}#dim, #{endif}#string)
+        ${type}$, intent(in) :: value${ranksuffix(rank)}$
+        #{if rank == 3}#integer, intent(in) :: dim#{endif}#
         character(len=*), intent(in), optional :: string
     end subroutine disp_${rank}$_${type[0]}$${kind}$
-    #:else
-    module subroutine disp_${rank}$_${type[0]}$${kind}$(val, dim, string)
-        ${type}$, intent(in) :: val${ranksuffix(rank)}$
-        integer, intent(in) :: dim
-        character(len=*), intent(in), optional :: string
-    end subroutine disp_${rank}$_${type[0]}$${kind}$
-    #:endif
     #:endfor
     #:endfor
-    module subroutine disp_str(val, string)
-        character(len=*), intent(in), optional :: val
+    module subroutine disp_str(value, string)
+        character(len=*), intent(in), optional :: value
         character(len=*), intent(in), optional :: string
     end subroutine disp_str
   end interface disp
