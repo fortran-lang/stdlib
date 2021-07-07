@@ -132,7 +132,7 @@ program demo_savetxt
 end program demo_savetxt
 ```
 
-## `disp` - display your data to the screen (or an other output unit)
+## `disp` - display your data to the screen (or another output unit)
 
 ### Status
 
@@ -173,7 +173,7 @@ For null:
 
 ### Output
 
-The result is to print `header` and `value` on the screen (or an other output unit) in this order.  
+The result is to print `header` and `value` on the screen (or another output unit) in this order.  
 If `value` is a `array` type, the dimension length information of the `array` will also be output.
 
 ### Example
