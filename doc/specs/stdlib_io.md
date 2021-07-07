@@ -132,18 +132,18 @@ program demo_savetxt
 end program demo_savetxt
 ```
 
-## `disp` - display your data to the screen (or the default `output_unit`)
+## `disp` - display your data to the screen (or an other output unit)
 
 ### Status
 
 Experimental
 
 ### Description
-Display any type of scalar or `array` with up to 3 dimensions to the screen (or the default `output_unit`).  
+Display any type of scalar, vector or matrix.
 
 Make good use of similar to the following usage, can help you understand the data information in the `array`.
 ```fortran
-call disp( A(i, j, 2, :, :) [, string] )    !! `i, j, ...` can be determined by `do` loop.
+call disp( A(i, j, 2, :, :) [, unit, header, brief] )    !! `i, j, ...` can be determined by `do` loop.
 ```
 
 Generally, except for `complex` type, any other type of scalar or single element of the `array` will be printed out with a width of 12 characters and a space separator.  
@@ -152,40 +152,41 @@ For `complex` type, scalar or single element of the `array` will be printed out 
 ### Syntax
 
 General API:
-`call [[stdlib_io(module):disp(interface)]](value [, string])`
-
-Except, for 3D arrays:
-`call [[stdlib_io(module):disp(interface)]](value, dim [, string])` 
+`call [[stdlib_io(module):disp(interface)]](value [, unit, header, brief])`
 
 For null:
 `call [[stdlib_io(module):disp(interface)]]()`  
 
 ### Arguments
 
-`value`: Shall be any type of scalar or `array` with up to 3 dimensions.
+`value`: Shall be any type of scalar, vector or matrix.
     This is an `intent(in)` argument.
 
-`dim`: Shall be a scalar of type `integer` with a value: 1, 2 or 3.
-    This is an `intent(in)` argument.
+`unit`: Shall be an `integer` scalar link to an IO stream.
+    This is an `intent(in)` and `optional` argument.
 
-`string`: Shall be a scalar of type `character` with any length (usually used to comment data information).
+`header`: Shall be a scalar of type `character` with any length (usually used to comment data information).
+    This is an `intent(in)` and `optional` argument.
+
+`brief`: Shall be an `logical` scalar, controling an abridged version of the `value` object is printed.
     This is an `intent(in)` and `optional` argument.
 
 ### Output
 
-The result is to print `string` and `value` on the screen (or the default `output_unit`) in this order.
+The result is to print `header` and `value` on the screen (or an other output unit) in this order.  
+If `value` is a `array` type, the dimension length information of the `array` will also be output.
 
 ### Example
 
 ```fortran
-program demo_io_disp
-
+program test_io_disp
+    
     use :: stdlib_io, only: disp
     implicit none
     real(8) :: r(2, 3)
-    complex :: c(2, 3), c_3d(2, 3, 2)
+    complex :: c(2, 3), c_3d(2, 100, 20)
     integer :: i(2, 3)
-    logical :: l(2, 3)
+    logical :: l(10, 10)
 
     r = 1.; c = 1.; c_3d = 2.; i = 1; l = .true.
     r(1, 1) = -1.e-11
@@ -193,47 +194,54 @@ program demo_io_disp
     c(2, 2) = (-1.e10,-1.e10)
     c_3d(1,3,1) = (1000, 0.001)
     c_3d(1,3,2) = (1.e4, 100.)
-
-    call disp('string', 'disp(string):')
+    call disp('string', header='disp(string):')
     call disp('It is a note.')
     call disp()
 
-    call disp(r, 'disp(r):')
-    call disp(c, 'disp(c):')
-    call disp(i(1,:), 'disp(i):')
-    call disp(l(:,2), 'disp(l):')
+    call disp(r, header='disp(r):')
+    call disp(c, header='disp(c):')
+    call disp(i, header='disp(i):')
+    call disp(l, header='disp(l):', brief=.true.)
 
-    call disp(c_3d, 3, 'disp(c_3d, 3):')
+    call disp(c_3d(:,:,3), header='disp(c_3d, 3):', brief=.true.)
+    call disp(c_3d(2,:,:), header='disp(c_3d, 2):', brief=.true.)
 
-    call disp(c_3d(1,:,:), 'disp(c_3d(1,:,:)):')
-    
-end program demo_io_disp
+end program test_io_disp
 ```
 **Result:**
 ```fortran
- disp(string):
+disp(string):
  string
  It is a note.
 
  disp(r):
+ [matrix size: 2×3]
  -0.1000E-10  -0.1000E+11    1.000
    1.000        1.000        1.000
  disp(c):
+ [matrix size: 2×3]
             (1.000,0.000)             (1.000,0.000)             (1.000,0.000)
             (1.000,0.000) (-0.1000E+11,-0.1000E+11)             (1.000,0.000)
  disp(i):
+ [matrix size: 2×3]
+           1            1            1
            1            1            1
  disp(l):
-           T            T
+ [matrix size: 10×10]
+           T            T            T          ...            T
+           T            T            T          ...            T
+           T            T            T          ...            T
+           :            :            :            :            :
+           T            T            T          ...            T
  disp(c_3d, 3):
- Slice (:,:,1):
-            (2.000,0.000)             (2.000,0.000)         (1000.,0.1000E-2)
-            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)
- Slice (:,:,2):
-            (2.000,0.000)             (2.000,0.000)         (0.1000E+5,100.0)
-            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)
- disp(c_3d(1,:,:)):
-            (2.000,0.000)             (2.000,0.000)
-            (2.000,0.000)             (2.000,0.000)
-        (1000.,0.1000E-2)         (0.1000E+5,100.0)
+ [matrix size: 2×100]
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
+ disp(c_3d, 2):
+ [matrix size: 100×20]
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
+                        :                         :                         :                         :                         :  
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000) 
 ```

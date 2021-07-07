@@ -22,23 +22,26 @@ module stdlib_io
   interface disp
     !! version: experimental
     !!
-    !! Display any type of scalar and `array` with up to 3 dimensions to the default `output_unit`
-    !! ([Specification](../page/specs/stdlib_io.html#description_4))
+    !! Display any type of scalar, vector and matrix.
+    !! ([Specification](../page/specs/stdlib_io.html))
     #:set DISP_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES &
         & + CMPLX_KINDS_TYPES + LOG_KINDS_TYPES
-    #:set DISP_RANKS = range(0, 4)
+    #:set DISP_RANKS = range(0, 3)
     #:for kind, type in DISP_KINDS_TYPES
     #:for rank in DISP_RANKS
-    module subroutine disp_${rank}$_${type[0]}$${kind}$(value, #{if rank == 3}#dim, #{endif}#string)
+    module subroutine disp_${rank}$_${type[0]}$${kind}$(value, unit, header, brief)
         ${type}$, intent(in) :: value${ranksuffix(rank)}$
-        #{if rank == 3}#integer, intent(in) :: dim#{endif}#
-        character(len=*), intent(in), optional :: string
+        integer, intent(in), optional :: unit
+        character(len=*), intent(in), optional :: header
+        logical, intent(in), optional :: brief
     end subroutine disp_${rank}$_${type[0]}$${kind}$
     #:endfor
     #:endfor
-    module subroutine disp_str(value, string)
+    module subroutine disp_str(value, unit, header, brief)
         character(len=*), intent(in), optional :: value
-        character(len=*), intent(in), optional :: string
+        integer, intent(in), optional :: unit
+        character(len=*), intent(in), optional :: header
+        logical, intent(in), optional :: brief
     end subroutine disp_str
   end interface disp
 

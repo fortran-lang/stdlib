@@ -5,6 +5,7 @@ submodule (stdlib_io) stdlib_io_disp
 
     use stdlib_ascii, only: to_string
     use stdlib_strings, only: format_to_string
+    use, intrinsic :: iso_fortran_env, only: output_unit
     implicit none
     character(len=*), parameter :: fmt_r = '(*(g12.4, 1x))'
     character(len=*), parameter :: fmt_c = '(*(g25.0, 1x))'
@@ -13,118 +14,146 @@ contains
     
     #:for kind, type in RIL_KINDS_TYPES
     module procedure disp_0_${type[0]}$${kind}$
-        !! Display a ${type}$ variable to the default `output_unit`
-        if(present(string)) print *, trim(string)
-        print fmt_r, value
+        !! Display a/an ${type}$ scalar.
+        integer :: unit_
+        unit_  = merge(unit, output_unit, present(unit))
+        if(present(header)) write(unit_, *) header
+        write(unit_, fmt_r) value
     end procedure disp_0_${type[0]}$${kind}$
 
     module procedure disp_1_${type[0]}$${kind}$
-        !! Display a ${type}$ vector variable to the default `output_unit`
-        if(present(string)) print *, trim(string)
-        print fmt_r, value(:)
+        !! Display a/an ${type}$ vector.
+        integer :: unit_
+        logical :: brief_
+        integer :: m
+        unit_  = merge(unit, output_unit, present(unit))
+        brief_ = merge(brief, .false., present(brief))
+        m = size(value, 1)
+        if(present(header)) write(unit_, *) header
+        write(unit_, *) '[vector size: '//to_string(m)//']'
+        if(brief_ .and. m > 5) then
+            write(unit_, fmt_r) value(1:3), '...', value(m)
+        else
+            write(unit_, fmt_r) value(:)
+        end if
     end procedure disp_1_${type[0]}$${kind}$
 
     module procedure disp_2_${type[0]}$${kind}$
-        !! Display a ${type}$ 2D array variable to the default `output_unit`
-        integer :: i, m
+        !! Display a/an ${type}$ matrix.
+        integer :: unit_
+        logical :: brief_
+        character(1) :: colon(5)
+        integer :: i, m, n
+        unit_  = merge(unit, output_unit, present(unit))
+        brief_ = merge(brief, .false., present(brief))
         m = size(value, 1)
-        if(present(string)) print *, trim(string)
-        do i = 1, m
-            print fmt_r, value(i,:)
-        end do
+        n = size(value, 2)
+        if(present(header)) write(unit_, *) header
+        write(unit_, *) '[matrix size: '//to_string(m)//'×'//to_string(n)//']'
+        if(brief_ .and. (m > 5 .or. n > 5)) then
+            if(m > 5 .and. n > 5) then
+                do i = 1, 3
+                    write(unit_, fmt_r) value(i,1:3), '...', value(i,n)
+                end do
+                write(unit_, fmt_r) ':', ':', ':', ':', ':'
+                write(unit_, fmt_r) value(m,1:3), '...', value(m,n)
+            elseif(m > 5 .and. n <= 5) then
+                do i = 1, 3
+                    write(unit_, fmt_r) value(i,:)
+                end do
+                colon(1:n) = ':'
+                write(unit_, fmt_r) colon(1:n)
+                write(unit_, fmt_r) value(m,:)
+            elseif(m <= 5 .and. n > 5) then
+                do i = 1, m
+                    write(unit_, fmt_r) value(i,1:3), '...', value(i,n)
+                end do
+            end if
+        else
+            do i = 1, m
+                write(unit_, fmt_r) value(i,:)
+            end do
+        end if
     end procedure disp_2_${type[0]}$${kind}$
-
-    module procedure disp_3_${type[0]}$${kind}$
-        !! Display a ${type}$ 3D array variable to the default `output_unit`
-        integer :: i, dim1, dim2, dim3
-        dim1 = size(value, 1)
-        dim2 = size(value, 2)
-        dim3 = size(value, 3)
-        if(present(string)) print *, trim(string)
-        select case(dim)
-        case(1)
-            do i = 1, dim1
-                print *, 'Slice ('//to_string(i)//',:,:):'
-                call disp_2_${type[0]}$${kind}$(value(i, :, :))
-            end do
-        case(2)
-            do i = 1, dim2
-                print *, 'Slice (:,'//to_string(i)//',:):'
-                call disp_2_${type[0]}$${kind}$(value(:, i, :))
-            end do
-        case(3)
-            do i = 1, dim3
-                print *, 'Slice (:,:,'//to_string(i)//'):'
-                call disp_2_${type[0]}$${kind}$(value(:, :, i))
-            end do
-        case default
-            call error_stop('Error(disp): wrong dimension')
-        end select
-    end procedure disp_3_${type[0]}$${kind}$
     #:endfor
 
     #:for kind, type in CMPLX_KINDS_TYPES
     module procedure disp_0_${type[0]}$${kind}$
-        !! Display a ${type}$ variable to the default `output_unit`
-        if(present(string)) print *, trim(string)
-        print fmt_c, format_to_string(value, '(g0.4)')
+        !! Display a ${type}$ scalar.
+        integer :: unit_
+        unit_  = merge(unit, output_unit, present(unit))
+        if(present(header)) write(unit_, *) header
+        write(unit_, fmt_c) format_to_string(value, '(g0.4)')
     end procedure disp_0_${type[0]}$${kind}$
 
     module procedure disp_1_${type[0]}$${kind}$
-        !! Display a ${type}$ vector variable to the default `output_unit`
+        !! Display a ${type}$ vector.
+        integer :: unit_
+        logical :: brief_
         integer :: i, m
-        m = size(value)
-        if(present(string)) print *, trim(string)
-        print fmt_c, (format_to_string(value(i), '(g0.4)'), i=1, m)
+        unit_  = merge(unit, output_unit, present(unit))
+        brief_ = merge(brief, .false., present(brief))
+        m = size(value, 1)
+        if(present(header)) write(unit_, *) header
+        write(unit_, *) '[vector size: '//to_string(m)//']'
+        if(brief_ .and. m > 5) then
+            write(unit_, fmt_c) (format_to_string(value(i), '(g0.4)'), i=1, 3), &
+                          '...', format_to_string(value(m), '(g0.4)')
+        else
+            write(unit_, fmt_c) (format_to_string(value(i), '(g0.4)'), i=1, m)
+        end if
     end procedure disp_1_${type[0]}$${kind}$
 
     module procedure disp_2_${type[0]}$${kind}$
-        !! Display a ${type}$ 2D array variable to the default `output_unit`
+        !! Display a ${type}$ matrix.
+        integer :: unit_
+        logical :: brief_
+        character(1) :: colon(5)
         integer :: i, j, m, n
+        unit_  = merge(unit, output_unit, present(unit))
+        brief_ = merge(brief, .false., present(brief))
         m = size(value, 1)
         n = size(value, 2)
-        if(present(string)) print *, trim(string)
-        do i = 1, m
-            print fmt_c, (format_to_string(value(i, j), '(g0.4)'), j=1, n)
-        end do
-    end procedure disp_2_${type[0]}$${kind}$
-
-    module procedure disp_3_${type[0]}$${kind}$
-        !! Display a ${type}$ 3D array variable to the default `output_unit`
-        integer :: i, dim1, dim2, dim3
-        dim1 = size(value, 1)
-        dim2 = size(value, 2)
-        dim3 = size(value, 3)
-        if(present(string)) print *, trim(string)
-        if(dim == 1) then
-            do i = 1, dim1
-                print *, 'Slice ('//to_string(i)//',:,:):'
-                call disp_2_${type[0]}$${kind}$(value(i, :, :))
-            end do
-        elseif(dim == 2) then
-            do i = 1, dim2
-                print *, 'Slice (:,'//to_string(i)//',:):'
-                call disp_2_${type[0]}$${kind}$(value(:, i, :))
-            end do
-        elseif (dim == 3) then
-            do i = 1, dim3
-                print *, 'Slice (:,:,'//to_string(i)//'):'
-                call disp_2_${type[0]}$${kind}$(value(:, :, i))
-            end do
+        if(present(header)) write(unit_, *) header
+        write(unit_, *) '[matrix size: '//to_string(m)//'×'//to_string(n)//']'
+        if(brief_ .and. (m > 5 .or. n > 5)) then
+            if(m > 5 .and. n > 5) then
+                do i = 1, 3
+                    write(unit_, fmt_c) (format_to_string(value(i,j), '(g0.4)'), j=1, 3), &
+                                  '...', format_to_string(value(i,n), '(g0.4)')
+                end do
+                write(unit_, fmt_c) ':', ':', ':', ':', ':'
+                write(unit_, fmt_c) (format_to_string(value(m,j), '(g0.4)'), j=1, 3), &
+                              '...', format_to_string(value(m,n), '(g0.4)')
+            elseif(m > 5 .and. n <= 5) then
+                do i = 1, 3
+                    write(unit_, fmt_c) (format_to_string(value(i,j), '(g0.4)'), j=1, n)
+                end do
+                colon(1:n) = ':'
+                write(unit_, fmt_c) colon(1:n)
+                write(unit_, fmt_c) (format_to_string(value(m,j), '(g0.4)'), j=1, n)
+            elseif(m <= 5 .and. n > 5) then
+                do i = 1, m
+                    write(unit_, fmt_c) (format_to_string(value(m,j), '(g0.4)'), j=1, 3), &
+                                  '...', format_to_string(value(m,n), '(g0.4)')
+                end do
+            end if
         else
-            call error_stop('Error(disp): wrong dimension')
+            do i = 1, m
+                write(unit_, fmt_c) (format_to_string(value(i,j), '(g0.4)'), j=1, n)
+            end do
         end if
-    end procedure disp_3_${type[0]}$${kind}$
+    end procedure disp_2_${type[0]}$${kind}$
     #:endfor
 
     module procedure disp_str
-        !! Display a character variable to the default `output_unit`
-        if(present(string)) print *, trim(string)
-        if(present(value)) then
-            print *, trim(value)
-        else
-            print *, ''
-        end if
+        !! Display a `character` scalar.
+        character(:), allocatable :: value_
+        integer :: unit_
+        value_ = optval(value, '')
+        unit_  = merge(unit, output_unit, present(unit))
+        if(present(header)) write(unit_, *) header
+        write(unit_, *) value_
     end procedure disp_str
 
 end submodule stdlib_io_disp
