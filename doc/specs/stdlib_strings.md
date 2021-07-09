@@ -210,10 +210,10 @@ Deduced `first` and `last` argument take +infinity or -infinity value and deduce
 takes value +1 or -1 depending upon the actual argument(s) provided by the user.  
 
 Extraction Process:  
+Extraction starts only if `last` is crossable from `first` with stride of `stride`.  
 Extraction starts from the first valid index in the defined region to take stride of `stride` 
 and ends when the last valid index in the defined region is crossed.  
 If no valid index exists in the defined region, empty string is returned.
-Extraction starts only if `last` is crossable from `first` with stride of `stride`.
 
 #### Syntax
 
