@@ -143,7 +143,7 @@ Display any type of scalar, vector or matrix.
 
 Make good use of similar to the following usage, can help you understand the data information in the `array`.
 ```fortran
-call disp( A(i, j, 2, :, :) [, unit, header, brief] )    !! `i, j, ...` can be determined by `do` loop.
+call disp( A(i, j, 2, :, 1:10) [, unit, header, brief] )    !! `i, j, ...` can be determined by `do` loop.
 ```
 
 Generally, except for `complex` type, any other type of scalar or single element of the `array` will be printed out with a width of 12 characters and a space separator.  
@@ -174,7 +174,7 @@ For null:
 ### Output
 
 The result is to print `header` and `value` on the screen (or another output unit) in this order.  
-If `value` is a `array` type, the dimension length information of the `array` will also be output.
+If `value` is a `array` type, the dimension length information of the `array` will also be outputed.
 
 ### Example
 
@@ -199,18 +199,19 @@ program test_io_disp
     call disp()
 
     call disp(r, header='disp(r):')
+    call disp(r(1,:), header='disp(r(1,:))')
     call disp(c, header='disp(c):')
     call disp(i, header='disp(i):')
     call disp(l, header='disp(l):', brief=.true.)
 
-    call disp(c_3d(:,:,3), header='disp(c_3d, 3):', brief=.true.)
-    call disp(c_3d(2,:,:), header='disp(c_3d, 2):', brief=.true.)
+    call disp(c_3d(:,:,3), header='disp(c_3d(:,:,3)):', brief=.true.)
+    call disp(c_3d(2,:,:), header='disp(c_3d(2,:,:)):', brief=.true.)
 
 end program test_io_disp
 ```
 **Result:**
 ```fortran
-disp(string):
+ disp(string):
  string
  It is a note.
 
@@ -218,6 +219,9 @@ disp(string):
  [matrix size: 2×3]
  -0.1000E-10  -0.1000E+11    1.000
    1.000        1.000        1.000
+ disp(r(1,:))
+ [vector size: 3]
+ -0.1000E-10  -0.1000E+11    1.000
  disp(c):
  [matrix size: 2×3]
             (1.000,0.000)             (1.000,0.000)             (1.000,0.000)
@@ -233,11 +237,11 @@ disp(string):
            T            T            T          ...            T
            :            :            :            :            :
            T            T            T          ...            T
- disp(c_3d, 3):
+ disp(c_3d(:,:,3)):
  [matrix size: 2×100]
             (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
             (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
- disp(c_3d, 2):
+ disp(c_3d(2,:,:)):
  [matrix size: 100×20]
             (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
             (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
