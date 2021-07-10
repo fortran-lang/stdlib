@@ -6,10 +6,15 @@ SRCFYPP =\
         stdlib_io.fypp \
         stdlib_linalg.fypp \
         stdlib_linalg_diag.fypp \
+        stdlib_linalg_outer_product.fypp \
         stdlib_optval.fypp \
         stdlib_quadrature.fypp \
         stdlib_quadrature_trapz.fypp \
         stdlib_quadrature_simps.fypp \
+        stdlib_sorting.fypp \
+        stdlib_sorting_ord_sort.fypp \
+        stdlib_sorting_sort.fypp \
+        stdlib_sorting_sort_index.fypp \
         stdlib_stats.fypp \
         stdlib_stats_corr.fypp \
         stdlib_stats_cov.fypp \
@@ -27,8 +32,12 @@ SRCFYPP =\
 
 SRC = f18estop.f90 \
       stdlib_error.f90 \
+      stdlib_specialfunctions.f90 \
+      stdlib_specialfunctions_legendre.f90 \
+      stdlib_io.f90 \
       stdlib_kinds.f90 \
       stdlib_logger.f90 \
+      stdlib_quadrature_gauss.f90 \
       stdlib_strings.f90 \
       $(SRCGEN)
 
@@ -63,6 +72,8 @@ stdlib_bitsets.o: stdlib_kinds.o
 stdlib_bitsets_64.o: stdlib_bitsets.o
 stdlib_bitsets_large.o: stdlib_bitsets.o
 stdlib_error.o: stdlib_optval.o
+stdlib_specialfunctions.o: stdlib_kinds.o
+stdlib_specialfunctions_legendre.o: stdlib_kinds.o stdlib_specialfunctions.o
 stdlib_io.o: \
 	stdlib_error.o \
 	stdlib_optval.o \
@@ -75,6 +86,9 @@ stdlib_linalg_diag.o: \
 stdlib_logger.o: stdlib_ascii.o stdlib_optval.o
 stdlib_optval.o: stdlib_kinds.o
 stdlib_quadrature.o: stdlib_kinds.o
+
+stdlib_quadrature_gauss.o: stdlib_kinds.o stdlib_quadrature.o
+
 stdlib_quadrature_simps.o: \
 	stdlib_quadrature.o \
 	stdlib_error.o \
@@ -83,6 +97,15 @@ stdlib_quadrature_trapz.o: \
 	stdlib_quadrature.o \
 	stdlib_error.o \
 	stdlib_kinds.o
+stdlib_sorting.o: \
+	stdlib_kinds.o \
+	stdlib_string_type.o
+stdlib_sorting_ord_sort.o: \
+	stdlib_sorting.o
+stdlib_sorting_sort.o: \
+	stdlib_sorting.o
+stdlib_sorting_sort_index.o: \
+	stdlib_sorting.o
 stdlib_stats.o: \
 	stdlib_kinds.o
 stdlib_stats_corr.o: \
@@ -114,8 +137,11 @@ stdlib_stats_var.o: \
 stdlib_stats_distribution_PRNG.o: \
         stdlib_kinds.o \
 	stdlib_error.o
-stdlib_string_type.o: stdlib_ascii.o stdlib_kinds.o
-stdlib_strings.o: stdlib_ascii.o stdlib_string_type.o
+stdlib_string_type.o: stdlib_ascii.o \
+    stdlib_kinds.o
+stdlib_strings.o: stdlib_ascii.o \
+    stdlib_string_type.o \
+	stdlib_optval.o
 stdlib_math.o: stdlib_kinds.o
 stdlib_math_linspace.o: \
 	stdlib_math.o \
@@ -126,3 +152,4 @@ stdlib_math_logspace.o: \
 	stdlib_kinds.o \
 	stdlib_optval.o
 
+stdlib_linalg_outer_product.o: stdlib_linalg.o

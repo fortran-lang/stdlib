@@ -186,3 +186,95 @@ program demo_simps_weights
 ! 64.0
 end program demo_simps_weights
 ```
+
+## `gauss_legendre` - Gauss-Legendre quadrature (a.k.a. Gaussian quadrature) nodes and weights
+
+### Status
+
+Experimental
+
+### Description
+
+Computes Gauss-Legendre quadrature (also known as simply Gaussian quadrature) nodes and weights,
+ for any `N` (number of nodes).
+Using the nodes `x` and weights `w`, you can compute the integral of some function `f` as follows:
+`integral = sum(f(x) * w)`.
+
+Only double precision is supported - if lower precision is required, you must do the appropriate conversion yourself.
+Accuracy has been validated up to N=64 by comparing computed results to tablulated values known to be accurate to machine precision
+(maximum difference from those values is 2 epsilon).
+
+### Syntax
+
+`subroutine [[stdlib_quadrature(module):gauss_legendre(interface)]] (x, w[, interval])`
+
+### Arguments
+
+`x`: Shall be a rank-one array of type `real(real64)`. It is an *output* argument, representing the quadrature nodes.
+
+`w`: Shall be a rank-one array of type `real(real64)`, with the same dimension as `x`. 
+It is an *output* argument, representing the quadrature weights.
+
+`interval`: (Optional) Shall be a two-element array of type `real(real64)`. 
+If present, the nodes and weigts are calculated for integration from `interval(1)` to `interval(2)`.
+If not specified, the default integral is -1 to 1.
+
+### Example
+
+```fortran
+program integrate
+	use iso_fortran_env, dp => real64
+	implicit none
+
+	integer, parameter :: N = 6
+	real(dp), dimension(N) :: x,w
+	call gauss_legendre(x,w)
+	print *, "integral of x**2 from -1 to 1 is",  sum(x**2 * w)
+end program
+```
+
+## `gauss_legendre_lobatto` - Gauss-Legendre-Lobatto quadrature nodes and weights
+
+### Status
+
+Experimental
+
+### Description
+
+Computes Gauss-Legendre-Lobatto quadrature nodes and weights,
+ for any `N` (number of nodes).
+Using the nodes `x` and weights `w`, you can compute the integral of some function `f` as follows:
+`integral = sum(f(x) * w)`.
+
+Only double precision is supported - if lower precision is required, you must do the appropriate conversion yourself.
+Accuracy has been validated up to N=64 by comparing computed results to tablulated values known to be accurate to machine precision
+(maximum difference from those values is 2 epsilon).
+
+### Syntax
+
+`subroutine [[stdlib_quadrature(module):gauss_legendre_lobatto(interface)]] (x, w[, interval])`
+
+### Arguments
+
+`x`: Shall be a rank-one array of type `real(real64)`. It is an *output* argument, representing the quadrature nodes.
+
+`w`: Shall be a rank-one array of type `real(real64)`, with the same dimension as `x`. 
+It is an *output* argument, representing the quadrature weights.
+
+`interval`: (Optional) Shall be a two-element array of type `real(real64)`. 
+If present, the nodes and weigts are calculated for integration from `interval(1)` to `interval(2)`.
+If not specified, the default integral is -1 to 1.
+
+### Example
+
+```fortran
+program integrate
+	use iso_fortran_env, dp => real64
+	implicit none
+
+	integer, parameter :: N = 6
+	real(dp), dimension(N) :: x,w
+	call gauss_legendre_lobatto(x,w)
+	print *, "integral of x**2 from -1 to 1 is",  sum(x**2 * w)
+end program
+```
