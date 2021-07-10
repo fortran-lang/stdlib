@@ -120,27 +120,24 @@ module stdlib_math
   #:endfor
 
   #:for k1, t1 in IRC_KINDS_TYPES
-    #:for k2, t2 in IRC_KINDS_TYPES
-      #! k2, t2 correspond to the kind/type of the base that is passed
-      #:set RName = rname("logspace_n_base", 1, k1, k2)
-      #! ================================================================ !#
-      #! Need another function where base is not optional, otherwise the
-      #! compiler can not differentiate between
-      #! generic calls to logspace_n where a base is not present
-      #! ================================================================ !#
-      module function ${RName}$(start, end, n, base) result(res)
-      ! Generate logarithmically spaced sequence from ${k2}$ base to the powers
-      ! of ${k1}$ start and end. [base^start, ... , base^end]
-        ${t1}$, intent(in) :: start
-        ${t1}$, intent(in) :: end
-        integer, intent(in) :: n
-        ${t2}$, intent(in) :: base
+    #:set RName = rname("logspace_n_base", 1, k1, k1)
+    #! ================================================================ !#
+    #! Need another function where base is not optional, otherwise the
+    #! compiler can not differentiate between
+    #! generic calls to logspace_n where a base is not present
+    #! ================================================================ !#
+    module function ${RName}$(start, end, n, base) result(res)
+    ! Generate logarithmically spaced sequence from ${k1}$ base to the powers
+    ! of ${k1}$ start and end. [base^start, ... , base^end]
+      ${t1}$, intent(in) :: start
+      ${t1}$, intent(in) :: end
+      integer, intent(in) :: n
+      ${t1}$, intent(in) :: base
 
-        ${t1}$ :: res(n)
+      ${t1}$ :: res(n)
 
-      end function ${RName}$
-      #:endfor
-    #:endfor
+    end function ${RName}$
+  #:endfor
 
   end interface
 
