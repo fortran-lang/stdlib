@@ -66,5 +66,32 @@ contains
       res = base ** exponents
     end procedure
   #:endfor
+  #! Integer support:
+    ! Generate logarithmically spaced sequence from ${k1}$ base to the powers
+    ! of ${k1}$ start and end. [base^start, ... , base^end]
+    ! RName = ${RName}$
+  #:for k1 in REAL_KINDS
+    #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_r" + str(k1) + "base")
+    module procedure ${RName}$
+      integer :: exponents(n)
+      exponents = linspace(start, end, n)
+      res = base ** exponents
+    end procedure
+
+    #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_c" + str(k1) + "base")
+    module procedure ${RName}$
+      integer :: exponents(n)
+      exponents = linspace(start, end, n)
+      res = base ** exponents
+    end procedure
+  #:endfor
+
+    #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_ibase")
+    module procedure ${RName}$
+      integer :: exponents(n)
+      exponents = linspace(start, end, n)
+      res = base ** exponents
+    end procedure
+
 
 end submodule
