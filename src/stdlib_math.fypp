@@ -1,7 +1,6 @@
 #:include "common.fypp"
 #:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-#:set IRC_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 
 module stdlib_math
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
