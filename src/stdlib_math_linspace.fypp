@@ -39,7 +39,10 @@ contains
 
       interval = (end - start) / real((n - 1), ${k1}$)
 
-      do i = 1, n
+      res(1) = start
+      res(n) = end
+
+      do i = 2, n - 1
 
         res(i) = real((i-1), ${k1}$) * interval + start
 
