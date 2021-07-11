@@ -1,28 +1,378 @@
-program test_io_disp
-    
-    use :: stdlib_io, only: disp
+module test_io_disp
+
+    use stdlib_strings, only: starts_with
+    use stdlib_error, only: check
+    use stdlib_io, only: disp, open
     implicit none
-    real(8) :: r(2, 3)
-    complex :: c(2, 3), c_3d(2, 100, 20)
-    integer :: i(2, 3)
-    logical :: l(10, 10)
 
-    r = 1.; c = 1.; c_3d = 2.; i = 1; l = .true.
-    r(1, 1) = -1.e-11
-    r(1, 2) = -1.e10
-    c(2, 2) = (-1.e10,-1.e10)
-    c_3d(1,3,1) = (1000, 0.001)
-    c_3d(1,3,2) = (1.e4, 100.)
-    call disp('string', header='disp(string):')
-    call disp('It is a note.')
-    call disp()
+    integer :: unit
+    character(*), parameter :: filenanme = "./test_io_disp.tmp"
+    character(len=512) :: string
 
-    call disp(r, header='disp(r):')
-    call disp(c, header='disp(c):')
-    call disp(i, header='disp(i):')
-    call disp(l, header='disp(l):', brief=.true.)
+contains
 
-    call disp(c_3d(:,:,3), header='disp(c_3d, 3):', brief=.true.)
-    call disp(c_3d(2,:,:), header='disp(c_3d, 2):', brief=.true.)
+    subroutine check_formatter(actual, expected, description, partial)
+        character(len=*), intent(in) :: actual, expected, description
+        logical, intent(in), optional :: partial
+        logical :: stat
+        character(len=:), allocatable :: msg
 
-end program test_io_disp
+        if (merge(partial, .false., present(partial))) then
+            stat = starts_with(actual, expected)
+        else
+            stat = actual == expected
+        end if
+
+        if (.not. stat) then
+            msg = description//new_line("a")// &
+                & "Expected: '"//expected//"' but got '"//actual//"'"
+        else
+            print '(" - ", a, /, "   Result: ''", a, "''")', description, actual
+        end if
+
+        call check(stat, msg)
+
+    end subroutine check_formatter
+
+    subroutine test_io_disp_complex
+        complex :: c(6,6) = (1.0, 1.0)
+        ! unit = open(filenanme, 'w+t')
+        open(newunit=unit, file=filenanme)
+        call disp(c(1,1), header='Test_io_disp_complex_scalar (brief) : ', brief=.true.)
+        call disp(c(1,1), unit=unit, header='Test_io_disp_complex_scalar (brief) : ', brief=.true.)
+
+        call disp(c(1,:), header='Test_io_disp_complex_vector (brief) : ', brief=.true.)
+        call disp(c(1,:), unit=unit, header='Test_io_disp_complex_vector (brief) : ', brief=.true.)
+
+        call disp(c(:,1), header='Test_io_disp_complex_vector : ', brief=.false.)
+        call disp(c(:,1), unit=unit, header='Test_io_disp_complex_vector : ', brief=.false.)
+
+        call disp(c(1:2,1:2), header='Test_io_disp_complex_matrix : ', brief=.false.)
+        call disp(c(1:2,1:2), unit=unit, header='Test_io_disp_complex_matrix : ', brief=.false.)
+
+        call disp(c(:,:), header='Test_io_disp_complex_matrix (brief) : ', brief=.true.)
+        call disp(c(:,:), unit=unit, header='Test_io_disp_complex_matrix (brief) : ', brief=.true.)
+    
+        !! Checks
+        rewind(unit)
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_complex_scalar (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '(1.000,1.000)', 'Value')
+        
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_complex_vector (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[vector size: 6]', 'Vector Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '(1.000,1.000)             (1.000,1.000)             (1.000,1.000)  &
+        &                     ...             (1.000,1.000)', 'Brief Vector')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_complex_vector :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[vector size: 6]', 'Vector Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '(1.000,1.000)             (1.000,1.000)             (1.000,1.000)    &
+        &         (1.000,1.000)             (1.000,1.000)             (1.000,1.000)', 'Brief Vector')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_complex_matrix :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[matrix size: 2×2]', 'Matrix Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '(1.000,1.000)             (1.000,1.000)', 'Matrix Vector 1')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '(1.000,1.000)             (1.000,1.000)', 'Matrix Vector 2')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_complex_matrix (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[matrix size: 6×6]', 'Matrix Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '(1.000,1.000)             (1.000,1.000)             (1.000,1.000)    &
+        &                   ...             (1.000,1.000)', 'Matrix Vector 1')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '(1.000,1.000)             (1.000,1.000)             (1.000,1.000)    &
+        &                   ...             (1.000,1.000)', 'Matrix Vector 2')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '(1.000,1.000)             (1.000,1.000)             (1.000,1.000)    &
+        &                   ...             (1.000,1.000)', 'Matrix Vector 3')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        ':                         :                         :                &
+        &         :                         :', 'Matrix Vector ..')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '(1.000,1.000)             (1.000,1.000)             (1.000,1.000)    &
+        &                   ...             (1.000,1.000)', 'Matrix Vector Size(Matrix, 1)')
+        close(unit)
+
+    end subroutine test_io_disp_complex
+
+    subroutine test_io_disp_real
+
+        real :: r(6,6) = 1.0
+        ! unit = open(filenanme, 'w+t')
+        open(newunit=unit, file=filenanme)
+        call disp(r(1,1), header='Test_io_disp_real_scalar (brief) : ', brief=.true.)
+        call disp(r(1,1), unit=unit, header='Test_io_disp_real_scalar (brief) : ', brief=.true.)
+
+        call disp(r(1,:), header='Test_io_disp_real_vector (brief) : ', brief=.true.)
+        call disp(r(1,:), unit=unit, header='Test_io_disp_real_vector (brief) : ', brief=.true.)
+
+        call disp(r(:,1), header='Test_io_disp_real_vector : ', brief=.false.)
+        call disp(r(:,1), unit=unit, header='Test_io_disp_real_vector : ', brief=.false.)
+
+        call disp(r(1:2,1:2), header='Test_io_disp_real_matrix : ', brief=.false.)
+        call disp(r(1:2,1:2), unit=unit, header='Test_io_disp_real_matrix : ', brief=.false.)
+
+        call disp(r(:,:), header='Test_io_disp_real_matrix (brief) : ', brief=.true.)
+        call disp(r(:,:), unit=unit, header='Test_io_disp_real_matrix (brief) : ', brief=.true.)
+    
+        !! Checks
+        rewind(unit)
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_real_scalar (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '1.000', 'Value')
+        
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_real_vector (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[vector size: 6]', 'Vector Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1.000        1.000        1.000              ...    1.000', 'Brief Vector')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_real_vector :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[vector size: 6]', 'Vector Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1.000        1.000        1.000        1.000        1.000        1.000', 'Brief Vector')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_real_matrix :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[matrix size: 2×2]', 'Matrix Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1.000        1.000', 'Matrix Vector 1')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1.000        1.000', 'Matrix Vector 2')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_real_matrix (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[matrix size: 6×6]', 'Matrix Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1.000        1.000        1.000              ...    1.000', 'Matrix Vector 1')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1.000        1.000        1.000              ...    1.000', 'Matrix Vector 2')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1.000        1.000        1.000              ...    1.000', 'Matrix Vector 3')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        ':            :            :            :            :', 'Matrix Vector ..')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1.000        1.000        1.000              ...    1.000', 'Matrix Vector Size(Matrix, 1)')
+        close(unit)
+
+    end subroutine test_io_disp_real
+
+    subroutine test_io_disp_integer
+
+        integer :: i(6,6) = 1
+        ! unit = open(filenanme, 'w+t')
+        open(newunit=unit, file=filenanme)
+        call disp(i(1,1), header='Test_io_disp_integer_scalar (brief) : ', brief=.true.)
+        call disp(i(1,1), unit=unit, header='Test_io_disp_integer_scalar (brief) : ', brief=.true.)
+
+        call disp(i(1,:), header='Test_io_disp_integer_vector (brief) : ', brief=.true.)
+        call disp(i(1,:), unit=unit, header='Test_io_disp_integer_vector (brief) : ', brief=.true.)
+
+        call disp(i(:,1), header='Test_io_disp_integer_vector : ', brief=.false.)
+        call disp(i(:,1), unit=unit, header='Test_io_disp_integer_vector : ', brief=.false.)
+
+        call disp(i(1:2,1:2), header='Test_io_disp_integer_matrix : ', brief=.false.)
+        call disp(i(1:2,1:2), unit=unit, header='Test_io_disp_integer_matrix : ', brief=.false.)
+
+        call disp(i(:,:), header='Test_io_disp_integer_matrix (brief) : ', brief=.true.)
+        call disp(i(:,:), unit=unit, header='Test_io_disp_integer_matrix (brief) : ', brief=.true.)
+    
+        !! Checks
+        rewind(unit)
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_integer_scalar (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '1', 'Value')
+        
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_integer_vector (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[vector size: 6]', 'Vector Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1            1            1          ...            1', 'Brief Vector')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_integer_vector :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[vector size: 6]', 'Vector Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1            1            1            1            1            1', 'Brief Vector')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_integer_matrix :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[matrix size: 2×2]', 'Matrix Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1            1', 'Matrix Vector 1')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1            1', 'Matrix Vector 2')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_integer_matrix (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[matrix size: 6×6]', 'Matrix Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1            1            1          ...            1', 'Matrix Vector 1')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1            1            1          ...            1', 'Matrix Vector 2')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1            1            1          ...            1', 'Matrix Vector 3')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        ':            :            :            :            :', 'Matrix Vector ..')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        '1            1            1          ...            1', 'Matrix Vector Size(Matrix, 1)')
+        close(unit)
+
+    end subroutine test_io_disp_integer
+
+    subroutine test_io_disp_logical
+
+        logical :: l(6,6) = .true.
+        ! unit = open(filenanme, 'w+t')
+        open(newunit=unit, file=filenanme)
+        call disp(l(1,1), header='Test_io_disp_logical_scalar (brief) : ', brief=.true.)
+        call disp(l(1,1), unit=unit, header='Test_io_disp_logical_scalar (brief) : ', brief=.true.)
+
+        call disp(l(1,:), header='Test_io_disp_logical_vector (brief) : ', brief=.true.)
+        call disp(l(1,:), unit=unit, header='Test_io_disp_logical_vector (brief) : ', brief=.true.)
+
+        call disp(l(:,1), header='Test_io_disp_logical_vector : ', brief=.false.)
+        call disp(l(:,1), unit=unit, header='Test_io_disp_logical_vector : ', brief=.false.)
+
+        call disp(l(1:2,1:2), header='Test_io_disp_logical_matrix : ', brief=.false.)
+        call disp(l(1:2,1:2), unit=unit, header='Test_io_disp_logical_matrix : ', brief=.false.)
+
+        call disp(l(:,:), header='Test_io_disp_logical_matrix (brief) : ', brief=.true.)
+        call disp(l(:,:), unit=unit, header='Test_io_disp_logical_matrix (brief) : ', brief=.true.)
+    
+        !! Checks
+        rewind(unit)
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_logical_scalar (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'T', 'Value')
+        
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_logical_vector (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[vector size: 6]', 'Vector Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        'T            T            T          ...            T', 'Brief Vector')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_logical_vector :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[vector size: 6]', 'Vector Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        'T            T            T            T            T            T', 'Brief Vector')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_logical_matrix :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[matrix size: 2×2]', 'Matrix Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        'T            T', 'Matrix Vector 1')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        'T            T', 'Matrix Vector 2')
+
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_logical_matrix (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), '[matrix size: 6×6]', 'Matrix Info')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        'T            T            T          ...            T', 'Matrix Vector 1')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        'T            T            T          ...            T', 'Matrix Vector 2')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        'T            T            T          ...            T', 'Matrix Vector 3')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        ':            :            :            :            :', 'Matrix Vector ..')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), &
+        'T            T            T          ...            T', 'Matrix Vector Size(Matrix, 1)')
+        close(unit)
+
+    end subroutine test_io_disp_logical
+
+    subroutine test_io_disp_string
+
+        character(*), parameter :: str = 'It is a string.'
+        ! unit = open(filenanme, 'w+t')
+        open(newunit=unit, file=filenanme)
+        call disp(str, header='Test_io_disp_string_scalar (brief) : ', brief=.true.)
+        call disp(str, unit=unit, header='Test_io_disp_string_scalar (brief) : ', brief=.true.)
+    
+        !! Checks
+        rewind(unit)
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_string_scalar (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'It is a string.', 'Value')
+        close(unit)
+
+    end subroutine test_io_disp_string
+
+end module test_io_disp
+
+program tester
+    use test_io_disp
+    call test_io_disp_complex
+    call test_io_disp_real
+    call test_io_disp_integer
+    call test_io_disp_logical
+    call test_io_disp_string
+end program tester
