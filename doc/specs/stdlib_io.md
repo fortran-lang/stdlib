@@ -168,13 +168,13 @@ For null:
 `header`: Shall be a scalar of type `character` with any length (usually used to comment data information).
     This is an `intent(in)` and `optional` argument.
 
-`brief`: Shall be an `logical` scalar, controling an abridged version of the `value` object is printed.
+`brief`: Shall be an `logical` scalar, controlling an abridged version of the `value` object is printed.
     This is an `intent(in)` and `optional` argument.
 
 ### Output
 
 The result is to print `header` and `value` on the screen (or another output unit) in this order.  
-If `value` is a `array` type, the dimension length information of the `array` will also be outputed.
+If `value` is a `array` type, the dimension length information of the `array` will also be outputted.
 
 ### Example
 
