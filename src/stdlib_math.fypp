@@ -16,9 +16,9 @@ module stdlib_math
     integer, parameter :: DEFAULT_LOGSPACE_BASE = 10
 
     ! Useful constants for lnspace
-    real(sp), parameter :: EULERS_NUMBER_SP = 2.71828182845904523536028747135266249775724709369995_sp
-    real(dp), parameter :: EULERS_NUMBER_DP = 2.71828182845904523536028747135266249775724709369995_dp
-    real(qp), parameter :: EULERS_NUMBER_QP = 2.71828182845904523536028747135266249775724709369995_qp
+    real(sp), parameter :: EULERS_NUMBER_SP = exp(1.0_sp)
+    real(dp), parameter :: EULERS_NUMBER_DP = exp(1.0_dp)
+    real(qp), parameter :: EULERS_NUMBER_QP = exp(1.0_qp)
 
     interface clip
     #:for k1, t1 in IR_KINDS_TYPES
