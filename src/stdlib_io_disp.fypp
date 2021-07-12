@@ -5,6 +5,7 @@ submodule (stdlib_io) stdlib_io_disp
 
     use stdlib_ascii, only: to_string
     use stdlib_strings, only: format_to_string
+    use stdlib_string_type, only: string_type, char
     use, intrinsic :: iso_fortran_env, only: output_unit
     implicit none
     character(len=*), parameter :: fmt_r = '(*(g12.4, 1x))'
@@ -33,8 +34,10 @@ contains
         if(present(header)) write(unit_, *) header
         write(unit_, *) '[vector size: '//to_string(m)//']'
         if(brief_ .and. m > 5) then
+            !! Brief Print.
             write(unit_, fmt_r) value(1:3), '...', value(m)
         else
+            !! Full Print.
             write(unit_, fmt_r) value(:)
         end if
     end procedure disp_1_${type[0]}$${kind}$
@@ -49,9 +52,11 @@ contains
         brief_ = merge(brief, .false., present(brief))
         m = size(value, 1)
         n = size(value, 2)
+
         if(present(header)) write(unit_, *) header
         write(unit_, *) '[matrix size: '//to_string(m)//'×'//to_string(n)//']'
         if(brief_ .and. (m > 5 .or. n > 5)) then
+            !! Brief Print.
             if(m > 5 .and. n > 5) then
                 do i = 1, 3
                     write(unit_, fmt_r) value(i,1:3), '...', value(i,n)
@@ -71,6 +76,7 @@ contains
                 end do
             end if
         else
+            !! Full Print.
             do i = 1, m
                 write(unit_, fmt_r) value(i,:)
             end do
@@ -95,12 +101,15 @@ contains
         unit_  = merge(unit, output_unit, present(unit))
         brief_ = merge(brief, .false., present(brief))
         m = size(value, 1)
+
         if(present(header)) write(unit_, *) header
         write(unit_, *) '[vector size: '//to_string(m)//']'
         if(brief_ .and. m > 5) then
+            !! Brief Print.
             write(unit_, fmt_c) (format_to_string(value(i), format_), i=1, 3), &
                           '...', format_to_string(value(m), format_)
         else
+            !! Full Print.
             write(unit_, fmt_c) (format_to_string(value(i), format_), i=1, m)
         end if
     end procedure disp_1_${type[0]}$${kind}$
@@ -115,9 +124,11 @@ contains
         brief_ = merge(brief, .false., present(brief))
         m = size(value, 1)
         n = size(value, 2)
+
         if(present(header)) write(unit_, *) header
         write(unit_, *) '[matrix size: '//to_string(m)//'×'//to_string(n)//']'
         if(brief_ .and. (m > 5 .or. n > 5)) then
+            !! Brief Print.
             if(m > 5 .and. n > 5) then
                 do i = 1, 3
                     write(unit_, fmt_c) (format_to_string(value(i,j), format_), j=1, 3), &
@@ -140,6 +151,7 @@ contains
                 end do
             end if
         else
+            !! Full Print.
             do i = 1, m
                 write(unit_, fmt_c) (format_to_string(value(i,j), format_), j=1, n)
             end do
@@ -147,7 +159,7 @@ contains
     end procedure disp_2_${type[0]}$${kind}$
     #:endfor
 
-    module procedure disp_str
+    module procedure disp_character
         !! Display a `character` scalar.
         character(:), allocatable :: value_
         integer :: unit_
@@ -155,6 +167,15 @@ contains
         unit_  = merge(unit, output_unit, present(unit))
         if(present(header)) write(unit_, *) header
         write(unit_, *) value_
-    end procedure disp_str
+    end procedure disp_character
+
+    module procedure disp_string_type
+        !! Display a `string_type` scalar
+        integer :: unit_
+        unit_ = merge(unit, output_unit, present(unit))
+        if(present(header)) write(unit_, *) header
+        write(unit_, *) char(value)
+            !!\TODO: Need to improve ?
+    end procedure disp_string_type
 
 end submodule stdlib_io_disp

@@ -37,12 +37,19 @@ module stdlib_io
     end subroutine disp_${rank}$_${type[0]}$${kind}$
     #:endfor
     #:endfor
-    module subroutine disp_str(value, unit, header, brief)
+    module subroutine disp_character(value, unit, header, brief)
         character(len=*), intent(in), optional :: value
         integer, intent(in), optional :: unit
         character(len=*), intent(in), optional :: header
         logical, intent(in), optional :: brief
-    end subroutine disp_str
+    end subroutine disp_character
+    module subroutine disp_string_type(value, unit, header, brief)
+        use stdlib_string_type, only: string_type
+        type(string_type), intent(in) :: value
+        integer, intent(in), optional :: unit
+        character(len=*), intent(in), optional :: header
+        logical, intent(in), optional :: brief
+    end subroutine disp_string_type
   end interface disp
 
   interface loadtxt
