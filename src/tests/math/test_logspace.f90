@@ -19,7 +19,8 @@ program test_logspace
         ! Also test to verify that the proportion between adjacent elements is constant within
         ! a certain tolerance
 
-        real(dp), parameter :: TOLERANCE = 0.00001
+        real(sp), parameter :: TOLERANCE_SP = 1000 * epsilon(1.0_sp)
+        real(dp), parameter :: TOLERANCE_DP = 1000 * epsilon(1.0_dp) ! Percentage of the range for which the actual gap must not exceed
 
         open(newunit=iunit, file="test_logspace_log.txt", status="unknown") ! Log the results of the function
 
@@ -57,7 +58,7 @@ program test_logspace
 
             do i = 1, n-1
 
-                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE)
+                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE_SP)
 
             end do
 
@@ -93,7 +94,7 @@ program test_logspace
 
             do i = 1, n-1
 
-                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE)
+                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE_DP)
 
             end do
 
@@ -128,7 +129,7 @@ program test_logspace
 
             do i = 1, n-1
 
-                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE)
+                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE_DP)
 
             end do
 
@@ -163,7 +164,7 @@ program test_logspace
 
             do i = 1, n-1
 
-                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE)
+                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE_DP)
 
             end do
 
@@ -199,7 +200,7 @@ program test_logspace
 
             do i = 1, n-1
 
-                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE)
+                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE_DP)
 
             end do
 
@@ -234,7 +235,7 @@ program test_logspace
 
             do i = 1, n-1
 
-                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE)
+                call check(abs(x(i + 1) / x(i) - expected_proportion) < abs(expected_proportion) * TOLERANCE_DP)
 
             end do
 

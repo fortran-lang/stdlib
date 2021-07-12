@@ -7,7 +7,8 @@ program test_linspace
 
     integer :: iunit
     logical :: warn = .false.
-    real(dp), parameter :: TOLERANCE = 0.00001 ! Percentage of the range for which the actual gap must not exceed
+    real(sp), parameter :: TOLERANCE_SP = 1000 * epsilon(1.0_sp)
+    real(dp), parameter :: TOLERANCE_DP = 1000 * epsilon(1.0_dp) ! Percentage of the range for which the actual gap must not exceed
 
     ! Testing linspace.
     !
@@ -63,7 +64,7 @@ contains
         do i = 1, n-1
 
             true_difference = x(i + 1) - x(i)
-            call check(abs(true_difference - expected_interval) < abs(expected_interval) * TOLERANCE)
+            call check(abs(true_difference - expected_interval) < abs(expected_interval) * TOLERANCE_SP)
 
         end do
 
@@ -92,7 +93,7 @@ contains
         do i = 1, n-1
 
             true_difference = x(i + 1) - x(i)
-            call check(abs(true_difference - expected_interval) < abs(expected_interval) * TOLERANCE)
+            call check(abs(true_difference - expected_interval) < abs(expected_interval) * TOLERANCE_DP)
 
         end do
 
@@ -133,7 +134,7 @@ contains
         ! Due to roundoff error, it is possible that the jump from x(n-1) to x(n) is slightly different than the expected interval
         do i = 1, n-1
 
-            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE)
+            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE_DP)
 
         end do
 
@@ -172,7 +173,7 @@ contains
         ! Due to roundoff error, it is possible that the jump from x(n-1) to x(n) is slightly different than the expected interval
         do i = 1, n-1
 
-            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE)
+            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE_DP)
 
         end do
 
@@ -211,7 +212,7 @@ contains
         ! Due to roundoff error, it is possible that the jump from x(n-1) to x(n) is slightly different than the expected interval
         do i = 1, n-1
 
-            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE)
+            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE_DP)
 
         end do
 
@@ -250,7 +251,7 @@ contains
         ! Due to roundoff error, it is possible that the jump from x(n-1) to x(n) is slightly different than the expected interval
         do i = 1, n-1
 
-            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE)
+            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE_SP)
 
         end do
 
@@ -293,7 +294,7 @@ contains
 
             true_interval = (z(i + 1) - z(i))
             offset = abs(true_interval - expected_interval)
-            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE)
+            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE_SP)
             ! print *, i
 
         end do
@@ -333,7 +334,7 @@ contains
         ! Due to roundoff error, it is possible that the jump from x(n-1) to x(n) is slightly different than the expected interval
         do i = 1, n-1
 
-            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE)
+            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE_DP)
 
         end do
 
@@ -375,7 +376,7 @@ contains
         ! Due to roundoff error, it is possible that the jump from x(n-1) to x(n) is slightly different than the expected interval
         do i = 1, n-1
 
-            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE)
+            call check(abs( ( z(i + 1) - z(i) ) - expected_interval) < abs(expected_interval) * TOLERANCE_DP)
 
         end do
 
