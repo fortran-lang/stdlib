@@ -149,4 +149,5 @@ stdlib_string_format_to_string.o: stdlib_strings.o
 stdlib_linalg_outer_product.o: stdlib_linalg.o
 stdlib_io_disp.o: stdlib_error.o \
     stdlib_strings.o \
+    stdlib_string_type.o \
     stdlib_io.o
