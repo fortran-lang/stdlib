@@ -62,7 +62,7 @@ module stdlib_math
     !! return an array with size 0. If n = 1, return end. When dealing with integers as the `start` and `end`
     !! parameters, the return type is always a double precision real.
     !!
-    !!([Specification](../page/specs/stdlib_math.html#description))
+    !!([Specification](../page/specs/stdlib_math.html#linspace))
     #:for k1, t1 in INT_KINDS_TYPES
       #:set RName = rname("linspace_default", 1, t1, k1)
       #! The interface for INT_KINDS_TYPES cannot be combined with RC_KINDS_TYPES
@@ -95,6 +95,8 @@ module stdlib_math
   !! If the number of elements is not specified, create an array with size 50. If n is a negative value,
   !! return an array with size 0. If n = 1, return base**end. If no base is specified, logspace will default to using a base of
   !! 10
+  !!
+  !!([Specification](../page/specs/stdlib_math.html#logspace))
   #!=========================================================
   #!=     logspace(start, end)                              =
   #!=========================================================
