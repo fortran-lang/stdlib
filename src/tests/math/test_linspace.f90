@@ -202,7 +202,7 @@ contains
 
         z = linspace(start, end, n)
 
-        expected_interval =( end - start ) / ( n - 1 )
+        expected_interval = ( end - start ) / ( n - 1 )
 
         call check(z(1) == start, msg="Initial value of array is not equal to the passed start parameter", warn=warn)
         call check(z(n) == end, msg="Final array value is not equal to end parameter", warn=warn)
