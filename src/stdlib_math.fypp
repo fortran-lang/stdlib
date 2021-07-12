@@ -156,7 +156,8 @@ module stdlib_math
   #:for k1, t1 in REAL_KINDS_TYPES
     ! Generate logarithmically spaced sequence from ${k1}$ base to the powers
     ! of ${k1}$ start and end. [base^start, ... , base^end]
-    ! RName = ${RName}$
+    ! Different combinations of parameter types will lead to different result types.
+    ! Those combinations are indicated in the body of each function.
     #:set RName = rname("logspace", 1, t1, k1, "n_rbase")
     module function ${RName}$(start, end, n, base) result(res)
       ${t1}$, intent(in) :: start
@@ -192,7 +193,8 @@ module stdlib_math
   #:for k1, t1 in CMPLX_KINDS_TYPES
     ! Generate logarithmically spaced sequence from ${k1}$ base to the powers
     ! of ${k1}$ start and end. [base^start, ... , base^end]
-    ! RName = ${RName}$
+    ! Different combinations of parameter types will lead to different result types.
+    ! Those combinations are indicated in the body of each function.
     #:set RName = rname("logspace", 1, t1, k1, "n_rbase")
     module function ${RName}$(start, end, n, base) result(res)
       ${t1}$, intent(in) :: start
@@ -225,9 +227,11 @@ module stdlib_math
   #:endfor
   #! ========================================================
   #! ========================================================
+  #! Provide support for Integer start/endpoints
     ! Generate logarithmically spaced sequence from ${k1}$ base to the powers
     ! of ${k1}$ start and end. [base^start, ... , base^end]
-    ! RName = ${RName}$
+    ! Different combinations of parameter types will lead to different result types.
+    ! Those combinations are indicated in the body of each function.
   #:for k1 in REAL_KINDS
     #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_r" + str(k1) + "base")
     module function ${RName}$(start, end, n, base) result(res)
