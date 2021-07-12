@@ -164,7 +164,7 @@ end program demo_linspace_int16
 
 #### Description
 
-Returns a logarithmically spaced rank 1 array from [`base`^`start`, `base`^`end`]. Optionally, you can specify the length of the returned array by passing `n`.
+Returns a logarithmically spaced rank 1 array from [`base`^`start`, `base`^`end`]. The default size of the array is 100. Optionally, you can specify the length of the returned array by passing `n`.
 
 #### Syntax
 
