@@ -97,7 +97,7 @@ module stdlib_math
   !! return an array with size 0. If n = 1, return an array whose only element is base**end. If no base
   !! is specified, logspace will default to using a base of 10
   !!
-  !!([Specification](../page/specs/stdlib_math.html#logspace))
+  !!([Specification](../page/specs/stdlib_math.html#logspace-create-a-logarithmically-spaced-rank-one-array))
   #!=========================================================
   #!=     logspace(start, end)                              =
   #!=========================================================
