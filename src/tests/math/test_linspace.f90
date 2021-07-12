@@ -47,7 +47,7 @@ contains
         real(sp) :: true_difference
 
         integer :: i
-        real(sp), dimension(:), allocatable :: x
+        real(sp), allocatable :: x(:)
 
         x = linspace(start, end, n)
 
@@ -77,7 +77,7 @@ contains
         real(dp) :: expected_interval
         real(dp) :: true_difference
 
-        real(dp), dimension(:), allocatable :: x
+        real(dp), allocatable :: x(:)
         integer :: i
 
         x = linspace(start, end)
@@ -103,7 +103,7 @@ contains
         real(dp) :: start = 1.0_dp
         real(dp) :: end = 10.0_dp
 
-        real(dp), dimension(:), allocatable :: x
+        real(dp), allocatable :: x(:)
 
         x = linspace(start, end, -15)
 
@@ -118,7 +118,7 @@ contains
         complex(dp) :: expected_interval
         integer, parameter :: n = 10
 
-        complex(dp) :: z(n)
+        complex(dp), allocatable :: z(:)
 
         integer :: i
 
@@ -157,7 +157,7 @@ contains
 
         integer, parameter :: n = 5
 
-        complex(dp) :: z(n)
+        complex(dp), allocatable :: z(:)
 
         integer :: i
 
@@ -196,7 +196,7 @@ contains
 
         integer, parameter :: n = 20
 
-        complex(dp) :: z(n)
+        complex(dp), allocatable :: z(:)
 
         integer :: i
 
@@ -235,7 +235,7 @@ contains
 
         integer, parameter :: n = 10
 
-        complex(sp) :: z(n)
+        complex(sp), allocatable :: z(:)
 
         integer :: i
 
@@ -276,7 +276,7 @@ contains
 
         integer, parameter :: n = DEFAULT_LINSPACE_LENGTH
 
-        complex(sp) :: z(n)
+        complex(sp), allocatable :: z(:)
 
         integer :: i
 
@@ -318,7 +318,7 @@ contains
 
         integer, parameter :: n = 6
 
-        integer(int16) :: z(n)
+        integer(int16), allocatable :: z(:)
 
         integer :: i
 
@@ -358,7 +358,7 @@ contains
 
         integer, parameter :: n = 10
 
-        real(dp) :: z(n)
+        real(dp), allocatable :: z(:)
         integer(int8) :: z_int(n)
 
         integer :: i
