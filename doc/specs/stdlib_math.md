@@ -176,7 +176,7 @@ Experimental
 
 #### Class
 
-function.
+Function.
 
 #### Argument(s)
 
