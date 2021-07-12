@@ -1,6 +1,6 @@
 program test_linspace
     use stdlib_error, only: check
-    use stdlib_kinds, only: sp, dp, int16, int8
+    use stdlib_kinds, only: sp, dp, int8, int16
     use stdlib_math, only: linspace, DEFAULT_LINSPACE_LENGTH
 
     implicit none
