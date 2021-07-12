@@ -75,6 +75,7 @@ stdlib_error.o: stdlib_optval.o
 stdlib_specialfunctions.o: stdlib_kinds.o
 stdlib_specialfunctions_legendre.o: stdlib_kinds.o stdlib_specialfunctions.o
 stdlib_io.o: \
+	stdlib_ascii.o \
 	stdlib_error.o \
 	stdlib_optval.o \
 	stdlib_kinds.o
@@ -146,6 +147,5 @@ stdlib_math.o: stdlib_kinds.o
 stdlib_math_linspace.o: \
 	stdlib_math.o
 stdlib_math_logspace.o: \
-	stdlib_math.o \
-	stdlib_math_linspace.o \
+	stdlib_math_linspace.o
 stdlib_linalg_outer_product.o: stdlib_linalg.o
