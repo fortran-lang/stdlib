@@ -1,6 +1,7 @@
 module test_io_disp
 
     use stdlib_strings, only: starts_with
+    use stdlib_string_type, only: string_type, assignment(=)
     use stdlib_error, only: check
     use stdlib_io, only: disp, open
     implicit none
@@ -367,8 +368,9 @@ contains
 
     subroutine test_io_disp_string_type
 
-        character(*), parameter :: str = 'It is a string_type.'
+        type(string_type) :: str
         ! unit = open(filenanme, 'w+t')
+        str = 'It is a string_type.'
         open(newunit=unit, status='scratch')
         call disp(str, header='Test_io_disp_string_type_scalar (brief) : ', brief=.true.)
         call disp(str, unit=unit, header='Test_io_disp_string_type_scalar (brief) : ', brief=.true.)
