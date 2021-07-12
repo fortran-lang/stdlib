@@ -182,7 +182,7 @@ Function.
 
 `start`: Shall be a scalar of any numeric type. This argument is `intent(in)`.
 `end`: Shall be the same `type` and `kind` as `start`. This argument is `intent(in)`.
-`n`: Shall be an integer specifying the length of the output. This argument is `intent(in)`.
+`n`: Shall be an integer specifying the length of the output. This argument is `optional` and `intent(in)`.
 `base` : Shall be a scalar of any numeric type. This argument is `intent(in)`
 
 #### Output value or Result value
