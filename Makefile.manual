@@ -19,6 +19,11 @@ test:
 	@echo
 	@echo "All tests passed."
 
+# Fortran STDLIB Makefile for FPM BUILD
+dev:
+	$(MAKE) -f Makefile.fpm --directory=src
+
 clean:
 	$(MAKE) -f Makefile.manual clean --directory=src
 	$(MAKE) -f Makefile.manual clean --directory=src/tests
+	$(MAKE) -f Makefile.fpm clean --directory=src
