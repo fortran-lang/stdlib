@@ -122,7 +122,7 @@ The output is a rank 1 array whose length is either 100 (default value) or `n`.
 If `n` == 1, return a rank 1 array whose only element is `end`.
 If `n` <= 0, return a rank 1 array with length 0.
 
-If `start`/`end` are real or complex types, the `result` will be the same `type` and `kind` as `start`/`end`.
+If `start`/`end` are `real` or `complex` types, the `result` will be of the same type and kind as `start`/`end`.
 If `start`/`end` are integer types, the `result` will default to a double precision real array.
 
 #### Examples
