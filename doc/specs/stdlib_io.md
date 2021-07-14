@@ -139,7 +139,8 @@ end program demo_savetxt
 Experimental
 
 ### Description
-Display any type of scalar, vector or matrix.
+Display any type (`logical, integer, real, complex, character, string_type`) of scalar,   
+and display some data type (`logical, integer, real, complex`) of vector or matrix.
 
 Make good use of similar to the following usage, can help you understand the data information in the `array`.
 ```fortran
@@ -159,7 +160,7 @@ For null:
 
 ### Arguments
 
-`value`: Shall be any type of scalar, vector or matrix.
+`value`: Shall be any type of scalar, and some data type (`logical, integer, real, complex`) of vector or matrix.
     This is an `intent(in)` argument.
 
 `unit`: Shall be an `integer` scalar link to an IO stream.
