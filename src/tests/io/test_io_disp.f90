@@ -1,12 +1,12 @@
 module test_io_disp
 
     use stdlib_strings, only: starts_with
+    use stdlib_string_type, only: string_type, assignment(=)
     use stdlib_error, only: check
-    use stdlib_io, only: disp, open
+    use stdlib_io, only: disp
     implicit none
 
     integer :: unit
-    character(*), parameter :: filenanme = "./test_io_disp.tmp"
     character(len=512) :: string
 
 contains
@@ -37,7 +37,7 @@ contains
     subroutine test_io_disp_complex
         complex :: c(6,6) = (1.0, 1.0)
         ! unit = open(filenanme, 'w+t')
-        open(newunit=unit, file=filenanme)
+        open(newunit=unit, status='scratch')
         call disp(c(1,1), header='Test_io_disp_complex_scalar (brief) : ', brief=.true.)
         call disp(c(1,1), unit=unit, header='Test_io_disp_complex_scalar (brief) : ', brief=.true.)
 
@@ -121,7 +121,7 @@ contains
 
         real :: r(6,6) = 1.0
         ! unit = open(filenanme, 'w+t')
-        open(newunit=unit, file=filenanme)
+        open(newunit=unit, status='scratch')
         call disp(r(1,1), header='Test_io_disp_real_scalar (brief) : ', brief=.true.)
         call disp(r(1,1), unit=unit, header='Test_io_disp_real_scalar (brief) : ', brief=.true.)
 
@@ -198,7 +198,7 @@ contains
 
         integer :: i(6,6) = 1
         ! unit = open(filenanme, 'w+t')
-        open(newunit=unit, file=filenanme)
+        open(newunit=unit, status='scratch')
         call disp(i(1,1), header='Test_io_disp_integer_scalar (brief) : ', brief=.true.)
         call disp(i(1,1), unit=unit, header='Test_io_disp_integer_scalar (brief) : ', brief=.true.)
 
@@ -275,7 +275,7 @@ contains
 
         logical :: l(6,6) = .true.
         ! unit = open(filenanme, 'w+t')
-        open(newunit=unit, file=filenanme)
+        open(newunit=unit, status='scratch')
         call disp(l(1,1), header='Test_io_disp_logical_scalar (brief) : ', brief=.true.)
         call disp(l(1,1), unit=unit, header='Test_io_disp_logical_scalar (brief) : ', brief=.true.)
 
@@ -348,31 +348,59 @@ contains
 
     end subroutine test_io_disp_logical
 
-    subroutine test_io_disp_string
+    subroutine test_io_disp_character
 
-        character(*), parameter :: str = 'It is a string.'
+        character(*), parameter :: str = 'It is a character.'
         ! unit = open(filenanme, 'w+t')
-        open(newunit=unit, file=filenanme)
-        call disp(str, header='Test_io_disp_string_scalar (brief) : ', brief=.true.)
-        call disp(str, unit=unit, header='Test_io_disp_string_scalar (brief) : ', brief=.true.)
+        open(newunit=unit, status='scratch')
+        call disp(str, header='Test_io_disp_character_scalar (brief) : ', brief=.true.)
+        call disp(str, unit=unit, header='Test_io_disp_character_scalar (brief) : ', brief=.true.)
     
         !! Checks
         rewind(unit)
         read(unit, '(A200)') string
-        call check_formatter(trim(adjustl(string)), 'Test_io_disp_string_scalar (brief) :', 'Header')
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_character_scalar (brief) :', 'Header')
         read(unit, '(A200)') string
-        call check_formatter(trim(adjustl(string)), 'It is a string.', 'Value')
+        call check_formatter(trim(adjustl(string)), 'It is a character.', 'Value')
         close(unit)
 
-    end subroutine test_io_disp_string
+    end subroutine test_io_disp_character
+
+    subroutine test_io_disp_string_type
+
+        type(string_type) :: str
+        ! unit = open(filenanme, 'w+t')
+        str = 'It is a string_type.'
+        open(newunit=unit, status='scratch')
+        call disp(str, header='Test_io_disp_string_type_scalar (brief) : ', brief=.true.)
+        call disp(str, unit=unit, header='Test_io_disp_string_type_scalar (brief) : ', brief=.true.)
+    
+        !! Checks
+        rewind(unit)
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'Test_io_disp_string_type_scalar (brief) :', 'Header')
+        read(unit, '(A200)') string
+        call check_formatter(trim(adjustl(string)), 'It is a string_type.', 'Value')
+        close(unit)
+
+    end subroutine test_io_disp_string_type
 
 end module test_io_disp
 
 program tester
     use test_io_disp
+    real(4) :: x(51,51)
     call test_io_disp_complex
     call test_io_disp_real
     call test_io_disp_integer
     call test_io_disp_logical
-    call test_io_disp_string
+    call test_io_disp_character
+    call test_io_disp_string_type
+
+    !! Content that is difficult to test: The length of the dimension is too large
+    !!  to print and check by a test program.
+    x = 0.0
+    call disp(x, header="Test_io_disp_real_matrix (51×51)(default) : [10×50]")
+    call disp(x, header="Test_io_disp_real_matrix (51×51)(brief=.true.) : [5×5]", brief=.true.)
+    call disp(x, header="Test_io_disp_real_matrix (51×51)(brief=.false.) : [all]", brief=.false.)
 end program tester

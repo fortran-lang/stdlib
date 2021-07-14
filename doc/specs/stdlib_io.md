@@ -139,7 +139,8 @@ end program demo_savetxt
 Experimental
 
 ### Description
-Display any type of scalar, vector or matrix.
+Display any type (`logical, integer, real, complex, character, string_type`) of scalar,   
+and display some data type (`logical, integer, real, complex`) of vector or matrix.
 
 Make good use of similar to the following usage, can help you understand the data information in the `array`.
 ```fortran
@@ -148,6 +149,11 @@ call disp( A(i, j, 2, :, 1:10) [, unit, header, brief] )    !! `i, j, ...` can b
 
 Generally, except for `complex` type, any other type of scalar or single element of the `array` will be printed out with a width of 12 characters and a space separator.  
 For `complex` type, scalar or single element of the `array` will be printed out with a width of 25 characters and a space separator.
+
+In order to prevent users from accidentally passing large-length arrays to `disp`, causing unnecessary io blockage:
+1. If the `brief` argument is not specified, `disp` will print **the brief array content with a length of 10*50 by default**.
+2. Specify `brief=.true.`, `disp` will print **the brief array content with a length of 5*5**;
+3. Specify `brief=.false.`, `disp` will print **all the contents of the array** (please print all the contents of the array as appropriate according to the actual situation to avoid unnecessary IO blockage and affect the reading experience)
 
 ### Syntax
 
@@ -159,7 +165,7 @@ For null:
 
 ### Arguments
 
-`value`: Shall be any type of scalar, vector or matrix.
+`value`: Shall be any type of scalar, and some data type (`logical, integer, real, complex`) of vector or matrix.
     This is an `intent(in)` argument.
 
 `unit`: Shall be an `integer` scalar link to an IO stream.
@@ -168,13 +174,13 @@ For null:
 `header`: Shall be a scalar of type `character` with any length (usually used to comment data information).
     This is an `intent(in)` and `optional` argument.
 
-`brief`: Shall be an `logical` scalar, controling an abridged version of the `value` object is printed.
+`brief`: Shall be an `logical` scalar, controlling an abridged version of the `value` object is printed.
     This is an `intent(in)` and `optional` argument.
 
 ### Output
 
 The result is to print `header` and `value` on the screen (or another output unit) in this order.  
-If `value` is a `array` type, the dimension length information of the `array` will also be outputed.
+If `value` is a `array` type, the dimension length information of the `array` will also be outputted.
 
 ### Example
 

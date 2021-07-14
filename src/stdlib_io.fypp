@@ -23,7 +23,7 @@ module stdlib_io
     !! version: experimental
     !!
     !! Display any type of scalar, vector and matrix.
-    !! ([Specification](../page/specs/stdlib_io.html))
+    !! ([Specification](../page/specs/stdlib_io.html#disp-display-your-data-to-the-screen-or-another-output-unit))
     #:set DISP_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES &
         & + CMPLX_KINDS_TYPES + LOG_KINDS_TYPES
     #:set DISP_RANKS = range(0, 3)
@@ -37,12 +37,19 @@ module stdlib_io
     end subroutine disp_${rank}$_${type[0]}$${kind}$
     #:endfor
     #:endfor
-    module subroutine disp_str(value, unit, header, brief)
+    module subroutine disp_character(value, unit, header, brief)
         character(len=*), intent(in), optional :: value
         integer, intent(in), optional :: unit
         character(len=*), intent(in), optional :: header
         logical, intent(in), optional :: brief
-    end subroutine disp_str
+    end subroutine disp_character
+    module subroutine disp_string_type(value, unit, header, brief)
+        use stdlib_string_type, only: string_type
+        type(string_type), intent(in) :: value
+        integer, intent(in), optional :: unit
+        character(len=*), intent(in), optional :: header
+        logical, intent(in), optional :: brief
+    end subroutine disp_string_type
   end interface disp
 
   interface loadtxt

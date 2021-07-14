@@ -5,11 +5,17 @@ submodule (stdlib_io) stdlib_io_disp
 
     use stdlib_ascii, only: to_string
     use stdlib_strings, only: format_to_string
+    use stdlib_string_type, only: string_type, char
     use, intrinsic :: iso_fortran_env, only: output_unit
     implicit none
+    
     character(len=*), parameter :: fmt_r = '(*(g12.4, 1x))'
     character(len=*), parameter :: fmt_c = '(*(g25.0, 1x))'
     character(len=*), parameter :: format_ = '(g0.4)'
+    integer, parameter :: brief_col = 5
+    integer, parameter :: brief_row = 5
+    integer, parameter :: default_col = 10
+    integer, parameter :: default_row = 50
     
 contains
     
@@ -26,15 +32,19 @@ contains
         !! Display a/an ${type}$ vector.
         integer :: unit_
         logical :: brief_
-        integer :: m
+        integer :: m, col
         unit_  = merge(unit, output_unit, present(unit))
-        brief_ = merge(brief, .false., present(brief))
+        brief_ = merge(brief, .true., present(brief))
+        col = merge(brief_col, default_col, present(brief) .and. brief_)
         m = size(value, 1)
+
         if(present(header)) write(unit_, *) header
         write(unit_, *) '[vector size: '//to_string(m)//']'
-        if(brief_ .and. m > 5) then
-            write(unit_, fmt_r) value(1:3), '...', value(m)
+        if(brief_ .and. m > col) then
+            !! Brief Print.
+            write(unit_, fmt_r) value(1:col-2), '...', value(m)
         else
+            !! Full Print.
             write(unit_, fmt_r) value(:)
         end if
     end procedure disp_1_${type[0]}$${kind}$
@@ -43,34 +53,41 @@ contains
         !! Display a/an ${type}$ matrix.
         integer :: unit_
         logical :: brief_
-        character(1) :: colon(5)
         integer :: i, m, n
+        integer :: col, row
+        character(1) :: colon(default_col)
+
         unit_  = merge(unit, output_unit, present(unit))
-        brief_ = merge(brief, .false., present(brief))
+        brief_ = merge(brief, .true., present(brief))
+        col = merge(brief_col, default_col, present(brief) .and. brief_)
+        row = merge(brief_row, default_row, present(brief) .and. brief_)
         m = size(value, 1)
         n = size(value, 2)
+
         if(present(header)) write(unit_, *) header
         write(unit_, *) '[matrix size: '//to_string(m)//'×'//to_string(n)//']'
-        if(brief_ .and. (m > 5 .or. n > 5)) then
-            if(m > 5 .and. n > 5) then
-                do i = 1, 3
-                    write(unit_, fmt_r) value(i,1:3), '...', value(i,n)
+        if(brief_ .and. (m > col .or. n > row)) then
+            !! Brief Print.
+            colon = ':'
+            if(m > col .and. n > row) then
+                do i = 1, row-2
+                    write(unit_, fmt_r) value(i,1:col-2), '...', value(i,n)
                 end do
-                write(unit_, fmt_r) ':', ':', ':', ':', ':'
-                write(unit_, fmt_r) value(m,1:3), '...', value(m,n)
-            elseif(m > 5 .and. n <= 5) then
+                write(unit_, fmt_r) colon(1:col)
+                write(unit_, fmt_r) value(m,1:col-2), '...', value(m,n)
+            elseif(m > col .and. n <= row) then
                 do i = 1, 3
                     write(unit_, fmt_r) value(i,:)
                 end do
-                colon(1:n) = ':'
                 write(unit_, fmt_r) colon(1:n)
                 write(unit_, fmt_r) value(m,:)
-            elseif(m <= 5 .and. n > 5) then
+            elseif(m <= col .and. n > row) then
                 do i = 1, m
-                    write(unit_, fmt_r) value(i,1:3), '...', value(i,n)
+                    write(unit_, fmt_r) value(i,1:col-2), '...', value(i,n)
                 end do
             end if
         else
+            !! Full Print.
             do i = 1, m
                 write(unit_, fmt_r) value(i,:)
             end do
@@ -91,16 +108,20 @@ contains
         !! Display a ${type}$ vector.
         integer :: unit_
         logical :: brief_
-        integer :: i, m
+        integer :: i, m, col
         unit_  = merge(unit, output_unit, present(unit))
-        brief_ = merge(brief, .false., present(brief))
+        brief_ = merge(brief, .true., present(brief))
+        col = merge(brief_col, default_col, present(brief) .and. brief_)
         m = size(value, 1)
+
         if(present(header)) write(unit_, *) header
         write(unit_, *) '[vector size: '//to_string(m)//']'
-        if(brief_ .and. m > 5) then
-            write(unit_, fmt_c) (format_to_string(value(i), format_), i=1, 3), &
+        if(brief_ .and. m > col) then
+            !! Brief Print.
+            write(unit_, fmt_c) (format_to_string(value(i), format_), i=1, col-2), &
                           '...', format_to_string(value(m), format_)
         else
+            !! Full Print.
             write(unit_, fmt_c) (format_to_string(value(i), format_), i=1, m)
         end if
     end procedure disp_1_${type[0]}$${kind}$
@@ -109,37 +130,43 @@ contains
         !! Display a ${type}$ matrix.
         integer :: unit_
         logical :: brief_
-        character(1) :: colon(5)
         integer :: i, j, m, n
+        integer :: col, row
+        character(1) :: colon(default_col)
         unit_  = merge(unit, output_unit, present(unit))
-        brief_ = merge(brief, .false., present(brief))
+        brief_ = merge(brief, .true., present(brief))
+        col = merge(brief_col, default_col, present(brief) .and. brief_)
+        row = merge(brief_row, default_row, present(brief) .and. brief_)
         m = size(value, 1)
         n = size(value, 2)
+
         if(present(header)) write(unit_, *) header
         write(unit_, *) '[matrix size: '//to_string(m)//'×'//to_string(n)//']'
-        if(brief_ .and. (m > 5 .or. n > 5)) then
-            if(m > 5 .and. n > 5) then
-                do i = 1, 3
-                    write(unit_, fmt_c) (format_to_string(value(i,j), format_), j=1, 3), &
+        if(brief_ .and. (m > col .or. n > row)) then
+            !! Brief Print.
+            colon = ':'
+            if(m > col .and. n > row) then
+                do i = 1, col-2
+                    write(unit_, fmt_c) (format_to_string(value(i,j), format_), j=1, col-2), &
                                   '...', format_to_string(value(i,n), format_)
                 end do
-                write(unit_, fmt_c) ':', ':', ':', ':', ':'
-                write(unit_, fmt_c) (format_to_string(value(m,j), format_), j=1, 3), &
+                write(unit_, fmt_c) colon(1:col)
+                write(unit_, fmt_c) (format_to_string(value(m,j), format_), j=1, col-2), &
                               '...', format_to_string(value(m,n), format_)
-            elseif(m > 5 .and. n <= 5) then
-                do i = 1, 3
+            elseif(m > col .and. n <= row) then
+                do i = 1, col-2
                     write(unit_, fmt_c) (format_to_string(value(i,j), format_), j=1, n)
                 end do
-                colon(1:n) = ':'
                 write(unit_, fmt_c) colon(1:n)
                 write(unit_, fmt_c) (format_to_string(value(m,j), format_), j=1, n)
-            elseif(m <= 5 .and. n > 5) then
+            elseif(m <= col .and. n > row) then
                 do i = 1, m
-                    write(unit_, fmt_c) (format_to_string(value(m,j), format_), j=1, 3), &
+                    write(unit_, fmt_c) (format_to_string(value(m,j), format_), j=1, col-2), &
                                   '...', format_to_string(value(m,n), format_)
                 end do
             end if
         else
+            !! Full Print.
             do i = 1, m
                 write(unit_, fmt_c) (format_to_string(value(i,j), format_), j=1, n)
             end do
@@ -147,7 +174,7 @@ contains
     end procedure disp_2_${type[0]}$${kind}$
     #:endfor
 
-    module procedure disp_str
+    module procedure disp_character
         !! Display a `character` scalar.
         character(:), allocatable :: value_
         integer :: unit_
@@ -155,6 +182,15 @@ contains
         unit_  = merge(unit, output_unit, present(unit))
         if(present(header)) write(unit_, *) header
         write(unit_, *) value_
-    end procedure disp_str
+    end procedure disp_character
+
+    module procedure disp_string_type
+        !! Display a `string_type` scalar
+        integer :: unit_
+        unit_ = merge(unit, output_unit, present(unit))
+        if(present(header)) write(unit_, *) header
+        write(unit_, *) char(value)
+            !!\TODO: Need to improve ?
+    end procedure disp_string_type
 
 end submodule stdlib_io_disp
