@@ -147,7 +147,7 @@ end program demo_linspace_complex
 
 ##### Example 2:
 
-Here inputs are of type `integer` and kind `int16`, with the result defaulting to double precision real.
+Here inputs are of type `integer` and kind `int16`, with the result defaulting to `real(dp)`.
 ```fortran
 program demo_linspace_int16
   use stdlib_math, only: linspace
