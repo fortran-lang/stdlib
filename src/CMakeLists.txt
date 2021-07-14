@@ -29,6 +29,8 @@ set(fppFiles
     stdlib_quadrature_simps.fypp
     stdlib_stats_distribution_PRNG.fypp
     stdlib_math.fypp
+    stdlib_math_linspace.fypp
+    stdlib_math_logspace.fypp
     stdlib_string_type.fypp
 )
 
