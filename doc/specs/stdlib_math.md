@@ -200,7 +200,7 @@ The `type` and `kind` of the output is dependent on the `type` and `kind` of the
 For function calls where the `base` is not specified: `logspace(start, end)`/`logspace(start, end, n)`, the `type` and `kind` of
 the output follows the same scheme as above for `linspace`.
 >If `start`/`end` are `real` or `complex` types, the `result` will be the same type and kind as `start`/`end`.
->If `start`/`end` are integer types, the `result` will default to a double precision real array.
+>If `start`/`end` are integer types, the `result` will default to a `real(dp)` array.
 
 For function calls where the `base` is specified, the `type` and `kind` of the result is in accordance with the following table:
 
