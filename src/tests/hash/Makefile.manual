@@ -1,0 +1,4 @@
+PROGS_SRC = test_waterhash.f90
+
+
+include ../Makefile.manual.test.mk

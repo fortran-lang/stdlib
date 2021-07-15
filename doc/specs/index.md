@@ -13,11 +13,16 @@ This is and index/directory of the specifications (specs) for each new module/fe
 
  - [ascii](./stdlib_ascii.html) - Procedures for handling ASCII characters
  - [bitsets](./stdlib_bitsets.html) - Bitset data types and procedures
+ - [container](./stdlib_container.html) - Data containers
  - [error](./stdlib_error.html) - Catching and handling errors
+ - [hash](./stdlib_hash.html) - Hashing algorithms
  - [IO](./stdlib_io.html) - Input/output helper & convenience
  - [kinds](./stdlib_kinds.html) - Kind parameters
  - [linalg](./stdlib_linalg.html) - Linear Algebra
  - [logger](./stdlib_logger.html) - Runtime logging system
+ - [map](./stdlib_map.html) - Proxy module for map data types
+   - [map\_class](./stdlib_map_class.html) - Abstract base class for map data types
+   - [map\_cuckoohash](./stdlib_map_cuckoohash.html) - Implementation of cuckoo hash map
  - [math](./stdlib_math.html) - General purpose mathematical functions
  - [optval](./stdlib_optval.html) - Fallback value for optional arguments
  - [quadrature](./stdlib_quadrature.html) - Numerical integration

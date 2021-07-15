@@ -45,9 +45,14 @@ endif()
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
+    stdlib_container.f90
     stdlib_error.f90
     stdlib_kinds.f90
+    stdlib_hash.f90
     stdlib_logger.f90
+    stdlib_map.f90
+    stdlib_map_class.f90
+    stdlib_map_cuckoohash.f90
     stdlib_strings.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90
