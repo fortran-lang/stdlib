@@ -7,6 +7,7 @@ set(fppFiles
     stdlib_bitsets_64.fypp
     stdlib_bitsets_large.fypp
     stdlib_io.fypp
+    stdlib_io_disp.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
     stdlib_linalg_outer_product.fypp
@@ -30,6 +31,8 @@ set(fppFiles
     stdlib_stats_distribution_PRNG.fypp
     stdlib_math.fypp
     stdlib_string_type.fypp
+    stdlib_string_format_to_string.fypp
+    stdlib_strings.fypp
 )
 
 
@@ -48,7 +51,6 @@ set(SRC
     stdlib_error.f90
     stdlib_kinds.f90
     stdlib_logger.f90
-    stdlib_strings.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90
