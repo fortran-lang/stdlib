@@ -1972,3 +1972,58 @@ program demo
   close(io)
 end program demo
 ```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### move
+
+#### Description
+
+Moves the allocation from `from` to `to`, consequently deallocating `from` in this process.  
+If `from` is not allocated before execution, `to` gets deallocated by the process.  
+An unallocated string is equivalent to an empty string.
+
+#### Syntax
+
+`call [[stdlib_string_type(module):move(interface)]] (from, to)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure Subroutine.
+
+#### Argument
+
+- `from`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is `intent(inout)`.
+- `to`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is `intent(out)`.
+
+#### Example
+
+```fortran
+program demo
+  use stdlib_string_type, only : string_type, assignment(=), move
+  implicit none
+  type(string_type) :: from_string, to_string
+  character(len=:), allocatable :: from_char
+
+  from_string = "move this string"
+  from_char = "move this char"
+  ! from_string <-- "move this string"
+  ! from_char   <-- "move this char"
+  ! to_string   <-- "" (unallocated)
+
+  call move(from_string, to_string)
+  ! from_string <-- "" (unallocated)
+  ! to_string   <-- "move this string"
+
+  call move(from_char, to_string)
+  ! from_char <-- (unallocated)
+  ! to_string <-- "move this char"
+
+end program demo
+```
