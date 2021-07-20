@@ -56,7 +56,6 @@ module stdlib_math
 
 
     ! Add support for integer linspace
-    !! Version: Experimental
     !!
     !! Create rank 1 array of linearly spaced elements from start to end.
     !! If the number of elements is not specified, create an array with size 100. If n is a negative value,
