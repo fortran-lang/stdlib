@@ -139,14 +139,12 @@ contains
         end do
 
         write(unit=iunit, fmt=*) "linspace((0.0_dp, 10.0_dp), (1.0_dp, 0.0_dp), 10): "
-        write(unit=iunit,fmt=99)
+        write(unit=iunit,fmt='(70("="))')
         do i = 1, n
             write(unit=iunit,fmt=*) z(i)
         end do
         write(iunit,*)
         write(iunit,*)
-
-        99 format(70("="))
 
     end subroutine
 
@@ -178,14 +176,12 @@ contains
         end do
 
         write(unit=iunit, fmt=*) "linspace((10.0_dp, 10.0_dp), (1.0_dp, 1.0_dp), 5): "
-        write(unit=iunit,fmt=99)
+        write(unit=iunit,fmt='(70("="))')
         do i = 1, n
             write(unit=iunit,fmt=*) z(i)
         end do
         write(iunit,*)
         write(iunit,*)
-
-        99 format(70("="))
 
     end subroutine
 
@@ -217,14 +213,12 @@ contains
         end do
 
         write(unit=iunit, fmt=*) "linspace((-5.0_dp, 100.0_dp), (20.0_dp, 13.0_dp), 20): "
-        write(unit=iunit,fmt=99)
-        do i = 1, 20
+        write(unit=iunit,fmt='(70("="))')
+        do i = 1, n
             write(unit=iunit,fmt=*) z(i)
         end do
         write(iunit,*)
         write(iunit,*)
-
-        99 format(70("="))
 
     end subroutine
 
@@ -256,14 +250,12 @@ contains
         end do
 
         write(unit=iunit, fmt=*) "linspace((0.5_sp, 5.0_sp), (1.0_sp, -30.0_sp), 10): "
-        write(unit=iunit,fmt=99)
+        write(unit=iunit,fmt='(70("="))')
         do i = 1, n
             write(unit=iunit,fmt=*) z(i)
         end do
         write(iunit,*)
         write(iunit,*)
-
-        99 format(70("="))
 
     end subroutine
 
@@ -300,14 +292,12 @@ contains
         end do
 
         write(unit=iunit, fmt=*) "linspace((50.0_sp, 500.0_sp), (-100.0_sp, 2000.0_sp)): "
-        write(unit=iunit,fmt=99)
+        write(unit=iunit,fmt='(70("="))')
         do i = 1, n
             write(unit=iunit,fmt=*) z(i)
         end do
         write(iunit,*)
         write(iunit,*)
-
-        99 format(70("="))
 
     end subroutine
 
@@ -339,14 +329,12 @@ contains
         end do
 
         write(unit=iunit, fmt=*) "linspace(5_int16, 10_int16, 10): "
-        write(unit=iunit,fmt=99)
-        do i = 1, 6
+        write(unit=iunit,fmt='(70("="))')
+        do i = 1, n
             write(unit=iunit,fmt=*) z(i)
         end do
         write(iunit,*)
         write(iunit,*)
-
-        99 format(70("="))
 
     end subroutine
 
@@ -381,14 +369,12 @@ contains
         end do
 
         write(unit=iunit, fmt=*) "linspace(5_int16, 10_int16, 10): "
-        write(unit=iunit,fmt=99)
-        do i = 1, 10
-            write(unit=iunit,fmt=*) z_int(i)
+        write(unit=iunit,fmt='(70("="))')
+        do i = 1, n
+            write(unit=iunit,fmt=*) z(i)
         end do
         write(iunit,*)
         write(iunit,*)
-
-        99 format(70("="))
 
     end subroutine
 

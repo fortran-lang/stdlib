@@ -64,12 +64,10 @@ program test_logspace
 
 
             write(unit=iunit, fmt=*) "logspace(0.0_sp, 2.0_sp, 20): "
-            write(unit=iunit,fmt=99)
+            write(unit=iunit,fmt='(70("="))')
             write(unit=iunit,fmt="(20(F7.3, 2X))") x
             write(iunit,*)
             write(iunit,*)
-
-            99 format(70("="))
 
         end subroutine
 
@@ -134,12 +132,10 @@ program test_logspace
             end do
 
             write(unit=iunit, fmt=*) "logspace(0.0_dp, 1.0_dp): "
-            write(unit=iunit,fmt=99)
+            write(unit=iunit,fmt='(70("="))')
             write(unit=iunit,fmt="(50(F7.3, 2X))") x
             write(iunit,*)
             write(iunit,*)
-
-            99 format(70("="))
 
         end subroutine
 
@@ -169,12 +165,10 @@ program test_logspace
             end do
 
             write(unit=iunit, fmt=*) "logspace(1.0_dp, 10.0_dp, 10, 2): "
-            write(unit=iunit,fmt=99)
+            write(unit=iunit,fmt='(70("="))')
             write(unit=iunit,fmt="(10(F9.3, 2X))") x
             write(iunit,*)
             write(iunit,*)
-
-            99 format(70("="))
 
         end subroutine
 
@@ -205,12 +199,10 @@ program test_logspace
             end do
 
             write(unit=iunit, fmt=*) "logspace(1, i, 10, 2): "
-            write(unit=iunit,fmt=99)
+            write(unit=iunit,fmt='(70("="))')
             write(unit=iunit,fmt="(10('(', F6.3, ',', 1X, F6.3, ')', 2X))") x
             write(iunit,*)
             write(iunit,*)
-
-            99 format(70("="))
 
         end subroutine
 
@@ -240,12 +232,10 @@ program test_logspace
             end do
 
             write(unit=iunit, fmt=*) "logspace(1, 5, 5, i): "
-            write(unit=iunit,fmt=99)
+            write(unit=iunit,fmt='(70("="))')
             write(unit=iunit,fmt="(10('(', F6.3, ',', 1X, F6.3, ')', 2X))") x
             write(iunit,*)
             write(iunit,*)
-
-            99 format(70("="))
 
         end subroutine
 
