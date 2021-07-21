@@ -27,7 +27,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Set up Python 3.x
       uses: actions/setup-python@v1 # Use pip to install latest CMake, & FORD/Jin2For, etc.
@@ -109,7 +109,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Set up Python 3.x
       uses: actions/setup-python@v1
