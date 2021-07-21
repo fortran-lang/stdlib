@@ -186,7 +186,9 @@ Experimental
 
 ### Description
 
-Returns the median of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
+Returns the median of all the elements of `array`, or of the elements of `array`
+along dimension `dim` if provided, and if the corresponding element in `mask` is
+`true`.
 
 The median of the elements of `array` is defined as the "middle"
 element, after that the elements are sorted in an increasing order, e.g. `array_sorted =
@@ -202,7 +204,8 @@ and if `n` is an odd number, the median is:
 median(array) = mean( array_sorted( floor( (n + 1) / 2.):floor( (n + 1) / 2.) + 1 ) )
 ```
 
-The array is sorted using the subroutine `[[stdlib_sorting(module):ord_sort(interface)]]`
+The current implementation is a quite naive implementation that relies on sorting
+the whole array, using the subroutine `[[stdlib_sorting(module):ord_sort(interface)]]`
 provided by the `[[stdlib_sorting(module)]]` module.
 
 ### Syntax
