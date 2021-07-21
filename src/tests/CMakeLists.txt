@@ -19,6 +19,13 @@ add_subdirectory(system)
 add_subdirectory(quadrature)
 add_subdirectory(math)
 
+# some compilers have broken error stop return code handling
+if(f18errorstop)
+  set(DISABLE_ESTOP_TESTS false)
+else()
+  set(DISABLE_ESTOP_TESTS true)
+endif()
+
 add_executable(test_error_handling test_error_driver.f90)
 
 add_executable(test_always_77 test_always_77.f90)
@@ -30,3 +37,8 @@ add_executable(test_always_1 test_always_fail.f90)
 target_link_libraries(test_always_1 PRIVATE ${PROJECT_NAME})
 add_test(NAME test_error_1
     COMMAND $<TARGET_FILE:test_error_handling> $<TARGET_FILE:test_always_1> 1)
+
+set_tests_properties(test_error_77 test_error_1 PROPERTIES
+  TIMEOUT 5
+  DISABLED ${DISABLE_ESTOP_TESTS}
+)
