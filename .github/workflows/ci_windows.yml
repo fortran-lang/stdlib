@@ -3,7 +3,6 @@ name: CI_windows
 on: [push, pull_request]
 
 env:
-  CI: "ON"
   CTEST_TIME_TIMEOUT: "5"  # some failures hang forever
 
 jobs:

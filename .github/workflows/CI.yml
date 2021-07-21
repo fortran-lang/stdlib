@@ -3,7 +3,6 @@ name: CI
 on: [push, pull_request]
 
 env:
-  CI: "ON" # We can detect this in the build system and other vendors implement it
   CMAKE_BUILD_PARALLEL_LEVEL: "2" # 2 cores on each GHA VM, enable parallel builds
   CTEST_OUTPUT_ON_FAILURE: "ON" # This way we don't need a flag to ctest
   CTEST_PARALLEL_LEVEL: "2"
