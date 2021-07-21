@@ -64,7 +64,7 @@ contains
         integer :: c, n
         #:if rank > 1
         #:for fj in range(1, rank+1)
-        integer :: j${"_" * fj}$
+        integer :: j${fj}$
         #:endfor
         #:endif
         ${t1}$, allocatable :: x_tmp(:)
@@ -84,7 +84,7 @@ contains
           case(${fi}$)
             ! Loop over every dimension of the array except "dim"
             #:for fj in list(range(1, fi)) + list(range(fi+1, rank+1))
-              do j${"_" * fj}$ = 1, size(x, ${fj}$)
+              do j${fj}$ = 1, size(x, ${fj}$)
             #:endfor
                 x_tmp(:) = x${select_subvector('j', rank, fi)}$
                 call sort(x_tmp)
@@ -162,7 +162,7 @@ contains
         integer(kind = int64) :: c, n
         #:if rank > 1
         #:for fj in range(1, rank+1)
-        integer :: j${"_" * fj}$
+        integer :: j${fj}$
         #:endfor
         #:endif
         ${t1}$, allocatable :: x_tmp(:)
@@ -176,7 +176,7 @@ contains
           case(${fi}$)
             ! Loop over every dimension of the array except "dim"
             #:for fj in list(range(1, fi)) + list(range(fi+1, rank+1))
-              do j${"_" * fj}$ = 1, size(x, ${fj}$)
+              do j${fj}$ = 1, size(x, ${fj}$)
             #:endfor
                 x_tmp = pack(x${select_subvector('j', rank, fi)}$, &
                               mask${select_subvector('j', rank, fi)}$)
