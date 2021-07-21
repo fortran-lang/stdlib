@@ -2,7 +2,7 @@
 #:set RANKS = range(1, MAXRANK + 1)
 #:set REDRANKS = range(2, MAXRANK + 1)
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-#:set IR_KINDS_TYPES_OUTPUT = list(zip(REAL_KINDS, REAL_TYPES, REAL_KINDS)) + list(zip(INT_KINDS,INT_TYPES, ['dp']*len(INT_KINDS)))
+#:set IR_KINDS_TYPES_OUTPUT = list(zip(INT_KINDS,INT_TYPES, ['dp']*len(INT_KINDS))) + list(zip(REAL_KINDS, REAL_TYPES, REAL_KINDS))
 module stdlib_stats
   !! Provides support for various statistical methods. This includes currently
   !! descriptive statistics
