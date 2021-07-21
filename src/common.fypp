@@ -171,6 +171,9 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
 #!  select_subvector('j', 5, 2)
 #!   -> (j1, :, j3, j4, j5)
 #!
+#! Used, e.g., in
+#!  stdlib_stats_median.fypp
+#!
 #:def select_subvector(varname, rank, idim)
   #:assert rank > 0
   #:call join_lines(joinstr=", ", prefix="(", suffix=")")
@@ -198,6 +201,9 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
 #! E.g.,
 #!  reduce_subvector('j', 5, 2)
 #!   -> (j1, j3, j4, j5)
+#!
+#! Used, e.g., in
+#!  stdlib_stats_median.fypp
 #!
 #:def reduce_subvector(varname, rank, idim)
   #:assert rank > 0
