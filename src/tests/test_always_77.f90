@@ -1,4 +1,4 @@
-program test_always_skip
+program test_always_77
 
 use stdlib_error, only: check
 implicit none
