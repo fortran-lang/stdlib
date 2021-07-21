@@ -66,15 +66,14 @@ jobs:
         -S . -B build
 
     - name: Build and compile
-      run: cmake --build build
+      run: cmake --build build --parallel
 
     - name: catch build fail
       run: cmake --build build --verbose --parallel 1
       if: failure()
 
     - name: test
-      run: ctest --parallel --output-on-failure
-      working-directory: build
+      run: ctest --test-dir build --parallel --output-on-failure
 
     - name: Install project
       run: cmake --install build
