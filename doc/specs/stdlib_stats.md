@@ -188,9 +188,9 @@ Experimental
 
 Returns the median of all the elements of `array`, or of the elements of `array` along dimension `dim` if provided, and if the corresponding element in `mask` is `true`.
 
-After that the elements are sorted in an increasing order, e.g. `array_sorted =
-sort(array)`, the median of the elements of `array` is defined as the "middle"
-element. If `n = size(array)` is an even number, the median is:
+The median of the elements of `array` is defined as the "middle"
+element, after that the elements are sorted in an increasing order, e.g. `array_sorted =
+sort(array)`. If `n = size(array)` is an even number, the median is:
 
 ```
 median(array) = array_sorted( floor( (n + 1) / 2.))

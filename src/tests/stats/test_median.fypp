@@ -5,7 +5,7 @@ program test_median
     use stdlib_kinds, only: sp, dp, qp, &
         int8, int16, int32, int64
     use stdlib_stats, only: median, mean
-    use,intrinsic :: ieee_arithmetic, only : ieee_is_nan
+    use, intrinsic :: ieee_arithmetic, only : ieee_is_nan
     implicit none
     real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
     real(dp), parameter :: dptol = 2000 * epsilon(1._dp)
@@ -112,7 +112,7 @@ subroutine test_median_${k1}$()
     call check(size(d0) == 0, 'test_median_${k1}$: should be of size 0')
 
     d1 = [10., 2., -3., -4., 6., -6., 7., -8., 9., 0., 1., 20.]
-    call check(mod(size(d1), 2) == 0, 'stest_median_${k1}$: hould be an even number')
+    call check(mod(size(d1), 2) == 0, 'test_median_${k1}$: should be an even number')
 
     d2 = reshape(d1, [3, 4])
     call check(mod(size(d2), 2) == 0, 'test_median_${k1}$: should be an even number')

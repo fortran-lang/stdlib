@@ -11,7 +11,7 @@ submodule (stdlib_stats) stdlib_stats_median
   ! Use "ord_sort" rather than "sort" because the former can be much faster for arrays
   ! that are already partly sorted. While it is slightly slower for random arrays,
   ! ord_sort seems a better overall choice.
-  use stdlib_sorting, only:sort => ord_sort
+  use stdlib_sorting, only: sort => ord_sort
   implicit none
 
 contains
