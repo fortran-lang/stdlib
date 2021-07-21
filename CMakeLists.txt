@@ -39,8 +39,6 @@ elseif(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
     add_compile_options(-warn declarations,general,usage,interfaces,unused)
     add_compile_options(-stand f18)
   endif()
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
-  add_compile_options(-Mdclchk)
 endif()
 
 # --- compiler feature checks
