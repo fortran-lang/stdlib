@@ -46,7 +46,7 @@ include(CheckFortranSourceCompiles)
 include(CheckFortranSourceRuns)
 check_fortran_source_runs("i=0; error stop i; end" f18errorstop)
 check_fortran_source_compiles("real, allocatable :: array(:, :, :, :, :, :, :, :, :, :); end" f03rank SRC_EXT f90)
-check_fortran_source_runs("use, intrinsic :: iso_fortran_env, only : real128; real(real128) :: x; x = x+1; end" f03real128)
+# check_fortran_source_runs("use, intrinsic :: iso_fortran_env, only : real128; real(real128) :: x; x = x+1; end" f03real128)
 
 if(NOT DEFINED CMAKE_MAXIMUM_RANK)
   set(CMAKE_MAXIMUM_RANK 4 CACHE STRING "Maximum array rank for generated procedures")
