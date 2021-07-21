@@ -229,11 +229,13 @@ Generic subroutine
 ### Return value
 
 If `array` is of type `real`, the result is of type `real` with the same kind as `array`.
+If `array` is of type `real` and contains IEEE `NaN`, the result is IEEE `NaN`.
 If `array` is of type `integer`, the result is of type `real(dp)`.
 
 If `dim` is absent, a scalar with the median of all elements in `array` is returned. Otherwise, an array of rank `n-1`, where `n` equals the rank of `array`, and a shape similar to that of `array` with dimension `dim` dropped is returned.
 
 If `mask` is specified, the result is the median of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
+
 
 ### Example
 

@@ -5,7 +5,7 @@ program test_median
     use stdlib_kinds, only: sp, dp, qp, &
         int8, int16, int32, int64
     use stdlib_stats, only: median, mean
-    use, intrinsic :: ieee_arithmetic, only : ieee_is_nan
+    use, intrinsic :: ieee_arithmetic, only : ieee_is_nan, ieee_value, ieee_quiet_nan
     implicit none
     real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
     real(dp), parameter :: dptol = 2000 * epsilon(1._dp)
@@ -108,6 +108,7 @@ end subroutine
 #:for k1,t1 in REAL_KINDS_TYPES
 subroutine test_median_${k1}$()
     ${t1}$, allocatable :: d0(:), d1(:), d2(:,:), d3(:,:,:)
+    ${t1}$, allocatable :: tmp1(:)
 
     allocate(d0(0))
     !check just to be sure that the setup of d0 is correct
@@ -189,6 +190,41 @@ subroutine test_median_${k1}$()
                  '${k1}$ median(d2, 1), odd')
     call check( sum(abs(median(d2, 2) - [7._${k1}$, 1._${k1}$, 0._${k1}$])) < ${k1}$tol,                &
                  '${k1}$ median(d2, 2), odd')
+
+    !check IEEE NaN values in array
+    d1(1) = ieee_value(1._${k1}$, ieee_quiet_nan)
+    d2(1, 1) =  ieee_value(1._${k1}$, ieee_quiet_nan)
+    d3(1, 1, 1) =  ieee_value(1._${k1}$, ieee_quiet_nan)
+
+    !median_all
+    call check( ieee_is_nan(median(d1)), '${k1}$ median(d1), should be NaN')
+    call check( ieee_is_nan(median(d2)), '${k1}$ median(d2), should be NaN')
+    call check( ieee_is_nan(median(d3)), '${k1}$ median(d3), should be NaN')
+
+    !median
+    call check( any(ieee_is_nan(median(d2, 1))), '${k1}$ median(d2, 1) should contain at least 1 NaN' )
+    call check( any(ieee_is_nan(median(d2, 2))), '${k1}$ median(d2, 2) should contain at least 1 NaN' )
+
+    call check( any(ieee_is_nan(median(d3, 1))), '${k1}$ median(d3, 1) should contain at least 1 NaN' )
+    call check( any(ieee_is_nan(median(d3, 2))), '${k1}$ median(d3, 2) should contain at least 1 NaN' )
+    call check( any(ieee_is_nan(median(d3, 3))), '${k1}$ median(d3, 3) should contain at least 1 NaN' )
+
+    !median_mask_all
+    call check( ieee_is_nan(median(d1, d1 > 0)), '${k1}$ median(d1, d1 > 0) should be NaN' )
+    call check( ieee_is_nan(median(d2, d2 > 0)), '${k1}$ median(d2, d2 > 0) should be NaN' )
+    call check( ieee_is_nan(median(d3, d3 > 0)), '${k1}$ median(d3, d3 > 0) should be NaN' )
+
+    !median mask
+    call check( ieee_is_nan(median(d1, 1, d1 .ne. 0)), '${k1}$ median(d1, 1, d1.ne.0) should return NaN')
+
+    tmp1 = median(d2, 1, d2 .ne. 0)
+    call check( any(ieee_is_nan(tmp1)), '${k1}$ median(d2, 1, d2 .ne. 0 ) should contain at least 1 NaN')
+    call check( tmp1(2) == -4._${k1}$, '${k1}$ tmp1(2) == -4')
+    call check( any(ieee_is_nan(median(d2, 2, d2 .ne. 0))),              &
+       '${k1}$ median(d2, 2, d2 .ne. 0 ) should contain at least 1 NaN')
+
+    call check( any(ieee_is_nan(median(d3, 1, d3 .ne. 0))),              &
+       '${k1}$ median(d3, 1, d3 .ne. 0 ) should contain at least 1 NaN')
 
 end subroutine
 #:endfor
