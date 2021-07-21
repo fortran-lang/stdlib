@@ -3,8 +3,8 @@ name: CI_windows
 on: [push, pull_request]
 
 env:
-  CI: "ON"
   CTEST_TIME_TIMEOUT: "5"  # some failures hang forever
+  CMAKE_GENERATOR: Ninja
 
 jobs:
   msys2-build:
@@ -58,8 +58,7 @@ jobs:
       run: pip install fypp
 
     - run: >-
-        cmake -G Ninja
-        -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+        cmake
         -Wdev
         -B build
         -DCMAKE_BUILD_TYPE=Debug
@@ -79,8 +78,7 @@ jobs:
       if: failure()
 
     - name: CTest
-      run: ctest --output-on-failure --parallel -V -LE quadruple_precision
-      working-directory: build
+      run: ctest --test-dir build --output-on-failure --parallel -V -LE quadruple_precision
 
     - uses: actions/upload-artifact@v1
       if: failure()
