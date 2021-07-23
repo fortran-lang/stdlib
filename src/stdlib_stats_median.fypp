@@ -134,7 +134,7 @@ contains
 
   #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
     #:for rank in RANKS
-      #:set name = rname('median_mask_all',rank, t1, k1, o1)
+      #:set name = rname('median_all_mask',rank, t1, k1, o1)
       module function ${name}$(x, mask) result(res)
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in) :: mask${ranksuffix(rank)}$
