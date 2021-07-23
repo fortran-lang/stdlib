@@ -192,8 +192,8 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
 #!
 #! Args:
 #!   varname (str): Name of the variable to be used as origin
-#!   rank (int): Rank of the original variable
-#!   idim (int): Dimension of the variable
+#!   rank (int): Rank of the original array variable
+#!   idim (int): Dimension of the variable dropped
 #!
 #! Returns:
 #!   Array rank suffix string enclosed in braces
