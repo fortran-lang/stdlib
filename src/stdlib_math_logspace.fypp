@@ -43,21 +43,21 @@ contains
   #:for k1, t1 in RC_KINDS_TYPES
     #:set RName = rname("logspace", 1, t1, k1, "n_rbase")
     module procedure ${RName}$
-      ${t1}$ :: exponents(n)
+      ${t1}$ :: exponents(merge(n, 0, n > 0))
       exponents = linspace(start, end, n)
       res = base ** exponents
     end procedure
 
     #:set RName = rname("logspace", 1, t1, k1, "n_cbase")
     module procedure ${RName}$
-      ${t1}$ :: exponents(n)
+      ${t1}$ :: exponents(merge(n, 0, n > 0))
       exponents = linspace(start, end, n)
       res = base ** exponents
     end procedure
 
     #:set RName = rname("logspace", 1, t1, k1, "n_ibase")
     module procedure ${RName}$
-      ${t1}$ :: exponents(n)
+      ${t1}$ :: exponents(merge(n, 0, n > 0))
       exponents = linspace(start, end, n)
       res = base ** exponents
     end procedure
@@ -69,14 +69,14 @@ contains
   #:for k1 in REAL_KINDS
     #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_r" + str(k1) + "base")
     module procedure ${RName}$
-      integer :: exponents(n)
+      integer :: exponents(merge(n, 0, n > 0))
       exponents = linspace(start, end, n)
       res = base ** exponents
     end procedure
 
     #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_c" + str(k1) + "base")
     module procedure ${RName}$
-      integer :: exponents(n)
+      integer :: exponents(merge(n, 0, n > 0))
       exponents = linspace(start, end, n)
       res = base ** exponents
     end procedure
@@ -84,7 +84,7 @@ contains
 
     #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_ibase")
     module procedure ${RName}$
-      integer :: exponents(n)
+      integer :: exponents(merge(n, 0, n > 0))
       exponents = linspace(start, end, n)
       res = base ** exponents
     end procedure
