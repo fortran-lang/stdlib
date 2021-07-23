@@ -313,47 +313,47 @@ module stdlib_stats
     !! ([Specification](../page/specs/stdlib_stats.html#median-median-of-array-elements))
     #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
       #:for rank in RANKS
-        #:set RName = rname("median_all",rank, t1, k1, o1)
-        module function ${RName}$ (x, mask) result(res)
+        #:set name = rname("median_all",rank, t1, k1, o1)
+        module function ${name}$ (x, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in), optional :: mask
           real(${o1}$) :: res
-        end function ${RName}$
+        end function ${name}$
       #:endfor
     #:endfor
   
     #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
       #:for rank in RANKS
-        #:set RName = rname("median",rank, t1, k1, o1)
-        module function ${RName}$(x, dim, mask) result(res)
+        #:set name = rname("median",rank, t1, k1, o1)
+        module function ${name}$(x, dim, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in), optional :: mask
           real(${o1}$) :: res${reduced_shape('x', rank, 'dim')}$
-        end function ${RName}$
+        end function ${name}$
       #:endfor
     #:endfor
   
     #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
       #:for rank in RANKS
-        #:set RName = rname('median_mask_all',rank, t1, k1, o1)
-        module function ${RName}$(x, mask) result(res)
+        #:set name = rname('median_mask_all',rank, t1, k1, o1)
+        module function ${name}$(x, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           logical, intent(in) :: mask${ranksuffix(rank)}$
           real(${o1}$) :: res
-        end function ${RName}$
+        end function ${name}$
       #:endfor
     #:endfor
   
     #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
       #:for rank in RANKS
-        #:set RName = rname('median_mask',rank, t1, k1, o1)
-        module function  ${RName}$(x, dim, mask) result(res)
+        #:set name = rname('median_mask',rank, t1, k1, o1)
+        module function  ${name}$(x, dim, mask) result(res)
           ${t1}$, intent(in) :: x${ranksuffix(rank)}$
           integer, intent(in) :: dim
           logical, intent(in) :: mask${ranksuffix(rank)}$
           real(${o1}$) :: res${reduced_shape('x', rank, 'dim')}$
-        end function ${RName}$
+        end function ${name}$
       #:endfor
     #:endfor
 
