@@ -204,13 +204,14 @@ function prepend_string( string, list )
      call prepend_string%insert( list_head, string )
 end function prepend_string
 
-function append_stringlist( slist, list )
-     type(stringlist_type), intent(in) :: list
-     type(stringlist_type), intent(in) :: slist
-     type(stringlist_type)             :: append_stringlist
+function append_stringlist( list, slist )
+    type(stringlist_type), intent(in) :: list
+    type(stringlist_type), intent(in) :: slist
+    type(stringlist_type)             :: append_stringlist
 
-     append_stringlist = list
-     call append_stringlist%insert( list_after_end, slist )
+    append_stringlist = list
+    call append_stringlist%insert( list_after_end, slist )
+
 end function append_stringlist
 
 function append_stringarray( list, sarray )
