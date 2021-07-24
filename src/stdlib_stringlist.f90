@@ -280,8 +280,8 @@ pure integer function capacity( list )
     type(stringlist_type), intent(in) :: list
 
     capacity = 0
-    if ( allocated(list%stringarray) ) then
-        capacity = size(list%stringarray)
+    if ( allocated( list%stringarray ) ) then
+        capacity = size( list%stringarray )
     end if
 
 end function capacity
@@ -304,38 +304,38 @@ end function to_idxn
 !     string                 The string in question
 !
 subroutine insert_char_idx_wrap( list, idx, string )
-    type(stringlist_type), intent(inout)    :: list
-    type(stringlist_index_type), intent(in) :: idx
-    character(len=*), intent(in)            :: string
+    type(stringlist_type), intent(inout)        :: list
+    type(stringlist_index_type), intent(in)     :: idx
+    character(len=*), intent(in)                :: string
 
     call list%insert( idx, string_type( string ) )
 
 end subroutine insert_char_idx_wrap
 
 subroutine insert_string_idx_wrap( list, idx, string )
-    type(stringlist_type), intent(inout)   :: list
-    type(stringlist_index_type), intent(in) :: idx
-    type(type_string), intent(in)           :: string
+    type(stringlist_type), intent(inout)        :: list
+    type(stringlist_index_type), intent(in)     :: idx
+    type(string_type), intent(in)               :: string
 
-    call list%insert( to_idxn(idx), string )
+    call list%insert( to_idxn( idx ), string )
 
 end subroutine insert_string_idx_wrap
 
 subroutine insert_stringlist_idx_wrap( list, idx, slist )
-    type(stringlist_type), intent(inout)   :: list
-    type(stringlist_index_type), intent(in) :: idx
-    type(stringlist_type), intent(in)      :: slist
+    type(stringlist_type), intent(inout)        :: list
+    type(stringlist_index_type), intent(in)     :: idx
+    type(stringlist_type), intent(in)           :: slist
 
-    call list%insert( to_idxn(idx), slist )
+    call list%insert( to_idxn( idx ), slist )
 
 end subroutine insert_stringlist_idx_wrap
 
 subroutine insert_stringarray_idx_wrap( list, idx, sarray )
-    type(stringlist_type), intent(inout)      :: list
-    type(stringlist_index_type), intent(in)    :: idx
-    character(len=*), dimension(:), intent(in) :: sarray
+    type(stringlist_type), intent(inout)        :: list
+    type(stringlist_index_type), intent(in)     :: idx
+    character(len=*), dimension(:), intent(in)  :: sarray
 
-    call list%insert( to_idxn(idx), sarray )
+    call list%insert( to_idxn( idx ), sarray )
 
 end subroutine insert_stringarray_idx_wrap
 
@@ -348,13 +348,13 @@ end subroutine insert_stringarray_idx_wrap
 !     number                 Number of positions
 !
 subroutine insert_empty_positions( list, idxn, number )
-    type(stringlist_type), intent(inout)         :: list
-    integer, intent(inout)                       :: idxn
-    integer, intent(inout)                       :: number
+    type(stringlist_type), intent(inout)            :: list
+    integer, intent(inout)                          :: idxn
+    integer, intent(inout)                          :: number
 
-    integer                                      :: i, inew
-    integer                                      :: new_size, old_size
-    type(string_type), dimension(:), allocatable :: new_stringarray
+    integer                                         :: i, inew
+    integer                                         :: new_size, old_size
+    type(string_type), dimension(:), allocatable    :: new_stringarray
 
     if (number > 0) then
 
@@ -395,11 +395,11 @@ end subroutine insert_empty_positions
 !     Insert a new string into the list - specific implementation
 !
 subroutine insert_char_int_impl( list, idx, string )
-    type(stringlist_type), intent(inout)        :: list
-    integer, intent(in)                          :: idx
-    character(len=*), intent(in)                 :: string
+    type(stringlist_type), intent(inout)            :: list
+    integer, intent(in)                             :: idx
+    character(len=*), intent(in)                    :: string
 
-    call insert( list, idx, string_type(string) )
+    call insert( list, idx, string_type( string ) )
 
 end subroutine insert_char_int_impl
 
@@ -407,11 +407,11 @@ end subroutine insert_char_int_impl
 !     Insert a new string into the list - specific implementation
 !
 subroutine insert_string_int_impl( list, idx, string )
-    type(stringlist_type), intent(inout)        :: list
-    integer, intent(in)                          :: idx
-    type(string_type), intent(in)                :: string
+    type(stringlist_type), intent(inout)            :: list
+    integer, intent(in)                             :: idx
+    type(string_type), intent(in)                   :: string
 
-    integer                                      :: idxn
+    integer                                         :: idxn
 
     idxn = idx
     call insert_empty_positions( list, idxn, 1 )
@@ -424,17 +424,17 @@ end subroutine insert_string_int_impl
 !     Insert a list of strings into the list - specific implementation
 !
 subroutine insert_stringlist_int_impl( list, idx, slist )
-    type(stringlist_type), intent(inout)         :: list
-    integer, intent(in)                          :: idx
-    type(stringlist_type), intent(in)            :: slist
+    type(stringlist_type), intent(inout)            :: list
+    integer, intent(in)                             :: idx
+    type(stringlist_type), intent(in)               :: slist
 
-    integer                                      :: i
-    integer                                      :: idxn, idxnew
+    integer                                         :: i
+    integer                                         :: idxn, idxnew
 
     idxn = idx
-    call insert_empty_positions( list, idxn, len(list) )
+    call insert_empty_positions( list, idxn, len( slist ) )
 
-    do i = 1, len(list)
+    do i = 1, len( slist )
         idxnew = idxn + i - 1
         list%stringarray(idxnew) = slist%stringarray(i)
     end do
@@ -453,11 +453,11 @@ subroutine insert_chararray_int_impl( list, idx, sarray )
     integer                                      :: idxn, idxnew
 
     idxn = idx
-    call insert_empty_positions( list, idxn, size(sarray) )
+    call insert_empty_positions( list, idxn, size( sarray ) )
 
-    do i = 1, size(sarray)
+    do i = 1, size( sarray )
         idxnew = idxn + i - 1
-        list%stringarray(idxnew) = string_type(sarray(i))
+        list%stringarray(idxnew) = string_type( sarray(i) )
     end do
 
 end subroutine insert_chararray_int_impl
@@ -474,9 +474,9 @@ subroutine insert_stringarray_int_impl( list, idx, sarray )
     integer                                      :: idxn, idxnew
 
     idxn = idx
-    call insert_empty_positions( list, idxn, size(sarray) )
+    call insert_empty_positions( list, idxn, size( sarray ) )
 
-    do i = 1, size(sarray)
+    do i = 1, size( sarray )
         idxnew = idxn + i - 1
         list%stringarray(idxnew) = sarray(i)
     end do
@@ -499,9 +499,9 @@ pure function get_string_idx_wrap( list, idx )
 
 end function get_string_idx_wrap
 
-pure function get_string_int_impl( list, idx )
+pure function get_string_int_impl( list, idxn )
     type(stringlist_type), intent(in)  :: list
-    integer, intent(in)                :: idx
+    integer, intent(in)                :: idxn
     type(string_type)                  :: get_string_int_impl
 
     integer                            :: idxnew
@@ -510,7 +510,7 @@ pure function get_string_int_impl( list, idx )
     ! Examine the actual index:
     ! - if the index is out of bounds, return a string_type equivalent to empty string
     !
-    if ( 1 <= idx .or. idx <= len(list) ) then
+    if ( 1 <= idxn .and. idxn <= len( list ) ) then
         get_string_int_impl = list%stringarray(idx)
     end if
 
