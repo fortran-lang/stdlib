@@ -218,21 +218,13 @@ pure function prepend_string( string, list )
 
 end function prepend_string
 
-<<<<<<< Updated upstream
-function append_stringlist( list, slist )
-=======
 pure function append_stringlist( list, slist )
->>>>>>> Stashed changes
     type(stringlist_type), intent(in) :: list
     type(stringlist_type), intent(in) :: slist
     type(stringlist_type)             :: append_stringlist
 
     append_stringlist = list
-<<<<<<< Updated upstream
-    call append_stringlist%insert( list_after_end, slist )
-=======
     call append_stringlist%insert( list_tail, slist )
->>>>>>> Stashed changes
 
 end function append_stringlist
 
