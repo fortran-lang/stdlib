@@ -25,7 +25,7 @@ contains
       ${t1}$, intent(in) :: end
       integer, intent(in) :: n
 
-      ${t1}$ :: res(n)
+      ${t1}$ :: res(max(n, 0))
 
       integer :: i    ! Looping index
       ${t1}$ :: interval ! Difference between adjacent elements
@@ -65,8 +65,8 @@ contains
       #:set RName = rname("linspace_n", 1, t1, k1)
       module procedure ${RName}$
 
-        real(${k1}$) :: x(n) ! array of the real part of complex number
-        real(${k1}$) :: y(n) ! array of the imaginary part of the complex number
+        real(${k1}$) :: x(max(n, 0)) ! array of the real part of complex number
+        real(${k1}$) :: y(max(n, 0)) ! array of the imaginary part of the complex number
 
         x = linspace(start%re, end%re, n)
         y = linspace(start%im, end%im, n)
