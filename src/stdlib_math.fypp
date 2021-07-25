@@ -50,7 +50,7 @@ module stdlib_math
         ${t1}$, intent(in) :: end
         integer, intent(in) :: n
 
-        ${t1}$ :: res(merge(n, 0, n > 0))
+        ${t1}$ :: res(max(n, 0))
       end function ${RName}$
     #:endfor
 
@@ -77,7 +77,7 @@ module stdlib_math
         ${t1}$, intent(in) :: end
         integer, intent(in) :: n
 
-        real(dp) :: res(merge(n, 0, n > 0))
+        real(dp) :: res(max(n, 0))
       end function ${RName}$
     #:endfor
 
@@ -127,7 +127,7 @@ module stdlib_math
       ${t1}$, intent(in) :: end
       integer, intent(in) :: n
 
-      ${t1}$ :: res(merge(n, 0, n > 0))
+      ${t1}$ :: res(max(n, 0))
     end function ${RName}$
   #:endfor
   #! Integer support
@@ -159,7 +159,7 @@ module stdlib_math
       integer, intent(in) :: n
       ${t1}$, intent(in) :: base
       ! real(${k1}$) endpoints + real(${k1}$) base = real(${k1}$) result
-      ${t1}$ :: res(merge(n, 0, n > 0))
+      ${t1}$ :: res(max(n, 0))
     end function ${RName}$
 
     #:set RName = rname("logspace", 1, t1, k1, "n_cbase")
@@ -169,7 +169,7 @@ module stdlib_math
       integer, intent(in) :: n
       complex(${k1}$), intent(in) :: base
       ! real(${k1}$) endpoints + complex(${k1}$) base = complex(${k1}$) result
-      ${t1}$ :: res(merge(n, 0, n > 0))
+      ${t1}$ :: res(max(n, 0))
     end function ${RName}$
 
     #:set RName = rname("logspace", 1, t1, k1, "n_ibase")
@@ -179,7 +179,7 @@ module stdlib_math
       integer, intent(in) :: n
       integer, intent(in) :: base
       ! real(${k1}$) endpoints + integer base = real(${k1}$) result
-      ${t1}$ :: res(merge(n, 0, n > 0))
+      ${t1}$ :: res(max(n, 0))
     end function ${RName}$
   #:endfor
   #! ========================================================
@@ -196,7 +196,7 @@ module stdlib_math
       integer, intent(in) :: n
       real(${k1}$), intent(in) :: base
       ! complex(${k1}$) endpoints + real(${k1}$) base = complex(${k1}$) result
-      ${t1}$ :: res(merge(n, 0, n > 0))
+      ${t1}$ :: res(max(n, 0))
     end function ${RName}$
 
     #:set RName = rname("logspace", 1, t1, k1, "n_cbase")
@@ -206,7 +206,7 @@ module stdlib_math
       integer, intent(in) :: n
       complex(${k1}$), intent(in) :: base
       ! complex(${k1}$) endpoints + complex(${k1}$) base = complex(${k1}$) result
-      ${t1}$ :: res(merge(n, 0, n > 0))
+      ${t1}$ :: res(max(n, 0))
     end function ${RName}$
 
     #:set RName = rname("logspace", 1, t1, k1, "n_ibase")
@@ -216,7 +216,7 @@ module stdlib_math
       integer, intent(in) :: n
       integer, intent(in) :: base
       ! complex(${k1}$) endpoints + integer base = complex(${k1}$) result
-      ${t1}$ :: res(merge(n, 0, n > 0))
+      ${t1}$ :: res(max(n, 0))
     end function ${RName}$
   #:endfor
   #! ========================================================
@@ -234,7 +234,7 @@ module stdlib_math
       integer, intent(in) :: n
       real(${k1}$), intent(in) :: base
       ! integer endpoints + real(${k1}$) base = real(${k1}$) result
-      real(${k1}$) :: res(merge(n, 0, n > 0))
+      real(${k1}$) :: res(max(n, 0))
     end function ${RName}$
 
     #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_c" + str(k1) + "base")
@@ -244,7 +244,7 @@ module stdlib_math
       integer, intent(in) :: n
       complex(${k1}$), intent(in) :: base
       ! integer endpoints + complex(${k1}$) base = complex(${k1}$) result
-      complex(${k1}$) :: res(merge(n, 0, n > 0))
+      complex(${k1}$) :: res(max(n, 0))
     end function ${RName}$
   #:endfor
 
@@ -255,7 +255,7 @@ module stdlib_math
       integer, intent(in) :: n
       integer, intent(in) :: base
       ! integer endpoints + integer base = integer result
-      integer :: res(merge(n, 0, n > 0))
+      integer :: res(max(n, 0))
     end function ${RName}$
 
 
