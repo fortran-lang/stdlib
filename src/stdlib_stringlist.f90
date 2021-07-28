@@ -16,26 +16,26 @@
 !     Limited to implemented routines
 !
 module stdlib_stringlist
-    use stdlib_string_type, only: string_type, move, assignment(=) !, char, operator(==)
+    use stdlib_string_type, only: string_type !, move
     use stdlib_math, only: clip
     use stdlib_optval, only: optval
     implicit none
     private
 
     public :: stringlist_type, operator(//)
-    public :: list_head, list_tail, fidx, bidx !, operator(+), operator(-)
+    public :: list_head, list_tail, fidx, bidx, stringlist_index_type !, operator(+), operator(-)
 
     type stringlist_index_type
         private
-        logical :: head
+        logical :: forward
         integer :: offset
 
     end type stringlist_index_type
 
-    type(stringlist_index_type), parameter :: list_head      = forward_index(1)
+    type(stringlist_index_type), parameter :: list_head     = stringlist_index_type( .true. , 1 )   ! fidx(1)
+    type(stringlist_index_type), parameter :: list_tail     = stringlist_index_type( .false., 1 )   ! bidx(1)
     ! type(stringlist_index_type), parameter :: list_end       = stringlist_index_type( .false., 0 )
     ! type(stringlist_index_type), parameter :: list_after_end = stringlist_index_type( .false., 1 )
-    type(stringlist_index_type), parameter :: list_tail      = backward_index(1)
 
     ! interface operator(+)
     !     module procedure stringlist_index_add
@@ -45,10 +45,18 @@ module stdlib_stringlist
     !     module procedure stringlist_index_subtract
     ! end interface
 
+    !> Version: experimental
+    !> 
+    !> Returns an instance of type 'stringlist_index_type' representing forward index
+    !> [Specifications](../page/specs/stdlib_stringlist.html#fidx)
     interface fidx
         module procedure forward_index
     end interface
 
+    !> Version: experimental
+    !> 
+    !> Returns an instance of type 'stringlist_index_type' representing backward index
+    !> [Specifications](../page/specs/stdlib_stringlist.html#bidx)
     interface bidx
         module procedure backward_index
     end interface
@@ -60,20 +68,38 @@ module stdlib_stringlist
     
     contains
         private
+        procedure         :: copy                   => create_copy
+
         procedure, public :: destroy                => destroy_list
-        procedure         :: insert_string_idx      => insert_string_idx_wrap
-        procedure         :: insert_string_int      => insert_string_int_impl
-        procedure         :: insert_stringlist_idx  => insert_stringlist_idx_wrap
-        procedure         :: insert_stringlist_int  => insert_stringlist_int_impl
-        procedure         :: insert_stringarray_idx => insert_stringarray_idx_wrap
-        procedure         :: insert_stringarray_int => insert_stringarray_int_impl
-        generic, public   :: insert                 => insert_string_int,      insert_string_idx,     &
-                                                       insert_stringlist_int,  insert_stringlist_idx, &
-                                                       insert_stringarray_int, insert_stringarray_idx
-        procedure         :: get_string_int         => get_string_int_impl
-        procedure         :: get_string_idx         => get_string_idx_wrap
-        generic, public   :: get                    => get_string_int, get_string_idx
+
         procedure, public :: len                    => length_list
+
+        procedure         :: capacity               => capacity_list
+
+        procedure         :: to_idxn                => convert_to_idxn
+
+        procedure         :: insert_char_idx        => insert_char_idx_wrap
+        procedure         :: insert_string_idx      => insert_string_idx_wrap
+        procedure         :: insert_stringlist_idx  => insert_stringlist_idx_wrap
+        procedure         :: insert_chararray_idx   => insert_chararray_idx_wrap
+        procedure         :: insert_stringarray_idx => insert_stringarray_idx_wrap
+        generic, public   :: insert                 => insert_char_idx,         &
+                                                       insert_string_idx,       &
+                                                       insert_stringlist_idx,   &
+                                                       insert_chararray_idx,  &
+                                                       insert_stringarray_idx
+
+        procedure         :: insert_string_int      => insert_string_int_impl
+        procedure         :: insert_stringlist_int  => insert_stringlist_int_impl
+        procedure         :: insert_chararray_int   => insert_chararray_int_impl
+        procedure         :: insert_stringarray_int => insert_stringarray_int_impl
+
+        ! procedure         :: get_string_int         => get_string_int_impl
+        procedure         :: get_string_idx         => get_string_idx_wrap
+        generic, public   :: get                    => get_string_idx
+                                                        ! get_string_int
+
+
         ! procedure, public :: sort                   => sort_list
         ! procedure, public :: index                  => index_of_string, index_of_char
         ! procedure, public :: index_sub              => index_of_substring, index_of_subchar
@@ -115,6 +141,11 @@ module stdlib_stringlist
 
     end type stringlist_type
 
+    !> Version: experimental
+    !> 
+    !> Concatenates stringlist with the input entity
+    !> Returns a new stringlist
+    !> [Specifications](../page/specs/stdlib_stringlist.html#append-operator)
     interface operator(//)
         module procedure append_char
         module procedure append_string
@@ -164,357 +195,438 @@ contains
 
 ! end function stringlist_index_subtract
 
-pure function forward_index(idx)
-    integer, intent(in) :: idx
-    type(stringlist_index_type) :: forward_index
+    !> Returns an instance of type 'stringlist_index_type' representing forward index 'idx'
+    pure function forward_index(idx)
+        integer, intent(in) :: idx
+        type(stringlist_index_type) :: forward_index
 
-    forward_index = stringlist_index_type( .true., idx )
+        forward_index = stringlist_index_type( .true., idx )
 
-end function forward_index
+    end function forward_index
 
-pure function backward_index(idx)
-    integer, intent(in) :: idx
-    type(stringlist_index_type) :: backward_index
+    !> Returns an instance of type 'stringlist_index_type' representing backward index 'idx'
+    pure function backward_index(idx)
+        integer, intent(in) :: idx
+        type(stringlist_index_type) :: backward_index
 
-    backward_index = stringlist_index_type( .false., idx )
+        backward_index = stringlist_index_type( .false., idx )
 
-end function backward_index
+    end function backward_index
 
-pure function append_char( list, string )
-    type(stringlist_type), intent(in) :: list
-    character(len=*), intent(in)      :: string
-    type(stringlist_type)             :: append_char
+    pure function create_copy( original )
+        class(stringlist_type), intent(in)  :: original
+        type(stringlist_type)               :: create_copy
 
-    append_char = list // string_type( string )
+        create_copy = original
 
-end function append_char
+    end function create_copy
 
-pure function append_string( list, string )
-    type(stringlist_type), intent(in) :: list
-    type(string_type), intent(in)     :: string
-    type(stringlist_type)             :: append_string
+    !> Appends character scalar 'string' to the stringlist 'list'
+    !> Returns a new stringlist
+    function append_char( list, string )
+        type(stringlist_type), intent(in) :: list
+        character(len=*), intent(in)      :: string
+        type(stringlist_type)             :: append_char
 
-    append_string = list
-    call append_string%insert( list_tail, string )
+        append_char = list // string_type( string )
 
-end function append_string
+    end function append_char
 
-pure function prepend_char( string, list )
-    character(len=*), intent(in)      :: string
-    type(stringlist_type), intent(in) :: list
-    type(stringlist_type)             :: prepend_char
+    !> Appends string 'string' to the stringlist 'list'
+    !> Returns a new stringlist
+    function append_string( list, string )
+        type(stringlist_type), intent(in) :: list
+        type(string_type), intent(in)     :: string
+        type(stringlist_type)             :: append_string
 
-    prepend_char = string_type( string ) // list
+        append_string = list%copy()
+        call append_string%insert( list_tail, string )
 
-end function prepend_char
+    end function append_string
 
-pure function prepend_string( string, list )
-    type(string_type), intent(in)     :: string
-    type(stringlist_type), intent(in) :: list
-    type(stringlist_type)             :: prepend_string
+    !> Prepends character scalar 'string' to the stringlist 'list'
+    !> Returns a new stringlist
+    function prepend_char( string, list )
+        character(len=*), intent(in)      :: string
+        type(stringlist_type), intent(in) :: list
+        type(stringlist_type)             :: prepend_char
 
-    prepend_string = list
-    call prepend_string%insert( list_head, string )
+        prepend_char = string_type( string ) // list
 
-end function prepend_string
+    end function prepend_char
 
-pure function append_stringlist( list, slist )
-    type(stringlist_type), intent(in) :: list
-    type(stringlist_type), intent(in) :: slist
-    type(stringlist_type)             :: append_stringlist
+    !> Prepends string 'string' to the stringlist 'list'
+    !> Returns a new stringlist
+    function prepend_string( string, list )
+        type(string_type), intent(in)     :: string
+        type(stringlist_type), intent(in) :: list
+        type(stringlist_type)             :: prepend_string
 
-    append_stringlist = list
-    call append_stringlist%insert( list_tail, slist )
+        prepend_string = list%copy()
+        call prepend_string%insert( list_head, string )
 
-end function append_stringlist
+    end function prepend_string
 
-pure function append_stringarray( list, sarray )
-    type(stringlist_type), intent(in)          :: list
-    character(len=*), dimension(:), intent(in) :: sarray
-    type(stringlist_type)                      :: append_stringarray
+    !> Appends stringlist 'slist' to the stringlist 'list'
+    !> Returns a new stringlist
+    function append_stringlist( list, slist )
+        type(stringlist_type), intent(in) :: list
+        type(stringlist_type), intent(in) :: slist
+        type(stringlist_type)             :: append_stringlist
 
-    append_stringarray = list
-    call append_stringarray%insert( list_tail, sarray )
+        append_stringlist = list%copy()
+        call append_stringlist%insert( list_tail, slist )
 
-end function append_stringarray
+    end function append_stringlist
 
-pure function prepend_stringarray( sarray, list )
-    character(len=*), dimension(:), intent(in) :: sarray
-    type(stringlist_type), intent(in)          :: list
-    type(stringlist_type)                      :: prepend_stringarray
+    !> Appends stringarray 'sarray' to the stringlist 'list'
+    !> Returns a new stringlist
+    function append_stringarray( list, sarray )
+        type(stringlist_type), intent(in)          :: list
+        character(len=*), dimension(:), intent(in) :: sarray
+        type(stringlist_type)                      :: append_stringarray
 
-    prepend_stringarray = list
-    call prepend_stringarray%insert( list_head, sarray )
+        append_stringarray = list%copy()
+        call append_stringarray%insert( list_tail, sarray )
 
-end function prepend_stringarray
+    end function append_stringarray
 
+    !> Prepends stringarray 'sarray' to the stringlist 'list'
+    !> Returns a new stringlist
+    function prepend_stringarray( sarray, list )
+        character(len=*), dimension(:), intent(in) :: sarray
+        type(stringlist_type), intent(in)          :: list
+        type(stringlist_type)                      :: prepend_stringarray
 
-! destroy_list --
-!     Destroy the contents of the list
-!
-! Arguments:
-!     list                   The list of strings in question
-!
-subroutine destroy_list( list )
-    type(stringlist_type), intent(out) :: list
+        prepend_stringarray = list%copy()
+        call prepend_stringarray%insert( list_head, sarray )
 
-    list%size = 0
-    deallocate( list%stringarray )
+    end function prepend_stringarray
 
-end subroutine destroy_list
+  ! destroy:
 
-! length_list --
-!     Return the size (length) of the list
-!
-! Arguments:
-!     list                   The list of strings to retrieve the string from
-!
-pure integer function length_list( list )
-    type(stringlist_type), intent(in) :: list
+    !> Version: experimental
+    !>
+    !> Resets stringlist 'list' to an empy stringlist of len 0
+    !> Modifies the input stringlist 'list'
+    subroutine destroy_list( list )
+        !> TODO: needs a better name?? like clear_list or reset_list
+        class(stringlist_type), intent(out) :: list
 
-    length_list = list%size
+        list%size = 0
+        deallocate( list%stringarray )
 
-end function length_list
+    end subroutine destroy_list
 
-pure integer function capacity( list )
-    type(stringlist_type), intent(in) :: list
+  ! len:
 
-    capacity = 0
-    if ( allocated( list%stringarray ) ) then
-        capacity = size( list%stringarray )
-    end if
+    !> Version: experimental
+    !>
+    !> Returns the len (length) of the list
+    !> Returns an integer
+    pure integer function length_list( list )
+        class(stringlist_type), intent(in) :: list
 
-end function capacity
+        length_list = list%size
 
-! Convert fidx and bidx to the equivalent integer
-pure integer function to_idxn( idx )
-    type(stringlist_index_type), intent(in) :: idx
-    integer                                 :: to_idxn
+    end function length_list
 
-    to_idxn = merge( idx%offset, list%size + 2 - idx%offset, idx%head )
+  ! capacity:
 
-end function to_idxn
+    !> Version: experimental
+    !>
+    !> Returns the capacity of the list
+    !> Returns an integer
+    pure integer function capacity_list( list )
+        !> Not a part of public API
+        class(stringlist_type), intent(in) :: list
 
-! insert_string --
-!     Insert a new string (or an array of strings of another list) into the list
-!
-! Arguments:
-!     list                   The list of strings where the new string(s) should be inserted
-!     idx                    Index at which to insert the string
-!     string                 The string in question
-!
-subroutine insert_char_idx_wrap( list, idx, string )
-    type(stringlist_type), intent(inout)        :: list
-    type(stringlist_index_type), intent(in)     :: idx
-    character(len=*), intent(in)                :: string
-
-    call list%insert( idx, string_type( string ) )
-
-end subroutine insert_char_idx_wrap
-
-subroutine insert_string_idx_wrap( list, idx, string )
-    type(stringlist_type), intent(inout)        :: list
-    type(stringlist_index_type), intent(in)     :: idx
-    type(string_type), intent(in)               :: string
-
-    call list%insert( to_idxn( idx ), string )
-
-end subroutine insert_string_idx_wrap
-
-subroutine insert_stringlist_idx_wrap( list, idx, slist )
-    type(stringlist_type), intent(inout)        :: list
-    type(stringlist_index_type), intent(in)     :: idx
-    type(stringlist_type), intent(in)           :: slist
-
-    call list%insert( to_idxn( idx ), slist )
-
-end subroutine insert_stringlist_idx_wrap
-
-subroutine insert_stringarray_idx_wrap( list, idx, sarray )
-    type(stringlist_type), intent(inout)        :: list
-    type(stringlist_index_type), intent(in)     :: idx
-    character(len=*), dimension(:), intent(in)  :: sarray
-
-    call list%insert( to_idxn( idx ), sarray )
-
-end subroutine insert_stringarray_idx_wrap
-
-! insert_empty_positions
-!     Insert a number of positions for new strings
-!
-! Arguments:
-!     list                   The list of strings where the empty positions should be inserted
-!     idxn                   Index at which the positions should be inserted
-!     number                 Number of positions
-!
-subroutine insert_empty_positions( list, idxn, number )
-    type(stringlist_type), intent(inout)            :: list
-    integer, intent(inout)                          :: idxn
-    integer, intent(inout)                          :: number
-
-    integer                                         :: i, inew
-    integer                                         :: new_size, old_size
-    type(string_type), dimension(:), allocatable    :: new_stringarray
-
-    if (number > 0) then
-
-        idxn     = clip( idxn, 1, len(list) + 1 )
-        old_size = len(list)
-        new_size = old_size + number
-
-        if ( capacity(list) < new_size ) then
-
-            allocate( new_stringarray(new_size) )
-
-            do i = 1, idxn - 1
-                call move( list%stringarray(i), new_stringarray(i) )
-            end do
-            do i = idxn, old_size
-                inew = i + number
-                call move( list%stringarray(i), new_stringarray(inew) )
-            end do
-
-            call move_alloc( new_stringarray, list%stringarray )
-
-        else
-            do i = old_size, idxn, -1
-                inew = i + number
-                call move( list%stringarray(i), list%stringarray(inew) )
-            end do
+        capacity_list = 0
+        if ( allocated( list%stringarray ) ) then
+            capacity_list = size( list%stringarray )
         end if
 
-        list%size = new_size
+    end function capacity_list
 
-    else
-        number = 0
-    end if
+  ! to_idxn:
 
-end subroutine insert_empty_positions
+    !> Version: experimental
+    !>
+    !> Converts a forward index or backward index to its equivalent integer index
+    !> Returns an integer
+    pure integer function convert_to_idxn( list, idx )
+        !> Not a part of public API
+        class(stringlist_type), intent(in)      :: list
+        type(stringlist_index_type), intent(in) :: idx
+
+        convert_to_idxn = merge( idx%offset, list%len() + 2 - idx%offset, idx%forward )
+
+    end function convert_to_idxn
+
+  ! insert:
+
+    !> Version: experimental
+    !>
+    !> Inserts character scalar 'string' at stringlist_index 'idx' in stringlist 'list'
+    !> Modifies the input stringlist 'list'
+    subroutine insert_char_idx_wrap( list, idx, string )
+        class(stringlist_type), intent(inout)       :: list
+        type(stringlist_index_type), intent(in)     :: idx
+        character(len=*), intent(in)                :: string
+
+        call list%insert( idx, string_type( string ) )
+
+    end subroutine insert_char_idx_wrap
+
+    !> Version: experimental
+    !>
+    !> Inserts string 'string' at stringlist_index 'idx' in stringlist 'list'
+    !> Modifies the input stringlist 'list'
+    subroutine insert_string_idx_wrap( list, idx, string )
+        class(stringlist_type), intent(inout)       :: list
+        type(stringlist_index_type), intent(in)     :: idx
+        type(string_type), intent(in)               :: string
+
+        call list%insert_string_int( list%to_idxn( idx ), string )
+
+    end subroutine insert_string_idx_wrap
+
+    !> Version: experimental
+    !>
+    !> Inserts stringlist 'slist' at stringlist_index 'idx' in stringlist 'list'
+    !> Modifies the input stringlist 'list'
+    subroutine insert_stringlist_idx_wrap( list, idx, slist )
+        class(stringlist_type), intent(inout)       :: list
+        type(stringlist_index_type), intent(in)     :: idx
+        type(stringlist_type), intent(in)           :: slist
+
+        call list%insert_stringlist_int( list%to_idxn( idx ), slist )
+
+    end subroutine insert_stringlist_idx_wrap
+
+    !> Version: experimental
+    !>
+    !> Inserts chararray 'carray' at stringlist_index 'idx' in stringlist 'list'
+    !> Modifies the input stringlist 'list'
+    subroutine insert_chararray_idx_wrap( list, idx, carray )
+        class(stringlist_type), intent(inout)       :: list
+        type(stringlist_index_type), intent(in)     :: idx
+        character(len=*), dimension(:), intent(in)  :: carray
+
+        call list%insert_chararray_int( list%to_idxn( idx ), carray )
+
+    end subroutine insert_chararray_idx_wrap
+
+    !> Version: experimental
+    !>
+    !> Inserts stringarray 'sarray' at stringlist_index 'idx' in stringlist 'list'
+    !> Modifies the input stringlist 'list'
+    subroutine insert_stringarray_idx_wrap( list, idx, sarray )
+        class(stringlist_type), intent(inout)       :: list
+        type(stringlist_index_type), intent(in)     :: idx
+        type(string_type), dimension(:), intent(in) :: sarray
+
+        call list%insert_stringarray_int( list%to_idxn( idx ), sarray )
+
+    end subroutine insert_stringarray_idx_wrap
+
+    !> Version: experimental
+    !>
+    !> Inserts 'positions' number of empty positions at integer index 'idxn'
+    !> Modifies the input stringlist 'list'
+    subroutine insert_empty_positions( list, idxn, positions )
+        !> Not a part of public API
+        class(stringlist_type), intent(inout)           :: list
+        integer, intent(inout)                          :: idxn
+        integer, intent(inout)                          :: positions
+
+        integer                                         :: i, inew
+        integer                                         :: new_len, old_len
+        type(string_type), dimension(:), allocatable    :: new_stringarray
+
+        if (positions > 0) then
+
+            idxn     = clip( idxn, 1, list%len() + 1 )
+            old_len = list%len()
+            new_len = old_len + positions
+
+            if ( list%capacity() < new_len ) then
+
+                allocate( new_stringarray(new_len) )
+
+                do i = 1, idxn - 1
+                    ! TODO: can be improved by move
+                    new_stringarray(i) = list%stringarray(i)
+                end do
+                do i = idxn, old_len
+                    inew = i + positions
+                    ! TODO: can be improved by move
+                    new_stringarray(inew) = list%stringarray(i)
+                end do
+
+                call move_alloc( new_stringarray, list%stringarray )
+
+            else
+                do i = old_len, idxn, -1
+                    inew = i + positions
+                    ! TODO: can be improved by move
+                    list%stringarray(inew) = list%stringarray(i)
+                end do
+            end if
+
+            list%size = new_len
+
+        else
+            positions = 0
+        end if
+
+    end subroutine insert_empty_positions
 
 ! insert_char_int_impl --
 !     Insert a new string into the list - specific implementation
 !
-subroutine insert_char_int_impl( list, idx, string )
-    type(stringlist_type), intent(inout)            :: list
-    integer, intent(in)                             :: idx
-    character(len=*), intent(in)                    :: string
+! subroutine insert_char_int_impl( list, idx, string )
+!     type(stringlist_type), intent(inout)            :: list
+!     integer, intent(in)                             :: idx
+!     character(len=*), intent(in)                    :: string
 
-    call insert( list, idx, string_type( string ) )
+!     call insert( list, idx, string_type( string ) )
 
-end subroutine insert_char_int_impl
+! end subroutine insert_char_int_impl
 
-! insert_string_int_impl --
-!     Insert a new string into the list - specific implementation
-!
-subroutine insert_string_int_impl( list, idx, string )
-    type(stringlist_type), intent(inout)            :: list
-    integer, intent(in)                             :: idx
-    type(string_type), intent(in)                   :: string
+    !> Version: experimental
+    !>
+    !> Inserts string 'string' at integer index 'idxn' in stringlist 'list'
+    !> Modifies the input stringlist 'list'
+    subroutine insert_string_int_impl( list, idxn, string )
+        !> Not a part of public API
+        class(stringlist_type), intent(inout)           :: list
+        integer, intent(in)                             :: idxn
+        type(string_type), intent(in)                   :: string
 
-    integer                                         :: idxn
+        integer                                         :: work_idxn
+        integer                                         :: positions
 
-    idxn = idx
-    call insert_empty_positions( list, idxn, 1 )
+        work_idxn = idxn
+        positions = 1
+        call insert_empty_positions( list, work_idxn, positions )
 
-    list%stringarray(idxn) = string
+        list%stringarray(work_idxn) = string
 
-end subroutine insert_string_int_impl
+    end subroutine insert_string_int_impl
 
-! insert_stringlist_int_impl --
-!     Insert a list of strings into the list - specific implementation
-!
-subroutine insert_stringlist_int_impl( list, idx, slist )
-    type(stringlist_type), intent(inout)            :: list
-    integer, intent(in)                             :: idx
-    type(stringlist_type), intent(in)               :: slist
+    !> Version: experimental
+    !>
+    !> Inserts stringlist 'slist' at integer index 'idxn' in stringlist 'list'
+    !> Modifies the input stringlist 'list'
+    subroutine insert_stringlist_int_impl( list, idxn, slist )
+        !> Not a part of public API
+        class(stringlist_type), intent(inout)           :: list
+        integer, intent(in)                             :: idxn
+        type(stringlist_type), intent(in)               :: slist
 
-    integer                                         :: i
-    integer                                         :: idxn, idxnew
+        integer                                         :: i
+        integer                                         :: work_idxn, idxnew
+        integer                                         :: positions
 
-    idxn = idx
-    call insert_empty_positions( list, idxn, len( slist ) )
+        work_idxn = idxn
+        positions = slist%len()
+        call insert_empty_positions( list, work_idxn, positions )
 
-    do i = 1, len( slist )
-        idxnew = idxn + i - 1
-        list%stringarray(idxnew) = slist%stringarray(i)
-    end do
+        do i = 1, slist%len()
+            idxnew = work_idxn + i - 1
+            list%stringarray(idxnew) = slist%stringarray(i)
+        end do
 
-end subroutine insert_stringlist_int_impl
+    end subroutine insert_stringlist_int_impl
 
-! insert_chararray_int_impl --
-!     Insert an array of chars into the list - specific implementatinon
-!
-subroutine insert_chararray_int_impl( list, idx, sarray )
-    type(stringlist_type), intent(inout)         :: list
-    integer, intent(in)                          :: idx
-    character(len=*), dimension(:), intent(in)   :: sarray
+    !> Version: experimental
+    !>
+    !> Inserts chararray 'carray' at integer index 'idxn' in stringlist 'list'
+    !> Modifies the input stringlist 'list'
+    subroutine insert_chararray_int_impl( list, idxn, carray )
+        !> Not a part of public API
+        class(stringlist_type), intent(inout)        :: list
+        integer, intent(in)                          :: idxn
+        character(len=*), dimension(:), intent(in)   :: carray
 
-    integer                                      :: i
-    integer                                      :: idxn, idxnew
+        integer                                      :: i
+        integer                                      :: work_idxn, idxnew
+        integer                                      :: positions
 
-    idxn = idx
-    call insert_empty_positions( list, idxn, size( sarray ) )
+        work_idxn = idxn
+        positions = size( carray )
+        call insert_empty_positions( list, work_idxn, positions )
 
-    do i = 1, size( sarray )
-        idxnew = idxn + i - 1
-        list%stringarray(idxnew) = string_type( sarray(i) )
-    end do
+        do i = 1, size( carray )
+            idxnew = work_idxn + i - 1
+            list%stringarray(idxnew) = string_type( carray(i) )
+        end do
 
-end subroutine insert_chararray_int_impl
+    end subroutine insert_chararray_int_impl
 
-! insert_stringarray_int_impl --
-!     Insert an array of strings into the list - specific implementatinon
-!
-subroutine insert_stringarray_int_impl( list, idx, sarray )
-    type(stringlist_type), intent(inout)         :: list
-    integer, intent(in)                          :: idx
-    type(string_type), dimension(:), intent(in)  :: sarray
+    !> Version: experimental
+    !>
+    !> Inserts stringarray 'sarray' at integer index 'idxn' in stringlist 'list'
+    !> Modifies the input stringlist 'list'
+    subroutine insert_stringarray_int_impl( list, idxn, sarray )
+        !> Not a part of public API
+        class(stringlist_type), intent(inout)        :: list
+        integer, intent(in)                          :: idxn
+        type(string_type), dimension(:), intent(in)  :: sarray
 
-    integer                                      :: i
-    integer                                      :: idxn, idxnew
+        integer                                      :: i
+        integer                                      :: work_idxn, idxnew
+        integer                                      :: positions
 
-    idxn = idx
-    call insert_empty_positions( list, idxn, size( sarray ) )
+        work_idxn = idxn
+        positions = size( sarray )
+        call insert_empty_positions( list, work_idxn, positions )
 
-    do i = 1, size( sarray )
-        idxnew = idxn + i - 1
-        list%stringarray(idxnew) = sarray(i)
-    end do
+        do i = 1, size( sarray )
+            idxnew = work_idxn + i - 1
+            list%stringarray(idxnew) = sarray(i)
+        end do
 
-end subroutine insert_stringarray_int_impl
+    end subroutine insert_stringarray_int_impl
 
-! get_string --
-!     Get the string at a particular index
-!
-! Arguments:
-!     list                   The list of strings to retrieve the string from
-!     idx                    Index after which to insert the string
-!
-pure function get_string_idx_wrap( list, idx )
-    type(stringlist_type), intent(in)       :: list
-    type(stringlist_index_type), intent(in) :: idx
-    type(string_type)                       :: get_string_idx_wrap
+  ! get:
 
-    get_string_idx_wrap = list%get( to_idxn(idx) )
+    !> Version: experimental
+    !>
+    !> Returns the string present at stringlist_index 'idx' in stringlist 'list'
+    !> Returns string_type instance
+    pure function get_string_idx_wrap( list, idx )
+        class(stringlist_type), intent(in)      :: list
+        type(stringlist_index_type), intent(in) :: idx
+        type(string_type)                       :: get_string_idx_wrap
 
-end function get_string_idx_wrap
+        integer                                 :: idxn
 
-pure function get_string_int_impl( list, idxn )
-    type(stringlist_type), intent(in)  :: list
-    integer, intent(in)                :: idxn
-    type(string_type)                  :: get_string_int_impl
+        idxn = list%to_idxn( idx )
 
-    integer                            :: idxnew
+        ! - if the index is out of bounds, return a string_type equivalent to empty string
+        if ( 1 <= idxn .and. idxn <= list%len() ) then
+            get_string_idx_wrap = list%stringarray(idxn)
 
-    !
-    ! Examine the actual index:
-    ! - if the index is out of bounds, return a string_type equivalent to empty string
-    !
-    if ( 1 <= idxn .and. idxn <= len( list ) ) then
-        get_string_int_impl = list%stringarray(idx)
-    end if
+        end if
 
-end function get_string_int_impl
+    end function get_string_idx_wrap
+
+! pure function get_string_int_impl( list, idxn )
+!     class(stringlist_type), intent(in) :: list
+!     integer, intent(in)                :: idxn
+!     type(string_type)                  :: get_string_int_impl
+
+!     !
+!     ! Examine the actual index:
+!     ! - if the index is out of bounds, return a string_type equivalent to empty string
+!     !
+!     if ( 1 <= idxn .and. idxn <= list%len() ) then
+!         get_string_int_impl = list%stringarray(idxn)
+!     end if
+
+! end function get_string_int_impl
 
 ! ! sort_list --
 ! !     Sort the list and return the result as a new list
