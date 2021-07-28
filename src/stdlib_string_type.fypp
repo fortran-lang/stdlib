@@ -214,6 +214,7 @@ module stdlib_string_type
         module procedure :: move_string_string
         module procedure :: move_string_char
         module procedure :: move_char_string
+        module procedure :: move_char_char
     end interface move
 
     !> Lexically compare the order of two character sequences being greater,
@@ -760,6 +761,16 @@ contains
         call move_alloc(from, to%raw)
 
     end subroutine move_char_string
+
+    !> Moves the allocated character scalar from 'from' to 'to'
+    !> No output
+    subroutine move_char_char(from, to)
+        character(len=:), intent(inout), allocatable :: from
+        character(len=:), intent(inout), allocatable :: to
+
+        call move_alloc(from, to)
+
+    end subroutine move_char_char
 
     !> Compare two character sequences for being greater.
     !> In this version both character sequences are by a string.
