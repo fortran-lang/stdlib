@@ -4,17 +4,6 @@
 !
 !     Note: very preliminary
 !
-!     TODO:
-!     insert( list_end, ... ) in an empty list?
-!     concatenate two string lists
-!
-!     Not implemented yet:
-!     insert a list or an array of character strings
-!     replace a string, list or an array of character strings
-!     concatenate a list with another list or an array
-!
-!     Limited to implemented routines
-!
 module stdlib_stringlist
     use stdlib_string_type, only: string_type !, move
     use stdlib_math, only: clip
