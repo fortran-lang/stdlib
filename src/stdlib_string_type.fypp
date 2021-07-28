@@ -766,7 +766,7 @@ contains
     !> No output
     subroutine move_char_char(from, to)
         character(len=:), intent(inout), allocatable :: from
-        character(len=:), intent(inout), allocatable :: to
+        character(len=:), intent(out), allocatable :: to
 
         call move_alloc(from, to)
 
