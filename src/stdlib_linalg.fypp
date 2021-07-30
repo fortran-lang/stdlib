@@ -11,6 +11,7 @@ module stdlib_linalg
   public :: diag
   public :: eye
   public :: trace
+  public :: outer_product
 
   interface diag
     !! version: experimental
@@ -52,6 +53,7 @@ module stdlib_linalg
     #:endfor
   end interface
 
+
   ! Matrix trace
   interface trace
     !! version: experimental
@@ -62,6 +64,21 @@ module stdlib_linalg
       module procedure trace_${t1[0]}$${k1}$
     #:endfor
   end interface
+
+
+  ! Outer product (of two vectors)
+  interface outer_product
+    !! version: experimental
+    !!
+    !! Computes the outer product of two vectors, returning a rank-2 array
+    !! ([Specification](../page/specs/stdlib_linalg.html#description_3))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure module function outer_product_${t1[0]}$${k1}$(u, v) result(res)
+        ${t1}$, intent(in) :: u(:), v(:)
+        ${t1}$ :: res(size(u),size(v))
+      end function outer_product_${t1[0]}$${k1}$
+    #:endfor
+  end interface outer_product
 
 contains
 

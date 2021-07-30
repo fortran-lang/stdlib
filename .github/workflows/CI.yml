@@ -3,7 +3,6 @@ name: CI
 on: [push, pull_request]
 
 env:
-  CI: "ON" # We can detect this in the build system and other vendors implement it
   CMAKE_BUILD_PARALLEL_LEVEL: "2" # 2 cores on each GHA VM, enable parallel builds
   CTEST_OUTPUT_ON_FAILURE: "ON" # This way we don't need a flag to ctest
   CTEST_PARALLEL_LEVEL: "2"
@@ -21,14 +20,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        gcc_v: [7, 8, 9, 10] # Version of GFortran we want to use.
+        gcc_v: [9, 10, 11] # Version of GFortran we want to use.
     env:
       FC: gfortran-${{ matrix.gcc_v }}
       GCC_V: ${{ matrix.gcc_v }}
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Set up Python 3.x
       uses: actions/setup-python@v1 # Use pip to install latest CMake, & FORD/Jin2For, etc.
@@ -62,20 +61,19 @@ jobs:
       run: >-
         cmake -Wdev
         -DCMAKE_BUILD_TYPE=Release
-        -DCMAKE_MAXIMUM_RANK=4
+        -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -S . -B build
 
     - name: Build and compile
-      run: cmake --build build
+      run: cmake --build build --parallel
 
     - name: catch build fail
       run: cmake --build build --verbose --parallel 1
       if: failure()
 
     - name: test
-      run: ctest --parallel --output-on-failure
-      working-directory: build
+      run: ctest --test-dir build --parallel --output-on-failure
 
     - name: Install project
       run: cmake --install build
@@ -110,7 +108,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Set up Python 3.x
       uses: actions/setup-python@v1
@@ -179,7 +177,7 @@ jobs:
       run: >-
          cmake -Wdev
          -DCMAKE_BUILD_TYPE=Release
-         -DCMAKE_MAXIMUM_RANK=4
+         -DCMAKE_MAXIMUM_RANK:String=4
          -DCMAKE_INSTALL_PREFIX=$PWD/_dist
          -S . -B build
 
