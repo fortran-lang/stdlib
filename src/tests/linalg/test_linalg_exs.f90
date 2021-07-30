@@ -49,12 +49,17 @@ contains
     end subroutine test_linalg_ex_logical
 
     subroutine test_linalg_ex_string_type
+
+        type(string_type) :: string_list(1,2)
+        string_list = string_type("A")
+
         call check(all(ex(string_type("A"), 2) == [string_type("A"), string_type("A")]), &
                    msg='all(ex(string_type("A"), 2) == [string_type("A"), &
                    &string_type("A")]) failed', warn=warn)
-        call check(all(ex(string_type("A"), 1, 2) == reshape([string_type("A"), string_type("A")], [1, 2])), &
+        call check(all(ex(string_type("A"), 1, 2) == string_list), &
                    msg='all(ex(string_type("A"), 1, 2) == reshape([string_type("A"), &
                    &string_type("A")],[1,2])) failed', warn=warn)
+
     end subroutine test_linalg_ex_string_type
 
 end module test_linalg_exs
@@ -70,6 +75,7 @@ program tester
     call test_linalg_ex_complex
     call test_linalg_ex_logical
     call test_linalg_ex_string_type
+
     print *, "All tests in `test_linalg_exs` passed"
 
 end program tester
