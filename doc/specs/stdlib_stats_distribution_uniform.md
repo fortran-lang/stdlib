@@ -201,13 +201,19 @@ Experimental
 
 The probability density function of the uniform distribution.
 
-f(x) = 1 / (scale + 1);            for discrete uniform distribution
-f(x) = 1 / scale;                  for continuous uniform distribution
-f(x) = 1 / (scale%re * scale%im);  for complex uniform distribution
+f(x) = 1 / (scale + 1);            for discrete uniform distribution.
+
+f(x) = 1 / scale;                  for continuous uniform distribution.
+
+f(x) = 1 / (scale%re * scale%im);  for complex uniform distribution.
 
 ### Syntax
 
 `result = [[stdlib_stats_distribution_uniform(module):uniform_distribution_pdf(interface)]](x, loc, scale)`
+
+### Class
+
+Elemental function.
 
 ### Arguments
 
@@ -217,7 +223,7 @@ f(x) = 1 / (scale%re * scale%im);  for complex uniform distribution
 
 `scale`: has `intent(in)` and is a scalar of type `integer`, `real` or `complex`.
 
-The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type and kind.
+All three auguments could be arrays conformable to each other. All three arguments must have the same type and kind.
 
 ### Return value
 
@@ -289,13 +295,19 @@ Experimental
 
 Cumulative distribution function of the uniform distribution
 
-F(x) = (x - loc + 1) / (scale + 1);      for discrete uniform distribution
-F(x) = (x - loc) / scale;                for continuous uniform distribution
-F(x) = (x%re - loc%re)(x%im - loc%im) / (scale%re * scale%im); for complex uniform distribution
+F(x) = (x - loc + 1) / (scale + 1);      for discrete uniform distribution.
+
+F(x) = (x - loc) / scale;                for continuous uniform distribution.
+
+F(x) = (x%re - loc%re)(x%im - loc%im) / (scale%re * scale%im); for complex uniform distribution.
 
 ### Syntax
 
 `result = [[stdlib_stats_distribution_uniform(module):uniform_distribution_cdf(interface)]](x, loc, scale)`
+
+### Class
+
+Elemental function.
 
 ### Arguments
 
@@ -305,7 +317,7 @@ F(x) = (x%re - loc%re)(x%im - loc%im) / (scale%re * scale%im); for complex unifo
 
 `scale`: has `intent(in)` and is a scalar of type `integer`, `real` or `complex`.
 
-The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type and kind.
+All three auguments could be arrays conformable to each other. All three arguments must have the same type and kind.
 
 ### Return value
 
