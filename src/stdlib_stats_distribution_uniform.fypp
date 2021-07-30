@@ -108,7 +108,6 @@ Module stdlib_stats_distribution_uniform
                 bits_left = bits_left - bits
             end do L2
         end do L1
-        return
     end function unif_dist_rvs_1_${t1[0]}$${k1}$
 
     #:endfor
@@ -124,7 +123,6 @@ Module stdlib_stats_distribution_uniform
         if(scale <= 0_${k1}$) call error_stop("Error(unif_dist_rvs): Uniform"   &
                          //" distribution scale parameter must be positive")
         res = loc + unif_dist_rvs_1_${t1[0]}$${k1}$(scale)
-        return
     end function unif_dist_rvs_${t1[0]}$${k1}$
 
     #:endfor
@@ -141,7 +139,6 @@ Module stdlib_stats_distribution_uniform
 
         tmp = shiftr(dist_rand(INT_ONE), 11)        ! Get random from [0,2^53-1]
         res = real(tmp * MESENNE_NUMBER, kind =${k1}$) ! convert to [0,1]
-        return
     end function unif_dist_rvs_0_${t1[0]}$${k1}$
 
     #:endfor
@@ -156,7 +153,6 @@ Module stdlib_stats_distribution_uniform
         if(scale == 0._${k1}$) call error_stop("Error(unif_dist_rvs_1): "       &
                       //"Uniform distribution scale parameter must be non-zero")
         res = scale * unif_dist_rvs_0_${t1[0]}$${k1}$( )
-        return
     end function unif_dist_rvs_1_${t1[0]}$${k1}$
 
     #:endfor
@@ -172,7 +168,6 @@ Module stdlib_stats_distribution_uniform
         if(scale == 0._${k1}$) call error_stop("Error(unif_dist_rvs): "         &
                       //"Uniform distribution scale parameter must be non-zero")
         res = loc + scale * unif_dist_rvs_0_${t1[0]}$${k1}$( )
-        return
     end function unif_dist_rvs_${t1[0]}$${k1}$
 
     #:endfor
@@ -202,7 +197,6 @@ Module stdlib_stats_distribution_uniform
             ti = aimag(scale) * r2
         endif
         res = cmplx(tr, ti, kind=${k1}$)
-        return
     end function unif_dist_rvs_1_${t1[0]}$${k1}$
 
     #:endfor
@@ -234,7 +228,6 @@ Module stdlib_stats_distribution_uniform
             ti = aimag(loc) + aimag(scale) * r2
         endif
         res = cmplx(tr, ti, kind=${k1}$)
-        return
     end function unif_dist_rvs_${t1[0]}$${k1}$
 
     #:endfor
@@ -271,7 +264,6 @@ Module stdlib_stats_distribution_uniform
             end do L1
             res(i) = loc + nn
         end do
-        return
     end function unif_dist_rvs_array_${t1[0]}$${k1}$
 
     #:endfor
@@ -295,7 +287,6 @@ Module stdlib_stats_distribution_uniform
             t = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
             res(i) = loc + scale * t
         enddo
-        return
     end function unif_dist_rvs_array_${t1[0]}$${k1}$
 
     #:endfor
@@ -330,8 +321,7 @@ Module stdlib_stats_distribution_uniform
                 ti = aimag(loc) + aimag(scale) * r2
             endif
             res(i) = cmplx(tr, ti, kind=${k1}$)
-        enddo
-        return
+        end do
     end function unif_dist_rvs_array_${t1[0]}$${k1}$
 
     #:endfor
@@ -348,7 +338,6 @@ Module stdlib_stats_distribution_uniform
         else
             res = 1. / (scale + 1_${k1}$)
         end if
-        return
     end function unif_dist_pdf_${t1[0]}$${k1}$
 
     #:endfor
@@ -365,7 +354,6 @@ Module stdlib_stats_distribution_uniform
         else
             res = 1.0 / scale
         end if
-        return
     end function unif_dist_pdf_${t1[0]}$${k1}$
 
     #:endfor
@@ -385,7 +373,6 @@ Module stdlib_stats_distribution_uniform
         else
             res = 0.0
         end if
-        return
     end function unif_dist_pdf_${t1[0]}$${k1}$
 
     #:endfor
@@ -404,7 +391,6 @@ Module stdlib_stats_distribution_uniform
         else
             res = 1.0
         end if
-        return
     end function unif_dist_cdf_${t1[0]}$${k1}$
 
     #:endfor
@@ -423,7 +409,6 @@ Module stdlib_stats_distribution_uniform
         else
             res = 1.0
         end if
-        return
     end function unif_dist_cdf_${t1[0]}$${k1}$
 
     #:endfor
