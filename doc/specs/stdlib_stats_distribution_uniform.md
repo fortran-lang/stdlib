@@ -87,6 +87,9 @@ With triple auguments `loc`, `scale` and `array_size` the function returns a ran
 
 `result = [[stdlib_stats_distribution_uniform(module):uniform_distribution_rvs(interface)]]([[loc,] scale] [[[,array_size]]])`
 
+### Class
+Elemental function.
+
 ### Arguments
 
 `loc`: optional argument has `intent(in)` and is a scalar of type `integer`, `real` or `complex`.
