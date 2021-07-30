@@ -455,7 +455,6 @@ Module stdlib_stats_distribution_uniform
         elseif(r2 .and. i2)then
              res = 1.0
         end if
-        return
     end function unif_dist_cdf_${t1[0]}$${k1}$
 
     #:endfor
