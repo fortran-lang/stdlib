@@ -206,3 +206,107 @@ program demo_outer_product
     !A = reshape([3., 6., 9., 4., 8., 12.], [3,2])
 end program demo_outer_product
 ```
+
+## `zeros/ones` - creates an vector or matrix of `integer` type, given shape and `0/1` value.
+
+### Status
+
+Experimental
+
+### Class
+
+Pure function.
+
+### Description
+
+`zeros/ones` creates an vector or matrix of `integer` type, given shape and `0/1` value.
+
+### Syntax
+
+For vector:
+`result = [[stdlib_linalg(module):zeros(interface)]](dim)`  
+`result = [[stdlib_linalg(module):ones(interface)]](dim)`
+
+For matrix:
+`result = [[stdlib_linalg(module):zeros(interface)]](dim1, dim2)`  
+`result = [[stdlib_linalg(module):ones(interface)]](dim1, dim2)`
+
+
+### Arguments
+
+`dim/dim1`: Shall be an `integer` type.
+
+`dim2`: Shall be an `integer` type.
+
+### Return value
+
+Returns an vector or matrix of `integer` type, given shape and `0/1` value.
+
+### Example
+
+```fortran
+program demo
+    use stdlib_linalg, only: zeros, ones
+    implicit none
+    real, allocatable :: A(:,:)
+    
+    A = zeros(2,2)          !! 0 0 0 0
+    A = ones(4,4)           !! 1 1 1 1; 1 1 1 1; 1 1 1 1; 1 1 1 1
+    A = 2.0*ones(2,2)       !! 2.00000000       2.00000000       2.00000000       2.00000000
+
+end program demo
+```
+
+## `ex` - creates an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and `value` value.
+
+### Status
+
+Experimental
+
+### Class
+
+Pure function.
+
+### Description
+
+`ex` creates an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and `value` value.
+
+### Syntax
+
+For vector:
+`result = [[stdlib_linalg(module):ex(interface)]](value, dim)`  
+
+For matrix:
+`result = [[stdlib_linalg(module):ex(interface)]](value, dim1, dim2)`  
+
+
+### Arguments
+
+`value`: Shall be an `integer/logical/real/complex/string_type` scalar. 
+This is an `intent(in)` argument.
+
+`dim/dim1`: Shall be an `integer` scalar. 
+This is an `intent(in)` argument.
+
+`dim2`: Shall be an `integer` scalar. 
+This is an `intent(in)` argument.
+
+### Return value
+
+Returns an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and `value` value.
+
+### Example
+
+```fortran
+program demo_linalg_ex
+    use stdlib_linalg, only: zeros, ones
+    implicit none
+    real, allocatable :: A(:,:)
+    
+    A = ex(0,2,2)           !! Same as zeros(2,2)
+    A = ex(1,4,4)           !! Same as ones(4,4)
+    A = 2.0*ex(1, 2,2)      !! 2.00000000       2.00000000       2.00000000       2.00000000
+    A = ex(1.0, 2)          !! 1.00000000       1.00000000
+
+end program demo_linalg_ex
+```
