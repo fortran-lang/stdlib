@@ -474,7 +474,6 @@ Module stdlib_stats_distribution_uniform
             res(i) = res(j)
             res(j) = tmp
         end do
-        return
     end function shuffle_${t1[0]}$${k1}$
 
     #:endfor
