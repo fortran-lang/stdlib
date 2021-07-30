@@ -52,9 +52,8 @@ program test_distribution_uniform
     call test_uni_cdf_csp
     call test_uni_cdf_cdp
     call test_uni_cdf_cqp
-    stop
 
-    contains
+contains
 
     subroutine test_shuffle
         integer :: n(10), na(10) = [10, 6, 9, 2, 8, 1, 3, 5, 7, 4]
