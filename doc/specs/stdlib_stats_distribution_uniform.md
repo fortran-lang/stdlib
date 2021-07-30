@@ -20,6 +20,8 @@ Applying Fisher-Yates algorithm to generate an unbiased permutation for any list
 
 `result = [[stdlib_stats_distribution_uniform(module):shuffle(interface)]]( list )`
 
+Class
+Function.
 ### Arguments
 
 `list`: argument has `intent(in)` and is a rank one array of `integer`, `real`, or `complex` type.
