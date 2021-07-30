@@ -1,0 +1,12 @@
+SRCFYPP =\
+        test_median.fypp
+
+SRCGEN = $(SRCFYPP:.fypp=.f90)
+
+$(SRCGEN): %.f90: %.fypp common.fypp
+	fypp $(FYPPFLAGS) $< $@
+
+PROGS_SRC = $(SRCGEN) test_mean.f90 test_moment.f90 test_var.f90 \
+            test_distribution_PRNG.f90
+
+include ../Makefile.manual.test.mk
