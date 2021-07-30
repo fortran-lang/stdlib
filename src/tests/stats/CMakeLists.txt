@@ -3,6 +3,7 @@
 # Create a list of the files to be preprocessed
 set(fppFiles
     test_median.fypp
+    test_distribution_uniform.fypp
 )
 
 # Custom preprocessor flags
