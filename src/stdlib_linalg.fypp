@@ -9,6 +9,7 @@ module stdlib_linalg
   private
 
   public :: diag
+  public :: empty
   public :: eye
   public :: trace
   public :: outer_product
@@ -52,6 +53,14 @@ module stdlib_linalg
       end function diag_${t1[0]}$${k1}$_mat_k
     #:endfor
   end interface
+
+  !> Version: experimental
+  !>
+  !> `empty` creates a new vector or matrix of `integer` type and given shape, 
+  !>  without initializing values.
+  interface empty
+      procedure :: empty_1_default, empty_2_default
+  end interface empty
 
 
   ! Matrix trace
@@ -108,4 +117,23 @@ contains
         end do
       end function trace_${t1[0]}$${k1}$
     #:endfor
-end module
+
+    !> `empty` creates an empty vector with `integer` type.
+    pure function empty_1_default(dim) result(result)
+
+        implicit none
+        integer, intent(in) :: dim
+        integer :: result(dim)
+
+    end function empty_1_default
+
+    !> `empty` creates an empty matrix with `integer` type.
+    pure function empty_2_default(dim1, dim2) result(result)
+
+        implicit none
+        integer, intent(in) :: dim1, dim2
+        integer :: result(dim1, dim2)
+        
+    end function empty_2_default
+
+end module stdlib_linalg

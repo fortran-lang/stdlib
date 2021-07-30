@@ -206,3 +206,57 @@ program demo_outer_product
     !A = reshape([3., 6., 9., 4., 8., 12.], [3,2])
 end program demo_outer_product
 ```
+
+## `empty` - `empty` creates a new vector or matrix of `integer` type and given shape, without initializing values.
+
+### Status
+
+Experimental
+
+### Class
+
+Pure function.
+
+### Description
+
+`empty` creates a new vector or matrix of `integer` type and given shape, without initializing values.
+
+`empty`, unlike `zeros`, does not set the array values to zero, and may therefore be marginally faster. On the other hand, it requires the user to manually set all the values in the array, and should be used with caution.
+
+### Syntax
+
+For vector:
+`result = [[stdlib_linalg(module):empty(interface)]](dim)`
+
+For matrix:
+`result = [[stdlib_linalg(module):empty(interface)]](dim1, dim2)`
+
+### Arguments
+
+`dim/dim1`: Shall be an `integer` type.
+
+`dim2`: Shall be an `integer` type.
+
+### Return value
+
+Returns a new vector or matrix of `integer` type and given shape, without initializing values.
+
+### Example
+
+```fortran
+program demo_linlag_empty
+    
+    use stdlib_linlag, only: empty
+    implicit none
+    integer, allocatable :: i(:,:)
+
+    print *, empty(2, 1)
+    print *, 0.0*empty(2)                               !! 0.00000000       0.00000000
+    print *, empty(2) + empty(2)
+    print *, (0.1, 0.1)*empty(2) + (0.2, 0.2)*empty(2)
+
+    i = empty(2,2)
+    print *, i
+
+end program demo_linalg_empty
+```
