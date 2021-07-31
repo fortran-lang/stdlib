@@ -156,6 +156,6 @@ stdlib_math_linspace.o: \
 stdlib_math_logspace.o: \
 	stdlib_math_linspace.o
 stdlib_linalg_outer_product.o: stdlib_linalg.o
-stdlib_stringlist.o: stdlib_stringtype.o \
+stdlib_stringlist.o: stdlib_string_type.o \
     stdlib_math.o \
 	stdlib_optval.o

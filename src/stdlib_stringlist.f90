@@ -232,7 +232,9 @@ contains
         class(stringlist_type), intent(out) :: list
 
         list%size = 0
-        deallocate( list%stringarray )
+        if ( allocated( list%stringarray ) ) then
+            deallocate( list%stringarray )
+        end if
 
     end subroutine destroy_list
 
