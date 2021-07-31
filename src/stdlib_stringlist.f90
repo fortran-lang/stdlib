@@ -2,12 +2,22 @@
 !     Module for storing and manipulating list of strings
 !     The strings may have arbitrary lengths, not necessarily the same
 !
-!     Note: very preliminary
+!     insert AT:      Inserts an element BEFORE the element present currently at the asked index
+!                       for forward indexes, otherwise
+!                     Inserts an element AFTER the element present currently at the asked index
+!                       for backward indexes
+!                     In other words, after insertion the element will be present at the asked index
+!                       for both forward and backward indexes                    
+!     insert BEFORE:  Inserts an element BEFORE the element present currently at the asked index
+!     insert AFTER:   Inserts an element AFTER the element present currently at the asked index
+!
+!     Note the distinction between AT and BEFORE in the module. Care has been taken to keep it consistent
+!     throughout the PR
 !
 module stdlib_stringlist
     use stdlib_string_type, only: string_type !, move
     use stdlib_math, only: clip
-    use stdlib_optval, only: optval
+    ! use stdlib_optval, only: optval
     implicit none
     private
 
@@ -47,32 +57,37 @@ module stdlib_stringlist
     
     contains
         private
-        procedure         :: copy                   => create_copy
+        procedure         :: copy                           =>  create_copy
 
-        procedure, public :: destroy                => destroy_list
+        procedure, public :: destroy                        =>  destroy_list
 
-        procedure, public :: len                    => length_list
+        procedure, public :: len                            =>  length_list
 
-        procedure         :: capacity               => capacity_list
+        procedure         :: capacity                       =>  capacity_list
 
-        procedure         :: to_idxn                => convert_to_idxn
+        procedure         :: to_future_at_idxn              =>  convert_to_future_at_idxn
 
-        procedure         :: insert_char_idx        => insert_char_idx_wrap
-        procedure         :: insert_string_idx      => insert_string_idx_wrap
-        procedure         :: insert_stringlist_idx  => insert_stringlist_idx_wrap
-        procedure         :: insert_chararray_idx   => insert_chararray_idx_wrap
-        procedure         :: insert_stringarray_idx => insert_stringarray_idx_wrap
-        generic, public   :: insert                 => insert_char_idx,         &
-                                                       insert_string_idx,       &
-                                                       insert_stringlist_idx,   &
-                                                       insert_chararray_idx,  &
-                                                       insert_stringarray_idx
+        procedure, public :: to_current_idxn                =>  convert_to_current_idxn
 
-        procedure         :: insert_string_int      => insert_string_int_impl
-        procedure         :: insert_stringlist_int  => insert_stringlist_int_impl
-        procedure         :: insert_chararray_int   => insert_chararray_int_impl
-        procedure         :: insert_stringarray_int => insert_stringarray_int_impl
+        procedure         :: insert_at_char_idx             =>  insert_at_char_idx_wrap
+        procedure         :: insert_at_string_idx           =>  insert_at_string_idx_wrap
+        procedure         :: insert_at_stringlist_idx       =>  insert_at_stringlist_idx_wrap
+        procedure         :: insert_at_chararray_idx        =>  insert_at_chararray_idx_wrap
+        procedure         :: insert_at_stringarray_idx      =>  insert_at_stringarray_idx_wrap
+        generic, public   :: insert_at                      =>  insert_at_char_idx,         &
+                                                                insert_at_string_idx,       &
+                                                                insert_at_stringlist_idx,   &
+                                                                insert_at_chararray_idx,    &
+                                                                insert_at_stringarray_idx
 
+        procedure         :: insert_before_string_int       =>  insert_before_string_int_impl
+        procedure         :: insert_before_stringlist_int   =>  insert_before_stringlist_int_impl
+        procedure         :: insert_before_chararray_int    =>  insert_before_chararray_int_impl
+        procedure         :: insert_before_stringarray_int  =>  insert_before_stringarray_int_impl
+        generic           :: insert_before                  =>  insert_before_string_int,       &
+                                                                insert_before_stringlist_int,   &
+                                                                insert_before_chararray_int,    &
+                                                                insert_before_stringarray_int
         ! procedure         :: get_string_int         => get_string_int_impl
         procedure         :: get_string_idx         => get_string_idx_wrap
         generic, public   :: get                    => get_string_idx
@@ -115,6 +130,7 @@ contains
 
     end function backward_index
 
+    !> Returns a deep copy of the stringlist 'original'
     pure function create_copy( original )
         class(stringlist_type), intent(in)  :: original
         type(stringlist_type)               :: create_copy
@@ -142,7 +158,7 @@ contains
         type(stringlist_type)             :: append_string
 
         append_string = list%copy()
-        call append_string%insert( list_tail, string )
+        call append_string%insert_at( list_tail, string )
 
     end function append_string
 
@@ -165,7 +181,7 @@ contains
         type(stringlist_type)             :: prepend_string
 
         prepend_string = list%copy()
-        call prepend_string%insert( list_head, string )
+        call prepend_string%insert_at( list_head, string )
 
     end function prepend_string
 
@@ -177,7 +193,7 @@ contains
         type(stringlist_type)             :: append_stringlist
 
         append_stringlist = list%copy()
-        call append_stringlist%insert( list_tail, slist )
+        call append_stringlist%insert_at( list_tail, slist )
 
     end function append_stringlist
 
@@ -189,7 +205,7 @@ contains
         type(stringlist_type)                      :: append_stringarray
 
         append_stringarray = list%copy()
-        call append_stringarray%insert( list_tail, sarray )
+        call append_stringarray%insert_at( list_tail, sarray )
 
     end function append_stringarray
 
@@ -201,7 +217,7 @@ contains
         type(stringlist_type)                      :: prepend_stringarray
 
         prepend_stringarray = list%copy()
-        call prepend_stringarray%insert( list_head, sarray )
+        call prepend_stringarray%insert_at( list_head, sarray )
 
     end function prepend_stringarray
 
@@ -250,93 +266,111 @@ contains
 
     end function capacity_list
 
-  ! to_idxn:
+  ! to_future_at_idxn:
 
     !> Version: experimental
     !>
-    !> Converts a forward index or backward index to its equivalent integer index
+    !> Converts a forward index OR a backward index to an integer index at
+    !> which the new element will be present post insertion (i.e. in future)
     !> Returns an integer
-    pure integer function convert_to_idxn( list, idx )
+    pure integer function convert_to_future_at_idxn( list, idx )
         !> Not a part of public API
         class(stringlist_type), intent(in)      :: list
         type(stringlist_index_type), intent(in) :: idx
 
-        convert_to_idxn = merge( idx%offset, list%len() + 2 - idx%offset, idx%forward )
+        ! Formula: merge( fidx( x ) - ( list_head - 1 ), len - bidx( x ) + ( list_tail - 1 ) + 2, ... )
+        convert_to_future_at_idxn = merge( idx%offset, list%len() - idx%offset + 2 , idx%forward )
 
-    end function convert_to_idxn
+    end function convert_to_future_at_idxn
 
-  ! insert:
+  ! to_current_idxn:
 
     !> Version: experimental
     !>
-    !> Inserts character scalar 'string' at stringlist_index 'idx' in stringlist 'list'
+    !> Converts a forward index OR backward index to its equivalent integer index idxn
+    !> Returns an integer
+    pure integer function convert_to_current_idxn( list, idx )
+        !> Not a part of public API
+        class(stringlist_type), intent(in)      :: list
+        type(stringlist_index_type), intent(in) :: idx
+
+        ! Formula: merge( fidx( x ) - ( list_head - 1 ), len + 1 - bidx( x ) + ( list_tail - 1 ), ... )
+        convert_to_current_idxn = merge( idx%offset, list%len() - idx%offset + 1, idx%forward )
+
+    end function convert_to_current_idxn
+
+  ! insert_at:
+
+    !> Version: experimental
+    !>
+    !> Inserts character scalar 'string' AT stringlist_index 'idx' in stringlist 'list'
     !> Modifies the input stringlist 'list'
-    subroutine insert_char_idx_wrap( list, idx, string )
+    subroutine insert_at_char_idx_wrap( list, idx, string )
         class(stringlist_type), intent(inout)       :: list
         type(stringlist_index_type), intent(in)     :: idx
         character(len=*), intent(in)                :: string
 
-        call list%insert( idx, string_type( string ) )
+        call list%insert_at( idx, string_type( string ) )
 
-    end subroutine insert_char_idx_wrap
+    end subroutine insert_at_char_idx_wrap
 
     !> Version: experimental
     !>
-    !> Inserts string 'string' at stringlist_index 'idx' in stringlist 'list'
+    !> Inserts string 'string' AT stringlist_index 'idx' in stringlist 'list'
     !> Modifies the input stringlist 'list'
-    subroutine insert_string_idx_wrap( list, idx, string )
+    subroutine insert_at_string_idx_wrap( list, idx, string )
         class(stringlist_type), intent(inout)       :: list
         type(stringlist_index_type), intent(in)     :: idx
         type(string_type), intent(in)               :: string
 
-        call list%insert_string_int( list%to_idxn( idx ), string )
+        call list%insert_before( list%to_future_at_idxn( idx ), string )
 
-    end subroutine insert_string_idx_wrap
+    end subroutine insert_at_string_idx_wrap
 
     !> Version: experimental
     !>
-    !> Inserts stringlist 'slist' at stringlist_index 'idx' in stringlist 'list'
+    !> Inserts stringlist 'slist' AT stringlist_index 'idx' in stringlist 'list'
     !> Modifies the input stringlist 'list'
-    subroutine insert_stringlist_idx_wrap( list, idx, slist )
+    subroutine insert_at_stringlist_idx_wrap( list, idx, slist )
         class(stringlist_type), intent(inout)       :: list
         type(stringlist_index_type), intent(in)     :: idx
         type(stringlist_type), intent(in)           :: slist
 
-        call list%insert_stringlist_int( list%to_idxn( idx ), slist )
+        call list%insert_before( list%to_future_at_idxn( idx ), slist )
 
-    end subroutine insert_stringlist_idx_wrap
+    end subroutine insert_at_stringlist_idx_wrap
 
     !> Version: experimental
     !>
-    !> Inserts chararray 'carray' at stringlist_index 'idx' in stringlist 'list'
+    !> Inserts chararray 'carray' AT stringlist_index 'idx' in stringlist 'list'
     !> Modifies the input stringlist 'list'
-    subroutine insert_chararray_idx_wrap( list, idx, carray )
+    subroutine insert_at_chararray_idx_wrap( list, idx, carray )
         class(stringlist_type), intent(inout)       :: list
         type(stringlist_index_type), intent(in)     :: idx
         character(len=*), dimension(:), intent(in)  :: carray
 
-        call list%insert_chararray_int( list%to_idxn( idx ), carray )
+        call list%insert_before( list%to_future_at_idxn( idx ), carray )
 
-    end subroutine insert_chararray_idx_wrap
+    end subroutine insert_at_chararray_idx_wrap
 
     !> Version: experimental
     !>
-    !> Inserts stringarray 'sarray' at stringlist_index 'idx' in stringlist 'list'
+    !> Inserts stringarray 'sarray' AT stringlist_index 'idx' in stringlist 'list'
     !> Modifies the input stringlist 'list'
-    subroutine insert_stringarray_idx_wrap( list, idx, sarray )
+    subroutine insert_at_stringarray_idx_wrap( list, idx, sarray )
         class(stringlist_type), intent(inout)       :: list
         type(stringlist_index_type), intent(in)     :: idx
         type(string_type), dimension(:), intent(in) :: sarray
 
-        call list%insert_stringarray_int( list%to_idxn( idx ), sarray )
+        call list%insert_before( list%to_future_at_idxn( idx ), sarray )
 
-    end subroutine insert_stringarray_idx_wrap
+    end subroutine insert_at_stringarray_idx_wrap
 
     !> Version: experimental
     !>
-    !> Inserts 'positions' number of empty positions at integer index 'idxn'
+    !> Inserts 'positions' number of empty positions BEFORE integer index 'idxn'
     !> Modifies the input stringlist 'list'
-    subroutine insert_empty_positions( list, idxn, positions )
+    subroutine insert_before_empty_positions( list, idxn, positions )
         !> Not a part of public API
         class(stringlist_type), intent(inout)           :: list
         integer, intent(inout)                          :: idxn
@@ -348,7 +382,8 @@ contains
 
         if (positions > 0) then
 
-            idxn     = clip( idxn, 1, list%len() + 1 )
+            idxn    = clip( idxn, 1, list%len() + 1 )
+            ! Matlab's infinitely expandable list (Ivan's comment)??
             old_len = list%len()
             new_len = old_len + positions
 
@@ -382,25 +417,13 @@ contains
             positions = 0
         end if
 
-    end subroutine insert_empty_positions
-
-! insert_char_int_impl --
-!     Insert a new string into the list - specific implementation
-!
-! subroutine insert_char_int_impl( list, idx, string )
-!     type(stringlist_type), intent(inout)            :: list
-!     integer, intent(in)                             :: idx
-!     character(len=*), intent(in)                    :: string
-
-!     call insert( list, idx, string_type( string ) )
-
-! end subroutine insert_char_int_impl
+    end subroutine insert_before_empty_positions
 
     !> Version: experimental
     !>
-    !> Inserts string 'string' at integer index 'idxn' in stringlist 'list'
+    !> Inserts string 'string' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    subroutine insert_string_int_impl( list, idxn, string )
+    subroutine insert_before_string_int_impl( list, idxn, string )
         !> Not a part of public API
         class(stringlist_type), intent(inout)           :: list
         integer, intent(in)                             :: idxn
@@ -411,17 +434,17 @@ contains
 
         work_idxn = idxn
         positions = 1
-        call insert_empty_positions( list, work_idxn, positions )
+        call insert_before_empty_positions( list, work_idxn, positions )
 
         list%stringarray(work_idxn) = string
 
-    end subroutine insert_string_int_impl
+    end subroutine insert_before_string_int_impl
 
     !> Version: experimental
     !>
-    !> Inserts stringlist 'slist' at integer index 'idxn' in stringlist 'list'
+    !> Inserts stringlist 'slist' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    subroutine insert_stringlist_int_impl( list, idxn, slist )
+    subroutine insert_before_stringlist_int_impl( list, idxn, slist )
         !> Not a part of public API
         class(stringlist_type), intent(inout)           :: list
         integer, intent(in)                             :: idxn
@@ -433,20 +456,20 @@ contains
 
         work_idxn = idxn
         positions = slist%len()
-        call insert_empty_positions( list, work_idxn, positions )
+        call insert_before_empty_positions( list, work_idxn, positions )
 
         do i = 1, slist%len()
             idxnew = work_idxn + i - 1
             list%stringarray(idxnew) = slist%stringarray(i)
         end do
 
-    end subroutine insert_stringlist_int_impl
+    end subroutine insert_before_stringlist_int_impl
 
     !> Version: experimental
     !>
-    !> Inserts chararray 'carray' at integer index 'idxn' in stringlist 'list'
+    !> Inserts chararray 'carray' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    subroutine insert_chararray_int_impl( list, idxn, carray )
+    subroutine insert_before_chararray_int_impl( list, idxn, carray )
         !> Not a part of public API
         class(stringlist_type), intent(inout)        :: list
         integer, intent(in)                          :: idxn
@@ -458,20 +481,20 @@ contains
 
         work_idxn = idxn
         positions = size( carray )
-        call insert_empty_positions( list, work_idxn, positions )
+        call insert_before_empty_positions( list, work_idxn, positions )
 
         do i = 1, size( carray )
             idxnew = work_idxn + i - 1
             list%stringarray(idxnew) = string_type( carray(i) )
         end do
 
-    end subroutine insert_chararray_int_impl
+    end subroutine insert_before_chararray_int_impl
 
     !> Version: experimental
     !>
-    !> Inserts stringarray 'sarray' at integer index 'idxn' in stringlist 'list'
+    !> Inserts stringarray 'sarray' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    subroutine insert_stringarray_int_impl( list, idxn, sarray )
+    subroutine insert_before_stringarray_int_impl( list, idxn, sarray )
         !> Not a part of public API
         class(stringlist_type), intent(inout)        :: list
         integer, intent(in)                          :: idxn
@@ -483,14 +506,14 @@ contains
 
         work_idxn = idxn
         positions = size( sarray )
-        call insert_empty_positions( list, work_idxn, positions )
+        call insert_before_empty_positions( list, work_idxn, positions )
 
         do i = 1, size( sarray )
             idxnew = work_idxn + i - 1
             list%stringarray(idxnew) = sarray(i)
         end do
 
-    end subroutine insert_stringarray_int_impl
+    end subroutine insert_before_stringarray_int_impl
 
   ! get:
 
@@ -505,7 +528,7 @@ contains
 
         integer                                 :: idxn
 
-        idxn = list%to_idxn( idx )
+        idxn = list%to_current_idxn( idx )
 
         ! - if the index is out of bounds, return a string_type equivalent to empty string
         if ( 1 <= idxn .and. idxn <= list%len() ) then
