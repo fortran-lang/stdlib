@@ -1,6 +1,5 @@
 #:include "common.fypp"
-#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-#:set ALL_KINDS_TYPES = INT_KINDS_TYPES + RC_KINDS_TYPES
+#:set ALL_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 program test_distribution_uniform
     use stdlib_error, only : check
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
