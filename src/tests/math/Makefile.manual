@@ -1,4 +1,5 @@
-PROGS_SRC = test_stdlib_math.f90 test_linspace.f90 test_logspace.f90
+PROGS_SRC = test_stdlib_math.f90 test_linspace.f90 test_logspace.f90 \
+    test_math_seq.f90
 
 
 include ../Makefile.manual.test.mk

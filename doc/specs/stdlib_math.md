@@ -275,3 +275,61 @@ program demo_logspace_rstart_cbase
 
 end program demo_logspace_rstart_cbase
 ```
+## `seq` - Creates an vector of `integer/real` type with evenly spaced values within a given interval.
+
+### Status
+
+Experimental
+
+### Class
+
+Pure function.
+
+### Description
+
+Creates an vector of `integer/real` type with evenly spaced values within a given interval.
+
+### Syntax
+
+`result = [[stdlib_math(module):seq(interface)]](start [, end, by])`
+
+### Arguments
+
+`start`: Shall be an `integer/real` scalar.
+This is an `intent(in)` argument.
+
+`end`: Shall be an `integer/real` scalar.
+This is an `intent(in)` and `optional` argument.
+
+`by`: Shall be an `integer/real` scalar and large than `0`.
+This is an `intent(in)` and `optional` argument.  
+
+Warning:  
+If `by = 0`, the `by` argument will be corrected to `1/1.0` by the internal process of the `seq` function.   
+If `by < 0`, the `by` argument will be corrected to `abs(by)` by the internal process of the `seq` function. 
+
+### Return value
+
+Vector of evenly spaced values.
+
+For floating point arguments, the length of the result is `floor((end - start)/by) + 1`.
+
+### Example
+
+```fortran
+program demo_math_seq
+    use stdlib_math, only: seq
+
+    print *, seq(3)                 !! [1,2,3]
+    print *, seq(3.0)               !! [1.0,2.0,3.0]
+    print *, seq(-1)                !! [1,0,-1]
+    print *, seq(0,2)               !! [0,1,2]
+    print *, seq(1,-1)              !! [1,0,-1]
+    print *, seq(0, 2, 2)           !! [0,2]
+    print *, (1.0,1.0)*seq(3)       !! [(1.0,1.0),(2.0,2.0),[3.0,3.0]]
+
+    print *, seq(0.0,2.0,-2.0)      !! [0.0,2.0]. Not recommended: `by` argument is negative!
+    print *, seq(0.0,2.0,0.0)       !! [0.0,1.0]. Not recommended: `by` argument is zero!
+
+end program demo_math_seq
+```
