@@ -185,16 +185,16 @@ module stdlib_stats_distribution_uniform
         if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(uni_dist_" &
               //"rvs_1): Uniform distribution scale parameter must be non-zero")
         r1 = unif_dist_rvs_0_r${k1}$( )
-        if(real(scale) == 0.0_${k1}$) then
-            ti = aimag(scale) * r1
+        if(scale % re == 0.0_${k1}$) then
+            ti = scale % im * r1
             tr = 0.0_${k1}$
-        elseif(aimag(scale) == 0.0_${k1}$) then
-            tr = real(scale) * r1
+        elseif(scale % im == 0.0_${k1}$) then
+            tr = scale % re * r1
             ti = 0.0_${k1}$
         else
             r2 = unif_dist_rvs_0_r${k1}$( )
-            tr = real(scale) * r1
-            ti = aimag(scale) * r2
+            tr = scale % re * r1
+            ti = scale % im * r2
         endif
         res = cmplx(tr, ti, kind=${k1}$)
     end function unif_dist_rvs_1_${t1[0]}$${k1}$
@@ -216,16 +216,16 @@ module stdlib_stats_distribution_uniform
         if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(uni_dist_" &
               //"rvs): Uniform distribution scale parameter must be non-zero")
         r1 = unif_dist_rvs_0_r${k1}$( )
-        if(real(scale) == 0.0_${k1}$) then
-            tr = real(loc)
-            ti = aimag(loc) + aimag(scale) * r1
-        elseif(aimag(scale) == 0.0_${k1}$) then
-            tr = real(loc) + real(scale) * r1
-            ti = aimag(loc)
+        if(scale % re == 0.0_${k1}$) then
+            tr = loc % re
+            ti = loc % im + scale % im * r1
+        elseif(scale % im == 0.0_${k1}$) then
+            tr = loc % re + scale % re * r1
+            ti = loc % im
         else
             r2 = unif_dist_rvs_0_r${k1}$( )
-            tr = real(loc) + real(scale) * r1
-            ti = aimag(loc) + aimag(scale) * r2
+            tr = loc % re + scale % re * r1
+            ti = loc % im + scale % im * r2
         endif
         res = cmplx(tr, ti, kind=${k1}$)
     end function unif_dist_rvs_${t1[0]}$${k1}$
@@ -305,17 +305,17 @@ module stdlib_stats_distribution_uniform
         do i = 1, array_size
             tmp = shiftr(dist_rand(INT_ONE), 11)
             r1 = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
-            if(real(scale) == 0.0_${k1}$) then
-                tr = real(loc)
-                ti = aimag(loc) + aimag(scale) * r1
-            elseif(aimag(scale) == 0.0_${k1}$) then
-                tr = real(loc) + real(scale) * r1
-                ti = aimag(loc)
+            if(scale % re == 0.0_${k1}$) then
+                tr = loc % re
+                ti = loc % im + scale % im * r1
+            elseif(scale % im == 0.0_${k1}$) then
+                tr = loc % re + scale % re * r1
+                ti = loc % im
             else
                 tmp = shiftr(dist_rand(INT_ONE), 11)
                 r2 = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
-                tr = real(loc) + real(scale) * r1
-                ti = aimag(loc) + aimag(scale) * r2
+                tr = loc % re + scale % re * r1
+                ti = loc % im + scale % im * r2
             endif
             res(i) = cmplx(tr, ti, kind=${k1}$)
         end do
@@ -361,12 +361,12 @@ module stdlib_stats_distribution_uniform
         real :: res
         real(${k1}$) :: tr, ti
 
-        tr = real(loc) + real(scale); ti = aimag(loc) + aimag(scale)
+        tr = loc % re + scale % re; ti = loc % im + scale % im
         if(scale == (0.0_${k1}$,0.0_${k1}$)) then
             res = 0.0
-        elseif((real(x) >= real(loc) .and. real(x) <= tr) .and.                 &
-               (aimag(x) >= aimag(loc) .and. aimag(x) <= ti)) then
-            res = 1.0 / (real(scale) * aimag(scale))
+        elseif((x % re >= loc % re .and. x % re <= tr) .and.                 &
+               (x % im >= loc % im .and. x % im <= ti)) then
+            res = 1.0 / (scale % re * scale % im)
         else
             res = 0.0
         end if
@@ -420,20 +420,20 @@ module stdlib_stats_distribution_uniform
             res = 0.0
             return
         endif
-        r1 = real(x) < real(loc)
-        r2 = real(x) > (real(loc) + real(scale))
-        i1 = aimag(x) < aimag(loc)
-        i2 = aimag(x) > (aimag(loc) + aimag(scale))
+        r1 = x % re < loc % re
+        r2 = x % re > (loc % re + scale % re)
+        i1 = x % im < loc % im
+        i2 = x % im > (loc % im + scale % im)
         if(r1 .or. i1) then
             res = 0.0
         elseif((.not. r1) .and. (.not. r2) .and. i2) then
-            res = (real(x) - real(loc)) / real(scale)
+            res = (x % re - loc % re) / scale % re
         elseif((.not. i1) .and. (.not. i2) .and. r2) then
-            res = (aimag(x) - aimag(loc)) / aimag(scale)
+            res = (x % im - loc % im) / scale % im
         elseif((.not. r1) .and. (.not. r2) .and. (.not. i1) .and. (.not. i2))   &
              then
-             res = (real(x) - real(loc)) * (aimag(x) - aimag(loc)) /            &
-                   (real(scale) * aimag(scale))
+             res = (x % re - loc % re) * (x % im - loc % im) /            &
+                   (scale % re * scale % im)
         elseif(r2 .and. i2)then
              res = 1.0
         end if
