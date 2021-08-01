@@ -235,16 +235,15 @@ module stdlib_stats_distribution_uniform
     #:for k1, t1 in INT_KINDS_TYPES
     function unif_dist_rvs_array_${t1[0]}$${k1}$(loc, scale, array_size)        &
              result(res)
+        integer, intent(in) :: array_size
         ${t1}$, intent(in) :: loc, scale
         ${t1}$ :: res(array_size)
         ${t1}$ :: u, mask, n, nn
-        integer, intent(in) :: array_size
         integer :: i, zeros, bits_left, bits
 
         n = scale
         if(n == 0_${k1}$) call error_stop("Error(unif_dist_rvs_array): Uniform" &
                             //" distribution scale parameter must be non-zero")
-        allocate(res(array_size))
         zeros = leadz(n)
         bits = bit_size(n) - zeros
         mask = shiftr(not(0_${k1}$), zeros)
@@ -271,17 +270,16 @@ module stdlib_stats_distribution_uniform
     #:for k1, t1 in REAL_KINDS_TYPES
     function unif_dist_rvs_array_${t1[0]}$${k1}$(loc, scale, array_size)        &
              result(res)
-        ${t1}$, intent(in) :: loc, scale
-        ${t1}$, allocatable :: res(:)
-        ${t1}$ :: t
         integer, intent(in) :: array_size
+        ${t1}$, intent(in) :: loc, scale
+        ${t1}$ :: res(array_size)
+        ${t1}$ :: t
         integer(int64) :: tmp
         integer :: i
 
 
         if(scale == 0._${k1}$) call error_stop("Error(unif_dist_rvs_array):"    &
                     //" Uniform distribution scale parameter must be non-zero")
-        allocate(res(array_size))
         do i = 1, array_size
             tmp = shiftr(dist_rand(INT_ONE), 11)
             t = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
@@ -294,17 +292,16 @@ module stdlib_stats_distribution_uniform
     #:for k1, t1 in CMPLX_KINDS_TYPES
     function unif_dist_rvs_array_${t1[0]}$${k1}$(loc, scale, array_size)        &
              result(res)
-        ${t1}$, intent(in) :: loc, scale
-        ${t1}$, allocatable :: res(:)
-        real(${k1}$) :: r1, r2, tr, ti
         integer, intent(in) :: array_size
+        ${t1}$, intent(in) :: loc, scale
+        ${t1}$ :: res(array_size)
+        real(${k1}$) :: r1, r2, tr, ti
         integer(int64) :: tmp
         integer :: i
 
 
         if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(unif_dist_"&
            //"rvs_array): Uniform distribution scale parameter must be non-zero")
-        allocate(res(array_size))
         do i = 1, array_size
             tmp = shiftr(dist_rand(INT_ONE), 11)
             r1 = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
