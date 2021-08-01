@@ -68,7 +68,9 @@ program test_distribution_uniform
     end subroutine test_shuffle
 
     subroutine test_uni_rvs_0
-        integer :: i, j, freq(0:1000), num=10000000
+        integer, parameter :: num=10000000
+        integer, parameter :: array_size = 1000
+        integer :: i, j, freq(0:array_size)
         real(dp) :: chisq, expct
 
         print *,""
