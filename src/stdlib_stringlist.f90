@@ -15,13 +15,13 @@
 !     throughout the PR
 !
 module stdlib_stringlist
-    use stdlib_string_type, only: string_type !, move
+    use stdlib_string_type, only: string_type, char, operator(/=) !, move
     use stdlib_math, only: clip
     ! use stdlib_optval, only: optval
     implicit none
     private
 
-    public :: stringlist_type, operator(//)
+    public :: stringlist_type, operator(//), operator(==), operator(/=)
     public :: list_head, list_tail, fidx, bidx, stringlist_index_type
 
     type stringlist_index_type
@@ -106,8 +106,36 @@ module stdlib_stringlist
         module procedure prepend_char
         module procedure prepend_string
         module procedure append_stringlist
-        module procedure append_stringarray
-        module procedure prepend_stringarray
+        module procedure append_carray
+        module procedure append_sarray
+        module procedure prepend_carray
+        module procedure prepend_sarray
+    end interface
+
+    !> Version: experimental
+    !> 
+    !> Compares stringlist for equality with the input entity
+    !> Returns a logical
+    !> [Specifications](../page/specs/stdlib_stringlist.html#equality-operator)
+    interface operator(==)
+        module procedure eq_stringlist
+        module procedure eq_stringlist_carray
+        module procedure eq_stringlist_sarray
+        module procedure eq_carray_stringlist
+        module procedure eq_sarray_stringlist
+    end interface
+
+    !> Version: experimental
+    !> 
+    !> Compares stringlist for inequality with the input entity
+    !> Returns a logical
+    !> [Specifications](../page/specs/stdlib_stringlist.html#inequality-operator)
+    interface operator(/=)
+        module procedure ineq_stringlist
+        module procedure ineq_stringlist_carray
+        module procedure ineq_stringlist_sarray
+        module procedure ineq_carray_stringlist
+        module procedure ineq_sarray_stringlist
     end interface
 
 contains
@@ -197,29 +225,183 @@ contains
 
     end function append_stringlist
 
+    !> Appends chararray 'carray' to the stringlist 'list'
+    !> Returns a new stringlist
+    function append_carray( list, carray )
+        type(stringlist_type), intent(in)           :: list
+        character(len=*), dimension(:), intent(in)  :: carray
+        type(stringlist_type)                       :: append_carray
+
+        append_carray = list%copy()
+        call append_carray%insert_at( list_tail, carray )
+
+    end function append_carray
+
     !> Appends stringarray 'sarray' to the stringlist 'list'
     !> Returns a new stringlist
-    function append_stringarray( list, sarray )
+    function append_sarray( list, sarray )
+        type(stringlist_type), intent(in)           :: list
+        type(string_type), dimension(:), intent(in) :: sarray
+        type(stringlist_type)                       :: append_sarray
+
+        append_sarray = list%copy()
+        call append_sarray%insert_at( list_tail, sarray )
+
+    end function append_sarray
+
+    !> Prepends chararray 'carray' to the stringlist 'list'
+    !> Returns a new stringlist
+    function prepend_carray( carray, list )
+        character(len=*), dimension(:), intent(in) :: carray
         type(stringlist_type), intent(in)          :: list
-        character(len=*), dimension(:), intent(in) :: sarray
-        type(stringlist_type)                      :: append_stringarray
+        type(stringlist_type)                      :: prepend_carray
 
-        append_stringarray = list%copy()
-        call append_stringarray%insert_at( list_tail, sarray )
+        prepend_carray = list%copy()
+        call prepend_carray%insert_at( list_head, carray )
 
-    end function append_stringarray
+    end function prepend_carray
 
     !> Prepends stringarray 'sarray' to the stringlist 'list'
     !> Returns a new stringlist
-    function prepend_stringarray( sarray, list )
-        character(len=*), dimension(:), intent(in) :: sarray
-        type(stringlist_type), intent(in)          :: list
-        type(stringlist_type)                      :: prepend_stringarray
+    function prepend_sarray( sarray, list )
+        type(string_type), dimension(:), intent(in) :: sarray
+        type(stringlist_type), intent(in)           :: list
+        type(stringlist_type)                       :: prepend_sarray
 
-        prepend_stringarray = list%copy()
-        call prepend_stringarray%insert_at( list_head, sarray )
+        prepend_sarray = list%copy()
+        call prepend_sarray%insert_at( list_head, sarray )
 
-    end function prepend_stringarray
+    end function prepend_sarray
+
+    !> Compares stringlist 'list' for equality with stringlist 'slist'
+    !> Returns a logical
+    pure logical function eq_stringlist( list, slist )
+        type(stringlist_type), intent(in)           :: list
+        type(stringlist_type), intent(in)           :: slist
+        integer                                     :: i
+
+        eq_stringlist = .false.
+        if ( list%len() == slist%len() ) then
+            eq_stringlist = .true.
+            do i = 1, list%len()
+                if ( list%stringarray(i) /= slist%stringarray(i) ) then
+                    eq_stringlist = .false.
+                    exit
+                end if
+            end do
+        end if
+
+    end function eq_stringlist
+
+    !> Compares stringlist 'list' for equality with chararray 'carray'
+    !> Returns a logical
+    pure logical function eq_stringlist_carray( list, carray )
+        type(stringlist_type), intent(in)           :: list
+        character(len=*), dimension(:), intent(in)  :: carray
+        integer                                     :: i
+
+        eq_stringlist_carray = .false.
+        if ( list%len() == size( carray ) ) then
+            eq_stringlist_carray = .true.
+            do i = 1, list%len()
+                if ( char( list%stringarray(i) ) /= carray(i) ) then
+                    eq_stringlist_carray = .false.
+                    exit
+                end if
+            end do
+        end if
+
+    end function eq_stringlist_carray
+
+    !> Compares stringlist 'list' for equality with stringarray 'sarray'
+    !> Returns a logical
+    pure logical function eq_stringlist_sarray( list, sarray )
+        type(stringlist_type), intent(in)           :: list
+        type(string_type), dimension(:), intent(in) :: sarray
+        integer                                     :: i
+
+        eq_stringlist_sarray = .false.
+        if ( list%len() == size( sarray ) ) then
+            eq_stringlist_sarray = .true.
+            do i = 1, list%len()
+                if ( list%stringarray(i) /= sarray(i) ) then
+                    eq_stringlist_sarray = .false.
+                    exit
+                end if
+            end do
+        end if
+
+    end function eq_stringlist_sarray
+
+    !> Compares stringlist 'list' for equality with chararray 'carray'
+    !> Returns a logical
+    pure logical function eq_carray_stringlist( carray, list )
+        character(len=*), dimension(:), intent(in)  :: carray
+        type(stringlist_type), intent(in)           :: list
+
+        eq_carray_stringlist = ( list == carray )
+
+    end function eq_carray_stringlist
+
+    !> Compares stringlist 'list' for equality with stringarray 'sarray'
+    !> Returns a logical
+    pure logical function eq_sarray_stringlist( sarray, list )
+        type(string_type), dimension(:), intent(in) :: sarray
+        type(stringlist_type), intent(in)           :: list
+
+        eq_sarray_stringlist = ( list == sarray )
+
+    end function eq_sarray_stringlist
+
+    !> Compares stringlist 'list' for inequality with stringlist 'slist'
+    !> Returns a logical
+    pure logical function ineq_stringlist( list, slist )
+        type(stringlist_type), intent(in)           :: list
+        type(stringlist_type), intent(in)           :: slist
+
+        ineq_stringlist = .not.( list == slist )
+
+    end function ineq_stringlist
+
+    !> Compares stringlist 'list' for inequality with chararray 'carray'
+    !> Returns a logical
+    pure logical function ineq_stringlist_carray( list, carray )
+        type(stringlist_type), intent(in)           :: list
+        character(len=*), dimension(:), intent(in)  :: carray
+
+        ineq_stringlist_carray = .not.( list == carray ) 
+
+    end function ineq_stringlist_carray
+
+    !> Compares stringlist 'list' for inequality with stringarray 'sarray'
+    !> Returns a logical
+    pure logical function ineq_stringlist_sarray( list, sarray )
+        type(stringlist_type), intent(in)           :: list
+        type(string_type), dimension(:), intent(in) :: sarray
+
+        ineq_stringlist_sarray = .not.( list == sarray ) 
+
+    end function ineq_stringlist_sarray
+
+    !> Compares stringlist 'list' for inequality with chararray 'carray'
+    !> Returns a logical
+    pure logical function ineq_carray_stringlist( carray, list )
+        character(len=*), dimension(:), intent(in)  :: carray
+        type(stringlist_type), intent(in)           :: list
+
+        ineq_carray_stringlist = .not.( carray == list)
+
+    end function ineq_carray_stringlist
+
+    !> Compares stringlist 'list' for inequality with stringarray 'sarray'
+    !> Returns a logical
+    pure logical function ineq_sarray_stringlist( sarray, list )
+        type(string_type), dimension(:), intent(in) :: sarray
+        type(stringlist_type), intent(in)           :: list
+
+        ineq_sarray_stringlist = .not.( sarray == list )
+
+    end function ineq_sarray_stringlist
 
   ! destroy:
 

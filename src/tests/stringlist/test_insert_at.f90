@@ -2,8 +2,8 @@
 !     Test the insertion routine
 !
 program test_insertion
-    use stdlib_stringlist, only: stringlist_type, fidx, bidx, stringlist_index_type, &
-    & list_head, list_tail
+    use stdlib_stringlist, only: stringlist_type, stringlist_index_type, fidx, bidx, list_head, &
+    & list_tail, operator(//), operator(==)
     use stdlib_string_type, only: string_type, char
 
     type(stringlist_type)           :: list, second_list
@@ -17,19 +17,19 @@ program test_insertion
     write(*,*) 'Expected: A, B, C (3)'
     call print_list( list )
 
-    call list%insert_at( fidx(1), "D" )
+    call list%insert_at( list_tail, "D" )
 
     write(*,*) 'Expected: A, B, C, D (4)'
     call print_list( list )
 
-    call list%insert_at( bidx(1), "X" )
+    call list%insert_at( fidx(1), "X" )
 
     write(*,*) 'Expected: X, A, B, C, D (5)'
     call print_list( list )
 
     call list%insert_at( bidx(2), "Y" )
 
-    write(*,*) 'Expected: X, A, B, Y, C, D (6)'
+    write(*,*) 'Expected: X, A, B, C, Y, D (6)'
     call print_list( list )
 
     call list%insert_at( list_tail, "Z" )
@@ -78,6 +78,9 @@ subroutine renew_list( list )
     call list%insert_at( fidx(1), "A" )
     call list%insert_at( fidx(2), "B" )
     call list%insert_at( fidx(3), "C" )
+    write(*,*) '===>', list == ["A", "B", "C"], '<==='
+    write(*,*) '===>', ["A", "B", "C"] == list, '<==='
+
 end subroutine renew_list
 
 subroutine print_list( list )
