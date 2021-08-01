@@ -70,18 +70,18 @@ program test_distribution_uniform
     subroutine test_uni_rvs_0
         integer, parameter :: num=10000000
         integer, parameter :: array_size = 1000
-        integer :: i, j, freq(0:array_size)
+        integer :: i, j, freq(0:array_size - 1)
         real(dp) :: chisq, expct
 
         print *,""
         print *, "Test uniform random generator with chi-squared"
         freq = 0
         do i = 1, num
-            j = 1000 * uni_rvs( )
+            j = array_size * uni_rvs( )
             freq(j) = freq(j) + 1
         end do
         chisq = 0.0_dp
-        expct = num / 1000
+        expct = num / array_size
         do i = 0, array_size - 1
            chisq = chisq + (freq(i) - expct) ** 2 / expct
         end do
