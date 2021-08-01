@@ -178,8 +178,8 @@ program test_distribution_uniform
           call check(all(abs(res - ans) < ${k1}$tol),                           &
             msg="uniform_distribution_rvs_${t1[0]}$${k1}$ failed", warn=warn)
           #:else
-          call check(all(abs(real(res) - real(ans)) < ${k1}$tol) .and.          &
-                     all(abs(aimag(res) - aimag(ans)) < ${k1}$tol),             &
+          call check(all(abs(res % re - ans % re) < ${k1}$tol) .and.          &
+                     all(abs(res % im -ans % im) < ${k1}$tol),             &
             msg="uniform_distribution_rvs_${t1[0]}$${k1}$ failed", warn=warn)
           #:endif
       end subroutine test_uni_rvs_${t1[0]}$${k1}$
