@@ -447,7 +447,7 @@ module stdlib_stats_distribution_uniform
     #:for k1, t1 in ALL_KINDS_TYPES
     function shuffle_${t1[0]}$${k1}$( list ) result(res)
         ${t1}$, intent(in) :: list(:)
-        ${t1}$, allocatable :: res(:)
+        ${t1}$ :: res(size(list))
         ${t1}$ :: tmp
         integer :: n, i, j
 
