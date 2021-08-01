@@ -197,11 +197,11 @@ program test_distribution_uniform
         integer :: seed, get, i
         real :: res(3,5)
         #:if t1[0] == "i"
-        real :: ans(15) = [(1.96078438E-02, i=1,15)]
+        real, parameter :: ans(15) = [(1.96078438E-02, i=1,15)]
         #:elif t1[0] == "r"
-        real :: ans(15) = [(0.5, i=1,15)]
+        real, parameter :: ans(15) = [(0.5, i=1,15)]
         #:else
-        real :: ans(15) = [(1.0, i=1,15)]
+        real, parameter :: ans(15) = [(1.0, i=1,15)]
         #:endif
 
         print *, "Test uniform_distribution_pdf_${t1[0]}$${k1}$"
