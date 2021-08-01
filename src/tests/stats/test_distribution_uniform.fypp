@@ -33,7 +33,6 @@ program test_distribution_uniform
     #:for k1, t1 in ALL_KINDS_TYPES
     call test_uni_cdf_${t1[0]}$${k1}$
     #:endfor
-    stop
 
     contains
 
