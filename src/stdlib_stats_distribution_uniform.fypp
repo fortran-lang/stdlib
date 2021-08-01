@@ -180,7 +180,7 @@ module stdlib_stats_distribution_uniform
     !
         ${t1}$, intent(in) :: scale
         ${t1}$ :: res
-        real(${k1}$) :: r1, r2, tr, ti
+        real(${k1}$) :: r1, tr, ti
 
         if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(uni_dist_" &
               //"rvs_1): Uniform distribution scale parameter must be non-zero")
@@ -192,9 +192,9 @@ module stdlib_stats_distribution_uniform
             tr = scale % re * r1
             ti = 0.0_${k1}$
         else
-            r2 = unif_dist_rvs_0_r${k1}$( )
-            tr = scale % re * r1
-            ti = scale % im * r2
+            tr = scale % re * r1        
+            r1 = unif_dist_rvs_0_r${k1}$( )
+            ti = scale % im * r1
         endif
         res = cmplx(tr, ti, kind=${k1}$)
     end function unif_dist_rvs_1_${t1[0]}$${k1}$
@@ -211,7 +211,7 @@ module stdlib_stats_distribution_uniform
     !
         ${t1}$, intent(in) :: loc, scale
         ${t1}$ :: res
-        real(${k1}$) :: r1, r2, tr, ti
+        real(${k1}$) :: r1, tr, ti
 
         if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(uni_dist_" &
               //"rvs): Uniform distribution scale parameter must be non-zero")
@@ -223,9 +223,9 @@ module stdlib_stats_distribution_uniform
             tr = loc % re + scale % re * r1
             ti = loc % im
         else
-            r2 = unif_dist_rvs_0_r${k1}$( )
             tr = loc % re + scale % re * r1
-            ti = loc % im + scale % im * r2
+            r1 = unif_dist_rvs_0_r${k1}$( )
+            ti = loc % im + scale % im * r1
         endif
         res = cmplx(tr, ti, kind=${k1}$)
     end function unif_dist_rvs_${t1[0]}$${k1}$
@@ -295,7 +295,7 @@ module stdlib_stats_distribution_uniform
         integer, intent(in) :: array_size
         ${t1}$, intent(in) :: loc, scale
         ${t1}$ :: res(array_size)
-        real(${k1}$) :: r1, r2, tr, ti
+        real(${k1}$) :: r1, tr, ti
         integer(int64) :: tmp
         integer :: i
 
@@ -312,10 +312,10 @@ module stdlib_stats_distribution_uniform
                 tr = loc % re + scale % re * r1
                 ti = loc % im
             else
-                tmp = shiftr(dist_rand(INT_ONE), 11)
-                r2 = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
                 tr = loc % re + scale % re * r1
-                ti = loc % im + scale % im * r2
+                tmp = shiftr(dist_rand(INT_ONE), 11)
+                r1 = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
+                ti = loc % im + scale % im * r1
             endif
             res(i) = cmplx(tr, ti, kind=${k1}$)
         end do
