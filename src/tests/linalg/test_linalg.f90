@@ -81,6 +81,13 @@ contains
     integer :: i
     write(*,*) "test_eye"
 
+    call check(all(eye(3,3) == diag([(1,i=1,3)])), &
+               msg="all(eye(3,3) == diag([(1,i=1,3)])) failed.",warn=warn)
+    
+    rye = eye(3,4)
+    call check(sum(rye(:,1:3) - diag([(1.0_sp,i=1,3)])) < sptol, &
+               msg="sum(rye(:,1:3) - diag([(1.0_sp,i=1,3)])) < sptol", warn=warn)
+
     call check(all(eye(5) == diag([(1,i=1,5)])), &
           msg="all(eye(5) == diag([(1,i=1,5)] failed.",warn=warn)
     

@@ -101,21 +101,29 @@ end program demo_diag5
 
 Experimental
 
+### Class
+
+Pure function.
+
 ### Description
 
-Construct the identity matrix
+Construct the identity matrix.
 
 ### Syntax
 
-`I = [[stdlib_linalg(module):eye(function)]](n)`
+`I = [[stdlib_linalg(module):eye(function)]](dim1 [, dim2])`
 
 ### Arguments
 
-`n`: Shall be a scalar of default type `integer`. 
+`dim1`: Shall be a scalar of default type `integer`.
+This is an `intent(in)` argument. 
+
+`dim2`: Shall be a scalar of default type `integer`.
+This is an `intent(in)` and `optional` argument. 
 
 ### Return value
 
-Returns the identity matrix, i.e. a square matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer(int8)`.
+Returns the identity matrix, i.e. a square matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer`.
 
 ### Example
 
@@ -124,7 +132,10 @@ program demo_eye1
     use stdlib_linalg, only: eye
     implicit none
     real :: a(3,3)
+    real :: b(3,4)
     A = eye(3)
+    A = eye(3,3)
+    B = eye(3,4)
 end program demo_eye1
 ```
 
