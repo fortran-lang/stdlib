@@ -82,7 +82,7 @@ program test_distribution_uniform
         end do
         chisq = 0.0_dp
         expct = num / 1000
-        do i = 0, 999
+        do i = 0, array_size - 1
            chisq = chisq + (freq(i) - expct) ** 2 / expct
         end do
         write(*,*) "The critical values for chi-squared with 1000 d. of f. are" &
