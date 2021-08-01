@@ -138,7 +138,7 @@ module stdlib_stats_distribution_uniform
         integer(int64) :: tmp
 
         tmp = shiftr(dist_rand(INT_ONE), 11)        ! Get random from [0,2^53-1]
-        res = real(tmp * MESENNE_NUMBER, kind =${k1}$) ! convert to [0,1]
+        res = real(tmp * MESENNE_NUMBER, kind = ${k1}$) ! convert to [0,1]
     end function unif_dist_rvs_0_${t1[0]}$${k1}$
 
     #:endfor
