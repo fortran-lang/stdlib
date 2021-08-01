@@ -237,20 +237,19 @@ module stdlib_stats_distribution_uniform
         integer, intent(in) :: array_size
         ${t1}$, intent(in) :: loc, scale
         ${t1}$ :: res(array_size)
-        ${t1}$ :: u, mask, n, nn
+        ${t1}$ :: u, mask, nn
         integer :: i, zeros, bits_left, bits
 
-        n = scale
-        if(n == 0_${k1}$) call error_stop("Error(unif_dist_rvs_array): Uniform" &
+        if(scale == 0_${k1}$) call error_stop("Error(unif_dist_rvs_array): Uniform" &
                             //" distribution scale parameter must be non-zero")
-        zeros = leadz(n)
-        bits = bit_size(n) - zeros
+        zeros = leadz(scale)
+        bits = bit_size(scale) - zeros
         mask = shiftr(not(0_${k1}$), zeros)
         do i = 1, array_size
             L1 : do
-                u = dist_rand(n)
+                u = dist_rand(scale)
                 nn = iand(u, mask)
-                if(nn <= n) exit L1
+                if(nn <= scale) exit L1
                 bits_left = zeros
                 L2 : do
                     if(bits_left < bits) exit L2
