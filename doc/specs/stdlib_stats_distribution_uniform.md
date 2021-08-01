@@ -6,7 +6,7 @@ title: stats_distribution
 
 [TOC]
 
-## `shuffle` - Using Fisher-Yates algorithm to generate a random permutation of a list.
+## `shuffle` - Using Fisher-Yates algorithm to generate a random permutation of a list
 
 ### Status
 
