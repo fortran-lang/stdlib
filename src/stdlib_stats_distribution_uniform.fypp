@@ -236,7 +236,7 @@ module stdlib_stats_distribution_uniform
     function unif_dist_rvs_array_${t1[0]}$${k1}$(loc, scale, array_size)        &
              result(res)
         ${t1}$, intent(in) :: loc, scale
-        ${t1}$, allocatable :: res(:)
+        ${t1}$ :: res(array_size)
         ${t1}$ :: u, mask, n, nn
         integer, intent(in) :: array_size
         integer :: i, zeros, bits_left, bits
