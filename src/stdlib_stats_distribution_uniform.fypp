@@ -255,7 +255,7 @@ module stdlib_stats_distribution_uniform
                     if(bits_left < bits) exit L2
                     u = shiftr(u, bits)
                     nn = iand(u, mask)
-                    if(nn <= n) exit L1
+                    if(nn <= scale) exit L1
                     bits_left = bits_left - bits
                 end do L2
             end do L1
