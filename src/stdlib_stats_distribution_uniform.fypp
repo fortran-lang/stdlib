@@ -86,25 +86,24 @@ module stdlib_stats_distribution_uniform
     !
     ! Fortran 90 translated from c by Jim-215-fisher
         ${t1}$, intent(in) :: scale
-        ${t1}$ ::  res, u, mask, n
+        ${t1}$ ::  res, u, mask
         integer :: zeros, bits_left, bits
 
-        n = scale
-        if(n <= 0_${k1}$) call error_stop("Error(unif_dist_rvs_1): Uniform"     &
+        if(scale <= 0_${k1}$) call error_stop("Error(unif_dist_rvs_1): Uniform"     &
                          //" distribution scale parameter must be positive")
-        zeros = leadz(n)
-        bits = bit_size(n) - zeros
+        zeros = leadz(scale)
+        bits = bit_size(scale) - zeros
         mask = shiftr(not(0_${k1}$), zeros)
         L1 : do
-            u = dist_rand(n)
+            u = dist_rand(scale)
             res = iand(u, mask)
-            if(res <= n) exit L1
+            if(res <= scale) exit L1
             bits_left = zeros
             L2 : do
                 if(bits_left < bits) exit L2
                 u = shiftr(u, bits)
                 res = iand(u, mask)
-                if(res <= n) exit L1
+                if(res <= scale) exit L1
                 bits_left = bits_left - bits
             end do L2
         end do L1
