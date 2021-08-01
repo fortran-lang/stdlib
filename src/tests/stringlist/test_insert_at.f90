@@ -1,97 +1,52 @@
-! test_insert.f90 --
-!     Test the insertion routine
-!
-program test_insertion
+! SPDX-Identifier: MIT
+module test_insert_at
+    use stdlib_error, only: check
+    use stdlib_string_type, only: string_type, char, operator(//), operator(==)
     use stdlib_stringlist, only: stringlist_type, stringlist_index_type, fidx, bidx, list_head, &
-    & list_tail, operator(//), operator(==)
-    use stdlib_string_type, only: string_type, char
-
-    type(stringlist_type)           :: list, second_list
-    character(len=10), dimension(3) :: sarray
-
-
-    call list%insert_at( fidx(1), "C" )
-    call list%insert_at( fidx(1), "B" )
-    call list%insert_at( fidx(1), "A" )
-
-    write(*,*) 'Expected: A, B, C (3)'
-    call print_list( list )
-
-    call list%insert_at( list_tail, "D" )
-
-    write(*,*) 'Expected: A, B, C, D (4)'
-    call print_list( list )
-
-    call list%insert_at( fidx(1), "X" )
-
-    write(*,*) 'Expected: X, A, B, C, D (5)'
-    call print_list( list )
-
-    call list%insert_at( bidx(2), "Y" )
-
-    write(*,*) 'Expected: X, A, B, C, Y, D (6)'
-    call print_list( list )
-
-    call list%insert_at( list_tail, "Z" )
-
-    write(*,*) 'Expected: X, A, B, Y, C, D, Z (7)'
-    call print_list( list )
-
-    !
-    ! Try inserting a second list
-    !
-    call renew_list( list )
-
-    call second_list%insert_at( fidx(1), "SecondA" )
-    call second_list%insert_at( fidx(2), "SecondB" )
-
-    call list%insert_at( fidx(2), second_list )
-    call print_list( list )
-
-    call renew_list( list )
-
-    call list%insert_at( list_tail, second_list )
-    call print_list( list )
-
-    !
-    ! Try inserting an array
-    !
-    call renew_list( list )
-
-    sarray(1) = "ThirdA"
-    sarray(2) = "ThirdB"
-    sarray(3) = "ThirdC"
-
-    call list%insert_at( list_head, sarray )
-    call print_list( list )
-
-    call renew_list( list )
-
-    call list%insert_at( fidx(2), sarray )
-    call print_list( list )
+                            & list_tail, operator(==), operator(/=)
+    use stdlib_ascii, only: to_string
+    implicit none
 
 contains
-subroutine renew_list( list )
-    type(stringlist_type), intent(inout) :: list
 
-    call list%destroy()
-    call list%insert_at( fidx(1), "A" )
-    call list%insert_at( fidx(2), "B" )
-    call list%insert_at( fidx(3), "C" )
-    write(*,*) '===>', list == ["A", "B", "C"], '<==='
-    write(*,*) '===>', ["A", "B", "C"] == list, '<==='
+    subroutine test_insert_at_1
+        type(stringlist_type)           :: first_list
+        integer                         :: i, current_length
+        character(len=:), allocatable   :: string
 
-end subroutine renew_list
+        call check( first_list%to_current_idxn( list_tail ) == 0, "test_insert_at_1: list_tail == 0")
+        call check( first_list%to_current_idxn( list_head ) == 1, "test_insert_at_1: list_head == 1")
 
-subroutine print_list( list )
-    type(stringlist_type), intent(in) :: list
-    integer                           :: i
+        current_length = 0
+        do i = -5, 1
+            string = to_string( i )
+            call first_list%insert_at( fidx(i), string )
+            current_length = current_length + 1
 
-    write(*,*) list%len()
+            call check( first_list%get( fidx(1) ) == string, "test_insert_at_1: get check failed &
+                                        & for forward index " // string )
+            call check( first_list%get( list_head ) == string, "test_insert_at_1: get list_head check &
+                                        & failed for " // string )
+            call check( first_list%get( bidx(current_length) ) == string, "test_insert_at_1: get &
+                                        & list_head check failed for backward index " // string )
+            call check( first_list%get( list_tail ) == to_string(-5), "test_insert_at_1: get list_tail &
+                                        & check failed for " // string )
+            call check( first_list%to_current_idxn( list_head ) == 1, "")
+            call check( first_list%to_current_idxn( list_tail ) == current_length, "" )
+            call check( first_list%len() == current_length, "test_insert_at_1: length check &
+                                        & failed for " // to_string( current_length ) )
 
-    do i = 1, list%len()
-        write(*,*) '>', char( list%get( fidx(i) ) ), '<'
-    enddo
-end subroutine print_list
+        end do
 
-end program test_insertion
+    end subroutine test_insert_at_1
+
+end module test_insert_at
+
+
+program tester
+    use test_insert_at
+    implicit none
+
+    call test_insert_at_1
+
+end program tester

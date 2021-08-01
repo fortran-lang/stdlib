@@ -15,7 +15,7 @@
 !     throughout the PR
 !
 module stdlib_stringlist
-    use stdlib_string_type, only: string_type, char, operator(/=) !, move
+    use stdlib_string_type, only: string_type, operator(/=) !, move
     use stdlib_math, only: clip
     ! use stdlib_optval, only: optval
     implicit none
@@ -304,7 +304,7 @@ contains
         if ( list%len() == size( carray ) ) then
             eq_stringlist_carray = .true.
             do i = 1, list%len()
-                if ( char( list%stringarray(i) ) /= carray(i) ) then
+                if ( list%stringarray(i) /= carray(i) ) then
                     eq_stringlist_carray = .false.
                     exit
                 end if
