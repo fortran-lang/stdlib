@@ -1,7 +1,7 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 #:set ALL_KINDS_TYPES = INT_KINDS_TYPES + RC_KINDS_TYPES
-Module stdlib_stats_distribution_uniform
+module stdlib_stats_distribution_uniform
     use stdlib_kinds
     use stdlib_error, only : error_stop
     use stdlib_stats_distribution_PRNG, only : dist_rand
