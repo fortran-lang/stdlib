@@ -452,7 +452,7 @@ module stdlib_stats_distribution_uniform
         integer :: n, i, j
 
         n = size(list)
-        allocate(res(n), source=list)
+        res = list
         do i = 1, n - 1
             j = uniform_distribution_rvs(n - i) + i
             tmp = res(i)
