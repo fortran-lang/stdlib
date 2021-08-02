@@ -207,7 +207,7 @@ program demo_outer_product
 end program demo_outer_product
 ```
 
-## `zeros/ones` - creates an vector or matrix of `integer` type, given shape and `0/1` value.
+## `zeros/ones` - Create an vector or matrix of `integer/real/complex` type, given shape and `0/1` value.
 
 ### Status
 
@@ -219,15 +219,15 @@ Pure function.
 
 ### Description
 
-`zeros/ones` creates an vector or matrix of `integer` type, given shape and `0/1` value.
+`zeros/ones` creates an vector or matrix of `integer/real/complex` type, given shape and `0/1` value.
 
 ### Syntax
 
-For vector:
+For vector:  
 `result = [[stdlib_linalg(module):zeros(interface)]](dim)`  
 `result = [[stdlib_linalg(module):ones(interface)]](dim)`
 
-For matrix:
+For matrix:  
 `result = [[stdlib_linalg(module):zeros(interface)]](dim1, dim2)`  
 `result = [[stdlib_linalg(module):ones(interface)]](dim1, dim2)`
 
@@ -235,12 +235,22 @@ For matrix:
 ### Arguments
 
 `dim/dim1`: Shall be an `integer` type.
+This is an `intent(in)` argument.
 
 `dim2`: Shall be an `integer` type.
+This is an `intent(in)` argument.
+
+#### Note
+
+Because of `huge(integer :: i) == 2147483647`, the dimensional maximum length of array created by the `zeros/ones` function is `2147483647`. 
 
 ### Return value
 
-Returns an vector or matrix of `integer` type, given shape and `0/1` value.
+Returns an `vector` or `matrix` of `integer` type, given shape and `0/1` value.
+
+#### Note
+
+If the array that receives the return value of the `zeros/ones` function is of `real/complex` type, conversion from `integer` type to `real/complex` type will occur.
 
 ### Example
 
@@ -249,15 +259,20 @@ program demo
     use stdlib_linalg, only: zeros, ones
     implicit none
     real, allocatable :: A(:,:)
+    integer :: iA(2)
+    compelx :: cA(2)
     
-    A = zeros(2,2)          !! 0 0 0 0
-    A = ones(4,4)           !! 1 1 1 1; 1 1 1 1; 1 1 1 1; 1 1 1 1
-    A = 2.0*ones(2,2)       !! 2.00000000       2.00000000       2.00000000       2.00000000
+    A = zeros(2,2)          !! [0.0,0.0; 0.0,0.0]
+    A = ones(4,4)           !! [1.0,1.0,1.0,1.0; 1.0,1.0,1.0,1.0; 1.0,1.0,1.0,1.0; 1.0,1.0,1.0 1.0]
+    A = 2.0*ones(2,2)       !! [2.0,2.0; 2.0,2.0]
 
+    iA = ones(2)            !! [1,1]
+    cA = ones(2)            !! [(1.0,0.0),(1.0,0.0)]
+    cA = (1.0,1.0)*ones(2)  !! [(1.0,1.0),(1.0,1.0)]
 end program demo
 ```
 
-## `ex` - creates an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and `value` value.
+## `expand` - Create an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and given `value` value.
 
 ### Status
 
@@ -269,16 +284,15 @@ Pure function.
 
 ### Description
 
-`ex` creates an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and `value` value.
+`expand` creates an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and given `value` value.
 
 ### Syntax
 
-For vector:
-`result = [[stdlib_linalg(module):ex(interface)]](value, dim)`  
+For vector:  
+`result = [[stdlib_linalg(module):expand(interface)]](value, dim)`  
 
-For matrix:
-`result = [[stdlib_linalg(module):ex(interface)]](value, dim1, dim2)`  
-
+For matrix:  
+`result = [[stdlib_linalg(module):expand(interface)]](value, dim1, dim2)`  
 
 ### Arguments
 
@@ -291,22 +305,41 @@ This is an `intent(in)` argument.
 `dim2`: Shall be an `integer` scalar. 
 This is an `intent(in)` argument.
 
+#### Note
+
+Because of `huge(integer :: i) == 2147483647`, the dimensional maximum length of array created by the `expand` function is `2147483647`. 
+
 ### Return value
 
-Returns an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and `value` value.
+Returns an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and given `value` value.
 
 ### Example
 
 ```fortran
-program demo_linalg_ex
-    use stdlib_linalg, only: zeros, ones
+program demo_linalg_expand_1
+    use stdlib_linalg, only: expand
     implicit none
     real, allocatable :: A(:,:)
     
-    A = ex(0,2,2)           !! Same as zeros(2,2)
-    A = ex(1,4,4)           !! Same as ones(4,4)
-    A = 2.0*ex(1, 2,2)      !! 2.00000000       2.00000000       2.00000000       2.00000000
-    A = ex(1.0, 2)          !! 1.00000000       1.00000000
+    A = expand(0,2,2)           !! Same as zeros(2,2)
+    A = expand(1,2,1)           !! Same as ones(4,4)
+    A = 2.0*expand(1, 2,2)      !! 2.00000000       2.00000000       2.00000000       2.00000000
+    A = expand(1.0, 2)          !! 1.00000000       1.00000000
 
-end program demo_linalg_ex
+end program demo_linalg_expand_1
+```
+
+```fortran
+program demo_linalg_expand_2
+    use stdlib_linalg, only: expand
+    use stdlib_string_type
+    implicit none
+    
+    print *, expand(1, 2)                   !! [1,1]
+    print *, expand(1.0, 2)                 !! [1.0,1.0]
+    print *, expand((1.0,1.0), 2)           !! [(1.0,1.0),(1.0,1.0)]
+    print *, expand(.false., 2)             !! [F,F]
+    print *, expand(string_type("A"), 2)    !! ["A","A"]
+
+end program demo_linalg_expand_2
 ```

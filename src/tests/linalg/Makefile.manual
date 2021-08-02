@@ -1,4 +1,4 @@
-PROGS_SRC = test_linalg_exs.f90
+PROGS_SRC = test_linalg_expand.f90
 
 
 include ../Makefile.manual.test.mk

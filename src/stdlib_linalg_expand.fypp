@@ -1,76 +1,74 @@
 #:include "common.fypp"
 #:set ALL_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES &
     & + LOG_KINDS_TYPES + STRING_KINDS_TYPES
-submodule(stdlib_linalg) stdlib_linalg_exs
-
-    implicit none
+submodule(stdlib_linalg) stdlib_linalg_expand
 
 contains
 
     !> `ones` creates an vector of `integer` type and `1` value.
     pure module function ones_1_default(dim) result(result)
-        implicit none
         integer, intent(in) :: dim
-        integer :: result(dim)
+        integer, allocatable :: result(:)
 
+        allocate(result(dim))
         result = 1
 
     end function ones_1_default
 
     !> `ones` creates a matrix of `integer` type and `1` value.
     pure module function ones_2_default(dim1, dim2) result(result)
-        implicit none
         integer, intent(in) :: dim1, dim2
-        integer :: result(dim1, dim2)
+        integer, allocatable :: result(:, :)
 
+        allocate(result(dim1, dim2))
         result = 1
 
     end function ones_2_default
 
     !> `zeros` creates an vector of `integer` type and `0` value.
     pure module function zeros_1_default(dim) result(result)
-        implicit none
         integer, intent(in) :: dim
-        integer :: result(dim)
+        integer, allocatable :: result(:)
 
+        allocate(result(dim))
         result = 0
 
     end function zeros_1_default
 
     !> `zeros` creates a matrix of `integer` type and `0` value.
     pure module function zeros_2_default(dim1, dim2) result(result)
-        implicit none
         integer, intent(in) :: dim1, dim2
-        integer :: result(dim1, dim2)
+        integer, allocatable :: result(:, :)
 
+        allocate(result(dim1, dim2))
         result = 0
 
     end function zeros_2_default
 
     #:for k1, t1 in ALL_KINDS_TYPES
-    !> `ex` creates an vector of `${t1}$` type and `value` value.
-    pure module function ex_1_${t1[0]}$_${k1}$(value, dim) result(result)
+    !> `expand` creates an vector of `${t1}$` type and `value` value.
+    pure module function expand_1_${t1[0]}$_${k1}$(value, dim) result(result)
         
-        implicit none
         ${t1}$, intent(in) :: value
         integer, intent(in) :: dim
-        ${t1}$ :: result(dim)
+        ${t1}$, allocatable :: result(:)
 
+        allocate(result(dim))
         result = value
         
-    end function ex_1_${t1[0]}$_${k1}$
+    end function expand_1_${t1[0]}$_${k1}$
 
-    !> `ex` creates a matrix of `${t1}$` type and `value` value.
-    pure module function ex_2_${t1[0]}$_${k1}$(value, dim1, dim2) result(result)
+    !> `expand` creates a matrix of `${t1}$` type and `value` value.
+    pure module function expand_2_${t1[0]}$_${k1}$(value, dim1, dim2) result(result)
         
-        implicit none
         ${t1}$, intent(in) :: value
         integer, intent(in) :: dim1, dim2
-        ${t1}$ :: result(dim1, dim2)
+        ${t1}$, allocatable :: result(:, :)
 
+        allocate(result(dim1, dim2))
         result = value
         
-    end function ex_2_${t1[0]}$_${k1}$
+    end function expand_2_${t1[0]}$_${k1}$
     #:endfor
 
-end submodule stdlib_linalg_exs
+end submodule stdlib_linalg_expand

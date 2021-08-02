@@ -1,3 +1,3 @@
 ADDTEST(linalg)
-ADDTEST(linalg_exs)
+ADDTEST(linalg_expand)
 
