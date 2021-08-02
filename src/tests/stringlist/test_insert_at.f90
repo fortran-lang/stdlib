@@ -150,6 +150,77 @@ contains
 
     end subroutine test_insert_at_2
 
+    subroutine test_insert_at_3
+        type(stringlist_type)           :: work_list
+        integer                         :: i, current_length
+        character(len=:), allocatable   :: string
+        integer, parameter              :: first = 2
+        integer, parameter              :: last = 20
+
+        write (*,*) "test_insert_at_3: Starting test case 1!"
+
+        current_length = 0
+        do i = first, last, 2
+            string = to_string( i )
+            call work_list%insert_at( bidx(i), string )
+            current_length = current_length + 1
+
+            call check( work_list%get( bidx(current_length) ) == string, "test_insert_at_3:&
+                                    & get bidx(current_length) " // string )
+            call check( work_list%get( bidx(1) ) == to_string(first), "test_insert_at_3:&
+                                    & get bidx(1) " // string )
+            call check( work_list%get( list_tail ) == to_string(first), "test_insert_at_3:&
+                                    & get list_tail " // string )
+            call check( work_list%get( fidx(1) ) == string, "test_insert_at_3:&
+                                    & get fidx(1) " // string )
+            call check( work_list%get( fidx(current_length) ) == to_string(first), "test_insert_at_3: get&
+                                    & fidx(current_length) " // string )
+            call check( work_list%get( list_head ) == string, "test_insert_at_3: get&
+                                    & list_head " // string )
+
+            call check( work_list%to_current_idxn( list_head ) == 1, "test_insert_at_3:&
+                                    & to_current_idxn( list_head ) " // to_string( current_length ) )
+            call check( work_list%to_current_idxn( list_tail ) == current_length, "test_insert_at_3:&
+                                    & to_current_idxn( list_tail ) "  // to_string( current_length ) )
+            call check( work_list%len() == current_length, "test_insert_at_3: length check "&
+                                    & // to_string( current_length ) )
+
+        end do
+
+        write (*,*) "test_insert_at_3: Starting test case 2!"
+
+        do i = first - 1, last - 1, 2
+            string = to_string( i )
+            call work_list%insert_at( bidx(i), string )
+            current_length = current_length + 1
+
+            call check( work_list%get( bidx(i) ) == string, "test_insert_at_3:&
+                                    & get bidx(current_length) " // string )
+            call check( work_list%get( bidx(1) ) == to_string(first - 1), "test_insert_at_3:&
+                                    & get bidx(1) " // string )
+            call check( work_list%get( list_tail ) == to_string(first - 1), "test_insert_at_3:&
+                                    & get list_tail " // string )
+            call check( work_list%get( fidx(1) ) == to_string(last), "test_insert_at_3:&
+                                    & get fidx(1) " // string )
+            call check( work_list%get( fidx(current_length) ) == to_string(first - 1), "test_insert_at_3: get&
+                                    & fidx(current_length) " // string )
+            call check( work_list%get( list_head ) == to_string(last), "test_insert_at_3: get&
+                                    & list_head " // string )
+
+            call check( work_list%to_current_idxn( list_head ) == 1, "test_insert_at_3:&
+                                    & to_current_idxn( list_head ) " // to_string( current_length ) )
+            call check( work_list%to_current_idxn( list_tail ) == current_length, "test_insert_at_3:&
+                                    & to_current_idxn( list_tail ) "  // to_string( current_length ) )
+            call check( work_list%len() == current_length, "test_insert_at_3: length check "&
+                                    & // to_string( current_length ) )
+
+        end do
+
+        ! compare work_list with [20, 19, ..., ..., 2, 1]
+        call compare_list( work_list, last, first - 2, 4 )
+
+    end subroutine test_insert_at_3
+
     ! compares input stringlist 'list' with an array of consecutive integers
     ! array is 'first' inclusive and 'last' exclusive
     subroutine compare_list(list, first, last, call_number)
@@ -181,5 +252,6 @@ program tester
 
     call test_insert_at_1
     call test_insert_at_2
+    call test_insert_at_3
 
 end program tester
