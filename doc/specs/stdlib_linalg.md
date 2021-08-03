@@ -207,7 +207,7 @@ program demo_outer_product
 end program demo_outer_product
 ```
 
-## `zeros/ones` - Create an vector or matrix of `integer/real/complex` type, given shape and `0/1` value.
+## `zeros/ones` - Create a `vector` or `matrix` of the given shape, filled completely with either `0` or `1` `integer [/real/complex]` type values
 
 ### Status
 
@@ -219,7 +219,8 @@ Pure function.
 
 ### Description
 
-`zeros/ones` creates an vector or matrix of `integer/real/complex` type, given shape and `0/1` value.
+`zeros` creates a `vector` or `matrix` of the given shape, filled completely with `0` `integer [/real/complex]` type values.  
+`ones` creates a `vector` or `matrix` of the given shape, filled completely with `1` `integer [/real/complex]` type values.
 
 ### Syntax
 
@@ -246,11 +247,23 @@ Because of `huge(integer :: i) == 2147483647`, the dimensional maximum length of
 
 ### Return value
 
-Returns an `vector` or `matrix` of `integer` type, given shape and `0/1` value.
+Return a `vector` or `matrix` of the given shape, filled completely with either `0` or `1` `integer [/real/complex]` type values.
 
-#### Note
+#### Warning
 
-If the array that receives the return value of the `zeros/ones` function is of `real/complex` type, conversion from `integer` type to `real/complex` type will occur.
+If the array that receives the return value of the `zeros/ones` function is of `real/complex` type, conversion from `integer` type to `real/complex` type will occur.  
+
+Just as `Fortran` is a strongly typed statically compiled language, be careful with the following statements:
+```fortran
+real :: A(:,:)
+
+!> Be careful
+A = ones(2,2)/2     !! A = 1/2 = 0.0
+
+!> Recommend
+A = ones(2,2)/2.0   !! A = 1/2.0 = 0.5
+A = expand(0.5, 2,2)
+```
 
 ### Example
 
@@ -260,7 +273,7 @@ program demo
     implicit none
     real, allocatable :: A(:,:)
     integer :: iA(2)
-    compelx :: cA(2)
+    compelx :: cA(2), cB(2,3)
     
     A = zeros(2,2)          !! [0.0,0.0; 0.0,0.0]
     A = ones(4,4)           !! [1.0,1.0,1.0,1.0; 1.0,1.0,1.0,1.0; 1.0,1.0,1.0,1.0; 1.0,1.0,1.0 1.0]
@@ -269,10 +282,12 @@ program demo
     iA = ones(2)            !! [1,1]
     cA = ones(2)            !! [(1.0,0.0),(1.0,0.0)]
     cA = (1.0,1.0)*ones(2)  !! [(1.0,1.0),(1.0,1.0)]
+    cB = ones(2,3)          !! [(1.0,0.0),(1.0,0.0),(1.0,0.0); (1.0,0.0),(1.0,0.0),(1.0,0.0)]
+
 end program demo
 ```
 
-## `expand` - Create an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and given `value` value.
+## `expand` - Create a `vector` or `matrix` of the given shape, filled completely with `value` `integer/logical/real/complex/string_type` type values
 
 ### Status
 
@@ -284,7 +299,7 @@ Pure function.
 
 ### Description
 
-`expand` creates an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and given `value` value.
+`expand` creates a `vector` or `matrix` of the given shape, filled completely with `value` `integer/logical/real/complex/string_type` type values.
 
 ### Syntax
 
@@ -311,7 +326,7 @@ Because of `huge(integer :: i) == 2147483647`, the dimensional maximum length of
 
 ### Return value
 
-Returns an vector or matrix of `integer/logical/real/complex/string_type` type, given shape and given `value` value.
+Return a `vector` or `matrix` of the given shape, filled completely with `value` `integer/logical/real/complex/string_type` type values.
 
 ### Example
 
@@ -323,8 +338,8 @@ program demo_linalg_expand_1
     
     A = expand(0,2,2)           !! Same as zeros(2,2)
     A = expand(1,2,1)           !! Same as ones(4,4)
-    A = 2.0*expand(1, 2,2)      !! 2.00000000       2.00000000       2.00000000       2.00000000
-    A = expand(1.0, 2)          !! 1.00000000       1.00000000
+    A = 2.0*expand(1, 2,2)      !! [2.0,2.0; 2.0,2.0]
+    A = expand(1.0, 2)          !! [1.0,1.0]
 
 end program demo_linalg_expand_1
 ```

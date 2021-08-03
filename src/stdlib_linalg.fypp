@@ -84,8 +84,11 @@ module stdlib_linalg
 
     !> Version: experimental
     !>
-    !> `ones` creates an vector or matrix of `integer` type and given shape, 
-    !>  with a `1` value. 
+    !> `ones` creates a vector or matrix of the given shape, 
+    !>  filled completely with `1` `integer` type values. 
+    !> ([Specification](../page/specs/stdlib_linalg.html#
+    !>zerosones-create-a-vector-or-matrix-of-the-given-shape
+    !>-filled-completely-with-either-0-or-1-integer-realcomplex-type-values))
     interface ones
         pure module function ones_1_default(dim) result(result)
             integer, intent(in) :: dim
@@ -99,8 +102,11 @@ module stdlib_linalg
     
     !> Version: experimental
     !>
-    !> `zeros` creates an vector or matrix of `integer` type and given shape, 
-    !>  with a `0` value.  
+    !> `zeros` creates a vector or matrix of the given shape, 
+    !>  filled completely with `0` `integer` type values. 
+    !> ([Specification](../page/specs/stdlib_linalg.html#
+    !>zerosones-create-a-vector-or-matrix-of-the-given-shape
+    !>-filled-completely-with-either-0-or-1-integer-realcomplex-type-values))
     interface zeros
         pure module function zeros_1_default(dim) result(result)
             integer, intent(in) :: dim
@@ -114,8 +120,11 @@ module stdlib_linalg
 
     !> Version: experimental
     !>
-    !> `expand` creates an vector or matrix of `integer/logical/real/complex/string_type` type and given shape, 
-    !>  with an `value` value.  
+    !> `expand` creates a vector or matrix of the given shape, 
+    !>  filled with `value` `integer/logical/real/complex/string_type` type values.
+    !> ([Specification](../page/specs/stdlib_linalg.html#
+    !>expand-create-a-vector-or-matrix-of-the-given-shape-
+    !>filled-completely-with-value-integerlogicalrealcomplexstring_type-type-values))
     interface expand
         #:set ALL_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES &
             & + LOG_KINDS_TYPES + STRING_KINDS_TYPES
@@ -161,4 +170,5 @@ contains
         end do
       end function trace_${t1[0]}$${k1}$
     #:endfor
-end module
+
+end module stdlib_linalg
