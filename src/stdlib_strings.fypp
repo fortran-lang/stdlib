@@ -1,7 +1,5 @@
 ! SPDX-Identifier: MIT
 #:include "common.fypp"
-#:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + LOG_KINDS_TYPES &
-    & + CMPLX_KINDS_TYPES
 !> This module implements basic string handling routines.
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_strings.html).
@@ -13,26 +11,37 @@ module stdlib_strings
     implicit none
     private
 
-    public :: format_to_string
+    public :: to_string
     public :: strip, chomp
     public :: starts_with, ends_with
     public :: slice, find, replace_all, count
 
-    !> Format or transfer other types as a string.
-    !> ([Specification](../page/specs/stdlib_strings.html#description))
-    !>
     !> Version: experimental
-    interface format_to_string
-        #:for kind, type in KINDS_TYPES
-        !> Format or transfer a ${type}$ scalar as a string.
-        pure module function format_to_string_${type[0]}$_${kind}$(value, format) result(string)
-            ${type}$, intent(in) :: value
+    !>
+    !> Format or transfer other types as a string.
+    !> ([Specification](../page/specs/stdlib_strings.html#to_string))
+    interface to_string
+        #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+        #:set IL_KINDS_TYPES = INT_KINDS_TYPES + LOG_KINDS_TYPES
+        #:for k1, t1 in RC_KINDS_TYPES
+        pure module function to_string_${t1[0]}$_${k1}$(value, format) result(string)
+            ${t1}$, intent(in) :: value
             character(len=*), intent(in), optional :: format
             character(len=:), allocatable :: string
-        end function format_to_string_${type[0]}$_${kind}$
-
+        end function to_string_${t1[0]}$_${k1}$
         #:endfor
-    end interface format_to_string
+        #:for k1, t1 in IL_KINDS_TYPES
+        pure module function to_string_1_${t1[0]}$_${k1}$(value) result(string)
+            ${t1}$, intent(in) :: value
+            character(len=#{if t1[0]=="l"}#1)#{else}#:), allocatable#{endif}# :: string 
+        end function to_string_1_${t1[0]}$_${k1}$
+        pure module function to_string_2_${t1[0]}$_${k1}$(value, format) result(string)
+            ${t1}$, intent(in) :: value
+            character(len=*), intent(in) :: format
+            character(len=:), allocatable :: string
+        end function to_string_2_${t1[0]}$_${k1}$
+        #:endfor
+    end interface to_string
 
     !> Remove leading and trailing whitespace characters.
     !>

@@ -5,7 +5,7 @@ PROGS_SRC = test_string_assignment.f90 \
             test_string_match.f90 \
             test_string_operator.f90 \
             test_string_strip_chomp.f90 \
-            test_string_format_to_string.f90
+            test_string_to_string.f90
 
 
 include ../Makefile.manual.test.mk
