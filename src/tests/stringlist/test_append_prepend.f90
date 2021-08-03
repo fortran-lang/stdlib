@@ -26,8 +26,9 @@ contains
         end do
 
         call compare_list( work_list, first, last + 1, 1 )
-        call check( work_list == [ ( to_string(i), i = first, last ) ], "test_append_prepend_string:&
-                        & work_list == [ ( to_string(i), i = first, last ) ]" )
+        call check( work_list == [ ( string_type( to_string(i) ), i = first, last ) ], &
+                        & "test_append_prepend_string: work_list ==&
+                        & [ ( string_type( to_string(i) ), i = first, last ) ]" )
         call check( [ ( string_type( to_string(i) ), i = first, last ) ] == work_list, &
                         & "test_append_prepend_string: [ ( string_type( to_string(i) ),&
                         & i = first, last ) ] == work_list" )
@@ -48,8 +49,8 @@ contains
         call compare_list( reference_list, first, last + 1, 2 )
         call check( reference_list == [ ( string_type( to_string(i) ), i = first, last ) ], "test_append_prepend_string:&
                     & reference_list == [ ( string_type( to_string(i) ), i = first, last ) ]" )
-        call check( [ ( to_string(i), i = first, last ) ] == reference_list, &
-                    & "test_append_prepend_string: [ ( to_string(i), i = first, last ) ] == reference_list" )
+        call check( [ ( string_type( to_string(i) ), i = first, last ) ] == reference_list, &
+                    & "test_append_prepend_string: [ ( string_type( to_string(i) ), i = first, last ) ] == reference_list" )
 
         call check( work_list == reference_list, "test_append_prepend_string:&
                                     & work_list == reference_list" )
@@ -67,18 +68,19 @@ contains
         integer, parameter              :: stride = 10
 
         do i = first, last - 1, stride
-            work_list = work_list // [ ( to_string(j), j = i, i + stride - 1) ]
-            call check( work_list == [ ( to_string(j), j = first, i + stride - 1) ], &
+            work_list = work_list // [ ( string_type( to_string(j) ), j = i, i + stride - 1) ]
+            call check( work_list == [ ( string_type( to_string(j) ), j = first, i + stride - 1) ], &
                     & "test_append_prepend_array: work_list ==&
-                    & [ ( to_string(j), j = first, i + stride - 1) ]" )
+                    & [ ( string_type( to_string(j) ), j = first, i + stride - 1) ]" )
 
         end do
 
         work_list = work_list // to_string(last)
 
         call compare_list( work_list, first, last + 1, 3 )
-        call check( work_list == [ ( to_string(i), i = first, last) ], "test_append_prepend_array:&
-                    & work_list == [ ( to_string(i), i = first, last) ]" )
+        call check( work_list == [ ( string_type( to_string(i) ), i = first, last) ], &
+                    & "test_append_prepend_array: work_list ==&
+                    & [ ( string_type( to_string(i) ), i = first, last) ]" )
         call check( [ ( string_type( to_string(i) ), i = first, last) ] == work_list, &
                     & "test_append_prepend_array: [ ( string_type( to_string(i) ), i = first, last) ]&
                     & == work_list" )
@@ -104,8 +106,9 @@ contains
         call check( [ ( string_type( to_string(i) ), i = first, last) ] == reference_list, &
                     & "test_append_prepend_array:&
                     & [ ( string_type( to_string(i) ), i = first, last) ] == reference_list" )
-        call check( [ ( to_string(i), i = first, last) ] == reference_list, &
-                    & "test_append_prepend_array: [ ( to_string(i), i = first, last) ] == reference_list" )
+        call check( [ ( string_type( to_string(i) ), i = first, last) ] == reference_list, &
+                    & "test_append_prepend_array: [ ( string_type( to_string(i) ), i = first, last) ]&
+                    & == reference_list" )
 
         call check( work_list == reference_list, "test_append_prepend_array:&
                                     & work_list == reference_list" )
@@ -138,8 +141,8 @@ contains
         work_list = work_list // to_string(last)
 
         call compare_list( work_list, first, last + 1, 5 )
-        call check( work_list == [ ( to_string(i), i = first, last) ], "test_append_prepend_list:&
-                    & work_list == [ ( to_string(i), i = first, last) ]" )
+        call check( work_list == [ ( string_type( to_string(i) ), i = first, last) ], "test_append_prepend_list:&
+                    & work_list == [ ( string_type( to_string(i) ), i = first, last) ]" )
         call check( [ ( string_type( to_string(i) ), i = first, last) ] == work_list, &
                     & "test_append_prepend_list: [ ( string_type( to_string(i) ), i = first, last) ]&
                     & == work_list" )
@@ -169,8 +172,9 @@ contains
         call check( [ ( string_type( to_string(i) ), i = first, last) ] == reference_list, &
                     & "test_append_prepend_list:&
                     & [ ( string_type( to_string(i) ), i = first, last) ] == reference_list" )
-        call check( [ ( to_string(i), i = first, last) ] == reference_list, &
-                    & "test_append_prepend_list: [ ( to_string(i), i = first, last) ] == reference_list" )
+        call check( [ ( string_type( to_string(i) ), i = first, last) ] == reference_list, &
+                    & "test_append_prepend_list: [ ( string_type( to_string(i) ), i = first, last) ]&
+                    & == reference_list" )
 
         call check( work_list == reference_list, "test_append_prepend_list:&
                                     & work_list == reference_list" )
