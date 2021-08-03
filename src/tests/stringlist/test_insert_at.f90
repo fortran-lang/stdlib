@@ -2,8 +2,7 @@
 module test_insert_at
     use stdlib_error, only: check
     use stdlib_string_type, only: string_type, operator(//), operator(==)
-    use stdlib_stringlist, only: stringlist_type, stringlist_index_type, fidx, bidx, list_head, &
-                            & list_tail, operator(//), operator(==), operator(/=)
+    use stdlib_stringlist, only: stringlist_type, fidx, bidx, list_head, list_tail
     use stdlib_ascii, only: to_string
     implicit none
 
@@ -13,7 +12,7 @@ contains
         type(stringlist_type)           :: work_list
         integer                         :: i, current_length
         character(len=:), allocatable   :: string
-        integer, parameter              :: first = -5
+        integer, parameter              :: first = -100
         integer, parameter              :: last = 1
 
         call check( work_list%to_current_idxn( list_tail ) == 0, "test_insert_at_1: list_tail == 0")
@@ -44,9 +43,10 @@ contains
 
         end do
 
-        ! compare work_list with [1, 0, -1, -2, -3, -4, -5]
+        ! compare work_list with [1, 0, -1, ..., ..., -99, -100]
         call compare_list( work_list, last, first - 1, 1)
 
+        call work_list%destroy()
         call work_list%destroy()
         current_length = 0
 
@@ -74,7 +74,7 @@ contains
 
         end do
 
-        ! compare work_list with [-5, -4, -3, -2, -1, 0, 1]
+        ! compare work_list with [-100, -99, ..., ..., 0, 1]
         call compare_list( work_list, first, last + 1, 2)
 
     end subroutine test_insert_at_1
@@ -84,7 +84,7 @@ contains
         integer                         :: i, current_length
         character(len=:), allocatable   :: string
         integer, parameter              :: first = 2
-        integer, parameter              :: last = 20
+        integer, parameter              :: last = 200
 
         write (*,*) "test_insert_at_2: Starting test case 1!"
 
@@ -145,7 +145,7 @@ contains
 
         end do
 
-        ! compare work_list with [1, 2, ..., ..., 19, 20]
+        ! compare work_list with [1, 2, ..., ..., 199, 200]
         call compare_list( work_list, first - 1, last + 1, 3 )
 
     end subroutine test_insert_at_2
@@ -155,7 +155,7 @@ contains
         integer                         :: i, current_length
         character(len=:), allocatable   :: string
         integer, parameter              :: first = 2
-        integer, parameter              :: last = 20
+        integer, parameter              :: last = 200
 
         write (*,*) "test_insert_at_3: Starting test case 1!"
 
@@ -216,7 +216,7 @@ contains
 
         end do
 
-        ! compare work_list with [20, 19, ..., ..., 2, 1]
+        ! compare work_list with [200, 199, ..., ..., 2, 1]
         call compare_list( work_list, last, first - 2, 4 )
 
     end subroutine test_insert_at_3
