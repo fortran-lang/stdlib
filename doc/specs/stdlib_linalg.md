@@ -207,7 +207,7 @@ program demo_outer_product
 end program demo_outer_product
 ```
 
-## `empty` - `empty` creates a new vector or matrix of `integer` type and given shape, without initializing values.
+## `empty` - Create a new vector or matrix of `integer/real/complex` type and given shape, without initializing values.
 
 ### Status
 
@@ -219,7 +219,7 @@ Pure function.
 
 ### Description
 
-`empty` creates a new vector or matrix of `integer` type and given shape, without initializing values.
+`empty` creates a new vector or matrix of `integer/real/complex` type and given shape, without initializing values.
 
 `empty`, unlike `zeros`, does not set the array values to zero, and may therefore be marginally faster. On the other hand, it requires the user to manually set all the values in the array, and should be used with caution.
 
@@ -233,18 +233,27 @@ For matrix:
 
 ### Arguments
 
-`dim/dim1`: Shall be an `integer` type.
+`dim/dim1`: Shall be an `integer` scalar.
+This is an `intent(in)` argument.
 
-`dim2`: Shall be an `integer` type.
+`dim2`: Shall be an `integer` scalar.
+This is an `intent(in)` argument.
+
+#### Note
+
+Because of `huge(integer :: i) == 2147483647`, the dimensional maximum length of array created by the `empty` function is `2147483647`. 
 
 ### Return value
 
-Returns a new vector or matrix of `integer` type and given shape, without initializing values.
+Returns a new `vector` or `matrix` of `integer` type and given shape, without initializing values.
+
+#### Note
+If the receiving `array` of the return value of the `empty` function is of a `real/complex` type, conversion from `integer` type to `real/complex` type will occur. 
 
 ### Example
 
 ```fortran
-program demo_linlag_empty
+program demo_linlag_empty_1
     
     use stdlib_linlag, only: empty
     implicit none
@@ -252,11 +261,30 @@ program demo_linlag_empty
 
     print *, empty(2, 1)
     print *, 0.0*empty(2)                               !! 0.00000000       0.00000000
-    print *, empty(2) + empty(2)
+    print *, 0.0*empty(2) + 1.0*empty(2)
     print *, (0.1, 0.1)*empty(2) + (0.2, 0.2)*empty(2)
 
     i = empty(2,2)
     print *, i
 
-end program demo_linalg_empty
+end program demo_linalg_empty_1
+```
+
+```fortran
+program demo_linlag_empty_2
+    
+    use stdlib_linlag, only: empty
+    implicit none
+    integer, allocatable :: i(:,:)
+    real, allocatable :: r(:,:)
+    complex, allocatable :: c(:,:)
+    integer :: j(2)
+
+    i = empty(2,1)
+    r = empty(2,1)
+    c = empty(2,1)
+    j = empty(2)
+    print *, i, r, c, j
+
+end program demo_linalg_empty_2
 ```

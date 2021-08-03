@@ -121,19 +121,19 @@ contains
     !> `empty` creates an empty vector with `integer` type.
     pure function empty_1_default(dim) result(result)
 
-        implicit none
         integer, intent(in) :: dim
-        integer :: result(dim)
+        integer, allocatable :: result(:)
+        allocate(result(dim))
 
     end function empty_1_default
 
     !> `empty` creates an empty matrix with `integer` type.
     pure function empty_2_default(dim1, dim2) result(result)
 
-        implicit none
         integer, intent(in) :: dim1, dim2
-        integer :: result(dim1, dim2)
-        
+        integer, allocatable :: result(:, :)
+        allocate(result(dim1, dim2))
+
     end function empty_2_default
 
 end module stdlib_linalg
