@@ -19,12 +19,15 @@ SRCFYPP =\
         stdlib_stats_corr.fypp \
         stdlib_stats_cov.fypp \
         stdlib_stats_mean.fypp \
+        stdlib_stats_median.fypp \
         stdlib_stats_moment.fypp \
         stdlib_stats_moment_all.fypp \
         stdlib_stats_moment_mask.fypp \
         stdlib_stats_moment_scalar.fypp \
         stdlib_stats_var.fypp \
         stdlib_math.fypp \
+		stdlib_math_linspace.fypp \
+		stdlib_math_logspace.fypp \
         stdlib_stats_distribution_PRNG.fypp \
         stdlib_string_type.fypp \
         stdlib_string_type_constructor.fypp \
@@ -75,6 +78,7 @@ stdlib_error.o: stdlib_optval.o
 stdlib_specialfunctions.o: stdlib_kinds.o
 stdlib_specialfunctions_legendre.o: stdlib_kinds.o stdlib_specialfunctions.o
 stdlib_io.o: \
+	stdlib_ascii.o \
 	stdlib_error.o \
 	stdlib_optval.o \
 	stdlib_kinds.o \
@@ -121,6 +125,11 @@ stdlib_stats_mean.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
 	stdlib_stats.o
+stdlib_stats_median.o: \
+	stdlib_optval.o \
+	stdlib_kinds.o \
+	stdlib_sorting.o \
+	stdlib_stats.o
 stdlib_stats_moment.o: \
 	stdlib_optval.o \
 	stdlib_kinds.o \
@@ -149,4 +158,8 @@ stdlib_strings.o: stdlib_ascii.o \
     stdlib_kinds.o
 stdlib_math.o: stdlib_kinds.o
 stdlib_string_to_string.o: stdlib_strings.o
+stdlib_math_linspace.o: \
+	stdlib_math.o
+stdlib_math_logspace.o: \
+	stdlib_math_linspace.o
 stdlib_linalg_outer_product.o: stdlib_linalg.o

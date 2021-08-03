@@ -136,7 +136,7 @@ Important options are
 For example, to configure a build using the Ninja backend and generating procedures up to rank 7, which is installed to your home directory use
 
 ```sh
-cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local
+cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK:String=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local
 ```
 
 To build the standard library run

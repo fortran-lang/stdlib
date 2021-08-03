@@ -5,7 +5,7 @@
 !> The specification of this module is available [here](../page/specs/stdlib_strings.html).
 module stdlib_strings
     use stdlib_ascii, only: whitespace
-    use stdlib_string_type, only: string_type, char, verify
+    use stdlib_string_type, only: string_type, char, verify, repeat, len
     use stdlib_optval, only: optval
     use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64, lk, c_bool
     implicit none
@@ -14,7 +14,7 @@ module stdlib_strings
     public :: to_string
     public :: strip, chomp
     public :: starts_with, ends_with
-    public :: slice, find, replace_all, count
+    public :: slice, find, replace_all, padl, padr, count
 
     !> Version: experimental
     !>
@@ -120,6 +120,28 @@ module stdlib_strings
         module procedure :: replace_all_char_char_string
         module procedure :: replace_all_char_char_char
     end interface replace_all
+
+    !> Version: experimental
+    !>
+    !> Left pad the input string
+    !> [Specifications](../page/specs/stdlib_strings.html#padl)
+    interface padl
+        module procedure :: padl_string_default
+        module procedure :: padl_string_pad_with
+        module procedure :: padl_char_default
+        module procedure :: padl_char_pad_with
+    end interface padl
+
+    !> Version: experimental
+    !>
+    !> Right pad the input string
+    !> [Specifications](../page/specs/stdlib_strings.html#padr)
+    interface padr
+        module procedure :: padr_string_default
+        module procedure :: padr_string_pad_with
+        module procedure :: padr_char_default
+        module procedure :: padr_char_pad_with
+    end interface padr
 
     !> Version: experimental
     !>
@@ -686,6 +708,127 @@ contains
         res = res // string(last : length_string)
 
     end function replace_all_char_char_char
+
+    !> Left pad the input string with " " (1 whitespace)
+    !>
+    !> Returns a new string
+    pure function padl_string_default(string, output_length) result(res)
+        type(string_type), intent(in) :: string
+        integer, intent(in) :: output_length
+        type(string_type) :: res
+
+        res = string_type(padl(char(string), output_length, " "))
+
+    end function padl_string_default
+
+    !> Left pad the input string with the 'pad_with' character
+    !>
+    !> Returns a new string
+    pure function padl_string_pad_with(string, output_length, pad_with) result(res)
+        type(string_type), intent(in) :: string
+        integer, intent(in) :: output_length
+        character(len=1), intent(in) :: pad_with
+        type(string_type) :: res
+
+        res = string_type(padl(char(string), output_length, pad_with))
+
+    end function padl_string_pad_with
+
+    !> Left pad the input string with " " (1 whitespace)
+    !>
+    !> Returns a new string
+    pure function padl_char_default(string, output_length) result(res)
+        character(len=*), intent(in) :: string
+        integer, intent(in) :: output_length
+        character(len=max(len(string), output_length)) :: res
+
+        res = padl(string, output_length, " ")
+
+    end function padl_char_default
+
+    !> Left pad the input string with the 'pad_with' character
+    !>
+    !> Returns a new string
+    pure function padl_char_pad_with(string, output_length, pad_with) result(res)
+        character(len=*), intent(in) :: string
+        integer, intent(in) :: output_length
+        character(len=1), intent(in) :: pad_with
+        character(len=max(len(string), output_length)) :: res
+        integer :: string_length
+
+        string_length = len(string)
+
+        if (string_length < output_length) then
+            res = repeat(pad_with, output_length - string_length)
+            res(output_length - string_length + 1 : output_length) = string
+        else
+            res = string
+        end if
+
+    end function padl_char_pad_with
+
+    !> Right pad the input string with " " (1 whitespace)
+    !>
+    !> Returns a new string
+    pure function padr_string_default(string, output_length) result(res)
+        type(string_type), intent(in) :: string
+        integer, intent(in) :: output_length
+        character(len=max(len(string), output_length)) :: char_output
+        type(string_type) :: res
+
+        ! We're taking advantage of `char_output` being longer than `string` and
+        ! initialized with whitespaces. By casting `string` to a `character`
+        ! type and back to `string_type`, we're effectively right-padding
+        ! `string` with spaces, so we don't need to pad explicitly.
+        char_output = char(string)
+        res = string_type(char_output)
+
+    end function padr_string_default
+
+    !> Right pad the input string with the 'pad_with' character
+    !>
+    !> Returns a new string
+    pure function padr_string_pad_with(string, output_length, pad_with) result(res)
+        type(string_type), intent(in) :: string
+        integer, intent(in) :: output_length
+        character(len=1), intent(in) :: pad_with
+        type(string_type) :: res
+
+        res = string_type(padr(char(string), output_length, pad_with))
+
+    end function padr_string_pad_with
+
+    !> Right pad the input string with " " (1 whitespace)
+    !>
+    !> Returns a new string
+    pure function padr_char_default(string, output_length) result(res)
+        character(len=*), intent(in) :: string
+        integer, intent(in) :: output_length
+        character(len=max(len(string), output_length)) :: res
+
+        res = string
+
+    end function padr_char_default
+
+    !> Right pad the input string with the 'pad_with' character
+    !>
+    !> Returns a new string
+    pure function padr_char_pad_with(string, output_length, pad_with) result(res)
+        character(len=*), intent(in) :: string
+        integer, intent(in) :: output_length
+        character(len=1), intent(in) :: pad_with
+        character(len=max(len(string), output_length)) :: res
+        integer :: string_length
+
+        string_length = len(string)
+
+        res = string
+        if (string_length < output_length) then
+            res(string_length + 1 : output_length) = &
+              repeat(pad_with, output_length - string_length)
+        end if
+
+    end function padr_char_pad_with
 
     !> Returns the number of times substring 'pattern' has appeared in the
     !> input string 'string'

@@ -19,6 +19,7 @@ set(fppFiles
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
     stdlib_stats_mean.fypp
+    stdlib_stats_median.fypp
     stdlib_stats_moment.fypp
     stdlib_stats_moment_all.fypp
     stdlib_stats_moment_mask.fypp
@@ -29,6 +30,8 @@ set(fppFiles
     stdlib_quadrature_simps.fypp
     stdlib_stats_distribution_PRNG.fypp
     stdlib_math.fypp
+    stdlib_math_linspace.fypp
+    stdlib_math_logspace.fypp
     stdlib_string_type.fypp
     stdlib_string_type_constructor.fypp
     stdlib_string_to_string.fypp

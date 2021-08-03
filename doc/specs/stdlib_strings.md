@@ -199,25 +199,21 @@ end program demo
 
 #### Description
 
-Extracts the characters from the defined region of the input string by taking strides.
-
-Deduction Process:
-Function first automatically deduces the optional arguments that are not provided by the user.  
-This process is independent of both input `string` and permitted indexes of Fortran.  
-Deduced `first` and `last` argument take +infinity or -infinity value whereas deduced `stride` argument takes +1 or -1 value.
-
-Validation Process:
+Extracts the characters from the defined region of the input string by taking strides.  
 Argument `first` and `last` defines this region for extraction by function `slice`.  
-If the defined region is invalid i.e. region contains atleast one invalid index, `first` and 
-`last` are converted to first and last valid indexes in this defined region respectively, 
-if no valid index exists in this region an empty string is returned.  
-`stride` can attain both negative or positive values but when the only invalid value 
-0 is given, it is converted to 1.
+Argument `stride` defines the magnitude and direction (+/-) of stride to be taken while extraction. 
+`stride` when given invalid value 0, is converted to +1.
 
-Extraction Process:
-After all this, extraction starts from `first` index and takes stride of length `stride`.  
-Extraction starts only if `last` index is crossable from `first` index with stride `stride` 
-and remains active until `last` index is crossed.  
+Deduction Process:  
+Function first automatically deduces the optional arguments that are not provided by the user.  
+Deduced `first` and `last` argument take +infinity or -infinity value and deduced `stride` argument 
+takes value +1 or -1 depending upon the actual argument(s) provided by the user.  
+
+Extraction Process:  
+Extraction starts only if `last` is crossable from `first` with stride of `stride`.  
+Extraction starts from the first valid index in the defined region to take stride of `stride` 
+and ends when the last valid index in the defined region is crossed.  
+If no valid index exists in the defined region, empty string is returned.
 
 #### Syntax
 
@@ -381,6 +377,114 @@ program demo_replace_all
   ! string <-- "technology here, technology there, technology everywhere"
 
 end program demo_replace_all
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `padl`
+
+#### Description
+
+Returns a string of length `output_length` left padded with `pad_with` character if it is provided, otherwise with `" "` (1 whitespace).  
+If `output_length` is less than or equal to the length of `string`, padding is not performed.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):padl(interface)]] (string, output_length [, pad_with])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `output_length`: integer.
+  This argument is intent(in).
+- `pad_with`: Character scalar of length 1.
+  This argument is intent(in) and optional.
+
+#### Result value
+
+The result is of the same type as `string`.
+
+#### Example
+
+```fortran
+program demo_padl
+  use stdlib_string_type, only: string_type, assignment(=)
+  use stdlib_strings, only : padl
+  implicit none
+  string_type :: string
+
+  string = "left pad this string"
+  ! string <-- "left pad this string"
+
+  print *, padl(string, 25, "$") ! "$$$$$left pad this string"
+
+  string = padl(string, 25)
+  ! string <-- "     left pad this string"
+
+end program demo_padl
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `padr`
+
+#### Description
+
+Returns a string of length `output_length` right padded with `pad_with` character if it is provided, otherwise with `" "` (1 whitespace).  
+If `output_length` is less than or equal to the length of `string`, padding is not performed.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):padr(interface)]] (string, output_length [, pad_with])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `output_length`: integer.
+  This argument is intent(in).
+- `pad_with`: Character scalar of length 1.
+  This argument is intent(in) and optional.
+
+#### Result value
+
+The result is of the same type as `string`.
+
+#### Example
+
+```fortran
+program demo_padr
+  use stdlib_string_type, only: string_type, assignment(=)
+  use stdlib_strings, only : padr
+  implicit none
+  string_type :: string
+
+  string = "right pad this string"
+  ! string <-- "right pad this string"
+
+  print *, padr(string, 25, "$") ! "right pad this string$$$$"
+
+  string = padr(string, 25)
+  ! string <-- "right pad this string    "
+
+end program demo_padr
 ```
 
 
