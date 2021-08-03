@@ -121,9 +121,26 @@ This is an `intent(in)` argument.
 `dim2`: Shall be a scalar of default type `integer`.
 This is an `intent(in)` and `optional` argument. 
 
+#### Note
+
+Because of `huge(integer :: i) = 2147483647`, the dimensional maximum length of array created by the `eye` function is `2147483647`. 
+
 ### Return value
 
-Returns the identity matrix, i.e. a square matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer`.
+Return the identity matrix, i.e. a square matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer`.
+
+#### Warning
+
+If the array that receives the return value of the `eye` function is of `real/complex` type, conversion from `integer` type to `real/complex` type will occur.  
+
+Just as `Fortran` is a strongly typed statically compiled language, be careful with the following statements:
+```fortran
+real :: A(:,:)
+!> Be careful
+A = eye(2,2)/2     !! A == 0.0
+!> Recommend
+A = eye(2,2)/2.0   !! A == diag([0.5, 0.5])
+```
 
 ### Example
 
@@ -131,11 +148,16 @@ Returns the identity matrix, i.e. a square matrix with ones on the main diagonal
 program demo_eye1
     use stdlib_linalg, only: eye
     implicit none
+    integer :: i(2,2)
     real :: a(3,3)
-    real :: b(3,4)
-    A = eye(3)
-    A = eye(3,3)
-    B = eye(3,4)
+    real :: b(2,3)  !! Matrix is non-square.
+    complex :: c(2,2)
+    I = eye(2)              !! [1,0; 0,1]
+    A = eye(3)              !! [1.0,0.0,0.0; 0.0,1.0,0.0; 0.0,0.0,1.0]
+    A = eye(3,3)            !! [1.0,0.0,0.0; 0.0,1.0,0.0; 0.0,0.0,1.0]
+    B = eye(2,3)            !! [1.0,0.0,0.0; 0.0,1.0,0.0]
+    C = eye(2,2)            !! [(1.0,0.0),(0.0,0.0); (0.0,0.0),(1.0,0.0)]
+    C = (1.0,1.0)*eye(2,2)  !! [(1.0,1.0),(0.0,0.0); (0.0,0.0),(1.0,1.0)]
 end program demo_eye1
 ```
 
