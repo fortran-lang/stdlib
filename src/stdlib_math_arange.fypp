@@ -1,8 +1,6 @@
 #:include "common.fypp"
 submodule(stdlib_math) stdlib_math_arange
 
-    implicit none
-
 contains
 
     #:for k1, t1 in REAL_KINDS_TYPES

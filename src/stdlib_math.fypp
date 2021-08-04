@@ -266,9 +266,7 @@ module stdlib_math
     !>
     !> `arange` creates a vector of the `integer/real` type 
     !>  with evenly spaced values within a given interval.
-    !> ([Specification](../page/specs/stdlib_math.html#
-    !>arange-create-a-vector-of-the-integerreal-type-
-    !>with-evenly-spaced-values-within-a-given-interval))
+    !> ([Specification](../page/specs/stdlib_math.html#arange))
     interface arange
         #:set RI_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES
         #:for k1, t1 in RI_KINDS_TYPES

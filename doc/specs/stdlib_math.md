@@ -275,7 +275,7 @@ program demo_logspace_rstart_cbase
 
 end program demo_logspace_rstart_cbase
 ```
-## `arange` - Create a vector of the `integer/real` type with evenly spaced values within a given interval.
+## `arange`
 
 ### Status
 
@@ -287,13 +287,19 @@ Pure function.
 
 ### Description
 
-Create a vector of the `integer/real` type with evenly spaced values within a given interval.
+Create a vector of the `integer/real` type with given fixed spaced values within a given interval.
+
+#### Note
+
+Because of the `i` (`huge(integer :: i) = 2147483647`) index inside the `arange` function , the dimensional maximum length of array created by the `arange` function is `2147483647`. 
 
 ### Syntax
 
 `result = [[stdlib_math(module):arange(interface)]](start [, end, by])`
 
 ### Arguments
+
+All arguments should be the same type and kind.
 
 `start`: Shall be an `integer/real` scalar.
 This is an `intent(in)` argument.  
@@ -313,8 +319,9 @@ If `by < 0`, the `by` argument will be corrected to `abs(by)` by the internal pr
 
 ### Return value
 
-Return a vector of evenly spaced values.
+Return a vector of fixed spaced spaced values.
 
+For `integer` type arguments, the length of the result vector is `(end - start)/by + 1`.  
 For `real` type arguments, the length of the result vector is `floor((end - start)/by) + 1`.
 
 ### Example
@@ -331,7 +338,7 @@ program demo_math_arange
 
     print *, arange(3.0)               !! [1.0,2.0,3.0]
     print *, arange(0.0,5.0)           !! [0.0,1.0,2.0,3.0,4.0,5.0]
-    print *, arange(0.0,5.0,2.0)       !! [0.0,2.0,4.0]
+    print *, arange(0.0,6.0,2.5)       !! [0.0,2.5,5.0]
 
     print *, (1.0,1.0)*arange(3)       !! [(1.0,1.0),(2.0,2.0),[3.0,3.0]]
 
