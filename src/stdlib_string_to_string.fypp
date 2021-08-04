@@ -2,6 +2,8 @@
 submodule(stdlib_strings) stdlib_strings_to_string
 
     integer, parameter :: buffer_len = 128
+    character(len=*), parameter :: err_sym = "[*]"
+        !!TODO: [*]?
 
 contains
 
@@ -19,8 +21,7 @@ contains
         if (stat == 0) then
             string = trim(buffer)
         else
-            string = '[*]'
-                !!\TODO: [*]?
+            string = err_sym
         end if
 
     end function to_string_${t1[0]}$_${k1}$
@@ -40,7 +41,7 @@ contains
     #:endfor
 
     #:for k1, t1 in INT_KINDS_TYPES
-    !> Represent an integer of kind ${k1}$ as character sequence
+    !> Represent an integer of kind ${k1}$ as character sequence.
     pure module function to_string_1_${t1[0]}$_${k1}$(value) result(string)
         ${t1}$, intent(in) :: value
         character(len=:), allocatable :: string
@@ -85,15 +86,14 @@ contains
         if (stat == 0) then
             string = trim(buffer)
         else
-            string = '[*]'
-                !!\TODO: [*]?
+            string = err_sym
         end if
 
     end function to_string_2_${t1[0]}$_${k1}$
     #:endfor
 
     #:for k1, t1 in LOG_KINDS_TYPES
-    !> Represent an logical of kind ${k1}$ as character sequence
+    !> Represent an logical of kind ${k1}$ as character sequence.
     pure module function to_string_1_${t1[0]}$_${k1}$(value) result(string)
         ${t1}$, intent(in) :: value
         character(len=1) :: string
@@ -114,8 +114,7 @@ contains
         if (stat == 0) then
             string = trim(buffer)
         else
-            string = '[*]'
-                !!\TODO: [*]?
+            string = err_sym
         end if
 
     end function to_string_2_${t1[0]}$_${k1}$
