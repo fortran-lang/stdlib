@@ -287,7 +287,7 @@ Pure function.
 
 ### Description
 
-Create a vector of the `integer/real` type with given fixed spaced values within a given interval.
+Create a one-dimensional `array` of the `integer/real` type with fixed-spaced values of given spacing, within a given interval.
 
 #### Note
 
@@ -295,7 +295,7 @@ Because of the `i` (`huge(integer :: i) = 2147483647`) index inside the `arange`
 
 ### Syntax
 
-`result = [[stdlib_math(module):arange(interface)]](start [, end, by])`
+`result = [[stdlib_math(module):arange(interface)]](start [, end, step])`
 
 ### Arguments
 
@@ -309,20 +309,20 @@ The default `start` value is `1`.
 This is an `intent(in)` and `optional` argument.  
 The default `end` value is the inputted `start` value.
 
-`by`: Shall be an `integer/real` scalar and large than `0`. 
+`step`: Shall be an `integer/real` scalar and large than `0`. 
 This is an `intent(in)` and `optional` argument.   
-The default `by` value is `1`.
+The default `step` value is `1`.
 
 #### Warning
-If `by = 0`, the `by` argument will be corrected to `1/1.0` by the internal process of the `arange` function.   
-If `by < 0`, the `by` argument will be corrected to `abs(by)` by the internal process of the `arange` function. 
+If `step = 0`, the `step` argument will be corrected to `1/1.0` by the internal process of the `arange` function.   
+If `step < 0`, the `step` argument will be corrected to `abs(by)` by the internal process of the `arange` function. 
 
 ### Return value
 
-Return a vector of fixed spaced spaced values.
+Return a one-dimensional `array` of fixed-spaced values.
 
-For `integer` type arguments, the length of the result vector is `(end - start)/by + 1`.  
-For `real` type arguments, the length of the result vector is `floor((end - start)/by) + 1`.
+For `integer` type arguments, the length of the result vector is `(end - start)/step + 1`.  
+For `real` type arguments, the length of the result vector is `floor((end - start)/step) + 1`.
 
 ### Example
 

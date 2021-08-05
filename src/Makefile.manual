@@ -150,12 +150,12 @@ stdlib_string_type.o: stdlib_ascii.o \
 stdlib_strings.o: stdlib_ascii.o \
     stdlib_string_type.o \
 	stdlib_optval.o
-stdlib_math.o: stdlib_kinds.o
+stdlib_math.o: stdlib_kinds.o \
+    stdlib_optval.o
 stdlib_math_linspace.o: \
 	stdlib_math.o
 stdlib_math_logspace.o: \
 	stdlib_math_linspace.o
 stdlib_math_arange.o: \
-    stdlib_math.o \
-    stdlib_kinds.o
+    stdlib_math.o
 stdlib_linalg_outer_product.o: stdlib_linalg.o

@@ -4,6 +4,7 @@
 
 module stdlib_math
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
+    use stdlib_optval, only: optval
 
     implicit none
     private
@@ -264,15 +265,15 @@ module stdlib_math
 
     !> Version: experimental
     !>
-    !> `arange` creates a vector of the `integer/real` type 
-    !>  with evenly spaced values within a given interval.
+    !> `arange` creates a one-dimensional `array` of the `integer/real` type 
+    !>  with fixed-spaced values of given spacing, within a given interval.
     !> ([Specification](../page/specs/stdlib_math.html#arange))
     interface arange
         #:set RI_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES
         #:for k1, t1 in RI_KINDS_TYPES
-        pure module function arange_${t1[0]}$_${k1}$(start, end, by) result(result)
+        pure module function arange_${t1[0]}$_${k1}$(start, end, step) result(result)
             ${t1}$, intent(in) :: start
-            ${t1}$, intent(in), optional :: end, by
+            ${t1}$, intent(in), optional :: end, step
             ${t1}$, allocatable :: result(:)
         end function arange_${t1[0]}$_${k1}$
         #:endfor
