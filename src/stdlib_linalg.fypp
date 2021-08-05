@@ -5,6 +5,7 @@ module stdlib_linalg
   !! ([Specification](../page/specs/stdlib_linalg.html))
   use stdlib_kinds, only: sp, dp, qp, &
     int8, int16, int32, int64
+  use stdlib_optval, only: optval
   implicit none
   private
 
@@ -95,7 +96,7 @@ contains
         integer :: dim2_
         integer :: i
 
-        dim2_ = merge(dim2, dim1, present(dim2))
+        dim2_ = optval(dim2, dim1)
         allocate(result(dim1, dim2_))
         
         result = 0
