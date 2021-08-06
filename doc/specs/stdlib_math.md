@@ -287,11 +287,7 @@ Pure function.
 
 ### Description
 
-Create a one-dimensional `array` of the `integer/real` type with fixed-spaced values of given spacing, within a given interval.
-
-#### Note
-
-Because of the `i` (`huge(integer :: i) = 2147483647`) index inside the `arange` function , the dimensional maximum length of array created by the `arange` function is `2147483647`. 
+Creates a one-dimensional `array` of the `integer/real` type with fixed-spaced values of given spacing, within a given interval.
 
 ### Syntax
 
@@ -315,11 +311,11 @@ The default `step` value is `1`.
 
 #### Warning
 If `step = 0`, the `step` argument will be corrected to `1/1.0` by the internal process of the `arange` function.   
-If `step < 0`, the `step` argument will be corrected to `abs(by)` by the internal process of the `arange` function. 
+If `step < 0`, the `step` argument will be corrected to `abs(step)` by the internal process of the `arange` function. 
 
 ### Return value
 
-Return a one-dimensional `array` of fixed-spaced values.
+Returns a one-dimensional `array` of fixed-spaced values.
 
 For `integer` type arguments, the length of the result vector is `(end - start)/step + 1`.  
 For `real` type arguments, the length of the result vector is `floor((end - start)/step) + 1`.
@@ -342,8 +338,8 @@ program demo_math_arange
 
     print *, (1.0,1.0)*arange(3)       !! [(1.0,1.0),(2.0,2.0),[3.0,3.0]]
 
-    print *, arange(0.0,2.0,-2.0)      !! [0.0,2.0].     Not recommended: `by` argument is negative!
-    print *, arange(0.0,2.0,0.0)       !! [0.0,1.0,2.0]. Not recommended: `by` argument is zero!
+    print *, arange(0.0,2.0,-2.0)      !! [0.0,2.0].     Not recommended: `step` argument is negative!
+    print *, arange(0.0,2.0,0.0)       !! [0.0,1.0,2.0]. Not recommended: `step` argument is zero!
 
 end program demo_math_arange
 ```
