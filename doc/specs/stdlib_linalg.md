@@ -121,19 +121,13 @@ This is an `intent(in)` argument.
 `dim2`: Shall be a scalar of default type `integer`.
 This is an `intent(in)` and `optional` argument. 
 
-#### Note
-
-Because of `huge(integer :: i) = 2147483647`, the dimensional maximum length of array created by the `eye` function is `2147483647`. 
-
 ### Return value
 
-Return the identity matrix, i.e. a square matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer`.
+Return the identity matrix, i.e. a matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer`.
 
 #### Warning
 
-If the array that receives the return value of the `eye` function is of `real/complex` type, conversion from `integer` type to `real/complex` type will occur.  
-
-Just as `Fortran` is a strongly typed statically compiled language, be careful with the following statements:
+Since the result of `eye` is of `integer` type, one should be careful about using it in arithmetic expressions. For example:
 ```fortran
 real :: A(:,:)
 !> Be careful
