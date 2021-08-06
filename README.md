@@ -98,7 +98,7 @@ The following combinations are known to work, but they are not tested in the CI:
 
 Name | Version | Platform | Architecture
 --- | --- | --- | ---
-GCC Fortran (MinGW) | 9.3.0, 10.2.0 | Windows 10 | x86_64, i686
+GCC Fortran (MinGW) | 9.3.0, 10.2.0, 11.2.0 | Windows 10 | x86_64, i686
 
 We try to test as many available compilers and platforms as possible.
 A list of tested compilers which are currently not working and the respective issue are listed below.
