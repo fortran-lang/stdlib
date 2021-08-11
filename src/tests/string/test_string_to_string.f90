@@ -3,6 +3,7 @@ module test_string_to_string
     
     use stdlib_strings, only: to_string, starts_with
     use stdlib_error, only: check
+    use stdlib_optval, only: optval
     implicit none
 
 contains
@@ -13,7 +14,7 @@ contains
         logical :: stat
         character(len=:), allocatable :: msg
 
-        if (merge(partial, .false., present(partial))) then
+        if (optval(partial, .false.)) then
             stat = starts_with(actual, expected)
         else
             stat = actual == expected
