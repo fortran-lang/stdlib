@@ -1,3 +1,3 @@
 ADDTEST(linalg)
-ADDTEST(linalg_expand)
+ADDTEST(linalg_ones_zeros)
 

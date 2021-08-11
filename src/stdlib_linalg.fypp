@@ -13,7 +13,7 @@ module stdlib_linalg
   public :: eye
   public :: trace
   public :: outer_product
-  public :: zeros, ones, expand
+  public :: zeros, ones
 
   interface diag
     !! version: experimental
@@ -84,63 +84,23 @@ module stdlib_linalg
 
     !> Version: experimental
     !>
-    !> `ones` creates a vector or matrix of the given shape, 
+    !> `ones` creates a rank-1 or rank-2 array of the given shape, 
     !>  filled completely with `1` `integer` type values. 
-    !> ([Specification](../page/specs/stdlib_linalg.html#
-    !>zerosones-create-a-vector-or-matrix-of-the-given-shape
-    !>-filled-completely-with-either-0-or-1-integer-realcomplex-type-values))
+    !> ([Specification](../page/specs/stdlib_linalg.html#zerosones))
     interface ones
-        pure module function ones_1_default(dim) result(result)
-            integer, intent(in) :: dim
-            integer, allocatable :: result(:)
-        end function ones_1_default
-        pure module function ones_2_default(dim1, dim2) result(result)
-            integer, intent(in) :: dim1, dim2
-            integer, allocatable :: result(:, :)
-        end function ones_2_default
+        procedure :: ones_1_default
+        procedure :: ones_2_default
     end interface ones
     
     !> Version: experimental
     !>
-    !> `zeros` creates a vector or matrix of the given shape, 
+    !> `zeros` creates a rank-1 or rank-2 array of the given shape, 
     !>  filled completely with `0` `integer` type values. 
-    !> ([Specification](../page/specs/stdlib_linalg.html#
-    !>zerosones-create-a-vector-or-matrix-of-the-given-shape
-    !>-filled-completely-with-either-0-or-1-integer-realcomplex-type-values))
+    !> ([Specification](../page/specs/stdlib_linalg.html#zerosones))
     interface zeros
-        pure module function zeros_1_default(dim) result(result)
-            integer, intent(in) :: dim
-            integer, allocatable :: result(:)
-        end function zeros_1_default
-        pure module function zeros_2_default(dim1, dim2) result(result)
-            integer, intent(in) :: dim1, dim2
-            integer, allocatable :: result(:, :)
-        end function zeros_2_default
+        procedure :: zeros_1_default
+        procedure :: zeros_2_default
     end interface zeros
-
-    !> Version: experimental
-    !>
-    !> `expand` creates a vector or matrix of the given shape, 
-    !>  filled with `value` `integer/logical/real/complex/string_type` type values.
-    !> ([Specification](../page/specs/stdlib_linalg.html#
-    !>expand-create-a-vector-or-matrix-of-the-given-shape-
-    !>filled-completely-with-value-integerlogicalrealcomplexstring_type-type-values))
-    interface expand
-        #:set ALL_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES &
-            & + LOG_KINDS_TYPES + STRING_KINDS_TYPES
-        #:for k1, t1 in ALL_KINDS_TYPES
-        pure module function expand_1_${t1[0]}$_${k1}$(value, dim) result(result)
-            ${t1}$, intent(in) :: value
-            integer, intent(in) :: dim
-            ${t1}$, allocatable :: result(:)
-        end function expand_1_${t1[0]}$_${k1}$
-        pure module function expand_2_${t1[0]}$_${k1}$(value, dim1, dim2) result(result)
-            ${t1}$, intent(in) :: value
-            integer, intent(in) :: dim1, dim2
-            ${t1}$, allocatable :: result(:, :)
-        end function expand_2_${t1[0]}$_${k1}$
-        #:endfor
-    end interface expand
 
 contains
 
@@ -170,5 +130,41 @@ contains
         end do
       end function trace_${t1[0]}$${k1}$
     #:endfor
+
+    !> `ones` creates a rank-1 array, filled completely with `1` `integer` type values.
+    pure function ones_1_default(dim) result(result)
+        integer, intent(in) :: dim
+        integer, allocatable :: result(:)
+
+        allocate(result(dim), source=1)
+
+    end function ones_1_default
+
+    !> `ones` creates a rank-2 array, filled completely with `1` `integer` type values.
+    pure function ones_2_default(dim1, dim2) result(result)
+        integer, intent(in) :: dim1, dim2
+        integer, allocatable :: result(:, :)
+
+        allocate(result(dim1, dim2), source=1)
+
+    end function ones_2_default
+
+    !> `zeros` creates a rank-1 array, filled completely with `0` `integer` type values.
+    pure function zeros_1_default(dim) result(result)
+        integer, intent(in) :: dim
+        integer, allocatable :: result(:)
+
+        allocate(result(dim), source=0)
+
+    end function zeros_1_default
+
+    !> `zeros` creates a rank-2 array, filled completely with `0` `integer` type values.
+    pure function zeros_2_default(dim1, dim2) result(result)
+        integer, intent(in) :: dim1, dim2
+        integer, allocatable :: result(:, :)
+
+        allocate(result(dim1, dim2), source=0)
+
+    end function zeros_2_default
 
 end module stdlib_linalg

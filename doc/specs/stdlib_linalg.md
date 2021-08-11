@@ -207,7 +207,12 @@ program demo_outer_product
 end program demo_outer_product
 ```
 
-## `zeros/ones` - Create a `vector` or `matrix` of the given shape, filled completely with either `0` or `1` `integer [/real/complex]` type values
+## `zeros/ones`
+
+### Description
+
+`zeros` creates a rank-1 or rank-2 `array` of the given shape, filled completely with `0` `integer` type values.  
+`ones` creates a rank-1 or rank-2 `array` of the given shape, filled completely with `1` `integer` type values.
 
 ### Status
 
@@ -217,18 +222,13 @@ Experimental
 
 Pure function.
 
-### Description
-
-`zeros` creates a `vector` or `matrix` of the given shape, filled completely with `0` `integer [/real/complex]` type values.  
-`ones` creates a `vector` or `matrix` of the given shape, filled completely with `1` `integer [/real/complex]` type values.
-
 ### Syntax
 
-For vector:  
+For rank-1 array:  
 `result = [[stdlib_linalg(module):zeros(interface)]](dim)`  
 `result = [[stdlib_linalg(module):ones(interface)]](dim)`
 
-For matrix:  
+For rank-2 array:  
 `result = [[stdlib_linalg(module):zeros(interface)]](dim1, dim2)`  
 `result = [[stdlib_linalg(module):ones(interface)]](dim1, dim2)`
 
@@ -241,19 +241,13 @@ This is an `intent(in)` argument.
 `dim2`: Shall be an `integer` type.
 This is an `intent(in)` argument.
 
-#### Note
-
-Because of `huge(integer :: i) == 2147483647`, the dimensional maximum length of array created by the `zeros/ones` function is `2147483647`. 
-
 ### Return value
 
-Return a `vector` or `matrix` of the given shape, filled completely with either `0` or `1` `integer [/real/complex]` type values.
+Returns a rank-1 or rank-2 `array` of the given shape, filled completely with either `0` or `1` `integer` type values.
 
 #### Warning
 
-If the array that receives the return value of the `zeros/ones` function is of `real/complex` type, conversion from `integer` type to `real/complex` type will occur.  
-
-Just as `Fortran` is a strongly typed statically compiled language, be careful with the following statements:
+Since the result of `ones` is of `integer` type, one should be careful about using it in arithmetic expressions. For example:
 ```fortran
 real :: A(:,:)
 
@@ -262,7 +256,6 @@ A = ones(2,2)/2     !! A = 1/2 = 0.0
 
 !> Recommend
 A = ones(2,2)/2.0   !! A = 1/2.0 = 0.5
-A = expand(0.5, 2,2)
 ```
 
 ### Example
@@ -273,88 +266,18 @@ program demo
     implicit none
     real, allocatable :: A(:,:)
     integer :: iA(2)
-    compelx :: cA(2), cB(2,3)
+    complex :: cA(2), cB(2,3)
     
-    A = zeros(2,2)          !! [0.0,0.0; 0.0,0.0]
+    A = zeros(2,2)          !! [0.0,0.0; 0.0,0.0] (Same as `reshape(spread(0,1,2*2),[2,2])`)
     A = ones(4,4)           !! [1.0,1.0,1.0,1.0; 1.0,1.0,1.0,1.0; 1.0,1.0,1.0,1.0; 1.0,1.0,1.0 1.0]
     A = 2.0*ones(2,2)       !! [2.0,2.0; 2.0,2.0]
 
-    iA = ones(2)            !! [1,1]
+    print *, reshape(ones(2*3*4),[2,3,4])    !! Same as `reshape(spread(1,1,2*3*4),[2,3,4])`
+
+    iA = ones(2)            !! [1,1] (Same as `spread(1,1,2)`)
     cA = ones(2)            !! [(1.0,0.0),(1.0,0.0)]
     cA = (1.0,1.0)*ones(2)  !! [(1.0,1.0),(1.0,1.0)]
     cB = ones(2,3)          !! [(1.0,0.0),(1.0,0.0),(1.0,0.0); (1.0,0.0),(1.0,0.0),(1.0,0.0)]
 
 end program demo
-```
-
-## `expand` - Create a `vector` or `matrix` of the given shape, filled completely with `value` `integer/logical/real/complex/string_type` type values
-
-### Status
-
-Experimental
-
-### Class
-
-Pure function.
-
-### Description
-
-`expand` creates a `vector` or `matrix` of the given shape, filled completely with `value` `integer/logical/real/complex/string_type` type values.
-
-### Syntax
-
-For vector:  
-`result = [[stdlib_linalg(module):expand(interface)]](value, dim)`  
-
-For matrix:  
-`result = [[stdlib_linalg(module):expand(interface)]](value, dim1, dim2)`  
-
-### Arguments
-
-`value`: Shall be an `integer/logical/real/complex/string_type` scalar. 
-This is an `intent(in)` argument.
-
-`dim/dim1`: Shall be an `integer` scalar. 
-This is an `intent(in)` argument.
-
-`dim2`: Shall be an `integer` scalar. 
-This is an `intent(in)` argument.
-
-#### Note
-
-Because of `huge(integer :: i) == 2147483647`, the dimensional maximum length of array created by the `expand` function is `2147483647`. 
-
-### Return value
-
-Return a `vector` or `matrix` of the given shape, filled completely with `value` `integer/logical/real/complex/string_type` type values.
-
-### Example
-
-```fortran
-program demo_linalg_expand_1
-    use stdlib_linalg, only: expand
-    implicit none
-    real, allocatable :: A(:,:)
-    
-    A = expand(0,2,2)           !! Same as zeros(2,2)
-    A = expand(1,2,1)           !! Same as ones(4,4)
-    A = 2.0*expand(1, 2,2)      !! [2.0,2.0; 2.0,2.0]
-    A = expand(1.0, 2)          !! [1.0,1.0]
-
-end program demo_linalg_expand_1
-```
-
-```fortran
-program demo_linalg_expand_2
-    use stdlib_linalg, only: expand
-    use stdlib_string_type
-    implicit none
-    
-    print *, expand(1, 2)                   !! [1,1]
-    print *, expand(1.0, 2)                 !! [1.0,1.0]
-    print *, expand((1.0,1.0), 2)           !! [(1.0,1.0),(1.0,1.0)]
-    print *, expand(.false., 2)             !! [F,F]
-    print *, expand(string_type("A"), 2)    !! ["A","A"]
-
-end program demo_linalg_expand_2
 ```
