@@ -56,8 +56,9 @@ module stdlib_linalg
 
   !> Version: experimental
   !>
-  !> `empty` creates a new vector or matrix of `integer` type and given shape, 
+  !> `empty` creates a new rank-1 or rank-2 `array` of `integer` type and given shape, 
   !>  without initializing values.
+  !> ([Specification](../page/specs/stdlib_linalg.html#empty))
   interface empty
       procedure :: empty_1_default, empty_2_default
   end interface empty
@@ -118,20 +119,20 @@ contains
       end function trace_${t1[0]}$${k1}$
     #:endfor
 
-    !> `empty` creates an empty vector with `integer` type.
+    !> `empty` creates an empty rank-1 `array` of `integer` type.
     pure function empty_1_default(dim) result(result)
-
         integer, intent(in) :: dim
         integer, allocatable :: result(:)
+
         allocate(result(dim))
 
     end function empty_1_default
 
-    !> `empty` creates an empty matrix with `integer` type.
+    !> `empty` creates an empty rank-2 `array` of `integer` type.
     pure function empty_2_default(dim1, dim2) result(result)
-
         integer, intent(in) :: dim1, dim2
         integer, allocatable :: result(:, :)
+
         allocate(result(dim1, dim2))
 
     end function empty_2_default

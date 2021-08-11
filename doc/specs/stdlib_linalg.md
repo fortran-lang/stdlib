@@ -207,7 +207,13 @@ program demo_outer_product
 end program demo_outer_product
 ```
 
-## `empty` - Create a new vector or matrix of `integer/real/complex` type and given shape, without initializing values.
+## `empty`
+
+### Description
+
+`empty` creates a new rank-1 or rank-2 `array` of `integer/real/complex` type and given shape, without initializing values.
+
+`empty`, unlike `zeros`, does not set the array values to zero, and may therefore be marginally faster. On the other hand, it requires the user to manually set all the values in the array, and should be used with caution.
 
 ### Status
 
@@ -217,18 +223,12 @@ Experimental
 
 Pure function.
 
-### Description
-
-`empty` creates a new vector or matrix of `integer/real/complex` type and given shape, without initializing values.
-
-`empty`, unlike `zeros`, does not set the array values to zero, and may therefore be marginally faster. On the other hand, it requires the user to manually set all the values in the array, and should be used with caution.
-
 ### Syntax
 
-For vector:
+For rank-1 `array`:
 `result = [[stdlib_linalg(module):empty(interface)]](dim)`
 
-For matrix:
+For rank-2 `array`:
 `result = [[stdlib_linalg(module):empty(interface)]](dim1, dim2)`
 
 ### Arguments
@@ -239,13 +239,9 @@ This is an `intent(in)` argument.
 `dim2`: Shall be an `integer` scalar.
 This is an `intent(in)` argument.
 
-#### Note
-
-Because of `huge(integer :: i) == 2147483647`, the dimensional maximum length of array created by the `empty` function is `2147483647`. 
-
 ### Return value
 
-Returns a new `vector` or `matrix` of `integer` type and given shape, without initializing values.
+Returns a new rank-1 or rank-2 `array` of `integer` type and given shape, without initializing values.
 
 #### Note
 If the receiving `array` of the return value of the `empty` function is of a `real/complex` type, conversion from `integer` type to `real/complex` type will occur. 
@@ -265,7 +261,7 @@ program demo_linlag_empty_1
     print *, (0.1, 0.1)*empty(2) + (0.2, 0.2)*empty(2)
 
     i = empty(2,2)
-    print *, i
+    print *, reshape(empty(2*3*4),[2,3,4])
 
 end program demo_linalg_empty_1
 ```
