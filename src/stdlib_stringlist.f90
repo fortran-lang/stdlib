@@ -57,7 +57,6 @@ module stdlib_stringlist
     
     contains
         private
-        procedure         :: copy                           =>  create_copy
 
         procedure, public :: clear                          =>  clear_list
 
@@ -208,17 +207,6 @@ contains
 
     end function backward_index
 
-  ! copy
-
-    !> Returns a deep copy of the stringlist 'original'
-    pure function create_copy( original )
-        class(stringlist_type), intent(in)  :: original
-        type(stringlist_type)               :: create_copy
-
-        create_copy = original
-
-    end function create_copy
-
   ! concatenation operator:
 
     !> Appends character scalar 'string' to the stringlist 'list'
@@ -239,7 +227,7 @@ contains
         type(string_type), intent(in)     :: string
         type(stringlist_type)             :: append_string
 
-        append_string = list%copy()
+        append_string = list ! Intent: creating a full, deep copy
         call append_string%insert_at( list_tail, string )
 
     end function append_string
@@ -262,7 +250,7 @@ contains
         type(stringlist_type), intent(in) :: list
         type(stringlist_type)             :: prepend_string
 
-        prepend_string = list%copy()
+        prepend_string = list ! Intent: creating a full, deep copy
         call prepend_string%insert_at( list_head, string )
 
     end function prepend_string
@@ -274,7 +262,7 @@ contains
         type(stringlist_type), intent(in) :: slist
         type(stringlist_type)             :: append_stringlist
 
-        append_stringlist = list%copy()
+        append_stringlist = list ! Intent: creating a full, deep copy
         call append_stringlist%insert_at( list_tail, slist )
 
     end function append_stringlist
@@ -286,7 +274,7 @@ contains
         character(len=*), dimension(:), intent(in)  :: carray
         type(stringlist_type)                       :: append_carray
 
-        append_carray = list%copy()
+        append_carray = list ! Intent: creating a full, deep copy
         call append_carray%insert_at( list_tail, carray )
 
     end function append_carray
@@ -298,7 +286,7 @@ contains
         type(string_type), dimension(:), intent(in) :: sarray
         type(stringlist_type)                       :: append_sarray
 
-        append_sarray = list%copy()
+        append_sarray = list ! Intent: creating a full, deep copy
         call append_sarray%insert_at( list_tail, sarray )
 
     end function append_sarray
@@ -310,7 +298,7 @@ contains
         type(stringlist_type), intent(in)          :: list
         type(stringlist_type)                      :: prepend_carray
 
-        prepend_carray = list%copy()
+        prepend_carray = list ! Intent: creating a full, deep copy
         call prepend_carray%insert_at( list_head, carray )
 
     end function prepend_carray
@@ -322,7 +310,7 @@ contains
         type(stringlist_type), intent(in)           :: list
         type(stringlist_type)                       :: prepend_sarray
 
-        prepend_sarray = list%copy()
+        prepend_sarray = list ! Intent: creating a full, deep copy
         call prepend_sarray%insert_at( list_head, sarray )
 
     end function prepend_sarray
