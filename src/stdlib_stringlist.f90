@@ -603,7 +603,7 @@ contains
         !> Not a part of public API
         class(stringlist_type), intent(inout)           :: list
         integer, intent(inout)                          :: idxn
-        integer, intent(inout)                          :: positions
+        integer, intent(in)                             :: positions
 
         integer                                         :: i, inew
         integer                                         :: new_len, old_len
@@ -642,8 +642,6 @@ contains
 
             list%size = new_len
 
-        else
-            positions = 0
         end if
 
     end subroutine insert_before_empty_positions
@@ -659,11 +657,9 @@ contains
         type(string_type), intent(in)                   :: string
 
         integer                                         :: work_idxn
-        integer                                         :: positions
 
         work_idxn = idxn
-        positions = 1
-        call insert_before_empty_positions( list, work_idxn, positions )
+        call insert_before_empty_positions( list, work_idxn, 1 )
 
         list%stringarray(work_idxn) = string
 
@@ -681,14 +677,20 @@ contains
 
         integer                                         :: i
         integer                                         :: work_idxn, idxnew
-        integer                                         :: positions
+        integer                                         :: pre_length, post_length
 
-        work_idxn = idxn
-        positions = slist%len()
-        call insert_before_empty_positions( list, work_idxn, positions )
+        work_idxn   = idxn
+        pre_length  = slist%len()
+        call insert_before_empty_positions( list, work_idxn, pre_length )
+        post_length = slist%len()
 
-        do i = 1, slist%len()
+        do i = 1, min( work_idxn - 1, pre_length )
             idxnew = work_idxn + i - 1
+            list%stringarray(idxnew) = slist%stringarray(i)
+        end do
+
+        do i = work_idxn + post_length - pre_length, post_length
+            idxnew = work_idxn + i - post_length + pre_length - 1
             list%stringarray(idxnew) = slist%stringarray(i)
         end do
 
@@ -706,11 +708,9 @@ contains
 
         integer                                      :: i
         integer                                      :: work_idxn, idxnew
-        integer                                      :: positions
 
         work_idxn = idxn
-        positions = size( carray )
-        call insert_before_empty_positions( list, work_idxn, positions )
+        call insert_before_empty_positions( list, work_idxn, size( carray ) )
 
         do i = 1, size( carray )
             idxnew = work_idxn + i - 1
@@ -731,11 +731,9 @@ contains
 
         integer                                      :: i
         integer                                      :: work_idxn, idxnew
-        integer                                      :: positions
 
         work_idxn = idxn
-        positions = size( sarray )
-        call insert_before_empty_positions( list, work_idxn, positions )
+        call insert_before_empty_positions( list, work_idxn, size( sarray ) )
 
         do i = 1, size( sarray )
             idxnew = work_idxn + i - 1
@@ -759,7 +757,7 @@ contains
 
         idxn = list%to_current_idxn( idx )
 
-        ! - if the index is out of bounds, return a string_type equivalent to empty string
+        ! if the index is out of bounds, return a string_type equivalent to empty string
         if ( 1 <= idxn .and. idxn <= list%len() ) then
             get_string_idx_wrap = list%stringarray(idxn)
 
