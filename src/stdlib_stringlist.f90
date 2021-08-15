@@ -59,7 +59,7 @@ module stdlib_stringlist
         private
         procedure         :: copy                           =>  create_copy
 
-        procedure, public :: destroy                        =>  destroy_list
+        procedure, public :: clear                          =>  clear_list
 
         procedure, public :: len                            =>  length_list
 
@@ -88,12 +88,22 @@ module stdlib_stringlist
                                                                 insert_before_stringlist_int,   &
                                                                 insert_before_chararray_int,    &
                                                                 insert_before_stringarray_int
-        ! procedure         :: get_string_int         => get_string_int_impl
+
         procedure         :: get_string_idx         => get_string_idx_wrap
         generic, public   :: get                    => get_string_idx
-                                                        ! get_string_int
 
     end type stringlist_type
+
+    !> Version: experimental
+    !>
+    !> Constructor for stringlist
+    !> Returns an instance of type stringlist_type
+    !> [Specifications](../page/specs/stdlib_stringlist.html#stringlist_type)
+    interface stringlist_type
+        module procedure new_stringlist
+        module procedure new_stringlist_carray
+        module procedure new_stringlist_sarray
+    end interface
 
     !> Version: experimental
     !> 
@@ -140,8 +150,48 @@ module stdlib_stringlist
 
 contains
 
+  ! constructor for stringlist_type:
+
+    !> Constructor with no argument
+    !> Returns a new instance of type stringlist 
+    pure function new_stringlist()
+        type(stringlist_type)                           :: new_stringlist
+        type(string_type), dimension(0)                 :: sarray
+
+        new_stringlist = stringlist_type( 0, sarray )
+
+    end function new_stringlist
+
+    !> Constructor to convert chararray to stringlist
+    !> Returns a new instance of type stringlist
+    pure function new_stringlist_carray( carray )
+        character(len=*), dimension(:), intent(in)      :: carray
+        type(stringlist_type)                           :: new_stringlist_carray
+        type(string_type), dimension( size(carray) )    :: sarray
+        integer                                         :: i
+
+        do i = 1, size(carray)
+            sarray(i) = string_type( carray(i) )
+        end do
+
+        new_stringlist_carray = stringlist_type( sarray )
+        
+    end function new_stringlist_carray
+
+    !> Constructor to convert stringarray to stringlist
+    !> Returns a new instance of type stringlist
+    pure function new_stringlist_sarray( sarray )
+        type(string_type), dimension(:), intent(in)     :: sarray
+        type(stringlist_type)                           :: new_stringlist_sarray
+
+        new_stringlist_sarray = stringlist_type( size(sarray), sarray )
+    
+    end function new_stringlist_sarray
+
+  ! constructor for stringlist_index_type:
+
     !> Returns an instance of type 'stringlist_index_type' representing forward index 'idx'
-    pure function forward_index(idx)
+    pure function forward_index( idx )
         integer, intent(in) :: idx
         type(stringlist_index_type) :: forward_index
 
@@ -150,13 +200,15 @@ contains
     end function forward_index
 
     !> Returns an instance of type 'stringlist_index_type' representing backward index 'idx'
-    pure function backward_index(idx)
+    pure function backward_index( idx )
         integer, intent(in) :: idx
         type(stringlist_index_type) :: backward_index
 
         backward_index = stringlist_index_type( .false., idx )
 
     end function backward_index
+
+  ! copy
 
     !> Returns a deep copy of the stringlist 'original'
     pure function create_copy( original )
@@ -166,6 +218,8 @@ contains
         create_copy = original
 
     end function create_copy
+
+  ! concatenation operator:
 
     !> Appends character scalar 'string' to the stringlist 'list'
     !> Returns a new stringlist
@@ -273,6 +327,8 @@ contains
 
     end function prepend_sarray
 
+  ! equality operator:
+
     !> Compares stringlist 'list' for equality with stringlist 'slist'
     !> Returns a logical
     pure logical function eq_stringlist( list, slist )
@@ -353,6 +409,8 @@ contains
 
     end function eq_sarray_stringlist
 
+  ! inequality operator:
+
     !> Compares stringlist 'list' for inequality with stringlist 'slist'
     !> Returns a logical
     pure logical function ineq_stringlist( list, slist )
@@ -403,22 +461,21 @@ contains
 
     end function ineq_sarray_stringlist
 
-  ! destroy:
+  ! clear:
 
     !> Version: experimental
     !>
     !> Resets stringlist 'list' to an empy stringlist of len 0
     !> Modifies the input stringlist 'list'
-    subroutine destroy_list( list )
-        !> TODO: needs a better name?? like clear_list or reset_list
-        class(stringlist_type), intent(out) :: list
+    subroutine clear_list( list )
+        class(stringlist_type), intent(inout) :: list
 
         list%size = 0
         if ( allocated( list%stringarray ) ) then
             deallocate( list%stringarray )
         end if
 
-    end subroutine destroy_list
+    end subroutine clear_list
 
   ! len:
 

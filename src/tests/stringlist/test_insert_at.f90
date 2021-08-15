@@ -15,6 +15,8 @@ contains
         integer, parameter              :: first = -100
         integer, parameter              :: last = 1
 
+        work_list = stringlist_type()
+        call check( work_list%len() == 0, "test_insert_at_string_1: constructor" )
         call check( work_list%to_current_idxn( list_tail ) == 0, "test_insert_at_string_1: list_tail == 0")
         call check( work_list%to_current_idxn( list_head ) == 1, "test_insert_at_string_1: list_head == 1")
 
@@ -46,8 +48,8 @@ contains
         ! compare work_list with [1, 0, -1, ..., ..., -99, -100]
         call compare_list( work_list, last, first - 1, 1)
 
-        call work_list%destroy()
-        call work_list%destroy()
+        call work_list%clear()
+        call work_list%clear()
         current_length = 0
 
         write (*,*) "test_insert_at_string_1: Starting test case 2!"
@@ -279,7 +281,7 @@ contains
 
         write (*,*) "test_insert_at_list:     Starting work_list!"
 
-        call temp_list%destroy()
+        call temp_list%clear()
         do j = first, first + stride - 1
             call temp_list%insert_at( list_tail, string_type( to_string(j) ) )
         end do
@@ -287,7 +289,7 @@ contains
         call work_list%insert_at(list_head, temp_list)
         call compare_list( work_list, first, first + stride, 9)
 
-        call temp_list%destroy()
+        call temp_list%clear()
         do j = last - 1, last - stride, -1
             call temp_list%insert_at( list_head, string_type( to_string(j) ) )
         end do
@@ -295,7 +297,7 @@ contains
         call work_list%insert_at(list_tail, temp_list)
 
         do i = first + stride, last - stride - 1, stride
-            call temp_list%destroy()
+            call temp_list%clear()
             do j = i, i + stride - 1
                 call temp_list%insert_at( list_tail, to_string(j) )
             end do
@@ -303,7 +305,7 @@ contains
 
         end do
 
-        call temp_list%destroy()
+        call temp_list%clear()
         call temp_list%insert_at( list_head, to_string(last) )
         call work_list%insert_at( list_tail, temp_list )
 
@@ -311,7 +313,7 @@ contains
 
         write (*,*) "test_insert_at_list:     Starting reference_list!"
 
-        call temp_list%destroy()
+        call temp_list%clear()
         do j = last - stride + 1, last
             call temp_list%insert_at( list_tail, to_string(j) )
         end do
@@ -319,7 +321,7 @@ contains
         call reference_list%insert_at( list_tail, temp_list )
         call compare_list( reference_list, last - stride + 1, last + 1, 11 )
 
-        call temp_list%destroy()
+        call temp_list%clear()
         do j = first + 1, first + stride
             call temp_list%insert_at( list_tail, string_type( to_string(j) ) )
         end do
@@ -327,7 +329,7 @@ contains
         call reference_list%insert_at( list_head, temp_list )
 
         do i = last - stride, first + stride + 1, -1 * stride
-            call temp_list%destroy()
+            call temp_list%clear()
             do j = i - stride + 1, i
                 call temp_list%insert_at( list_tail, to_string(j) )
             end do
@@ -335,7 +337,7 @@ contains
 
         end do
 
-        call temp_list%destroy()
+        call temp_list%clear()
         call temp_list%insert_at( list_tail, to_string(first) )
         call reference_list%insert_at( list_head, temp_list )
 

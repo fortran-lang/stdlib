@@ -126,7 +126,7 @@ contains
         integer, parameter              :: stride = 10
 
         do i = first, last - 1, stride
-            call temp_list%destroy()
+            call temp_list%clear()
             do j = i, i + stride - 1
                 call temp_list%insert_at( list_tail, string_type( to_string(j) ) )
             end do
@@ -153,7 +153,7 @@ contains
             call check( reference_list /= work_list, "test_append_prepend_list:&
                                     & reference_list /= work_list" )
 
-            call temp_list%destroy()
+            call temp_list%clear()
             do j = i - stride + 1, i
                 call temp_list%insert_at( list_tail, to_string(j) )
             end do
