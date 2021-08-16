@@ -3,7 +3,7 @@
 !     The strings may have arbitrary lengths, not necessarily the same
 !
 !     insert AT:      Inserts an element BEFORE the element present currently at the asked index
-!                       for forward indexes, otherwise
+!                       for forward indexes
 !                     Inserts an element AFTER the element present currently at the asked index
 !                       for backward indexes
 !                     In other words, after insertion the element will be present at the asked index
@@ -17,7 +17,6 @@
 module stdlib_stringlist
     use stdlib_string_type, only: string_type, operator(/=) !, move
     use stdlib_math, only: clip
-    ! use stdlib_optval, only: optval
     implicit none
     private
 
@@ -163,14 +162,14 @@ contains
 
     !> Constructor to convert chararray to stringlist
     !> Returns a new instance of type stringlist
-    pure function new_stringlist_carray( carray )
-        character(len=*), dimension(:), intent(in)      :: carray
+    pure function new_stringlist_carray( array )
+        character(len=*), dimension(:), intent(in)      :: array
         type(stringlist_type)                           :: new_stringlist_carray
-        type(string_type), dimension( size(carray) )    :: sarray
+        type(string_type), dimension( size(array) )     :: sarray
         integer                                         :: i
 
-        do i = 1, size(carray)
-            sarray(i) = string_type( carray(i) )
+        do i = 1, size(array)
+            sarray(i) = string_type( array(i) )
         end do
 
         new_stringlist_carray = stringlist_type( sarray )
@@ -179,11 +178,11 @@ contains
 
     !> Constructor to convert stringarray to stringlist
     !> Returns a new instance of type stringlist
-    pure function new_stringlist_sarray( sarray )
-        type(string_type), dimension(:), intent(in)     :: sarray
+    pure function new_stringlist_sarray( array )
+        type(string_type), dimension(:), intent(in)     :: array
         type(stringlist_type)                           :: new_stringlist_sarray
 
-        new_stringlist_sarray = stringlist_type( size(sarray), sarray )
+        new_stringlist_sarray = stringlist_type( size(array), array )
     
     end function new_stringlist_sarray
 
@@ -612,7 +611,6 @@ contains
         if (positions > 0) then
 
             idxn    = clip( idxn, 1, list%len() + 1 )
-            ! Matlab's infinitely expandable list (Ivan's comment)??
             old_len = list%len()
             new_len = old_len + positions
 
