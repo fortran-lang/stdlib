@@ -2,7 +2,7 @@
 module test_insert_at
     use stdlib_error, only: check
     use stdlib_string_type, only: string_type, operator(//), operator(==)
-    use stdlib_stringlist, only: stringlist_type, fidx, bidx, list_head, list_tail
+    use stdlib_stringlist, only: stringlist_type, fidx, bidx, list_head, list_tail, operator(==)
     use stdlib_ascii, only: to_string
     implicit none
 
@@ -345,6 +345,38 @@ contains
 
     end subroutine test_insert_at_list
 
+    subroutine test_constructor
+        type(stringlist_type)           :: work_list
+        character(len=4), allocatable   :: carray(:)
+        type(string_type), allocatable  :: sarray(:)
+
+        write (*,*) "test_constructor:        Starting test case 1!"
+        work_list = stringlist_type()
+        allocate( carray(0) )
+        allocate( sarray(0) )
+        call check( work_list == carray, "test_constructor:&
+            & test_case 1 work_list == carray" )
+        call check( work_list == sarray, "test_constructor:&
+            & test_case 1 work_list == sarray" )
+
+        write (*,*) "test_constructor:        Starting test case 2!"
+        carray = [ '#1', '#2', '#3', '#4' ]
+        sarray = [ string_type('#1'), string_type('#2'), string_type('#3'), string_type('#4') ]
+        work_list = stringlist_type( carray )
+        call check( work_list == carray, "test_constructor:&
+            & test_case 2 work_list == carray" )
+        call check( work_list == sarray, "test_constructor:&
+            & test_case 2 work_list == sarray" )
+
+        write (*,*) "test_constructor:        Starting test case 3!"
+        work_list = stringlist_type( sarray )
+        call check( work_list == carray, "test_constructor:&
+            & test_case 3 work_list == carray" )
+        call check( work_list == sarray, "test_constructor:&
+            & test_case 3 work_list == sarray" )
+
+    end subroutine test_constructor
+
     ! compares input stringlist 'list' with an array of consecutive integers
     ! array is 'first' inclusive and 'last' exclusive
     subroutine compare_list(list, first, last, call_number)
@@ -379,5 +411,6 @@ program tester
     call test_insert_at_string_3
     call test_insert_at_array
     call test_insert_at_list
+    call test_constructor
 
 end program tester
