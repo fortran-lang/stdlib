@@ -47,8 +47,8 @@ Experimental
 
 #### Syntax
 
-For fidx: `res = [[stdlib_stringlist(module):fidx()]] (idx)`  
-For bidx: `res = [[stdlib_stringlist(module):bidx()]] (idx)`
+For fidx: `res = [[stdlib_stringlist(module):fidx()]] (idx)`.  
+For bidx: `res = [[stdlib_stringlist(module):bidx()]] (idx)`.
 
 #### Status
 
@@ -106,8 +106,9 @@ With argument: Initializes a stringlist equivalent to the input array `array` i.
 
 #### Syntax
 
-No arguments given: `res = [[stdlib_stringlist(module):stringlist_type(interface)]] ()`
-With argument: `res = [[stdlib_stringlist(module):stringlist_type(interface)]] (array)`
+- No arguments given: `res = [[stdlib_stringlist(module):stringlist_type(interface)]] ()`
+
+- With argument: `res = [[stdlib_stringlist(module):stringlist_type(interface)]] (array)`
 
 #### Status
 
@@ -119,10 +120,11 @@ Pure function.
 
 #### Argument
 
-No arguments.
+1). No arguments.
 
-With argument: - `array`: array of Character scalar or array of [[stdlib_string_type(module):string_type(type)]].  
-                This argument is intent(in).
+2). With argument:
+- `array`: array of Character scalar or array of [[stdlib_string_type(module):string_type(type)]]. 
+This argument is intent(in).
 
 #### Result value
 
