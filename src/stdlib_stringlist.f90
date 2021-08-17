@@ -61,8 +61,6 @@ module stdlib_stringlist
 
         procedure, public :: len                            =>  length_list
 
-        procedure         :: capacity                       =>  capacity_list
-
         procedure         :: to_future_at_idxn              =>  convert_to_future_at_idxn
 
         procedure, public :: to_current_idxn                =>  convert_to_current_idxn
@@ -477,23 +475,6 @@ contains
 
     end function length_list
 
-  ! capacity:
-
-    !> Version: experimental
-    !>
-    !> Returns the capacity of the list
-    !> Returns an integer
-    pure integer function capacity_list( list )
-        !> Not a part of public API
-        class(stringlist_type), intent(in) :: list
-
-        capacity_list = 0
-        if ( allocated( list%stringarray ) ) then
-            capacity_list = size( list%stringarray )
-        end if
-
-    end function capacity_list
-
   ! to_future_at_idxn:
 
     !> Version: experimental
@@ -614,29 +595,19 @@ contains
             old_len = list%len()
             new_len = old_len + positions
 
-            if ( list%capacity() < new_len ) then
+            allocate( new_stringarray(new_len) )
 
-                allocate( new_stringarray(new_len) )
+            do i = 1, idxn - 1
+                ! TODO: can be improved by move
+                new_stringarray(i) = list%stringarray(i)
+            end do
+            do i = idxn, old_len
+                inew = i + positions
+                ! TODO: can be improved by move
+                new_stringarray(inew) = list%stringarray(i)
+            end do
 
-                do i = 1, idxn - 1
-                    ! TODO: can be improved by move
-                    new_stringarray(i) = list%stringarray(i)
-                end do
-                do i = idxn, old_len
-                    inew = i + positions
-                    ! TODO: can be improved by move
-                    new_stringarray(inew) = list%stringarray(i)
-                end do
-
-                call move_alloc( new_stringarray, list%stringarray )
-
-            else
-                do i = old_len, idxn, -1
-                    inew = i + positions
-                    ! TODO: can be improved by move
-                    list%stringarray(inew) = list%stringarray(i)
-                end do
-            end if
+            call move_alloc( new_stringarray, list%stringarray )
 
             list%size = new_len
 
