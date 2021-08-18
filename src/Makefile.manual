@@ -40,7 +40,7 @@ SRC = f18estop.f90 \
       stdlib_logger.f90 \
       stdlib_quadrature_gauss.f90 \
       stdlib_strings.f90 \
-      stdlib_stringlist.f90 \
+      stdlib_stringlist_type.f90 \
       $(SRCGEN)
 
 LIB = libstdlib.a
@@ -156,6 +156,6 @@ stdlib_math_linspace.o: \
 stdlib_math_logspace.o: \
 	stdlib_math_linspace.o
 stdlib_linalg_outer_product.o: stdlib_linalg.o
-stdlib_stringlist.o: stdlib_string_type.o \
+stdlib_stringlist_type.o: stdlib_string_type.o \
     stdlib_math.o \
 	stdlib_optval.o

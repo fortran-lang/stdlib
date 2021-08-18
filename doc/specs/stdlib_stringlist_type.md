@@ -1,14 +1,14 @@
 ---
-title: stringlist
+title: stringlist type
 ---
 
-# `stdlib_stringlist` module (1-D List of Strings)
+# `stdlib_stringlist_type` module (1-D List of Strings)
 
 [TOC]
 
 ## Introduction
 
-The `stdlib_stringlist` module provides with 2 derived types to deal with list of strings.
+The `stdlib_stringlist_type` module provides with 2 derived types to deal with list of strings.
 `stringlist_type` derived type represents a one-dimensional list of variable-length strings which is compatible with Fortran intrinsic character and `stringlist_type` derived type represents an index to access, modify the elements of a stringlist and insert strings to a stringlist.
 
 ## Derived type provided
@@ -47,8 +47,8 @@ Experimental
 
 #### Syntax
 
-For fidx: `res = [[stdlib_stringlist(module):fidx()]] (idx)`.  
-For bidx: `res = [[stdlib_stringlist(module):bidx()]] (idx)`.
+For fidx: `res = [[stdlib_stringlist_type(module):fidx()]] (idx)`.  
+For bidx: `res = [[stdlib_stringlist_type(module):bidx()]] (idx)`.
 
 #### Status
 
@@ -71,7 +71,7 @@ The result is of type `stringlist_index_type`.
 
 ```fortran
 program demo_fidx_bidx
-  use stdlib_stringlist, only: stringlist_type, stringlist_index_type, fidx, bidx
+  use stdlib_stringlist_type, only: stringlist_type, stringlist_index_type, fidx, bidx
   implicit none
 
   type(stringlist_type) :: stringlist
@@ -106,9 +106,9 @@ With argument: Initializes a stringlist equivalent to the input array `array` i.
 
 #### Syntax
 
-- No arguments given: `res = [[stdlib_stringlist(module):stringlist_type(interface)]] ()`
+- No arguments given: `res = [[stdlib_stringlist_type(module):stringlist_type(interface)]] ()`
 
-- With argument: `res = [[stdlib_stringlist(module):stringlist_type(interface)]] (array)`
+- With argument: `res = [[stdlib_stringlist_type(module):stringlist_type(interface)]] (array)`
 
 #### Status
 
@@ -134,7 +134,7 @@ The result is an instance of type `stringlist_type`.
 
 ```fortran
 program demo_constructor
-  use stdlib_stringlist, only: stringlist_type
+  use stdlib_stringlist_type, only: stringlist_type
   use stdlib_string_type, only: string_type
   implicit none
 
@@ -162,7 +162,7 @@ Inserts the string `string` _AT_ the index `idx`, so that the newly added elemen
 
 #### Syntax
 
-`call [[stdlib_stringlist(module):stringlist_type(type)]]%[[stdlib_stringlist(module):insert_at(generic)]] (idx, string)`
+`call [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stdlib_stringlist_type(module):insert_at(generic)]] (idx, string)`
 
 #### Status
 
@@ -174,7 +174,7 @@ Pure subroutine.
 
 #### Argument
 
-- `idx`: [[stdlib_stringlist(module):stringlist_index_type(type)]].
+- `idx`: [[stdlib_stringlist_type(module):stringlist_index_type(type)]].
   This argument is intent(in).
 
 - `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
@@ -188,7 +188,7 @@ No result.
 
 ```fortran
 program demo_insert_at
-  use stdlib_stringlist, only: stringlist_type, stringlist_index_type, fidx, bidx
+  use stdlib_stringlist_type, only: stringlist_type, stringlist_index_type, fidx, bidx
   use stdlib_string_type, only: string_type
   implicit none
 
@@ -222,7 +222,7 @@ Returns the string present currently at the index `idx` in a stringlist. If inde
 
 #### Syntax
 
-`res = [[stdlib_stringlist(module):stringlist_type(type)]]%[[stdlib_stringlist(module):get(generic)]] (idx)`
+`res = [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stdlib_stringlist_type(module):get(generic)]] (idx)`
 
 #### Status
 
@@ -234,7 +234,7 @@ Pure function.
 
 #### Argument
 
-- `idx`: [[stdlib_stringlist(module):stringlist_index_type(type)]].
+- `idx`: [[stdlib_stringlist_type(module):stringlist_index_type(type)]].
   This argument is intent(in).
 
 #### Result value
@@ -245,7 +245,7 @@ The result is a string of type `string_type`.
 
 ```fortran
 program demo_get
-  use stdlib_stringlist, only: stringlist_type, fidx, bidx
+  use stdlib_stringlist_type, only: stringlist_type, fidx, bidx
   use stdlib_string_type, only: string_type
   implicit none
 
@@ -284,7 +284,7 @@ Returns the number of elements present currently in the stringlist.
 
 #### Syntax
 
-`res = [[stdlib_stringlist(module):stringlist_type(type)]]%[[stdlib_stringlist(module):len()]] ()`
+`res = [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stdlib_stringlist_type(module):len()]] ()`
 
 #### Status
 
@@ -306,7 +306,7 @@ The result is of type `integer`.
 
 ```fortran
 program demo_len
-  use stdlib_stringlist, only: stringlist_type, bidx
+  use stdlib_stringlist_type, only: stringlist_type, bidx
   implicit none
 
   type(stringlist_type) :: stringlist
@@ -336,7 +336,7 @@ Removes all elements from a stringlist.
 
 #### Syntax
 
-`call [[stdlib_stringlist(module):stringlist_type(type)]]%[[stdlib_stringlist(module):clear()]] ()`
+`call [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stdlib_stringlist_type(module):clear()]] ()`
 
 #### Status
 
@@ -358,7 +358,7 @@ No result.
 
 ```fortran
 program demo_clear
-  use stdlib_stringlist, only: stringlist_type, fidx
+  use stdlib_stringlist_type, only: stringlist_type, fidx
   implicit none
 
   type(stringlist_type) :: stringlist

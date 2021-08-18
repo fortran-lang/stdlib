@@ -1,4 +1,4 @@
-! stdlib_stringlist.f90 --
+! stdlib_stringlist_type.f90 --
 !     Module for storing and manipulating list of strings
 !     The strings may have arbitrary lengths, not necessarily the same
 !
@@ -14,7 +14,7 @@
 !     Note the distinction between AT and BEFORE in the module. Care has been taken to keep it consistent
 !     throughout the PR
 !
-module stdlib_stringlist
+module stdlib_stringlist_type
     use stdlib_string_type, only: string_type, operator(/=) !, move
     use stdlib_math, only: clip
     implicit none
@@ -36,7 +36,7 @@ module stdlib_stringlist
     !> Version: experimental
     !> 
     !> Returns an instance of type 'stringlist_index_type' representing forward index
-    !> [Specifications](../page/specs/stdlib_stringlist.html#fidx)
+    !> [Specifications](../page/specs/stdlib_stringlist_type.html#fidx)
     interface fidx
         module procedure forward_index
     end interface
@@ -44,7 +44,7 @@ module stdlib_stringlist
     !> Version: experimental
     !> 
     !> Returns an instance of type 'stringlist_index_type' representing backward index
-    !> [Specifications](../page/specs/stdlib_stringlist.html#bidx)
+    !> [Specifications](../page/specs/stdlib_stringlist_type.html#bidx)
     interface bidx
         module procedure backward_index
     end interface
@@ -93,7 +93,7 @@ module stdlib_stringlist
     !>
     !> Constructor for stringlist
     !> Returns an instance of type stringlist_type
-    !> [Specifications](../page/specs/stdlib_stringlist.html#stringlist_type)
+    !> [Specifications](../page/specs/stdlib_stringlist_type.html#stringlist_type)
     interface stringlist_type
         module procedure new_stringlist
         module procedure new_stringlist_carray
@@ -103,7 +103,7 @@ module stdlib_stringlist
     !> 
     !> Concatenates stringlist with the input entity
     !> Returns a new stringlist
-    !> [Specifications](../page/specs/stdlib_stringlist.html#append-operator)
+    !> [Specifications](../page/specs/stdlib_stringlist_type.html#append-operator)
     interface operator(//)
         module procedure append_char
         module procedure append_string
@@ -120,7 +120,7 @@ module stdlib_stringlist
     !> 
     !> Compares stringlist for equality with the input entity
     !> Returns a logical
-    !> [Specifications](../page/specs/stdlib_stringlist.html#equality-operator)
+    !> [Specifications](../page/specs/stdlib_stringlist_type.html#equality-operator)
     interface operator(==)
         module procedure eq_stringlist
         module procedure eq_stringlist_carray
@@ -133,7 +133,7 @@ module stdlib_stringlist
     !> 
     !> Compares stringlist for inequality with the input entity
     !> Returns a logical
-    !> [Specifications](../page/specs/stdlib_stringlist.html#inequality-operator)
+    !> [Specifications](../page/specs/stdlib_stringlist_type.html#inequality-operator)
     interface operator(/=)
         module procedure ineq_stringlist
         module procedure ineq_stringlist_carray
@@ -723,4 +723,4 @@ contains
     end function get_string_idx_wrap
 
 
-end module stdlib_stringlist
+end module stdlib_stringlist_type
