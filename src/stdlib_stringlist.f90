@@ -51,7 +51,6 @@ module stdlib_stringlist
 
     type stringlist_type
         private
-        integer :: size = 0
         type(string_type), dimension(:), allocatable :: stringarray
     
     contains
@@ -98,7 +97,6 @@ module stdlib_stringlist
     interface stringlist_type
         module procedure new_stringlist
         module procedure new_stringlist_carray
-        module procedure new_stringlist_sarray
     end interface
 
     !> Version: experimental
@@ -154,7 +152,7 @@ contains
         type(stringlist_type)                           :: new_stringlist
         type(string_type), dimension(0)                 :: sarray
 
-        new_stringlist = stringlist_type( 0, sarray )
+        new_stringlist = stringlist_type( sarray )
 
     end function new_stringlist
 
@@ -173,16 +171,6 @@ contains
         new_stringlist_carray = stringlist_type( sarray )
         
     end function new_stringlist_carray
-
-    !> Constructor to convert stringarray to stringlist
-    !> Returns a new instance of type stringlist
-    pure function new_stringlist_sarray( array )
-        type(string_type), dimension(:), intent(in)     :: array
-        type(stringlist_type)                           :: new_stringlist_sarray
-
-        new_stringlist_sarray = stringlist_type( size(array), array )
-    
-    end function new_stringlist_sarray
 
   ! constructor for stringlist_index_type:
 
@@ -455,7 +443,6 @@ contains
     subroutine clear_list( list )
         class(stringlist_type), intent(inout) :: list
 
-        list%size = 0
         if ( allocated( list%stringarray ) ) then
             deallocate( list%stringarray )
         end if
@@ -471,7 +458,10 @@ contains
     pure integer function length_list( list )
         class(stringlist_type), intent(in) :: list
 
-        length_list = list%size
+        length_list = 0
+        if ( allocated( list%stringarray ) ) then
+            length_list = size( list%stringarray )
+        end if
 
     end function length_list
 
@@ -608,8 +598,6 @@ contains
             end do
 
             call move_alloc( new_stringarray, list%stringarray )
-
-            list%size = new_len
 
         end if
 
