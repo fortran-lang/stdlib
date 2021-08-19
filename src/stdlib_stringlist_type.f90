@@ -15,7 +15,7 @@
 !     throughout the PR
 !
 module stdlib_stringlist_type
-    use stdlib_string_type, only: string_type, operator(/=) !, move
+    use stdlib_string_type, only: string_type, operator(/=)
     use stdlib_math, only: clip
     implicit none
     private

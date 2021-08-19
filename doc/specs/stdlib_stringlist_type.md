@@ -2,16 +2,16 @@
 title: stringlist type
 ---
 
-# `stdlib_stringlist_type` module (1-D List of Strings)
+# `stdlib_stringlist_type` module (1-D List of strings)
 
 [TOC]
 
 ## Introduction
 
-The `stdlib_stringlist_type` module provides with 2 derived types to deal with list of strings.
-`stringlist_type` derived type represents a one-dimensional list of variable-length strings which is compatible with Fortran intrinsic character and `stringlist_type` derived type represents an index to access, modify the elements of a stringlist and insert strings to a stringlist.
+The `stdlib_stringlist_type` module provides with 2 derived types to deal with lists of strings.
+`stringlist_type` derived type represents a one-dimensional list of variable-length strings which is compatible with Fortran intrinsic character and `stringlist_index_type` derived type represents an index to access, modify the elements of a stringlist and insert strings to a stringlist.
 
-## Derived type provided
+## Derived types provided
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### `stringlist_type` derived type
@@ -30,7 +30,7 @@ Experimental
 An instance of the derived type `stringlist_index_type` represents either a forward index OR a backward index. 
 The internal representation is implementation dependent and is not visible to the user of the module.  
 `list_head` and `list_tail` are 2 special instances of this type representing the head and the tail of a stringlist respectively.
-An instance is independent of the stringlist it is used with and hence, an index can be used with multiple stringlists in the same program.
+An instance is independent of the `stringlist_type` it is used with and hence, an index can be used with multiple stringlists in the same program.
 
 #### Status
 
@@ -60,8 +60,8 @@ Pure function.
 
 #### Argument
 
-- `idx`: integer.
-  This argument is intent(in).
+- `idx`: Shall be of kind `integer`.
+  This argument is `intent(in)`.
 
 #### Result value
 
@@ -96,7 +96,7 @@ end program demo_fidx_bidx
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### Constructor for stringlist
+### Constructor for `stringlist_type`
 
 #### Description
 
@@ -106,9 +106,7 @@ With argument: Initializes a stringlist equivalent to the input array `array` i.
 
 #### Syntax
 
-- No arguments given: `res = [[stdlib_stringlist_type(module):stringlist_type(interface)]] ()`
-
-- With argument: `res = [[stdlib_stringlist_type(module):stringlist_type(interface)]] (array)`
+`res = [[stdlib_stringlist_type(module):stringlist_type(interface)]] ([array])`
 
 #### Status
 
@@ -120,11 +118,8 @@ Pure function.
 
 #### Argument
 
-1). No arguments.
-
-2). With argument:
-- `array`: array of Character scalar or array of [[stdlib_string_type(module):string_type(type)]]. 
-This argument is intent(in).
+- `array`: Shall be an array of `character` scalar or array of [[stdlib_string_type(module):string_type(type)]]. 
+This argument is `intent(in)` and `optional`.
 
 #### Result value
 
@@ -175,10 +170,10 @@ Pure subroutine.
 #### Argument
 
 - `idx`: [[stdlib_stringlist_type(module):stringlist_index_type(type)]].
-  This argument is intent(in).
+  This argument is `intent(in)`.
 
 - `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
-  This argument is intent(in).
+  This argument is `intent(in)`.
 
 #### Result value
 
