@@ -17,8 +17,6 @@ contains
 
         work_list = stringlist_type()
         call check( work_list%len() == 0, "test_insert_at_string_1: constructor" )
-        call check( work_list%to_current_idxn( list_tail ) == 0, "test_insert_at_string_1: list_tail == 0")
-        call check( work_list%to_current_idxn( list_head ) == 1, "test_insert_at_string_1: list_head == 1")
 
         write (*,*) "test_insert_at_string_1: Starting test case 1!"
         current_length = 0
@@ -36,10 +34,6 @@ contains
             call check( work_list%get( list_tail ) == to_string(first), "test_insert_at_string_1: get&
                                     & list_tail " // string )
 
-            call check( work_list%to_current_idxn( list_head ) == 1, "test_insert_at_string_1:&
-                                    & to_current_idxn( list_head ) " // to_string( current_length ) )
-            call check( work_list%to_current_idxn( list_tail ) == current_length, "test_insert_at_string_1:&
-                                    & to_current_idxn( list_tail ) "  // to_string( current_length ) )
             call check( work_list%len() == current_length, "test_insert_at_string_1: length check "&
                                     & // to_string( current_length ) )
 
@@ -67,10 +61,6 @@ contains
             call check( work_list%get( list_head ) == to_string(first), "test_insert_at_string_1: get&
                                     & list_head " // string )
 
-            call check( work_list%to_current_idxn( list_head ) == 1, "test_insert_at_string_1:&
-                                    & to_current_idxn( list_head ) " // to_string( current_length ) )
-            call check( work_list%to_current_idxn( list_tail ) == current_length, "test_insert_at_string_1:&
-                                    & to_current_idxn( list_tail ) "  // to_string( current_length ) )
             call check( work_list%len() == current_length, "test_insert_at_string_1: length check "&
                                     & // to_string( current_length ) )
 
@@ -109,10 +99,6 @@ contains
             call check( work_list%get( list_tail ) == string, "test_insert_at_string_2: get&
                                     & list_tail " // string )
 
-            call check( work_list%to_current_idxn( list_head ) == 1, "test_insert_at_string_2:&
-                                    & to_current_idxn( list_head ) " // to_string( current_length ) )
-            call check( work_list%to_current_idxn( list_tail ) == current_length, "test_insert_at_string_2:&
-                                    & to_current_idxn( list_tail ) "  // to_string( current_length ) )
             call check( work_list%len() == current_length, "test_insert_at_string_2: length check "&
                                     & // to_string( current_length ) )
 
@@ -138,10 +124,6 @@ contains
             call check( work_list%get( list_tail ) == to_string(last), "test_insert_at_string_2: get&
                                     & list_tail " // string )
 
-            call check( work_list%to_current_idxn( list_head ) == 1, "test_insert_at_string_2:&
-                                    & to_current_idxn( list_head ) " // to_string( current_length ) )
-            call check( work_list%to_current_idxn( list_tail ) == current_length, "test_insert_at_string_2:&
-                                    & to_current_idxn( list_tail ) "  // to_string( current_length ) )
             call check( work_list%len() == current_length, "test_insert_at_string_2: length check "&
                                     & // to_string( current_length ) )
 
@@ -180,10 +162,6 @@ contains
             call check( work_list%get( list_head ) == string, "test_insert_at_string_3: get&
                                     & list_head " // string )
 
-            call check( work_list%to_current_idxn( list_head ) == 1, "test_insert_at_string_3:&
-                                    & to_current_idxn( list_head ) " // to_string( current_length ) )
-            call check( work_list%to_current_idxn( list_tail ) == current_length, "test_insert_at_string_3:&
-                                    & to_current_idxn( list_tail ) "  // to_string( current_length ) )
             call check( work_list%len() == current_length, "test_insert_at_string_3: length check "&
                                     & // to_string( current_length ) )
 
@@ -209,10 +187,6 @@ contains
             call check( work_list%get( list_head ) == to_string(last), "test_insert_at_string_3: get&
                                     & list_head " // string )
 
-            call check( work_list%to_current_idxn( list_head ) == 1, "test_insert_at_string_3:&
-                                    & to_current_idxn( list_head ) " // to_string( current_length ) )
-            call check( work_list%to_current_idxn( list_tail ) == current_length, "test_insert_at_string_3:&
-                                    & to_current_idxn( list_tail ) "  // to_string( current_length ) )
             call check( work_list%len() == current_length, "test_insert_at_string_3: length check "&
                                     & // to_string( current_length ) )
 

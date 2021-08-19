@@ -62,7 +62,7 @@ module stdlib_stringlist_type
 
         procedure         :: to_future_at_idxn              =>  convert_to_future_at_idxn
 
-        procedure, public :: to_current_idxn                =>  convert_to_current_idxn
+        procedure         :: to_current_idxn                =>  convert_to_current_idxn
 
         procedure         :: insert_at_char_idx             =>  insert_at_char_idx_wrap
         procedure         :: insert_at_string_idx           =>  insert_at_string_idx_wrap
