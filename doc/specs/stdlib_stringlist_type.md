@@ -2,22 +2,24 @@
 title: stringlist type
 ---
 
-# `stdlib_stringlist_type` module (1-D List of strings)
+# `stdlib_stringlist_type` module (1-D list of strings)
 
 [TOC]
 
 ## Introduction
 
 The `stdlib_stringlist_type` module provides with 2 derived types to deal with lists of strings.
-`stringlist_type` derived type represents a one-dimensional list of variable-length strings which is compatible with Fortran intrinsic character and `stringlist_index_type` derived type represents an index to access, modify the elements of a stringlist and insert strings to a stringlist.
+`stringlist_type` derived type represents one-dimensional list of variable-length strings (also referred as one-dimensional stringlist) which is compatible with Fortran intrinsic character and `stringlist_index_type` derived type represents an index to access, modify the elements of a stringlist, insert elements to a stringlist and much more.
 
 ## Derived types provided
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### `stringlist_type` derived type
 
-The `stringlist_type` derived type represents one-dimensional list of strings. 
+The `stringlist_type` derived type represents one-dimensional list of strings (also referred as one-dimensional stringlist).  
 The internal representation of the list is implementation dependent and is not visible to the user of the module.
+
+Note: _stringlist_ is an abstract concept which is expressed through the derived type `stringlist_type`.
 
 #### Status
 
@@ -30,7 +32,7 @@ Experimental
 An instance of the derived type `stringlist_index_type` represents either a forward index OR a backward index. 
 The internal representation is implementation dependent and is not visible to the user of the module.  
 `list_head` and `list_tail` are 2 special instances of this type representing the head and the tail of a stringlist respectively.
-An instance is independent of the `stringlist_type` it is used with and hence, an index can be used with multiple stringlists in the same program.
+An index is independent of the stringlist(or `stringlist_type`) it is used with and hence, an index can be used with multiple stringlists in the same program.
 
 #### Status
 
@@ -86,11 +88,11 @@ end program demo_fidx_bidx
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### Constructor for `stringlist_type`
+### Constructor for `stringlist_type`(or stringlist)
 
 #### Description
 
-No arguments given: Initializes an empty stringlist(a list containing no elements in it).
+No arguments given: Initializes an empty stringlist(a stringlist containing no elements in it).
 
 With argument: Initializes a stringlist equivalent to the input array `array` i.e. a stringlist containing all elements of the input array `array` in the same order.
 
@@ -389,7 +391,7 @@ a [[stdlib_stringlist_type(module):stringlist_type(type)]].
 
 #### Result value
 
-The result is a default logical scalar value.
+The result is a default `logical` scalar value.
 
 #### Example
 
@@ -459,7 +461,7 @@ a [[stdlib_stringlist_type(module):stringlist_type(type)]].
 
 #### Result value
 
-The result is a default logical scalar value.
+The result is a default `logical` scalar value.
 
 #### Example
 
@@ -501,7 +503,7 @@ end program demo_inequality_operator
 
 #### Description
 
-Concatenates left hand side (lhs) and right hand side (rhs).
+Returns the concatenated output of left hand side (lhs) and right hand side (rhs).
 
 #### Syntax
 
