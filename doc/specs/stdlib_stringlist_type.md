@@ -108,8 +108,8 @@ Pure function.
 
 #### Argument
 
-- `array`: Shall be an array of `character` scalar or array of [[stdlib_string_type(module):string_type(type)]]. 
-This argument is `intent(in)` and `optional`.
+- `array`: Shall be an array of `character` scalar or array of [[stdlib_string_type(module):string_type(type)]].
+ This argument is `intent(in)` and `optional`.
 
 #### Result value
 
@@ -353,4 +353,210 @@ program demo_clear
     ! stringlist <-- {"Element No. one"}
 
 end program demo_clear
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### Comparison operator equal
+
+#### Description
+
+Compares left hand side (lhs) with right hand side (rhs) for equality.
+
+#### Syntax
+
+`res = lhs == rhs`
+
+`res = lhs .eq. rhs`
+
+#### Status
+
+Experimental.
+
+#### Class
+
+Pure function, `operator(==)` and `operator(.eq.)`.
+
+#### Argument
+
+- `lhs`: Shall be an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
+a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+ This argument is `intent(in)`.
+ 
+- `rhs`: Shall be an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
+a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+ This argument is `intent(in)`.
+
+#### Result value
+
+The result is a default logical scalar value.
+
+#### Example
+
+```fortran
+program demo_equality_operator
+  use stdlib_stringlist_type, only: stringlist_type, fidx, list_head, operator(==)
+  use stdlib_string_type, only: string_type
+  implicit none
+
+  type(stringlist_type)          :: stringlist
+  type(string_type), allocatable :: stringarray(:)
+  logical                        :: res
+
+  !> inserting 4 elements to the stringlist
+  call stringlist%insert_at( fidx(1), "#1" )
+  call stringlist%insert_at( list_head, "#2" )
+  call stringlist%insert_at( fidx(1), "#3" )
+  call stringlist%insert_at( list_head, "#4" )
+    ! stringlist <-- {"#4", "#3", "#2", "#1"}
+
+  !> creating an array of 4 string_type elements
+    stringarray = [string_type("#4"), string_type("#3"), string_type("#2"), string_type("#1")]
+  
+  res = ( stringarray == stringlist )
+    ! res <-- .true.
+  
+  res = ( stringlist == ["#4", "#3", "#2", "#1"] )
+    ! res <-- .true.
+
+  print'(a)', stringlist == ["#4", "#3", "#1"]
+    ! .false.
+
+end program demo_equality_operator
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### Comparison operator not equal
+
+#### Description
+
+Compares left hand side (lhs) with right hand side (rhs) for inequality.
+
+#### Syntax
+
+`res = lhs /= rhs`
+
+`res = lhs .ne. rhs`
+
+#### Status
+
+Experimental.
+
+#### Class
+
+Pure function, `operator(/=)` and `operator(.ne.)`.
+
+#### Argument
+
+- `lhs`: Shall be an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
+a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+ This argument is `intent(in)`.
+ 
+- `rhs`: Shall be an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
+a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+ This argument is `intent(in)`.
+
+#### Result value
+
+The result is a default logical scalar value.
+
+#### Example
+
+```fortran
+program demo_inequality_operator
+  use stdlib_stringlist_type, only: stringlist_type, bidx, list_tail, operator(/=)
+  use stdlib_string_type, only: string_type
+  implicit none
+
+  type(stringlist_type)          :: stringlist
+  type(string_type), allocatable :: stringarray(:)
+  logical                        :: res
+
+  !> inserting 4 elements to the stringlist
+  call stringlist%insert_at( bidx(1), "#1" )
+  call stringlist%insert_at( list_tail, "#2" )
+  call stringlist%insert_at( bidx(1), "#3" )
+  call stringlist%insert_at( list_tail, "#4" )
+    ! stringlist <-- {"#1", "#2", "#3", "#4"}
+
+  !> creating an array of 4 string_type elements
+    stringarray = [string_type("#1"), string_type("#2"), string_type("#3"), string_type("#4")]
+  
+  res = ( stringarray /= stringlist )
+    ! res <-- .false.
+  
+  res = ( stringlist /= ["#111", "#222", "#333", "#444"] )
+    ! res <-- .true.
+
+  print'(a)', stringlist /= ["#4", "#3", "#1"]
+    ! .true.
+
+end program demo_inequality_operator
+```
+
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### Concatenation operator(//)
+
+#### Description
+
+Concatenates left hand side (lhs) and right hand side (rhs).
+
+#### Syntax
+
+`res = lhs // rhs`
+
+#### Status
+
+Experimental.
+
+#### Class
+
+Pure function, `operator(//)`.
+
+#### Argument
+
+- `lhs`: Shall be a `character` scalar or [[stdlib_string_type(module):string_type(type)]] OR an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
+a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+ This argument is `intent(in)`.
+ 
+- `rhs`: Shall be a `character` scalar or [[stdlib_string_type(module):string_type(type)]] OR an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
+a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+ This argument is `intent(in)`.
+
+#### Result value
+
+The result is an instance of `stringlist_type`.
+
+#### Example
+
+```fortran
+program demo_concatenate_operator
+  use stdlib_stringlist_type, only: stringlist_type, operator(//)
+  use stdlib_string_type, only: string_type
+  implicit none
+
+  type(stringlist_type)          :: first_stringlist, second_stringlist
+  type(string_type), allocatable :: stringarray(:)
+
+  first_stringlist = first_stringlist // "Element No. one"
+    ! first_stringlist <-- {"Element No. one"}
+
+  second_stringlist = string_type("Element No. two") // first_stringlist
+    ! second_stringlist <-- {Element No. two, "Element No. one"}
+
+  !> Creating an array of 2 string_type elements
+  stringarray = [string_type("Element No. three"), string_type("Element No. four")]
+
+  second_stringlist = first_stringlist // stringarray
+    ! second_stringlist <-- {"Element No. one", "Element No. three", "Element No. four"}
+
+  second_stringlist =  ["#1", "#2"] // second_stringlist
+    ! second_stringlist <-- {"#1", "#2", "Element No. one", "Element No. three", "Element No. four"}
+
+  first_stringlist = first_stringlist // second_stringlist
+    ! first_stringlist <-- {"Element No. one", "#1", "#2", "Element No. one", "Element No. three", "Element No. four"}
+
+end program demo_concatenate_operator
 ```

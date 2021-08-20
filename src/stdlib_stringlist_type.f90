@@ -203,126 +203,126 @@ contains
 
   ! concatenation operator:
 
-    !> Appends character scalar 'string' to the stringlist 'list'
+    !> Appends character scalar 'rhs' to the stringlist 'list'
     !> Returns a new stringlist
-    function append_char( list, string )
-        type(stringlist_type), intent(in) :: list
-        character(len=*), intent(in)      :: string
+    function append_char( lhs, rhs )
+        type(stringlist_type), intent(in) :: lhs
+        character(len=*), intent(in)      :: rhs
         type(stringlist_type)             :: append_char
 
-        append_char = list // string_type( string )
+        append_char = lhs // string_type( rhs )
 
     end function append_char
 
-    !> Appends string 'string' to the stringlist 'list'
+    !> Appends string 'rhs' to the stringlist 'list'
     !> Returns a new stringlist
-    function append_string( list, string )
-        type(stringlist_type), intent(in) :: list
-        type(string_type), intent(in)     :: string
+    function append_string( lhs, rhs )
+        type(stringlist_type), intent(in) :: lhs
+        type(string_type), intent(in)     :: rhs
         type(stringlist_type)             :: append_string
 
-        append_string = list ! Intent: creating a full, deep copy
-        call append_string%insert_at( list_tail, string )
+        append_string = lhs ! Intent: creating a full, deep copy
+        call append_string%insert_at( list_tail, rhs )
 
     end function append_string
 
-    !> Prepends character scalar 'string' to the stringlist 'list'
+    !> Prepends character scalar 'lhs' to the stringlist 'rhs'
     !> Returns a new stringlist
-    function prepend_char( string, list )
-        character(len=*), intent(in)      :: string
-        type(stringlist_type), intent(in) :: list
+    function prepend_char( lhs, rhs )
+        character(len=*), intent(in)      :: lhs
+        type(stringlist_type), intent(in) :: rhs
         type(stringlist_type)             :: prepend_char
 
-        prepend_char = string_type( string ) // list
+        prepend_char = string_type( lhs ) // rhs
 
     end function prepend_char
 
-    !> Prepends string 'string' to the stringlist 'list'
+    !> Prepends string 'lhs' to the stringlist 'rhs'
     !> Returns a new stringlist
-    function prepend_string( string, list )
-        type(string_type), intent(in)     :: string
-        type(stringlist_type), intent(in) :: list
+    function prepend_string( lhs, rhs )
+        type(string_type), intent(in)     :: lhs
+        type(stringlist_type), intent(in) :: rhs
         type(stringlist_type)             :: prepend_string
 
-        prepend_string = list ! Intent: creating a full, deep copy
-        call prepend_string%insert_at( list_head, string )
+        prepend_string = rhs ! Intent: creating a full, deep copy
+        call prepend_string%insert_at( list_head, lhs )
 
     end function prepend_string
 
-    !> Appends stringlist 'slist' to the stringlist 'list'
+    !> Appends stringlist 'rhs' to the stringlist 'lhs'
     !> Returns a new stringlist
-    function append_stringlist( list, slist )
-        type(stringlist_type), intent(in) :: list
-        type(stringlist_type), intent(in) :: slist
+    function append_stringlist( lhs, rhs )
+        type(stringlist_type), intent(in) :: lhs
+        type(stringlist_type), intent(in) :: rhs
         type(stringlist_type)             :: append_stringlist
 
-        append_stringlist = list ! Intent: creating a full, deep copy
-        call append_stringlist%insert_at( list_tail, slist )
+        append_stringlist = lhs ! Intent: creating a full, deep copy
+        call append_stringlist%insert_at( list_tail, rhs )
 
     end function append_stringlist
 
-    !> Appends chararray 'carray' to the stringlist 'list'
+    !> Appends chararray 'rhs' to the stringlist 'lhs'
     !> Returns a new stringlist
-    function append_carray( list, carray )
-        type(stringlist_type), intent(in)           :: list
-        character(len=*), dimension(:), intent(in)  :: carray
+    function append_carray( lhs, rhs )
+        type(stringlist_type), intent(in)           :: lhs
+        character(len=*), dimension(:), intent(in)  :: rhs
         type(stringlist_type)                       :: append_carray
 
-        append_carray = list ! Intent: creating a full, deep copy
-        call append_carray%insert_at( list_tail, carray )
+        append_carray = lhs ! Intent: creating a full, deep copy
+        call append_carray%insert_at( list_tail, rhs )
 
     end function append_carray
 
-    !> Appends stringarray 'sarray' to the stringlist 'list'
+    !> Appends stringarray 'rhs' to the stringlist 'lhs'
     !> Returns a new stringlist
-    function append_sarray( list, sarray )
-        type(stringlist_type), intent(in)           :: list
-        type(string_type), dimension(:), intent(in) :: sarray
+    function append_sarray( lhs, rhs )
+        type(stringlist_type), intent(in)           :: lhs
+        type(string_type), dimension(:), intent(in) :: rhs
         type(stringlist_type)                       :: append_sarray
 
-        append_sarray = list ! Intent: creating a full, deep copy
-        call append_sarray%insert_at( list_tail, sarray )
+        append_sarray = lhs ! Intent: creating a full, deep copy
+        call append_sarray%insert_at( list_tail, rhs )
 
     end function append_sarray
 
-    !> Prepends chararray 'carray' to the stringlist 'list'
+    !> Prepends chararray 'lhs' to the stringlist 'rhs'
     !> Returns a new stringlist
-    function prepend_carray( carray, list )
-        character(len=*), dimension(:), intent(in) :: carray
-        type(stringlist_type), intent(in)          :: list
+    function prepend_carray( lhs, rhs )
+        character(len=*), dimension(:), intent(in) :: lhs
+        type(stringlist_type), intent(in)          :: rhs
         type(stringlist_type)                      :: prepend_carray
 
-        prepend_carray = list ! Intent: creating a full, deep copy
-        call prepend_carray%insert_at( list_head, carray )
+        prepend_carray = rhs ! Intent: creating a full, deep copy
+        call prepend_carray%insert_at( list_head, lhs )
 
     end function prepend_carray
 
-    !> Prepends stringarray 'sarray' to the stringlist 'list'
+    !> Prepends stringarray 'lhs' to the stringlist 'rhs'
     !> Returns a new stringlist
-    function prepend_sarray( sarray, list )
-        type(string_type), dimension(:), intent(in) :: sarray
-        type(stringlist_type), intent(in)           :: list
+    function prepend_sarray( lhs, rhs )
+        type(string_type), dimension(:), intent(in) :: lhs
+        type(stringlist_type), intent(in)           :: rhs
         type(stringlist_type)                       :: prepend_sarray
 
-        prepend_sarray = list ! Intent: creating a full, deep copy
-        call prepend_sarray%insert_at( list_head, sarray )
+        prepend_sarray = rhs ! Intent: creating a full, deep copy
+        call prepend_sarray%insert_at( list_head, lhs )
 
     end function prepend_sarray
 
   ! equality operator:
 
-    !> Compares stringlist 'list' for equality with stringlist 'slist'
+    !> Compares stringlist 'lhs' for equality with stringlist 'rhs'
     !> Returns a logical
-    pure logical function eq_stringlist( list, slist )
-        type(stringlist_type), intent(in)           :: list
-        type(stringlist_type), intent(in)           :: slist
+    pure logical function eq_stringlist( lhs, rhs )
+        type(stringlist_type), intent(in)           :: lhs
+        type(stringlist_type), intent(in)           :: rhs
         integer                                     :: i
 
         eq_stringlist = .false.
-        if ( list%len() == slist%len() ) then
+        if ( lhs%len() == rhs%len() ) then
             eq_stringlist = .true.
-            do i = 1, list%len()
-                if ( list%stringarray(i) /= slist%stringarray(i) ) then
+            do i = 1, lhs%len()
+                if ( lhs%stringarray(i) /= rhs%stringarray(i) ) then
                     eq_stringlist = .false.
                     exit
                 end if
@@ -331,18 +331,18 @@ contains
 
     end function eq_stringlist
 
-    !> Compares stringlist 'list' for equality with chararray 'carray'
+    !> Compares stringlist 'lhs' for equality with chararray 'rhs'
     !> Returns a logical
-    pure logical function eq_stringlist_carray( list, carray )
-        type(stringlist_type), intent(in)           :: list
-        character(len=*), dimension(:), intent(in)  :: carray
+    pure logical function eq_stringlist_carray( lhs, rhs )
+        type(stringlist_type), intent(in)           :: lhs
+        character(len=*), dimension(:), intent(in)  :: rhs
         integer                                     :: i
 
         eq_stringlist_carray = .false.
-        if ( list%len() == size( carray ) ) then
+        if ( lhs%len() == size( rhs ) ) then
             eq_stringlist_carray = .true.
-            do i = 1, list%len()
-                if ( list%stringarray(i) /= carray(i) ) then
+            do i = 1, lhs%len()
+                if ( lhs%stringarray(i) /= rhs(i) ) then
                     eq_stringlist_carray = .false.
                     exit
                 end if
@@ -351,18 +351,18 @@ contains
 
     end function eq_stringlist_carray
 
-    !> Compares stringlist 'list' for equality with stringarray 'sarray'
+    !> Compares stringlist 'lhs' for equality with stringarray 'rhs'
     !> Returns a logical
-    pure logical function eq_stringlist_sarray( list, sarray )
-        type(stringlist_type), intent(in)           :: list
-        type(string_type), dimension(:), intent(in) :: sarray
+    pure logical function eq_stringlist_sarray( lhs, rhs )
+        type(stringlist_type), intent(in)           :: lhs
+        type(string_type), dimension(:), intent(in) :: rhs
         integer                                     :: i
 
         eq_stringlist_sarray = .false.
-        if ( list%len() == size( sarray ) ) then
+        if ( lhs%len() == size( rhs ) ) then
             eq_stringlist_sarray = .true.
-            do i = 1, list%len()
-                if ( list%stringarray(i) /= sarray(i) ) then
+            do i = 1, lhs%len()
+                if ( lhs%stringarray(i) /= rhs(i) ) then
                     eq_stringlist_sarray = .false.
                     exit
                 end if
@@ -371,75 +371,75 @@ contains
 
     end function eq_stringlist_sarray
 
-    !> Compares stringlist 'list' for equality with chararray 'carray'
+    !> Compares chararray 'lhs' for equality with stringlist 'rhs'
     !> Returns a logical
-    pure logical function eq_carray_stringlist( carray, list )
-        character(len=*), dimension(:), intent(in)  :: carray
-        type(stringlist_type), intent(in)           :: list
+    pure logical function eq_carray_stringlist( lhs, rhs )
+        character(len=*), dimension(:), intent(in)  :: lhs
+        type(stringlist_type), intent(in)           :: rhs
 
-        eq_carray_stringlist = ( list == carray )
+        eq_carray_stringlist = ( rhs == lhs )
 
     end function eq_carray_stringlist
 
-    !> Compares stringlist 'list' for equality with stringarray 'sarray'
+    !> Compares stringarray 'lhs' for equality with stringlist 'rhs'
     !> Returns a logical
-    pure logical function eq_sarray_stringlist( sarray, list )
-        type(string_type), dimension(:), intent(in) :: sarray
-        type(stringlist_type), intent(in)           :: list
+    pure logical function eq_sarray_stringlist( lhs, rhs )
+        type(string_type), dimension(:), intent(in) :: lhs
+        type(stringlist_type), intent(in)           :: rhs
 
-        eq_sarray_stringlist = ( list == sarray )
+        eq_sarray_stringlist = ( rhs == lhs )
 
     end function eq_sarray_stringlist
 
   ! inequality operator:
 
-    !> Compares stringlist 'list' for inequality with stringlist 'slist'
+    !> Compares stringlist 'lhs' for inequality with stringlist 'rhs'
     !> Returns a logical
-    pure logical function ineq_stringlist( list, slist )
-        type(stringlist_type), intent(in)           :: list
-        type(stringlist_type), intent(in)           :: slist
+    pure logical function ineq_stringlist( lhs, rhs )
+        type(stringlist_type), intent(in)           :: lhs
+        type(stringlist_type), intent(in)           :: rhs
 
-        ineq_stringlist = .not.( list == slist )
+        ineq_stringlist = .not.( lhs == rhs )
 
     end function ineq_stringlist
 
-    !> Compares stringlist 'list' for inequality with chararray 'carray'
+    !> Compares stringlist 'lhs' for inequality with chararray 'rhs'
     !> Returns a logical
-    pure logical function ineq_stringlist_carray( list, carray )
-        type(stringlist_type), intent(in)           :: list
-        character(len=*), dimension(:), intent(in)  :: carray
+    pure logical function ineq_stringlist_carray( lhs, rhs )
+        type(stringlist_type), intent(in)           :: lhs
+        character(len=*), dimension(:), intent(in)  :: rhs
 
-        ineq_stringlist_carray = .not.( list == carray ) 
+        ineq_stringlist_carray = .not.( lhs == rhs ) 
 
     end function ineq_stringlist_carray
 
-    !> Compares stringlist 'list' for inequality with stringarray 'sarray'
+    !> Compares stringlist 'lhs' for inequality with stringarray 'rhs'
     !> Returns a logical
-    pure logical function ineq_stringlist_sarray( list, sarray )
-        type(stringlist_type), intent(in)           :: list
-        type(string_type), dimension(:), intent(in) :: sarray
+    pure logical function ineq_stringlist_sarray( lhs, rhs )
+        type(stringlist_type), intent(in)           :: lhs
+        type(string_type), dimension(:), intent(in) :: rhs
 
-        ineq_stringlist_sarray = .not.( list == sarray ) 
+        ineq_stringlist_sarray = .not.( lhs == rhs ) 
 
     end function ineq_stringlist_sarray
 
-    !> Compares stringlist 'list' for inequality with chararray 'carray'
+    !> Compares chararray 'lhs' for inequality with stringlist 'rhs'
     !> Returns a logical
-    pure logical function ineq_carray_stringlist( carray, list )
-        character(len=*), dimension(:), intent(in)  :: carray
-        type(stringlist_type), intent(in)           :: list
+    pure logical function ineq_carray_stringlist( lhs, rhs )
+        character(len=*), dimension(:), intent(in)  :: lhs
+        type(stringlist_type), intent(in)           :: rhs
 
-        ineq_carray_stringlist = .not.( carray == list)
+        ineq_carray_stringlist = .not.( lhs == rhs)
 
     end function ineq_carray_stringlist
 
-    !> Compares stringlist 'list' for inequality with stringarray 'sarray'
+    !> Compares stringarray 'lhs' for inequality with stringlist 'rhs'
     !> Returns a logical
-    pure logical function ineq_sarray_stringlist( sarray, list )
-        type(string_type), dimension(:), intent(in) :: sarray
-        type(stringlist_type), intent(in)           :: list
+    pure logical function ineq_sarray_stringlist( lhs, rhs )
+        type(string_type), dimension(:), intent(in) :: lhs
+        type(stringlist_type), intent(in)           :: rhs
 
-        ineq_sarray_stringlist = .not.( sarray == list )
+        ineq_sarray_stringlist = .not.( lhs == rhs )
 
     end function ineq_sarray_stringlist
 
