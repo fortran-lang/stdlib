@@ -97,6 +97,7 @@ module stdlib_stringlist_type
     interface stringlist_type
         module procedure new_stringlist
         module procedure new_stringlist_carray
+        module procedure new_stringlist_sarray
     end interface
 
     !> Version: experimental
@@ -150,9 +151,6 @@ contains
     !> Returns a new instance of type stringlist 
     pure function new_stringlist()
         type(stringlist_type)                           :: new_stringlist
-        type(string_type), dimension(0)                 :: sarray
-
-        new_stringlist = stringlist_type( sarray )
 
     end function new_stringlist
 
@@ -171,6 +169,17 @@ contains
         new_stringlist_carray = stringlist_type( sarray )
         
     end function new_stringlist_carray
+
+    !> Constructor to convert stringarray to stringlist
+    !> Returns a new instance of type stringlist
+    pure function new_stringlist_sarray( array )
+        type(string_type), dimension(:), intent(in)     :: array
+        type(stringlist_type)                           :: new_stringlist_sarray
+
+        new_stringlist_sarray = stringlist_type()
+        new_stringlist_sarray%stringarray = array
+
+    end function new_stringlist_sarray
 
   ! constructor for stringlist_index_type:
 

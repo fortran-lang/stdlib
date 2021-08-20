@@ -342,12 +342,12 @@ contains
         call check( work_list == sarray, "test_constructor:&
             & test_case 2 work_list == sarray" )
 
-        ! write (*,*) "test_constructor:        Starting test case 3!"
-        ! work_list = stringlist_type( sarray )
-        ! call check( work_list == carray, "test_constructor:&
-        !     & test_case 3 work_list == carray" )
-        ! call check( work_list == sarray, "test_constructor:&
-        !     & test_case 3 work_list == sarray" )
+        write (*,*) "test_constructor:        Starting test case 3!"
+        work_list = stringlist_type( sarray )
+        call check( work_list == carray, "test_constructor:&
+            & test_case 3 work_list == carray" )
+        call check( work_list == sarray, "test_constructor:&
+            & test_case 3 work_list == sarray" )
 
     end subroutine test_constructor
 
