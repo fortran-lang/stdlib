@@ -71,26 +71,16 @@ The result is of type `stringlist_index_type`.
 
 ```fortran
 program demo_fidx_bidx
-  use stdlib_stringlist_type, only: stringlist_type, stringlist_index_type, fidx, bidx
+  use stdlib_stringlist_type, only: stringlist_index_type, fidx, bidx
   implicit none
 
-  type(stringlist_type) :: stringlist
   type(stringlist_index_type) :: index
 
   index = fidx(1)
-
-  !> inserting 2 elements to the stringlist
-  call stringlist%insert_at( fidx(1), "Element No. one" )
-  call stringlist%insert_at( index, "Element No. two" )
-    ! stringlist <-- {"Element No. two", "Element No. one"}
+    ! forward index 1
 
   index = bidx(3)
-
-  !> inserting 2 elements to the stringlist
-  call stringlist%insert_at( bidx(1), "Element No. three" )
-  call stringlist%insert_at( index, "Element No. four" )
-    ! stringlist <-- {"Element No. two", "Element No. four", 
-    "Element No. one", "Element No. three"}
+    ! backward index 3
 
 end program demo_fidx_bidx
 ```
@@ -175,10 +165,6 @@ Pure subroutine.
 - `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
   This argument is `intent(in)`.
 
-#### Result value
-
-No result.
-
 #### Example
 
 ```fortran
@@ -230,7 +216,7 @@ Pure function.
 #### Argument
 
 - `idx`: [[stdlib_stringlist_type(module):stringlist_index_type(type)]].
-  This argument is intent(in).
+  This argument is `intent(in)`.
 
 #### Result value
 
@@ -344,10 +330,6 @@ Pure subroutine.
 #### Argument
 
 No arguments.
-
-#### Result value
-
-No result.
 
 #### Example
 
