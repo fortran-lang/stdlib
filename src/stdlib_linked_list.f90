@@ -33,7 +33,7 @@ module stdlib_linked_list
 
     !> Defining Linked List
     !>
-    !> This linked list is single-dimentional chain of Parent Nodes.
+    !> This linked list is single-dimensional chain of Parent Nodes.
     !> It is a doubly-linked heterogeneous generic list .
     type linked_list
         integer, private           :: num_parent_nodes
@@ -64,14 +64,14 @@ module stdlib_linked_list
     !> Creates a Parent Node that contains 'item' as its child
     !>
     !> Returns the new parent node                 
-    pure function initialise_parent_node( item ) result( new_node )
+    pure function initialize_parent_node( item ) result( new_node )
         type(Parent_Node) :: new_node
         type(child_list), intent(in) :: item
 
         ! allocating item to the new node's child
         allocate(new_node%child, source=item)
 
-    end function initialise_parent_node
+    end function initialize_parent_node
 
 
     !> Returns the number of nodes stored in the input parent node's child list
@@ -120,12 +120,12 @@ module stdlib_linked_list
         ! Fitting in the new parent node with proper next and prev references
         if( associated(this_parent_node%next) ) then
             next_parent_node => this_parent_node%next
-            allocate(this_parent_node%next, source=initialise_parent_node(new_child_list))
+            allocate(this_parent_node%next, source=initialize_parent_node(new_child_list))
             this_parent_node%next%next => next_parent_node
             this_parent_node%next%prev => next_parent_node%prev
             next_parent_node%prev => this_parent_node%next
         else
-            allocate(this_parent_node%next, source=initialise_parent_node(new_child_list))
+            allocate(this_parent_node%next, source=initialize_parent_node(new_child_list))
             next_parent_node = this_parent_node
             next_parent_node%next%prev => next_parent_node
         end if
@@ -160,7 +160,7 @@ module stdlib_linked_list
         if( this_linked_list%num_parent_nodes == 0 ) then
             ! Linked List is empty. Associating head and tail of the input linked list
             call new_child%push(item)
-            allocate(this_linked_list%head, source=initialise_parent_node(new_child))
+            allocate(this_linked_list%head, source=initialize_parent_node(new_child))
             this_linked_list%tail => this_linked_list%head
             this_linked_list%num_parent_nodes = this_linked_list%num_parent_nodes + 1
         else

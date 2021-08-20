@@ -25,7 +25,7 @@ module stdlib_child_list
 
     !> Defining Child List
     !>
-    !> This linked list is single-dimentional chain of Nodes.
+    !> This linked list is single-dimensional chain of Nodes.
     !> It is a doubly-linked heterogeneous generic list .
     type child_list
         integer, private :: num_nodes = 0
@@ -49,13 +49,13 @@ module stdlib_child_list
     !> Creates a Node that contains 'new_item' as its child
     !>
     !> Returns the new parent node   
-    pure function initialise_node( new_item ) result( new_node )
+    pure function initialize_node( new_item ) result( new_node )
         type(node) :: new_node
         class(*), intent(in), optional :: new_item
         
         ! allocating new_item to the new node's item
         allocate(new_node%item, source=new_item)
-    end function initialise_node
+    end function initialize_node
     
     !> Delete a node and frees the memory in the item.
     pure subroutine node_destroyed( this_node )
@@ -96,11 +96,11 @@ module stdlib_child_list
 
         ! Finding if its a first node or the child_list already have a node
         if (associated(this_child_list%tail)) then
-            allocate(this_child_list%tail%next, source=initialise_node(item))
+            allocate(this_child_list%tail%next, source=initialize_node(item))
             this_child_list%tail%next%prev => this_child_list%tail
             this_child_list%tail => this_child_list%tail%next
         else
-            allocate(this_child_list%head, source=initialise_node(item))
+            allocate(this_child_list%head, source=initialize_node(item))
             this_child_list%tail => this_child_list%head
         end if
 
@@ -128,7 +128,7 @@ module stdlib_child_list
         else if(index <=0) then
             ! will insert after tail when the input is more than size of the child list
             current_node => this_child_list%head
-            allocate(this_child_list%head,source = initialise_node(item))
+            allocate(this_child_list%head,source = initialize_node(item))
             this_child_list%head%next => current_node
             current_node%prev   => this_child_list%head
         else
@@ -138,7 +138,7 @@ module stdlib_child_list
             current_node => current_node%next;
             end do
             next_node => current_node%next
-            allocate(current_node%next,source = initialise_node(item))
+            allocate(current_node%next,source = initialize_node(item))
             current_node%next%prev => current_node
             current_node%next%next => next_node
             current_node => current_node%next
