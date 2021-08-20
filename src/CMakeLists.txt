@@ -14,7 +14,7 @@ set(fppFiles
     stdlib_sorting.fypp
     stdlib_sorting_ord_sort.fypp
     stdlib_sorting_sort.fypp
-    stdlib_sorting_sort_index.fypp 
+    stdlib_sorting_sort_index.fypp
     stdlib_stats.fypp
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
@@ -57,6 +57,8 @@ set(SRC
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90
     stdlib_quadrature_gauss.f90
+    stdlib_child_list.f90
+    stdlib_linked_list.f90
     ${outFiles}
 )
 
