@@ -1,6 +1,15 @@
 .PHONY: all clean test
 
-all test clean:
+LIB = libstdlib-testing.a
+SRCFYPP = stdlib_test.fypp
+SRCGEN = $(SRCFYPP:.fypp=.f90)
+SRC = $(SRCGEN)
+OBJS = $(SRC:.f90=.o)
+MODS = $(OBJS:.o=.mod)
+
+all test:: $(LIB)
+
+all test clean::
 	$(MAKE) -f Makefile.manual --directory=ascii $@
 	$(MAKE) -f Makefile.manual --directory=bitsets $@
 	$(MAKE) -f Makefile.manual --directory=io $@
@@ -10,4 +19,17 @@ all test clean:
 	$(MAKE) -f Makefile.manual --directory=quadrature $@
 	$(MAKE) -f Makefile.manual --directory=stats $@
 	$(MAKE) -f Makefile.manual --directory=string $@
+	$(MAKE) -f Makefile.manual --directory=test $@
 	$(MAKE) -f Makefile.manual --directory=math $@
+
+$(LIB): $(OBJS)
+	ar rcs $@ $^
+
+clean::
+	$(RM) $(LIB) $(OBJS) $(MODS) $(SRCGEN)
+
+%.o: %.f90
+	$(FC) $(FFLAGS) -I.. -c $<
+
+$(SRCGEN): %.f90: %.fypp ../common.fypp
+	fypp $(FYPPFLAGS) -I.. $< $@

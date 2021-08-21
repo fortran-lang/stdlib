@@ -1,0 +1,2 @@
+ADDTEST(check)
+ADDTEST(select)
