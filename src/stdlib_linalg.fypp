@@ -10,6 +10,13 @@ module stdlib_linalg
 
   public :: diag
   public :: eye
+  public :: is_square
+  public :: is_diagonal
+  public :: is_symmetric
+  public :: is_skew_symmetric
+  public :: is_hermitian
+  !public :: is_triangular
+  !public :: is_hessenberg
   public :: trace
   public :: outer_product
 
@@ -80,7 +87,69 @@ module stdlib_linalg
     #:endfor
   end interface outer_product
 
+
+  ! Check for squareness
+  interface is_square
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is square.
+    !! ([Specification](../page/specs/stdlib_linalg.html#description_4))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_square_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_square
+
+
+  ! Check for diagonality
+  interface is_diagonal
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is diagonal.
+    !! ([Specification](../page/specs/stdlib_linalg.html#description_5))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_diagonal_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_diagonal
+
+
+  ! Check for symmetry
+  interface is_symmetric
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is symmetric.
+    !! ([Specification](../page/specs/stdlib_linalg.html#description_6))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_symmetric_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_symmetric
+
+
+  ! Check for skew-symmetry
+  interface is_skew_symmetric
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is skew-symmetric.
+    !! ([Specification](../page/specs/stdlib_linalg.html#description_7))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_skew_symmetric_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_skew_symmetric
+
+
+  ! Check for Hermiticity
+  interface is_hermitian
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is Hermitian.
+    !! ([Specification](../page/specs/stdlib_linalg.html#description_8))
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+      module procedure is_hermitian_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_hermitian
+  
+
 contains
+
 
     function eye(n) result(res)
       !! version: experimental
@@ -108,4 +177,118 @@ contains
         end do
       end function trace_${t1[0]}$${k1}$
     #:endfor
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure function is_square_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        integer :: A_shape(2)
+        A_shape = shape(A)
+        res = (A_shape(1) .eq. A_shape(2))
+      end function is_square_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure function is_diagonal_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        ${t1}$ :: zero
+        integer :: A_shape(2), m, n, o, i, j
+        zero = 0 !zero of relevant type
+        A_shape = shape(A)
+        m = A_shape(1)
+        n = A_shape(2)
+        o = min(m,n) !minimum/lower dimension
+        do i=1,n !loop over all columns
+            do j=1,o-1 !loop over rows above diagonal
+                if (.not. (A(i,j) .eq. zero)) then
+                  res = .false.
+                  return
+                end if
+            end do
+            do j=o+1,m !loop over rows below diagonal
+                if (.not. (A(i,j) .eq. zero)) then
+                  res = .false.
+                  return
+                end if
+            end do
+        end do
+        res = .true. !otherwise A is diagonal
+      end function is_diagonal_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure function is_symmetric_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        integer :: A_shape(2), n, i, j
+        if (.not. is_square(A)) then
+           res = .false.
+           return !nonsquare matrices cannot be symmetric
+        end if
+        A_shape = shape(A)
+        n = A_shape(1) !symmetric dimension of A
+        do i=1,n !loop over all rows
+            do j=j+1,n !loop over all columns right of diagonal
+                if (.not. (A(i,j) .eq. A(j,i))) then
+                  res = .false.
+                  return
+                end if
+            end do
+        end do
+        res = .true. !otherwise A is symmetric
+      end function is_symmetric_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure function is_skew_symmetric_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        integer :: A_shape(2), n, i, j
+        if (.not. is_square(A)) then
+           res = .false.
+           return !nonsquare matrices cannot be skew-symmetric
+        end if
+        A_shape = shape(A)
+        n = A_shape(1) !symmetric dimension of A
+        do i=1,n !loop over all rows
+            do j=j,n !loop over all columns right of diagonal (including diagonal)
+                if (.not. (A(i,j) .eq. -A(j,i))) then
+                  res = .false.
+                  return
+                end if
+            end do
+        end do
+        res = .true. !otherwise A is skew-symmetric
+      end function is_skew_symmetric_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+      pure function is_hermitian_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        integer :: A_shape(2), n, i, j
+        if (.not. is_square(A)) then
+           res = .false.
+           return !nonsquare matrices cannot be Hermitian
+        end if
+        A_shape = shape(A)
+        n = A_shape(1) !symmetric dimension of A
+        do i=1,n !loop over all rows
+            do j=j+1,n !loop over all columns right of diagonal
+                if (.not. (A(i,j) .eq. conjg(A(j,i)))) then
+                  res = .false.
+                  return
+                end if
+            end do
+        end do
+        res = .true. !otherwise A is Hermitian
+      end function is_hermitian_${t1[0]}$${k1}$
+    #:endfor
+
 end module
