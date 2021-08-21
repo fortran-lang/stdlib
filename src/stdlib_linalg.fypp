@@ -91,7 +91,7 @@ contains
 
         integer, intent(in) :: dim1
         integer, intent(in), optional :: dim2
-        integer, allocatable :: result(:, :)
+        integer(int8), allocatable :: result(:, :)
 
         integer :: dim2_
         integer :: i
@@ -99,9 +99,9 @@ contains
         dim2_ = optval(dim2, dim1)
         allocate(result(dim1, dim2_))
         
-        result = 0
+        result = 0_int8
         do i = 1, min(dim1, dim2_)
-            result(i, i) = 1
+            result(i, i) = 1_int8
         end do
 
     end function eye

@@ -123,11 +123,12 @@ This is an `intent(in)` and `optional` argument.
 
 ### Return value
 
-Return the identity matrix, i.e. a matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer`.
+Return the identity matrix, i.e. a matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer(int8)`.
+The use of `int8` was suggested to save storage.
 
 #### Warning
 
-Since the result of `eye` is of `integer` type, one should be careful about using it in arithmetic expressions. For example:
+Since the result of `eye` is of `integer(int8)` type, one should be careful about using it in arithmetic expressions. For example:
 ```fortran
 real :: A(:,:)
 !> Be careful
