@@ -1,4 +1,4 @@
-### Pre-process: .fpp -> .f90 via Fypp
+#### Pre-process: .fpp -> .f90 via Fypp
 
 # Create a list of the files to be preprocessed
 set(fppFiles
@@ -14,7 +14,7 @@ set(fppFiles
     stdlib_sorting.fypp
     stdlib_sorting_ord_sort.fypp
     stdlib_sorting_sort.fypp
-    stdlib_sorting_sort_index.fypp 
+    stdlib_sorting_sort_index.fypp
     stdlib_stats.fypp
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
@@ -70,10 +70,21 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     Fortran_MODULE_DIRECTORY ${LIB_MOD_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${LIB_MOD_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_MODULEDIR}>
 )
 
-target_link_libraries(
-  ${PROJECT_NAME}
-  PRIVATE
-  fortran_stdlib::fortran_stdlib
+if(f18errorstop)
+  target_sources(${PROJECT_NAME} PRIVATE f18estop.f90)
+else()
+  target_sources(${PROJECT_NAME} PRIVATE f08estop.f90)
+endif()
+
+add_subdirectory(tests)
+
+install(TARGETS ${PROJECT_NAME}
+        EXPORT ${PROJECT_NAME}-targets
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )
+install(DIRECTORY ${LIB_MOD_DIR} DESTINATION "${CMAKE_INSTALL_MODULEDIR}")
