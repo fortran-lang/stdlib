@@ -67,21 +67,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     Fortran_MODULE_DIRECTORY ${LIB_MOD_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${LIB_MOD_DIR}>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_MODULEDIR}>
 )
 
-if(f18errorstop)
-  target_sources(${PROJECT_NAME} PRIVATE f18estop.f90)
-else()
-  target_sources(${PROJECT_NAME} PRIVATE f08estop.f90)
-endif()
-
-add_subdirectory(tests)
-
-install(TARGETS ${PROJECT_NAME}
-        EXPORT ${PROJECT_NAME}-targets
-        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+target_link_libraries(
+  ${PROJECT_NAME}
+  PRIVATE
+  fortran_stdlib::fortran_stdlib
 )
-install(DIRECTORY ${LIB_MOD_DIR} DESTINATION "${CMAKE_INSTALL_MODULEDIR}")
