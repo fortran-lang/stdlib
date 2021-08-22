@@ -87,7 +87,7 @@
 module stdlib_test
   use, intrinsic :: iso_fortran_env, only : error_unit
   use, intrinsic :: ieee_arithmetic, only : ieee_is_nan
-  use stdlib_ascii, only : to_string
+  use stdlib_strings, only : to_string
   use stdlib_kinds, only : sp, dp, qp, int8, int16, int32, int64
   use stdlib_optval, only : optval
   implicit none
@@ -140,16 +140,6 @@ module stdlib_test
     module procedure :: check_bool
     module procedure :: check_string
   end interface check
-
-
-  interface to_string
-  #:for kind in REAL_KINDS
-    module procedure :: real_${kind}$_to_string
-  #:endfor
-  #:for kind in CMPLX_KINDS
-    module procedure :: complex_${kind}$_to_string
-  #:endfor
-  end interface to_string
 
 
   abstract interface
@@ -809,33 +799,6 @@ contains
       end if
     end if
   end subroutine get_variable
-
-
-#:for kind in REAL_KINDS
-  pure function real_${kind}$_to_string(val) result(string)
-    integer, parameter :: wp = ${kind}$
-    real(wp), intent(in) :: val
-    character(len=:), allocatable :: string
-    integer, parameter :: buffer_len = 128
-    character(len=buffer_len) :: buffer
-
-    write(buffer, '(g0)') val
-    string = trim(buffer)
-  end function real_${kind}$_to_string
-#:endfor
-
-
-#:for kind in CMPLX_KINDS
-  pure function complex_${kind}$_to_string(val) result(string)
-    integer, parameter :: wp = ${kind}$
-    complex(wp), intent(in) :: val
-    character(len=:), allocatable :: string
-    integer, parameter :: buffer_len = 256
-    character(len=buffer_len) :: buffer
-
-    string = "("//to_string(real(val))//", "//to_string(aimag(val))//")"
-  end function complex_${kind}$_to_string
-#:endfor
 
 
   !> Clear error type after it has been handled.
