@@ -38,9 +38,9 @@ contains
     testsuite = [ &
       new_unittest("success", test_success), &
       new_unittest("failure", test_failure, should_fail=.true.), &
-      new_unittest("skipped", test_skipped), &
       new_unittest("failure-message", test_failure_message, should_fail=.true.), &
       new_unittest("failure-with-more", test_failure_with_more, should_fail=.true.), &
+      new_unittest("skipped", test_skipped), &
       new_unittest("expression", test_expression), &
       new_unittest("expression-fail", test_expression_fail, should_fail=.true.), &
       new_unittest("expression-message", test_expression_message, should_fail=.true.), &
@@ -50,11 +50,29 @@ contains
       new_unittest("real-single-nan", test_rsp_nan, should_fail=.true.), &
       new_unittest("real-single-abs-fail", test_rsp_abs_fail, should_fail=.true.), &
       new_unittest("real-single-rel-fail", test_rsp_rel_fail, should_fail=.true.), &
+      new_unittest("real-single-abs-message", test_rsp_abs_message, should_fail=.true.), &
+      new_unittest("real-single-nan-message", test_rsp_nan_message, should_fail=.true.), &
       new_unittest("real-double-abs", test_rdp_abs), &
       new_unittest("real-double-rel", test_rdp_rel), &
       new_unittest("real-double-nan", test_rdp_nan, should_fail=.true.), &
       new_unittest("real-double-abs-fail", test_rdp_abs_fail, should_fail=.true.), &
       new_unittest("real-double-rel-fail", test_rdp_rel_fail, should_fail=.true.), &
+      new_unittest("real-double-abs-message", test_rdp_abs_message, should_fail=.true.), &
+      new_unittest("real-double-nan-message", test_rdp_nan_message, should_fail=.true.), &
+      new_unittest("complex-single-abs", test_csp_abs), &
+      new_unittest("complex-single-rel", test_csp_rel), &
+      new_unittest("complex-single-nan", test_csp_nan, should_fail=.true.), &
+      new_unittest("complex-single-abs-fail", test_csp_abs_fail, should_fail=.true.), &
+      new_unittest("complex-single-rel-fail", test_csp_rel_fail, should_fail=.true.), &
+      new_unittest("complex-single-abs-message", test_csp_abs_message, should_fail=.true.), &
+      new_unittest("complex-single-nan-message", test_csp_nan_message, should_fail=.true.), &
+      new_unittest("complex-double-abs", test_cdp_abs), &
+      new_unittest("complex-double-rel", test_cdp_rel), &
+      new_unittest("complex-double-nan", test_cdp_nan, should_fail=.true.), &
+      new_unittest("complex-double-abs-fail", test_cdp_abs_fail, should_fail=.true.), &
+      new_unittest("complex-double-rel-fail", test_cdp_rel_fail, should_fail=.true.), &
+      new_unittest("complex-double-abs-message", test_cdp_abs_message, should_fail=.true.), &
+      new_unittest("complex-double-nan-message", test_cdp_nan_message, should_fail=.true.), &
       new_unittest("integer-char", test_i1), &
       new_unittest("integer-char-fail", test_i1_fail, should_fail=.true.), &
       new_unittest("integer-char-message", test_i1_message, should_fail=.true.), &
@@ -103,15 +121,6 @@ contains
   end subroutine test_failure
 
 
-  subroutine test_skipped(error)
-    !> Error handling
-    type(error_type), allocatable, intent(out) :: error
-
-    call skip_test(error, "This test is always skipped")
-
-  end subroutine test_skipped
-
-
   subroutine test_failure_message(error)
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
@@ -128,6 +137,15 @@ contains
     call check(error, 3, more="with an additional descriptive message here")
 
   end subroutine test_failure_with_more
+
+
+  subroutine test_skipped(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    call skip_test(error, "This test is always skipped")
+
+  end subroutine test_skipped
 
 
   subroutine test_expression(error)
@@ -193,6 +211,7 @@ contains
 
 
   subroutine test_rsp_rel(error)
+
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
 
@@ -229,6 +248,33 @@ contains
     call check(error, val, 1.5_sp, rel=.true.)
 
   end subroutine test_rsp_rel_fail
+
+
+  subroutine test_rsp_abs_message(error)
+
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    real(sp) :: val
+
+    val = 1.0_sp
+
+    call check(error, val, 1.5_sp, message="Actual value is not 1.5")
+
+  end subroutine test_rsp_abs_message
+
+
+  subroutine test_rsp_nan_message(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    real(sp) :: val
+
+    val = ieee_value(val, ieee_quiet_nan)
+
+    call check(error, val, message="Actual value is not a number")
+
+  end subroutine test_rsp_nan_message
 
 
   subroutine test_rdp_abs(error)
@@ -294,6 +340,215 @@ contains
     call check(error, val, 1.5_dp, rel=.true.)
 
   end subroutine test_rdp_rel_fail
+
+
+  subroutine test_rdp_abs_message(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    real(dp) :: val
+
+    val = 1.0_dp
+
+    call check(error, val, 1.5_dp, message="Actual value is not 1.5")
+
+  end subroutine test_rdp_abs_message
+
+
+  subroutine test_rdp_nan_message(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    real(dp) :: val
+
+    val = ieee_value(val, ieee_quiet_nan)
+
+    call check(error, val, message="Actual value is not a number")
+
+  end subroutine test_rdp_nan_message
+
+
+  subroutine test_csp_abs(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(sp) :: val
+
+    val = cmplx(3.3_sp, 1.0_sp, sp)
+
+    call check(error, val, cmplx(3.3_sp, 1.0_sp, sp), thr=sqrt(epsilon(abs(val))))
+
+  end subroutine test_csp_abs
+
+
+  subroutine test_csp_nan(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(sp) :: val
+
+    val = cmplx(ieee_value(real(val), ieee_quiet_nan), &
+      & ieee_value(aimag(val), ieee_quiet_nan), sp)
+
+    call check(error, val, cmplx(3.3_sp, 1.0_sp, sp), rel=.true.)
+
+  end subroutine test_csp_nan
+
+
+  subroutine test_csp_rel(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(sp) :: val
+
+    val = cmplx(3.3_sp, 1.0_sp, sp)
+
+    call check(error, val, cmplx(3.3_sp, 1.0_sp, sp), rel=.true.)
+
+  end subroutine test_csp_rel
+
+
+  subroutine test_csp_abs_fail(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(sp) :: val
+
+    val = cmplx(1.0_sp, 2.0_sp, sp)
+
+    call check(error, val, cmplx(2.0_sp, 1.0_sp, sp))
+
+  end subroutine test_csp_abs_fail
+
+
+  subroutine test_csp_rel_fail(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(sp) :: val
+
+    val = cmplx(1.0_sp, 1.5_sp, sp)
+
+    call check(error, val, cmplx(1.5_sp, 1.0_sp, sp), rel=.true.)
+
+  end subroutine test_csp_rel_fail
+
+
+  subroutine test_csp_abs_message(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(sp) :: val
+
+    val = cmplx(1.0_sp, 1.5_sp, sp)
+
+    call check(error, val, cmplx(1.5_sp, 1.0_sp, sp), message="Actual value is not 1.5+1.0i")
+
+  end subroutine test_csp_abs_message
+
+
+  subroutine test_csp_nan_message(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(sp) :: val
+
+    val = cmplx(ieee_value(real(val), ieee_quiet_nan), 0.0_sp, sp)
+
+    call check(error, val, message="Actual value is not a number")
+
+  end subroutine test_csp_nan_message
+
+
+  subroutine test_cdp_abs(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(dp) :: val
+
+    val = cmplx(3.3_dp, 1.0_dp, dp)
+
+    call check(error, val, cmplx(3.3_dp, 1.0_dp, dp), thr=sqrt(epsilon(real(val))))
+
+  end subroutine test_cdp_abs
+
+
+  subroutine test_cdp_rel(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(dp) :: val
+
+    val = cmplx(3.3_dp, 1.0_dp, dp)
+
+    call check(error, val, cmplx(3.3_dp, 1.0_dp, dp), rel=.true.)
+
+  end subroutine test_cdp_rel
+
+
+  subroutine test_cdp_nan(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(dp) :: val
+
+    val = cmplx(ieee_value(real(val), ieee_quiet_nan), 0.0_dp, dp)
+
+    call check(error, val, cmplx(3.3_dp, 1.0_dp, dp), rel=.true.)
+
+  end subroutine test_cdp_nan
+
+
+  subroutine test_cdp_abs_fail(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(dp) :: val
+
+    val = cmplx(1.0_dp, 2.0_dp, dp)
+
+    call check(error, val, cmplx(2.0_dp, 1.0_dp, dp))
+
+  end subroutine test_cdp_abs_fail
+
+
+  subroutine test_cdp_rel_fail(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(dp) :: val
+
+    val = cmplx(1.0_dp, 1.5_dp, dp)
+
+    call check(error, val, cmplx(1.5_dp, 1.0_dp, dp), rel=.true.)
+
+  end subroutine test_cdp_rel_fail
+
+
+  subroutine test_cdp_abs_message(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(dp) :: val
+
+    val = cmplx(1.0_dp, 1.5_dp, dp)
+
+    call check(error, val, cmplx(1.5_dp, 1.0_dp, dp), message="Actual value is not 1.5+1.0i")
+
+  end subroutine test_cdp_abs_message
+
+
+  subroutine test_cdp_nan_message(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    complex(dp) :: val
+
+    val = cmplx(ieee_value(real(val), ieee_quiet_nan), 0.0_dp, dp)
+
+    call check(error, val, message="Actual value is not a number")
+
+  end subroutine test_cdp_nan_message
 
 
   subroutine test_i1(error)

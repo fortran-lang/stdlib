@@ -67,10 +67,17 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_alphanum('A'))
+        if (allocated(error)) return
+
         call check(error, is_alphanum('1'))
+        if (allocated(error)) return
+
         call check(error, .not. is_alphanum('#'))
+        if (allocated(error)) return
+
         ! N.B.: does not return true for non-ASCII Unicode alphanumerics
         call check(error, .not. is_alphanum('á'))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_alphanum_long(error)
@@ -83,11 +90,13 @@ contains
         clist = digits//octal_digits//fullhex_digits//letters//lowercase//uppercase
         do i = 1, len(clist)
             call check(error, is_alphanum(clist(i:i)))
+            if (allocated(error)) return
         end do
 
         clist = whitespace
         do i = 1, len(clist)
             call check(error, .not. is_alphanum(clist(i:i)))
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -96,11 +105,17 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_alpha('A'))
+        if (allocated(error)) return
+
         call check(error, .not. is_alpha('1'))
+        if (allocated(error)) return
+
         call check(error, .not. is_alpha('#'))
+        if (allocated(error)) return
 
         ! N.B.: does not return true for non-ASCII Unicode alphabetic characters
         call check(error, .not. is_alpha('á'))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_alpha_long(error)
@@ -113,11 +128,13 @@ contains
         clist = letters//lowercase//uppercase
         do i = 1, len(clist)
             call check(error, is_alpha(clist(i:i)))
+            if (allocated(error)) return
         end do
 
         clist = digits//octal_digits//whitespace
         do i = 1, len(clist)
             call check(error, .not. is_alpha(clist(i:i)))
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -126,12 +143,20 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_lower('a'))
+        if (allocated(error)) return
+
         call check(error, .not. is_lower('A'))
+        if (allocated(error)) return
+
         call check(error, .not. is_lower('#'))
+        if (allocated(error)) return
 
         ! N.B.: does not return true for non-ASCII Unicode lowercase letters
         call check(error, .not. is_lower('á'))
+        if (allocated(error)) return
+
         call check(error, .not. is_lower('Á'))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_lower_long(error)
@@ -143,11 +168,13 @@ contains
 
         do i = 1, len(lowercase)
             call check(error, is_lower(lowercase(i:i)))
+            if (allocated(error)) return
         end do
 
         clist = digits//uppercase//whitespace
         do i = 1, len(clist)
             call check(error, .not. is_lower(clist(i:i)))
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -156,12 +183,20 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_upper('A'))
+        if (allocated(error)) return
+
         call check(error, .not. is_upper('a'))
+        if (allocated(error)) return
+
         call check(error, .not. is_upper('#'))
+        if (allocated(error)) return
 
         ! N.B.: does not return true for non-ASCII Unicode uppercase letters
         call check(error, .not. is_upper('á'))
+        if (allocated(error)) return
+
         call check(error, .not. is_upper('Á'))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_upper_long(error)
@@ -173,11 +208,13 @@ contains
 
         do i = 1, len(uppercase)
             call check(error, is_upper(uppercase(i:i)))
+            if (allocated(error)) return
         end do
 
         clist = digits//lowercase//whitespace
         do i = 1, len(clist)
             call check(error, .not. is_upper(clist(i:i)))
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -187,13 +224,23 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_digit('3'))
+        if (allocated(error)) return
+
         call check(error, is_digit('8'))
+        if (allocated(error)) return
+
         call check(error, .not. is_digit('B'))
+        if (allocated(error)) return
+
         call check(error, .not. is_digit('#'))
+        if (allocated(error)) return
 
         ! N.B.: does not return true for non-ASCII Unicode numbers
         call check(error, .not. is_digit('０')) ! full-width digit zero (U+FF10)
+        if (allocated(error)) return
+
         call check(error, .not. is_digit('４')) ! full-width digit four (U+FF14))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_digit_long(error)
@@ -205,11 +252,13 @@ contains
 
         do i = 1, len(digits)
             call check(error, is_digit(digits(i:i)))
+            if (allocated(error)) return
         end do
 
         clist = letters//whitespace
         do i = 1, len(clist)
             call check(error, .not. is_digit(clist(i:i)))
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -218,10 +267,19 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_octal_digit('0'))
+        if (allocated(error)) return
+
         call check(error, is_octal_digit('7'))
+        if (allocated(error)) return
+
         call check(error, .not. is_octal_digit('8'))
+        if (allocated(error)) return
+
         call check(error, .not. is_octal_digit('A'))
+        if (allocated(error)) return
+
         call check(error, .not. is_octal_digit('#'))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_octal_digit_long(error)
@@ -233,10 +291,12 @@ contains
 
         do i = 1, len(octal_digits)
             call check(error, is_octal_digit(octal_digits(i:i)))
+            if (allocated(error)) return
         end do
         clist = letters//'89'//whitespace
         do i = 1, len(clist)
             call check(error, .not. is_octal_digit(clist(i:i)))
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -245,11 +305,22 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_hex_digit('0'))
+        if (allocated(error)) return
+
         call check(error, is_hex_digit('A'))
+        if (allocated(error)) return
+
         call check(error, is_hex_digit('f')) !! lowercase hex digits are accepted
+        if (allocated(error)) return
+
         call check(error, .not. is_hex_digit('g'))
+        if (allocated(error)) return
+
         call check(error, .not. is_hex_digit('G'))
+        if (allocated(error)) return
+
         call check(error, .not. is_hex_digit('#'))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_hex_digit_long(error)
@@ -261,10 +332,12 @@ contains
 
         do i = 1, len(fullhex_digits)
             call check(error, is_hex_digit(fullhex_digits(i:i)))
+            if (allocated(error)) return
         end do
         clist = lowercase(7:)//uppercase(7:)//whitespace
         do i = 1, len(clist)
             call check(error, .not. is_hex_digit(clist(i:i)))
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -273,11 +346,22 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_white(' '))
+        if (allocated(error)) return
+
         call check(error, is_white(TAB))
+        if (allocated(error)) return
+
         call check(error, is_white(LF))
+        if (allocated(error)) return
+
         call check(error, .not. is_white('1'))
+        if (allocated(error)) return
+
         call check(error, .not. is_white('a'))
+        if (allocated(error)) return
+
         call check(error, .not. is_white('#'))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_white_long(error)
@@ -289,10 +373,12 @@ contains
 
         do i = 1, len(whitespace)
             call check(error, is_white(whitespace(i:i)))
+            if (allocated(error)) return
         end do
         clist = digits//letters
         do i = 1, len(clist)
             call check(error, .not. is_white(clist(i:i)))
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -301,10 +387,19 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_blank(' '))
+        if (allocated(error)) return
+
         call check(error, is_blank(TAB))
+        if (allocated(error)) return
+
         call check(error, .not. is_blank('1'))
+        if (allocated(error)) return
+
         call check(error, .not. is_blank('a'))
+        if (allocated(error)) return
+
         call check(error, .not. is_blank('#'))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_blank_long(error)
@@ -320,10 +415,12 @@ contains
             else
                 call check(error, .not. is_blank(whitespace(i:i)))
             end if
+            if (allocated(error)) return
         end do
         clist = digits//letters
         do i = 1, len(clist)
             call check(error, .not. is_blank(clist(i:i)))
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -334,10 +431,19 @@ contains
         ! print *, is_control('\0')
         ! print *, is_control('\022')
         call check(error, is_control(new_line('a'))) ! newline is both whitespace and control
+        if (allocated(error)) return
+
         call check(error, .not. is_control(' '))
+        if (allocated(error)) return
+
         call check(error, .not. is_control('1'))
+        if (allocated(error)) return
+
         call check(error, .not. is_control('a'))
+        if (allocated(error)) return
+
         call check(error, .not. is_control('#'))
+        if (allocated(error)) return
 
         ! N.B.: non-ASCII Unicode control characters are not recognized:
         ! print *, .not. is_control('\u0080')
@@ -354,12 +460,15 @@ contains
 
         do i = 0, 31
             call check(error, is_control(achar(i)))
+            if (allocated(error)) return
         end do
         call check(error, is_control(DEL))
+        if (allocated(error)) return
 
         clist = digits//letters//' '
         do i = 1, len(clist)
             call check(error, .not. is_control(clist(i:i)))
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -368,19 +477,43 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_punctuation('.'))
+        if (allocated(error)) return
+
         call check(error, is_punctuation(','))
+        if (allocated(error)) return
+
         call check(error, is_punctuation(':'))
+        if (allocated(error)) return
+
         call check(error, is_punctuation('!'))
+        if (allocated(error)) return
+
         call check(error, is_punctuation('#'))
+        if (allocated(error)) return
+
         call check(error, is_punctuation('~'))
+        if (allocated(error)) return
+
         call check(error, is_punctuation('+'))
+        if (allocated(error)) return
+
         call check(error, is_punctuation('_'))
+        if (allocated(error)) return
 
         call check(error, .not. is_punctuation('1'))
+        if (allocated(error)) return
+
         call check(error, .not. is_punctuation('a'))
+        if (allocated(error)) return
+
         call check(error, .not. is_punctuation(' '))
+        if (allocated(error)) return
+
         call check(error, .not. is_punctuation(LF)) ! new line character
+        if (allocated(error)) return
+
         call check(error, .not. is_punctuation(NUL))
+        if (allocated(error)) return
 
         ! N.B.: Non-ASCII Unicode punctuation characters are not recognized.
         ! print *, is_punctuation('\u2012') ! (U+2012 = en-dash)
@@ -400,6 +533,7 @@ contains
             else
                 call check(error, is_punctuation(c))
             end if
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -408,14 +542,26 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_graphical('1'))
+        if (allocated(error)) return
+
         call check(error, is_graphical('a'))
+        if (allocated(error)) return
+
         call check(error, is_graphical('#'))
+        if (allocated(error)) return
+
         call check(error, .not. is_graphical(' ')) ! whitespace is not graphical
+        if (allocated(error)) return
+
         call check(error, .not. is_graphical(LF))
+        if (allocated(error)) return
+
         call check(error, .not. is_graphical(NUL))
+        if (allocated(error)) return
 
         ! N.B.: Unicode graphical characters are not regarded as such.
         call check(error, .not. is_graphical('ä'))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_graphical_long(error)
@@ -432,6 +578,7 @@ contains
             else
                 call check(error, is_graphical(c))
             end if
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -440,13 +587,23 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_printable(' ')) ! whitespace is printable
+        if (allocated(error)) return
+
         call check(error, is_printable('1'))
+        if (allocated(error)) return
+
         call check(error, is_printable('a'))
+        if (allocated(error)) return
+
         call check(error, is_printable('#'))
+        if (allocated(error)) return
+
         call check(error, .not. is_printable(NUL)) ! control characters are not printable
+        if (allocated(error)) return
 
         ! N.B.: Printable non-ASCII Unicode characters are not recognized.
         call check(error, .not. is_printable('ä'))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_printable_long(error)
@@ -463,6 +620,7 @@ contains
             else
                 call check(error, is_printable(c))
             end if
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -471,7 +629,10 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, is_ascii('a'))
+        if (allocated(error)) return
+
         call check(error, .not. is_ascii('ä'))
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_is_ascii_long(error)
@@ -482,8 +643,10 @@ contains
 
         do i = 0, 127
             call check(error, is_ascii(achar(i)))
+            if (allocated(error)) return
         end do
         call check(error, .not. is_ascii(achar(128))) ! raises compiler warning
+        if (allocated(error)) return
 
     end subroutine
 
@@ -492,8 +655,13 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, to_lower('a'), 'a')
+        if (allocated(error)) return
+
         call check(error, to_lower('A'), 'a')
+        if (allocated(error)) return
+
         call check(error, to_lower('#'), '#')
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_to_lower_long(error)
@@ -505,6 +673,7 @@ contains
 
         do i = 1, len(uppercase)
             call check(error, to_lower(uppercase(i:i)), lowercase(i:i))
+            if (allocated(error)) return
         end do
         do i = 0, 127
             c = achar(i)
@@ -513,6 +682,7 @@ contains
             else
                 call check(error, to_lower(c) /= c)
             end if
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -521,8 +691,13 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         call check(error, to_upper('a'), 'A')
+        if (allocated(error)) return
+
         call check(error, to_upper('A'), 'A')
+        if (allocated(error)) return
+
         call check(error, to_upper('#'), '#')
+        if (allocated(error)) return
     end subroutine
 
     subroutine test_to_upper_long(error)
@@ -534,6 +709,7 @@ contains
 
         do i = 1, len(lowercase)
             call check(error, to_upper(lowercase(i:i)), uppercase(i:i))
+            if (allocated(error)) return
         end do
 
         do i = 0, 127
@@ -543,6 +719,7 @@ contains
             else
                 call check(error, to_upper(c) /= c)
             end if
+            if (allocated(error)) return
         end do
     end subroutine
 
@@ -615,14 +792,21 @@ contains
 
         dlc = to_lower("UPPERCASE")
         call check(error, dlc, "uppercase")
+        if (allocated(error)) return
 
         dlc = to_lower(input)
         call check(error, len(dlc), 32)
+        if (allocated(error)) return
+
         call check(error, len_trim(dlc), 9)
+        if (allocated(error)) return
+
         call check(error, trim(dlc), "uppercase")
+        if (allocated(error)) return
 
         dlc = to_lower("0123456789ABCDE")
         call check(error, dlc, "0123456789abcde")
+        if (allocated(error)) return
     end subroutine test_to_lower_string
 
     subroutine test_to_upper_string(error)
@@ -634,14 +818,21 @@ contains
 
         dlc = to_upper("lowercase")
         call check(error, dlc, "LOWERCASE")
+        if (allocated(error)) return
 
         dlc = to_upper(input)
         call check(error, len(dlc), 32)
+        if (allocated(error)) return
+
         call check(error, len_trim(dlc), 9)
+        if (allocated(error)) return
+
         call check(error, trim(dlc), "LOWERCASE")
+        if (allocated(error)) return
 
         dlc = to_upper("0123456789abcde")
         call check(error, dlc, "0123456789ABCDE")
+        if (allocated(error)) return
     end subroutine test_to_upper_string
 
     subroutine test_to_title_string(error)
@@ -653,20 +844,29 @@ contains
 
         dlc = to_title("tHis Is tO bE tiTlEd")
         call check(error, dlc, "This Is To Be Titled")
+        if (allocated(error)) return
 
         dlc = to_title(input)
         call check(error, len(dlc), 32)
+        if (allocated(error)) return
+
         call check(error, len_trim(dlc), 20)
+        if (allocated(error)) return
+
         call check(error, trim(dlc), "This Is To Be Titled")
+        if (allocated(error)) return
 
         dlc = to_title(" s P a C e D !")
         call check(error, dlc, " S P A C E D !")
+        if (allocated(error)) return
 
         dlc = to_title("1st, 2nD, 3RD")
         call check(error, dlc, "1st, 2nd, 3rd")
+        if (allocated(error)) return
 
         dlc = to_title("""quOTed""")
         call check(error, dlc, """Quoted""")
+        if (allocated(error)) return
     end subroutine test_to_title_string
 
     subroutine test_to_sentence_string(error)
@@ -678,20 +878,29 @@ contains
 
         dlc = to_sentence("tHis iS A seNteNcE.")
         call check(error, dlc, "This is a sentence.")
+        if (allocated(error)) return
 
         dlc = to_sentence(input)
         call check(error, len(dlc), 32)
+        if (allocated(error)) return
+
         call check(error, len_trim(dlc), 19)
+        if (allocated(error)) return
+
         call check(error, trim(dlc), "This is a sentence.")
+        if (allocated(error)) return
 
         dlc = to_sentence(" s P a C e D !")
         call check(error, dlc, " S p a c e d !")
+        if (allocated(error)) return
 
         dlc = to_sentence("1st, 2nd, 3rd")
         call check(error, dlc, "1st, 2nd, 3rd")
+        if (allocated(error)) return
 
         dlc = to_sentence("""quOTed""")
         call check(error, dlc, """Quoted""")
+        if (allocated(error)) return
     end subroutine test_to_sentence_string
 
     subroutine test_reverse_string(error)
@@ -703,12 +912,20 @@ contains
 
         dlc = reverse("reversed")
         call check(error, dlc, "desrever")
+        if (allocated(error)) return
 
         dlc = reverse(input)
         call check(error, len(dlc), 32)
+        if (allocated(error)) return
+
         call check(error, len_trim(dlc), 32)
+        if (allocated(error)) return
+
         call check(error, trim(dlc), "                        desrever")
+        if (allocated(error)) return
+
         call check(error, trim(adjustl(dlc)), "desrever")
+        if (allocated(error)) return
     end subroutine test_reverse_string
 
     subroutine test_to_string(error)
@@ -719,42 +936,55 @@ contains
 
         write(flc, '(g0)') 1026192
         call check(error, to_string(1026192), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') -124784
         call check(error, to_string(-124784), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') 1_int8
         call check(error, to_string(1_int8), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') -3_int8
         call check(error, to_string(-3_int8), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') 80_int16
         call check(error, to_string(80_int16), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') 8924890_int32
         call check(error, to_string(8924890_int32), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') -2378401_int32
         call check(error, to_string(-2378401_int32), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') -921092378401_int64
         call check(error, to_string(-921092378401_int64), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') 1272835771_int64
         call check(error, to_string(1272835771_int64), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') .true.
         call check(error, to_string(.true.), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') .false.
         call check(error, to_string(.false.), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') .true._c_bool
         call check(error, to_string(.true._c_bool), trim(flc))
+        if (allocated(error)) return
 
         write(flc, '(g0)') .false._lk
         call check(error, to_string(.false._lk), trim(flc))
+        if (allocated(error)) return
     end subroutine test_to_string
 
 end module test_ascii
