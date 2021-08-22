@@ -563,9 +563,11 @@ Pure function.
 
 - `value`: Shall be an `integer/real/complex/logical` scalar.
   This is an `intent(in)` argument.
-- `format`: Shall be a `character(len=*)` scalar like `'(F6.2)'`.
-  This is an `intent(in)` and `optional` argument.
-
+- `format`: Shall be a `character(len=*)` scalar like `'(F6.2)'` or just `'F6.2'`.
+  This is an `intent(in)` and `optional` argument.  
+  Contains the edit descriptor to format `value` into a string, for example `'(F6.2)'` or `'(f6.2)'`. 
+  `to_string` will automatically enclose `format` in a set of parentheses, so passing `F6.2` or `f6.2` as `format` is possible as well.
+  
 #### Result value
 
 The result is an `allocatable` length `character` scalar with up to `128` cached `character` length.
@@ -575,7 +577,6 @@ The result is an `allocatable` length `character` scalar with up to `128` cached
 ```fortran
 program demo_to_string
     use stdlib_strings, only: to_string
-    implicit none
 
     !> Example for `complex` type
     print *, to_string((1, 1))              !! "(1.00000000,1.00000000)"
@@ -593,14 +594,16 @@ program demo_to_string
     !> Example for `real` type
     print *, to_string(1.)                  !! "1.00000000"
     print *, to_string(1., '(F6.2)')        !! "  1.00" 
+    print *, to_string(1., 'F6.2')          !! "  1.00" 
     print *, to_string(1., '(SP,ES9.2)'), to_string(1, '(F7.3)')    !! "+1.00E+00""[*]"
                     !! 1 wrong demonstration (`[*]` from `to_string`)
 
     !> Example for `logical` type
     print *, to_string(.true.)              !! "T"
     print *, to_string(.true., '(L2)')      !! " T"
-    print *, to_string(.true., 'L2'), to_string(.false., '(I5)')    !! "[*]""[*]"
-                    !! 2 wrong demonstrations(`[*]` from `to_string`)
+    print *, to_string(.true., 'L2')        !! " T"
+    print *, to_string(.false., '(I5)')     !! "[*]"
+                    !! 1 wrong demonstrations(`[*]` from `to_string`)
 
 end program demo_to_string
 ```

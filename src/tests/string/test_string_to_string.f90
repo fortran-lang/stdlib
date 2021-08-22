@@ -36,11 +36,11 @@ contains
                 & "Default formatter for complex number", partial=.true.)
         call check_formatter(to_string((1, 1), '(F6.2)'), "(  1.00,  1.00)", &
                 & "Formatter for complex number")
-        call check_formatter(to_string((-1, -1), '(F6.2)'), "( -1.00, -1.00)", &
+        call check_formatter(to_string((-1, -1), 'F6.2'), "( -1.00, -1.00)", &
                 & "Formatter for negative complex number")
-        call check_formatter(to_string((1, 1), '(SP,F6.2)'), "( +1.00, +1.00)", &
+        call check_formatter(to_string((1, 1), 'SP,F6.2'), "( +1.00, +1.00)", &
                 & "Formatter with sign control descriptor for complex number")
-        call check_formatter(to_string((1, 1), '(F6.2)') // to_string((2, 2), '(F7.3)'), &
+        call check_formatter(to_string((1, 1), 'F6.2') // to_string((2, 2), '(F7.3)'), &
                 & "(  1.00,  1.00)(  2.000,  2.000)", &
                 & "Multiple formatters for complex numbers")
 
@@ -49,17 +49,17 @@ contains
     subroutine test_to_string_integer
         call check_formatter(to_string(100), "100", &
                 & "Default formatter for integer number")
-        call check_formatter(to_string(100, '(I6)'), "   100", &
+        call check_formatter(to_string(100, 'I6'), "   100", &
                 & "Formatter for integer number")
-        call check_formatter(to_string(100, '(I0.6)'), "000100", &
+        call check_formatter(to_string(100, 'I0.6'), "000100", &
                 & "Formatter with zero padding for integer number")
-        call check_formatter(to_string(100, '(I6)') // to_string(1000, '(I7)'), &
+        call check_formatter(to_string(100, 'I6') // to_string(1000, '(I7)'), &
                 & "   100   1000", "Multiple formatters for integers")
-        call check_formatter(to_string(34, '(B8)'), "  100010", &
+        call check_formatter(to_string(34, 'B8'), "  100010", &
                 & "Binary formatter for integer number")
-        call check_formatter(to_string(34, '(O0.3)'), "042", &
+        call check_formatter(to_string(34, 'O0.3'), "042", &
                 & "Octal formatter with zero padding for integer number")
-        call check_formatter(to_string(34, '(Z3)'), " 22", &
+        call check_formatter(to_string(34, 'Z3'), " 22", &
                 & "Hexadecimal formatter for integer number")
 
     end subroutine test_to_string_integer
@@ -67,19 +67,19 @@ contains
     subroutine test_to_string_real
         call check_formatter(to_string(100.), "100.0", &
                 & "Default formatter for real number", partial=.true.)
-        call check_formatter(to_string(100., '(F6.2)'), "100.00", &
+        call check_formatter(to_string(100., 'F6.2'), "100.00", &
                 & "Formatter for real number")
-        call check_formatter(to_string(289., '(E7.2)'), ".29E+03", &
+        call check_formatter(to_string(289., 'E7.2'), ".29E+03", &
                 & "Exponential formatter with rounding for real number")
-        call check_formatter(to_string(128., '(ES8.2)'), "1.28E+02", &
+        call check_formatter(to_string(128., 'ES8.2'), "1.28E+02", &
                 & "Exponential formatter for real number")
     
       ! Wrong demonstration
-        call check_formatter(to_string(-100., '(F6.2)'), "*", &
+        call check_formatter(to_string(-100., 'F6.2'), "*", &
                 & "Too narrow formatter for signed real number", partial=.true.)
-        call check_formatter(to_string(1000., '(F6.3)'), "*", &
+        call check_formatter(to_string(1000., 'F6.3'), "*", &
                 & "Too narrow formatter for real number", partial=.true.)
-        call check_formatter(to_string(1000., '(7.3)'), "[*]", &
+        call check_formatter(to_string(1000., '7.3'), "[*]", &
                 & "Invalid formatter for real number", partial=.true.)
 
     end subroutine test_to_string_real
@@ -87,13 +87,13 @@ contains
     subroutine test_to_string_logical
         call check_formatter(to_string(.true.), "T", &
                 & "Default formatter for logcal value")
-        call check_formatter(to_string(.true., '(L2)'), " T", &
+        call check_formatter(to_string(.true., 'L2'), " T", &
                 & "Formatter for logical value")
-        call check_formatter(to_string(.false., '(L2)') // to_string(.true., '(L5)'), &
+        call check_formatter(to_string(.false., 'L2') // to_string(.true., '(L5)'), &
                 & " F    T", "Multiple formatters for logical values")
 
       ! Wrong demonstration
-        call check_formatter(to_string(.false., '(1x)'), "[*]", &
+        call check_formatter(to_string(.false., '1x'), "[*]", &
                 & "Invalid formatter for logical value", partial=.true.)
 
     end subroutine test_to_string_logical

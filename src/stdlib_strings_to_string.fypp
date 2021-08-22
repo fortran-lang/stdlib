@@ -17,7 +17,7 @@ contains
         character(len=buffer_len) :: buffer
         integer :: stat
 
-        write(buffer, optval(format, "(g0)"), iostat=stat) value
+        write(buffer, '(' // optval(format, "g0") // ')', iostat=stat) value
         if (stat == 0) then
             string = trim(buffer)
         else
@@ -82,7 +82,7 @@ contains
         character(len=buffer_len) :: buffer
         integer :: stat
 
-        write(buffer, format, iostat=stat) value
+        write(buffer, "(" // format // ")", iostat=stat) value
         if (stat == 0) then
             string = trim(buffer)
         else
@@ -110,7 +110,7 @@ contains
         character(len=buffer_len) :: buffer
         integer :: stat
 
-        write(buffer, format, iostat=stat) value
+        write(buffer, "(" // format // ")", iostat=stat) value
         if (stat == 0) then
             string = trim(buffer)
         else
