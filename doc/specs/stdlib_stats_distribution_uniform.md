@@ -75,15 +75,17 @@ Experimental
 
 ### Description
 
-Without augument the function returns a scalar standard uniformly distributed variate U(0,1) of `real` type with single precision on [0,1].
+Without argument the function returns a scalar standard uniformly distributed variate U(0,1) of `real` type with single precision on [0,1].
 
-With single augument `scale` of `integer` type the function returns a scalar uniformly distributed variate of `integer` type on [0,scale]. This is the standard Rectangular distribution.
+With single argument `scale` of `integer` type the function returns a scalar uniformly distributed variate of `integer` type on [0,scale]. This is the standard Rectangular distribution.
 
-With single augument `scale` of `real` or `complex` type the function returns a scalar uniformly distributed variate of `real` or `complex` type on [0, scale]. The real part and imaginary part of a `complex` type are independent of each other.
+With single argument `scale` of `real` or `complex` type the function returns a scalar uniformly distributed variate of `real` or `complex` type on [0, scale].
 
-With double auguments `loc` and `scale` the function returns a scalar uniformly distributed random variates of `integer`, `real` or `complex` type on [loc, loc + scale] dependent of input type. If it is `complex` augument, the real part and imaginary part are independent of each other.
+With double arguments `loc` and `scale` the function returns a scalar uniformly distributed random variates of `integer`, `real` or `complex` type on [loc, loc + scale] dependent of input type.
 
-With triple auguments `loc`, `scale` and `array_size` the function returns a rank one array of uniformly distributed variates of `integer`, `real` or `complex` type with an array size of `array_size`.
+With triple arguments `loc`, `scale` and `array_size` the function returns a rank one array of uniformly distributed variates of `integer`, `real` or `complex` type with an array size of `array_size`.
+
+For `complex` type, the real part and imaginary part are independent of each other.
 
 ### Syntax
 
@@ -223,11 +225,11 @@ Elemental function.
 
 `scale`: has `intent(in)` and is a scalar of type `integer`, `real` or `complex`.
 
-All three auguments could be arrays conformable to each other. All three arguments must have the same type and kind.
+All three arguments must have the same type and kind.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to auguments, of type `real`.
+The result is a scalar or an array, with a shape conformable to arguments, of type `real`.
 
 ### Example
 
@@ -317,11 +319,11 @@ Elemental function.
 
 `scale`: has `intent(in)` and is a scalar of type `integer`, `real` or `complex`.
 
-All three auguments could be arrays conformable to each other. All three arguments must have the same type and kind.
+All three arguments must have the same type and kind.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to auguments, of type `real`.
+The result is a scalar or an array, with a shape conformable to arguments, of type `real`.
 
 ### Example
 
