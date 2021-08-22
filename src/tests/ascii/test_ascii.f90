@@ -5,8 +5,7 @@ module test_ascii
         whitespace, letters, is_alphanum, is_alpha, is_lower, is_upper, &
         is_digit, is_octal_digit, is_hex_digit, is_white, is_blank, &
         is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
-        to_lower, to_upper, to_title, to_sentence, reverse, LF, TAB, NUL, DEL, &
-        to_string
+        to_lower, to_upper, to_title, to_sentence, reverse, LF, TAB, NUL, DEL
     use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
     implicit none
     private
@@ -57,8 +56,7 @@ contains
             new_unittest("to_lower_string", test_to_lower_string), &
             new_unittest("to_title_string", test_to_title_string), &
             new_unittest("to_sentence_string", test_to_sentence_string), &
-            new_unittest("reverse_string", test_reverse_string), &
-            new_unittest("to_string", test_to_string) &
+            new_unittest("reverse_string", test_reverse_string) &
             ]
     end subroutine collect_ascii
 
@@ -928,64 +926,6 @@ contains
         if (allocated(error)) return
     end subroutine test_reverse_string
 
-    subroutine test_to_string(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        character(len=128) :: flc
-
-        write(flc, '(g0)') 1026192
-        call check(error, to_string(1026192), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') -124784
-        call check(error, to_string(-124784), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') 1_int8
-        call check(error, to_string(1_int8), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') -3_int8
-        call check(error, to_string(-3_int8), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') 80_int16
-        call check(error, to_string(80_int16), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') 8924890_int32
-        call check(error, to_string(8924890_int32), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') -2378401_int32
-        call check(error, to_string(-2378401_int32), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') -921092378401_int64
-        call check(error, to_string(-921092378401_int64), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') 1272835771_int64
-        call check(error, to_string(1272835771_int64), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') .true.
-        call check(error, to_string(.true.), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') .false.
-        call check(error, to_string(.false.), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') .true._c_bool
-        call check(error, to_string(.true._c_bool), trim(flc))
-        if (allocated(error)) return
-
-        write(flc, '(g0)') .false._lk
-        call check(error, to_string(.false._lk), trim(flc))
-        if (allocated(error)) return
-    end subroutine test_to_string
 
 end module test_ascii
 

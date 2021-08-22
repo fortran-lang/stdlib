@@ -1,4 +1,4 @@
-SRCFYPP =\
+SRCFYPP = \
         stdlib_ascii.fypp \
         stdlib_bitsets_64.fypp \
         stdlib_bitsets_large.fypp \
@@ -27,10 +27,13 @@ SRCFYPP =\
         stdlib_stats_moment_scalar.fypp \
         stdlib_stats_var.fypp \
         stdlib_math.fypp \
-		stdlib_math_linspace.fypp \
-		stdlib_math_logspace.fypp \
+	stdlib_math_linspace.fypp \
+	stdlib_math_logspace.fypp \
         stdlib_stats_distribution_PRNG.fypp \
-        stdlib_string_type.fypp
+        stdlib_string_type.fypp \
+        stdlib_string_type_constructor.fypp \
+        stdlib_strings.fypp \
+        stdlib_strings_to_string.fypp
 
 SRC = f18estop.f90 \
       stdlib_error.f90 \
@@ -40,7 +43,6 @@ SRC = f18estop.f90 \
       stdlib_kinds.f90 \
       stdlib_logger.f90 \
       stdlib_quadrature_gauss.f90 \
-      stdlib_strings.f90 \
       $(SRCGEN)
 
 LIB = libstdlib.a
@@ -77,85 +79,89 @@ stdlib_error.o: stdlib_optval.o
 stdlib_specialfunctions.o: stdlib_kinds.o
 stdlib_specialfunctions_legendre.o: stdlib_kinds.o stdlib_specialfunctions.o
 stdlib_io.o: \
-	stdlib_ascii.o \
-	stdlib_error.o \
-	stdlib_optval.o \
-	stdlib_kinds.o
+    stdlib_ascii.o \
+    stdlib_error.o \
+    stdlib_optval.o \
+    stdlib_kinds.o \
+    stdlib_ascii.o
 stdlib_linalg.o: \
-	stdlib_kinds.o
+    stdlib_kinds.o
 stdlib_linalg_diag.o: \
-	stdlib_linalg.o \
-	stdlib_kinds.o
+    stdlib_linalg.o \
+    stdlib_kinds.o
 stdlib_logger.o: stdlib_ascii.o stdlib_optval.o
 stdlib_optval.o: stdlib_kinds.o
 stdlib_quadrature.o: stdlib_kinds.o
-
 stdlib_quadrature_gauss.o: stdlib_kinds.o stdlib_quadrature.o
-
 stdlib_quadrature_simps.o: \
-	stdlib_quadrature.o \
-	stdlib_error.o \
-	stdlib_kinds.o
+    stdlib_quadrature.o \
+    stdlib_error.o \
+    stdlib_kinds.o
 stdlib_quadrature_trapz.o: \
-	stdlib_quadrature.o \
-	stdlib_error.o \
-	stdlib_kinds.o
+    stdlib_quadrature.o \
+    stdlib_error.o \
+    stdlib_kinds.o
 stdlib_sorting.o: \
-	stdlib_kinds.o \
-	stdlib_string_type.o
+    stdlib_kinds.o \
+    stdlib_string_type.o
 stdlib_sorting_ord_sort.o: \
-	stdlib_sorting.o
+    stdlib_sorting.o
 stdlib_sorting_sort.o: \
-	stdlib_sorting.o
+    stdlib_sorting.o
 stdlib_sorting_sort_index.o: \
-	stdlib_sorting.o
+    stdlib_sorting.o
 stdlib_stats.o: \
-	stdlib_kinds.o
+    stdlib_kinds.o
 stdlib_stats_corr.o: \
-	stdlib_optval.o \
-	stdlib_kinds.o \
-	stdlib_stats.o
+    stdlib_optval.o \
+    stdlib_kinds.o \
+    stdlib_stats.o
 stdlib_stats_cov.o: \
-	stdlib_optval.o \
-	stdlib_kinds.o \
-	stdlib_stats.o
+    stdlib_optval.o \
+    stdlib_kinds.o \
+    stdlib_stats.o
 stdlib_stats_mean.o: \
-	stdlib_optval.o \
-	stdlib_kinds.o \
-	stdlib_stats.o
+    stdlib_optval.o \
+    stdlib_kinds.o \
+    stdlib_stats.o
 stdlib_stats_median.o: \
-	stdlib_optval.o \
-	stdlib_kinds.o \
-	stdlib_sorting.o \
-	stdlib_stats.o
+    stdlib_optval.o \
+    stdlib_kinds.o \
+    stdlib_sorting.o \
+    stdlib_stats.o
 stdlib_stats_moment.o: \
-	stdlib_optval.o \
-	stdlib_kinds.o \
-	stdlib_stats.o
+    stdlib_optval.o \
+    stdlib_kinds.o \
+    stdlib_stats.o
 stdlib_stats_moment_all.o: \
-	stdlib_stats_moment.o
+    stdlib_stats_moment.o
 stdlib_stats_moment_mask.o: \
-	stdlib_stats_moment.o
+    stdlib_stats_moment.o
 stdlib_stats_moment_scalar.o: \
-	stdlib_stats_moment.o
+    stdlib_stats_moment.o
 stdlib_stats_var.o: \
-	stdlib_optval.o \
-	stdlib_kinds.o \
-	stdlib_stats.o
+    stdlib_optval.o \
+    stdlib_kinds.o \
+    stdlib_stats.o
 stdlib_stats_distribution_PRNG.o: \
-        stdlib_kinds.o \
-	stdlib_error.o
+    stdlib_kinds.o \
+    stdlib_error.o
 stdlib_string_type.o: stdlib_ascii.o \
     stdlib_kinds.o
+stdlib_string_type_constructor.o: stdlib_string_type.o \
+    stdlib_strings_to_string.o \
+    stdlib_strings.o
 stdlib_strings.o: stdlib_ascii.o \
     stdlib_string_type.o \
-	stdlib_optval.o
+    stdlib_optval.o \
+    stdlib_kinds.o
+stdlib_strings_to_string.o: stdlib_strings.o
 stdlib_math.o: stdlib_kinds.o \
     stdlib_optval.o
 stdlib_math_linspace.o: \
-	stdlib_math.o
+    stdlib_math.o
 stdlib_math_logspace.o: \
-	stdlib_math_linspace.o
+    stdlib_math_linspace.o
 stdlib_math_arange.o: \
     stdlib_math.o
 stdlib_linalg_outer_product.o: stdlib_linalg.o
