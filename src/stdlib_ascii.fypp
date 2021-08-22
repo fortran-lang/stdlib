@@ -20,19 +20,6 @@ module stdlib_ascii
 
     ! Character conversion functions
     public :: to_lower, to_upper, to_title, to_sentence, reverse
-    public :: to_string
-
-    !> Version: experimental
-    !>
-    !> Create a character string representing the value of the provided variable.
-    interface to_string
-    #:for kind in INT_KINDS
-        module procedure :: to_string_integer_${kind}$
-    #:endfor
-    #:for kind in LOG_KINDS
-        module procedure :: to_string_logical_${kind}$
-    #:endfor
-    end interface to_string
 
     ! All control characters in the ASCII table (see www.asciitable.com).
     character(len=1), public, parameter :: NUL = achar(int(z'00')) !! Null
@@ -361,52 +348,5 @@ contains
         end do
 
     end function reverse
-
-    #:for kind in INT_KINDS
-    !> Represent an integer of kind ${kind}$ as character sequence
-    pure function to_string_integer_${kind}$(val) result(string)
-        integer, parameter :: ik = ${kind}$
-        integer(ik), intent(in) :: val
-        character(len=:), allocatable :: string
-        integer, parameter :: buffer_len = range(val)+2
-        character(len=buffer_len) :: buffer
-        integer :: pos
-        integer(ik) :: n
-        character(len=1), parameter :: numbers(0:9) = &
-            ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-        if (val == 0_ik) then
-            string = numbers(0)
-            return
-        end if
-
-        n = abs(val)
-        buffer = ""
-
-        pos = buffer_len + 1
-        do while (n > 0_ik)
-            pos = pos - 1
-            buffer(pos:pos) = numbers(mod(n, 10_ik))
-            n = n/10_ik
-        end do
-        if (val < 0_ik) then
-            pos = pos - 1
-            buffer(pos:pos) = '-'
-        end if
-
-        string = buffer(pos:)
-    end function to_string_integer_${kind}$
-    #:endfor
-
-    #:for kind in LOG_KINDS
-    !> Represent an logical of kind ${kind}$ as character sequence
-    pure function to_string_logical_${kind}$(val) result(string)
-        integer, parameter :: ik = ${kind}$
-        logical(ik), intent(in) :: val
-        character(len=1) :: string
-
-        string = merge("T", "F", val)
-    end function to_string_logical_${kind}$
-    #:endfor
 
 end module stdlib_ascii
