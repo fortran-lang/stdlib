@@ -187,7 +187,7 @@ contains
           #:if t1[0] == "i"
           call check(all(res == ans),                                          &
               msg="uniform_distribution_rvs_${t1[0]}$${k1}$ failed", warn=warn)
-          #:elif
+          #:else
           call check(all(abs(res - ans) < ${k1}$tol),                          &
               msg="uniform_distribution_rvs_${t1[0]}$${k1}$ failed", warn=warn)
           #:endif
