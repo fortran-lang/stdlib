@@ -538,3 +538,72 @@ program demo_count
 
 end program demo_count
 ```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `to_string`
+
+#### Description
+
+Format or transfer a `integer/real/complex/logical` scalar as a string.  
+Input a wrong `format` that cause the internal-IO to fail, the result value is a string of `[*]`.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):to_string(interface)]] (value [, format])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Argument
+
+- `value`: Shall be an `integer/real/complex/logical` scalar.
+  This is an `intent(in)` argument.
+- `format`: Shall be a `character(len=*)` scalar like `'(F6.2)'` or just `'F6.2'`.
+  This is an `intent(in)` and `optional` argument.  
+  Contains the edit descriptor to format `value` into a string, for example `'(F6.2)'` or `'(f6.2)'`. 
+  `to_string` will automatically enclose `format` in a set of parentheses, so passing `F6.2` or `f6.2` as `format` is possible as well.
+  
+#### Result value
+
+The result is an `allocatable` length `character` scalar with up to `128` cached `character` length.
+
+#### Example
+
+```fortran
+program demo_to_string
+    use stdlib_strings, only: to_string
+
+    !> Example for `complex` type
+    print *, to_string((1, 1))              !! "(1.00000000,1.00000000)"
+    print *, to_string((1, 1), '(F6.2)')    !! "(  1.00,  1.00)"
+    print *, to_string((1000, 1), '(ES0.2)'), to_string((1000, 1), '(SP,F6.3)')     
+                    !! "(1.00E+3,1.00)""(******,+1.000)"
+                    !! Too narrow formatter for real number
+                    !! Normal demonstration(`******` from Fortran Standard)
+
+    !> Example for `integer` type
+    print *, to_string(-3)                  !! "-3"
+    print *, to_string(42, '(I4)')          !! "  42"
+    print *, to_string(1, '(I0.4)'), to_string(2, '(B4)')           !! "0001""  10"  
+
+    !> Example for `real` type
+    print *, to_string(1.)                  !! "1.00000000"
+    print *, to_string(1., '(F6.2)')        !! "  1.00" 
+    print *, to_string(1., 'F6.2')          !! "  1.00" 
+    print *, to_string(1., '(SP,ES9.2)'), to_string(1, '(F7.3)')    !! "+1.00E+00""[*]"
+                    !! 1 wrong demonstration (`[*]` from `to_string`)
+
+    !> Example for `logical` type
+    print *, to_string(.true.)              !! "T"
+    print *, to_string(.true., '(L2)')      !! " T"
+    print *, to_string(.true., 'L2')        !! " T"
+    print *, to_string(.false., '(I5)')     !! "[*]"
+                    !! 1 wrong demonstrations(`[*]` from `to_string`)
+
+end program demo_to_string
+```
