@@ -3,6 +3,10 @@
 #:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS))
 #:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS))
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"],  ["character(len=len(array))"], ["char"]))
+
+#! For better code reuse in fypp, make lists that contain the input types,
+#! with each having output types and a separate name prefix for subroutines
+#! This approach allows us to have the same code for all input types.
 #:set IRSC_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
 
 #:set SIGN_NAME = ["increase", "decrease"]
