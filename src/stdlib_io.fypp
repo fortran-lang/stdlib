@@ -11,6 +11,7 @@ module stdlib_io
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
   use stdlib_ascii, only: is_blank
+  use stdlib_string_type, only: string_type
   implicit none
   private
   ! Public API
@@ -19,35 +20,34 @@ module stdlib_io
   ! Private API that is exposed so that we can test it in tests
   public :: parse_mode
 
+  !> version: experimental
+  !>
+  !> Display a scalar, vector or matrix.
+  !> ([Specification](../page/specs/stdlib_io.html#disp-display-your-data-to-the-screen-or-another-output-unit))
   interface disp
-    !! version: experimental
-    !!
-    !! Display any type of scalar, vector and matrix.
-    !! ([Specification](../page/specs/stdlib_io.html#disp-display-your-data-to-the-screen-or-another-output-unit))
     #:set DISP_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES &
         & + CMPLX_KINDS_TYPES + LOG_KINDS_TYPES
     #:set DISP_RANKS = range(0, 3)
-    #:for kind, type in DISP_KINDS_TYPES
+    #:for k1, t1 in DISP_KINDS_TYPES
     #:for rank in DISP_RANKS
-    module subroutine disp_${rank}$_${type[0]}$${kind}$(value, unit, header, brief)
-        ${type}$, intent(in) :: value${ranksuffix(rank)}$
-        integer, intent(in), optional :: unit
+    module subroutine disp_${rank}$_${t1[0]}$${k1}$(value, header, unit, brief)
+        ${t1}$, intent(in) :: value${ranksuffix(rank)}$
         character(len=*), intent(in), optional :: header
+        integer, intent(in), optional :: unit
         logical, intent(in), optional :: brief
-    end subroutine disp_${rank}$_${type[0]}$${kind}$
+    end subroutine disp_${rank}$_${t1[0]}$${k1}$
     #:endfor
     #:endfor
-    module subroutine disp_character(value, unit, header, brief)
+    module subroutine disp_character(value, header, unit, brief)
         character(len=*), intent(in), optional :: value
-        integer, intent(in), optional :: unit
         character(len=*), intent(in), optional :: header
+        integer, intent(in), optional :: unit
         logical, intent(in), optional :: brief
     end subroutine disp_character
-    module subroutine disp_string_type(value, unit, header, brief)
-        use stdlib_string_type, only: string_type
+    module subroutine disp_string_type(value, header, unit, brief)
         type(string_type), intent(in) :: value
-        integer, intent(in), optional :: unit
         character(len=*), intent(in), optional :: header
+        integer, intent(in), optional :: unit
         logical, intent(in), optional :: brief
     end subroutine disp_string_type
   end interface disp

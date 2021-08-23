@@ -4,10 +4,11 @@ module test_io_disp
     use stdlib_string_type, only: string_type, assignment(=)
     use stdlib_error, only: check
     use stdlib_io, only: disp
+    use stdlib_optval, only: optval
     implicit none
 
     integer :: unit
-    character(len=512) :: string
+    character(len=200) :: string
 
 contains
 
@@ -17,7 +18,7 @@ contains
         logical :: stat
         character(len=:), allocatable :: msg
 
-        if (merge(partial, .false., present(partial))) then
+        if (optval(partial, .false.)) then
             stat = starts_with(actual, expected)
         else
             stat = actual == expected
@@ -36,7 +37,7 @@ contains
 
     subroutine test_io_disp_complex
         complex :: c(6,6) = (1.0, 1.0)
-        ! unit = open(filenanme, 'w+t')
+
         open(newunit=unit, status='scratch')
         call disp(c(1,1), header='Test_io_disp_complex_scalar (brief) : ', brief=.true.)
         call disp(c(1,1), unit=unit, header='Test_io_disp_complex_scalar (brief) : ', brief=.true.)
@@ -120,7 +121,7 @@ contains
     subroutine test_io_disp_real
 
         real :: r(6,6) = 1.0
-        ! unit = open(filenanme, 'w+t')
+        
         open(newunit=unit, status='scratch')
         call disp(r(1,1), header='Test_io_disp_real_scalar (brief) : ', brief=.true.)
         call disp(r(1,1), unit=unit, header='Test_io_disp_real_scalar (brief) : ', brief=.true.)
@@ -197,7 +198,7 @@ contains
     subroutine test_io_disp_integer
 
         integer :: i(6,6) = 1
-        ! unit = open(filenanme, 'w+t')
+        
         open(newunit=unit, status='scratch')
         call disp(i(1,1), header='Test_io_disp_integer_scalar (brief) : ', brief=.true.)
         call disp(i(1,1), unit=unit, header='Test_io_disp_integer_scalar (brief) : ', brief=.true.)
@@ -369,7 +370,7 @@ contains
     subroutine test_io_disp_string_type
 
         type(string_type) :: str
-        ! unit = open(filenanme, 'w+t')
+        
         str = 'It is a string_type.'
         open(newunit=unit, status='scratch')
         call disp(str, header='Test_io_disp_string_type_scalar (brief) : ', brief=.true.)
@@ -388,8 +389,10 @@ contains
 end module test_io_disp
 
 program tester
+
     use test_io_disp
-    real(4) :: x(51,51)
+    ! real(4) :: x(51,51)
+
     call test_io_disp_complex
     call test_io_disp_real
     call test_io_disp_integer
@@ -397,10 +400,11 @@ program tester
     call test_io_disp_character
     call test_io_disp_string_type
 
-    !! Content that is difficult to test: The length of the dimension is too large
-    !!  to print and check by a test program.
-    x = 0.0
-    call disp(x, header="Test_io_disp_real_matrix (51×51)(default) : [10×50]")
-    call disp(x, header="Test_io_disp_real_matrix (51×51)(brief=.true.) : [5×5]", brief=.true.)
-    call disp(x, header="Test_io_disp_real_matrix (51×51)(brief=.false.) : [all]", brief=.false.)
+    !> Content that is difficult to test: The length of the dimension is too large
+    !>  to print and check by a test program.
+    ! x = 0.0
+    ! call disp(x, header="Test_io_disp_real_matrix (51×51)(default) : [10×50]")
+    ! call disp(x, header="Test_io_disp_real_matrix (51×51)(brief=.true.) : [5×5]", brief=.true.)
+    ! call disp(x, header="Test_io_disp_real_matrix (51×51)(brief=.false.) : [all]", brief=.false.)
+
 end program tester

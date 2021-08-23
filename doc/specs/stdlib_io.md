@@ -138,56 +138,65 @@ end program demo_savetxt
 
 Experimental
 
+### Class
+
+Impure subroutine.
+
 ### Description
-Display any type (`logical, integer, real, complex, character, string_type`) of scalar,   
-and display some data type (`logical, integer, real, complex`) of vector or matrix.
+
+Display a `logical/integer/real/complex/character/string_type` scalar or `logical/integer/real/complex` and rank-1/rank-2 array to the screen or another output `unit`.
+
+#### More details
 
 Make good use of similar to the following usage, can help you understand the data information in the `array`.
 ```fortran
-call disp( A(i, j, 2, :, 1:10) [, unit, header, brief] )    !! `i, j, ...` can be determined by `do` loop.
+call disp( A(i, j, 2, :, 1:10) [, header, unit, brief] )    !! `i, j, ...` can be determined by `do` loop.
 ```
 
 Generally, except for `complex` type, any other type of scalar or single element of the `array` will be printed out with a width of 12 characters and a space separator.  
 For `complex` type, scalar or single element of the `array` will be printed out with a width of 25 characters and a space separator.
 
 In order to prevent users from accidentally passing large-length arrays to `disp`, causing unnecessary io blockage:
-1. If the `brief` argument is not specified, `disp` will print **the brief array content with a length of 10*50 by default**.
-2. Specify `brief=.true.`, `disp` will print **the brief array content with a length of 5*5**;
-3. Specify `brief=.false.`, `disp` will print **all the contents of the array** (please print all the contents of the array as appropriate according to the actual situation to avoid unnecessary IO blockage and affect the reading experience)
+1. If the `brief` argument is not specified, `disp` will print **the brief array content with a length of `10*50` by default**.
+2. Specify `brief=.true.`, `disp` will print **the brief array content with a length of `5*5`**;
+3. Specify `brief=.false.`, `disp` will print **`all` the contents of the array** (please print all the contents of the array as appropriate according to the actual situation to avoid unnecessary IO blockage and affect the reading experience)
 
 ### Syntax
 
-General API:
-`call [[stdlib_io(module):disp(interface)]](value [, unit, header, brief])`
-
-For null:
-`call [[stdlib_io(module):disp(interface)]]()`  
+`call [[stdlib_io(module):disp(interface)]]([value, header, unit, brief])`  
 
 ### Arguments
 
-`value`: Shall be any type of scalar, and some data type (`logical, integer, real, complex`) of vector or matrix.
-    This is an `intent(in)` argument.
+`value`: Shall be a `logical/integer/real/complex/string_type` scalar or `logical/integer/real/complex` and rank-1/rank-2 array.
+This argument is `intent(in)` and `optional`.
 
-`unit`: Shall be an `integer` scalar link to an IO stream.
-    This is an `intent(in)` and `optional` argument.
+`header`: Shall be a `character(len=*)` scalar. 
+This argument is `intent(in)` and `optional`.  
+Usually used to comment data information.
 
-`header`: Shall be a scalar of type `character` with any length (usually used to comment data information).
-    This is an `intent(in)` and `optional` argument.
+`unit`: Shall be an `integer` scalar linked to an IO stream.
+This argument is `intent(in)` and `optional`.
+Indicates the output `unit`.
 
-`brief`: Shall be an `logical` scalar, controlling an abridged version of the `value` object is printed.
-    This is an `intent(in)` and `optional` argument.
+`brief`: Shall be a `logical` scalar.
+This argument is `intent(in)` and `optional`.  
+Controls an abridged version of the `value` object is printed.
 
 ### Output
 
-The result is to print `header` and `value` on the screen (or another output unit) in this order.  
-If `value` is a `array` type, the dimension length information of the `array` will also be outputted.
+The result is to print `header` and `value` on the screen (or another output `unit`) in this order.  
+If `value` is a rank-1/rank-2 `array` type, the dimension length information of the `array` will also be outputted.
+
+If `disp` is not passed any arguments, a blank line is printed.
+
+If the `value` is present and of `real/complex` type, the data will retain four significant decimal places, like `(g0.4)`.
 
 ### Example
 
 ```fortran
 program test_io_disp
     
-    use :: stdlib_io, only: disp
+    use stdlib_io, only: disp
     implicit none
     real(8) :: r(2, 3)
     complex :: c(2, 3), c_3d(2, 100, 20)
@@ -200,6 +209,7 @@ program test_io_disp
     c(2, 2) = (-1.e10,-1.e10)
     c_3d(1,3,1) = (1000, 0.001)
     c_3d(1,3,2) = (1.e4, 100.)
+
     call disp('string', header='disp(string):')
     call disp('It is a note.')
     call disp()
@@ -215,7 +225,7 @@ program test_io_disp
 
 end program test_io_disp
 ```
-**Result:**
+**Results:**
 ```fortran
  disp(string):
  string
