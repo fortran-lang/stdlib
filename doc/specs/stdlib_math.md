@@ -275,3 +275,71 @@ program demo_logspace_rstart_cbase
 
 end program demo_logspace_rstart_cbase
 ```
+## `arange`
+
+### Status
+
+Experimental
+
+### Class
+
+Pure function.
+
+### Description
+
+Creates a one-dimensional `array` of the `integer/real` type with fixed-spaced values of given spacing, within a given interval.
+
+### Syntax
+
+`result = [[stdlib_math(module):arange(interface)]](start [, end, step])`
+
+### Arguments
+
+All arguments should be the same type and kind.
+
+`start`: Shall be an `integer/real` scalar.
+This is an `intent(in)` argument.  
+The default `start` value is `1`.
+
+`end`: Shall be an `integer/real` scalar.
+This is an `intent(in)` and `optional` argument.  
+The default `end` value is the inputted `start` value.
+
+`step`: Shall be an `integer/real` scalar and large than `0`. 
+This is an `intent(in)` and `optional` argument.   
+The default `step` value is `1`.
+
+#### Warning
+If `step = 0`, the `step` argument will be corrected to `1/1.0` by the internal process of the `arange` function.   
+If `step < 0`, the `step` argument will be corrected to `abs(step)` by the internal process of the `arange` function. 
+
+### Return value
+
+Returns a one-dimensional `array` of fixed-spaced values.
+
+For `integer` type arguments, the length of the result vector is `(end - start)/step + 1`.  
+For `real` type arguments, the length of the result vector is `floor((end - start)/step) + 1`.
+
+### Example
+
+```fortran
+program demo_math_arange
+    use stdlib_math, only: arange
+
+    print *, arange(3)                 !! [1,2,3]
+    print *, arange(-1)                !! [1,0,-1]
+    print *, arange(0,2)               !! [0,1,2]
+    print *, arange(1,-1)              !! [1,0,-1]
+    print *, arange(0, 2, 2)           !! [0,2]
+
+    print *, arange(3.0)               !! [1.0,2.0,3.0]
+    print *, arange(0.0,5.0)           !! [0.0,1.0,2.0,3.0,4.0,5.0]
+    print *, arange(0.0,6.0,2.5)       !! [0.0,2.5,5.0]
+
+    print *, (1.0,1.0)*arange(3)       !! [(1.0,1.0),(2.0,2.0),[3.0,3.0]]
+
+    print *, arange(0.0,2.0,-2.0)      !! [0.0,2.0].     Not recommended: `step` argument is negative!
+    print *, arange(0.0,2.0,0.0)       !! [0.0,1.0,2.0]. Not recommended: `step` argument is zero!
+
+end program demo_math_arange
+```
