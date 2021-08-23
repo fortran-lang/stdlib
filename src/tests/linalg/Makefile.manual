@@ -1,0 +1,4 @@
+PROGS_SRC = test_linalg.f90
+
+
+include ../Makefile.manual.test.mk
