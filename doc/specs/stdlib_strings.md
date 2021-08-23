@@ -199,25 +199,21 @@ end program demo
 
 #### Description
 
-Extracts the characters from the defined region of the input string by taking strides.
-
-Deduction Process:
-Function first automatically deduces the optional arguments that are not provided by the user.  
-This process is independent of both input `string` and permitted indexes of Fortran.  
-Deduced `first` and `last` argument take +infinity or -infinity value whereas deduced `stride` argument takes +1 or -1 value.
-
-Validation Process:
+Extracts the characters from the defined region of the input string by taking strides.  
 Argument `first` and `last` defines this region for extraction by function `slice`.  
-If the defined region is invalid i.e. region contains atleast one invalid index, `first` and 
-`last` are converted to first and last valid indexes in this defined region respectively, 
-if no valid index exists in this region an empty string is returned.  
-`stride` can attain both negative or positive values but when the only invalid value 
-0 is given, it is converted to 1.
+Argument `stride` defines the magnitude and direction (+/-) of stride to be taken while extraction. 
+`stride` when given invalid value 0, is converted to +1.
 
-Extraction Process:
-After all this, extraction starts from `first` index and takes stride of length `stride`.  
-Extraction starts only if `last` index is crossable from `first` index with stride `stride` 
-and remains active until `last` index is crossed.  
+Deduction Process:  
+Function first automatically deduces the optional arguments that are not provided by the user.  
+Deduced `first` and `last` argument take +infinity or -infinity value and deduced `stride` argument 
+takes value +1 or -1 depending upon the actual argument(s) provided by the user.  
+
+Extraction Process:  
+Extraction starts only if `last` is crossable from `first` with stride of `stride`.  
+Extraction starts from the first valid index in the defined region to take stride of `stride` 
+and ends when the last valid index in the defined region is crossed.  
+If no valid index exists in the defined region, empty string is returned.
 
 #### Syntax
 
@@ -544,7 +540,7 @@ end program demo_count
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `format_to_string`
+### `to_string`
 
 #### Description
 
@@ -553,7 +549,7 @@ Input a wrong `format` that cause the internal-IO to fail, the result value is a
 
 #### Syntax
 
-`format_to_string = [[stdlib_strings(module):format_to_string(interface)]] (value [, format])`
+`string = [[stdlib_strings(module):to_string(interface)]] (value [, format])`
 
 #### Status
 
@@ -561,49 +557,53 @@ Experimental
 
 #### Class
 
-Pure function
+Pure function.
 
 #### Argument
 
 - `value`: Shall be an `integer/real/complex/logical` scalar.
   This is an `intent(in)` argument.
-- `format`: Shall be a `character` scalar like `'(F6.2)'`.
-  This is an `intent(in)` and `optional` argument.
-
+- `format`: Shall be a `character(len=*)` scalar like `'(F6.2)'` or just `'F6.2'`.
+  This is an `intent(in)` and `optional` argument.  
+  Contains the edit descriptor to format `value` into a string, for example `'(F6.2)'` or `'(f6.2)'`. 
+  `to_string` will automatically enclose `format` in a set of parentheses, so passing `F6.2` or `f6.2` as `format` is possible as well.
+  
 #### Result value
 
-The result is an allocatable length `character` scalar with up to 512 `character` length.
+The result is an `allocatable` length `character` scalar with up to `128` cached `character` length.
 
 #### Example
 
 ```fortran
-program demo_format_to_string
-    use :: stdlib_strings, only: format_to_string
-    implicit none
+program demo_to_string
+    use stdlib_strings, only: to_string
 
-    print *, 'format_to_string(complex) : '
-        print *, format_to_string((1, 1))              ! (1.00000000,1.00000000)
-        print *, format_to_string((1, 1), '(F6.2)')    ! (  1.00,  1.00)
-        print *, format_to_string((1000, 1), '(ES0.2)'), format_to_string((1000, 1), '(SP,F6.3)')     ! (1.00E+3,1.00)(******,+1.000)
-                        !! Too narrow formatter for real number
-                        !! Normal demonstration(`******` from Fortran Standard)
+    !> Example for `complex` type
+    print *, to_string((1, 1))              !! "(1.00000000,1.00000000)"
+    print *, to_string((1, 1), '(F6.2)')    !! "(  1.00,  1.00)"
+    print *, to_string((1000, 1), '(ES0.2)'), to_string((1000, 1), '(SP,F6.3)')     
+                    !! "(1.00E+3,1.00)""(******,+1.000)"
+                    !! Too narrow formatter for real number
+                    !! Normal demonstration(`******` from Fortran Standard)
 
-    print *, 'format_to_string(integer) : '
-        print *, format_to_string(1)                   ! 1
-        print *, format_to_string(1, '(I4)')           !     1
-        print *, format_to_string(1, '(I0.4)'), format_to_string(2, '(B4)')           ! 0001  10  
+    !> Example for `integer` type
+    print *, to_string(-3)                  !! "-3"
+    print *, to_string(42, '(I4)')          !! "  42"
+    print *, to_string(1, '(I0.4)'), to_string(2, '(B4)')           !! "0001""  10"  
 
-    print *, 'format_to_string(real) : '
-        print *, format_to_string(1.)                  ! 1.00000000
-        print *, format_to_string(1., '(F6.2)')        !   1.00 
-        print *, format_to_string(1., '(SP,ES9.2)'), format_to_string(1, '(F7.3)')    ! +1.00E+00[*]
-                        !! 1 wrong demonstration(`*` from `format_to_string`)
+    !> Example for `real` type
+    print *, to_string(1.)                  !! "1.00000000"
+    print *, to_string(1., '(F6.2)')        !! "  1.00" 
+    print *, to_string(1., 'F6.2')          !! "  1.00" 
+    print *, to_string(1., '(SP,ES9.2)'), to_string(1, '(F7.3)')    !! "+1.00E+00""[*]"
+                    !! 1 wrong demonstration (`[*]` from `to_string`)
 
-    print *, 'format_to_string(logical) : '
-        print *, format_to_string(.true.)              ! T
-        print *, format_to_string(.true., '(L2)')      !  T
-        print *, format_to_string(.true., 'L2'), format_to_string(.false., '(I5)')    ! [*][*]
-                        !! 2 wrong demonstrations(`*` from `format_to_string`)
+    !> Example for `logical` type
+    print *, to_string(.true.)              !! "T"
+    print *, to_string(.true., '(L2)')      !! " T"
+    print *, to_string(.true., 'L2')        !! " T"
+    print *, to_string(.false., '(I5)')     !! "[*]"
+                    !! 1 wrong demonstrations(`[*]` from `to_string`)
 
-end program demo_format_to_string
+end program demo_to_string
 ```
