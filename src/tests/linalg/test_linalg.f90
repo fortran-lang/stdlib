@@ -2,7 +2,7 @@ program test_linalg
   
   use stdlib_error, only: check
   use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
-  use stdlib_linalg, only: diag, eye, trace, outer_product
+  use stdlib_linalg, only: diag, eye, trace, outer_product, is_square ,is_diagonal!, is_symmetric
   
   implicit none
   
@@ -57,7 +57,7 @@ program test_linalg
   call test_trace_int64
 
   !
-  ! outer product
+  ! outer_product
   !
   call test_outer_product_rsp
   call test_outer_product_rdp
@@ -72,6 +72,37 @@ program test_linalg
   call test_outer_product_int32
   call test_outer_product_int64
 
+  !
+  ! is_square
+  !
+  call test_is_square_rsp
+  call test_is_square_rdp
+  call test_is_square_rqp
+
+  call test_is_square_csp
+  call test_is_square_cdp
+  call test_is_square_cqp
+
+  call test_is_square_int8
+  call test_is_square_int16
+  call test_is_square_int32
+  call test_is_square_int64
+
+  !
+  ! is_diagonal
+  !
+  call test_is_diagonal_rsp
+  call test_is_diagonal_rdp
+  call test_is_diagonal_rqp
+
+  !call test_is_diagonal_csp
+  !call test_is_diagonal_cdp
+  !call test_is_diagonal_cqp
+
+  !call test_is_diagonal_int8
+  !call test_is_diagonal_int16
+  !call test_is_diagonal_int32
+  !call test_is_diagonal_int64
 
 contains
 
@@ -562,6 +593,227 @@ contains
     call check(all(abs(diff) == 0), &
          msg="all(abs(diff) == 0) failed.",warn=warn)
   end subroutine test_outer_product_int64
+
+
+  subroutine test_is_square_rsp
+    real(sp) :: A_true(2,2), A_false(2,3)
+    logical :: should_be_true, should_be_false, true_when_working
+    write(*,*) "test_is_square_rsp" 
+    A_true = reshape([1.,2.,3.,4.],[2,2])
+    A_false = reshape([1.,2.,3.,4.,5.,6.],[2,3])
+    should_be_true = is_square(A_true)
+    should_be_false = is_square(A_false)
+    true_when_working = (should_be_true .and. (.not. should_be_false))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_square_rsp
+
+  subroutine test_is_square_rdp
+    real(dp) :: A_true(2,2), A_false(2,3)
+    logical :: should_be_true, should_be_false, true_when_working
+    write(*,*) "test_is_square_rdp" 
+    A_true = reshape([1.,2.,3.,4.],[2,2])
+    A_false = reshape([1.,2.,3.,4.,5.,6.],[2,3])
+    should_be_true = is_square(A_true)
+    should_be_false = is_square(A_false)
+    true_when_working = (should_be_true .and. (.not. should_be_false))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_square_rdp
+
+  subroutine test_is_square_rqp
+    real(qp) :: A_true(2,2), A_false(2,3)
+    logical :: should_be_true, should_be_false, true_when_working
+    write(*,*) "test_is_square_rqp" 
+    A_true = reshape([1.,2.,3.,4.],[2,2])
+    A_false = reshape([1.,2.,3.,4.,5.,6.],[2,3])
+    should_be_true = is_square(A_true)
+    should_be_false = is_square(A_false)
+    true_when_working = (should_be_true .and. (.not. should_be_false))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_square_rqp
+
+  subroutine test_is_square_csp
+    complex(sp) :: A_true(2,2), A_false(2,3)
+    logical :: should_be_true, should_be_false, true_when_working
+    write(*,*) "test_is_square_csp" 
+    A_true = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.),cmplx(4.,1.)],[2,2])
+    A_false = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.), &
+         cmplx(4.,1.),cmplx(5.,0.),cmplx(6.,1.)],[2,3])
+    should_be_true = is_square(A_true)
+    should_be_false = is_square(A_false)
+    true_when_working = (should_be_true .and. (.not. should_be_false))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_square_csp
+
+  subroutine test_is_square_cdp
+    complex(dp) :: A_true(2,2), A_false(2,3)
+    logical :: should_be_true, should_be_false, true_when_working
+    write(*,*) "test_is_square_cdp" 
+    A_true = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.),cmplx(4.,1.)],[2,2])
+    A_false = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.), &
+         cmplx(4.,1.),cmplx(5.,0.),cmplx(6.,1.)],[2,3])
+    should_be_true = is_square(A_true)
+    should_be_false = is_square(A_false)
+    true_when_working = (should_be_true .and. (.not. should_be_false))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_square_cdp
+
+  subroutine test_is_square_cqp
+    complex(qp) :: A_true(2,2), A_false(2,3)
+    logical :: should_be_true, should_be_false, true_when_working
+    write(*,*) "test_is_square_cqp" 
+    A_true = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.),cmplx(4.,1.)],[2,2])
+    A_false = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.), &
+         cmplx(4.,1.),cmplx(5.,0.),cmplx(6.,1.)],[2,3])
+    should_be_true = is_square(A_true)
+    should_be_false = is_square(A_false)
+    true_when_working = (should_be_true .and. (.not. should_be_false))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_square_cqp
+
+  subroutine test_is_square_int8
+    integer(int8) :: A_true(2,2), A_false(2,3)
+    logical :: should_be_true, should_be_false, true_when_working
+    write(*,*) "test_is_square_int8" 
+    A_true = reshape([1,2,3,4],[2,2])
+    A_false = reshape([1,2,3,4,5,6],[2,3])
+    should_be_true = is_square(A_true)
+    should_be_false = is_square(A_false)
+    true_when_working = (should_be_true .and. (.not. should_be_false))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_square_int8
+
+  subroutine test_is_square_int16
+    integer(int16) :: A_true(2,2), A_false(2,3)
+    logical :: should_be_true, should_be_false, true_when_working
+    write(*,*) "test_is_square_int16" 
+    A_true = reshape([1,2,3,4],[2,2])
+    A_false = reshape([1,2,3,4,5,6],[2,3])
+    should_be_true = is_square(A_true)
+    should_be_false = is_square(A_false)
+    true_when_working = (should_be_true .and. (.not. should_be_false))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_square_int16
+
+  subroutine test_is_square_int32
+    integer(int32) :: A_true(2,2), A_false(2,3)
+    logical :: should_be_true, should_be_false, true_when_working
+    write(*,*) "test_is_square_int32" 
+    A_true = reshape([1,2,3,4],[2,2])
+    A_false = reshape([1,2,3,4,5,6],[2,3])
+    should_be_true = is_square(A_true)
+    should_be_false = is_square(A_false)
+    true_when_working = (should_be_true .and. (.not. should_be_false))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_square_int32
+
+  subroutine test_is_square_int64
+    integer(int64) :: A_true(2,2), A_false(2,3)
+    logical :: should_be_true, should_be_false, true_when_working
+    write(*,*) "test_is_square_int64" 
+    A_true = reshape([1,2,3,4],[2,2])
+    A_false = reshape([1,2,3,4,5,6],[2,3])
+    should_be_true = is_square(A_true)
+    should_be_false = is_square(A_false)
+    true_when_working = (should_be_true .and. (.not. should_be_false))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_square_int64
+
+  subroutine test_is_diagonal_rsp
+    real(sp) :: A_true_s(2,2), A_false_s(2,2) !square matrices
+    real(sp) :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+    real(sp) :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+    logical :: should_be_true_s, should_be_false_s, true_when_working_s
+    logical :: should_be_true_sf, should_be_false_sf, true_when_working_sf
+    logical :: should_be_true_ts, should_be_false_ts, true_when_working_ts
+    logical :: true_when_working
+    write(*,*) "test_is_diagonal_rsp" 
+    A_true_s = reshape([1.,0.,0.,4.],[2,2]) !generate diagonal and non-diagonal matrices of 3 types
+    A_false_s = reshape([1.,0.,3.,4.],[2,2])
+    A_true_sf = reshape([1.,0.,0.,4.,0.,0.],[2,3])
+    A_false_sf = reshape([1.,0.,3.,4.,0.,0.],[2,3])
+    A_true_ts = reshape([1.,0.,0.,0.,5.,0.],[3,2])
+    A_false_ts = reshape([1.,0.,0.,0.,5.,6.],[3,2])
+    should_be_true_s = is_diagonal(A_true_s) !test generated matrices
+    should_be_false_s = is_diagonal(A_false_s)
+    should_be_true_sf = is_diagonal(A_true_sf)
+    should_be_false_sf = is_diagonal(A_false_sf)
+    should_be_true_ts = is_diagonal(A_true_ts)
+    should_be_false_ts = is_diagonal(A_false_ts)
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !compress results
+    true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
+    true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
+    true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_diagonal_rsp
+
+  subroutine test_is_diagonal_rdp
+    real(dp) :: A_true_s(2,2), A_false_s(2,2) !square matrices
+    real(dp) :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+    real(dp) :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+    logical :: should_be_true_s, should_be_false_s, true_when_working_s
+    logical :: should_be_true_sf, should_be_false_sf, true_when_working_sf
+    logical :: should_be_true_ts, should_be_false_ts, true_when_working_ts
+    logical :: true_when_working
+    write(*,*) "test_is_diagonal_rdp" 
+    A_true_s = reshape([1.,0.,0.,4.],[2,2]) !generate diagonal and non-diagonal matrices of 3 types
+    A_false_s = reshape([1.,0.,3.,4.],[2,2])
+    A_true_sf = reshape([1.,0.,0.,4.,0.,0.],[2,3])
+    A_false_sf = reshape([1.,0.,3.,4.,0.,0.],[2,3])
+    A_true_ts = reshape([1.,0.,0.,0.,5.,0.],[3,2])
+    A_false_ts = reshape([1.,0.,0.,0.,5.,6.],[3,2])
+    should_be_true_s = is_diagonal(A_true_s) !test generated matrices
+    should_be_false_s = is_diagonal(A_false_s)
+    should_be_true_sf = is_diagonal(A_true_sf)
+    should_be_false_sf = is_diagonal(A_false_sf)
+    should_be_true_ts = is_diagonal(A_true_ts)
+    should_be_false_ts = is_diagonal(A_false_ts)
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !compress results
+    true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
+    true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
+    true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_diagonal_rdp
+
+  subroutine test_is_diagonal_rqp
+    real(qp) :: A_true_s(2,2), A_false_s(2,2) !square matrices
+    real(qp) :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+    real(qp) :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+    logical :: should_be_true_s, should_be_false_s, true_when_working_s
+    logical :: should_be_true_sf, should_be_false_sf, true_when_working_sf
+    logical :: should_be_true_ts, should_be_false_ts, true_when_working_ts
+    logical :: true_when_working
+    write(*,*) "test_is_diagonal_rqp" 
+    A_true_s = reshape([1.,0.,0.,4.],[2,2]) !generate diagonal and non-diagonal matrices of 3 types
+    A_false_s = reshape([1.,0.,3.,4.],[2,2])
+    A_true_sf = reshape([1.,0.,0.,4.,0.,0.],[2,3])
+    A_false_sf = reshape([1.,0.,3.,4.,0.,0.],[2,3])
+    A_true_ts = reshape([1.,0.,0.,0.,5.,0.],[3,2])
+    A_false_ts = reshape([1.,0.,0.,0.,5.,6.],[3,2])
+    should_be_true_s = is_diagonal(A_true_s) !test generated matrices
+    should_be_false_s = is_diagonal(A_false_s)
+    should_be_true_sf = is_diagonal(A_true_sf)
+    should_be_false_sf = is_diagonal(A_false_sf)
+    should_be_true_ts = is_diagonal(A_true_ts)
+    should_be_false_ts = is_diagonal(A_false_ts)
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !compress results
+    true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
+    true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
+    true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_diagonal_rqp
 
 
   pure recursive function catalan_number(n) result(value)

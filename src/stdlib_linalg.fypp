@@ -10,15 +10,15 @@ module stdlib_linalg
 
   public :: diag
   public :: eye
+  public :: trace
+  public :: outer_product
   public :: is_square
   public :: is_diagonal
   public :: is_symmetric
   public :: is_skew_symmetric
   public :: is_hermitian
-  !public :: is_triangular
-  !public :: is_hessenberg
-  public :: trace
-  public :: outer_product
+  public :: is_triangular
+  public :: is_hessenberg
 
   interface diag
     !! version: experimental
@@ -146,7 +146,30 @@ module stdlib_linalg
       module procedure is_hermitian_${t1[0]}$${k1}$
     #:endfor
   end interface is_hermitian
+
+
+  ! Check for triangularity
+  interface is_triangular
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is triangular.
+    !! ([Specification](../page/specs/stdlib_linalg.html#description_9))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_triangular_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_triangular
   
+
+  ! Check for matrix being Hessenberg
+  interface is_hessenberg
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is Hessenberg
+    !! ([Specification](../page/specs/stdlib_linalg.html#description_10))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_Hessenberg_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_hessenberg
 
 contains
 
@@ -200,15 +223,15 @@ contains
         A_shape = shape(A)
         m = A_shape(1)
         n = A_shape(2)
-        o = min(m,n) !minimum/lower dimension
-        do i=1,n !loop over all columns
-            do j=1,o-1 !loop over rows above diagonal
+        do j=1,n !loop over all columns
+            o = min(j-1,m) !index of row above diagonal (or last row)
+            do i=1,o !loop over rows above diagonal
                 if (.not. (A(i,j) .eq. zero)) then
                   res = .false.
                   return
                 end if
             end do
-            do j=o+1,m !loop over rows below diagonal
+            do i=o+2,m !loop over rows below diagonal
                 if (.not. (A(i,j) .eq. zero)) then
                   res = .false.
                   return
@@ -231,8 +254,8 @@ contains
         end if
         A_shape = shape(A)
         n = A_shape(1) !symmetric dimension of A
-        do i=1,n !loop over all rows
-            do j=j+1,n !loop over all columns right of diagonal
+        do j=1,n !loop over all columns
+            do i=1,j-1 !loop over all rows above diagonal
                 if (.not. (A(i,j) .eq. A(j,i))) then
                   res = .false.
                   return
@@ -255,8 +278,8 @@ contains
         end if
         A_shape = shape(A)
         n = A_shape(1) !symmetric dimension of A
-        do i=1,n !loop over all rows
-            do j=j,n !loop over all columns right of diagonal (including diagonal)
+        do j=1,n !loop over all columns
+            do i=1,j !loop over all rows above diagonal (and diagonal)
                 if (.not. (A(i,j) .eq. -A(j,i))) then
                   res = .false.
                   return
@@ -279,8 +302,8 @@ contains
         end if
         A_shape = shape(A)
         n = A_shape(1) !symmetric dimension of A
-        do i=1,n !loop over all rows
-            do j=j+1,n !loop over all columns right of diagonal
+        do j=1,n !loop over all columns
+            do i=1,j !loop over all rows above diagonal (and diagonal)
                 if (.not. (A(i,j) .eq. conjg(A(j,i)))) then
                   res = .false.
                   return
@@ -289,6 +312,85 @@ contains
         end do
         res = .true. !otherwise A is Hermitian
       end function is_hermitian_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure function is_triangular_${t1[0]}$${k1}$(A,uplo) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        character, intent(in) :: uplo
+        logical :: res
+        ${t1}$ :: zero
+        integer :: A_shape(2), m, n, o, i, j
+        zero = 0 !zero of relevant type
+        A_shape = shape(A)
+        m = A_shape(1)
+        n = A_shape(2)
+        if ((uplo .eq. 'u') .or. (uplo .eq. 'U')) then !check for upper triangularity
+          do j=1,n !loop over all columns
+              o = min(j-1,m) !index of row above diagonal (or last row)
+              do i=o+2,m !loop over rows below diagonal
+                  if (.not. (A(i,j) .eq. zero)) then
+                    res = .false.
+                    return
+                  end if
+              end do
+          end do
+        else if ((uplo .eq. 'l') .or. (uplo .eq. 'L')) then !check for lower triangularity
+          do j=1,n !loop over all columns
+              o = min(j-1,m) !index of row above diagonal (or last row)
+              do i=1,o !loop over rows above diagonal
+                  if (.not. (A(i,j) .eq. zero)) then
+                    res = .false.
+                    return
+                  end if
+              end do
+           end do
+        else
+           !return error on uplo parameter needing to be in {u,U,l,L}
+        end if
+     
+        res = .true. !otherwise A is triangular of the requested type
+      end function is_triangular_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure function is_hessenberg_${t1[0]}$${k1}$(A,uplo) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        character, intent(in) :: uplo
+        logical :: res
+        ${t1}$ :: zero
+        integer :: A_shape(2), m, n, o, i, j
+        zero = 0 !zero of relevant type
+        A_shape = shape(A)
+        m = A_shape(1)
+        n = A_shape(2)
+        if ((uplo .eq. 'u') .or. (uplo .eq. 'U')) then !check for upper Hessenberg
+          do j=1,n !loop over all columns
+              o = min(j-2,m) !index of row two above diagonal (or last row)
+              do i=o+4,m !loop over rows two or more below main diagonal
+                  if (.not. (A(i,j) .eq. zero)) then
+                    res = .false.
+                    return
+                  end if
+              end do
+          end do
+        else if ((uplo .eq. 'l') .or. (uplo .eq. 'L')) then !check for lower Hessenberg
+          do j=1,n !loop over all columns
+              o = min(j-2,m) !index of row two above diagonal (or last row)
+              do i=1,o !loop over rows one or more above main diagonal
+                  if (.not. (A(i,j) .eq. zero)) then
+                    res = .false.
+                    return
+                  end if
+              end do
+           end do
+        else
+           !return error on uplo parameter needing to be in {u,U,l,L}
+        end if
+        res = .true. !otherwise A is Hessenberg of the requested type
+      end function is_hessenberg_${t1[0]}$${k1}$
     #:endfor
 
 end module
