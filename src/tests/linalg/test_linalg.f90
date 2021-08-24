@@ -13,6 +13,7 @@ module test_linalg
 
 contains
 
+
     !> Collect all exported unit tests
     subroutine collect_linalg(testsuite)
         !> Collection of tests
@@ -69,6 +70,11 @@ contains
 
         call check(error, all(eye(5) == diag([(1,i=1,5)])), &
             "all(eye(5) == diag([(1,i=1,5)] failed.")
+        if (allocated(error)) return
+
+        rye = eye(3,4)
+        call check(error, sum(abs(rye(:,1:3) - diag([(1.0_sp,i=1,3)]))) < sptol, &
+            "sum(abs(rye(:,1:3) - diag([(1.0_sp,i=1,3)]))) < sptol failed")
         if (allocated(error)) return
 
         rye = eye(6)
@@ -401,7 +407,6 @@ contains
         real(sp) :: re(n,n), im(n,n)
         complex(sp) :: a(n,n), b(n,n)
         complex(sp), parameter :: i_ = cmplx(0,1,kind=sp)
-
 
         call random_number(re)
         call random_number(im)

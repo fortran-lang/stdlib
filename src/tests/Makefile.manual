@@ -21,6 +21,7 @@ all test clean::
 	$(MAKE) -f Makefile.manual --directory=string $@
 	$(MAKE) -f Makefile.manual --directory=test $@
 	$(MAKE) -f Makefile.manual --directory=math $@
+	$(MAKE) -f Makefile.manual --directory=linalg $@
 
 $(LIB): $(OBJS)
 	ar rcs $@ $^
