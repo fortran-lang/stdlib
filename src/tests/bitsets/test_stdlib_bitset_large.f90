@@ -206,7 +206,7 @@ contains
         call set3 % read_bitset(unit)
         call set5 % read_bitset(unit)
         call set4 % read_bitset(unit)
-        call check(error, set4 /= set0 .or. set5 /= set1 .or. set3 /= set2, &
+        call check(error, set4 == set0 .and. set5 == set1 .and. set3 == set2, &
             'transfer to and from units using bitset literals failed.')
 
         if (.not.allocated(error)) then
@@ -223,7 +223,7 @@ contains
             call set13 % read_bitset(unit)
             call set15 % read_bitset(unit)
             call set14 % read_bitset(unit)
-            call check(error, set14 /= set10 .or. set15 /= set11 .or. set3 /= set12, &
+            call check(error, set14 == set10 .and. set15 == set11 .and. set3 == set12, &
                 'transfer to and from units using bitset literals for bits > 64 failed.')
         end if
         if (.not.allocated(error)) then
@@ -237,7 +237,7 @@ contains
             call set3 % read_bitset(unit, advance='no')
             call set4 % read_bitset(unit, advance='no')
             call set5 % read_bitset(unit)
-            call check(error, set5 /= set0 .or. set4 /= set1 .or. set3 /= set2, &
+            call check(error, set5 == set0 .and. set4 == set1 .and. set3 == set2, &
                 'transfer to and from units using bitset literals with advance == "no" failed.')
         end if
         if (.not.allocated(error)) then
@@ -251,7 +251,7 @@ contains
             call set13 % read_bitset(unit, advance='no')
             call set14 % read_bitset(unit, advance='no')
             call set15 % read_bitset(unit)
-            call check(error, set15 /= set10 .or. set14 /= set11 .or. set13 /= set12, &
+            call check(error, set15 == set10 .and. set14 == set11 .and. set13 == set12, &
                 'transfer to and from units using  bitset literals for bitss > 64 with advance == "no" failed.')
         end if
 
@@ -267,7 +267,7 @@ contains
         call set5 % input(unit)
         call set4 % input(unit)
         call set3 % input(unit)
-        call check(error, set3 /= set0 .or. set4 /= set1 .or. set5 /= set2, &
+        call check(error, set3 == set0 .and. set4 == set1 .and. set5 == set2, &
             'transfer to and from units using output and input failed.')
 
         close( unit )
@@ -282,7 +282,7 @@ contains
         call set5 % input(unit)
         call set4 % input(unit)
         call set3 % input(unit)
-        call check(error, set3 /= set0 .or. set4 /= set1 .or. set5 /= set2, &
+        call check(error, set3 == set0 .and. set4 == set1 .and. set5 == set2, &
             'transfer to and from units using stream output and input failed.')
 
         close( unit )
@@ -297,7 +297,7 @@ contains
         call set15 % input(unit)
         call set14 % input(unit)
         call set13 % input(unit)
-        call check(error, set13 /= set10 .or. set14 /= set11 .or. set15 /= set12, &
+        call check(error, set13 == set10 .and. set14 == set11 .and. set15 == set12, &
             'transfer to and from units using output and input failed for bits . 64.')
         close(unit)
         if (allocated(error)) return
@@ -311,7 +311,7 @@ contains
         call set15 % input(unit)
         call set14 % input(unit)
         call set13 % input(unit)
-        call check(error, set13 /= set10 .or. set14 /= set11 .or. set15 /= set12, &
+        call check(error, set13 == set10 .and. set14 == set11 .and. set15 == set12, &
             'transfer to and from units using stream output and input failed for bits . 64.')
         close(unit)
         if (allocated(error)) return
@@ -594,15 +594,11 @@ contains
             if (allocated(error)) return
         end do
 
-        write(*,*) 'As expected set0 had no bits set.'
-
         do i=0, set1 % bits() - 1
             call check(error, set1 % test(i), &
                 'against expectations set0 has at least 1 bit unset.')
             if (allocated(error)) return
         end do
-
-        write(*,*) 'As expected set1 had all bits set.'
 
         do i=0, set0 % bits() - 1
             call check(error, set0 % value(i), 0, &
@@ -610,15 +606,11 @@ contains
             if (allocated(error)) return
         end do
 
-        write(*,*) 'As expected set0 had no bits set.'
-
         do i=0, set1 % bits() - 1
             call check(error, set1 % value(i), 1, &
                 'against expectations set0 has at least 1 bit unset.')
             if (allocated(error)) return
         end do
-
-        write(*,*) 'As expected set1 had all bits set.'
 
         call check(error, set0 % bits() == 33, &
             'set0 unexpectedly does not have 33 bits.')
@@ -750,7 +742,7 @@ contains
 
         call set11 % init( 166_bits_kind )
         call set11 % not()
-        call check(error, .not. set11 % all(), &
+        call check(error, set11 % all(), &
             'set11 is not all set.')
         if (allocated(error)) return
 
