@@ -3,7 +3,7 @@ module test_insert_at
     use stdlib_error, only: check
     use stdlib_string_type, only: string_type, operator(//), operator(==)
     use stdlib_stringlist_type, only: stringlist_type, fidx, bidx, list_head, list_tail, operator(==)
-    use stdlib_ascii, only: to_string
+    use stdlib_strings, only: to_string
     implicit none
 
 contains
