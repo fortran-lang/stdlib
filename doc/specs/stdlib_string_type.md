@@ -1981,7 +1981,7 @@ end program demo
 
 Moves the allocation from `from` to `to`, consequently deallocating `from` in this process.  
 If `from` is not allocated before execution, `to` gets deallocated by the process.  
-An unallocated string is equivalent to an empty string.
+An unallocated `string_type` instance is equivalent to an empty string.
 
 #### Syntax
 
@@ -2005,25 +2005,25 @@ Pure Subroutine.
 #### Example
 
 ```fortran
-program demo
+program demo_move
   use stdlib_string_type, only : string_type, assignment(=), move
   implicit none
-  type(string_type) :: from_string, to_string
-  character(len=:), allocatable :: from_char
+  type(string_type) :: from_string
+  character(len=:), allocatable :: from_char, to_char
 
   from_string = "move this string"
   from_char = "move this char"
   ! from_string <-- "move this string"
   ! from_char   <-- "move this char"
-  ! to_string   <-- "" (unallocated)
+  ! to_char   <-- (unallocated)
 
-  call move(from_string, to_string)
-  ! from_string <-- "" (unallocated)
-  ! to_string   <-- "move this string"
+  call move(from_string, to_char)
+  ! from_string <-- ""
+  ! to_char   <-- "move this string"
 
-  call move(from_char, to_string)
+  call move(from_char, to_char)
   ! from_char <-- (unallocated)
   ! to_string <-- "move this char"
 
-end program demo
+end program demo_move
 ```

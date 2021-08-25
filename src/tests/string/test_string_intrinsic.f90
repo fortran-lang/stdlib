@@ -464,14 +464,14 @@ contains
     end subroutine test_iachar
 
     subroutine test_move
-        type(string_type) :: from_string
-        type(string_type) :: to_string
-        character(len=:), allocatable :: from_char
+        type(string_type) :: from_string, to_string
+        character(len=:), allocatable :: from_char, to_char
 
         from_string = "Move This String"
         from_char = "Move This Char"
         call check(from_string == "Move This String" .and. to_string == "" .and. &
-                    & from_char == "Move This Char", "move: test_case 1")
+                    & from_char == "Move This Char" .and. .not. allocated(to_char), &
+                    & "move: test_case 1")
 
         ! string_type (allocated) --> string_type (not allocated)
         call move(from_string, to_string)
@@ -483,17 +483,27 @@ contains
                     & "move: test_case 3")
 
         ! string_type (allocated) --> character (not allocated)
-        call move(to_string, from_char)
-        call check(to_string == "" .and. from_char == "Move This String", "move: test_case 4")
+        call move(to_string, to_char)
+        call check(to_string == "" .and. to_char == "Move This String", "move: test_case 4")
 
         ! character (allocated) --> string_type (allocated)
-        call move(from_char, from_string)
-        call check(.not. allocated(from_char) .and. from_string == "Move This String", &
+        call move(to_char, from_string)
+        call check(.not. allocated(to_char) .and. from_string == "Move This String", &
                     & "move: test_case 5")
 
+        from_char = "new char"
         ! character (allocated) --> string_type (allocated)
         call move(from_char, from_string)
-        call check(.not. allocated(from_char) .and. from_string == "", "move: test_case 6")
+        call check(.not. allocated(from_char) .and. from_string == "new char", "move: test_case 6")
+
+        ! character (unallocated) --> string_type (allocated)
+        call move(from_char, from_string)
+        call check(from_string == "", "move: test_case 7")
+
+        from_string = "moving to self"
+        ! string_type (allocated) --> string_type (allocated)
+        call move(from_string, from_string)
+        call check(from_string == "", "move: test_case 8")
 
     end subroutine test_move
 
