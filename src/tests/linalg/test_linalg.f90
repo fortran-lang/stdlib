@@ -2,7 +2,8 @@ program test_linalg
   
   use stdlib_error, only: check
   use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
-  use stdlib_linalg, only: diag, eye, trace, outer_product, is_square ,is_diagonal!, is_symmetric
+  use stdlib_linalg, only: diag, eye, trace, outer_product, is_square ,is_diagonal, &
+       is_symmetric, is_skew_symmetric
   
   implicit none
   
@@ -95,14 +96,46 @@ program test_linalg
   call test_is_diagonal_rdp
   call test_is_diagonal_rqp
 
-  !call test_is_diagonal_csp
-  !call test_is_diagonal_cdp
-  !call test_is_diagonal_cqp
+  call test_is_diagonal_csp
+  call test_is_diagonal_cdp
+  call test_is_diagonal_cqp
 
-  !call test_is_diagonal_int8
-  !call test_is_diagonal_int16
-  !call test_is_diagonal_int32
-  !call test_is_diagonal_int64
+  call test_is_diagonal_int8
+  call test_is_diagonal_int16
+  call test_is_diagonal_int32
+  call test_is_diagonal_int64
+
+  !
+  ! is_symmetric
+  !
+  call test_is_symmetric_rsp
+  call test_is_symmetric_rdp
+  call test_is_symmetric_rqp
+
+  call test_is_symmetric_csp
+  call test_is_symmetric_cdp
+  call test_is_symmetric_cqp
+
+  call test_is_symmetric_int8
+  call test_is_symmetric_int16
+  call test_is_symmetric_int32
+  call test_is_symmetric_int64
+
+  !
+  ! is_skew_symmetric
+  !
+  call test_is_skew_symmetric_rsp
+  call test_is_skew_symmetric_rdp
+  call test_is_skew_symmetric_rqp
+
+  call test_is_skew_symmetric_csp
+  call test_is_skew_symmetric_cdp
+  call test_is_skew_symmetric_cqp
+
+  !call test_is_skew_symmetric_int8
+  !call test_is_skew_symmetric_int16
+  !call test_is_skew_symmetric_int32
+  !call test_is_skew_symmetric_int64
 
 contains
 
@@ -728,6 +761,7 @@ contains
          msg="true_when_working failed.",warn=warn)
   end subroutine test_is_square_int64
 
+
   subroutine test_is_diagonal_rsp
     real(sp) :: A_true_s(2,2), A_false_s(2,2) !square matrices
     real(sp) :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
@@ -749,7 +783,7 @@ contains
     should_be_false_sf = is_diagonal(A_false_sf)
     should_be_true_ts = is_diagonal(A_true_ts)
     should_be_false_ts = is_diagonal(A_false_ts)
-    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !compress results
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !combine results
     true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
     true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
     true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
@@ -778,7 +812,7 @@ contains
     should_be_false_sf = is_diagonal(A_false_sf)
     should_be_true_ts = is_diagonal(A_true_ts)
     should_be_false_ts = is_diagonal(A_false_ts)
-    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !compress results
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !combine results
     true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
     true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
     true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
@@ -807,13 +841,589 @@ contains
     should_be_false_sf = is_diagonal(A_false_sf)
     should_be_true_ts = is_diagonal(A_true_ts)
     should_be_false_ts = is_diagonal(A_false_ts)
-    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !compress results
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !combine results
     true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
     true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
     true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
     call check(true_when_working, &
          msg="true_when_working failed.",warn=warn)
   end subroutine test_is_diagonal_rqp
+
+  subroutine test_is_diagonal_csp
+    complex(sp) :: A_true_s(2,2), A_false_s(2,2) !square matrices
+    complex(sp) :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+    complex(sp) :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+    logical :: should_be_true_s, should_be_false_s, true_when_working_s
+    logical :: should_be_true_sf, should_be_false_sf, true_when_working_sf
+    logical :: should_be_true_ts, should_be_false_ts, true_when_working_ts
+    logical :: true_when_working
+    write(*,*) "test_is_diagonal_csp"
+    !generate diagonal and non-diagonal matrices of 3 types
+    A_true_s = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(4.,1.)],[2,2]) 
+    A_false_s = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,1.)],[2,2])
+    A_true_sf = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(4.,1.), &
+         cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+    A_false_sf = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,1.), &
+         cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+    A_true_ts = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(5.,1.),cmplx(0.,0.)],[3,2])
+    A_false_ts = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(5.,1.),cmplx(6.,1.)],[3,2])
+    !test generated matrices
+    should_be_true_s = is_diagonal(A_true_s) 
+    should_be_false_s = is_diagonal(A_false_s)
+    should_be_true_sf = is_diagonal(A_true_sf)
+    should_be_false_sf = is_diagonal(A_false_sf)
+    should_be_true_ts = is_diagonal(A_true_ts)
+    should_be_false_ts = is_diagonal(A_false_ts)
+    !combine results
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s))
+    true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
+    true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
+    true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_diagonal_csp
+
+  subroutine test_is_diagonal_cdp
+    complex(dp) :: A_true_s(2,2), A_false_s(2,2) !square matrices
+    complex(dp) :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+    complex(dp) :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+    logical :: should_be_true_s, should_be_false_s, true_when_working_s
+    logical :: should_be_true_sf, should_be_false_sf, true_when_working_sf
+    logical :: should_be_true_ts, should_be_false_ts, true_when_working_ts
+    logical :: true_when_working
+    write(*,*) "test_is_diagonal_cdp"
+    !generate diagonal and non-diagonal matrices of 3 types
+    A_true_s = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(4.,1.)],[2,2]) 
+    A_false_s = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,1.)],[2,2])
+    A_true_sf = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(4.,1.), &
+         cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+    A_false_sf = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,1.), &
+         cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+    A_true_ts = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(5.,1.),cmplx(0.,0.)],[3,2])
+    A_false_ts = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(5.,1.),cmplx(6.,1.)],[3,2])
+    !test generated matrices
+    should_be_true_s = is_diagonal(A_true_s) 
+    should_be_false_s = is_diagonal(A_false_s)
+    should_be_true_sf = is_diagonal(A_true_sf)
+    should_be_false_sf = is_diagonal(A_false_sf)
+    should_be_true_ts = is_diagonal(A_true_ts)
+    should_be_false_ts = is_diagonal(A_false_ts)
+    !combine results
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s))
+    true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
+    true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
+    true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_diagonal_cdp
+
+  subroutine test_is_diagonal_cqp
+    complex(qp) :: A_true_s(2,2), A_false_s(2,2) !square matrices
+    complex(qp) :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+    complex(qp) :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+    logical :: should_be_true_s, should_be_false_s, true_when_working_s
+    logical :: should_be_true_sf, should_be_false_sf, true_when_working_sf
+    logical :: should_be_true_ts, should_be_false_ts, true_when_working_ts
+    logical :: true_when_working
+    write(*,*) "test_is_diagonal_cqp"
+    !generate diagonal and non-diagonal matrices of 3 types
+    A_true_s = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(4.,1.)],[2,2]) 
+    A_false_s = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,1.)],[2,2])
+    A_true_sf = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(4.,1.), &
+         cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+    A_false_sf = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,1.), &
+         cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+    A_true_ts = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(5.,1.),cmplx(0.,0.)],[3,2])
+    A_false_ts = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(0.,0.),cmplx(5.,1.),cmplx(6.,1.)],[3,2])
+    !test generated matrices
+    should_be_true_s = is_diagonal(A_true_s) 
+    should_be_false_s = is_diagonal(A_false_s)
+    should_be_true_sf = is_diagonal(A_true_sf)
+    should_be_false_sf = is_diagonal(A_false_sf)
+    should_be_true_ts = is_diagonal(A_true_ts)
+    should_be_false_ts = is_diagonal(A_false_ts)
+    !combine results
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s))
+    true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
+    true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
+    true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_diagonal_cqp
+
+  subroutine test_is_diagonal_int8
+    integer(int8) :: A_true_s(2,2), A_false_s(2,2) !square matrices
+    integer(int8) :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+    integer(int8) :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+    logical :: should_be_true_s, should_be_false_s, true_when_working_s
+    logical :: should_be_true_sf, should_be_false_sf, true_when_working_sf
+    logical :: should_be_true_ts, should_be_false_ts, true_when_working_ts
+    logical :: true_when_working
+    write(*,*) "test_is_diagonal_int8" 
+    A_true_s = reshape([1,0,0,4],[2,2]) !generate diagonal and non-diagonal matrices of 3 types
+    A_false_s = reshape([1,0,3,4],[2,2])
+    A_true_sf = reshape([1,0,0,4,0,0],[2,3])
+    A_false_sf = reshape([1,0,3,4,0,0],[2,3])
+    A_true_ts = reshape([1,0,0,0,5,0],[3,2])
+    A_false_ts = reshape([1,0,0,0,5,6],[3,2])
+    should_be_true_s = is_diagonal(A_true_s) !test generated matrices
+    should_be_false_s = is_diagonal(A_false_s)
+    should_be_true_sf = is_diagonal(A_true_sf)
+    should_be_false_sf = is_diagonal(A_false_sf)
+    should_be_true_ts = is_diagonal(A_true_ts)
+    should_be_false_ts = is_diagonal(A_false_ts)
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !combine results
+    true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
+    true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
+    true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_diagonal_int8
+
+  subroutine test_is_diagonal_int16
+    integer(int16) :: A_true_s(2,2), A_false_s(2,2) !square matrices
+    integer(int16) :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+    integer(int16) :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+    logical :: should_be_true_s, should_be_false_s, true_when_working_s
+    logical :: should_be_true_sf, should_be_false_sf, true_when_working_sf
+    logical :: should_be_true_ts, should_be_false_ts, true_when_working_ts
+    logical :: true_when_working
+    write(*,*) "test_is_diagonal_int16" 
+    A_true_s = reshape([1,0,0,4],[2,2]) !generate diagonal and non-diagonal matrices of 3 types
+    A_false_s = reshape([1,0,3,4],[2,2])
+    A_true_sf = reshape([1,0,0,4,0,0],[2,3])
+    A_false_sf = reshape([1,0,3,4,0,0],[2,3])
+    A_true_ts = reshape([1,0,0,0,5,0],[3,2])
+    A_false_ts = reshape([1,0,0,0,5,6],[3,2])
+    should_be_true_s = is_diagonal(A_true_s) !test generated matrices
+    should_be_false_s = is_diagonal(A_false_s)
+    should_be_true_sf = is_diagonal(A_true_sf)
+    should_be_false_sf = is_diagonal(A_false_sf)
+    should_be_true_ts = is_diagonal(A_true_ts)
+    should_be_false_ts = is_diagonal(A_false_ts)
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !combine results
+    true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
+    true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
+    true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_diagonal_int16
+
+  subroutine test_is_diagonal_int32
+    integer(int32) :: A_true_s(2,2), A_false_s(2,2) !square matrices
+    integer(int32) :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+    integer(int32) :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+    logical :: should_be_true_s, should_be_false_s, true_when_working_s
+    logical :: should_be_true_sf, should_be_false_sf, true_when_working_sf
+    logical :: should_be_true_ts, should_be_false_ts, true_when_working_ts
+    logical :: true_when_working
+    write(*,*) "test_is_diagonal_int32" 
+    A_true_s = reshape([1,0,0,4],[2,2]) !generate diagonal and non-diagonal matrices of 3 types
+    A_false_s = reshape([1,0,3,4],[2,2])
+    A_true_sf = reshape([1,0,0,4,0,0],[2,3])
+    A_false_sf = reshape([1,0,3,4,0,0],[2,3])
+    A_true_ts = reshape([1,0,0,0,5,0],[3,2])
+    A_false_ts = reshape([1,0,0,0,5,6],[3,2])
+    should_be_true_s = is_diagonal(A_true_s) !test generated matrices
+    should_be_false_s = is_diagonal(A_false_s)
+    should_be_true_sf = is_diagonal(A_true_sf)
+    should_be_false_sf = is_diagonal(A_false_sf)
+    should_be_true_ts = is_diagonal(A_true_ts)
+    should_be_false_ts = is_diagonal(A_false_ts)
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !combine results
+    true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
+    true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
+    true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_diagonal_int32
+
+  subroutine test_is_diagonal_int64
+    integer(int64) :: A_true_s(2,2), A_false_s(2,2) !square matrices
+    integer(int64) :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+    integer(int64) :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+    logical :: should_be_true_s, should_be_false_s, true_when_working_s
+    logical :: should_be_true_sf, should_be_false_sf, true_when_working_sf
+    logical :: should_be_true_ts, should_be_false_ts, true_when_working_ts
+    logical :: true_when_working
+    write(*,*) "test_is_diagonal_int64" 
+    A_true_s = reshape([1,0,0,4],[2,2]) !generate diagonal and non-diagonal matrices of 3 types
+    A_false_s = reshape([1,0,3,4],[2,2])
+    A_true_sf = reshape([1,0,0,4,0,0],[2,3])
+    A_false_sf = reshape([1,0,3,4,0,0],[2,3])
+    A_true_ts = reshape([1,0,0,0,5,0],[3,2])
+    A_false_ts = reshape([1,0,0,0,5,6],[3,2])
+    should_be_true_s = is_diagonal(A_true_s) !test generated matrices
+    should_be_false_s = is_diagonal(A_false_s)
+    should_be_true_sf = is_diagonal(A_true_sf)
+    should_be_false_sf = is_diagonal(A_false_sf)
+    should_be_true_ts = is_diagonal(A_true_ts)
+    should_be_false_ts = is_diagonal(A_false_ts)
+    true_when_working_s = (should_be_true_s .and. (.not. should_be_false_s)) !combine results
+    true_when_working_sf = (should_be_true_sf .and. (.not. should_be_false_sf))
+    true_when_working_ts = (should_be_true_ts .and. (.not. should_be_false_ts))
+    true_when_working = (true_when_working_s .and. true_when_working_sf .and. true_when_working_ts)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_diagonal_int64
+
+
+  subroutine test_is_symmetric_rsp
+    real(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_symmetric_rsp" 
+    A_true = reshape([1.,2.,2.,4.],[2,2])
+    A_false_1 = reshape([1.,2.,3.,4.],[2,2])
+    A_false_2 = reshape([1.,2.,3.,2.,5.,6.],[3,2]) !nonsquare matrix
+    should_be_true = is_symmetric(A_true)
+    should_be_false_1 = is_symmetric(A_false_1)
+    should_be_false_2 = is_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_symmetric_rsp
+
+  subroutine test_is_symmetric_rdp
+    real(dp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_symmetric_rdp" 
+    A_true = reshape([1.,2.,2.,4.],[2,2])
+    A_false_1 = reshape([1.,2.,3.,4.],[2,2])
+    A_false_2 = reshape([1.,2.,3.,2.,5.,6.],[3,2]) !nonsquare matrix
+    should_be_true = is_symmetric(A_true)
+    should_be_false_1 = is_symmetric(A_false_1)
+    should_be_false_2 = is_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_symmetric_rdp
+
+  subroutine test_is_symmetric_rqp
+    real(qp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_symmetric_rqp" 
+    A_true = reshape([1.,2.,2.,4.],[2,2])
+    A_false_1 = reshape([1.,2.,3.,4.],[2,2])
+    A_false_2 = reshape([1.,2.,3.,2.,5.,6.],[3,2]) !nonsquare matrix
+    should_be_true = is_symmetric(A_true)
+    should_be_false_1 = is_symmetric(A_false_1)
+    should_be_false_2 = is_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_symmetric_rqp
+
+  subroutine test_is_symmetric_csp
+    complex(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_symmetric_csp" 
+    A_true = reshape([cmplx(1.,1.),cmplx(2.,1.), &
+         cmplx(2.,1.),cmplx(4.,1.)],[2,2])
+    A_false_1 = reshape([cmplx(1.,1.),cmplx(2.,1.), &
+         cmplx(3.,1.),cmplx(4.,1.)],[2,2])
+    A_false_2 = reshape([cmplx(1.,1.),cmplx(2.,1.),cmplx(3.,1.), &
+         cmplx(2.,1.),cmplx(5.,1.),cmplx(6.,2.)],[3,2]) !nonsquare matrix
+    should_be_true = is_symmetric(A_true)
+    should_be_false_1 = is_symmetric(A_false_1)
+    should_be_false_2 = is_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_symmetric_csp
+
+  subroutine test_is_symmetric_cdp
+    complex(dp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_symmetric_cdp" 
+    A_true = reshape([cmplx(1.,1.),cmplx(2.,1.), &
+         cmplx(2.,1.),cmplx(4.,1.)],[2,2])
+    A_false_1 = reshape([cmplx(1.,1.),cmplx(2.,1.), &
+         cmplx(3.,1.),cmplx(4.,1.)],[2,2])
+    A_false_2 = reshape([cmplx(1.,1.),cmplx(2.,1.),cmplx(3.,1.), &
+         cmplx(2.,1.),cmplx(5.,1.),cmplx(6.,2.)],[3,2]) !nonsquare matrix
+    should_be_true = is_symmetric(A_true)
+    should_be_false_1 = is_symmetric(A_false_1)
+    should_be_false_2 = is_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_symmetric_cdp
+
+  subroutine test_is_symmetric_cqp
+    complex(qp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_symmetric_cqp" 
+    A_true = reshape([cmplx(1.,1.),cmplx(2.,1.), &
+         cmplx(2.,1.),cmplx(4.,1.)],[2,2])
+    A_false_1 = reshape([cmplx(1.,1.),cmplx(2.,1.), &
+         cmplx(3.,1.),cmplx(4.,1.)],[2,2])
+    A_false_2 = reshape([cmplx(1.,1.),cmplx(2.,1.),cmplx(3.,1.), &
+         cmplx(2.,1.),cmplx(5.,1.),cmplx(6.,2.)],[3,2]) !nonsquare matrix
+    should_be_true = is_symmetric(A_true)
+    should_be_false_1 = is_symmetric(A_false_1)
+    should_be_false_2 = is_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_symmetric_cqp
+
+  subroutine test_is_symmetric_int8
+    integer(int8) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_symmetric_int8" 
+    A_true = reshape([1,2,2,4],[2,2])
+    A_false_1 = reshape([1,2,3,4],[2,2])
+    A_false_2 = reshape([1,2,3,2,5,6],[3,2]) !nonsquare matrix
+    should_be_true = is_symmetric(A_true)
+    should_be_false_1 = is_symmetric(A_false_1)
+    should_be_false_2 = is_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_symmetric_int8
+  
+  subroutine test_is_symmetric_int16
+    integer(int16) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_symmetric_int16" 
+    A_true = reshape([1,2,2,4],[2,2])
+    A_false_1 = reshape([1,2,3,4],[2,2])
+    A_false_2 = reshape([1,2,3,2,5,6],[3,2]) !nonsquare matrix
+    should_be_true = is_symmetric(A_true)
+    should_be_false_1 = is_symmetric(A_false_1)
+    should_be_false_2 = is_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_symmetric_int16
+
+  subroutine test_is_symmetric_int32
+    integer(int32) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_symmetric_int32" 
+    A_true = reshape([1,2,2,4],[2,2])
+    A_false_1 = reshape([1,2,3,4],[2,2])
+    A_false_2 = reshape([1,2,3,2,5,6],[3,2]) !nonsquare matrix
+    should_be_true = is_symmetric(A_true)
+    should_be_false_1 = is_symmetric(A_false_1)
+    should_be_false_2 = is_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_symmetric_int32
+
+  subroutine test_is_symmetric_int64
+    integer(int64) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_symmetric_int64" 
+    A_true = reshape([1,2,2,4],[2,2])
+    A_false_1 = reshape([1,2,3,4],[2,2])
+    A_false_2 = reshape([1,2,3,2,5,6],[3,2]) !nonsquare matrix
+    should_be_true = is_symmetric(A_true)
+    should_be_false_1 = is_symmetric(A_false_1)
+    should_be_false_2 = is_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_symmetric_int64
+
+
+  subroutine test_is_skew_symmetric_rsp
+    real(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_skew_symmetric_rsp" 
+    A_true = reshape([0.,2.,-2.,0.],[2,2])
+    A_false_1 = reshape([0.,2.,-3.,0.],[2,2])
+    A_false_2 = reshape([0.,2.,3.,-2.,0.,6.],[3,2]) !nonsquare matrix
+    should_be_true = is_skew_symmetric(A_true)
+    should_be_false_1 = is_skew_symmetric(A_false_1)
+    should_be_false_2 = is_skew_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_skew_symmetric_rsp
+
+  subroutine test_is_skew_symmetric_rdp
+    real(dp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_skew_symmetric_rdp" 
+    A_true = reshape([0.,2.,-2.,0.],[2,2])
+    A_false_1 = reshape([0.,2.,-3.,0.],[2,2])
+    A_false_2 = reshape([0.,2.,3.,-2.,0.,6.],[3,2]) !nonsquare matrix
+    should_be_true = is_skew_symmetric(A_true)
+    should_be_false_1 = is_skew_symmetric(A_false_1)
+    should_be_false_2 = is_skew_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_skew_symmetric_rdp
+
+  subroutine test_is_skew_symmetric_rqp
+    real(qp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_skew_symmetric_rqp" 
+    A_true = reshape([0.,2.,-2.,0.],[2,2])
+    A_false_1 = reshape([0.,2.,-3.,0.],[2,2])
+    A_false_2 = reshape([0.,2.,3.,-2.,0.,6.],[3,2]) !nonsquare matrix
+    should_be_true = is_skew_symmetric(A_true)
+    should_be_false_1 = is_skew_symmetric(A_false_1)
+    should_be_false_2 = is_skew_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_skew_symmetric_rqp
+
+  subroutine test_is_skew_symmetric_csp
+    complex(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_skew_symmetric_csp" 
+    A_true = reshape([cmplx(0.,0.),cmplx(2.,1.), &
+         -cmplx(2.,1.),cmplx(0.,0.)],[2,2])
+    A_false_1 = reshape([cmplx(0.,0.),cmplx(2.,1.), &
+         -cmplx(3.,1.),cmplx(0.,0.)],[2,2])
+    A_false_2 = reshape([cmplx(0.,0.),cmplx(2.,1.),cmplx(3.,0.), &
+         -cmplx(2.,1.),cmplx(0.,0.),cmplx(6.,0.)],[3,2]) !nonsquare matrix
+    should_be_true = is_skew_symmetric(A_true)
+    should_be_false_1 = is_skew_symmetric(A_false_1)
+    should_be_false_2 = is_skew_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_skew_symmetric_csp
+
+  subroutine test_is_skew_symmetric_cdp
+    complex(dp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_skew_symmetric_cdp" 
+    A_true = reshape([cmplx(0.,0.),cmplx(2.,1.), &
+         -cmplx(2.,1.),cmplx(0.,0.)],[2,2])
+    A_false_1 = reshape([cmplx(0.,0.),cmplx(2.,1.), &
+         -cmplx(3.,1.),cmplx(0.,0.)],[2,2])
+    A_false_2 = reshape([cmplx(0.,0.),cmplx(2.,1.),cmplx(3.,0.), &
+         -cmplx(2.,1.),cmplx(0.,0.),cmplx(6.,0.)],[3,2]) !nonsquare matrix
+    should_be_true = is_skew_symmetric(A_true)
+    should_be_false_1 = is_skew_symmetric(A_false_1)
+    should_be_false_2 = is_skew_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_skew_symmetric_cdp
+
+  subroutine test_is_skew_symmetric_cqp
+    complex(qp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_skew_symmetric_cqp" 
+    A_true = reshape([cmplx(0.,0.),cmplx(2.,1.), &
+         -cmplx(2.,1.),cmplx(0.,0.)],[2,2])
+    A_false_1 = reshape([cmplx(0.,0.),cmplx(2.,1.), &
+         -cmplx(3.,1.),cmplx(0.,0.)],[2,2])
+    A_false_2 = reshape([cmplx(0.,0.),cmplx(2.,1.),cmplx(3.,0.), &
+         -cmplx(2.,1.),cmplx(0.,0.),cmplx(6.,0.)],[3,2]) !nonsquare matrix
+    should_be_true = is_skew_symmetric(A_true)
+    should_be_false_1 = is_skew_symmetric(A_false_1)
+    should_be_false_2 = is_skew_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_skew_symmetric_cqp
+
+  subroutine test_is_skew_symmetric_int8
+    integer(int8) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_skew_symmetric_int8" 
+    A_true = reshape([0,2,-2,0],[2,2])
+    A_false_1 = reshape([0,2,-3,0],[2,2])
+    A_false_2 = reshape([0,2,3,-2,0,6],[3,2]) !nonsquare matrix
+    should_be_true = is_skew_symmetric(A_true)
+    should_be_false_1 = is_skew_symmetric(A_false_1)
+    should_be_false_2 = is_skew_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_skew_symmetric_int8
+  
+  subroutine test_is_skew_symmetric_int16
+    integer(int16) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_skew_symmetric_int16" 
+    A_true = reshape([0,2,-2,0],[2,2])
+    A_false_1 = reshape([0,2,-3,0],[2,2])
+    A_false_2 = reshape([0,2,3,-2,0,6],[3,2]) !nonsquare matrix
+    should_be_true = is_skew_symmetric(A_true)
+    should_be_false_1 = is_skew_symmetric(A_false_1)
+    should_be_false_2 = is_skew_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_skew_symmetric_int16
+
+  subroutine test_is_skew_symmetric_int32
+    integer(int32) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_skew_symmetric_int32" 
+    A_true = reshape([0,2,-2,0],[2,2])
+    A_false_1 = reshape([0,2,-3,0],[2,2])
+    A_false_2 = reshape([0,2,3,-2,0,6],[3,2]) !nonsquare matrix
+    should_be_true = is_skew_symmetric(A_true)
+    should_be_false_1 = is_skew_symmetric(A_false_1)
+    should_be_false_2 = is_skew_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_skew_symmetric_int32
+
+  subroutine test_is_skew_symmetric_int64
+    integer(int64) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    logical :: should_be_true, should_be_false_1, should_be_false_2, true_when_working
+    write(*,*) "test_is_skew_symmetric_int64" 
+    A_true = reshape([0,2,-2,0],[2,2])
+    A_false_1 = reshape([0,2,-3,0],[2,2])
+    A_false_2 = reshape([0,2,3,-2,0,6],[3,2]) !nonsquare matrix
+    should_be_true = is_skew_symmetric(A_true)
+    should_be_false_1 = is_skew_symmetric(A_false_1)
+    should_be_false_2 = is_skew_symmetric(A_false_2)
+    true_when_working = (should_be_true .and. (.not. should_be_false_1) &
+         .and. (.not. should_be_false_2))
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_skew_symmetric_int64
 
 
   pure recursive function catalan_number(n) result(value)
