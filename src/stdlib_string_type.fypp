@@ -14,7 +14,7 @@
 !> The specification of this module is available [here](../page/specs/stdlib_string_type.html).
 module stdlib_string_type
     use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, &
-       & to_title_ => to_title, to_sentence_ => to_sentence, reverse_ => reverse, to_string
+       & to_title_ => to_title, to_sentence_ => to_sentence, reverse_ => reverse
     use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
     implicit none
     private
@@ -42,24 +42,32 @@ module stdlib_string_type
         character(len=:), allocatable :: raw
     end type string_type
 
-    !> Constructor for new string instances
-    interface string_type
-        module procedure :: new_string
-      #:for kind in INT_KINDS
-        module procedure :: new_string_from_integer_${kind}$
-      #:endfor
-      #:for kind in LOG_KINDS
-        module procedure :: new_string_from_logical_${kind}$
-      #:endfor
-    end interface string_type
-
-
     !> Returns the length of the character sequence represented by the string.
     !>
     !> This method is elemental and returns a default integer scalar value.
     interface len
         module procedure :: len_string
     end interface len
+
+    !> Constructor for new string instances
+    interface string_type
+        pure elemental module function new_string(string) result(new)
+            character(len=*), intent(in), optional :: string
+            type(string_type) :: new
+        end function new_string
+        #:for kind in INT_KINDS
+        pure elemental module function new_string_from_integer_${kind}$(val) result(new)
+            integer(${kind}$), intent(in) :: val
+            type(string_type) :: new
+        end function new_string_from_integer_${kind}$
+        #:endfor
+        #:for kind in LOG_KINDS
+        pure elemental module function new_string_from_logical_${kind}$(val) result(new)
+            logical(${kind}$), intent(in) :: val
+            type(string_type) :: new
+        end function new_string_from_logical_${kind}$
+        #:endfor
+    end interface string_type        
 
     !> Returns the length of the character sequence without trailing spaces
     !> represented by the string.
@@ -355,35 +363,6 @@ module stdlib_string_type
 
 
 contains
-
-
-    !> Constructor for new string instances from a scalar character value.
-    elemental function new_string(string) result(new)
-        character(len=*), intent(in), optional :: string
-        type(string_type) :: new
-        if (present(string)) then
-            new%raw = string
-        end if
-    end function new_string
-
-  #:for kind in INT_KINDS
-    !> Constructor for new string instances from an integer of kind ${kind}$.
-    elemental function new_string_from_integer_${kind}$(val) result(new)
-        integer(${kind}$), intent(in) :: val
-        type(string_type) :: new
-        new%raw = to_string(val)
-    end function new_string_from_integer_${kind}$
-  #:endfor
-
-  #:for kind in LOG_KINDS
-    !> Constructor for new string instances from a logical of kind ${kind}$.
-    elemental function new_string_from_logical_${kind}$(val) result(new)
-        logical(${kind}$), intent(in) :: val
-        type(string_type) :: new
-        new%raw = to_string(val)
-    end function new_string_from_logical_${kind}$
-  #:endfor
-
 
     !> Assign a character sequence to a string.
     elemental subroutine assign_string_char(lhs, rhs)
