@@ -48,7 +48,8 @@ contains
             new_unittest("index", test_index), &
             new_unittest("char", test_char), &
             new_unittest("ichar", test_ichar), &
-            new_unittest("iachar", test_iachar) &
+            new_unittest("iachar", test_iachar), &
+            new_unittest("move", test_move) &
             ]
     end subroutine collect_string_intrinsic
 
@@ -661,6 +662,59 @@ contains
         code = iachar(string)
         call check(error, code == iachar("F"))
     end subroutine test_iachar
+
+    subroutine test_move(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        type(string_type) :: from_string, to_string
+        character(len=:), allocatable :: from_char, to_char
+
+        from_string = "Move This String"
+        from_char = "Move This Char"
+        call check(error, from_string == "Move This String" .and. to_string == "" .and. &
+            & from_char == "Move This Char" .and. .not. allocated(to_char), &
+            & "move: test_case 1")
+        if (allocated(error)) return
+
+        ! string_type (allocated) --> string_type (not allocated)
+        call move(from_string, to_string)
+        call check(error, from_string == "" .and. to_string == "Move This String", "move: test_case 2")
+        if (allocated(error)) return
+
+        ! character (allocated) --> string_type (not allocated)
+        call move(from_char, from_string)
+        call check(error, .not. allocated(from_char) .and. from_string == "Move This Char", &
+            & "move: test_case 3")
+        if (allocated(error)) return
+
+        ! string_type (allocated) --> character (not allocated)
+        call move(to_string, to_char)
+        call check(error, to_string == "" .and. to_char == "Move This String", "move: test_case 4")
+        if (allocated(error)) return
+
+        ! character (allocated) --> string_type (allocated)
+        call move(to_char, from_string)
+        call check(error, .not. allocated(to_char) .and. from_string == "Move This String", &
+            & "move: test_case 5")
+        if (allocated(error)) return
+
+        from_char = "new char"
+        ! character (allocated) --> string_type (allocated)
+        call move(from_char, from_string)
+        call check(error, .not. allocated(from_char) .and. from_string == "new char", "move: test_case 6")
+        if (allocated(error)) return
+
+        ! character (unallocated) --> string_type (allocated)
+        call move(from_char, from_string)
+        call check(error, from_string == "", "move: test_case 7")
+        if (allocated(error)) return
+
+        from_string = "moving to self"
+        ! string_type (allocated) --> string_type (allocated)
+        call move(from_string, from_string)
+        call check(error, from_string == "", "move: test_case 8")
+
+    end subroutine test_move
 
 end module test_string_intrinsic
 
