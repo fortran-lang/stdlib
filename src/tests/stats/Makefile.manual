@@ -1,4 +1,5 @@
 SRCFYPP =\
+        test_mean.fypp \
         test_median.fypp
 
 SRCGEN = $(SRCFYPP:.fypp=.f90)
