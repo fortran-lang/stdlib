@@ -3,7 +3,7 @@ program test_linalg
   use stdlib_error, only: check
   use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
   use stdlib_linalg, only: diag, eye, trace, outer_product, is_square ,is_diagonal, &
-       is_symmetric, is_skew_symmetric
+       is_symmetric, is_skew_symmetric, is_triangular!, is_hessenberg
   
   implicit none
   
@@ -132,10 +132,27 @@ program test_linalg
   call test_is_skew_symmetric_cdp
   call test_is_skew_symmetric_cqp
 
-  !call test_is_skew_symmetric_int8
-  !call test_is_skew_symmetric_int16
-  !call test_is_skew_symmetric_int32
-  !call test_is_skew_symmetric_int64
+  call test_is_skew_symmetric_int8
+  call test_is_skew_symmetric_int16
+  call test_is_skew_symmetric_int32
+  call test_is_skew_symmetric_int64
+
+
+  !
+  ! is_triangular
+  !
+  call test_is_triangular_rsp
+  !call test_is_triangular_rdp
+  !call test_is_triangular_rqp
+
+  !call test_is_triangular_csp
+  !call test_is_triangular_cdp
+  !call test_is_triangular_cqp
+
+  !call test_is_triangular_int8
+  !call test_is_triangular_int16
+  !call test_is_triangular_int32
+  !call test_is_triangular_int64
 
 contains
 
@@ -1424,6 +1441,62 @@ contains
     call check(true_when_working, &
          msg="true_when_working failed.",warn=warn)
   end subroutine test_is_skew_symmetric_int64
+
+
+  subroutine test_is_triangular_rsp
+    real(sp) :: A_true_s_u(2,2), A_false_s_u(2,2) !square matrices (upper triangular)
+    real(sp) :: A_true_sf_u(2,3), A_false_sf_u(2,3) !short and fat matrices
+    real(sp) :: A_true_ts_u(3,2), A_false_ts_u(3,2) !tall and skinny matrices
+    real(sp) :: A_true_s_l(2,2), A_false_s_l(2,2) !square matrices (lower triangular)
+    real(sp) :: A_true_sf_l(2,3), A_false_sf_l(2,3) !short and fat matrices
+    real(sp) :: A_true_ts_l(3,2), A_false_ts_l(3,2) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_triangular_rsp" 
+    !upper triangular
+    A_true_s_u = reshape([1.,0.,3.,4.],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_u = reshape([1.,2.,0.,4.],[2,2])
+    A_true_sf_u = reshape([1.,0.,3.,4.,0.,6.],[2,3])
+    A_false_sf_u = reshape([1.,2.,3.,4.,0.,6.],[2,3])
+    A_true_ts_u = reshape([1.,0.,0.,4.,5.,0.],[3,2])
+    A_false_ts_u = reshape([1.,0.,0.,4.,5.,6.],[3,2])
+    should_be_true_s_u = is_triangular(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_triangular(A_false_s_u,'u')
+    should_be_true_sf_u = is_triangular(A_true_sf_u,'u')
+    should_be_false_sf_u = is_triangular(A_false_sf_u,'u')
+    should_be_true_ts_u = is_triangular(A_true_ts_u,'U')
+    should_be_false_ts_u = is_triangular(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower triangular
+    A_true_s_l = reshape([1.,2.,0.,4.],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_l = reshape([1.,0.,3.,4.],[2,2])
+    A_true_sf_l = reshape([1.,2.,0.,4.,0.,0.],[2,3])
+    A_false_sf_l = reshape([1.,2.,3.,4.,0.,0.],[2,3])
+    A_true_ts_l = reshape([1.,2.,3.,0.,5.,6.],[3,2])
+    A_false_ts_l = reshape([1.,2.,3.,4.,5.,6.],[3,2])
+    should_be_true_s_l = is_triangular(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_triangular(A_false_s_l,'l')
+    should_be_true_sf_l = is_triangular(A_true_sf_l,'l')
+    should_be_false_sf_l = is_triangular(A_false_sf_l,'l')
+    should_be_true_ts_l = is_triangular(A_true_ts_l,'L')
+    should_be_false_ts_l = is_triangular(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_triangular_rsp
 
 
   pure recursive function catalan_number(n) result(value)
