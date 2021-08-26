@@ -1,0 +1,33 @@
+#:include "common.fypp"
+
+submodule(stdlib_math) stdlib_math_is_close
+
+contains
+
+    #! Determines whether the values of `a` and `b` are close.
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    elemental module function is_close_${t1[0]}$${k1}$(a, b, rtol, atol) result(result)
+        ${t1}$, intent(in) :: a, b
+        real(${k1}$), intent(in), optional :: rtol, atol
+        logical :: result
+
+        result = abs(a - b) <= abs(optval(rtol, 1.0e-5_${k1}$)*b) + &
+                               abs(optval(atol, 1.0e-8_${k1}$))
+
+    end function is_close_${t1[0]}$${k1}$
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    elemental module function is_close_${t1[0]}$${k1}$(a, b, rtol, atol) result(result)
+        ${t1}$, intent(in) :: a, b
+        real(${k1}$), intent(in), optional :: rtol, atol
+        logical :: result
+
+        result = is_close_r${k1}$(a%re, b%re, rtol, atol) .and. &
+                 is_close_r${k1}$(a%im, b%im, rtol, atol)
+
+    end function is_close_${t1[0]}$${k1}$
+    #:endfor
+
+end submodule stdlib_math_is_close
