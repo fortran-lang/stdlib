@@ -31,8 +31,8 @@ contains
       #:set name = rname("test_select", 1, arraytype, arraykind, intkind)
       subroutine ${name}$()
 
-          ${inttype}$, parameter :: N = 10,  Nreps = 4, Nm = 8
-          ${inttype}$, parameter :: Nr = min(HUGE(N)/2_int64, 100_int64) ! < HUGE(N)
+          ${inttype}$, parameter :: N = 10,  Nreps = 2, Nm = 8
+          ${inttype}$, parameter :: Nr = min(HUGE(N)/2_int64, 25_int64) ! < HUGE(N)
 
           ${arraytype}$ :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
               kth_smallest, random_vals(Nr), one = 1
@@ -189,8 +189,8 @@ contains
       #:set name = rname("test_arg_select", 1, arraytype, arraykind, intkind)
       subroutine ${name}$
 
-          ${inttype}$, parameter :: N = 10,  Nreps = 4, Nm = 8
-          ${inttype}$, parameter :: Nr = min(HUGE(N)/2_int64, 100_int64) ! < HUGE(N)
+          ${inttype}$, parameter :: N = 10,  Nreps = 2, Nm = 8
+          ${inttype}$, parameter :: Nr = min(HUGE(N)/2_int64, 25_int64) ! < HUGE(N)
           integer, parameter :: ip = ${intkind}$
 
           ${arraytype}$ :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
