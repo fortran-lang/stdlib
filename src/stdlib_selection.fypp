@@ -183,7 +183,7 @@ contains
               !! and also that:
               !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
               !! and:
-              !!  `maxavl(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
