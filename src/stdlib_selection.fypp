@@ -5,7 +5,7 @@
 
 module stdlib_selection
 !
-! This code was modified from a matlab implementation of "qselect" by Manolis 
+! This code was modified from a matlab implementation of "qselect" by Manolis
 ! Lourakis, https://www.mathworks.com/matlabcentral/fileexchange/68947-qselect
 ! Below is the licence of qselect
 !
@@ -22,7 +22,7 @@ module stdlib_selection
 !   this list of conditions and the following disclaimer in the documentation
 !   and/or other materials provided with the distribution
 ! * Neither the name of Foundation for Research and Technology - Hellas nor the
-!   names of its contributors may be used to endorse or promote products 
+!   names of its contributors may be used to endorse or promote products
 !   derived from this software without specific prior written permission.
 ! THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 ! AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -51,7 +51,7 @@ interface select
       module procedure ${name}$
     #:endfor
   #:endfor
-end interface    
+end interface
 
 interface arg_select
   #:for arraykind, arraytype in ARRAY_KINDS_TYPES
@@ -99,29 +99,29 @@ contains
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
               !! partially sorted, see documentation for `a(:)`).
-  
+
           ${inttype}$ :: l, r, s, i, j, k_local
           ${arraytype}$ :: pivot
-  
+
           l = 1_${intkind}$
           if(present(left)) l = left
           r = size(a)
           if(present(right)) r = right
-  
+
           if(k < 1 .or. k > size(a) .or. l > r .or. l < 1 .or. &
               r > size(a)) then
               stop "select must have 1 <= k <= size(a), and 1 <= left <= right <= size(a)";
           end if
-  
+
           k_local = k - l + 1
-  
+
           do while(.true.)
               s = (l+r)/2_${intkind}$ ! Deliberate integer division
               if(a(s) < a(r)) call swap(a(s), a(r))
               if(a(s) < a(l)) call swap(a(s), a(l))
               if(a(r) < a(l)) call swap(a(r), a(l))
               pivot = a(r) ! Median
-  
+
               i = l
               do j = l, r-1
                   if(a(j) <= pivot) then
@@ -140,7 +140,7 @@ contains
                   return
               end if
           end do
-  
+
           contains
               subroutine swap(a, b)
                   ${arraytype}$, intent(inout) :: a, b
@@ -188,33 +188,33 @@ contains
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
               !! `indx(:)` becomes partially sorted, see documentation for `indx(:)`).
-  
+
           ${inttype}$ :: l, r, s, i, j, k_local
           ${arraytype}$ :: pivot
-  
+
           l = 1_${intkind}$
           if(present(left)) l = left
           r = size(a)
           if(present(right)) r = right
-  
+
           if(size(a) /= size(indx)) then
               stop "arg_select must have size(a) == size(indx)"
           end if
-  
+
           if(k < 1 .or. k > size(a) .or. l > r .or. l < 1 .or. &
               r > size(a)) then
               stop "arg_select must have 1 <= k <= size(a), and 1 <= left <= right <= size(a)";
           end if
-  
+
           k_local = k - l + 1
-  
+
           do while(.true.)
               s = (l+r)/2_${intkind}$ ! Deliberate integer division
               if(a(indx(s)) < a(indx(r))) call swap(indx(s), indx(r))
               if(a(indx(s)) < a(indx(l))) call swap(indx(s), indx(l))
               if(a(indx(r)) < a(indx(l))) call swap(indx(r), indx(l))
               pivot = a(indx(r)) ! Median
-  
+
               i = l
               do j = l, r-1
                   if(a(indx(j)) <= pivot) then
@@ -233,7 +233,7 @@ contains
                   return
               end if
           end do
-  
+
           contains
               subroutine swap(a, b)
                   ${inttype}$, intent(inout) :: a, b
