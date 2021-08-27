@@ -102,39 +102,40 @@ contains
 
           ${inttype}$ :: l, r, s, i, j, k_local
           ${arraytype}$ :: pivot
+          integer, parameter :: ip = ${intkind}$
 
-          l = 1_${intkind}$
+          l = 1_ip
           if(present(left)) l = left
-          r = size(a)
+          r = size(a, kind=ip)
           if(present(right)) r = right
 
-          if(k < 1 .or. k > size(a) .or. l > r .or. l < 1 .or. &
-              r > size(a)) then
+          if(k < 1_ip .or. k > size(a, kind=ip) .or. l > r .or. l < 1_ip .or. &
+              r > size(a, kind=ip)) then
               error stop "select must have 1 <= k <= size(a), and 1 <= left <= right <= size(a)";
           end if
 
-          k_local = k - l + 1
+          k_local = k - l + 1_ip
 
           do while(.true.)
-              s = (l+r)/2_${intkind}$ ! Deliberate integer division
+              s = (l+r)/2_ip ! Deliberate integer division
               if(a(s) < a(r)) call swap(a(s), a(r))
               if(a(s) < a(l)) call swap(a(s), a(l))
               if(a(r) < a(l)) call swap(a(r), a(l))
               pivot = a(r) ! Median
 
               i = l
-              do j = l, r-1
+              do j = l, r-1_ip
                   if(a(j) <= pivot) then
                       call swap(a(i), a(j))
-                      i = i+1
+                      i = i+1_ip
                   end if
               end do
               call swap(a(r), a(i))
-              s = i-l+1
+              s = i-l+1_ip
               if(k_local < s) then
-                  r = i-1
+                  r = i-1_ip
               else if(k_local > s) then
-                  l=i+1; k_local=k_local-s;
+                  l=i+1_ip; k_local=k_local-s;
               else
                   kth_smallest = a(i)
                   return
@@ -191,43 +192,44 @@ contains
 
           ${inttype}$ :: l, r, s, i, j, k_local
           ${arraytype}$ :: pivot
+          integer, parameter :: ip = ${intkind}$
 
-          l = 1_${intkind}$
+          l = 1_ip
           if(present(left)) l = left
-          r = size(a)
+          r = size(a, kind=ip)
           if(present(right)) r = right
 
           if(size(a) /= size(indx)) then
               error stop "arg_select must have size(a) == size(indx)"
           end if
 
-          if(k < 1 .or. k > size(a) .or. l > r .or. l < 1 .or. &
-              r > size(a)) then
+          if(k < 1_ip .or. k > size(a, kind=ip) .or. l > r .or. l < 1_ip .or. &
+              r > size(a, kind=ip)) then
               error stop "arg_select must have 1 <= k <= size(a), and 1 <= left <= right <= size(a)";
           end if
 
-          k_local = k - l + 1
+          k_local = k - l + 1_ip
 
           do while(.true.)
-              s = (l+r)/2_${intkind}$ ! Deliberate integer division
+              s = (l+r)/2_ip ! Deliberate integer division
               if(a(indx(s)) < a(indx(r))) call swap(indx(s), indx(r))
               if(a(indx(s)) < a(indx(l))) call swap(indx(s), indx(l))
               if(a(indx(r)) < a(indx(l))) call swap(indx(r), indx(l))
               pivot = a(indx(r)) ! Median
 
               i = l
-              do j = l, r-1
+              do j = l, r-1_ip
                   if(a(indx(j)) <= pivot) then
                       call swap(indx(i), indx(j))
-                      i = i+1
+                      i = i+1_ip
                   end if
               end do
               call swap(indx(r), indx(i))
-              s = i-l+1
+              s = i-l+1_ip
               if(k_local < s) then
-                  r = i-1
+                  r = i-1_ip
               else if(k_local > s) then
-                  l=i+1; k_local=k_local-s;
+                  l=i+1_ip; k_local=k_local-s;
               else
                   kth_smallest = indx(i)
                   return
