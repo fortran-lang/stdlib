@@ -1,5 +1,5 @@
 #:include "common.fypp"
-! Specify kinds/types for the input array in quick_select and arg_quick_select
+! Specify kinds/types for the input array in select and arg_select
 #:set ARRAY_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
 ! The index arrays are of all INT_KINDS_TYPES
 
@@ -18,6 +18,12 @@ program test_selection
     #:endfor
   #:endfor
 
+  #:for arraykind, arraytype in ARRAY_KINDS_TYPES
+    #:for intkind, inttype in INT_KINDS_TYPES
+      #:set name = rname("test_arg_select", 1, arraytype, arraykind, intkind)
+      call ${name}$()
+    #:endfor
+  #:endfor
 contains
 
   #:for arraykind, arraytype in ARRAY_KINDS_TYPES
@@ -25,8 +31,10 @@ contains
       #:set name = rname("test_select", 1, arraytype, arraykind, intkind)
       subroutine ${name}$()
 
-          ${inttype}$, parameter :: N = 10, Nr = min(HUGE(N)/2_int64, 100_int64), Nreps = 4
-          ${arraytype}$ :: x(N), x_copy(N), mat(8), mat_copy(8), len1(1), len2(2), &
+          ${inttype}$, parameter :: N = 10,  Nreps = 4, Nm = 8
+          ${inttype}$, parameter :: Nr = min(HUGE(N)/2_int64, 100_int64) ! < HUGE(N)
+
+          ${arraytype}$ :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
               kth_smallest, random_vals(Nr), one = 1
           ${inttype}$ :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
@@ -34,12 +42,12 @@ contains
           integer, parameter :: ip = ${intkind}$
 
           ! x contains the numbers 1**2, 2**2, .... 10**2, with mixed-up order
-          x = (/( i**2, i=1, size(x) )/)
+          x = (/( i**2, i=1, size(x, kind=ip) )/)
           x(5:2:-1) = x(2:5)
           x(10:8:-1) = x(8:10)
 
           ! Check that the ith-ranked entry of x really is i**2
-          do i = 1, size(x)
+          do i = 1, size(x, kind=ip)
               x_copy = x
               call select(x_copy, i, kth_smallest)
               call check( (kth_smallest == i**2), " ${name}$: kth smallest entry should be i**2")
@@ -48,7 +56,7 @@ contains
           ! Check that it works when we specify "left" and know that the array
           ! is partially sorted due to previous calls to quickselect
           x_copy = x
-          do i = 1, size(x), 1
+          do i = 1, size(x, kind=ip), 1
               call select(x_copy, i, kth_smallest, left=i)
               call check( (kth_smallest == i**2), " ${name}$: kth smallest entry with left specified")
           end do
@@ -56,7 +64,7 @@ contains
           ! Check that it works when we specify "right" and know that the array
           ! is partially sorted due to previous calls to quickselect
           x_copy = x
-          do i = size(x), 1, -1
+          do i = size(x, kind=ip), 1, -1
               call select(x_copy, i, kth_smallest, right=i)
               call check( (kth_smallest == i**2), " ${name}$: kth smallest entry with right specified")
           end do
@@ -72,7 +80,7 @@ contains
           call select(mat_copy, 2_ip, kth_smallest)
           call check( kth_smallest == 1, " ${name}$: mat test 2")
           mat_copy = mat
-          call select(mat_copy, size(mat)+1_ip-4_ip, kth_smallest)
+          call select(mat_copy, size(mat, kind=ip)+1_ip-4_ip, kth_smallest)
           call check( kth_smallest == 4, " ${name}$: mat test 3")
           mat_copy = mat
           call select(mat_copy, 5_ip, kth_smallest)
@@ -124,7 +132,7 @@ contains
                   test1 = kth_smallest == random_vals(p)
                   test2 = all(random_vals(1:(p-1)) <= random_vals(p))
                   test3 = all(random_vals(p) <= &
-                      random_vals((p+1):size(random_vals)))
+                      random_vals((p+1):size(random_vals, kind=ip)))
                   if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
                       any_failed = .TRUE.
 
@@ -135,7 +143,7 @@ contains
                   test1 = kth_smallest == random_vals(up_rank)
                   test2 = all(random_vals(1:(up_rank-1)) <= random_vals(up_rank))
                   test3 = all(random_vals(up_rank) <= &
-                      random_vals((up_rank+1):size(random_vals)))
+                      random_vals((up_rank+1):size(random_vals, kind=ip)))
                   if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
                       any_failed = .TRUE.
 
@@ -147,7 +155,7 @@ contains
                   test2 = all(random_vals(1:(down_rank-1)) <= &
                       random_vals(down_rank))
                   test3 = all(random_vals(down_rank) <= &
-                      random_vals((down_rank+1):size(random_vals)))
+                      random_vals((down_rank+1):size(random_vals, kind=ip)))
                   if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
                       any_failed = .TRUE.
 
@@ -161,7 +169,7 @@ contains
                   test2 = all(random_vals(1:(mid_rank-1)) <= &
                       random_vals(mid_rank))
                   test3 = all(random_vals(mid_rank) <= &
-                      random_vals((mid_rank+1):size(random_vals)))
+                      random_vals((mid_rank+1):size(random_vals, kind=ip)))
                   if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
                       any_failed = .TRUE.
 
@@ -175,5 +183,191 @@ contains
     #:endfor
   #:endfor
 
+
+  #:for arraykind, arraytype in ARRAY_KINDS_TYPES
+    #:for intkind, inttype in INT_KINDS_TYPES
+      #:set name = rname("test_arg_select", 1, arraytype, arraykind, intkind)
+      subroutine ${name}$
+  
+          ${inttype}$, parameter :: N = 10,  Nreps = 4, Nm = 8
+          ${inttype}$, parameter :: Nr = min(HUGE(N)/2_int64, 100_int64) ! < HUGE(N)
+          integer, parameter :: ip = ${intkind}$
+
+          ${arraytype}$ :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+
+          integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
+              indx_len1(1), indx_len2(2), indx_r(Nr)
+          real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
+          integer(ip) :: i, j, p, up_rank, down_rank, mid_rank, kth_smallest
+          logical :: test1, test2, test3, any_failed
+  
+          ! Make x contain 1**2, 2**2, .... 10**2, but mix up the order
+          x = (/( i**2, i=1, size(x, kind=ip) )/)
+          x(5:2:-1) = x(2:5)
+          x(10:8:-1) = x(8:10)
+  
+          indx = (/(i, i = 1, size(x, kind=ip))/)
+  
+          ! Check that the ith ranked entry of x equals i**2
+          do i = 1, size(x, kind=ip)
+              indx_copy = indx
+              call arg_select(x, indx, i, kth_smallest)
+              call check(x(kth_smallest) == i**2, " ${name}$: kth smallest entry should be i**2")
+          end do
+  
+          ! Check that it works when we specify "left" and know that the index
+          ! array is partially sorted due to previous calls to arg_select
+          indx_copy = indx
+          do i = 1, size(x, kind=ip), 1
+              call arg_select(x, indx_copy,  i, kth_smallest, left=i)
+              call check( (x(kth_smallest) == i**2), " ${name}$: kth smallest entry with left specified")
+          end do
+  
+          ! Check that it works when we specify "right" and know that the index
+          ! array is partially sorted due to previous calls to arg_select
+          indx_copy = indx
+          do i = size(x, kind=ip), 1, -1
+              call arg_select(x, indx_copy, i, kth_smallest, right=i)
+              call check( (x(kth_smallest) == i**2), " ${name}$: kth smallest entry with right specified")
+          end do
+  
+          !
+          ! Variants of test that came with the matlab documentation for qselect
+          !
+          mat = one * [3, 2, 7, 4, 5, 1, 4, -1]
+          indx_mat = (/( i, i = 1, size(mat, kind=ip) )/)
+  
+          indx_mat_copy = indx_mat
+          call arg_select(mat, indx_mat_copy, 1_ip, kth_smallest)
+          call check( mat(kth_smallest) == -1, " ${name}$: mat test 1")
+  
+          indx_mat_copy = indx_mat
+          call arg_select(mat, indx_mat_copy, 2_ip, kth_smallest)
+          call check( mat(kth_smallest) == 1, " ${name}$: mat test 2")
+  
+          indx_mat_copy = indx_mat
+          call arg_select(mat, indx_mat_copy, size(mat, kind=ip)+1_ip-4_ip, &
+              kth_smallest)
+          call check( mat(kth_smallest) == 4, " ${name}$: mat test 3")
+  
+          indx_mat_copy = indx_mat
+          call arg_select(mat, indx_mat_copy, 5_ip, kth_smallest)
+          call check( mat(kth_smallest) == 4, " ${name}$: mat test 4")
+  
+          indx_mat_copy = indx_mat
+          call arg_select(mat, indx_mat_copy, 6_ip, kth_smallest)
+          call check( mat(kth_smallest) == 4, " ${name}$: mat test 5")
+  
+          indx_mat_copy = indx_mat
+          call arg_select(mat, indx_mat_copy, 7_ip, kth_smallest)
+          call check( mat(kth_smallest) == 5, " ${name}$: mat test 6")
+  
+          ! Check it works for size(a) == 1
+          len1(1) = -1 * one
+          indx_len1(1) = 1
+          call arg_select(len1, indx_len1, 1_ip, kth_smallest)
+          call check(len1(kth_smallest) == -1, " ${name}$: array with size 1")
+  
+          ! Check it works for size(a) == 2
+          len2 = [-3, -5] * one
+          indx_len2 = [1_ip, 2_ip]
+          call arg_select(len2, indx_len2, 2_ip, kth_smallest)
+          call check(len2(kth_smallest) == -3, " ${name}$: array with size 2, test 1")
+  
+          len2 = [-3, -5] * one
+          indx_len2 = [1_ip, 2_ip]
+          call arg_select(len2, indx_len2, 1_ip, kth_smallest)
+          call check(len2(kth_smallest) == -5, " ${name}$: array with size 2, test 2")
+  
+          len2 = [-1, -1] * one
+          indx_len2 = [1_ip, 2_ip]
+          call arg_select(len2, indx_len2, 1_ip, kth_smallest)
+          call check(len2(kth_smallest) == -1, " ${name}$: array with size 2, test 3")
+  
+          len2 = [-1, -1] * one
+          indx_len2 = [1_ip, 2_ip]
+          call arg_select(len2, indx_len2, 2_ip, kth_smallest)
+          call check(len2(kth_smallest) == -1, " ${name}$: array with size 2, test 4")
+  
+          !
+          ! Test using random data
+          !
+          any_failed=.FALSE.
+  
+          ! Search for the pth-smallest, for all these p (avoid end-points to
+          ! enable additional tests using "left", "right" arguments)
+          do p = 3, Nr-2
+  
+              ! Repeat for many random samples to try to expose any errors
+              do i = 1, Nreps
+  
+                  ! Make random numbers of the correct type
+                  call random_number(random_doubles)
+                  random_vals = random_doubles * Nr
+  
+                  indx_r = (/( j, j = 1, size(random_vals, kind=ip) )/)
+  
+                  ! Standard arg_select
+                  call arg_select(random_vals, indx_r, p, kth_smallest)
+  
+                  test1 = random_vals(kth_smallest) == random_vals(indx_r(p))
+                  test2 = all(random_vals(indx_r(1:(p-1))) <= &
+                      random_vals(indx_r(p)))
+                  test3 = all(random_vals(indx_r(p)) <= &
+                      random_vals(indx_r((p+1):size(random_vals, kind=ip))))
+                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
+                      any_failed = .TRUE.
+  
+                  ! Constrained search for a rank above 'p', providing 'left'
+                  up_rank = p + (Nr-p)/2_ip ! Deliberate integer division
+                  call arg_select(random_vals, indx_r, up_rank, &
+                      kth_smallest, left=p)
+  
+                  test1 = random_vals(kth_smallest) == &
+                      random_vals(indx_r(up_rank))
+                  test2 = all(random_vals(indx_r(1:(up_rank-1))) <= &
+                      random_vals(indx_r(up_rank)))
+                  test3 = all(random_vals(indx_r(up_rank)) <= &
+                      random_vals(indx_r((up_rank+1):size(random_vals, kind=ip))))
+                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
+                      any_failed = .TRUE.
+  
+                  ! Constrained search for a rank below p, providing 'right'
+                  down_rank = p - (p/2_ip)
+                  call arg_select(random_vals, indx_r, down_rank, &
+                      kth_smallest, right=p)
+  
+                  test1 = random_vals(kth_smallest) == &
+                      random_vals(indx_r(down_rank))
+                  test2 = all(random_vals(indx_r(1:(down_rank-1))) <= &
+                      random_vals(indx_r(down_rank)))
+                  test3 = all(random_vals(indx_r(down_rank)) <= &
+                      random_vals(indx_r((down_rank+1):size(random_vals, kind=ip))))
+                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
+                      any_failed = .TRUE.
+  
+                  ! Constrained search for a rank between up-ind and down-ind,
+                  ! proving left and right. 'mid_rank' is either above or below p
+                  mid_rank = p - p/3_ip*mod(i,2_ip) + (Nr-p)/3_ip*(1_ip-mod(i,2_ip))
+                  call arg_select(random_vals, indx_r, mid_rank, &
+                      kth_smallest, left=down_rank, right=up_rank)
+  
+                  test1 = random_vals(kth_smallest) == &
+                      random_vals(indx_r(mid_rank))
+                  test2 = all(random_vals(indx_r(1:(mid_rank-1))) <= &
+                      random_vals(indx_r(mid_rank)))
+                  test3 = all(random_vals(indx_r(mid_rank)) <= &
+                      random_vals(indx_r((mid_rank+1):size(random_vals, kind=ip))))
+                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
+                      any_failed = .TRUE.
+  
+              end do
+          end do
+  
+          call check( (.not. any_failed), " ${name}$: random number test failed ")
+  
+      end subroutine
+    #:endfor
+  #:endfor
 
 end program
