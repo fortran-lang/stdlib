@@ -139,23 +139,23 @@ than sorting `a` entirely.
       real :: kth_smallest
       integer :: k, left, right
 
-      array = 1.0 * [3, 2, 7, 4, 5, 1, 4, -1]
+      array = [3., 2., 7., 4., 5., 1., 4., -1.]
 
       k = 2
       call select(array, k, kth_smallest)
-      print*, kth_smallest ! print 1
+      print*, kth_smallest ! print 1.0
 
       k = 7
       ! Due to the previous call to select, we know for sure this is in an
       ! index >= 2
       call select(array, k, kth_smallest, left=2)
-      print*, kth_smallest ! print 5
+      print*, kth_smallest ! print 5.0
 
       k = 6
       ! Due to the previous two calls to select, we know for sure this is in
       ! an index >= 2 and <= 7
       call select(array, k, kth_smallest, left=2, right=7)
-      print*, kth_smallest ! print 4
+      print*, kth_smallest ! print 4.0
 
     end program demo_select
 ```
@@ -234,25 +234,25 @@ than sorting `a` entirely.
       integer :: kth_smallest
       integer :: k, left, right
 
-      array = 1.0 * [3, 2, 7, 4, 5, 1, 4, -1]
+      array = [3., 2., 7., 4., 5., 1., 4., -1.]
       indx = (/( k, k = 1, size(array) )/)
 
       k = 2
       call arg_select(array, indx, k, kth_smallest)
-      print*, array(kth_smallest) ! print 1
+      print*, array(kth_smallest) ! print 1.0
 
       k = 7
       ! Due to the previous call to arg_select, we know for sure this is in an
       ! index >= 2
       call arg_select(array, indx, k, kth_smallest, left=2)
-      print*, array(kth_smallest) ! print 5
+      print*, array(kth_smallest) ! print 5.0
 
       k = 6
       ! Due to the previous two calls to arg_select, we know for sure this is in
       ! an index >= 2 and <= 7
       call arg_select(array, indx, k, kth_smallest, left=2, right=7)
-      print*, array(kth_smallest) ! print 4
+      print*, array(kth_smallest) ! print 4.0
 
-    end program demo_select
+    end program demo_arg_select
 ```
 
