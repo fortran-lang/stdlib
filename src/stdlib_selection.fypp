@@ -1,0 +1,249 @@
+#:include "common.fypp"
+! Specify kinds/types for the input array in quick_select and arg_quick_select
+#:set ARRAY_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
+! The index arrays are of all INT_KINDS_TYPES
+
+module stdlib_quick_select
+!
+! This code was modified from a matlab implementation of "qselect" by Manolis 
+! Lourakis, https://www.mathworks.com/matlabcentral/fileexchange/68947-qselect
+! Below is the licence of qselect
+!
+! Copyright (c) 2018, Manolis Lourakis
+! All rights reserved.
+!
+! Redistribution and use in source and binary forms, with or without
+! modification, are permitted provided that the following conditions are met:
+!
+! * Redistributions of source code must retain the above copyright notice, this
+!   list of conditions and the following disclaimer.
+!
+! * Redistributions in binary form must reproduce the above copyright notice,
+!   this list of conditions and the following disclaimer in the documentation
+!   and/or other materials provided with the distribution
+! * Neither the name of Foundation for Research and Technology - Hellas nor the
+!   names of its contributors may be used to endorse or promote products 
+!   derived from this software without specific prior written permission.
+! THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+! AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+! DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+! FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+! DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+! SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+! CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+! OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+! OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+!
+
+use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
+
+implicit none
+
+private
+
+public select, arg_select
+
+interface select
+  #:for arraykind, arraytype in ARRAY_KINDS_TYPES
+    #:for intkind, inttype in INT_KINDS_TYPES
+      #:set name = rname("quick_select", 1, arraytype, arraykind, intkind)
+      module procedure ${name}$
+    #:endfor
+  #:endfor
+end interface    
+
+interface arg_select
+  #:for arraykind, arraytype in ARRAY_KINDS_TYPES
+    #:for intkind, inttype in INT_KINDS_TYPES
+      #:set name = rname("arg_quick_select", 1, arraytype, arraykind, intkind)
+      module procedure ${name}$
+    #:endfor
+  #:endfor
+end interface
+
+contains
+
+  #:for arraykind, arraytype in ARRAY_KINDS_TYPES
+    #:for intkind, inttype in INT_KINDS_TYPES
+      #:set name = rname("quick_select", 1, arraytype, arraykind, intkind)
+      subroutine ${name}$(a, k, kth_smallest, left, right)
+          !! quick_select - select the k-th smallest entry in a(:).
+          !!
+          !! Implements Hoares Quickselect algorithm
+          !!     (https://en.wikipedia.org/wiki/Quickselect)
+          !! with the median-of-3 pivot strategy.
+          !! Operates in-place, avoiding sorting and recursion.
+          !!
+          !! Modified from a translation of "qselect" by Manolis Lourakis
+          !! https://www.mathworks.com/matlabcentral/fileexchange/68947-qselect
+          !!
+          ${arraytype}$, intent(inout) :: a(:)
+              !! Array in which we seek the kth-smallest entry.
+              !! On output it will be partially sorted such that
+              !! `maxval(a(1:(k-1))) <= a(k) <= minval(a((k+1):size(a))).`
+          ${inttype}$, intent(in) :: k
+              !! We want the kth smallest entry. E.G. `k=1` leads to
+              !! `kth_smallest=min(a)`, and `k=size(a)` leads to
+              !! `kth_smallest=max(a)`
+          ${arraytype}$, intent(out) :: kth_smallest
+              !! On output contains the kth-smallest value of `a(:)`
+          ${inttype}$, intent(in), optional :: left, right
+              !! If we know that:
+              !!    the kth-smallest entry of `a` is in `a(left:right)`
+              !! and also that:
+              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
+              !! and:
+              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !! then one or both bounds can be specified to narrow the search.
+              !! The constraints are available if we have previously called the
+              !! subroutine with different `k` (because of how `a(:)` becomes
+              !! partially sorted, see documentation for `a(:)`).
+  
+          ${inttype}$ :: l, r, s, i, j, k_local
+          ${arraytype}$ :: pivot
+  
+          l = 1_${intkind}$
+          if(present(left)) l = left
+          r = size(a)
+          if(present(right)) r = right
+  
+          if(k < 1 .or. k > size(a) .or. l > r .or. l < 1 .or. &
+              r > size(a)) then
+              stop "quick_select must have 1 <= k <= size(a), and 1 <= left <= right <= size(a)";
+          end if
+  
+          k_local = k - l + 1
+  
+          do while(.true.)
+              s = (l+r)/2_${intkind}$ ! Deliberate integer division
+              if(a(s) < a(r)) call swap(a(s), a(r))
+              if(a(s) < a(l)) call swap(a(s), a(l))
+              if(a(r) < a(l)) call swap(a(r), a(l))
+              pivot = a(r) ! Median
+  
+              i = l
+              do j = l, r-1
+                  if(a(j) <= pivot) then
+                      call swap(a(i), a(j))
+                      i = i+1
+                  end if
+              end do
+              call swap(a(r), a(i))
+              s = i-l+1
+              if(k_local < s) then
+                  r = i-1
+              else if(k_local > s) then
+                  l=i+1; k_local=k_local-s;
+              else
+                  kth_smallest = a(i)
+                  return
+              end if
+          end do
+  
+          contains
+              subroutine swap(a, b)
+                  ${arraytype}$, intent(inout) :: a, b
+                  ${arraytype}$ :: tmp
+                  tmp = a; a = b; b = tmp
+              end subroutine
+      end subroutine
+    #:endfor
+  #:endfor
+
+
+  #:for arraykind, arraytype in ARRAY_KINDS_TYPES
+    #:for intkind, inttype in INT_KINDS_TYPES
+      #:set name = rname("arg_quick_select", 1, arraytype, arraykind, intkind)
+      subroutine ${name}$(a, indx, k, kth_smallest, left, right)
+          !! arg_quick_select - find the index of the k-th smallest entry in `a(:)`
+          !!
+          !! Implements Hoares Quickselect algorithm
+          !!    https://en.wikipedia.org/wiki/Quickselect)
+          !! with the median-of-3 pivot strategy.
+          !! Operates in-place, avoiding sorting and recursion.
+          !!
+          ${arraytype}$, intent(in) :: a(:)
+              !! Array in which we seek the kth-smallest entry.
+          ${inttype}$, intent(inout) :: indx(:)
+              !! Array of indices into `a(:)`. Must contain each integer
+              !! from `1:size(a)` exactly once. On output it will be partially
+              !! "sorted" such that
+              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+          ${inttype}$, intent(in) :: k
+              !! We want index of the kth smallest entry. E.G. `k=1` leads to
+              !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
+              !! `a(kth_smallest) = max(a)`
+          ${inttype}$, intent(out) :: kth_smallest
+              !! On output contains the index with the kth-smallest value of `a(:)`
+          ${inttype}$, intent(in), optional :: left, right
+              !! If we know that:
+              !!  the kth-smallest entry of `a` is in `a(indx(left:right))`
+              !! and also that:
+              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
+              !! and:
+              !!  `maxavl(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !! then one or both bounds can be specified to reduce the search
+              !! time. These constraints are available if we have previously
+              !! called the subroutine with a different `k` (due to the way that
+              !! `indx(:)` becomes partially sorted, see documentation for `indx(:)`).
+  
+          ${inttype}$ :: l, r, s, i, j, k_local
+          ${arraytype}$ :: pivot
+  
+          l = 1_${intkind}$
+          if(present(left)) l = left
+          r = size(a)
+          if(present(right)) r = right
+  
+          if(size(a) /= size(indx)) then
+              stop "arg_quick_select must have size(a) == size(indx)"
+          end if
+  
+          if(k < 1 .or. k > size(a) .or. l > r .or. l < 1 .or. &
+              r > size(a)) then
+              stop "arg_quick_select must have 1 <= k <= size(a), and 1 <= left <= right <= size(a)";
+          end if
+  
+          k_local = k - l + 1
+  
+          do while(.true.)
+              s = (l+r)/2_${intkind}$ ! Deliberate integer division
+              if(a(indx(s)) < a(indx(r))) call swap(indx(s), indx(r))
+              if(a(indx(s)) < a(indx(l))) call swap(indx(s), indx(l))
+              if(a(indx(r)) < a(indx(l))) call swap(indx(r), indx(l))
+              pivot = a(indx(r)) ! Median
+  
+              i = l
+              do j = l, r-1
+                  if(a(indx(j)) <= pivot) then
+                      call swap(indx(i), indx(j))
+                      i = i+1
+                  end if
+              end do
+              call swap(indx(r), indx(i))
+              s = i-l+1
+              if(k_local < s) then
+                  r = i-1
+              else if(k_local > s) then
+                  l=i+1; k_local=k_local-s;
+              else
+                  kth_smallest = indx(i)
+                  return
+              end if
+          end do
+  
+          contains
+              subroutine swap(a, b)
+                  ${inttype}$, intent(inout) :: a, b
+                  ${inttype}$ :: tmp
+                  tmp = a; a = b; b = tmp
+              end subroutine
+      end subroutine
+    #:endfor
+  #:endfor
+
+end module
+
+
