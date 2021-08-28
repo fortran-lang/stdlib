@@ -217,7 +217,8 @@ where we need to search.
 
 `arg_select` does not modify `a`, unlike `select`.
 
-While it is essential that that `indx` contains the integers 1:size(a), the code does not check for this.
+While it is essential that that `indx` contains the integers 1:size(a) (in any
+order), the code does not check for this.
 
 Selection of a single value should have runtime of O(`size(a)`), so it is asymptotically faster
 than sorting `a` entirely.
