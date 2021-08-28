@@ -125,7 +125,7 @@ You can pass additional options to CMake to customize the build.
 Important options are
 
 - `-G Ninja` to use the Ninja backend instead of the default Make backend. Other build backends are available with a similar syntax.
-- `-DCMAKE_INSTALL_PREFIX` is used to provide the install location for the library.
+- `-DCMAKE_INSTALL_PREFIX` is used to provide the install location for the library. If not provided, this defaults to `stdlib_install` in the `stdlib` directory.
 - `-DCMAKE_MAXIMUM_RANK` the maximum array rank procedures should be generated for.
   The default value is chosen as 4.
   The maximum is 15 for Fortran 2003 compliant compilers, otherwise 7 for compilers not supporting Fortran 2003 completely yet.
@@ -153,7 +153,7 @@ cmake --build build --target test
 
 Please report failing tests on our [issue tracker](https://github.com/fortran-lang/stdlib/issues/new/choose) including details of the compiler used, the operating system and platform architecture.
 
-To install the project to the declared prefix run
+To install the project to the declared prefix (by default `stdlib_install` in the `stdlib` directory), run
 
 ```sh
 cmake --install build
@@ -199,7 +199,7 @@ To make the installed stdlib project discoverable add the stdlib directory to th
 The usual install localtion of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
 
 For non-CMake build systems (like make) you can use the exported pkg-config file by setting ``PKG_CONFIG_PATH`` to include the directory containing the exported pc-file.
-The usual install location of the pc-file is ``$PREFIX/lib/pkgconfig``.
+The usual install location of the pc-file is ``$PREFIX/lib/pkgconfig`` (by default, `stdlib_install/lib/pkgconfig` in the `stdlib` directory).
 In make you can obtain the required compile and link arguments with
 
 ```make
