@@ -5,6 +5,7 @@ module stdlib_linalg
   !! ([Specification](../page/specs/stdlib_linalg.html))
   use stdlib_kinds, only: sp, dp, qp, &
     int8, int16, int32, int64
+  use stdlib_error, only: error_stop
   implicit none
   private
 
@@ -92,7 +93,7 @@ module stdlib_linalg
   interface is_square
     !! version: experimental
     !!
-    !! Checks if a matrix (rank-2 array) is square.
+    !! Checks if a matrix (rank-2 array) is square
     !! ([Specification](../page/specs/stdlib_linalg.html#description_4))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_square_${t1[0]}$${k1}$
@@ -104,7 +105,7 @@ module stdlib_linalg
   interface is_diagonal
     !! version: experimental
     !!
-    !! Checks if a matrix (rank-2 array) is diagonal.
+    !! Checks if a matrix (rank-2 array) is diagonal
     !! ([Specification](../page/specs/stdlib_linalg.html#description_5))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_diagonal_${t1[0]}$${k1}$
@@ -116,7 +117,7 @@ module stdlib_linalg
   interface is_symmetric
     !! version: experimental
     !!
-    !! Checks if a matrix (rank-2 array) is symmetric.
+    !! Checks if a matrix (rank-2 array) is symmetric
     !! ([Specification](../page/specs/stdlib_linalg.html#description_6))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_symmetric_${t1[0]}$${k1}$
@@ -128,7 +129,7 @@ module stdlib_linalg
   interface is_skew_symmetric
     !! version: experimental
     !!
-    !! Checks if a matrix (rank-2 array) is skew-symmetric.
+    !! Checks if a matrix (rank-2 array) is skew-symmetric
     !! ([Specification](../page/specs/stdlib_linalg.html#description_7))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_skew_symmetric_${t1[0]}$${k1}$
@@ -140,7 +141,7 @@ module stdlib_linalg
   interface is_hermitian
     !! version: experimental
     !!
-    !! Checks if a matrix (rank-2 array) is Hermitian.
+    !! Checks if a matrix (rank-2 array) is Hermitian
     !! ([Specification](../page/specs/stdlib_linalg.html#description_8))
     #:for k1, t1 in CMPLX_KINDS_TYPES
       module procedure is_hermitian_${t1[0]}$${k1}$
@@ -152,7 +153,7 @@ module stdlib_linalg
   interface is_triangular
     !! version: experimental
     !!
-    !! Checks if a matrix (rank-2 array) is triangular.
+    !! Checks if a matrix (rank-2 array) is triangular
     !! ([Specification](../page/specs/stdlib_linalg.html#description_9))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_triangular_${t1[0]}$${k1}$
@@ -223,15 +224,15 @@ contains
         A_shape = shape(A)
         m = A_shape(1)
         n = A_shape(2)
-        do j=1,n !loop over all columns
+        do j = 1, n !loop over all columns
             o = min(j-1,m) !index of row above diagonal (or last row)
-            do i=1,o !loop over rows above diagonal
+            do i = 1, o !loop over rows above diagonal
                 if (.not. (A(i,j) .eq. zero)) then
                   res = .false.
                   return
                 end if
             end do
-            do i=o+2,m !loop over rows below diagonal
+            do i = o+2, m !loop over rows below diagonal
                 if (.not. (A(i,j) .eq. zero)) then
                   res = .false.
                   return
@@ -254,8 +255,8 @@ contains
         end if
         A_shape = shape(A)
         n = A_shape(1) !symmetric dimension of A
-        do j=1,n !loop over all columns
-            do i=1,j-1 !loop over all rows above diagonal
+        do j = 1, n !loop over all columns
+            do i = 1, j-1 !loop over all rows above diagonal
                 if (.not. (A(i,j) .eq. A(j,i))) then
                   res = .false.
                   return
@@ -278,8 +279,8 @@ contains
         end if
         A_shape = shape(A)
         n = A_shape(1) !symmetric dimension of A
-        do j=1,n !loop over all columns
-            do i=1,j !loop over all rows above diagonal (and diagonal)
+        do j = 1, n !loop over all columns
+            do i = 1, j !loop over all rows above diagonal (and diagonal)
                 if (.not. (A(i,j) .eq. -A(j,i))) then
                   res = .false.
                   return
@@ -302,8 +303,8 @@ contains
         end if
         A_shape = shape(A)
         n = A_shape(1) !symmetric dimension of A
-        do j=1,n !loop over all columns
-            do i=1,j !loop over all rows above diagonal (and diagonal)
+        do j = 1, n !loop over all columns
+            do i = 1, j !loop over all rows above diagonal (and diagonal)
                 if (.not. (A(i,j) .eq. conjg(A(j,i)))) then
                   res = .false.
                   return
@@ -316,7 +317,7 @@ contains
 
 
     #:for k1, t1 in RCI_KINDS_TYPES
-      pure function is_triangular_${t1[0]}$${k1}$(A,uplo) result(res)
+      function is_triangular_${t1[0]}$${k1}$(A,uplo) result(res)
         ${t1}$, intent(in) :: A(:,:)
         character, intent(in) :: uplo
         logical :: res
@@ -327,9 +328,9 @@ contains
         m = A_shape(1)
         n = A_shape(2)
         if ((uplo .eq. 'u') .or. (uplo .eq. 'U')) then !check for upper triangularity
-          do j=1,n !loop over all columns
+          do j = 1, n !loop over all columns
               o = min(j-1,m) !index of row above diagonal (or last row)
-              do i=o+2,m !loop over rows below diagonal
+              do i = o+2, m !loop over rows below diagonal
                   if (.not. (A(i,j) .eq. zero)) then
                     res = .false.
                     return
@@ -347,7 +348,7 @@ contains
               end do
            end do
         else
-           !return error on uplo parameter needing to be in {u,U,l,L}
+           call error_stop("ERROR (is_triangular): second argument must be one of {'u','U','l','L'}")
         end if
      
         res = .true. !otherwise A is triangular of the requested type
@@ -356,7 +357,7 @@ contains
 
 
     #:for k1, t1 in RCI_KINDS_TYPES
-      pure function is_hessenberg_${t1[0]}$${k1}$(A,uplo) result(res)
+      function is_hessenberg_${t1[0]}$${k1}$(A,uplo) result(res)
         ${t1}$, intent(in) :: A(:,:)
         character, intent(in) :: uplo
         logical :: res
@@ -367,9 +368,9 @@ contains
         m = A_shape(1)
         n = A_shape(2)
         if ((uplo .eq. 'u') .or. (uplo .eq. 'U')) then !check for upper Hessenberg
-          do j=1,n !loop over all columns
+          do j = 1, n !loop over all columns
               o = min(j-2,m) !index of row two above diagonal (or last row)
-              do i=o+4,m !loop over rows two or more below main diagonal
+              do i = o+4, m !loop over rows two or more below main diagonal
                   if (.not. (A(i,j) .eq. zero)) then
                     res = .false.
                     return
@@ -377,9 +378,9 @@ contains
               end do
           end do
         else if ((uplo .eq. 'l') .or. (uplo .eq. 'L')) then !check for lower Hessenberg
-          do j=1,n !loop over all columns
+          do j = 1, n !loop over all columns
               o = min(j-2,m) !index of row two above diagonal (or last row)
-              do i=1,o !loop over rows one or more above main diagonal
+              do i = 1, o !loop over rows one or more above main diagonal
                   if (.not. (A(i,j) .eq. zero)) then
                     res = .false.
                     return
@@ -387,7 +388,7 @@ contains
               end do
            end do
         else
-           !return error on uplo parameter needing to be in {u,U,l,L}
+           call error_stop("ERROR (is_hessenberg): second argument must be one of {'u','U','l','L'}")
         end if
         res = .true. !otherwise A is Hessenberg of the requested type
       end function is_hessenberg_${t1[0]}$${k1}$
