@@ -36,7 +36,7 @@ input index array with the same size as `array`, having unique indices from
 `1:size(array)`, which is modified instead. On return the index array is modified
 such that `all(array(index(1:k)) <= array(index(k)))` and `all(array(k) <= array(k+1:size(array)))`.
 The user can optionally specify `left` and `right` indices to constrain the search
-for the kth-smallest value. This can be useful if you have previously called `select`
+for the kth-smallest value. This can be useful if you have previously called `arg_select`
 to find a smaller or larger rank (that will have led to partial sorting of
 `index`, thus implying some constraint on the location).
 
