@@ -170,7 +170,7 @@ Alternatively, you can build using provided Makefiles:
 make -f Makefile.manual
 ```
 
-You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS`` environment variable:
+You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS`` environment variable (which can reduce the compilation time):
 
 ```sh
 make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
