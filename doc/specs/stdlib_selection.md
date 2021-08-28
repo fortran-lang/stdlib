@@ -217,7 +217,7 @@ where we need to search.
 
 `arg_select` does not modify `a`, unlike `select`.
 
-While it is essential that that `indx` contains the integers 1:size(a) (in any
+While it is essential that that `indx` contains the integers `1:size(a)` (in any
 order), the code does not check for this.
 
 Selection of a single value should have runtime of O(`size(a)`), so it is asymptotically faster
@@ -347,7 +347,7 @@ LOG(size(array)).
   end program
 ```
 
-The results seem consistent with expectations; the program prints:
+The results seem consistent with expectations when the array is large; the program prints:
 ```
  select    ; N=           1 ; PASS; Relative-speedup-vs-sort:   2.11456394
  arg_select; N=           1 ; PASS; Relative-speedup-vs-sort:   3.48637915
