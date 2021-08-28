@@ -3,7 +3,7 @@ program test_linalg
   use stdlib_error, only: check
   use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
   use stdlib_linalg, only: diag, eye, trace, outer_product, is_square ,is_diagonal, &
-       is_symmetric, is_skew_symmetric, is_triangular!, is_hessenberg
+       is_symmetric, is_skew_symmetric, is_triangular, is_hessenberg
   
   implicit none
   
@@ -145,14 +145,30 @@ program test_linalg
   call test_is_triangular_rdp
   call test_is_triangular_rqp
 
-  !call test_is_triangular_csp
-  !call test_is_triangular_cdp
-  !call test_is_triangular_cqp
+  call test_is_triangular_csp
+  call test_is_triangular_cdp
+  call test_is_triangular_cqp
 
-  !call test_is_triangular_int8
-  !call test_is_triangular_int16
-  !call test_is_triangular_int32
-  !call test_is_triangular_int64
+  call test_is_triangular_int8
+  call test_is_triangular_int16
+  call test_is_triangular_int32
+  call test_is_triangular_int64
+
+  !
+  ! is_hessenberg
+  !
+  call test_is_hessenberg_rsp
+  call test_is_hessenberg_rdp
+  call test_is_hessenberg_rqp
+
+  call test_is_hessenberg_csp
+  call test_is_hessenberg_cdp
+  call test_is_hessenberg_cqp
+
+  call test_is_hessenberg_int8
+  call test_is_hessenberg_int16
+  call test_is_hessenberg_int32
+  call test_is_hessenberg_int64
 
 contains
 
@@ -355,8 +371,19 @@ contains
     call check(all(diag(a,-2) == diag(a,2)), &
           msg="all(diag(a,-2) == diag(a,2))", warn=warn)
   end subroutine test_diag_int64
-
-
+  pure recursive function catalan_number(n) result(value)
+    integer, intent(in) :: n
+    integer :: value
+    integer :: i
+    if (n <= 1) then
+      value = 1
+    else
+      value = 0
+      do i = 0, n-1
+        value = value + catalan_number(i)*catalan_number(n-i-1)
+      end do
+    end if
+  end function
 
 
   subroutine test_trace_rsp
@@ -1679,19 +1706,1021 @@ contains
          msg="true_when_working failed.",warn=warn)
   end subroutine test_is_triangular_csp
 
+  subroutine test_is_triangular_cdp
+    complex(dp) :: A_true_s_u(2,2), A_false_s_u(2,2) !square matrices (upper triangular)
+    complex(dp) :: A_true_sf_u(2,3), A_false_sf_u(2,3) !short and fat matrices
+    complex(dp) :: A_true_ts_u(3,2), A_false_ts_u(3,2) !tall and skinny matrices
+    complex(dp) :: A_true_s_l(2,2), A_false_s_l(2,2) !square matrices (lower triangular)
+    complex(dp) :: A_true_sf_l(2,3), A_false_sf_l(2,3) !short and fat matrices
+    complex(dp) :: A_true_ts_l(3,2), A_false_ts_l(3,2) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_triangular_cdp" 
+    !upper triangular
+    A_true_s_u = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,0.)],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_u = reshape([cmplx(1.,1.),cmplx(2.,0.), &
+         cmplx(0.,0.),cmplx(4.,0.)],[2,2])
+    A_true_sf_u = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(0.,0.),cmplx(6.,0.)],[2,3])
+    A_false_sf_u = reshape([cmplx(1.,1.),cmplx(2.,0.), &
+         cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(0.,0.),cmplx(6.,0.)],[2,3])
+    A_true_ts_u = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(0.,0.)],[3,2])
+    A_false_ts_u = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.)],[3,2])
+    should_be_true_s_u = is_triangular(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_triangular(A_false_s_u,'u')
+    should_be_true_sf_u = is_triangular(A_true_sf_u,'u')
+    should_be_false_sf_u = is_triangular(A_false_sf_u,'u')
+    should_be_true_ts_u = is_triangular(A_true_ts_u,'U')
+    should_be_false_ts_u = is_triangular(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower triangular
+    A_true_s_l = reshape([cmplx(1.,1.),cmplx(2.,0.), &
+         cmplx(0.,0.),cmplx(4.,0.)],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_l = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,0.)],[2,2])
+    A_true_sf_l = reshape([cmplx(1.,1.),cmplx(2.,0.), &
+         cmplx(0.,0.),cmplx(4.,0.), &
+         cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+    A_false_sf_l = reshape([cmplx(1.,1.),cmplx(2.,0.), &
+         cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+    A_true_ts_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(0.,0.),cmplx(5.,1.),cmplx(6.,0.)],[3,2])
+    A_false_ts_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.)],[3,2])
+    should_be_true_s_l = is_triangular(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_triangular(A_false_s_l,'l')
+    should_be_true_sf_l = is_triangular(A_true_sf_l,'l')
+    should_be_false_sf_l = is_triangular(A_false_sf_l,'l')
+    should_be_true_ts_l = is_triangular(A_true_ts_l,'L')
+    should_be_false_ts_l = is_triangular(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_triangular_cdp
 
-  pure recursive function catalan_number(n) result(value)
-    integer, intent(in) :: n
-    integer :: value
-    integer :: i
-    if (n <= 1) then
-      value = 1
-    else
-      value = 0
-      do i = 0, n-1
-        value = value + catalan_number(i)*catalan_number(n-i-1)
-      end do
-    end if
-  end function
+  subroutine test_is_triangular_cqp
+    complex(qp) :: A_true_s_u(2,2), A_false_s_u(2,2) !square matrices (upper triangular)
+    complex(qp) :: A_true_sf_u(2,3), A_false_sf_u(2,3) !short and fat matrices
+    complex(qp) :: A_true_ts_u(3,2), A_false_ts_u(3,2) !tall and skinny matrices
+    complex(qp) :: A_true_s_l(2,2), A_false_s_l(2,2) !square matrices (lower triangular)
+    complex(qp) :: A_true_sf_l(2,3), A_false_sf_l(2,3) !short and fat matrices
+    complex(qp) :: A_true_ts_l(3,2), A_false_ts_l(3,2) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_triangular_cqp" 
+    !upper triangular
+    A_true_s_u = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,0.)],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_u = reshape([cmplx(1.,1.),cmplx(2.,0.), &
+         cmplx(0.,0.),cmplx(4.,0.)],[2,2])
+    A_true_sf_u = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(0.,0.),cmplx(6.,0.)],[2,3])
+    A_false_sf_u = reshape([cmplx(1.,1.),cmplx(2.,0.), &
+         cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(0.,0.),cmplx(6.,0.)],[2,3])
+    A_true_ts_u = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(0.,0.)],[3,2])
+    A_false_ts_u = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.)],[3,2])
+    should_be_true_s_u = is_triangular(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_triangular(A_false_s_u,'u')
+    should_be_true_sf_u = is_triangular(A_true_sf_u,'u')
+    should_be_false_sf_u = is_triangular(A_false_sf_u,'u')
+    should_be_true_ts_u = is_triangular(A_true_ts_u,'U')
+    should_be_false_ts_u = is_triangular(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower triangular
+    A_true_s_l = reshape([cmplx(1.,1.),cmplx(2.,0.), &
+         cmplx(0.,0.),cmplx(4.,0.)],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_l = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+         cmplx(3.,1.),cmplx(4.,0.)],[2,2])
+    A_true_sf_l = reshape([cmplx(1.,1.),cmplx(2.,0.), &
+         cmplx(0.,0.),cmplx(4.,0.), &
+         cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+    A_false_sf_l = reshape([cmplx(1.,1.),cmplx(2.,0.), &
+         cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+    A_true_ts_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(0.,0.),cmplx(5.,1.),cmplx(6.,0.)],[3,2])
+    A_false_ts_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.)],[3,2])
+    should_be_true_s_l = is_triangular(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_triangular(A_false_s_l,'l')
+    should_be_true_sf_l = is_triangular(A_true_sf_l,'l')
+    should_be_false_sf_l = is_triangular(A_false_sf_l,'l')
+    should_be_true_ts_l = is_triangular(A_true_ts_l,'L')
+    should_be_false_ts_l = is_triangular(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_triangular_cqp
+
+  subroutine test_is_triangular_int8
+    integer(int8) :: A_true_s_u(2,2), A_false_s_u(2,2) !square matrices (upper triangular)
+    integer(int8) :: A_true_sf_u(2,3), A_false_sf_u(2,3) !short and fat matrices
+    integer(int8) :: A_true_ts_u(3,2), A_false_ts_u(3,2) !tall and skinny matrices
+    integer(int8) :: A_true_s_l(2,2), A_false_s_l(2,2) !square matrices (lower triangular)
+    integer(int8) :: A_true_sf_l(2,3), A_false_sf_l(2,3) !short and fat matrices
+    integer(int8) :: A_true_ts_l(3,2), A_false_ts_l(3,2) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_triangular_int8" 
+    !upper triangular
+    A_true_s_u = reshape([1,0,3,4],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_u = reshape([1,2,0,4],[2,2])
+    A_true_sf_u = reshape([1,0,3,4,0,6],[2,3])
+    A_false_sf_u = reshape([1,2,3,4,0,6],[2,3])
+    A_true_ts_u = reshape([1,0,0,4,5,0],[3,2])
+    A_false_ts_u = reshape([1,0,0,4,5,6],[3,2])
+    should_be_true_s_u = is_triangular(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_triangular(A_false_s_u,'u')
+    should_be_true_sf_u = is_triangular(A_true_sf_u,'u')
+    should_be_false_sf_u = is_triangular(A_false_sf_u,'u')
+    should_be_true_ts_u = is_triangular(A_true_ts_u,'U')
+    should_be_false_ts_u = is_triangular(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower triangular
+    A_true_s_l = reshape([1,2,0,4],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_l = reshape([1,0,3,4],[2,2])
+    A_true_sf_l = reshape([1,2,0,4,0,0],[2,3])
+    A_false_sf_l = reshape([1,2,3,4,0,0],[2,3])
+    A_true_ts_l = reshape([1,2,3,0,5,6],[3,2])
+    A_false_ts_l = reshape([1,2,3,4,5,6],[3,2])
+    should_be_true_s_l = is_triangular(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_triangular(A_false_s_l,'l')
+    should_be_true_sf_l = is_triangular(A_true_sf_l,'l')
+    should_be_false_sf_l = is_triangular(A_false_sf_l,'l')
+    should_be_true_ts_l = is_triangular(A_true_ts_l,'L')
+    should_be_false_ts_l = is_triangular(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_triangular_int8
+
+  subroutine test_is_triangular_int16
+    integer(int16) :: A_true_s_u(2,2), A_false_s_u(2,2) !square matrices (upper triangular)
+    integer(int16) :: A_true_sf_u(2,3), A_false_sf_u(2,3) !short and fat matrices
+    integer(int16) :: A_true_ts_u(3,2), A_false_ts_u(3,2) !tall and skinny matrices
+    integer(int16) :: A_true_s_l(2,2), A_false_s_l(2,2) !square matrices (lower triangular)
+    integer(int16) :: A_true_sf_l(2,3), A_false_sf_l(2,3) !short and fat matrices
+    integer(int16) :: A_true_ts_l(3,2), A_false_ts_l(3,2) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_triangular_int16" 
+    !upper triangular
+    A_true_s_u = reshape([1,0,3,4],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_u = reshape([1,2,0,4],[2,2])
+    A_true_sf_u = reshape([1,0,3,4,0,6],[2,3])
+    A_false_sf_u = reshape([1,2,3,4,0,6],[2,3])
+    A_true_ts_u = reshape([1,0,0,4,5,0],[3,2])
+    A_false_ts_u = reshape([1,0,0,4,5,6],[3,2])
+    should_be_true_s_u = is_triangular(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_triangular(A_false_s_u,'u')
+    should_be_true_sf_u = is_triangular(A_true_sf_u,'u')
+    should_be_false_sf_u = is_triangular(A_false_sf_u,'u')
+    should_be_true_ts_u = is_triangular(A_true_ts_u,'U')
+    should_be_false_ts_u = is_triangular(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower triangular
+    A_true_s_l = reshape([1,2,0,4],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_l = reshape([1,0,3,4],[2,2])
+    A_true_sf_l = reshape([1,2,0,4,0,0],[2,3])
+    A_false_sf_l = reshape([1,2,3,4,0,0],[2,3])
+    A_true_ts_l = reshape([1,2,3,0,5,6],[3,2])
+    A_false_ts_l = reshape([1,2,3,4,5,6],[3,2])
+    should_be_true_s_l = is_triangular(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_triangular(A_false_s_l,'l')
+    should_be_true_sf_l = is_triangular(A_true_sf_l,'l')
+    should_be_false_sf_l = is_triangular(A_false_sf_l,'l')
+    should_be_true_ts_l = is_triangular(A_true_ts_l,'L')
+    should_be_false_ts_l = is_triangular(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_triangular_int16
+
+  subroutine test_is_triangular_int32
+    integer(int32) :: A_true_s_u(2,2), A_false_s_u(2,2) !square matrices (upper triangular)
+    integer(int32) :: A_true_sf_u(2,3), A_false_sf_u(2,3) !short and fat matrices
+    integer(int32) :: A_true_ts_u(3,2), A_false_ts_u(3,2) !tall and skinny matrices
+    integer(int32) :: A_true_s_l(2,2), A_false_s_l(2,2) !square matrices (lower triangular)
+    integer(int32) :: A_true_sf_l(2,3), A_false_sf_l(2,3) !short and fat matrices
+    integer(int32) :: A_true_ts_l(3,2), A_false_ts_l(3,2) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_triangular_int32" 
+    !upper triangular
+    A_true_s_u = reshape([1,0,3,4],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_u = reshape([1,2,0,4],[2,2])
+    A_true_sf_u = reshape([1,0,3,4,0,6],[2,3])
+    A_false_sf_u = reshape([1,2,3,4,0,6],[2,3])
+    A_true_ts_u = reshape([1,0,0,4,5,0],[3,2])
+    A_false_ts_u = reshape([1,0,0,4,5,6],[3,2])
+    should_be_true_s_u = is_triangular(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_triangular(A_false_s_u,'u')
+    should_be_true_sf_u = is_triangular(A_true_sf_u,'u')
+    should_be_false_sf_u = is_triangular(A_false_sf_u,'u')
+    should_be_true_ts_u = is_triangular(A_true_ts_u,'U')
+    should_be_false_ts_u = is_triangular(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower triangular
+    A_true_s_l = reshape([1,2,0,4],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_l = reshape([1,0,3,4],[2,2])
+    A_true_sf_l = reshape([1,2,0,4,0,0],[2,3])
+    A_false_sf_l = reshape([1,2,3,4,0,0],[2,3])
+    A_true_ts_l = reshape([1,2,3,0,5,6],[3,2])
+    A_false_ts_l = reshape([1,2,3,4,5,6],[3,2])
+    should_be_true_s_l = is_triangular(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_triangular(A_false_s_l,'l')
+    should_be_true_sf_l = is_triangular(A_true_sf_l,'l')
+    should_be_false_sf_l = is_triangular(A_false_sf_l,'l')
+    should_be_true_ts_l = is_triangular(A_true_ts_l,'L')
+    should_be_false_ts_l = is_triangular(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_triangular_int32
+
+  subroutine test_is_triangular_int64
+    integer(int64) :: A_true_s_u(2,2), A_false_s_u(2,2) !square matrices (upper triangular)
+    integer(int64) :: A_true_sf_u(2,3), A_false_sf_u(2,3) !short and fat matrices
+    integer(int64) :: A_true_ts_u(3,2), A_false_ts_u(3,2) !tall and skinny matrices
+    integer(int64) :: A_true_s_l(2,2), A_false_s_l(2,2) !square matrices (lower triangular)
+    integer(int64) :: A_true_sf_l(2,3), A_false_sf_l(2,3) !short and fat matrices
+    integer(int64) :: A_true_ts_l(3,2), A_false_ts_l(3,2) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_triangular_int64" 
+    !upper triangular
+    A_true_s_u = reshape([1,0,3,4],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_u = reshape([1,2,0,4],[2,2])
+    A_true_sf_u = reshape([1,0,3,4,0,6],[2,3])
+    A_false_sf_u = reshape([1,2,3,4,0,6],[2,3])
+    A_true_ts_u = reshape([1,0,0,4,5,0],[3,2])
+    A_false_ts_u = reshape([1,0,0,4,5,6],[3,2])
+    should_be_true_s_u = is_triangular(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_triangular(A_false_s_u,'u')
+    should_be_true_sf_u = is_triangular(A_true_sf_u,'u')
+    should_be_false_sf_u = is_triangular(A_false_sf_u,'u')
+    should_be_true_ts_u = is_triangular(A_true_ts_u,'U')
+    should_be_false_ts_u = is_triangular(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower triangular
+    A_true_s_l = reshape([1,2,0,4],[2,2]) !generate triangular and non-triangular matrices of 3 types
+    A_false_s_l = reshape([1,0,3,4],[2,2])
+    A_true_sf_l = reshape([1,2,0,4,0,0],[2,3])
+    A_false_sf_l = reshape([1,2,3,4,0,0],[2,3])
+    A_true_ts_l = reshape([1,2,3,0,5,6],[3,2])
+    A_false_ts_l = reshape([1,2,3,4,5,6],[3,2])
+    should_be_true_s_l = is_triangular(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_triangular(A_false_s_l,'l')
+    should_be_true_sf_l = is_triangular(A_true_sf_l,'l')
+    should_be_false_sf_l = is_triangular(A_false_sf_l,'l')
+    should_be_true_ts_l = is_triangular(A_true_ts_l,'L')
+    should_be_false_ts_l = is_triangular(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_triangular_int64
+  
+
+  subroutine test_is_hessenberg_rsp
+    real(sp) :: A_true_s_u(3,3), A_false_s_u(3,3) !square matrices (upper hessenberg)
+    real(sp) :: A_true_sf_u(3,4), A_false_sf_u(3,4) !short and fat matrices
+    real(sp) :: A_true_ts_u(4,3), A_false_ts_u(4,3) !tall and skinny matrices
+    real(sp) :: A_true_s_l(3,3), A_false_s_l(3,3) !square matrices (lower hessenberg)
+    real(sp) :: A_true_sf_l(3,4), A_false_sf_l(3,4) !short and fat matrices
+    real(sp) :: A_true_ts_l(4,3), A_false_ts_l(4,3) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_hessenberg_rsp" 
+    !upper hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_u = reshape([1.,2.,0.,4.,5.,6.,7.,8.,9.],[3,3]) 
+    A_false_s_u = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.],[3,3])
+    A_true_sf_u = reshape([1.,2.,0.,4.,5.,6.,7.,8.,9.,10.,11.,12.],[3,4])
+    A_false_sf_u = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.],[3,4])
+    A_true_ts_u = reshape([1.,2.,0.,0.,5.,6.,7.,0.,9.,10.,11.,12.],[4,3])
+    A_false_ts_u = reshape([1.,2.,3.,0.,5.,6.,7.,0.,9.,10.,11.,12.],[4,3])
+    should_be_true_s_u = is_hessenberg(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_hessenberg(A_false_s_u,'u')
+    should_be_true_sf_u = is_hessenberg(A_true_sf_u,'u')
+    should_be_false_sf_u = is_hessenberg(A_false_sf_u,'u')
+    should_be_true_ts_u = is_hessenberg(A_true_ts_u,'U')
+    should_be_false_ts_u = is_hessenberg(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_l = reshape([1.,2.,3.,4.,5.,6.,0.,8.,9.],[3,3]) 
+    A_false_s_l = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.],[3,3])
+    A_true_sf_l = reshape([1.,2.,3.,4.,5.,6.,0.,8.,9.,0.,0.,12.],[3,4])
+    A_false_sf_l = reshape([1.,2.,3.,4.,5.,6.,0.,8.,9.,0.,11.,12.],[3,4])
+    A_true_ts_l = reshape([1.,2.,3.,4.,5.,6.,7.,8.,0.,10.,11.,12.],[4,3])
+    A_false_ts_l = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.],[4,3])
+    should_be_true_s_l = is_hessenberg(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_hessenberg(A_false_s_l,'l')
+    should_be_true_sf_l = is_hessenberg(A_true_sf_l,'l')
+    should_be_false_sf_l = is_hessenberg(A_false_sf_l,'l')
+    should_be_true_ts_l = is_hessenberg(A_true_ts_l,'L')
+    should_be_false_ts_l = is_hessenberg(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_hessenberg_rsp
+
+  subroutine test_is_hessenberg_rdp
+    real(dp) :: A_true_s_u(3,3), A_false_s_u(3,3) !square matrices (upper hessenberg)
+    real(dp) :: A_true_sf_u(3,4), A_false_sf_u(3,4) !short and fat matrices
+    real(dp) :: A_true_ts_u(4,3), A_false_ts_u(4,3) !tall and skinny matrices
+    real(dp) :: A_true_s_l(3,3), A_false_s_l(3,3) !square matrices (lower hessenberg)
+    real(dp) :: A_true_sf_l(3,4), A_false_sf_l(3,4) !short and fat matrices
+    real(dp) :: A_true_ts_l(4,3), A_false_ts_l(4,3) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_hessenberg_rdp" 
+    !upper hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_u = reshape([1.,2.,0.,4.,5.,6.,7.,8.,9.],[3,3]) 
+    A_false_s_u = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.],[3,3])
+    A_true_sf_u = reshape([1.,2.,0.,4.,5.,6.,7.,8.,9.,10.,11.,12.],[3,4])
+    A_false_sf_u = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.],[3,4])
+    A_true_ts_u = reshape([1.,2.,0.,0.,5.,6.,7.,0.,9.,10.,11.,12.],[4,3])
+    A_false_ts_u = reshape([1.,2.,3.,0.,5.,6.,7.,0.,9.,10.,11.,12.],[4,3])
+    should_be_true_s_u = is_hessenberg(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_hessenberg(A_false_s_u,'u')
+    should_be_true_sf_u = is_hessenberg(A_true_sf_u,'u')
+    should_be_false_sf_u = is_hessenberg(A_false_sf_u,'u')
+    should_be_true_ts_u = is_hessenberg(A_true_ts_u,'U')
+    should_be_false_ts_u = is_hessenberg(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_l = reshape([1.,2.,3.,4.,5.,6.,0.,8.,9.],[3,3]) 
+    A_false_s_l = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.],[3,3])
+    A_true_sf_l = reshape([1.,2.,3.,4.,5.,6.,0.,8.,9.,0.,0.,12.],[3,4])
+    A_false_sf_l = reshape([1.,2.,3.,4.,5.,6.,0.,8.,9.,0.,11.,12.],[3,4])
+    A_true_ts_l = reshape([1.,2.,3.,4.,5.,6.,7.,8.,0.,10.,11.,12.],[4,3])
+    A_false_ts_l = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.],[4,3])
+    should_be_true_s_l = is_hessenberg(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_hessenberg(A_false_s_l,'l')
+    should_be_true_sf_l = is_hessenberg(A_true_sf_l,'l')
+    should_be_false_sf_l = is_hessenberg(A_false_sf_l,'l')
+    should_be_true_ts_l = is_hessenberg(A_true_ts_l,'L')
+    should_be_false_ts_l = is_hessenberg(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_hessenberg_rdp
+
+  subroutine test_is_hessenberg_rqp
+    real(qp) :: A_true_s_u(3,3), A_false_s_u(3,3) !square matrices (upper hessenberg)
+    real(qp) :: A_true_sf_u(3,4), A_false_sf_u(3,4) !short and fat matrices
+    real(qp) :: A_true_ts_u(4,3), A_false_ts_u(4,3) !tall and skinny matrices
+    real(qp) :: A_true_s_l(3,3), A_false_s_l(3,3) !square matrices (lower hessenberg)
+    real(qp) :: A_true_sf_l(3,4), A_false_sf_l(3,4) !short and fat matrices
+    real(qp) :: A_true_ts_l(4,3), A_false_ts_l(4,3) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_hessenberg_rqp" 
+    !upper hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_u = reshape([1.,2.,0.,4.,5.,6.,7.,8.,9.],[3,3]) 
+    A_false_s_u = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.],[3,3])
+    A_true_sf_u = reshape([1.,2.,0.,4.,5.,6.,7.,8.,9.,10.,11.,12.],[3,4])
+    A_false_sf_u = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.],[3,4])
+    A_true_ts_u = reshape([1.,2.,0.,0.,5.,6.,7.,0.,9.,10.,11.,12.],[4,3])
+    A_false_ts_u = reshape([1.,2.,3.,0.,5.,6.,7.,0.,9.,10.,11.,12.],[4,3])
+    should_be_true_s_u = is_hessenberg(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_hessenberg(A_false_s_u,'u')
+    should_be_true_sf_u = is_hessenberg(A_true_sf_u,'u')
+    should_be_false_sf_u = is_hessenberg(A_false_sf_u,'u')
+    should_be_true_ts_u = is_hessenberg(A_true_ts_u,'U')
+    should_be_false_ts_u = is_hessenberg(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_l = reshape([1.,2.,3.,4.,5.,6.,0.,8.,9.],[3,3]) 
+    A_false_s_l = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.],[3,3])
+    A_true_sf_l = reshape([1.,2.,3.,4.,5.,6.,0.,8.,9.,0.,0.,12.],[3,4])
+    A_false_sf_l = reshape([1.,2.,3.,4.,5.,6.,0.,8.,9.,0.,11.,12.],[3,4])
+    A_true_ts_l = reshape([1.,2.,3.,4.,5.,6.,7.,8.,0.,10.,11.,12.],[4,3])
+    A_false_ts_l = reshape([1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.],[4,3])
+    should_be_true_s_l = is_hessenberg(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_hessenberg(A_false_s_l,'l')
+    should_be_true_sf_l = is_hessenberg(A_true_sf_l,'l')
+    should_be_false_sf_l = is_hessenberg(A_false_sf_l,'l')
+    should_be_true_ts_l = is_hessenberg(A_true_ts_l,'L')
+    should_be_false_ts_l = is_hessenberg(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_hessenberg_rqp
+
+  subroutine test_is_hessenberg_csp
+    complex(sp) :: A_true_s_u(3,3), A_false_s_u(3,3) !square matrices (upper hessenberg)
+    complex(sp) :: A_true_sf_u(3,4), A_false_sf_u(3,4) !short and fat matrices
+    complex(sp) :: A_true_ts_u(4,3), A_false_ts_u(4,3) !tall and skinny matrices
+    complex(sp) :: A_true_s_l(3,3), A_false_s_l(3,3) !square matrices (lower hessenberg)
+    complex(sp) :: A_true_sf_l(3,4), A_false_sf_l(3,4) !short and fat matrices
+    complex(sp) :: A_true_ts_l(4,3), A_false_ts_l(4,3) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_hessenberg_csp" 
+    !upper hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(0.,0.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_false_s_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_true_sf_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(0.,0.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[3,4])
+    A_false_sf_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[3,4])
+    A_true_ts_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(0.,0.), &
+         cmplx(9.,1.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    A_false_ts_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.),cmplx(0.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(0.,0.), &
+         cmplx(9.,1.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    should_be_true_s_u = is_hessenberg(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_hessenberg(A_false_s_u,'u')
+    should_be_true_sf_u = is_hessenberg(A_true_sf_u,'u')
+    should_be_false_sf_u = is_hessenberg(A_false_sf_u,'u')
+    should_be_true_ts_u = is_hessenberg(A_true_ts_u,'U')
+    should_be_false_ts_u = is_hessenberg(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(0.,0.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_false_s_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_true_sf_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(0.,0.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(0.,0.),cmplx(0.,0.),cmplx(12.,0.)],[3,4])
+    A_false_sf_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(0.,0.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(0.,0.),cmplx(11.,1.),cmplx(12.,0.)],[3,4])
+    A_true_ts_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(8.,0.), &
+         cmplx(0.,0.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    A_false_ts_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(8.,0.), &
+         cmplx(9.,1.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    should_be_true_s_l = is_hessenberg(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_hessenberg(A_false_s_l,'l')
+    should_be_true_sf_l = is_hessenberg(A_true_sf_l,'l')
+    should_be_false_sf_l = is_hessenberg(A_false_sf_l,'l')
+    should_be_true_ts_l = is_hessenberg(A_true_ts_l,'L')
+    should_be_false_ts_l = is_hessenberg(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_hessenberg_csp
+
+  subroutine test_is_hessenberg_cdp
+    complex(dp) :: A_true_s_u(3,3), A_false_s_u(3,3) !square matrices (upper hessenberg)
+    complex(dp) :: A_true_sf_u(3,4), A_false_sf_u(3,4) !short and fat matrices
+    complex(dp) :: A_true_ts_u(4,3), A_false_ts_u(4,3) !tall and skinny matrices
+    complex(dp) :: A_true_s_l(3,3), A_false_s_l(3,3) !square matrices (lower hessenberg)
+    complex(dp) :: A_true_sf_l(3,4), A_false_sf_l(3,4) !short and fat matrices
+    complex(dp) :: A_true_ts_l(4,3), A_false_ts_l(4,3) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_hessenberg_cdp" 
+    !upper hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(0.,0.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_false_s_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_true_sf_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(0.,0.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[3,4])
+    A_false_sf_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[3,4])
+    A_true_ts_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(0.,0.), &
+         cmplx(9.,1.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    A_false_ts_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.),cmplx(0.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(0.,0.), &
+         cmplx(9.,1.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    should_be_true_s_u = is_hessenberg(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_hessenberg(A_false_s_u,'u')
+    should_be_true_sf_u = is_hessenberg(A_true_sf_u,'u')
+    should_be_false_sf_u = is_hessenberg(A_false_sf_u,'u')
+    should_be_true_ts_u = is_hessenberg(A_true_ts_u,'U')
+    should_be_false_ts_u = is_hessenberg(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(0.,0.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_false_s_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_true_sf_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(0.,0.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(0.,0.),cmplx(0.,0.),cmplx(12.,0.)],[3,4])
+    A_false_sf_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(0.,0.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(0.,0.),cmplx(11.,1.),cmplx(12.,0.)],[3,4])
+    A_true_ts_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(8.,0.), &
+         cmplx(0.,0.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    A_false_ts_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(8.,0.), &
+         cmplx(9.,1.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    should_be_true_s_l = is_hessenberg(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_hessenberg(A_false_s_l,'l')
+    should_be_true_sf_l = is_hessenberg(A_true_sf_l,'l')
+    should_be_false_sf_l = is_hessenberg(A_false_sf_l,'l')
+    should_be_true_ts_l = is_hessenberg(A_true_ts_l,'L')
+    should_be_false_ts_l = is_hessenberg(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_hessenberg_cdp
+
+  subroutine test_is_hessenberg_cqp
+    complex(qp) :: A_true_s_u(3,3), A_false_s_u(3,3) !square matrices (upper hessenberg)
+    complex(qp) :: A_true_sf_u(3,4), A_false_sf_u(3,4) !short and fat matrices
+    complex(qp) :: A_true_ts_u(4,3), A_false_ts_u(4,3) !tall and skinny matrices
+    complex(qp) :: A_true_s_l(3,3), A_false_s_l(3,3) !square matrices (lower hessenberg)
+    complex(qp) :: A_true_sf_l(3,4), A_false_sf_l(3,4) !short and fat matrices
+    complex(qp) :: A_true_ts_l(4,3), A_false_ts_l(4,3) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_hessenberg_cqp" 
+    !upper hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(0.,0.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_false_s_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_true_sf_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(0.,0.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[3,4])
+    A_false_sf_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[3,4])
+    A_true_ts_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(0.,0.),cmplx(0.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(0.,0.), &
+         cmplx(9.,1.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    A_false_ts_u = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.),cmplx(0.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(0.,0.), &
+         cmplx(9.,1.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    should_be_true_s_u = is_hessenberg(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_hessenberg(A_false_s_u,'u')
+    should_be_true_sf_u = is_hessenberg(A_true_sf_u,'u')
+    should_be_false_sf_u = is_hessenberg(A_false_sf_u,'u')
+    should_be_true_ts_u = is_hessenberg(A_true_ts_u,'U')
+    should_be_false_ts_u = is_hessenberg(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(0.,0.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_false_s_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(7.,1.),cmplx(8.,0.),cmplx(9.,1.)],[3,3]) 
+    A_true_sf_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(0.,0.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(0.,0.),cmplx(0.,0.),cmplx(12.,0.)],[3,4])
+    A_false_sf_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.), &
+         cmplx(4.,0.),cmplx(5.,1.),cmplx(6.,0.), &
+         cmplx(0.,0.),cmplx(8.,0.),cmplx(9.,1.), &
+         cmplx(0.,0.),cmplx(11.,1.),cmplx(12.,0.)],[3,4])
+    A_true_ts_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(8.,0.), &
+         cmplx(0.,0.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    A_false_ts_l = reshape([cmplx(1.,1.),cmplx(2.,0.),cmplx(3.,1.),cmplx(4.,0.), &
+         cmplx(5.,1.),cmplx(6.,0.),cmplx(7.,1.),cmplx(8.,0.), &
+         cmplx(9.,1.),cmplx(10.,0.),cmplx(11.,1.),cmplx(12.,0.)],[4,3])
+    should_be_true_s_l = is_hessenberg(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_hessenberg(A_false_s_l,'l')
+    should_be_true_sf_l = is_hessenberg(A_true_sf_l,'l')
+    should_be_false_sf_l = is_hessenberg(A_false_sf_l,'l')
+    should_be_true_ts_l = is_hessenberg(A_true_ts_l,'L')
+    should_be_false_ts_l = is_hessenberg(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_hessenberg_cqp
+
+  subroutine test_is_hessenberg_int8
+    integer(int8) :: A_true_s_u(3,3), A_false_s_u(3,3) !square matrices (upper hessenberg)
+    integer(int8) :: A_true_sf_u(3,4), A_false_sf_u(3,4) !short and fat matrices
+    integer(int8) :: A_true_ts_u(4,3), A_false_ts_u(4,3) !tall and skinny matrices
+    integer(int8) :: A_true_s_l(3,3), A_false_s_l(3,3) !square matrices (lower hessenberg)
+    integer(int8) :: A_true_sf_l(3,4), A_false_sf_l(3,4) !short and fat matrices
+    integer(int8) :: A_true_ts_l(4,3), A_false_ts_l(4,3) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_hessenberg_int8" 
+    !upper hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_u = reshape([1,2,0,4,5,6,7,8,9],[3,3]) 
+    A_false_s_u = reshape([1,2,3,4,5,6,7,8,9],[3,3])
+    A_true_sf_u = reshape([1,2,0,4,5,6,7,8,9,10,11,12],[3,4])
+    A_false_sf_u = reshape([1,2,3,4,5,6,7,8,9,10,11,12],[3,4])
+    A_true_ts_u = reshape([1,2,0,0,5,6,7,0,9,10,11,12],[4,3])
+    A_false_ts_u = reshape([1,2,3,0,5,6,7,0,9,10,11,12],[4,3])
+    should_be_true_s_u = is_hessenberg(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_hessenberg(A_false_s_u,'u')
+    should_be_true_sf_u = is_hessenberg(A_true_sf_u,'u')
+    should_be_false_sf_u = is_hessenberg(A_false_sf_u,'u')
+    should_be_true_ts_u = is_hessenberg(A_true_ts_u,'U')
+    should_be_false_ts_u = is_hessenberg(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_l = reshape([1,2,3,4,5,6,0,8,9],[3,3]) 
+    A_false_s_l = reshape([1,2,3,4,5,6,7,8,9],[3,3])
+    A_true_sf_l = reshape([1,2,3,4,5,6,0,8,9,0,0,12],[3,4])
+    A_false_sf_l = reshape([1,2,3,4,5,6,0,8,9,0,11,12],[3,4])
+    A_true_ts_l = reshape([1,2,3,4,5,6,7,8,0,10,11,12],[4,3])
+    A_false_ts_l = reshape([1,2,3,4,5,6,7,8,9,10,11,12],[4,3])
+    should_be_true_s_l = is_hessenberg(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_hessenberg(A_false_s_l,'l')
+    should_be_true_sf_l = is_hessenberg(A_true_sf_l,'l')
+    should_be_false_sf_l = is_hessenberg(A_false_sf_l,'l')
+    should_be_true_ts_l = is_hessenberg(A_true_ts_l,'L')
+    should_be_false_ts_l = is_hessenberg(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_hessenberg_int8
+
+  subroutine test_is_hessenberg_int16
+    integer(int16) :: A_true_s_u(3,3), A_false_s_u(3,3) !square matrices (upper hessenberg)
+    integer(int16) :: A_true_sf_u(3,4), A_false_sf_u(3,4) !short and fat matrices
+    integer(int16) :: A_true_ts_u(4,3), A_false_ts_u(4,3) !tall and skinny matrices
+    integer(int16) :: A_true_s_l(3,3), A_false_s_l(3,3) !square matrices (lower hessenberg)
+    integer(int16) :: A_true_sf_l(3,4), A_false_sf_l(3,4) !short and fat matrices
+    integer(int16) :: A_true_ts_l(4,3), A_false_ts_l(4,3) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_hessenberg_int16" 
+    !upper hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_u = reshape([1,2,0,4,5,6,7,8,9],[3,3]) 
+    A_false_s_u = reshape([1,2,3,4,5,6,7,8,9],[3,3])
+    A_true_sf_u = reshape([1,2,0,4,5,6,7,8,9,10,11,12],[3,4])
+    A_false_sf_u = reshape([1,2,3,4,5,6,7,8,9,10,11,12],[3,4])
+    A_true_ts_u = reshape([1,2,0,0,5,6,7,0,9,10,11,12],[4,3])
+    A_false_ts_u = reshape([1,2,3,0,5,6,7,0,9,10,11,12],[4,3])
+    should_be_true_s_u = is_hessenberg(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_hessenberg(A_false_s_u,'u')
+    should_be_true_sf_u = is_hessenberg(A_true_sf_u,'u')
+    should_be_false_sf_u = is_hessenberg(A_false_sf_u,'u')
+    should_be_true_ts_u = is_hessenberg(A_true_ts_u,'U')
+    should_be_false_ts_u = is_hessenberg(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_l = reshape([1,2,3,4,5,6,0,8,9],[3,3]) 
+    A_false_s_l = reshape([1,2,3,4,5,6,7,8,9],[3,3])
+    A_true_sf_l = reshape([1,2,3,4,5,6,0,8,9,0,0,12],[3,4])
+    A_false_sf_l = reshape([1,2,3,4,5,6,0,8,9,0,11,12],[3,4])
+    A_true_ts_l = reshape([1,2,3,4,5,6,7,8,0,10,11,12],[4,3])
+    A_false_ts_l = reshape([1,2,3,4,5,6,7,8,9,10,11,12],[4,3])
+    should_be_true_s_l = is_hessenberg(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_hessenberg(A_false_s_l,'l')
+    should_be_true_sf_l = is_hessenberg(A_true_sf_l,'l')
+    should_be_false_sf_l = is_hessenberg(A_false_sf_l,'l')
+    should_be_true_ts_l = is_hessenberg(A_true_ts_l,'L')
+    should_be_false_ts_l = is_hessenberg(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_hessenberg_int16
+
+  subroutine test_is_hessenberg_int32
+    integer(int32) :: A_true_s_u(3,3), A_false_s_u(3,3) !square matrices (upper hessenberg)
+    integer(int32) :: A_true_sf_u(3,4), A_false_sf_u(3,4) !short and fat matrices
+    integer(int32) :: A_true_ts_u(4,3), A_false_ts_u(4,3) !tall and skinny matrices
+    integer(int32) :: A_true_s_l(3,3), A_false_s_l(3,3) !square matrices (lower hessenberg)
+    integer(int32) :: A_true_sf_l(3,4), A_false_sf_l(3,4) !short and fat matrices
+    integer(int32) :: A_true_ts_l(4,3), A_false_ts_l(4,3) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_hessenberg_int32" 
+    !upper hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_u = reshape([1,2,0,4,5,6,7,8,9],[3,3]) 
+    A_false_s_u = reshape([1,2,3,4,5,6,7,8,9],[3,3])
+    A_true_sf_u = reshape([1,2,0,4,5,6,7,8,9,10,11,12],[3,4])
+    A_false_sf_u = reshape([1,2,3,4,5,6,7,8,9,10,11,12],[3,4])
+    A_true_ts_u = reshape([1,2,0,0,5,6,7,0,9,10,11,12],[4,3])
+    A_false_ts_u = reshape([1,2,3,0,5,6,7,0,9,10,11,12],[4,3])
+    should_be_true_s_u = is_hessenberg(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_hessenberg(A_false_s_u,'u')
+    should_be_true_sf_u = is_hessenberg(A_true_sf_u,'u')
+    should_be_false_sf_u = is_hessenberg(A_false_sf_u,'u')
+    should_be_true_ts_u = is_hessenberg(A_true_ts_u,'U')
+    should_be_false_ts_u = is_hessenberg(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_l = reshape([1,2,3,4,5,6,0,8,9],[3,3]) 
+    A_false_s_l = reshape([1,2,3,4,5,6,7,8,9],[3,3])
+    A_true_sf_l = reshape([1,2,3,4,5,6,0,8,9,0,0,12],[3,4])
+    A_false_sf_l = reshape([1,2,3,4,5,6,0,8,9,0,11,12],[3,4])
+    A_true_ts_l = reshape([1,2,3,4,5,6,7,8,0,10,11,12],[4,3])
+    A_false_ts_l = reshape([1,2,3,4,5,6,7,8,9,10,11,12],[4,3])
+    should_be_true_s_l = is_hessenberg(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_hessenberg(A_false_s_l,'l')
+    should_be_true_sf_l = is_hessenberg(A_true_sf_l,'l')
+    should_be_false_sf_l = is_hessenberg(A_false_sf_l,'l')
+    should_be_true_ts_l = is_hessenberg(A_true_ts_l,'L')
+    should_be_false_ts_l = is_hessenberg(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_hessenberg_int32
+
+  subroutine test_is_hessenberg_int64
+    integer(int64) :: A_true_s_u(3,3), A_false_s_u(3,3) !square matrices (upper hessenberg)
+    integer(int64) :: A_true_sf_u(3,4), A_false_sf_u(3,4) !short and fat matrices
+    integer(int64) :: A_true_ts_u(4,3), A_false_ts_u(4,3) !tall and skinny matrices
+    integer(int64) :: A_true_s_l(3,3), A_false_s_l(3,3) !square matrices (lower hessenberg)
+    integer(int64) :: A_true_sf_l(3,4), A_false_sf_l(3,4) !short and fat matrices
+    integer(int64) :: A_true_ts_l(4,3), A_false_ts_l(4,3) !tall and skinny matrices
+    logical :: should_be_true_s_u, should_be_false_s_u, true_when_working_s_u !upper logicals
+    logical :: should_be_true_sf_u, should_be_false_sf_u, true_when_working_sf_u
+    logical :: should_be_true_ts_u, should_be_false_ts_u, true_when_working_ts_u
+    logical :: should_be_true_s_l, should_be_false_s_l, true_when_working_s_l !lower logicals
+    logical :: should_be_true_sf_l, should_be_false_sf_l, true_when_working_sf_l
+    logical :: should_be_true_ts_l, should_be_false_ts_l, true_when_working_ts_l
+    logical :: true_when_working_u, true_when_working_l, true_when_working
+    write(*,*) "test_is_hessenberg_int64" 
+    !upper hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_u = reshape([1,2,0,4,5,6,7,8,9],[3,3]) 
+    A_false_s_u = reshape([1,2,3,4,5,6,7,8,9],[3,3])
+    A_true_sf_u = reshape([1,2,0,4,5,6,7,8,9,10,11,12],[3,4])
+    A_false_sf_u = reshape([1,2,3,4,5,6,7,8,9,10,11,12],[3,4])
+    A_true_ts_u = reshape([1,2,0,0,5,6,7,0,9,10,11,12],[4,3])
+    A_false_ts_u = reshape([1,2,3,0,5,6,7,0,9,10,11,12],[4,3])
+    should_be_true_s_u = is_hessenberg(A_true_s_u,'u') !test generated matrices
+    should_be_false_s_u = is_hessenberg(A_false_s_u,'u')
+    should_be_true_sf_u = is_hessenberg(A_true_sf_u,'u')
+    should_be_false_sf_u = is_hessenberg(A_false_sf_u,'u')
+    should_be_true_ts_u = is_hessenberg(A_true_ts_u,'U')
+    should_be_false_ts_u = is_hessenberg(A_false_ts_u,'U')
+    true_when_working_s_u = (should_be_true_s_u .and. (.not. should_be_false_s_u)) !combine results
+    true_when_working_sf_u = (should_be_true_sf_u .and. (.not. should_be_false_sf_u))
+    true_when_working_ts_u = (should_be_true_ts_u .and. (.not. should_be_false_ts_u))
+    true_when_working_u = (true_when_working_s_u .and. true_when_working_sf_u .and. true_when_working_ts_u)
+    !lower hessenberg
+    !generate hessenberg and non-hessenberg matrices of 3 types
+    A_true_s_l = reshape([1,2,3,4,5,6,0,8,9],[3,3]) 
+    A_false_s_l = reshape([1,2,3,4,5,6,7,8,9],[3,3])
+    A_true_sf_l = reshape([1,2,3,4,5,6,0,8,9,0,0,12],[3,4])
+    A_false_sf_l = reshape([1,2,3,4,5,6,0,8,9,0,11,12],[3,4])
+    A_true_ts_l = reshape([1,2,3,4,5,6,7,8,0,10,11,12],[4,3])
+    A_false_ts_l = reshape([1,2,3,4,5,6,7,8,9,10,11,12],[4,3])
+    should_be_true_s_l = is_hessenberg(A_true_s_l,'l') !test generated matrices
+    should_be_false_s_l = is_hessenberg(A_false_s_l,'l')
+    should_be_true_sf_l = is_hessenberg(A_true_sf_l,'l')
+    should_be_false_sf_l = is_hessenberg(A_false_sf_l,'l')
+    should_be_true_ts_l = is_hessenberg(A_true_ts_l,'L')
+    should_be_false_ts_l = is_hessenberg(A_false_ts_l,'L')
+    true_when_working_s_l = (should_be_true_s_l .and. (.not. should_be_false_s_l)) !combine results
+    true_when_working_sf_l = (should_be_true_sf_l .and. (.not. should_be_false_sf_l))
+    true_when_working_ts_l = (should_be_true_ts_l .and. (.not. should_be_false_ts_l))
+    true_when_working_l = (true_when_working_s_l .and. true_when_working_sf_l .and. true_when_working_ts_l)
+    !combine upper and lower results
+    true_when_working = (true_when_working_u .and. true_when_working_l)
+    call check(true_when_working, &
+         msg="true_when_working failed.",warn=warn)
+  end subroutine test_is_hessenberg_int64
 
 end program
