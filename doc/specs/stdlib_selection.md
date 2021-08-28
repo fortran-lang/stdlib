@@ -204,13 +204,13 @@ and on return it contains the index of the k-th smallest entry of `a(:)`.
 `left` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
 in `a(indx(left:size(a)))`. If not present it is 1. This is typically useful if multiple calls
-to `select` are made, because the partial sorting of `a` implies constraints on where
+to `arg_select` are made, because the partial sorting of `indx` implies constraints on where
 we need to search.
 
 `right` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
 in `a(indx(1:right))`. If not present it is `size(a)`. This is typically useful if multiple calls
-to `select` are made, because the reordering of `indx` implies constraints on
+to `arg_select` are made, because the reordering of `indx` implies constraints on
 where we need to search.
 
 ##### Notes
