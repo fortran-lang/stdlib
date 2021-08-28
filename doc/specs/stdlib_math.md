@@ -343,3 +343,132 @@ program demo_math_arange
 
 end program demo_math_arange
 ```
+
+## `arg`
+
+### Status
+
+Experimental
+
+### Class
+
+Elemental function.
+
+### Description
+
+`arg` computes the phase angle (radian version) of `complex` scalar in the interval [-π,π]. 
+The angles in `theta` are such that `z = abs(z)*exp((0.0, theta))`.
+
+### Syntax
+
+`result = [[stdlib_math(module):arg(interface)]](z)`
+
+### Arguments
+
+`z`: Shall be a `complex` scalar/array.
+This is an `intent(in)` argument.
+
+### Return value
+
+Returns the `real` type phase angle (radian version) of the `complex` argument `z`.
+
+#### Notes
+
+Although the angle of the complex number `0` is undefined, `arg((0,0))` returns the value `0`.
+
+### Example
+
+```fortran
+program demo_math_arg
+    use stdlib_math, only: arg
+    print *, arg((0.0, 0.0))                  !! 0.0
+    print *, arg((3.0, 4.0))                  !! 0.927
+    print *, arg(2.0*exp((0.0, 0.5)))         !! 0.5
+end program demo_math_arg
+```
+
+## `argd`
+
+### Status
+
+Experimental
+
+### Class
+
+Elemental function.
+
+### Description
+
+`argd` computes the phase angle (degree version) of `complex` scalar in the interval [-180.0,180.0]. 
+The angles in `theta` are such that `z = abs(z)*exp((0.0, theta*π/180.0))`.
+
+### Syntax
+
+`result = [[stdlib_math(module):argd(interface)]](z)`
+
+### Arguments
+
+`z`: Shall be a `complex` scalar/array.
+This is an `intent(in)` argument.
+
+### Return value
+
+Returns the `real` type phase angle (degree version) of the `complex` argument `z`.
+
+#### Notes
+
+Although the angle of the complex number `0` is undefined, `argd((0,0))` returns the value `0`.
+
+### Example
+
+```fortran
+program demo_math_argd
+    use stdlib_math, only: argd
+    print *, argd((0.0, 0.0))                  !! 0.0
+    print *, argd((3.0, 4.0))                  !! 53.1°
+    print *, argd(2.0*exp((0.0, 0.5)))         !! 28.64°
+end program demo_math_argd
+```
+
+## `argpi`
+
+### Status
+
+Experimental
+
+### Class
+
+Elemental function.
+
+### Description
+
+`argpi` computes the phase angle (circular version) of `complex` scalar in the interval [-1.0,1.0]. 
+The angles in `theta` are such that `z = abs(z)*exp((0.0, theta*π))`.
+
+### Syntax
+
+`result = [[stdlib_math(module):argpi(interface)]](z)`
+
+### Arguments
+
+`z`: Shall be a `complex` scalar/array.
+This is an `intent(in)` argument.
+
+### Return value
+
+Returns the `real` type phase angle (circular version) of the `complex` argument `z`.
+
+#### Notes
+
+Although the angle of the complex number `0` is undefined, `argpi((0,0))` returns the value `0`.
+
+### Example
+
+```fortran
+program demo_math_argpi
+    use stdlib_math, only: argpi
+    print *, argpi((0.0, 0.0))                  !! 0.0
+    print *, argpi((3.0, 4.0))                  !! 0.295
+    print *, argpi(2.0*exp((0.0, 0.5)))         !! 0.159
+end program demo_math_argpi
+```
