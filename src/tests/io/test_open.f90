@@ -3,6 +3,7 @@ module test_open
     use stdlib_test, only: new_unittest, unittest_type, error_type, check
     implicit none
 
+    private
     public :: collect_open
 contains
 
