@@ -16,7 +16,8 @@ contains
         testsuite = [ &
             new_unittest("loadtxt_int32", test_loadtxt_int32), &
             new_unittest("loadtxt_sp", test_loadtxt_sp), &
-            new_unittest("loadtxt_dp", test_loadtxt_sp) &
+            new_unittest("loadtxt_dp", test_loadtxt_dp), &
+            new_unittest("loadtxt_complex", test_loadtxt_complex) &
         ]
 
     end subroutine collect_loadtxt
@@ -80,6 +81,20 @@ contains
         if (.not. allocated(error)) return
 
     end subroutine test_loadtxt_dp
+
+
+    subroutine test_loadtxt_complex(error)
+      !> Error handling
+      type(error_type), allocatable, intent(out) :: error
+      complex(dp), allocatable :: input(:,:), expected(:,:)
+
+      call loadtxt("array5.dat", input)
+      call savetxt("array5_new.dat", input)
+      call loadtxt("array5_new.dat", expected)
+      call check(error, all(input == expected))
+      if (.not. allocated(error)) return
+
+  end subroutine test_loadtxt_complex
 
 end module test_loadtxt
 
