@@ -33,7 +33,7 @@ Checks the value of a logical condition.
 
 ### Return value
 
-If `condition` is `.false`., and:
+If `condition` is `.false.`, and:
 
  * no other arguments are provided, this subroutine stops the program with the default message and exit code 1;
 
