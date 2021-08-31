@@ -49,14 +49,14 @@ contains
         real(sp), allocatable :: input(:,:), expected(:,:)
 
         call loadtxt("array3.dat", input)
-        call savetxt("array3_new.dat", input)
-        call loadtxt("array3_new.dat", expected)
+        call savetxt("array3_sp.dat", input)
+        call loadtxt("array3_sp.dat", expected)
         call check(error, all(input == expected))
         if (allocated(error)) return
 
         call loadtxt("array4.dat", input)
-        call savetxt("array4_new.dat", input)
-        call loadtxt("array4_new.dat", expected)
+        call savetxt("array4_sp.dat", input)
+        call loadtxt("array4_sp.dat", expected)
         call check(error, all(input == expected))
         if (allocated(error)) return
 
@@ -69,14 +69,14 @@ contains
         real(dp), allocatable :: input(:,:), expected(:,:)
 
         call loadtxt("array3.dat", input)
-        call savetxt("array3_new.dat", input)
-        call loadtxt("array3_new.dat", expected)
+        call savetxt("array3_dp.dat", input)
+        call loadtxt("array3_dp.dat", expected)
         call check(error, all(input == expected))
         if (allocated(error)) return
 
         call loadtxt("array4.dat", input)
-        call savetxt("array4_new.dat", input)
-        call loadtxt("array4_new.dat", expected)
+        call savetxt("array4_dp.dat", input)
+        call loadtxt("array4_dp.dat", expected)
         call check(error, all(input == expected))
         if (allocated(error)) return
 
