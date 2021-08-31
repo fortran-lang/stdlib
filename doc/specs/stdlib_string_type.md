@@ -1130,7 +1130,7 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the lowercase version of the 
+Returns a new string_type instance which holds the lowercase version of the
 character sequence hold by the input string.
 
 #### Syntax
@@ -1176,7 +1176,7 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the uppercase version of the 
+Returns a new string_type instance which holds the uppercase version of the
 character sequence hold by the input string.
 
 #### Syntax
@@ -1222,12 +1222,12 @@ end program demo
 
 #### Description
 
-Returns a new string_type instance which holds the titlecase version 
-of the character sequence hold by the input string.  
-Title case: First character of every word in the sentence is converted to 
-uppercase and the rest of the characters are converted to lowercase.  
-A word is a contiguous sequence of character(s) which consists of alphabetical 
-character(s) and numeral(s) only and doesn't exclude any alphabetical character 
+Returns a new string_type instance which holds the titlecase version
+of the character sequence hold by the input string.
+Title case: First character of every word in the sentence is converted to
+uppercase and the rest of the characters are converted to lowercase.
+A word is a contiguous sequence of character(s) which consists of alphabetical
+character(s) and numeral(s) only and doesn't exclude any alphabetical character
 or numeral present next to either of its 2 ends.
 
 #### Syntax
@@ -1272,10 +1272,10 @@ end program demo_to_title
 
 #### Description
 
-Returns a new string_type instance which holds the sentencecase 
-version of the character sequence hold by the input string.  
-Sentencecase version: The first alphabetical character of the input character sequence 
-is transformed to uppercase unless it follows a numeral and the rest of the 
+Returns a new string_type instance which holds the sentencecase
+version of the character sequence hold by the input string.
+Sentencecase version: The first alphabetical character of the input character sequence
+is transformed to uppercase unless it follows a numeral and the rest of the
 characters in the sequence are transformed to lowercase.
 
 #### Syntax
@@ -1320,7 +1320,7 @@ end program demo_to_sentence
 
 #### Description
 
-Returns a new string_type instance which holds the reversed version of the 
+Returns a new string_type instance which holds the reversed version of the
 character sequence hold by the input string.
 
 #### Syntax
@@ -1350,7 +1350,7 @@ program demo
   use stdlib_string_type
   implicit none
   type(string_type) :: string, reverse_string
-  
+
   string = "Reverse This String"
   ! string <-- "Reverse This String"
 
@@ -1979,8 +1979,8 @@ end program demo
 
 #### Description
 
-Moves the allocation from `from` to `to`, consequently deallocating `from` in this process.  
-If `from` is not allocated before execution, `to` gets deallocated by the process.  
+Moves the allocation from `from` to `to`, consequently deallocating `from` in this process.
+If `from` is not allocated before execution, `to` gets deallocated by the process.
 An unallocated `string_type` instance is equivalent to an empty string.
 
 #### Syntax
