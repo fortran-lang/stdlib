@@ -32,13 +32,13 @@ contains
         call savetxt("array1_new.dat", input)
         call loadtxt("array1_new.dat", expected)
         call check(error, all(input == expected))
-        if (.not. allocated(error)) return
+        if (allocated(error)) return
 
         call loadtxt("array2.dat", input)
         call savetxt("array2_new.dat", input)
         call loadtxt("array2_new.dat", expected)
         call check(error, all(input == expected))
-        if (.not. allocated(error)) return
+        if (allocated(error)) return
 
     end subroutine test_loadtxt_int32
 
@@ -52,13 +52,13 @@ contains
         call savetxt("array3_new.dat", input)
         call loadtxt("array3_new.dat", expected)
         call check(error, all(input == expected))
-        if (.not. allocated(error)) return
+        if (allocated(error)) return
 
         call loadtxt("array4.dat", input)
         call savetxt("array4_new.dat", input)
         call loadtxt("array4_new.dat", expected)
         call check(error, all(input == expected))
-        if (.not. allocated(error)) return
+        if (allocated(error)) return
 
     end subroutine test_loadtxt_sp
 
@@ -72,13 +72,13 @@ contains
         call savetxt("array3_new.dat", input)
         call loadtxt("array3_new.dat", expected)
         call check(error, all(input == expected))
-        if (.not. allocated(error)) return
+        if (allocated(error)) return
 
         call loadtxt("array4.dat", input)
         call savetxt("array4_new.dat", input)
         call loadtxt("array4_new.dat", expected)
         call check(error, all(input == expected))
-        if (.not. allocated(error)) return
+        if (allocated(error)) return
 
     end subroutine test_loadtxt_dp
 
@@ -92,7 +92,7 @@ contains
       call savetxt("array5_new.dat", input)
       call loadtxt("array5_new.dat", expected)
       call check(error, all(input == expected))
-      if (.not. allocated(error)) return
+      if (allocated(error)) return
 
   end subroutine test_loadtxt_complex
 

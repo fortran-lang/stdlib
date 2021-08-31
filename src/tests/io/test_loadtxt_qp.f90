@@ -29,7 +29,7 @@ contains
         call savetxt("array4_new.dat", input)
         call loadtxt("array4_new.dat", expected)
         call check(error, all(input == expected))
-        if (.not. allocated(error)) return
+        if (allocated(error)) return
 
     end subroutine test_loadtxt_qp_
 
