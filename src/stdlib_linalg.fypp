@@ -143,7 +143,7 @@ module stdlib_linalg
     !!
     !! Checks if a matrix (rank-2 array) is Hermitian
     !! ([Specification](../page/specs/stdlib_linalg.html#description_8))
-    #:for k1, t1 in CMPLX_KINDS_TYPES
+    #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_hermitian_${t1[0]}$${k1}$
     #:endfor
   end interface is_hermitian
@@ -292,6 +292,18 @@ contains
     #:endfor
 
 
+    #:for k1, t1 in (REAL_KINDS_TYPES + INT_KINDS_TYPES)
+      pure function is_hermitian_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        integer :: A_shape(2), n, i, j
+        if (.not. is_square(A)) then
+           res = .false.
+           return !nonsquare matrices cannot be Hermitian
+        end if
+        res = is_symmetric(A) !real symmetric matrices are Hermitian
+      end function is_hermitian_${t1[0]}$${k1}$
+    #:endfor
     #:for k1, t1 in CMPLX_KINDS_TYPES
       pure function is_hermitian_${t1[0]}$${k1}$(A) result(res)
         ${t1}$, intent(in) :: A(:,:)

@@ -3,7 +3,7 @@ program test_linalg
   use stdlib_error, only: check
   use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
   use stdlib_linalg, only: diag, eye, trace, outer_product, is_square ,is_diagonal, &
-       is_symmetric, is_skew_symmetric, is_triangular, is_hessenberg
+       is_symmetric, is_skew_symmetric, is_hermitian, is_triangular, is_hessenberg
   
   implicit none
   
@@ -140,18 +140,18 @@ program test_linalg
   !
   ! is_hermitian
   !
-  !call test_is_hermitian_rsp
-  !call test_is_hermitian_rdp
-  !call test_is_hermitian_rqp
+  call test_is_hermitian_rsp
+  call test_is_hermitian_rdp
+  call test_is_hermitian_rqp
 
-  !call test_is_hermitian_csp
-  !call test_is_hermitian_cdp
-  !call test_is_hermitian_cqp
+  call test_is_hermitian_csp
+  call test_is_hermitian_cdp
+  call test_is_hermitian_cqp
 
-  !call test_is_hermitian_int8
-  !call test_is_hermitian_int16
-  !call test_is_hermitian_int32
-  !call test_is_hermitian_int64
+  call test_is_hermitian_int8
+  call test_is_hermitian_int16
+  call test_is_hermitian_int32
+  call test_is_hermitian_int64
 
   !
   ! is_triangular
@@ -1374,6 +1374,156 @@ contains
     call check((.not. is_skew_symmetric(A_false_2)), &
          msg="(.not. is_skew_symmetric(A_false_2)) failed.",warn=warn)
   end subroutine test_is_skew_symmetric_int64
+
+
+  subroutine test_is_hermitian_rsp
+    real(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    write(*,*) "test_is_hermitian_rsp" 
+    A_true = reshape([1.,2.,2.,4.],[2,2])
+    A_false_1 = reshape([1.,2.,3.,4.],[2,2])
+    A_false_2 = reshape([1.,2.,3.,2.,5.,6.],[3,2]) !nonsquare matrix
+    call check(is_hermitian(A_true), &
+         msg="is_hermitian(A_true) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_1)), &
+         msg="(.not. is_hermitian(A_false_1)) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_2)), &
+         msg="(.not. is_hermitian(A_false_2)) failed.",warn=warn)
+  end subroutine test_is_hermitian_rsp
+
+  subroutine test_is_hermitian_rdp
+    real(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    write(*,*) "test_is_hermitian_rdp" 
+    A_true = reshape([1.,2.,2.,4.],[2,2])
+    A_false_1 = reshape([1.,2.,3.,4.],[2,2])
+    A_false_2 = reshape([1.,2.,3.,2.,5.,6.],[3,2]) !nonsquare matrix
+    call check(is_hermitian(A_true), &
+         msg="is_hermitian(A_true) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_1)), &
+         msg="(.not. is_hermitian(A_false_1)) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_2)), &
+         msg="(.not. is_hermitian(A_false_2)) failed.",warn=warn)
+  end subroutine test_is_hermitian_rdp
+
+  subroutine test_is_hermitian_rqp
+    real(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    write(*,*) "test_is_hermitian_rqp" 
+    A_true = reshape([1.,2.,2.,4.],[2,2])
+    A_false_1 = reshape([1.,2.,3.,4.],[2,2])
+    A_false_2 = reshape([1.,2.,3.,2.,5.,6.],[3,2]) !nonsquare matrix
+    call check(is_hermitian(A_true), &
+         msg="is_hermitian(A_true) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_1)), &
+         msg="(.not. is_hermitian(A_false_1)) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_2)), &
+         msg="(.not. is_hermitian(A_false_2)) failed.",warn=warn)
+  end subroutine test_is_hermitian_rqp
+
+  subroutine test_is_hermitian_csp
+    complex(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    write(*,*) "test_is_hermitian_csp" 
+    A_true = reshape([cmplx(1.,0.),cmplx(2.,-1.), &
+         cmplx(2.,1.),cmplx(4.,0.)],[2,2])
+    A_false_1 = reshape([cmplx(1.,0.),cmplx(2.,-1.), &
+         cmplx(3.,1.),cmplx(4.,0.)],[2,2])
+    A_false_2 = reshape([cmplx(1.,0.),cmplx(2.,-1.),cmplx(3.,-1.), &
+         cmplx(2.,1.),cmplx(5.,0.),cmplx(6.,-1.)],[3,2]) !nonsquare matrix
+    call check(is_hermitian(A_true), &
+         msg="is_hermitian(A_true) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_1)), &
+         msg="(.not. is_hermitian(A_false_1)) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_2)), &
+         msg="(.not. is_hermitian(A_false_2)) failed.",warn=warn)
+  end subroutine test_is_hermitian_csp
+
+  subroutine test_is_hermitian_cdp
+    complex(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    write(*,*) "test_is_hermitian_cdp" 
+    A_true = reshape([cmplx(1.,0.),cmplx(2.,-1.), &
+         cmplx(2.,1.),cmplx(4.,0.)],[2,2])
+    A_false_1 = reshape([cmplx(1.,0.),cmplx(2.,-1.), &
+         cmplx(3.,1.),cmplx(4.,0.)],[2,2])
+    A_false_2 = reshape([cmplx(1.,0.),cmplx(2.,-1.),cmplx(3.,-1.), &
+         cmplx(2.,1.),cmplx(5.,0.),cmplx(6.,-1.)],[3,2]) !nonsquare matrix
+    call check(is_hermitian(A_true), &
+         msg="is_hermitian(A_true) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_1)), &
+         msg="(.not. is_hermitian(A_false_1)) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_2)), &
+         msg="(.not. is_hermitian(A_false_2)) failed.",warn=warn)
+  end subroutine test_is_hermitian_cdp
+
+  subroutine test_is_hermitian_cqp
+    complex(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    write(*,*) "test_is_hermitian_cqp" 
+    A_true = reshape([cmplx(1.,0.),cmplx(2.,-1.), &
+         cmplx(2.,1.),cmplx(4.,0.)],[2,2])
+    A_false_1 = reshape([cmplx(1.,0.),cmplx(2.,-1.), &
+         cmplx(3.,1.),cmplx(4.,0.)],[2,2])
+    A_false_2 = reshape([cmplx(1.,0.),cmplx(2.,-1.),cmplx(3.,-1.), &
+         cmplx(2.,1.),cmplx(5.,0.),cmplx(6.,-1.)],[3,2]) !nonsquare matrix
+    call check(is_hermitian(A_true), &
+         msg="is_hermitian(A_true) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_1)), &
+         msg="(.not. is_hermitian(A_false_1)) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_2)), &
+         msg="(.not. is_hermitian(A_false_2)) failed.",warn=warn)
+  end subroutine test_is_hermitian_cqp
+
+  subroutine test_is_hermitian_int8
+    integer(int8) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    write(*,*) "test_is_hermitian_int8" 
+    A_true = reshape([1,2,2,4],[2,2])
+    A_false_1 = reshape([1,2,3,4],[2,2])
+    A_false_2 = reshape([1,2,3,2,5,6],[3,2]) !nonsquare matrix
+    call check(is_hermitian(A_true), &
+         msg="is_hermitian(A_true) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_1)), &
+         msg="(.not. is_hermitian(A_false_1)) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_2)), &
+         msg="(.not. is_hermitian(A_false_2)) failed.",warn=warn)
+  end subroutine test_is_hermitian_int8
+
+  subroutine test_is_hermitian_int16
+    integer(int16) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    write(*,*) "test_is_hermitian_int16" 
+    A_true = reshape([1,2,2,4],[2,2])
+    A_false_1 = reshape([1,2,3,4],[2,2])
+    A_false_2 = reshape([1,2,3,2,5,6],[3,2]) !nonsquare matrix
+    call check(is_hermitian(A_true), &
+         msg="is_hermitian(A_true) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_1)), &
+         msg="(.not. is_hermitian(A_false_1)) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_2)), &
+         msg="(.not. is_hermitian(A_false_2)) failed.",warn=warn)
+  end subroutine test_is_hermitian_int16
+
+  subroutine test_is_hermitian_int32
+    integer(int32) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    write(*,*) "test_is_hermitian_int32" 
+    A_true = reshape([1,2,2,4],[2,2])
+    A_false_1 = reshape([1,2,3,4],[2,2])
+    A_false_2 = reshape([1,2,3,2,5,6],[3,2]) !nonsquare matrix
+    call check(is_hermitian(A_true), &
+         msg="is_hermitian(A_true) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_1)), &
+         msg="(.not. is_hermitian(A_false_1)) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_2)), &
+         msg="(.not. is_hermitian(A_false_2)) failed.",warn=warn)
+  end subroutine test_is_hermitian_int32
+
+  subroutine test_is_hermitian_int64
+    integer(int64) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+    write(*,*) "test_is_hermitian_int64" 
+    A_true = reshape([1,2,2,4],[2,2])
+    A_false_1 = reshape([1,2,3,4],[2,2])
+    A_false_2 = reshape([1,2,3,2,5,6],[3,2]) !nonsquare matrix
+    call check(is_hermitian(A_true), &
+         msg="is_hermitian(A_true) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_1)), &
+         msg="(.not. is_hermitian(A_false_1)) failed.",warn=warn)
+    call check((.not. is_hermitian(A_false_2)), &
+         msg="(.not. is_hermitian(A_false_2)) failed.",warn=warn)
+  end subroutine test_is_hermitian_int64
 
 
   subroutine test_is_triangular_rsp
