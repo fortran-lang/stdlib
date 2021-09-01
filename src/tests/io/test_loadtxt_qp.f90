@@ -24,12 +24,18 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         real(qp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
 
-        call loadtxt("array4.dat", input)
-        call savetxt("array4_new.dat", input)
-        call loadtxt("array4_new.dat", expected)
-        call check(error, all(input == expected))
-        if (allocated(error)) return
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 100
+            call random_number(input)
+            call savetxt('test_qp.txt', input)
+            call loadtxt('test_qp.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
 
     end subroutine test_loadtxt_qp_
 

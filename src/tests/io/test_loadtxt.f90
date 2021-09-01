@@ -27,18 +27,21 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         integer(int32), allocatable :: input(:,:), expected(:,:)
+        real(sp), allocatable :: harvest(:,:)
+        integer :: n
 
-        call loadtxt("array1.dat", input)
-        call savetxt("array1_new.dat", input)
-        call loadtxt("array1_new.dat", expected)
-        call check(error, all(input == expected))
-        if (allocated(error)) return
+        allocate(harvest(10,10))
+        allocate(input(10,10))
+        allocate(expected(10,10))
 
-        call loadtxt("array2.dat", input)
-        call savetxt("array2_new.dat", input)
-        call loadtxt("array2_new.dat", expected)
-        call check(error, all(input == expected))
-        if (allocated(error)) return
+        do n = 1, 100
+            call random_number(harvest)
+            input = int(harvest * 100)
+            call savetxt('test_int32.txt', input)
+            call loadtxt('test_int32.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
 
     end subroutine test_loadtxt_int32
 
@@ -47,18 +50,18 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         real(sp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
 
-        call loadtxt("array3.dat", input)
-        call savetxt("array3_sp.dat", input)
-        call loadtxt("array3_sp.dat", expected)
-        call check(error, all(input == expected))
-        if (allocated(error)) return
+        allocate(input(10,10))
+        allocate(expected(10,10))
 
-        call loadtxt("array4.dat", input)
-        call savetxt("array4_sp.dat", input)
-        call loadtxt("array4_sp.dat", expected)
-        call check(error, all(input == expected))
-        if (allocated(error)) return
+        do n = 1, 100
+            call random_number(input)
+            call savetxt('test_sp.txt', input)
+            call loadtxt('test_sp.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
 
     end subroutine test_loadtxt_sp
 
@@ -67,34 +70,45 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         real(dp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
 
-        call loadtxt("array3.dat", input)
-        call savetxt("array3_dp.dat", input)
-        call loadtxt("array3_dp.dat", expected)
-        call check(error, all(input == expected))
-        if (allocated(error)) return
+        allocate(input(10,10))
+        allocate(expected(10,10))
 
-        call loadtxt("array4.dat", input)
-        call savetxt("array4_dp.dat", input)
-        call loadtxt("array4_dp.dat", expected)
-        call check(error, all(input == expected))
-        if (allocated(error)) return
+        do n = 1, 100
+            call random_number(input)
+            call savetxt('test_dp.txt', input)
+            call loadtxt('test_dp.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
 
     end subroutine test_loadtxt_dp
 
 
     subroutine test_loadtxt_complex(error)
-      !> Error handling
-      type(error_type), allocatable, intent(out) :: error
-      complex(dp), allocatable :: input(:,:), expected(:,:)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        complex(dp), allocatable :: input(:,:), expected(:,:)
+        real(dp), allocatable :: re(:,:), im(:,:)
+        integer :: n
 
-      call loadtxt("array5.dat", input)
-      call savetxt("array5_new.dat", input)
-      call loadtxt("array5_new.dat", expected)
-      call check(error, all(input == expected))
-      if (allocated(error)) return
+        allocate(re(10,10))
+        allocate(im(10,10))
+        allocate(input(10,10))
+        allocate(expected(10,10))
 
-  end subroutine test_loadtxt_complex
+        do n = 1, 100
+            call random_number(re)
+            call random_number(im)
+            input = cmplx(re, im)
+            call savetxt('test_complex.txt', input)
+            call loadtxt('test_complex.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_complex
 
 end module test_loadtxt
 
