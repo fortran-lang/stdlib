@@ -19,6 +19,16 @@ module stdlib_io
   ! Private API that is exposed so that we can test it in tests
   public :: parse_mode
 
+  ! Format strings with edit descriptors for each type and kind
+  character(*), parameter :: &
+    FMT_INT = '(*(i0,1x))', &
+    FMT_REAL_SP = '(*(es15.8,1x))', &
+    FMT_REAL_DP = '(*(es23.16,1x))', &
+    FMT_REAL_QP = '(*(es42.35,1x))', &
+    FMT_COMPLEX_SP = '(*(es15.8,1x,es15.8))', &
+    FMT_COMPLEX_DP = '(*(es23.16,1x,es23.16))', &
+    FMT_COMPLEX_QP = '(*(es42.35,1x,es42.35))'
+
   interface loadtxt
     !! version: experimental
     !!
@@ -78,13 +88,22 @@ contains
 
       ! determine number of columns
       ncol = number_of_columns(s)
+      #:if 'complex' in t1
+      ncol = ncol / 2
+      #:endif
 
       ! determine number or rows
       nrow = number_of_rows_numeric(s)
 
       allocate(d(nrow, ncol))
       do i = 1, nrow
-        read(s, *) d(i, :)
+        #:if 'real' in t1
+          read(s, FMT_REAL_${k1}$) d(i, :)
+        #:elif 'complex' in t1
+          read(s, FMT_COMPLEX_${k1}$) d(i, :)
+        #:else
+          read(s, *) d(i, :)
+        #:endif
       end do
       close(s)
 
@@ -116,7 +135,15 @@ contains
       integer :: s, i
       s = open(filename, "w")
       do i = 1, size(d, 1)
-        write(s, *) d(i, :)
+        #:if 'real' in t1
+          write(s, FMT_REAL_${k1}$) d(i, :)
+        #:elif 'complex' in t1
+          write(s, FMT_COMPLEX_${k1}$) d(i, :)
+        #:elif 'integer' in t1
+          write(s, FMT_INT) d(i, :)
+        #:else
+          write(s, *) d(i, :)
+        #:endif
       end do
       close(s)
     end subroutine savetxt_${t1[0]}$${k1}$
