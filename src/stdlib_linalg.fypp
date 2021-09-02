@@ -207,9 +207,7 @@ contains
       pure function is_square_${t1[0]}$${k1}$(A) result(res)
         ${t1}$, intent(in) :: A(:,:)
         logical :: res
-        integer :: A_shape(2)
-        A_shape = shape(A)
-        res = (A_shape(1) .eq. A_shape(2))
+        res = (size(A,1) .eq. size(A,2))
       end function is_square_${t1[0]}$${k1}$
     #:endfor
 
@@ -219,11 +217,10 @@ contains
         ${t1}$, intent(in) :: A(:,:)
         logical :: res
         ${t1}$ :: zero
-        integer :: A_shape(2), m, n, o, i, j
+        integer :: m, n, o, i, j
         zero = 0 !zero of relevant type
-        A_shape = shape(A)
-        m = A_shape(1)
-        n = A_shape(2)
+        m = size(A,1)
+        n = size(A,2)
         do j = 1, n !loop over all columns
             o = min(j-1,m) !index of row above diagonal (or last row)
             do i = 1, o !loop over rows above diagonal
@@ -248,13 +245,12 @@ contains
       pure function is_symmetric_${t1[0]}$${k1}$(A) result(res)
         ${t1}$, intent(in) :: A(:,:)
         logical :: res
-        integer :: A_shape(2), n, i, j
+        integer :: n, i, j
         if (.not. is_square(A)) then
            res = .false.
            return !nonsquare matrices cannot be symmetric
         end if
-        A_shape = shape(A)
-        n = A_shape(1) !symmetric dimension of A
+        n = size(A,1) !symmetric dimension of A
         do j = 1, n !loop over all columns
             do i = 1, j-1 !loop over all rows above diagonal
                 if (.not. (A(i,j) .eq. A(j,i))) then
@@ -272,13 +268,12 @@ contains
       pure function is_skew_symmetric_${t1[0]}$${k1}$(A) result(res)
         ${t1}$, intent(in) :: A(:,:)
         logical :: res
-        integer :: A_shape(2), n, i, j
+        integer :: n, i, j
         if (.not. is_square(A)) then
            res = .false.
            return !nonsquare matrices cannot be skew-symmetric
         end if
-        A_shape = shape(A)
-        n = A_shape(1) !symmetric dimension of A
+        n = size(A,1) !symmetric dimension of A
         do j = 1, n !loop over all columns
             do i = 1, j !loop over all rows above diagonal (and diagonal)
                 if (.not. (A(i,j) .eq. -A(j,i))) then
@@ -296,7 +291,6 @@ contains
       pure function is_hermitian_${t1[0]}$${k1}$(A) result(res)
         ${t1}$, intent(in) :: A(:,:)
         logical :: res
-        integer :: A_shape(2), n, i, j
         if (.not. is_square(A)) then
            res = .false.
            return !nonsquare matrices cannot be Hermitian
@@ -308,13 +302,12 @@ contains
       pure function is_hermitian_${t1[0]}$${k1}$(A) result(res)
         ${t1}$, intent(in) :: A(:,:)
         logical :: res
-        integer :: A_shape(2), n, i, j
+        integer :: n, i, j
         if (.not. is_square(A)) then
            res = .false.
            return !nonsquare matrices cannot be Hermitian
         end if
-        A_shape = shape(A)
-        n = A_shape(1) !symmetric dimension of A
+        n = size(A,1) !symmetric dimension of A
         do j = 1, n !loop over all columns
             do i = 1, j !loop over all rows above diagonal (and diagonal)
                 if (.not. (A(i,j) .eq. conjg(A(j,i)))) then
@@ -334,11 +327,10 @@ contains
         character, intent(in) :: uplo
         logical :: res
         ${t1}$ :: zero
-        integer :: A_shape(2), m, n, o, i, j
+        integer :: m, n, o, i, j
         zero = 0 !zero of relevant type
-        A_shape = shape(A)
-        m = A_shape(1)
-        n = A_shape(2)
+        m = size(A,1)
+        n = size(A,2)
         if ((uplo .eq. 'u') .or. (uplo .eq. 'U')) then !check for upper triangularity
           do j = 1, n !loop over all columns
               o = min(j-1,m) !index of row above diagonal (or last row)
@@ -374,11 +366,10 @@ contains
         character, intent(in) :: uplo
         logical :: res
         ${t1}$ :: zero
-        integer :: A_shape(2), m, n, o, i, j
+        integer :: m, n, o, i, j
         zero = 0 !zero of relevant type
-        A_shape = shape(A)
-        m = A_shape(1)
-        n = A_shape(2)
+        m = size(A,1)
+        n = size(A,2)
         if ((uplo .eq. 'u') .or. (uplo .eq. 'U')) then !check for upper Hessenberg
           do j = 1, n !loop over all columns
               o = min(j-2,m) !index of row two above diagonal (or last row)
