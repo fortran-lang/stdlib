@@ -16,7 +16,11 @@ contains
         testsuite = [ &
             new_unittest("loadtxt_int32", test_loadtxt_int32), &
             new_unittest("loadtxt_sp", test_loadtxt_sp), &
+            new_unittest("loadtxt_sp_huge", test_loadtxt_sp_huge), &
+            new_unittest("loadtxt_sp_tiny", test_loadtxt_sp_tiny), &
             new_unittest("loadtxt_dp", test_loadtxt_dp), &
+            new_unittest("loadtxt_dp_huge", test_loadtxt_dp_huge), &
+            new_unittest("loadtxt_dp_tiny", test_loadtxt_dp_tiny), &
             new_unittest("loadtxt_complex", test_loadtxt_complex) &
         ]
 
@@ -34,7 +38,7 @@ contains
         allocate(input(10,10))
         allocate(expected(10,10))
 
-        do n = 1, 100
+        do n = 1, 10
             call random_number(harvest)
             input = int(harvest * 100)
             call savetxt('test_int32.txt', input)
@@ -55,8 +59,9 @@ contains
         allocate(input(10,10))
         allocate(expected(10,10))
 
-        do n = 1, 100
+        do n = 1, 10
             call random_number(input)
+            input = input - 0.5
             call savetxt('test_sp.txt', input)
             call loadtxt('test_sp.txt', expected)
             call check(error, all(input == expected))
@@ -64,6 +69,48 @@ contains
         end do
 
     end subroutine test_loadtxt_sp
+
+
+    subroutine test_loadtxt_sp_huge(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(sp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * huge(input)
+            call savetxt('test_sp_huge.txt', input)
+            call loadtxt('test_sp_huge.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_sp_huge
+
+
+    subroutine test_loadtxt_sp_tiny(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(sp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * tiny(input)
+            call savetxt('test_sp_tiny.txt', input)
+            call loadtxt('test_sp_tiny.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_sp_tiny
 
 
     subroutine test_loadtxt_dp(error)
@@ -75,8 +122,9 @@ contains
         allocate(input(10,10))
         allocate(expected(10,10))
 
-        do n = 1, 100
+        do n = 1, 10
             call random_number(input)
+            input = input - 0.5
             call savetxt('test_dp.txt', input)
             call loadtxt('test_dp.txt', expected)
             call check(error, all(input == expected))
@@ -84,6 +132,48 @@ contains
         end do
 
     end subroutine test_loadtxt_dp
+
+
+    subroutine test_loadtxt_dp_huge(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(dp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * huge(input)
+            call savetxt('test_dp_huge.txt', input)
+            call loadtxt('test_dp_huge.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_dp_huge
+
+
+    subroutine test_loadtxt_dp_tiny(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(dp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * tiny(input)
+            call savetxt('test_dp_tiny.txt', input)
+            call loadtxt('test_dp_tiny.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_dp_tiny
 
 
     subroutine test_loadtxt_complex(error)
@@ -98,7 +188,7 @@ contains
         allocate(input(10,10))
         allocate(expected(10,10))
 
-        do n = 1, 100
+        do n = 1, 10
             call random_number(re)
             call random_number(im)
             input = cmplx(re, im)
