@@ -14,7 +14,9 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest("loadtxt_qp", test_loadtxt_qp_) &
+            new_unittest("loadtxt_qp", test_loadtxt_qp_), &
+            new_unittest("loadtxt_qp_huge", test_loadtxt_qp_huge), &
+            new_unittest("loadtxt_qp_tiny", test_loadtxt_qp_tiny) &
         ]
 
     end subroutine collect_loadtxt_qp
@@ -24,14 +26,63 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         real(qp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
 
-        call loadtxt("array4.dat", input)
-        call savetxt("array4_new.dat", input)
-        call loadtxt("array4_new.dat", expected)
-        call check(error, all(input == expected))
-        if (allocated(error)) return
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 100
+            call random_number(input)
+            input = input - 0.5
+            call savetxt('test_qp.txt', input)
+            call loadtxt('test_qp.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
 
     end subroutine test_loadtxt_qp_
+
+
+    subroutine test_loadtxt_qp_huge(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(qp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * huge(input)
+            call savetxt('test_qp_huge.txt', input)
+            call loadtxt('test_qp_huge.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_qp_huge
+
+
+    subroutine test_loadtxt_qp_tiny(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(qp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * tiny(input)
+            call savetxt('test_qp_tiny.txt', input)
+            call loadtxt('test_qp_tiny.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_qp_tiny
 
 end module test_loadtxt_qp
 

@@ -111,7 +111,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         character(:), allocatable :: filename
-        integer :: ierr, u, a(3)
+        integer :: ierr, u
 
         filename = get_outpath() // "/io_open.stream"
 

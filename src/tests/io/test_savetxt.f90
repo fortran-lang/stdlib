@@ -52,7 +52,7 @@ contains
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [3, 2]))
         if (allocated(error)) return
-        call check(error, all(abs(d-d2) == 0))
+        call check(error, all(d == d2))
         if (allocated(error)) return
 
         e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
@@ -60,7 +60,7 @@ contains
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [2, 3]))
         if (allocated(error)) return
-        call check(error, all(abs(e-d2) == 0))
+        call check(error, all(e == d2))
         if (allocated(error)) return
     end subroutine
 
@@ -79,7 +79,7 @@ contains
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [3, 2]))
         if (allocated(error)) return
-        call check(error, all(abs(d-d2) < epsilon(1._sp)))
+        call check(error, all(d == d2))
         if (allocated(error)) return
 
         e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
@@ -87,7 +87,7 @@ contains
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [2, 3]))
         if (allocated(error)) return
-        call check(error, all(abs(e-d2) < epsilon(1._sp)))
+        call check(error, all(e == d2))
         if (allocated(error)) return
     end subroutine test_rsp
 
@@ -106,7 +106,7 @@ contains
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [3, 2]))
         if (allocated(error)) return
-        call check(error, all(abs(d-d2) < epsilon(1._dp)))
+        call check(error, all(d == d2))
         if (allocated(error)) return
 
         e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
@@ -114,7 +114,7 @@ contains
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [2, 3]))
         if (allocated(error)) return
-        call check(error, all(abs(e-d2) < epsilon(1._dp)))
+        call check(error, all(e == d2))
         if (allocated(error)) return
     end subroutine test_rdp
 
@@ -133,7 +133,7 @@ contains
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [3, 2]))
         if (allocated(error)) return
-        call check(error, all(abs(d-d2) < epsilon(1._sp)))
+        call check(error, all(d == d2))
         if (allocated(error)) return
 
         e = cmplx(1, 1,kind=sp)* reshape([1, 2, 3, 4, 5, 6], [2, 3])
@@ -141,7 +141,7 @@ contains
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [2, 3]))
         if (allocated(error)) return
-        call check(error, all(abs(e-d2) < epsilon(1._sp)))
+        call check(error, all(e == d2))
         if (allocated(error)) return
     end subroutine test_csp
 
@@ -160,7 +160,7 @@ contains
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [3, 2]))
         if (allocated(error)) return
-        call check(error, all(abs(d-d2) < epsilon(1._dp)))
+        call check(error, all(d == d2))
         if (allocated(error)) return
 
         e = cmplx(1, 1,kind=dp)* reshape([1, 2, 3, 4, 5, 6], [2, 3])
@@ -168,7 +168,7 @@ contains
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [2, 3]))
         if (allocated(error)) return
-        call check(error, all(abs(e-d2) < epsilon(1._dp)))
+        call check(error, all(e == d2))
         if (allocated(error)) return
     end subroutine test_cdp
 
