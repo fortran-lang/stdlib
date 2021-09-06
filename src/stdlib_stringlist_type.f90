@@ -15,7 +15,7 @@
 !     throughout the PR
 !
 module stdlib_stringlist_type
-    use stdlib_string_type, only: string_type, operator(/=)
+    use stdlib_string_type, only: string_type, operator(/=), move
     use stdlib_math, only: clip
     implicit none
     private
@@ -600,13 +600,11 @@ contains
             allocate( new_stringarray(new_len) )
 
             do i = 1, idxn - 1
-                ! TODO: can be improved by move
-                new_stringarray(i) = list%stringarray(i)
+                call move( list%stringarray(i), new_stringarray(i) )
             end do
             do i = idxn, old_len
                 inew = i + positions
-                ! TODO: can be improved by move
-                new_stringarray(inew) = list%stringarray(i)
+                call move( list%stringarray(i), new_stringarray(inew) )
             end do
 
             call move_alloc( new_stringarray, list%stringarray )
@@ -766,13 +764,11 @@ contains
             allocate( new_stringarray(new_len) )
             
             do i = 1, idxn - 1
-                ! TODO: can be improved by move
-                new_stringarray(i) = list%stringarray(i)
+                call move( list%stringarray(i), new_stringarray(i) )
             end do
             do i = idxn + 1, old_len
                 inew = i - 1
-                ! TODO: can be improved by move
-                new_stringarray(inew) = list%stringarray(i)
+                call move( list%stringarray(i), new_stringarray(inew) )
             end do
 
             call move_alloc( new_stringarray, list%stringarray )
