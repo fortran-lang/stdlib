@@ -206,3 +206,285 @@ program demo_outer_product
     !A = reshape([3., 6., 9., 4., 8., 12.], [3,2])
 end program demo_outer_product
 ```
+
+## `is_square` - Checks if a matrix is square
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is square
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_square(interface)]](A)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+### Return value
+
+Returns a logical value that is true if the input matrix is square, and false otherwise.
+
+### Example
+
+```fortran
+program demo_is_square
+    use stdlib_linalg, only: is_square
+    implicit none
+    real :: A_true(2,2), A_false(3,2)
+    logical :: res
+    A_true = reshape([1., 2., 3., 4.], shape(A_true))
+    A_false = reshape([1., 2., 3., 4., 5., 6.], shape(A_false))
+    res = is_square(A_true)
+    !res = .true.
+    res = is_square(A_false)
+    !res = .false.
+end program demo_is_square
+```
+
+## `is_diagonal` - Checks if a matrix is diagonal
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is diagonal
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_diagonal(interface)]](A)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+### Return value
+
+Returns a logical value that is true if the input matrix is diagonal, and false otherwise.
+Note that nonsquare matrices may be diagonal, so long as `a_ij = 0` when `i /= j`.
+
+### Example
+
+```fortran
+program demo_is_diagonal
+    use stdlib_linalg, only: is_diagonal
+    implicit none
+    real :: A_true(2,2), A_false(2,2)
+    logical :: res
+    A_true = reshape([1., 0., 0., 4.], shape(A_true))
+    A_false = reshape([1., 0., 3., 4.], shape(A_false))
+    res = is_diagonal(A_true)
+    !res = .true.
+    res = is_diagonal(A_false)
+    !res = .false.
+end program demo_is_diagonal
+```
+
+## `is_symmetric` - Checks if a matrix is symmetric
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is symmetric
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_symmetric(interface)]](A)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+### Return value
+
+Returns a logical value that is true if the input matrix is symmetric, and false otherwise.
+
+### Example
+
+```fortran
+program demo_is_symmetric
+    use stdlib_linalg, only: is_symmetric
+    implicit none
+    real :: A_true(2,2), A_false(2,2)
+    logical :: res
+    A_true = reshape([1., 3., 3., 4.], shape(A_true))
+    A_false = reshape([1., 0., 3., 4.], shape(A_false))
+    res = is_symmetric(A_true)
+    !res = .true.
+    res = is_symmetric(A_false)
+    !res = .false.
+end program demo_is_symmetric
+```
+
+## `is_skew_symmetric` - Checks if a matrix is skew-symmetric
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is skew-symmetric
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_skew_symmetric(interface)]](A)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+### Return value
+
+Returns a logical value that is true if the input matrix is skew-symmetric, and false otherwise.
+
+### Example
+
+```fortran
+program demo_is_skew_symmetric
+    use stdlib_linalg, only: is_skew_symmetric
+    implicit none
+    real :: A_true(2,2), A_false(2,2)
+    logical :: res
+    A_true = reshape([0., -3., 3., 0.], shape(A_true))
+    A_false = reshape([0., 3., 3., 0.], shape(A_false))
+    res = is_skew_symmetric(A_true)
+    !res = .true.
+    res = is_skew_symmetric(A_false)
+    !res = .false.
+end program demo_is_skew_symmetric
+```
+
+## `is_hermitian` - Checks if a matrix is Hermitian
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is Hermitian
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_hermitian(interface)]](A)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+### Return value
+
+Returns a logical value that is true if the input matrix is Hermitian, and false otherwise.
+
+### Example
+
+```fortran
+program demo_is_hermitian
+    use stdlib_linalg, only: is_hermitian
+    implicit none
+    complex :: A_true(2,2), A_false(2,2)
+    logical :: res
+    A_true = reshape([cmplx(1.,0.), cmplx(3.,-1.), cmplx(3.,1.), cmplx(4.,0.)], shape(A_true))
+    A_false = reshape([cmplx(1.,0.), cmplx(3.,1.), cmplx(3.,1.), cmplx(4.,0.)], shape(A_false))
+    res = is_hermitian(A_true)
+    !res = .true.
+    res = is_hermitian(A_false)
+    !res = .false.
+end program demo_is_hermitian
+```
+
+## `is_triangular` - Checks if a matrix is triangular
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is triangular
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_triangular(interface)]](A,uplo)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+`uplo`: Shall be a single character from `{'u','U','l','L'}`
+
+### Return value
+
+Returns a logical value that is true if the input matrix is the type of triangular specified by `uplo` (upper or lower), and false otherwise.
+Note that the definition of triangular used here allows nonsquare matrices to be triangular.
+Specifically, upper triangular matrices satisfy `a_ij = 0` when `j < i`, and lower triangular matrices satisfy `a_ij = 0` when `j > i`.
+
+### Example
+
+```fortran
+program demo_is_triangular
+    use stdlib_linalg, only: is_triangular
+    implicit none
+    real :: A_true(3,3), A_false(3,3)
+    logical :: res
+    A_true = reshape([1., 0., 0., 4., 5., 0., 7., 8., 9.], shape(A_true))
+    A_false = reshape([1., 0., 3., 4., 5., 0., 7., 8., 9.], shape(A_false))
+    res = is_triangular(A_true,'u')
+    !res = .true.
+    res = is_triangular(A_false,'u')
+    !res = .false.
+end program demo_is_triangular
+```
+
+## `is_hessenberg` - Checks if a matrix is hessenberg
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is Hessenberg
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_hessenberg(interface)]](A,uplo)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+`uplo`: Shall be a single character from `{'u','U','l','L'}`
+
+### Return value
+
+Returns a logical value that is true if the input matrix is the type of Hessenberg specified by `uplo` (upper or lower), and false otherwise.
+Note that the definition of Hessenberg used here allows nonsquare matrices to be Hessenberg.
+Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and lower Hessenberg matrices satisfy `a_ij = 0` when `j > i+1`.
+
+### Example
+
+```fortran
+program demo_is_hessenberg
+    use stdlib_linalg, only: is_hessenberg
+    implicit none
+    real :: A_true(3,3), A_false(3,3)
+    logical :: res
+    A_true = reshape([1., 2., 0., 4., 5., 6., 7., 8., 9.], shape(A_true))
+    A_false = reshape([1., 2., 3., 4., 5., 6., 7., 8., 9.], shape(A_false))
+    res = is_hessenberg(A_true,'u')
+    !res = .true.
+    res = is_hessenberg(A_false,'u')
+    !res = .false.
+end program demo_is_hessenberg
+```
