@@ -84,8 +84,11 @@ module stdlib_stringlist_type
                                                                 insert_before_chararray_int,    &
                                                                 insert_before_stringarray_int
 
-        procedure         :: get_string_idx         => get_string_idx_wrap
-        generic, public   :: get                    => get_string_idx
+        procedure         :: get_string_idx                 => get_string_idx_impl
+        generic, public   :: get                            => get_string_idx
+        
+        procedure         :: delete_string_idx              => delete_string_idx_impl
+        generic, public   :: delete                         => delete_string_idx
 
     end type stringlist_type
 
@@ -718,22 +721,64 @@ contains
     !>
     !> Returns the string present at stringlist_index 'idx' in stringlist 'list'
     !> Returns string_type instance
-    pure function get_string_idx_wrap( list, idx )
+    pure function get_string_idx_impl( list, idx )
         class(stringlist_type), intent(in)      :: list
         type(stringlist_index_type), intent(in) :: idx
-        type(string_type)                       :: get_string_idx_wrap
+        type(string_type)                       :: get_string_idx_impl
 
         integer                                 :: idxn
 
         idxn = list%to_current_idxn( idx )
 
-        ! if the index is out of bounds, return a string_type equivalent to empty string
+        ! if the index is out of bounds, returns a string_type instance equivalent to empty string
         if ( 1 <= idxn .and. idxn <= list%len() ) then
-            get_string_idx_wrap = list%stringarray(idxn)
+            get_string_idx_impl = list%stringarray(idxn)
 
         end if
 
-    end function get_string_idx_wrap
+    end function get_string_idx_impl
 
+  ! delete:
+
+    !> Version: experimental
+    !>
+    !> Deletes the string present at stringlist_index 'idx' in stringlist 'list'
+    !> Returns the deleted string
+    impure function delete_string_idx_impl( list, idx )
+        class(stringlist_type)                          :: list
+        type(stringlist_index_type), intent(in)         :: idx
+        type(string_type)                               :: delete_string_idx_impl
+
+        integer                                         :: idxn, i, inew
+        integer                                         :: old_len, new_len
+        type(string_type), dimension(:), allocatable    :: new_stringarray
+
+        idxn = list%to_current_idxn( idx )
+
+        old_len = list%len()
+        ! if the index is out of bounds, returns a string_type instance equivalent to empty string
+        ! without deleting anything from the stringlist
+        if ( 1 <= idxn .and. idxn <= old_len ) then
+            delete_string_idx_impl = list%stringarray(idxn)
+
+            new_len = old_len - 1
+
+            allocate( new_stringarray(new_len) )
+            
+            do i = 1, idxn - 1
+                ! TODO: can be improved by move
+                new_stringarray(i) = list%stringarray(i)
+            end do
+            do i = idxn + 1, old_len
+                inew = i - 1
+                ! TODO: can be improved by move
+                new_stringarray(inew) = list%stringarray(i)
+            end do
+
+            call move_alloc( new_stringarray, list%stringarray )
+
+        end if
+
+    end function delete_string_idx_impl
 
 end module stdlib_stringlist_type
