@@ -183,5 +183,18 @@ contains
 
     end subroutine
 
+    subroutine test_parse_mode_access()
+        character(1) :: m
+
+        m = parse_mode("s")
+        call check(m == "r ts")
+
+        m = parse_mode("u")
+        call check(m == "r tu")
+
+        m = parse_mode("d")
+        call check(m == "r td")
+
+    end subroutine test_parse_mode_access
 
 end program

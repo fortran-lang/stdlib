@@ -49,7 +49,7 @@ Experimental
 
 ### Description
 
-Returns the unit number of a file opened to read, to write, or to read and write. The file might be a text file or a binary file. All files are opened using a streamed access.
+Returns the unit number of a file opened to read, to write, or to read and write. The file might be a text file or a binary file. All files are opened using a streamed access by default.
 
 ### Syntax
 
@@ -71,9 +71,12 @@ Returns the unit number of a file opened to read, to write, or to read and write
 | `'+'` | open for updating (reading and writing) |
 | `'b'` | binary mode |
 | `'t'` | text mode (default) |
+| `'u'` | sequential access |
+| `'d'` | direct access |
+| `'s'` | stream access (default) |
 
 
-The default `mode` is `'rt'` (i.e. open for reading a text file). The `mode` may include one of the four different methods for opening a file (i.e., `'r'`, `'w'`, `'x'`, and `'a'`). These four methods can be associated with the character `'+'` to open the file for updating. In addition, it can be specified if the file should be handled as a binary file (`'b'`) or a text file (`'t'`).
+The default `mode` is `'rts'` (i.e. open for reading a text file). The `mode` may include one of the four different methods for opening a file (i.e., `'r'`, `'w'`, `'x'`, and `'a'`). These four methods can be associated with the character `'+'` to open the file for updating. In addition, it can be specified if the file should be handled as a binary file (`'b'`) or a text file (`'t'`).
 
 `iostat` (optional): Shall be a scalar of type `integer` that receives the error status of `open`, if provided. If no error exists, `iostat` is zero.
 

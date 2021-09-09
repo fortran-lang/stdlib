@@ -80,6 +80,20 @@ call check(io /= 0)
 u = open(filename, "r", io)
 call check(io /= 0)
 
+! Sequential file
+filename = get_outpath() // "/io_open.sequential"
+
+! Test mode "w"
+u = open(filename, "wu")
+write(u, *) 1, 2, 3
+close(u)
+
+! Test mode "r"
+u = open(filename, "ru")
+read(u, *) a
+call check(all(a == [1, 2, 3]))
+close(u)
+
 
 contains
 

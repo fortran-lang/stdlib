@@ -211,7 +211,7 @@ contains
     character(*), intent(in), optional :: mode
     integer, intent(out), optional :: iostat
 
-    character(3) :: mode_
+    character(4) :: mode_
     character(:),allocatable :: action_, position_, status_, access_, form_
 
 
@@ -263,7 +263,11 @@ contains
       call error_stop("Unsupported mode: "//mode_(3:3))
     end select
 
-    access_ = 'stream'
+    select case (mode_(4:4))
+        case('u'); access_ = 'sequential'
+        case('d'); access_ = 'direct'
+        case('s'); access_ = 'stream'
+    end select
 
     if (present(iostat)) then
       open(newunit=u, file=filename, &
@@ -278,14 +282,14 @@ contains
 
   end function open
 
-  character(3) function parse_mode(mode) result(mode_)
+  character(4) function parse_mode(mode) result(mode_)
     character(*), intent(in) :: mode
 
     integer :: i
     character(:),allocatable :: a
-    logical :: lfirst(3)
+    logical :: lfirst(4)
 
-    mode_ = 'r t'
+    mode_ = 'r ts'
 
     if (len_trim(mode) == 0) return
     a=trim(adjustl(mode))
@@ -303,6 +307,9 @@ contains
       else if (lfirst(3) .and. (a(i:i) == 't' .or. a(i:i) == 'b')) then
         mode_(3:3) = a(i:i)
         lfirst(3)=.false.
+      else if (lfirst(4) .and. (a(i:i) == 'u' .or. a(i:i) == 'd' .or. a(i:i) == 's')) then
+        mode_(4:4) = a(i:i)
+        lfirst(4)=.false.
       else if (a(i:i) == ' ') then
         cycle
       else if(any(.not.lfirst)) then
