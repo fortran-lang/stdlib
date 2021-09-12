@@ -69,10 +69,10 @@ module stdlib_stringlist_type
         procedure         :: insert_at_stringlist_idx       =>  insert_at_stringlist_idx_wrap
         procedure         :: insert_at_chararray_idx        =>  insert_at_chararray_idx_wrap
         procedure         :: insert_at_stringarray_idx      =>  insert_at_stringarray_idx_wrap
-        generic, public   :: insert_at                      =>  insert_at_char_idx,         &
-                                                                insert_at_string_idx,       &
-                                                                insert_at_stringlist_idx,   &
-                                                                insert_at_chararray_idx,    &
+        generic, public   :: insert_at                      =>  insert_at_char_idx,             &
+                                                                insert_at_string_idx,           &
+                                                                insert_at_stringlist_idx,       &
+                                                                insert_at_chararray_idx,        &
                                                                 insert_at_stringarray_idx
 
         procedure         :: insert_before_string_int       =>  insert_before_string_int_impl
@@ -87,11 +87,15 @@ module stdlib_stringlist_type
         procedure         :: get_string_idx                 => get_string_idx_impl
         generic, public   :: get                            => get_string_idx
         
-        procedure         :: pop_string_idx                 => pop_string_idx_impl
-        generic, public   :: pop                            => pop_string_idx
+        procedure         :: pop_idx                        => pop_idx_impl
+        procedure         :: pop_range_idx                  => pop_range_idx_impl
+        generic, public   :: pop                            => pop_idx,                         &
+                                                               pop_range_idx
 
-        procedure         :: drop_string_idx                => drop_string_idx_impl
-        generic, public   :: drop                           => drop_string_idx
+        procedure         :: drop_idx                       => drop_idx_impl
+        procedure         :: drop_range_idx                 => drop_range_idx_impl
+        generic, public   :: drop                           => drop_idx,                        &
+                                                               drop_range_idx
 
     end type stringlist_type
 
@@ -743,7 +747,7 @@ contains
     !>
     !> Removes strings present at indexes in interval ['first', 'last']
     !> Returns captured popped strings
-    subroutine pop_positions( list, first, last, capture_popped)
+    subroutine pop_engine( list, first, last, capture_popped)
         class(stringlist_type)                                  :: list
         type(stringlist_index_type), intent(in)                 :: first, last
         type(string_type), allocatable, intent(out), optional   :: capture_popped(:)
@@ -785,10 +789,13 @@ contains
             end do
 
             call move_alloc( new_stringarray, list%stringarray )
-
+        else
+            if ( present(capture_popped) ) then
+                allocate( capture_popped(0) )
+            end if
         end if
 
-    end subroutine pop_positions
+    end subroutine pop_engine
 
   ! pop:
 
@@ -796,20 +803,35 @@ contains
     !>
     !> Removes the string present at stringlist_index 'idx' in stringlist 'list'
     !> Returns the removed string
-    function pop_string_idx_impl( list, idx )
+    function pop_idx_impl( list, idx )
         class(stringlist_type)                          :: list
         type(stringlist_index_type), intent(in)         :: idx
-        type(string_type)                               :: pop_string_idx_impl
+        type(string_type)                               :: pop_idx_impl
 
-        type(string_type), dimension(:), allocatable    :: capture_popped
+        type(string_type), dimension(:), allocatable    :: popped_strings
 
-        call pop_positions( list, idx, idx, capture_popped )
+        call pop_engine( list, idx, idx, popped_strings )
 
-        if ( allocated(capture_popped) ) then
-            pop_string_idx_impl = capture_popped(1)
+        if ( size(popped_strings) > 0 ) then
+            pop_idx_impl = popped_strings(1)
         end if
 
-    end function pop_string_idx_impl
+    end function pop_idx_impl
+
+    !> Version: experimental
+    !>
+    !> Removes strings present at stringlist_indexes in interval ['first', 'last']
+    !> in stringlist 'list'
+    !> Returns removed strings
+    function pop_range_idx_impl( list, first, last )
+        class(stringlist_type)                          :: list
+        type(stringlist_index_type), intent(in)         :: first, last
+
+        type(string_type), dimension(:), allocatable    :: pop_range_idx_impl
+
+        call pop_engine( list, first, last, pop_range_idx_impl )
+
+    end function pop_range_idx_impl
 
   ! drop:
 
@@ -817,12 +839,25 @@ contains
     !>
     !> Removes the string present at stringlist_index 'idx' in stringlist 'list'
     !> Doesn't return the removed string 
-    subroutine drop_string_idx_impl( list, idx )
+    subroutine drop_idx_impl( list, idx )
         class(stringlist_type)                          :: list
         type(stringlist_index_type), intent(in)         :: idx
 
-        call pop_positions( list, idx, idx )
+        call pop_engine( list, idx, idx )
 
-    end subroutine drop_string_idx_impl
+    end subroutine drop_idx_impl
+
+    !> Version: experimental
+    !>
+    !> Removes strings present at stringlist_indexes in interval ['first', 'last']
+    !> in stringlist 'list'
+    !> Doesn't return removed strings
+    subroutine drop_idx_impl( list, first, last)
+        class(stringlist_type)                          :: list
+        type(stringlist_index_type), intent(in)         :: first, last
+
+        call pop_engine( list, first, last )
+
+    end subroutine drop_idx_impl
 
 end module stdlib_stringlist_type
