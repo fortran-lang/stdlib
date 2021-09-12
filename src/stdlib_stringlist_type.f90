@@ -739,6 +739,57 @@ contains
 
     end function get_string_idx_impl
 
+    !> Version: experimental
+    !>
+    !> Removes strings present at indexes in interval ['first', 'last']
+    !> Returns captured popped strings
+    subroutine pop_positions( list, first, last, capture_popped)
+        class(stringlist_type)                                  :: list
+        type(stringlist_index_type), intent(in)                 :: first, last
+        type(string_type), allocatable, intent(out), optional   :: capture_popped(:)
+
+        integer                                                 :: firstn, lastn
+        integer                                                 :: i, inew
+        integer                                                 :: pos, old_len, new_len
+        type(string_type), dimension(:), allocatable            :: new_stringarray
+
+        old_len = list%len()
+
+        firstn = max( list%to_current_idxn( first ), 1 )
+        lastn  = min( list%to_current_idxn( last ), old_len )
+        
+        ! out of bounds indexes won't modify stringlist
+        if ( firstn <= lastn ) then
+            pos = lastn - firstn + 1
+            new_len = old_len - pos
+
+            allocate( new_stringarray(new_len) )
+            do i = 1, firstn - 1
+                call move( list%stringarray(i), new_stringarray(i) )
+            end do
+
+            ! capture popped strings
+            if ( present(capture_popped) ) then
+                allocate( capture_popped(pos) )
+                inew = 1
+                do i = firstn, lastn
+                    call move( list%stringarray(i), capture_popped(inew) )
+                    inew = inew + 1
+                end do
+            end if
+
+            inew = firstn
+            do i = lastn + 1, old_len
+                call move( list%stringarray(i), new_stringarray(inew) )
+                inew = inew + 1
+            end do
+
+            call move_alloc( new_stringarray, list%stringarray )
+
+        end if
+
+    end subroutine pop_positions
+
   ! pop:
 
     !> Version: experimental
@@ -750,32 +801,12 @@ contains
         type(stringlist_index_type), intent(in)         :: idx
         type(string_type)                               :: pop_string_idx_impl
 
-        integer                                         :: idxn, i, inew
-        integer                                         :: old_len, new_len
-        type(string_type), dimension(:), allocatable    :: new_stringarray
+        type(string_type), dimension(:), allocatable    :: capture_popped
 
-        idxn = list%to_current_idxn( idx )
+        call pop_positions( list, idx, idx, capture_popped )
 
-        old_len = list%len()
-        ! if the index is out of bounds, returns a string_type instance equivalent to empty string
-        ! without deleting anything from the stringlist
-        if ( 1 <= idxn .and. idxn <= old_len ) then
-            pop_string_idx_impl = list%stringarray(idxn)
-
-            new_len = old_len - 1
-
-            allocate( new_stringarray(new_len) )
-            
-            do i = 1, idxn - 1
-                call move( list%stringarray(i), new_stringarray(i) )
-            end do
-            do i = idxn + 1, old_len
-                inew = i - 1
-                call move( list%stringarray(i), new_stringarray(inew) )
-            end do
-
-            call move_alloc( new_stringarray, list%stringarray )
-
+        if ( allocated(capture_popped) ) then
+            pop_string_idx_impl = capture_popped(1)
         end if
 
     end function pop_string_idx_impl
@@ -789,10 +820,8 @@ contains
     subroutine drop_string_idx_impl( list, idx )
         class(stringlist_type)                          :: list
         type(stringlist_index_type), intent(in)         :: idx
-        type(string_type)                               :: garbage_string
 
-        ! Throwing away garbage_string by not returning it
-        garbage_string = list%pop( idx )
+        call pop_positions( list, idx, idx )
 
     end subroutine drop_string_idx_impl
 
