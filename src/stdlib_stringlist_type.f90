@@ -87,8 +87,11 @@ module stdlib_stringlist_type
         procedure         :: get_string_idx                 => get_string_idx_impl
         generic, public   :: get                            => get_string_idx
         
-        procedure         :: delete_string_idx              => delete_string_idx_impl
-        generic, public   :: delete                         => delete_string_idx
+        procedure         :: pop_string_idx                 => pop_string_idx_impl
+        generic, public   :: pop                            => pop_string_idx
+
+        procedure         :: drop_string_idx                => drop_string_idx_impl
+        generic, public   :: drop                           => drop_string_idx
 
     end type stringlist_type
 
@@ -736,16 +739,16 @@ contains
 
     end function get_string_idx_impl
 
-  ! delete:
+  ! pop:
 
     !> Version: experimental
     !>
-    !> Deletes the string present at stringlist_index 'idx' in stringlist 'list'
-    !> Returns the deleted string
-    impure function delete_string_idx_impl( list, idx )
+    !> Removes the string present at stringlist_index 'idx' in stringlist 'list'
+    !> Returns the removed string
+    function pop_string_idx_impl( list, idx )
         class(stringlist_type)                          :: list
         type(stringlist_index_type), intent(in)         :: idx
-        type(string_type)                               :: delete_string_idx_impl
+        type(string_type)                               :: pop_string_idx_impl
 
         integer                                         :: idxn, i, inew
         integer                                         :: old_len, new_len
@@ -757,7 +760,7 @@ contains
         ! if the index is out of bounds, returns a string_type instance equivalent to empty string
         ! without deleting anything from the stringlist
         if ( 1 <= idxn .and. idxn <= old_len ) then
-            delete_string_idx_impl = list%stringarray(idxn)
+            pop_string_idx_impl = list%stringarray(idxn)
 
             new_len = old_len - 1
 
@@ -775,6 +778,22 @@ contains
 
         end if
 
-    end function delete_string_idx_impl
+    end function pop_string_idx_impl
+
+  ! drop:
+
+    !> Version: experimental
+    !>
+    !> Removes the string present at stringlist_index 'idx' in stringlist 'list'
+    !> Doesn't return the removed string 
+    subroutine drop_string_idx_impl( list, idx )
+        class(stringlist_type)                          :: list
+        type(stringlist_index_type), intent(in)         :: idx
+        type(string_type)                               :: garbage_string
+
+        ! Throwing away garbage_string by not returning it
+        garbage_string = list%pop( idx )
+
+    end subroutine drop_string_idx_impl
 
 end module stdlib_stringlist_type
