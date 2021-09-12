@@ -812,7 +812,7 @@ contains
 
         call pop_engine( list, idx, idx, popped_strings )
 
-        if ( size(popped_strings) > 0 ) then
+        if ( size(popped_strings) == 1 ) then
             pop_idx_impl = popped_strings(1)
         end if
 
@@ -852,12 +852,12 @@ contains
     !> Removes strings present at stringlist_indexes in interval ['first', 'last']
     !> in stringlist 'list'
     !> Doesn't return removed strings
-    subroutine drop_idx_impl( list, first, last)
+    subroutine drop_range_idx_impl( list, first, last)
         class(stringlist_type)                          :: list
         type(stringlist_index_type), intent(in)         :: first, last
 
         call pop_engine( list, first, last )
 
-    end subroutine drop_idx_impl
+    end subroutine drop_range_idx_impl
 
 end module stdlib_stringlist_type
