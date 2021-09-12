@@ -11,8 +11,8 @@
 !     insert BEFORE:  Inserts an element BEFORE the element present currently at the asked index
 !     insert AFTER:   Inserts an element AFTER the element present currently at the asked index
 !
-!     Note the distinction between AT and BEFORE in the module. Care has been taken to keep it consistent
-!     throughout the PR
+!     Note the distinction between AT and BEFORE in the whole module. Care has been taken to 
+!     keep this terminology consistent throughout the module.
 !
 module stdlib_stringlist_type
     use stdlib_string_type, only: string_type, operator(/=), move
