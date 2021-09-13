@@ -1,0 +1,28 @@
+name: Feature Proposal
+description: Suggestion for new functionality in stdlib
+labels: [idea]
+body:
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      placeholder: |
+        What is the purpose of this proposal. Please provide usage examples for the new functionality as well.
+    validations:
+      required: true
+  - type: textarea
+    id: prior-art
+    attributes:
+      label: Prior Art
+      placeholder: |
+        Include links and references to other package manager or build systems if available.
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      placeholder: Further relevant context, i.e. links to other issues
+    validations:
+      required: false
+
