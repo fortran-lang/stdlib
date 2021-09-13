@@ -146,8 +146,8 @@ The result is of scalar logical type.
 program demo
   use stdlib_strings, only : starts_with
   implicit none
-  print'(a)', starts_with("pattern", "pat")  ! T
-  print'(a)', starts_with("pattern", "ern")  ! F
+  print'(l0)', starts_with("pattern", "pat")  ! T
+  print'(l0)', starts_with("pattern", "ern")  ! F
 end program demo
 ```
 
@@ -188,8 +188,8 @@ The result is of scalar logical type.
 program demo
   use stdlib_strings, only : ends_with
   implicit none
-  print'(a)', ends_with("pattern", "ern")  ! T
-  print'(a)', ends_with("pattern", "pat")  ! F
+  print'(l0)', ends_with("pattern", "ern")  ! T
+  print'(l0)', ends_with("pattern", "pat")  ! F
 end program demo
 ```
 
