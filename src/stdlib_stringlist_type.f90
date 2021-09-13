@@ -464,7 +464,7 @@ contains
         type(stringlist_index_type), intent(in)                 :: idx
         integer, intent(in)                                     :: shift_by
 
-        type(stringlist_index_type), intent(in)                 :: shift
+        type(stringlist_index_type)                             :: shift
 
         shift = merge( fidx( idx%offset + shift_by ), bidx( idx%offset + shift_by ), idx%forward )
 
@@ -607,7 +607,7 @@ contains
     !> Modifies the input stringlist 'list'
     subroutine insert_before_engine( list, idxn, positions )
         !> Not a part of public API
-        class(stringlist_type), intent(inout)           :: list
+        type(stringlist_type), intent(inout)            :: list
         integer, intent(inout)                          :: idxn
         integer, intent(in)                             :: positions
 
@@ -744,8 +744,8 @@ contains
     !> Returns strings present at stringlist_indexes in interval ['first', 'last']
     !> Stores requested strings in array 'capture_strings'
     !> No return
-    subroutine get_engine( list, first, last, capture_strings )
-        class(stringlist_type)                                  :: list
+    pure subroutine get_engine( list, first, last, capture_strings )
+        type(stringlist_type), intent(in)                       :: list
         type(stringlist_index_type), intent(in)                 :: first, last
         type(string_type), allocatable, intent(out)             :: capture_strings(:)
 
@@ -757,8 +757,7 @@ contains
 
         ! out of bounds indexes won't be captured in capture_strings
         if ( from <= to ) then
-            pos = to - from + 1
-            allocate( capture_strings(pos) )
+            allocate( capture_strings( to - from + 1 ) )
             
             inew = 1
             do i = from, to
@@ -779,8 +778,8 @@ contains
     pure function get_idx_impl( list, idx )
         class(stringlist_type), intent(in)                      :: list
         type(stringlist_index_type), intent(in)                 :: idx
-        type(string_type)                                       :: get_idx_impl
 
+        type(string_type)                                       :: get_idx_impl
         type(string_type), allocatable                          :: capture_strings(:)
 
         call get_engine( list, idx, idx, capture_strings )
