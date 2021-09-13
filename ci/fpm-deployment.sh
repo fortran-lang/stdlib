@@ -1,31 +1,50 @@
 #!/usr/bin/env bash
-#
-#
+
 set -ex
 
-DESTDIR="stdlib-fpm"
+# Target directory to deploy stdlib to
+destdir="${DESTDIR:-stdlib-fpm}"
 
-FYFLAGS="-DMAXRANK=4"
+# Get fypp preprocessor
+fypp="${FYPP:-$(which fypp)}"
 
-mkdir -p $DESTDIR/src
-mkdir -p $DESTDIR/test
+# Arguments for the fypp preprocessor
+fyflags="${FYFLAGS:--DMAXRANK=4}"
+
+# Number of parallel jobs for preprocessing
+njob="$(nproc)"
+
+# Additional files to include
+include=(
+  "ci/fpm.toml"
+  "LICENSE"
+)
+
+# Files to remove from collection
+prune=(
+  "$destdir/test/test_always_fail.f90"
+  "$destdir/test/test_always_skip.f90"
+  "$destdir/test/test_mean_f03.f90"
+  "$destdir/src/common.f90"
+  "$destdir/src/f18estop.f90"
+)
+
+mkdir -p "$destdir/src" "$destdir/test"
 
 # Preprocess stdlib sources
-ls src/*.fypp | cut -f1 -d. | xargs -i{} fypp {}.fypp {}.f90 $FYFLAGS
+find src -maxdepth 1 -iname "*.fypp" \
+  | cut -f1 -d. | xargs -P "$njob" -I{} "$fypp" "{}.fypp" "$destdir/{}.f90" $fyflags
 
-# Collect stdlib files
-find src -maxdepth 1 -iname "*.f90" -exec cp {} $DESTDIR/src/ \;
-find src/tests -name "test_*.f90" -exec cp {} $DESTDIR/test/ \;
-find src/tests -name "*.dat" -exec cp {} $DESTDIR/ \;
-cp LICENSE $DESTDIR/
-cp ci/fpm.toml $DESTDIR/
+# Collect stdlib source files
+find src -maxdepth 1 -iname "*.f90" -exec cp {} "$destdir/src/" \;
+find src/tests -name "test_*.f90" -exec cp {} "$destdir/test/" \;
+find src/tests -name "*.dat" -exec cp {} "$destdir/" \;
+
+# Include additional files
+cp "${include[@]}" "$destdir/"
 
 # Source file workarounds for fpm
-rm $DESTDIR/test/test_always_fail.f90
-rm $DESTDIR/test/test_always_skip.f90
-rm $DESTDIR/test/test_mean_f03.f90
-rm $DESTDIR/src/common.f90
-rm $DESTDIR/src/f18estop.f90
+rm "${prune[@]}"
 
 # List stdlib-fpm package contents
-ls -R $DESTDIR
+ls -R "$destdir"
