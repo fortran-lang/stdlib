@@ -84,18 +84,20 @@ module stdlib_stringlist_type
                                                                 insert_before_chararray_int,    &
                                                                 insert_before_stringarray_int
 
-        procedure         :: get_string_idx                 => get_string_idx_impl
-        generic, public   :: get                            => get_string_idx
+        procedure         :: get_idx                        =>  get_idx_impl
+        procedure         :: get_range_idx                  =>  get_range_idx_impl
+        generic, public   :: get                            =>  get_idx,                        &
+                                                                get_range_idx
         
-        procedure         :: pop_idx                        => pop_idx_impl
-        procedure         :: pop_range_idx                  => pop_range_idx_impl
-        generic, public   :: pop                            => pop_idx,                         &
-                                                               pop_range_idx
+        procedure         :: pop_idx                        =>  pop_idx_impl
+        procedure         :: pop_range_idx                  =>  pop_range_idx_impl
+        generic, public   :: pop                            =>  pop_idx,                        &
+                                                                pop_range_idx
 
-        procedure         :: drop_idx                       => drop_idx_impl
-        procedure         :: drop_range_idx                 => drop_range_idx_impl
-        generic, public   :: drop                           => drop_idx,                        &
-                                                               drop_range_idx
+        procedure         :: drop_idx                       =>  drop_idx_impl
+        procedure         :: drop_range_idx                 =>  drop_range_idx_impl
+        generic, public   :: drop                           =>  drop_idx,                       &
+                                                                drop_range_idx
 
     end type stringlist_type
 
@@ -453,6 +455,21 @@ contains
 
     end function ineq_sarray_stringlist
 
+    ! Version: experimental
+    !>
+    !> Shifts a stringlist_index by integer 'shift_by'
+    !> Returns the shifted stringlist_index
+    pure function shift( idx, shift_by )
+        !> Not a part of public API
+        type(stringlist_index_type), intent(in)                 :: idx
+        integer, intent(in)                                     :: shift_by
+
+        type(stringlist_index_type), intent(in)                 :: shift
+
+        shift = merge( fidx( idx%offset + shift_by ), bidx( idx%offset + shift_by ), idx%forward )
+
+    end function shift
+
   ! clear:
 
     !> Version: experimental
@@ -588,7 +605,7 @@ contains
     !>
     !> Inserts 'positions' number of empty positions BEFORE integer index 'idxn'
     !> Modifies the input stringlist 'list'
-    subroutine insert_before_empty_positions( list, idxn, positions )
+    subroutine insert_before_engine( list, idxn, positions )
         !> Not a part of public API
         class(stringlist_type), intent(inout)           :: list
         integer, intent(inout)                          :: idxn
@@ -618,7 +635,7 @@ contains
 
         end if
 
-    end subroutine insert_before_empty_positions
+    end subroutine insert_before_engine
 
     !> Version: experimental
     !>
@@ -633,7 +650,7 @@ contains
         integer                                         :: work_idxn
 
         work_idxn = idxn
-        call insert_before_empty_positions( list, work_idxn, 1 )
+        call insert_before_engine( list, work_idxn, 1 )
 
         list%stringarray(work_idxn) = string
 
@@ -688,7 +705,7 @@ contains
         integer                                      :: work_idxn, idxnew
 
         work_idxn = idxn
-        call insert_before_empty_positions( list, work_idxn, size( carray ) )
+        call insert_before_engine( list, work_idxn, size( carray ) )
 
         do i = 1, size( carray )
             idxnew = work_idxn + i - 1
@@ -711,7 +728,7 @@ contains
         integer                                      :: work_idxn, idxnew
 
         work_idxn = idxn
-        call insert_before_empty_positions( list, work_idxn, size( sarray ) )
+        call insert_before_engine( list, work_idxn, size( sarray ) )
 
         do i = 1, size( sarray )
             idxnew = work_idxn + i - 1
@@ -724,66 +741,111 @@ contains
 
     !> Version: experimental
     !>
-    !> Returns the string present at stringlist_index 'idx' in stringlist 'list'
-    !> Returns string_type instance
-    pure function get_string_idx_impl( list, idx )
-        class(stringlist_type), intent(in)      :: list
-        type(stringlist_index_type), intent(in) :: idx
-        type(string_type)                       :: get_string_idx_impl
+    !> Returns strings present at stringlist_indexes in interval ['first', 'last']
+    !> Stores requested strings in array 'capture_strings'
+    !> No return
+    subroutine get_engine( list, first, last, capture_strings )
+        class(stringlist_type)                                  :: list
+        type(stringlist_index_type), intent(in)                 :: first, last
+        type(string_type), allocatable, intent(out)             :: capture_strings(:)
 
-        integer                                 :: idxn
+        integer                                                 :: from, to
+        integer                                                 :: i, inew
 
-        idxn = list%to_current_idxn( idx )
+        from = max( list%to_current_idxn( first ), 1 )
+        to  = min( list%to_current_idxn( last ), list%len() )
 
-        ! if the index is out of bounds, returns a string_type instance equivalent to empty string
-        if ( 1 <= idxn .and. idxn <= list%len() ) then
-            get_string_idx_impl = list%stringarray(idxn)
+        ! out of bounds indexes won't be captured in capture_strings
+        if ( from <= to ) then
+            pos = to - from + 1
+            allocate( capture_strings(pos) )
+            
+            inew = 1
+            do i = from, to
+                capture_strings(inew) = list%stringarray(i)
+                inew = inew + 1
+            end do
 
+        else
+            allocate( capture_strings(0) )
         end if
 
-    end function get_string_idx_impl
+    end subroutine get_engine
+
+    !> Version: experimental
+    !>
+    !> Returns the string present at stringlist_index 'idx' in stringlist 'list'
+    !> Returns string_type instance
+    pure function get_idx_impl( list, idx )
+        class(stringlist_type), intent(in)                      :: list
+        type(stringlist_index_type), intent(in)                 :: idx
+        type(string_type)                                       :: get_idx_impl
+
+        type(string_type), allocatable                          :: capture_strings(:)
+
+        call get_engine( list, idx, idx, capture_strings )
+
+        ! if index 'idx' is out of bounds, returns an empty string
+        if ( size(capture_strings) == 1 ) then
+            call move( capture_strings(1), get_idx_impl )
+        end if
+
+    end function get_idx_impl
+
+    !> Version: experimental
+    !>
+    !> Returns strings present at stringlist_indexes in interval ['first', 'last']
+    !> Returns array of string_type instances
+    pure function get_range_idx_impl( list, first, last )
+        class(stringlist_type), intent(in)                      :: list
+        type(stringlist_index_type), intent(in)                 :: first, last
+
+        type(string_type), allocatable                          :: get_range_idx_impl(:)
+
+        call get_engine( list, first, last, get_range_idx_impl )
+
+    end function get_range_idx_impl
+
+  ! pop & drop:
 
     !> Version: experimental
     !>
     !> Removes strings present at indexes in interval ['first', 'last']
-    !> Returns captured popped strings
-    subroutine pop_engine( list, first, last, capture_popped)
+    !> Stores captured popped strings in array 'capture_popped'
+    !> No return
+    subroutine pop_drop_engine( list, first, last, capture_popped )
         class(stringlist_type)                                  :: list
         type(stringlist_index_type), intent(in)                 :: first, last
         type(string_type), allocatable, intent(out), optional   :: capture_popped(:)
 
-        integer                                                 :: firstn, lastn
-        integer                                                 :: i, inew
-        integer                                                 :: pos, old_len, new_len
+        integer                                                 :: firstn, lastn, from, to
+        integer                                                 :: i, inew, pos, old_len, new_len
         type(string_type), dimension(:), allocatable            :: new_stringarray
 
         old_len = list%len()
-
-        firstn = max( list%to_current_idxn( first ), 1 )
-        lastn  = min( list%to_current_idxn( last ), old_len )
+        firstn  = list%to_current_idxn( first )
+        lastn   = list%to_current_idxn( last )
+        from    = max( firstn , 1 )
+        to      = min( lastn , old_len )
         
         ! out of bounds indexes won't modify stringlist
-        if ( firstn <= lastn ) then
-            pos = lastn - firstn + 1
+        if ( from <= to ) then
+            pos     = to - from + 1
             new_len = old_len - pos
 
             allocate( new_stringarray(new_len) )
-            do i = 1, firstn - 1
+            do i = 1, from - 1
                 call move( list%stringarray(i), new_stringarray(i) )
             end do
 
             ! capture popped strings
             if ( present(capture_popped) ) then
-                allocate( capture_popped(pos) )
-                inew = 1
-                do i = firstn, lastn
-                    call move( list%stringarray(i), capture_popped(inew) )
-                    inew = inew + 1
-                end do
+                call get_engine( list, shift( first, from - firstn ), &
+                    & shift( last, lastn - to ), capture_popped )
             end if
 
-            inew = firstn
-            do i = lastn + 1, old_len
+            inew = from
+            do i = to + 1, old_len
                 call move( list%stringarray(i), new_stringarray(inew) )
                 inew = inew + 1
             end do
@@ -795,9 +857,7 @@ contains
             end if
         end if
 
-    end subroutine pop_engine
-
-  ! pop:
+    end subroutine pop_drop_engine
 
     !> Version: experimental
     !>
@@ -810,10 +870,10 @@ contains
 
         type(string_type), dimension(:), allocatable    :: popped_strings
 
-        call pop_engine( list, idx, idx, popped_strings )
+        call pop_drop_engine( list, idx, idx, popped_strings )
 
         if ( size(popped_strings) == 1 ) then
-            pop_idx_impl = popped_strings(1)
+            call move( pop_idx_impl, popped_strings(1) )
         end if
 
     end function pop_idx_impl
@@ -829,11 +889,9 @@ contains
 
         type(string_type), dimension(:), allocatable    :: pop_range_idx_impl
 
-        call pop_engine( list, first, last, pop_range_idx_impl )
+        call pop_drop_engine( list, first, last, pop_range_idx_impl )
 
     end function pop_range_idx_impl
-
-  ! drop:
 
     !> Version: experimental
     !>
@@ -843,7 +901,7 @@ contains
         class(stringlist_type)                          :: list
         type(stringlist_index_type), intent(in)         :: idx
 
-        call pop_engine( list, idx, idx )
+        call pop_drop_engine( list, idx, idx )
 
     end subroutine drop_idx_impl
 
@@ -852,11 +910,11 @@ contains
     !> Removes strings present at stringlist_indexes in interval ['first', 'last']
     !> in stringlist 'list'
     !> Doesn't return removed strings
-    subroutine drop_range_idx_impl( list, first, last)
+    subroutine drop_range_idx_impl( list, first, last )
         class(stringlist_type)                          :: list
         type(stringlist_index_type), intent(in)         :: first, last
 
-        call pop_engine( list, first, last )
+        call pop_drop_engine( list, first, last )
 
     end subroutine drop_range_idx_impl
 
