@@ -22,7 +22,7 @@ jobs:
 
     - name: Generate stdlib-fpm package 🔧
       run: |
-        sh ./ci/fpm-deployment.sh
+        bash ./ci/fpm-deployment.sh
 
     - name: Install GFortran
       run: |
