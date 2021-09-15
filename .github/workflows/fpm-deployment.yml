@@ -28,7 +28,7 @@ jobs:
       run: |
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ env.GCC_V }} 100 \
         --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${{ env.GCC_V }} \
-        --slave /usr/bingcov gcov /usr/bin/gcov-${{ env.GCC_V }}
+        --slave /usr/bin/gcov gcov /usr/bin/gcov-${{ env.GCC_V }}
 
     - name: Install fpm latest release
       uses: fortran-lang/setup-fpm@v3

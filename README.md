@@ -179,15 +179,15 @@ make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 
 ### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
 
-Fortran Package Manager (fpm) is a great package manager and build system for Fortran.   
-You can build using provided `fpm.toml`:
+Fortran Package Manager (fpm) is a package manager and build system for Fortran.   
+You can build `stdlib` using provided `fpm.toml`:
 
 ```sh
 git checkout stdlib-fpm
 fpm build --profile release
 ```
 
-To use `stdlib` within your `fpm` project, add the following to your `fpm.toml` file:
+To use `stdlib` within your `fpm` project, add the following lines to your `fpm.toml` file:
 ```toml
 [dependencies]
 stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
