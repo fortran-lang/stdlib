@@ -1,4 +1,5 @@
 
+
 !! Licensing:
 !!
 !! This file is subjec† both to the Fortran Standard Library license, and
@@ -3375,7 +3376,6 @@ contains
     end subroutine string_type_sort_index
 
 
-
     module subroutine char_sort_index( array, index, work, iwork, reverse )
 ! A modification of `char_ord_sort` to return an array of indices that
 ! would perform a stable sort of the `ARRAY` as input, and also sort `ARRAY`
@@ -3402,10 +3402,10 @@ contains
 ! used as scratch memory.
 
         character(len=*), intent(inout)                    :: array(0:)
-        integer(int_size), intent(out)                     :: index(0:)
-        character(len=len(array)), intent(out), optional   :: work(0:)
-        integer(int_size), intent(out), optional           :: iwork(0:)
-        logical, intent(in), optional                      :: reverse
+        integer(int_size), intent(out)           :: index(0:)
+        character(len=len(array)), intent(out), optional            :: work(0:)
+        integer(int_size), intent(out), optional :: iwork(0:)
+        logical, intent(in), optional            :: reverse
 
         integer(int_size) :: array_size, i, stat
         character(len=:), allocatable :: buf(:)
@@ -3425,7 +3425,13 @@ contains
 
 ! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
+            if ( size(work, kind=int_size) < array_size/2 ) then
+                error stop "work array is too small."
+            end if
             if ( present(iwork) ) then
+                if ( size(iwork, kind=int_size) < array_size/2 ) then
+                    error stop "iwork array is too small."
+                endif
                 call merge_sort( array, index, work, iwork )
             else
                 allocate( ibuf(0:array_size/2-1), stat=stat )
@@ -3437,6 +3443,9 @@ contains
                       stat=stat )
             if ( stat /= 0 ) error stop "Allocation of array buffer failed."
             if ( present(iwork) ) then
+                if ( size(iwork, kind=int_size) < array_size/2 ) then
+                    error stop "iwork array is too small."
+                endif
                 call merge_sort( array, index, buf, iwork )
             else
                 allocate( ibuf(0:array_size/2-1), stat=stat )
@@ -3477,10 +3486,10 @@ contains
         pure subroutine insertion_sort( array, index )
 ! Sorts `ARRAY` using an insertion sort, while maintaining consistency in
 ! location of the indices in `INDEX` to the elements of `ARRAY`.
-            character(len=*), intent(inout)  :: array(0:)
+            character(len=*), intent(inout)            :: array(0:)
             integer(int_size), intent(inout) :: index(0:)
 
-            integer(int_size)         :: i, j, key_index
+            integer(int_size) :: i, j, key_index
             character(len=len(array)) :: key
 
             do j=1, size(array, kind=int_size)-1
@@ -3561,7 +3570,7 @@ contains
 ! Consistency of the indices in `index` with the elements of `array`
 ! are maintained.
 
-            character(len=*), intent(inout)  :: array(0:)
+            character(len=*), intent(inout)            :: array(0:)
             integer(int_size), intent(inout) :: index(0:)
 
             character(len=len(array)) :: tmp
@@ -3601,10 +3610,10 @@ contains
 ! worst-case. Consistency of the indices in `index` with the elements of
 ! `array` are maintained.
 
-            character(len=*), intent(inout)          :: array(0:)
-            integer(int_size), intent(inout)         :: index(0:)
-            character(len=len(array)), intent(inout) :: buf(0:)
-            integer(int_size), intent(inout)         :: ibuf(0:)
+            character(len=*), intent(inout)            :: array(0:)
+            integer(int_size), intent(inout) :: index(0:)
+            character(len=len(array)), intent(inout)            :: buf(0:)
+            integer(int_size), intent(inout) :: ibuf(0:)
 
             integer(int_size) :: array_size, finish, min_run, r, r_count, &
                 start
@@ -3694,11 +3703,11 @@ contains
 ! using `BUF` as temporary storage, and stores the merged runs into
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
-            character(len=*), intent(inout)          :: array(0:)
-            integer(int_size), intent(in)            :: mid
-            character(len=len(array)), intent(inout) :: buf(0:)
-            integer(int_size), intent(inout)         :: index(0:)
-            integer(int_size), intent(inout)         :: ibuf(0:)
+            character(len=*), intent(inout)            :: array(0:)
+            integer(int_size), intent(in)    :: mid
+            character(len=len(array)), intent(inout)            :: buf(0:)
+            integer(int_size), intent(inout) :: index(0:)
+            integer(int_size), intent(inout) :: ibuf(0:)
 
             integer(int_size) :: array_len, i, j, k
 
@@ -3759,10 +3768,10 @@ contains
 
         pure subroutine reverse_segment( array, index )
 ! Reverse a segment of an array in place
-            character(len=*), intent(inout)  :: array(0:)
+            character(len=*), intent(inout) :: array(0:)
             integer(int_size), intent(inout) :: index(0:)
 
-            integer(int_size)         :: itemp, lo, hi
+            integer(int_size) :: itemp, lo, hi
             character(len=len(array)) :: temp
 
             lo = 0
@@ -3781,5 +3790,6 @@ contains
         end subroutine reverse_segment
 
     end subroutine char_sort_index
+
 
 end submodule stdlib_sorting_sort_index

@@ -1,4 +1,6 @@
 
+
+
 !! Licensing:
 !!
 !! This file is subject both to the Fortran Standard Library license, and
@@ -431,17 +433,16 @@ module stdlib_sorting
             logical, intent(in), optional :: reverse
         end subroutine string_type_ord_sort
 
-
         module subroutine char_ord_sort( array, work, reverse )
 !! Version: experimental
 !!
-!! `char_ord_sort( array[, work, reverse] )` sorts the input `ARRAY` of type
-!! `CHARACTER(*)` using a hybrid sort based on the `'Rust" sort` algorithm
-!! found in `slice.rs`
-            character(len=*), intent(inout)                  :: array(0:)
+!! `char_ord_sort( array )` sorts the input `ARRAY` of type `character(len=*)`
+!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
+            character(len=*), intent(inout)         :: array(0:)
             character(len=len(array)), intent(out), optional :: work(0:)
-            logical, intent(in), optional                    :: reverse
+            logical, intent(in), optional :: reverse
         end subroutine char_ord_sort
+
 
     end interface ord_sort
 
@@ -548,18 +549,18 @@ module stdlib_sorting
             logical, intent(in), optional :: reverse
         end subroutine string_type_sort
 
-
         pure module subroutine char_sort( array, reverse )
 !! Version: experimental
 !!
-!! `char_sort( array[, reverse] )` sorts the input `ARRAY` of type
-!! `CHARACTER(*)` using a hybrid sort based on the `introsort` of David Musser.
+!! `char_sort( array[, reverse] )` sorts the input `ARRAY` of type `character(len=*)`
+!! using a hybrid sort based on the `introsort` of David Musser.
 !! The algorithm is of order O(N Ln(N)) for all inputs.
 !! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
 !! behavior is small for random data compared to other sorting algorithms.
-            character(len=*), intent(inout) :: array(0:)
-            logical, intent(in), optional   :: reverse
+            character(len=*), intent(inout)         :: array(0:)
+            logical, intent(in), optional :: reverse
         end subroutine char_sort
+
 
     end interface sort
 
@@ -705,22 +706,22 @@ module stdlib_sorting
             logical, intent(in), optional            :: reverse
         end subroutine string_type_sort_index
 
-
         module subroutine char_sort_index( array, index, work, iwork, &
             reverse )
 !! Version: experimental
 !!
 !! `char_sort_index( array, index[, work, iwork, reverse] )` sorts
-!! an input `ARRAY` of type `CHARACTER(*)`
+!! an input `ARRAY` of type `character(len=*)`
 !! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            character(len=*), intent(inout)                  :: array(0:)
-            integer(int_size), intent(out)                   :: index(0:)
-            character(len=len(array)), intent(out), optional :: work(0:)
-            integer(int_size), intent(out), optional         :: iwork(0:)
-            logical, intent(in), optional                    :: reverse
+            character(len=*), intent(inout)                    :: array(0:)
+            integer(int_size), intent(out)           :: index(0:)
+            character(len=len(array)), intent(out), optional            :: work(0:)
+            integer(int_size), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional            :: reverse
         end subroutine char_sort_index
+
 
     end interface sort_index
 

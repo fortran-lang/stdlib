@@ -1,5 +1,6 @@
 
 
+
 !! Licensing:
 !!
 !! This file is subjec† both to the Fortran Standard Library license, and
@@ -179,6 +180,21 @@ contains
              call string_type_increase_sort(array)
             endif
     end subroutine string_type_sort
+    pure module subroutine char_sort( array, reverse )
+            character(len=*), intent(inout) :: array(0:)
+            logical, intent(in), optional            :: reverse
+
+            logical :: reverse_
+
+            reverse_ = .false.
+            if(present(reverse)) reverse_ = reverse
+
+            if(reverse_)then
+             call char_decrease_sort(array)
+            else
+             call char_increase_sort(array)
+            endif
+    end subroutine char_sort
 
 
     pure subroutine int8_increase_sort( array )
@@ -1509,6 +1525,172 @@ contains
     end subroutine string_type_increase_sort
 
 
+    pure subroutine char_increase_sort( array )
+! `char_increase_sort( array )` sorts the input `ARRAY` of type `character(len=*)`
+! using a hybrid sort based on the `introsort` of David Musser. As with
+! `introsort`, `char_increase_sort( array )` is an unstable hybrid comparison
+! algorithm using `quicksort` for the main body of the sort tree,
+! supplemented by `insertion sort` for the outer branches, but if
+! `quicksort` is converging too slowly the algorithm resorts
+! to `heapsort`. The algorithm is of order O(N Ln(N)) for all inputs.
+! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
+! behavior is typically small compared to other sorting algorithms.
+
+        character(len=*), intent(inout) :: array(0:)
+
+        integer(int32) :: depth_limit
+
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+                                                 kind=dp) ) / log(2.0_dp) ), &
+                               kind=int32 )
+        call introsort(array, depth_limit)
+
+    contains
+
+        pure recursive subroutine introsort( array, depth_limit )
+! It devolves to `insertionsort` if the remaining number of elements
+! is fewer than or equal to `INSERT_SIZE`, `heapsort` if the completion
+! of the `quicksort` is too slow as estimated from `DEPTH_LIMIT`,
+! otherwise sorting is done by a `quicksort`.
+            character(len=*), intent(inout) :: array(0:)
+            integer(int32), intent(in)     :: depth_limit
+
+            integer(int_size), parameter :: insert_size = 16_int_size
+            integer(int_size)            :: index
+
+            if ( size(array, kind=int_size) <= insert_size ) then
+                ! May be best at the end of SORT processing the whole array
+                ! See Musser, D.R., “Introspective Sorting and Selection
+                ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
+                ! 983–993 (August 1997).
+
+                call insertion_sort( array )
+            else if ( depth_limit == 0 ) then
+                call heap_sort( array )
+            else
+                call partition( array, index )
+                call introsort( array(0:index-1), depth_limit-1 )
+                call introsort( array(index+1:), depth_limit-1 )
+            end if
+
+        end subroutine introsort
+
+
+        pure subroutine partition( array, index )
+! quicksort partition using median of three.
+            character(len=*), intent(inout) :: array(0:)
+            integer(int_size), intent(out) :: index
+
+            character(len=len(array)) :: u, v, w, x, y
+            integer(int_size) :: i, j
+
+! Determine median of three and exchange it with the end.
+            u = array( 0 )
+            v = array( size(array, kind=int_size)/2-1 )
+            w = array( size(array, kind=int_size)-1 )
+            if ( (u > v) .neqv. (u > w) ) then
+                x = u
+                y = array(0)
+                array(0) = array( size( array, kind=int_size ) - 1 )
+                array( size( array, kind=int_size ) - 1 ) = y
+            else if ( (v < u) .neqv. (v < w) ) then
+                x = v
+                y = array(size( array, kind=int_size )/2-1)
+                array( size( array, kind=int_size )/2-1 ) = &
+                    array( size( array, kind=int_size )-1 )
+                array( size( array, kind=int_size )-1 ) = y
+            else
+                x = w
+            end if
+! Partition the array.
+            i = -1_int_size
+            do j = 0_int_size, size(array, kind=int_size)-2
+                if ( array(j) <= x ) then
+                    i = i + 1
+                    y = array(i)
+                    array(i) = array(j)
+                    array(j) = y
+                end if
+            end do
+            y = array(i+1)
+            array(i+1) = array(size(array, kind=int_size)-1)
+            array(size(array, kind=int_size)-1) = y
+            index = i + 1
+
+        end subroutine partition
+
+        pure subroutine insertion_sort( array )
+! Bog standard insertion sort.
+            character(len=*), intent(inout) :: array(0:)
+
+            integer(int_size) :: i, j
+            character(len=len(array)) :: key
+
+            do j=1_int_size, size(array, kind=int_size)-1
+                key = array(j)
+                i = j - 1
+                do while( i >= 0 )
+                    if ( array(i) <= key ) exit
+                    array(i+1) = array(i)
+                    i = i - 1
+                end do
+                array(i+1) = key
+            end do
+
+        end subroutine insertion_sort
+
+        pure subroutine heap_sort( array )
+! A bog standard heap sort
+            character(len=*), intent(inout) :: array(0:)
+
+            integer(int_size) :: i, heap_size
+            character(len=len(array))   :: y
+
+            heap_size = size( array, kind=int_size )
+! Build the max heap
+            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+                call max_heapify( array, i, heap_size )
+            end do
+            do i = heap_size-1, 1_int_size, -1_int_size
+! Swap the first element with the current final element
+                y = array(0)
+                array(0) = array(i)
+                array(i) = y
+! Sift down using max_heapify
+                call max_heapify( array, 0_int_size, i )
+            end do
+
+        end subroutine heap_sort
+
+        pure recursive subroutine max_heapify( array, i, heap_size )
+! Transform the array into a max heap
+            character(len=*), intent(inout) :: array(0:)
+            integer(int_size), intent(in)  :: i, heap_size
+
+            integer(int_size) :: l, r, largest
+            character(len=len(array))   :: y
+
+            largest = i
+            l = 2_int_size * i + 1_int_size
+            r = l + 1_int_size
+            if ( l < heap_size ) then
+                if ( array(l) > array(largest) ) largest = l
+            end if
+            if ( r < heap_size ) then
+                if ( array(r) > array(largest) ) largest = r
+            end if
+            if ( largest /= i ) then
+                y = array(i)
+                array(i) = array(largest)
+                array(largest) = y
+                call max_heapify( array, largest, heap_size )
+            end if
+
+        end subroutine max_heapify
+
+    end subroutine char_increase_sort
+
+
     pure subroutine int8_decrease_sort( array )
 ! `int8_decrease_sort( array )` sorts the input `ARRAY` of type `integer(int8)`
 ! using a hybrid sort based on the `introsort` of David Musser. As with
@@ -2837,191 +3019,8 @@ contains
     end subroutine string_type_decrease_sort
 
 
-
-    pure module subroutine char_sort( array, reverse )
-        character(len=*), intent(inout) :: array(0:)
-        logical, intent(in), optional   :: reverse
-
-        logical :: reverse_
-
-        reverse_ = .false.
-        if(present(reverse)) reverse_ = reverse
-
-        if(reverse_)then
-            call char_decrease_sort(array)
-        else
-            call char_increase_sort(array)
-        endif
-    end subroutine char_sort
-
-
-
-    pure subroutine char_increase_sort( array )
-! `char_increase_sort( array )` sorts the input `ARRAY` of type `CHARACTER(*)`
-! using a hybrid sort based on the `introsort` of David Musser. As with
-! `introsort`, `char_increase_sort( array )` is an unstable hybrid comparison
-! algorithm using `quicksort` for the main body of the sort tree,
-! supplemented by `insertion sort` for the outer branches, but if
-! `quicksort` is converging too slowly the algorithm resorts
-! to `heapsort`. The algorithm is of order O(N Ln(N)) for all inputs.
-! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
-! behavior is typically small compared to other sorting algorithms.
-
-        character(len=*), intent(inout) :: array(0:)
-
-        integer(int32) :: depth_limit
-
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size ),  &
-                                                 kind=dp) ) / log(2.0_dp) ), &
-                               kind=int32 )
-        call introsort(array, depth_limit)
-
-    contains
-
-        pure recursive subroutine introsort( array, depth_limit )
-! It devolves to `insertionsort` if the remaining number of elements
-! is fewer than or equal to `INSERT_SIZE`, `heapsort` if the completion
-! of the `quicksort` is too slow as estimated from `DEPTH_LIMIT`,
-! otherwise sorting is done by a `quicksort`.
-            character(len=*), intent(inout) :: array(0:)
-            integer(int32), intent(in)      :: depth_limit
-
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
-
-            if ( size(array, kind=int_size) <= insert_size ) then
-                ! May be best at the end of SORT processing the whole array
-                ! See Musser, D.R., “Introspective Sorting and Selection
-                ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
-                ! 983–993 (August 1997).
-
-                call insertion_sort( array )
-            else if ( depth_limit == 0 ) then
-                call heap_sort( array )
-            else
-                call partition( array, index )
-                call introsort( array(0:index-1), depth_limit-1 )
-                call introsort( array(index+1:), depth_limit-1 )
-            end if
-
-        end subroutine introsort
-
-
-        pure subroutine partition( array, index )
-! quicksort partition using median of three.
-            character(len=*), intent(inout) :: array(0:)
-            integer(int_size), intent(out)  :: index
-
-            integer(int_size)         :: i, j
-            character(len=len(array)) :: u, v, w, x, y
-
-! Determine median of three and exchange it with the end.
-            u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
-            if ( (u > v) .neqv. (u > w) ) then
-                x = u
-                y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
-            else if ( (v < u) .neqv. (v < w) ) then
-                x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
-            else
-                x = w
-            end if
-! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
-                if ( array(j) <= x ) then
-                    i = i + 1
-                    y = array(i)
-                    array(i) = array(j)
-                    array(j) = y
-                end if
-            end do
-            y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
-            index = i + 1
-
-        end subroutine partition
-
-        pure subroutine insertion_sort( array )
-! Bog standard insertion sort.
-            character(len=*), intent(inout) :: array(0:)
-
-            integer(int_size)         :: i, j
-            character(len=len(array)) :: key
-
-            do j=1_int_size, size(array, kind=int_size)-1
-                key = array(j)
-                i = j - 1
-                do while( i >= 0 )
-                    if ( array(i) <= key ) exit
-                    array(i+1) = array(i)
-                    i = i - 1
-                end do
-                array(i+1) = key
-            end do
-
-        end subroutine insertion_sort
-
-        pure subroutine heap_sort( array )
-! A bog standard heap sort
-            character(len=*), intent(inout) :: array(0:)
-
-            integer(int_size)         :: i, heap_size
-            character(len=len(array)) :: y
-
-            heap_size = size( array, kind=int_size )
-! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
-                call max_heapify( array, i, heap_size )
-            end do
-            do i = heap_size-1, 1_int_size, -1_int_size
-! Swap the first element with the current final element
-                y = array(0)
-                array(0) = array(i)
-                array(i) = y
-! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
-            end do
-
-        end subroutine heap_sort
-
-        pure recursive subroutine max_heapify( array, i, heap_size )
-! Transform the array into a max heap
-            character(len=*), intent(inout) :: array(0:)
-            integer(int_size), intent(in)   :: i, heap_size
-
-            integer(int_size)         :: l, r, largest
-            character(len=len(array)) :: y
-
-            largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
-            if ( l < heap_size ) then
-                if ( array(l) > array(largest) ) largest = l
-            end if
-            if ( r < heap_size ) then
-                if ( array(r) > array(largest) ) largest = r
-            end if
-            if ( largest /= i ) then
-                y = array(i)
-                array(i) = array(largest)
-                array(largest) = y
-                call max_heapify( array, largest, heap_size )
-            end if
-
-        end subroutine max_heapify
-
-    end subroutine char_increase_sort
     pure subroutine char_decrease_sort( array )
-! `char_decrease_sort( array )` sorts the input `ARRAY` of type `CHARACTER(*)`
+! `char_decrease_sort( array )` sorts the input `ARRAY` of type `character(len=*)`
 ! using a hybrid sort based on the `introsort` of David Musser. As with
 ! `introsort`, `char_decrease_sort( array )` is an unstable hybrid comparison
 ! algorithm using `quicksort` for the main body of the sort tree,
@@ -3035,7 +3034,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size ),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -3048,7 +3047,7 @@ contains
 ! of the `quicksort` is too slow as estimated from `DEPTH_LIMIT`,
 ! otherwise sorting is done by a `quicksort`.
             character(len=*), intent(inout) :: array(0:)
-            integer(int32), intent(in)      :: depth_limit
+            integer(int32), intent(in)     :: depth_limit
 
             integer(int_size), parameter :: insert_size = 16_int_size
             integer(int_size)            :: index
@@ -3074,10 +3073,10 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             character(len=*), intent(inout) :: array(0:)
-            integer(int_size), intent(out)  :: index
+            integer(int_size), intent(out) :: index
 
-            integer(int_size)         :: i, j
             character(len=len(array)) :: u, v, w, x, y
+            integer(int_size) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
@@ -3118,7 +3117,7 @@ contains
 ! Bog standard insertion sort.
             character(len=*), intent(inout) :: array(0:)
 
-            integer(int_size)         :: i, j
+            integer(int_size) :: i, j
             character(len=len(array)) :: key
 
             do j=1_int_size, size(array, kind=int_size)-1
@@ -3138,8 +3137,8 @@ contains
 ! A bog standard heap sort
             character(len=*), intent(inout) :: array(0:)
 
-            integer(int_size)         :: i, heap_size
-            character(len=len(array)) :: y
+            integer(int_size) :: i, heap_size
+            character(len=len(array))   :: y
 
             heap_size = size( array, kind=int_size )
 ! Build the max heap
@@ -3160,10 +3159,10 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             character(len=*), intent(inout) :: array(0:)
-            integer(int_size), intent(in)   :: i, heap_size
+            integer(int_size), intent(in)  :: i, heap_size
 
-            integer(int_size)         :: l, r, largest
-            character(len=len(array)) :: y
+            integer(int_size) :: l, r, largest
+            character(len=len(array))   :: y
 
             largest = i
             l = 2_int_size * i + 1_int_size
@@ -3184,5 +3183,6 @@ contains
         end subroutine max_heapify
 
     end subroutine char_decrease_sort
+
 
 end submodule stdlib_sorting_sort
