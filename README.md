@@ -11,6 +11,7 @@
   - [Supported compilers](#supported-compilers)
   - [Build with CMake](#build-with-cmake)
   - [Build with make](#build-with-make)
+  - [Build with fortran-lang/fpm](#build-with-fortran-langfpm)
 * [Using stdlib in your project](#using-stdlib-in-your-project)
 * [Documentation](#documentation)
 * [Contributing](#contributing)
@@ -176,7 +177,21 @@ You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS
 make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 ```
 
+### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
 
+Fortran Package Manager (fpm) is a package manager and build system for Fortran.   
+You can build `stdlib` using provided `fpm.toml`:
+
+```sh
+git checkout stdlib-fpm
+fpm build --profile release
+```
+
+To use `stdlib` within your `fpm` project, add the following lines to your `fpm.toml` file:
+```toml
+[dependencies]
+stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
+```
 
 ## Using stdlib in your project
 

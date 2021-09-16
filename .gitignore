@@ -39,6 +39,7 @@ API-doc/
 
 # Build directory for out-of-tree builds
 /build
+/stdlib-fpm
 
 # Emacs backup files
 *~
