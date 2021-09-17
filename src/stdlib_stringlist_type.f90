@@ -811,9 +811,9 @@ contains
     !> Version: experimental
     !>
     !> Removes strings present at indexes in interval ['first', 'last']
-    !> Stores captured popped strings in array 'capture_popped'
+    !> Stores popped strings in array 'popped_strings'
     !> No return
-    pure subroutine pop_drop_engine( list, first, last, capture_popped )
+    pure subroutine pop_drop_engine( list, first, last, popped_strings )
         class(stringlist_type), intent(inout)                   :: list
         type(stringlist_index_type), intent(in)                 :: first, last
         type(string_type), allocatable, intent(out), optional   :: popped_strings(:)
@@ -839,9 +839,9 @@ contains
             end do
 
             ! capture popped strings
-            if ( present(capture_popped) ) then
+            if ( present(popped_strings) ) then
                 call get_engine( list, shift( first, from - firstn ), &
-                    & shift( last, lastn - to ), capture_popped )
+                    & shift( last, lastn - to ), popped_strings )
             end if
 
             inew = from
@@ -852,8 +852,8 @@ contains
 
             call move_alloc( new_stringarray, list%stringarray )
         else
-            if ( present(capture_popped) ) then
-                allocate( capture_popped(0) )
+            if ( present(popped_strings) ) then
+                allocate( popped_strings(0) )
             end if
         end if
 
