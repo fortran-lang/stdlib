@@ -22,6 +22,7 @@ contains
         ${t1}$ :: res
 
         real(${k1}$) :: n
+        ${t1}$ :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._${k1}$, ieee_quiet_nan)
@@ -31,10 +32,11 @@ contains
         n = real(size(x, kind = int64), ${k1}$)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function ${RName}$
     #:endfor
@@ -52,6 +54,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -61,10 +64,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function ${RName}$
     #:endfor
@@ -82,14 +86,16 @@ contains
         ${t1}$ :: res
 
         real(${k1}$) :: n
+        ${t1}$ :: center_
 
         n = real(count(mask, kind = int64), ${k1}$)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function ${RName}$
     #:endfor
@@ -107,14 +113,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function ${RName}$
     #:endfor
