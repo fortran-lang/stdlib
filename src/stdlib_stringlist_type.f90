@@ -816,7 +816,7 @@ contains
     pure subroutine pop_drop_engine( list, first, last, capture_popped )
         class(stringlist_type), intent(inout)                   :: list
         type(stringlist_index_type), intent(in)                 :: first, last
-        type(string_type), allocatable, intent(out), optional   :: capture_popped(:)
+        type(string_type), allocatable, intent(out), optional   :: popped_strings(:)
 
         integer                                                 :: firstn, lastn, from, to
         integer                                                 :: i, inew, pos, old_len, new_len
