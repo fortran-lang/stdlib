@@ -356,7 +356,7 @@ Elemental function.
 
 ### Description
 
-`arg` computes the phase angle (radian version) of `complex` scalar in the interval [-π,π]. 
+`arg` computes the phase angle (radian version) of `complex` scalar in the interval (-π,π]. 
 The angles in `theta` are such that `z = abs(z)*exp((0.0, theta))`.
 
 ### Syntax
@@ -399,7 +399,7 @@ Elemental function.
 
 ### Description
 
-`argd` computes the phase angle (degree version) of `complex` scalar in the interval [-180.0,180.0]. 
+`argd` computes the phase angle (degree version) of `complex` scalar in the interval (-180.0,180.0]. 
 The angles in `theta` are such that `z = abs(z)*exp((0.0, theta*π/180.0))`.
 
 ### Syntax
@@ -442,7 +442,7 @@ Elemental function.
 
 ### Description
 
-`argpi` computes the phase angle (circular version) of `complex` scalar in the interval [-1.0,1.0]. 
+`argpi` computes the phase angle (circular version) of `complex` scalar in the interval (-1.0,1.0]. 
 The angles in `theta` are such that `z = abs(z)*exp((0.0, theta*π))`.
 
 ### Syntax
