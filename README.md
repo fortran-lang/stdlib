@@ -125,7 +125,7 @@ cmake -B build
 You can pass additional options to CMake to customize the build.
 Important options are
 
-- `-G Ninja` to use the Ninja backend instead of the default Make backend. This makes it easy to specify compiler flags for the build. Other build backends are available with a similar syntax.
+- `-G Ninja` to use the Ninja backend instead of the default Make backend. Other build backends are available with a similar syntax.
 - `-DCMAKE_INSTALL_PREFIX` is used to provide the install location for the library. If not provided the defaults will depend on your operating system, [see here](https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html). 
 - `-DCMAKE_MAXIMUM_RANK` the maximum array rank procedures should be generated for.
   The default value is chosen as 4.
