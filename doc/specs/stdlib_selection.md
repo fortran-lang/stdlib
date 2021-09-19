@@ -10,9 +10,9 @@ title: Selection Procedures
 
 Suppose you wish to find the value of the kth-smallest entry in an array, or
 the index of that value. While it could be done by sorting the whole array
-using `sort` or `sort_index` from `stdlib_sorting` and then finding the k-th
+using `[[stdlib_sorting(module):sort(interface)]]` or `[[stdlib_sorting(module):sort_index(interface)]]` from `[[stdlib_sorting(module)]]` and then finding the k-th
 entry, that would require O(N x LOG(N)) time. However selection of a single
-entry can be done in O(N) time, so is much faster for large arrays.  This is
+entry can be done in O(N) time, which is much faster for large arrays.  This is
 useful, for example, to quickly find the median of an array, or some other
 percentile.
 
@@ -28,7 +28,7 @@ such that `all(array(1:k) <= array(k)))`  and `all(array(k) <= array((k+1):size(
 The user can optionally specify `left` and `right` indices to constrain the search
 for the kth-smallest value. This can be useful if you have previously called `select`
 to find a smaller or larger rank (that will have led to partial sorting of
-`array`, thus implying some constraint on the location).
+`array`, thus implying some constraints on the location).
 
 * `arg_select` is used to find the index of the kth-smallest entry of an array.
 In this case the input array is not modified, but the user must provide an
@@ -38,7 +38,7 @@ such that `all(array(index(1:k)) <= array(index(k)))` and `all(array(k) <= array
 The user can optionally specify `left` and `right` indices to constrain the search
 for the kth-smallest value. This can be useful if you have previously called `arg_select`
 to find a smaller or larger rank (that will have led to partial sorting of
-`index`, thus implying some constraint on the location).
+`index`, thus implying some constraints on the location).
 
 #### Licensing
 
@@ -47,7 +47,7 @@ License. However components of the library may be based on code with
 additional licensing restrictions. In particular `select` and `arg_select`
 were derived by modifying a matlab implementation of "qselect" by Manolis
 Lourakis, https://www.mathworks.com/matlabcentral/fileexchange/68947-qselect
-Below is the licence of the matlab qselect
+Below is the license of the matlab qselect
 
 Copyright (c) 2018, Manolis Lourakis
 All rights reserved.
@@ -238,7 +238,7 @@ than sorting `a` entirely.
       integer :: k, left, right
 
       array = [3., 2., 7., 4., 5., 1., 4., -1.]
-      indx = (/( k, k = 1, size(array) )/)
+      indx = [( k, k = 1, size(array) )]
 
       k = 2
       call arg_select(array, indx, k, kth_smallest)
@@ -259,7 +259,7 @@ than sorting `a` entirely.
     end program demo_arg_select
 ```
 
-## Comparison with using sort
+## Comparison with using `sort`
 
 The following program compares the timings of `select` and `arg_select` for
 computing the median of an array, vs using `sort` from stdlib.  In theory we
