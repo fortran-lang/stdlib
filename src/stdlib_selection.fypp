@@ -81,7 +81,7 @@ contains
           ${arraytype}$, intent(inout) :: a(:)
               !! Array in which we seek the kth-smallest entry.
               !! On output it will be partially sorted such that
-              !! `maxval(a(1:(k-1))) <= a(k) <= minval(a((k+1):size(a))).`
+              !! `all(a(1:(k-1)) <= a(k)) .and. all(a(k) <= a((k+1):size(a)))`.
           ${inttype}$, intent(in) :: k
               !! We want the kth smallest entry. E.G. `k=1` leads to
               !! `kth_smallest=min(a)`, and `k=size(a)` leads to
@@ -169,7 +169,7 @@ contains
           ${inttype}$, intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! "sorted" such that
+              !! sorted such that
               !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
               !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
           ${inttype}$, intent(in) :: k
