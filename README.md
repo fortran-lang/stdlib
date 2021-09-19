@@ -125,7 +125,7 @@ cmake -B build
 You can pass additional options to CMake to customize the build.
 Important options are
 
-- `-G Ninja` to use the Ninja backend instead of the default Make backend. Other build backends are available with a similar syntax.
+- `-G Ninja` to use the Ninja backend instead of the default Make backend. This makes it easy to specify compiler flags for the build. Other build backends are available with a similar syntax.
 - `-DCMAKE_INSTALL_PREFIX` is used to provide the install location for the library. If not provided the defaults will depend on your operating system, [see here](https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html). 
 - `-DCMAKE_MAXIMUM_RANK` the maximum array rank procedures should be generated for.
   The default value is chosen as 4.
@@ -134,9 +134,10 @@ Important options are
   Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
 
-For example, to configure a build using the Ninja backend and generating procedures up to rank 7, which is installed to your home directory use
+For example, to configure a build using the Ninja backend while specifying compiler flags `FFLAGS`, generating procedures up to rank 7, and installing to your home directory, use
 
 ```sh
+export FFLAGS="-O3 -flto -fPIC"
 cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK:String=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local
 ```
 
@@ -176,6 +177,8 @@ You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS
 ```sh
 make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 ```
+
+You can edit the compiler and its optimization flags by specifying the `FC` and `FFLAGS` variables in Makefile.manual. The default `FFLAGS` does not include any optimization, and you may want to add `-O3 -flto` to its definition. 
 
 ### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
 
