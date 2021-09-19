@@ -131,3 +131,130 @@ program demo_savetxt
     call savetxt('example.dat', x) 
 end program demo_savetxt
 ```
+
+## `disp` - display your data
+
+### Status
+
+Experimental
+
+### Class
+
+Impure subroutine.
+
+### Description
+
+Outputs a `logical/integer/real/complex/character/string_type` scalar or `logical/integer/real/complex` and rank-1/rank-2 array to the screen or a file `unit`.
+
+#### More details
+
+```fortran
+call disp( A(i, j, 2, :, 1:10) [, header, unit, brief] )    !! `i, j, ...` can be determined by `do` loop.
+```
+
+For `complex` type, the output format is `*(A25, 1X)`; 
+For    other types, the output format is `*(A12, 1X)`.
+
+To prevent users from accidentally passing large-length arrays to `disp`, causing unnecessary io blockage:
+1. If the `brief` argument is not specified, `disp` will print **the brief array content with a length of `10*50` by default**.
+2. Specify `brief=.true.`, `disp` will print **the brief array content with a length of `5*5`**;
+3. Specify `brief=.false.`, `disp` will print **`all` the contents of the array**.
+
+### Syntax
+
+`call [[stdlib_io(module):disp(interface)]]([x, header, unit, brief])`  
+
+### Arguments
+
+`x`: Shall be a `logical/integer/real/complex/string_type` scalar or `logical/integer/real/complex` and rank-1/rank-2 array.
+This argument is `intent(in)` and `optional`.
+
+`header`: Shall be a `character(len=*)` scalar. 
+This argument is `intent(in)` and `optional`.
+
+`unit`: Shall be an `integer` scalar linked to an IO stream.
+This argument is `intent(in)` and `optional`.
+
+`brief`: Shall be a `logical` scalar.
+This argument is `intent(in)` and `optional`.  
+Controls an abridged version of the `x` object is printed.
+
+### Output
+
+The result is to print `header` and `x` on the screen (or another output `unit/file`) in this order.  
+If `x` is a rank-1/rank-2 `array` type, the dimension length information of the `array` will also be outputted.
+
+If `disp` is not passed any arguments, a blank line is printed.
+
+If the `x` is present and of `real/complex` type, the data will retain four significant decimal places, like `(g0.4)`.
+
+### Example
+
+```fortran
+program test_io_disp
+    
+    use stdlib_io, only: disp
+
+    real(8) :: r(2, 3)
+    complex :: c(2, 3), c_3d(2, 100, 20)
+    integer :: i(2, 3)
+    logical :: l(10, 10)
+    r = 1.; c = 1.; c_3d = 2.; i = 1; l = .true.
+    r(1, 1) = -1.e-11
+    r(1, 2) = -1.e10
+    c(2, 2) = (-1.e10,-1.e10)
+    c_3d(1,3,1) = (1000, 0.001)
+    c_3d(1,3,2) = (1.e4, 100.)
+    call disp('string', header='disp(string):')
+    call disp('It is a note.')
+    call disp()
+    call disp(r, header='disp(r):')
+    call disp(r(1,:), header='disp(r(1,:))')
+    call disp(c, header='disp(c):')
+    call disp(i, header='disp(i):')
+    call disp(l, header='disp(l):', brief=.true.)
+    call disp(c_3d(:,:,3), header='disp(c_3d(:,:,3)):', brief=.true.)
+    call disp(c_3d(2,:,:), header='disp(c_3d(2,:,:)):', brief=.true.)
+
+end program test_io_disp
+```
+**Results:**
+```fortran
+ disp(string):
+ string
+ It is a note.
+
+ disp(r):
+ [matrix size: 2×3]
+ -0.1000E-10  -0.1000E+11    1.000
+   1.000        1.000        1.000
+ disp(r(1,:))
+ [vector size: 3]
+ -0.1000E-10  -0.1000E+11    1.000
+ disp(c):
+ [matrix size: 2×3]
+            (1.000,0.000)             (1.000,0.000)             (1.000,0.000)
+            (1.000,0.000) (-0.1000E+11,-0.1000E+11)             (1.000,0.000)
+ disp(i):
+ [matrix size: 2×3]
+           1            1            1
+           1            1            1
+ disp(l):
+ [matrix size: 10×10]
+           T            T            T          ...            T
+           T            T            T          ...            T
+           T            T            T          ...            T
+           :            :            :            :            :
+           T            T            T          ...            T
+ disp(c_3d(:,:,3)):
+ [matrix size: 2×100]
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
+ disp(c_3d(2,:,:)):
+ [matrix size: 100×20]
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000)  
+                        :                         :                         :                         :                         :  
+            (2.000,0.000)             (2.000,0.000)             (2.000,0.000)                       ...             (2.000,0.000) 
+```
