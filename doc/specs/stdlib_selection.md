@@ -8,7 +8,7 @@ title: Selection Procedures
 
 ## Overview of selection
 
-Suppose you wish to find the value of the kth-smallest entry in an array, or
+Suppose you wish to find the value of the kth-smallest entry in an array of size N, or
 the index of that value. While it could be done by sorting the whole array
 using `[[stdlib_sorting(module):sort(interface)]]` or 
 `[[stdlib_sorting(module):sort_index(interface)]]` from 
@@ -122,7 +122,7 @@ we need to search.
 
 `right` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
-in `array(1:right)`. If not present it is `size(a)`. This is typically useful if multiple calls
+in `array(1:right)`. If not present it is `size(array)`. This is typically useful if multiple calls
 to `select` are made, because the partial sorting of `array` implies constraints on where
 we need to search.
 
@@ -192,7 +192,7 @@ Generic subroutine.
 the array in which we search for the kth smallest entry.
 
 `indx`: shall be a rank one array with the same size as `array`, containing all integers
-from `1:size(a)` in any order. It is of any of the types:
+from `1:size(array)` in any order. It is of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`. It is an
 `intent(inout)` argument. On return its elements will define a partial sorting of `array(:)` such that:
  `all( array(indx(1:k-1)) <= array(indx(k)) )` and `all(array(indx(k)) <= array(indx(k+1:size(array))))`.
