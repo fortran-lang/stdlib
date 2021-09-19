@@ -10,11 +10,12 @@ title: Selection Procedures
 
 Suppose you wish to find the value of the kth-smallest entry in an array, or
 the index of that value. While it could be done by sorting the whole array
-using `[[stdlib_sorting(module):sort(interface)]]` or `[[stdlib_sorting(module):sort_index(interface)]]` from `[[stdlib_sorting(module)]]` and then finding the k-th
-entry, that would require O(N x LOG(N)) time. However selection of a single
-entry can be done in O(N) time, which is much faster for large arrays.  This is
-useful, for example, to quickly find the median of an array, or some other
-percentile.
+using `[[stdlib_sorting(module):sort(interface)]]` or 
+`[[stdlib_sorting(module):sort_index(interface)]]` from 
+`[[stdlib_sorting(module)]]` and then finding the k-th entry, that would
+require O(N x LOG(N)) time. However selection of a single entry can be done in
+O(N) time, which is much faster for large arrays.  This is useful, for example,
+to quickly find the median of an array, or some other percentile.
 
 The Fortran Standard Library therefore provides a module, `stdlib_selection`,
 which implements selection algorithms.
@@ -86,12 +87,12 @@ Experimental
 
 ##### Description
 
-Returns the k-th smallest value of array `a(:)`, and also partially sorts `a(:)`
-such that `all(a(1:k) <= a(k))`  and `all(a(k) <= a((k+1):size(a)))`
+Returns the k-th smallest value of `array(:)`, and also partially sorts `array(:)`
+such that `all(array(1:k) <= array(k))`  and `all(array(k) <= array((k+1):size(array)))`
 
 ##### Syntax
 
-`call [[stdlib_selection(module):select(interface)]]( a, k, kth_smallest [, left, right ] )`
+`call [[stdlib_selection(module):select(interface)]]( array, k, kth_smallest [, left, right ] )`
 
 ##### Class
 
@@ -99,36 +100,37 @@ Generic subroutine.
 
 ##### Arguments
 
-`a` : shall be a rank one array of any of the types:
+`array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
 `real(sp)`, `real(dp)`, `real(qp)`. It is an `intent(inout)` argument. On input it is
 the array in which we search for the kth smallest entry. On return its elements
 will be partially sorted such that:
- `all( a(1:k-1) <= a(k) )` and `all(a(k) <= a(k+1:size(a)))`.
+ `all( array(1:k-1) <= array(k) )` and `all(array(k) <= array(k+1:size(array)))`.
 
 `k`: shall be a scalar with any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`. It
-is an `intent(in)` argument. We search for the `k`-th smallest entry of `a(:)`.
+is an `intent(in)` argument. We search for the `k`-th smallest entry of `array(:)`.
 
-`kth_smallest`: shall be a scalar with the same type as `a`. On return it contains
-the k-th smallest entry of `a(:)`.
+`kth_smallest`: shall be a scalar with the same type as `array`. On return it contains
+the k-th smallest entry of `array(:)`.
 
 `left` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
-in `a(left:size(a))`. If not present it is 1. This is typically useful if multiple calls
-to `select` are made, because the partial sorting of `a` implies constraints on where
+in `array(left:size(array))`. If not present it is 1. This is typically useful if multiple calls
+to `select` are made, because the partial sorting of `array` implies constraints on where
 we need to search.
 
 `right` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
-in `a(1:right)`. If not present it is `size(a)`. This is typically useful if multiple calls
-to `select` are made, because the partial sorting of `a` implies constraints on where
+in `array(1:right)`. If not present it is `size(a)`. This is typically useful if multiple calls
+to `select` are made, because the partial sorting of `array` implies constraints on where
 we need to search.
 
 ##### Notes
 
-Selection of a single value should have runtime of O(`size(a)`), so it is asymptotically faster
-than sorting `a` entirely.
+Selection of a single value should have runtime of O(`size(array)`), so it is
+asymptotically faster than sorting `array` entirely. The test program at the the
+end of this document shows that is the case.
 
 ##### Example
 
@@ -170,13 +172,13 @@ Experimental
 
 ##### Description
 
-Returns the index of the k-th smallest value of array `a(:)`, and also partially sorts
-the index-array `indx(:)` such that `all(a(indx(1:k)) <= a(indx(k)))`  and
-`all(a(indx(k)) <= a(indx((k+1):size(a))))`
+Returns the index of the k-th smallest value of `array(:)`, and also partially sorts
+the index-array `indx(:)` such that `all(array(indx(1:k)) <= array(indx(k)))`  and
+`all(array(indx(k)) <= array(indx((k+1):size(array))))`
 
 ##### Syntax
 
-`call [[stdlib_selection(module):arg_select(interface)]]( a, indx, k, kth_smallest [, left, right ] )`
+`call [[stdlib_selection(module):arg_select(interface)]]( array, indx, k, kth_smallest [, left, right ] )`
 
 ##### Class
 
@@ -184,44 +186,45 @@ Generic subroutine.
 
 ##### Arguments
 
-`a` : shall be a rank one array of any of the types:
+`array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
 `real(sp)`, `real(dp)`, `real(qp)`. It is an `intent(in)` argument. On input it is
 the array in which we search for the kth smallest entry.
 
-`indx`: shall be a rank one array with the same size as `a`, containing integers
+`indx`: shall be a rank one array with the same size as `array`, containing all integers
 from `1:size(a)` in any order. It is of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`. It is an
-`intent(inout)` argument. On return its elements will define a partial sorting of `a(:)` such that:
- `all( a(indx(1:k-1)) <= a(indx(k)) )` and `all(a(indx(k)) <= a(indx(k+1:size(a))))`.
+`intent(inout)` argument. On return its elements will define a partial sorting of `array(:)` such that:
+ `all( array(indx(1:k-1)) <= array(indx(k)) )` and `all(array(indx(k)) <= array(indx(k+1:size(array))))`.
 
 `k`: shall be a scalar with the same type as `indx`. It is an `intent(in)`
-argument. We search for the `k`-th smallest entry of `a(:)`.
+argument. We search for the `k`-th smallest entry of `array(:)`.
 
 `kth_smallest`: a scalar with the same type as `indx`. It is an `intent(out)` argument,
-and on return it contains the index of the k-th smallest entry of `a(:)`.
+and on return it contains the index of the k-th smallest entry of `array(:)`.
 
 `left` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
-in `a(indx(left:size(a)))`. If not present it is 1. This is typically useful if multiple calls
+in `array(indx(left:size(array)))`. If not present it is 1. This is typically useful if multiple calls
 to `arg_select` are made, because the partial sorting of `indx` implies constraints on where
 we need to search.
 
 `right` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
-in `a(indx(1:right))`. If not present it is `size(a)`. This is typically useful if multiple calls
+in `array(indx(1:right))`. If not present it is `size(array)`. This is typically useful if multiple calls
 to `arg_select` are made, because the reordering of `indx` implies constraints on
 where we need to search.
 
 ##### Notes
 
-`arg_select` does not modify `a`, unlike `select`.
+`arg_select` does not modify `array`, unlike `select`.
 
-While it is essential that that `indx` contains the integers `1:size(a)` (in any
+While it is essential that that `indx` contains the integers `1:size(array)` (in any
 order), the code does not check for this.
 
-Selection of a single value should have runtime of O(`size(a)`), so it is asymptotically faster
-than sorting `a` entirely.
+Selection of a single value should have runtime of O(`size(array)`), so it is
+asymptotically faster than sorting `array` entirely. The test program at the end of
+these documents confirms that is the case.
 
 
 ##### Example
@@ -264,7 +267,7 @@ than sorting `a` entirely.
 The following program compares the timings of `select` and `arg_select` for
 computing the median of an array, vs using `sort` from stdlib.  In theory we
 should see a speed improvement with the selection routines which grows like
-LOG(size(array)).
+LOG(size(`array`)).
 
 ```fortran
   program selection_vs_sort
@@ -347,7 +350,7 @@ LOG(size(array)).
   end program
 ```
 
-The results seem consistent with expectations when the array is large; the program prints:
+The results seem consistent with expectations when the `array` is large; the program prints:
 ```
  select    ; N=           1 ; PASS; Relative-speedup-vs-sort:   2.11456394
  arg_select; N=           1 ; PASS; Relative-speedup-vs-sort:   3.48637915
