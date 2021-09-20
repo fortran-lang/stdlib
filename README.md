@@ -182,7 +182,10 @@ You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS
 make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 ```
 
-You can edit the compiler and its optimization flags by specifying the `FC` and `FFLAGS` variables in Makefile.manual. The default `FFLAGS` does not include any optimization, and you may want to add `-O3 -flto` to its definition. 
+You can also specify the compiler and compiler-flags by setting the ``FC`` and ``FFLAGS`` environmental variables. Among other things, this facilitates use of compiler optimizations that are not specified in the Makefile.manual defaults.
+```sh
+make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4 FC=gfortran FFLAGS="-O3 -flto"
+```
 
 ### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
 
