@@ -11,6 +11,7 @@
   - [Supported compilers](#supported-compilers)
   - [Build with CMake](#build-with-cmake)
   - [Build with make](#build-with-make)
+  - [Build with fortran-lang/fpm](#build-with-fortran-langfpm)
 * [Using stdlib in your project](#using-stdlib-in-your-project)
 * [Documentation](#documentation)
 * [Contributing](#contributing)
@@ -125,7 +126,7 @@ You can pass additional options to CMake to customize the build.
 Important options are
 
 - `-G Ninja` to use the Ninja backend instead of the default Make backend. Other build backends are available with a similar syntax.
-- `-DCMAKE_INSTALL_PREFIX` is used to provide the install location for the library.
+- `-DCMAKE_INSTALL_PREFIX` is used to provide the install location for the library. If not provided the defaults will depend on your operating system, [see here](https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html). 
 - `-DCMAKE_MAXIMUM_RANK` the maximum array rank procedures should be generated for.
   The default value is chosen as 4.
   The maximum is 15 for Fortran 2003 compliant compilers, otherwise 7 for compilers not supporting Fortran 2003 completely yet.
@@ -170,13 +171,27 @@ Alternatively, you can build using provided Makefiles:
 make -f Makefile.manual
 ```
 
-You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS`` environment variable:
+You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS`` environment variable (which can reduce the compilation time):
 
 ```sh
 make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 ```
 
+### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
 
+Fortran Package Manager (fpm) is a package manager and build system for Fortran.   
+You can build `stdlib` using provided `fpm.toml`:
+
+```sh
+git checkout stdlib-fpm
+fpm build --profile release
+```
+
+To use `stdlib` within your `fpm` project, add the following lines to your `fpm.toml` file:
+```toml
+[dependencies]
+stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
+```
 
 ## Using stdlib in your project
 
@@ -196,7 +211,7 @@ target_link_libraries(
 ```
 
 To make the installed stdlib project discoverable add the stdlib directory to the ``CMAKE_PREFIX_PATH``.
-The usual install localtion of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
+The usual install location of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
 
 For non-CMake build systems (like make) you can use the exported pkg-config file by setting ``PKG_CONFIG_PATH`` to include the directory containing the exported pc-file.
 The usual install location of the pc-file is ``$PREFIX/lib/pkgconfig``.

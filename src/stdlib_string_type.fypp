@@ -22,7 +22,7 @@ module stdlib_string_type
     public :: string_type
     public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl
     public :: lgt, lge, llt, lle, char, ichar, iachar
-    public :: to_lower, to_upper, to_title, to_sentence, reverse
+    public :: to_lower, to_upper, to_title, to_sentence, reverse, move
     public :: assignment(=)
     public :: operator(>), operator(>=), operator(<), operator(<=)
     public :: operator(==), operator(/=), operator(//)
@@ -213,6 +213,17 @@ module stdlib_string_type
         module procedure :: verify_string_char
         module procedure :: verify_char_string
     end interface verify
+
+    !> Version: experimental
+    !>
+    !> Moves the allocated character scalar from 'from' to 'to'
+    !> [Specifications](../page/specs/stdlib_string_type.html#move)
+    interface move
+        module procedure :: move_string_string
+        module procedure :: move_string_char
+        module procedure :: move_char_string
+        module procedure :: move_char_char
+    end interface move
 
     !> Lexically compare the order of two character sequences being greater,
     !> The left-hand side, the right-hand side or both character sequences can
@@ -700,6 +711,45 @@ contains
 
     end function verify_char_string
 
+    !> Moves the allocated character scalar from 'from' to 'to'
+    !> No output
+    subroutine move_string_string(from, to)
+        type(string_type), intent(inout) :: from
+        type(string_type), intent(out) :: to
+
+        call move_alloc(from%raw, to%raw)
+
+    end subroutine move_string_string
+
+    !> Moves the allocated character scalar from 'from' to 'to'
+    !> No output
+    subroutine move_string_char(from, to)
+        type(string_type), intent(inout) :: from
+        character(len=:), intent(out), allocatable :: to
+
+        call move_alloc(from%raw, to)
+
+    end subroutine move_string_char
+
+    !> Moves the allocated character scalar from 'from' to 'to'
+    !> No output
+    subroutine move_char_string(from, to)
+        character(len=:), intent(inout), allocatable :: from
+        type(string_type), intent(out) :: to
+
+        call move_alloc(from, to%raw)
+
+    end subroutine move_char_string
+
+    !> Moves the allocated character scalar from 'from' to 'to'
+    !> No output
+    subroutine move_char_char(from, to)
+        character(len=:), intent(inout), allocatable :: from
+        character(len=:), intent(out), allocatable :: to
+
+        call move_alloc(from, to)
+
+    end subroutine move_char_char
 
     !> Compare two character sequences for being greater.
     !> In this version both character sequences are by a string.

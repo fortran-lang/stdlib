@@ -60,6 +60,7 @@ set(SRC
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90
     stdlib_quadrature_gauss.f90
+    stdlib_stringlist_type.f90
     ${outFiles}
 )
 

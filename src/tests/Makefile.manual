@@ -11,3 +11,5 @@ all test clean:
 	$(MAKE) -f Makefile.manual --directory=stats $@
 	$(MAKE) -f Makefile.manual --directory=string $@
 	$(MAKE) -f Makefile.manual --directory=math $@
+	$(MAKE) -f Makefile.manual --directory=stringlist $@
+	$(MAKE) -f Makefile.manual --directory=linalg $@
