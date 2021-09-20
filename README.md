@@ -137,7 +137,7 @@ Important options are
 For example, to configure a build using the Ninja backend while specifying compiler flags `FFLAGS`, generating procedures up to rank 7, and installing to your home directory, use
 
 ```sh
-export FFLAGS="-O3 -flto"
+export FFLAGS="-O3"
 cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK:String=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local
 ```
 
