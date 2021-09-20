@@ -163,7 +163,7 @@ cmake --install build
 
 Now you have a working version of stdlib you can use for your project.
 
-If at some point you wish to recompile stdlib with different options, you might
+If at some point you wish to recompile `stdlib` with different options, you might
 want to delete the `build` folder. This will ensure that cached variables from
 earlier builds do not affect the new build.
 
