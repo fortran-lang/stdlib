@@ -78,12 +78,7 @@ contains
             ${t1}$, intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
 
-            logical :: reverse_
-
-            reverse_ = .false.
-            if(present(reverse)) reverse_ = reverse
-
-            if(reverse_)then
+            if(optval(reverse, .false.))then
              call ${name1}$_decrease_sort(array)
             else
              call ${name1}$_increase_sort(array)
