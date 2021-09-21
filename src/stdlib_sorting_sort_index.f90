@@ -97,10 +97,8 @@ contains
             index(i) = i+1
         end do
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
 ! If necessary allocate buffers to serve as scratch memory.
@@ -133,10 +131,8 @@ contains
             end if
         end if
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
     contains
@@ -512,10 +508,8 @@ contains
             index(i) = i+1
         end do
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
 ! If necessary allocate buffers to serve as scratch memory.
@@ -548,10 +542,8 @@ contains
             end if
         end if
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
     contains
@@ -927,10 +919,8 @@ contains
             index(i) = i+1
         end do
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
 ! If necessary allocate buffers to serve as scratch memory.
@@ -963,10 +953,8 @@ contains
             end if
         end if
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
     contains
@@ -1342,10 +1330,8 @@ contains
             index(i) = i+1
         end do
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
 ! If necessary allocate buffers to serve as scratch memory.
@@ -1378,10 +1364,8 @@ contains
             end if
         end if
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
     contains
@@ -1757,10 +1741,8 @@ contains
             index(i) = i+1
         end do
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
 ! If necessary allocate buffers to serve as scratch memory.
@@ -1793,10 +1775,8 @@ contains
             end if
         end if
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
     contains
@@ -2172,10 +2152,8 @@ contains
             index(i) = i+1
         end do
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
 ! If necessary allocate buffers to serve as scratch memory.
@@ -2208,10 +2186,8 @@ contains
             end if
         end if
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
     contains
@@ -2587,10 +2563,8 @@ contains
             index(i) = i+1
         end do
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
 ! If necessary allocate buffers to serve as scratch memory.
@@ -2623,10 +2597,8 @@ contains
             end if
         end if
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
     contains
@@ -3002,10 +2974,8 @@ contains
             index(i) = i+1
         end do
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
 ! If necessary allocate buffers to serve as scratch memory.
@@ -3038,10 +3008,8 @@ contains
             end if
         end if
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
     contains
@@ -3417,10 +3385,8 @@ contains
             index(i) = i+1
         end do
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
 ! If necessary allocate buffers to serve as scratch memory.
@@ -3454,10 +3420,8 @@ contains
             end if
         end if
 
-        if ( present(reverse) ) then
-            if ( reverse ) then
-                call reverse_segment( array, index )
-            end if
+        if ( optval(reverse, .false.) ) then
+            call reverse_segment( array, index )
         end if
 
     contains

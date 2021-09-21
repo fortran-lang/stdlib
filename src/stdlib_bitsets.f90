@@ -12,6 +12,7 @@ module stdlib_bitsets
            int16,               &
            int32,               &
            int64
+    use stdlib_optval, only : optval
 
     use, intrinsic ::          &
         iso_fortran_env, only: &

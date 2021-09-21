@@ -1,5 +1,6 @@
 module stdlib_stats_distribution_PRNG
     use stdlib_kinds, only: int8, int16, int32, int64
+    use stdlib_optval, only: optval
     use stdlib_error, only: error_stop
     implicit none
     private
@@ -165,8 +166,7 @@ module stdlib_stats_distribution_PRNG
     ! Values are converted from C unsigned integer of 0x9e3779b97f4a7c15,
     ! 0xbf58476d1ce4e5b9, 0x94d049bb133111eb
 
-        if(present(s)) si = s
-        res = si
+        res = optval(s, si)
         si = res + int01
         res = ieor(res, shiftr(res, 30)) * int02
         res = ieor(res, shiftr(res, 27)) * int03

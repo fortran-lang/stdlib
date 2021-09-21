@@ -114,6 +114,8 @@ module stdlib_sorting
         dp,                 &
         qp
 
+    use stdlib_optval, only: optval
+
     use stdlib_string_type, only: string_type, assignment(=), operator(>), &
         operator(>=), operator(<), operator(<=)
 

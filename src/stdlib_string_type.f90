@@ -15,6 +15,7 @@ module stdlib_string_type
     use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, &
        & to_title_ => to_title, to_sentence_ => to_sentence, reverse_ => reverse
     use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
+    use stdlib_optval, only: optval
     implicit none
     private
 
@@ -580,11 +581,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = index(maybe(string), maybe(substring), back)
-        else
-          pos = index(maybe(string), maybe(substring), .false.)
-        end if
+        pos = index(maybe(string), maybe(substring), optval(back, .false.))
 
     end function index_string_string
 
@@ -596,11 +593,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = index(maybe(string), substring, back)
-        else
-          pos = index(maybe(string), substring, .false.)
-        end if
+        pos = index(maybe(string), substring, optval(back, .false.))
 
     end function index_string_char
 
@@ -612,11 +605,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = index(string, maybe(substring), back)
-        else
-          pos = index(string, maybe(substring), .false.)
-        end if
+        pos = index(string, maybe(substring), optval(back, .false.))
 
     end function index_char_string
 
@@ -630,11 +619,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = scan(maybe(string), maybe(set), back)
-        else
-          pos = scan(maybe(string), maybe(set), .false.)
-        end if
+        pos = scan(maybe(string), maybe(set), optval(back, .false.))
 
     end function scan_string_string
 
@@ -646,11 +631,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = scan(maybe(string), set, back)
-        else
-          pos = scan(maybe(string), set, .false.)
-        end if
+        pos = scan(maybe(string), set, optval(back, .false.))
 
     end function scan_string_char
 
@@ -662,11 +643,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = scan(string, maybe(set), back)
-        else
-          pos = scan(string, maybe(set), .false.)
-        end if
+        pos = scan(string, maybe(set), optval(back, .false.))
 
     end function scan_char_string
 
@@ -680,11 +657,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = verify(maybe(string), maybe(set), back)
-        else
-          pos = verify(maybe(string), maybe(set), .false.)
-        end if
+        pos = verify(maybe(string), maybe(set), optval(back, .false.))
 
     end function verify_string_string
 
@@ -697,11 +670,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = verify(maybe(string), set, back)
-        else
-          pos = verify(maybe(string), set, .false.)
-        end if
+        pos = verify(maybe(string), set, optval(back, .false.))
 
     end function verify_string_char
 
@@ -714,11 +683,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = verify(string, maybe(set), back)
-        else
-          pos = verify(string, maybe(set), .false.)
-        end if
+        pos = verify(string, maybe(set), optval(back, .false.))
 
     end function verify_char_string
 

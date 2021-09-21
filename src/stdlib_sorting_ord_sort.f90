@@ -61,12 +61,7 @@ contains
         integer(int8), intent(out), optional :: work(0:)
         logical, intent(in), optional :: reverse
 
-        logical :: reverse_
-
-        reverse_ = .false.
-        if(present(reverse)) reverse_ = reverse
-
-        if (reverse_) then
+        if (optval(reverse, .false.)) then
             call int8_decrease_ord_sort(array, work)
         else
             call int8_increase_ord_sort(array, work)
@@ -78,12 +73,7 @@ contains
         integer(int16), intent(out), optional :: work(0:)
         logical, intent(in), optional :: reverse
 
-        logical :: reverse_
-
-        reverse_ = .false.
-        if(present(reverse)) reverse_ = reverse
-
-        if (reverse_) then
+        if (optval(reverse, .false.)) then
             call int16_decrease_ord_sort(array, work)
         else
             call int16_increase_ord_sort(array, work)
@@ -95,12 +85,7 @@ contains
         integer(int32), intent(out), optional :: work(0:)
         logical, intent(in), optional :: reverse
 
-        logical :: reverse_
-
-        reverse_ = .false.
-        if(present(reverse)) reverse_ = reverse
-
-        if (reverse_) then
+        if (optval(reverse, .false.)) then
             call int32_decrease_ord_sort(array, work)
         else
             call int32_increase_ord_sort(array, work)
@@ -112,12 +97,7 @@ contains
         integer(int64), intent(out), optional :: work(0:)
         logical, intent(in), optional :: reverse
 
-        logical :: reverse_
-
-        reverse_ = .false.
-        if(present(reverse)) reverse_ = reverse
-
-        if (reverse_) then
+        if (optval(reverse, .false.)) then
             call int64_decrease_ord_sort(array, work)
         else
             call int64_increase_ord_sort(array, work)
@@ -129,12 +109,7 @@ contains
         real(sp), intent(out), optional :: work(0:)
         logical, intent(in), optional :: reverse
 
-        logical :: reverse_
-
-        reverse_ = .false.
-        if(present(reverse)) reverse_ = reverse
-
-        if (reverse_) then
+        if (optval(reverse, .false.)) then
             call sp_decrease_ord_sort(array, work)
         else
             call sp_increase_ord_sort(array, work)
@@ -146,12 +121,7 @@ contains
         real(dp), intent(out), optional :: work(0:)
         logical, intent(in), optional :: reverse
 
-        logical :: reverse_
-
-        reverse_ = .false.
-        if(present(reverse)) reverse_ = reverse
-
-        if (reverse_) then
+        if (optval(reverse, .false.)) then
             call dp_decrease_ord_sort(array, work)
         else
             call dp_increase_ord_sort(array, work)
@@ -163,12 +133,7 @@ contains
         real(qp), intent(out), optional :: work(0:)
         logical, intent(in), optional :: reverse
 
-        logical :: reverse_
-
-        reverse_ = .false.
-        if(present(reverse)) reverse_ = reverse
-
-        if (reverse_) then
+        if (optval(reverse, .false.)) then
             call qp_decrease_ord_sort(array, work)
         else
             call qp_increase_ord_sort(array, work)
@@ -180,12 +145,7 @@ contains
         type(string_type), intent(out), optional :: work(0:)
         logical, intent(in), optional :: reverse
 
-        logical :: reverse_
-
-        reverse_ = .false.
-        if(present(reverse)) reverse_ = reverse
-
-        if (reverse_) then
+        if (optval(reverse, .false.)) then
             call string_type_decrease_ord_sort(array, work)
         else
             call string_type_increase_ord_sort(array, work)
@@ -197,12 +157,7 @@ contains
         character(len=len(array)), intent(out), optional :: work(0:)
         logical, intent(in), optional :: reverse
 
-        logical :: reverse_
-
-        reverse_ = .false.
-        if(present(reverse)) reverse_ = reverse
-
-        if (reverse_) then
+        if (optval(reverse, .false.)) then
             call char_decrease_ord_sort(array, work)
         else
             call char_increase_ord_sort(array, work)

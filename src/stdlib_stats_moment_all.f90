@@ -15,6 +15,7 @@ contains
         real(sp) :: res
 
         real(sp) :: n
+        real(sp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._sp, ieee_quiet_nan)
@@ -24,10 +25,11 @@ contains
         n = real(size(x, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_1_rsp_rsp
       module function moment_all_2_rsp_rsp(x, order, center, mask) result(res)
@@ -38,6 +40,7 @@ contains
         real(sp) :: res
 
         real(sp) :: n
+        real(sp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._sp, ieee_quiet_nan)
@@ -47,10 +50,11 @@ contains
         n = real(size(x, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_2_rsp_rsp
       module function moment_all_3_rsp_rsp(x, order, center, mask) result(res)
@@ -61,6 +65,7 @@ contains
         real(sp) :: res
 
         real(sp) :: n
+        real(sp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._sp, ieee_quiet_nan)
@@ -70,10 +75,11 @@ contains
         n = real(size(x, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_3_rsp_rsp
       module function moment_all_4_rsp_rsp(x, order, center, mask) result(res)
@@ -84,6 +90,7 @@ contains
         real(sp) :: res
 
         real(sp) :: n
+        real(sp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._sp, ieee_quiet_nan)
@@ -93,10 +100,11 @@ contains
         n = real(size(x, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_4_rsp_rsp
       module function moment_all_1_rdp_rdp(x, order, center, mask) result(res)
@@ -107,6 +115,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -116,10 +125,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_1_rdp_rdp
       module function moment_all_2_rdp_rdp(x, order, center, mask) result(res)
@@ -130,6 +140,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -139,10 +150,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_2_rdp_rdp
       module function moment_all_3_rdp_rdp(x, order, center, mask) result(res)
@@ -153,6 +165,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -162,10 +175,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_3_rdp_rdp
       module function moment_all_4_rdp_rdp(x, order, center, mask) result(res)
@@ -176,6 +190,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -185,10 +200,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_4_rdp_rdp
       module function moment_all_1_rqp_rqp(x, order, center, mask) result(res)
@@ -199,6 +215,7 @@ contains
         real(qp) :: res
 
         real(qp) :: n
+        real(qp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._qp, ieee_quiet_nan)
@@ -208,10 +225,11 @@ contains
         n = real(size(x, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_1_rqp_rqp
       module function moment_all_2_rqp_rqp(x, order, center, mask) result(res)
@@ -222,6 +240,7 @@ contains
         real(qp) :: res
 
         real(qp) :: n
+        real(qp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._qp, ieee_quiet_nan)
@@ -231,10 +250,11 @@ contains
         n = real(size(x, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_2_rqp_rqp
       module function moment_all_3_rqp_rqp(x, order, center, mask) result(res)
@@ -245,6 +265,7 @@ contains
         real(qp) :: res
 
         real(qp) :: n
+        real(qp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._qp, ieee_quiet_nan)
@@ -254,10 +275,11 @@ contains
         n = real(size(x, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_3_rqp_rqp
       module function moment_all_4_rqp_rqp(x, order, center, mask) result(res)
@@ -268,6 +290,7 @@ contains
         real(qp) :: res
 
         real(qp) :: n
+        real(qp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._qp, ieee_quiet_nan)
@@ -277,10 +300,11 @@ contains
         n = real(size(x, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_4_rqp_rqp
       module function moment_all_1_csp_csp(x, order, center, mask) result(res)
@@ -291,6 +315,7 @@ contains
         complex(sp) :: res
 
         real(sp) :: n
+        complex(sp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._sp, ieee_quiet_nan)
@@ -300,10 +325,11 @@ contains
         n = real(size(x, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_1_csp_csp
       module function moment_all_2_csp_csp(x, order, center, mask) result(res)
@@ -314,6 +340,7 @@ contains
         complex(sp) :: res
 
         real(sp) :: n
+        complex(sp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._sp, ieee_quiet_nan)
@@ -323,10 +350,11 @@ contains
         n = real(size(x, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_2_csp_csp
       module function moment_all_3_csp_csp(x, order, center, mask) result(res)
@@ -337,6 +365,7 @@ contains
         complex(sp) :: res
 
         real(sp) :: n
+        complex(sp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._sp, ieee_quiet_nan)
@@ -346,10 +375,11 @@ contains
         n = real(size(x, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_3_csp_csp
       module function moment_all_4_csp_csp(x, order, center, mask) result(res)
@@ -360,6 +390,7 @@ contains
         complex(sp) :: res
 
         real(sp) :: n
+        complex(sp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._sp, ieee_quiet_nan)
@@ -369,10 +400,11 @@ contains
         n = real(size(x, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_4_csp_csp
       module function moment_all_1_cdp_cdp(x, order, center, mask) result(res)
@@ -383,6 +415,7 @@ contains
         complex(dp) :: res
 
         real(dp) :: n
+        complex(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -392,10 +425,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_1_cdp_cdp
       module function moment_all_2_cdp_cdp(x, order, center, mask) result(res)
@@ -406,6 +440,7 @@ contains
         complex(dp) :: res
 
         real(dp) :: n
+        complex(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -415,10 +450,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_2_cdp_cdp
       module function moment_all_3_cdp_cdp(x, order, center, mask) result(res)
@@ -429,6 +465,7 @@ contains
         complex(dp) :: res
 
         real(dp) :: n
+        complex(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -438,10 +475,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_3_cdp_cdp
       module function moment_all_4_cdp_cdp(x, order, center, mask) result(res)
@@ -452,6 +490,7 @@ contains
         complex(dp) :: res
 
         real(dp) :: n
+        complex(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -461,10 +500,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_4_cdp_cdp
       module function moment_all_1_cqp_cqp(x, order, center, mask) result(res)
@@ -475,6 +515,7 @@ contains
         complex(qp) :: res
 
         real(qp) :: n
+        complex(qp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._qp, ieee_quiet_nan)
@@ -484,10 +525,11 @@ contains
         n = real(size(x, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_1_cqp_cqp
       module function moment_all_2_cqp_cqp(x, order, center, mask) result(res)
@@ -498,6 +540,7 @@ contains
         complex(qp) :: res
 
         real(qp) :: n
+        complex(qp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._qp, ieee_quiet_nan)
@@ -507,10 +550,11 @@ contains
         n = real(size(x, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_2_cqp_cqp
       module function moment_all_3_cqp_cqp(x, order, center, mask) result(res)
@@ -521,6 +565,7 @@ contains
         complex(qp) :: res
 
         real(qp) :: n
+        complex(qp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._qp, ieee_quiet_nan)
@@ -530,10 +575,11 @@ contains
         n = real(size(x, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_3_cqp_cqp
       module function moment_all_4_cqp_cqp(x, order, center, mask) result(res)
@@ -544,6 +590,7 @@ contains
         complex(qp) :: res
 
         real(qp) :: n
+        complex(qp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._qp, ieee_quiet_nan)
@@ -553,10 +600,11 @@ contains
         n = real(size(x, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order) / n
+          center_ = center
         else
-         res = sum((x - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((x - center_)**order) / n
 
       end function moment_all_4_cqp_cqp
 
@@ -569,6 +617,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -578,10 +627,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_1_iint8_dp
       module function moment_all_2_iint8_dp(x, order, center, mask) result(res)
@@ -592,6 +642,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -601,10 +652,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_2_iint8_dp
       module function moment_all_3_iint8_dp(x, order, center, mask) result(res)
@@ -615,6 +667,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -624,10 +677,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_3_iint8_dp
       module function moment_all_4_iint8_dp(x, order, center, mask) result(res)
@@ -638,6 +692,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -647,10 +702,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_4_iint8_dp
       module function moment_all_1_iint16_dp(x, order, center, mask) result(res)
@@ -661,6 +717,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -670,10 +727,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_1_iint16_dp
       module function moment_all_2_iint16_dp(x, order, center, mask) result(res)
@@ -684,6 +742,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -693,10 +752,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_2_iint16_dp
       module function moment_all_3_iint16_dp(x, order, center, mask) result(res)
@@ -707,6 +767,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -716,10 +777,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_3_iint16_dp
       module function moment_all_4_iint16_dp(x, order, center, mask) result(res)
@@ -730,6 +792,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -739,10 +802,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_4_iint16_dp
       module function moment_all_1_iint32_dp(x, order, center, mask) result(res)
@@ -753,6 +817,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -762,10 +827,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_1_iint32_dp
       module function moment_all_2_iint32_dp(x, order, center, mask) result(res)
@@ -776,6 +842,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -785,10 +852,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_2_iint32_dp
       module function moment_all_3_iint32_dp(x, order, center, mask) result(res)
@@ -799,6 +867,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -808,10 +877,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_3_iint32_dp
       module function moment_all_4_iint32_dp(x, order, center, mask) result(res)
@@ -822,6 +892,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -831,10 +902,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_4_iint32_dp
       module function moment_all_1_iint64_dp(x, order, center, mask) result(res)
@@ -845,6 +917,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -854,10 +927,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_1_iint64_dp
       module function moment_all_2_iint64_dp(x, order, center, mask) result(res)
@@ -868,6 +942,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -877,10 +952,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_2_iint64_dp
       module function moment_all_3_iint64_dp(x, order, center, mask) result(res)
@@ -891,6 +967,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -900,10 +977,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_3_iint64_dp
       module function moment_all_4_iint64_dp(x, order, center, mask) result(res)
@@ -914,6 +992,7 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         if (.not.optval(mask, .true.)) then
           res = ieee_value(1._dp, ieee_quiet_nan)
@@ -923,10 +1002,11 @@ contains
         n = real(size(x, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x))**order) / n
+          center_ = mean(x)
         end if
+        res = sum((real(x, dp) - center_)**order) / n
 
       end function moment_all_4_iint64_dp
 
@@ -939,14 +1019,16 @@ contains
         real(sp) :: res
 
         real(sp) :: n
+        real(sp) :: center_
 
         n = real(count(mask, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_1_rsp_rsp
       module function moment_mask_all_2_rsp_rsp(x, order, center, mask) result(res)
@@ -957,14 +1039,16 @@ contains
         real(sp) :: res
 
         real(sp) :: n
+        real(sp) :: center_
 
         n = real(count(mask, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_2_rsp_rsp
       module function moment_mask_all_3_rsp_rsp(x, order, center, mask) result(res)
@@ -975,14 +1059,16 @@ contains
         real(sp) :: res
 
         real(sp) :: n
+        real(sp) :: center_
 
         n = real(count(mask, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_3_rsp_rsp
       module function moment_mask_all_4_rsp_rsp(x, order, center, mask) result(res)
@@ -993,14 +1079,16 @@ contains
         real(sp) :: res
 
         real(sp) :: n
+        real(sp) :: center_
 
         n = real(count(mask, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_4_rsp_rsp
       module function moment_mask_all_1_rdp_rdp(x, order, center, mask) result(res)
@@ -1011,14 +1099,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_1_rdp_rdp
       module function moment_mask_all_2_rdp_rdp(x, order, center, mask) result(res)
@@ -1029,14 +1119,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_2_rdp_rdp
       module function moment_mask_all_3_rdp_rdp(x, order, center, mask) result(res)
@@ -1047,14 +1139,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_3_rdp_rdp
       module function moment_mask_all_4_rdp_rdp(x, order, center, mask) result(res)
@@ -1065,14 +1159,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_4_rdp_rdp
       module function moment_mask_all_1_rqp_rqp(x, order, center, mask) result(res)
@@ -1083,14 +1179,16 @@ contains
         real(qp) :: res
 
         real(qp) :: n
+        real(qp) :: center_
 
         n = real(count(mask, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_1_rqp_rqp
       module function moment_mask_all_2_rqp_rqp(x, order, center, mask) result(res)
@@ -1101,14 +1199,16 @@ contains
         real(qp) :: res
 
         real(qp) :: n
+        real(qp) :: center_
 
         n = real(count(mask, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_2_rqp_rqp
       module function moment_mask_all_3_rqp_rqp(x, order, center, mask) result(res)
@@ -1119,14 +1219,16 @@ contains
         real(qp) :: res
 
         real(qp) :: n
+        real(qp) :: center_
 
         n = real(count(mask, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_3_rqp_rqp
       module function moment_mask_all_4_rqp_rqp(x, order, center, mask) result(res)
@@ -1137,14 +1239,16 @@ contains
         real(qp) :: res
 
         real(qp) :: n
+        real(qp) :: center_
 
         n = real(count(mask, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_4_rqp_rqp
       module function moment_mask_all_1_csp_csp(x, order, center, mask) result(res)
@@ -1155,14 +1259,16 @@ contains
         complex(sp) :: res
 
         real(sp) :: n
+        complex(sp) :: center_
 
         n = real(count(mask, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_1_csp_csp
       module function moment_mask_all_2_csp_csp(x, order, center, mask) result(res)
@@ -1173,14 +1279,16 @@ contains
         complex(sp) :: res
 
         real(sp) :: n
+        complex(sp) :: center_
 
         n = real(count(mask, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_2_csp_csp
       module function moment_mask_all_3_csp_csp(x, order, center, mask) result(res)
@@ -1191,14 +1299,16 @@ contains
         complex(sp) :: res
 
         real(sp) :: n
+        complex(sp) :: center_
 
         n = real(count(mask, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_3_csp_csp
       module function moment_mask_all_4_csp_csp(x, order, center, mask) result(res)
@@ -1209,14 +1319,16 @@ contains
         complex(sp) :: res
 
         real(sp) :: n
+        complex(sp) :: center_
 
         n = real(count(mask, kind = int64), sp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_4_csp_csp
       module function moment_mask_all_1_cdp_cdp(x, order, center, mask) result(res)
@@ -1227,14 +1339,16 @@ contains
         complex(dp) :: res
 
         real(dp) :: n
+        complex(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_1_cdp_cdp
       module function moment_mask_all_2_cdp_cdp(x, order, center, mask) result(res)
@@ -1245,14 +1359,16 @@ contains
         complex(dp) :: res
 
         real(dp) :: n
+        complex(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_2_cdp_cdp
       module function moment_mask_all_3_cdp_cdp(x, order, center, mask) result(res)
@@ -1263,14 +1379,16 @@ contains
         complex(dp) :: res
 
         real(dp) :: n
+        complex(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_3_cdp_cdp
       module function moment_mask_all_4_cdp_cdp(x, order, center, mask) result(res)
@@ -1281,14 +1399,16 @@ contains
         complex(dp) :: res
 
         real(dp) :: n
+        complex(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_4_cdp_cdp
       module function moment_mask_all_1_cqp_cqp(x, order, center, mask) result(res)
@@ -1299,14 +1419,16 @@ contains
         complex(qp) :: res
 
         real(qp) :: n
+        complex(qp) :: center_
 
         n = real(count(mask, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_1_cqp_cqp
       module function moment_mask_all_2_cqp_cqp(x, order, center, mask) result(res)
@@ -1317,14 +1439,16 @@ contains
         complex(qp) :: res
 
         real(qp) :: n
+        complex(qp) :: center_
 
         n = real(count(mask, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_2_cqp_cqp
       module function moment_mask_all_3_cqp_cqp(x, order, center, mask) result(res)
@@ -1335,14 +1459,16 @@ contains
         complex(qp) :: res
 
         real(qp) :: n
+        complex(qp) :: center_
 
         n = real(count(mask, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_3_cqp_cqp
       module function moment_mask_all_4_cqp_cqp(x, order, center, mask) result(res)
@@ -1353,14 +1479,16 @@ contains
         complex(qp) :: res
 
         real(qp) :: n
+        complex(qp) :: center_
 
         n = real(count(mask, kind = int64), qp)
 
         if (present(center)) then
-         res = sum((x - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((x - mean(x, mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((x - center_)**order, mask) / n
 
       end function moment_mask_all_4_cqp_cqp
 
@@ -1373,14 +1501,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_1_iint8_dp
       module function moment_mask_all_2_iint8_dp(x, order, center, mask) result(res)
@@ -1391,14 +1521,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_2_iint8_dp
       module function moment_mask_all_3_iint8_dp(x, order, center, mask) result(res)
@@ -1409,14 +1541,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_3_iint8_dp
       module function moment_mask_all_4_iint8_dp(x, order, center, mask) result(res)
@@ -1427,14 +1561,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_4_iint8_dp
       module function moment_mask_all_1_iint16_dp(x, order, center, mask) result(res)
@@ -1445,14 +1581,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_1_iint16_dp
       module function moment_mask_all_2_iint16_dp(x, order, center, mask) result(res)
@@ -1463,14 +1601,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_2_iint16_dp
       module function moment_mask_all_3_iint16_dp(x, order, center, mask) result(res)
@@ -1481,14 +1621,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_3_iint16_dp
       module function moment_mask_all_4_iint16_dp(x, order, center, mask) result(res)
@@ -1499,14 +1641,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_4_iint16_dp
       module function moment_mask_all_1_iint32_dp(x, order, center, mask) result(res)
@@ -1517,14 +1661,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_1_iint32_dp
       module function moment_mask_all_2_iint32_dp(x, order, center, mask) result(res)
@@ -1535,14 +1681,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_2_iint32_dp
       module function moment_mask_all_3_iint32_dp(x, order, center, mask) result(res)
@@ -1553,14 +1701,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_3_iint32_dp
       module function moment_mask_all_4_iint32_dp(x, order, center, mask) result(res)
@@ -1571,14 +1721,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_4_iint32_dp
       module function moment_mask_all_1_iint64_dp(x, order, center, mask) result(res)
@@ -1589,14 +1741,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_1_iint64_dp
       module function moment_mask_all_2_iint64_dp(x, order, center, mask) result(res)
@@ -1607,14 +1761,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_2_iint64_dp
       module function moment_mask_all_3_iint64_dp(x, order, center, mask) result(res)
@@ -1625,14 +1781,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_3_iint64_dp
       module function moment_mask_all_4_iint64_dp(x, order, center, mask) result(res)
@@ -1643,14 +1801,16 @@ contains
         real(dp) :: res
 
         real(dp) :: n
+        real(dp) :: center_
 
         n = real(count(mask, kind = int64), dp)
 
         if (present(center)) then
-         res = sum((real(x, dp) - center)**order, mask) / n
+          center_ = center
         else
-         res = sum((real(x, dp) - mean(x,mask))**order, mask) / n
+          center_ = mean(x, mask)
         end if
+        res = sum((real(x, dp) - center_)**order, mask) / n
 
       end function moment_mask_all_4_iint64_dp
 

@@ -64,12 +64,7 @@ contains
             integer(int8), intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
 
-            logical :: reverse_
-
-            reverse_ = .false.
-            if(present(reverse)) reverse_ = reverse
-
-            if(reverse_)then
+            if(optval(reverse, .false.))then
              call int8_decrease_sort(array)
             else
              call int8_increase_sort(array)
@@ -79,12 +74,7 @@ contains
             integer(int16), intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
 
-            logical :: reverse_
-
-            reverse_ = .false.
-            if(present(reverse)) reverse_ = reverse
-
-            if(reverse_)then
+            if(optval(reverse, .false.))then
              call int16_decrease_sort(array)
             else
              call int16_increase_sort(array)
@@ -94,12 +84,7 @@ contains
             integer(int32), intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
 
-            logical :: reverse_
-
-            reverse_ = .false.
-            if(present(reverse)) reverse_ = reverse
-
-            if(reverse_)then
+            if(optval(reverse, .false.))then
              call int32_decrease_sort(array)
             else
              call int32_increase_sort(array)
@@ -109,12 +94,7 @@ contains
             integer(int64), intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
 
-            logical :: reverse_
-
-            reverse_ = .false.
-            if(present(reverse)) reverse_ = reverse
-
-            if(reverse_)then
+            if(optval(reverse, .false.))then
              call int64_decrease_sort(array)
             else
              call int64_increase_sort(array)
@@ -124,12 +104,7 @@ contains
             real(sp), intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
 
-            logical :: reverse_
-
-            reverse_ = .false.
-            if(present(reverse)) reverse_ = reverse
-
-            if(reverse_)then
+            if(optval(reverse, .false.))then
              call sp_decrease_sort(array)
             else
              call sp_increase_sort(array)
@@ -139,12 +114,7 @@ contains
             real(dp), intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
 
-            logical :: reverse_
-
-            reverse_ = .false.
-            if(present(reverse)) reverse_ = reverse
-
-            if(reverse_)then
+            if(optval(reverse, .false.))then
              call dp_decrease_sort(array)
             else
              call dp_increase_sort(array)
@@ -154,12 +124,7 @@ contains
             real(qp), intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
 
-            logical :: reverse_
-
-            reverse_ = .false.
-            if(present(reverse)) reverse_ = reverse
-
-            if(reverse_)then
+            if(optval(reverse, .false.))then
              call qp_decrease_sort(array)
             else
              call qp_increase_sort(array)
@@ -169,12 +134,7 @@ contains
             type(string_type), intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
 
-            logical :: reverse_
-
-            reverse_ = .false.
-            if(present(reverse)) reverse_ = reverse
-
-            if(reverse_)then
+            if(optval(reverse, .false.))then
              call string_type_decrease_sort(array)
             else
              call string_type_increase_sort(array)
@@ -184,12 +144,7 @@ contains
             character(len=*), intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
 
-            logical :: reverse_
-
-            reverse_ = .false.
-            if(present(reverse)) reverse_ = reverse
-
-            if(reverse_)then
+            if(optval(reverse, .false.))then
              call char_decrease_sort(array)
             else
              call char_increase_sort(array)

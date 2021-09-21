@@ -935,23 +935,13 @@ contains
             end if
         end do
 
-        if ( present(advance) ) then
-            read( unit,            &
-                  advance=advance, &
-                  FMT='(A1)',      &
-                  err=997,         &
-                  end=998,         &
-                  iostat=ierr,     &
-                  iomsg=message ) char
-        else
-            read( unit,          &
-                  advance='YES', &
-                  FMT='(A1)',    &
-                  err=997,       &
-                  end=998,       &
-                  iostat=ierr,   &
-                  iomsg=message ) char
-        end if
+        read( unit,                           &
+              advance=optval(advance, 'YES'), &
+              FMT='(A1)',                     &
+              err=997,                        &
+              end=998,                        &
+              iostat=ierr,                    &
+              iomsg=message ) char
         if ( char == '0' ) then
             call self % clear( bits-bit )
         else if ( char == '1' ) then
@@ -1203,21 +1193,12 @@ contains
         end if
 
 
-        if ( present( advance ) ) then
-            write( unit,            &
-                   FMT='(A)',       &
-                   advance=advance, &
-                   iostat=ierr,     &
-                   iomsg=message )  &
-                   string
-        else
-            write( unit,           &
-                   FMT='(A)',      &
-                   advance='YES',  &
-                   iostat=ierr,    &
-                   iomsg=message ) &
-                   string
-        end if
+        write( unit,                           &
+               FMT='(A)',                      &
+               advance=optval(advance, 'YES'), &
+               iostat=ierr,                    &
+               iomsg=message )                 &
+               string
         if (ierr /= 0) then
             call error_handler( 'Failure on a WRITE statement for UNIT.', &
                                 write_failure, status, module_name, procedure )
