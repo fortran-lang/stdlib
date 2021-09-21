@@ -67,7 +67,7 @@ program demo_shuffle
 end program demo_shuffle
 ```
 
-## `uniform_distribution_rvs` - uniform distribution random variates
+## `rvs_uniform` - uniform distribution random variates
 
 ### Status
 
@@ -89,11 +89,11 @@ For `complex` type, the real part and imaginary part are independent of each oth
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_uniform(module):uniform_distribution_rvs(interface)]]([[loc,] scale] [[[,array_size]]])`
+`result = [[stdlib_stats_distribution_uniform(module):rvs_uniform(interface)]]([[loc,] scale] [[[,array_size]]])`
 
 ### Class
 
-Elemental function.
+Elemental function (without the third argument).
 
 ### Arguments
 
@@ -114,7 +114,7 @@ The result is a scalar or a rank one array, with size of `array_size`, of type `
 ```fortran
 program demo_uniform_rvs
     use stdlib_stats_distribution_PRNG, only:random_seed
-    use stdlib_stats_distribution_uniform, only:uni=> uniform_distribution_rvs
+    use stdlib_stats_distribution_uniform, only:uni=> rvs_uniform
 
     implicit none
     complex :: loc, scale
@@ -193,7 +193,7 @@ program demo_uniform_rvs
 end program demo_uniform_rvs
 ```
 
-## `uniform_distribution_pdf` - Uniform probability density function
+## `pdf_uniform` - Uniform probability density function
 
 ### Status
 
@@ -236,9 +236,8 @@ The result is a scalar or an array, with a shape conformable to arguments, of ty
 ```fortran
 program demo_uniform_pdf
     use stdlib_stats_distribution_PRNG, only : random_seed
-    use stdlib_stats_distribution_uniform,  only :                              &
-                                           uni_pdf => uniform_distribution_pdf, &
-                                           uni => uniform_distribution_rvs
+    use stdlib_stats_distribution_uniform,  only : uni_pdf => pdf_uniform,     &
+                                                   uni => rvs_uniform
 
     implicit none
     complex :: loc, scale
@@ -287,7 +286,7 @@ end program demo_uniform_pdf
 
 ```
 
-## `uniform_distribution_cdf` - Uniform cumulative distribution function
+## `cdf_uniform` - Uniform cumulative distribution function
 
 ### Status
 
@@ -305,7 +304,7 @@ F(x) = (x%re - loc%re)(x%im - loc%im) / (scale%re * scale%im); for complex unifo
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_uniform(module):uniform_distribution_cdf(interface)]](x, loc, scale)`
+`result = [[stdlib_stats_distribution_uniform(module):cdf_uniform(interface)]](x, loc, scale)`
 
 ### Class
 
@@ -330,9 +329,8 @@ The result is a scalar or an array, with a shape conformable to arguments, of ty
 ```fortran
 program demo_uniform_cdf
     use stdlib_stats_distribution_PRNG, only : random_seed
-    use stdlib_stats_distribution_uniform, only :                               &
-	                                      uni_cdf => uniform_distribution_cdf,  &
-                                          uni => uniform_distribution_rvs,      &
+    use stdlib_stats_distribution_uniform, only : uni_cdf => cdf_uniform,      &
+                                                  uni => rvs_uniform
 
     implicit none
     real :: x(3,4,5), a(3,4,5), b(3,4,5)
@@ -359,15 +357,15 @@ program demo_uniform_cdf
     x = reshape(uni(-1.0,2.0,60),[3,4,5]) ! uniform random variates array
     print *, uni_cdf(x,a,b)        ! cumulative array in [-1.0, 1.0]
 
-!0.161520004  0.553248405  0.986900032  0.942091405  0.114239901  0.780188501  &
-! 0.854656875  0.464386612  0.284466714  0.748768032  0.301834047  0.337008357  &
-!0.568843365  0.596165061  0.180993259  0.614166319  0.214835495 7.98164606E-02 &
-!0.641274095  0.607101977  0.701139212  0.230517209  1.97925568E-02 0.857982159 &
-!0.712761045  0.139202654  0.361759573  0.796536088  0.356012046  0.197665215   &
-!9.80764329E-02 0.781620383  0.595349193  0.125651121  0.957528770  0.942990601 &
-!0.259489566  7.84273148E-02  0.779313922  0.317909390  0.559013724 0.421358019 &
-!0.878484428  7.67416358E-02  0.298707575  0.693327367  0.146014273 0.102338850 &
-!0.855926156  0.250811368  0.300751567  0.110186398  0.502883077  0.738479793   &
+!0.161520004  0.553248405  0.986900032  0.942091405  0.114239901  0.780188501  
+! 0.854656875  0.464386612  0.284466714  0.748768032  0.301834047  0.337008357  
+!0.568843365  0.596165061  0.180993259  0.614166319  0.214835495 7.98164606E-02 
+!0.641274095  0.607101977  0.701139212  0.230517209  1.97925568E-02 0.857982159 
+!0.712761045  0.139202654  0.361759573  0.796536088  0.356012046  0.197665215   
+!9.80764329E-02 0.781620383  0.595349193  0.125651121  0.957528770  0.942990601 
+!0.259489566  7.84273148E-02  0.779313922  0.317909390  0.559013724 0.421358019 
+!0.878484428  7.67416358E-02  0.298707575  0.693327367  0.146014273 0.102338850 
+!0.855926156  0.250811368  0.300751567  0.110186398  0.502883077  0.738479793   
 !0.764856219  0.294822574  1.90783739E-02 0.631218433 0.752170086  0.196848959
 
     loc = (0., 0.)
