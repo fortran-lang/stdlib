@@ -26,18 +26,18 @@ module stdlib_stats_distribution_uniform
     !! ([Specification](../page/specs/stdlib_stats_distribution_uniform.html#
     !! description))
 
-        module procedure unif_dist_rvs_0_rsp                 ! 0 dummy variable
+        module procedure rvs_unif_0_rsp                 ! 0 dummy variable
 
         #:for k1, t1 in ALL_KINDS_TYPES
-        module procedure unif_dist_rvs_1_${t1[0]}$${k1}$     ! 1 dummy variable
+        module procedure rvs_unif_1_${t1[0]}$${k1}$     ! 1 dummy variable
         #:endfor
 
         #:for k1, t1 in ALL_KINDS_TYPES
-        module procedure unif_dist_rvs_${t1[0]}$${k1}$       ! 2 dummy variables
+        module procedure rvs_unif_${t1[0]}$${k1}$       ! 2 dummy variables
         #:endfor
 
         #:for k1, t1 in ALL_KINDS_TYPES
-        module procedure unif_dist_rvs_array_${t1[0]}$${k1}$ ! 3 dummy variables
+        module procedure rvs_unif_array_${t1[0]}$${k1}$ ! 3 dummy variables
         #:endfor
     end interface rvs_uniform
 
@@ -51,7 +51,7 @@ module stdlib_stats_distribution_uniform
     !! description))
 
         #:for k1, t1 in ALL_KINDS_TYPES
-        module procedure unif_dist_pdf_${t1[0]}$${k1}$
+        module procedure pdf_unif_${t1[0]}$${k1}$
         #:endfor
     end interface pdf_uniform
 
@@ -65,7 +65,7 @@ module stdlib_stats_distribution_uniform
     !! description))
     !!
         #:for k1, t1 in ALL_KINDS_TYPES
-        module procedure unif_dist_cdf_${t1[0]}$${k1}$
+        module procedure cdf_unif_${t1[0]}$${k1}$
         #:endfor
     end interface cdf_uniform
 
@@ -92,7 +92,7 @@ contains
 
 
     #:for k1, t1 in INT_KINDS_TYPES
-    impure elemental function unif_dist_rvs_1_${t1[0]}$${k1}$(scale) result(res)
+    impure elemental function rvs_unif_1_${t1[0]}$${k1}$(scale) result(res)
     !
     ! Uniformly distributed integer in [0, scale]
     ! Bitmask with rejection
@@ -104,7 +104,7 @@ contains
         ${t1}$ ::  res, u, mask
         integer :: zeros, bits_left, bits
 
-        if(scale <= 0_${k1}$) call error_stop("Error(unif_dist_rvs_1): Uniform"&
+        if(scale <= 0_${k1}$) call error_stop("Error(rvs_unif_1): Uniform"     &
             //" distribution scale parameter must be positive")
         zeros = leadz(scale)
         bits = bit_size(scale) - zeros
@@ -122,32 +122,31 @@ contains
                 bits_left = bits_left - bits
             end do L2
         end do L1
-    end function unif_dist_rvs_1_${t1[0]}$${k1}$
+    end function rvs_unif_1_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in INT_KINDS_TYPES
-    impure elemental function unif_dist_rvs_${t1[0]}$${k1}$(loc, scale)        &
-        result( res )
+    impure elemental function rvs_unif_${t1[0]}$${k1}$(loc, scale) result(res)
     !
     ! Uniformly distributed integer in [loc, loc + scale]
     !
         ${t1}$, intent(in) :: loc, scale
         ${t1}$  ::  res
 
-        if(scale <= 0_${k1}$) call error_stop("Error(unif_dist_rvs): Uniform"  &
+        if(scale <= 0_${k1}$) call error_stop("Error(rvs_unif): Uniform"       &
             //" distribution scale parameter must be positive")
-        res = loc + unif_dist_rvs_1_${t1[0]}$${k1}$(scale)
-    end function unif_dist_rvs_${t1[0]}$${k1}$
+        res = loc + rvs_unif_1_${t1[0]}$${k1}$(scale)
+    end function rvs_unif_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function unif_dist_rvs_0_${t1[0]}$${k1}$( ) result(res)
+    impure elemental function rvs_unif_0_${t1[0]}$${k1}$( ) result(res)
     !
     ! Uniformly distributed float in [0,1]
     ! Based on the paper by Frederic Goualard, "Generating Random Floating-
@@ -159,50 +158,48 @@ contains
 
         tmp = shiftr(dist_rand(INT_ONE), 11)        ! Get random from [0,2^53-1]
         res = real(tmp * MESENNE_NUMBER, kind = ${k1}$) ! convert to [0,1]
-    end function unif_dist_rvs_0_${t1[0]}$${k1}$
+    end function rvs_unif_0_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function unif_dist_rvs_1_${t1[0]}$${k1}$(scale) result(res)
+    impure elemental function rvs_unif_1_${t1[0]}$${k1}$(scale) result(res)
     !
     ! Uniformly distributed float in [0, scale]
     !
         ${t1}$, intent(in) :: scale
         ${t1}$  ::  res
 
-        if(scale == 0._${k1}$) call error_stop("Error(unif_dist_rvs_1): "      &
+        if(scale == 0._${k1}$) call error_stop("Error(rvs_unif_1): "           &
             //"Uniform distribution scale parameter must be non-zero")
-        res = scale * unif_dist_rvs_0_${t1[0]}$${k1}$( )
-    end function unif_dist_rvs_1_${t1[0]}$${k1}$
+        res = scale * rvs_unif_0_${t1[0]}$${k1}$( )
+    end function rvs_unif_1_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function unif_dist_rvs_${t1[0]}$${k1}$(loc, scale)        &
-        result(res)
+    impure elemental function rvs_unif_${t1[0]}$${k1}$(loc, scale) result(res)
     !
     ! Uniformly distributed float in [loc, loc + scale]
     !
         ${t1}$, intent(in) :: loc, scale
         ${t1}$  ::  res
 
-        if(scale == 0._${k1}$) call error_stop("Error(unif_dist_rvs): "        &
+        if(scale == 0._${k1}$) call error_stop("Error(rvs_unif): "             &
            //"Uniform distribution scale parameter must be non-zero")
-        res = loc + scale * unif_dist_rvs_0_${t1[0]}$${k1}$( )
-    end function unif_dist_rvs_${t1[0]}$${k1}$
+        res = loc + scale * rvs_unif_0_${t1[0]}$${k1}$( )
+    end function rvs_unif_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    impure elemental function unif_dist_rvs_1_${t1[0]}$${k1}$(scale)           &
-        result(res)
+    impure elemental function rvs_unif_1_${t1[0]}$${k1}$(scale) result(res)
     !
     ! Uniformly distributed complex in [(0,0i), (scale, i(scale))]
     ! The real part and imaginary part are independent of each other, so that
@@ -212,9 +209,9 @@ contains
         ${t1}$ :: res
         real(${k1}$) :: r1, tr, ti
 
-        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(uni_dist_"&
-           //"rvs_1): Uniform distribution scale parameter must be non-zero")
-        r1 = unif_dist_rvs_0_r${k1}$( )
+        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(rvs_uni_" &
+           //"1): Uniform distribution scale parameter must be non-zero")
+        r1 = rvs_unif_0_r${k1}$( )
         if(scale % re == 0.0_${k1}$) then
             ti = scale % im * r1
             tr = 0.0_${k1}$
@@ -223,19 +220,18 @@ contains
             ti = 0.0_${k1}$
         else
             tr = scale % re * r1
-            r1 = unif_dist_rvs_0_r${k1}$( )
+            r1 = rvs_unif_0_r${k1}$( )
             ti = scale % im * r1
         end if
         res = cmplx(tr, ti, kind=${k1}$)
-    end function unif_dist_rvs_1_${t1[0]}$${k1}$
+    end function rvs_unif_1_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    impure elemental function unif_dist_rvs_${t1[0]}$${k1}$(loc, scale)        &
-        result(res)
+    impure elemental function rvs_unif_${t1[0]}$${k1}$(loc, scale) result(res)
     !
     ! Uniformly distributed complex in [(loc,iloc), (loc + scale, i(loc +
     ! scale))].
@@ -247,9 +243,9 @@ contains
         ${t1}$ :: res
         real(${k1}$) :: r1, tr, ti
 
-        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(uni_dist_"&
-            //"rvs): Uniform distribution scale parameter must be non-zero")
-        r1 = unif_dist_rvs_0_r${k1}$( )
+        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(rvs_uni_" &
+            //"): Uniform distribution scale parameter must be non-zero")
+        r1 = rvs_unif_0_r${k1}$( )
         if(scale % re == 0.0_${k1}$) then
             tr = loc % re
             ti = loc % im + scale % im * r1
@@ -258,19 +254,18 @@ contains
             ti = loc % im
         else
             tr = loc % re + scale % re * r1
-            r1 = unif_dist_rvs_0_r${k1}$( )
+            r1 = rvs_unif_0_r${k1}$( )
             ti = loc % im + scale % im * r1
         end if
         res = cmplx(tr, ti, kind=${k1}$)
-    end function unif_dist_rvs_${t1[0]}$${k1}$
+    end function rvs_unif_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in INT_KINDS_TYPES
-    function unif_dist_rvs_array_${t1[0]}$${k1}$(loc, scale, array_size)       &
-        result(res)
+    function rvs_unif_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
 
         integer, intent(in) :: array_size
         ${t1}$, intent(in) :: loc, scale
@@ -278,7 +273,7 @@ contains
         ${t1}$ :: u, mask, nn
         integer :: i, zeros, bits_left, bits
 
-        if(scale == 0_${k1}$) call error_stop("Error(unif_dist_rvs_array): "   &
+        if(scale == 0_${k1}$) call error_stop("Error(rvs_unif_array): "        &
             //"Uniform distribution scale parameter must be non-zero")
         zeros = leadz(scale)
         bits = bit_size(scale) - zeros
@@ -299,15 +294,14 @@ contains
             end do L1
             res(i) = loc + nn
         end do
-    end function unif_dist_rvs_array_${t1[0]}$${k1}$
+    end function rvs_unif_array_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    function unif_dist_rvs_array_${t1[0]}$${k1}$(loc, scale, array_size)       &
-        result(res)
+    function rvs_unif_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
 
         integer, intent(in) :: array_size
         ${t1}$, intent(in) :: loc, scale
@@ -317,22 +311,21 @@ contains
         integer :: i
 
 
-        if(scale == 0._${k1}$) call error_stop("Error(unif_dist_rvs_array):"   &
+        if(scale == 0._${k1}$) call error_stop("Error(rvs_unif_array):"        &
            //" Uniform distribution scale parameter must be non-zero")
         do i = 1, array_size
             tmp = shiftr(dist_rand(INT_ONE), 11)
             t = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
             res(i) = loc + scale * t
         end do
-    end function unif_dist_rvs_array_${t1[0]}$${k1}$
+    end function rvs_unif_array_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    function unif_dist_rvs_array_${t1[0]}$${k1}$(loc, scale, array_size)       &
-        result(res)
+    function rvs_unif_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
 
         integer, intent(in) :: array_size
         ${t1}$, intent(in) :: loc, scale
@@ -342,9 +335,8 @@ contains
         integer :: i
 
 
-        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(unif_dist"&
-           //"_rvs_array): Uniform distribution scale parameter must be "      &
-           //"non-zero")
+        if(scale == (0.0_${k1}$, 0.0_${k1}$)) call error_stop("Error(rvs_unif" &
+           //"_array): Uniform distribution scale parameter must be non-zero")
         do i = 1, array_size
             tmp = shiftr(dist_rand(INT_ONE), 11)
             r1 = real(tmp * MESENNE_NUMBER, kind = ${k1}$)
@@ -362,14 +354,14 @@ contains
             end if
             res(i) = cmplx(tr, ti, kind=${k1}$)
         end do
-    end function unif_dist_rvs_array_${t1[0]}$${k1}$
+    end function rvs_unif_array_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in INT_KINDS_TYPES
-    elemental function unif_dist_pdf_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    elemental function pdf_unif_${t1[0]}$${k1}$(x, loc, scale) result(res)
 
         ${t1}$, intent(in) :: x, loc, scale
         real :: res
@@ -381,14 +373,14 @@ contains
         else
             res = 1. / (scale + 1_${k1}$)
         end if
-    end function unif_dist_pdf_${t1[0]}$${k1}$
+    end function pdf_unif_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    elemental function unif_dist_pdf_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    elemental function pdf_unif_${t1[0]}$${k1}$(x, loc, scale) result(res)
 
         ${t1}$, intent(in) :: x, loc, scale
         real :: res
@@ -400,14 +392,14 @@ contains
         else
             res = 1.0 / scale
         end if
-    end function unif_dist_pdf_${t1[0]}$${k1}$
+    end function pdf_unif_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    elemental function unif_dist_pdf_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    elemental function pdf_unif_${t1[0]}$${k1}$(x, loc, scale) result(res)
 
         ${t1}$, intent(in) :: x, loc, scale
         real :: res
@@ -422,14 +414,14 @@ contains
         else
             res = 0.0
         end if
-    end function unif_dist_pdf_${t1[0]}$${k1}$
+    end function pdf_unif_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in INT_KINDS_TYPES
-    elemental function unif_dist_cdf_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    elemental function cdf_unif_${t1[0]}$${k1}$(x, loc, scale) result(res)
 
         ${t1}$, intent(in) :: x, loc, scale
         real :: res
@@ -443,14 +435,14 @@ contains
         else
             res = 1.0
         end if
-    end function unif_dist_cdf_${t1[0]}$${k1}$
+    end function cdf_unif_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    elemental function unif_dist_cdf_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    elemental function cdf_unif_${t1[0]}$${k1}$(x, loc, scale) result(res)
 
         ${t1}$, intent(in) :: x, loc, scale
         real :: res
@@ -464,14 +456,14 @@ contains
         else
             res = 1.0
         end if
-    end function unif_dist_cdf_${t1[0]}$${k1}$
+    end function cdf_unif_${t1[0]}$${k1}$
 
     #:endfor
 
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    elemental function unif_dist_cdf_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    elemental function cdf_unif_${t1[0]}$${k1}$(x, loc, scale) result(res)
 
         ${t1}$, intent(in) :: x, loc, scale
         real :: res
@@ -498,7 +490,7 @@ contains
         else if(r2 .and. i2)then
              res = 1.0
         end if
-    end function unif_dist_cdf_${t1[0]}$${k1}$
+    end function cdf_unif_${t1[0]}$${k1}$
 
     #:endfor
 
