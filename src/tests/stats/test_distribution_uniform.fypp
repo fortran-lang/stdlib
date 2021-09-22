@@ -115,7 +115,8 @@ contains
           #:elif k1 == "int64"
           ${t1}$, parameter :: ans(15) = [76, 45, 43, 75, 76, 15, 25, 24, 114, &
                                           113, 94, 29, 109, 93, 89]
-          #:elif t1[0] == "r"   #! for real type
+          #:elif t1[0] == "r"
+                #! for real type
           ${t1}$, parameter :: ans(15) =                                       &
                           [0.914826628538749186958511927514337003_${k1}$,      &
                           0.367330098664966409049981166390352882_${k1}$,       &
@@ -132,7 +133,8 @@ contains
                           -0.901660046141515819639877804547722917_${k1}$,      &
                           -0.164090614147737401395943379611708224_${k1}$,      &
                           -0.333886718190384290672056977200554684_${k1}$]
-          #:else        #! for complex type
+          #:else
+                #! for complex type
           ${t1}$, parameter :: ans(15) =                                       &
                              [(0.457413314269374593479255963757168502_${k1}$,  &
                                0.183665049332483204524990583195176441_${k1}$), &
@@ -169,11 +171,14 @@ contains
           print *, "Test rvs_uniform_${t1[0]}$${k1}$"
           seed = 258147369; k = 5
           call random_seed(seed, get)
-          #:if t1[0] == "i"          #! for integer type
+          #:if t1[0] == "i"
+              #! for integer type
           loc = 15_${k1}$; scale = 100_${k1}$
-          #:elif t1[0] == "r"        #! for real type
+          #:elif t1[0] == "r"
+              #! for real type
           loc = -1.0_${k1}$; scale = 2.0_${k1}$
-          #:else                     #! for complex type
+          #:else
+              #! for complex type
           loc = (-0.5_${k1}$,0.5_${k1}$); scale = (1.0_${k1}$, 1.0_${k1}$)
           #:endif
           do i = 1, 5
@@ -183,10 +188,12 @@ contains
               res(i) = uni_rvs(loc, scale)        ! 2 dummies
           end do
           res(11:15) = uni_rvs(loc, scale, k)     ! 3 dummies
-          #:if t1[0] == "i"           #! for integer type
+          #:if t1[0] == "i"
+              #! for integer type
           call check(all(res == ans),                                          &
               msg="rvs_uniform_${t1[0]}$${k1}$ failed", warn=warn)
-          #:else                      #! for real and complex types
+          #:else
+              #! for real and complex types
           call check(all(abs(res - ans) < ${k1}$tol),                          &
               msg="rvs_uniform_${t1[0]}$${k1}$ failed", warn=warn)
           #:endif
@@ -201,22 +208,28 @@ contains
         ${t1}$ :: x1, x2(3,4), loc, scale
         integer :: seed, get, i
         real :: res(3,5)
-        #:if t1[0] == "i"        #! for integer type
+        #:if t1[0] == "i"
+            #! for integer type
         real, parameter :: ans(15) = [(1.96078438E-02, i=1,15)]
-        #:elif t1[0] == "r"      #! for real type
+        #:elif t1[0] == "r"
+            #! for real type
         real, parameter :: ans(15) = [(0.5, i=1,15)]
-        #:else                   #! for complex type
+        #:else
+            #! for complex type
         real, parameter :: ans(15) = [(1.0, i=1,15)]
         #:endif
 
         print *, "Test pdf_uniform_${t1[0]}$${k1}$"
         seed = 147258639
         call random_seed(seed, get)
-        #:if t1[0] == "i"        #! for integer type
+        #:if t1[0] == "i"
+            #! for integer type
         loc = 0_${k1}$; scale = 50_${k1}$
-        #:elif t1[0] == "r"      #! for real type
+        #:elif t1[0] == "r"
+            #! for real type
         loc = 0.0_${k1}$; scale = 2.0_${k1}$
-        #:else                   #! for complex type
+        #:else
+            #! for complex type
         loc = (-0.5_${k1}$, 0.5_${k1}$); scale = (1.0_${k1}$, 1.0_${k1}$)
         #:endif
         x1 = uni_rvs(loc, scale)
@@ -260,13 +273,15 @@ contains
                                       0.851485133, 0.623762369, 5.94059415E-02,&
                                       0.693069279, 0.544554472, 0.207920790,   &
                                       0.306930691, 0.356435657, 0.128712878]
-        #:elif t1[0] == "r"       #! for real type
+        #:elif t1[0] == "r"
+            #! for real type
         real, parameter :: ans(15) = [0.170192942, 0.170192942, 0.170192942,   &
                                       0.276106149, 0.754930079, 0.406620681,   &
                                       0.187742814, 0.651605546, 0.934733927,   &
                                       0.151271492, 0.987674534, 0.130533904,   &
                                       0.106271908, 9.27578658E-02, 0.203399420]
-        #:else                    #! for complex type
+        #:else
+            #! for complex type
         real, parameter :: ans(15) = [4.69913185E-02, 4.69913185E-02,          &
                                       4.69913185E-02, 0.306970179, 0.122334257,&
                                       0.141398594, 0.128925011, 9.85755492E-03,&
@@ -278,11 +293,14 @@ contains
         print *, "Test cdf_uniform_${t1[0]}$${k1}$"
         seed = 369147258
         call random_seed(seed, get)
-        #:if t1[0] == "i"      #! for integer type
+        #:if t1[0] == "i"
+            #! for integer type
         loc = 14_${k1}$; scale = 100_${k1}$
-        #:elif t1[0] == "r"    #! for real type
+        #:elif t1[0] == "r"
+            #! for real type
         loc = 0.0_${k1}$; scale = 2.0_${k1}$
-        #:else                 #! for complex type
+        #:else
+            #! for complex type
         loc = (-0.5_${k1}$, -0.5_${k1}$); scale = (1.0_${k1}$, 1.0_${k1}$)
         #:endif
         x1 = uni_rvs(loc, scale)
