@@ -60,41 +60,42 @@ module stdlib_stringlist_type
 
         procedure, public :: len                            =>  length_list
 
-        procedure         :: to_future_at_idxn              =>  convert_to_future_at_idxn
+        procedure         :: to_future_at_idxn
 
-        procedure         :: to_current_idxn                =>  convert_to_current_idxn
+        procedure         :: to_current_idxn
 
-        procedure         :: insert_at_char_idx             =>  insert_at_char_idx_wrap
-        procedure         :: insert_at_string_idx           =>  insert_at_string_idx_wrap
-        procedure         :: insert_at_stringlist_idx       =>  insert_at_stringlist_idx_wrap
-        procedure         :: insert_at_chararray_idx        =>  insert_at_chararray_idx_wrap
-        procedure         :: insert_at_stringarray_idx      =>  insert_at_stringarray_idx_wrap
+        procedure         :: insert_at_char_idx
+        procedure         :: insert_at_string_idx
+        procedure         :: insert_at_stringlist_idx
+        procedure         :: insert_at_chararray_idx
+        procedure         :: insert_at_stringarray_idx
         generic, public   :: insert_at                      =>  insert_at_char_idx,             &
                                                                 insert_at_string_idx,           &
                                                                 insert_at_stringlist_idx,       &
                                                                 insert_at_chararray_idx,        &
                                                                 insert_at_stringarray_idx
 
-        procedure         :: insert_before_string_int       =>  insert_before_string_int_impl
-        procedure         :: insert_before_stringlist_int   =>  insert_before_stringlist_int_impl
-        procedure         :: insert_before_chararray_int    =>  insert_before_chararray_int_impl
-        procedure         :: insert_before_stringarray_int  =>  insert_before_stringarray_int_impl
+        procedure         :: insert_before_string_int
+        procedure         :: insert_before_stringlist_int
+        procedure         :: insert_before_chararray_int
+        procedure         :: insert_before_stringarray_int
         generic           :: insert_before                  =>  insert_before_string_int,       &
                                                                 insert_before_stringlist_int,   &
                                                                 insert_before_chararray_int,    &
                                                                 insert_before_stringarray_int
 
-        procedure         :: get_idx                        =>  get_idx_impl
-        procedure         :: get_range_idx                  =>  get_range_idx_impl
+        procedure         :: get_idx
+        procedure         :: get_range_idx
         generic, public   :: get                            =>  get_idx,                        &
                                                                 get_range_idx
         
-        procedure         :: pop_index               ! or `pop_idx`, if you wish
-        procedure         :: pop_range_index         ! or `pop_range_idx`, if you wish
-        generic, public   :: pop                =>  pop_index, pop_range_index
+        procedure         :: pop_idx
+        procedure         :: pop_range_idx
+        generic, public   :: pop                            =>  pop_idx,                        &
+                                                                pop_range_idx
 
-        procedure         :: drop_idx                       =>  drop_idx_impl
-        procedure         :: drop_range_idx                 =>  drop_range_idx_impl
+        procedure         :: drop_idx
+        procedure         :: drop_range_idx
         generic, public   :: drop                           =>  drop_idx,                       &
                                                                 drop_range_idx
 
@@ -510,15 +511,15 @@ contains
     !> Converts a forward index OR a backward index to an integer index at
     !> which the new element will be present post insertion (i.e. in future)
     !> Returns an integer
-    pure integer function convert_to_future_at_idxn( list, idx )
+    pure integer function to_future_at_idxn( list, idx )
         !> Not a part of public API
         class(stringlist_type), intent(in)      :: list
         type(stringlist_index_type), intent(in) :: idx
 
         ! Formula: merge( fidx( x ) - ( list_head - 1 ), len - bidx( x ) + ( list_tail - 1 ) + 2, ... )
-        convert_to_future_at_idxn = merge( idx%offset, list%len() - idx%offset + 2 , idx%forward )
+        to_future_at_idxn = merge( idx%offset, list%len() - idx%offset + 2 , idx%forward )
 
-    end function convert_to_future_at_idxn
+    end function to_future_at_idxn
 
   ! to_current_idxn:
 
@@ -526,15 +527,15 @@ contains
     !>
     !> Converts a forward index OR backward index to its equivalent integer index idxn
     !> Returns an integer
-    pure integer function convert_to_current_idxn( list, idx )
+    pure integer function to_current_idxn( list, idx )
         !> Not a part of public API
         class(stringlist_type), intent(in)      :: list
         type(stringlist_index_type), intent(in) :: idx
 
         ! Formula: merge( fidx( x ) - ( list_head - 1 ), len + 1 - bidx( x ) + ( list_tail - 1 ), ... )
-        convert_to_current_idxn = merge( idx%offset, list%len() - idx%offset + 1, idx%forward )
+        to_current_idxn = merge( idx%offset, list%len() - idx%offset + 1, idx%forward )
 
-    end function convert_to_current_idxn
+    end function to_current_idxn
 
   ! insert_at:
 
@@ -542,66 +543,66 @@ contains
     !>
     !> Inserts character scalar 'string' AT stringlist_index 'idx' in stringlist 'list'
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_at_char_idx_wrap( list, idx, string )
+    pure subroutine insert_at_char_idx( list, idx, string )
         class(stringlist_type), intent(inout)       :: list
         type(stringlist_index_type), intent(in)     :: idx
         character(len=*), intent(in)                :: string
 
         call list%insert_at( idx, string_type( string ) )
 
-    end subroutine insert_at_char_idx_wrap
+    end subroutine insert_at_char_idx
 
     !> Version: experimental
     !>
     !> Inserts string 'string' AT stringlist_index 'idx' in stringlist 'list'
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_at_string_idx_wrap( list, idx, string )
+    pure subroutine insert_at_string_idx( list, idx, string )
         class(stringlist_type), intent(inout)       :: list
         type(stringlist_index_type), intent(in)     :: idx
         type(string_type), intent(in)               :: string
 
         call list%insert_before( list%to_future_at_idxn( idx ), string )
 
-    end subroutine insert_at_string_idx_wrap
+    end subroutine insert_at_string_idx
 
     !> Version: experimental
     !>
     !> Inserts stringlist 'slist' AT stringlist_index 'idx' in stringlist 'list'
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_at_stringlist_idx_wrap( list, idx, slist )
+    pure subroutine insert_at_stringlist_idx( list, idx, slist )
         class(stringlist_type), intent(inout)       :: list
         type(stringlist_index_type), intent(in)     :: idx
         type(stringlist_type), intent(in)           :: slist
 
         call list%insert_before( list%to_future_at_idxn( idx ), slist )
 
-    end subroutine insert_at_stringlist_idx_wrap
+    end subroutine insert_at_stringlist_idx
 
     !> Version: experimental
     !>
     !> Inserts chararray 'carray' AT stringlist_index 'idx' in stringlist 'list'
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_at_chararray_idx_wrap( list, idx, carray )
+    pure subroutine insert_at_chararray_idx( list, idx, carray )
         class(stringlist_type), intent(inout)       :: list
         type(stringlist_index_type), intent(in)     :: idx
         character(len=*), dimension(:), intent(in)  :: carray
 
         call list%insert_before( list%to_future_at_idxn( idx ), carray )
 
-    end subroutine insert_at_chararray_idx_wrap
+    end subroutine insert_at_chararray_idx
 
     !> Version: experimental
     !>
     !> Inserts stringarray 'sarray' AT stringlist_index 'idx' in stringlist 'list'
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_at_stringarray_idx_wrap( list, idx, sarray )
+    pure subroutine insert_at_stringarray_idx( list, idx, sarray )
         class(stringlist_type), intent(inout)       :: list
         type(stringlist_index_type), intent(in)     :: idx
         type(string_type), dimension(:), intent(in) :: sarray
 
         call list%insert_before( list%to_future_at_idxn( idx ), sarray )
 
-    end subroutine insert_at_stringarray_idx_wrap
+    end subroutine insert_at_stringarray_idx
 
     !> Version: experimental
     !>
@@ -643,7 +644,7 @@ contains
     !>
     !> Inserts string 'string' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_before_string_int_impl( list, idxn, string )
+    pure subroutine insert_before_string_int( list, idxn, string )
         !> Not a part of public API
         class(stringlist_type), intent(inout)           :: list
         integer, intent(in)                             :: idxn
@@ -656,13 +657,13 @@ contains
 
         list%stringarray(work_idxn) = string
 
-    end subroutine insert_before_string_int_impl
+    end subroutine insert_before_string_int
 
     !> Version: experimental
     !>
     !> Inserts stringlist 'slist' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_before_stringlist_int_impl( list, idxn, slist )
+    pure subroutine insert_before_stringlist_int( list, idxn, slist )
         !> Not a part of public API
         class(stringlist_type), intent(inout)           :: list
         integer, intent(in)                             :: idxn
@@ -691,13 +692,13 @@ contains
             end do
         end if
 
-    end subroutine insert_before_stringlist_int_impl
+    end subroutine insert_before_stringlist_int
 
     !> Version: experimental
     !>
     !> Inserts chararray 'carray' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_before_chararray_int_impl( list, idxn, carray )
+    pure subroutine insert_before_chararray_int( list, idxn, carray )
         !> Not a part of public API
         class(stringlist_type), intent(inout)        :: list
         integer, intent(in)                          :: idxn
@@ -714,13 +715,13 @@ contains
             list%stringarray(idxnew) = string_type( carray(i) )
         end do
 
-    end subroutine insert_before_chararray_int_impl
+    end subroutine insert_before_chararray_int
 
     !> Version: experimental
     !>
     !> Inserts stringarray 'sarray' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_before_stringarray_int_impl( list, idxn, sarray )
+    pure subroutine insert_before_stringarray_int( list, idxn, sarray )
         !> Not a part of public API
         class(stringlist_type), intent(inout)        :: list
         integer, intent(in)                          :: idxn
@@ -737,7 +738,7 @@ contains
             list%stringarray(idxnew) = sarray(i)
         end do
 
-    end subroutine insert_before_stringarray_int_impl
+    end subroutine insert_before_stringarray_int
 
   ! get:
 
@@ -777,35 +778,35 @@ contains
     !>
     !> Returns the string present at stringlist_index 'idx' in stringlist 'list'
     !> Returns string_type instance
-    pure function get_idx_impl( list, idx )
+    pure function get_idx( list, idx )
         class(stringlist_type), intent(in)                      :: list
         type(stringlist_index_type), intent(in)                 :: idx
 
-        type(string_type)                                       :: get_idx_impl
+        type(string_type)                                       :: get_idx
         type(string_type), allocatable                          :: capture_strings(:)
 
         call get_engine( list, idx, idx, capture_strings )
 
         ! if index 'idx' is out of bounds, returns an empty string
         if ( size(capture_strings) == 1 ) then
-            call move( capture_strings(1), get_idx_impl )
+            call move( capture_strings(1), get_idx )
         end if
 
-    end function get_idx_impl
+    end function get_idx
 
     !> Version: experimental
     !>
     !> Returns strings present at stringlist_indexes in interval ['first', 'last']
     !> Returns array of string_type instances
-    pure function get_range_idx_impl( list, first, last )
+    pure function get_range_idx( list, first, last )
         class(stringlist_type), intent(in)                      :: list
         type(stringlist_index_type), intent(in)                 :: first, last
 
-        type(string_type), allocatable                          :: get_range_idx_impl(:)
+        type(string_type), allocatable                          :: get_range_idx(:)
 
-        call get_engine( list, first, last, get_range_idx_impl )
+        call get_engine( list, first, last, get_range_idx )
 
-    end function get_range_idx_impl
+    end function get_range_idx
 
   ! pop & drop:
 
@@ -864,59 +865,59 @@ contains
     !>
     !> Removes the string present at stringlist_index 'idx' in stringlist 'list'
     !> Returns the removed string
-    function pop_idx_impl( list, idx )
+    function pop_idx( list, idx )
         class(stringlist_type), intent(inout)           :: list
         type(stringlist_index_type), intent(in)         :: idx
-        type(string_type)                               :: pop_idx_impl
+        type(string_type)                               :: pop_idx
 
         type(string_type), dimension(:), allocatable    :: popped_strings
 
         call pop_drop_engine( list, idx, idx, popped_strings )
 
         if ( size(popped_strings) == 1 ) then
-            call move( pop_idx_impl, popped_strings(1) )
+            call move( pop_idx, popped_strings(1) )
         end if
 
-    end function pop_idx_impl
+    end function pop_idx
 
     !> Version: experimental
     !>
     !> Removes strings present at stringlist_indexes in interval ['first', 'last']
     !> in stringlist 'list'
     !> Returns removed strings
-    function pop_range_idx_impl( list, first, last )
+    function pop_range_idx( list, first, last )
         class(stringlist_type), intent(inout)           :: list
         type(stringlist_index_type), intent(in)         :: first, last
 
-        type(string_type), dimension(:), allocatable    :: pop_range_idx_impl
+        type(string_type), dimension(:), allocatable    :: pop_range_idx
 
-        call pop_drop_engine( list, first, last, pop_range_idx_impl )
+        call pop_drop_engine( list, first, last, pop_range_idx )
 
-    end function pop_range_idx_impl
+    end function pop_range_idx
 
     !> Version: experimental
     !>
     !> Removes the string present at stringlist_index 'idx' in stringlist 'list'
     !> Doesn't return the removed string 
-    pure subroutine drop_idx_impl( list, idx )
+    pure subroutine drop_idx( list, idx )
         class(stringlist_type), intent(inout)           :: list
         type(stringlist_index_type), intent(in)         :: idx
 
         call pop_drop_engine( list, idx, idx )
 
-    end subroutine drop_idx_impl
+    end subroutine drop_idx
 
     !> Version: experimental
     !>
     !> Removes strings present at stringlist_indexes in interval ['first', 'last']
     !> in stringlist 'list'
     !> Doesn't return removed strings
-    pure subroutine drop_range_idx_impl( list, first, last )
+    pure subroutine drop_range_idx( list, first, last )
         class(stringlist_type), intent(inout)           :: list
         type(stringlist_index_type), intent(in)         :: first, last
 
         call pop_drop_engine( list, first, last )
 
-    end subroutine drop_range_idx_impl
+    end subroutine drop_range_idx
 
 end module stdlib_stringlist_type
