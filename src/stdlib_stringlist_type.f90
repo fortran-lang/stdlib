@@ -222,7 +222,8 @@ contains
         character(len=*), intent(in)      :: rhs
         type(stringlist_type)             :: append_char
 
-        append_char = lhs // string_type( rhs )
+        append_char = lhs ! Intent: creating a full, deep copy
+        call append_char%insert_at( list_tail, rhs )
 
     end function append_char
 
@@ -245,7 +246,8 @@ contains
         type(stringlist_type), intent(in) :: rhs
         type(stringlist_type)             :: prepend_char
 
-        prepend_char = string_type( lhs ) // rhs
+        prepend_char = rhs ! Intent: creating a full, deep copy
+        call prepend_char%insert_at( list_head, lhs )
 
     end function prepend_char
 
