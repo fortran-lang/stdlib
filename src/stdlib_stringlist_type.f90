@@ -89,10 +89,9 @@ module stdlib_stringlist_type
         generic, public   :: get                            =>  get_idx,                        &
                                                                 get_range_idx
         
-        procedure         :: pop_idx                        =>  pop_idx_impl
-        procedure         :: pop_range_idx                  =>  pop_range_idx_impl
-        generic, public   :: pop                            =>  pop_idx,                        &
-                                                                pop_range_idx
+        procedure         :: pop_index               ! or `pop_idx`, if you wish
+        procedure         :: pop_range_index         ! or `pop_range_idx`, if you wish
+        generic, public   :: pop                =>  pop_index, pop_range_index
 
         procedure         :: drop_idx                       =>  drop_idx_impl
         procedure         :: drop_range_idx                 =>  drop_range_idx_impl
