@@ -224,13 +224,13 @@ contains
         do j = 1, n !loop over all columns
             o = min(j-1,m) !index of row above diagonal (or last row)
             do i = 1, o !loop over rows above diagonal
-                if (.not. (A(i,j) .eq. zero)) then
+                if (A(i,j) .ne. zero) then
                   res = .false.
                   return
                 end if
             end do
             do i = o+2, m !loop over rows below diagonal
-                if (.not. (A(i,j) .eq. zero)) then
+                if (A(i,j) .ne. zero) then
                   res = .false.
                   return
                 end if
@@ -253,7 +253,7 @@ contains
         n = size(A,1) !symmetric dimension of A
         do j = 1, n !loop over all columns
             do i = 1, j-1 !loop over all rows above diagonal
-                if (.not. (A(i,j) .eq. A(j,i))) then
+                if (A(i,j) .ne. A(j,i)) then
                   res = .false.
                   return
                 end if
@@ -276,7 +276,7 @@ contains
         n = size(A,1) !symmetric dimension of A
         do j = 1, n !loop over all columns
             do i = 1, j !loop over all rows above diagonal (and diagonal)
-                if (.not. (A(i,j) .eq. -A(j,i))) then
+                if (A(i,j) .ne. -A(j,i)) then
                   res = .false.
                   return
                 end if
@@ -310,7 +310,7 @@ contains
         n = size(A,1) !symmetric dimension of A
         do j = 1, n !loop over all columns
             do i = 1, j !loop over all rows above diagonal (and diagonal)
-                if (.not. (A(i,j) .eq. conjg(A(j,i)))) then
+                if (A(i,j) .ne. conjg(A(j,i))) then
                   res = .false.
                   return
                 end if
@@ -335,7 +335,7 @@ contains
           do j = 1, n !loop over all columns
               o = min(j-1,m) !index of row above diagonal (or last row)
               do i = o+2, m !loop over rows below diagonal
-                  if (.not. (A(i,j) .eq. zero)) then
+                  if (A(i,j) .ne. zero) then
                     res = .false.
                     return
                   end if
@@ -345,7 +345,7 @@ contains
           do j=1,n !loop over all columns
               o = min(j-1,m) !index of row above diagonal (or last row)
               do i=1,o !loop over rows above diagonal
-                  if (.not. (A(i,j) .eq. zero)) then
+                  if (A(i,j) .ne. zero) then
                     res = .false.
                     return
                   end if
@@ -374,7 +374,7 @@ contains
           do j = 1, n !loop over all columns
               o = min(j-2,m) !index of row two above diagonal (or last row)
               do i = o+4, m !loop over rows two or more below main diagonal
-                  if (.not. (A(i,j) .eq. zero)) then
+                  if (A(i,j) .ne. zero) then
                     res = .false.
                     return
                   end if
@@ -384,7 +384,7 @@ contains
           do j = 1, n !loop over all columns
               o = min(j-2,m) !index of row two above diagonal (or last row)
               do i = 1, o !loop over rows one or more above main diagonal
-                  if (.not. (A(i,j) .eq. zero)) then
+                  if (A(i,j) .ne. zero) then
                     res = .false.
                     return
                   end if
