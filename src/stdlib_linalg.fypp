@@ -207,7 +207,7 @@ contains
       pure function is_square_${t1[0]}$${k1}$(A) result(res)
         ${t1}$, intent(in) :: A(:,:)
         logical :: res
-        res = (size(A,1) .eq. size(A,2))
+        res = (size(A,1) == size(A,2))
       end function is_square_${t1[0]}$${k1}$
     #:endfor
 
@@ -224,13 +224,13 @@ contains
         do j = 1, n !loop over all columns
             o = min(j-1,m) !index of row above diagonal (or last row)
             do i = 1, o !loop over rows above diagonal
-                if (A(i,j) .ne. zero) then
+                if (A(i,j) /= zero) then
                   res = .false.
                   return
                 end if
             end do
             do i = o+2, m !loop over rows below diagonal
-                if (A(i,j) .ne. zero) then
+                if (A(i,j) /= zero) then
                   res = .false.
                   return
                 end if
@@ -253,7 +253,7 @@ contains
         n = size(A,1) !symmetric dimension of A
         do j = 1, n !loop over all columns
             do i = 1, j-1 !loop over all rows above diagonal
-                if (A(i,j) .ne. A(j,i)) then
+                if (A(i,j) /= A(j,i)) then
                   res = .false.
                   return
                 end if
@@ -276,7 +276,7 @@ contains
         n = size(A,1) !symmetric dimension of A
         do j = 1, n !loop over all columns
             do i = 1, j !loop over all rows above diagonal (and diagonal)
-                if (A(i,j) .ne. -A(j,i)) then
+                if (A(i,j) /= -A(j,i)) then
                   res = .false.
                   return
                 end if
@@ -310,7 +310,7 @@ contains
         n = size(A,1) !symmetric dimension of A
         do j = 1, n !loop over all columns
             do i = 1, j !loop over all rows above diagonal (and diagonal)
-                if (A(i,j) .ne. conjg(A(j,i))) then
+                if (A(i,j) /= conjg(A(j,i))) then
                   res = .false.
                   return
                 end if
@@ -331,21 +331,21 @@ contains
         zero = 0 !zero of relevant type
         m = size(A,1)
         n = size(A,2)
-        if ((uplo .eq. 'u') .or. (uplo .eq. 'U')) then !check for upper triangularity
+        if ((uplo == 'u') .or. (uplo == 'U')) then !check for upper triangularity
           do j = 1, n !loop over all columns
               o = min(j-1,m) !index of row above diagonal (or last row)
               do i = o+2, m !loop over rows below diagonal
-                  if (A(i,j) .ne. zero) then
+                  if (A(i,j) /= zero) then
                     res = .false.
                     return
                   end if
               end do
           end do
-        else if ((uplo .eq. 'l') .or. (uplo .eq. 'L')) then !check for lower triangularity
+        else if ((uplo == 'l') .or. (uplo == 'L')) then !check for lower triangularity
           do j=1,n !loop over all columns
               o = min(j-1,m) !index of row above diagonal (or last row)
               do i=1,o !loop over rows above diagonal
-                  if (A(i,j) .ne. zero) then
+                  if (A(i,j) /= zero) then
                     res = .false.
                     return
                   end if
@@ -370,21 +370,21 @@ contains
         zero = 0 !zero of relevant type
         m = size(A,1)
         n = size(A,2)
-        if ((uplo .eq. 'u') .or. (uplo .eq. 'U')) then !check for upper Hessenberg
+        if ((uplo == 'u') .or. (uplo == 'U')) then !check for upper Hessenberg
           do j = 1, n !loop over all columns
               o = min(j-2,m) !index of row two above diagonal (or last row)
               do i = o+4, m !loop over rows two or more below main diagonal
-                  if (A(i,j) .ne. zero) then
+                  if (A(i,j) /= zero) then
                     res = .false.
                     return
                   end if
               end do
           end do
-        else if ((uplo .eq. 'l') .or. (uplo .eq. 'L')) then !check for lower Hessenberg
+        else if ((uplo == 'l') .or. (uplo == 'L')) then !check for lower Hessenberg
           do j = 1, n !loop over all columns
               o = min(j-2,m) !index of row two above diagonal (or last row)
               do i = 1, o !loop over rows one or more above main diagonal
-                  if (A(i,j) .ne. zero) then
+                  if (A(i,j) /= zero) then
                     res = .false.
                     return
                   end if
