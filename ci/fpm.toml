@@ -1,0 +1,6 @@
+name = "stdlib"
+version = "0.0.0"
+license = "MIT"
+author = "stdlib contributors"
+maintainer = "@fortran-lang/stdlib"
+copyright = "2019-2021 stdlib contributors"

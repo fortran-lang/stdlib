@@ -35,6 +35,9 @@ set(fppFiles
     stdlib_math_arange.fypp
     stdlib_math_is_close.fypp
     stdlib_string_type.fypp
+    stdlib_string_type_constructor.fypp
+    stdlib_strings_to_string.fypp
+    stdlib_strings.fypp
 )
 
 
@@ -53,11 +56,11 @@ set(SRC
     stdlib_error.f90
     stdlib_kinds.f90
     stdlib_logger.f90
-    stdlib_strings.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90
     stdlib_quadrature_gauss.f90
+    stdlib_stringlist_type.f90
     ${outFiles}
 )
 
