@@ -235,14 +235,12 @@ Returns a logical value that is true if the input matrix is square, and false ot
 program demo_is_square
     use stdlib_linalg, only: is_square
     implicit none
-    real :: A_true(2,2), A_false(3,2)
+    real :: A(2,2), B(3,2)
     logical :: res
-    A_true = reshape([1., 2., 3., 4.], shape(A_true))
-    A_false = reshape([1., 2., 3., 4., 5., 6.], shape(A_false))
-    res = is_square(A_true)
-    !res = .true.
-    res = is_square(A_false)
-    !res = .false.
+    A = reshape([1., 2., 3., 4.], shape(A))
+    B = reshape([1., 2., 3., 4., 5., 6.], shape(B))
+    res = is_square(A) ! returns .true.
+    res = is_square(B) ! returns .false.
 end program demo_is_square
 ```
 
@@ -275,14 +273,12 @@ Note that nonsquare matrices may be diagonal, so long as `a_ij = 0` when `i /= j
 program demo_is_diagonal
     use stdlib_linalg, only: is_diagonal
     implicit none
-    real :: A_true(2,2), A_false(2,2)
+    real :: A(2,2), B(2,2)
     logical :: res
-    A_true = reshape([1., 0., 0., 4.], shape(A_true))
-    A_false = reshape([1., 0., 3., 4.], shape(A_false))
-    res = is_diagonal(A_true)
-    !res = .true.
-    res = is_diagonal(A_false)
-    !res = .false.
+    A = reshape([1., 0., 0., 4.], shape(A))
+    B = reshape([1., 0., 3., 4.], shape(B))
+    res = is_diagonal(A) ! returns .true.
+    res = is_diagonal(B) ! returns .false.
 end program demo_is_diagonal
 ```
 
@@ -314,14 +310,12 @@ Returns a logical value that is true if the input matrix is symmetric, and false
 program demo_is_symmetric
     use stdlib_linalg, only: is_symmetric
     implicit none
-    real :: A_true(2,2), A_false(2,2)
+    real :: A(2,2), B(2,2)
     logical :: res
-    A_true = reshape([1., 3., 3., 4.], shape(A_true))
-    A_false = reshape([1., 0., 3., 4.], shape(A_false))
-    res = is_symmetric(A_true)
-    !res = .true.
-    res = is_symmetric(A_false)
-    !res = .false.
+    A = reshape([1., 3., 3., 4.], shape(A))
+    B = reshape([1., 0., 3., 4.], shape(B))
+    res = is_symmetric(A) ! returns .true.
+    res = is_symmetric(B) ! returns .false.
 end program demo_is_symmetric
 ```
 
@@ -353,14 +347,12 @@ Returns a logical value that is true if the input matrix is skew-symmetric, and 
 program demo_is_skew_symmetric
     use stdlib_linalg, only: is_skew_symmetric
     implicit none
-    real :: A_true(2,2), A_false(2,2)
+    real :: A(2,2), B(2,2)
     logical :: res
-    A_true = reshape([0., -3., 3., 0.], shape(A_true))
-    A_false = reshape([0., 3., 3., 0.], shape(A_false))
-    res = is_skew_symmetric(A_true)
-    !res = .true.
-    res = is_skew_symmetric(A_false)
-    !res = .false.
+    A = reshape([0., -3., 3., 0.], shape(A))
+    B = reshape([0., 3., 3., 0.], shape(B))
+    res = is_skew_symmetric(A) ! returns .true.
+    res = is_skew_symmetric(B) ! returns .false.
 end program demo_is_skew_symmetric
 ```
 
@@ -392,14 +384,12 @@ Returns a logical value that is true if the input matrix is Hermitian, and false
 program demo_is_hermitian
     use stdlib_linalg, only: is_hermitian
     implicit none
-    complex :: A_true(2,2), A_false(2,2)
+    complex :: A(2,2), B(2,2)
     logical :: res
-    A_true = reshape([cmplx(1.,0.), cmplx(3.,-1.), cmplx(3.,1.), cmplx(4.,0.)], shape(A_true))
-    A_false = reshape([cmplx(1.,0.), cmplx(3.,1.), cmplx(3.,1.), cmplx(4.,0.)], shape(A_false))
-    res = is_hermitian(A_true)
-    !res = .true.
-    res = is_hermitian(A_false)
-    !res = .false.
+    A = reshape([cmplx(1.,0.), cmplx(3.,-1.), cmplx(3.,1.), cmplx(4.,0.)], shape(A))
+    B = reshape([cmplx(1.,0.), cmplx(3.,1.), cmplx(3.,1.), cmplx(4.,0.)], shape(B))
+    res = is_hermitian(A) ! returns .true.
+    res = is_hermitian(B) ! returns .false.
 end program demo_is_hermitian
 ```
 
@@ -435,14 +425,12 @@ Specifically, upper triangular matrices satisfy `a_ij = 0` when `j < i`, and low
 program demo_is_triangular
     use stdlib_linalg, only: is_triangular
     implicit none
-    real :: A_true(3,3), A_false(3,3)
+    real :: A(3,3), B(3,3)
     logical :: res
-    A_true = reshape([1., 0., 0., 4., 5., 0., 7., 8., 9.], shape(A_true))
-    A_false = reshape([1., 0., 3., 4., 5., 0., 7., 8., 9.], shape(A_false))
-    res = is_triangular(A_true,'u')
-    !res = .true.
-    res = is_triangular(A_false,'u')
-    !res = .false.
+    A = reshape([1., 0., 0., 4., 5., 0., 7., 8., 9.], shape(A))
+    B = reshape([1., 0., 3., 4., 5., 0., 7., 8., 9.], shape(B))
+    res = is_triangular(A,'u') ! returns .true.
+    res = is_triangular(B,'u') ! returns .false.
 end program demo_is_triangular
 ```
 
@@ -478,13 +466,11 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 program demo_is_hessenberg
     use stdlib_linalg, only: is_hessenberg
     implicit none
-    real :: A_true(3,3), A_false(3,3)
+    real :: A(3,3), B(3,3)
     logical :: res
-    A_true = reshape([1., 2., 0., 4., 5., 6., 7., 8., 9.], shape(A_true))
-    A_false = reshape([1., 2., 3., 4., 5., 6., 7., 8., 9.], shape(A_false))
-    res = is_hessenberg(A_true,'u')
-    !res = .true.
-    res = is_hessenberg(A_false,'u')
-    !res = .false.
+    A = reshape([1., 2., 0., 4., 5., 6., 7., 8., 9.], shape(A))
+    B = reshape([1., 2., 3., 4., 5., 6., 7., 8., 9.], shape(B))
+    res = is_hessenberg(A,'u') ! returns .true.
+    res = is_hessenberg(B,'u') ! returns .false.
 end program demo_is_hessenberg
 ```
