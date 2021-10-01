@@ -103,9 +103,11 @@ contains
 
         a = "a"
         b = "b"
-        call check("a" //  b  == "ab")
-        call check( a  // "b" == "ab")
-        call check( a  //  b  == "ab")
+        call check( "a" //  b  == "ab" )
+        call check( a  // "b" == "ab" )
+        call check( a  //  b  == "ab" )
+        call check( a  //  ""  == "a" )
+        call check( ""  //  b  == "b" )
     end subroutine test_concat
 
 end module test_string_operator
