@@ -1093,7 +1093,7 @@ contains
         type(string_type), intent(in) :: rhs
         type(string_type) :: string
 
-        string%raw = maybe(rhs) // maybe(lhs)
+        string%raw = maybe(lhs) // maybe(rhs)
 
     end function concat_string_string
 
