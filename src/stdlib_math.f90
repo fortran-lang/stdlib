@@ -5,7 +5,7 @@ module stdlib_math
 
     implicit none
     private
-    public :: clip, linspace, logspace
+    public :: clip, gcd, linspace, logspace
     public :: EULERS_NUMBER_SP, EULERS_NUMBER_DP, EULERS_NUMBER_QP
     public :: DEFAULT_LINSPACE_LENGTH, DEFAULT_LOGSPACE_BASE, DEFAULT_LOGSPACE_LENGTH
     public :: arange
@@ -28,6 +28,17 @@ module stdlib_math
         module procedure clip_dp
         module procedure clip_qp
     end interface clip
+
+    !> Returns the greatest common divisor of two integers
+    !> ([Specification](../page/specs/stdlib_math.html#gcd))
+    !>
+    !> Version: experimental
+    interface gcd
+        module procedure gcd_int8
+        module procedure gcd_int16
+        module procedure gcd_int32
+        module procedure gcd_int64
+    end interface gcd
 
     interface linspace
     !! Version: Experimental
@@ -647,5 +658,78 @@ contains
 
         res = max(min(x, xmax), xmin)
     end function clip_qp
+
+
+    !> Returns the greatest common divisor of two integers of kind int8
+    !> using the Euclidean algorithm.
+    elemental function gcd_int8(a, b) result(res)
+        integer(int8), intent(in) :: a
+        integer(int8), intent(in) :: b
+        integer(int8) :: res
+
+        integer(int8) :: rem, tmp
+
+        rem = min(abs(a), abs(b))
+        res = max(abs(a), abs(b))
+        do while (rem /= 0_int8)
+          tmp = rem
+          rem = mod(res, rem)
+          res = tmp
+        end do
+    end function gcd_int8
+
+    !> Returns the greatest common divisor of two integers of kind int16
+    !> using the Euclidean algorithm.
+    elemental function gcd_int16(a, b) result(res)
+        integer(int16), intent(in) :: a
+        integer(int16), intent(in) :: b
+        integer(int16) :: res
+
+        integer(int16) :: rem, tmp
+
+        rem = min(abs(a), abs(b))
+        res = max(abs(a), abs(b))
+        do while (rem /= 0_int16)
+          tmp = rem
+          rem = mod(res, rem)
+          res = tmp
+        end do
+    end function gcd_int16
+
+    !> Returns the greatest common divisor of two integers of kind int32
+    !> using the Euclidean algorithm.
+    elemental function gcd_int32(a, b) result(res)
+        integer(int32), intent(in) :: a
+        integer(int32), intent(in) :: b
+        integer(int32) :: res
+
+        integer(int32) :: rem, tmp
+
+        rem = min(abs(a), abs(b))
+        res = max(abs(a), abs(b))
+        do while (rem /= 0_int32)
+          tmp = rem
+          rem = mod(res, rem)
+          res = tmp
+        end do
+    end function gcd_int32
+
+    !> Returns the greatest common divisor of two integers of kind int64
+    !> using the Euclidean algorithm.
+    elemental function gcd_int64(a, b) result(res)
+        integer(int64), intent(in) :: a
+        integer(int64), intent(in) :: b
+        integer(int64) :: res
+
+        integer(int64) :: rem, tmp
+
+        rem = min(abs(a), abs(b))
+        res = max(abs(a), abs(b))
+        do while (rem /= 0_int64)
+          tmp = rem
+          rem = mod(res, rem)
+          res = tmp
+        end do
+    end function gcd_int64
 
 end module stdlib_math
