@@ -99,11 +99,15 @@ contains
     end subroutine test_ne
 
     subroutine test_concat
-        type(string_type) :: string
+        type(string_type) :: a, b
 
-        string = "Hello, "
-        string = string // "World!"
-        call check(len(string) == 13)
+        a = "a"
+        b = "b"
+        call check( "a" //  b  == "ab" )
+        call check( a  // "b" == "ab" )
+        call check( a  //  b  == "ab" )
+        call check( a  //  ""  == "a" )
+        call check( ""  //  b  == "b" )
     end subroutine test_concat
 
 end module test_string_operator
