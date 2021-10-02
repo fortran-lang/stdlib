@@ -69,9 +69,7 @@ contains
               call check( (kth_smallest == i**2), " ${name}$: kth smallest entry with right specified")
           end do
 
-          !
-          ! Variants of test that came with the matlab documentation
-          !
+          ! Simple tests
           mat = one * [3, 2, 7, 4, 5, 1, 4, -1]
           mat_copy = mat
           call select(mat_copy, 1_ip, kth_smallest)
@@ -231,9 +229,7 @@ contains
               call check( (x(kth_smallest) == i**2), " ${name}$: kth smallest entry with right specified")
           end do
 
-          !
-          ! Variants of test that came with the matlab documentation for qselect
-          !
+          ! Simple tests
           mat = one * [3, 2, 7, 4, 5, 1, 4, -1]
           indx_mat = (/( i, i = 1, size(mat, kind=ip) )/)
 

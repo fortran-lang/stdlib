@@ -5,36 +5,39 @@
 
 module stdlib_selection
 !
-! This code was modified from a matlab implementation of "qselect" by Manolis
-! Lourakis, https://www.mathworks.com/matlabcentral/fileexchange/68947-qselect
-! Below is the licence of qselect
+! This code was modified from the "Coretran" implementation "quickSelect" by
+! Leon Folks, https://github.com/leonfoks/coretran/tree/master/src/sorting
+! Below is the licence of "Coretran"
 !
-! Copyright (c) 2018, Manolis Lourakis
+! BSD 3-Clause License
+! 
+! Copyright (c) 2019, Leon Foks
 ! All rights reserved.
-!
+! 
 ! Redistribution and use in source and binary forms, with or without
 ! modification, are permitted provided that the following conditions are met:
-!
-! * Redistributions of source code must retain the above copyright notice, this
-!   list of conditions and the following disclaimer.
-!
-! * Redistributions in binary form must reproduce the above copyright notice,
-!   this list of conditions and the following disclaimer in the documentation
-!   and/or other materials provided with the distribution
-! * Neither the name of Foundation for Research and Technology - Hellas nor the
-!   names of its contributors may be used to endorse or promote products
-!   derived from this software without specific prior written permission.
+! 
+! 1. Redistributions of source code must retain the above copyright notice, this
+!    list of conditions and the following disclaimer.
+! 
+! 2. Redistributions in binary form must reproduce the above copyright notice,
+!    this list of conditions and the following disclaimer in the documentation
+!    and/or other materials provided with the distribution.
+! 
+! 3. Neither the name of the copyright holder nor the names of its
+!    contributors may be used to endorse or promote products derived from
+!    this software without specific prior written permission.
+! 
 ! THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 ! AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-! DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+! DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
 ! FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 ! DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
 ! SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 ! CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 ! OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ! OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-!
 
 use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
 
@@ -70,13 +73,8 @@ contains
       subroutine ${name}$(a, k, kth_smallest, left, right)
           !! select - select the k-th smallest entry in a(:).
           !!
-          !! Implements Hoares Quickselect algorithm
-          !!     (https://en.wikipedia.org/wiki/Quickselect)
-          !! with the median-of-3 pivot strategy.
-          !! Operates in-place, avoiding sorting and recursion.
-          !!
-          !! Modified from a translation of "qselect" by Manolis Lourakis
-          !! https://www.mathworks.com/matlabcentral/fileexchange/68947-qselect
+          !! Partly derived from the "Coretran" implementation of 
+          !! quickSelect by Leon Folks, https://github.com/leonfoks/coretran
           !!
           ${arraytype}$, intent(inout) :: a(:)
               !! Array in which we seek the kth-smallest entry.
@@ -100,7 +98,7 @@ contains
               !! subroutine with different `k` (because of how `a(:)` becomes
               !! partially sorted, see documentation for `a(:)`).
 
-          ${inttype}$ :: l, r, s, i, j, k_local
+          ${inttype}$ :: l, r, mid, iPivot
           ${arraytype}$ :: pivot
           integer, parameter :: ip = ${intkind}$
 
@@ -114,31 +112,20 @@ contains
               error stop "select must have 1 <= k <= size(a), and 1 <= left <= right <= size(a)";
           end if
 
-          k_local = k - l + 1_ip
-
           do while(.true.)
-              s = (l+r)/2_ip ! Deliberate integer division
-              if(a(s) < a(r)) call swap(a(s), a(r))
-              if(a(s) < a(l)) call swap(a(s), a(l))
-              if(a(r) < a(l)) call swap(a(r), a(l))
-              pivot = a(r) ! Median
+              mid = (l+r)/2_ip ! Deliberate integer division
 
-              i = l
-              do j = l, r-1_ip
-                  if(a(j) <= pivot) then
-                      call swap(a(i), a(j))
-                      i = i+1_ip
-                  end if
-              end do
-              call swap(a(r), a(i))
-              s = i-l+1_ip
-              if(k_local < s) then
-                  r = i-1_ip
-              else if(k_local > s) then
-                  l=i+1_ip; k_local=k_local-s;
-              else
-                  kth_smallest = a(i)
-                  return
+              call medianOf3(a, l, mid, r)
+              call swap(a(l), a(mid))
+              call partition(a, l, r, iPivot)
+
+              if (iPivot < k) then
+                l = iPivot + 1
+              elseif (iPivot > k) then
+                r = iPivot - 1
+              elseif (iPivot == k) then
+                kth_smallest = a(k)
+                return
               end if
           end do
 
@@ -147,6 +134,41 @@ contains
                   ${arraytype}$, intent(inout) :: a, b
                   ${arraytype}$ :: tmp
                   tmp = a; a = b; b = tmp
+              end subroutine
+
+              subroutine medianOf3(a, left, mid, right)
+                  ${arraytype}$, intent(inout) :: a(:)
+                  ${inttype}$, intent(in) :: left, mid, right 
+                  if(a(right) < a(left)) call swap(a(right), a(left))
+                  if(a(mid)   < a(left)) call swap(a(mid)  , a(left))
+                  if(a(right) < a(mid) ) call swap(a(mid)  , a(right))
+              end subroutine
+
+              subroutine partition(array,left,right,iPivot)
+                  ${arraytype}$, intent(inout) :: array(:)
+                  ${inttype}$, intent(in) :: left, right
+                  ${inttype}$, intent(out) :: iPivot 
+                  ${inttype}$ :: lo,hi
+                  ${arraytype}$ :: pivot
+
+                  pivot = array(left)
+                  lo = left
+                  hi=right
+                  do while (lo <= hi)
+                    do while (array(hi) > pivot)
+                      hi=hi-1
+                    end do
+                    do while (lo <= hi .and. array(lo) <= pivot)
+                      lo=lo+1
+                    end do
+                    if (lo <= hi) then
+                      call swap(array(lo),array(hi))
+                      lo=lo+1
+                      hi=hi-1
+                    end if
+                  end do
+                  call swap(array(left),array(hi))
+                  iPivot=hi
               end subroutine
       end subroutine
     #:endfor
@@ -159,10 +181,8 @@ contains
       subroutine ${name}$(a, indx, k, kth_smallest, left, right)
           !! arg_select - find the index of the k-th smallest entry in `a(:)`
           !!
-          !! Implements Hoares Quickselect algorithm
-          !!    https://en.wikipedia.org/wiki/Quickselect)
-          !! with the median-of-3 pivot strategy.
-          !! Operates in-place, avoiding sorting and recursion.
+          !! Partly derived from the "Coretran" implementation of 
+          !! quickSelect by Leon Folks, https://github.com/leonfoks/coretran
           !!
           ${arraytype}$, intent(in) :: a(:)
               !! Array in which we seek the kth-smallest entry.
@@ -190,7 +210,7 @@ contains
               !! called the subroutine with a different `k` (due to the way that
               !! `indx(:)` becomes partially sorted, see documentation for `indx(:)`).
 
-          ${inttype}$ :: l, r, s, i, j, k_local
+          ${inttype}$ :: l, r, mid, iPivot
           ${arraytype}$ :: pivot
           integer, parameter :: ip = ${intkind}$
 
@@ -208,31 +228,20 @@ contains
               error stop "arg_select must have 1 <= k <= size(a), and 1 <= left <= right <= size(a)";
           end if
 
-          k_local = k - l + 1_ip
-
           do while(.true.)
-              s = (l+r)/2_ip ! Deliberate integer division
-              if(a(indx(s)) < a(indx(r))) call swap(indx(s), indx(r))
-              if(a(indx(s)) < a(indx(l))) call swap(indx(s), indx(l))
-              if(a(indx(r)) < a(indx(l))) call swap(indx(r), indx(l))
-              pivot = a(indx(r)) ! Median
+              mid = (l+r)/2_ip ! Deliberate integer division
 
-              i = l
-              do j = l, r-1_ip
-                  if(a(indx(j)) <= pivot) then
-                      call swap(indx(i), indx(j))
-                      i = i+1_ip
-                  end if
-              end do
-              call swap(indx(r), indx(i))
-              s = i-l+1_ip
-              if(k_local < s) then
-                  r = i-1_ip
-              else if(k_local > s) then
-                  l=i+1_ip; k_local=k_local-s;
-              else
-                  kth_smallest = indx(i)
-                  return
+              call arg_medianOf3(a, indx, l, mid, r)
+              call swap(indx(l), indx(mid))
+              call arg_partition(a, indx, l, r, iPivot)
+
+              if (iPivot < k) then
+                l = iPivot + 1
+              elseif (iPivot > k) then
+                r = iPivot - 1
+              elseif (iPivot == k) then
+                kth_smallest = indx(k)
+                return
               end if
           end do
 
@@ -241,6 +250,43 @@ contains
                   ${inttype}$, intent(inout) :: a, b
                   ${inttype}$ :: tmp
                   tmp = a; a = b; b = tmp
+              end subroutine
+
+              subroutine arg_medianOf3(a, indx, left, mid, right)
+                  ${arraytype}$, intent(in) :: a(:)
+                  ${inttype}$, intent(inout) :: indx(:)
+                  ${inttype}$, intent(in) :: left, mid, right 
+                  if(a(indx(right)) < a(indx(left))) call swap(indx(right), indx(left))
+                  if(a(indx(mid))   < a(indx(left))) call swap(indx(mid)  , indx(left))
+                  if(a(indx(right)) < a(indx(mid)) ) call swap(indx(mid)  , indx(right))
+              end subroutine
+
+              subroutine arg_partition(array, indx, left,right,iPivot)
+                  ${arraytype}$, intent(in) :: array(:)
+                  ${inttype}$, intent(inout) :: indx(:)
+                  ${inttype}$, intent(in) :: left, right
+                  ${inttype}$, intent(out) :: iPivot 
+                  ${inttype}$ :: lo,hi
+                  ${arraytype}$ :: pivot
+
+                  pivot = array(indx(left))
+                  lo = left
+                  hi = right
+                  do while (lo <= hi)
+                    do while (array(indx(hi)) > pivot)
+                      hi=hi-1
+                    end do
+                    do while (lo <= hi .and. array(indx(lo)) <= pivot)
+                      lo=lo+1
+                    end do
+                    if (lo <= hi) then
+                      call swap(indx(lo),indx(hi))
+                      lo=lo+1
+                      hi=hi-1
+                    end if
+                  end do
+                  call swap(indx(left),indx(hi))
+                  iPivot=hi
               end subroutine
       end subroutine
     #:endfor
