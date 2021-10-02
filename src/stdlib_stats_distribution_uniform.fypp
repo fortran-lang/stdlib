@@ -19,7 +19,7 @@ module stdlib_stats_distribution_uniform
 
 
     interface rvs_uniform
-    !! Version experimental
+    !! version: experimental
     !!
     !! Get uniformly distributed random variate for integer, real and complex
     !! variables.
@@ -43,7 +43,7 @@ module stdlib_stats_distribution_uniform
 
 
     interface pdf_uniform
-    !! Version experimental
+    !! version: experimental
     !!
     !! Get uniform distribution probability density (pdf) for integer, real and
     !! complex variables.
@@ -57,7 +57,7 @@ module stdlib_stats_distribution_uniform
 
 
     interface cdf_uniform
-    !! Version experimental
+    !! version: experimental
     !!
     !! Get uniform distribution cumulative distribution function (cdf) for integer,
     !! real and complex variables.
@@ -71,7 +71,7 @@ module stdlib_stats_distribution_uniform
 
 
     interface shuffle
-    !! Version experimental
+    !! version: experimental
     !!
     !! Fisher-Yates shuffle algorithm for a rank one array of integer, real and
     !! complex variables.
