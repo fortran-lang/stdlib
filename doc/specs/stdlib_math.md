@@ -406,3 +406,63 @@ program demo_math_is_close
         !! all(is_close(x, [2.0, 2.0])) failed.
 end program demo_math_is_close
 ```
+
+### `all_close`
+
+#### Description
+
+Returns a boolean scalar where two arrays are element-wise equal within a tolerance, behaves like `all(is_close(a, b [, rel_tol, abs_tol]))`.
+
+#### Syntax
+
+`bool = [[stdlib_math(module):all_close(interface)]] (a, b [, rel_tol, abs_tol])`
+
+#### Status
+
+Experimental.
+
+#### Class
+
+Impure function.
+
+#### Arguments
+
+`a`: Shall be a `real/complex` array.
+This argument is `intent(in)`.
+
+`b`: Shall be a `real/complex` array.
+This argument is `intent(in)`.
+
+`rel_tol`: Shall be a `real` scalar.
+This argument is `intent(in)` and `optional`, which is `1.0e-9` by default.
+
+`abs_tol`: Shall be a `real` scalar.
+This argument is `intent(in)` and `optional`, which is `0.0` by default.
+
+Note: All `real/complex` arguments must have same `kind`.  
+If the value of `rel_tol/abs_tol` is negative (not recommended), 
+it will be corrected to `abs(rel_tol/abs_tol)` by the internal process of `all_close`.
+
+#### Result value
+
+Returns a `logical` scalar.
+
+#### Example
+
+```fortran
+program demo_math_all_close
+    use stdlib_math,  only: all_close
+    use stdlib_error, only: check
+    real    :: x(2) = [1, 2], random(4, 4)
+    complex :: z(4, 4)
+    
+    call check(all_close(x, [2.0, 2.0], rel_tol=1.0e-6, abs_tol=1.0e-3), &
+               msg="all_close(x, [2.0, 2.0]) failed.", warn=.true.)
+               !! all_close(x, [2.0, 2.0]) failed.
+
+    call random_number(random(4, 4))
+    z = 1.0
+    print *, all_close(z+1.0e-11*random, z)     !! T
+    
+end program demo_math_all_close
+```
