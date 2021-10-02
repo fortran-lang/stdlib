@@ -102,10 +102,7 @@ Generic subroutine.
 
 `array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
-`real(sp)`, `real(dp)`, `real(qp)`. It is an `intent(inout)` argument. On input it is
-the array in which we search for the kth smallest entry. On return its elements
-will be partially sorted such that:
- `all( array(1:k-1) <= array(k) )` and `all(array(k) <= array(k+1:size(array)))`.
+`real(sp)`, `real(dp)`, `real(qp)`. It is an `intent(inout)` argument. 
 
 `k`: shall be a scalar with any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`. It
@@ -131,6 +128,9 @@ we need to search.
 Selection of a single value should have runtime of O(`size(array)`), so it is
 asymptotically faster than sorting `array` entirely. The test program at the the
 end of this document shows that is the case.
+
+On return the elements of `array` will be partially sorted such that:
+`all( array(1:k-1) <= array(k) )` and `all(array(k) <= array(k+1:size(array)))`.
 
 ##### Example
 
