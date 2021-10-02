@@ -38,6 +38,10 @@ used in a pure way.
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Constructor for empty string
 
+#### Status
+
+Experimental
+
 #### Description
 
 The module defines a constructor to create an empty string type.
@@ -47,10 +51,6 @@ Creates a string instance representing an empty string.
 #### Syntax
 
 `res = [[stdlib_string_type(module):string_type(interface)]] ()`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -80,6 +80,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Constructor from character scalar
 
+#### Status
+
+Experimental
+
 #### Description
 
 The module defines a constructor to create a string type from a character scalar.
@@ -91,10 +95,6 @@ character variable is passed.
 #### Syntax
 
 `res = [[stdlib_string_type(module):string_type(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -126,6 +126,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Constructor from integer scalar
 
+#### Status
+
+Experimental
+
 #### Description
 
 The module defines a constructor to create a string type from an integer scalar.
@@ -133,10 +137,6 @@ The module defines a constructor to create a string type from an integer scalar.
 #### Syntax
 
 `res = [[stdlib_string_type(module):string_type(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -168,6 +168,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Constructor from logical scalar
 
+#### Status
+
+Experimental
+
 #### Description
 
 The module defines a constructor to create a string type from a logical scalar.
@@ -175,10 +179,6 @@ The module defines a constructor to create a string type from a logical scalar.
 #### Syntax
 
 `res = [[stdlib_string_type(module):string_type(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -210,6 +210,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Assignment of character scalar
 
+#### Status
+
+Experimental
+
 #### Description
 
 The module defines an assignment operations, `=`, to create a string type
@@ -220,10 +224,6 @@ Creates a string instance representing the right-hand-side character scalar valu
 #### Syntax
 
 `lhs = rhs`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -246,6 +246,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Len function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Returns the length of the string.
@@ -253,10 +257,6 @@ Returns the length of the string.
 #### Syntax
 
 `res = [[stdlib_string_type(module):len(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -293,6 +293,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Len\_trim function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Returns the length of the character sequence without trailing spaces
@@ -301,10 +305,6 @@ represented by the string.
 #### Syntax
 
 `res = [[stdlib_string_type(module):len_trim(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -341,6 +341,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Trim function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Returns the character sequence hold by the string without trailing spaces
@@ -349,10 +353,6 @@ represented by a `string_type`.
 #### Syntax
 
 `res = [[stdlib_string_type(module):trim(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -384,6 +384,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Adjustl function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Left-adjust the character sequence represented by the string.
@@ -392,10 +396,6 @@ The length of the character sequence remains unchanged.
 #### Syntax
 
 `res = [[stdlib_string_type(module):adjustl(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -427,6 +427,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Adjustr function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Right-adjust the character sequence represented by the string.
@@ -435,10 +439,6 @@ The length of the character sequence remains unchanged.
 #### Syntax
 
 `res = [[stdlib_string_type(module):adjustr(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -470,6 +470,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Repeat function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Repeats the character sequence hold by the string by the number of
@@ -478,10 +482,6 @@ specified copies.
 #### Syntax
 
 `res = [[stdlib_string_type(module):repeat(interface)]] (string, ncopies)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -514,6 +514,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Char function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Return the character sequence represented by the string.
@@ -521,10 +525,6 @@ Return the character sequence represented by the string.
 #### Syntax
 
 `res = [[stdlib_string_type(module):char(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -557,6 +557,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Char function (position variant)
 
+#### Status
+
+Experimental
+
 #### Description
 
 Return the character at a certain position in the string.
@@ -564,10 +568,6 @@ Return the character at a certain position in the string.
 #### Syntax
 
 `res = [[stdlib_string_type(module):char(interface)]] (string, pos)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -604,6 +604,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Char function (range variant)
 
+#### Status
+
+Experimental
+
 #### Description
 
 Return a substring from the character sequence of the string.
@@ -611,10 +615,6 @@ Return a substring from the character sequence of the string.
 #### Syntax
 
 `res = [[stdlib_string_type(module):char(interface)]] (string, start, last)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -649,6 +649,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Ichar function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Character-to-integer conversion function.
@@ -659,10 +663,6 @@ character sequence in the system's native character set.
 #### Syntax
 
 `res = [[stdlib_string_type(module):ichar(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -694,6 +694,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Iachar function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Code in ASCII collating sequence.
@@ -704,10 +708,6 @@ the character sequences represent by the string.
 #### Syntax
 
 `res = [[stdlib_string_type(module):iachar(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -739,6 +739,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Index function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Position of a *substring* within a *string*.
@@ -750,10 +754,6 @@ present in *string*, zero is returned.
 #### Syntax
 
 `res = [[stdlib_string_type(module):index(interface)]] (string, substring[, back])`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -794,6 +794,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Scan function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Scans a *string* for the  presence any of the characters in a *set* of characters.
@@ -805,10 +809,6 @@ the rightmost position is returned. If no character of *set* is found in
 #### Syntax
 
 `res = [[stdlib_string_type(module):scan(interface)]] (string, set[, back])`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -849,6 +849,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Verify function
 
+#### Status
+
+Experimental
+
 #### Description
 
 Verifies that all the characters in *string* belong to the set of characters in *set*.
@@ -860,10 +864,6 @@ in *set*, the result is zero.
 #### Syntax
 
 `res = [[stdlib_string_type(module):verify(interface)]] (string, set[, back])`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -910,6 +910,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Lgt function (lexical greater than)
 
+#### Status
+
+Experimental
+
 #### Description
 
 Lexically compare the order of two character sequences being greater than.
@@ -921,10 +925,6 @@ This defines three procedures overloading the intrinsic `lgt` procedure.
 #### Syntax
 
 `res = [[stdlib_string_type(module):lgt(interface)]] (lhs, rhs)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -964,6 +964,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Llt function (lexical less than)
 
+#### Status
+
+Experimental
+
 #### Description
 
 Lexically compare the order of two character sequences being less than.
@@ -975,10 +979,6 @@ This defines three procedures overloading the intrinsic `llt` procedure.
 #### Syntax
 
 `res = [[stdlib_string_type(module):llt(interface)]] (lhs, rhs)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1018,6 +1018,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Lge function (lexical greater than or equal)
 
+#### Status
+
+Experimental
+
 #### Description
 
 Lexically compare the order of two character sequences being greater than
@@ -1030,10 +1034,6 @@ This defines three procedures overloading the intrinsic `lge` procedure.
 #### Syntax
 
 `res = [[stdlib_string_type(module):lge(interface)]] (lhs, rhs)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1073,6 +1073,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Lle function (lexical less than or equal)
 
+#### Status
+
+Experimental
+
 #### Description
 
 Lexically compare the order of two character sequences being less than
@@ -1085,10 +1089,6 @@ This defines three procedures overloading the intrinsic `lle` procedure.
 #### Syntax
 
 `res = [[stdlib_string_type(module):lle(interface)]] (lhs, rhs)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1128,18 +1128,18 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### To\_lower function
 
+#### Status
+
+Experimental
+
 #### Description
 
-Returns a new string_type instance which holds the lowercase version of the 
+Returns a new string_type instance which holds the lowercase version of the
 character sequence hold by the input string.
 
 #### Syntax
 
 `lowercase_string = [[stdlib_string_type(module): to_lower(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1174,18 +1174,18 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### To\_upper function
 
+#### Status
+
+Experimental
+
 #### Description
 
-Returns a new string_type instance which holds the uppercase version of the 
+Returns a new string_type instance which holds the uppercase version of the
 character sequence hold by the input string.
 
 #### Syntax
 
 `uppercase_string = [[stdlib_string_type(module): to_upper(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1220,23 +1220,23 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### To\_title function
 
+#### Status
+
+Experimental
+
 #### Description
 
-Returns a new string_type instance which holds the titlecase version 
-of the character sequence hold by the input string.  
-Title case: First character of every word in the sentence is converted to 
-uppercase and the rest of the characters are converted to lowercase.  
-A word is a contiguous sequence of character(s) which consists of alphabetical 
-character(s) and numeral(s) only and doesn't exclude any alphabetical character 
+Returns a new string_type instance which holds the titlecase version
+of the character sequence hold by the input string.
+Title case: First character of every word in the sentence is converted to
+uppercase and the rest of the characters are converted to lowercase.
+A word is a contiguous sequence of character(s) which consists of alphabetical
+character(s) and numeral(s) only and doesn't exclude any alphabetical character
 or numeral present next to either of its 2 ends.
 
 #### Syntax
 
 `titlecase_string = [[stdlib_string_type(module): to_title(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1270,21 +1270,21 @@ end program demo_to_title
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### To\_sentence function
 
+#### Status
+
+Experimental
+
 #### Description
 
-Returns a new string_type instance which holds the sentencecase 
-version of the character sequence hold by the input string.  
-Sentencecase version: The first alphabetical character of the input character sequence 
-is transformed to uppercase unless it follows a numeral and the rest of the 
+Returns a new string_type instance which holds the sentencecase
+version of the character sequence hold by the input string.
+Sentencecase version: The first alphabetical character of the input character sequence
+is transformed to uppercase unless it follows a numeral and the rest of the
 characters in the sequence are transformed to lowercase.
 
 #### Syntax
 
 `sentencecase_string = [[stdlib_string_type(module): to_sentence(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1318,18 +1318,18 @@ end program demo_to_sentence
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Reverse function
 
+#### Status
+
+Experimental
+
 #### Description
 
-Returns a new string_type instance which holds the reversed version of the 
+Returns a new string_type instance which holds the reversed version of the
 character sequence hold by the input string.
 
 #### Syntax
 
 `reverse_string = [[stdlib_string_type(module): reverse(interface)]] (string)`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1350,7 +1350,7 @@ program demo
   use stdlib_string_type
   implicit none
   type(string_type) :: string, reverse_string
-  
+
   string = "Reverse This String"
   ! string <-- "Reverse This String"
 
@@ -1363,6 +1363,10 @@ end program demo
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator greater
+
+#### Status
+
+Experimental
 
 #### Description
 
@@ -1378,10 +1382,6 @@ and `operator(.gt.)`.
 `res = lhs > rhs`
 
 `res = lhs .gt. rhs`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1421,6 +1421,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator less
 
+#### Status
+
+Experimental
+
 #### Description
 
 Compare the order of two character sequences being less.
@@ -1435,10 +1439,6 @@ and `operator(.lt.)`.
 `res = lhs < rhs`
 
 `res = lhs .lt. rhs`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1478,6 +1478,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator greater or equal
 
+#### Status
+
+Experimental
+
 #### Description
 
 Compare the order of two character sequences being greater or equal.
@@ -1492,10 +1496,6 @@ and `operator(.ge.)`.
 `res = lhs >= rhs`
 
 `res = lhs .ge. rhs`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1535,6 +1535,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator less or equal
 
+#### Status
+
+Experimental
+
 #### Description
 
 Compare the order of two character sequences being less or equal.
@@ -1549,10 +1553,6 @@ and `operator(.le.)`.
 `res = lhs <= rhs`
 
 `res = lhs .le. rhs`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1592,6 +1592,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator equal
 
+#### Status
+
+Experimental
+
 #### Description
 
 Compare two character sequences for equality.
@@ -1606,10 +1610,6 @@ and `operator(.eq.)`.
 `res = lhs == rhs`
 
 `res = lhs .eq. rhs`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1649,6 +1649,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Comparison operator not equal
 
+#### Status
+
+Experimental
+
 #### Description
 
 Compare two character sequences for inequality.
@@ -1663,10 +1667,6 @@ and `operator(.ne.)`.
 `res = lhs /= rhs`
 
 `res = lhs .ne. rhs`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1706,6 +1706,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Concatenation operator
 
+#### Status
+
+Experimental
+
 #### Description
 
 Concatenate two character sequences.
@@ -1717,10 +1721,6 @@ This defines three procedures overloading the intrinsic `operator(//)`.
 #### Syntax
 
 `res = lhs // rhs`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1753,6 +1753,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Unformatted write
 
+#### Status
+
+Experimental
+
 #### Description
 
 Write the character sequence hold by the string to a connected unformatted unit.
@@ -1762,10 +1766,6 @@ holding the length of the following character record.
 #### Syntax
 
 `write(unit, iostat=iostat, iomsg=iomsg) string`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1803,6 +1803,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Formatted write
 
+#### Status
+
+Experimental
+
 #### Description
 
 Write the character sequence hold by the string to a connected formatted unit.
@@ -1813,10 +1817,6 @@ output. Requesting namelist output will raise an error.
 #### Syntax
 
 `write(unit, fmt, iostat=iostat, iomsg=iomsg) string`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1862,6 +1862,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Unformatted read
 
+#### Status
+
+Experimental
+
 #### Description
 
 Read a character sequence from a connected unformatted unit into the string.
@@ -1873,10 +1877,6 @@ On failure the state the read variable is undefined and implementation dependent
 #### Syntax
 
 `read(unit, iostat=iostat, iomsg=iomsg) string`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1915,6 +1915,10 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### Formatted read
 
+#### Status
+
+Experimental
+
 #### Description
 
 Read a character sequence from a connected formatted unit into the string.
@@ -1928,10 +1932,6 @@ Requesting `dt` formatted input or namelist output will raise an error.
 #### Syntax
 
 `read(unit, fmt, iostat=iostat, iomsg=iomsg) string`
-
-#### Status
-
-Experimental
 
 #### Class
 
@@ -1977,19 +1977,19 @@ end program demo
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### move
 
+#### Status
+
+Experimental
+
 #### Description
 
-Moves the allocation from `from` to `to`, consequently deallocating `from` in this process.  
-If `from` is not allocated before execution, `to` gets deallocated by the process.  
+Moves the allocation from `from` to `to`, consequently deallocating `from` in this process.
+If `from` is not allocated before execution, `to` gets deallocated by the process.
 An unallocated `string_type` instance is equivalent to an empty string.
 
 #### Syntax
 
 `call [[stdlib_string_type(module):move(interface)]] (from, to)`
-
-#### Status
-
-Experimental
 
 #### Class
 

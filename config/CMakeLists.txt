@@ -1,10 +1,14 @@
 # SPDX-Identifier: MIT
 
-option(
-  CMAKE_INSTALL_MODULEDIR
-  "Directory in prefix to install generated module files"
-  "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/${CMAKE_Fortran_COMPILER_ID}-${CMAKE_Fortran_COMPILER_VERSION}"
-)
+if(NOT DEFINED CMAKE_INSTALL_MODULEDIR)
+  set(
+    CMAKE_INSTALL_MODULEDIR
+    "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/${CMAKE_Fortran_COMPILER_ID}-${CMAKE_Fortran_COMPILER_VERSION}"
+    CACHE
+    STRING
+    "Directory in prefix to install generated module files"
+  )
+endif()
 
 # Export a pkg-config file
 configure_file(

@@ -286,10 +286,10 @@ module stdlib_math
     interface is_close
         #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
         #:for k1, t1 in RC_KINDS_TYPES
-        elemental module function is_close_${t1[0]}$${k1}$(a, b, rtol, atol) result(result)
+        elemental module function is_close_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol) result(close)
             ${t1}$, intent(in) :: a, b
-            real(${k1}$), intent(in), optional :: rtol, atol
-            logical :: result
+            real(${k1}$), intent(in), optional :: rel_tol, abs_tol
+            logical :: close
         end function is_close_${t1[0]}$${k1}$
         #:endfor
     end interface is_close
