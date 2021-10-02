@@ -1,5 +1,5 @@
 ---
-title: stats_distribution
+title: stats_distribution_PRNG
 ---
 
 # Statistical Distributions -- Pseudorandom Number Generator Module
