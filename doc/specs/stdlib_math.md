@@ -468,7 +468,7 @@ Experimental.
 
 #### Class
 
-Impure function.
+Pure function.
 
 #### Arguments
 

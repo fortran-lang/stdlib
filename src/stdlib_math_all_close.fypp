@@ -10,7 +10,7 @@ contains
 
     #:for k1, t1 in RC_KINDS_TYPES
     #:for r1 in RANKS
-    logical module function all_close_${r1}$_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol) result(close)
+    logical pure module function all_close_${r1}$_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol) result(close)
 
         ${t1}$, intent(in) :: a${ranksuffix(r1)}$, b${ranksuffix(r1)}$
         real(${k1}$), intent(in), optional :: rel_tol, abs_tol
