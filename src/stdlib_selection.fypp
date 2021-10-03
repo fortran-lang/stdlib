@@ -184,7 +184,6 @@ contains
               !! `indx(:)` becomes partially sorted, see documentation for `indx(:)`).
 
           ${inttype}$ :: l, r, mid, iPivot
-          ${arraytype}$ :: pivot
           integer, parameter :: ip = ${intkind}$
 
           l = 1_ip
