@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 
 program test_stdlib_math
-    use stdlib_math, only: clip
+    use stdlib_math, only: clip, gcd
     use stdlib_error, only: check
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
     implicit none
@@ -94,5 +94,24 @@ program test_stdlib_math
                'clip_qp failed for invalid case', warn=.true.)
     call check(clip(-55891546.2_qp, -689712245.23_qp, -8958133457.23_qp) == -689712245.23_qp, &
                'clip_qp failed for invalid case', warn=.true.)
+
+
+    ! gcd function
+    ! testing format: check(gcd(a, b) == correct answer)
+    call check(gcd(0, 0) == 0, 'gcd(0, 0) failed.', warn=.true.)
+    call check(gcd(2, 0) == 2, 'gcd(2, 0) failed.', warn=.true.)
+    call check(gcd(0, -2) == 2, 'gcd(0, -2) failed.', warn=.true.)
+    call check(gcd(3, 3) == 3, 'gcd(3, 3) failed.', warn=.true.)
+    call check(gcd(9, 6) == 3, 'gcd(9, 6) failed.', warn=.true.)
+    call check(gcd(6, 9) == 3, 'gcd(6, 9) failed.', warn=.true.)
+    call check(gcd(-9, 6) == 3, 'gcd(-9, 6) failed.', warn=.true.)
+    call check(gcd(9, -6) == 3, 'gcd(9, -6) failed.', warn=.true.)
+    call check(gcd(-9, -6) == 3, 'gcd(-9, -6) failed.', warn=.true.)
+    call check(gcd(97, 91) == 1, 'gcd(97, 91) failed.', warn=.true.)
+
+    call check(gcd(48_int8, 18_int8) == 6_int8, 'gcd(48, 18) failed for int8.', warn=.true.)
+    call check(gcd(48_int16, 18_int16) == 6_int16, 'gcd(48, 18) failed for int16', warn=.true.)
+    call check(gcd(48_int32, 18_int32) == 6_int32, 'gcd(48, 18) failed for int32', warn=.true.)
+    call check(gcd(48_int64, 18_int64) == 6_int64, 'gcd(48, 18) failed for int64', warn=.true.)
 
 end program test_stdlib_math
