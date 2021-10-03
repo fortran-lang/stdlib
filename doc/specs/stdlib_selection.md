@@ -33,7 +33,7 @@ to find a smaller or larger rank (that will have led to partial sorting of
 
 * `arg_select` is used to find the index of the k-th smallest entry of an array.
 In this case the input array is not modified, but the user must provide an
-input index array with the same size as `array`, having unique indices from
+input index array with the same size as `array`, having indices that are a permutation of
 `1:size(array)`, which is modified instead. On return the index array is modified
 such that `all(array(index(1:k)) <= array(index(k)))` and `all(array(k) <= array(k+1:size(array)))`.
 The user can optionally specify `left` and `right` indices to constrain the search
@@ -41,7 +41,7 @@ for the k-th smallest value. This can be useful if you have previously called `a
 to find a smaller or larger rank (that will have led to partial sorting of
 `index`, thus implying some constraints on the location).
 
-#### Licensing
+### Licensing
 
 The Fortran Standard Library is distributed under the MIT
 License. It is worth noting that  `select` and `arg_select`
@@ -49,28 +49,26 @@ were derived using some code from quickSelect in the Coretran library, by Leon F
 https://github.com/leonfoks/coretran. Leon Foks has given permission for the code here
 to be released under stdlib's MIT license.
 
-### Specifications of the `stdlib_selection` procedures
+## `select` - find the k-th smallest value in an input array
 
-#### `select` - find the k-th smallest value in an input array
-
-##### Status
+### Status
 
 Experimental
 
-##### Description
+### Description
 
 Returns the k-th smallest value of `array(:)`, and also partially sorts `array(:)`
 such that `all(array(1:k) <= array(k))`  and `all(array(k) <= array((k+1):size(array)))`
 
-##### Syntax
+### Syntax
 
 `call [[stdlib_selection(module):select(interface)]]( array, k, kth_smallest [, left, right ] )`
 
-##### Class
+### Class
 
 Generic subroutine.
 
-##### Arguments
+### Arguments
 
 `array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
@@ -95,16 +93,13 @@ in `array(1:right)`. If `right` is not present, the default is `size(array)`. Th
 to `select` are made, because the partial sorting of `array` implies constraints on where
 we need to search.
 
-##### Notes
+### Notes
 
 Selection of a single value should have runtime of O(`size(array)`), so it is
 asymptotically faster than sorting `array` entirely. The test program at the
 end of this document shows that is the case.
 
-On return the elements of `array` will be partially sorted such that:
-`all( array(1:k-1) <= array(k) )` and `all(array(k) <= array(k+1:size(array)))`.
-
-##### Example
+### Example
 
 ```fortran
     program demo_select
@@ -136,27 +131,27 @@ On return the elements of `array` will be partially sorted such that:
     end program demo_select
 ```
 
-#### `arg_select` - find the kth smallest value in an input array
+## `arg_select` - find the kth smallest value in an input array
 
-##### Status
+### Status
 
 Experimental
 
-##### Description
+### Description
 
 Returns the index of the k-th smallest value of `array(:)`, and also partially sorts
 the index-array `indx(:)` such that `all(array(indx(1:k)) <= array(indx(k)))`  and
 `all(array(indx(k)) <= array(indx((k+1):size(array))))`
 
-##### Syntax
+### Syntax
 
 `call [[stdlib_selection(module):arg_select(interface)]]( array, indx, k, kth_smallest [, left, right ] )`
 
-##### Class
+### Class
 
 Generic subroutine.
 
-##### Arguments
+### Arguments
 
 `array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
@@ -187,19 +182,21 @@ in `array(indx(1:right))`. If `right` is not present, the default is `size(array
 to `arg_select` are made, because the reordering of `indx` implies constraints on
 where we need to search.
 
-##### Notes
+### Notes
 
 `arg_select` does not modify `array`, unlike `select`.
 
-While it is essential that that `indx` contains the integers `1:size(array)` (in any
-order), the code does not check for this.
+While it is essential that that `indx` contains a permutation of the integers `1:size(array)`, 
+the code does not check for this. For example if `size(array) == 4`, then we could have 
+`indx = [4, 2, 1, 3]` or `indx = [1, 2, 3, 4]`, but not `indx = [2, 1, 2, 4]`. It is the user's
+responsibility to avoid such errors. 
 
 Selection of a single value should have runtime of O(`size(array)`), so it is
 asymptotically faster than sorting `array` entirely. The test program at the end of
 these documents confirms that is the case.
 
 
-##### Example
+### Example
 
 
 ```fortran

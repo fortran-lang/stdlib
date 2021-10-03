@@ -21,6 +21,9 @@ private
 public select, arg_select
 
 interface select
+    !! version: experimental
+    !! ([Specification](..//page/specs/stdlib_selection.html#description))
+
   #:for arraykind, arraytype in ARRAY_KINDS_TYPES
     #:for intkind, inttype in INT_KINDS_TYPES
       #:set name = rname("select", 1, arraytype, arraykind, intkind)
@@ -30,6 +33,8 @@ interface select
 end interface
 
 interface arg_select
+    !! version: experimental
+    !! ([Specification](..//page/specs/stdlib_selection.html#description_1))
   #:for arraykind, arraytype in ARRAY_KINDS_TYPES
     #:for intkind, inttype in INT_KINDS_TYPES
       #:set name = rname("arg_select", 1, arraytype, arraykind, intkind)
