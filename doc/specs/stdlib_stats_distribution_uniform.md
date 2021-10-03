@@ -1,5 +1,5 @@
 ---
-title: stats_distribution
+title: stats_distribution_uniform
 ---
 
 # Statistical Distributions -- Uniform Distribution Module
@@ -211,7 +211,7 @@ f(x) = 1 / (scale%re * scale%im);  for complex uniform distribution.
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_uniform(module):uniform_distribution_pdf(interface)]](x, loc, scale)`
+`result = [[stdlib_stats_distribution_uniform(module):pdf_uniform(interface)]](x, loc, scale)`
 
 ### Class
 
