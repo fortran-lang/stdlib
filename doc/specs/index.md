@@ -21,9 +21,9 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [math](./stdlib_math.html) - General purpose mathematical functions
  - [optval](./stdlib_optval.html) - Fallback value for optional arguments
  - [quadrature](./stdlib_quadrature.html) - Numerical integration
+ - [random](./stdlib_random.html) - Probability Distributions random number generator
  - [sorting](./stdlib_sorting.html) - Sorting of rank one arrays
  - [stats](./stdlib_stats.html) - Descriptive Statistics
- - [stats_distribution_PRNG](./stdlib_stats_distribution_PRNG.html) - Probability Distributions random number generator
  - [string\_type](./stdlib_string_type.html) - Basic string support
  - [strings](./stdlib_strings.html) - String handling and manipulation routines
  - [stringlist_type](./stdlib_stringlist_type.html) - 1-Dimensional list of strings
