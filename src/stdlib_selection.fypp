@@ -157,7 +157,8 @@ contains
                     do while (array(hi) > pivot)
                       hi=hi-1_ip
                     end do
-                    do while (lo <= hi .and. array(lo) <= pivot)
+                    do while (lo <= hi )
+                       if(array(lo) > pivot) exit
                       lo=lo+1_ip
                     end do
                     if (lo <= hi) then
@@ -275,7 +276,8 @@ contains
                     do while (array(indx(hi)) > pivot)
                       hi=hi-1_ip
                     end do
-                    do while (lo <= hi .and. array(indx(lo)) <= pivot)
+                    do while (lo <= hi )
+                      if(array(indx(lo)) > pivot) exit
                       lo=lo+1_ip
                     end do
                     if (lo <= hi) then
