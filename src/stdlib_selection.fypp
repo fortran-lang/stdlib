@@ -99,7 +99,6 @@ contains
               !! partially sorted, see documentation for `a(:)`).
 
           ${inttype}$ :: l, r, mid, iPivot
-          ${arraytype}$ :: pivot
           integer, parameter :: ip = ${intkind}$
 
           l = 1_ip
@@ -120,9 +119,9 @@ contains
               call partition(a, l, r, iPivot)
 
               if (iPivot < k) then
-                l = iPivot + 1
+                l = iPivot + 1_ip
               elseif (iPivot > k) then
-                r = iPivot - 1
+                r = iPivot - 1_ip
               elseif (iPivot == k) then
                 kth_smallest = a(k)
                 return
@@ -156,15 +155,15 @@ contains
                   hi=right
                   do while (lo <= hi)
                     do while (array(hi) > pivot)
-                      hi=hi-1
+                      hi=hi-1_ip
                     end do
                     do while (lo <= hi .and. array(lo) <= pivot)
-                      lo=lo+1
+                      lo=lo+1_ip
                     end do
                     if (lo <= hi) then
                       call swap(array(lo),array(hi))
-                      lo=lo+1
-                      hi=hi-1
+                      lo=lo+1_ip
+                      hi=hi-1_ip
                     end if
                   end do
                   call swap(array(left),array(hi))
@@ -236,9 +235,9 @@ contains
               call arg_partition(a, indx, l, r, iPivot)
 
               if (iPivot < k) then
-                l = iPivot + 1
+                l = iPivot + 1_ip
               elseif (iPivot > k) then
-                r = iPivot - 1
+                r = iPivot - 1_ip
               elseif (iPivot == k) then
                 kth_smallest = indx(k)
                 return
@@ -274,15 +273,15 @@ contains
                   hi = right
                   do while (lo <= hi)
                     do while (array(indx(hi)) > pivot)
-                      hi=hi-1
+                      hi=hi-1_ip
                     end do
                     do while (lo <= hi .and. array(indx(lo)) <= pivot)
-                      lo=lo+1
+                      lo=lo+1_ip
                     end do
                     if (lo <= hi) then
                       call swap(indx(lo),indx(hi))
-                      lo=lo+1
-                      hi=hi-1
+                      lo=lo+1_ip
+                      hi=hi-1_ip
                     end if
                   end do
                   call swap(indx(left),indx(hi))
