@@ -8,33 +8,17 @@ submodule (stdlib_math) stdlib_math_all_close
     
 contains
 
-    #:def inrank(r1)
-        rank(${r1}$)
-            select rank(b)
-            rank(${r1}$)
-                close = all(is_close(a, b, rel_tol, abs_tol))
-            rank default
-                error stop "*<ERROR>* The ranks of `a` and `b` in `all_close` are not equal."
-            end select
-    #:enddef
-
     #:for k1, t1 in RC_KINDS_TYPES
-    logical module function all_close_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol) result(close)
+    #:for r1 in RANKS
+    logical module function all_close_${r1}$_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol) result(close)
 
-        ${t1}$, intent(in) :: a(..), b(..)
+        ${t1}$, intent(in) :: a${ranksuffix(r1)}$, b${ranksuffix(r1)}$
         real(${k1}$), intent(in), optional :: rel_tol, abs_tol
 
-        select rank(a)
+        close = all(is_close(a, b, rel_tol, abs_tol))
 
-        #:for r1 in RANKS
-        $:inrank(r1)
-        #:endfor
-
-        rank default
-            error stop "*<ERROR>* The rank of `a` in `all_close` is too large to be supported."
-        end select
-
-    end function all_close_${t1[0]}$${k1}$
+    end function all_close_${r1}$_${t1[0]}$${k1}$
+    #:endfor
     #:endfor
 
 end submodule stdlib_math_all_close
