@@ -8,7 +8,7 @@ title: Selection Procedures
 
 ## Overview of selection
 
-Suppose you wish to find the value of the kth-smallest entry in an array of size N, or
+Suppose you wish to find the value of the k-th smallest entry in an array of size N, or
 the index of that value. While it could be done by sorting the whole array
 using `[[stdlib_sorting(module):sort(interface)]]` or 
 `[[stdlib_sorting(module):sort_index(interface)]]` from 
@@ -31,23 +31,22 @@ for the kth-smallest value. This can be useful if you have previously called `se
 to find a smaller or larger rank (that will have led to partial sorting of
 `array`, thus implying some constraints on the location).
 
-* `arg_select` is used to find the index of the kth-smallest entry of an array.
+* `arg_select` is used to find the index of the k-th smallest entry of an array.
 In this case the input array is not modified, but the user must provide an
 input index array with the same size as `array`, having unique indices from
 `1:size(array)`, which is modified instead. On return the index array is modified
 such that `all(array(index(1:k)) <= array(index(k)))` and `all(array(k) <= array(k+1:size(array)))`.
 The user can optionally specify `left` and `right` indices to constrain the search
-for the kth-smallest value. This can be useful if you have previously called `arg_select`
+for the k-th smallest value. This can be useful if you have previously called `arg_select`
 to find a smaller or larger rank (that will have led to partial sorting of
 `index`, thus implying some constraints on the location).
 
 #### Licensing
 
 The Fortran Standard Library is distributed under the MIT
-License. However components of the library may be based on code with
-additional licensing restrictions. In particular `select` and `arg_select`
+License. It is worth noting that  `select` and `arg_select`
 were derived using some code from quickSelect in the Coretran library, by Leon Foks,
-https://github.com/leonfoks/coretran. Leon has given permission for the code here
+https://github.com/leonfoks/coretran. Leon Foks has given permission for the code here
 to be released under stdlib's MIT licence.
 
 ### Specifications of the `stdlib_selection` procedures
