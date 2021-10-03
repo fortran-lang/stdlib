@@ -8,7 +8,7 @@ module stdlib_selection
 ! This code was modified from the "Coretran" implementation "quickSelect" by
 ! Leon Foks, https://github.com/leonfoks/coretran/tree/master/src/sorting
 !
-! Leon gave permission for this to be released under stdlib's MIT licence.
+! Leon Foks gave permission to be release this code under stdlib's MIT license.
 ! (https://github.com/fortran-lang/stdlib/pull/500#commitcomment-57418593)
 !
 

@@ -47,11 +47,11 @@ The Fortran Standard Library is distributed under the MIT
 License. It is worth noting that  `select` and `arg_select`
 were derived using some code from quickSelect in the Coretran library, by Leon Foks,
 https://github.com/leonfoks/coretran. Leon Foks has given permission for the code here
-to be released under stdlib's MIT licence.
+to be released under stdlib's MIT license.
 
 ### Specifications of the `stdlib_selection` procedures
 
-#### `select` - find the kth smallest value in an input array
+#### `select` - find the k-th smallest value in an input array
 
 ##### Status
 
@@ -85,20 +85,20 @@ the k-th smallest entry of `array(:)`.
 
 `left` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
-in `array(left:size(array))`. If not present it is 1. This is typically useful if multiple calls
+in `array(left:size(array))`. If `left` is not present, the default is 1. This is typically useful if multiple calls
 to `select` are made, because the partial sorting of `array` implies constraints on where
 we need to search.
 
 `right` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
-in `array(1:right)`. If not present it is `size(array)`. This is typically useful if multiple calls
+in `array(1:right)`. If `right` is not present, the default is `size(array)`. This is typically useful if multiple calls
 to `select` are made, because the partial sorting of `array` implies constraints on where
 we need to search.
 
 ##### Notes
 
 Selection of a single value should have runtime of O(`size(array)`), so it is
-asymptotically faster than sorting `array` entirely. The test program at the the
+asymptotically faster than sorting `array` entirely. The test program at the
 end of this document shows that is the case.
 
 On return the elements of `array` will be partially sorted such that:
@@ -177,13 +177,13 @@ and on return it contains the index of the k-th smallest entry of `array(:)`.
 
 `left` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
-in `array(indx(left:size(array)))`. If not present it is 1. This is typically useful if multiple calls
+in `array(indx(left:size(array)))`. If `left` is not present, the default is 1. This is typically useful if multiple calls
 to `arg_select` are made, because the partial sorting of `indx` implies constraints on where
 we need to search.
 
 `right` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
-in `array(indx(1:right))`. If not present it is `size(array)`. This is typically useful if multiple calls
+in `array(indx(1:right))`. If `right` is not present, the default is `size(array)`. This is typically useful if multiple calls
 to `arg_select` are made, because the reordering of `indx` implies constraints on
 where we need to search.
 
@@ -237,7 +237,7 @@ these documents confirms that is the case.
 ## Comparison with using `sort`
 
 The following program compares the timings of `select` and `arg_select` for
-computing the median of an array, vs using `sort` from stdlib.  In theory we
+computing the median of an array, vs using `sort` from `stdlib`.  In theory we
 should see a speed improvement with the selection routines which grows like
 LOG(size(`array`)).
 
