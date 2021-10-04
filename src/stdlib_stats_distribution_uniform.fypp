@@ -4,7 +4,7 @@
 module stdlib_stats_distribution_uniform
     use stdlib_kinds
     use stdlib_error, only : error_stop
-    use stdlib_stats_distribution_PRNG, only : dist_rand
+    use stdlib_random, only : dist_rand
 
     implicit none
     private
