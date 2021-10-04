@@ -227,7 +227,7 @@ Checks if a matrix is square
 
 ### Return value
 
-Returns a logical value that is true if the input matrix is square, and false otherwise.
+Returns a `logical` scalar that is `.true.` if the input matrix is square, and `.false.` otherwise.
 
 ### Example
 
@@ -264,7 +264,7 @@ Checks if a matrix is diagonal
 
 ### Return value
 
-Returns a logical value that is true if the input matrix is diagonal, and false otherwise.
+Returns a `logical` scalar that is `.true.` if the input matrix is diagonal, and `.false.` otherwise.
 Note that nonsquare matrices may be diagonal, so long as `a_ij = 0` when `i /= j`.
 
 ### Example
@@ -302,7 +302,7 @@ Checks if a matrix is symmetric
 
 ### Return value
 
-Returns a logical value that is true if the input matrix is symmetric, and false otherwise.
+Returns a `logical` scalar that is `.true.` if the input matrix is symmetric, and `.false.` otherwise.
 
 ### Example
 
@@ -339,7 +339,7 @@ Checks if a matrix is skew-symmetric
 
 ### Return value
 
-Returns a logical value that is true if the input matrix is skew-symmetric, and false otherwise.
+Returns a `logical` scalar that is `.true.` if the input matrix is skew-symmetric, and `.false.` otherwise.
 
 ### Example
 
@@ -376,7 +376,7 @@ Checks if a matrix is Hermitian
 
 ### Return value
 
-Returns a logical value that is true if the input matrix is Hermitian, and false otherwise.
+Returns a `logical` scalar that is `.true.` if the input matrix is Hermitian, and `.false.` otherwise.
 
 ### Example
 
@@ -415,8 +415,8 @@ Checks if a matrix is triangular
 
 ### Return value
 
-Returns a logical value that is true if the input matrix is the type of triangular specified by `uplo` (upper or lower), and false otherwise.
-Note that the definition of triangular used here allows nonsquare matrices to be triangular.
+Returns a `logical` scalar that is `.true.` if the input matrix is the type of triangular specified by `uplo` (upper or lower), and `.false.` otherwise.
+Note that the definition of triangular used in this implementation allows nonsquare matrices to be triangular.
 Specifically, upper triangular matrices satisfy `a_ij = 0` when `j < i`, and lower triangular matrices satisfy `a_ij = 0` when `j > i`.
 
 ### Example
@@ -456,8 +456,8 @@ Checks if a matrix is Hessenberg
 
 ### Return value
 
-Returns a logical value that is true if the input matrix is the type of Hessenberg specified by `uplo` (upper or lower), and false otherwise.
-Note that the definition of Hessenberg used here allows nonsquare matrices to be Hessenberg.
+Returns a `logical` scalar that is `.true.` if the input matrix is the type of Hessenberg specified by `uplo` (upper or lower), and `.false.` otherwise.
+Note that the definition of Hessenberg used in this implementation allows nonsquare matrices to be Hessenberg.
 Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and lower Hessenberg matrices satisfy `a_ij = 0` when `j > i+1`.
 
 ### Example
