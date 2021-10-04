@@ -94,7 +94,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is square
-    !! ([Specification](../page/specs/stdlib_linalg.html#description_4))
+    !! ([Specification](../page/specs/stdlib_linalg.html#is_square))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_square_${t1[0]}$${k1}$
     #:endfor
@@ -106,7 +106,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is diagonal
-    !! ([Specification](../page/specs/stdlib_linalg.html#description_5))
+    !! ([Specification](../page/specs/stdlib_linalg.html#is_diagonal))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_diagonal_${t1[0]}$${k1}$
     #:endfor
@@ -118,7 +118,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is symmetric
-    !! ([Specification](../page/specs/stdlib_linalg.html#description_6))
+    !! ([Specification](../page/specs/stdlib_linalg.html#is_symmetric))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_symmetric_${t1[0]}$${k1}$
     #:endfor
@@ -130,7 +130,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is skew-symmetric
-    !! ([Specification](../page/specs/stdlib_linalg.html#description_7))
+    !! ([Specification](../page/specs/stdlib_linalg.html#is_skew_symmetric))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_skew_symmetric_${t1[0]}$${k1}$
     #:endfor
@@ -142,7 +142,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is Hermitian
-    !! ([Specification](../page/specs/stdlib_linalg.html#description_8))
+    !! ([Specification](../page/specs/stdlib_linalg.html#is_hermitian))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_hermitian_${t1[0]}$${k1}$
     #:endfor
@@ -154,7 +154,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is triangular
-    !! ([Specification](../page/specs/stdlib_linalg.html#description_9))
+    !! ([Specification](../page/specs/stdlib_linalg.html#is_triangular))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_triangular_${t1[0]}$${k1}$
     #:endfor
@@ -166,7 +166,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is Hessenberg
-    !! ([Specification](../page/specs/stdlib_linalg.html#description_10))
+    !! ([Specification](../page/specs/stdlib_linalg.html#is_hessenberg))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_Hessenberg_${t1[0]}$${k1}$
     #:endfor
