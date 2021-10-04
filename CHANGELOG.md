@@ -42,6 +42,8 @@
     [#146](https://github.com/fortran-lang/stdlib/pull/146)
   - new procedures `gauss_legendre`, `gauss_legendre_lobatto`
     [#313](https://github.com/fortran-lang/stdlib/pull/313)
+- new module `stdlib_random`
+  [#271](https://github.com/fortran-lang/stdlib/pull/271)
 - new module `stdlib_sorting`
   - new procedures `sort`, `ord_sort` and `sort_index`
     [#408](https://github.com/fortran-lang/stdlib/pull/408)
@@ -61,8 +63,6 @@
     [#191](https://github.com/fortran-lang/stdlib/pull/191)
   - new procedure `median`
     [#426](https://github.com/fortran-lang/stdlib/pull/426)
-- new module `stdlib_stats_distribution_PRNG`
-  [#271](https://github.com/fortran-lang/stdlib/pull/271)
 - new module `stdlib_string_type`
   - new derived types `string_type`
     [#320](https://github.com/fortran-lang/stdlib/pull/320)
