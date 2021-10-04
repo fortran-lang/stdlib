@@ -1,5 +1,12 @@
 # Unreleased
 
+
+# Version 0.1.0
+
+Full release notes available at [v0.1.0] tag.
+
+[v0.1.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.1.0
+
 - new module `stdlib_ascii`
   [#32](https://github.com/fortran-lang/stdlib/pull/32)
 - new module `stdlib_bitsets`
@@ -20,19 +27,21 @@
 - new module `stdlib_linalg`
   - new procedures `diag`, `eye` and `trace`
     [#170](https://github.com/fortran-lang/stdlib/pull/170)
-  - new procedures `linspace` and `logspace`
-    [#420](https://github.com/fortran-lang/stdlib/pull/420)
   - new procedure `outer_product`
     [#432](https://github.com/fortran-lang/stdlib/pull/432)
-  - new procedure `arange`
-    [#480](https://github.com/fortran-lang/stdlib/pull/480)
 - new module `stdlib_logger`
-  - new derived type: `logger_type`
+  - new derived type `logger_type`
     [#228](https://github.com/fortran-lang/stdlib/pull/228)
     [#261](https://github.com/fortran-lang/stdlib/pull/261)
 - new module `stdlib_math`
   - new procedure `clip`
     [#355](https://github.com/fortran-lang/stdlib/pull/355)
+  - new procedures `linspace` and `logspace`
+    [#420](https://github.com/fortran-lang/stdlib/pull/420)
+  - new procedure `arange`
+    [#480](https://github.com/fortran-lang/stdlib/pull/480)
+  - new procedure `gcd`
+    [#539](https://github.com/fortran-lang/stdlib/pull/539)
 - new module `stdlib_optval`
   [#73](https://github.com/fortran-lang/stdlib/pull/73)
   [#96](https://github.com/fortran-lang/stdlib/pull/96)
