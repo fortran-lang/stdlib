@@ -30,7 +30,6 @@ SRCFYPP = \
 	stdlib_math_linspace.fypp \
 	stdlib_math_logspace.fypp \
         stdlib_stats_distribution_PRNG.fypp \
-        stdlib_stats_distribution_uniform.fypp \
         stdlib_string_type.fypp \
         stdlib_string_type_constructor.fypp \
         stdlib_strings.fypp \
@@ -149,10 +148,6 @@ stdlib_stats_var.o: \
 stdlib_stats_distribution_PRNG.o: \
     stdlib_kinds.o \
     stdlib_error.o
-stdlib_stats_distribution_uniform.o: \
-    stdlib_kinds.o \
-    stdlib_error.o \
-    stdlib_stats_distribution_PRNG.o
 stdlib_string_type.o: stdlib_ascii.o \
     stdlib_kinds.o
 stdlib_string_type_constructor.o: stdlib_string_type.o \
