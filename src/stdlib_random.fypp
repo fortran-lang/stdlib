@@ -19,7 +19,7 @@ module stdlib_random
     !!
     !! Generation of random integers with different kinds
     !! ([Specification](../page/specs/stdlib_random.html#
-    !! description))
+    !! dist_rand-get-a-random-integer-with-specified-kind))
         #:for k1, t1 in INT_KINDS_TYPES
         module procedure dist_rand_${t1[0]}$${k1}$
         #:endfor
@@ -30,7 +30,7 @@ module stdlib_random
     !!
     !! Set seed value for random number generator
     !! ([Specification](../page/specs/stdlib_random.html#
-    !! description))
+    !! random_seed-set-or-get-a-value-of-seed-to-the-probability-distribution-pseudorandom-number-generator))
     !!
         #:for k1, t1 in INT_KINDS_TYPES
         module procedure random_distribution_seed_${t1[0]}$${k1}$
