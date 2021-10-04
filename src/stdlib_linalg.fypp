@@ -216,9 +216,8 @@ contains
       pure function is_diagonal_${t1[0]}$${k1}$(A) result(res)
         ${t1}$, intent(in) :: A(:,:)
         logical :: res
-        ${t1}$ :: zero
+        ${t1}$, parameter :: zero = 0 !zero of relevant type
         integer :: m, n, o, i, j
-        zero = 0 !zero of relevant type
         m = size(A,1)
         n = size(A,2)
         do j = 1, n !loop over all columns
@@ -322,9 +321,8 @@ contains
         ${t1}$, intent(in) :: A(:,:)
         character, intent(in) :: uplo
         logical :: res
-        ${t1}$ :: zero
+        ${t1}$, parameter :: zero = 0 !zero of relevant type
         integer :: m, n, o, i, j
-        zero = 0 !zero of relevant type
         m = size(A,1)
         n = size(A,2)
         if ((uplo == 'u') .or. (uplo == 'U')) then !check for upper triangularity
@@ -361,9 +359,8 @@ contains
         ${t1}$, intent(in) :: A(:,:)
         character, intent(in) :: uplo
         logical :: res
-        ${t1}$ :: zero
+        ${t1}$, parameter :: zero = 0 !zero of relevant type
         integer :: m, n, o, i, j
-        zero = 0 !zero of relevant type
         m = size(A,1)
         n = size(A,2)
         if ((uplo == 'u') .or. (uplo == 'U')) then !check for upper Hessenberg
