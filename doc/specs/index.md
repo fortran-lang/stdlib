@@ -24,7 +24,7 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [random](./stdlib_random.html) - Probability Distributions random number generator
  - [sorting](./stdlib_sorting.html) - Sorting of rank one arrays
  - [stats](./stdlib_stats.html) - Descriptive Statistics
- - [stats_distributions_uniform](./stdlib_stats_distribtuion_uniform.html) - Uniform Probability Distribution
+ - [stats_distributions_uniform](./stdlib_stats_distribution_uniform.html) - Uniform Probability Distribution
  - [string\_type](./stdlib_string_type.html) - Basic string support
  - [strings](./stdlib_strings.html) - String handling and manipulation routines
  - [stringlist_type](./stdlib_stringlist_type.html) - 1-Dimensional list of strings
