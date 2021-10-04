@@ -25,7 +25,8 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Creates a diagonal array or extract the diagonal elements of an array
-    !! ([Specification](../page/specs/stdlib_linalg.html#description))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! diag-create-a-diagonal-array-or-extract-the-diagonal-elements-of-an-array))
       !
       ! Vector to matrix
       !
@@ -67,7 +68,8 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Computes the trace of a matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#description_2))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! trace-trace-of-a-matrix))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure trace_${t1[0]}$${k1}$
     #:endfor
@@ -79,7 +81,8 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Computes the outer product of two vectors, returning a rank-2 array
-    !! ([Specification](../page/specs/stdlib_linalg.html#description_3))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! outer_product-computes-the-outer-product-of-two-vectors))
     #:for k1, t1 in RCI_KINDS_TYPES
       pure module function outer_product_${t1[0]}$${k1}$(u, v) result(res)
         ${t1}$, intent(in) :: u(:), v(:)
@@ -94,7 +97,8 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is square
-    !! ([Specification](../page/specs/stdlib_linalg.html#is_square))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_square-checks-if-a-matrix-is-square))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_square_${t1[0]}$${k1}$
     #:endfor
@@ -106,7 +110,8 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is diagonal
-    !! ([Specification](../page/specs/stdlib_linalg.html#is_diagonal))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_diagonal-checks-if-a-matrix-is-diagonal))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_diagonal_${t1[0]}$${k1}$
     #:endfor
@@ -118,7 +123,8 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is symmetric
-    !! ([Specification](../page/specs/stdlib_linalg.html#is_symmetric))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_symmetric-checks-if-a-matrix-is-symmetric))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_symmetric_${t1[0]}$${k1}$
     #:endfor
@@ -130,7 +136,8 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is skew-symmetric
-    !! ([Specification](../page/specs/stdlib_linalg.html#is_skew_symmetric))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_skew_symmetric-checks-if-a-matrix-is-skew-symmetric))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_skew_symmetric_${t1[0]}$${k1}$
     #:endfor
@@ -142,7 +149,8 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is Hermitian
-    !! ([Specification](../page/specs/stdlib_linalg.html#is_hermitian))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_hermitian-checks-if-a-matrix-is-hermitian))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_hermitian_${t1[0]}$${k1}$
     #:endfor
@@ -154,7 +162,8 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is triangular
-    !! ([Specification](../page/specs/stdlib_linalg.html#is_triangular))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_triangular-checks-if-a-matrix-is-triangular))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_triangular_${t1[0]}$${k1}$
     #:endfor
@@ -166,7 +175,8 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is Hessenberg
-    !! ([Specification](../page/specs/stdlib_linalg.html#is_hessenberg))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_hessenberg-checks-if-a-matrix-is-hessenberg))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure is_Hessenberg_${t1[0]}$${k1}$
     #:endfor
@@ -179,7 +189,8 @@ contains
       !! version: experimental
       !!
       !! Constructs the identity matrix
-      !! ([Specification](../page/specs/stdlib_linalg.html#description_1))
+      !! ([Specification](../page/specs/stdlib_linalg.html#
+      !! eye-construct-the-identity-matrix))
       integer, intent(in) :: n
       integer(int8) :: res(n, n)
       integer :: i
