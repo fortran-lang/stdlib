@@ -291,11 +291,7 @@ contains
       pure function is_hermitian_${t1[0]}$${k1}$(A) result(res)
         ${t1}$, intent(in) :: A(:,:)
         logical :: res
-        if (.not. is_square(A)) then
-           res = .false.
-           return !nonsquare matrices cannot be Hermitian
-        end if
-        res = is_symmetric(A) !real symmetric matrices are Hermitian
+        res = is_symmetric(A) !symmetry and Hermiticity are equivalent for real matrices
       end function is_hermitian_${t1[0]}$${k1}$
     #:endfor
     #:for k1, t1 in CMPLX_KINDS_TYPES
