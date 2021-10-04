@@ -148,7 +148,7 @@ Trace of a matrix (rank-2 array)
 
 ### Syntax
 
-`result = [stdlib_linalg(module):trace(interface)](A)`
+`result = [[stdlib_linalg(module):trace(interface)]](A)`
 
 ### Arguments
 
