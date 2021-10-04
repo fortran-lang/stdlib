@@ -3,7 +3,7 @@
 program test_distribution_uniform
     use stdlib_error, only : check
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
-    use stdlib_stats_distribution_PRNG, only : random_seed, dist_rand
+    use stdlib_random, only : random_seed, dist_rand
     use stdlib_stats_distribution_uniform, uni_rvs => rvs_uniform,             &
                                            uni_pdf => pdf_uniform,             &
                                            uni_cdf => cdf_uniform
