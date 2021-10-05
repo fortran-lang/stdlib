@@ -4,7 +4,7 @@ implicit none
 
 contains
 
-    module function linspace_default_1_rsp_rsp(start, end) result(res)
+    pure module function linspace_default_1_rsp_rsp(start, end) result(res)
       real(sp), intent(in) :: start
       real(sp), intent(in) :: end
 
@@ -13,7 +13,7 @@ contains
       res = linspace(start, end, DEFAULT_LINSPACE_LENGTH)
 
     end function linspace_default_1_rsp_rsp
-    module function linspace_default_1_rdp_rdp(start, end) result(res)
+    pure module function linspace_default_1_rdp_rdp(start, end) result(res)
       real(dp), intent(in) :: start
       real(dp), intent(in) :: end
 
@@ -22,7 +22,7 @@ contains
       res = linspace(start, end, DEFAULT_LINSPACE_LENGTH)
 
     end function linspace_default_1_rdp_rdp
-    module function linspace_default_1_rqp_rqp(start, end) result(res)
+    pure module function linspace_default_1_rqp_rqp(start, end) result(res)
       real(qp), intent(in) :: start
       real(qp), intent(in) :: end
 
@@ -32,7 +32,7 @@ contains
 
     end function linspace_default_1_rqp_rqp
 
-    module function linspace_n_1_rsp_rsp(start, end, n) result(res)
+    pure module function linspace_n_1_rsp_rsp(start, end, n) result(res)
       real(sp), intent(in) :: start
       real(sp), intent(in) :: end
       integer, intent(in) :: n
@@ -61,7 +61,7 @@ contains
       end do
 
     end function linspace_n_1_rsp_rsp
-    module function linspace_n_1_rdp_rdp(start, end, n) result(res)
+    pure module function linspace_n_1_rdp_rdp(start, end, n) result(res)
       real(dp), intent(in) :: start
       real(dp), intent(in) :: end
       integer, intent(in) :: n
@@ -90,7 +90,7 @@ contains
       end do
 
     end function linspace_n_1_rdp_rdp
-    module function linspace_n_1_rqp_rqp(start, end, n) result(res)
+    pure module function linspace_n_1_rqp_rqp(start, end, n) result(res)
       real(qp), intent(in) :: start
       real(qp), intent(in) :: end
       integer, intent(in) :: n
