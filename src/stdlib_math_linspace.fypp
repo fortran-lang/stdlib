@@ -7,7 +7,7 @@ contains
 
   #:for k1, t1 in REAL_KINDS_TYPES
     #:set RName = rname("linspace_default", 1, t1, k1)
-    module function ${RName}$(start, end) result(res)
+    pure module function ${RName}$(start, end) result(res)
       ${t1}$, intent(in) :: start
       ${t1}$, intent(in) :: end
 
@@ -20,7 +20,7 @@ contains
 
   #:for k1, t1 in REAL_KINDS_TYPES
     #:set RName = rname("linspace_n", 1, t1, k1)
-    module function ${RName}$(start, end, n) result(res)
+    pure module function ${RName}$(start, end, n) result(res)
       ${t1}$, intent(in) :: start
       ${t1}$, intent(in) :: end
       integer, intent(in) :: n
