@@ -1,4 +1,4 @@
-### Pre-process: .fpp -> .f90 via Fypp
+#### Pre-process: .fpp -> .f90 via Fypp
 
 # Create a list of the files to be preprocessed
 set(fppFiles
@@ -14,7 +14,7 @@ set(fppFiles
     stdlib_sorting.fypp
     stdlib_sorting_ord_sort.fypp
     stdlib_sorting_sort.fypp
-    stdlib_sorting_sort_index.fypp 
+    stdlib_sorting_sort_index.fypp
     stdlib_stats.fypp
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
@@ -24,6 +24,7 @@ set(fppFiles
     stdlib_stats_moment_all.fypp
     stdlib_stats_moment_mask.fypp
     stdlib_stats_moment_scalar.fypp
+    stdlib_stats_distribution_uniform.fypp
     stdlib_stats_var.fypp
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp

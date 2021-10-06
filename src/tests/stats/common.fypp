@@ -18,6 +18,14 @@
 #! Collected (kind, type) tuples for integer types
 #:set INT_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES))
 
+#! Complex kinds to be considered during templating
+#:set CMPLX_KINDS = ["sp", "dp", "qp"]
+
+#! Complex types to be considered during templating
+#:set CMPLX_TYPES = ["complex({})".format(k) for k in CMPLX_KINDS]
+
+#! Collected (kind, type) tuples for complex types
+#:set CMPLX_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES))
 
 #! Whether Fortran 90 compatible code should be generated
 #:set VERSION90 = defined('VERSION90')
