@@ -86,7 +86,7 @@ contains
     !
     ! Latest version - 1 January 2001
     !
-        real(dp), parameter :: M1 = 2147483648.0_dp
+        real(dp), parameter :: M1 = 2147483648.0_dp, vn = 0.00991256303526217_dp
         real(dp)            :: dn, tn, q
         integer :: i
 
