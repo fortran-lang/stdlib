@@ -4,6 +4,7 @@
 set(fppFiles
     test_median.fypp
     test_distribution_uniform.fypp
+    test_distribution_normal.fypp
 )
 
 # Custom preprocessor flags
@@ -27,6 +28,7 @@ ADDTEST(var)
 ADDTEST(varn)
 ADDTEST(distribution_PRNG)
 ADDTEST(distribution_uniform)
+ADDTEST(distribution_normal)
 
 if(DEFINED CMAKE_MAXIMUM_RANK)
     if(${CMAKE_MAXIMUM_RANK} GREATER 7)

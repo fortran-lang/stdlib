@@ -1,12 +1,12 @@
 ---
-title: stats_distribution
+title: stats_distribution_normal
 ---
 
-# Statistical Distributions -- Normal Module
+# Statistical Distributions -- Normal Distribution Module
 
 [TOC]
 
-## `normal_distribution_rvs` - normal distribution random variates
+## `rvs_normal` - normal distribution random variates
 
 ### Status
 
@@ -16,15 +16,19 @@ Experimental
 
 A normal continuous random variate distribution, also known as Gaussian, or Gauss or Laplace-Gauss distribution. The location `loc` specifies the mean or expectation. The `scale` specifies the standard deviation. 
 
-Without augument the function returns a standard normal distributed random variate N(0,1). The function is elemental.
+Without argument the function returns a standard normal distributed random variate N(0,1).
 
-With two arguments, the function returns a normal distributed random variate N(loc, scale^2). For complex auguments, the real and imaginary parts are independent of each other. The function is elemental.
+With two arguments, the function returns a normal distributed random variate N(loc, scale^2). For complex arguments, the real and imaginary parts are independent of each other.
 
-With three auguments, the function returns a rank one array of normal distributed random variates.
+With three arguments, the function returns a rank one array of normal distributed random variates.
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_normal(module):normal_distribution_rvs(interface)]]([loc, scale] [[, array_size]])`
+`result = [[stdlib_stats_distribution_normal(module):rvs_normal(interface)]]([loc, scale] [[, array_size]])`
+
+### Class
+
+Function
 
 ### Arguments
 
@@ -44,8 +48,8 @@ The result is a scalar or rank one array, with a size of `array_size`, of type `
 
 ```fortran
 program demo_normal_rvs
-    use stdlib_stats_distribution_PRNG, only: random_seed
-    use stdlib_stats_distribution_normal, only: norm => normal_distribution_rvs
+    use stdlib_random, only: random_seed
+    use stdlib_stats_distribution_normal, only: norm => rvs_normal
 
     implicit none
     real ::  a(2,3,4), b(2,3,4)
@@ -90,7 +94,7 @@ program demo_normal_rvs
 end program demo_normal_rvs
 ```
 
-## `normal_distribution_pdf` - normal probability density function
+## `pdf_normal` - normal distribution probability density function
 
 ### Status
 
@@ -100,11 +104,15 @@ Experimental
 
 The probability density function of the continuous normal distribution.
 
-$$f(x)=\frac{1}{\sigma&space;\sqrt{2&space;\pi}}&space;e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^{2}})$$
+$$f(x) = \frac{1}{\sigma \sqrt{2}} e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^{2}}$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_normal(module):normal_distribution_pdf(interface)]](x, loc, scale)`
+`result = [[stdlib_stats_distribution_normal(module):pdf_normal(interface)]](x, loc, scale)`
+
+### Class
+
+Elemental function
 
 ### Arguments
 
@@ -114,20 +122,19 @@ $$f(x)=\frac{1}{\sigma&space;\sqrt{2&space;\pi}}&space;e^{-\frac{1}{2}(\frac{x-\
 
 `scale`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type.
+All three arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to auguments, of type `real`.
+The result is a scalar or an array, with a shape conformable to arguments, of type `real`.
 
 ### Example
 
 ```fortran
 program demo_normal_pdf
-    use stdlib_stats_distribution_PRNG, only : random_seed
-    use stdlib_stats_distribution_normal, only :                                &
-                                             norm_pdf=>normal_distribution_pdf, &
-                                             norm => normal_distribution_rvs
+    use stdlib_random, only : random_seed
+    use stdlib_stats_distribution_normal, only : norm_pdf=>pdf_normal, &
+                                                 norm => rvs_normal
 
     implicit none
     real :: x(3,4,5),a(3,4,5),b(3,4,5)
@@ -170,7 +177,7 @@ program demo_normal_pdf
 end program demo_normal_pdf
 ```
 
-## `normal_distribution_cdf` - normal cumulative distribution function
+## `cdf_normal` - normal distribution cumulative distribution function
 
 ### Status
 
@@ -180,11 +187,15 @@ Experimental
 
 Cumulative distribution function of the normal continuous distribution
 
-$$F(X)=\frac{1}{2}\left&space;[&space;1&space;&plus;&space;erf(\frac{x-\mu}{\sqrt{2}&space;\sigma})&space;\right&space;])$$
+$$F(x)=\frac{1}{2}\left [ 1+erf(\frac{x-\mu}{\sigma \sqrt{2}}) \right ]$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_normal(module):normal_distribution_cdf(interface)]](x, loc, scale)`
+`result = [[stdlib_stats_distribution_normal(module):cdf_normal(interface)]](x, loc, scale)`
+
+### Class
+
+Elemental function
 
 ### Arguments
 
@@ -194,20 +205,19 @@ $$F(X)=\frac{1}{2}\left&space;[&space;1&space;&plus;&space;erf(\frac{x-\mu}{\sqr
 
 `scale`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-The function is elemental, i.e., all three auguments could be arrays conformable to each other. All three arguments must have the same type.
+All three arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to auguments, of type `real`.
+The result is a scalar or an array, with a shape conformable to arguments, of type `real`.
 
 ### Example
 
 ```fortran
 program demo_norm_cdf
-    use stdlib_stats_distribution_PRNG, only : random_seed
-    use stdlib_stats_distribution_normal, only :                                &
-                                          norm_cdf => normal_distribution_cdf,  &
-                                          norm => normal_distribution_rvs
+    use stdlib_random, only : random_seed
+    use stdlib_stats_distribution_normal, only : norm_cdf => cdf_normal,  &
+                                                 norm => rvs_normal
 
     implicit none
     real :: x(2,3,4),a(2,3,4),b(2,3,4)

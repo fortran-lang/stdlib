@@ -25,6 +25,7 @@ set(fppFiles
     stdlib_stats_moment_mask.fypp
     stdlib_stats_moment_scalar.fypp
     stdlib_stats_distribution_uniform.fypp
+    stdlib_stats_distribution_normal.fypp
     stdlib_stats_var.fypp
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp
