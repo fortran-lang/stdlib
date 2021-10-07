@@ -23,11 +23,11 @@ which implements selection algorithms.
 ## Overview of the module
 
 The module `stdlib_selection` defines two generic subroutines:
-* `select` is used to find the kth-smallest entry of an array. The input
+* `select` is used to find the k-th smallest entry of an array. The input
 array is also modified in-place, and on return will be partially sorted
 such that `all(array(1:k) <= array(k)))`  and `all(array(k) <= array((k+1):size(array)))`.
 The user can optionally specify `left` and `right` indices to constrain the search
-for the kth-smallest value. This can be useful if you have previously called `select`
+for the k-th smallest value. This can be useful if you have previously called `select`
 to find a smaller or larger rank (that will have led to partial sorting of
 `array`, thus implying some constraints on the location).
 
@@ -131,7 +131,7 @@ end of this document shows that is the case.
     end program demo_select
 ```
 
-## `arg_select` - find the kth smallest value in an input array
+## `arg_select` - find the k-th smallest value in an input array
 
 ### Status
 
@@ -156,7 +156,7 @@ Generic subroutine.
 `array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
 `real(sp)`, `real(dp)`, `real(qp)`. It is an `intent(in)` argument. On input it is
-the array in which we search for the kth smallest entry.
+the array in which we search for the k-th smallest entry.
 
 `indx`: shall be a rank one array with the same size as `array`, containing all integers
 from `1:size(array)` in any order. It is of any of the types:

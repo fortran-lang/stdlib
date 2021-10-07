@@ -55,18 +55,18 @@ contains
           !! quickSelect by Leon Foks, https://github.com/leonfoks/coretran
           !!
           ${arraytype}$, intent(inout) :: a(:)
-              !! Array in which we seek the kth-smallest entry.
+              !! Array in which we seek the k-th smallest entry.
               !! On output it will be partially sorted such that
               !! `all(a(1:(k-1)) <= a(k)) .and. all(a(k) <= a((k+1):size(a)))`.
           ${inttype}$, intent(in) :: k
-              !! We want the kth smallest entry. E.G. `k=1` leads to
+              !! We want the k-th smallest entry. E.G. `k=1` leads to
               !! `kth_smallest=min(a)`, and `k=size(a)` leads to
               !! `kth_smallest=max(a)`
           ${arraytype}$, intent(out) :: kth_smallest
-              !! On output contains the kth-smallest value of `a(:)`
+              !! On output contains the k-th smallest value of `a(:)`
           ${inttype}$, intent(in), optional :: left, right
               !! If we know that:
-              !!    the kth-smallest entry of `a` is in `a(left:right)`
+              !!    the k-th smallest entry of `a` is in `a(left:right)`
               !! and also that:
               !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
               !! and:
@@ -163,7 +163,7 @@ contains
           !! quickSelect by Leon Foks, https://github.com/leonfoks/coretran
           !!
           ${arraytype}$, intent(in) :: a(:)
-              !! Array in which we seek the kth-smallest entry.
+              !! Array in which we seek the k-th smallest entry.
           ${inttype}$, intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
@@ -171,14 +171,14 @@ contains
               !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
               !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
           ${inttype}$, intent(in) :: k
-              !! We want index of the kth smallest entry. E.G. `k=1` leads to
+              !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
               !! `a(kth_smallest) = max(a)`
           ${inttype}$, intent(out) :: kth_smallest
-              !! On output contains the index with the kth-smallest value of `a(:)`
+              !! On output contains the index with the k-th smallest value of `a(:)`
           ${inttype}$, intent(in), optional :: left, right
               !! If we know that:
-              !!  the kth-smallest entry of `a` is in `a(indx(left:right))`
+              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
               !! and also that:
               !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
               !! and:
