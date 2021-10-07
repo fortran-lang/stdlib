@@ -12,11 +12,13 @@ module stdlib_quadrature
     public :: trapz_weights
     public :: simps
     public :: simps_weights
+    public :: gauss_legendre
+    public :: gauss_legendre_lobatto
 
 
     interface trapz
-	!! version: experimental
-	!!
+        !! version: experimental
+        !!
         !! Integrates sampled values using trapezoidal rule
         !! ([Specification](../page/specs/stdlib_quadrature.html#description))
         #:for k1, t1 in REAL_KINDS_TYPES
@@ -24,7 +26,7 @@ module stdlib_quadrature
           ${t1}$, dimension(:), intent(in) :: y
           ${t1}$, intent(in) :: dx
           ${t1}$ :: integral
-        end function trapz_dx_${k1}$      
+        end function trapz_dx_${k1}$
         #:endfor
         #:for k1, t1 in REAL_KINDS_TYPES
         module function trapz_x_${k1}$(y, x) result(integral)
@@ -37,8 +39,8 @@ module stdlib_quadrature
 
 
     interface trapz_weights
-	!! version: experimental
-	!!
+        !! version: experimental
+        !!
         !! Integrates sampled values using trapezoidal rule weights for given abscissas
         !! ([Specification](../page/specs/stdlib_quadrature.html#description_1))
         #:for k1, t1 in REAL_KINDS_TYPES
@@ -51,8 +53,8 @@ module stdlib_quadrature
 
 
     interface simps
-	!! version: experimental
-	!!
+        !! version: experimental
+        !!
         !! Integrates sampled values using Simpson's rule
         !! ([Specification](../page/specs/stdlib_quadrature.html#description_3))
         ! "recursive" is an implementation detail
@@ -76,8 +78,8 @@ module stdlib_quadrature
 
 
     interface simps_weights
-	!! version: experimental
-	!!
+        !! version: experimental
+        !!
         !! Integrates sampled values using trapezoidal rule weights for given abscissas
         !! ([Specification](../page/specs/stdlib_quadrature.html#description_3))
         #:for k1, t1 in REAL_KINDS_TYPES
@@ -88,6 +90,28 @@ module stdlib_quadrature
         end function simps_weights_${k1}$
         #:endfor
     end interface simps_weights
+
+
+    interface gauss_legendre
+        !! version: experimental
+        !!
+        !! Computes Gauss-Legendre quadrature nodes and weights.
+        pure module subroutine gauss_legendre_fp64 (x, w, interval)
+            real(dp), intent(out) :: x(:), w(:)
+            real(dp), intent(in), optional :: interval(2)
+        end subroutine
+    end interface gauss_legendre
+
+
+    interface gauss_legendre_lobatto
+        !! version: experimental
+        !!
+        !! Computes Gauss-Legendre-Lobatto quadrature nodes and weights.
+        pure module subroutine gauss_legendre_lobatto_fp64 (x, w, interval)
+            real(dp), intent(out) :: x(:), w(:)
+            real(dp), intent(in), optional :: interval(2)
+        end subroutine
+    end interface gauss_legendre_lobatto
 
 
     ! Interface for a simple f(x)-style integrand function.
@@ -102,5 +126,7 @@ module stdlib_quadrature
         end function integrand_${k1}$
         #:endfor
     end interface
+
+
 
 end module stdlib_quadrature

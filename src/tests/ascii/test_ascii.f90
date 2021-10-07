@@ -6,7 +6,8 @@ program test_ascii
         whitespace, letters, is_alphanum, is_alpha, is_lower, is_upper, &
         is_digit, is_octal_digit, is_hex_digit, is_white, is_blank, &
         is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
-        to_lower, to_upper, LF, TAB, NUL, DEL
+        to_lower, to_upper, to_title, to_sentence, reverse, LF, TAB, NUL, DEL
+    use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
 
     implicit none
 
@@ -67,6 +68,12 @@ program test_ascii
     call test_to_upper_long
 
     ! call test_ascii_table
+
+    call test_to_upper_string
+    call test_to_lower_string
+    call test_to_title_string
+    call test_to_sentence_string
+    call test_reverse_string
 
 contains
 
@@ -539,5 +546,95 @@ contains
         end do
         write(*,'(5X,12(I4))') (count(table(:,i)),i=1,12)
     end subroutine test_ascii_table
+
+    subroutine test_to_lower_string
+        character(len=:), allocatable :: dlc
+        character(len=32), parameter :: input = "UPPERCASE"
+
+        dlc = to_lower("UPPERCASE")
+        call check(dlc == "uppercase")
+
+        dlc = to_lower(input)
+        call check(len(dlc) == 32)
+        call check(len_trim(dlc) == 9)
+        call check(trim(dlc) == "uppercase")
+
+        dlc = to_lower("0123456789ABCDE")
+        call check(dlc == "0123456789abcde")
+    end subroutine test_to_lower_string
+
+    subroutine test_to_upper_string
+        character(len=:), allocatable :: dlc
+        character(len=32), parameter :: input = "lowercase"
+
+        dlc = to_upper("lowercase")
+        call check(dlc == "LOWERCASE")
+
+        dlc = to_upper(input)
+        call check(len(dlc) == 32)
+        call check(len_trim(dlc) == 9)
+        call check(trim(dlc) == "LOWERCASE")
+
+        dlc = to_upper("0123456789abcde")
+        call check(dlc == "0123456789ABCDE")
+    end subroutine test_to_upper_string
+
+    subroutine test_to_title_string
+        character(len=:), allocatable :: dlc
+        character(len=32), parameter :: input = "tHis Is tO bE tiTlEd"
+
+        dlc = to_title("tHis Is tO bE tiTlEd")
+        call check(dlc == "This Is To Be Titled")
+
+        dlc = to_title(input)
+        call check(len(dlc) == 32)
+        call check(len_trim(dlc) == 20)
+        call check(trim(dlc) == "This Is To Be Titled")
+
+        dlc = to_title(" s P a C e D !")
+        call check(dlc == " S P A C E D !")
+
+        dlc = to_title("1st, 2nD, 3RD")
+        call check(dlc == "1st, 2nd, 3rd")
+
+        dlc = to_title("""quOTed""")
+        call check(dlc == """Quoted""")
+    end subroutine test_to_title_string
+
+    subroutine test_to_sentence_string
+        character(len=:), allocatable :: dlc
+        character(len=32), parameter :: input = "tHis iS A seNteNcE."
+
+        dlc = to_sentence("tHis iS A seNteNcE.")
+        call check(dlc == "This is a sentence.")
+
+        dlc = to_sentence(input)
+        call check(len(dlc) == 32)
+        call check(len_trim(dlc) == 19)
+        call check(trim(dlc) == "This is a sentence.")
+
+        dlc = to_sentence(" s P a C e D !")
+        call check(dlc == " S p a c e d !")
+
+        dlc = to_sentence("1st, 2nd, 3rd")
+        call check(dlc == "1st, 2nd, 3rd")
+
+        dlc = to_sentence("""quOTed""")
+        call check(dlc == """Quoted""")
+    end subroutine test_to_sentence_string
+
+    subroutine test_reverse_string
+        character(len=:), allocatable :: dlc
+        character(len=32), parameter :: input = "reversed"
+
+        dlc = reverse("reversed")
+        call check(dlc == "desrever")
+
+        dlc = reverse(input)
+        call check(len(dlc) == 32)
+        call check(len_trim(dlc) == 32)
+        call check(trim(dlc) == "                        desrever")
+        call check(trim(adjustl(dlc)) == "desrever")
+    end subroutine test_reverse_string
 
 end program test_ascii

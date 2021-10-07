@@ -47,7 +47,7 @@ focus on the semantics of the proposed changes rather than style and formatting.
 <!-- ATTENTION! This section includes intentional trailing whitespace to get decent formatting with GFM and Python Markdown. -->
 
 * Always specify `intent` for dummy arguments.
-* Don't use `dimension` attribute to declare arrays because it is less verbose.
+* Don't use `dimension` attribute to declare arrays because it is more verbose.
   Use this:  
   ```
   real, allocatable :: a(:), b(:,:)
