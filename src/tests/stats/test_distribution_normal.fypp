@@ -47,7 +47,7 @@ contains
     subroutine test_normal_random_generator
 
         integer, parameter :: num = 10000000, array_size = 1000
-        integer :: i, j, freq(0:array_size - 1)
+        integer :: i, j, freq(0:array_size)
         real(dp) :: chisq, expct
 
         print *, ""
