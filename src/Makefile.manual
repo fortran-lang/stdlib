@@ -13,6 +13,7 @@ SRCFYPP = \
         stdlib_quadrature_trapz.fypp \
         stdlib_quadrature_simps.fypp \
         stdlib_selection.fypp \
+        stdlib_random.fypp \
         stdlib_sorting.fypp \
         stdlib_sorting_ord_sort.fypp \
         stdlib_sorting_sort.fypp \
@@ -26,11 +27,11 @@ SRCFYPP = \
         stdlib_stats_moment_all.fypp \
         stdlib_stats_moment_mask.fypp \
         stdlib_stats_moment_scalar.fypp \
+        stdlib_stats_distribution_uniform.fypp \
         stdlib_stats_var.fypp \
         stdlib_math.fypp \
-        stdlib_math_linspace.fypp \
-        stdlib_math_logspace.fypp \
-        stdlib_stats_distribution_PRNG.fypp \
+	stdlib_math_linspace.fypp \
+	stdlib_math_logspace.fypp \
         stdlib_string_type.fypp \
         stdlib_string_type_constructor.fypp \
         stdlib_strings.fypp \
@@ -146,7 +147,11 @@ stdlib_stats_var.o: \
     stdlib_optval.o \
     stdlib_kinds.o \
     stdlib_stats.o
-stdlib_stats_distribution_PRNG.o: \
+stdlib_stats_distribution_uniform.o: \
+    stdlib_kinds.o \
+    stdlib_error.o \
+    stdlib_random.o
+stdlib_random.o: \
     stdlib_kinds.o \
     stdlib_error.o
 stdlib_string_type.o: stdlib_ascii.o \
