@@ -131,7 +131,7 @@ end of this document shows that is the case.
     end program demo_select
 ```
 
-## `arg_select` - find the k-th smallest value in an input array
+## `arg_select` - find the index of the k-th smallest value in an input array
 
 ### Status
 

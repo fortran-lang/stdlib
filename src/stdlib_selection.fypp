@@ -22,7 +22,7 @@ public select, arg_select
 
 interface select
     !! version: experimental
-    !! ([Specification](..//page/specs/stdlib_selection.html#description))
+    !! ([Specification](..//page/specs/stdlib_selection.html#select-find-the-k-th-smallest-value-in-an-input-array))
 
   #:for arraykind, arraytype in ARRAY_KINDS_TYPES
     #:for intkind, inttype in INT_KINDS_TYPES
@@ -34,7 +34,7 @@ end interface
 
 interface arg_select
     !! version: experimental
-    !! ([Specification](..//page/specs/stdlib_selection.html#description_1))
+    !! ([Specification](..//page/specs/stdlib_selection.html#arg_select-find-the-index-of-the-k-th-smallest-value-in-an-input-array))
   #:for arraykind, arraytype in ARRAY_KINDS_TYPES
     #:for intkind, inttype in INT_KINDS_TYPES
       #:set name = rname("arg_select", 1, arraytype, arraykind, intkind)
