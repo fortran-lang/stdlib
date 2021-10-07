@@ -114,7 +114,7 @@ contains
           !
           any_failed=.FALSE.
 
-          ! Search for the pth-smallest rank, for all these p
+          ! Search for the p-th smallest rank, for all these p
           ! (avoid end-points to enable constrained search tests)
           do p = 3, Nr-2
 
@@ -290,7 +290,7 @@ contains
           !
           any_failed=.FALSE.
 
-          ! Search for the pth-smallest, for all these p (avoid end-points to
+          ! Search for the p-th smallest, for all these p (avoid end-points to
           ! enable additional tests using "left", "right" arguments)
           do p = 3, Nr-2
 
