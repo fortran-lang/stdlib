@@ -34,7 +34,7 @@ You are welcome to propose changes to the style guide by
 ## Documentation
 
 Please follow the
-[Fortran stdlib spec template](https://github.com/fortran-lang/stdlib/blob/master/SPEC_TEMPLATE.md)
+[Fortran stdlib spec template](https://github.com/fortran-lang/stdlib/blob/master/SPEC_GUIDE.md)
 for the documentation of your Fortran code.
 
 The spec template is a living document.
