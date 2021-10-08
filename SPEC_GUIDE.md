@@ -11,3 +11,5 @@
 * Each derived type, type-bound method, or procedure section contains at least one example.
 * If only one example is provided, it's placed in the level-2 section "Example".
 * If multiple examples are provided, each is placed in a level-3 section "Example <number>", all inside level-2 section "Examples".
+* An [Example](SPEC_EXAMPLE.md) ís provided.
+* A [Template](SPEC_TEMPLATE.md) is provided.
