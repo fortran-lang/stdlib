@@ -649,7 +649,7 @@ contains
         if (pre_length > 0) then
             work_idxn   = idxn
 
-            call insert_before_engine( list, work_idxn, pre_length )
+            call insert_before_empty_positions( list, work_idxn, pre_length )
             post_length = slist%len()
 
             inew = work_idxn
