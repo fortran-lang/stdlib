@@ -38,7 +38,7 @@ Function
 
 `scale`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`loc` and `scale` arguments must have the same type.
+`loc` and `scale` arguments must be of the same type.
 
 ### Return value
 
