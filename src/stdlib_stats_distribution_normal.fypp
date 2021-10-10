@@ -10,9 +10,9 @@ module stdlib_stats_distribution_normal
     private
 
     real(dp), parameter  :: HALF = 0.5_dp, ONE = 1.0_dp, TWO = 2.0_dp
-    integer, save :: kn(0:127)
-    real(dp), save :: wn(0:127), fn(0:127)
-    logical, save  :: zig_norm_initialized = .false.
+    integer :: kn(0:127)
+    real(dp) :: wn(0:127), fn(0:127)
+    logical  :: zig_norm_initialized = .false.
 
     public :: rvs_normal
     public :: pdf_normal
@@ -21,7 +21,7 @@ module stdlib_stats_distribution_normal
 
 
     interface rvs_normal
-    !! Version experimental
+    !! version: experimental
     !!
     !! Normal Distribution Random Variates
     !! ([Specification](../page/specs/stdlib_stats_distribution_normal.html#
@@ -41,7 +41,7 @@ module stdlib_stats_distribution_normal
 
 
     interface pdf_normal
-    !! Version experimental
+    !! version: experimental
     !!
     !! Normal Distribution Probability Density Function
     !! ([Specification](../page/specs/stdlib_stats_distribution_normal.html#
@@ -81,8 +81,6 @@ contains
     !
     ! This is an electronic journal which can be downloaded from:
     ! http://www.jstatsoft.org/v05/i08
-    !
-    ! N.B. It is assumed that all integers are 32-bit.
     !
     ! Latest version - 1 January 2001
     !
