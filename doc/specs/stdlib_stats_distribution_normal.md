@@ -68,7 +68,7 @@ program demo_normal_rvs
 
 ! -0.633261681
 
-    print *, norm(0.,1.0,10)       !an array of 10 standard norml random variates
+    print *, norm(0.0, 1.0, 10)       !an array of 10 standard norml random variates
 
 ! -3.38123664E-02  -0.190365672  0.220678389  -0.424612164  -0.249541596
 !  0.865260184  1.11086845  -0.328349441  1.10873628  1.27049923
