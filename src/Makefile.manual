@@ -88,8 +88,9 @@ stdlib_io.o: \
     stdlib_kinds.o \
     stdlib_ascii.o
 stdlib_linalg.o: \
+	stdlib_error.o \
 	stdlib_kinds.o \
-	stdlib_error.o
+	stdlib_optval.o
 stdlib_linalg_diag.o: \
     stdlib_linalg.o \
     stdlib_kinds.o

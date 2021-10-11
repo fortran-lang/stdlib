@@ -6,6 +6,7 @@ module stdlib_linalg
   use stdlib_kinds, only: sp, dp, qp, &
     int8, int16, int32, int64
   use stdlib_error, only: error_stop
+  use stdlib_optval, only: optval
   implicit none
   private
 
