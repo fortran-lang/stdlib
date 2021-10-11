@@ -1,0 +1,35 @@
+#:include "common.fypp"
+submodule(stdlib_string_type) stdlib_string_type_constructor
+
+    use stdlib_strings, only: to_string
+
+contains
+
+    !> Constructor for new string instances from a scalar character value.
+    elemental module function new_string(string) result(new)
+        character(len=*), intent(in), optional :: string
+        type(string_type) :: new
+        if (present(string)) then
+            new%raw = string
+        end if
+    end function new_string
+
+    #:for kind in INT_KINDS
+    !> Constructor for new string instances from an integer of kind ${kind}$.
+    elemental module function new_string_from_integer_${kind}$(val) result(new)
+        integer(${kind}$), intent(in) :: val
+        type(string_type) :: new
+        new%raw = to_string(val)
+    end function new_string_from_integer_${kind}$
+    #:endfor
+
+    #:for kind in LOG_KINDS
+    !> Constructor for new string instances from a logical of kind ${kind}$.
+    elemental module function new_string_from_logical_${kind}$(val) result(new)
+        logical(${kind}$), intent(in) :: val
+        type(string_type) :: new
+        new%raw = to_string(val)
+    end function new_string_from_logical_${kind}$
+    #:endfor
+
+end submodule stdlib_string_type_constructor

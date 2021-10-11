@@ -1147,11 +1147,8 @@ contains
         character(:), allocatable :: d_and_t, m_and_p, pref
         character(:), allocatable :: buffer
 
-        if ( present(prefix) ) then
-            pref = prefix // ': '
-        else
-            pref = ''
-        end if
+        pref = optval(prefix, '')
+        if ( len(pref) > 0 ) pref = pref // ': '
 
         if ( self % time_stamp ) then
             d_and_t = time_stamp() // ': '

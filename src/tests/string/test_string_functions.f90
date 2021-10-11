@@ -6,7 +6,7 @@ module test_string_functions
                                     to_lower, to_upper, to_title, to_sentence, reverse
     use stdlib_strings, only: slice, find, replace_all, padl, padr, count
     use stdlib_optval, only: optval
-    use stdlib_ascii, only : to_string
+    use stdlib_strings, only : to_string
     implicit none
 
 contains

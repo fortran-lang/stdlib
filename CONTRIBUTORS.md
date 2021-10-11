@@ -1,1 +1,0 @@
-# Fortran stdlib contributors
