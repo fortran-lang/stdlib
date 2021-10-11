@@ -1,0 +1,5 @@
+PROGS_SRC = test_linalg.f90 \
+		    test_linalg_matrix_property_checks.f90
+
+
+include ../Makefile.manual.test.mk
