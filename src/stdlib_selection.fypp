@@ -107,13 +107,13 @@ contains
           end do
 
           contains
-              subroutine swap(a, b)
+              pure subroutine swap(a, b)
                   ${arraytype}$, intent(inout) :: a, b
                   ${arraytype}$ :: tmp
                   tmp = a; a = b; b = tmp
               end subroutine
 
-              subroutine medianOf3(a, left, mid, right)
+              pure subroutine medianOf3(a, left, mid, right)
                   ${arraytype}$, intent(inout) :: a(:)
                   ${inttype}$, intent(in) :: left, mid, right 
                   if(a(right) < a(left)) call swap(a(right), a(left))
@@ -121,7 +121,7 @@ contains
                   if(a(right) < a(mid) ) call swap(a(mid)  , a(right))
               end subroutine
 
-              subroutine partition(array,left,right,iPivot)
+              pure subroutine partition(array,left,right,iPivot)
                   ${arraytype}$, intent(inout) :: array(:)
                   ${inttype}$, intent(in) :: left, right
                   ${inttype}$, intent(out) :: iPivot 
@@ -223,13 +223,13 @@ contains
           end do
 
           contains
-              subroutine swap(a, b)
+              pure subroutine swap(a, b)
                   ${inttype}$, intent(inout) :: a, b
                   ${inttype}$ :: tmp
                   tmp = a; a = b; b = tmp
               end subroutine
 
-              subroutine arg_medianOf3(a, indx, left, mid, right)
+              pure subroutine arg_medianOf3(a, indx, left, mid, right)
                   ${arraytype}$, intent(in) :: a(:)
                   ${inttype}$, intent(inout) :: indx(:)
                   ${inttype}$, intent(in) :: left, mid, right 
@@ -238,7 +238,7 @@ contains
                   if(a(indx(right)) < a(indx(mid)) ) call swap(indx(mid)  , indx(right))
               end subroutine
 
-              subroutine arg_partition(array, indx, left,right,iPivot)
+              pure subroutine arg_partition(array, indx, left,right,iPivot)
                   ${arraytype}$, intent(in) :: array(:)
                   ${inttype}$, intent(inout) :: indx(:)
                   ${inttype}$, intent(in) :: left, right
