@@ -421,7 +421,7 @@ program demo_equality_operator
   res = ( stringlist == ["#4", "#3", "#2", "#1"] )
     ! res <-- .true.
 
-  print'(a)', stringlist == ["#4", "#3", "#1"]
+  print'(l0)', stringlist == ["#4", "#3", "#1"]
     ! .false.
 
 end program demo_equality_operator
@@ -491,7 +491,7 @@ program demo_inequality_operator
   res = ( stringlist /= ["#111", "#222", "#333", "#444"] )
     ! res <-- .true.
 
-  print'(a)', stringlist /= ["#4", "#3", "#1"]
+  print'(l0)', stringlist /= ["#4", "#3", "#1"]
     ! .true.
 
 end program demo_inequality_operator
