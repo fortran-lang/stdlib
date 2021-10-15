@@ -75,14 +75,14 @@ module stdlib_stringlist_type
                                                                 insert_at_chararray_idx,        &
                                                                 insert_at_stringarray_idx
 
-        procedure         :: insert_before_string_int
-        procedure         :: insert_before_stringlist_int
-        procedure         :: insert_before_chararray_int
-        procedure         :: insert_before_stringarray_int
-        generic           :: insert_before                  =>  insert_before_string_int,       &
-                                                                insert_before_stringlist_int,   &
-                                                                insert_before_chararray_int,    &
-                                                                insert_before_stringarray_int
+        procedure         :: insert_before_string_idxn
+        procedure         :: insert_before_stringlist_idxn
+        procedure         :: insert_before_chararray_idxn
+        procedure         :: insert_before_stringarray_idxn
+        generic           :: insert_before                  =>  insert_before_string_idxn,      &
+                                                                insert_before_stringlist_idxn,  &
+                                                                insert_before_chararray_idxn,   &
+                                                                insert_before_stringarray_idxn
 
         procedure         :: get_idx
         procedure         :: get_range_idx
@@ -218,7 +218,7 @@ contains
 
     !> Appends character scalar 'rhs' to the stringlist 'list'
     !> Returns a new stringlist
-    function append_char( lhs, rhs )
+    pure function append_char( lhs, rhs )
         type(stringlist_type), intent(in) :: lhs
         character(len=*), intent(in)      :: rhs
         type(stringlist_type)             :: append_char
@@ -230,7 +230,7 @@ contains
 
     !> Appends string 'rhs' to the stringlist 'list'
     !> Returns a new stringlist
-    function append_string( lhs, rhs )
+    pure function append_string( lhs, rhs )
         type(stringlist_type), intent(in) :: lhs
         type(string_type), intent(in)     :: rhs
         type(stringlist_type)             :: append_string
@@ -242,7 +242,7 @@ contains
 
     !> Prepends character scalar 'lhs' to the stringlist 'rhs'
     !> Returns a new stringlist
-    function prepend_char( lhs, rhs )
+    pure function prepend_char( lhs, rhs )
         character(len=*), intent(in)      :: lhs
         type(stringlist_type), intent(in) :: rhs
         type(stringlist_type)             :: prepend_char
@@ -254,7 +254,7 @@ contains
 
     !> Prepends string 'lhs' to the stringlist 'rhs'
     !> Returns a new stringlist
-    function prepend_string( lhs, rhs )
+    pure function prepend_string( lhs, rhs )
         type(string_type), intent(in)     :: lhs
         type(stringlist_type), intent(in) :: rhs
         type(stringlist_type)             :: prepend_string
@@ -266,7 +266,7 @@ contains
 
     !> Appends stringlist 'rhs' to the stringlist 'lhs'
     !> Returns a new stringlist
-    function append_stringlist( lhs, rhs )
+    pure function append_stringlist( lhs, rhs )
         type(stringlist_type), intent(in) :: lhs
         type(stringlist_type), intent(in) :: rhs
         type(stringlist_type)             :: append_stringlist
@@ -278,7 +278,7 @@ contains
 
     !> Appends chararray 'rhs' to the stringlist 'lhs'
     !> Returns a new stringlist
-    function append_carray( lhs, rhs )
+    pure function append_carray( lhs, rhs )
         type(stringlist_type), intent(in)           :: lhs
         character(len=*), dimension(:), intent(in)  :: rhs
         type(stringlist_type)                       :: append_carray
@@ -290,7 +290,7 @@ contains
 
     !> Appends stringarray 'rhs' to the stringlist 'lhs'
     !> Returns a new stringlist
-    function append_sarray( lhs, rhs )
+    pure function append_sarray( lhs, rhs )
         type(stringlist_type), intent(in)           :: lhs
         type(string_type), dimension(:), intent(in) :: rhs
         type(stringlist_type)                       :: append_sarray
@@ -302,7 +302,7 @@ contains
 
     !> Prepends chararray 'lhs' to the stringlist 'rhs'
     !> Returns a new stringlist
-    function prepend_carray( lhs, rhs )
+    pure function prepend_carray( lhs, rhs )
         character(len=*), dimension(:), intent(in) :: lhs
         type(stringlist_type), intent(in)          :: rhs
         type(stringlist_type)                      :: prepend_carray
@@ -314,7 +314,7 @@ contains
 
     !> Prepends stringarray 'lhs' to the stringlist 'rhs'
     !> Returns a new stringlist
-    function prepend_sarray( lhs, rhs )
+    pure function prepend_sarray( lhs, rhs )
         type(string_type), dimension(:), intent(in) :: lhs
         type(stringlist_type), intent(in)           :: rhs
         type(stringlist_type)                       :: prepend_sarray
@@ -458,21 +458,6 @@ contains
 
     end function ineq_sarray_stringlist
 
-    ! Version: experimental
-    !>
-    !> Shifts a stringlist_index by integer 'shift_by'
-    !> Returns the shifted stringlist_index
-    pure function shift( idx, shift_by )
-        !> Not a part of public API
-        type(stringlist_index_type), intent(in)                 :: idx
-        integer, intent(in)                                     :: shift_by
-
-        type(stringlist_index_type)                             :: shift
-
-        shift = merge( fidx( idx%offset + shift_by ), bidx( idx%offset + shift_by ), idx%forward )
-
-    end function shift
-
   ! clear:
 
     !> Version: experimental
@@ -525,7 +510,7 @@ contains
 
     !> Version: experimental
     !>
-    !> Converts a forward index OR backward index to its equivalent integer index idxn
+    !> Converts a forward index OR backward index to its equivalent integer index
     !> Returns an integer
     pure integer function to_current_idxn( list, idx )
         !> Not a part of public API
@@ -644,7 +629,7 @@ contains
     !>
     !> Inserts string 'string' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_before_string_int( list, idxn, string )
+    pure subroutine insert_before_string_idxn( list, idxn, string )
         !> Not a part of public API
         class(stringlist_type), intent(inout)           :: list
         integer, intent(in)                             :: idxn
@@ -657,13 +642,13 @@ contains
 
         list%stringarray(work_idxn) = string
 
-    end subroutine insert_before_string_int
+    end subroutine insert_before_string_idxn
 
     !> Version: experimental
     !>
     !> Inserts stringlist 'slist' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_before_stringlist_int( list, idxn, slist )
+    pure subroutine insert_before_stringlist_idxn( list, idxn, slist )
         !> Not a part of public API
         class(stringlist_type), intent(inout)           :: list
         integer, intent(in)                             :: idxn
@@ -675,9 +660,9 @@ contains
 
         pre_length  = slist%len()
         if (pre_length > 0) then
-            work_idxn   = idxn
+            work_idxn = idxn
 
-            call insert_before_empty_positions( list, work_idxn, pre_length )
+            call insert_before_engine( list, work_idxn, pre_length )
             post_length = slist%len()
 
             inew = work_idxn
@@ -692,53 +677,53 @@ contains
             end do
         end if
 
-    end subroutine insert_before_stringlist_int
+    end subroutine insert_before_stringlist_idxn
 
     !> Version: experimental
     !>
     !> Inserts chararray 'carray' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_before_chararray_int( list, idxn, carray )
+    pure subroutine insert_before_chararray_idxn( list, idxn, carray )
         !> Not a part of public API
         class(stringlist_type), intent(inout)        :: list
         integer, intent(in)                          :: idxn
         character(len=*), dimension(:), intent(in)   :: carray
 
-        integer                                      :: i
-        integer                                      :: work_idxn, idxnew
+        integer                                      :: i, inew
+        integer                                      :: work_idxn
 
         work_idxn = idxn
         call insert_before_engine( list, work_idxn, size( carray ) )
 
         do i = 1, size( carray )
-            idxnew = work_idxn + i - 1
-            list%stringarray(idxnew) = string_type( carray(i) )
+            inew = work_idxn + i - 1
+            list%stringarray(inew) = string_type( carray(i) )
         end do
 
-    end subroutine insert_before_chararray_int
+    end subroutine insert_before_chararray_idxn
 
     !> Version: experimental
     !>
     !> Inserts stringarray 'sarray' BEFORE integer index 'idxn' in the underlying stringarray
     !> Modifies the input stringlist 'list'
-    pure subroutine insert_before_stringarray_int( list, idxn, sarray )
+    pure subroutine insert_before_stringarray_idxn( list, idxn, sarray )
         !> Not a part of public API
         class(stringlist_type), intent(inout)        :: list
         integer, intent(in)                          :: idxn
         type(string_type), dimension(:), intent(in)  :: sarray
 
-        integer                                      :: i
-        integer                                      :: work_idxn, idxnew
+        integer                                      :: i, inew
+        integer                                      :: work_idxn
 
         work_idxn = idxn
         call insert_before_engine( list, work_idxn, size( sarray ) )
 
         do i = 1, size( sarray )
-            idxnew = work_idxn + i - 1
-            list%stringarray(idxnew) = sarray(i)
+            inew = work_idxn + i - 1
+            list%stringarray(inew) = sarray(i)
         end do
 
-    end subroutine insert_before_stringarray_int
+    end subroutine insert_before_stringarray_idxn
 
   ! get:
 
@@ -820,15 +805,13 @@ contains
         type(stringlist_index_type), intent(in)                 :: first, last
         type(string_type), allocatable, intent(out), optional   :: popped_strings(:)
 
-        integer                                                 :: firstn, lastn, from, to
+        integer                                                 :: from, to
         integer                                                 :: i, inew, pos, old_len, new_len
         type(string_type), dimension(:), allocatable            :: new_stringarray
 
         old_len = list%len()
-        firstn  = list%to_current_idxn( first )
-        lastn   = list%to_current_idxn( last )
-        from    = max( firstn, 1 )
-        to      = min( lastn, old_len )
+        from    = max( list%to_current_idxn( first ), 1 )
+        to      = min( list%to_current_idxn( last ), old_len )
         
         ! out of bounds indexes won't modify stringlist
         if ( from <= to ) then
@@ -842,8 +825,12 @@ contains
 
             ! capture popped strings
             if ( present(popped_strings) ) then
-                call get_engine( list, shift( first, from - firstn ), &
-                    & shift( last, lastn - to ), popped_strings )
+                allocate( popped_strings(pos) )
+                inew = 1
+                do i = from, to
+                    call move( list%stringarray(i), popped_strings(inew) )
+                    inew = inew + 1
+                end do
             end if
 
             inew = from
