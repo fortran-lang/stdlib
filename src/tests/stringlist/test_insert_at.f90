@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 module test_insert_at
     use stdlib_error, only: check
-    use stdlib_string_type, only: string_type, operator(//), operator(==)
+    use stdlib_string_type, only: string_type, operator(//), operator(==), char
     use stdlib_stringlist_type, only: stringlist_type, fidx, bidx, list_head, list_tail, operator(==)
     use stdlib_strings, only: to_string
     use stdlib_optval, only: optval
@@ -355,29 +355,29 @@ contains
     subroutine test_insert_at_same_list
         type(stringlist_type)           :: work_list
         type(stringlist_type)           :: temp_list
-        integer                         :: i, j
+        integer                         :: i
         integer, parameter              :: first = -100
         integer, parameter              :: last = 100
-        integer, parameter              :: stride = 4
 
         write (*,*) "test_insert_at_same_list:     Starting work_list!"
 
         call work_list%insert_at( list_head, work_list )
         call work_list%insert_at( list_tail, work_list )
 
-        do j = -10, 10
-            call work_list%insert_at( fidx(j), work_list )
-            call work_list%insert_at( bidx(j), work_list )
+        do i = -10, 10
+            call work_list%insert_at( fidx(i), work_list )
+            call work_list%insert_at( bidx(i), work_list )
 
         end do
 
         call compare_list( work_list, 0, 0, 13 )
+        call check( work_list%len() == 0, "test_insert_at_same_list: empty list insertion")
 
-        do j = first, last
-            call work_list%insert_at( list_tail, string_type( to_string(j) ) )
+        do i = first, last
+            call work_list%insert_at( list_tail, string_type( to_string(i) ) )
         end do
-
         temp_list = work_list
+
         call work_list%insert_at( list_head, work_list )
         call compare_list( work_list, first, last + 1, 14, to=last - first + 1 )
         call compare_list( work_list, first, last + 1, 15, from=last - first + 2 )
@@ -390,13 +390,15 @@ contains
         work_list = temp_list
         call compare_list( work_list, first, last + 1, 18 )
 
-        do j = 1, last - first + 2
-            temp_list = work_list
-            call temp_list%insert_at( fidx(j), temp_list )
+        write (*,*) "test_insert_at_same_list:     Starting temp_list!"
 
-            call compare_list( temp_list, first, first + j - 1, 19, to=j - 1)
-            call compare_list( temp_list, first, last + 1, 20, from=j, to=j + last - first)
-            call compare_list( temp_list, first + j - 1, last + 1, 21, from=j + last - first + 1)
+        do i = 1, last - first + 2
+            temp_list = work_list
+            call temp_list%insert_at( fidx(i), temp_list )
+
+            call compare_list( temp_list, first, first + i - 1, 19, to=i - 1 )
+            call compare_list( temp_list, first, last + 1, 20, from=i, to=i + last - first )
+            call compare_list( temp_list, first + i - 1, last + 1, 21, from=i + last - first + 1 )
 
         end do
 
@@ -421,13 +423,13 @@ contains
         do i = work_from, work_to
             call check( list%get( fidx(i) ) == to_string( first + ( ( i - work_from ) * j ) ), &
                                     & "compare_list: call_number " // to_string( call_number ) &
-                                    & // " fidx( " // to_string( i ) // " )")
+                                    & // " fidx( " // to_string( i ) // " )" )
 
             k = length - ( work_to - ( i - work_from ) ) + 1
             call check( list%get( bidx(k) ) == &
                                     & to_string( last - ( ( i - work_from + 1 ) * j ) ), &
                                     & "compare_list: call_number " // to_string( call_number ) &
-                                    & // " bidx( " // to_string( k ) // " )")
+                                    & // " bidx( " // to_string( k ) // " )" )
         end do
 
     end subroutine compare_list
