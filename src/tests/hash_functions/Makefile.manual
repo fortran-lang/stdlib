@@ -1,0 +1,3 @@
+PROGS_SRC = test_64_bit_hash_functions.f90 test_32_bit_hash_functions.f90
+
+include ../Makefile.manual.test.mk
