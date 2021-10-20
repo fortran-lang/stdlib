@@ -581,7 +581,7 @@ It differs from typical implementations in that it also ecodes the
 size of the structure in the hash code.
 This code is relatively fast on short keys, and is small enough that it
 will often be retained in the instruction cache if hashing is
-intermitent.
+intermittent.
 As a result it should give good performance for typical hash table
 applications.
 This code does not pass any of the SMHasher tests, but the resulting
@@ -643,7 +643,7 @@ It differs from typical implementations in that it also ecodes the
 size of the structure in the hash code.
 This code is relatively fast on short keys, and is small enough that it
 will often be retained in the instruction cache if hashing is
-intermitent.
+intermittent.
 As a result it should give good performance for typical hash table
 applications.
 This code does not pass any of the SMHasher tests, but the resulting
@@ -1208,7 +1208,7 @@ It differs from typical implementations in that it also ecodes the
 size of the structure in the hash code.
 This code is relatively fast on short keys, and is small enough that it
 will often be retained in the instruction cache if hashing is
-intermitent.
+intermittent.
 As a result it should give good performance for typical hash table
 applications, although it is rare for them to need 64 bits.
 This code does not pass any of the SMHasher tests, but the resulting
@@ -1270,7 +1270,7 @@ It differs from typical implementations in that it also ecodes the
 size of the structure in the hash code.
 This code is relatively fast on short keys, and is small enough that it
 will often be retained in the instruction cache if hashing is
-intermitent.
+intermittent.
 As a result it should give good performance for typical hash table
 applications.
 This code does not pass any of the SMHasher tests, but the resulting

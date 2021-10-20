@@ -1,4 +1,3 @@
-#! Integer kinds to be considered during templating
 !!------------------------------------------------------------------------------
 !! `SPOOKY_HASH` is a translation to Fortran 2008 of the unsigned 64 bit
 !! `SpookyHash` V2 function of Bob Jenkins
@@ -11,6 +10,7 @@
 !! different on Big Endian processors, but still probably as good quality.
 !!------------------------------------------------------------------------------
 
+#! Integer kinds to be considered during templating
 #:set INT_KINDS = ["int16", "int32", "int64"]
 
 submodule(stdlib_64_bit_hash_functions) stdlib_64_bit_spookyv2_hashes
@@ -204,7 +204,7 @@ contains
 100     c = c + sc_const
         d = d + sc_const
 
-888     call shortend( a, b, c, d )
+888     call short_end( a, b, c, d )
 
         hash_inout(1) = a
         hash_inout(2) = b
@@ -285,7 +285,7 @@ contains
 
         end subroutine shortmix
 
-        pure subroutine shortend( h0, h1, h2, h3 )
+        pure subroutine short_end( h0, h1, h2, h3 )
     !
     ! Mix all 4 inputs together so that h0, h1 are a hash of them all.
     !
@@ -334,7 +334,7 @@ contains
             h0 = ishftc( h0, 63 )
             h1 = h1 + h0
 
-        end subroutine shortend
+        end subroutine short_end
 
     end subroutine spookyhash_short
 

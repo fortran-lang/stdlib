@@ -229,7 +229,7 @@ contains
     end function universal_mult_hash
 
     subroutine odd_random_integer( harvest )
-!! Returns a 32 bit psuedo random integer, HARVEST, distributed uniformly over
+!! Returns a 32 bit pseudo random integer, HARVEST, distributed uniformly over
 !! the odd integers of the INT32 kind.
         integer(int32), intent(out) :: harvest
         real(dp) :: sample

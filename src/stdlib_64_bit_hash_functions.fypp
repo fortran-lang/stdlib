@@ -279,7 +279,7 @@ contains
     end function universal_mult_hash
 
     subroutine odd_random_integer( harvest )
-!! Returns a 64 bit psuedo random integer, HARVEST, distributed uniformly over
+!! Returns a 64 bit pseudo random integer, HARVEST, distributed uniformly over
 !! the odd integers of the 64 bit kind.
         integer(int64), intent(out) :: harvest
         real(dp) :: sample(2)
@@ -293,7 +293,7 @@ contains
     end subroutine odd_random_integer
 
     subroutine random_integer( harvest )
-!! Returns a 64 bit psuedo random integer, HARVEST, distributed uniformly over
+!! Returns a 64 bit pseudo random integer, HARVEST, distributed uniformly over
 !! the values of the 64 bit kind.
         integer(int64), intent(out) :: harvest
         real(dp) :: sample(2)
