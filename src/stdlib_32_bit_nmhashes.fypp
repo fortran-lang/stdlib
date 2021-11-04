@@ -1,6 +1,6 @@
 !!------------------------------------------------------------------------------
 !! `NM_HASH32` and `NM_HASH32X` are translations to Fortran 2008 and signed
-!! two's complement arithmetic of the `nmhash32` and `nmhash32x` scalar
+!! two's complement arithmetic of the `nmhash32` and `nmhash32x` V. 2 scalar
 !! algorithms of James Z. M. Gao, copyright 2021. James Z. M. Gao's original
 !! C++ code, `nmhash.h`, is available at the URL:
 !! https://github.com/gzm55/hash-garage/blob/a8913138bdb3b7539c202edee30a7f0794bbd835/nmhash.h
@@ -9,7 +9,7 @@
 !! The algorithms come in multiple versions, depending on whether the
 !! vectorized instructions SSE2 or AVX2 are available. As neither instruction
 !! is available in portable Fortran 2008, the algorithms that do not use these
-!! instructions are used.
+!! instructions.
 !!
 !! The BSD 2-Clause license is as follows:
 !!
@@ -93,7 +93,7 @@ contains
 
     pure function nmh_readle32( p ) result( v )
         integer(int32) :: v
-        integer(int8), intent(in) :: p(:)
+        integer(int8), intent(in) :: p(1:4)
 
         if ( little_endian ) then
             v = transfer( p(1:4), 0_int32 )
@@ -105,7 +105,7 @@ contains
 
     pure function nmh_readle16( p ) result( v )
         integer(int16) :: v
-        integer(int8), intent(in) :: p(:)
+        integer(int8), intent(in) :: p(1:2)
 
         if ( little_endian ) then
             v = transfer( p(1:2), 0_int16 )
@@ -125,11 +125,11 @@ contains
         integer(int32), parameter :: m2 = int(z'3FB39C65', int32)
         integer(int32), parameter :: m3 = int(z'E9139917', int32)
 
-        integer(int16) :: vx16(2)
+        integer(int16) :: vx16(0:1)
         integer(int16), parameter :: &
-            m116(2) = transfer( m1, 0_int16, 2 ), &
-            m216(2) = transfer( m2, 0_int16, 2 ), &
-            m316(2) = transfer( m3, 0_int16, 2 )
+            m116(0:1) = transfer( m1, 0_int16, 2 ), &
+            m216(0:1) = transfer( m2, 0_int16, 2 ), &
+            m316(0:1) = transfer( m3, 0_int16, 2 )
 
         vx32 = x
         vx32 = ieor( vx32, ieor( ishft( vx32, -12 ), ishft( vx32, -6 ) ) )
@@ -149,11 +149,11 @@ contains
 
     end function nmhash32_0to8
 
-    pure function nmhash32_9to255( p, seed, full_avalanche ) result( result )
+    pure function nmhash32_9to255( p, seed, full_avalanche ) result( hash )
         integer(int8), intent(in)  :: p(0:)
         integer(int32), intent(in) :: seed
         logical, intent(in)        :: full_avalanche
-        integer(int32) :: result
+        integer(int32) :: hash
 
         integer(int32) :: xu32(0:3), yu32(0:3)
         integer(int16) :: xu16(0:1)
@@ -169,7 +169,6 @@ contains
         ! base mixer: [f0d9649b  5 -13 29a7935d -9 11 55d35831 -20 -10 ] =
         ! 0.93495901789135362
 
-        result = 0
         length = size( p, kind=int64 )
         length32 = transfer(length, 0_int32, 2)
         if (little_endian) then
@@ -268,7 +267,7 @@ contains
         xu32(0) = transfer( xu16, 0_int32 )
         xu32(0) = ieor(xu32(0), &
                        ieor(ishft(xu32(0), -10), ishft(xu32(0), -20) ) )
-        result = xu32(0)
+        hash = xu32(0)
 
     end function nmhash32_9to255
 
@@ -389,13 +388,11 @@ contains
         u32 = x
         u32 = ieor( u32, ieor( ishft( u32, -8 ), ishft( u32, -21 ) ) )
         u16 = transfer( u32, 0_int16, 2 )
-        u16(0) = u16(0) * m1_16(0)
-        u16(1) = u16(1) * m1_16(1)
+        u16 = u16 * m1_16
         u32 = transfer( u16, 0_int32 )
         u32 = ieor( u32, ieor( ishft( u32, 12 ), ishft( u32, -7 ) ) )
         u16 = transfer( u32, 0_int16, 2 )
-        u16(0) = u16(0) * m2_16(0)
-        u16(1) = u16(1) * m2_16(1)
+        u16 = u16 * m2_16
         u32 = transfer( u16, 0_int32 )
         u32 = ieor( u32, ieor( ishft( u32, -8 ), ishft( u32, -21 ) ) )
 
@@ -529,20 +526,24 @@ contains
         integer(int32) :: x
 
         integer(int64) :: len
-        integer(int32) :: len32(0:1), len_base
+        integer(int32) :: len32(0:1)
+        integer(int8)  :: len8(0:7)
+        integer(int32) :: len_base
         integer(int32) :: y
         integer(int32) :: a, b
         integer(int64) :: i, r
 
-        ! 5 to 9 bytes
-        ! mixer: [11049a7d 23 bcccdc7b 12 065e9dad 12] = 0.16577596555667246
+        ! - at least 9 bytes
+        ! base mixer: [11049a7d 23 bcccdc7b 12 065e9dad 12] = 0.16577596555667246
+        ! tail mixer: [16 a52fb2cd 15 551e4d49 16] = 0.17162579707098322
 
         len = size(p, kind=int64)
+        len8 = transfer(len, 0_int8, 8)
         len32 = transfer(len, 0_int32, 2)
         if (little_endian) then
-            len_base = len32(0)
+            len_base = transfer( [len8(0), 0_int8, 0_int8, 0_int8], 0_int32 )
         else
-            len_base = len32(1)
+            len_base = transfer( [0_int8, 0_int8, 0_int8, len8(7)], 0_int32 )
         end if
         x = nmh_prime32_3
         y = seed
@@ -618,7 +619,11 @@ contains
             x = x * int(z'551E4D49', int32)
         end if
 
-        x = ieor(x, len_base )
+        if ( little_endian ) then
+            x = ieor(x, len32(0) )
+        else
+            x = ieor(x, len32(1) )
+        end if
         x = ieor(x, ishftc(a, 27)) ! rotate one lane to pass Diff test
         x = ieor(x, ishft(x,-14))
         x = x * int(z'141CC535', int32 )
