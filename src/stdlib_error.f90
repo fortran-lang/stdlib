@@ -6,20 +6,43 @@ use stdlib_optval, only: optval
 implicit none
 private
 
-interface ! f{08,18}estop.f90
-    module subroutine error_stop(msg, code)
-        !! version: experimental
-        !!
-        !! Provides a call to `error stop` and allows the user to specify a code and message
-        !! ([Specification](..//page/specs/stdlib_error.html#description_1))
-        character(*), intent(in) :: msg
-        integer, intent(in), optional :: code
-    end subroutine error_stop
-end interface
-
 public :: check, error_stop
 
 contains
+
+
+subroutine error_stop(msg, code)
+    !! version: experimental
+    !!
+    !! Provides a call to `error stop` and allows the user to specify a code and message
+    !! ([Specification](..//page/specs/stdlib_error.html#description_1))
+    !!
+    !! Aborts the program with nonzero exit code.
+    !! The "stop <character>" statement generally has return code 0.
+    !! To allow non-zero return code termination with character message,
+    !! error_stop() uses the statement "error stop", which by default
+    !! has exit code 1 and prints the message to stderr.
+    !! An optional integer return code "code" may be specified.
+    !!
+    !!##### Examples
+    !!
+    !!```fortran
+    !!  call error_stop("Invalid argument")
+    !!```
+    !!```fortran
+    !!  call error_stop("Invalid argument", 123)
+    !!```
+
+    character(*), intent(in) :: msg
+    integer, intent(in), optional :: code
+
+    if(.not.present(code)) error stop msg
+
+    write(stderr, '(a)') msg
+    error stop code
+
+end subroutine error_stop
+
 
 subroutine check(condition, msg, code, warn)
     !! version: experimental

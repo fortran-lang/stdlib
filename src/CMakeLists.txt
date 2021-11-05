@@ -80,12 +80,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_MODULEDIR}>
 )
 
-if(f18errorstop)
-  target_sources(${PROJECT_NAME} PRIVATE f18estop.f90)
-else()
-  target_sources(${PROJECT_NAME} PRIVATE f08estop.f90)
-endif()
-
 add_subdirectory(tests)
 
 install(TARGETS ${PROJECT_NAME}

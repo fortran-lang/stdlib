@@ -36,8 +36,7 @@ SRCFYPP = \
         stdlib_strings.fypp \
         stdlib_strings_to_string.fypp
 
-SRC = f18estop.f90 \
-      stdlib_error.f90 \
+SRC = stdlib_error.f90 \
       stdlib_specialfunctions.f90 \
       stdlib_specialfunctions_legendre.f90 \
       stdlib_io.f90 \
@@ -73,7 +72,6 @@ $(SRCGEN): %.f90: %.fypp common.fypp
 	fypp $(FYPPFLAGS) $< $@
 
 # Fortran module dependencies
-f18estop.o: stdlib_error.o
 stdlib_ascii.o: stdlib_kinds.o
 stdlib_bitsets.o: stdlib_kinds.o
 stdlib_bitsets_64.o: stdlib_bitsets.o
