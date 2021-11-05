@@ -43,8 +43,8 @@ find src/tests -name "*.dat" -exec cp {} "$destdir/" \;
 # Include additional files
 cp "${include[@]}" "$destdir/"
 
-# Source file workarounds for fpm
-rm "${prune[@]}"
+# Source file workarounds for fpm; ignore missing files
+rm -f "${prune[@]}"
 
 # List stdlib-fpm package contents
 ls -R "$destdir"
