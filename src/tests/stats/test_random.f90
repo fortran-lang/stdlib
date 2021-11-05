@@ -1,7 +1,8 @@
 module test_stats_distribution_prng
     use stdlib_kinds, only: int8, int16, int32, int64
-    use stdlib_stats_distribution_PRNG, only : random_seed, dist_rand
+    use stdlib_random, only : random_seed, dist_rand
     use stdlib_test, only: new_unittest, unittest_type, error_type, check
+
     implicit none
 
     private

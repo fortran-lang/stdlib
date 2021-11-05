@@ -11,6 +11,7 @@
   - [Supported compilers](#supported-compilers)
   - [Build with CMake](#build-with-cmake)
   - [Build with make](#build-with-make)
+  - [Build with fortran-lang/fpm](#build-with-fortran-langfpm)
 * [Using stdlib in your project](#using-stdlib-in-your-project)
 * [Documentation](#documentation)
 * [Contributing](#contributing)
@@ -133,9 +134,10 @@ Important options are
   Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
 
-For example, to configure a build using the Ninja backend and generating procedures up to rank 7, which is installed to your home directory use
+For example, to configure a build using the Ninja backend while specifying compiler flags `FFLAGS`, generating procedures up to rank 7, and installing to your home directory, use
 
 ```sh
+export FFLAGS="-O3"
 cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK:String=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local
 ```
 
@@ -161,6 +163,10 @@ cmake --install build
 
 Now you have a working version of stdlib you can use for your project.
 
+If at some point you wish to recompile `stdlib` with different options, you might
+want to delete the `build` folder. This will ensure that cached variables from
+earlier builds do not affect the new build.
+
 
 ### Build with make
 
@@ -176,7 +182,26 @@ You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS
 make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
 ```
 
+You can also specify the compiler and compiler-flags by setting the ``FC`` and ``FFLAGS`` environmental variables. Among other things, this facilitates use of compiler optimizations that are not specified in the Makefile.manual defaults.
+```sh
+make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4 FC=gfortran FFLAGS="-O3 -flto"
+```
 
+### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
+
+Fortran Package Manager (fpm) is a package manager and build system for Fortran.   
+You can build `stdlib` using provided `fpm.toml`:
+
+```sh
+git checkout stdlib-fpm
+fpm build --profile release
+```
+
+To use `stdlib` within your `fpm` project, add the following lines to your `fpm.toml` file:
+```toml
+[dependencies]
+stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
+```
 
 ## Using stdlib in your project
 

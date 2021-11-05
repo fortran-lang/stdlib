@@ -1,5 +1,14 @@
 #:include "common.fypp"
-#:set IRS_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + STRING_KINDS_TYPES
+
+#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS))
+#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS))
+#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS))
+#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"]))
+
+#! For better code reuse in fypp, make lists that contain the input types,
+#! with each having output types and a separate name prefix for subroutines
+#! This approach allows us to have the same code for all input types.
+#:set IRSC_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
 
 !! Licensing:
 !!
@@ -113,6 +122,8 @@ module stdlib_sorting
         sp,                 &
         dp,                 &
         qp
+
+    use stdlib_optval, only: optval
 
     use stdlib_string_type, only: string_type, assignment(=), operator(>), &
         operator(>=), operator(<), operator(<=)
@@ -353,29 +364,18 @@ module stdlib_sorting
 !! sorted data, having O(N) performance on uniformly non-increasing or
 !! non-decreasing data.
 
-#:for k1, t1 in IRS_KINDS_TYPES
-        module subroutine ${k1}$_ord_sort( array, work, reverse )
+#:for t1, t2, name1 in IRSC_TYPES_ALT_NAME
+        module subroutine ${name1}$_ord_sort( array, work, reverse )
 !! Version: experimental
 !!
-!! `${k1}$_ord_sort( array )` sorts the input `ARRAY` of type `${t1}$`
+!! `${name1}$_ord_sort( array )` sorts the input `ARRAY` of type `${t1}$`
 !! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
             ${t1}$, intent(inout)         :: array(0:)
-            ${t1}$, intent(out), optional :: work(0:)
+            ${t2}$, intent(out), optional :: work(0:)
             logical, intent(in), optional :: reverse
-        end subroutine ${k1}$_ord_sort
+        end subroutine ${name1}$_ord_sort
 
 #:endfor
-
-        module subroutine char_ord_sort( array, work, reverse )
-!! Version: experimental
-!!
-!! `char_ord_sort( array[, work, reverse] )` sorts the input `ARRAY` of type
-!! `CHARACTER(*)` using a hybrid sort based on the `'Rust" sort` algorithm
-!! found in `slice.rs`
-            character(len=*), intent(inout)                  :: array(0:)
-            character(len=len(array)), intent(out), optional :: work(0:)
-            logical, intent(in), optional                    :: reverse
-        end subroutine char_ord_sort
 
     end interface ord_sort
 
@@ -386,32 +386,20 @@ module stdlib_sorting
 !! on the `introsort` of David Musser.
 !! ([Specification](../page/specs/stdlib_sorting.html#sort-sorts-an-input-array))
 
-#:for k1, t1 in IRS_KINDS_TYPES
-        pure module subroutine ${k1}$_sort( array, reverse )
+#:for t1, t2, name1 in IRSC_TYPES_ALT_NAME
+        pure module subroutine ${name1}$_sort( array, reverse )
 !! Version: experimental
 !!
-!! `${k1}$_sort( array[, reverse] )` sorts the input `ARRAY` of type `${t1}$`
+!! `${name1}$_sort( array[, reverse] )` sorts the input `ARRAY` of type `${t1}$`
 !! using a hybrid sort based on the `introsort` of David Musser.
 !! The algorithm is of order O(N Ln(N)) for all inputs.
 !! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
 !! behavior is small for random data compared to other sorting algorithms.
             ${t1}$, intent(inout)         :: array(0:)
             logical, intent(in), optional :: reverse
-        end subroutine ${k1}$_sort
+        end subroutine ${name1}$_sort
 
 #:endfor
-
-        pure module subroutine char_sort( array, reverse )
-!! Version: experimental
-!!
-!! `char_sort( array[, reverse] )` sorts the input `ARRAY` of type
-!! `CHARACTER(*)` using a hybrid sort based on the `introsort` of David Musser.
-!! The algorithm is of order O(N Ln(N)) for all inputs.
-!! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
-!! behavior is small for random data compared to other sorting algorithms.
-            character(len=*), intent(inout) :: array(0:)
-            logical, intent(in), optional   :: reverse
-        end subroutine char_sort
 
     end interface sort
 
@@ -429,40 +417,24 @@ module stdlib_sorting
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
 !! with a value of `.TRUE.` the indices correspond to a non-increasing sort.
 
-#:for k1, t1 in IRS_KINDS_TYPES
-        module subroutine ${k1}$_sort_index( array, index, work, iwork, &
+#:for t1, t2, name1 in IRSC_TYPES_ALT_NAME
+        module subroutine ${name1}$_sort_index( array, index, work, iwork, &
             reverse )
 !! Version: experimental
 !!
-!! `${k1}$_sort_index( array, index[, work, iwork, reverse] )` sorts
+!! `${name1}$_sort_index( array, index[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `${t1}$`
 !! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
             ${t1}$, intent(inout)                    :: array(0:)
             integer(int_size), intent(out)           :: index(0:)
-            ${t1}$, intent(out), optional            :: work(0:)
+            ${t2}$, intent(out), optional            :: work(0:)
             integer(int_size), intent(out), optional :: iwork(0:)
             logical, intent(in), optional            :: reverse
-        end subroutine ${k1}$_sort_index
+        end subroutine ${name1}$_sort_index
 
 #:endfor
-
-        module subroutine char_sort_index( array, index, work, iwork, &
-            reverse )
-!! Version: experimental
-!!
-!! `char_sort_index( array, index[, work, iwork, reverse] )` sorts
-!! an input `ARRAY` of type `CHARACTER(*)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-!! and returns the sorted `ARRAY` and an array `INDEX of indices in the
-!! order that would sort the input `ARRAY` in the desired direction.
-            character(len=*), intent(inout)                  :: array(0:)
-            integer(int_size), intent(out)                   :: index(0:)
-            character(len=len(array)), intent(out), optional :: work(0:)
-            integer(int_size), intent(out), optional         :: iwork(0:)
-            logical, intent(in), optional                    :: reverse
-        end subroutine char_sort_index
 
     end interface sort_index
 
