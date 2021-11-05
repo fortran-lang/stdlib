@@ -1,4 +1,4 @@
-module test_stats_distribution_prng
+module test_stats_random
     use stdlib_kinds, only: int8, int16, int32, int64
     use stdlib_random, only : random_seed, dist_rand
     use stdlib_test, only: new_unittest, unittest_type, error_type, check
@@ -6,12 +6,12 @@ module test_stats_distribution_prng
     implicit none
 
     private
-    public :: collect_stats_distribution_prng
+    public :: collect_stats_random
 
 contains
 
     !> Collect all exported unit tests
-    subroutine collect_stats_distribution_prng(testsuite)
+    subroutine collect_stats_random(testsuite)
         !> Collection of tests
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
@@ -23,7 +23,7 @@ contains
             new_unittest("random_rand_iint64", test_random_rand_iint8) &
         ]
 
-    end subroutine collect_stats_distribution_prng
+    end subroutine collect_stats_random
 
     subroutine test_random_seed(error)
         !> Error handling
@@ -104,13 +104,13 @@ contains
         call check(error, all(res == ans))
     end subroutine test_random_rand_iint64
 
-end module test_stats_distribution_prng
+end module test_stats_random
 
 
 program tester
     use iso_fortran_env, only: error_unit
     use stdlib_test, only: new_testsuite, run_testsuite, testsuite_type
-    use test_stats_distribution_prng, only: collect_stats_distribution_prng
+    use test_stats_random, only: collect_stats_random
     implicit none
 
     integer :: stat, is
@@ -120,7 +120,7 @@ program tester
     stat = 0
 
     testsuites = [ &
-        new_testsuite("stats_distribution_prng", collect_stats_distribution_prng) &
+        new_testsuite("stats_random", collect_stats_random) &
         ]
 
     do is = 1, size(testsuites)
