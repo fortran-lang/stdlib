@@ -38,7 +38,7 @@ contains
 
     t_ms = (toc - tic) * 1000._real64 / trate
 
-    call check(error, t_ms, real(millisec, real64), thr=0.5_real64, rel=.true.)
+    call check(error, t_ms, real(millisec, real64), thr=1.5_real64, rel=.true.)
 
   end subroutine test_sleep_
 
