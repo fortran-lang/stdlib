@@ -11,8 +11,8 @@ title: Hash codes
 The comparison of lexical entities or other objects for equality
 can be computationally expensive.
 This cost is often reduced by computing a near unique integer value,
-termed a hash code, from the structure of the object using a procedure
-termed a hash function.
+termed a hash code, from the structure of the object, termed a key,
+using a procedure, termed a hash function.
 Equality of hash codes is a necessary, but not sufficient, condition
 for the original objects to be equal. 
 As integer comparisons are very efficient, performing an initial
@@ -200,12 +200,12 @@ The Standard Library provides two modules implementing hash
 functions and scalar hashes.
 The `stdlib_32_bit_hash_functions` module provides procedures to
 compute 32 bit integer hash codes and a scalar hash. 
-The hash codes are useful for tables of up to `2**15` entries, and
-for keys with a few hundred elements.
+The 32 bit hash codes are useful for tables of up to `2**16` entries,
+and for keys with a few hundred elements.
 The `stdlib_64_bit_hash_functions` module provides hash procedures to
 compute 64 bit integer hash codes and a scalar hash.
-The hash codes are useful for tables of up to `2**30` entries, and
-for keys with a few thousand elements.
+The 64 bit hash codes are useful for tables of up to `2**30` entries,
+and for keys with thousands of elements.
 While one of the codes in `stdlib_64_bit_hash_functions`,
 `SPSOOKY_HASH`, can also be used to calculate 128 bit hash codes, none
 of the current codes can be used to calculate 256 bit hash codes.
@@ -1595,7 +1595,7 @@ It multiplies the `KEY` by `SEED`, and returns the
 The Fortran Standard Library provides two test codes for the hash
 functions of `stdlib_32_bit_hash_functions` and
 `stdlib_64_bit_hash_functions`, `test_32_bit_hash_performance` and
-`test_64_bit_hash_performance` respectively. These are primarilly set
+`test_64_bit_hash_performance` respectively. These are primarily set
 up to test runtime performance of the functions. They take a sample of
 `2**18` integers of kind `INT8` and break it up into vectors of size
 1, 2, 4, 8, 16, 64,  256, and 1024 elements, yielding `2**18`,
