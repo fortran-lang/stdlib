@@ -1,6 +1,6 @@
 ! SPDX-Identifier: MIT
 module test_string_match
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_ascii, only : reverse
     use stdlib_strings, only : starts_with, ends_with
     use stdlib_string_type, only : string_type
@@ -93,7 +93,7 @@ end module test_string_match
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_string_match, only : collect_string_match
     implicit none
     integer :: stat, is

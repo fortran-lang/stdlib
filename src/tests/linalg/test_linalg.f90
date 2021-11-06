@@ -1,5 +1,5 @@
 module test_linalg
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
     use stdlib_linalg, only: diag, eye, trace, outer_product
 
@@ -694,7 +694,7 @@ end module
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_linalg, only : collect_linalg
     implicit none
     integer :: stat, is

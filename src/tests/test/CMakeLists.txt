@@ -1,2 +1,0 @@
-ADDTEST(check)
-ADDTEST(select)

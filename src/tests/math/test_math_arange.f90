@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 
 module test_math_arange
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_math, only: arange
     implicit none
 
@@ -61,7 +61,7 @@ end module test_math_arange
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_math_arange, only : collect_math_arange
     implicit none
     integer :: stat, is

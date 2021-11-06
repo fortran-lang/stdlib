@@ -1,4 +1,0 @@
-PROGS_SRC = test_check.f90 test_select.f90
-
-
-include ../Makefile.manual.test.mk

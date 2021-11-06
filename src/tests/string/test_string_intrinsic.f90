@@ -1,6 +1,6 @@
 ! SPDX-Identifer: MIT
 module test_string_intrinsic
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_string_type
     implicit none
 
@@ -721,7 +721,7 @@ end module test_string_intrinsic
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_string_intrinsic, only : collect_string_intrinsic
     implicit none
     integer :: stat, is

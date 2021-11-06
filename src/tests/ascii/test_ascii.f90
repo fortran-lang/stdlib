@@ -1,5 +1,5 @@
 module test_ascii
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_ascii, only: lowercase, uppercase, digits, &
         octal_digits, fullhex_digits, hex_digits, lowerhex_digits, &
         whitespace, letters, is_alphanum, is_alpha, is_lower, is_upper, &
@@ -932,7 +932,7 @@ end module test_ascii
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_ascii, only : collect_ascii
     implicit none
     integer :: stat, is

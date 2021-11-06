@@ -1,7 +1,7 @@
 module test_sleep
   use, intrinsic :: iso_fortran_env, only : int64, real64
   use stdlib_system, only : sleep
-  use stdlib_test, only: new_unittest, unittest_type, error_type, check
+  use testdrive, only: new_unittest, unittest_type, error_type, check
   implicit none
 
   private
@@ -38,8 +38,7 @@ contains
 
     t_ms = (toc - tic) * 1000._real64 / trate
 
-    call check(error, t_ms > 0.5 * millisec)
-    call check(error, t_ms < 2 * millisec)
+    call check(error, t_ms, real(millisec, real64), thr=0.5_real64, rel=.true.)
 
   end subroutine test_sleep_
 
@@ -48,7 +47,7 @@ end module test_sleep
 
 program tester
   use, intrinsic :: iso_fortran_env, only: error_unit
-  use stdlib_test, only: run_testsuite, new_testsuite, testsuite_type
+  use testdrive, only: run_testsuite, new_testsuite, testsuite_type
   use test_sleep, only: collect_sleep
   implicit none
   integer :: stat, is

@@ -1,7 +1,7 @@
 module test_stats_random
     use stdlib_kinds, only: int8, int16, int32, int64
     use stdlib_random, only : random_seed, dist_rand
-    use stdlib_test, only: new_unittest, unittest_type, error_type, check
+    use testdrive, only: new_unittest, unittest_type, error_type, check
 
     implicit none
 
@@ -109,7 +109,7 @@ end module test_stats_random
 
 program tester
     use iso_fortran_env, only: error_unit
-    use stdlib_test, only: new_testsuite, run_testsuite, testsuite_type
+    use testdrive, only: new_testsuite, run_testsuite, testsuite_type
     use test_stats_random, only: collect_stats_random
     implicit none
 

@@ -1,6 +1,6 @@
 module test_simps
     use stdlib_kinds, only: sp, dp, qp
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_quadrature, only: simps, simps_weights
 
     implicit none
@@ -544,7 +544,7 @@ end module
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_simps, only : collect_simps
     implicit none
     integer :: stat, is

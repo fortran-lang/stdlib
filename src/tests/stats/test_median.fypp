@@ -4,7 +4,7 @@
 #:set NRANK = 3
 
 module test_stats_median
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_stats, only: median
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp, qp
     use, intrinsic :: ieee_arithmetic, only : ieee_is_nan
@@ -532,7 +532,7 @@ end module test_stats_median
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_stats_median, only : collect_stats_median
     implicit none
     integer :: stat, is

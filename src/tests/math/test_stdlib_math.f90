@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 
 module test_stdlib_math
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_math, only: clip
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
     implicit none
@@ -198,7 +198,7 @@ end module test_stdlib_math
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_stdlib_math, only : collect_stdlib_math
     implicit none
     integer :: stat, is

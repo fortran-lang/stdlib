@@ -1,6 +1,6 @@
 ! SPDX-Identifer: MIT
 module test_string_derivedtype_io
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_string_type, only : string_type, assignment(=), len, &
         write(formatted), read(formatted), write(unformatted), read(unformatted), &
         operator(==)
@@ -97,7 +97,7 @@ end module test_string_derivedtype_io
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_string_derivedtype_io, only : collect_string_derivedtype_io
     implicit none
     integer :: stat, is

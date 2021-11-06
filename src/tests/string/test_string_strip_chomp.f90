@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 module test_strip_chomp
     use stdlib_ascii, only : TAB, VT, NUL, LF, CR, FF
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_strings, only : strip, chomp
     use stdlib_string_type, only : string_type, operator(==), operator(//)
     implicit none
@@ -191,7 +191,7 @@ end module test_strip_chomp
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_strip_chomp, only : collect_strip_chomp
     implicit none
     integer :: stat, is

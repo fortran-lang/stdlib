@@ -1,6 +1,6 @@
 module test_trapz
     use stdlib_kinds, only: sp, dp, qp
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_quadrature, only: trapz, trapz_weights
 
     implicit none
@@ -253,7 +253,7 @@ end module test_trapz
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_trapz, only : collect_trapz
     implicit none
     integer :: stat, is

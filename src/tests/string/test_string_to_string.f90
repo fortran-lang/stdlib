@@ -2,7 +2,7 @@
 module test_string_to_string
 
     use stdlib_strings, only: to_string, starts_with
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_optval, only: optval
     implicit none
 
@@ -151,7 +151,7 @@ end module test_string_to_string
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_string_to_string, only : collect_string_to_string
     implicit none
     integer :: stat, is

@@ -1,5 +1,5 @@
 module test_stdlib_bitset_large
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use :: stdlib_kinds, only : int8, int16, int32, int64
     use stdlib_bitsets
     implicit none
@@ -1102,7 +1102,7 @@ end module test_stdlib_bitset_large
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_stdlib_bitset_large, only : collect_stdlib_bitset_large
     implicit none
     integer :: stat, is

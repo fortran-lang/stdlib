@@ -1,6 +1,6 @@
 ! SPDX-Identifier: MIT
 module test_string_assignment
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
     use stdlib_string_type, only : string_type, assignment(=), operator(==), len
     implicit none
@@ -92,7 +92,7 @@ end module test_string_assignment
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_string_assignment, only : collect_string_assignment
     implicit none
     integer :: stat, is

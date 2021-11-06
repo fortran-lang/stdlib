@@ -1,5 +1,5 @@
 module test_var
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_kinds, only: sp, dp, int32, int64
     use stdlib_stats, only: var
     use,intrinsic :: ieee_arithmetic, only : ieee_is_nan
@@ -706,7 +706,7 @@ end module
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_var, only : collect_var
     implicit none
     integer :: stat, is

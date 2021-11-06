@@ -1,7 +1,7 @@
 module test_parse_mode
     use stdlib_ascii, only: reverse
     use stdlib_io, only: parse_mode
-    use stdlib_test, only: new_unittest, unittest_type, error_type, check
+    use testdrive, only: new_unittest, unittest_type, error_type, check
     implicit none
 
     private
@@ -148,7 +148,7 @@ end module test_parse_mode
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_parse_mode, only : collect_parse_mode
     implicit none
     integer :: stat, is

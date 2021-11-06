@@ -5,7 +5,7 @@ module test_sorting
     use stdlib_sorting
     use stdlib_string_type, only: string_type, assignment(=), operator(>), &
         operator(<), write(formatted)
-    use stdlib_test, only: new_unittest, unittest_type, error_type, check
+    use testdrive, only: new_unittest, unittest_type, error_type, check
 
     implicit none
 
@@ -990,7 +990,7 @@ end module test_sorting
 
 program tester
     use, intrinsic :: iso_fortran_env, only: compiler_version, error_unit
-    use stdlib_test, only: new_testsuite, run_testsuite, testsuite_type
+    use testdrive, only: new_testsuite, run_testsuite, testsuite_type
     use test_sorting, only: initialize_tests, collect_sorting
 
     implicit none

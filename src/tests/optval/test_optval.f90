@@ -2,7 +2,7 @@ module test_optval
     use, intrinsic :: iso_fortran_env, only: &
         sp => real32, dp => real64, qp => real128, &
         int8, int16, int32, int64
-    use stdlib_test, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_optval, only: optval
 
     implicit none
@@ -448,7 +448,7 @@ end module test_optval
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_optval, only : collect_optval
     implicit none
     integer :: stat, is

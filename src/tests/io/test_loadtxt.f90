@@ -1,7 +1,7 @@
 module test_loadtxt
     use stdlib_kinds, only: int32, sp, dp
     use stdlib_io, only: loadtxt, savetxt
-    use stdlib_test, only: new_unittest, unittest_type, error_type, check
+    use testdrive, only: new_unittest, unittest_type, error_type, check
     implicit none
 
     private
@@ -205,7 +205,7 @@ end module test_loadtxt
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
-    use stdlib_test, only : run_testsuite, new_testsuite, testsuite_type
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_loadtxt, only : collect_loadtxt
     implicit none
     integer :: stat, is
