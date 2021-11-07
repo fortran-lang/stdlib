@@ -24,7 +24,6 @@ include=(
 prune=(
   "$destdir/test/test_always_fail.f90"
   "$destdir/test/test_always_skip.f90"
-  "$destdir/test/test_mean_f03.f90"
   "$destdir/src/common.f90"
   "$destdir/src/f18estop.f90"
 )
@@ -43,7 +42,7 @@ find src/tests -name "*.dat" -exec cp {} "$destdir/" \;
 # Include additional files
 cp "${include[@]}" "$destdir/"
 
-# Source file workarounds for fpm
+# Source file workarounds for fpm; ignore missing files
 rm "${prune[@]}"
 
 # List stdlib-fpm package contents

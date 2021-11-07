@@ -1,30 +1,115 @@
-program test_loadtxt_qp
-use stdlib_kinds, only: qp
-use stdlib_io, only: loadtxt
-implicit none
+module test_loadtxt_qp
+    use stdlib_kinds, only: qp
+    use stdlib_io, only: loadtxt, savetxt
+    use testdrive, only: new_unittest, unittest_type, error_type, check
+    implicit none
 
-real(qp), allocatable :: q(:, :)
-
-call loadtxt("array4.dat", q)
-call print_array(q)
-
+    private
+    public :: collect_loadtxt_qp
 contains
 
-subroutine print_array(a)
-class(*),intent(in) :: a(:, :)
-integer :: i
-print *, "Array, shape=(", size(a, 1), ",", size(a, 2), ")"
+    !> Collect all exported unit tests
+    subroutine collect_loadtxt_qp(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
- select type(a)
-  type is(real(qp))
-   do i = 1, size(a, 1)
-    print *, a(i, :)
-   end do
-  class default
-   write(*,'(a)')'The proposed type is not supported'
-   error stop
- end select
+        testsuite = [ &
+            new_unittest("loadtxt_qp", test_loadtxt_qp_), &
+            new_unittest("loadtxt_qp_huge", test_loadtxt_qp_huge), &
+            new_unittest("loadtxt_qp_tiny", test_loadtxt_qp_tiny) &
+        ]
 
-end subroutine
+    end subroutine collect_loadtxt_qp
 
-end program
+
+    subroutine test_loadtxt_qp_(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(qp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 100
+            call random_number(input)
+            input = input - 0.5
+            call savetxt('test_qp.txt', input)
+            call loadtxt('test_qp.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_qp_
+
+
+    subroutine test_loadtxt_qp_huge(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(qp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * huge(input)
+            call savetxt('test_qp_huge.txt', input)
+            call loadtxt('test_qp_huge.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_qp_huge
+
+
+    subroutine test_loadtxt_qp_tiny(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(qp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * tiny(input)
+            call savetxt('test_qp_tiny.txt', input)
+            call loadtxt('test_qp_tiny.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_qp_tiny
+
+end module test_loadtxt_qp
+
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_loadtxt_qp, only : collect_loadtxt_qp
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("loadtxt_qp", collect_loadtxt_qp) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+
+end program tester

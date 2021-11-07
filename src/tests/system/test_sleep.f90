@@ -1,33 +1,73 @@
-program test_sleep
-use, intrinsic :: iso_fortran_env, only : int64, real64
-use stdlib_system, only : sleep
+module test_sleep
+  use, intrinsic :: iso_fortran_env, only : int64, real64
+  use stdlib_system, only : sleep
+  use testdrive, only: new_unittest, unittest_type, error_type, check
+  implicit none
 
-implicit none
+  private
+  public :: collect_sleep
 
-integer :: ierr, millisec
-character(8) :: argv
-integer(int64) :: tic, toc, trate
-real(real64) :: t_ms
+  integer, parameter :: millisec = 100
 
-call system_clock(count_rate=trate)
+contains
 
-millisec = 780
-call get_command_argument(1, argv, status=ierr)
-if (ierr==0) read(argv,*) millisec
+  !> Collect all exported unit tests
+  subroutine collect_sleep(testsuite)
+    !> Collection of tests
+    type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
-if (millisec<0) millisec=0
+    testsuite = [ &
+      new_unittest('sleep', test_sleep_) &
+    ]
 
-call system_clock(count=tic)
-call sleep(millisec)
-call system_clock(count=toc)
+  end subroutine collect_sleep
 
-t_ms = (toc-tic) * 1000._real64 / trate
 
-if (millisec > 0) then
-  if (t_ms < 0.5 * millisec) error stop 'actual sleep time was too short'
-  if (t_ms > 2 * millisec) error stop 'actual sleep time was too long'
-endif
+  subroutine test_sleep_(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
 
-print '(A,F8.3)', 'OK: test_sleep: slept for (ms): ',t_ms
+    integer(int64) :: tic, toc, trate
+    real(real64) :: t_ms
 
-end program
+    call system_clock(count_rate=trate)
+
+    call system_clock(count=tic)
+    call sleep(millisec)
+    call system_clock(count=toc)
+
+    t_ms = (toc - tic) * 1000._real64 / trate
+
+    call check(error, t_ms, real(millisec, real64), thr=1.5_real64, rel=.true.)
+
+  end subroutine test_sleep_
+
+end module test_sleep
+
+
+program tester
+  use, intrinsic :: iso_fortran_env, only: error_unit
+  use testdrive, only: run_testsuite, new_testsuite, testsuite_type
+  use test_sleep, only: collect_sleep
+  implicit none
+  integer :: stat, is
+  type(testsuite_type), allocatable :: testsuites(:)
+  character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+  stat = 0
+
+  testsuites = [ &
+    new_testsuite('sleep', collect_sleep) &
+  ]
+
+  do is = 1, size(testsuites)
+    write(error_unit, fmt) "Testing:", testsuites(is)%name
+    call run_testsuite(testsuites(is)%collect, error_unit, stat)
+  end do
+
+  if (stat > 0) then
+    write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+    error stop
+  end if
+
+end program tester

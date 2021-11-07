@@ -2,6 +2,8 @@
 
 # Create a list of the files to be preprocessed
 set(fppFiles
+    test_mean.fypp
+    test_mean_f03.fypp
     test_median.fypp
     test_distribution_uniform.fypp
 )
@@ -25,7 +27,7 @@ ADDTEST(moment)
 ADDTEST(rawmoment)
 ADDTEST(var)
 ADDTEST(varn)
-ADDTEST(distribution_PRNG)
+ADDTEST(random)
 ADDTEST(distribution_uniform)
 
 if(DEFINED CMAKE_MAXIMUM_RANK)
