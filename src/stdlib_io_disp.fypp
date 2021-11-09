@@ -299,7 +299,7 @@ contains
         sep_    = optval(sep, "  ")
             
         if (present(header)) then
-            write(unit_, *) format_output_string([string_type(header)], width_, brief_, "", len(header))
+            write(unit_, "(A)") format_output_string([string_type(header)], width_, brief_, "", len(header))
         end if
         
         coloum(1) = string_type(x_)
