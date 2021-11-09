@@ -32,7 +32,7 @@ contains
         integer :: unit_, width_#{if r1 == 2}#, max_elem_len#{endif}#
         logical :: brief_
         character(len=:), allocatable :: format_, sep_
-        #{if r1 != 0 or (r1 == 1 and k1 != "string_type")}#integer :: i#{endif}#
+        #{if r1 != 0 and not(r1 == 1 and k1 == "string_type")}#integer :: i#{endif}#
         #{if r1 == 2 and k1 != "string_type"}#integer :: j#{endif}#
         #{if k1 != "string_type"}#type(string_type), allocatable :: x_str${ranksuffix(r1)}$#{endif}#
         #{if r1 != 0}#type(string_type) :: array_info#{endif}#
@@ -146,7 +146,7 @@ contains
     #:endfor
     
     !> Format output string
-    pure module function format_output_string(x, width, brief, sep, max_elem_len) result(str)
+    pure function format_output_string(x, width, brief, sep, max_elem_len) result(str)
     
         type(string_type), intent(in) :: x(:)
         integer, intent(in) :: width
@@ -204,7 +204,7 @@ contains
             num1 = merge(width/elem_len, 1, elem_len <= width)
             num2 = size(x, 1)/num1
             
-            if (num2 > 1 .or. size(x, 1) /= 0) then
+            if (num2 > 1 .or. size(x, 1) > 1) then
                 allocate(str(merge(num2, num2 + 1, mod(size(x, 1), num1)==0)))
                 
                 do i = 1, size(str) - 1
@@ -262,8 +262,8 @@ contains
         
     end function format_output_string
     
-    !> Print array infomation
-    pure type(string_type) module function array_info_maker(m, n) result(info)
+    !> Print array information
+    pure type(string_type) function array_info_maker(m, n) result(info)
         integer, intent(in) :: m
         integer, intent(in), optional :: n
         
