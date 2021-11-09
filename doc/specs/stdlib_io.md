@@ -132,7 +132,7 @@ program demo_savetxt
 end program demo_savetxt
 ```
 
-## `disp` - display the value of the vairable
+## `disp` - display the value of the variable
 
 ### Status
 
@@ -163,7 +163,7 @@ This argument is `intent(in)` and `optional`.
 This argument is `intent(in)` and `optional`.<br>
 The default value is `output_unit` from `iso_fortran_env` module.
 
-- `brief`: Shall be a `logical` scalar, controls an abridged version of the `x` array to be outputed.
+- `brief`: Shall be a `logical` scalar, controls an abridged version of the `x` array to be outputted.
 This argument is `intent(in)` and `optional`.<br>
 The default value is `.false.`
 
@@ -171,7 +171,7 @@ The default value is `.false.`
 This argument is `intent(in)` and `optional`.<br>
 The default value is `g0.4`.
 
-- `width`: Shall be an `integer` scalar, controls the outputed maximum width (`>=80`).
+- `width`: Shall be an `integer` scalar, controls the outputted maximum width (`>=80`).
 This argument is `intent(in)` and `optional`.<br>
 The default value is `80`.
 
