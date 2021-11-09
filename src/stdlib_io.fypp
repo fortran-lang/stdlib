@@ -34,32 +34,31 @@ module stdlib_io
   !>
   !> Display a scalar, vector or matrix.
   !> ([Specification](../page/specs/stdlib_io.html#disp-display-your-data))
+  #! Displays a scalar or array value nicely
   interface disp
-    #:set DISP_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES &
-        & + CMPLX_KINDS_TYPES + LOG_KINDS_TYPES
-    #:set DISP_RANKS = range(0, 3)
-    #:for k1, t1 in DISP_KINDS_TYPES
-    #:for rank in DISP_RANKS
-    module subroutine disp_${rank}$_${t1[0]}$${k1}$(x, header, unit, brief)
-        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+      #:set ALL_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES + LOG_KINDS_TYPES + STRING_KINDS_TYPES
+      module subroutine disp_char(x, header, unit, brief, format, width, sep)
+        character(*), intent(in), optional :: x
         character(len=*), intent(in), optional :: header
-        integer,          intent(in), optional :: unit
-        logical,          intent(in), optional :: brief
-    end subroutine disp_${rank}$_${t1[0]}$${k1}$
-    #:endfor
-    #:endfor
-    module subroutine disp_character(x, header, unit, brief)
-        character(len=*), intent(in), optional :: x
+        integer, intent(in), optional :: unit
+        logical, intent(in), optional :: brief
+        character(len=*), intent(in), optional :: format
+        integer, intent(in), optional :: width
+        character(len=*), intent(in), optional :: sep
+      end subroutine disp_char
+      #:for r1 in range(0, 3)
+      #:for k1, t1 in ALL_KINDS_TYPES
+      module subroutine disp_${r1}$_${t1[0]}$${k1}$(x, header, unit, brief, format, width, sep)
+        ${t1}$, intent(in) :: x${ranksuffix(r1)}$
         character(len=*), intent(in), optional :: header
-        integer,          intent(in), optional :: unit
-        logical,          intent(in), optional :: brief
-    end subroutine disp_character
-    module subroutine disp_string_type(x, header, unit, brief)
-        type(string_type), intent(in)           :: x
-        character(len=*),  intent(in), optional :: header
-        integer,           intent(in), optional :: unit
-        logical,           intent(in), optional :: brief
-    end subroutine disp_string_type
+        integer, intent(in), optional :: unit
+        logical, intent(in), optional :: brief
+        character(len=*), intent(in), optional :: format
+        integer, intent(in), optional :: width
+        character(len=*), intent(in), optional :: sep
+      end subroutine disp_${r1}$_${t1[0]}$${k1}$
+      #:endfor
+      #:endfor
   end interface disp
 
   interface loadtxt
