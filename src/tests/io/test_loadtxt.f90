@@ -1,63 +1,231 @@
-program test_loadtxt
-use stdlib_kinds, only: int32, sp, dp
-use stdlib_io, only: loadtxt
-use stdlib_error, only: error_stop
-implicit none
+module test_loadtxt
+    use stdlib_kinds, only: int32, sp, dp
+    use stdlib_io, only: loadtxt, savetxt
+    use testdrive, only: new_unittest, unittest_type, error_type, check
+    implicit none
 
-integer(int32), allocatable :: i(:, :)
-real(sp), allocatable :: s(:, :)
-real(dp), allocatable :: d(:, :)
-complex(dp), allocatable :: z(:, :)
-
-call loadtxt("array1.dat", i)
-call print_array(i)
-
-call loadtxt("array1.dat", s)
-call print_array(s)
-
-call loadtxt("array1.dat", d)
-call print_array(d)
-
-call loadtxt("array2.dat", d)
-call print_array(d)
-
-call loadtxt("array3.dat", d)
-call print_array(d)
-
-call loadtxt("array4.dat", d)
-call print_array(d)
-
-call loadtxt("array5.dat", z)
-call print_array(z)
-
+    private
+    public :: collect_loadtxt
 contains
 
-subroutine print_array(a)
-class(*),intent(in) :: a(:, :)
-integer :: i
-print *, "Array, shape=(", size(a, 1), ",", size(a, 2), ")"
+    !> Collect all exported unit tests
+    subroutine collect_loadtxt(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
- select type(a)
-  type is(integer(int32))
-   do i = 1, size(a, 1)
-    print *, a(i, :)
-   end do
-  type is(real(sp))
-   do i = 1, size(a, 1)
-    print *, a(i, :)
-   end do
-  type is(real(dp))
-   do i = 1, size(a, 1)
-    print *, a(i, :)
-   end do
-  type is(complex(dp))
-    do i = 1, size(a, 1)
-      print *, a(i, :)
+        testsuite = [ &
+            new_unittest("loadtxt_int32", test_loadtxt_int32), &
+            new_unittest("loadtxt_sp", test_loadtxt_sp), &
+            new_unittest("loadtxt_sp_huge", test_loadtxt_sp_huge), &
+            new_unittest("loadtxt_sp_tiny", test_loadtxt_sp_tiny), &
+            new_unittest("loadtxt_dp", test_loadtxt_dp), &
+            new_unittest("loadtxt_dp_huge", test_loadtxt_dp_huge), &
+            new_unittest("loadtxt_dp_tiny", test_loadtxt_dp_tiny), &
+            new_unittest("loadtxt_complex", test_loadtxt_complex) &
+        ]
+
+    end subroutine collect_loadtxt
+
+
+    subroutine test_loadtxt_int32(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        integer(int32), allocatable :: input(:,:), expected(:,:)
+        real(sp), allocatable :: harvest(:,:)
+        integer :: n
+
+        allocate(harvest(10,10))
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(harvest)
+            input = int(harvest * 100)
+            call savetxt('test_int32.txt', input)
+            call loadtxt('test_int32.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_int32
+
+
+    subroutine test_loadtxt_sp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(sp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = input - 0.5
+            call savetxt('test_sp.txt', input)
+            call loadtxt('test_sp.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_sp
+
+
+    subroutine test_loadtxt_sp_huge(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(sp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * huge(input)
+            call savetxt('test_sp_huge.txt', input)
+            call loadtxt('test_sp_huge.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_sp_huge
+
+
+    subroutine test_loadtxt_sp_tiny(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(sp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * tiny(input)
+            call savetxt('test_sp_tiny.txt', input)
+            call loadtxt('test_sp_tiny.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_sp_tiny
+
+
+    subroutine test_loadtxt_dp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(dp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = input - 0.5
+            call savetxt('test_dp.txt', input)
+            call loadtxt('test_dp.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_dp
+
+
+    subroutine test_loadtxt_dp_huge(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(dp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * huge(input)
+            call savetxt('test_dp_huge.txt', input)
+            call loadtxt('test_dp_huge.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_dp_huge
+
+
+    subroutine test_loadtxt_dp_tiny(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(dp), allocatable :: input(:,:), expected(:,:)
+        integer :: n
+
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(input)
+            input = (input - 0.5) * tiny(input)
+            call savetxt('test_dp_tiny.txt', input)
+            call loadtxt('test_dp_tiny.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_dp_tiny
+
+
+    subroutine test_loadtxt_complex(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        complex(dp), allocatable :: input(:,:), expected(:,:)
+        real(dp), allocatable :: re(:,:), im(:,:)
+        integer :: n
+
+        allocate(re(10,10))
+        allocate(im(10,10))
+        allocate(input(10,10))
+        allocate(expected(10,10))
+
+        do n = 1, 10
+            call random_number(re)
+            call random_number(im)
+            input = cmplx(re, im)
+            call savetxt('test_complex.txt', input)
+            call loadtxt('test_complex.txt', expected)
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_loadtxt_complex
+
+end module test_loadtxt
+
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_loadtxt, only : collect_loadtxt
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("loadtxt", collect_loadtxt) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
     end do
-  class default
-   call error_stop('The proposed type is not supported')
- end select
 
-end subroutine
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
 
-end program
+end program tester
