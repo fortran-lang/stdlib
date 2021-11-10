@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14.0)
 project(fortran_stdlib
         LANGUAGES Fortran
-        VERSION 0
+        VERSION 0.1.0
         DESCRIPTION "Community driven and agreed upon de facto standard library for Fortran"
 )
 enable_testing()

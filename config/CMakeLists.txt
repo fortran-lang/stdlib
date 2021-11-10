@@ -10,6 +10,9 @@ if(NOT DEFINED CMAKE_INSTALL_MODULEDIR)
   )
 endif()
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
+
 # Export a pkg-config file
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/template.pc"

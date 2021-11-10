@@ -1,6 +1,9 @@
 name = "stdlib"
-version = "0.0.0"
+version = "0.1.0"
 license = "MIT"
 author = "stdlib contributors"
 maintainer = "@fortran-lang/stdlib"
 copyright = "2019-2021 stdlib contributors"
+
+[dev-dependencies]
+test-drive.git = "https://github.com/fortran-lang/test-drive"

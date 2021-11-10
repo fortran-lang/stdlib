@@ -33,7 +33,7 @@ jobs:
     - name: Install fpm latest release
       uses: fortran-lang/setup-fpm@v3
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        fpm-version: 'v0.4.0'
 
     - name: Run fpm test ⚙
       run: |

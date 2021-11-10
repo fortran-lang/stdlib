@@ -152,7 +152,7 @@ Experimental
 
 #### Class
 
-Function.
+Pure function.
 
 #### Argument(s)
 
@@ -224,7 +224,7 @@ Experimental
 
 #### Class
 
-Function.
+Pure function.
 
 #### Argument(s)
 
