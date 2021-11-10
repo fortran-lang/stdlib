@@ -406,7 +406,7 @@ is_close(a, b, rel_tol, abs_tol) = is_close(a%re, b%re, rel_tol, abs_tol) .and. 
 
 #### Syntax
 
-`bool = [[stdlib_math(module):is_close(interface)]] (a, b [, rel_tol, abs_tol])`
+`bool = [[stdlib_math(module):is_close(interface)]] (a, b [, rel_tol, abs_tol, equal_nan])`
 
 #### Status
 
@@ -424,11 +424,14 @@ This argument is `intent(in)`.
 `b`: Shall be a `real/complex` scalar/array.
 This argument is `intent(in)`.
 
-`rel_tol`: Shall be a `real` scalar.
+`rel_tol`: Shall be a `real` scalar/array.
 This argument is `intent(in)` and `optional`, which is `1.0e-9` by default.
 
-`abs_tol`: Shall be a `real` scalar.
+`abs_tol`: Shall be a `real` scalar/array.
 This argument is `intent(in)` and `optional`, which is `0.0` by default.
+
+`equal_nan`: Shall be a `logical` scalar/array.
+This argument is `intent(in)` and `optional`, which is `.false.` by default.
 
 Note: All `real/complex` arguments must have same `kind`.  
 If the value of `rel_tol/abs_tol` is negative (not recommended), 
@@ -442,13 +445,22 @@ Returns a `logical` scalar/array.
 
 ```fortran
 program demo_math_is_close
+
     use stdlib_math,  only: is_close
     use stdlib_error, only: check
-    real :: x(2) = [1, 2]
-    print *, is_close(x,[real :: 1, 2.1])        !! [T, F]
-    print *, is_close(2.0, 2.1, abs_tol=0.1)     !! T
+    real :: x(2) = [1, 2], y, NAN
+    
+    y   = -3
+    NAN = sqrt(y)
+    
+    print *, is_close(x,[real :: 1, 2.1])       !! [T, F]
+    print *, is_close(2.0, 2.1, abs_tol=0.1)    !! T
+    print *, NAN, is_close(2.0, NAN), is_close(2.0, NAN, equal_nan=.true.)   !! NAN, F, F
+    print *, is_close(NAN, NAN), is_close(NAN, NAN, equal_nan=.true.)        !! F, T
+    
     call check(all(is_close(x, [2.0, 2.0])), msg="all(is_close(x, [2.0, 2.0])) failed.", warn=.true.)
-        !! all(is_close(x, [2.0, 2.0])) failed.
+            !! all(is_close(x, [2.0, 2.0])) failed.
+        
 end program demo_math_is_close
 ```
 
@@ -456,11 +468,11 @@ end program demo_math_is_close
 
 #### Description
 
-Returns a boolean scalar where two arrays are element-wise equal within a tolerance, behaves like `all(is_close(a, b [, rel_tol, abs_tol]))`.
+Returns a boolean scalar where two arrays are element-wise equal within a tolerance, behaves like `all(is_close(a, b [, rel_tol, abs_tol, equal_nan]))`.
 
 #### Syntax
 
-`bool = [[stdlib_math(module):all_close(interface)]] (a, b [, rel_tol, abs_tol])`
+`bool = [[stdlib_math(module):all_close(interface)]] (a, b [, rel_tol, abs_tol, equal_nan])`
 
 #### Status
 
@@ -484,6 +496,9 @@ This argument is `intent(in)` and `optional`, which is `1.0e-9` by default.
 `abs_tol`: Shall be a `real` scalar.
 This argument is `intent(in)` and `optional`, which is `0.0` by default.
 
+`equal_nan`: Shall be a `logical` scalar.
+This argument is `intent(in)` and `optional`, which is `.false.` by default.
+
 Note: All `real/complex` arguments must have same `kind`.  
 If the value of `rel_tol/abs_tol` is negative (not recommended), 
 it will be corrected to `abs(rel_tol/abs_tol)` by the internal process of `all_close`.
@@ -496,18 +511,23 @@ Returns a `logical` scalar.
 
 ```fortran
 program demo_math_all_close
+
     use stdlib_math,  only: all_close
     use stdlib_error, only: check
-    real    :: x(2) = [1, 2], random(4, 4)
+    real    :: x(2) = [1, 2], y, NAN
     complex :: z(4, 4)
     
+    y   = -3
+    NAN = sqrt(y)
+    z   = (1.0, 1.0)
+    
+    print *, all_close(z+cmplx(1.0e-11, 1.0e-11), z)     !! T
+    print *, NAN, all_close([NAN], [NAN]), all_close([NAN], [NAN], equal_nan=.true.) 
+                                                         !! NAN, F, T
+                                                
     call check(all_close(x, [2.0, 2.0], rel_tol=1.0e-6, abs_tol=1.0e-3), &
                msg="all_close(x, [2.0, 2.0]) failed.", warn=.true.)
                !! all_close(x, [2.0, 2.0]) failed.
-
-    call random_number(random(4, 4))
-    z = 1.0
-    print *, all_close(z+1.0e-11*random, z)     !! T
     
 end program demo_math_all_close
 ```

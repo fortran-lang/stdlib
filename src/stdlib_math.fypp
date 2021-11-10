@@ -296,10 +296,10 @@ module stdlib_math
     interface is_close
         #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
         #:for k1, t1 in RC_KINDS_TYPES
-        elemental module function is_close_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol) result(close)
+        elemental module logical function is_close_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol, equal_nan) result(close)
             ${t1}$, intent(in) :: a, b
             real(${k1}$), intent(in), optional :: rel_tol, abs_tol
-            logical :: close
+            logical, intent(in), optional :: equal_nan
         end function is_close_${t1[0]}$${k1}$
         #:endfor
     end interface is_close
@@ -313,9 +313,10 @@ module stdlib_math
         #:set RANKS = range(1, MAXRANK + 1)
         #:for k1, t1 in RC_KINDS_TYPES
         #:for r1 in RANKS
-        logical pure module function all_close_${r1}$_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol) result(close)
+        logical pure module function all_close_${r1}$_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol, equal_nan) result(close)
             ${t1}$, intent(in) :: a${ranksuffix(r1)}$, b${ranksuffix(r1)}$
             real(${k1}$), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
         end function all_close_${r1}$_${t1[0]}$${k1}$
         #:endfor
         #:endfor
