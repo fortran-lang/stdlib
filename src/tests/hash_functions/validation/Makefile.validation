@@ -1,0 +1,47 @@
+FFLAGS = -O3
+CFLAGS = -O3
+CXXFLAGS = -O3
+LIBDIRS = -L./
+LIBS = -lc_hash
+INCLUDE_DIRS = -I./
+
+all: generate_hash_arrays generate_key_array test_hash_validity
+
+generate_key_array: generate_key_array.f90
+	$(FC) $(FFLAGS) generate_key_array.f90 -o generate_key_array
+
+test_hash_validity: test_hash_validity.f90
+	$(FC) $(FFLAGS) -L../../../ -lstdlib -I../../../ test_hash_validity.f90 \
+-o test_hash_validity
+
+generate_hash_arrays: generate_hash_arrays.o ./libc_hash.a
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) generate_hash_arrays.o \
+$(LIBS) -o generate_hash_arrays
+
+generate_hash_arrays.o: generate_hash_arrays.cpp libc_hash.a
+	$(CXX) $(CXXFLAGS) -c generate_hash_arrays.cpp -o generate_hash_arrays.o
+
+libc_hash.a: SpookyV2.o SpookyV2Test.o pengyhash.o nmhash_scalar.o waterhash.o
+	ar rcs libc_hash.a SpookyV2.o SpookyV2Test.o pengyhash.o \
+               nmhash_scalar.o waterhash.o
+
+pengyhash.o: pengyhash.c pengyhash.h
+	$(CC) $(CFLAGS) $(INCLUDE_DIRS) -c pengyhash.c -o pengyhash.o
+
+waterhash.o: waterhash.c waterhash.h
+	$(CC) $(CFLAGS) $(INCLUDE_DIRS) -c waterhash.c -o waterhash.o
+
+SpookyV2.o: SpookyV2.cpp SpookyV2.h
+	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -c SpookyV2.cpp -o SpookyV2.o
+
+SpookyV2Test.o: SpookyV2Test.cpp SpookyV2.h
+	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -c SpookyV2Test.cpp -o SpookyV2Test.o
+
+nmhash_scalar.o: nmhash_scalar.c nmhash_scalar.h
+	$(CC) $(CXXFLAGS) $(INCLUDE_DIRS) -c nmhash_scalar.c -o nmhash_scalar.o
+
+clean:
+	rm nmhash_scalar.o SpookyV2Test.o SpookyV2.o waterhash.o pengyhash.o \
+           libc_hash.a generate_hash_arrays.o generate_hash_arrays
+
+
