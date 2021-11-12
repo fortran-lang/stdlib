@@ -5,14 +5,14 @@ LIBDIRS = -L./
 LIBS = -lc_hash
 INCLUDE_DIRS = -I./
 
-all: generate_hash_arrays generate_key_array test_hash_validity
+all: generate_hash_arrays generate_key_array hash_validity_test
 
 generate_key_array: generate_key_array.f90
 	$(FC) $(FFLAGS) generate_key_array.f90 -o generate_key_array
 
-test_hash_validity: test_hash_validity.f90
-	$(FC) $(FFLAGS) -L../../../ -lstdlib -I../../../ test_hash_validity.f90 \
--o test_hash_validity
+hash_validity_test: hash_validity_test.f90
+	$(FC) $(FFLAGS) -L../../../ -lstdlib -I../../../ hash_validity_test.f90 \
+-o hash_validity_test
 
 generate_hash_arrays: generate_hash_arrays.o ./libc_hash.a
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) generate_hash_arrays.o \
@@ -42,6 +42,7 @@ nmhash_scalar.o: nmhash_scalar.c nmhash_scalar.h
 
 clean:
 	rm nmhash_scalar.o SpookyV2Test.o SpookyV2.o waterhash.o pengyhash.o \
-           libc_hash.a generate_hash_arrays.o generate_hash_arrays
+           libc_hash.a generate_hash_arrays.o generate_hash_arrays \
+	   hash_validity_test generate_key_array
 
 
