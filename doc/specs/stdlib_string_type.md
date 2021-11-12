@@ -528,7 +528,7 @@ Return the character sequence represented by the string.
 
 #### Class
 
-Pure function.
+Elemental function.
 
 #### Argument
 
@@ -618,7 +618,7 @@ Return a substring from the character sequence of the string.
 
 #### Class
 
-Pure function.
+Elemental function.
 
 #### Argument
 
@@ -1993,7 +1993,7 @@ An unallocated `string_type` instance is equivalent to an empty string.
 
 #### Class
 
-Pure Subroutine.
+Pure subroutine (Elemental subroutine, only when both `from` and `to` are `type(string_type)`)
 
 #### Argument
 
