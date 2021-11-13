@@ -2,7 +2,7 @@
 
 module test_trapz
     use stdlib_kinds, only: sp, dp, xdp, qp
-    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_quadrature, only: trapz, trapz_weights
 
     implicit none

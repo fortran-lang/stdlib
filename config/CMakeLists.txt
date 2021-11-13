@@ -21,9 +21,9 @@ if (NOT DEFINED WITH_QP)
     "if (selected_real_kind(33) == -1) stop 1; end"
     WITH_QP
   )
+  set(WITH_QP ${WITH_QP} PARENT_SCOPE)
 endif()
 if (NOT DEFINED WITH_XDP)
-  set(WITH_QP ${WITH_QP} PARENT_SCOPE)
   check_fortran_source_runs(
     "if (any(selected_real_kind(18) == [-1, selected_real_kind(33)])) stop 1; end"
     WITH_XDP

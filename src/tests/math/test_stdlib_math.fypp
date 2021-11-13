@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 
 module test_stdlib_math
-    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_math, only: clip
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none

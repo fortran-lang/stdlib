@@ -3,7 +3,7 @@
 module test_loadtxt_qp
     use stdlib_kinds, only: qp
     use stdlib_io, only: loadtxt, savetxt
-    use testdrive, only: new_unittest, unittest_type, error_type, check
+    use testdrive, only: new_unittest, unittest_type, error_type, check, skip_test
     implicit none
 
     private
