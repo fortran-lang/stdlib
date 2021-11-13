@@ -1,9 +1,10 @@
 SRCFYPP = \
           test_linalg.fypp
+SRCGEN = $(SRCFYPP:.fypp=.f90)
 PROGS_SRC = \
-            $(SRCFYPP:.fypp=.f90)
+            $(SRCGEN)
 
-$(SRCFYPP): %.f90: %.fypp ../../common.fypp
+$(SRCGEN): %.f90: %.fypp ../../common.fypp
 	fypp -I../.. $(FYPPFLAGS) $< $@
 
 

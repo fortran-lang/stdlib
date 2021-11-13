@@ -1,11 +1,12 @@
 SRCFYPP = \
           test_simps.fypp \
           test_trapz.fypp
+SRCGEN = $(SRCFYPP:.fypp=.f90)
 PROGS_SRC = \
             test_gauss.f90 \
-            $(SRCFYPP:.fypp=.f90)
+            $(SRCGEN)
 
-$(SRCFYPP): %.f90: %.fypp ../../common.fypp
+$(SRCGEN): %.f90: %.fypp ../../common.fypp
 	fypp -I../.. $(FYPPFLAGS) $< $@
 
 include ../Makefile.manual.test.mk

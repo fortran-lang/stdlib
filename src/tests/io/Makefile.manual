@@ -2,15 +2,17 @@ SRCFYPP = \
           test_loadtxt_qp.fypp \
           test_savetxt_qp.fypp
 
+SRCGEN = $(SRCFYPP:.fypp=.f90)
+
 PROGS_SRC = test_loadtxt.f90 \
             test_savetxt.f90 \
             test_parse_mode.f90 \
             test_open.f90 \
-            $(SRCFYPP:.fypp=.f90)
+            $(SRCGEN)
 
-$(SRCFYPP): %.f90: %.fypp ../../common.fypp
+$(SRCGEN): %.f90: %.fypp ../../common.fypp
 	fypp -I../.. $(FYPPFLAGS) $< $@
 
-CLEAN_FILES = tmp*.dat io_open.dat io_open.stream
+CLEAN_FILES = tmp*.dat io_open.dat io_open.stream $(SRCFYPP:.fypp=.f90) $(PROGS_SRC:.f90=.mod)
 
 include ../Makefile.manual.test.mk

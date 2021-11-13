@@ -1,11 +1,12 @@
 SRCFYPP = \
           test_stdlib_math.fypp
+SRCGEN = $(SRCFYPP:.fypp=.f90)
 
 PROGS_SRC = test_linspace.f90 test_logspace.f90 \
             test_math_arange.f90 \
-            $(SRCFYPP:.fypp=.f90)
+            $(SRCGEN)
 
-$(SRCFYPP): %.f90: %.fypp ../../common.fypp
+$(SRCGEN): %.f90: %.fypp ../../common.fypp
 	fypp -I../.. $(FYPPFLAGS) $< $@
 
 

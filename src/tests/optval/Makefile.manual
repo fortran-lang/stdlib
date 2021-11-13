@@ -1,9 +1,11 @@
 SRCFYPP = \
           test_optval.fypp
-PROGS_SRC = \
-            $(SRCFYPP:.fypp=.f90)
+SRCGEN = $(SRCFYPP:.fypp=.f90)
 
-$(SRCFYPP): %.f90: %.fypp ../../common.fypp
+PROGS_SRC = \
+				$(SRCGEN)
+
+$(SRCGEN): %.f90: %.fypp ../../common.fypp
 	fypp -I../.. $(FYPPFLAGS) $< $@
 
 include ../Makefile.manual.test.mk
