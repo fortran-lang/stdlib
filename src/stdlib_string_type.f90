@@ -51,31 +51,31 @@ module stdlib_string_type
 
     !> Constructor for new string instances
     interface string_type
-        pure elemental module function new_string(string) result(new)
+        elemental module function new_string(string) result(new)
             character(len=*), intent(in), optional :: string
             type(string_type) :: new
         end function new_string
-        pure elemental module function new_string_from_integer_int8(val) result(new)
+        elemental module function new_string_from_integer_int8(val) result(new)
             integer(int8), intent(in) :: val
             type(string_type) :: new
         end function new_string_from_integer_int8
-        pure elemental module function new_string_from_integer_int16(val) result(new)
+        elemental module function new_string_from_integer_int16(val) result(new)
             integer(int16), intent(in) :: val
             type(string_type) :: new
         end function new_string_from_integer_int16
-        pure elemental module function new_string_from_integer_int32(val) result(new)
+        elemental module function new_string_from_integer_int32(val) result(new)
             integer(int32), intent(in) :: val
             type(string_type) :: new
         end function new_string_from_integer_int32
-        pure elemental module function new_string_from_integer_int64(val) result(new)
+        elemental module function new_string_from_integer_int64(val) result(new)
             integer(int64), intent(in) :: val
             type(string_type) :: new
         end function new_string_from_integer_int64
-        pure elemental module function new_string_from_logical_lk(val) result(new)
+        elemental module function new_string_from_logical_lk(val) result(new)
             logical(lk), intent(in) :: val
             type(string_type) :: new
         end function new_string_from_logical_lk
-        pure elemental module function new_string_from_logical_c_bool(val) result(new)
+        elemental module function new_string_from_logical_c_bool(val) result(new)
             logical(c_bool), intent(in) :: val
             type(string_type) :: new
         end function new_string_from_logical_c_bool
@@ -689,7 +689,7 @@ contains
 
     !> Moves the allocated character scalar from 'from' to 'to'
     !> No output
-    subroutine move_string_string(from, to)
+    elemental subroutine move_string_string(from, to)
         type(string_type), intent(inout) :: from
         type(string_type), intent(out) :: to
 
@@ -699,7 +699,7 @@ contains
 
     !> Moves the allocated character scalar from 'from' to 'to'
     !> No output
-    subroutine move_string_char(from, to)
+    pure subroutine move_string_char(from, to)
         type(string_type), intent(inout) :: from
         character(len=:), intent(out), allocatable :: to
 
@@ -709,7 +709,7 @@ contains
 
     !> Moves the allocated character scalar from 'from' to 'to'
     !> No output
-    subroutine move_char_string(from, to)
+    pure subroutine move_char_string(from, to)
         character(len=:), intent(inout), allocatable :: from
         type(string_type), intent(out) :: to
 
@@ -719,7 +719,7 @@ contains
 
     !> Moves the allocated character scalar from 'from' to 'to'
     !> No output
-    subroutine move_char_char(from, to)
+    pure subroutine move_char_char(from, to)
         character(len=:), intent(inout), allocatable :: from
         character(len=:), intent(out), allocatable :: to
 
