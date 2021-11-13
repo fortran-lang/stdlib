@@ -3,7 +3,11 @@
 This directory contains source code and a makefile, `Makefile.validation`,
 for generatng applications from the souce code intended to test the more
 complicated hash functions in `libstdlib.a` aginst the original C and C++
-hash procedures. The makefile generates three applications\:
+hash procedures. At least two of the hash procedures, nmhash32 anc
+nmhash32x assumes that the C processor is either gcc or MSVC so that
+currently the tests can only use gcc.
+
+The makefile generates three applications\:
 `generate_key_array`, `generate_hash_arrays`, and `hash_validity_test`.
 * `generate_key_array` generates a file, `key_array.bin`, that contains a
 random sequence of 2048 eight bit integers.

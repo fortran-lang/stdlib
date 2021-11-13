@@ -1,3 +1,5 @@
+MOD_PATH = -I../../../
+
 FFLAGS = -O3
 CFLAGS = -O3
 CXXFLAGS = -O3
@@ -11,8 +13,8 @@ generate_key_array: generate_key_array.f90
 	$(FC) $(FFLAGS) generate_key_array.f90 -o generate_key_array
 
 hash_validity_test: hash_validity_test.f90
-	$(FC) $(FFLAGS) -L../../../ -lstdlib -I../../../ hash_validity_test.f90 \
--o hash_validity_test
+	$(FC) $(FFLAGS) -L../../../ -lstdlib $(MOD_PATH) \
+	hash_validity_test.f90 -o hash_validity_test
 
 generate_hash_arrays: generate_hash_arrays.o ./libc_hash.a
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) generate_hash_arrays.o \
