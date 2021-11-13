@@ -2,12 +2,12 @@
 
 #! Support for quadruple precision floating point numbers
 #:if not defined("WITH_QP")
-#:set WITH_QP = 0
+#:set WITH_QP = False
 #:endif
 
 #! Support for extended double precision floating point numbers
 #:if not defined("WITH_XDP")
-#:set WITH_XDP = 0
+#:set WITH_XDP = False
 #:endif
 
 #! Real kinds to be considered during templating
