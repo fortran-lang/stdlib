@@ -50,6 +50,12 @@ else()
   set(fyppFlags "-DVERSION90")
 endif()
 
+list(
+  APPEND fyppFlags
+  "-DWITH_QP=$<BOOL:${WITH_QP}>"
+  "-DWITH_XDP=$<BOOL:${WITH_XDP}>"
+)
+
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC

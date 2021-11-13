@@ -1,5 +1,7 @@
+#:include "common.fypp"
+
 module test_trapz
-    use stdlib_kinds, only: sp, dp, qp
+    use stdlib_kinds, only: sp, dp, xdp, qp
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_quadrature, only: trapz, trapz_weights
 
@@ -94,6 +96,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 17
         real(qp), dimension(n) :: y
         real(qp), dimension(n) :: x
@@ -120,6 +123,9 @@ contains
         val = trapz(y, x)
         ans = 2728.0_qp
         call check(error, abs(val - ans) < epsilon(ans))
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_trapz_qp
 
 
@@ -185,6 +191,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 17
         real(qp), dimension(n) :: y
         real(qp), dimension(n) :: x
@@ -206,7 +213,9 @@ contains
         val = dot_product(w, y)
         ans = trapz(y, x)
         call check(error, abs(val - ans) < epsilon(ans))
-
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_trapz_weights_qp
 
 
@@ -240,12 +249,16 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         real(qp), dimension(0) :: a
 
         call check(error, abs(trapz(a, 1.0_qp)) < epsilon(0.0_qp))
         call check(error, abs(trapz([1.0_qp], 1.0_qp)) < epsilon(0.0_qp))
         call check(error, abs(trapz(a, a)) < epsilon(0.0_qp))
         call check(error, abs(trapz([1.0_qp], [1.0_qp])) < epsilon(0.0_qp))
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_trapz_zero_qp
 
 end module test_trapz

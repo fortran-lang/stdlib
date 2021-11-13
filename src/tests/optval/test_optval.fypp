@@ -1,3 +1,5 @@
+#:include "common.fypp"
+
 module test_optval
     use, intrinsic :: iso_fortran_env, only: &
         sp => real32, dp => real64, qp => real128, &
@@ -79,17 +81,23 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         call check(error, foo_qp(1.0_qp) == 1.0_qp)
         if (allocated(error)) return
         call check(error, foo_qp() == 2.0_qp)
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_optval_rqp
 
 
+#:if WITH_QP
     function foo_qp(x) result(z)
         real(qp), intent(in), optional :: x
         real(qp) :: z
         z = optval(x, 2.0_qp)
     endfunction foo_qp
+#:endif
 
 
     subroutine test_optval_csp(error)
@@ -132,18 +140,24 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         complex(qp) :: z1
         z1 = cmplx(1.0_qp, 2.0_qp, kind=qp)
         call check(error, foo_cqp(z1) == z1)
         if (allocated(error)) return
         call check(error, foo_cqp() == z1)
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_optval_cqp
 
+#:if WITH_QP
     function foo_cqp(x) result(z)
         complex(qp), intent(in), optional :: x
         complex(qp) :: z
         z = optval(x, cmplx(1.0_qp, 2.0_qp, kind=qp))
     endfunction foo_cqp
+#:endif
 
 
     subroutine test_optval_iint8(error)
@@ -286,17 +300,23 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         call check(error, all(foo_qp_arr([1.0_qp, -1.0_qp]) == [1.0_qp, -1.0_qp]))
         if (allocated(error)) return
         call check(error, all(foo_qp_arr() == [2.0_qp, -2.0_qp]))
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_optval_rqp_arr
 
 
+#:if WITH_QP
     function foo_qp_arr(x) result(z)
         real(qp), dimension(2), intent(in), optional :: x
         real(qp), dimension(2) :: z
         z = optval(x, [2.0_qp, -2.0_qp])
     end function foo_qp_arr
+#:endif
 
 
     subroutine test_optval_csp_arr(error)
@@ -343,20 +363,26 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         complex(qp), dimension(2) :: z1, z2
         z1 = cmplx(1.0_qp, 2.0_qp, kind=qp)*[1.0_qp, -1.0_qp]
         z2 = cmplx(2.0_qp, 2.0_qp, kind=qp)*[1.0_qp, -1.0_qp]
         call check(error, all(foo_cqp_arr(z1) == z1))
         if (allocated(error)) return
         call check(error, all(foo_cqp_arr() == z2))
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_optval_cqp_arr
 
 
+#:if WITH_QP
     function foo_cqp_arr(x) result(z)
         complex(qp), dimension(2), intent(in), optional :: x
         complex(qp), dimension(2) :: z
         z = optval(x, cmplx(2.0_qp, 2.0_qp, kind=qp)*[1.0_qp, -1.0_qp])
     end function foo_cqp_arr
+#:endif
 
 
     subroutine test_optval_iint8_arr(error)

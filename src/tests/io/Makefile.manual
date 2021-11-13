@@ -1,9 +1,15 @@
+SRCFYPP = \
+          test_loadtxt_qp.fypp \
+          test_savetxt_qp.fypp
+
 PROGS_SRC = test_loadtxt.f90 \
             test_savetxt.f90 \
-            test_loadtxt_qp.f90 \
-            test_savetxt_qp.f90 \
             test_parse_mode.f90 \
-            test_open.f90
+            test_open.f90 \
+            $(SRCFYPP:.fypp=.f90)
+
+$(SRCFYPP): %.f90: %.fypp ../../common.fypp
+	fypp -I../.. $(FYPPFLAGS) $< $@
 
 CLEAN_FILES = tmp*.dat io_open.dat io_open.stream
 

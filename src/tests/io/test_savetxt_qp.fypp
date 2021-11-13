@@ -1,3 +1,5 @@
+#:include "common.fypp"
+
 module test_savetxt_qp
     use stdlib_kinds, only: qp
     use stdlib_io, only: loadtxt, savetxt
@@ -38,6 +40,7 @@ contains
     subroutine test_rqp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
+#:if WITH_QP
         real(qp) :: d(3, 2), e(2, 3)
         real(qp), allocatable :: d2(:, :)
         character(:), allocatable :: outpath
@@ -59,12 +62,16 @@ contains
         if (allocated(error)) return
         call check(error, all(e == d2))
         if (allocated(error)) return
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_rqp
 
 
     subroutine test_cqp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
+#:if WITH_QP
         complex(qp) :: d(3, 2), e(2, 3)
         complex(qp), allocatable :: d2(:, :)
         character(:), allocatable :: outpath
@@ -86,6 +93,9 @@ contains
         if (allocated(error)) return
         call check(error, all(e == d2))
         if (allocated(error)) return
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_cqp
 
 end module test_savetxt_qp

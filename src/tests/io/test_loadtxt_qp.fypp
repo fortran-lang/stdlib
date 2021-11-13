@@ -1,3 +1,5 @@
+#:include "common.fypp"
+
 module test_loadtxt_qp
     use stdlib_kinds, only: qp
     use stdlib_io, only: loadtxt, savetxt
@@ -25,6 +27,7 @@ contains
     subroutine test_loadtxt_qp_(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
+#:if WITH_QP
         real(qp), allocatable :: input(:,:), expected(:,:)
         integer :: n
 
@@ -39,6 +42,9 @@ contains
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
 
     end subroutine test_loadtxt_qp_
 
@@ -46,6 +52,7 @@ contains
     subroutine test_loadtxt_qp_huge(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
+#:if WITH_QP
         real(qp), allocatable :: input(:,:), expected(:,:)
         integer :: n
 
@@ -60,6 +67,9 @@ contains
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
 
     end subroutine test_loadtxt_qp_huge
 
@@ -67,6 +77,7 @@ contains
     subroutine test_loadtxt_qp_tiny(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
+#:if WITH_QP
         real(qp), allocatable :: input(:,:), expected(:,:)
         integer :: n
 
@@ -81,6 +92,9 @@ contains
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
 
     end subroutine test_loadtxt_qp_tiny
 

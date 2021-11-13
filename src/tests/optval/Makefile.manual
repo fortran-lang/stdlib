@@ -1,4 +1,9 @@
-PROGS_SRC = test_optval.f90
+SRCFYPP = \
+          test_optval.fypp
+PROGS_SRC = \
+            $(SRCFYPP:.fypp=.f90)
 
+$(SRCFYPP): %.f90: %.fypp ../../common.fypp
+	fypp -I../.. $(FYPPFLAGS) $< $@
 
 include ../Makefile.manual.test.mk

@@ -1,5 +1,11 @@
-PROGS_SRC = test_trapz.f90
-PROGS_SRC += test_simps.f90
-PROGS_SRC += test_gauss.f90
+SRCFYPP = \
+          test_simps.fypp \
+          test_trapz.fypp
+PROGS_SRC = \
+            test_gauss.f90 \
+            $(SRCFYPP:.fypp=.f90)
+
+$(SRCFYPP): %.f90: %.fypp ../../common.fypp
+	fypp -I../.. $(FYPPFLAGS) $< $@
 
 include ../Makefile.manual.test.mk

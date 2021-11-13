@@ -6,7 +6,7 @@
 module test_stats_mean
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_stats, only: mean
-    use stdlib_kinds, only : int8, int16, int32, int64, sp, dp, qp
+    use stdlib_kinds, only : int8, int16, int32, int64, sp, dp, xdp, qp
     use, intrinsic :: ieee_arithmetic, only : ieee_is_nan
     implicit none
     private
@@ -15,7 +15,12 @@ module test_stats_mean
 
     real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
     real(dp), parameter :: dptol = 2000 * epsilon(1._dp)
+#:if WITH_XDP
+    real(xdp), parameter :: xdptol = 2000 * epsilon(1._xdp)
+#:endif
+#:if WITH_QP
     real(qp), parameter :: qptol = 2000 * epsilon(1._qp)
+#:endif
 
     #:for k1,t1 in IR_KINDS_TYPES
     ${t1}$ , parameter :: d1_${k1}$(18) = [-10, 2, 3, 4, -6, 6, -7, 8, 9, 4, 1, -20, 9, 10, 14, 15, 40, 30]
