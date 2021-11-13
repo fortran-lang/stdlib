@@ -528,7 +528,7 @@ Return the character sequence represented by the string.
 
 #### Class
 
-Elemental function.
+Pure function.
 
 #### Argument
 
@@ -618,7 +618,7 @@ Return a substring from the character sequence of the string.
 
 #### Class
 
-Elemental function.
+Pure function.
 
 #### Argument
 

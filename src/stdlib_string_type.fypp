@@ -438,7 +438,7 @@ contains
 
 
     !> Return the character sequence represented by the string.
-    elemental function char_string(string) result(character_string)
+    pure function char_string(string) result(character_string)
         type(string_type), intent(in) :: string
         character(len=len(string)) :: character_string
 
@@ -457,7 +457,7 @@ contains
     end function char_string_pos
 
     !> Return the character sequence represented by the string.
-    elemental function char_string_range(string, start, last) result(character_string)
+    pure function char_string_range(string, start, last) result(character_string)
         type(string_type), intent(in) :: string
         integer, intent(in) :: start
         integer, intent(in) :: last
@@ -1233,7 +1233,7 @@ contains
 
 
     !> Safely return the character sequences represented by the string
-    elemental function maybe(string) result(maybe_string)
+    pure function maybe(string) result(maybe_string)
         type(string_type), intent(in) :: string
         character(len=len(string)) :: maybe_string
         if (allocated(string%raw)) then
