@@ -83,8 +83,8 @@ module stdlib_32_bit_hash_functions
 
         pure module function character_fnv_1( key ) result(hash_code)
 !! FNV_1 hash function for default character string keys
-            character(*), intent(in)      :: key
-            integer(int_hash)             :: hash_code
+            character(*), intent(in) :: key
+            integer(int_hash)        :: hash_code
         end function character_fnv_1
 
     end interface fnv_1_hash
@@ -94,16 +94,16 @@ module stdlib_32_bit_hash_functions
         #:for k1 in INT_KINDS
           pure module function ${k1}$_fnv_1a( key ) result(hash_value)
 !! FNV_1A hash function for rank 1 array keys of kind ${k1}$
-              integer(${k1}$), intent(in)   :: key(:)
-              integer(int_hash)             :: hash_value
+              integer(${k1}$), intent(in) :: key(:)
+              integer(int_hash)           :: hash_value
           end function ${k1}$_fnv_1a
 
         #:endfor
 
         pure module function character_fnv_1a( key ) result(hash_value)
 !! FNV_1A hash function for default character string keys
-            character(*), intent(in)      :: key
-            integer(int_hash)             :: hash_value
+            character(*), intent(in) :: key
+            integer(int_hash)        :: hash_value
         end function character_fnv_1a
 
     end interface fnv_1a_hash
@@ -115,9 +115,9 @@ module stdlib_32_bit_hash_functions
           pure module function ${k1}$_nmhash32( key, seed ) &
               result(hash_value)
 !! NMHASH32 hash function for rank 1 array keys of kind ${k1}$
-              integer(${k1}$), intent(in)   :: key(0:)
-              integer(int32), intent(in) :: seed
-              integer(int32)             :: hash_value
+              integer(${k1}$), intent(in) :: key(0:)
+              integer(int32), intent(in)  :: seed
+              integer(int32)              :: hash_value
           end function ${k1}$_nmhash32
 
         #:endfor
