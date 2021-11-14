@@ -16,22 +16,26 @@ The `stdlib_kinds` module provides kind parameters for the Fortran intrinsic dat
 
 ### `sp`
 
+Single precision real kind parameter.
 Provides real kind parameter for floating point numbers with a minimal precision of 6 significant digits.
 
 
 ### `dp`
 
+Double precision real kind parameter.
 Provides real kind parameter for floating point numbers with a minimal precision of 15 significant digits.
 
 
 ### `xdp`
 
+Extended double precision real kind parameter.
 Provides real kind parameter for floating point numbers with a minimal precision of 18 significant digits.
 If not available it has value `-1`.
 
 
 ### `qp`
 
+Quadruple precision real kind parameter.
 Provides real kind parameter for floating point numbers with a minimal precision of 33 significant digits.
 If not available it has value `-1`.
 
