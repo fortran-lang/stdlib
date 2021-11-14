@@ -12,7 +12,11 @@ fypp="${FYPP:-$(which fypp)}"
 fyflags="${FYFLAGS:--DMAXRANK=4}"
 
 # Number of parallel jobs for preprocessing
-njob="$(nproc)"
+if [ $(uname) = "Darwin" ]; then
+  njob="$(sysctl -n hw.ncpu)"
+else
+  njob="$(nproc)"
+fi
 
 # Additional files to include
 include=(
