@@ -1,3 +1,4 @@
+#:include "common.fypp"
 !> Version: experimental
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_kinds.html).
@@ -15,10 +16,10 @@ module stdlib_kinds
   integer, parameter :: dp = selected_real_kind(15)
 
   !> Extended double precision real numbers
-  integer, parameter :: xdp = selected_real_kind(18)
+  integer, parameter :: xdp = #{if WITH_XDP}#selected_real_kind(18)#{else}#-1#{endif}#
 
   !> Quadruple precision real numbers
-  integer, parameter :: qp = selected_real_kind(33)
+  integer, parameter :: qp = #{if WITH_QP}#selected_real_kind(33)#{else}#-1#{endif}#
 
   !> Default logical kind parameter
   integer, parameter :: lk = kind(.true.)
