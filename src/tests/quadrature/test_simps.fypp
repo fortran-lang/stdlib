@@ -1,13 +1,20 @@
+#:include "common.fypp"
+
 module test_simps
-    use stdlib_kinds, only: sp, dp, qp
-    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use stdlib_kinds, only: sp, dp, xdp, qp
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_quadrature, only: simps, simps_weights
 
     implicit none
 
     real(sp), parameter :: tol_sp = 1000 * epsilon(1.0_sp)
     real(dp), parameter :: tol_dp = 1000 * epsilon(1.0_dp)
-    real(qp), parameter :: tol_qp = 1000 *epsilon(1.0_sp)
+#:if WITH_XDP
+    real(xdp), parameter :: tol_xdp = 1000 * epsilon(1.0_xdp)
+#:endif
+#:if WITH_QP
+    real(qp), parameter :: tol_qp = 1000 * epsilon(1.0_qp)
+#:endif
 
 
 contains
@@ -105,6 +112,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 13
         real(qp), dimension(n) :: y
         real(qp), dimension(n) :: x
@@ -129,6 +137,9 @@ contains
         val = simps(y, x)
         ans = 144.0_qp
         call check(error, val, ans, thr=tol_qp)
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_simps_qp
 
 
@@ -182,6 +193,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 17
         real(qp), dimension(n) :: y
         real(qp), dimension(n) :: x
@@ -198,6 +210,9 @@ contains
         val = sum(w*y)
         ans = simps(y, x)
         call check(error, val, ans, thr=tol_qp)
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_simps_weights_qp
 
 
@@ -239,6 +254,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         real(qp), dimension(0) :: a
 
 
@@ -249,6 +265,9 @@ contains
         call check(error, abs(simps(a, a)) < epsilon(0.0_qp))
         if (allocated(error)) return
         call check(error, abs(simps([1.0_qp], [1.0_qp])) < epsilon(0.0_qp))
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_simps_zero_qp
 
 
@@ -323,6 +342,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 11
         real(qp), dimension(n) :: y
         real(qp), dimension(n) :: x
@@ -352,6 +372,9 @@ contains
             call check(error, val, ans, thr=tol_qp)
             if (allocated(error)) return
         end do
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_simps_even_qp
 
 
@@ -413,6 +436,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 16
         real(qp), dimension(n) :: y
         real(qp), dimension(n) :: x
@@ -434,6 +458,9 @@ contains
             call check(error, val, ans, thr=tol_qp)
             if (allocated(error)) return
         end do
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_simps_weights_even_qp
 
 
@@ -508,6 +535,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 6
         real(qp), dimension(n) :: y
         real(qp), dimension(n) :: x
@@ -537,6 +565,9 @@ contains
             call check(error, val, ans, thr=tol_qp)
             if (allocated(error)) return
         end do
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_simps_six_qp
 
 end module

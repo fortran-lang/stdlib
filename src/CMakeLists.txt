@@ -7,6 +7,7 @@ set(fppFiles
     stdlib_bitsets_64.fypp
     stdlib_bitsets_large.fypp
     stdlib_io.fypp
+    stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
     stdlib_linalg_outer_product.fypp
@@ -50,11 +51,16 @@ else()
   set(fyppFlags "-DVERSION90")
 endif()
 
+list(
+  APPEND fyppFlags
+  "-DWITH_QP=$<BOOL:${WITH_QP}>"
+  "-DWITH_XDP=$<BOOL:${WITH_XDP}>"
+)
+
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
     stdlib_error.f90
-    stdlib_kinds.f90
     stdlib_logger.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90

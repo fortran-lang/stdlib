@@ -7,7 +7,7 @@ module stdlib_strings
     use stdlib_ascii, only: whitespace
     use stdlib_string_type, only: string_type, char, verify, repeat, len
     use stdlib_optval, only: optval
-    use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64, lk, c_bool
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk, c_bool
     implicit none
     private
 

@@ -5,8 +5,8 @@ SRCFYPP = \
 
 SRCGEN = $(SRCFYPP:.fypp=.f90)
 
-$(SRCGEN): %.f90: %.fypp common.fypp
-	fypp $(FYPPFLAGS) $< $@
+$(SRCGEN): %.f90: %.fypp ../../common.fypp
+	fypp -I../.. $(FYPPFLAGS) $< $@
 
 PROGS_SRC = $(SRCGEN) test_mean.f90 test_moment.f90 test_var.f90 test_random.f90
 

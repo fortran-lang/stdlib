@@ -1,9 +1,11 @@
 ! SPDX-Identifier: MIT
 
+#:include "common.fypp"
+
 module test_stdlib_math
-    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_math, only: clip
-    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none
 
     public :: collect_stdlib_math
@@ -174,23 +176,31 @@ contains
     subroutine test_clip_rqp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
+#:if WITH_QP
         ! type: real(qp), kind: qp
         ! valid test case
         call check(error, clip(3.025_qp, -5.77_qp, 3.025_qp), 3.025_qp)
         if (allocated(error)) return
         call check(error, clip(-55891546.2_qp, -8958133457.23_qp, -689712245.23_qp), -689712245.23_qp)
         if (allocated(error)) return
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_clip_rqp
 
 
     subroutine test_clip_rqp_bounds(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
+#:if WITH_QP
         ! invalid test case
         call check(error, clip(3.025_qp, 3.025_qp, -5.77_qp), 3.025_qp)
         if (allocated(error)) return
         call check(error, clip(-55891546.2_qp, -689712245.23_qp, -8958133457.23_qp), -689712245.23_qp)
         if (allocated(error)) return
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
 
     end subroutine test_clip_rqp_bounds
 
