@@ -7,3 +7,4 @@ copyright = "2019-2021 stdlib contributors"
 
 [dev-dependencies]
 test-drive.git = "https://github.com/fortran-lang/test-drive"
+test-drive.rev = "6f56c059c26715eab56f0ac85b400c1a6007fb88"

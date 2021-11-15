@@ -9,7 +9,7 @@ FETCH = curl -L
 all test:: $(LIB)
 
 testdrive.F90:
-	$(FETCH) https://github.com/fortran-lang/test-drive/raw/main/src/testdrive.F90 > $@
+	$(FETCH) https://github.com/fortran-lang/test-drive/raw/6f56c059c26715eab56f0ac85b400c1a6007fb88/src/testdrive.F90 > $@
 
 all test clean::
 	$(MAKE) -f Makefile.manual --directory=ascii $@
