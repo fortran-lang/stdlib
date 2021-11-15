@@ -13,7 +13,7 @@ module stdlib_optval
   !!
   !! It is an error to call `optval` with a single actual argument.
   !!
-  use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
+  use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
   implicit none
 
 
@@ -28,14 +28,12 @@ module stdlib_optval
     !! ([Specification](../page/specs/stdlib_optval.html#description))
       module procedure optval_rsp
       module procedure optval_rdp
-      module procedure optval_rqp
       module procedure optval_iint8
       module procedure optval_iint16
       module procedure optval_iint32
       module procedure optval_iint64
       module procedure optval_csp
       module procedure optval_cdp
-      module procedure optval_cqp
       module procedure optval_ll1
     module procedure optval_character
      ! TODO: differentiate ascii & ucs char kinds
@@ -66,17 +64,6 @@ contains
        y = default
     end if
   end function optval_rdp
-    pure elemental function optval_rqp(x, default) result(y)
-    real(qp), intent(in), optional :: x
-    real(qp), intent(in) :: default
-    real(qp) :: y
-
-    if (present(x)) then
-       y = x
-    else
-       y = default
-    end if
-  end function optval_rqp
     pure elemental function optval_iint8(x, default) result(y)
     integer(int8), intent(in), optional :: x
     integer(int8), intent(in) :: default
@@ -143,17 +130,6 @@ contains
        y = default
     end if
   end function optval_cdp
-    pure elemental function optval_cqp(x, default) result(y)
-    complex(qp), intent(in), optional :: x
-    complex(qp), intent(in) :: default
-    complex(qp) :: y
-
-    if (present(x)) then
-       y = x
-    else
-       y = default
-    end if
-  end function optval_cqp
     pure elemental function optval_ll1(x, default) result(y)
     logical, intent(in), optional :: x
     logical, intent(in) :: default

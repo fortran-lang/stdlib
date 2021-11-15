@@ -112,6 +112,7 @@ module stdlib_sorting
         int64,              &
         sp,                 &
         dp,                 &
+        xdp,                &
         qp
 
     use stdlib_optval, only: optval
@@ -415,16 +416,6 @@ module stdlib_sorting
             logical, intent(in), optional :: reverse
         end subroutine dp_ord_sort
 
-        module subroutine qp_ord_sort( array, work, reverse )
-!! Version: experimental
-!!
-!! `qp_ord_sort( array )` sorts the input `ARRAY` of type `real(qp)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-            real(qp), intent(inout)         :: array(0:)
-            real(qp), intent(out), optional :: work(0:)
-            logical, intent(in), optional :: reverse
-        end subroutine qp_ord_sort
-
         module subroutine string_type_ord_sort( array, work, reverse )
 !! Version: experimental
 !!
@@ -526,18 +517,6 @@ module stdlib_sorting
             real(dp), intent(inout)         :: array(0:)
             logical, intent(in), optional :: reverse
         end subroutine dp_sort
-
-        pure module subroutine qp_sort( array, reverse )
-!! Version: experimental
-!!
-!! `qp_sort( array[, reverse] )` sorts the input `ARRAY` of type `real(qp)`
-!! using a hybrid sort based on the `introsort` of David Musser.
-!! The algorithm is of order O(N Ln(N)) for all inputs.
-!! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
-!! behavior is small for random data compared to other sorting algorithms.
-            real(qp), intent(inout)         :: array(0:)
-            logical, intent(in), optional :: reverse
-        end subroutine qp_sort
 
         pure module subroutine string_type_sort( array, reverse )
 !! Version: experimental
@@ -675,22 +654,6 @@ module stdlib_sorting
             integer(int_size), intent(out), optional :: iwork(0:)
             logical, intent(in), optional            :: reverse
         end subroutine dp_sort_index
-
-        module subroutine qp_sort_index( array, index, work, iwork, &
-            reverse )
-!! Version: experimental
-!!
-!! `qp_sort_index( array, index[, work, iwork, reverse] )` sorts
-!! an input `ARRAY` of type `real(qp)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-!! and returns the sorted `ARRAY` and an array `INDEX of indices in the
-!! order that would sort the input `ARRAY` in the desired direction.
-            real(qp), intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            real(qp), intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
-        end subroutine qp_sort_index
 
         module subroutine string_type_sort_index( array, index, work, iwork, &
             reverse )

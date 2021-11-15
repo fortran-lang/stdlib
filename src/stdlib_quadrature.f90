@@ -1,6 +1,6 @@
 module stdlib_quadrature
     !! ([Specification](../page/specs/stdlib_quadrature.html#description))
-    use stdlib_kinds, only: sp, dp, qp
+    use stdlib_kinds, only: sp, dp, xdp, qp
 
     implicit none
 
@@ -30,11 +30,6 @@ module stdlib_quadrature
           real(dp), intent(in) :: dx
           real(dp) :: integral
         end function trapz_dx_dp
-        pure module function trapz_dx_qp(y, dx) result(integral)
-          real(qp), dimension(:), intent(in) :: y
-          real(qp), intent(in) :: dx
-          real(qp) :: integral
-        end function trapz_dx_qp
         module function trapz_x_sp(y, x) result(integral)
             real(sp), dimension(:), intent(in) :: y
             real(sp), dimension(:), intent(in) :: x
@@ -45,11 +40,6 @@ module stdlib_quadrature
             real(dp), dimension(:), intent(in) :: x
             real(dp) :: integral
         end function trapz_x_dp
-        module function trapz_x_qp(y, x) result(integral)
-            real(qp), dimension(:), intent(in) :: y
-            real(qp), dimension(:), intent(in) :: x
-            real(qp) :: integral
-        end function trapz_x_qp
     end interface trapz
 
 
@@ -66,10 +56,6 @@ module stdlib_quadrature
             real(dp), dimension(:), intent(in) :: x
             real(dp), dimension(size(x)) :: w
         end function trapz_weights_dp
-        pure module function trapz_weights_qp(x) result(w)
-            real(qp), dimension(:), intent(in) :: x
-            real(qp), dimension(size(x)) :: w
-        end function trapz_weights_qp
     end interface trapz_weights
 
 
@@ -91,12 +77,6 @@ module stdlib_quadrature
             integer, intent(in), optional :: even
             real(dp) :: integral
         end function simps_dx_dp
-        pure recursive module function simps_dx_qp(y, dx, even) result(integral)
-            real(qp), dimension(:), intent(in) :: y
-            real(qp), intent(in) :: dx
-            integer, intent(in), optional :: even
-            real(qp) :: integral
-        end function simps_dx_qp
         recursive module function simps_x_sp(y, x, even) result(integral)
             real(sp), dimension(:), intent(in) :: y
             real(sp), dimension(:), intent(in) :: x
@@ -109,12 +89,6 @@ module stdlib_quadrature
             integer, intent(in), optional :: even
             real(dp) :: integral
         end function simps_x_dp
-        recursive module function simps_x_qp(y, x, even) result(integral)
-            real(qp), dimension(:), intent(in) :: y
-            real(qp), dimension(:), intent(in) :: x
-            integer, intent(in), optional :: even
-            real(qp) :: integral
-        end function simps_x_qp
     end interface simps
 
 
@@ -133,11 +107,6 @@ module stdlib_quadrature
             integer, intent(in), optional :: even
             real(dp), dimension(size(x)) :: w
         end function simps_weights_dp
-        pure recursive module function simps_weights_qp(x, even) result(w)
-            real(qp), dimension(:), intent(in) :: x
-            integer, intent(in), optional :: even
-            real(qp), dimension(size(x)) :: w
-        end function simps_weights_qp
     end interface simps_weights
 
 
@@ -177,11 +146,6 @@ module stdlib_quadrature
             real(dp), intent(in) :: x
             real(dp) :: f
         end function integrand_dp
-        pure function integrand_qp(x) result(f)
-            import :: qp
-            real(qp), intent(in) :: x
-            real(qp) :: f
-        end function integrand_qp
     end interface
 
 

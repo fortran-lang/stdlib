@@ -22,15 +22,6 @@ contains
           res(i,i) = v(i)
         end do
       end function diag_rdp
-      module function diag_rqp(v) result(res)
-        real(qp), intent(in) :: v(:)
-        real(qp) :: res(size(v),size(v))
-        integer :: i
-        res = 0
-        do i = 1, size(v)
-          res(i,i) = v(i)
-        end do
-      end function diag_rqp
       module function diag_csp(v) result(res)
         complex(sp), intent(in) :: v(:)
         complex(sp) :: res(size(v),size(v))
@@ -49,15 +40,6 @@ contains
           res(i,i) = v(i)
         end do
       end function diag_cdp
-      module function diag_cqp(v) result(res)
-        complex(qp), intent(in) :: v(:)
-        complex(qp) :: res(size(v),size(v))
-        integer :: i
-        res = 0
-        do i = 1, size(v)
-          res(i,i) = v(i)
-        end do
-      end function diag_cqp
       module function diag_iint8(v) result(res)
         integer(int8), intent(in) :: v(:)
         integer(int8) :: res(size(v),size(v))
@@ -138,27 +120,6 @@ contains
           end do
         end if
       end function diag_rdp_k
-      module function diag_rqp_k(v,k) result(res)
-        real(qp), intent(in) :: v(:)
-        integer, intent(in) :: k
-        real(qp) :: res(size(v)+abs(k),size(v)+abs(k))
-        integer :: i, sz
-        sz = size(v)
-        res = 0
-        if (k > 0) then
-          do i = 1, sz
-              res(i,k+i) = v(i)
-          end do
-        else if (k < 0) then
-          do i = 1, sz
-              res(i+abs(k),i) = v(i)
-          end do
-        else
-          do i = 1, sz
-              res(i,i) = v(i)
-          end do
-        end if
-      end function diag_rqp_k
       module function diag_csp_k(v,k) result(res)
         complex(sp), intent(in) :: v(:)
         integer, intent(in) :: k
@@ -201,27 +162,6 @@ contains
           end do
         end if
       end function diag_cdp_k
-      module function diag_cqp_k(v,k) result(res)
-        complex(qp), intent(in) :: v(:)
-        integer, intent(in) :: k
-        complex(qp) :: res(size(v)+abs(k),size(v)+abs(k))
-        integer :: i, sz
-        sz = size(v)
-        res = 0
-        if (k > 0) then
-          do i = 1, sz
-              res(i,k+i) = v(i)
-          end do
-        else if (k < 0) then
-          do i = 1, sz
-              res(i+abs(k),i) = v(i)
-          end do
-        else
-          do i = 1, sz
-              res(i,i) = v(i)
-          end do
-        end if
-      end function diag_cqp_k
       module function diag_iint8_k(v,k) result(res)
         integer(int8), intent(in) :: v(:)
         integer, intent(in) :: k
@@ -323,14 +263,6 @@ contains
           res(i) = A(i,i)
         end do
       end function diag_rdp_mat
-      module function diag_rqp_mat(A) result(res)
-        real(qp), intent(in) :: A(:,:)
-        real(qp) :: res(minval(shape(A)))
-        integer :: i
-        do i = 1, minval(shape(A))
-          res(i) = A(i,i)
-        end do
-      end function diag_rqp_mat
       module function diag_csp_mat(A) result(res)
         complex(sp), intent(in) :: A(:,:)
         complex(sp) :: res(minval(shape(A)))
@@ -347,14 +279,6 @@ contains
           res(i) = A(i,i)
         end do
       end function diag_cdp_mat
-      module function diag_cqp_mat(A) result(res)
-        complex(qp), intent(in) :: A(:,:)
-        complex(qp) :: res(minval(shape(A)))
-        integer :: i
-        do i = 1, minval(shape(A))
-          res(i) = A(i,i)
-        end do
-      end function diag_cqp_mat
       module function diag_iint8_mat(A) result(res)
         integer(int8), intent(in) :: A(:,:)
         integer(int8) :: res(minval(shape(A)))
@@ -428,26 +352,6 @@ contains
           end do
         end if
       end function diag_rdp_mat_k
-      module function diag_rqp_mat_k(A,k) result(res)
-        real(qp), intent(in) :: A(:,:)
-        integer, intent(in) :: k
-        real(qp) :: res(minval(shape(A))-abs(k))
-        integer :: i, sz
-        sz = minval(shape(A))-abs(k)
-        if (k > 0) then
-          do i = 1, sz
-              res(i) = A(i,k+i)
-          end do
-        else if (k < 0) then
-          do i = 1, sz
-              res(i) = A(i+abs(k),i)
-          end do
-        else
-          do i = 1, sz
-              res(i) = A(i,i)
-          end do
-        end if
-      end function diag_rqp_mat_k
       module function diag_csp_mat_k(A,k) result(res)
         complex(sp), intent(in) :: A(:,:)
         integer, intent(in) :: k
@@ -488,26 +392,6 @@ contains
           end do
         end if
       end function diag_cdp_mat_k
-      module function diag_cqp_mat_k(A,k) result(res)
-        complex(qp), intent(in) :: A(:,:)
-        integer, intent(in) :: k
-        complex(qp) :: res(minval(shape(A))-abs(k))
-        integer :: i, sz
-        sz = minval(shape(A))-abs(k)
-        if (k > 0) then
-          do i = 1, sz
-              res(i) = A(i,k+i)
-          end do
-        else if (k < 0) then
-          do i = 1, sz
-              res(i) = A(i+abs(k),i)
-          end do
-        else
-          do i = 1, sz
-              res(i) = A(i,i)
-          end do
-        end if
-      end function diag_cqp_mat_k
       module function diag_iint8_mat_k(A,k) result(res)
         integer(int8), intent(in) :: A(:,:)
         integer, intent(in) :: k

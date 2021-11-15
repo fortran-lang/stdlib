@@ -129,67 +129,6 @@ contains
         end if
 
       end function moment_scalar_4_rdp_rdp
-      module function moment_scalar_2_rqp_rqp(x, order, dim, center, mask) result(res)
-        real(qp), intent(in) :: x(:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        real(qp), intent(in) :: center
-        logical, intent(in), optional :: mask
-        real(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim))
-
-        if (.not.optval(mask, .true.)) then
-          res = ieee_value(1._qp, ieee_quiet_nan)
-          return
-        end if
-
-        if (dim >= 1 .and. dim <= 2) then
-          res = sum((x - center)**order, dim) / size(x, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_scalar_2_rqp_rqp
-      module function moment_scalar_3_rqp_rqp(x, order, dim, center, mask) result(res)
-        real(qp), intent(in) :: x(:,:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        real(qp), intent(in) :: center
-        logical, intent(in), optional :: mask
-        real(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim))
-
-        if (.not.optval(mask, .true.)) then
-          res = ieee_value(1._qp, ieee_quiet_nan)
-          return
-        end if
-
-        if (dim >= 1 .and. dim <= 3) then
-          res = sum((x - center)**order, dim) / size(x, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_scalar_3_rqp_rqp
-      module function moment_scalar_4_rqp_rqp(x, order, dim, center, mask) result(res)
-        real(qp), intent(in) :: x(:,:,:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        real(qp), intent(in) :: center
-        logical, intent(in), optional :: mask
-        real(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
-            & size(x, 4), mask=3<dim))
-
-        if (.not.optval(mask, .true.)) then
-          res = ieee_value(1._qp, ieee_quiet_nan)
-          return
-        end if
-
-        if (dim >= 1 .and. dim <= 4) then
-          res = sum((x - center)**order, dim) / size(x, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_scalar_4_rqp_rqp
       module function moment_scalar_2_csp_csp(x, order, dim, center, mask) result(res)
         complex(sp), intent(in) :: x(:,:)
         integer, intent(in) :: order
@@ -312,67 +251,6 @@ contains
         end if
 
       end function moment_scalar_4_cdp_cdp
-      module function moment_scalar_2_cqp_cqp(x, order, dim, center, mask) result(res)
-        complex(qp), intent(in) :: x(:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        complex(qp), intent(in) :: center
-        logical, intent(in), optional :: mask
-        complex(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim))
-
-        if (.not.optval(mask, .true.)) then
-          res = ieee_value(1._qp, ieee_quiet_nan)
-          return
-        end if
-
-        if (dim >= 1 .and. dim <= 2) then
-          res = sum((x - center)**order, dim) / size(x, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_scalar_2_cqp_cqp
-      module function moment_scalar_3_cqp_cqp(x, order, dim, center, mask) result(res)
-        complex(qp), intent(in) :: x(:,:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        complex(qp), intent(in) :: center
-        logical, intent(in), optional :: mask
-        complex(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim))
-
-        if (.not.optval(mask, .true.)) then
-          res = ieee_value(1._qp, ieee_quiet_nan)
-          return
-        end if
-
-        if (dim >= 1 .and. dim <= 3) then
-          res = sum((x - center)**order, dim) / size(x, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_scalar_3_cqp_cqp
-      module function moment_scalar_4_cqp_cqp(x, order, dim, center, mask) result(res)
-        complex(qp), intent(in) :: x(:,:,:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        complex(qp), intent(in) :: center
-        logical, intent(in), optional :: mask
-        complex(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
-            & size(x, 4), mask=3<dim))
-
-        if (.not.optval(mask, .true.)) then
-          res = ieee_value(1._qp, ieee_quiet_nan)
-          return
-        end if
-
-        if (dim >= 1 .and. dim <= 4) then
-          res = sum((x - center)**order, dim) / size(x, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_scalar_4_cqp_cqp
 
       module function moment_scalar_2_iint8_dp(x, order, dim, center, mask) result(res)
         integer(int8), intent(in) :: x(:,:)
@@ -712,52 +590,6 @@ contains
         end if
 
       end function moment_mask_scalar_4_rdp_rdp
-      module function moment_mask_scalar_2_rqp_rqp(x, order, dim, center, mask) result(res)
-        real(qp), intent(in) :: x(:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        real(qp), intent(in) :: center
-        logical, intent(in) :: mask(:,:)
-        real(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim))
-
-        if (dim >= 1 .and. dim <= 2) then
-          res = sum((x - center)**order, dim, mask) / count(mask, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_mask_scalar_2_rqp_rqp
-      module function moment_mask_scalar_3_rqp_rqp(x, order, dim, center, mask) result(res)
-        real(qp), intent(in) :: x(:,:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        real(qp), intent(in) :: center
-        logical, intent(in) :: mask(:,:,:)
-        real(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim))
-
-        if (dim >= 1 .and. dim <= 3) then
-          res = sum((x - center)**order, dim, mask) / count(mask, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_mask_scalar_3_rqp_rqp
-      module function moment_mask_scalar_4_rqp_rqp(x, order, dim, center, mask) result(res)
-        real(qp), intent(in) :: x(:,:,:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        real(qp), intent(in) :: center
-        logical, intent(in) :: mask(:,:,:,:)
-        real(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
-            & size(x, 4), mask=3<dim))
-
-        if (dim >= 1 .and. dim <= 4) then
-          res = sum((x - center)**order, dim, mask) / count(mask, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_mask_scalar_4_rqp_rqp
       module function moment_mask_scalar_2_csp_csp(x, order, dim, center, mask) result(res)
         complex(sp), intent(in) :: x(:,:)
         integer, intent(in) :: order
@@ -850,52 +682,6 @@ contains
         end if
 
       end function moment_mask_scalar_4_cdp_cdp
-      module function moment_mask_scalar_2_cqp_cqp(x, order, dim, center, mask) result(res)
-        complex(qp), intent(in) :: x(:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        complex(qp), intent(in) :: center
-        logical, intent(in) :: mask(:,:)
-        complex(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim))
-
-        if (dim >= 1 .and. dim <= 2) then
-          res = sum((x - center)**order, dim, mask) / count(mask, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_mask_scalar_2_cqp_cqp
-      module function moment_mask_scalar_3_cqp_cqp(x, order, dim, center, mask) result(res)
-        complex(qp), intent(in) :: x(:,:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        complex(qp), intent(in) :: center
-        logical, intent(in) :: mask(:,:,:)
-        complex(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim))
-
-        if (dim >= 1 .and. dim <= 3) then
-          res = sum((x - center)**order, dim, mask) / count(mask, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_mask_scalar_3_cqp_cqp
-      module function moment_mask_scalar_4_cqp_cqp(x, order, dim, center, mask) result(res)
-        complex(qp), intent(in) :: x(:,:,:,:)
-        integer, intent(in) :: order
-        integer, intent(in) :: dim
-        complex(qp), intent(in) :: center
-        logical, intent(in) :: mask(:,:,:,:)
-        complex(qp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
-            & size(x, 4), mask=3<dim))
-
-        if (dim >= 1 .and. dim <= 4) then
-          res = sum((x - center)**order, dim, mask) / count(mask, dim)
-        else
-          call error_stop("ERROR (moment): wrong dimension")
-        end if
-
-      end function moment_mask_scalar_4_cqp_cqp
 
 
       module function moment_mask_scalar_2_iint8_dp(x, order, dim, center, mask) result(res)

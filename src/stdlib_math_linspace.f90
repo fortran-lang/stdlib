@@ -22,15 +22,6 @@ contains
       res = linspace(start, end, DEFAULT_LINSPACE_LENGTH)
 
     end function linspace_default_1_rdp_rdp
-    pure module function linspace_default_1_rqp_rqp(start, end) result(res)
-      real(qp), intent(in) :: start
-      real(qp), intent(in) :: end
-
-      real(qp) :: res(DEFAULT_LINSPACE_LENGTH)
-
-      res = linspace(start, end, DEFAULT_LINSPACE_LENGTH)
-
-    end function linspace_default_1_rqp_rqp
 
     pure module function linspace_n_1_rsp_rsp(start, end, n) result(res)
       real(sp), intent(in) :: start
@@ -90,35 +81,6 @@ contains
       end do
 
     end function linspace_n_1_rdp_rdp
-    pure module function linspace_n_1_rqp_rqp(start, end, n) result(res)
-      real(qp), intent(in) :: start
-      real(qp), intent(in) :: end
-      integer, intent(in) :: n
-
-      real(qp) :: res(max(n, 0))
-
-      integer :: i    ! Looping index
-      real(qp) :: interval ! Difference between adjacent elements
-
-
-      if(n <= 0) return ! If passed length is less than or equal to 0, return an empty (allocated with length 0) array
-      if(n == 1) then
-        res(1) = end
-        return
-      end if
-
-      interval = (end - start) / real((n - 1), qp)
-
-      res(1) = start
-      res(n) = end
-
-      do i = 2, n - 1
-
-        res(i) = real((i-1), qp) * interval + start
-
-      end do
-
-    end function linspace_n_1_rqp_rqp
 
 
       module procedure linspace_default_1_csp_csp
@@ -131,11 +93,6 @@ contains
         res = linspace(start, end, DEFAULT_LINSPACE_LENGTH)
 
       end procedure linspace_default_1_cdp_cdp
-      module procedure linspace_default_1_cqp_cqp
-
-        res = linspace(start, end, DEFAULT_LINSPACE_LENGTH)
-
-      end procedure linspace_default_1_cqp_cqp
 
       module procedure linspace_n_1_csp_csp
 
@@ -159,17 +116,6 @@ contains
         res = cmplx(x, y, kind=dp)
 
       end procedure linspace_n_1_cdp_cdp
-      module procedure linspace_n_1_cqp_cqp
-
-        real(qp) :: x(max(n, 0)) ! array of the real part of complex number
-        real(qp) :: y(max(n, 0)) ! array of the imaginary part of the complex number
-
-        x = linspace(start%re, end%re, n)
-        y = linspace(start%im, end%im, n)
-
-        res = cmplx(x, y, kind=qp)
-
-      end procedure linspace_n_1_cqp_cqp
 
       module procedure linspace_default_1_iint8_iint8
 

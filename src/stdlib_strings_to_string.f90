@@ -40,23 +40,6 @@ contains
         end if
 
     end function to_string_r_dp
-    !> Format or transfer a real(qp) scalar as a string.
-    pure module function to_string_r_qp(value, format) result(string)
-        real(qp), intent(in) :: value
-        character(len=*), intent(in), optional :: format
-        character(len=:), allocatable :: string
-        
-        character(len=buffer_len) :: buffer
-        integer :: stat
-
-        write(buffer, '(' // optval(format, "g0") // ')', iostat=stat) value
-        if (stat == 0) then
-            string = trim(buffer)
-        else
-            string = err_sym
-        end if
-
-    end function to_string_r_qp
 
     !> Format or transfer a complex(sp) scalar as a string.
     pure module function to_string_c_sp(value, format) result(string)
@@ -78,16 +61,6 @@ contains
                       & to_string_r_dp(value%im, format) // ')'
 
     end function to_string_c_dp
-    !> Format or transfer a complex(qp) scalar as a string.
-    pure module function to_string_c_qp(value, format) result(string)
-        complex(qp), intent(in) :: value
-        character(len=*), intent(in), optional :: format
-        character(len=:), allocatable :: string
-
-        string = '(' // to_string_r_qp(value%re, format) // ',' // &
-                      & to_string_r_qp(value%im, format) // ')'
-
-    end function to_string_c_qp
 
     !> Represent an integer of kind int8 as character sequence.
     pure module function to_string_1_i_int8(value) result(string)
