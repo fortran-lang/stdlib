@@ -1,6 +1,17 @@
 .PHONY: all clean test
 
-all test clean:
+LIB = libstdlib-testing.a
+SRC = testdrive.F90
+OBJS = $(SRC:.F90=.o)
+MODS = $(OBJS:.o=.mod)
+FETCH = curl -L
+
+all test:: $(LIB)
+
+testdrive.F90:
+	$(FETCH) https://github.com/fortran-lang/test-drive/raw/v0.4.0/src/testdrive.F90 > $@
+
+all test clean::
 	$(MAKE) -f Makefile.manual --directory=ascii $@
 	$(MAKE) -f Makefile.manual --directory=bitsets $@
 	$(MAKE) -f Makefile.manual --directory=io $@
@@ -14,3 +25,12 @@ all test clean:
 	$(MAKE) -f Makefile.manual --directory=math $@
 	$(MAKE) -f Makefile.manual --directory=stringlist $@
 	$(MAKE) -f Makefile.manual --directory=linalg $@
+
+$(LIB): $(OBJS)
+	ar rcs $@ $^
+
+clean::
+	$(RM) $(LIB) $(OBJS) $(MODS) $(SRCGEN)
+
+%.o: %.F90
+	$(FC) $(FFLAGS) -I.. -c $<

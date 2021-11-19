@@ -21,9 +21,18 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         gcc_v: [9, 10, 11] # Version of GFortran we want to use.
+        build: [cmake]
+        include:
+          - os: ubuntu-latest
+            gcc_v: 10
+            build: cmake-inline
+          - os: ubuntu-latest
+            gcc_v: 10
+            build: make
     env:
       FC: gfortran-${{ matrix.gcc_v }}
       GCC_V: ${{ matrix.gcc_v }}
+      BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
 
     steps:
     - name: Checkout code
@@ -58,35 +67,32 @@ jobs:
           brew link gcc@${GCC_V}
 
     - name: Configure with CMake
+      if: ${{ contains(matrix.build, 'cmake') }}
       run: >-
         cmake -Wdev
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
-        -S . -B build
+        -S . -B ${{ env.BUILD_DIR }}
 
     - name: Build and compile
-      run: cmake --build build --parallel
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: cmake --build ${{ env.BUILD_DIR }} --parallel
 
     - name: catch build fail
-      run: cmake --build build --verbose --parallel 1
-      if: failure()
+      run: cmake --build ${{ env.BUILD_DIR }} --verbose --parallel 1
+      if: ${{ failure() && contains(matrix.build, 'cmake') }}
 
     - name: test
-      run: ctest --test-dir build --parallel --output-on-failure
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: ctest --test-dir ${{ env.BUILD_DIR }} --parallel --output-on-failure
 
     - name: Install project
-      run: cmake --install build
-
-    - name: Test in-tree builds
-      if: contains( matrix.gcc_v, '10') # Only test one compiler on each platform
-      run: |
-          cmake -DCMAKE_MAXIMUM_RANK=4 .
-          cmake --build .
-          cmake --build . --target test
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: cmake --install ${{ env.BUILD_DIR }}
 
     - name: Test manual makefiles
-      if: contains(matrix.os, 'ubuntu') && contains(matrix.gcc_v, '10')
+      if: ${{ matrix.build == 'make' }}
       run: |
         make -f Makefile.manual FYPPFLAGS="-DMAXRANK=4" -j
         make -f Makefile.manual test
