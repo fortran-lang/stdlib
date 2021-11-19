@@ -7,7 +7,7 @@
 program test_selection
 
     use stdlib_error, only: check
-    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
+    use stdlib_kinds
     use stdlib_selection, only: select, arg_select
     implicit none
 
