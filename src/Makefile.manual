@@ -105,6 +105,8 @@ stdlib_quadrature_trapz.o: \
     stdlib_quadrature.o \
     stdlib_error.o \
     stdlib_kinds.o
+stdlib_selection.o: \
+	stdlib_kinds.o
 stdlib_sorting.o: \
     stdlib_kinds.o \
     stdlib_string_type.o
