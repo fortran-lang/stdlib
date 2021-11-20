@@ -54,7 +54,7 @@ contains
               kth_smallest, random_vals(Nr), one = 1
           ${inttype}$ :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
-          logical :: test1, test2, test3, any_failed
+          logical :: test1, test2, test3
           integer, parameter :: ip = ${intkind}$
 
           ! x contains the numbers 1**2, 2**2, .... 10**2, with mixed-up order
@@ -142,8 +142,6 @@ contains
           !
           ! Test using random data
           !
-          any_failed=.FALSE.
-
           ! Search for the p-th smallest rank, for all these p
           ! (avoid end-points to enable constrained search tests)
           do p = 3, Nr-2
@@ -161,8 +159,8 @@ contains
                   test2 = all(random_vals(1:(p-1)) <= random_vals(p))
                   test3 = all(random_vals(p) <= &
                       random_vals((p+1):size(random_vals, kind=ip)))
-                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
-                      any_failed = .TRUE.
+                  call check(error, (test1 .and. test2 .and. test3), "${name}$: random data regular select")
+                  if(allocated(error)) return
 
                   ! Constrained search above 'p', providing 'left'
                   up_rank = p + (Nr-p)/2_ip ! Deliberate integer division
@@ -172,8 +170,8 @@ contains
                   test2 = all(random_vals(1:(up_rank-1)) <= random_vals(up_rank))
                   test3 = all(random_vals(up_rank) <= &
                       random_vals((up_rank+1):size(random_vals, kind=ip)))
-                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
-                      any_failed = .TRUE.
+                  call check(error, (test1 .and. test2 .and. test3), "${name}$: random data left-constrained select")
+                  if(allocated(error)) return
 
                   ! Constrained search below p, providing 'right'
                   down_rank = p - (p/2_ip)
@@ -184,8 +182,8 @@ contains
                       random_vals(down_rank))
                   test3 = all(random_vals(down_rank) <= &
                       random_vals((down_rank+1):size(random_vals, kind=ip)))
-                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
-                      any_failed = .TRUE.
+                  call check(error, (test1 .and. test2 .and. test3), "${name}$: random data right-constrained select")
+                  if(allocated(error)) return
 
                   ! Constrained search between up-ind and down-ind, proving left
                   ! and right. Make 'mid_rank' either above or below p
@@ -198,15 +196,11 @@ contains
                       random_vals(mid_rank))
                   test3 = all(random_vals(mid_rank) <= &
                       random_vals((mid_rank+1):size(random_vals, kind=ip)))
-                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
-                      any_failed = .TRUE.
+                  call check(error, (test1 .and. test2 .and. test3), "${name}$: random data left-right-constrained select")
+                  if(allocated(error)) return
 
               end do
           end do
-
-          call check(error, (.not. any_failed), " ${name}$: random number test failed ")
-          if(allocated(error)) return
-
 
       end subroutine
     #:endfor
@@ -229,7 +223,7 @@ contains
               indx_len1(1), indx_len2(2), indx_r(Nr)
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           integer(ip) :: i, j, p, up_rank, down_rank, mid_rank, kth_smallest
-          logical :: test1, test2, test3, any_failed
+          logical :: test1, test2, test3
 
           ! Make x contain 1**2, 2**2, .... 10**2, but mix up the order
           x = (/( i**2, i=1, size(x, kind=ip) )/)
@@ -334,8 +328,6 @@ contains
           !
           ! Test using random data
           !
-          any_failed=.FALSE.
-
           ! Search for the p-th smallest, for all these p (avoid end-points to
           ! enable additional tests using "left", "right" arguments)
           do p = 3, Nr-2
@@ -357,8 +349,8 @@ contains
                       random_vals(indx_r(p)))
                   test3 = all(random_vals(indx_r(p)) <= &
                       random_vals(indx_r((p+1):size(random_vals, kind=ip))))
-                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
-                      any_failed = .TRUE.
+                  call check(error, (test1 .and. test2 .and. test3), "${name}$: random data regular arg_select")
+                  if(allocated(error)) return
 
                   ! Constrained search for a rank above 'p', providing 'left'
                   up_rank = p + (Nr-p)/2_ip ! Deliberate integer division
@@ -371,8 +363,9 @@ contains
                       random_vals(indx_r(up_rank)))
                   test3 = all(random_vals(indx_r(up_rank)) <= &
                       random_vals(indx_r((up_rank+1):size(random_vals, kind=ip))))
-                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
-                      any_failed = .TRUE.
+                  call check(error, (test1 .and. test2 .and. test3), "${name}$: random data left-constrained arg_select")
+                  if(allocated(error)) return
+
 
                   ! Constrained search for a rank below p, providing 'right'
                   down_rank = p - (p/2_ip)
@@ -385,8 +378,8 @@ contains
                       random_vals(indx_r(down_rank)))
                   test3 = all(random_vals(indx_r(down_rank)) <= &
                       random_vals(indx_r((down_rank+1):size(random_vals, kind=ip))))
-                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
-                      any_failed = .TRUE.
+                  call check(error, (test1 .and. test2 .and. test3), "${name}$: random data right-constrained arg_select")
+                  if(allocated(error)) return
 
                   ! Constrained search for a rank between up-ind and down-ind,
                   ! proving left and right. 'mid_rank' is either above or below p
@@ -400,14 +393,11 @@ contains
                       random_vals(indx_r(mid_rank)))
                   test3 = all(random_vals(indx_r(mid_rank)) <= &
                       random_vals(indx_r((mid_rank+1):size(random_vals, kind=ip))))
-                  if( (.not. test1) .or. (.not. test2) .or. (.not. test3) ) &
-                      any_failed = .TRUE.
+                  call check(error, (test1 .and. test2 .and. test3), "${name}$: random data left-right-constrained arg_select")
+                  if(allocated(error)) return
 
               end do
           end do
-
-          call check(error, (.not. any_failed), " ${name}$: random number test failed ")
-          if(allocated(error)) return
 
       end subroutine
     #:endfor
