@@ -4,32 +4,48 @@
 ! The index arrays are of all INT_KINDS_TYPES
 
 
-program test_selection
+module test_selection
 
-    use stdlib_error, only: check
     use stdlib_kinds
     use stdlib_selection, only: select, arg_select
+    use testdrive, only: new_unittest, unittest_type, error_type, check
+
     implicit none
 
-  #:for arraykind, arraytype in ARRAY_KINDS_TYPES
-    #:for intkind, inttype in INT_KINDS_TYPES
-      #:set name = rname("test_select", 1, arraytype, arraykind, intkind)
-      call ${name}$()
-    #:endfor
-  #:endfor
+    private
+    public :: collect_selection
 
-  #:for arraykind, arraytype in ARRAY_KINDS_TYPES
-    #:for intkind, inttype in INT_KINDS_TYPES
-      #:set name = rname("test_arg_select", 1, arraytype, arraykind, intkind)
-      call ${name}$()
-    #:endfor
-  #:endfor
 contains
 
+    !> Collect all exported unit tests
+    subroutine collect_selection(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+              new_unittest("test_select_1_iint8_int8", test_select_1_iint8_int8) &
+          #:for arraykind, arraytype in ARRAY_KINDS_TYPES
+            #:for intkind, inttype in INT_KINDS_TYPES
+              #:set name = rname("test_select", 1, arraytype, arraykind, intkind)
+              , new_unittest("${name}$", ${name}$) &
+            #:endfor
+          #:endfor
+
+          #:for arraykind, arraytype in ARRAY_KINDS_TYPES
+            #:for intkind, inttype in INT_KINDS_TYPES
+              #:set name = rname("test_arg_select", 1, arraytype, arraykind, intkind)
+              , new_unittest("${name}$", ${name}$) &
+            #:endfor
+          #:endfor
+          ]
+
+    end subroutine collect_selection
+
   #:for arraykind, arraytype in ARRAY_KINDS_TYPES
     #:for intkind, inttype in INT_KINDS_TYPES
       #:set name = rname("test_select", 1, arraytype, arraykind, intkind)
-      subroutine ${name}$()
+      subroutine ${name}$(error)
+          type(error_type), allocatable, intent(out) :: error
 
           ${inttype}$, parameter :: N = 10,  Nreps = 2, Nm = 8
           ${inttype}$, parameter :: Nr = min(HUGE(N)/2_int64, 25_int64) ! < HUGE(N)
@@ -50,7 +66,8 @@ contains
           do i = 1, size(x, kind=ip)
               x_copy = x
               call select(x_copy, i, kth_smallest)
-              call check( (kth_smallest == i**2), " ${name}$: kth smallest entry should be i**2")
+              call check( error, (kth_smallest == i**2), " ${name}$: kth smallest entry should be i**2")
+              if(allocated(error)) return
           end do
 
           ! Check that it works when we specify "left" and know that the array
@@ -58,7 +75,8 @@ contains
           x_copy = x
           do i = 1, size(x, kind=ip), 1
               call select(x_copy, i, kth_smallest, left=i)
-              call check( (kth_smallest == i**2), " ${name}$: kth smallest entry with left specified")
+              call check( error,  (kth_smallest == i**2), " ${name}$: kth smallest entry with left specified")
+              if(allocated(error)) return
           end do
 
           ! Check that it works when we specify "right" and know that the array
@@ -66,48 +84,60 @@ contains
           x_copy = x
           do i = size(x, kind=ip), 1, -1
               call select(x_copy, i, kth_smallest, right=i)
-              call check( (kth_smallest == i**2), " ${name}$: kth smallest entry with right specified")
+              call check( error, (kth_smallest == i**2), " ${name}$: kth smallest entry with right specified")
+              if(allocated(error)) return
           end do
 
           ! Simple tests
           mat = one * [3, 2, 7, 4, 5, 1, 4, -1]
           mat_copy = mat
           call select(mat_copy, 1_ip, kth_smallest)
-          call check( kth_smallest == -1, " ${name}$: mat test 1")
+          call check(error, kth_smallest == -1, " ${name}$: mat test 1")
+          if(allocated(error)) return
           mat_copy = mat
           call select(mat_copy, 2_ip, kth_smallest)
-          call check( kth_smallest == 1, " ${name}$: mat test 2")
+          call check(error, kth_smallest == 1, " ${name}$: mat test 2")
+          if(allocated(error)) return
           mat_copy = mat
           call select(mat_copy, size(mat, kind=ip)+1_ip-4_ip, kth_smallest)
-          call check( kth_smallest == 4, " ${name}$: mat test 3")
+          call check(error, kth_smallest == 4, " ${name}$: mat test 3")
+          if(allocated(error)) return
           mat_copy = mat
           call select(mat_copy, 5_ip, kth_smallest)
-          call check( kth_smallest == 4, " ${name}$: mat test 4")
+          call check(error, kth_smallest == 4, " ${name}$: mat test 4")
+          if(allocated(error)) return
           mat_copy = mat
           call select(mat_copy, 6_ip, kth_smallest)
-          call check( kth_smallest == 4, " ${name}$: mat test 5")
+          call check(error, kth_smallest == 4, " ${name}$: mat test 5")
+          if(allocated(error)) return
           mat_copy = mat
           call select(mat_copy, 7_ip, kth_smallest)
-          call check( kth_smallest == 5, " ${name}$: mat test 6")
+          call check(error, kth_smallest == 5, " ${name}$: mat test 6")
+          if(allocated(error)) return
 
           ! Check it works for size(a) == 1
           len1(1) = -1 * one
           call select(len1, 1_ip, kth_smallest)
-          call check(kth_smallest == -1, " ${name}$: array with size 1")
+          call check(error, kth_smallest == -1, " ${name}$: array with size 1")
+          if(allocated(error)) return
 
           ! Check it works for size(a) == 2
           len2 = [-3, -5]*one
           call select(len2, 2_ip, kth_smallest)
-          call check(kth_smallest == -3, " ${name}$: array with size 2, test 1")
+          call check(error, kth_smallest == -3, " ${name}$: array with size 2, test 1")
+          if(allocated(error)) return
           len2 = [-3, -5]*one
           call select(len2, 1_ip, kth_smallest)
-          call check(kth_smallest == -5, " ${name}$: array with size 2, test 2")
+          call check(error, kth_smallest == -5, " ${name}$: array with size 2, test 2")
+          if(allocated(error)) return
           len2 = [-1, -1]*one
           call select(len2, 1_ip, kth_smallest)
-          call check(kth_smallest == -1, " ${name}$: array with size 2, test 3")
+          call check(error, kth_smallest == -1, " ${name}$: array with size 2, test 3")
+          if(allocated(error)) return
           len2 = [-1, -1]*one
           call select(len2, 2_ip, kth_smallest)
-          call check(kth_smallest == -1, " ${name}$: array with size 2, test 4")
+          call check(error, kth_smallest == -1, " ${name}$: array with size 2, test 4")
+          if(allocated(error)) return
 
           !
           ! Test using random data
@@ -174,7 +204,8 @@ contains
               end do
           end do
 
-          call check( (.not. any_failed), " ${name}$: random number test failed ")
+          call check(error, (.not. any_failed), " ${name}$: random number test failed ")
+          if(allocated(error)) return
 
 
       end subroutine
@@ -185,7 +216,8 @@ contains
   #:for arraykind, arraytype in ARRAY_KINDS_TYPES
     #:for intkind, inttype in INT_KINDS_TYPES
       #:set name = rname("test_arg_select", 1, arraytype, arraykind, intkind)
-      subroutine ${name}$
+      subroutine ${name}$(error)
+          type(error_type), allocatable, intent(out) :: error
 
           ${inttype}$, parameter :: N = 10,  Nreps = 2, Nm = 8
           ${inttype}$, parameter :: Nr = min(HUGE(N)/2_int64, 25_int64) ! < HUGE(N)
@@ -210,7 +242,8 @@ contains
           do i = 1, size(x, kind=ip)
               indx_copy = indx
               call arg_select(x, indx, i, kth_smallest)
-              call check(x(kth_smallest) == i**2, " ${name}$: kth smallest entry should be i**2")
+              call check(error, x(kth_smallest) == i**2, " ${name}$: kth smallest entry should be i**2")
+              if(allocated(error)) return
           end do
 
           ! Check that it works when we specify "left" and know that the index
@@ -218,7 +251,8 @@ contains
           indx_copy = indx
           do i = 1, size(x, kind=ip), 1
               call arg_select(x, indx_copy,  i, kth_smallest, left=i)
-              call check( (x(kth_smallest) == i**2), " ${name}$: kth smallest entry with left specified")
+              call check(error, (x(kth_smallest) == i**2), " ${name}$: kth smallest entry with left specified")
+              if(allocated(error)) return
           end do
 
           ! Check that it works when we specify "right" and know that the index
@@ -226,7 +260,8 @@ contains
           indx_copy = indx
           do i = size(x, kind=ip), 1, -1
               call arg_select(x, indx_copy, i, kth_smallest, right=i)
-              call check( (x(kth_smallest) == i**2), " ${name}$: kth smallest entry with right specified")
+              call check(error, (x(kth_smallest) == i**2), " ${name}$: kth smallest entry with right specified")
+              if(allocated(error)) return
           end do
 
           ! Simple tests
@@ -235,55 +270,66 @@ contains
 
           indx_mat_copy = indx_mat
           call arg_select(mat, indx_mat_copy, 1_ip, kth_smallest)
-          call check( mat(kth_smallest) == -1, " ${name}$: mat test 1")
+          call check(error, mat(kth_smallest) == -1, " ${name}$: mat test 1")
+          if(allocated(error)) return
 
           indx_mat_copy = indx_mat
           call arg_select(mat, indx_mat_copy, 2_ip, kth_smallest)
-          call check( mat(kth_smallest) == 1, " ${name}$: mat test 2")
+          call check(error, mat(kth_smallest) == 1, " ${name}$: mat test 2")
+          if(allocated(error)) return
 
           indx_mat_copy = indx_mat
           call arg_select(mat, indx_mat_copy, size(mat, kind=ip)+1_ip-4_ip, &
               kth_smallest)
-          call check( mat(kth_smallest) == 4, " ${name}$: mat test 3")
+          call check(error, mat(kth_smallest) == 4, " ${name}$: mat test 3")
+          if(allocated(error)) return
 
           indx_mat_copy = indx_mat
           call arg_select(mat, indx_mat_copy, 5_ip, kth_smallest)
-          call check( mat(kth_smallest) == 4, " ${name}$: mat test 4")
+          call check(error, mat(kth_smallest) == 4, " ${name}$: mat test 4")
+          if(allocated(error)) return
 
           indx_mat_copy = indx_mat
           call arg_select(mat, indx_mat_copy, 6_ip, kth_smallest)
-          call check( mat(kth_smallest) == 4, " ${name}$: mat test 5")
+          call check(error, mat(kth_smallest) == 4, " ${name}$: mat test 5")
+          if(allocated(error)) return
 
           indx_mat_copy = indx_mat
           call arg_select(mat, indx_mat_copy, 7_ip, kth_smallest)
-          call check( mat(kth_smallest) == 5, " ${name}$: mat test 6")
+          call check(error, mat(kth_smallest) == 5, " ${name}$: mat test 6")
+          if(allocated(error)) return
 
           ! Check it works for size(a) == 1
           len1(1) = -1 * one
           indx_len1(1) = 1
           call arg_select(len1, indx_len1, 1_ip, kth_smallest)
-          call check(len1(kth_smallest) == -1, " ${name}$: array with size 1")
+          call check(error, len1(kth_smallest) == -1, " ${name}$: array with size 1")
+          if(allocated(error)) return
 
           ! Check it works for size(a) == 2
           len2 = [-3, -5] * one
           indx_len2 = [1_ip, 2_ip]
           call arg_select(len2, indx_len2, 2_ip, kth_smallest)
-          call check(len2(kth_smallest) == -3, " ${name}$: array with size 2, test 1")
+          call check(error, len2(kth_smallest) == -3, " ${name}$: array with size 2, test 1")
+          if(allocated(error)) return
 
           len2 = [-3, -5] * one
           indx_len2 = [1_ip, 2_ip]
           call arg_select(len2, indx_len2, 1_ip, kth_smallest)
-          call check(len2(kth_smallest) == -5, " ${name}$: array with size 2, test 2")
+          call check(error, len2(kth_smallest) == -5, " ${name}$: array with size 2, test 2")
+          if(allocated(error)) return
 
           len2 = [-1, -1] * one
           indx_len2 = [1_ip, 2_ip]
           call arg_select(len2, indx_len2, 1_ip, kth_smallest)
-          call check(len2(kth_smallest) == -1, " ${name}$: array with size 2, test 3")
+          call check(error, len2(kth_smallest) == -1, " ${name}$: array with size 2, test 3")
+          if(allocated(error)) return
 
           len2 = [-1, -1] * one
           indx_len2 = [1_ip, 2_ip]
           call arg_select(len2, indx_len2, 2_ip, kth_smallest)
-          call check(len2(kth_smallest) == -1, " ${name}$: array with size 2, test 4")
+          call check(error, len2(kth_smallest) == -1, " ${name}$: array with size 2, test 4")
+          if(allocated(error)) return
 
           !
           ! Test using random data
@@ -360,10 +406,39 @@ contains
               end do
           end do
 
-          call check( (.not. any_failed), " ${name}$: random number test failed ")
+          call check(error, (.not. any_failed), " ${name}$: random number test failed ")
+          if(allocated(error)) return
 
       end subroutine
     #:endfor
   #:endfor
 
-end program
+end module
+
+program tester
+    use, intrinsic :: iso_fortran_env, only: compiler_version, error_unit
+    use testdrive, only: new_testsuite, run_testsuite, testsuite_type
+    use test_selection, only: collect_selection
+
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("selection", collect_selection) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+
+end program tester

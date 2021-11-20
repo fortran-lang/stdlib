@@ -1,5 +1,4 @@
-SRCFYPP =\
-        test_selection.fypp
+SRCFYPP = test_selection.fypp
 
 SRCGEN = $(SRCFYPP:.fypp=.f90)
 
