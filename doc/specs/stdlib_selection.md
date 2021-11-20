@@ -72,26 +72,29 @@ Generic subroutine.
 
 `array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
-`real(sp)`, `real(dp)`, `real(qp)`. It is an `intent(inout)` argument. 
+`real(sp)`, `real(dp)`, `real(xdp)`, `real(qp)`. It is an `intent(inout)` argument. 
 
 `k`: shall be a scalar with any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`. It
 is an `intent(in)` argument. We search for the `k`-th smallest entry of `array(:)`.
 
-`kth_smallest`: shall be a scalar with the same type as `array`. On return it contains
-the k-th smallest entry of `array(:)`.
+`kth_smallest`: shall be a scalar with the same type as `array`. It is an
+`intent(out)` argument. On return it contains the k-th smallest entry of
+`array(:)`.
 
-`left` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
-argument. If specified then we assume the k-th smallest value is definitely contained
-in `array(left:size(array))`. If `left` is not present, the default is 1. This is typically useful if multiple calls
-to `select` are made, because the partial sorting of `array` implies constraints on where
-we need to search.
+`left` (optional): shall be a scalar with the same type as `k`. It is an
+`intent(in)` argument. If specified then we assume the k-th smallest value is
+definitely contained in `array(left:size(array))`. If `left` is not present,
+the default is 1. This is typically useful if multiple calls to `select` are
+made, because the partial sorting of `array` implies constraints on where we
+need to search.
 
-`right` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
-argument. If specified then we assume the k-th smallest value is definitely contained
-in `array(1:right)`. If `right` is not present, the default is `size(array)`. This is typically useful if multiple calls
-to `select` are made, because the partial sorting of `array` implies constraints on where
-we need to search.
+`right` (optional): shall be a scalar with the same type as `k`. It is an
+`intent(in)` argument. If specified then we assume the k-th smallest value is
+definitely contained in `array(1:right)`. If `right` is not present, the
+default is `size(array)`. This is typically useful if multiple calls to
+`select` are made, because the partial sorting of `array` implies constraints
+on where we need to search.
 
 ### Notes
 
@@ -155,7 +158,7 @@ Generic subroutine.
 
 `array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
-`real(sp)`, `real(dp)`, `real(qp)`. It is an `intent(in)` argument. On input it is
+`real(sp)`, `real(dp)`, `real(xdp), `real(qp)`. It is an `intent(in)` argument. On input it is
 the array in which we search for the k-th smallest entry.
 
 `indx`: shall be a rank one array with the same size as `array`, containing all integers
@@ -172,15 +175,16 @@ and on return it contains the index of the k-th smallest entry of `array(:)`.
 
 `left` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
-in `array(indx(left:size(array)))`. If `left` is not present, the default is 1. This is typically useful if multiple calls
-to `arg_select` are made, because the partial sorting of `indx` implies constraints on where
-we need to search.
+in `array(indx(left:size(array)))`. If `left` is not present, the default is 1.
+This is typically useful if multiple calls to `arg_select` are made, because
+the partial sorting of `indx` implies constraints on where we need to search.
 
 `right` (optional): shall be a scalar with the same type as `k`. It is an `intent(in)`
 argument. If specified then we assume the k-th smallest value is definitely contained
-in `array(indx(1:right))`. If `right` is not present, the default is `size(array)`. This is typically useful if multiple calls
-to `arg_select` are made, because the reordering of `indx` implies constraints on
-where we need to search.
+in `array(indx(1:right))`. If `right` is not present, the default is
+`size(array)`. This is typically useful if multiple calls to `arg_select` are
+made, because the reordering of `indx` implies constraints on where we need to
+search.
 
 ### Notes
 
@@ -189,7 +193,7 @@ where we need to search.
 While it is essential that that `indx` contains a permutation of the integers `1:size(array)`, 
 the code does not check for this. For example if `size(array) == 4`, then we could have 
 `indx = [4, 2, 1, 3]` or `indx = [1, 2, 3, 4]`, but not `indx = [2, 1, 2, 4]`. It is the user's
-responsibility to avoid such errors. 
+responsibility to avoid such errors.
 
 Selection of a single value should have runtime of O(`size(array)`), so it is
 asymptotically faster than sorting `array` entirely. The test program at the end of
