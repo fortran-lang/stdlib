@@ -5,8 +5,6 @@ set(fppFiles
     test_selection.fypp
 )
 
-set(fyppFlags)
-
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 ADDTEST(selection)
