@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 module test_insert_at
     use stdlib_error, only: check
-    use stdlib_string_type, only: string_type, operator(//), operator(==), char
+    use stdlib_string_type, only: string_type, operator(//), operator(==), char, operator(/=)
     use stdlib_stringlist_type, only: stringlist_type, fidx, bidx, list_head, list_tail, operator(==)
     use stdlib_strings, only: to_string
     use stdlib_optval, only: optval
@@ -375,6 +375,7 @@ contains
 
         do i = first, last
             call work_list%insert_at( list_tail, string_type( to_string(i) ) )
+            call check(string_type( to_string(i) ) /= "", "There is something wrong with this")
         end do
         temp_list = work_list
 
