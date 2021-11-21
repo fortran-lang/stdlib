@@ -2,6 +2,14 @@
 
 # Create a list of the files to be preprocessed
 set(fppFiles
+    stdlib_32_bit_fnv_hashes.fypp
+    stdlib_32_bit_hash_functions.fypp
+    stdlib_32_bit_nmhashes.fypp 
+    stdlib_32_bit_water_hashes.fypp 
+    stdlib_64_bit_fnv_hashes.fypp 
+    stdlib_64_bit_hash_functions.fypp 
+    stdlib_64_bit_pengy_hashes.fypp 
+    stdlib_64_bit_spookyv2_hashes.fypp 
     stdlib_ascii.fypp
     stdlib_bitsets.fypp
     stdlib_bitsets_64.fypp

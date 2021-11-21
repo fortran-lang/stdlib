@@ -1,4 +1,12 @@
 SRCFYPP = \
+        stdlib_32_bit_fnv_hashes.fypp \
+        stdlib_32_bit_hash_functions.fypp \
+        stdlib_32_bit_nmhashes.fypp \
+        stdlib_32_bit_water_hashes.fypp \
+        stdlib_64_bit_fnv_hashes.fypp \
+        stdlib_64_bit_hash_functions.fypp \
+        stdlib_64_bit_pengy_hashes.fypp \
+        stdlib_64_bit_spookyv2_hashes.fypp \
         stdlib_ascii.fypp \
         stdlib_bitsets_64.fypp \
         stdlib_bitsets_large.fypp \
@@ -74,6 +82,22 @@ $(SRCGEN): %.f90: %.fypp common.fypp
 
 # Fortran module dependencies
 f18estop.o: stdlib_error.o
+stdlib_32_bit_fnv_hashes.o: \
+   stdlib_32_bit_hash_functions.o
+stdlib_32_bit_hash_functions.o: \
+   stdlib_kinds.o
+stdlib_32_bit_nmhashes.o: \
+   stdlib_32_bit_hash_functions.o
+stdlib_32_bit_water_hashes.o: \
+   stdlib_32_bit_hash_functions.o
+stdlib_64_bit_fnv_hashes.o: \
+   stdlib_64_bit_hash_functions.o
+stdlib_64_bit_hash_functions.o: \
+   stdlib_kinds.o
+stdlib_64_bit_pengy_hashes.o: \
+   stdlib_64_bit_hash_functions.o
+stdlib_64_bit_spookyv2_hashes.o: \
+   stdlib_64_bit_hash_functions.o
 stdlib_ascii.o: stdlib_kinds.o
 stdlib_bitsets.o: stdlib_kinds.o
 stdlib_bitsets_64.o: stdlib_bitsets.o
