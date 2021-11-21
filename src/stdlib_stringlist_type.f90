@@ -643,7 +643,7 @@ contains
 
         integer                                         :: i
         integer                                         :: work_idxn, inew
-        integer                                         :: pre_length, post_length
+        integer                                         :: pre_length, post_length, temp
 
         pre_length  = slist%len()
         if (pre_length > 0) then
@@ -653,12 +653,14 @@ contains
             post_length = slist%len()
 
             inew = work_idxn
-            do i = 1, min( work_idxn - 1, pre_length )
+            temp = min( work_idxn - 1, pre_length )
+            do i = 1, temp
                 list%stringarray(inew) = slist%stringarray(i)
                 inew = inew + 1
             end do
 
-            do i = work_idxn + post_length - pre_length, post_length
+            temp = work_idxn + post_length - pre_length
+            do i = temp, post_length
                 list%stringarray(inew) = slist%stringarray(i)
                 inew = inew + 1
             end do
