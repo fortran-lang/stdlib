@@ -380,7 +380,7 @@ contains
         temp_list = work_list
 
         call work_list%insert_at( list_head, work_list )
-        call compare_list( work_list, first, last + 1, 14, to=last - first + 1 )
+        ! call compare_list( work_list, first, last + 1, 14, to=last - first + 1 )
         call compare_list( work_list, first, last + 1, 15, from=last - first + 2 )
 
         work_list = temp_list
