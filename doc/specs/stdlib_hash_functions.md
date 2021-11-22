@@ -27,8 +27,7 @@ be compared, further improving performance.
 A hash function can also be used to generate a checksum to verify that
 data has not changed.
 The Fortran Standard Library therefore provides procedures to compute
-hash codes and scalar hashes, and derived types implementing hash
-tables.
+hash codes and scalar hashes.
 This document only discusses the hash codes and scalar hashes in the
 library.
 
@@ -49,7 +48,7 @@ described in D. E. Knuth, "The Art of
 Computer Programming, Second Edition, Volume 3, Sorting and
 Searching", Addison-Wesley, Upper Saddle River, NJ,
 pp. 517-518, 1998. The algorithms in that source are considered public
-domain.
+domain, and its use is unrestricted.
 
 `UNIVERSAL_MULT_HASH` is a scalar hash. It is an implementation in
 Fortran 2008 and signed two's complement integers of the
@@ -250,7 +249,7 @@ that are sufficiently complicated that a direct comparison is costly
 and common enough that a general procedure is useful:
 character strings and rank one arrays of integers.
 Other objects can, in principle, be hashed by using `transfer` to
-map their contents to an integer array, typically one of  kind `INT8`.
+map their contents to an integer array, typically one of kind `INT8`.
 The other problem is that hash codes are typically defined using
 modular unsigned integer arithmetic.
 As such integers are not part of the current Fortran standard,
@@ -261,7 +260,7 @@ larger size, or, for the larger integers, by dividing the integer into
 two lower and higher order halves, 
 and performing the operations on each half separately using 
 the larger integers.
-In the other, the unsigned integers may be replaced directly by
+In the second, the unsigned integers may be replaced directly by
 the corresponding signed integers, but
 otherwise not modifying the the code logic.
 The first should be standard conforming on current processors, but
@@ -381,19 +380,19 @@ All assume a two's complement sign bit, and no out of
 range checks.
 
 The `stdlib_32_bit_fnv_hashes` and `stdlib_64_bits_fnv_hashes`
-submodules each provide implementations of ths FNV-1  and FNV-1A
+submodules each provide implementations of the FNV-1 and FNV-1A
 algorithms in the form of two separate overloaded functions: `FNV_1`
 and `FNV_1A`.
 The FNV-1 and FNV-2 algorithms differ in their order of the
 multiplication and exclusive or operations.
 They differ from their normal implementation in that they also
-encode the structure size in  the hash code.
+encode the structure size in the hash code.
 The 32 and 64 bit algorithms differ in their initial offsets and in
 their multiplicative constants.
 Analysis suggests that `FNV_1A` should be better at randomizing the
 input, but tests with hash tables show negligible difference.
 These algorithms have the reputation of being particularly useful for
-small byte strings, i.e, strings of less than 32 bytes.
+small byte strings, i.e., strings of less than 32 bytes.
 While they do not at all perform well on the SMHasher test suite,
 usage indicates that that that this has little impact on the
 performance of small hash tables, and the small size of the functions

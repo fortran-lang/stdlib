@@ -4,7 +4,7 @@
 !! corresponding hash produced by the original C/C++ code, stopping if
 !! they are different. As the original C/C++ code was typically developed
 !! for Little-Endian machines the testing should only be cone on such
-!! machones. The Fortran codes also assume two's complement integers.
+!! machines. The Fortran codes also assume two's complement integers.
 !! The code set assume that C's int32_t and int64_t have the same
 !! representation as Firtrans int32 and int64 respectively.
 

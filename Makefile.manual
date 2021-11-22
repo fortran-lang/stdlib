@@ -1,7 +1,7 @@
 # Fortran stdlib Makefile
 
 FC ?= gfortran
-FFLAGS ?= -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fno-range-check
+FFLAGS ?= -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fwrapv
 FYPPFLAGS ?=
 
 export FC
