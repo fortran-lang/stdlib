@@ -4,7 +4,7 @@ title: Hash codes
 
 # The `stdlib_32_bit_hash_functions` and `stdlib_64_bit_hash_functions` modules
 
-(TOC)
+[TOC]
 
 ## Overview of hash functions
 
