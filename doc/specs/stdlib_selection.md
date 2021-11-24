@@ -41,13 +41,6 @@ for the k-th smallest value. This can be useful if you have previously called `a
 to find a smaller or larger rank (that will have led to partial sorting of
 `index`, thus implying some constraints on the location).
 
-### Licensing
-
-The Fortran Standard Library is distributed under the MIT
-License. It is worth noting that  `select` and `arg_select`
-were derived using some code from quickSelect in the Coretran library, by Leon Foks,
-https://github.com/leonfoks/coretran. Leon Foks has given permission for the code here
-to be released under stdlib's MIT license.
 
 ## `select` - find the k-th smallest value in an input array
 
@@ -101,6 +94,10 @@ on where we need to search.
 Selection of a single value should have runtime of O(`size(array)`), so it is
 asymptotically faster than sorting `array` entirely. The test program at the
 end of this document shows that is the case.
+
+`select` was derived using some code from quickSelect in the Coretran library, by Leon Foks,
+https://github.com/leonfoks/coretran. Leon Foks has given permission for the code here
+to be released under stdlib's MIT license.
 
 ### Example
 
@@ -199,6 +196,9 @@ Selection of a single value should have runtime of O(`size(array)`), so it is
 asymptotically faster than sorting `array` entirely. The test program at the end of
 these documents confirms that is the case.
 
+`arg_select` was derived using some code from quickSelect in the Coretran library, by Leon Foks,
+https://github.com/leonfoks/coretran. Leon Foks has given permission for the code here
+to be released under stdlib's MIT license.
 
 ### Example
 
