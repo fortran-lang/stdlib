@@ -95,9 +95,9 @@ Selection of a single value should have runtime of O(`size(array)`), so it is
 asymptotically faster than sorting `array` entirely. The test program at the
 end of this document shows that is the case.
 
-`select` was derived using some code from quickSelect in the Coretran library, by Leon Foks,
-https://github.com/leonfoks/coretran. Leon Foks has given permission for the code here
-to be released under stdlib's MIT license.
+`select` was derived from code in the Coretran library by Leon Foks,
+https://github.com/leonfoks/coretran. Leon Foks has given permission for the
+code here to be released under stdlib's MIT license.
 
 ### Example
 
@@ -196,9 +196,9 @@ Selection of a single value should have runtime of O(`size(array)`), so it is
 asymptotically faster than sorting `array` entirely. The test program at the end of
 these documents confirms that is the case.
 
-`arg_select` was derived using some code from quickSelect in the Coretran library, by Leon Foks,
-https://github.com/leonfoks/coretran. Leon Foks has given permission for the code here
-to be released under stdlib's MIT license.
+`arg_select` was derived using code from the Coretran library by Leon Foks,
+https://github.com/leonfoks/coretran. Leon Foks has given permission for the
+code here to be released under stdlib's MIT license.
 
 ### Example
 
