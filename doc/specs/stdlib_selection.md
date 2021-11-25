@@ -187,6 +187,9 @@ search.
 
 `arg_select` does not modify `array`, unlike `select`.
 
+The partial sorting of `indx` is not stable, i.e., indices that map to equal
+values of array may be reordered.
+
 While it is essential that that `indx` contains a permutation of the integers `1:size(array)`, 
 the code does not check for this. For example if `size(array) == 4`, then we could have 
 `indx = [4, 2, 1, 3]` or `indx = [1, 2, 3, 4]`, but not `indx = [2, 1, 2, 4]`. It is the user's
