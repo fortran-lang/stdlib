@@ -47,15 +47,18 @@ contains
       subroutine ${name}$(error)
           type(error_type), allocatable, intent(out) :: error
 
-          ${inttype}$, parameter :: N = 10,  Nreps = 2, Nm = 8
-          ${inttype}$, parameter :: Nr = min(HUGE(N)/2_int64, 25_int64) ! < HUGE(N)
+          integer, parameter :: ip = ${intkind}$
+          ${inttype}$, parameter :: N = 10, Nm = 8
+          ${inttype}$, parameter :: near_huge = HUGE(N) - 1_ip ! Segfaults without the -1_ip
+          ${inttype}$, parameter :: Nreps = 2  ! Number of repetitions of random sampling
+          ${inttype}$, parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
           ${arraytype}$ :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
               kth_smallest, random_vals(Nr), one = 1
           ${inttype}$ :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
-          integer, parameter :: ip = ${intkind}$
+          ${arraytype}$, allocatable :: long_array(:)
 
           ! x contains the numbers 1**2, 2**2, .... 10**2, with mixed-up order
           x = (/( i**2, i=1, size(x, kind=ip) )/)
@@ -87,6 +90,19 @@ contains
               call check( error, (kth_smallest == i**2), " ${name}$: kth smallest entry with right specified")
               if(allocated(error)) return
           end do
+
+          ! The test below can catch overflow in naive calculation of the middle index, like discussed here:
+          ! https://ai.googleblog.com/2006/06/extra-extra-read-all-about-it-nearly.html
+          ! But don't do it if near_huge is large, to avoid allocating a big array and slowing the tests
+          if(near_huge < 200) then
+              allocate(long_array(near_huge))
+              long_array = 0 * one
+              long_array(1:3) = one
+              call select(long_array, near_huge - 2_ip, kth_smallest)
+              call check( error, (kth_smallest == one), " ${name}$: designed to catch overflow in middle index")
+              if(allocated(error)) return
+              deallocate(long_array)
+          end if
 
           ! Simple tests
           mat = one * [3, 2, 7, 4, 5, 1, 4, -1]
@@ -213,9 +229,11 @@ contains
       subroutine ${name}$(error)
           type(error_type), allocatable, intent(out) :: error
 
-          ${inttype}$, parameter :: N = 10,  Nreps = 2, Nm = 8
-          ${inttype}$, parameter :: Nr = min(HUGE(N)/2_int64, 25_int64) ! < HUGE(N)
           integer, parameter :: ip = ${intkind}$
+          ${inttype}$, parameter :: N = 10, Nm = 8
+          ${inttype}$, parameter :: near_huge = HUGE(N) - 1_ip ! Segfaults without the -1_ip
+          ${inttype}$, parameter :: Nreps = 2  ! Number of repetitions of random sampling
+          ${inttype}$, parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
           ${arraytype}$ :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
 
@@ -224,6 +242,8 @@ contains
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           integer(ip) :: i, j, p, up_rank, down_rank, mid_rank, kth_smallest
           logical :: test1, test2, test3
+          ${arraytype}$, allocatable :: long_array(:)
+          ${inttype}$, allocatable :: long_array_index(:)
 
           ! Make x contain 1**2, 2**2, .... 10**2, but mix up the order
           x = (/( i**2, i=1, size(x, kind=ip) )/)
@@ -257,6 +277,21 @@ contains
               call check(error, (x(kth_smallest) == i**2), " ${name}$: kth smallest entry with right specified")
               if(allocated(error)) return
           end do
+
+          ! The test below would catch overflow in naive calculation of the middle index, like discussed here:
+          ! https://ai.googleblog.com/2006/06/extra-extra-read-all-about-it-nearly.html
+          ! But don't do it if near_huge is large, to avoid allocating a big array and slowing the tests
+          if(near_huge < 200) then
+              allocate(long_array(near_huge))
+              allocate(long_array_index(near_huge))
+              long_array = 0 * one
+              long_array(1:3) = one
+              long_array_index = (/( i, i = 1_ip, size(long_array, kind=ip) )/)
+              call arg_select(long_array, long_array_index, near_huge - 2_ip, kth_smallest)
+              call check( error, (kth_smallest < 4), " ${name}$: designed to catch overflow in middle index")
+              if(allocated(error)) return
+              deallocate(long_array, long_array_index)
+          end if
 
           ! Simple tests
           mat = one * [3, 2, 7, 4, 5, 1, 4, -1]
