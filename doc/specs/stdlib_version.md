@@ -18,7 +18,7 @@ Therefore, it is recommended to retrieve the version information always at runti
 
 ### `stdlib_version_string`
 
-String contant representing the version number.
+String constant representing the version number.
 
 ### `stdlib_version_compact`
 
