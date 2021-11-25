@@ -54,7 +54,7 @@ endif()
 # --- find preprocessor
 find_program(FYPP fypp)
 if(NOT FYPP)
-  message(FATAL_ERROR "Preprocessor fypp not found!")
+  message(FATAL_ERROR "Preprocessor fypp not found! Please install fypp following the instructions in https://fypp.readthedocs.io/en/stable/fypp.html#installing")
 endif()
 
 add_subdirectory(src)
