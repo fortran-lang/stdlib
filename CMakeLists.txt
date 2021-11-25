@@ -1,9 +1,17 @@
 cmake_minimum_required(VERSION 3.14.0)
 project(fortran_stdlib
         LANGUAGES Fortran
-        VERSION 0.1.0
         DESCRIPTION "Community driven and agreed upon de facto standard library for Fortran"
 )
+
+# Read version from file
+file(STRINGS "${PROJECT_SOURCE_DIR}/VERSION" PROJECT_VERSION)
+string(REPLACE "." ";" VERSION_LIST ${PROJECT_VERSION})
+list(GET VERSION_LIST 0 PROJECT_VERSION_MAJOR)
+list(GET VERSION_LIST 1 PROJECT_VERSION_MINOR)
+list(GET VERSION_LIST 2 PROJECT_VERSION_PATCH)
+unset(VERSION_LIST)
+
 enable_testing()
 
 # Follow GNU conventions for installation directories
