@@ -25,7 +25,7 @@ which implements selection algorithms.
 The module `stdlib_selection` defines two generic subroutines:
 * `select` is used to find the k-th smallest entry of an array. The input
 array is also modified in-place, and on return will be partially sorted
-such that `all(array(1:k) <= array(k)))`  and `all(array(k) <= array((k+1):size(array)))`.
+such that `all(array(1:k) <= array(k)))`  and `all(array(k) <= array((k+1):size(array)))` is true.
 The user can optionally specify `left` and `right` indices to constrain the search
 for the k-th smallest value. This can be useful if you have previously called `select`
 to find a smaller or larger rank (that will have led to partial sorting of
