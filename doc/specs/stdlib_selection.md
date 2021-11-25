@@ -95,6 +95,10 @@ Selection of a single value should have runtime of O(`size(array)`), so it is
 asymptotically faster than sorting `array` entirely. The test program at the
 end of this document shows that is the case.
 
+The code does not support `NaN` elements in `array`; it will run, but there is
+no consistent interpretation given to the order of `NaN` entries of `array`
+compared to other entries.
+
 `select` was derived from code in the Coretran library by Leon Foks,
 https://github.com/leonfoks/coretran. Leon Foks has given permission for the
 code here to be released under stdlib's MIT license.
@@ -189,6 +193,10 @@ search.
 
 The partial sorting of `indx` is not stable, i.e., indices that map to equal
 values of array may be reordered.
+
+The code does not support `NaN` elements in `array`; it will run, but there is
+no consistent interpretation given to the order of `NaN` entries of `array`
+compared to other entries.
 
 While it is essential that that `indx` contains a permutation of the integers `1:size(array)`, 
 the code does not check for this. For example if `size(array) == 4`, then we could have 
