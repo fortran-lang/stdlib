@@ -177,18 +177,29 @@ The BSD 2-Clause license is as follows:
     with the distribution.
 
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-	CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-	MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
-	BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-	EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-	TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-	DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-	ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-	TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
-	THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-	SUCH DAMAGE.
+    CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+    MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+    BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+    TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+    THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+    SUCH DAMAGE.
+
+## Glossary
+
+There are a few words used in this document that may not be familiar to
+readers of this document:
+
+* Key - a value to be used to find entries in a hash table typically
+  using its hashed value for the initial search; and
+
+* Seed - an additional argument to a hash function that changes its
+  output making some attacks impractical.
 
 
 ## The hash codes modules
@@ -199,12 +210,16 @@ The Standard Library provides two modules implementing hash
 functions and scalar hashes.
 The `stdlib_32_bit_hash_functions` module provides procedures to
 compute 32 bit integer hash codes and a scalar hash. 
-The hash codes are useful for tables of up to `2**15` entries, and
-for keys with a few hundred elements.
+The hash codes can be used for tables of up to `2**30` entries, and
+for keys with a few hundred elements, but performance has only been
+tested for tables up to `2**16` entries and performance may degrade
+for larger numbers of entries.
 The `stdlib_64_bit_hash_functions` module provides hash procedures to
 compute 64 bit integer hash codes and a scalar hash.
-The hash codes are useful for tables of up to `2**30` entries, and
-for keys with a few thousand elements.
+The hash codes can, in principle, be used for tables of up to `2**62`
+entries, and for keys with a few thousand elements, but testing of
+performance has only been been for tables up to `2**16`elements and
+performance may degrade for larger numbers of entries.
 While one of the codes in `stdlib_64_bit_hash_functions`,
 `SPSOOKY_HASH`, can also be used to calculate 128 bit hash codes, none
 of the current codes can be used to calculate 256 bit hash codes.

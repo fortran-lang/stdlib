@@ -33,13 +33,13 @@ module stdlib_64_bit_hash_functions
         bits_int64 = bit_size(0_int64)
 
     integer, parameter, public ::       &
-! Should be 8
+! Should be 1
         bytes_int8  = bits_int8/bits_int8,  &
-! Should be 16
+! Should be 2
         bytes_int16 = bits_int16/bits_int8, &
-! Should be 32
+! Should be 4
         bytes_int32 = bits_int32/bits_int8, &
-! Should be 64
+! Should be 8
         bytes_int64 = bits_int64/bits_int8
 
     integer, parameter, public :: &
