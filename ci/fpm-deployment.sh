@@ -22,6 +22,7 @@ fi
 include=(
   "ci/fpm.toml"
   "LICENSE"
+  "VERSION"
 )
 
 # Files to remove from collection
@@ -31,6 +32,11 @@ prune=(
   "$destdir/src/common.f90"
   "$destdir/src/f18estop.f90"
 )
+
+major=$(cut -d. -f1 VERSION)
+minor=$(cut -d. -f2 VERSION)
+patch=$(cut -d. -f3 VERSION)
+fyflags="${fyflags} -DPROJECT_VERSION_MAJOR=${major} -DPROJECT_VERSION_MINOR=${minor} -DPROJECT_VERSION_PATCH=${patch}"
 
 mkdir -p "$destdir/src" "$destdir/test"
 

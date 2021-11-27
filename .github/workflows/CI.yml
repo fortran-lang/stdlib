@@ -94,9 +94,11 @@ jobs:
     - name: Test manual makefiles
       if: ${{ matrix.build == 'make' }}
       run: |
-        make -f Makefile.manual FYPPFLAGS="-DMAXRANK=4" -j
+        make -f Makefile.manual -j
         make -f Makefile.manual test
         make -f Makefile.manual clean
+      env:
+        FYPPFLAGS: "-DMAXRANK=4"
 
   intel-build:
     runs-on: ${{ matrix.os }}
