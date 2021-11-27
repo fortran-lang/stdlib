@@ -9,7 +9,7 @@ title: Version information
 ## Introduction
 
 The `stdlib_version` module contains the version of the standard library.
-The version information can be used as compile time constant or retrieved from a getter function at runtime.
+The version information can be used as a compile time constant or retrieved from a getter function at runtime.
 In case the standard library is dynamically linked, the version number retrieved from the getter might mismatch the compile time constants provided from the version built against.
 Therefore, it is recommended to retrieve the version information always at runtime.
 
