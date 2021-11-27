@@ -7,6 +7,7 @@ set(fppFiles
     stdlib_bitsets_64.fypp
     stdlib_bitsets_large.fypp
     stdlib_io.fypp
+    stdlib_io_npy.fypp
     stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
