@@ -33,6 +33,8 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [string\_type](./stdlib_string_type.html) - Basic string support
  - [stringlist_type](./stdlib_stringlist_type.html) - 1-Dimensional list of strings
  - [strings](./stdlib_strings.html) - String handling and manipulation routines
+ - [stringlist_type](./stdlib_stringlist_type.html) - 1-Dimensional list of strings
+ - [terminal_colors](./stdlib_terminal_colors.html) - Terminal color and style escape sequences
  - [version](./stdlib_version.html) - Version information
 
 ## Released/Stable Features & Modules
