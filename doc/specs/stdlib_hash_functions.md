@@ -196,7 +196,9 @@ There are a few words used in this document that may not be familiar to
 readers of this document:
 
 * Key - a value to be used to find entries in a hash table typically
-  using its hashed value for the initial search; and
+  using its hashed value for the initial search;
+
+* Salt - see seed, and;
 
 * Seed - an additional argument to a hash function that changes its
   output making some attacks impractical.
@@ -247,7 +249,7 @@ computational complexity,
 their relative performance on different size keys, and the
 expected uniqueness (randomness) of the resulting hash codes.
 Their relative performance in the analysis of text, in particular,
-can depend on the processor, character set, language, and content.
+can depend on the compiler, character set, language, and content.
 The quality of a hash function is often evaluated using
 the SMHasher test suite, originally written by
 [Austin Appleby](https://github.com/aappleby/smhasher), but greatly
@@ -259,10 +261,8 @@ version of SMHasher.
 There are two problems in implementing hash functions in Fortran.
 First, the static typing of Fortran makes it awkward to define general
 purpose hash functions.
-Instead hash functions are defined for some of the more common objects
-that are sufficiently complicated that a direct comparison is costly
-and common enough that a general procedure is useful:
-character strings and rank one arrays of integers.
+Instead hash functions are defined for some of the more common
+objects: character strings and rank one arrays of integers.
 Other objects can, in principle, be hashed by using `transfer` to
 map their contents to an integer array, typically one of kind `INT8`.
 The other problem is that hash codes are typically defined using
@@ -278,33 +278,33 @@ the larger integers.
 In the second, the unsigned integers may be replaced directly by
 the corresponding signed integers, but
 otherwise not modifying the the code logic.
-The first should be standard conforming on current processors, but
-is more computationally intensive unless the processors recognize 
+The first should be standard conforming on current compilers, but
+is more computationally intensive unless the compilers recognize 
 underlying idioms that are rarely used in Fortran codes. The second is
 not standard conforming as bit operations involving the sign are
 undefined,
 but should yield equivalent results with fewer operations on
-processors with two's complement integers that do not trap on over
+compilers with two's complement integers that do not trap on over
 or under flow. The codes currently use the second method.
 
-In order to compile the hash function modules, the processors must
+In order to compile the hash function modules, the compilers must
 implement much of Fortran 2003, and selected components of Fortran
 2008: submodules, 64 bit integers, and some bit intrinsics.
-The main limitation on valid processors is whether they
+The main limitation on valid compilers is whether they
 implement the submodules enhancement of Fortran 2008.
 In order to properly run the hash functions, the compilers must
 use two's complement integers, and be able to execute them with
 wraparound semantics and no integer overflow exceptions.
-Current Fortran 2003+ processors solely use two's complement
+Current Fortran 2003+ compilers solely use two's complement
 integers, and appear to be able to turn off overflow detection,
 so the modules use signed integer arithmetic. For that reason
 trapping on signed arithmetic must be disabled. The command line
-flags to disable overflow detection for processors implementing
+flags to disable overflow detection for compilers implementing
 submodules are summarized in the table below.
 Note that FLANG, gfortran, ifort, and NAG all default to
 integer overflow wrapping.
 
-|Processor|Legal flag|Illegal flag|Default|
+|Compiler|Legal flag|Illegal flag|Default|
 |---------|----------|------------|-------|
 | ARM Fortran | NA? | NA? | overflow wrapping? |
 | Cray Fortran | NA? | NA? | overflow wrapping? |
@@ -424,7 +424,7 @@ version 0.2,
 in the form of the overloaded functions, `NMHASH32` and `NMHASH32X`.
 The implementations are based on the scalar versions of Gao's
 algorithms and not the vector versions that require access to
-the vector instructions of some processors.
+the vector instructions of some compilers.
 Both algorithms perform well on the SMHasher tests, and have no known
 bad seeds. The vector versions of both codes perform well on large
 keys, with the `nmhash32x` faster on short keys. To provide randomly
@@ -458,9 +458,9 @@ incremental hashing procedures.
 SpookyHash is optimized for large objects and should give excellent 
 performance for objects greater than about 96 byes, but has
 significant overhead for smaller objects.
-The code was designed for Little Endian processors, and will give
-different results on Big Endian processors, but the hash quality on
-those processors is probably just as good.
+The code was designed for Little Endian compilers, and will give
+different results on Big Endian compilers, but the hash quality on
+those compilers is probably just as good.
 SpookyHash version 2 passes all of Reini Urban's SMHasher tests, and
 has one bad seed only when reduced to a 32 bit output.
 Its only potential problem is undefined behavior if the key is
@@ -471,8 +471,9 @@ misaligned.
 ### Overview of the module
 
 Thirty two bit hash functions are primarily useful for generating hash
-codes for hash tables.
-Checksums generally benefit from having a larger number of bits.
+codes and hash indices for hash tables.
+They tend to be less useful for generating checksums, which generally
+benefit from having a larger number of bits.
 The `stdlib_32_bit_hash_codes` module defines five public overloaded
 32 bit hash code functions, `FNV_1`, `FNV-1A`, `NMHASH32`, `NMHASH32x`
 and `WATER_HASH`, two scalar hash functions, `FIBONACCI_HASH` and
@@ -493,9 +494,9 @@ As `stdlib_32_bit_hash_codes` deals exclusively with 32 bit hash codes,
 ### The `LITTLE_ENDIAN` parameter
 
 In implementing hash functions it is sometimes necessary to know the
-"endianess" of the processor's integers. To this end the
+"endianess" of the compiler's integers. To this end the
 `stdlib_32_bit_hash_codes` module defines the logical parameter
-`LITTLE_ENDIAN` that, if true, indicates that the processor has little
+`LITTLE_ENDIAN` that, if true, indicates that the compiler has little
 endian integers, and that if false indicates that the integers are big
 endian.
 
@@ -509,7 +510,8 @@ Experimental
 
 ##### Description
 
-Calculates an `nbits` hash code from a 32 bit integer.
+Calculates an `nbits` hash code from a 64 bit integer. This is useful
+in mapping hash codes into small arrays.
 
 ##### Syntax
 
@@ -530,7 +532,7 @@ Pure function
 ##### Result
 
 The result is an integer of kind `INT32` with at most the lowest
-`nbits` nonzero.
+`nbits` nonzero, mapping to a range 0 to `nbits-1`.
 
 ##### Note
 
@@ -550,7 +552,7 @@ E. Knuth. It multiplies the `KEY` by the odd valued approximation to
       integer(int32) :: hash, source
       allocate( array1(0:2**6-1) )
       array1(:) = 0
-      source = int(Z'1FFFFFF', int32)
+      source = 42_int32
       hash = fibonacci_hash(source, 6)
       azray1(hash) = source
       print *, hash
@@ -961,7 +963,8 @@ Experimental
 
 ##### Description
 
-Calculates an `nbits` hash code from a 32 bit integer.
+Calculates an `nbits` hash code from a 32 bit integer.  This is useful
+in mapping a hash value to a range 0 to `2**nbits-1`.
 
 ##### Syntax
 
@@ -1060,9 +1063,12 @@ As a result it should give reasonable performance for typical hash
 table applications.
 This code passes the SMHasher tests.
 The `waterhash` is based on the `wyhash` of Wang Yi.
-While `wyhash` has a number of bad seeds, depending on the version,
+While `wyhash` has a number of bad seeds, where randomiaation of the
+output is poor,
 so far testing has not found any bad seeds for `waterhash`.
-It can have undefined behavior if the key is not word aligned. 
+It can have undefined behavior if the key is not word aligned,
+i.e. some computer processors can only process a given size integer if
+the address of the integer is a multiple of the integer size. 
 
 ##### Example
 
@@ -1119,9 +1125,9 @@ As `stdlib_64_bit_hash_codes` deals exclusively with 64 bit hash codes,
 ### The `LITTLE_ENDIAN` parameter
 
 In implementing hash functions it is sometimes necessary to know the
-"endianess" of the processor's integers. To this end the
+"endianess" of the compiler's integers. To this end the
 `stdlib_64_bit_hash_codes` module defines the logical parameter
-`LITTLE_ENDIAN` that if true indicates that the processor has little
+`LITTLE_ENDIAN` that if true indicates that the compiler has little
 endian integers, and that if false indicates that the integers are big
 endian.
 
@@ -1136,7 +1142,8 @@ Experimental
 
 ##### Description
 
-Calculates an `nbits` hash code from a 64 bit integer.
+Calculates an `nbits` hash code from a 64 bit integer. This is useful
+in mapping hash codes into small arrays.
 
 ##### Syntax
 
@@ -1156,8 +1163,8 @@ Pure function
 
 ##### Result
 
-The result is a scalar integer of kind `INT64` with at most the lowest
-`nbits` nonzero.
+The result is an integer of kind `INT64` with at most the lowest
+`nbits` nonzero, mapping to a range 0 to `nbits-1`.
 
 ##### Note
 
@@ -1513,7 +1520,7 @@ The result is a two element integer vector of kind `INT64`.
 
 `SPOOKY_HASH` is an implementation of the 64 bit version 2 of
 SpookyHash of Bob Jenkins. The code was designed for Little-Endian
-processors. The output is different on Big Endian processors, but still
+compilers. The output is different on Big Endian compilers, but still
 probably as good quality. It is often used as a 64 bit hash using the
 first element of the returned value, but can be used as a 128 bit
 hash. This version of `SPOOKY_HASH` has good performance on small keys
@@ -1546,7 +1553,8 @@ Experimental
 
 ##### Description
 
-Calculates an `nbits` hash code from a 64 bit integer.
+Calculates an `nbits` hash code from a 64 bit integer. This is useful
+in mapping a hash value to a range 0 to `2**nbits-1`.
 
 ##### Syntax
 
@@ -1606,8 +1614,15 @@ It multiplies the `KEY` by `SEED`, and returns the
 
 ### Test Codes
 
-The Fortran Standard Library provides two test codes for the hash
-functions of `stdlib_32_bit_hash_functions` and
+The Fortran Standard Library provides two categories of test
+codes. One ccategory is tests of the relative performance of the
+various hash functions. The other is a comparison of the outputs of
+the Fortran hash functions, with the outputs of the C and C++ hash
+procedures that are the inspiration for the Fortran hash functions.
+
+In the `src/test/hash_functions` subdirectory, the Fortran Standard
+Library provides two performance test codes for
+the hash functions of `stdlib_32_bit_hash_functions` and
 `stdlib_64_bit_hash_functions`, `test_32_bit_hash_performance` and
 `test_64_bit_hash_performance` respectively. These are primarily set
 up to test runtime performance of the functions. They take a sample of
@@ -1709,3 +1724,21 @@ hashing is intermittent. If hashing is intermittent then that can more
 severely impact the performance of  `nmhash32`, `nmhash32x`,
 `water_hash`, `pengy_hash`, and `spooky_hash` relative to
 `fnv_1_hash` and `fnv_1a_hash`.
+
+In the `src/test/hash_functions/validation` subdirectory, the Fortran
+Standard Library implements three executables to test the validity of
+the Fortran codes against the original C and C++ codes. The tree
+executables must be compiled manually using the makefile
+`Makefile.validation`, and the the compiler suite used must be
+GCC's. The first executable, `generate_key_array` is 
+based on Fortran code, and generates a random sequence of 2048
+integers of kind `INT8`, and stores that sequence in the binary file
+`key_array.bin`. The second executable, `generate_hash_arrays`, reads
+the values in `key_array.bin`, and, for each complicated hash
+procedure generates a corresponding binary file containing 2049 hash
+values generated from the values in `key_array.bin`. The third
+executsble, `hash_validity_test`, reads the binary files and for each
+complicated hash procedure compares the contents of the binary file
+with the results of calculating hash values using the corresponding
+Fortran hash procedure on the same keys. These executables mus be run
+manually in the same ordeer.
