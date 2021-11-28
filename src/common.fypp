@@ -1,5 +1,8 @@
 #:mute
 
+#! Project version number
+#:set PROJECT_VERSION = "{}.{}.{}".format(PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH)
+
 #! Support for quadruple precision floating point numbers
 #:if not defined("WITH_QP")
 #:set WITH_QP = False

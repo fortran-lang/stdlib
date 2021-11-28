@@ -47,6 +47,7 @@ set(fppFiles
     stdlib_string_type_constructor.fypp
     stdlib_strings_to_string.fypp
     stdlib_strings.fypp
+    stdlib_version.fypp
 )
 
 
@@ -63,6 +64,9 @@ list(
   APPEND fyppFlags
   "-DWITH_QP=$<BOOL:${WITH_QP}>"
   "-DWITH_XDP=$<BOOL:${WITH_XDP}>"
+  "-DPROJECT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}"
+  "-DPROJECT_VERSION_MINOR=${PROJECT_VERSION_MINOR}"
+  "-DPROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}"
 )
 
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)

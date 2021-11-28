@@ -4,6 +4,12 @@ FC ?= gfortran
 FFLAGS ?= -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fno-range-check
 FYPPFLAGS ?=
 
+VERSION := $(subst ., ,$(file < VERSION))
+FYPPFLAGS += \
+             -DPROJECT_VERSION_MAJOR=$(word 1,$(VERSION)) \
+             -DPROJECT_VERSION_MINOR=$(word 2,$(VERSION)) \
+             -DPROJECT_VERSION_PATCH=$(word 3,$(VERSION))
+
 export FC
 export FFLAGS
 export FYPPFLAGS
