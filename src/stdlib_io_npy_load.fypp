@@ -1,0 +1,435 @@
+! SPDX-Identifier: MIT
+
+#:include "common.fypp"
+#:set RANKS = range(1, MAXRANK + 1)
+#:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES
+
+submodule (stdlib_io_npy) stdlib_io_npy_load
+    implicit none
+
+contains
+
+#:for k1, t1 in KINDS_TYPES
+  #:for rank in RANKS
+    module subroutine load_npy_${t1[0]}$${k1}$_${rank}$(filename, array, iostat)
+        character(len=*), intent(in) :: filename
+        ${t1}$, allocatable, intent(out) :: array${ranksuffix(rank)}$
+        integer, intent(out), optional :: iostat
+
+        character(len=*), parameter :: vtype = type_${t1[0]}$${k1}$
+        integer, parameter :: rank = ${rank}$
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        catch: block
+            integer :: i
+            character(len=:), allocatable :: this_type
+            logical :: fortran_order
+            integer, allocatable :: vshape(:)
+
+            call get_descriptor(io, this_type, fortran_order, vshape, stat, msg)
+            if (stat /= 0) exit catch
+
+            if (.not.fortran_order) then
+                vshape = [(vshape(i), i = size(vshape), 1, -1)]
+            end if
+
+            if (this_type /= vtype) then
+                stat = 1
+                msg = "File '"//filename//"' contains data of type '"//this_type//"', "//&
+                    & "but expected '"//vtype//"'"
+                exit catch
+            end if
+
+            if (size(vshape) /= rank) then
+                stat = 1
+                msg = "File '"//filename//"' contains data of rank "//&
+                    & to_string(size(vshape))//", but expected "//&
+                    & to_string(rank)
+                exit catch
+            end if
+
+            call allocator(array, vshape, stat)
+            if (stat /= 0) then
+                msg = "Failed to allocate array of type '"//vtype//"' "//&
+                    & "with total size of "//to_string(product(vshape))
+                exit catch
+            end if
+
+            read(io, iostat=stat) array
+        end block catch
+        close(io)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            if (allocated(msg)) then
+                call error_stop("Failed to read array from file '"//filename//"'"//nl//&
+                    & msg)
+            else
+                call error_stop("Failed to read array from file '"//filename//"'")
+            end if
+        end if
+    contains
+
+    subroutine allocator(array, vshape, stat)
+        ${t1}$, allocatable, intent(out) :: array${ranksuffix(rank)}$
+        integer, intent(in) :: vshape(:)
+        integer, intent(out) :: stat
+
+        allocate(array( &
+            #:for i in range(rank-1)
+            &    vshape(${i+1}$), &
+            #:endfor
+            &    vshape(${rank}$)), &
+            &    stat=stat)
+
+    end subroutine allocator
+
+    end subroutine load_npy_${t1[0]}$${k1}$_${rank}$
+  #:endfor
+#:endfor
+
+
+    subroutine get_descriptor(io, vtype, fortran_order, vshape, stat, msg)
+        integer, intent(in) :: io
+        character(len=:), allocatable, intent(out) :: vtype
+        logical, intent(out) :: fortran_order
+        integer, allocatable, intent(out) :: vshape(:)
+        integer, intent(out) :: stat
+        character(len=:), allocatable, intent(out) :: msg
+
+        integer :: major, header_len
+        character(len=:), allocatable :: dict
+        character(len=8) :: header
+        character :: buf(4)
+
+        read(io, iostat=stat) header
+        if (stat /= 0) return
+
+        call parse_header(header, major, stat, msg)
+        if (stat /= 0) return
+
+        read(io, iostat=stat) buf(1:merge(4, 2, major > 1))
+        if (stat /= 0) return
+
+        if (major > 1) then
+            header_len = ichar(buf(1)) &
+                &      + ichar(buf(2)) * 2**8 &
+                &      + ichar(buf(3)) * 2**16 &
+                &      + ichar(buf(4)) * 2**32
+        else
+            header_len = ichar(buf(1)) &
+                &      + ichar(buf(2)) * 2**8
+        end if
+        allocate(character(header_len) :: dict, stat=stat)
+        if (stat /= 0) return
+
+        read(io, iostat=stat) dict
+        if (stat /= 0) return
+
+        if (dict(header_len:header_len) /= nl) then
+            stat = 1
+            msg = "Descriptor length does not match"
+            return
+        end if
+
+        if (scan(dict, char(0)) > 0) then
+            stat = 1
+            msg = "Nul byte not allowed in descriptor string"
+            return
+        end if
+
+        call parse_descriptor(trim(dict(:len(dict)-1)), vtype, fortran_order, vshape, &
+            & stat, msg)
+        if (stat /= 0) return
+    end subroutine get_descriptor
+
+
+    subroutine parse_header(header, major, stat, msg)
+        character(len=*), intent(in) :: header
+        integer, intent(out) :: major
+        integer, intent(out) :: stat
+        character(len=:), allocatable, intent(out) :: msg
+
+        integer :: minor
+
+        if (header(1:1) /= magic_number) then
+            stat = 1
+            msg = "Expected z'93' but got z'"//to_string(ichar(header(1:1)))//"' "//&
+                & "as first byte"
+            return
+        end if
+
+        if (header(2:6) /= magic_string) then
+            stat = 1
+            msg = "Expected identifier '"//magic_string//"'"
+            return
+        end if
+
+        major = ichar(header(7:7))
+        if (.not.any(major == [1, 2, 3])) then
+            stat = 1
+            msg = "Unsupported format major version number '"//to_string(major)//"'"
+            return
+        end if
+
+        minor = ichar(header(8:8))
+        if (minor /= 0) then
+            stat = 1
+            msg = "Unsupported format version "// &
+                & "'"//to_string(major)//"."//to_string(minor)//"'"
+            return
+        end if
+    end subroutine parse_header
+
+    subroutine parse_descriptor(input, vtype, fortran_order, vshape, stat, msg)
+        character(len=*), intent(in) :: input
+        character(len=:), allocatable, intent(out) :: vtype
+        logical, intent(out) :: fortran_order
+        integer, allocatable, intent(out) :: vshape(:)
+        integer, intent(out) :: stat
+        character(len=:), allocatable, intent(out) :: msg
+
+        enum, bind(c)
+            enumerator :: invalid, string, lbrace, rbrace, comma, colon, &
+                lparen, rparen, bool, literal, space
+        end enum
+
+        type :: token_type
+            integer :: first, last, kind
+        end type token_type
+
+        integer :: pos, last
+        character(len=:), allocatable :: key
+        type(token_type) :: token
+        logical :: has_descr, has_shape, has_fortran_order
+
+        has_descr = .false.
+        has_shape = .false.
+        has_fortran_order = .false.
+        pos = 0
+        call next_token(input, pos, token, [lbrace], stat)
+        if (stat /= 0) return
+
+        last = comma
+        do while (pos < len(input))
+            call get_token(input, pos, token)
+            select case(token%kind)
+            case(space)
+                continue
+            case(comma)
+                if (token%kind == last) then
+                    stat = pos
+                    return
+                end if
+                last = comma
+            case(rbrace)
+                exit
+            case(string)
+                key = input(token%first:token%last)
+                call next_token(input, pos, token, [colon], stat)
+                if (stat /= 0) return
+
+                select case(key)
+                case("descr")
+                    if (has_descr) then
+                        stat = 1
+                        msg = "Duplicate descriptor"
+                    end if
+                    call next_token(input, pos, token, [string], stat)
+                    if (stat /= 0) return
+
+                    vtype = input(token%first:token%last)
+                    has_descr = .true.
+
+                case("fortran_order")
+                    if (has_fortran_order) then
+                        stat = 1
+                        msg = "Duplicate fortran_order"
+                    end if
+                    call next_token(input, pos, token, [bool], stat)
+                    if (stat /= 0) return
+
+                    fortran_order = input(token%first:token%last) == "True"
+                    has_fortran_order = .true.
+
+                case("shape")
+                    if (has_shape) then
+                        stat = 1
+                        msg = "Duplicate shape"
+                    end if
+                    call parse_tuple(input, pos, token, vshape, stat)
+
+                    has_shape = .true.
+
+                case default
+                    stat = pos
+                    return
+                end select
+                last = string
+            case default
+                stat = pos
+                return
+            end select
+        end do
+
+        if (.not.has_descr) then
+            stat = 1
+            msg = "Missing descriptor"
+        end if
+
+        if (.not.has_shape) then
+            stat = 1
+            msg = "Missing shape"
+        end if
+
+        if (.not.has_fortran_order) then
+            stat = 1
+            msg = "Missing fortran_order"
+        end if
+
+    contains
+
+    subroutine parse_tuple(input, pos, token, tuple, stat)
+        character(len=*), intent(in) :: input
+        integer, intent(inout) :: pos
+        type(token_type), intent(out) :: token
+        integer, allocatable, intent(out) :: tuple(:)
+        integer, intent(out) :: stat
+
+        integer :: last, itmp
+
+        allocate(tuple(0), stat=stat)
+        if (stat /= 0) return
+
+        call next_token(input, pos, token, [lparen], stat)
+        if (stat /= 0) return
+
+        last = comma
+        do while (pos < len(input))
+            call get_token(input, pos, token)
+            select case(token%kind)
+            case(space)
+                continue
+            case(literal)
+                if (token%kind == last) then
+                    stat = pos
+                    return
+                end if
+                last = token%kind
+                read(input(token%first:token%last), *, iostat=stat) itmp
+                if (stat /= 0) then
+                    return
+                end if
+                tuple = [tuple, itmp]
+            case(comma)
+                if (token%kind == last) then
+                    stat = pos
+                    return
+                end if
+                last = token%kind
+            case(rparen)
+                exit
+            case default
+                stat = pos
+                return
+            end select
+        end do
+    end subroutine parse_tuple
+
+    subroutine next_token(input, pos, token, allowed_token, stat)
+        character(len=*), intent(in) :: input
+        integer, intent(inout) :: pos
+        type(token_type), intent(out) :: token
+        integer, intent(in) :: allowed_token(:)
+        integer, intent(out) :: stat
+
+        stat = pos
+        do while (pos < len(input))
+            call get_token(input, pos, token)
+            if (token%kind == space) then
+                continue
+            else if (any(token%kind == allowed_token)) then
+                stat = 0
+                exit
+            else
+                stat = pos
+                exit
+            end if
+        end do
+    end subroutine next_token
+
+    subroutine get_token(input, pos, token)
+        character(len=*), intent(in) :: input
+        integer, intent(inout) :: pos
+        type(token_type), intent(out) :: token
+
+        character :: quote
+
+        pos = pos + 1
+        select case(input(pos:pos))
+        case("""", "'")
+            quote = input(pos:pos)
+            pos = pos + 1
+            token%first = pos
+            do while (pos <= len(input))
+                if (input(pos:pos) == quote) then
+                    token%last = pos - 1
+                    exit
+                else
+                    pos = pos + 1
+                end if
+            end do
+            token%kind = string
+        case("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+            token%first = pos
+            do while (pos <= len(input))
+                if (.not.any(input(pos:pos) == ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])) then
+                    token%last = pos - 1
+                    pos = pos - 1
+                    exit
+                else
+                    pos = pos + 1
+                end if
+            end do
+            token%kind = literal
+        case("T")
+            if (starts_with(input(pos:), "True")) then
+                token = token_type(pos, pos+3, bool)
+                pos = pos + 3
+            else
+                token = token_type(pos, pos, invalid)
+            end if
+        case("F")
+            if (starts_with(input(pos:), "False")) then
+                token = token_type(pos, pos+4, bool)
+                pos = pos + 4
+            else
+                token = token_type(pos, pos, invalid)
+            end if
+        case("{")
+            token = token_type(pos, pos, lbrace)
+        case("}")
+            token = token_type(pos, pos, rbrace)
+        case(",")
+            token = token_type(pos, pos, comma)
+        case(":")
+            token = token_type(pos, pos, colon)
+        case("(")
+            token = token_type(pos, pos, lparen)
+        case(")")
+            token = token_type(pos, pos, rparen)
+        case(" ", char(10))
+            token = token_type(pos, pos, space)
+        case default
+            token = token_type(pos, pos, invalid)
+        end select
+
+    end subroutine get_token
+
+    end subroutine parse_descriptor
+
+end submodule stdlib_io_npy_load

@@ -5,6 +5,8 @@ SRCFYPP = \
         stdlib_bitsets.fypp \
         stdlib_io.fypp \
         stdlib_io_npy.fypp \
+        stdlib_io_npy_load.fypp \
+        stdlib_io_npy_save.fypp \
         stdlib_kinds.fypp \
         stdlib_linalg.fypp \
         stdlib_linalg_diag.fypp \
@@ -92,6 +94,8 @@ stdlib_io_npy.o: \
     stdlib_error.o \
     stdlib_kinds.o \
     stdlib_strings.o
+stdlib_io_npy_load.o: stdlib_io_npy.o
+stdlib_io_npy_save.o: stdlib_io_npy.o
 stdlib_linalg.o: \
     stdlib_kinds.o
 stdlib_linalg_diag.o: \
