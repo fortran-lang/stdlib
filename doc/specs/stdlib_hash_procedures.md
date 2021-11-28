@@ -1,12 +1,12 @@
 ---
-title: Hash codes
+title: Hash procedures
 ---
 
-# The `stdlib_32_bit_hash_functions` and `stdlib_64_bit_hash_functions` modules
+# The `stdlib_32_bit_hash_codes` and `stdlib_64_bit_hash_codes` modules
 
 [TOC]
 
-## Overview of hash functions
+## Overview of hash procedures
 
 The comparison of lexical entities or other objects for equality
 can be computationally expensive.
@@ -34,13 +34,13 @@ library.
 ## Licensing
 
 The Fortran Standard Library is distributed under the MIT License.
-However components of the library may be based on code with additional
-licensing restrictions. In particular, the hash codes are often based
-on algorithms with additional restrictions on distribution.
-The algorithms with such restrictions (`Fibonacci Hash`, `Universal
-Multiplicative Hash`,
-`FNV-1 Hash`, `FNV-1A Hash`, `nmhash32`, `nmhash32x`, `waterhash`,
-`pengyhash` and `SpookyHash`) are discussed below.
+However components of the library may be based on code released under a
+different license. In particular, the hash codes are often based
+on algorithms considered as public domain (`Fibonacci Hash`, `Universal
+Multiplicative Hash)`or released under a different license than the
+MIT license (`FNV-1 Hash`, `FNV-1A Hash`, `nmhash32`, `nmhash32x`,
+`waterhash`, `pengyhash` and `SpookyHash`)
+The licensing status of the algorithms are discussed below.
 
 `FIBONACCI_HASH` is a scalar hash. It is an implementation in Fortran
 2008 and signed two's complement integers of the Fibonacci Hash
@@ -329,7 +329,7 @@ of a known hash to increase the number of hash table collisions.
 This additional integer must be kept the same for all hashes
 in a given hash table, but can be changed and the objects rehashed
 if collisions are unusually common.
-The *seed* can be either a scalar or a two element array.
+The *seed* can be either a scalar or a two-element array.
 Some of the hash functions have alternatives that allow incremental
 hashing. 
 
@@ -539,7 +539,7 @@ The result is an integer of kind `INT32` with at most the lowest
 `FIBONACCI_HASH` is an implementation of the Fibonacci Hash of Donald
 E. Knuth. It multiplies the `KEY` by the odd valued approximation to
 `2**32/phi`, where `phi` is the golden ratio 1.618..., and returns the
-`NBITS` upper bits of the product as the lowest bits of the result.
+`nbits` upper bits of the product as the lowest bits of the result.
 
 ##### Example
 
@@ -612,10 +612,8 @@ expected to be minor compared to its faster hashing rate.
       use stdlib_32_bit_hash_codes, only: fnv_1_hash
       use iso_fortran_env, only: int32 
       implicit none
-      integer, allocatable :: array1(:)
       integer(int32) :: hash
-      array1 = [ 5, 4, 3, 1, 10, 4, 9]
-      hash = fnv_1_hash(array1)
+      hash = fnv_1_hash([ 5, 4, 3, 1, 10, 4, 9])
       print *, hash
     end program demo_fnv_1_hash
 ```
@@ -655,7 +653,7 @@ The result is a scalar integer of kind `INT32`.
 
 `FNV_1A_HASH` is an implementation of the alternative FNV-1a hash code of
 Glenn Fowler, Landon Curt Noll, and Phong Vo.
-It differs from typical implementations in that it also ecodes the
+It differs from typical implementations in that it also encodes the
 size of the structure in the hash code.
 This code is relatively fast on short keys, and is small enough that it
 will often be retained in the instruction cache if hashing is
@@ -673,10 +671,8 @@ expected to be minor compared to its faster hashing rate.
       use stdlib_32_bit_hash_codes, only: fnv_1a_hash
       use iso_fortran_env, only: int32 
       implicit none
-      integer, allocatable :: array1(:)
       integer(int32) :: hash
-      array1 = [ 5, 4, 3, 1, 10, 4, 9]
-      hash = fnv_1a_hash(array1)
+      hash = fnv_1a_hash( [ 5, 4, 3, 1, 10, 4, 9] )
       print *, hash
     end program demo_fnv_1a_hash
 ```
@@ -711,7 +707,7 @@ and on output it will be different from the input `seed`.
 
 Currently there are no known bad seeds for `NMHASH32`, but if any are
 identified the procedure will be revised so that they cannot be
-returned.  This subroutine uses Fortran's intrinsic
+returned. This subroutine uses Fortran's intrinsic
  `RANDOM_NUMBER` and the values returned can be changed by calling the
  intrinsic `RANDOM_INIT`.
 
@@ -838,7 +834,7 @@ This code has good, but not great, performance on long keys, poorer
 performance on short keys.
 As a result it should give fair performance for typical hash table
 applications.
-This code passes the SMHasher tests, and has no known bad seeds:
+This code passes the SMHasher tests, and has no known bad seeds.
 
 ##### Example
 
@@ -848,12 +844,10 @@ This code passes the SMHasher tests, and has no known bad seeds:
           new_nmhash32_seed
       use iso_fortran_env, only: int32 
       implicit none
-      integer, allocatable :: array1(:)
       integer(int32) :: hash
-      integer(int32) :: seed = int(Z'11111111`, int32)
+      integer(int32) :: seed = 42_int32
       call new_nmhash32_seed(seed)
-      array1 = [ 5, 4, 3, 1, 10, 4, 9]
-      hash = nmhash32(array1, seed)
+      hash = nmhash32([ 5, 4, 3, 1, 10, 4, 9], seed)
       print *, seed, hash
     end program demo_nmhash32
 ```
@@ -900,7 +894,7 @@ This code has good, but not great, performance on long keys, poorer
 performance on short keys.
 As a result it should give fair performance for typical hash table
 applications.
-This code passes the SMHasher tests, and has no known bad seeds:
+This code passes the SMHasher tests, and has no known bad seeds.
 
 ##### Example
 
@@ -910,12 +904,10 @@ This code passes the SMHasher tests, and has no known bad seeds:
 	  new_nmhash32x_seed
       use iso_fortran_env, only: int32 
       implicit none
-      integer, allocatable :: array1(:)
       integer(int32) :: hash
-      integer(int32) :: seed = int(Z'11111111`, int32)
+      integer(int32) :: seed = 42_int32
       call new_nmhash32x_seed(seed)
-      array1 = [ 5, 4, 3, 1, 10, 4, 9]
-      hash = nmhash32x(array1, seed)
+      hash = nmhash32x([ 5, 4, 3, 1, 10, 4, 9], seed)
       print *, seed, hash
     end program demo_nmhash32x
 ```
@@ -963,7 +955,7 @@ Experimental
 
 ##### Description
 
-Calculates an `nbits` hash code from a 32 bit integer.  This is useful
+Calculates an `nbits` hash code from a 32 bit integer. This is useful
 in mapping a hash value to a range 0 to `2**nbits-1`.
 
 ##### Syntax
@@ -995,7 +987,7 @@ The result is a scalar integer of kind `INT32` with at most the lowest
 `UNIVERSAL_MULT_HASH` is an implementation of the Universal
 Multiplicative Hash of M. Dietzfelbinger, et al.
 It multiplies the `KEY` by `SEED`, and returns the
-`NBITS` upper bits of the product as the lowest bits of the result.
+`nbits` upper bits of the product as the lowest bits of the result.
 
 ##### Example
 
@@ -1010,12 +1002,12 @@ It multiplies the `KEY` by `SEED`, and returns the
       seed = 0
       allocate( array1(0:2**6-1) )
       do i = 0, 2**6-1
-          array(i) = i
+          array1(i) = i
       end do
       call odd_random_integer( seed )
-      source = int(Z'1FFFFFF', int32)
+      source = 42_int32
       hash = universal_mult_hash(source, seed, 6)
-      azray1(hash) = source
+      array1(hash) = source
       print *, seed, hash, array1
     end program demo_odd_random_integer
 ```
@@ -1063,7 +1055,7 @@ As a result it should give reasonable performance for typical hash
 table applications.
 This code passes the SMHasher tests.
 The `waterhash` is based on the `wyhash` of Wang Yi.
-While `wyhash` has a number of bad seeds, where randomiaation of the
+While `wyhash` has a number of bad seeds, where randomization of the
 output is poor,
 so far testing has not found any bad seeds for `waterhash`.
 It can have undefined behavior if the key is not word aligned,
@@ -1078,12 +1070,10 @@ the address of the integer is a multiple of the integer size.
 	  new_water_hash_seed
       use iso_fortran_env, only: int32, int64
       implicit none
-      integer, allocatable :: array1(:)
       integer(int32) :: hash
-      integer(int64) :: seed = int(Z'11111111`, int64)
+      integer(int64) :: seed = 42_int64
       call new_water_hash_seed( seed )
-      array1 = [ 5, 4, 3, 1, 10, 4, 9]
-      hash = water_hash(array1, seed)
+      hash = water_hash([ 5, 4, 3, 1, 10, 4, 9], seed)
       print *, hash, seed
     end program demo_water_hash
 ```
@@ -1451,7 +1441,7 @@ Pure function
 Rank 1 integer vector expression of kind `INt8`, `INT16`, `INT32`, or
 `INTT64`. It is an `intent(in)` argument.
 
-`seed`: shall be an integer ex of kind `INT64`. It ispression
+`seed`: shall be an integer expression of kind `INT64`. It is
 an `intent(in)` argument.
 
 ##### Result
@@ -1470,12 +1460,12 @@ no known bad seeds.
 ```fortran
     program demo_pengy_hash
       use stdlib_64_bit_hash_codes, only: new_pengy_hash_seed, pengy_hash
-      use iso_fortran_env, only: int64 
+      use iso_fortran_env, only: int32, int64 
       implicit none
       integer, allocatable :: key(:)
       integer(int64) :: hash
       integer(int32)  ::  seed
-      key = [ 0_int64, 1_int64, 2_int64, 3_int64 ]
+      key = [ 0, 1, 2, 3 ]
       seed = 0_int32
       call new_pengy_hash_seed( seed )
       hash = pengy_hash( key, seed )
@@ -1536,8 +1526,8 @@ and has no known bad seeds.
       use iso_fortran_env, only: int64 
       implicit none
       integer, allocatable :: key(:)
-      integer(int64) :: hash(2), seed(2), source
-      key = [ 0_int64, 1_int64, 2_int64, 3_int64 ]
+      integer(int64) :: hash(2), seed(2)
+      key = [ 0, 1, 2, 3 ]
       seed = [ 119_int64, 2_int64**41-1 ]
       call new_spooky_hash_seed( seed )
       hash = spooky_hash( key, seed )
@@ -1600,11 +1590,9 @@ It multiplies the `KEY` by `SEED`, and returns the
       integer(int64) :: hash, i, seed, source
       seed = 0
       allocate( array1(0:2**6-1) )
-      do i = 0, 2**6-1
-          array(i) = i
-      end do
+      array1 = 0
       call odd_random_integer( seed )
-      source = int(Z'1FFFFFF', int64)
+      source = 42_int64
       hash = universal_mult_hash(source, seed, 6)
       azray1(hash) = source
       print *, seed, hash, array1
@@ -1727,7 +1715,7 @@ severely impact the performance of  `nmhash32`, `nmhash32x`,
 
 In the `src/test/hash_functions/validation` subdirectory, the Fortran
 Standard Library implements three executables to test the validity of
-the Fortran codes against the original C and C++ codes. The tree
+the Fortran codes against the original C and C++ codes. The three
 executables must be compiled manually using the makefile
 `Makefile.validation`, and the the compiler suite used must be
 GCC's. The first executable, `generate_key_array` is 

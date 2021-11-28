@@ -14,7 +14,7 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [ascii](./stdlib_ascii.html) - Procedures for handling ASCII characters
  - [bitsets](./stdlib_bitsets.html) - Bitset data types and procedures
  - [error](./stdlib_error.html) - Catching and handling errors
- - [hash\_functions](./stdlib_hash_functions.html) - Hashing integer
+ - [hash\_procedures](./stdlib_hash_procedures.html) - Hashing integer
    vectors or character strings
  - [IO](./stdlib_io.html) - Input/output helper & convenience
  - [kinds](./stdlib_kinds.html) - Kind parameters
