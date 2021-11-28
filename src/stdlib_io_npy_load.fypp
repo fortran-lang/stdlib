@@ -11,10 +11,11 @@ contains
 
 #:for k1, t1 in KINDS_TYPES
   #:for rank in RANKS
-    module subroutine load_npy_${t1[0]}$${k1}$_${rank}$(filename, array, iostat)
+    module subroutine load_npy_${t1[0]}$${k1}$_${rank}$(filename, array, iostat, iomsg)
         character(len=*), intent(in) :: filename
         ${t1}$, allocatable, intent(out) :: array${ranksuffix(rank)}$
         integer, intent(out), optional :: iostat
+        character(len=:), allocatable, intent(out), optional :: iomsg
 
         character(len=*), parameter :: vtype = type_${t1[0]}$${k1}$
         integer, parameter :: rank = ${rank}$
@@ -72,6 +73,8 @@ contains
                 call error_stop("Failed to read array from file '"//filename//"'")
             end if
         end if
+
+        if (present(iomsg).and.allocated(msg)) call move_alloc(msg, iomsg)
     contains
 
     subroutine allocator(array, vshape, stat)

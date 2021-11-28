@@ -18,7 +18,15 @@ contains
             new_unittest("read-rdp-r2", test_read_rdp_rank2), &
             new_unittest("read-rdp-r3", test_read_rdp_rank3), &
             new_unittest("read-rsp-r1", test_read_rsp_rank1), &
-            new_unittest("read-rsp-r2", test_read_rsp_rank2) &
+            new_unittest("read-rsp-r2", test_read_rsp_rank2), &
+            new_unittest("write-rdp-r2", test_write_rdp_rank2), &
+            new_unittest("write-rsp-r2", test_write_rsp_rank2), &
+            new_unittest("invalid-magic-number", test_invalid_magic_number), &
+            new_unittest("invalid-magic-string", test_invalid_magic_string), &
+            new_unittest("invalid-major-version", test_invalid_major_version), &
+            new_unittest("invalid-minor-version", test_invalid_minor_version), &
+            new_unittest("invalid-header-len", test_invalid_header_len), &
+            new_unittest("invalid-nul-byte", test_invalid_nul_byte) &
             ]
     end subroutine collect_npy
 
@@ -141,6 +149,228 @@ contains
         call check(error, size(array), 37)
         if (allocated(error)) return
     end subroutine test_read_rsp_rank1
+
+    subroutine test_write_rdp_rank2(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat
+        character(len=*), parameter :: filename = ".test-rdp-r2-rt.npy"
+        real(dp), allocatable :: array(:, :)
+
+        array = reshape(spread(0.0_dp, 1, 40), [10, 4])
+        call save_npy(filename, array, stat)
+
+        call check(error, stat, "Writing of npy file failed")
+        if (allocated(error)) return
+
+        call load_npy(filename, array, stat)
+        call delete_file(filename)
+
+        call check(error, stat, "Reading of npy file failed")
+        if (allocated(error)) return
+
+        call check(error, size(array), 40)
+        if (allocated(error)) return
+    end subroutine test_write_rdp_rank2
+
+    subroutine test_write_rsp_rank2(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat
+        character(len=*), parameter :: filename = ".test-rsp-r2-rt.npy"
+        real(sp), allocatable :: array(:, :)
+
+        array = reshape(spread(0.0_dp, 1, 60), [12, 5])
+        call save_npy(filename, array, stat)
+
+        call check(error, stat, "Writing of npy file failed")
+        if (allocated(error)) return
+
+        call load_npy(filename, array, stat)
+        call delete_file(filename)
+
+        call check(error, stat, "Reading of npy file failed")
+        if (allocated(error)) return
+
+        call check(error, size(array), 60)
+        if (allocated(error)) return
+    end subroutine test_write_rsp_rank2
+
+    subroutine test_invalid_magic_number(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'descr': '<f8', 'fortran_order': True, 'shape': (10, 4, ), }        " //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(50) // "NUMPY" // char(1) // char(0) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-invalid-magic-num.npy"
+        real(dp), allocatable :: array(:, :)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
+        if (allocated(error)) return
+        call check(error, msg, "Expected z'93' but got z'50' as first byte")
+    end subroutine test_invalid_magic_number
+
+    subroutine test_invalid_magic_string(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'descr': '<f8', 'fortran_order': True, 'shape': (10, 4, ), }        " //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "numpy" // char(1) // char(0) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-invalid-magic-str.npy"
+        real(dp), allocatable :: array(:, :)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
+        if (allocated(error)) return
+        call check(error, msg, "Expected identifier 'NUMPY'")
+    end subroutine test_invalid_magic_string
+
+    subroutine test_invalid_major_version(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'descr': '<f8', 'fortran_order': True, 'shape': (10, 4, ), }        " //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "NUMPY" // char(0) // char(0) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-invalid-major-version.npy"
+        real(dp), allocatable :: array(:, :)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
+        if (allocated(error)) return
+        call check(error, msg, "Unsupported format major version number '0'")
+    end subroutine test_invalid_major_version
+
+    subroutine test_invalid_minor_version(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'descr': '<f8', 'fortran_order': True, 'shape': (10, 4, ), }        " //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "NUMPY" // char(1) // char(9) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-invalid-minor-version.npy"
+        real(dp), allocatable :: array(:, :)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
+        if (allocated(error)) return
+        call check(error, msg, "Unsupported format version '1.9'")
+    end subroutine test_invalid_minor_version
+
+    subroutine test_invalid_header_len(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'descr': '<f8', 'fortran_order': True, 'shape': (10, 4, ), }        " //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "NUMPY" // char(1) // char(0) // &
+            char(len(dict)-1) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-invalid-header-len.npy"
+        real(dp), allocatable :: array(:, :)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
+        if (allocated(error)) return
+        call check(error, msg, "Descriptor length does not match")
+    end subroutine test_invalid_header_len
+
+    subroutine test_invalid_nul_byte(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'descr': '<f8', 'fortran_order': True, 'shape': (10, 4, ), }       " //  &
+            char(0) // char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "NUMPY" // char(1) // char(0) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-invalid-nul-byte.npy"
+        real(dp), allocatable :: array(:, :)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
+        if (allocated(error)) return
+        call check(error, msg, "Nul byte not allowed in descriptor string")
+    end subroutine test_invalid_nul_byte
 
     subroutine delete_file(filename)
         character(len=*), intent(in) :: filename

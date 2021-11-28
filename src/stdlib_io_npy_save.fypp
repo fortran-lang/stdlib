@@ -96,13 +96,15 @@ contains
 #:for k1, t1 in KINDS_TYPES
   #:for rank in RANKS
     !> Save ${rank}$-dimensional array in npy format
-    module subroutine save_npy_${t1[0]}$${k1}$_${rank}$(filename, array, iostat)
+    module subroutine save_npy_${t1[0]}$${k1}$_${rank}$(filename, array, iostat, iomsg)
         character(len=*), intent(in) :: filename
         ${t1}$, intent(in) :: array${ranksuffix(rank)}$
         integer, intent(out), optional :: iostat
         character(len=*), parameter :: vtype = type_${t1[0]}$${k1}$
+        character(len=:), allocatable, intent(out), optional :: iomsg
 
         integer :: io, stat
+        character(len=:), allocatable :: msg
 
         open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
         if (stat == 0) then
@@ -119,6 +121,7 @@ contains
             call error_stop("Failed to write array to file '"//filename//"'")
         end if
 
+        if (present(iomsg).and.allocated(msg)) call move_alloc(msg, iomsg)
     end subroutine save_npy_${t1[0]}$${k1}$_${rank}$
   #:endfor
 #:endfor
