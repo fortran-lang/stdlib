@@ -36,7 +36,7 @@ program demo_loadtxt
     use stdlib_io, only: loadtxt
     implicit none
     real, allocatable :: x(:,:)
-    call loadtxt('example.dat', x) 
+    call loadtxt('example.dat', x)
 end program demo_loadtxt
 ```
 
@@ -128,6 +128,90 @@ program demo_savetxt
     use stdlib_io, only: savetxt
     implicit none
     real :: x(3,2) = 1
-    call savetxt('example.dat', x) 
+    call savetxt('example.dat', x)
+end program demo_savetxt
+```
+
+
+## `load_npy`
+
+### Status
+
+Experimental
+
+### Description
+
+Loads am `array` from a npy formatted binary file.
+
+### Syntax
+
+`call [[stdlib_io_npy(module):load_npy(interface)]](filename, array[, iostat][, iomsg])`
+
+### Arguments
+
+`filename`: Shall be  a character expression containing the file name from which to load the `array`.
+
+`array`: Shall be an allocatable array of any rank of type `real`, `complex` or `integer`.
+
+`iostat`: Default integer, contains status of loading to file, zero in case of success.
+          Optional argument, in case not present the program will halt for non-zero status.
+
+`iomsg`: Deferred length character value, contains error message in case `iostat` is non-zero.
+         Optional argument, error message will be dropped if not present.
+
+### Return value
+
+Returns an allocated `array` with the content of `filename` in case of success.
+
+### Example
+
+```fortran
+program demo_loadtxt
+    use stdlib_io_npy, only: load_npy
+    implicit none
+    real, allocatable :: x(:,:)
+    call loadtxt('example.npy', x)
+end program demo_loadtxt
+```
+
+
+## `save_npy`
+
+### Status
+
+Experimental
+
+### Description
+
+Saves an `array` into a npy formatted binary file.
+
+### Syntax
+
+`call [[stdlib_io_npy(module):save_npy(interface)]](filename, array[, iostat][, iomsg])`
+
+### Arguments
+
+`filename`: Shall be  a character expression containing the name of the file that will contain the `array`.
+
+`array`: Shall be an array of any rank of type `real`, `complex` or `integer`.
+
+`iostat`: Default integer, contains status of saving to file, zero in case of success.
+          Optional argument, in case not present the program will halt for non-zero status.
+
+`iomsg`: Deferred length character value, contains error message in case `iostat` is non-zero.
+         Optional argument, error message will be dropped if not present.
+
+### Output
+
+Provides a text file called `filename` that contains the rank-2 `array`.
+
+### Example
+
+```fortran
+program demo_savetxt
+    use stdlib_io_npy, only: save_npy
+    implicit none
+    real :: x(3,2) = 1
+    call save_npy('example.npy', x)
 end program demo_savetxt
 ```
