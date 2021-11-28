@@ -1,5 +1,5 @@
 ---
-title: Hash codes
+title: Hash procedures
 ---
 
 # The `stdlib_32_bit_hash_functions` and `stdlib_64_bit_hash_functions` modules
