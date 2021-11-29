@@ -331,13 +331,13 @@ contains
         if (.not.has_shape) then
             stat = 1
             msg = make_message(filename, input, 1, pos, &
-                & "Dictionary does not contain required entry 'fortran_order'")
+                & "Dictionary does not contain required entry 'shape'")
         end if
 
         if (.not.has_fortran_order) then
             stat = 1
             msg = make_message(filename, input, 1, pos, &
-                & "Dictionary does not contain required entry 'shape'")
+                & "Dictionary does not contain required entry 'fortran_order'")
         end if
 
     contains
