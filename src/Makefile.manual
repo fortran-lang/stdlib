@@ -91,11 +91,15 @@ stdlib_io.o: \
     stdlib_kinds.o \
     stdlib_ascii.o
 stdlib_io_npy.o: \
+    stdlib_kinds.o
+stdlib_io_npy_load.o: \
+    stdlib_io_npy.o \
     stdlib_error.o \
-    stdlib_kinds.o \
     stdlib_strings.o
-stdlib_io_npy_load.o: stdlib_io_npy.o
-stdlib_io_npy_save.o: stdlib_io_npy.o
+stdlib_io_npy_save.o: \
+    stdlib_io_npy.o \
+    stdlib_error.o \
+    stdlib_strings.o
 stdlib_linalg.o: \
     stdlib_kinds.o
 stdlib_linalg_diag.o: \

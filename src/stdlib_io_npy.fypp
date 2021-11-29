@@ -69,9 +69,7 @@
 !> This version replaces the ASCII string (which in practice was latin1) with a
 !> utf8-encoded string, so supports structured types with any unicode field names.
 module stdlib_io_npy
-    use stdlib_error, only : error_stop
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp, xdp, qp
-    use stdlib_strings, only : to_string, starts_with
     implicit none
     private
 
@@ -107,7 +105,7 @@ module stdlib_io_npy
     end interface load_npy
 
 
-    character(len=*), parameter :: nl = char(10)
+    character(len=*), parameter :: nl = achar(10)
 
     character(len=*), parameter :: &
         type_iint8 = "<i1", type_iint16 = "<i2", type_iint32 = "<i4", type_iint64 = "<i8", &
