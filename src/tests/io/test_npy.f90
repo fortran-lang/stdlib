@@ -440,7 +440,7 @@ contains
 
         integer :: io, stat
         character(len=:), allocatable :: msg
-        character(len=*), parameter :: filename = ".test-invalid-key.npy"
+        character(len=*), parameter :: filename = ".test-invalid-comma.npy"
         real(dp), allocatable :: array(:)
 
         open(newunit=io, file=filename, form="unformatted", access="stream")
@@ -468,7 +468,7 @@ contains
 
         integer :: io, stat
         character(len=:), allocatable :: msg
-        character(len=*), parameter :: filename = ".test-invalid-key.npy"
+        character(len=*), parameter :: filename = ".test-invalid-string.npy"
         real(dp), allocatable :: array(:)
 
         open(newunit=io, file=filename, form="unformatted", access="stream")
@@ -496,7 +496,7 @@ contains
 
         integer :: io, stat
         character(len=:), allocatable :: msg
-        character(len=*), parameter :: filename = ".test-invalid-key.npy"
+        character(len=*), parameter :: filename = ".test-invalid-descr.npy"
         real(dp), allocatable :: array(:)
 
         open(newunit=io, file=filename, form="unformatted", access="stream")

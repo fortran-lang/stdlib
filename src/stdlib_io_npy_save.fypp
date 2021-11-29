@@ -35,7 +35,7 @@ contains
         !> Header string for npy format
         character(len=:), allocatable :: str
 
-        integer, parameter :: len_v10 = 8 + 2, len_v20 = 8 + 4
+        integer, parameter :: len_v10 = 8 + 2, len_v20 = 8 + 4, block_size = 64
 
         str = &
             "{'descr': '"//vtype//&
@@ -44,11 +44,11 @@ contains
 
         if (len(str) + len_v10 >= 65535) then
             str = str // &
-                & repeat(" ", 16 - mod(len(str) + len_v20 + 1, 16)) // nl
+                & repeat(" ", block_size - mod(len(str) + len_v20 + 1, block_size)) // nl
             str = magic_header(2, 0) // to_bytes_i4(int(len(str))) // str
         else
             str = str // &
-                & repeat(" ", 16 - mod(len(str) + len_v10 + 1, 16)) // nl
+                & repeat(" ", block_size - mod(len(str) + len_v10 + 1, block_size)) // nl
             str = magic_header(1, 0) // to_bytes_i2(int(len(str))) // str
         end if
     end function npy_header
