@@ -1728,5 +1728,5 @@ values generated from the values in `key_array.bin`. The third
 executsble, `hash_validity_test`, reads the binary files and for each
 complicated hash procedure compares the contents of the binary file
 with the results of calculating hash values using the corresponding
-Fortran hash procedure on the same keys. These executables mus be run
+Fortran hash procedure on the same keys. These executables must be run
 manually in the same ordeer.

@@ -534,8 +534,9 @@ contains
         integer(int32) :: a, b
         integer(int64) :: i, r
 
-        ! 5 to 9 bytes
-        ! mixer: [11049a7d 23 bcccdc7b 12 065e9dad 12] = 0.16577596555667246
+        ! - at least 9 bytes
+        ! - base mixer: [11049a7d 23 bcccdc7b 12 065e9dad 12] = 0.16577596555667246
+        ! - tail mixer: [16 a52fb2cd 15 551e4d49 16] = 0.17162579707098322
 
         len = size(p, kind=int64)
         len32 = transfer(len, 0_int32, 2)

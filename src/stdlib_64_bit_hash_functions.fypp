@@ -186,7 +186,7 @@ module stdlib_64_bit_hash_functions
 
     interface spooky_init
 
-         module subroutine spookysubhash_init( self, seed )
+         pure module subroutine spookysubhash_init( self, seed )
             type(spooky_subhash), intent(out) :: self
             integer(int_hash), intent(in)     :: seed(2)
         end subroutine spookysubhash_init
@@ -197,7 +197,7 @@ module stdlib_64_bit_hash_functions
     interface spooky_update
 
          module subroutine spookyhash_update( spooky, key )
-            type(spooky_subhash), intent(out) :: spooky
+            type(spooky_subhash), intent(inout) :: spooky
             integer(int8), intent(in)         :: key(0:)
         end subroutine spookyhash_update
 

@@ -32,11 +32,8 @@ contains
         integer(int64), intent(in) :: seed(2)
         integer(int64)             :: hash_code(2)
 
-        integer(int64) :: hash2(2)
-
-        hash2(:) = seed
-        call spookyhash_128( key, hash2 )
-        hash_code = hash2
+        hash_code(:) = seed
+        call spookyhash_128( key, hash_code )
 
     end function int8_spooky_hash
 
@@ -541,7 +538,7 @@ contains
     end subroutine spookyhash_end
 
 
-     module subroutine spookysubhash_init( self, seed )
+     pure module subroutine spookysubhash_init( self, seed )
         type(spooky_subhash), intent(out) :: self
         integer(int64), intent(in)     :: seed(2)
 
@@ -554,7 +551,7 @@ contains
 
 ! add a message fragment to the state
      module subroutine spookyhash_update( spooky, key )
-        type(spooky_subhash), intent(out) :: spooky
+        type(spooky_subhash), intent(inout) :: spooky
         integer(int8), intent(in)         :: key(0:)
 
         integer(int8)  :: dummy(0:7)
