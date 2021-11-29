@@ -21,12 +21,20 @@ contains
             new_unittest("read-rsp-r2", test_read_rsp_rank2), &
             new_unittest("write-rdp-r2", test_write_rdp_rank2), &
             new_unittest("write-rsp-r2", test_write_rsp_rank2), &
-            new_unittest("invalid-magic-number", test_invalid_magic_number), &
-            new_unittest("invalid-magic-string", test_invalid_magic_string), &
-            new_unittest("invalid-major-version", test_invalid_major_version), &
-            new_unittest("invalid-minor-version", test_invalid_minor_version), &
-            new_unittest("invalid-header-len", test_invalid_header_len), &
-            new_unittest("invalid-nul-byte", test_invalid_nul_byte) &
+            new_unittest("write-i2-r4", test_write_int16_rank4), &
+            new_unittest("invalid-magic-number", test_invalid_magic_number, should_fail=.true.), &
+            new_unittest("invalid-magic-string", test_invalid_magic_string, should_fail=.true.), &
+            new_unittest("invalid-major-version", test_invalid_major_version, should_fail=.true.), &
+            new_unittest("invalid-minor-version", test_invalid_minor_version, should_fail=.true.), &
+            new_unittest("invalid-header-len", test_invalid_header_len, should_fail=.true.), &
+            new_unittest("invalid-nul-byte", test_invalid_nul_byte, should_fail=.true.), &
+            new_unittest("invalid-key", test_invalid_key, should_fail=.true.), &
+            new_unittest("invalid-comma", test_invalid_comma, should_fail=.true.), &
+            new_unittest("invalid-string", test_invalid_string, should_fail=.true.), &
+            new_unittest("duplicate-descr", test_duplicate_descr, should_fail=.true.), &
+            new_unittest("missing-descr", test_missing_descr, should_fail=.true.), &
+            new_unittest("missing-fortran_order", test_missing_fortran_order, should_fail=.true.), &
+            new_unittest("missing-shape", test_missing_shape, should_fail=.true.) &
             ]
     end subroutine collect_npy
 
@@ -156,22 +164,26 @@ contains
 
         integer :: stat
         character(len=*), parameter :: filename = ".test-rdp-r2-rt.npy"
-        real(dp), allocatable :: array(:, :)
+        real(dp), allocatable :: input(:, :), output(:, :)
 
-        array = reshape(spread(0.0_dp, 1, 40), [10, 4])
-        call save_npy(filename, array, stat)
+        allocate(input(10, 4))
+        call random_number(input)
+        call save_npy(filename, input, stat)
 
         call check(error, stat, "Writing of npy file failed")
         if (allocated(error)) return
 
-        call load_npy(filename, array, stat)
+        call load_npy(filename, output, stat)
         call delete_file(filename)
 
         call check(error, stat, "Reading of npy file failed")
         if (allocated(error)) return
 
-        call check(error, size(array), 40)
+        call check(error, size(output), size(input))
         if (allocated(error)) return
+
+        call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
+           "Precision loss when rereading array")
     end subroutine test_write_rdp_rank2
 
     subroutine test_write_rsp_rank2(error)
@@ -198,6 +210,33 @@ contains
         if (allocated(error)) return
     end subroutine test_write_rsp_rank2
 
+    subroutine test_write_int16_rank4(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat, i
+        character(len=*), parameter :: filename = ".test-i2-r4-rt.npy"
+        integer(int16), allocatable :: input(:, :, :, :), output(:, :, :, :)
+
+        input = reshape([(i*(i+1)/2, i = 1, 40)], [2, 5, 2, 2])
+        call save_npy(filename, input, stat)
+
+        call check(error, stat, "Writing of npy file failed")
+        if (allocated(error)) return
+
+        call load_npy(filename, output, stat)
+        call delete_file(filename)
+
+        call check(error, stat, "Reading of npy file failed")
+        if (allocated(error)) return
+
+        call check(error, size(output), size(input))
+        if (allocated(error)) return
+
+        call check(error, all(abs(output - input) == 0), &
+           "Precision loss when rereading array")
+    end subroutine test_write_int16_rank4
+
     subroutine test_invalid_magic_number(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -222,9 +261,7 @@ contains
         call load_npy(filename, array, stat, msg)
         call delete_file(filename)
 
-        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
-        if (allocated(error)) return
-        call check(error, msg, "Expected z'93' but got z'50' as first byte")
+        call check(error, stat, msg)
     end subroutine test_invalid_magic_number
 
     subroutine test_invalid_magic_string(error)
@@ -251,9 +288,7 @@ contains
         call load_npy(filename, array, stat, msg)
         call delete_file(filename)
 
-        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
-        if (allocated(error)) return
-        call check(error, msg, "Expected identifier 'NUMPY'")
+        call check(error, stat, msg)
     end subroutine test_invalid_magic_string
 
     subroutine test_invalid_major_version(error)
@@ -280,9 +315,7 @@ contains
         call load_npy(filename, array, stat, msg)
         call delete_file(filename)
 
-        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
-        if (allocated(error)) return
-        call check(error, msg, "Unsupported format major version number '0'")
+        call check(error, stat, msg)
     end subroutine test_invalid_major_version
 
     subroutine test_invalid_minor_version(error)
@@ -309,9 +342,7 @@ contains
         call load_npy(filename, array, stat, msg)
         call delete_file(filename)
 
-        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
-        if (allocated(error)) return
-        call check(error, msg, "Unsupported format version '1.9'")
+        call check(error, stat, msg)
     end subroutine test_invalid_minor_version
 
     subroutine test_invalid_header_len(error)
@@ -338,9 +369,7 @@ contains
         call load_npy(filename, array, stat, msg)
         call delete_file(filename)
 
-        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
-        if (allocated(error)) return
-        call check(error, msg, "Descriptor length does not match")
+        call check(error, stat, msg)
     end subroutine test_invalid_header_len
 
     subroutine test_invalid_nul_byte(error)
@@ -367,10 +396,200 @@ contains
         call load_npy(filename, array, stat, msg)
         call delete_file(filename)
 
-        call check(error, stat /= 0, "Reading of invalid npy file succeeded")
-        if (allocated(error)) return
-        call check(error, msg, "Nul byte not allowed in descriptor string")
+        call check(error, stat, msg)
     end subroutine test_invalid_nul_byte
+
+    subroutine test_invalid_key(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'fortran_order': True, 'shape': (10, 4, ), 'descr': '<f8', 'x': 1, }" //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "NUMPY" // char(1) // char(0) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-invalid-key.npy"
+        real(dp), allocatable :: array(:, :)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat, msg)
+    end subroutine test_invalid_key
+
+    subroutine test_invalid_comma(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'fortran_order': True,, 'shape': (10, 4, ), 'descr': '<f8', }       " //  &
+            "   " //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "NUMPY" // char(1) // char(0) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-invalid-key.npy"
+        real(dp), allocatable :: array(:)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat, msg)
+    end subroutine test_invalid_comma
+
+    subroutine test_invalid_string(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'fortran_order': True, 'shape': (10, 4, ), 'descr': '<f8' '<f4', }  " //  &
+            "   " //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "NUMPY" // char(1) // char(0) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-invalid-key.npy"
+        real(dp), allocatable :: array(:)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat, msg)
+    end subroutine test_invalid_string
+
+    subroutine test_duplicate_descr(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'descr': '<f8', 'descr': '<f8', 'fortran_order': True, 'shape': (40, ), }"//&
+            "   " //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "NUMPY" // char(1) // char(0) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-invalid-key.npy"
+        real(dp), allocatable :: array(:)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat, msg)
+    end subroutine test_duplicate_descr
+
+    subroutine test_missing_descr(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'fortran_order': True, 'shape': (10, 4, ), }                        " //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "NUMPY" // char(1) // char(0) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-missing-descr.npy"
+        real(dp), allocatable :: array(:, :)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat, msg)
+    end subroutine test_missing_descr
+
+    subroutine test_missing_fortran_order(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'descr': '<f8', 'shape': (10, 4, ), }                               " //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "NUMPY" // char(1) // char(0) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-missing-fortran_order.npy"
+        real(dp), allocatable :: array(:, :)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat, msg)
+    end subroutine test_missing_fortran_order
+
+    subroutine test_missing_shape(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=*), parameter :: dict = &
+            "{'fortran_order': True, 'descr': '<f8'}                              " //  &
+            char(10)
+        character(len=*), parameter :: header = &
+            char(int(z"93")) // "NUMPY" // char(1) // char(0) // &
+            char(len(dict)) // char(0) // dict
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = ".test-missing-shape.npy"
+        real(dp), allocatable :: array(:, :)
+
+        open(newunit=io, file=filename, form="unformatted", access="stream")
+        write(io) header
+        write(io) spread(0.0_dp, 1, 40)
+        close(io)
+
+        call load_npy(filename, array, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat, msg)
+    end subroutine test_missing_shape
 
     subroutine delete_file(filename)
         character(len=*), intent(in) :: filename
