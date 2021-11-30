@@ -1,7 +1,7 @@
 #! Integer kinds to be considered during templating
 #:set INT_KINDS = ["int8", "int16", "int32", "int64"]
 
-module stdlib_32_bit_hash_functions
+module stdlib_32_bit_hash_codes
 
     use, intrinsic :: iso_fortran_env, only : &
         character_storage_size
@@ -241,4 +241,4 @@ contains
 
     end subroutine odd_random_integer
 
-end module stdlib_32_bit_hash_functions
+end module stdlib_32_bit_hash_codes

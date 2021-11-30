@@ -74,7 +74,7 @@
 #! Integer kinds to be considered during templating
 #:set INT_KINDS = ["int16", "int32", "int64"]
 
-submodule(stdlib_32_bit_hash_functions) stdlib_32_bit_water_hashes
+submodule(stdlib_32_bit_hash_codes) stdlib_32_bit_water_hashes
     implicit none
 
 contains
