@@ -40,7 +40,7 @@
 #! Integer kinds to be considered during templating
 #:set INT_KINDS = ["int16", "int32", "int64"]
 
-submodule(stdlib_64_bit_hash_functions) stdlib_64_bit_pengy_hashes
+submodule(stdlib_64_bit_hash_codes) stdlib_64_bit_pengy_hashes
 
     implicit none
 

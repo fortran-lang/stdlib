@@ -13,7 +13,7 @@
 #! Integer kinds to be considered during templating
 #:set INT_KINDS = ["int16", "int32", "int64"]
 
-submodule(stdlib_64_bit_hash_functions) stdlib_64_bit_spookyv2_hashes
+submodule(stdlib_64_bit_hash_codes) stdlib_64_bit_spookyv2_hashes
 
 ! I have tried to make this portable while retaining efficiency. I assume
 ! processors with two's complement integers from 8, 16, 32, and 64 bits.
@@ -552,7 +552,7 @@ contains
 ! add a message fragment to the state
      module subroutine spookyhash_update( spooky, key )
         type(spooky_subhash), intent(inout) :: spooky
-        integer(int8), intent(in)         :: key(0:)
+        integer(int8), intent(in)           :: key(0:)
 
         integer(int8)  :: dummy(0:7)
         integer(int64) :: h(0:11)
