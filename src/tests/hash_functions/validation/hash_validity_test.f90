@@ -11,12 +11,12 @@
 program hash_validity_test
 
     use, intrinsic :: iso_fortran_env, only: int8, int32, int64, real64
-    use stdlib_32_bit_hash_functions, only: &
+    use stdlib_32_bit_hash_codes, only: &
         little_endian, &
         nmhash32,      &
         nmhash32x,     &
         water_hash
-    use stdlib_64_bit_hash_functions, only: &
+    use stdlib_64_bit_hash_codes, only: &
         pengy_hash, &
         spooky_hash
 
