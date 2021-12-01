@@ -159,7 +159,7 @@ Generic subroutine.
 
 `array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
-`real(sp)`, `real(dp)`, `real(xdp), `real(qp)`. It is an `intent(in)` argument. On input it is
+`real(sp)`, `real(dp)`, `real(xdp)`, `real(qp)`. It is an `intent(in)` argument. On input it is
 the array in which we search for the k-th smallest entry.
 
 `indx`: shall be a rank one array with the same size as `array`, containing all integers
@@ -198,7 +198,7 @@ The code does not support `NaN` elements in `array`; it will run, but there is
 no consistent interpretation given to the order of `NaN` entries of `array`
 compared to other entries.
 
-While it is essential that that `indx` contains a permutation of the integers `1:size(array)`, 
+While it is essential that `indx` contains a permutation of the integers `1:size(array)`, 
 the code does not check for this. For example if `size(array) == 4`, then we could have 
 `indx = [4, 2, 1, 3]` or `indx = [1, 2, 3, 4]`, but not `indx = [2, 1, 2, 4]`. It is the user's
 responsibility to avoid such errors.
