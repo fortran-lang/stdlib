@@ -220,8 +220,7 @@ Generic subroutine
 
 ### Arguments
 
-`array`: Shall be an array of type `integer` or `real`. It is an `intent(in)`
-argument.
+`array`: Shall be an array of type `integer` or `real`. It is an `intent(in)` argument.
 
 `dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
