@@ -89,7 +89,7 @@ contains
         character(len=*), parameter :: filename = ".test-rsp-r2.npy"
         real(sp), allocatable :: input(:, :), output(:, :)
 
-        allocate(input(12, 5))
+        allocate(input(5, 12))
         call random_number(input)
 
         open(newunit=io, file=filename, form="unformatted", access="stream")
