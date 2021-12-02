@@ -16,7 +16,7 @@ module stdlib_optval
   !!
   !! It is an error to call `optval` with a single actual argument.
   !!
-  use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
+  use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
   implicit none
 
 

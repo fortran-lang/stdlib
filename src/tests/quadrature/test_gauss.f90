@@ -1,16 +1,34 @@
-program test_gauss_
+module test_gauss
     use stdlib_kinds, only: dp
-    use stdlib_error, only: check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_quadrature , only: gauss_legendre, gauss_legendre_lobatto
 
     implicit none
 
-    call test_gauss
-    call test_gauss_lobatto
 
 contains
 
-    subroutine test_gauss
+    !> Collect all exported unit tests
+    subroutine collect_gauss(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest("gauss-analytic", test_gauss_analytic), &
+            new_unittest("gauss-5", test_gauss_5), &
+            new_unittest("gauss-32", test_gauss_32), &
+            new_unittest("gauss-64", test_gauss_64), &
+            new_unittest("gauss-lobatto-analytic", test_gauss_lobatto_analytic), &
+            new_unittest("gauss-lobatto-5", test_gauss_lobatto_5), &
+            new_unittest("gauss-lobatto-32", test_gauss_lobatto_32), &
+            new_unittest("gauss-lobatto-64", test_gauss_lobatto_64) &
+            ]
+    end subroutine
+
+    subroutine test_gauss_analytic(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
         integer :: i
         real(dp) :: analytic, numeric
 
@@ -23,9 +41,18 @@ contains
                 call gauss_legendre(x,w)
                 numeric = sum(x**2 * w)
                 !print *, i, numeric
-                call check(abs(numeric-analytic) < 2*epsilon(analytic))
+                call check(error, abs(numeric-analytic) < 2*epsilon(analytic))
+                if (allocated(error)) return
             end block
         end do
+
+    end subroutine
+
+    subroutine test_gauss_5(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: i
 
         ! test the values of nodes and weights
         i = 5
@@ -44,9 +71,18 @@ contains
             wref(4)=0.47862867049936647_dp
             wref(5)=0.23692688505618909_dp
 
-            call check (all(abs(x-xref) < 2*epsilon(x(1))))
-            call check (all(abs(w-wref) < 2*epsilon(w(1))))
+            call check(error, all(abs(x-xref) < 2*epsilon(x(1))))
+            if (allocated(error)) return
+            call check(error, all(abs(w-wref) < 2*epsilon(w(1))))
         end block
+
+    end subroutine
+
+    subroutine test_gauss_32(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: i
 
         i = 32 
         block 
@@ -120,9 +156,18 @@ contains
             wref(31)=0.016274394730905671_dp
             wref(32)=0.0070186100094700966_dp
 
-            call check (all(abs(x-xref) < 2*epsilon(x(1))))
-            call check (all(abs(w-wref) < 2*epsilon(w(1))))
+            call check(error, all(abs(x-xref) < 2*epsilon(x(1))))
+            if (allocated(error)) return
+            call check(error, all(abs(w-wref) < 2*epsilon(w(1))))
         end block
+
+    end subroutine
+
+    subroutine test_gauss_64(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: i
 
 
         i = 64
@@ -262,15 +307,19 @@ contains
             wref(63)=0.0041470332605624676_dp
             wref(64)=0.0017832807216964329_dp
             
-            call check (all(abs(x-xref) < 2*epsilon(x(1))))
-            call check (all(abs(w-wref) < 2*epsilon(w(1))))
+            call check(error, all(abs(x-xref) < 2*epsilon(x(1))))
+            if (allocated(error)) return
+            call check(error, all(abs(w-wref) < 2*epsilon(w(1))))
         end block
 
 
 
     end subroutine
 
-    subroutine test_gauss_lobatto
+    subroutine test_gauss_lobatto_analytic(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
         integer :: i
         real(dp) :: analytic, numeric
 
@@ -283,9 +332,18 @@ contains
                 call gauss_legendre_lobatto(x,w)
                 numeric = sum(x**2 * w)
                 !print *, i, numeric
-                call check(abs(numeric-analytic) < 2*epsilon(analytic))
+                call check(error, abs(numeric-analytic) < 2*epsilon(analytic))
+                if (allocated(error)) return
             end block
         end do
+
+    end subroutine
+
+    subroutine test_gauss_lobatto_5(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: i
 
 
         ! test the values of nodes and weights
@@ -308,9 +366,18 @@ contains
             wref(5)=0.10000000000000000_dp
 
 
-            call check (all(abs(x-xref) < 2*epsilon(x(1))))
-            call check (all(abs(w-wref) < 2*epsilon(w(1))))
+            call check(error, all(abs(x-xref) < 2*epsilon(x(1))))
+            if (allocated(error)) return
+            call check(error, all(abs(w-wref) < 2*epsilon(w(1))))
         end block
+
+    end subroutine
+
+    subroutine test_gauss_lobatto_32(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: i
 
         i = 32 
         block 
@@ -383,9 +450,18 @@ contains
             wref(31)=0.012398106501373844_dp
             wref(32)=0.0020161290322580645_dp
             
-            call check (all(abs(x-xref) < 2*epsilon(x(1))))
-            call check (all(abs(w-wref) < 2*epsilon(w(1))))
+            call check(error, all(abs(x-xref) < 2*epsilon(x(1))))
+            if (allocated(error)) return
+            call check(error, all(abs(w-wref) < 2*epsilon(w(1))))
         end block
+
+    end subroutine
+
+    subroutine test_gauss_lobatto_64(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: i
 
 
         i = 64
@@ -524,10 +600,38 @@ contains
             wref(63)=0.0030560082449124904_dp
             wref(64)=0.00049603174603174603_dp
             
-            call check (all(abs(x-xref) < 2*epsilon(x(1))))
-            call check (all(abs(w-wref) < 2*epsilon(w(1))))
+            call check(error, all(abs(x-xref) < 2*epsilon(x(1))))
+            if (allocated(error)) return
+            call check(error, all(abs(w-wref) < 2*epsilon(w(1))))
         end block
 
     end subroutine
 
+end module
+
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_gauss, only : collect_gauss
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("gauss", collect_gauss) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
 end program
