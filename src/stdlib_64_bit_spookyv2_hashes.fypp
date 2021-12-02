@@ -682,7 +682,7 @@ contains
     end subroutine spookyhash_final
 
 
-    function rot_64_32( a, k )
+    pure function rot_64_32( a, k )
         integer(int64)             :: rot_64_32
         integer(int64), intent(in) :: a
         integer, intent(in)           :: k
