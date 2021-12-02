@@ -44,7 +44,7 @@ contains
         call select(x_tmp, c, val)
 
         if (mod(n, 2_int64) == 0) then
-          call select(x_tmp, c+1, val1, left = c)
+          val1 = minval(x_tmp(c+1:n))  !instead of call select(x_tmp, c+1, val1, left = c)
           #:if t1[0] == 'r'
             res = (val + val1) / 2._${o1}$
           #:else
@@ -111,7 +111,7 @@ contains
                 call select(x_tmp, c, val)
 
                 if (mod(n, 2) == 0) then
-                    call select(x_tmp, c+1, val1, left = c)
+                    val1 = minval(x_tmp(c+1:n))
                     res${reduce_subvector('j', rank, fi)}$ = &
                     #:if t1[0] == 'r'
                         (val + val1) / 2._${o1}$
@@ -171,7 +171,7 @@ contains
         call select(x_tmp, c, val)
 
         if (mod(n, 2_int64) == 0) then
-          call select(x_tmp, c+1, val1, left = c)
+          val1 = minval(x_tmp(c+1:n))
           #:if t1[0] == 'r'
             res = (val + val1) / 2._${o1}$
           #:else
@@ -242,7 +242,7 @@ contains
                 call select(x_tmp, c, val)
 
                 if (mod(n, 2_int64) == 0) then
-                    call select(x_tmp, c+1, val1, left = c)
+                    val1 = minval(x_tmp(c+1:n))
                     res${reduce_subvector('j', rank, fi)}$ = &
                     #:if t1[0] == 'r'
                         (val + val1) / 2._${o1}$
