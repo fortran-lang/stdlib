@@ -76,7 +76,10 @@ module stdlib_io_npy
     public :: save_npy, load_npy
 
 
+    !> Version: experimental
+    !>
     !> Save multidimensional array in npy format
+    !> ([Specification](../page/specs/stdlib_io.html#save_npy))
     interface save_npy
     #:for k1, t1 in KINDS_TYPES
       #:for rank in RANKS
@@ -90,7 +93,10 @@ module stdlib_io_npy
     #:endfor
     end interface save_npy
 
+    !> Version: experimental
+    !>
     !> Load multidimensional array in npy format
+    !> ([Specification](../page/specs/stdlib_io.html#load_npy))
     interface load_npy
     #:for k1, t1 in KINDS_TYPES
       #:for rank in RANKS

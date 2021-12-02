@@ -51,21 +51,27 @@ contains
 
         integer :: io, stat
         character(len=*), parameter :: filename = ".test-rdp-r2.npy"
-        real(dp), allocatable :: array(:, :)
+        real(dp), allocatable :: input(:, :), output(:, :)
+
+        allocate(input(10, 4))
+        call random_number(input)
 
         open(newunit=io, file=filename, form="unformatted", access="stream")
         write(io) header
-        write(io) spread(0.0_dp, 1, 40)
+        write(io) input
         close(io)
 
-        call load_npy(filename, array, stat)
+        call load_npy(filename, output, stat)
         call delete_file(filename)
 
         call check(error, stat, "Reading of npy file failed")
         if (allocated(error)) return
 
-        call check(error, size(array), 40)
+        call check(error, size(output), size(input))
         if (allocated(error)) return
+
+        call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
+           "Precision loss when rereading array")
     end subroutine test_read_rdp_rank2
 
     subroutine test_read_rsp_rank2(error)
@@ -81,21 +87,27 @@ contains
 
         integer :: io, stat
         character(len=*), parameter :: filename = ".test-rsp-r2.npy"
-        real(sp), allocatable :: array(:, :)
+        real(sp), allocatable :: input(:, :), output(:, :)
+
+        allocate(input(12, 5))
+        call random_number(input)
 
         open(newunit=io, file=filename, form="unformatted", access="stream")
         write(io) header
-        write(io) spread(0.0_sp, 1, 60)
+        write(io) input
         close(io)
 
-        call load_npy(filename, array, stat)
+        call load_npy(filename, output, stat)
         call delete_file(filename)
 
         call check(error, stat, "Reading of npy file failed")
         if (allocated(error)) return
 
-        call check(error, size(array), 60)
+        call check(error, size(output), size(input))
         if (allocated(error)) return
+
+        call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
+           "Precision loss when rereading array")
     end subroutine test_read_rsp_rank2
 
     subroutine test_read_rdp_rank3(error)
@@ -111,21 +123,27 @@ contains
 
         integer :: io, stat
         character(len=*), parameter :: filename = ".test-rdp-r3.npy"
-        real(dp), allocatable :: array(:, :, :)
+        real(dp), allocatable :: input(:, :, :), output(:, :, :)
+
+        allocate(input(10, 2, 2))
+        call random_number(input)
 
         open(newunit=io, file=filename, form="unformatted", access="stream")
         write(io) header
-        write(io) spread(0.0_dp, 1, 40)
+        write(io) input
         close(io)
 
-        call load_npy(filename, array, stat)
+        call load_npy(filename, output, stat)
         call delete_file(filename)
 
         call check(error, stat, "Reading of npy file failed")
         if (allocated(error)) return
 
-        call check(error, size(array), 40)
+        call check(error, size(output), size(input))
         if (allocated(error)) return
+
+        call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
+           "Precision loss when rereading array")
     end subroutine test_read_rdp_rank3
 
     subroutine test_read_rsp_rank1(error)
@@ -141,21 +159,27 @@ contains
 
         integer :: io, stat
         character(len=*), parameter :: filename = ".test-rsp-r1.npy"
-        real(sp), allocatable :: array(:)
+        real(sp), allocatable :: input(:), output(:)
+
+        allocate(input(37))
+        call random_number(input)
 
         open(newunit=io, file=filename, form="unformatted", access="stream")
         write(io) header
-        write(io) spread(0.0_sp, 1, 37)
+        write(io) input
         close(io)
 
-        call load_npy(filename, array, stat)
+        call load_npy(filename, output, stat)
         call delete_file(filename)
 
         call check(error, stat, "Reading of npy file failed")
         if (allocated(error)) return
 
-        call check(error, size(array), 37)
+        call check(error, size(output), 37)
         if (allocated(error)) return
+
+        call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
+           "Precision loss when rereading array")
     end subroutine test_read_rsp_rank1
 
     subroutine test_write_rdp_rank2(error)
@@ -192,22 +216,26 @@ contains
 
         integer :: stat
         character(len=*), parameter :: filename = ".test-rsp-r2-rt.npy"
-        real(sp), allocatable :: array(:, :)
+        real(sp), allocatable :: input(:, :), output(:, :)
 
-        array = reshape(spread(0.0_dp, 1, 60), [12, 5])
-        call save_npy(filename, array, stat)
+        allocate(input(12, 5))
+        call random_number(input)
+        call save_npy(filename, input, stat)
 
         call check(error, stat, "Writing of npy file failed")
         if (allocated(error)) return
 
-        call load_npy(filename, array, stat)
+        call load_npy(filename, output, stat)
         call delete_file(filename)
 
         call check(error, stat, "Reading of npy file failed")
         if (allocated(error)) return
 
-        call check(error, size(array), 60)
+        call check(error, size(output), size(input))
         if (allocated(error)) return
+
+        call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
+           "Precision loss when rereading array")
     end subroutine test_write_rsp_rank2
 
     subroutine test_write_int16_rank4(error)
