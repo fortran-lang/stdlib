@@ -1,14 +1,14 @@
 CC = gcc
 CXX = g++
 
-FFLAGS = -O3
+FFLAGS = -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fno-range-check
 CFLAGS = -O3
 CXXFLAGS = -O3
 
 CPPFLAGS += -I. -I../.. -I..
 LDFLAGS += -L../.. -L.. -lstdlib-testing -lstdlib
 
-PROGS = generate_key_array generate_hash_arrays hash_validity_test
+PROGS = generate_key_array generate_hash_arrays hash_validity_test test_hash_functions
 TESTPROGS = $(PROGS:=TEST)
 
 all: $(PROGS)
@@ -18,14 +18,14 @@ test: $(TESTPROGS)
 $(TESTPROGS):
 	./$(@:TEST=)
 
-
-
 generate_key_array: generate_key_array.f90
 	$(FC) $(FFLAGS) generate_key_array.f90 -o generate_key_array
 
+test_hash_functions: test_hash_functions.f90
+	$(FC) $(FFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
+
 hash_validity_test: hash_validity_test.f90
-	$(FC) $(FFLAGS) $(CPPFLAGS) \
-	hash_validity_test.f90 -o hash_validity_test $(LDFLAGS)
+	$(FC) $(FFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 generate_hash_arrays: generate_hash_arrays.o libc_hash.a
 	$(CXX) $(CXXFLAGS) generate_hash_arrays.o \
@@ -55,8 +55,7 @@ nmhash_scalar.o: nmhash_scalar.c nmhash_scalar.h
 
 clean:
 	rm nmhash_scalar.o SpookyV2Test.o SpookyV2.o waterhash.o pengyhash.o \
-           libc_hash.a generate_hash_arrays.o generate_hash_arrays \
-	   hash_validity_test generate_key_array \
+           libc_hash.a generate_hash_arrays.o $(PROGS) \
 	   *.bin
 
 

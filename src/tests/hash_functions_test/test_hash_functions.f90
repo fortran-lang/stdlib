@@ -1,0 +1,271 @@
+
+module test_hash_functions
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
+    use stdlib_32_bit_hash_codes, only: little_endian &
+        , nmhash32 &
+        , nmhash32x &
+        , water_hash
+    use stdlib_64_bit_hash_codes, only: pengy_hash, spooky_hash
+ 
+    implicit none
+
+    real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
+    real(dp), parameter :: dptol = 1000 * epsilon(1._dp)
+
+    integer, parameter :: size_key_array = 2048
+
+    integer(int32), parameter :: nm_seed = int( z'deadbeef', int32 )
+    integer(int64), parameter :: water_seed = int( z'deadbeef1eadbeef', int64 )
+    integer(int32), parameter :: pengy_seed = int( z'deadbeef', int32 )
+    integer(int64), parameter :: spooky_seed(2) = [ water_seed, water_seed ]
+
+    interface read_array
+        module procedure read_array_int8
+        module procedure read_array_int32
+        module procedure read_array_int64
+        module procedure read_2darray_int64
+    end interface
+
+contains
+
+    !> Collect all exported unit tests
+    subroutine collect_hash_functions(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest("dummy", test_dummy) &
+            , new_unittest("little_endian", test_little_endian) &
+            , new_unittest("nmhash32", test_nmhash32) &
+            , new_unittest("nmhash32x", test_nmhash32x) &
+            , new_unittest("water_hash", test_water_hash) &
+            , new_unittest("pengy_hash", test_pengy_hash) &
+            , new_unittest("spooky_hash", test_spooky_hash) &
+            ]
+
+    end subroutine collect_hash_functions
+
+    subroutine test_dummy(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error, .true., "dummy")
+        if (allocated(error)) return
+
+    end subroutine
+
+    subroutine test_little_endian(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+ 
+        ! Test for endianness
+
+        call check(error, little_endian, "The processor is not Little-Endian")
+        if (allocated(error)) return
+
+    end subroutine
+
+    subroutine test_nmhash32(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: index
+        integer(int8) :: key_array(size_key_array)
+        integer(int32) :: c_hash(0:size_key_array)
+
+        call read_array("key_array.bin", key_array )
+
+        ! Read hash array generated from key array by the C version of nmhash32
+        call read_array("c_nmhash32_array.bin", c_hash) 
+
+        do index=0, 2048
+            call check(error, c_hash(index) == nmhash32(key_array(1:index), nm_seed) &
+                , "NMHASH32 failed")
+            if (allocated(error)) return
+         end do
+
+    end subroutine
+
+    subroutine test_nmhash32x(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: index
+        integer(int8) :: key_array(size_key_array)
+        integer(int32) :: c_hash(0:size_key_array)
+
+        call read_array("key_array.bin", key_array )
+
+        ! Read hash array generated from key array by the C version of nmhash32x
+        call read_array("c_nmhash32x_array.bin", c_hash) 
+
+        do index=0, 2048
+            call check(error, c_hash(index) == nmhash32x(key_array(1:index), nm_seed) &
+                , "NMHASH32X failed")
+            if (allocated(error)) return
+         end do
+
+    end subroutine
+
+    subroutine test_water_hash(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: index
+        integer(int8) :: key_array(size_key_array)
+        integer(int32) :: c_hash(0:size_key_array)
+
+        call read_array("key_array.bin", key_array )
+
+        ! Read hash array generated from key array by the C version of water_hash
+        call read_array("c_water_hash_array.bin", c_hash) 
+
+        do index=0, 2048
+            call check(error, c_hash(index) == water_hash(key_array(1:index), water_seed) &
+                , "WATER_HASH failed")
+            if (allocated(error)) return
+         end do
+
+    end subroutine
+
+    subroutine test_pengy_hash(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: index
+        integer(int8) :: key_array(size_key_array)
+        integer(int64) :: c_hash(0:size_key_array)
+
+        call read_array("key_array.bin", key_array )
+
+        ! Read hash array generated from key array by the C version of pengy_hash
+        call read_array("c_pengy_hash_array.bin", c_hash) 
+
+        do index=0, 2048
+            call check(error, c_hash(index) == pengy_hash(key_array(1:index), pengy_seed) &
+                , "PENGY_HASH failed")
+            if (allocated(error)) return
+         end do
+
+    end subroutine
+
+    subroutine test_spooky_hash(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: index
+        integer(int8) :: key_array(size_key_array)
+        integer(int64) :: c_hash(0:1, 0:size_key_array)
+
+        call read_array("key_array.bin", key_array )
+
+        ! Read hash array generated from key array by the C version of spooky_hash
+        call read_array("c_spooky_hash_array.bin", c_hash) 
+
+        do index=0, 2048
+            call check(error, all(c_hash(:, index) == spooky_hash(key_array(1:index), spooky_seed)) &
+                , "SPOOKY_HASH failed")
+            if (allocated(error)) return
+         end do
+
+    end subroutine
+
+
+
+    subroutine read_array_int8(filename, res)
+        character(*), intent(in) :: filename
+        integer(int8), intent(out) :: res(:)
+
+        integer :: lun
+
+        open(newunit=lun, file=filename, form="unformatted", &
+            access="stream", status="old", action="read", err = 9908)
+        read(lun) res
+        close(lun)
+
+        return
+
+9908    res =  0
+
+    end subroutine
+
+    subroutine read_array_int32(filename, res)
+        character(*), intent(in) :: filename
+        integer(int32), intent(out) :: res(:)
+
+        integer :: lun
+
+        open(newunit=lun, file=filename, form="unformatted", &
+            access="stream", status="old", action="read", err = 9908)
+        read(lun) res
+        close(lun)
+
+        return
+
+9908    res =  0
+
+    end subroutine
+
+    subroutine read_array_int64(filename, res)
+        character(*), intent(in) :: filename
+        integer(int64), intent(out) :: res(:)
+
+        integer :: lun
+
+        open(newunit=lun, file=filename, form="unformatted", &
+            access="stream", status="old", action="read", err = 9908)
+        read(lun) res
+        close(lun)
+
+        return
+
+9908    res =  0
+
+    end subroutine
+
+    subroutine read_2darray_int64(filename, res)
+        character(*), intent(in) :: filename
+        integer(int64), intent(out) :: res(:,:)
+
+        integer :: lun
+
+        open(newunit=lun, file=filename, form="unformatted", &
+            access="stream", status="old", action="read", err = 9908)
+        read(lun) res
+        close(lun)
+
+        return
+
+9908    res =  0
+
+    end subroutine
+
+end module
+
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_hash_functions, only : collect_hash_functions
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("hash_functions", collect_hash_functions) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program
