@@ -15,6 +15,7 @@ all test clean::
 	$(MAKE) -f Makefile.manual --directory=ascii $@
 	$(MAKE) -f Makefile.manual --directory=bitsets $@
 	$(MAKE) -f Makefile.manual --directory=hash_functions $@
+	$(MAKE) -f Makefile.manual --directory=hash_functions_test $@
 	$(MAKE) -f Makefile.manual --directory=io $@
 	$(MAKE) -f Makefile.manual --directory=logger $@
 	$(MAKE) -f Makefile.manual --directory=optval $@
