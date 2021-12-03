@@ -88,7 +88,7 @@ contains
           if(l > r .or. l < 1_ip .or. r > size(a, kind=ip) &
               .or. k < l .or. k > r                        & !i.e. if k is not in the interval [l; r]  
               ) then
-              error stop "select must have 1 <= k <= size(a), and 1 <= left <= right <= size(a)";
+              error stop "select must have  1 <= left <= k <= right <= size(a)";
           end if
 
           searchk: do
@@ -205,7 +205,7 @@ contains
           if(l > r .or. l < 1_ip .or. r > size(a, kind=ip) &
               .or. k < l .or. k > r                        & !i.e. if k is not in the interval [l; r]  
               ) then
-              error stop "arg_select must have 1 <= k <= size(a), and 1 <= left <= right <= size(a)";
+              error stop "arg_select must have 1 <= left <= k <= right <= size(a)";
           end if
 
           searchk: do
