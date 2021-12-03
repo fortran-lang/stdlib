@@ -1,1 +1,1 @@
-ADDTEST(test_hash_functions)
+ADDTEST(hash_functions)
