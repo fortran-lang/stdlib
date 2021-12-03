@@ -43,10 +43,6 @@ jobs:
       with:
         python-version: 3.x
 
-    - name: Install CMake Linux
-      if: contains(matrix.os, 'ubuntu')
-      run: ci/install_cmake.sh
-
     - name: Install fypp
       run: pip install --upgrade fypp
 
@@ -85,7 +81,12 @@ jobs:
 
     - name: test
       if: ${{ contains(matrix.build, 'cmake') }}
-      run: ctest --test-dir ${{ env.BUILD_DIR }} --parallel --output-on-failure
+      run: >-
+        ctest
+        --test-dir ${{ env.BUILD_DIR }}
+        --parallel
+        --output-on-failure
+        --no-tests=error
 
     - name: Install project
       if: ${{ contains(matrix.build, 'cmake') }}
@@ -122,10 +123,6 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.x
-
-    - name: Install CMake Linux
-      if: contains(matrix.os, 'ubuntu')
-      run: ci/install_cmake.sh
 
     - name: Prepare for cache restore (OSX)
       if: contains(matrix.os, 'macos')
@@ -197,7 +194,7 @@ jobs:
       if: failure()
 
     - name: test
-      run: ctest --parallel --output-on-failure
+      run: ctest --parallel --output-on-failure --no-tests=error
       working-directory: build
 
     - name: Install project
