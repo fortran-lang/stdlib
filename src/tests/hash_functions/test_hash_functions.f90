@@ -1,6 +1,6 @@
 module test_hash_functions
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
+    use stdlib_kinds, only: int8, int32, int64, dp
     use stdlib_32_bit_hash_codes, only: little_endian &
         , nmhash32 &
         , nmhash32x &
@@ -8,9 +8,6 @@ module test_hash_functions
     use stdlib_64_bit_hash_codes, only: pengy_hash, spooky_hash
  
     implicit none
-
-    real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
-    real(dp), parameter :: dptol = 1000 * epsilon(1._dp)
 
     integer, parameter :: size_key_array = 2048
 
@@ -174,10 +171,10 @@ contains
 
     subroutine generate_key_array()
     
-        integer        :: lun
+        integer        :: i, lun
         integer(int8)  :: key_array(size_key_array)
         integer(int32) :: dummy(size_key_array/4)
-        real(real64)   :: rand(size_key_array/4)
+        real(dp)   :: rand(size_key_array/4)
     
         ! Create key array
         call random_number( rand )
