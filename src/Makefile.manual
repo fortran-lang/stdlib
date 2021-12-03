@@ -21,6 +21,7 @@ SRCFYPP = \
         stdlib_quadrature.fypp \
         stdlib_quadrature_trapz.fypp \
         stdlib_quadrature_simps.fypp \
+        stdlib_selection.fypp \
         stdlib_random.fypp \
         stdlib_sorting.fypp \
         stdlib_sorting_ord_sort.fypp \
@@ -128,6 +129,8 @@ stdlib_quadrature_simps.o: \
 stdlib_quadrature_trapz.o: \
     stdlib_quadrature.o \
     stdlib_error.o \
+    stdlib_kinds.o
+stdlib_selection.o: \
     stdlib_kinds.o
 stdlib_sorting.o: \
     stdlib_kinds.o \
