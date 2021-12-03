@@ -15,7 +15,7 @@ program generate_key_array
     key_array = transfer( dummy, 0_int8, 2048 )
 
     open(newunit=lun, file="key_array.bin", form="unformatted", &
-        access="stream", status="new", action="write")
+        access="stream", status="replace", action="write")
     write(lun) key_array
     close(lun)
 

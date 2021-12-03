@@ -1,3 +1,61 @@
-PROGS_SRC = test_64_bit_hash_performance.f90 test_32_bit_hash_performance.f90
+CC = gcc
+CXX = g++
 
-include ../Makefile.manual.test.mk
+FFLAGS = -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fno-range-check
+CFLAGS = -O3
+CXXFLAGS = -O3
+
+CPPFLAGS += -I. -I../.. -I..
+LDFLAGS += -L../.. -L.. -lstdlib-testing -lstdlib
+
+PROGS = generate_key_array generate_hash_arrays hash_validity_test test_hash_functions
+TESTPROGS = $(PROGS:=TEST)
+
+all: $(PROGS)
+
+test: $(TESTPROGS)
+
+$(TESTPROGS):
+	./$(@:TEST=)
+
+generate_key_array: generate_key_array.f90
+	$(FC) $(FFLAGS) generate_key_array.f90 -o generate_key_array
+
+test_hash_functions: test_hash_functions.f90
+	$(FC) $(FFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
+
+hash_validity_test: hash_validity_test.f90
+	$(FC) $(FFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
+
+generate_hash_arrays: generate_hash_arrays.o libc_hash.a
+	$(CXX) $(CXXFLAGS) generate_hash_arrays.o \
+	-o generate_hash_arrays -L. -lc_hash
+
+generate_hash_arrays.o: generate_hash_arrays.cpp libc_hash.a
+	$(CXX) $(CXXFLAGS) -c generate_hash_arrays.cpp -o generate_hash_arrays.o
+
+libc_hash.a: SpookyV2.o SpookyV2Test.o pengyhash.o nmhash_scalar.o waterhash.o
+	ar rcs libc_hash.a SpookyV2.o SpookyV2Test.o pengyhash.o \
+               nmhash_scalar.o waterhash.o
+
+pengyhash.o: pengyhash.c pengyhash.h
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c pengyhash.c -o pengyhash.o
+
+waterhash.o: waterhash.c waterhash.h
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c waterhash.c -o waterhash.o
+
+SpookyV2.o: SpookyV2.cpp SpookyV2.h
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c SpookyV2.cpp -o SpookyV2.o
+
+SpookyV2Test.o: SpookyV2Test.cpp SpookyV2.h
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c SpookyV2Test.cpp -o SpookyV2Test.o
+
+nmhash_scalar.o: nmhash_scalar.c nmhash_scalar.h
+	$(CC) $(CXXFLAGS) $(CPPFLAGS) -c nmhash_scalar.c -o nmhash_scalar.o
+
+clean:
+	rm nmhash_scalar.o SpookyV2Test.o SpookyV2.o waterhash.o pengyhash.o \
+           libc_hash.a generate_hash_arrays.o $(PROGS) \
+	   *.bin
+
+
