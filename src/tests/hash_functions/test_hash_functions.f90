@@ -1,4 +1,3 @@
-
 module test_hash_functions
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
@@ -79,7 +78,7 @@ contains
         ! Read hash array generated from key array by the C version of nmhash32
         call read_array("c_nmhash32_array.bin", c_hash) 
 
-        do index=0, 2048
+        do index=0, size_key_array
             call check(error, c_hash(index) == nmhash32(key_array(1:index), nm_seed) &
                 , "NMHASH32 failed")
             if (allocated(error)) return
@@ -100,7 +99,7 @@ contains
         ! Read hash array generated from key array by the C version of nmhash32x
         call read_array("c_nmhash32x_array.bin", c_hash) 
 
-        do index=0, 2048
+        do index=0, size_key_array
             call check(error, c_hash(index) == nmhash32x(key_array(1:index), nm_seed) &
                 , "NMHASH32X failed")
             if (allocated(error)) return
@@ -121,7 +120,7 @@ contains
         ! Read hash array generated from key array by the C version of water_hash
         call read_array("c_water_hash_array.bin", c_hash) 
 
-        do index=0, 2048
+        do index=0, size_key_array
             call check(error, c_hash(index) == water_hash(key_array(1:index), water_seed) &
                 , "WATER_HASH failed")
             if (allocated(error)) return
@@ -142,7 +141,7 @@ contains
         ! Read hash array generated from key array by the C version of pengy_hash
         call read_array("c_pengy_hash_array.bin", c_hash) 
 
-        do index=0, 2048
+        do index=0, size_key_array
             call check(error, c_hash(index) == pengy_hash(key_array(1:index), pengy_seed) &
                 , "PENGY_HASH failed")
             if (allocated(error)) return
@@ -163,7 +162,7 @@ contains
         ! Read hash array generated from key array by the C version of spooky_hash
         call read_array("c_spooky_hash_array.bin", c_hash) 
 
-        do index=0, 2048
+        do index=0, size_key_array
             call check(error, all(c_hash(:, index) == spooky_hash(key_array(1:index), spooky_seed)) &
                 , "SPOOKY_HASH failed")
             if (allocated(error)) return
@@ -171,6 +170,28 @@ contains
 
     end subroutine
 
+
+
+    subroutine generate_key_array()
+    
+        integer        :: lun
+        integer(int8)  :: key_array(size_key_array)
+        integer(int32) :: dummy(size_key_array/4)
+        real(real64)   :: rand(size_key_array/4)
+    
+        ! Create key array
+        call random_number( rand )
+        do i=1, size_key_array/4
+            dummy(i) = floor( rand(i) * 2_int64**32 - 2_int64**31, kind=int32 )
+        end do
+        key_array = transfer( dummy, 0_int8, size_key_array )
+    
+        open(newunit=lun, file="key_array.bin", form="unformatted", &
+            access="stream", status="replace", action="write")
+        write(lun) key_array
+        close(lun)
+    
+    end subroutine
 
 
     subroutine read_array_int8(filename, res)
