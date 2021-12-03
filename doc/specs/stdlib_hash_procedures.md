@@ -301,7 +301,7 @@ so the modules use signed integer arithmetic. For that reason
 trapping on signed arithmetic must be disabled. The command line
 flags to disable overflow detection for compilers implementing
 submodules are summarized in the table below.
-Note that FLANG, gfortran, ifort, and NAG all default to
+Note that FLANG, gfortran (since version 10), ifort, and NAG all default to
 integer overflow wrapping.
 
 |Compiler|Legal flag|Illegal flag|Default|
@@ -378,7 +378,7 @@ The `stdlib_64_bit_hash_functions` module also provides
 implementations of four hash code algorithms:
 the *FNV_1* and *FNV_1A* variants of Glenn Fowler, 
 Landon Curt Noll, and Kiem-Phong Vo;
-the *pengynash* of Alberto Fajardo;
+the *pengyhash* of Alberto Fajardo;
 and the *SpookyHash*  of Bob Jenkins.
 The detailed implementation of each algorithm is handled in a separate
 submodule: `stdlib_64_bit_fnv_hashes`,
@@ -412,7 +412,7 @@ While they do not at all perform well on the SMHasher test suite,
 usage indicates that that that this has little impact on the
 performance of small hash tables, and the small size of the functions
 allows their quick loading and retainment in the instruction cache,
-givng a performance boost where the hashing is intermittent.
+giving a performance boost where the hashing is intermittent.
 (See the
 [SMHasher discussion](https://github.com/rurban/smhasher/README.md)
 and S. Richter, V. Alvarez, and J. Dittrich,
@@ -745,7 +745,7 @@ and on output it will be different from the input `seed`.
 
 Currently there are no known bad seeds for `NMHASH32X`, but if any are
 identified the procedure will be revised so that they cannot be
-returned.  This subroutine uses Fortran's intrinsic
+returned. This subroutine uses Fortran's intrinsic
  `RANDOM_NUMBER` and the values returned can be changed by calling the
  intrinsic `RANDOM_INIT`.
 
@@ -1277,7 +1277,7 @@ The result is a scalar integer of kind `INT32`.
 
 `FNV_1A` is an implementation of the alternative FNV-1a hash code of
 Glenn Fowler, Landon Curt Noll, and Phong Vo.
-It differs from typical implementations in that it also ecodes the
+It differs from typical implementations in that it also encodes the
 size of the structure in the hash code.
 This code is relatively fast on short keys, and is small enough that it
 will often be retained in the instruction cache if hashing is
@@ -1603,7 +1603,7 @@ It multiplies the `KEY` by `SEED`, and returns the
 ### Test Codes
 
 The Fortran Standard Library provides two categories of test
-codes. One ccategory is tests of the relative performance of the
+codes. One category is tests of the relative performance of the
 various hash functions. The other is a comparison of the outputs of
 the Fortran hash functions, with the outputs of the C and C++ hash
 procedures that are the inspiration for the Fortran hash functions.
@@ -1725,8 +1725,8 @@ integers of kind `INT8`, and stores that sequence in the binary file
 the values in `key_array.bin`, and, for each complicated hash
 procedure generates a corresponding binary file containing 2049 hash
 values generated from the values in `key_array.bin`. The third
-executsble, `hash_validity_test`, reads the binary files and for each
+executable, `hash_validity_test`, reads the binary files and for each
 complicated hash procedure compares the contents of the binary file
 with the results of calculating hash values using the corresponding
 Fortran hash procedure on the same keys. These executables must be run
-manually in the same ordeer.
+manually in the same order.
