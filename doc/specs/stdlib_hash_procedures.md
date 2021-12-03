@@ -277,7 +277,7 @@ and performing the operations on each half separately using
 the larger integers.
 In the second, the unsigned integers may be replaced directly by
 the corresponding signed integers, but
-otherwise not modifying the the code logic.
+otherwise not modifying the code logic.
 The first should be standard conforming on current compilers, but
 is more computationally intensive unless the compilers recognize 
 underlying idioms that are rarely used in Fortran codes. The second is
@@ -1717,7 +1717,7 @@ In the `src/test/hash_functions/validation` subdirectory, the Fortran
 Standard Library implements three executables to test the validity of
 the Fortran codes against the original C and C++ codes. The three
 executables must be compiled manually using the makefile
-`Makefile.validation`, and the the compiler suite used must be
+`Makefile.validation`, and the compiler suite used must be
 GCC's. The first executable, `generate_key_array` is 
 based on Fortran code, and generates a random sequence of 2048
 integers of kind `INT8`, and stores that sequence in the binary file
