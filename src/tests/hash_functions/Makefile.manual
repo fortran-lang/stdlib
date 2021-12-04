@@ -8,7 +8,6 @@ CXXFLAGS = -O3
 CPPFLAGS += -I. -I../.. -I..
 LDFLAGS += -L../.. -L.. -lstdlib-testing -lstdlib
 
-#PROGS = generate_key_array generate_hash_arrays hash_validity_test test_hash_functions
 PROGS =  test_hash_functions
 TESTPROGS = $(PROGS:=TEST)
 
@@ -19,18 +18,8 @@ test: $(TESTPROGS)
 $(TESTPROGS):
 	./$(@:TEST=)
 
-generate_key_array: generate_key_array.f90
-	$(FC) $(FFLAGS) generate_key_array.f90 -o generate_key_array
-
 test_hash_functions: test_hash_functions.f90 generate_hash_arrays.o libc_hash.a
 	$(FC) $(FFLAGS) $(CPPFLAGS) -L. -o $@ $^ $(LDFLAGS) -lc_hash -lstdc++
-
-hash_validity_test: hash_validity_test.f90
-	$(FC) $(FFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
-
-generate_hash_arrays: generate_hash_arrays.o libc_hash.a
-	$(CXX) $(CXXFLAGS) generate_hash_arrays.o \
-	-o generate_hash_arrays -L. -lc_hash
 
 generate_hash_arrays.o: generate_hash_arrays.cpp libc_hash.a
 	$(CXX) $(CXXFLAGS) -c generate_hash_arrays.cpp -o generate_hash_arrays.o
