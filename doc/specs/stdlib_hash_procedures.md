@@ -510,7 +510,7 @@ Experimental
 
 ##### Description
 
-Calculates an `nbits` hash code from a 64 bit integer. This is useful
+Calculates an `nbits` hash code from a 32 bit integer. This is useful
 in mapping hash codes into small arrays.
 
 ##### Syntax
@@ -519,7 +519,7 @@ in mapping hash codes into small arrays.
 
 ##### Class
 
-Pure function
+Elemental function
 
 ##### Arguments
 
@@ -576,7 +576,7 @@ character string.
 
 ##### Class
 
-Pure function
+Pure/elemental function
 
 ##### Argument
 
@@ -603,6 +603,8 @@ applications.
 This code does not pass any of the SMHasher tests, but the resulting
 degradation in performance due to its larger number of collisions is
 expected to be minor compared to its faster hashing rate.
+It is a *pure* function for integer arrays, and an *elemental*
+function for character strings. 
 
 
 ##### Example
@@ -636,7 +638,7 @@ character string.
 
 ##### Class
 
-Pure function
+Pure/elemental function
 
 ##### Argument
 
@@ -663,6 +665,8 @@ applications.
 This code does not pass any of the SMHasher tests, but the resulting
 degradation in performance due to its larger number of collisions is
 expected to be minor compared to its faster hashing rate.
+It is a *pure* function for integer arrays, and an *elemental*
+function for character strings. 
 
 ##### Example
 
@@ -810,7 +814,7 @@ character string, and the input `seed`.
 
 ##### Class
 
-Pure function
+Pure/elemental function
 
 ##### Arguments
 
@@ -835,6 +839,8 @@ performance on short keys.
 As a result it should give fair performance for typical hash table
 applications.
 This code passes the SMHasher tests, and has no known bad seeds.
+It is a *pure* function for integer arrays, and an *elemental*
+function for character strings. 
 
 ##### Example
 
@@ -870,7 +876,7 @@ character string, and the input `seed`.
 
 ##### Class
 
-Pure function
+Pure/elemental function
 
 ##### Arguments
 
@@ -895,6 +901,8 @@ performance on short keys.
 As a result it should give fair performance for typical hash table
 applications.
 This code passes the SMHasher tests, and has no known bad seeds.
+It is a *pure* function for integer arrays, and an *elemental*
+function for character strings. 
 
 ##### Example
 
@@ -964,7 +972,7 @@ in mapping a hash value to a range 0 to `2**nbits-1`.
 
 ##### Class
 
-Pure function
+Elemental function
 
 ##### Arguments
 
@@ -1029,7 +1037,7 @@ character string, and the input `seed`.
 
 ##### Class
 
-Pure function
+Pure/elemental function
 
 ##### Arguments
 
@@ -1061,6 +1069,8 @@ so far testing has not found any bad seeds for `waterhash`.
 It can have undefined behavior if the key is not word aligned,
 i.e. some computer processors can only process a given size integer if
 the address of the integer is a multiple of the integer size. 
+It is a *pure* function for integer arrays, and an *elemental*
+function for character strings. 
 
 ##### Example
 
@@ -1141,7 +1151,7 @@ in mapping hash codes into small arrays.
 
 ##### Class
 
-Pure function
+Elemental function
 
 ##### Arguments
 
@@ -1198,7 +1208,7 @@ character string.
 
 ##### Class
 
-Pure function
+Pure/elemental function
 
 ##### Argument
 
@@ -1225,6 +1235,8 @@ applications, although it is rare for them to need 64 bits.
 This code does not pass any of the SMHasher tests, but the resulting
 degradation in performance due to its larger number of collisions is
 expected to be minor compared to its faster hashing rate.
+It is a *pure* function for integer arrays, and an *elemental*
+function for character strings. 
 
 
 ##### Example
@@ -1260,7 +1272,7 @@ character string.
 
 ##### Class
 
-Pure function
+Pure/elemental function
 
 ##### Argument
 
@@ -1287,6 +1299,8 @@ applications.
 This code does not pass any of the SMHasher tests, but the resulting
 degradation in performance due to its larger number of collisions is
 expected to be minor compared to its faster hashing rate.
+It is a *pure* function for integer arrays, and an *elemental*
+function for character strings. 
 
 ##### Example
 
@@ -1433,7 +1447,7 @@ value also depends on a scalar 32 bit integer, `seed`.
 
 #####  Class
 
-Pure function
+Pure/elemental function
 
 ##### Arguments
 
@@ -1454,6 +1468,8 @@ The result is an integer of kind `INT64`.
 Fajardo. The hash has acceptable performance on small keys, and good
 performance on long keys. It passes all the SMHasher tests, and has
 no known bad seeds.
+It is a *pure* function for integer arrays, and an *elemental*
+function for character strings. 
 
 ##### Exampl
 
@@ -1491,7 +1507,7 @@ value also depends on a two element vector,  `seed`.
 
 #####  Class
 
-Pure function
+Function
 
 ##### Arguments
 
@@ -1552,7 +1568,7 @@ in mapping a hash value to a range 0 to `2**nbits-1`.
 
 ##### Class
 
-Pure function
+Elemental function
 
 ##### Arguments
 
