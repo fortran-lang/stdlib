@@ -554,7 +554,7 @@ E. Knuth. It multiplies the `KEY` by the odd valued approximation to
       array1(:) = 0
       source = 42_int32
       hash = fibonacci_hash(source, 6)
-      azray1(hash) = source
+      array1(hash) = source
       print *, hash
     end program demo_fibonacci_hash
 ```
