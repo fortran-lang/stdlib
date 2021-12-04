@@ -9,7 +9,6 @@ extern "C" {
   int generate_all_c_hash();
 }
 
-
 #include "SpookyV2.h"
 
 void SpookyHash32_with_state_test(const void *key, size_t len, const void *state, void *out) {
