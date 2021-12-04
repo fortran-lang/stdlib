@@ -8,6 +8,9 @@ module test_hash_functions
     use stdlib_64_bit_hash_codes, only: pengy_hash, spooky_hash
  
     implicit none
+    private
+    public :: collect_hash_functions
+    public :: generate_key_array
 
     integer, parameter :: size_key_array = 2048
 
@@ -168,7 +171,6 @@ contains
     end subroutine
 
 
-
     subroutine generate_key_array()
     
         integer        :: i, lun
@@ -261,15 +263,37 @@ contains
 
 end module
 
+module modchash
+ use, intrinsic :: ISO_C_Binding
+ implicit none
+ private
+ public :: generate_all_c_hash
+
+ interface
+  function generate_all_c_hash() result(error) bind(C,name = "generate_all_c_hash")
+    import C_int
+    integer(C_int) :: error
+  end function
+ end interface
+
+end module
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
+    use, intrinsic :: ISO_C_Binding, only : C_int
     use testdrive, only : run_testsuite, new_testsuite, testsuite_type
-    use test_hash_functions, only : collect_hash_functions
+    use test_hash_functions, only : collect_hash_functions, generate_key_array
+    use modchash, only: generate_all_c_hash
     implicit none
+    integer(C_int) :: error
     integer :: stat, is
     type(testsuite_type), allocatable :: testsuites(:)
     character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+
+    call generate_key_array()
+
+    error = generate_all_c_hash()
 
     stat = 0
 
