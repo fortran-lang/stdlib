@@ -9,7 +9,7 @@ CPPFLAGS += -I. -I../.. -I..
 LDFLAGS += -L../.. -L.. -lstdlib-testing -lstdlib
 
 #PROGS = generate_key_array generate_hash_arrays hash_validity_test test_hash_functions
-PROGS = generate_key_array hash_validity_test test_hash_functions
+PROGS =  test_hash_functions
 TESTPROGS = $(PROGS:=TEST)
 
 all: $(PROGS)
