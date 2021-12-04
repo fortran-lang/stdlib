@@ -724,7 +724,7 @@ contains
 
 #:endfor
 
-    pure module function character_nmhash32( key, seed ) result(hash_code)
+    elemental module function character_nmhash32( key, seed ) result(hash_code)
 !! NMHASH32 hash function for default character keys
         character(*), intent(in)   :: key
         integer(int32), intent(in) :: seed
@@ -749,7 +749,7 @@ contains
 
 #:endfor
 
-    pure module function character_nmhash32x( key, seed ) result(hash_code)
+    elemental module function character_nmhash32x( key, seed ) result(hash_code)
 !! NMHASH32X hash function for default character keys
         character(*), intent(in)   :: key
         integer(int32), intent(in) :: seed
