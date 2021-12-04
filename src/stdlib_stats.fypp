@@ -7,7 +7,7 @@ module stdlib_stats
   !! Provides support for various statistical methods. This includes currently
   !! descriptive statistics
   !! ([Specification](../page/specs/stdlib_stats.html))
-  use stdlib_kinds, only: sp, dp, qp, &
+  use stdlib_kinds, only: sp, dp, xdp, qp, &
       int8, int16, int32, int64
   implicit none
   private

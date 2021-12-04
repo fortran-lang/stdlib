@@ -1,5 +1,5 @@
 module stdlib_specialfunctions
-    use stdlib_kinds, only: sp, dp, qp
+    use stdlib_kinds, only: sp, dp, xdp, qp
 
     implicit none
 
