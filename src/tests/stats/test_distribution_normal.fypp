@@ -2,7 +2,7 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 program test_distribution_normal
-    use stdlib_kinds
+    use stdlib_kinds, only : sp, dp, qp
     use stdlib_error, only : check
     use stdlib_random, only : random_seed
     use stdlib_stats_distribution_uniform, only : uni => rvs_uniform
@@ -63,7 +63,7 @@ contains
            chisq = chisq + (freq(i) - expct) ** 2 / expct
         end do
         write(*,*) "The critical values for chi-squared with 1000 d. of f. is" &
-                    //" 1143.92"
+            //" 1143.92"
         write(*,*) "Chi-squared for normal random generator is : ", chisq
         call check((chisq < 1143.9),                                           &
             msg = "normal randomness failed chi-squared test", warn = warn)

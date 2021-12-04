@@ -102,9 +102,13 @@ Experimental
 
 ### Description
 
-The probability density function of the continuous normal distribution.
+The probability density function (pdf) of the single real variable normal distribution:
 
 $$f(x) = \frac{1}{\sigma \sqrt{2}} e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^{2}}$$
+
+For complex varible (x + y i) with independent real x and imaginary y parts, the joint probability density function is the product of corresponding marginal pdf of real and imaginary pdf (ref. "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
+
+$$f(x + y \mathit{i}) = f(x) f(y) = \frac{1}{2\sigma_{x}\sigma_{y}} e^{-\frac{1}{2}[(\frac{x-\mu}{\sigma_{x}})^{2}+(\frac{y-\nu}{\sigma_{y}})^{2}]}$$
 
 ### Syntax
 
@@ -185,9 +189,13 @@ Experimental
 
 ### Description
 
-Cumulative distribution function of the normal continuous distribution
+Cumulative distribution function of the single real variable normal distribution:
 
 $$F(x)=\frac{1}{2}\left [ 1+erf(\frac{x-\mu}{\sigma \sqrt{2}}) \right ]$$
+
+For the complex variable (x + y i) with independent real x and imaginary y parts, the joint cumulative distribution function is the product of corresponding marginal cdf of real and imaginary cdf (ref. "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
+
+$$F(x+y\mathit{i})=F(x)F(y)=\frac{1}{4} [1+erf(\frac{x-\mu}{\sigma_{x} \sqrt{2}})] [1+erf(\frac{y-\nu}{\sigma_{y} \sqrt{2}})]$$
 
 ### Syntax
 

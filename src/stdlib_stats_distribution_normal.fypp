@@ -74,7 +74,8 @@ contains
 
     subroutine zigset
     ! Marsaglia & Tsang generator for random normals & random exponentials.
-    ! Translated from C by Alan Miller (amiller@bigpond.net.au)
+    ! Translated from C by Alan Miller (amiller@bigpond.net.au), released as public
+    ! domain (https://jblevins.org/mirror/amiller/)
     !
     ! Marsaglia, G. & Tsang, W.W. (2000) `The ziggurat method for generating
     ! random variables', J. Statist. Software, v5(8).
