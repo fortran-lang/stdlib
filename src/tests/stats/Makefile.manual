@@ -1,7 +1,8 @@
 SRCFYPP = \
         test_mean.fypp \
         test_median.fypp \
-	    test_distribution_uniform.fypp
+	    test_distribution_uniform.fypp \
+        test_distribution_normal.fypp
 
 SRCGEN = $(SRCFYPP:.fypp=.f90)
 
