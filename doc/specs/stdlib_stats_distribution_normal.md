@@ -22,6 +22,8 @@ With two arguments, the function returns a normal distributed random variate N(l
 
 With three arguments, the function returns a rank one array of normal distributed random variates.
 
+Note: the algorithm used for generating normal random variates is fundamentally limited to double precision.
+
 ### Syntax
 
 `result = [[stdlib_stats_distribution_normal(module):rvs_normal(interface)]]([loc, scale] [[, array_size]])`
