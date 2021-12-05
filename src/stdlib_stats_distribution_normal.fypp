@@ -279,7 +279,7 @@ contains
 
         if(scale == 0._${k1}$) call error_stop("Error(pdf_norm): Normal"       &
             //"distribution scale parameter must be non-zero")
-        res = exp(- 0.5_${k1}$ * (x - loc) * (x - loc) / (scale * scale)) /    &
+        res = exp(- 0.5_${k1}$ * ((x - loc) / scale) * (x - loc) / scale) /    &
               (sqrt_2_Pi * scale)
     end function pdf_norm_${t1[0]}$${k1}$
 
