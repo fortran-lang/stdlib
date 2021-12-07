@@ -176,15 +176,15 @@ Alternatively, you can build using provided Makefiles:
 make -f Makefile.manual
 ```
 
-You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS`` environment variable (which can reduce the compilation time):
+You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``ADD_FYPPFLAGS`` environment variable (which can reduce the compilation time):
 
 ```sh
-make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
+make -f Makefile.manual ADD_FYPPFLAGS=-DMAXRANK=4
 ```
 
 You can also specify the compiler and compiler-flags by setting the ``FC`` and ``FFLAGS`` environmental variables. Among other things, this facilitates use of compiler optimizations that are not specified in the Makefile.manual defaults.
 ```sh
-make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4 FC=gfortran FFLAGS="-O3 -flto"
+make -f Makefile.manual ADD_FYPPFLAGS=-DMAXRANK=4 FC=gfortran FFLAGS="-O3 -flto"
 ```
 
 ### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
