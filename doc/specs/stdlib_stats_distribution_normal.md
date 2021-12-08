@@ -44,7 +44,7 @@ Function
 
 ### Return value
 
-The result is a scalar or rank one array, with a size of `array_size`, of type `real` or `complex`.
+The result is a scalar or rank one array, with a size of `array_size`, and as the same type of `scale` and `loc`.
 
 ### Example
 
@@ -132,7 +132,7 @@ All three arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to arguments, of type `real`.
+The result is a scalar or an array, with a shape conformable to arguments, and as the same type of input arguments.
 
 ### Example
 
@@ -219,7 +219,7 @@ All three arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to arguments, of type `real`.
+The result is a scalar or an array, with a shape conformable to arguments, as the same type of input arguments.
 
 ### Example
 
