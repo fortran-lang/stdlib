@@ -6,7 +6,7 @@ module stdlib_io
   !! Provides a support for file handling
   !! ([Specification](../page/specs/stdlib_io.html))
 
-  use stdlib_kinds, only: sp, dp, qp, &
+  use stdlib_kinds, only: sp, dp, xdp, qp, &
       int8, int16, int32, int64
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
@@ -24,9 +24,11 @@ module stdlib_io
     FMT_INT = '(*(i0,1x))', &
     FMT_REAL_SP = '(*(es15.8e2,1x))', &
     FMT_REAL_DP = '(*(es24.16e3,1x))', &
+    FMT_REAL_XDP = '(*(es26.18e3,1x))', &
     FMT_REAL_QP = '(*(es44.35e4,1x))', &
     FMT_COMPLEX_SP = '(*(es15.8e2,1x,es15.8e2))', &
     FMT_COMPLEX_DP = '(*(es24.16e3,1x,es24.16e3))', &
+    FMT_COMPLEX_XDP = '(*(es26.18e3,1x,es26.18e3))', &
     FMT_COMPLEX_QP = '(*(es44.35e4,1x,es44.35e4))'
 
   interface loadtxt

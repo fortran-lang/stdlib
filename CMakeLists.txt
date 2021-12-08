@@ -1,9 +1,17 @@
 cmake_minimum_required(VERSION 3.14.0)
 project(fortran_stdlib
         LANGUAGES Fortran
-        VERSION 0.1.0
         DESCRIPTION "Community driven and agreed upon de facto standard library for Fortran"
 )
+
+# Read version from file
+file(STRINGS "${PROJECT_SOURCE_DIR}/VERSION" PROJECT_VERSION)
+string(REPLACE "." ";" VERSION_LIST ${PROJECT_VERSION})
+list(GET VERSION_LIST 0 PROJECT_VERSION_MAJOR)
+list(GET VERSION_LIST 1 PROJECT_VERSION_MINOR)
+list(GET VERSION_LIST 2 PROJECT_VERSION_PATCH)
+unset(VERSION_LIST)
+
 enable_testing()
 
 # Follow GNU conventions for installation directories
@@ -24,7 +32,6 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   add_compile_options(-Wall)
   add_compile_options(-Wextra)
   add_compile_options(-Wimplicit-procedure)
-  add_compile_options(-Wconversion-extra)
   # -pedantic-errors triggers a false positive for optional arguments of elemental functions,
   # see test_optval and https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95446
   if(CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 11.0)
@@ -55,7 +62,7 @@ endif()
 # --- find preprocessor
 find_program(FYPP fypp)
 if(NOT FYPP)
-  message(FATAL_ERROR "Preprocessor fypp not found!")
+  message(FATAL_ERROR "Preprocessor fypp not found! Please install fypp following the instructions in https://fypp.readthedocs.io/en/stable/fypp.html#installing")
 endif()
 
 add_subdirectory(src)

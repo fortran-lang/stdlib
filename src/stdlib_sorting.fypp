@@ -121,6 +121,7 @@ module stdlib_sorting
         int64,              &
         sp,                 &
         dp,                 &
+        xdp,                &
         qp
 
     use stdlib_optval, only: optval

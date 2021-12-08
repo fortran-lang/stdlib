@@ -9,6 +9,9 @@ media_dir: doc/media
 fpp_extensions: fypp
 preprocess: true
 macro: MAXRANK=3
+       PROJECT_VERSION_MAJOR=0
+       PROJECT_VERSION_MINOR=0
+       PROJECT_VERSION_PATCH=0
 preprocessor: fypp
 display: public
          protected

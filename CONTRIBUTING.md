@@ -89,6 +89,8 @@ You are welcome to propose changes to the workflow by
 * Smaller PRs are better than large PRs, and will lead to a shorter review and
   merge cycle.
 * Add tests for your feature or bug fix to be sure that it stays functional and useful.
+* Include new features and changes in the
+  [CHANGELOG](https://github.com/fortran-lang/stdlib/blob/master/CHANGELOG.md)
 * Be open to constructive criticism and requests for improving your code.
 * Again, please follow the
   [Fortran stdlib style guide](https://github.com/fortran-lang/stdlib/blob/master/STYLE_GUIDE.md).

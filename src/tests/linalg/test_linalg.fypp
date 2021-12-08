@@ -1,13 +1,17 @@
+#:include "common.fypp"
+
 module test_linalg
-    use testdrive, only : new_unittest, unittest_type, error_type, check
-    use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_linalg, only: diag, eye, trace, outer_product
 
     implicit none
 
     real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
     real(dp), parameter :: dptol = 1000 * epsilon(1._dp)
+#:if WITH_QP
     real(qp), parameter :: qptol = 1000 * epsilon(1._qp)
+#:endif
 
 
 
@@ -169,6 +173,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 3
         real(qp) :: v(n), a(n,n), b(n,n)
         integer :: i,j
@@ -182,6 +187,9 @@ contains
 
         call check(error, all(diag(3*a) == 3*v), &
             "all(diag(3*a) == 3*v) failed.")
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_diag_rqp
 
     subroutine test_diag_csp(error)
@@ -223,6 +231,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 3
         complex(qp) :: a(n,n)
         complex(qp), parameter :: i_ = cmplx(0,1,kind=qp)
@@ -230,6 +239,9 @@ contains
         a = diag([i_,i_],-1) + diag([i_,i_],1)
         call check(error, all(diag(a,-1) == i_) .and. all(diag(a,1) == i_), &
             "all(diag(a,-1) == i_) .and. all(diag(a,1) == i_) failed.")
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_diag_cqp
 
     subroutine test_diag_int8(error)
@@ -394,6 +406,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 3
         real(qp) :: a(n,n)
         integer :: i
@@ -401,6 +414,9 @@ contains
         a = reshape([(i,i=1,n**2)],[n,n])
         call check(error, abs(trace(a) - sum(diag(a))) < qptol, &
             "abs(trace(a) - sum(diag(a))) < qptol failed.")
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_trace_rqp
 
 
@@ -447,6 +463,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 3
         complex(qp) :: a(n,n)
         complex(qp), parameter :: i_ = cmplx(0,1,kind=qp)
@@ -454,6 +471,9 @@ contains
         a = 3*eye(n) + 4*eye(n)*i_ ! pythagorean triple
         call check(error, abs(trace(a)) - 3*5.0_qp < qptol, &
             "abs(trace(a)) - 3*5.0_qp < qptol failed.")
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_trace_cqp
 
 
@@ -558,6 +578,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 2
         real(qp) :: u(n), v(n), expected(n,n), diff(n,n)
 
@@ -567,6 +588,9 @@ contains
         diff = expected - outer_product(u,v)
         call check(error, all(abs(diff) < qptol), &
             "all(abs(diff) < qptol) failed.")
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_outer_product_rqp
 
     subroutine test_outer_product_csp(error)
@@ -603,6 +627,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if WITH_QP
         integer, parameter :: n = 2
         complex(qp) :: u(n), v(n), expected(n,n), diff(n,n)
 
@@ -612,6 +637,9 @@ contains
         diff = expected - outer_product(u,v)
         call check(error, all(abs(diff) < qptol), &
             "all(abs(diff) < qptol) failed.")
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
     end subroutine test_outer_product_cqp
 
     subroutine test_outer_product_int8(error)

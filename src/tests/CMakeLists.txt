@@ -10,12 +10,18 @@ macro(ADDTEST name)
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endmacro(ADDTEST)
 
+list(
+  APPEND fyppFlags
+  "-I${PROJECT_SOURCE_DIR}/src"
+)
+
 add_subdirectory(ascii)
 add_subdirectory(bitsets)
 add_subdirectory(io)
 add_subdirectory(linalg)
 add_subdirectory(logger)
 add_subdirectory(optval)
+add_subdirectory(selection)
 add_subdirectory(sorting)
 add_subdirectory(stats)
 add_subdirectory(string)
