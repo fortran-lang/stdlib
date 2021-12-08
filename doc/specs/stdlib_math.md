@@ -393,13 +393,13 @@ end program demo_math_arange
 
 #### Description
 
-Returns a boolean scalar/array where two scalars/arrays are element-wise equal within a tolerance, behaves like `isclose` in Python stdlib.
+Returns a boolean scalar/array where two scalars/arrays are element-wise equal within a tolerance.
 
 ```fortran
 !> For `real` type
 is_close(a, b, rel_tol, abs_tol) = abs(a - b) <= max(rel_tol*(abs(a), abs(b)), abs_tol)
 
-!> For `complex` type
+!> and for `complex` type
 is_close(a, b, rel_tol, abs_tol) = is_close(a%re, b%re, rel_tol, abs_tol) .and. &
                                    is_close(a%im, b%im, rel_tol, abs_tol)
 ```
@@ -418,6 +418,10 @@ Elemental function.
 
 #### Arguments
 
+Note: All `real/complex` arguments must have same `kind`.  
+If the value of `rel_tol/abs_tol` is negative (not recommended), 
+it will be corrected to `abs(rel_tol/abs_tol)` by the internal process of `is_close`.
+
 `a`: Shall be a `real/complex` scalar/array.
 This argument is `intent(in)`.
 
@@ -425,17 +429,15 @@ This argument is `intent(in)`.
 This argument is `intent(in)`.
 
 `rel_tol`: Shall be a `real` scalar/array.
-This argument is `intent(in)` and `optional`, which is `1.0e-9` by default.
+This argument is `intent(in)` and `optional`, which is `sqrt(epsilon(..))` by default.
 
 `abs_tol`: Shall be a `real` scalar/array.
 This argument is `intent(in)` and `optional`, which is `0.0` by default.
 
 `equal_nan`: Shall be a `logical` scalar/array.
 This argument is `intent(in)` and `optional`, which is `.false.` by default.
-
-Note: All `real/complex` arguments must have same `kind`.  
-If the value of `rel_tol/abs_tol` is negative (not recommended), 
-it will be corrected to `abs(rel_tol/abs_tol)` by the internal process of `is_close`.
+Whether to compare `NaN` values as equal. If `.true.`, 
+`NaN` values in `a` will be considered equal to `NaN` values in `b`.
 
 #### Result value
 
@@ -457,9 +459,6 @@ program demo_math_is_close
     print *, is_close(2.0, 2.1, abs_tol=0.1)    !! T
     print *, NAN, is_close(2.0, NAN), is_close(2.0, NAN, equal_nan=.true.)   !! NAN, F, F
     print *, is_close(NAN, NAN), is_close(NAN, NAN, equal_nan=.true.)        !! F, T
-    
-    call check(all(is_close(x, [2.0, 2.0])), msg="all(is_close(x, [2.0, 2.0])) failed.", warn=.true.)
-            !! all(is_close(x, [2.0, 2.0])) failed.
         
 end program demo_math_is_close
 ```
@@ -468,7 +467,7 @@ end program demo_math_is_close
 
 #### Description
 
-Returns a boolean scalar where two arrays are element-wise equal within a tolerance, behaves like `all(is_close(a, b [, rel_tol, abs_tol, equal_nan]))`.
+Returns a boolean scalar where two arrays are element-wise equal within a tolerance.
 
 #### Syntax
 
@@ -484,6 +483,10 @@ Pure function.
 
 #### Arguments
 
+Note: All `real/complex` arguments must have same `kind`.  
+If the value of `rel_tol/abs_tol` is negative (not recommended), 
+it will be corrected to `abs(rel_tol/abs_tol)` by the internal process of `all_close`.
+
 `a`: Shall be a `real/complex` array.
 This argument is `intent(in)`.
 
@@ -491,17 +494,15 @@ This argument is `intent(in)`.
 This argument is `intent(in)`.
 
 `rel_tol`: Shall be a `real` scalar.
-This argument is `intent(in)` and `optional`, which is `1.0e-9` by default.
+This argument is `intent(in)` and `optional`, which is `sqrt(epsilon(..))` by default.
 
 `abs_tol`: Shall be a `real` scalar.
 This argument is `intent(in)` and `optional`, which is `0.0` by default.
 
 `equal_nan`: Shall be a `logical` scalar.
 This argument is `intent(in)` and `optional`, which is `.false.` by default.
-
-Note: All `real/complex` arguments must have same `kind`.  
-If the value of `rel_tol/abs_tol` is negative (not recommended), 
-it will be corrected to `abs(rel_tol/abs_tol)` by the internal process of `all_close`.
+Whether to compare `NaN` values as equal. If `.true.`, 
+`NaN` values in `a` will be considered equal to `NaN` values in `b`.
 
 #### Result value
 
@@ -524,10 +525,6 @@ program demo_math_all_close
     print *, all_close(z+cmplx(1.0e-11, 1.0e-11), z)     !! T
     print *, NAN, all_close([NAN], [NAN]), all_close([NAN], [NAN], equal_nan=.true.) 
                                                          !! NAN, F, T
-                                                
-    call check(all_close(x, [2.0, 2.0], rel_tol=1.0e-6, abs_tol=1.0e-3), &
-               msg="all_close(x, [2.0, 2.0]) failed.", warn=.true.)
-               !! all_close(x, [2.0, 2.0]) failed.
     
 end program demo_math_all_close
 ```

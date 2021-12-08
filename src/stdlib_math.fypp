@@ -297,7 +297,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> Returns a boolean scalar/array where two scalar/arrays are element-wise equal within a tolerance.
-    !> ([Specification](../page/specs/stdlib_logic.html#is_close))
+    !> ([Specification](../page/specs/stdlib_math.html#is_close))
     interface is_close
         #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
         #:for k1, t1 in RC_KINDS_TYPES
@@ -312,7 +312,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> Returns a boolean scalar where two arrays are element-wise equal within a tolerance.
-    !> ([Specification](../page/specs/stdlib_logic.html#all_close))
+    !> ([Specification](../page/specs/stdlib_math.html#all_close))
     interface all_close
         #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
         #:set RANKS = range(1, MAXRANK + 1)
