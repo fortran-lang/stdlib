@@ -99,7 +99,7 @@ jobs:
         make -f Makefile.manual test
         make -f Makefile.manual clean
       env:
-        FYPPFLAGS: "-DMAXRANK=4"
+        ADD_FYPPFLAGS: "-DMAXRANK=4"
 
   intel-build:
     runs-on: ${{ matrix.os }}
