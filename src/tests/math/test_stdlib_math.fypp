@@ -4,7 +4,7 @@
 
 module test_stdlib_math
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_math, only: clip
+    use stdlib_math, only: clip, arg, argd, argpi
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none
 
@@ -32,6 +32,13 @@ contains
             new_unittest("clip-real-double-bounds", test_clip_rdp_bounds), &
             new_unittest("clip-real-quad", test_clip_rqp), &
             new_unittest("clip-real-quad-bounds", test_clip_rqp_bounds) &
+            
+            !> Tests for arg/argd/argpi
+            #:for k1 in CMPLX_KINDS
+            , new_unittest("arg-cmplx-${k1}$", test_arg_${k1}$) &
+            , new_unittest("argd-cmplx-${k1}$", test_argd_${k1}$) &
+            , new_unittest("argpi-cmplx-${k1}$", test_argpi_${k1}$) &
+            #:endfor
             ]
 
     end subroutine collect_stdlib_math
@@ -203,6 +210,68 @@ contains
 #:endif
 
     end subroutine test_clip_rqp_bounds
+    
+    #:for k1 in CMPLX_KINDS
+    subroutine test_arg_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = epsilon(1.0_${k1}$)
+        
+        #! For scalar
+        call check(error, abs(arg(2*exp((0.0_${k1}$, 0.5_${k1}$))) - 0.5_${k1}$) < tol, &
+            "test_nonzero_scalar")
+        if (allocated(error)) return
+        call check(error, abs(arg((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
+            "test_zero_scalar")
+        
+        #! and for array
+        call check(error, all(abs(arg([2*exp((0.0_${k1}$, 0.5_${k1}$))]) - [0.5_${k1}$]) < [tol]), &
+            "test_nonzero_array")
+        if (allocated(error)) return
+        call check(error, all(abs(arg([(0.0_${k1}$, 0.0_${k1}$)]) - [0.0_${k1}$]) < [tol]), &
+            "test_zero_array")
+        
+    end subroutine test_arg_${k1}$
+    
+    subroutine test_argd_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = epsilon(1.0_${k1}$)
+        
+        #! For scalar
+        call check(error, abs(argd((-1.0_${k1}$, 0.0_${k1}$)) - 180.0_${k1}$) < tol, &
+            "test_nonzero_scalar")
+        if (allocated(error)) return
+        call check(error, abs(argd((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
+            "test_zero_scalar")
+        
+        #! and for array
+        call check(error, all(abs(argd([(-1.0_${k1}$, 0.0_${k1}$)]) - [180.0_${k1}$]) < [tol]), &
+            "test_nonzero_array")
+        if (allocated(error)) return
+        call check(error, all(abs(argd([(0.0_${k1}$, 0.0_${k1}$)]) - [0.0_${k1}$]) < [tol]), &
+            "test_zero_array")
+        
+    end subroutine test_argd_${k1}$
+    
+    subroutine test_argpi_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = epsilon(1.0_${k1}$)
+        
+        #! For scalar
+        call check(error, abs(argpi((-1.0_${k1}$, 0.0_${k1}$)) - 1.0_${k1}$) < tol, &
+            "test_nonzero_scalar")
+        if (allocated(error)) return
+        call check(error, abs(argpi((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
+            "test_zero_scalar")
+        
+        #! and for array
+        call check(error, all(abs(argpi([(-1.0_${k1}$, 0.0_${k1}$)]) - [1.0_${k1}$]) < [tol]), &
+            "test_nonzero_array")
+        if (allocated(error)) return
+        call check(error, all(abs(argpi([(0.0_${k1}$, 0.0_${k1}$)]) - [0.0_${k1}$]) < [tol]), &
+            "test_zero_array")
+        
+    end subroutine test_argpi_${k1}$
+    #:endfor
 
 end module test_stdlib_math
 

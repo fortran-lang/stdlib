@@ -301,30 +301,30 @@ module stdlib_math
 
     !> Version: experimental
     !>
-    !> `arg` computes the phase angle in the interval [-π,π].
+    !> `arg` computes the phase angle in the interval (-π,π].
     !> ([Specification](../page/specs/stdlib_math.html#arg))
     interface arg
-        #:for k1, t1 in CMPLX_KINDS_TYPES
+        #:for k1 in CMPLX_KINDS
         procedure :: arg_${k1}$
         #:endfor
     end interface arg
 
     !> Version: experimental
     !>
-    !> `argd` computes the phase angle of degree version in the interval [-180.0,180.0].
+    !> `argd` computes the phase angle of degree version in the interval (-180.0,180.0].
     !> ([Specification](../page/specs/stdlib_math.html#argd))
     interface argd
-        #:for k1, t1 in CMPLX_KINDS_TYPES
+        #:for k1 in CMPLX_KINDS
         procedure :: argd_${k1}$
         #:endfor
     end interface argd
 
     !> Version: experimental
     !>
-    !> `argpi` computes the phase angle of IEEE circular version in the interval [-1.0,1.0].
+    !> `argpi` computes the phase angle of IEEE circular version in the interval (-1.0,1.0].
     !> ([Specification](../page/specs/stdlib_math.html#argpi))
     interface argpi
-        #:for k1, t1 in CMPLX_KINDS_TYPES
+        #:for k1 in CMPLX_KINDS
         procedure :: argpi_${k1}$
         #:endfor
     end interface argpi
