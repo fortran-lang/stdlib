@@ -117,12 +117,6 @@ contains
         call check(error, median(d2odd_${k1}$),  1._dp&
                     , 'median(d2odd_${k1}$): uncorrect answer'&
                     , thr = dptol)
-        if (allocated(error)) return
-
-        call check(error, median(d2odd_${k1}$),  1._dp&
-                    , 'median(d2odd_${k1}$): uncorrect answer'&
-                    , thr = dptol)
-        if (allocated(error)) return
 
     end subroutine
 
