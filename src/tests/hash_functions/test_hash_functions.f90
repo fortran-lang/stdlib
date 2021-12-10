@@ -34,8 +34,7 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest("dummy", test_dummy) &
-            , new_unittest("little_endian", test_little_endian) &
+            new_unittest("little_endian", test_little_endian) &
             , new_unittest("nmhash32", test_nmhash32) &
             , new_unittest("nmhash32x", test_nmhash32x) &
             , new_unittest("water_hash", test_water_hash) &
@@ -44,15 +43,6 @@ contains
             ]
 
     end subroutine collect_hash_functions
-
-    subroutine test_dummy(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        call check(error, .true., "dummy")
-        if (allocated(error)) return
-
-    end subroutine
 
     subroutine test_little_endian(error)
         !> Error handling
@@ -63,7 +53,7 @@ contains
         call check(error, little_endian, "The processor is not Little-Endian")
         if (allocated(error)) return
 
-    end subroutine
+    end subroutine test_little_endian
 
     subroutine test_nmhash32(error)
         !> Error handling
@@ -84,7 +74,7 @@ contains
             if (allocated(error)) return
          end do
 
-    end subroutine
+    end subroutine test_nmhash32
 
     subroutine test_nmhash32x(error)
         !> Error handling
@@ -105,7 +95,7 @@ contains
             if (allocated(error)) return
          end do
 
-    end subroutine
+    end subroutine test_nmhash32x
 
     subroutine test_water_hash(error)
         !> Error handling
@@ -126,7 +116,7 @@ contains
             if (allocated(error)) return
          end do
 
-    end subroutine
+    end subroutine test_water_hash
 
     subroutine test_pengy_hash(error)
         !> Error handling
@@ -147,7 +137,7 @@ contains
             if (allocated(error)) return
          end do
 
-    end subroutine
+    end subroutine test_pengy_hash
 
     subroutine test_spooky_hash(error)
         !> Error handling
@@ -168,7 +158,7 @@ contains
             if (allocated(error)) return
          end do
 
-    end subroutine
+    end subroutine test_spooky_hash
 
 
     subroutine generate_key_array()
@@ -190,7 +180,7 @@ contains
         write(lun) key_array
         close(lun)
     
-    end subroutine
+    end subroutine generate_key_array
 
 
     subroutine read_array_int8(filename, res)
@@ -208,7 +198,7 @@ contains
 
 9908    res =  0
 
-    end subroutine
+    end subroutine read_array_int8
 
     subroutine read_array_int32(filename, res)
         character(*), intent(in) :: filename
@@ -225,7 +215,7 @@ contains
 
 9908    res =  0
 
-    end subroutine
+    end subroutine read_array_int32
 
     subroutine read_array_int64(filename, res)
         character(*), intent(in) :: filename
@@ -242,7 +232,7 @@ contains
 
 9908    res =  0
 
-    end subroutine
+    end subroutine read_array_int64
 
     subroutine read_2darray_int64(filename, res)
         character(*), intent(in) :: filename
@@ -259,7 +249,7 @@ contains
 
 9908    res =  0
 
-    end subroutine
+    end subroutine read_2darray_int64
 
 end module
 
