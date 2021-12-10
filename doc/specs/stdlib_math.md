@@ -91,6 +91,51 @@ program demo_clip_real
 end program demo_clip_real
 ```
 
+### `gcd` function
+
+#### Description
+
+Returns the greatest common divisor of two integers.
+
+#### Syntax
+
+`res = [[stdlib_math(module):gcd(interface)]] (a, b)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument(s)
+
+`a`: One integer with `intent(in)` to get the divisor for.
+`b`: Another integer with `intent(in)` to get the divisor for.
+
+Note: All arguments must be integers of the same `kind`.
+
+#### Output value or Result value
+
+Returns an integer of the same `kind` as that of the arguments.
+
+#### Examples
+
+##### Example 1:
+
+```fortran
+program demo_gcd
+  use stdlib_math, only: gcd
+  implicit none
+  integer :: a, b, c
+  
+  a = 48
+  b = 18
+  c = gcd(a, b) ! returns 6
+end program demo_gcd
+```
+
 ### `linspace` - Create a linearly spaced rank one array
 
 #### Description
@@ -107,7 +152,7 @@ Experimental
 
 #### Class
 
-Function.
+Pure function.
 
 #### Argument(s)
 
@@ -179,7 +224,7 @@ Experimental
 
 #### Class
 
-Function.
+Pure function.
 
 #### Argument(s)
 

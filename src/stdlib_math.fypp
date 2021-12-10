@@ -3,13 +3,16 @@
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 
 module stdlib_math
-    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, qp
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     use stdlib_optval, only: optval
 
     implicit none
     private
-    public :: clip, linspace, logspace
-    public :: EULERS_NUMBER_SP, EULERS_NUMBER_DP, EULERS_NUMBER_QP
+    public :: clip, gcd, linspace, logspace
+    public :: EULERS_NUMBER_SP, EULERS_NUMBER_DP
+#:if WITH_QP
+    public :: EULERS_NUMBER_QP
+#:endif
     public :: DEFAULT_LINSPACE_LENGTH, DEFAULT_LOGSPACE_BASE, DEFAULT_LOGSPACE_LENGTH
     public :: arange, arg, argd, argpi
 
@@ -20,7 +23,9 @@ module stdlib_math
     ! Useful constants for lnspace
     real(sp), parameter :: EULERS_NUMBER_SP = exp(1.0_sp)
     real(dp), parameter :: EULERS_NUMBER_DP = exp(1.0_dp)
+#:if WITH_QP
     real(qp), parameter :: EULERS_NUMBER_QP = exp(1.0_qp)
+#:endif
 
     !> Useful constants `PI` for `argd/argpi`
     #:for k1 in REAL_KINDS
@@ -33,6 +38,16 @@ module stdlib_math
     #:endfor
     end interface clip
 
+    !> Returns the greatest common divisor of two integers
+    !> ([Specification](../page/specs/stdlib_math.html#gcd))
+    !>
+    !> Version: experimental
+    interface gcd
+    #:for k1, t1 in INT_KINDS_TYPES
+        module procedure gcd_${k1}$
+    #:endfor
+    end interface gcd
+
     interface linspace
     !! Version: Experimental
     !!
@@ -42,7 +57,7 @@ module stdlib_math
     !!([Specification](../page/specs/stdlib_math.html#linspace-create-a-linearly-spaced-rank-one-array))
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("linspace_default", 1, t1, k1)
-      module function ${RName}$(start, end) result(res)
+      pure module function ${RName}$(start, end) result(res)
         ${t1}$, intent(in) :: start
         ${t1}$, intent(in) :: end
 
@@ -52,7 +67,7 @@ module stdlib_math
 
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("linspace_n", 1, t1, k1)
-      module function ${RName}$(start, end, n) result(res)
+      pure module function ${RName}$(start, end, n) result(res)
         ${t1}$, intent(in) :: start
         ${t1}$, intent(in) :: end
         integer, intent(in) :: n
@@ -69,7 +84,7 @@ module stdlib_math
       #:set RName = rname("linspace_default", 1, t1, k1)
       #! The interface for INT_KINDS_TYPES cannot be combined with RC_KINDS_TYPES
       #! because the output for integer types is always a real with dp.
-      module function ${RName}$(start, end) result(res)
+      pure module function ${RName}$(start, end) result(res)
         ${t1}$, intent(in) :: start
         ${t1}$, intent(in) :: end
 
@@ -79,7 +94,7 @@ module stdlib_math
 
     #:for k1, t1 in INT_KINDS_TYPES
       #:set RName = rname("linspace_n", 1, t1, k1)
-      module function ${RName}$(start, end, n) result(res)
+      pure module function ${RName}$(start, end, n) result(res)
         ${t1}$, intent(in) :: start
         ${t1}$, intent(in) :: end
         integer, intent(in) :: n
@@ -104,7 +119,7 @@ module stdlib_math
   #!=========================================================
   #:for k1, t1 in RC_KINDS_TYPES
     #:set RName = rname("logspace", 1, t1, k1, "default")
-    module function ${RName}$(start, end) result(res)
+    pure module function ${RName}$(start, end) result(res)
 
       ${t1}$, intent(in) :: start
       ${t1}$, intent(in) :: end
@@ -115,7 +130,7 @@ module stdlib_math
   #:endfor
   #! Integer support
   #:set RName = rname("logspace", 1, "integer(int32)", "int32", "default")
-    module function ${RName}$(start, end) result(res)
+    pure module function ${RName}$(start, end) result(res)
 
       integer, intent(in) :: start
       integer, intent(in) :: end
@@ -129,7 +144,7 @@ module stdlib_math
   #!=========================================================
   #:for k1, t1 in RC_KINDS_TYPES
     #:set RName = rname("logspace", 1, t1, k1, "n")
-    module function ${RName}$(start, end, n) result(res)
+    pure module function ${RName}$(start, end, n) result(res)
       ${t1}$, intent(in) :: start
       ${t1}$, intent(in) :: end
       integer, intent(in) :: n
@@ -139,7 +154,7 @@ module stdlib_math
   #:endfor
   #! Integer support
   #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n")
-    module function ${RName}$(start, end, n) result(res)
+    pure module function ${RName}$(start, end, n) result(res)
       integer, intent(in) :: start
       integer, intent(in) :: end
       integer, intent(in) :: n
@@ -160,7 +175,7 @@ module stdlib_math
     ! Different combinations of parameter types will lead to different result types.
     ! Those combinations are indicated in the body of each function.
     #:set RName = rname("logspace", 1, t1, k1, "n_rbase")
-    module function ${RName}$(start, end, n, base) result(res)
+    pure module function ${RName}$(start, end, n, base) result(res)
       ${t1}$, intent(in) :: start
       ${t1}$, intent(in) :: end
       integer, intent(in) :: n
@@ -170,7 +185,7 @@ module stdlib_math
     end function ${RName}$
 
     #:set RName = rname("logspace", 1, t1, k1, "n_cbase")
-    module function ${RName}$(start, end, n, base) result(res)
+    pure module function ${RName}$(start, end, n, base) result(res)
       ${t1}$, intent(in) :: start
       ${t1}$, intent(in) :: end
       integer, intent(in) :: n
@@ -180,7 +195,7 @@ module stdlib_math
     end function ${RName}$
 
     #:set RName = rname("logspace", 1, t1, k1, "n_ibase")
-    module function ${RName}$(start, end, n, base) result(res)
+    pure module function ${RName}$(start, end, n, base) result(res)
       ${t1}$, intent(in) :: start
       ${t1}$, intent(in) :: end
       integer, intent(in) :: n
@@ -197,7 +212,7 @@ module stdlib_math
     ! Different combinations of parameter types will lead to different result types.
     ! Those combinations are indicated in the body of each function.
     #:set RName = rname("logspace", 1, t1, k1, "n_rbase")
-    module function ${RName}$(start, end, n, base) result(res)
+    pure module function ${RName}$(start, end, n, base) result(res)
       ${t1}$, intent(in) :: start
       ${t1}$, intent(in) :: end
       integer, intent(in) :: n
@@ -207,7 +222,7 @@ module stdlib_math
     end function ${RName}$
 
     #:set RName = rname("logspace", 1, t1, k1, "n_cbase")
-    module function ${RName}$(start, end, n, base) result(res)
+    pure module function ${RName}$(start, end, n, base) result(res)
       ${t1}$, intent(in) :: start
       ${t1}$, intent(in) :: end
       integer, intent(in) :: n
@@ -217,7 +232,7 @@ module stdlib_math
     end function ${RName}$
 
     #:set RName = rname("logspace", 1, t1, k1, "n_ibase")
-    module function ${RName}$(start, end, n, base) result(res)
+    pure module function ${RName}$(start, end, n, base) result(res)
       ${t1}$, intent(in) :: start
       ${t1}$, intent(in) :: end
       integer, intent(in) :: n
@@ -235,7 +250,7 @@ module stdlib_math
     ! Those combinations are indicated in the body of each function.
   #:for k1 in REAL_KINDS
     #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_r" + str(k1) + "base")
-    module function ${RName}$(start, end, n, base) result(res)
+    pure module function ${RName}$(start, end, n, base) result(res)
       integer, intent(in) :: start
       integer, intent(in) :: end
       integer, intent(in) :: n
@@ -245,7 +260,7 @@ module stdlib_math
     end function ${RName}$
 
     #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_c" + str(k1) + "base")
-    module function ${RName}$(start, end, n, base) result(res)
+    pure module function ${RName}$(start, end, n, base) result(res)
       integer, intent(in) :: start
       integer, intent(in) :: end
       integer, intent(in) :: n
@@ -256,7 +271,7 @@ module stdlib_math
   #:endfor
 
     #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_ibase")
-    module function ${RName}$(start, end, n, base) result(res)
+    pure module function ${RName}$(start, end, n, base) result(res)
       integer, intent(in) :: start
       integer, intent(in) :: end
       integer, intent(in) :: n
@@ -354,4 +369,25 @@ contains
     end function argpi_${k1}$
     #:endfor
 
+    #:for k1, t1 in INT_KINDS_TYPES
+    !> Returns the greatest common divisor of two integers of kind ${k1}$
+    !> using the Euclidean algorithm.
+    elemental function gcd_${k1}$(a, b) result(res)
+        ${t1}$, intent(in) :: a
+        ${t1}$, intent(in) :: b
+        ${t1}$ :: res
+
+        ${t1}$ :: rem, tmp
+
+        rem = min(abs(a), abs(b))
+        res = max(abs(a), abs(b))
+        do while (rem /= 0_${k1}$)
+          tmp = rem
+          rem = mod(res, rem)
+          res = tmp
+        end do
+    end function gcd_${k1}$
+
+    #:endfor
+    
 end module stdlib_math

@@ -1,0 +1,398 @@
+#:include "common.fypp"
+#:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
+
+#:set NRANK = 4
+
+module test_stats_mean
+    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use stdlib_stats, only: mean
+    use stdlib_kinds, only : int8, int16, int32, int64, sp, dp, xdp, qp
+    use, intrinsic :: ieee_arithmetic, only : ieee_is_nan
+    implicit none
+    private
+
+    public :: collect_stats_mean
+
+    real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
+    real(dp), parameter :: dptol = 2000 * epsilon(1._dp)
+#:if WITH_XDP
+    real(xdp), parameter :: xdptol = 2000 * epsilon(1._xdp)
+#:endif
+#:if WITH_QP
+    real(qp), parameter :: qptol = 2000 * epsilon(1._qp)
+#:endif
+
+    #:for k1,t1 in IR_KINDS_TYPES
+    ${t1}$ , parameter :: d1_${k1}$(18) = [-10, 2, 3, 4, -6, 6, -7, 8, 9, 4, 1, -20, 9, 10, 14, 15, 40, 30]
+    ${t1}$ :: d2_${k1}$(3, 6) = reshape(d1_${k1}$, [3, 6])
+    ${t1}$ :: d3_${k1}$(3, 2, 3) = reshape(d1_${k1}$, [3, 2, 3])
+    ${t1}$ :: d4_${k1}$(3, 2, 3, 2) = reshape(d1_${k1}$, [3, 2, 3, 2], [${t1}$ :: 3])
+    #:endfor
+
+    #:for k1,t1 in CMPLX_KINDS_TYPES
+    ${t1}$ , parameter :: d1_c${k1}$(18) = d1_${k1}$
+    ${t1}$ :: d2_c${k1}$(3, 6) = reshape(d1_c${k1}$, [3, 6])
+    ${t1}$ :: d3_c${k1}$(3, 2, 3) = reshape(d1_c${k1}$, [3, 2, 3])
+    ${t1}$ :: d4_c${k1}$(3, 2, 3, 2) = reshape(d1_c${k1}$, [3, 2, 3, 2], [${t1}$ :: (3, -2)] )
+    #:endfor
+
+
+contains
+
+    !> Collect all exported unit tests
+    subroutine collect_stats_mean(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest("test_stats_mean_all_int8", test_stats_mean_all_int8) &
+            #:for k1,t1 in IR_KINDS_TYPES
+            ,new_unittest("test_stats_mean_all_${k1}$", test_stats_mean_all_${k1}$) &
+            , new_unittest("test_stats_mean_all_optmask_${k1}$", test_stats_mean_all_optmask_${k1}$) &
+            , new_unittest("test_stats_mean_${k1}$", test_stats_mean_${k1}$) &
+            , new_unittest("test_stats_mean_optmask_${k1}$", test_stats_mean_optmask_${k1}$) &
+            , new_unittest("test_stats_mean_mask_all_${k1}$", test_stats_mean_mask_all_${k1}$) &
+            , new_unittest("test_stats_mean_mask_${k1}$", test_stats_mean_mask_${k1}$) &
+            #:endfor
+            #:for k1,t1 in CMPLX_KINDS_TYPES
+            ,new_unittest("test_stats_mean_all_c${k1}$", test_stats_mean_all_c${k1}$) &
+            , new_unittest("test_stats_mean_all_optmask_c${k1}$", test_stats_mean_all_optmask_c${k1}$) &
+            , new_unittest("test_stats_mean_c${k1}$", test_stats_mean_c${k1}$) &
+            , new_unittest("test_stats_mean_optmask_c${k1}$", test_stats_mean_optmask_c${k1}$) &
+            , new_unittest("test_stats_mean_mask_all_c${k1}$", test_stats_mean_mask_all_c${k1}$) &
+            , new_unittest("test_stats_mean_mask_c${k1}$", test_stats_mean_mask_c${k1}$) &
+            #:endfor
+            ]
+    end subroutine collect_stats_mean
+
+    #:for k1,t1 in INT_KINDS_TYPES
+    subroutine test_stats_mean_all_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for rank in range(1, NRANK + 1)
+        call check(error, mean(d${rank}$_${k1}$), sum(real(d${rank}$_${k1}$, dp))/real(size(d${rank}$_${k1}$), dp)&
+                    , 'mean(d${rank}$_${k1}$): uncorrect answer'&
+                    , thr = dptol)
+        if (allocated(error)) return
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_all_optmask_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for rank in range(1, NRANK + 1)
+        call check(error, ieee_is_nan(mean(d${rank}$_${k1}$, .false.))&
+                    , 'mean(d${rank}$_${k1}$, .false.): uncorrect answer')
+        if (allocated(error)) return
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error&
+                    , abs(mean(d1_${k1}$, 1) -&
+                    sum(real(d1_${k1}$, dp), 1)/real(size(d1_${k1}$, 1), dp)) < dptol&
+                    , 'mean(d1_${k1}$, 1): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+
+        #:for rank in range(2, NRANK+1)
+        #:for dim in range(1, rank+1)
+        call check(error&
+                    , sum(abs(mean(d${rank}$_${k1}$, ${dim}$) -&
+                    sum(real(d${rank}$_${k1}$, dp), ${dim}$)/real(size(d${rank}$_${k1}$, ${dim}$), dp))) < dptol&
+                    , 'mean(d${rank}$_${k1}$, ${dim}$): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+        #:endfor
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_optmask_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error, ieee_is_nan(mean(d1_${k1}$, 1, .false.))&
+                    , 'mean(d1_${k1}$, 1, .false.): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+
+        #:for rank in range(2, NRANK+1)
+        #:for dim in range(1, rank+1)
+        call check(error, any(ieee_is_nan(mean(d${rank}$_${k1}$, ${dim}$, .false.)))&
+                    , 'mean(d${rank}$_${k1}$, ${dim}$, .false.): uncorrect answer')
+        if (allocated(error)) return
+        #:endfor
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_mask_all_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for rank in range(1, NRANK+1)
+        call check(error, mean(d${rank}$_${k1}$, d${rank}$_${k1}$ > 0)&
+                    , sum(real(d${rank}$_${k1}$, dp), d${rank}$_${k1}$ > 0)/real(count(d${rank}$_${k1}$ > 0), dp)&
+                    , 'mean(d${rank}$_${k1}$, d${rank}$_${k1}$ > 0): uncorrect answer'&
+                    , thr = dptol)
+        if (allocated(error)) return
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_mask_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error&
+                    , abs(mean(d1_${k1}$, 1, d1_${k1}$ > 0) -&
+                    sum(real(d1_${k1}$, dp), 1, d1_${k1}$ > 0)/real(count(d1_${k1}$ > 0, 1), dp)) < dptol&
+                    , 'mean(d1_${k1}$, 1, d1_${k1}$ > 0): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+
+        #:for rank in range(2, NRANK+1)
+        #:for dim in range(1, rank+1)
+        call check(error&
+                    , sum(abs(mean(d${rank}$_${k1}$, ${dim}$, d${rank}$_${k1}$ > 0) -&
+                    sum(real(d${rank}$_${k1}$, dp), ${dim}$, d${rank}$_${k1}$ > 0)/real(count(d${rank}$_${k1}$ > 0, ${dim}$), dp))) < dptol&
+                    , 'mean(d${rank}$_${k1}$, ${dim}$, d${rank}$_${k1}$ > 0): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+        #:endfor
+        #:endfor
+    end subroutine
+    #:endfor
+
+    #:for k1,t1 in REAL_KINDS_TYPES
+    subroutine test_stats_mean_all_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for rank in range(1, NRANK+1)
+        call check(error, mean(d${rank}$_${k1}$), sum(d${rank}$_${k1}$)/real(size(d${rank}$_${k1}$), ${k1}$)&
+                    , 'mean(d${rank}$_${k1}$): uncorrect answer'&
+                    , thr = ${k1}$tol)
+        if (allocated(error)) return
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_all_optmask_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for rank in range(1, NRANK+1)
+        call check(error, ieee_is_nan(mean(d${rank}$_${k1}$, .false.))&
+                    , 'mean(d${rank}$_${k1}$, .false.): uncorrect answer')
+        if (allocated(error)) return
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error&
+                    , abs(mean(d1_${k1}$, 1) - sum(d1_${k1}$, 1)/real(size(d1_${k1}$, 1), ${k1}$)) <${k1}$tol&
+                    , 'mean(d1_${k1}$, 1): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+
+        #:for rank in range(2, NRANK+1)
+        #:for dim in range(1, rank+1)
+        call check(error&
+                    , sum(abs(mean(d${rank}$_${k1}$, ${dim}$) -&
+                    sum(d${rank}$_${k1}$, ${dim}$)/real(size(d${rank}$_${k1}$, ${dim}$), ${k1}$))) < ${k1}$tol&
+                    , 'mean(d${rank}$_${k1}$, ${dim}$): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+        #:endfor
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_optmask_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error, ieee_is_nan(mean(d1_${k1}$, 1, .false.))&
+                    , 'mean(d1_${k1}$, 1, .false.): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+
+        #:for rank in range(2, NRANK+1)
+        #:for dim in range(1, rank+1)
+        call check(error, any(ieee_is_nan(mean(d${rank}$_${k1}$, ${dim}$, .false.)))&
+                    , 'mean(d${rank}$_${k1}$, ${dim}$, .false.): uncorrect answer')
+        if (allocated(error)) return
+        #:endfor
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_mask_all_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for rank in range(1, NRANK+1)
+        call check(error, mean(d${rank}$_${k1}$, d${rank}$_${k1}$ > 0)&
+                    , sum(d${rank}$_${k1}$, d${rank}$_${k1}$ > 0)/real(count(d${rank}$_${k1}$ > 0), ${k1}$)&
+                    , 'mean(d${rank}$_${k1}$, d${rank}$_${k1}$ > 0): uncorrect answer'&
+                    , thr = ${k1}$tol)
+        if (allocated(error)) return
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_mask_${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error&
+                    , abs(mean(d1_${k1}$, 1, d1_${k1}$ > 0) -&
+                    sum(d1_${k1}$, 1, d1_${k1}$ > 0)/real(count(d1_${k1}$ > 0, 1), ${k1}$)) < ${k1}$tol&
+                    , 'mean(d1_${k1}$, 1, d1_${k1}$ > 0): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+
+        #:for rank in range(2, NRANK+1)
+        #:for dim in range(1, rank+1)
+        call check(error&
+                    , sum(abs(mean(d${rank}$_${k1}$, ${dim}$, d${rank}$_${k1}$ > 0) -&
+                    sum(d${rank}$_${k1}$, ${dim}$, d${rank}$_${k1}$ > 0)/real(count(d${rank}$_${k1}$ > 0, ${dim}$), ${k1}$))) < ${k1}$tol&
+                    , 'mean(d${rank}$_${k1}$, ${dim}$, d${rank}$_${k1}$ > 0): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+        #:endfor
+        #:endfor
+    end subroutine
+    #:endfor
+
+    #:for k1,t1 in CMPLX_KINDS_TYPES
+    subroutine test_stats_mean_all_c${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for rank in range(1, NRANK+1)
+        call check(error, mean(d${rank}$_c${k1}$), sum(d${rank}$_c${k1}$)/real(size(d${rank}$_c${k1}$), ${k1}$)&
+                    , 'mean(d${rank}$_c${k1}$): uncorrect answer'&
+                    , thr = ${k1}$tol)
+        if (allocated(error)) return
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_all_optmask_c${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for rank in range(1, NRANK+1)
+        call check(error, ieee_is_nan(real(mean(d${rank}$_c${k1}$, .false.)))&
+                    , 'mean(d${rank}$_c${k1}$, .false.): uncorrect answer')
+        if (allocated(error)) return
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_c${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error&
+                    , abs(mean(d1_c${k1}$, 1) - sum(d1_c${k1}$, 1)/real(size(d1_c${k1}$, 1), ${k1}$)) <${k1}$tol&
+                    , 'mean(d1_c${k1}$, 1): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+
+        #:for rank in range(2, NRANK+1)
+        #:for dim in range(1, rank+1)
+        call check(error&
+                    , sum(abs(mean(d${rank}$_c${k1}$, ${dim}$) -&
+                    sum(d${rank}$_c${k1}$, ${dim}$)/real(size(d${rank}$_c${k1}$, ${dim}$), ${k1}$))) < ${k1}$tol&
+                    , 'mean(d${rank}$_c${k1}$, ${dim}$): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+        #:endfor
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_optmask_c${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error, ieee_is_nan(real(mean(d1_c${k1}$, 1, .false.)))&
+                    , 'mean(d1_c${k1}$, 1, .false.): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+
+        #:for rank in range(2, NRANK+1)
+        #:for dim in range(1, rank+1)
+        call check(error, any(ieee_is_nan(real(mean(d${rank}$_c${k1}$, ${dim}$, .false.))))&
+                    , 'mean(d${rank}$_c${k1}$, ${dim}$, .false.): uncorrect answer')
+        if (allocated(error)) return
+        #:endfor
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_mask_all_c${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for rank in range(1, NRANK+1)
+        call check(error, mean(d${rank}$_c${k1}$, d${rank}$_c${k1}$%re > 0)&
+                    , sum(d${rank}$_c${k1}$, d${rank}$_c${k1}$%re > 0)/real(count(d${rank}$_c${k1}$%re > 0), ${k1}$)&
+                    , 'mean(d${rank}$_c${k1}$, d${rank}$_c${k1}$%re > 0): uncorrect answer'&
+                    , thr = ${k1}$tol)
+        if (allocated(error)) return
+        #:endfor
+    end subroutine
+
+    subroutine test_stats_mean_mask_c${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error&
+                    , abs(mean(d1_c${k1}$, 1, d1_c${k1}$%re > 0) -&
+                    sum(d1_c${k1}$, 1, d1_c${k1}$%re > 0)/real(count(d1_c${k1}$%re > 0, 1), ${k1}$)) < ${k1}$tol&
+                    , 'mean(d1_c${k1}$, 1, d1_c${k1}$%re > 0): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+
+        #:for rank in range(2, NRANK+1)
+        #:for dim in range(1, rank+1)
+        call check(error&
+                    , sum(abs(mean(d${rank}$_c${k1}$, ${dim}$, d${rank}$_c${k1}$%re > 0) -&
+                    sum(d${rank}$_c${k1}$, ${dim}$, d${rank}$_c${k1}$%re > 0)/real(count(d${rank}$_c${k1}$%re > 0, ${dim}$), ${k1}$))) < ${k1}$tol&
+                    , 'mean(d${rank}$_c${k1}$, ${dim}$, d${rank}$_c${k1}$%re > 0): uncorrect answer'&
+                    )
+        if (allocated(error)) return
+        #:endfor
+        #:endfor
+    end subroutine
+    #:endfor
+
+end module test_stats_mean
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_stats_mean, only : collect_stats_mean
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("stats_mean", collect_stats_mean) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program

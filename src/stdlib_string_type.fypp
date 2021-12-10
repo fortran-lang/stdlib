@@ -14,15 +14,16 @@
 !> The specification of this module is available [here](../page/specs/stdlib_string_type.html).
 module stdlib_string_type
     use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, &
-       & to_title_ => to_title, to_sentence_ => to_sentence, reverse_ => reverse, to_string
+       & to_title_ => to_title, to_sentence_ => to_sentence, reverse_ => reverse
     use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
+    use stdlib_optval, only: optval
     implicit none
     private
 
     public :: string_type
     public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl
     public :: lgt, lge, llt, lle, char, ichar, iachar
-    public :: to_lower, to_upper, to_title, to_sentence, reverse
+    public :: to_lower, to_upper, to_title, to_sentence, reverse, move
     public :: assignment(=)
     public :: operator(>), operator(>=), operator(<), operator(<=)
     public :: operator(==), operator(/=), operator(//)
@@ -42,24 +43,32 @@ module stdlib_string_type
         character(len=:), allocatable :: raw
     end type string_type
 
-    !> Constructor for new string instances
-    interface string_type
-        module procedure :: new_string
-      #:for kind in INT_KINDS
-        module procedure :: new_string_from_integer_${kind}$
-      #:endfor
-      #:for kind in LOG_KINDS
-        module procedure :: new_string_from_logical_${kind}$
-      #:endfor
-    end interface string_type
-
-
     !> Returns the length of the character sequence represented by the string.
     !>
     !> This method is elemental and returns a default integer scalar value.
     interface len
         module procedure :: len_string
     end interface len
+
+    !> Constructor for new string instances
+    interface string_type
+        elemental module function new_string(string) result(new)
+            character(len=*), intent(in), optional :: string
+            type(string_type) :: new
+        end function new_string
+        #:for kind in INT_KINDS
+        elemental module function new_string_from_integer_${kind}$(val) result(new)
+            integer(${kind}$), intent(in) :: val
+            type(string_type) :: new
+        end function new_string_from_integer_${kind}$
+        #:endfor
+        #:for kind in LOG_KINDS
+        elemental module function new_string_from_logical_${kind}$(val) result(new)
+            logical(${kind}$), intent(in) :: val
+            type(string_type) :: new
+        end function new_string_from_logical_${kind}$
+        #:endfor
+    end interface string_type        
 
     !> Returns the length of the character sequence without trailing spaces
     !> represented by the string.
@@ -205,6 +214,17 @@ module stdlib_string_type
         module procedure :: verify_string_char
         module procedure :: verify_char_string
     end interface verify
+
+    !> Version: experimental
+    !>
+    !> Moves the allocated character scalar from 'from' to 'to'
+    !> [Specifications](../page/specs/stdlib_string_type.html#move)
+    interface move
+        module procedure :: move_string_string
+        module procedure :: move_string_char
+        module procedure :: move_char_string
+        module procedure :: move_char_char
+    end interface move
 
     !> Lexically compare the order of two character sequences being greater,
     !> The left-hand side, the right-hand side or both character sequences can
@@ -355,35 +375,6 @@ module stdlib_string_type
 
 
 contains
-
-
-    !> Constructor for new string instances from a scalar character value.
-    elemental function new_string(string) result(new)
-        character(len=*), intent(in), optional :: string
-        type(string_type) :: new
-        if (present(string)) then
-            new%raw = string
-        end if
-    end function new_string
-
-  #:for kind in INT_KINDS
-    !> Constructor for new string instances from an integer of kind ${kind}$.
-    elemental function new_string_from_integer_${kind}$(val) result(new)
-        integer(${kind}$), intent(in) :: val
-        type(string_type) :: new
-        new%raw = to_string(val)
-    end function new_string_from_integer_${kind}$
-  #:endfor
-
-  #:for kind in LOG_KINDS
-    !> Constructor for new string instances from a logical of kind ${kind}$.
-    elemental function new_string_from_logical_${kind}$(val) result(new)
-        logical(${kind}$), intent(in) :: val
-        type(string_type) :: new
-        new%raw = to_string(val)
-    end function new_string_from_logical_${kind}$
-  #:endfor
-
 
     !> Assign a character sequence to a string.
     elemental subroutine assign_string_char(lhs, rhs)
@@ -579,11 +570,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = index(maybe(string), maybe(substring), back)
-        else
-          pos = index(maybe(string), maybe(substring), .false.)
-        end if
+        pos = index(maybe(string), maybe(substring), optval(back, .false.))
 
     end function index_string_string
 
@@ -595,11 +582,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = index(maybe(string), substring, back)
-        else
-          pos = index(maybe(string), substring, .false.)
-        end if
+        pos = index(maybe(string), substring, optval(back, .false.))
 
     end function index_string_char
 
@@ -611,11 +594,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = index(string, maybe(substring), back)
-        else
-          pos = index(string, maybe(substring), .false.)
-        end if
+        pos = index(string, maybe(substring), optval(back, .false.))
 
     end function index_char_string
 
@@ -629,11 +608,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = scan(maybe(string), maybe(set), back)
-        else
-          pos = scan(maybe(string), maybe(set), .false.)
-        end if
+        pos = scan(maybe(string), maybe(set), optval(back, .false.))
 
     end function scan_string_string
 
@@ -645,11 +620,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = scan(maybe(string), set, back)
-        else
-          pos = scan(maybe(string), set, .false.)
-        end if
+        pos = scan(maybe(string), set, optval(back, .false.))
 
     end function scan_string_char
 
@@ -661,11 +632,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = scan(string, maybe(set), back)
-        else
-          pos = scan(string, maybe(set), .false.)
-        end if
+        pos = scan(string, maybe(set), optval(back, .false.))
 
     end function scan_char_string
 
@@ -679,11 +646,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = verify(maybe(string), maybe(set), back)
-        else
-          pos = verify(maybe(string), maybe(set), .false.)
-        end if
+        pos = verify(maybe(string), maybe(set), optval(back, .false.))
 
     end function verify_string_string
 
@@ -696,11 +659,7 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = verify(maybe(string), set, back)
-        else
-          pos = verify(maybe(string), set, .false.)
-        end if
+        pos = verify(maybe(string), set, optval(back, .false.))
 
     end function verify_string_char
 
@@ -713,14 +672,49 @@ contains
         logical, intent(in), optional :: back
         integer :: pos
 
-        if (present(back)) then
-          pos = verify(string, maybe(set), back)
-        else
-          pos = verify(string, maybe(set), .false.)
-        end if
+        pos = verify(string, maybe(set), optval(back, .false.))
 
     end function verify_char_string
 
+    !> Moves the allocated character scalar from 'from' to 'to'
+    !> No output
+    elemental subroutine move_string_string(from, to)
+        type(string_type), intent(inout) :: from
+        type(string_type), intent(out) :: to
+
+        call move_alloc(from%raw, to%raw)
+
+    end subroutine move_string_string
+
+    !> Moves the allocated character scalar from 'from' to 'to'
+    !> No output
+    pure subroutine move_string_char(from, to)
+        type(string_type), intent(inout) :: from
+        character(len=:), intent(out), allocatable :: to
+
+        call move_alloc(from%raw, to)
+
+    end subroutine move_string_char
+
+    !> Moves the allocated character scalar from 'from' to 'to'
+    !> No output
+    pure subroutine move_char_string(from, to)
+        character(len=:), intent(inout), allocatable :: from
+        type(string_type), intent(out) :: to
+
+        call move_alloc(from, to%raw)
+
+    end subroutine move_char_string
+
+    !> Moves the allocated character scalar from 'from' to 'to'
+    !> No output
+    pure subroutine move_char_char(from, to)
+        character(len=:), intent(inout), allocatable :: from
+        character(len=:), intent(out), allocatable :: to
+
+        call move_alloc(from, to)
+
+    end subroutine move_char_char
 
     !> Compare two character sequences for being greater.
     !> In this version both character sequences are by a string.
@@ -1088,7 +1082,7 @@ contains
         type(string_type), intent(in) :: rhs
         type(string_type) :: string
 
-        string%raw = maybe(rhs) // maybe(lhs)
+        string%raw = maybe(lhs) // maybe(rhs)
 
     end function concat_string_string
 

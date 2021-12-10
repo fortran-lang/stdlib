@@ -1,0 +1,5 @@
+PROGS_SRC = test_insert_at.f90 \
+            test_append_prepend.f90
+
+
+include ../Makefile.manual.test.mk
