@@ -52,17 +52,18 @@ jobs:
     - name: Install fypp
       run: pip install --upgrade fypp
 
-    - name: Install GFortran Linux
+    - name: Install GCC compilers Linux
       if: contains( matrix.os, 'ubuntu')
       run: |
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt-get update
-        sudo apt-get install -y gcc-${GCC_V} gfortran-${GCC_V}
+        sudo apt-get install -y gcc-${GCC_V} g++-${GCC_V} gfortran-${GCC_V}
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_V} 100 \
         --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} \
+        --slave /usr/bin/g++ g++ /usr/bin/g++-${GCC_V} \
         --slave /usr/bin/gcov gcov /usr/bin/gcov-${GCC_V}
 
-    - name: Install GFortran macOS
+    - name: Install GCC compilers macOS
       if: contains( matrix.os, 'macos')
       run: |
           brew install gcc@${GCC_V} || brew upgrade gcc@${GCC_V} || true
@@ -160,6 +161,7 @@ jobs:
       if: contains(matrix.os, 'ubuntu')
       run: |
         sudo apt-get install intel-oneapi-compiler-fortran
+        sudo apt-get install intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
 
     - name: Install Intel oneAPI compiler (OSX)
       if: contains(matrix.os, 'macos') && steps.cache-install.outputs.cache-hit != 'true'
