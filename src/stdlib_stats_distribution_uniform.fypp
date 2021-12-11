@@ -2,7 +2,7 @@
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 #:set ALL_KINDS_TYPES = INT_KINDS_TYPES + RC_KINDS_TYPES
 module stdlib_stats_distribution_uniform
-    use stdlib_kinds
+    use stdlib_kinds, only : sp, dp, xdp, qp, int64
     use stdlib_error, only : error_stop
     use stdlib_random, only : dist_rand
 
@@ -383,14 +383,15 @@ contains
     elemental function pdf_unif_${t1[0]}$${k1}$(x, loc, scale) result(res)
 
         ${t1}$, intent(in) :: x, loc, scale
-        real :: res
+        ${t1}$ :: res
+        ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
-        if(scale == 0.0_${k1}$) then
-            res = 0.0
+        if(scale == zero) then
+            res = zero
         else if(x < loc .or. x > (loc + scale)) then
-            res = 0.0
+            res = zero
         else
-            res = 1.0 / scale
+            res = one / scale
         end if
     end function pdf_unif_${t1[0]}$${k1}$
 
@@ -402,17 +403,17 @@ contains
     elemental function pdf_unif_${t1[0]}$${k1}$(x, loc, scale) result(res)
 
         ${t1}$, intent(in) :: x, loc, scale
-        real :: res
-        real(${k1}$) :: tr, ti
+        real(${k1}$) :: res, tr, ti
+        real(${k1}$), parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
         tr = loc % re + scale % re; ti = loc % im + scale % im
-        if(scale == (0.0_${k1}$,0.0_${k1}$)) then
-            res = 0.0
+        if(scale == (zero, zero)) then
+            res = zero
         else if((x % re >= loc % re .and. x % re <= tr) .and.                  &
             (x % im >= loc % im .and. x % im <= ti)) then
-            res = 1.0 / (scale % re * scale % im)
+            res = one / (scale % re * scale % im)
         else
-            res = 0.0
+            res = zero
         end if
     end function pdf_unif_${t1[0]}$${k1}$
 
@@ -445,16 +446,17 @@ contains
     elemental function cdf_unif_${t1[0]}$${k1}$(x, loc, scale) result(res)
 
         ${t1}$, intent(in) :: x, loc, scale
-        real :: res
+        ${t1}$ :: res
+        ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
-        if(scale == 0.0_${k1}$) then
-            res = 0.0
+        if(scale == zero) then
+            res = zero
         else if(x < loc) then
-            res = 0.0
+            res = zero
         else if(x >= loc .and. x <= (loc + scale)) then
             res = (x - loc) / scale
         else
-            res = 1.0
+            res = one
         end if
     end function cdf_unif_${t1[0]}$${k1}$
 
@@ -466,11 +468,12 @@ contains
     elemental function cdf_unif_${t1[0]}$${k1}$(x, loc, scale) result(res)
 
         ${t1}$, intent(in) :: x, loc, scale
-        real :: res
+        real(${k1}$) :: res
+        real(${k1}$), parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
         logical :: r1, r2, i1, i2
 
-        if(scale == (0.0_${k1}$,0.0_${k1}$)) then
-            res = 0.0
+        if(scale == (zero, zero)) then
+            res = zero
             return
         end if
         r1 = x % re < loc % re
@@ -478,17 +481,17 @@ contains
         i1 = x % im < loc % im
         i2 = x % im > (loc % im + scale % im)
         if(r1 .or. i1) then
-            res = 0.0
+            res = zero
         else if((.not. r1) .and. (.not. r2) .and. i2) then
             res = (x % re - loc % re) / scale % re
         else if((.not. i1) .and. (.not. i2) .and. r2) then
             res = (x % im - loc % im) / scale % im
         else if((.not. r1) .and. (.not. r2) .and. (.not. i1) .and. (.not. i2)) &
             then
-            res = (x % re - loc % re) * (x % im - loc % im) /                  &
-                   (scale % re * scale % im)
+            res = ((x % re - loc % re) / scale % re) * ((x % im - loc % im) /  &
+                  scale % im)
         else if(r2 .and. i2)then
-             res = 1.0
+             res = one
         end if
     end function cdf_unif_${t1[0]}$${k1}$
 

@@ -79,9 +79,9 @@ Without argument the function returns a scalar standard uniformly distributed va
 
 With single argument `scale` of `integer` type the function returns a scalar uniformly distributed variate of `integer` type on [0,scale]. This is the standard Rectangular distribution.
 
-With single argument `scale` of `real` or `complex` type the function returns a scalar uniformly distributed variate of `real` or `complex` type on [0, scale].
+With single argument `scale` of `real` or `complex` type the function returns a scalar uniformly distributed variate of `real` type on [0, scale] or `complex` type on [(0, 0i), (scale, i(scale))].
 
-With double arguments `loc` and `scale` the function returns a scalar uniformly distributed random variates of `integer`, `real` or `complex` type on [loc, loc + scale] dependent of input type.
+With double arguments `loc` and `scale` the function returns a scalar uniformly distributed random variates of `integer` or `real` type on [loc, loc + scale], or `complex` type on [(loc, i(loc)), ((loc + scale), i(loc + scale))], dependent of input type.
 
 With triple arguments `loc`, `scale` and `array_size` the function returns a rank one array of uniformly distributed variates of `integer`, `real` or `complex` type with an array size of `array_size`.
 
@@ -101,7 +101,7 @@ Elemental function (without the third argument).
 
 `scale`: optional argument has `intent(in)` and is a scalar of type `integer`, `real` or `complex`.
 
-`array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
+`array_size`: optional argument has `intent(in)` and is a scalar of type `integer` with default kind.
 
 `loc` and `scale` must have the same type and kind when both are present.
 

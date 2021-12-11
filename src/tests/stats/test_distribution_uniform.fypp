@@ -207,16 +207,18 @@ contains
     subroutine test_uni_pdf_${t1[0]}$${k1}$
         ${t1}$ :: x1, x2(3,4), loc, scale
         integer :: seed, get, i
-        real :: res(3,5)
         #:if t1[0] == "i"
             #! for integer type
+        real :: res(3, 5)
         real, parameter :: ans(15) = [(1.96078438E-02, i=1,15)]
         #:elif t1[0] == "r"
             #! for real type
-        real, parameter :: ans(15) = [(0.5, i=1,15)]
+        ${t1}$ :: res(3, 5)
+        ${t1}$, parameter :: ans(15) = [(0.5_${k1}$, i=1,15)]
         #:else
             #! for complex type
-        real, parameter :: ans(15) = [(1.0, i=1,15)]
+        real(${k1}$) :: res(3, 5)
+        real(${k1}$), parameter :: ans(15) = [(1.0_${k1}$, i=1,15)]
         #:endif
 
         print *, "Test pdf_uniform_${t1[0]}$${k1}$"
@@ -236,6 +238,7 @@ contains
         x2 = reshape(uni_rvs(loc, scale, 12), [3,4])
         res(:,1) = uni_pdf(x1, loc, scale)
         res(:, 2:5) = uni_pdf(x2, loc, scale)
+        print *, res
         call check(all(abs(res - reshape(ans,[3,5])) < sptol),                 &
             msg = "pdf_uniform_${t1[0]}$${k1}$ failed", warn=warn)
     end subroutine test_uni_pdf_${t1[0]}$${k1}$
@@ -307,6 +310,7 @@ contains
         x2 = reshape(uni_rvs(loc, scale, 12), [3,4])
         res(:,1) = uni_cdf(x1, loc, scale)
         res(:, 2:5) = uni_cdf(x2, loc, scale)
+        print *, res
         call check(all(abs(res - reshape(ans,[3,5])) < sptol),                 &
             msg = "cdf_uniform_${t1[0]}$${k1}$ failed", warn=warn)
     end subroutine test_uni_cdf_${t1[0]}$${k1}$
