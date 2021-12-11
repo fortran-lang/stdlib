@@ -161,7 +161,7 @@ jobs:
       if: contains(matrix.os, 'ubuntu')
       run: |
         sudo apt-get install intel-oneapi-compiler-fortran
-        sudo apt-get install intel-oneapi-compiler-c
+        sudo apt-get install intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
 
     - name: Install Intel oneAPI compiler (OSX)
       if: contains(matrix.os, 'macos') && steps.cache-install.outputs.cache-hit != 'true'
