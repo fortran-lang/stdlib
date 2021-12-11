@@ -31,6 +31,8 @@ jobs:
             build: make
     env:
       FC: gfortran-${{ matrix.gcc_v }}
+      CC: gcc-${{ matrix.gcc_v }}
+      CXX: g++-${{ matrix.gcc_v }}
       GCC_V: ${{ matrix.gcc_v }}
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
 
@@ -107,12 +109,16 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         fc: [ifort]
+        cc: [icc]
+        cxx: [icpc]
     env:
       MACOS_HPCKIT_URL: >-
         https://registrationcenter-download.intel.com/akdlm/irc_nas/17398/m_HPCKit_p_2021.1.0.2681_offline.dmg
       MACOS_FORTRAN_COMPONENTS: >-
         intel.oneapi.mac.ifort-compiler
       FC: ${{ matrix.fc }}
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
 
     steps:
     - name: Checkout code
