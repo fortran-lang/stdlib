@@ -57,9 +57,10 @@ jobs:
       run: |
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt-get update
-        sudo apt-get install -y gcc-${GCC_V} gfortran-${GCC_V}
+        sudo apt-get install -y gcc-${GCC_V} g++-${GCC_V} gfortran-${GCC_V}
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_V} 100 \
         --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} \
+        --slave /usr/bin/g++ g++ /usr/bin/g++-${GCC_V} \
         --slave /usr/bin/gcov gcov /usr/bin/gcov-${GCC_V}
 
     - name: Install GFortran macOS
