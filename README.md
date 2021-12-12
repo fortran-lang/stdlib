@@ -184,7 +184,7 @@ make -f Makefile.manual ADD_FYPPFLAGS=-DMAXRANK=4
 
 You can also specify the compiler and compiler-flags by setting the ``FC`` and ``FFLAGS`` environmental variables. Among other things, this facilitates use of compiler optimizations that are not specified in the Makefile.manual defaults.
 ```sh
-make -f Makefile.manual ADD_FYPPFLAGS=-DMAXRANK=4 FC=gfortran FFLAGS="-O3"
+make -f Makefile.manual ADD_FYPPFLAGS=-DMAXRANK=4 FC=gfortran FFLAGS="-O3 "
 ```
 
 ### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
