@@ -124,24 +124,20 @@ contains
         integer(int32), parameter :: m3 = int(z'E9139917', int32)
 
         integer(int16) :: vx16(2)
-        integer(int16), parameter :: &
-            m116(2) = transfer( m1, 0_int16, 2 ), &
-            m216(2) = transfer( m2, 0_int16, 2 ), &
-            m316(2) = transfer( m3, 0_int16, 2 )
 
         vx32 = x
         vx32 = ieor( vx32, ieor( ishft( vx32, -12 ), ishft( vx32, -6 ) ) )
         vx16 = transfer( vx32, 0_int16, 2 )
-        vx16 = vx16 * m116
+        vx16 = vx16 * transfer( m1, 0_int16, 2 )
         vx32 = transfer( vx16, 0_int32 )
         vx32 = ieor( vx32, ieor( ishft( vx32, 11 ), ishft( vx32, -19 ) ) )
         vx16 = transfer( vx32, 0_int16, 2 )
-        vx16 = vx16 * m216
+        vx16 = vx16 * transfer( m2, 0_int16, 2 )
         vx32 = transfer( vx16, 0_int32 )
         vx32 = ieor( vx32, seed )
         vx32 = ieor( vx32, ieor( ishft( vx32, -15 ), ishft( vx32, -9 ) ) )
         vx16 = transfer( vx32, 0_int16, 2 )
-        vx16 = vx16 * m316
+        vx16 = vx16 * transfer( m3, 0_int16, 2 )
         vx32 = transfer( vx16, 0_int32 )
         vx32 = ieor( vx32, ieor( ishft(vx32, 16), ishft(vx32, -11) ) )
 
@@ -155,14 +151,22 @@ contains
 
         integer(int32) :: xu32(0:3), yu32(0:3)
         integer(int16) :: xu16(0:1)
-        integer(int16), parameter :: &
-            nmh_m1_16(0:1) = transfer( nmh_m1, 0_int16, 2 ),  &
-            nmh_m2_16(0:1) = transfer( nmh_m2, 0_int16, 2 ),  &
-            nmh_m3_16(0:1) = transfer( nmh_m3, 0_int16, 2 )
+!       Due to an issue with Intel OneAPI ifort 2021 (see  
+!       https://community.intel.com/t5/Intel-Fortran-Compiler/Intrinsic-transfer-with-a-provided-size-un-expected-behavior/m-p/1343313#M158733
+!       ), it is not possible to define the following variables as a parameter.
+!        integer(int16), parameter :: &
+!            nmh_m1_16(0:1) = transfer( nmh_m1, 0_int16, 2 ),  &
+!            nmh_m2_16(0:1) = transfer( nmh_m2, 0_int16, 2 ),  &
+!            nmh_m3_16(0:1) = transfer( nmh_m3, 0_int16, 2 )
+        integer(int16) :: nmh_m1_16(0:1), nmh_m2_16(0:1), nmh_m3_16(0:1)
         integer(int32) :: s1
         integer(int64) :: length
         integer(int32) :: length32(0:1)
         integer(int64) :: i, j, r
+
+        nmh_m1_16(0:1) = transfer( nmh_m1, 0_int16, 2 )
+        nmh_m2_16(0:1) = transfer( nmh_m2, 0_int16, 2 )
+        nmh_m3_16(0:1) = transfer( nmh_m3, 0_int16, 2 )
 
         ! base mixer: [f0d9649b  5 -13 29a7935d -9 11 55d35831 -20 -10 ] =
         ! 0.93495901789135362
@@ -380,9 +384,16 @@ contains
         integer(int16) :: u16(0:1)
         integer(int32), parameter:: m1 = int(z'CCE5196D', int32)
         integer(int32), parameter:: m2 = int(z'464BE229', int32)
-        integer(int16), parameter:: m1_16(0:1) = transfer(m1, 0_int16, 2)
-        integer(int16), parameter:: m2_16(0:1) = transfer(m2, 0_int16, 2)
+!       Due to an issue with Intel OneAPI ifort 2021 (see  
+!       https://community.intel.com/t5/Intel-Fortran-Compiler/Intrinsic-transfer-with-a-provided-size-un-expected-behavior/m-p/1343313#M158733
+!       ), it is not possible to define the following variables as a parameter.
+        !integer(int16), parameter:: m1_16(0:1) = transfer(m1, 0_int16, 2)
+        !integer(int16), parameter:: m2_16(0:1) = transfer(m2, 0_int16, 2)
+        integer(int16) :: m1_16(0:1), m2_16(0:1)
         ! [-21 -8 cce5196d 12 -7 464be229 -21 -8] = 3.2267098842182733
+
+        m1_16(0:1) = transfer(m1, 0_int16, 2)
+        m2_16(0:1) = transfer(m2, 0_int16, 2)
 
         u32 = x
         u32 = ieor( u32, ieor( ishft( u32, -8 ), ishft( u32, -21 ) ) )
