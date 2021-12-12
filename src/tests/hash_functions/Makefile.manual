@@ -1,9 +1,16 @@
-CC = gcc
-CXX = g++
+FFLAGS = #-g -check all -debug all
+CFLAGS = #-g -debug all 
+CXXFLAGS = #-g -debug all
+#CFLAGS += -P -cpp
+#CXXFLAGS += -P -cpp
 
-FFLAGS = -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fno-range-check
-CFLAGS = -O3
-CXXFLAGS = -O3
+#CC = gcc
+#CXX = g++
+#FFLAGS =
+#CFLAGS =
+#CXXFLAGS =
+#CFLAGS = -E
+#CXXFLAGS = -E
 
 CPPFLAGS += -I. -I../.. -I..
 LDFLAGS += -L../.. -L.. -lstdlib-testing -lstdlib
@@ -41,11 +48,11 @@ SpookyV2Test.o: SpookyV2Test.cpp SpookyV2.h
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c SpookyV2Test.cpp -o SpookyV2Test.o
 
 nmhash_scalar.o: nmhash_scalar.c nmhash_scalar.h
-	$(CC) $(CXXFLAGS) $(CPPFLAGS) -c nmhash_scalar.c -o nmhash_scalar.o
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c nmhash_scalar.c -o nmhash_scalar.o
 
 clean:
 	rm nmhash_scalar.o SpookyV2Test.o SpookyV2.o waterhash.o pengyhash.o \
-           libc_hash.a generate_hash_arrays.o $(PROGS) \
+           libc_hash.a generate_hash_arrays.o $(PROGS) *.*mod\
 	   *.bin
 
 
