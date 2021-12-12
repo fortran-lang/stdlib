@@ -62,8 +62,6 @@ submodule(stdlib_32_bit_hash_codes) stdlib_32_bit_nmhashes
     integer(int32), parameter :: nmh_m2_v(0:31) = nmh_m2
     integer(int32), parameter :: nmh_m3_v(0:31) = nmh_m3
 
-    integer(int16), parameter :: nmh_m3_16(2) = transfer( nmh_m3, 0_int16, 2 )
-
     logical, parameter :: nmh_short32_without_seed2=.false.
     logical, parameter :: nmh_short32_with_seed2=.true.
 
