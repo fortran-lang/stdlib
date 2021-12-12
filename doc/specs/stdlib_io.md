@@ -223,3 +223,51 @@ program demo_savenpy
     call save_npy('example.npy', x)
 end program demo_savenpy
 ```
+
+## `getline`
+
+### Status
+
+Experimental
+
+### Description
+
+Read a whole line from a formatted unit into a string variable
+
+### Syntax
+
+`call [[stdlib_io(module):getline(interface)]](unit, line[, iostat][, iomsg])`
+
+### Arguments
+
+`unit`: Formatted input unit.
+        This argument is `intent(in)`.
+
+`line`: Deferred length character or `string_type` variable.
+        This argument is `intent(out)`.
+
+`iostat`: Default integer, contains status of reading from unit, zero in case of success.
+          It is an optional argument, in case not present the program will halt for non-zero status.
+          This argument is `intent(out)`.
+
+`iomsg`: Deferred length character value, contains error message in case `iostat` is non-zero.
+         It is an optional argument, error message will be dropped if not present.
+         This argument is `intent(out)`.
+
+### Example
+
+```fortran
+program demo_getline
+    use, intrinsic :: iso_fortran_env, only : input_unit, output_unit
+    use stdlib_io, only: getline
+    implicit none
+    character(len=:), allocatable :: line
+    integer :: stat
+
+    call getline(input_unit, line, stat)
+    do while(stat == 0)
+      write(output_unit, '(a)') line
+      call getline(input_unit, line, stat)
+    end do
+end program demo_getline
+```
