@@ -33,6 +33,7 @@ SRCFYPP = \
         stdlib_stats_moment_scalar.fypp \
         stdlib_stats_distribution_uniform.fypp \
         stdlib_stats_distribution_normal.fypp \
+        stdlib_stats_distribution_exponential.fypp \
         stdlib_stats_var.fypp \
         stdlib_math.fypp \
 	stdlib_math_linspace.fypp \
@@ -169,6 +170,11 @@ stdlib_stats_distribution_uniform.o: \
     stdlib_error.o \
     stdlib_random.o
 stdlib_stats_distribution_normal.o: \
+    stdlib_kinds.o \
+    stdlib_error.o \
+    stdlib_random.o \
+    stdlib_stats_distribution_uniform.o
+stdlib_stats_distribution_exponential.o: \
     stdlib_kinds.o \
     stdlib_error.o \
     stdlib_random.o \

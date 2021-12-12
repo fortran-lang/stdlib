@@ -1,12 +1,12 @@
 ---
-title: stats_distribution
+title: stats_distribution_exponential
 ---
 
-# Statistical Distributions -- Exponential Module
+# Statistical Distributions -- Exponential Distribution Module
 
 [TOC]
 
-## `exponential_distribution_rvs` - exponential distribution random variates
+## `rvs_expon` - exponential distribution random variates
 
 ### Status
 
@@ -14,35 +14,40 @@ Experimental
 
 ### Description
 
-An exponentially distributed random variate distribution is the distribution of time between events in a Poisson point process. The inverse scale parameter `lamda` specifies the rate of change.
+An exponentially distributed random variate distribution is the distribution of time between events in a Poisson point process. The inverse scale parameter `lambda` specifies the rate of change.
 
-Without augument the function returns a standard exponential distributed random variate with `lamda = 1.0`. The function is elemental.
+Without argument the function returns a standard exponential distributed random variate E(1) with `lambda = 1`.
 
-With single argument, the function returns an exponential distributed random variate E(lamda). The function is elemental. For complex auguments, the real and imaginary parts are independent of each other.
+With single argument, the function returns an exponential distributed random variate E(lambda). For complex arguments, the real and imaginary parts are independent of each other.
 
-With two auguments the function returns a rank one array of random variates.
+With two arguments the function returns a rank one array of exponential distributed random variates.
+
+Note: the algorithm used for generating normal random variates is fundamentally limited to double precision.
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_exponential(module):exponential_distribution_rvs(interface)]]([lamda] [[, array_size]])`
+`result = [[stdlib_stats_distribution_exponential(module):rvs_expon(interface)]]([lambda] [[, array_size]])`
+
+### Class
+
+Function
 
 ### Arguments
 
-`lamda`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
+`lambda`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
+`array_size`: optional argument has `intent(in)` and is a scalar of type `integer` with default kind.
 
 ### Return value
 
-The result is a scalar or rank one array, with a size of `array_size`, of type `real` or `complex`.
+The result is a scalar or rank one array with a size of `array_size`, and as the same type of `lambda`.
 
 ### Example
 
 ```fortran
 program demo_exponential_rvs
-    use stdlib_stats_distribution_PRNG, only : random_seed
-    use stdlib_stats_distribution_exponential, only:                            &
-                                            rexp => exponential_distribution_rvs
+    use stdlib_random, only : random_seed
+    use stdlib_stats_distribution_exponential, only: rexp => rvs_expon
 
     implicit none
     real ::  a(2,3,4)
@@ -56,35 +61,26 @@ program demo_exponential_rvs
 
 ! 0.358690143
 
-    print *, rexp(2.0)       !exponential random variate with lamda=2.0
+    print *, rexp(2.0)       !exponential random variate with lambda=2.0
 
 ! 0.816459715
 
-    print *, rexp(0.3, 10)   !an array of 10 variates with lamda=0.3
+    print *, rexp(0.3, 10)   !an array of 10 variates with lambda=0.3
 
 !  1.84008647E-02  3.59742008E-02  0.136567295  0.262772143  3.62352766E-02 
 !  0.547133625  0.213591918  4.10784185E-02  0.583882213  0.671128035
 
-    a(:,:,:) = 0.5
-    print *, rexp(a)         !a rank 3 array of 24 exponential random variates
-
-!  0.219550118  0.318272740  0.426896989  0.803026378  0.395067871 
-!  5.93891777E-02  0.809226036  1.27890170  1.38805652  0.179149821 
-!  1.75288841E-02  7.23171830E-02  0.157068044  0.153069839  0.421180248 
-!  0.517792642  2.09411430  0.785641313  0.116311245  0.295113146 
-!  0.824005902  0.123385273  5.50238751E-02  3.52851897E-02
-
     scale = (2.0, 0.7)
     print *, rexp(scale)
-    !single complex exponential random variate with real part of lamda=2.0;
-    !imagainary part of lamda=0.7
+    !single complex exponential random variate with real part of lambda=2.0;
+    !imagainary part of lambda=0.7
 
 ! (1.41435969,4.081114382E-02)
 
 end program demo_exponential_rvs
 ```
 
-## `exponential_distribution_pdf` - exponential probability density function
+## `pdf_expon` - exponential distribution probability density function
 
 ### Status
 
@@ -92,34 +88,41 @@ Experimental
 
 ### Description
 
-The probability density function of the continuous exponential distribution.
+The probability density function (pdf) of the single real variable exponential distribution:
 
-$$ f(x)=\begin{cases}lamda \times e^{-lamda \times x} &x\geqslant 0 \\\\ 0 &x< 0\end{} $$
+$$f(x)=\begin{cases} \lambda e^{-\lambda x} &x\geqslant 0 \\\\ 0 &x< 0\end{}$$
+
+For complex varible (x + y i) with independent real x and imaginary y parts, the joint probability density function is the product of corresponding marginal pdf of real and imaginary pdf (ref. "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
+
+$$f(x+\mathit{i}y)=f(x)f(y)=\begin{cases} \lambda_{x} \lambda_{y} e^{-(\lambda_{x} x + \lambda_{y} y)} &x\geqslant 0, y\geqslant 0 \\\\ 0 &otherwise\end{}$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_exponential(module):exponential_distribution_pdf(interface)]](x, lamda)`
+`result = [[stdlib_stats_distribution_exponential(module):pdf_expon(interface)]](x, lambda)`
+
+### Class
+
+Elemental function
 
 ### Arguments
 
 `x`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`lamda`: has `intent(in)` and is a scalar of type `real` or `complex`.
+`lambda`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-The function is elemental, i.e., all auguments could be arrays conformable to each other. All arguments must have the same type.
+All arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to auguments, of type `real`.
+The result is a scalar or an array, with a shape conformable to arguments, and as the same type of input arguments.
 
 ### Example
 
 ```fortran
 program demo_exponential_pdf
-    use stdlib_stats_distribution_PRNG, only : random_seed
-    use stdlib_stats_distribution_exponential, only:                            &
-                                 exp_pdf => exponential_distribution_pdf,       &
-                                 rexp => exponential_distribution_rvs
+    use stdlib_random, only : random_seed
+    use stdlib_stats_distribution_exponential, only: exp_pdf => pdf_expon,     &
+                                                     rexp => rvs_expon
 
     implicit none
     real :: x(2,3,4),a(2,3,4)
@@ -133,7 +136,7 @@ program demo_exponential_pdf
 
 ! 0.367879450
 
-    print *, exp_pdf(2.0,2.0) !a probability density at 2.0 with lamda=2.0
+    print *, exp_pdf(2.0,2.0) !a probability density at 2.0 with lambda=2.0
 
 ! 3.66312787E-02
 
@@ -150,14 +153,14 @@ program demo_exponential_pdf
     scale = (1.0, 2.)
     print *, exp_pdf((1.5,1.0), scale)
     ! a complex expon probability density function at (1.5,1.0) with real part
-    !of lamda=1.0 and imaginary part of lamda=2.0
+    !of lambda=1.0 and imaginary part of lambda=2.0
 
 ! 6.03947677E-02
 
 end program demo_exponential_pdf
 ```
 
-## `exponential_distribution_cdf` - exponential cumulative distribution function
+## `cdf_expon` - exponential distribution cumulative distribution function
 
 ### Status
 
@@ -165,35 +168,41 @@ Experimental
 
 ### Description
 
-Cumulative distribution function of the exponential continuous distribution
+Cumulative distribution function (cdf) of the single real variable exponential distribution:
 
-$$ F(x)=\begin{cases}1 - e^{-lamda \times x} &x\geqslant 0 \\\\ 0 &x< 0\end{} $$
+$$F(x)=\begin{cases}1 - e^{-\lambda x} &x\geqslant 0 \\\\ 0 &x< 0\end{}$$
 
+For the complex variable (x + y i) with independent real x and imaginary y parts, the joint cumulative distribution function is the product of corresponding marginal cdf of real and imaginary cdf (ref. "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
+
+$$F(x+\mathit{i}y)=F(x)F(y)=\begin{cases} (1 - e^{-\lambda_{x} x})(1 - e^{-\lambda_{y} y}) &x\geqslant 0, \;\; y\geqslant 0 \\\\ 0 &otherwise \end{}$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_exponential(module):exponential_distribution_cdf(interface)]](x, lamda)`
+`result = [[stdlib_stats_distribution_exponential(module):cdf_expon(interface)]](x, lambda)`
+
+### Class
+
+Elemental function
 
 ### Arguments
 
 `x`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`lamda`: has `intent(in)` and is a scalar of type `real` or `complex`.
+`lambda`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-The function is elemental, i.e., all auguments could be arrays conformable to each other. All arguments must have the same type.
+All arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to auguments, of type `real`.
+The result is a scalar or an array, with a shape conformable to arguments, and as the same type of input arguments.
 
 ### Example
 
 ```fortran
 program demo_exponential_cdf
-    use stdlib_stats_distribution_PRNG, only : random_seed
-    use stdlib_stats_distribution_exponential, only :                           &
-        exp_cdf => exponential_distribution_cdf,                                &
-        rexp => exponential_distribution_rvs
+    use stdlib_random, only : random_seed
+    use stdlib_stats_distribution_exponential, only : exp_cdf => cdf_expon,    &
+                                                      rexp => rvs_expon
 
     implicit none
     real :: x(2,3,4),a(2,3,4)
@@ -207,7 +216,7 @@ program demo_exponential_cdf
 
 ! 0.632120550
 
-    print *, exp_cdf(2.0, 2.0) ! a cumulative at 2.0 with lamda=2
+    print *, exp_cdf(2.0, 2.0) ! a cumulative at 2.0 with lambda=2
 
 ! 0.981684387
 
@@ -225,7 +234,7 @@ program demo_exponential_cdf
     scale = (0.5,1.0)
     print *, exp_cdf((0.5,0.5),scale)
     !complex exponential cumulative distribution at (0.5,0.5) with real part of
-    !lamda=0.5 and imaginary part of lamda=1.0
+    !lambda=0.5 and imaginary part of lambda=1.0
 
 ! 8.70351046E-02
 
