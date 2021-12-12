@@ -9,7 +9,7 @@ requests.
 
 By contributing to *stdlib*, you certify that you own or are allowed to share the
 content of your contribution under the
-[stdlib license](https://github.com/fortran-lang/stdlib/blob/master/LICENSE).
+[stdlib license](https://github.com/fortran-lang/stdlib/blob/HEAD/LICENSE).
 
 * [Style](#style)
 * [Reporting a bug](#reporting-a-bug)
@@ -22,7 +22,7 @@ content of your contribution under the
 ## Style
 
 Please follow the
-[Fortran stdlib style guide](https://github.com/fortran-lang/stdlib/blob/master/STYLE_GUIDE.md)
+[Fortran stdlib style guide](https://github.com/fortran-lang/stdlib/blob/HEAD/STYLE_GUIDE.md)
 for any Fortran code that you contribute.
 This allows the community to focus on substance rather than style.
 
@@ -42,7 +42,7 @@ Before opening a bug report:
 1. Check if the issue has already been reported
    ([issues](https://github.com/fortran-lang/stdlib/issues)).
 2. Check if it is still an issue or it has been fixed?
-   Try to reproduce it with the latest version from the master branch.
+   Try to reproduce it with the latest version from the default branch.
 3. Isolate the problem and create a minimal test case.
 
 A good bug report should include all information needed to reproduce the bug.
@@ -74,7 +74,7 @@ It is quite possible we have not considered such solutions yet.
 ## Workflow
 
 The general workflow is documented in
-[this document](https://github.com/fortran-lang/stdlib/blob/master/WORKFLOW.md)
+[this document](https://github.com/fortran-lang/stdlib/blob/HEAD/WORKFLOW.md)
 
 The workflow guide is a living document.
 You are welcome to propose changes to the workflow by
@@ -91,7 +91,7 @@ You are welcome to propose changes to the workflow by
 * Add tests for your feature or bug fix to be sure that it stays functional and useful.
 * Be open to constructive criticism and requests for improving your code.
 * Again, please follow the
-  [Fortran stdlib style guide](https://github.com/fortran-lang/stdlib/blob/master/STYLE_GUIDE.md).
+  [Fortran stdlib style guide](https://github.com/fortran-lang/stdlib/blob/HEAD/STYLE_GUIDE.md).
 
 
 ## For new contributors
