@@ -3,7 +3,6 @@ name: CI
 on: [push, pull_request]
 
 env:
-  CI: "ON" # We can detect this in the build system and other vendors implement it
   CMAKE_BUILD_PARALLEL_LEVEL: "2" # 2 cores on each GHA VM, enable parallel builds
   CTEST_OUTPUT_ON_FAILURE: "ON" # This way we don't need a flag to ctest
   CTEST_PARALLEL_LEVEL: "2"
@@ -21,23 +20,28 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        gcc_v: [7, 8, 9, 10] # Version of GFortran we want to use.
+        gcc_v: [9, 10, 11] # Version of GFortran we want to use.
+        build: [cmake]
+        include:
+          - os: ubuntu-latest
+            gcc_v: 10
+            build: cmake-inline
+          - os: ubuntu-latest
+            gcc_v: 10
+            build: make
     env:
       FC: gfortran-${{ matrix.gcc_v }}
       GCC_V: ${{ matrix.gcc_v }}
+      BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Set up Python 3.x
       uses: actions/setup-python@v1 # Use pip to install latest CMake, & FORD/Jin2For, etc.
       with:
         python-version: 3.x
-
-    - name: Install CMake Linux
-      if: contains(matrix.os, 'ubuntu')
-      run: ci/install_cmake.sh
 
     - name: Install fypp
       run: pip install --upgrade fypp
@@ -50,7 +54,7 @@ jobs:
         sudo apt-get install -y gcc-${GCC_V} gfortran-${GCC_V}
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_V} 100 \
         --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} \
-        --slave /usr/bingcov gcov /usr/bin/gcov-${GCC_V}
+        --slave /usr/bin/gcov gcov /usr/bin/gcov-${GCC_V}
 
     - name: Install GFortran macOS
       if: contains( matrix.os, 'macos')
@@ -59,65 +63,82 @@ jobs:
           brew link gcc@${GCC_V}
 
     - name: Configure with CMake
+      if: ${{ contains(matrix.build, 'cmake') }}
       run: >-
         cmake -Wdev
         -DCMAKE_BUILD_TYPE=Release
-        -DCMAKE_MAXIMUM_RANK=4
+        -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
-        -S . -B build
+        -S . -B ${{ env.BUILD_DIR }}
 
     - name: Build and compile
-      run: cmake --build build
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: cmake --build ${{ env.BUILD_DIR }} --parallel
 
     - name: catch build fail
-      run: cmake --build build --verbose --parallel 1
-      if: failure()
+      run: cmake --build ${{ env.BUILD_DIR }} --verbose --parallel 1
+      if: ${{ failure() && contains(matrix.build, 'cmake') }}
 
     - name: test
-      run: ctest --parallel --output-on-failure
-      working-directory: build
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: >-
+        ctest
+        --test-dir ${{ env.BUILD_DIR }}
+        --parallel
+        --output-on-failure
+        --no-tests=error
 
     - name: Install project
-      run: cmake --install build
-
-    - name: Test in-tree builds
-      if: contains( matrix.gcc_v, '10') # Only test one compiler on each platform
-      run: |
-          cmake -DCMAKE_MAXIMUM_RANK=4 .
-          cmake --build .
-          cmake --build . --target test
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: cmake --install ${{ env.BUILD_DIR }}
 
     - name: Test manual makefiles
-      if: contains(matrix.os, 'ubuntu') && contains(matrix.gcc_v, '10')
+      if: ${{ matrix.build == 'make' }}
       run: |
-        make -f Makefile.manual FYPPFLAGS="-DMAXRANK=4" -j
+        make -f Makefile.manual -j
         make -f Makefile.manual test
         make -f Makefile.manual clean
+      env:
+        ADD_FYPPFLAGS: "-DMAXRANK=4"
 
   intel-build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-latest, macos-latest]
         fc: [ifort]
     env:
+      MACOS_HPCKIT_URL: >-
+        https://registrationcenter-download.intel.com/akdlm/irc_nas/17398/m_HPCKit_p_2021.1.0.2681_offline.dmg
+      MACOS_FORTRAN_COMPONENTS: >-
+        intel.oneapi.mac.ifort-compiler
       FC: ${{ matrix.fc }}
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Set up Python 3.x
       uses: actions/setup-python@v1
       with:
         python-version: 3.x
 
-    - name: Install CMake Linux
-      if: contains(matrix.os, 'ubuntu')
-      run: ci/install_cmake.sh
+    - name: Prepare for cache restore (OSX)
+      if: contains(matrix.os, 'macos')
+      run: |
+        sudo mkdir -p /opt/intel
+        sudo chown $USER /opt/intel
 
-    - name: Add Intel repository
+    - name: Cache Intel install (OSX)
+      if: contains(matrix.os, 'macos')
+      id: cache-install
+      uses: actions/cache@v2
+      with:
+        path: /opt/intel/oneapi
+        key: install-${{ env.MACOS_HPCKIT_URL }}-${{ env.MACOS_FORTRAN_COMPONENTS }}
+
+    - name: Add Intel repository (Linux)
       if: contains(matrix.os, 'ubuntu')
       run: |
         wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
@@ -126,10 +147,31 @@ jobs:
         echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
         sudo apt-get update
 
-    - name: Install Intel oneAPI compiler
+    - name: Install Intel oneAPI compiler (Linux)
       if: contains(matrix.os, 'ubuntu')
       run: |
         sudo apt-get install intel-oneapi-compiler-fortran
+
+    - name: Install Intel oneAPI compiler (OSX)
+      if: contains(matrix.os, 'macos') && steps.cache-install.outputs.cache-hit != 'true'
+      run: |
+        curl --output webimage.dmg --url "$URL" --retry 5 --retry-delay 5
+        hdiutil attach webimage.dmg
+        if [ -z "$COMPONENTS" ]; then
+          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --eula=accept --continue-with-optional-error=yes --log-dir=.
+          installer_exit_code=$?
+        else
+          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$COMPONENTS" --eula=accept --continue-with-optional-error=yes --log-dir=.
+          installer_exit_code=$?
+        fi
+        hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
+        exit $installer_exit_code
+      env:
+        URL: ${{ env.MACOS_HPCKIT_URL }}
+        COMPONENTS: ${{ env.MACOS_FORTRAN_COMPONENTS }}
+
+    - name: Setup Intel oneAPI environment
+      run: |
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
 
@@ -140,7 +182,7 @@ jobs:
       run: >-
          cmake -Wdev
          -DCMAKE_BUILD_TYPE=Release
-         -DCMAKE_MAXIMUM_RANK=4
+         -DCMAKE_MAXIMUM_RANK:String=4
          -DCMAKE_INSTALL_PREFIX=$PWD/_dist
          -S . -B build
 
@@ -152,7 +194,7 @@ jobs:
       if: failure()
 
     - name: test
-      run: ctest --parallel --output-on-failure
+      run: ctest --parallel --output-on-failure --no-tests=error
       working-directory: build
 
     - name: Install project

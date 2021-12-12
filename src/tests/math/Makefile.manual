@@ -1,0 +1,13 @@
+SRCFYPP = \
+          test_stdlib_math.fypp
+SRCGEN = $(SRCFYPP:.fypp=.f90)
+
+PROGS_SRC = test_linspace.f90 test_logspace.f90 \
+            test_math_arange.f90 \
+            $(SRCGEN)
+
+$(SRCGEN): %.f90: %.fypp ../../common.fypp
+	fypp -I../.. $(FYPPFLAGS) $< $@
+
+
+include ../Makefile.manual.test.mk

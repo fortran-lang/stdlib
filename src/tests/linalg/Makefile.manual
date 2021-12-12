@@ -1,0 +1,11 @@
+SRCFYPP = \
+          test_linalg.fypp
+SRCGEN = $(SRCFYPP:.fypp=.f90)
+PROGS_SRC = \
+            $(SRCGEN)
+
+$(SRCGEN): %.f90: %.fypp ../../common.fypp
+	fypp -I../.. $(FYPPFLAGS) $< $@
+
+
+include ../Makefile.manual.test.mk

@@ -2,26 +2,33 @@
 title: error
 ---
 
-# Catching and handling errors
+# The `stdlib_error` module
 
 [TOC]
 
-## `check` - Checks the value of a logical condition
+## Introduction
 
-### Status
+Catching and handling errors.
+
+## Procedures and methods provided
+
+
+### `check` - Checks the value of a logical condition
+
+#### Status
 
 Experimental
 
-### Description
+#### Description
 
 Checks the value of a logical condition.
 
-### Syntax
+#### Syntax
 
 `call [[check(subroutine)]](condition, msg, code, warn)`
 
 
-### Arguments
+#### Arguments
 
 `condition`: Shall be a scalar of type `logical`.
 
@@ -31,9 +38,9 @@ Checks the value of a logical condition.
 
 `warn` (optional): Shall be a scalar of type `logical`. The default `warn` is `.true.`.
 
-### Return value
+#### Return value
 
-If `condition` is `.false`., and:
+If `condition` is `.false.`, and:
 
  * no other arguments are provided, this subroutine stops the program with the default message and exit code 1;
 
@@ -43,7 +50,7 @@ If `condition` is `.false`., and:
 
  * `warn` is provided and `warn` is `.true.`, this subroutine doesn't stop the program and prints the message.
 
-### Examples
+#### Examples
 
 ```fortran
 program demo_check1
@@ -82,31 +89,31 @@ program demo_check3
 end program demo_check3
 ```
 
-## `error_stop` - aborts the program
+### `error_stop` - aborts the program
 
-### Status
+#### Status
 
 Experimental
 
-### Description
+#### Description
 
 Aborts the program with a message and a nonzero exit code.
 
-### Syntax
+#### Syntax
 
 `call [[stdlib_error(module):error_stop(interface)]](msg, code)`
 
-### Arguments
+#### Arguments
 
 `msg`: Shall be a character expression containing the message to be printed to `stderr`.
 
 `code` (optional): Shall be a scalar of type `integer` to be returned as exit code.
 
-### Output
+#### Output
 
 Aborts the program with printing the message `msg` to `stderr` and a nonzero exit code. The nonzero exit code is equal to `code` if provided, and 1 otherwise.
 
-### Examples
+#### Examples
 
 Without error code:
 

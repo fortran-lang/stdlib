@@ -1,0 +1,269 @@
+#:include "common.fypp"
+#:set RANKS = range(1, MAXRANK + 1)
+#:set IR_KINDS_TYPES_OUTPUT = list(zip(INT_KINDS,INT_TYPES, ['dp']*len(INT_KINDS))) + list(zip(REAL_KINDS, REAL_TYPES, REAL_KINDS))
+
+submodule (stdlib_stats) stdlib_stats_median
+
+  use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
+  use stdlib_error, only: error_stop
+  use stdlib_optval, only: optval
+  use stdlib_selection, only: select
+  implicit none
+
+contains
+
+  #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+    #:for rank in RANKS
+      #:set name = rname("median_all",rank, t1, k1, o1)
+      module function ${name}$ (x, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        logical, intent(in), optional :: mask
+        real(${o1}$) :: res
+
+        integer(kind = int64) :: c, n
+        ${t1}$ :: val, val1
+        ${t1}$, allocatable :: x_tmp(:)
+
+        if (.not.optval(mask, .true.) .or. size(x) == 0) then
+          res = ieee_value(1._${o1}$, ieee_quiet_nan)
+          return
+        end if
+
+        #:if t1[0] == 'r'
+          if (any(ieee_is_nan(x))) then
+            res = ieee_value(1._${o1}$, ieee_quiet_nan)
+            return
+          end if
+        #:endif
+
+        n = size(x, kind=int64)
+        c = floor( (n + 1) / 2._${o1}$, kind=int64 )
+
+        x_tmp = reshape(x, [n])
+
+        call select(x_tmp, c, val)
+
+        if (mod(n, 2_int64) == 0) then
+          val1 = minval(x_tmp(c+1:n))  !instead of call select(x_tmp, c+1, val1, left = c)
+          #:if t1[0] == 'r'
+            res = (val + val1) / 2._${o1}$
+          #:else
+            res = (real(val, kind=${o1}$) + &
+                   real(val1, kind=${o1}$)) / 2._${o1}$
+          #:endif
+        else
+            res = val
+        end if
+
+      end function ${name}$
+    #:endfor
+  #:endfor
+
+  #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+    #:for rank in RANKS
+      #:set name = rname("median",rank, t1, k1, o1)
+      module function ${name}$(x, dim, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        real(${o1}$) :: res${reduced_shape('x', rank, 'dim')}$
+
+        integer :: c, n
+        #:if rank > 1
+        #:for fj in range(1, rank+1)
+        integer :: j${fj}$
+        #:endfor
+        #:endif
+        ${t1}$ :: val, val1
+        ${t1}$, allocatable :: x_tmp(:)
+
+        if (.not.optval(mask, .true.) .or. size(x) == 0) then
+          res = ieee_value(1._${o1}$, ieee_quiet_nan)
+          return
+        end if
+
+        n = size(x, dim)
+        c = floor( (n + 1) / 2._${o1}$ )
+
+        allocate(x_tmp(n))
+
+        select case(dim)
+          #:for fi in range(1, rank+1)
+          case(${fi}$)
+            ! Loop over every dimension of the array except "dim"
+            #:for fj in list(range(1, fi)) + list(range(fi+1, rank+1))
+              do j${fj}$ = 1, size(x, ${fj}$)
+            #:endfor
+                x_tmp(:) = x${select_subvector('j', rank, fi)}$
+
+                #:if t1[0] == 'r'
+                  if (any(ieee_is_nan(x_tmp))) then
+                    res${reduce_subvector('j', rank, fi)}$ = &
+                      ieee_value(1._${o1}$, ieee_quiet_nan)
+                    #:if fi == 1
+                      return
+                    #:else
+                      cycle
+                    #:endif
+                  end if
+                #:endif
+
+                call select(x_tmp, c, val)
+
+                if (mod(n, 2) == 0) then
+                    val1 = minval(x_tmp(c+1:n))
+                    res${reduce_subvector('j', rank, fi)}$ = &
+                    #:if t1[0] == 'r'
+                        (val + val1) / 2._${o1}$
+                    #:else
+                        (real(val, kind=${o1}$) + real(val1, kind=${o1}$)) / 2._${o1}$
+                    #:endif
+                else
+                    res${reduce_subvector('j', rank, fi)}$ = val
+                end if
+            #:for fj in range(1, rank)
+              end do
+            #:endfor
+          #:endfor
+          case default
+            call error_stop("ERROR (median): wrong dimension")
+        end select
+
+      end function ${name}$
+    #:endfor
+  #:endfor
+
+
+  #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+    #:for rank in RANKS
+      #:set name = rname('median_all_mask',rank, t1, k1, o1)
+      module function ${name}$(x, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        logical, intent(in) :: mask${ranksuffix(rank)}$
+        real(${o1}$) :: res
+
+        integer(kind = int64) :: c, n
+        ${t1}$ :: val, val1
+        ${t1}$, allocatable   :: x_tmp(:)
+
+        if (any(shape(x) .ne. shape(mask))) then
+            call error_stop("ERROR (median): shapes of x and mask are different")
+        end if
+
+        #:if t1[0] == 'r'
+          if (any(ieee_is_nan(x))) then
+            res = ieee_value(1._${o1}$, ieee_quiet_nan)
+            return
+          end if
+        #:endif
+
+        x_tmp = pack(x, mask)
+
+        n = size(x_tmp, kind=int64)
+
+        if (n == 0) then
+            res = ieee_value(1._${o1}$, ieee_quiet_nan)
+            return
+        end if
+
+        c = floor( (n + 1) / 2._${o1}$, kind=int64)
+
+        call select(x_tmp, c, val)
+
+        if (mod(n, 2_int64) == 0) then
+          val1 = minval(x_tmp(c+1:n))
+          #:if t1[0] == 'r'
+            res = (val + val1) / 2._${o1}$
+          #:else
+            res = (real(val, kind=${o1}$) + real(val1, kind=${o1}$)) / 2._${o1}$
+          #:endif
+        else if (mod(n, 2_int64) == 1) then
+            res = val
+        end if
+
+      end function ${name}$
+    #:endfor
+  #:endfor
+
+  #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+    #:for rank in RANKS
+      #:set name = rname('median_mask',rank, t1, k1, o1)
+      module function ${name}$(x, dim, mask) result(res)
+        ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask${ranksuffix(rank)}$
+        real(${o1}$) :: res${reduced_shape('x', rank, 'dim')}$
+
+        integer(kind = int64) :: c, n
+        #:if rank > 1
+        #:for fj in range(1, rank+1)
+        integer :: j${fj}$
+        #:endfor
+        #:endif
+        ${t1}$ :: val, val1
+        ${t1}$, allocatable :: x_tmp(:)
+
+        if (any(shape(x) .ne. shape(mask))) then
+            call error_stop("ERROR (median): shapes of x and mask are different")
+        end if
+
+        select case(dim)
+          #:for fi in range(1, rank+1)
+          case(${fi}$)
+            ! Loop over every dimension of the array except "dim"
+            #:for fj in list(range(1, fi)) + list(range(fi+1, rank+1))
+              do j${fj}$ = 1, size(x, ${fj}$)
+            #:endfor
+                x_tmp = pack(x${select_subvector('j', rank, fi)}$, &
+                              mask${select_subvector('j', rank, fi)}$)
+
+                #:if t1[0] == 'r'
+                  if (any(ieee_is_nan(x_tmp))) then
+                    res${reduce_subvector('j', rank, fi)}$ = &
+                      ieee_value(1._${o1}$, ieee_quiet_nan)
+                    #:if rank == 1
+                      return
+                    #:else
+                      cycle
+                    #:endif
+                  end if
+                #:endif
+
+                n = size(x_tmp, kind=int64)
+
+                if (n == 0) then
+                    res${reduce_subvector('j', rank, fi)}$ = &
+                        ieee_value(1._${o1}$, ieee_quiet_nan)
+                    return
+                end if
+
+                c = floor( (n + 1) / 2._${o1}$, kind=int64 )
+
+                call select(x_tmp, c, val)
+
+                if (mod(n, 2_int64) == 0) then
+                    val1 = minval(x_tmp(c+1:n))
+                    res${reduce_subvector('j', rank, fi)}$ = &
+                    #:if t1[0] == 'r'
+                        (val + val1) / 2._${o1}$
+                    #:else
+                        (real(val, kind=${o1}$) + real(val1, kind=${o1}$)) / 2._${o1}$
+                    #:endif
+                else if (mod(n, 2_int64) == 1) then
+                    res${reduce_subvector('j', rank, fi)}$ = val
+                end if
+
+                deallocate(x_tmp)
+            #:for fj in range(1, rank)
+              end do
+            #:endfor
+          #:endfor
+          case default
+            call error_stop("ERROR (median): wrong dimension")
+        end select
+
+      end function ${name}$
+    #:endfor
+  #:endfor
+
+end submodule

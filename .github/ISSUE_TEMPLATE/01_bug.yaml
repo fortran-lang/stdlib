@@ -1,0 +1,39 @@
+name: Bug Report
+description: Something is not working
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: Please include steps to reproduce your issue, provide example code snippets if possible
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behaviour
+      placeholder: What did you expect to happen instead
+    validations:
+      required: true
+  - type: input
+    id: stdlib-version
+    attributes:
+      label: Version of stdlib
+      placeholder: 86ed2f3af570e2e09bdf03f1b74cdc4c4b13b43d, ...
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Platform and Architecture
+      placeholder: MacOS/ARM, Windows, OpenBSD, ...
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      placeholder: Further relevant context, i.e. links to other issues
+    validations:
+      required: false
