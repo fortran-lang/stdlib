@@ -4,11 +4,15 @@
 
 module test_stdlib_math
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_math, only: clip, arg, argd, argpi
+    use stdlib_math, only: clip, arg, argd, argpi, arange
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none
 
     public :: collect_stdlib_math
+    
+    #:for k1 in REAL_KINDS
+    real(kind=${k1}$), parameter :: PI_${k1}$ = acos(-1.0_${k1}$)
+    #:endfor
 
 contains
 
@@ -214,7 +218,8 @@ contains
     #:for k1 in CMPLX_KINDS
     subroutine test_arg_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
-        real(${k1}$), parameter :: tol = epsilon(1.0_${k1}$)
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+        real(${k1}$), allocatable :: theta(:)
         
         #! For scalar
         call check(error, abs(arg(2*exp((0.0_${k1}$, 0.5_${k1}$))) - 0.5_${k1}$) < tol, &
@@ -223,18 +228,17 @@ contains
         call check(error, abs(arg((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
             "test_zero_scalar")
         
-        #! and for array
-        call check(error, all(abs(arg([2*exp((0.0_${k1}$, 0.5_${k1}$))]) - [0.5_${k1}$]) < [tol]), &
-            "test_nonzero_array")
-        if (allocated(error)) return
-        call check(error, all(abs(arg([(0.0_${k1}$, 0.0_${k1}$)]) - [0.0_${k1}$]) < [tol]), &
-            "test_zero_array")
+        #! and for array (180.0° see scalar version)
+        theta = arange(-179.0_${k1}$, 179.0_${k1}$, 3.58_${k1}$)
+        call check(error, all(abs(arg(exp(cmplx(0.0_${k1}$, theta/180*PI_${k1}$, ${k1}$))) - theta/180*PI_${k1}$) < tol), &
+            "test_array")
         
     end subroutine test_arg_${k1}$
     
     subroutine test_argd_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
-        real(${k1}$), parameter :: tol = epsilon(1.0_${k1}$)
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+        real(${k1}$), allocatable :: theta(:)
         
         #! For scalar
         call check(error, abs(argd((-1.0_${k1}$, 0.0_${k1}$)) - 180.0_${k1}$) < tol, &
@@ -243,18 +247,17 @@ contains
         call check(error, abs(argd((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
             "test_zero_scalar")
         
-        #! and for array
-        call check(error, all(abs(argd([(-1.0_${k1}$, 0.0_${k1}$)]) - [180.0_${k1}$]) < [tol]), &
-            "test_nonzero_array")
-        if (allocated(error)) return
-        call check(error, all(abs(argd([(0.0_${k1}$, 0.0_${k1}$)]) - [0.0_${k1}$]) < [tol]), &
-            "test_zero_array")
+        #! and for array (180.0° see scalar version)
+        theta = arange(-179.0_${k1}$, 179.0_${k1}$, 3.58_${k1}$)
+        call check(error, all(abs(argd(exp(cmplx(0.0_${k1}$, theta/180*PI_${k1}$, ${k1}$))) - theta) < tol), &
+            "test_array")
         
     end subroutine test_argd_${k1}$
     
     subroutine test_argpi_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
-        real(${k1}$), parameter :: tol = epsilon(1.0_${k1}$)
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+        real(${k1}$), allocatable :: theta(:)
         
         #! For scalar
         call check(error, abs(argpi((-1.0_${k1}$, 0.0_${k1}$)) - 1.0_${k1}$) < tol, &
@@ -263,12 +266,10 @@ contains
         call check(error, abs(argpi((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
             "test_zero_scalar")
         
-        #! and for array
-        call check(error, all(abs(argpi([(-1.0_${k1}$, 0.0_${k1}$)]) - [1.0_${k1}$]) < [tol]), &
-            "test_nonzero_array")
-        if (allocated(error)) return
-        call check(error, all(abs(argpi([(0.0_${k1}$, 0.0_${k1}$)]) - [0.0_${k1}$]) < [tol]), &
-            "test_zero_array")
+        #! and for array (180.0° see scalar version)
+        theta = arange(-179.0_${k1}$, 179.0_${k1}$, 3.58_${k1}$)
+        call check(error, all(abs(argpi(exp(cmplx(0.0_${k1}$, theta/180*PI_${k1}$, ${k1}$))) - theta/180) < tol), &
+            "test_array")
         
     end subroutine test_argpi_${k1}$
     #:endfor
