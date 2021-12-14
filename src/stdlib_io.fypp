@@ -357,7 +357,7 @@ contains
     character(len=bufsize) :: buffer, msg
     integer :: chunk, stat
 
-    allocate(character(len=0) :: line)
+    line = ""
     do
       read(unit, '(a)', advance='no', iostat=stat, iomsg=msg, size=chunk) buffer
       if (stat > 0) exit
