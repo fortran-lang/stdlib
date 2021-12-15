@@ -9,6 +9,9 @@ waterhash.c
 generate_hash_arrays.cpp
 )
 
+enable_language(CXX)
+enable_language(C)
+
 add_library(libc_hash ${SRC})
 
 set(CMAKE_FORTRAN_LINK_EXECUTABLE "<CMAKE_Fortran_COMPILER>  <CMAKE_Fortran_LINK_FLAGS> <LINK_FLAGS> <FLAGS> <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>")

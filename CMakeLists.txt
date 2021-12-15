@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14.0)
 project(fortran_stdlib
-        LANGUAGES Fortran C CXX
+        LANGUAGES Fortran
         DESCRIPTION "Community driven and agreed upon de facto standard library for Fortran"
 )
 
