@@ -1111,7 +1111,7 @@ also defines the integer kind constant, `INT_HASH`, used to specify
 the kind of the hash function results, and a logical constant,
 `LITTLE_ENDIAN`, used to deal with one aspect of the machine
 dependence of the hash codes. 
-Note that while SpookyHash can be used as a sixty four bit hash
+Note that while SpookyHash can be used as a sixty-four bit hash
 algorithm, its algorithms actually returns two element integer arrays
 of kind `INT64`, so it can also be used as a 128 bit hash.
 
