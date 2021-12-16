@@ -116,8 +116,7 @@ jobs:
     env:
       MACOS_HPCKIT_URL: >-
         https://registrationcenter-download.intel.com/akdlm/irc_nas/17398/m_HPCKit_p_2021.1.0.2681_offline.dmg
-      MACOS_FORTRAN_COMPONENTS: >-
-        intel.oneapi.mac.ifort-compiler
+      MACOS_FORTRAN_COMPONENTS: all
       FC: ${{ matrix.fc }}
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx }}
