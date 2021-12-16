@@ -1438,8 +1438,8 @@ Experimental
 
 ##### Description
 
-Maps a character string or integer vector to a 64 bit integer whose
-value also depends on a scalar 32 bit integer, `seed`.
+Maps a character string or integer vector to a 64-bit integer whose
+value also depends on a scalar 32-bit integer, `seed`.
 
 ##### Syntax
 
