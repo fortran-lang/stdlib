@@ -409,7 +409,7 @@ input, but tests with hash tables show negligible difference.
 These algorithms have the reputation of being particularly useful for
 small byte strings, i.e., strings of less than 32 bytes.
 While they do not at all perform well on the SMHasher test suite,
-usage indicates that that that this has little impact on the
+usage indicates that this has little impact on the
 performance of small hash tables, and the small size of the functions
 allows their quick loading and retainment in the instruction cache,
 giving a performance boost where the hashing is intermittent.
