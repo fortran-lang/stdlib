@@ -51,7 +51,8 @@ extern "C" {
 #endif
 
 #if defined(__has_builtin)
-#  if __has_builtin(__builtin_rotateleft32)
+#  if __has_builtin(__builtin_rotateleft32) \
+    && !(defined(__INTEL_COMPILER) && defined(__APPLE__))
 #    define NMH_rotl32 __builtin_rotateleft32 /* clang */
 #  endif
 #endif
