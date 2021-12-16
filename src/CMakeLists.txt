@@ -15,6 +15,9 @@ set(fppFiles
     stdlib_bitsets_64.fypp
     stdlib_bitsets_large.fypp
     stdlib_io.fypp
+    stdlib_io_npy.fypp
+    stdlib_io_npy_load.fypp
+    stdlib_io_npy_save.fypp
     stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
@@ -35,6 +38,7 @@ set(fppFiles
     stdlib_stats_moment_mask.fypp
     stdlib_stats_moment_scalar.fypp
     stdlib_stats_distribution_uniform.fypp
+    stdlib_stats_distribution_normal.fypp
     stdlib_stats_var.fypp
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp

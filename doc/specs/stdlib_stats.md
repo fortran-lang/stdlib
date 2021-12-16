@@ -32,11 +32,11 @@ Generic subroutine
 
 ### Arguments
 
-`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`.
+`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
 
-`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
-`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`.
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`. It is an `intent(in)` argument.
 
 ### Return value
 
@@ -93,13 +93,13 @@ Generic subroutine
 
 ### Arguments
 
-`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`.
+`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
 
-`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
-`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`.
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`. It is an `intent(in)` argument.
 
-`corrected` (optional): Shall be a scalar of type `logical`. If `corrected` is `.true.` (default value), the sum is scaled with `n-1`. If `corrected` is `.false.`, then the sum is scaled with `n`.
+`corrected` (optional): Shall be a scalar of type `logical`. If `corrected` is `.true.` (default value), the sum is scaled with `n-1`. If `corrected` is `.false.`, then the sum is scaled with `n`. It is an `intent(in)` argument.
 
 ### Return value
 
@@ -148,11 +148,11 @@ Generic subroutine
 
 ### Arguments
 
-`array`: Shall be an array of type `integer`, `real`, or `complex`.
+`array`: Shall be an array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
 
-`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
-`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`.
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`. It is an `intent(in)` argument.
 
 ### Return value
 
@@ -204,9 +204,9 @@ and if `n` is an odd number, the median is:
 median(array) = mean( array_sorted( floor( (n + 1) / 2.):floor( (n + 1) / 2.) + 1 ) )
 ```
 
-The current implementation is a quite naive implementation that relies on sorting
-the whole array, using the subroutine `[[stdlib_sorting(module):ord_sort(interface)]]`
-provided by the `[[stdlib_sorting(module)]]` module.
+The current implementation relies on a selection algorithm applied on a copy of
+the whole array, using the subroutine `[[stdlib_selection(module):select(interface)]]`
+provided by the `[[stdlib_selection(module)]]` module.
 
 ### Syntax
 
@@ -220,11 +220,11 @@ Generic subroutine
 
 ### Arguments
 
-`array`: Shall be an array of type `integer` or `real`.
+`array`: Shall be an array of type `integer` or `real`. It is an `intent(in)` argument.
 
-`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
-`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`.
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`. It is an `intent(in)` argument.
 
 ### Return value
 
@@ -360,13 +360,13 @@ Generic subroutine
 
 ### Arguments
 
-`array`: Shall be an array of type `integer`, `real`, or `complex`.
+`array`: Shall be an array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
 
-`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
-`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`.
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`. It is an `intent(in)` argument.
 
-`corrected` (optional): Shall be a scalar of type `logical`. If `corrected` is `.true.` (default value), the sum is scaled with `n-1`. If `corrected` is `.false.`, then the sum is scaled with `n`.
+`corrected` (optional): Shall be a scalar of type `logical`. If `corrected` is `.true.` (default value), the sum is scaled with `n-1`. If `corrected` is `.false.`, then the sum is scaled with `n`. It is an `intent(in)` argument.
 
 ### Return value
 

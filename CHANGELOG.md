@@ -1,5 +1,30 @@
 # Unreleased
 
+Features available from the latest git source
+
+- new module `stdlib_distribution_uniform`
+  [#272](https://github.com/fortran-lang/stdlib/pull/272)
+- new module `stdlib_selection`
+  [#500](https://github.com/fortran-lang/stdlib/pull/500)
+  - new procedures `select`, `arg_select`
+- new module `stdlib_version`
+  [#579](https://github.com/fortran-lang/stdlib/pull/579)
+  - new procedure `get_stdlib_version`
+- new module `stdlib_io_npy`
+  [#581](https://github.com/fortran-lang/stdlib/pull/581)
+  - new procedures `save_npy`, `load_npy`
+
+Changes to existing modules
+
+- change in module `stdlib_math`
+  - `linspace` and `logspace` made pure
+    [#549](https://github.com/fortran-lang/stdlib/pull/549)
+- change in module `stdlib_string_type`
+  - `move` procedure made *pure*/*elemental*
+    [#562](https://github.com/fortran-lang/stdlib/pull/562)
+- support for quadruple precision made optional
+  [#565](https://github.com/fortran-lang/stdlib/pull/565)
+
 
 # Version 0.1.0
 
