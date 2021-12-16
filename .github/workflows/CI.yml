@@ -115,7 +115,7 @@ jobs:
         cxx: [icpc]
     env:
       MACOS_HPCKIT_URL: >-
-        https://registrationcenter-download.intel.com/akdlm/irc_nas/17398/m_HPCKit_p_2021.1.0.2681_offline.dmg
+        https://registrationcenter-download.intel.com/akdlm/irc_nas/18242/m_HPCKit_p_2021.4.0.3389_offline.dmg
       MACOS_FORTRAN_COMPONENTS: all
       FC: ${{ matrix.fc }}
       CC: ${{ matrix.cc }}
