@@ -6,6 +6,7 @@ extern "C" {
   #include "nmhash_scalar.h"
   #include "pengyhash.h"
   #include "waterhash.h"
+  int generate_all_c_hash();
 }
 
 #include "SpookyV2.h"
@@ -163,6 +164,18 @@ int write_spooky(){
     return 0;
 }
 
+int generate_all_c_hash(){
+    if (read_keys()==1){return 1;};
+    if (write_nmhash32()==1){return 1;};
+    if (write_nmhash32x()==1){return 1;};
+    if (write_water()==1){return 1;};
+    if (write_pengy()==1){return 1;};
+    if (write_spooky()==1){return 1;};
+    return 0;
+}
+
+
+/*
 int main(){
     if (read_keys()==1){return 1;};
     if (write_nmhash32()==1){return 1;};
@@ -172,3 +185,4 @@ int main(){
     if (write_spooky()==1){return 1;};
     return 0;
 }
+*/
