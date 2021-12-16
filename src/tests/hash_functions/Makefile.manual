@@ -1,16 +1,5 @@
-FFLAGS = #-g -check all -debug all
-CFLAGS = #-g -debug all 
-CXXFLAGS = #-g -debug all
-#CFLAGS += -P -cpp
-#CXXFLAGS += -P -cpp
-
-#CC = gcc
-#CXX = g++
-#FFLAGS =
-#CFLAGS =
-#CXXFLAGS =
-#CFLAGS = -E
-#CXXFLAGS = -E
+CC ?= gcc
+CXX ?= g++
 
 CPPFLAGS += -I. -I../.. -I..
 LDFLAGS += -L../.. -L.. -lstdlib-testing -lstdlib
