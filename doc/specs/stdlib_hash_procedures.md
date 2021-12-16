@@ -1092,7 +1092,7 @@ function for character strings.
 
 ### Overview of the module
 
-Sixty four bit hash functions are generally overkill for hash table
+Sixty-four bit hash functions are generally overkill for hash table
 applications, and are primarily useful for check sums and related
 applications.
 As checksums often have to deal with extremely large files or
