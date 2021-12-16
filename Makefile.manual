@@ -1,8 +1,6 @@
 # Fortran stdlib Makefile
 
 FC ?= gfortran
-CC ?= gcc
-CXX ?= g++
 
 FFLAGS ?= -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fno-range-check
 FYPPFLAGS ?=
@@ -14,8 +12,6 @@ FYPPFLAGS += \
              -DPROJECT_VERSION_PATCH=$(word 3,$(VERSION))
 
 export FC
-export CC
-export CXX
 export FFLAGS
 export FYPPFLAGS
 
