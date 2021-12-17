@@ -6,7 +6,7 @@ module stdlib_selection
 !! ([Specification](../page/specs/stdlib_selection.html))
 !
 ! This code was modified from the "Coretran" implementation "quickSelect" by
-! Leon Foks, https://github.com/leonfoks/coretran/tree/master/src/sorting
+! Leon Foks, https://github.com/leonfoks/coretran/tree/HEAD/src/sorting
 !
 ! Leon Foks gave permission to release this code under stdlib's MIT license.
 ! (https://github.com/fortran-lang/stdlib/pull/500#commitcomment-57418593)
