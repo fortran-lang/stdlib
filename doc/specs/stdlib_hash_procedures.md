@@ -458,8 +458,8 @@ incremental hashing procedures.
 SpookyHash is optimized for large objects and should give excellent 
 performance for objects greater than about 96 byes, but has
 significant overhead for smaller objects.
-The code was designed for Little Endian compilers, and will give
-different results on Big Endian compilers, but the hash quality on
+The code was designed for little-endian compilers, and will give
+different results on big-endian compilers, but the hash quality on
 those compilers is probably just as good.
 SpookyHash version 2 passes all of Reini Urban's SMHasher tests, and
 has one bad seed only when reduced to a 32 bit output.
@@ -496,9 +496,9 @@ As `stdlib_32_bit_hash_codes` deals exclusively with 32 bit hash codes,
 In implementing hash functions it is sometimes necessary to know the
 "endianess" of the compiler's integers. To this end the
 `stdlib_32_bit_hash_codes` module defines the logical parameter
-`LITTLE_ENDIAN` that, if true, indicates that the compiler has little
-endian integers, and that if false indicates that the integers are big
-endian.
+`LITTLE_ENDIAN` that, if true, indicates that the compiler has
+little-endian integers, and that if false indicates that the integers
+are big-endian.
 
 ### Specifications of the `stdlib_32_bit_hash_codes` procedures
 
@@ -1127,9 +1127,9 @@ As `stdlib_64_bit_hash_codes` deals exclusively with 64 bit hash codes,
 In implementing hash functions it is sometimes necessary to know the
 "endianess" of the compiler's integers. To this end the
 `stdlib_64_bit_hash_codes` module defines the logical parameter
-`LITTLE_ENDIAN` that if true indicates that the compiler has little
-endian integers, and that if false indicates that the integers are big
-endian.
+`LITTLE_ENDIAN` that if true indicates that the compiler has
+little-endian integers, and that if false indicates that the integers
+are big-endian.
 
 
 ### Specifications of the `stdlib_64_bit_hash_codes` procedures
@@ -1525,8 +1525,8 @@ The result is a two element integer vector of kind `INT64`.
 ##### Note
 
 `SPOOKY_HASH` is an implementation of the 64 bit version 2 of
-SpookyHash of Bob Jenkins. The code was designed for Little-Endian
-compilers. The output is different on Big Endian compilers, but still
+SpookyHash of Bob Jenkins. The code was designed for little-endian
+compilers. The output is different on big-endian compilers, but still
 probably as good quality. It is often used as a 64 bit hash using the
 first element of the returned value, but can be used as a 128 bit
 hash. This version of `SPOOKY_HASH` has good performance on small keys
