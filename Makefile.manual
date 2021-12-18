@@ -1,7 +1,7 @@
 # Fortran stdlib Makefile
 
-FC ?= gfortran
-FFLAGS ?= -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all  -fno-range-check
+FC ?= gfortran # -fno-range-check needed for hash functions for gfortran-9
+FFLAGS ?= -Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fno-range-check
 ADD_FYPPFLAGS ?=
 
 VERSION := $(subst ., ,$(file < VERSION))
