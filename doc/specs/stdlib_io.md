@@ -236,12 +236,14 @@ Read a whole line from a formatted unit into a string variable
 
 ### Syntax
 
-`call [[stdlib_io(module):getline(interface)]](unit, line[, iostat][, iomsg])`
+`call [[stdlib_io(module):getline(interface)]] (unit, line[, iostat][, iomsg])`
+`call [[stdlib_io(module):getline(interface)]] (line[, iostat][, iomsg])`
 
 ### Arguments
 
 `unit`: Formatted input unit.
         This argument is `intent(in)`.
+        If `unit` is not specified standard input is used.
 
 `line`: Deferred length character or `string_type` variable.
         This argument is `intent(out)`.
