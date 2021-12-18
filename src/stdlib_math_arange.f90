@@ -61,7 +61,7 @@ contains
         step_  = optval(step, 1_int8)
         step_  = sign(merge(step_, 1_int8, step_ /= 0_int8), end_ - start_)
 
-        allocate(result((end_ - start_)/step_ + 1))
+        allocate(result((end_ - start_)/step_ + 1_int8))
 
         result = [(i, i=start_, end_, step_)]
 
@@ -82,7 +82,7 @@ contains
         step_  = optval(step, 1_int16)
         step_  = sign(merge(step_, 1_int16, step_ /= 0_int16), end_ - start_)
 
-        allocate(result((end_ - start_)/step_ + 1))
+        allocate(result((end_ - start_)/step_ + 1_int16))
 
         result = [(i, i=start_, end_, step_)]
 
@@ -103,7 +103,7 @@ contains
         step_  = optval(step, 1_int32)
         step_  = sign(merge(step_, 1_int32, step_ /= 0_int32), end_ - start_)
 
-        allocate(result((end_ - start_)/step_ + 1))
+        allocate(result((end_ - start_)/step_ + 1_int32))
 
         result = [(i, i=start_, end_, step_)]
 
@@ -124,7 +124,7 @@ contains
         step_  = optval(step, 1_int64)
         step_  = sign(merge(step_, 1_int64, step_ /= 0_int64), end_ - start_)
 
-        allocate(result((end_ - start_)/step_ + 1))
+        allocate(result((end_ - start_)/step_ + 1_int64))
 
         result = [(i, i=start_, end_, step_)]
 

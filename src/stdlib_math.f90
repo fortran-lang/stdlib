@@ -8,7 +8,7 @@ module stdlib_math
     public :: clip, gcd, linspace, logspace
     public :: EULERS_NUMBER_SP, EULERS_NUMBER_DP
     public :: DEFAULT_LINSPACE_LENGTH, DEFAULT_LOGSPACE_BASE, DEFAULT_LOGSPACE_LENGTH
-    public :: arange
+    public :: arange, is_close, all_close
 
     integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
     integer, parameter :: DEFAULT_LOGSPACE_LENGTH = 50
@@ -453,6 +453,120 @@ module stdlib_math
             integer(int64), allocatable :: result(:)
         end function arange_i_int64
     end interface arange
+
+    !> Version: experimental
+    !>
+    !> Returns a boolean scalar/array where two scalar/arrays are element-wise equal within a tolerance.
+    !> ([Specification](../page/specs/stdlib_math.html#is_close))
+    interface is_close
+        elemental module logical function is_close_rsp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            real(sp), intent(in) :: a, b
+            real(sp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function is_close_rsp
+        elemental module logical function is_close_rdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            real(dp), intent(in) :: a, b
+            real(dp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function is_close_rdp
+        elemental module logical function is_close_csp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            complex(sp), intent(in) :: a, b
+            real(sp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function is_close_csp
+        elemental module logical function is_close_cdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            complex(dp), intent(in) :: a, b
+            real(dp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function is_close_cdp
+    end interface is_close
+
+    !> Version: experimental
+    !>
+    !> Returns a boolean scalar where two arrays are element-wise equal within a tolerance.
+    !> ([Specification](../page/specs/stdlib_math.html#all_close))
+    interface all_close
+        logical pure module function all_close_1_rsp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            real(sp), intent(in) :: a(:), b(:)
+            real(sp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_1_rsp
+        logical pure module function all_close_2_rsp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            real(sp), intent(in) :: a(:,:), b(:,:)
+            real(sp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_2_rsp
+        logical pure module function all_close_3_rsp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            real(sp), intent(in) :: a(:,:,:), b(:,:,:)
+            real(sp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_3_rsp
+        logical pure module function all_close_4_rsp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            real(sp), intent(in) :: a(:,:,:,:), b(:,:,:,:)
+            real(sp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_4_rsp
+        logical pure module function all_close_1_rdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            real(dp), intent(in) :: a(:), b(:)
+            real(dp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_1_rdp
+        logical pure module function all_close_2_rdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            real(dp), intent(in) :: a(:,:), b(:,:)
+            real(dp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_2_rdp
+        logical pure module function all_close_3_rdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            real(dp), intent(in) :: a(:,:,:), b(:,:,:)
+            real(dp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_3_rdp
+        logical pure module function all_close_4_rdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            real(dp), intent(in) :: a(:,:,:,:), b(:,:,:,:)
+            real(dp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_4_rdp
+        logical pure module function all_close_1_csp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            complex(sp), intent(in) :: a(:), b(:)
+            real(sp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_1_csp
+        logical pure module function all_close_2_csp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            complex(sp), intent(in) :: a(:,:), b(:,:)
+            real(sp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_2_csp
+        logical pure module function all_close_3_csp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            complex(sp), intent(in) :: a(:,:,:), b(:,:,:)
+            real(sp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_3_csp
+        logical pure module function all_close_4_csp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            complex(sp), intent(in) :: a(:,:,:,:), b(:,:,:,:)
+            real(sp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_4_csp
+        logical pure module function all_close_1_cdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            complex(dp), intent(in) :: a(:), b(:)
+            real(dp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_1_cdp
+        logical pure module function all_close_2_cdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            complex(dp), intent(in) :: a(:,:), b(:,:)
+            real(dp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_2_cdp
+        logical pure module function all_close_3_cdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            complex(dp), intent(in) :: a(:,:,:), b(:,:,:)
+            real(dp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_3_cdp
+        logical pure module function all_close_4_cdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+            complex(dp), intent(in) :: a(:,:,:,:), b(:,:,:,:)
+            real(dp), intent(in), optional :: rel_tol, abs_tol
+            logical, intent(in), optional :: equal_nan
+        end function all_close_4_cdp
+    end interface all_close
 
 contains
 
