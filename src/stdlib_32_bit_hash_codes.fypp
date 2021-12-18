@@ -70,8 +70,10 @@ module stdlib_32_bit_hash_codes
 
 
     interface fnv_1_hash
+!! Version: experimental
+!!
 !! FNV_1 interfaces
-
+!! ([Specification](../page/specs/stdlib_hash_procedures.html#fnv_1_hash-calculates-a-hash-code-from-a-key))
         #:for k1 in INT_KINDS
           pure module function ${k1}$_fnv_1( key ) result(hash_code)
 !! FNV_1 hash function for rank 1 array keys of kind ${k1}$
@@ -90,7 +92,10 @@ module stdlib_32_bit_hash_codes
     end interface fnv_1_hash
 
     interface fnv_1a_hash
+!! Version: experimental
+!!
 !! FNV_1A interfaces
+!! ([Specification](../page/specs/stdlib_hash_procedures.html#fnv_1a_hash-calculates-a-hash-code-from-a-key))
         #:for k1 in INT_KINDS
           pure module function ${k1}$_fnv_1a( key ) result(hash_value)
 !! FNV_1A hash function for rank 1 array keys of kind ${k1}$
@@ -109,8 +114,10 @@ module stdlib_32_bit_hash_codes
     end interface fnv_1a_hash
 
     interface nmhash32
-!!  NMHASH32 interfaces
-
+!! Version: experimental
+!!
+!! NMHASH32 interfaces
+!! ([Specification](../page/specs/stdlib_hash_procedures.html#nmhash32-calculates-a-hash-code-from-a-key-and-a-seed))
         #:for k1 in INT_KINDS
           pure module function ${k1}$_nmhash32( key, seed ) &
               result(hash_value)
@@ -133,8 +140,10 @@ module stdlib_32_bit_hash_codes
     end interface nmhash32
 
     interface nmhash32x
-!!  NMHASH32X interfaces
-
+!! Version: experimental
+!!
+!! NMHASH32X interfaces
+!! ([Specification](file:///home/jvandenp/stdlib/API-doc/page/specs/stdlib_hash_procedures.html#nmhash32x-calculates-a-hash-code-from-a-key-and-a-seed))
         #:for k1 in INT_KINDS
           pure module function ${k1}$_nmhash32x( key, seed ) &
               result(hash_value)
@@ -157,8 +166,10 @@ module stdlib_32_bit_hash_codes
     end interface nmhash32x
 
     interface water_hash
+!! Version: experimental
+!!
 !! WATER_HASH interfaces
-
+!! ([Specification](../page/specs/stdlib_hash_procedures.html#water_hash-calculates-a-hash-code-from-a-key-and-a-seed))
         #:for k1 in INT_KINDS
           pure module function ${k1}$_water_hash( key, seed ) &
               result(hash_code)
@@ -180,7 +191,9 @@ module stdlib_32_bit_hash_codes
     end interface water_hash
 
     interface new_water_hash_seed
-
+!! Version: experimental
+!!
+!! ([Specification](file:///home/jvandenp/stdlib/API-doc/page/specs/stdlib_hash_procedures.html#new_water_hash_seed-returns-a-valid-input-seed-for-water_hash))
         module subroutine new_water_hash_seed( seed )
             integer(int64), intent(inout) :: seed
         end subroutine new_water_hash_seed
@@ -188,6 +201,9 @@ module stdlib_32_bit_hash_codes
     end interface new_water_hash_seed
 
     interface new_nmhash32_seed
+!! Version: experimental
+!!
+!! ([Specification](../page/specs/stdlib_hash_procedures.html#new_nmhash32_seed-returns-a-valid-input-seed-for-nmhash32)
 
         module subroutine new_nmhash32_seed( seed )
             integer(int32), intent(inout) :: seed
@@ -196,6 +212,9 @@ module stdlib_32_bit_hash_codes
     end interface new_nmhash32_seed
 
     interface new_nmhash32x_seed
+!! Version: experimental
+!!
+!! ([Specification](../page/specs/stdlib_hash_procedures.html#new_nmhash32x_seed-returns-a-valid-input-seed-for-nmhash32x))
 
         module subroutine new_nmhash32x_seed( seed )
             integer(int32), intent(inout) :: seed
@@ -206,8 +225,12 @@ module stdlib_32_bit_hash_codes
 contains
 
     elemental function fibonacci_hash( key, nbits ) result( sample )
+!! Version: experimental
+!!
 !! Maps the 32 bit integer KEY to an unsigned integer value with only NBITS
 !! bits where NBITS is less than 32
+!! ([Specification](../page/specs/stdlib_hash_procedures.html#fibonacci_hash-maps-an-integer-to-a-smaller-number-of-bits))
+
         integer(int32), intent(in) :: key
         integer, intent(in)        :: nbits
         integer(int32)             :: sample
@@ -217,8 +240,11 @@ contains
     end function fibonacci_hash
 
     elemental function universal_mult_hash( key, seed, nbits ) result( sample )
+!! Version: experimental
+!!
 !! Uses the "random" odd 32 bit integer SEED to map the 32 bit integer KEY to
 !! an unsigned integer value with only NBITS bits where NBITS is less than 32
+!! ([Specification](../page/specs/stdlib_hash_procedures.html#universal_mult_hash-maps-an-integer-to-a-smaller-number-of-bits))
         integer(int32), intent(in) :: key
         integer(int32), intent(in) :: seed
         integer, intent(in)        :: nbits
@@ -229,8 +255,11 @@ contains
     end function universal_mult_hash
 
     subroutine odd_random_integer( harvest )
+!! Version: experimental
+!!
 !! Returns a 32 bit pseudo random integer, HARVEST, distributed uniformly over
 !! the odd integers of the INT32 kind.
+!! ([Specification](../page/specs/stdlib_hash_procedures.html#odd_random_integer-returns-an-odd-integer))
         integer(int32), intent(out) :: harvest
         real(dp) :: sample
 
