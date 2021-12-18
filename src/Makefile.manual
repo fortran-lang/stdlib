@@ -35,8 +35,10 @@ SRCFYPP = \
         stdlib_stats_distribution_normal.fypp \
         stdlib_stats_var.fypp \
         stdlib_math.fypp \
-	stdlib_math_linspace.fypp \
-	stdlib_math_logspace.fypp \
+        stdlib_math_linspace.fypp \
+        stdlib_math_logspace.fypp \
+        stdlib_math_is_close.fypp \
+        stdlib_math_all_close.fypp \
         stdlib_string_type.fypp \
         stdlib_string_type_constructor.fypp \
         stdlib_strings.fypp \
@@ -81,7 +83,8 @@ $(SRCGEN): %.f90: %.fypp common.fypp
 # Fortran module dependencies
 f18estop.o: stdlib_error.o
 stdlib_ascii.o: stdlib_kinds.o
-stdlib_bitsets.o: stdlib_kinds.o
+stdlib_bitsets.o: stdlib_kinds.o \
+    stdlib_optval.o
 stdlib_bitsets_64.o: stdlib_bitsets.o
 stdlib_bitsets_large.o: stdlib_bitsets.o
 stdlib_error.o: stdlib_optval.o
@@ -104,7 +107,8 @@ stdlib_io_npy_save.o: \
     stdlib_error.o \
     stdlib_strings.o
 stdlib_linalg.o: \
-    stdlib_kinds.o
+    stdlib_kinds.o \
+    stdlib_optval.o
 stdlib_linalg_diag.o: \
     stdlib_linalg.o \
     stdlib_kinds.o
@@ -195,6 +199,11 @@ stdlib_math_logspace.o: \
 stdlib_math_arange.o: \
     stdlib_math.o
 stdlib_linalg_outer_product.o: stdlib_linalg.o
+stdlib_math_is_close.o: \
+    stdlib_math.o
+stdlib_math_all_close.o: \
+    stdlib_math.o \
+    stdlib_math_is_close.o
 stdlib_stringlist_type.o: stdlib_string_type.o \
     stdlib_math.o \
-	stdlib_optval.o
+    stdlib_optval.o
