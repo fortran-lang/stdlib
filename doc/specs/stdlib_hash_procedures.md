@@ -19,7 +19,7 @@ As integer comparisons are very efficient, performing an initial
 comparison of hash codes and then performing a detailed comparison
 only if the hash codes are equal can improve performance.
 The hash codes, in turn, can be mapped to a smaller set of integers,
-that can be used as an index, termed a hash index, to a rank one
+that can be used as an index, termed a hash index, to a rank-1
 array, often termed a hash table.
 This mapping will be known as a scalar hash.
 The use of a hash table reduces the number of hash codes that need to
@@ -262,7 +262,7 @@ There are two problems in implementing hash functions in Fortran.
 First, the static typing of Fortran makes it awkward to define general
 purpose hash functions.
 Instead hash functions are defined for some of the more common
-objects: character strings and rank one arrays of integers.
+objects: character strings and rank-1 arrays of integers.
 Other objects can, in principle, be hashed by using `transfer` to
 map their contents to an integer array, typically one of kind `INT8`.
 The other problem is that hash codes are typically defined using
@@ -567,7 +567,7 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit hash code from a rank 1 integer array or a default
+Calculates a 32 bit hash code from a rank-1 integer array or a default
 character string.
 
 ##### Syntax
@@ -581,7 +581,7 @@ Pure/elemental function
 ##### Argument
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank 1 integer array expression of kind `INT8`, `INT16`,
+or a rank-1 integer array expression of kind `INT8`, `INT16`,
 `INT32`, or `INT64`.
 It is an `intent(in)` argument.
 
@@ -629,7 +629,7 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit hash code from a rank 1 integer array or a default
+Calculates a 32 bit hash code from a rank-1 integer array or a default
 character string.
 
 ##### Syntax
@@ -643,7 +643,7 @@ Pure/elemental function
 ##### Argument
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank 1 integer array expression of kind `INT8`, `INT16`,
+or a rank-1 integer array expression of kind `INT8`, `INT16`,
 `INT32`, or `INT64`.
 It is an `intent(in)` argument.
 
@@ -805,7 +805,7 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit hash code from a rank 1 integer array or a default
+Calculates a 32 bit hash code from a rank-1 integer array or a default
 character string, and the input `seed`.
 
 ##### Syntax
@@ -819,7 +819,7 @@ Pure/elemental function
 ##### Arguments
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank 1 integer array expression of kind `INT8`, `INT16`,
+or a rank-1 integer array expression of kind `INT8`, `INT16`,
 `INT32`, or `INT64`.
 It is an `intent(in)` argument.
 
@@ -867,7 +867,7 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit hash code from a rank 1 integer array or a default
+Calculates a 32 bit hash code from a rank-1 integer array or a default
 character string, and the input `seed`.
 
 ##### Syntax
@@ -881,7 +881,7 @@ Pure/elemental function
 ##### Arguments
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank 1 integer array expression of kind `INT8`, `INT16`,
+or a rank-1 integer array expression of kind `INT8`, `INT16`,
 `INT32`, or `INT64`.
 It is an `intent(in)` argument.
 
@@ -1028,7 +1028,7 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit hash code from a rank 1 integer array or a default
+Calculates a 32 bit hash code from a rank-1 integer array or a default
 character string, and the input `seed`.
 
 ##### Syntax
@@ -1042,7 +1042,7 @@ Pure/elemental function
 ##### Arguments
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank 1 integer array expression of kind `INT8`, `INT16`,
+or a rank-1 integer array expression of kind `INT8`, `INT16`,
 `INT32`, or `INT64`.
 It is an `intent(in)` argument.
 
@@ -1199,7 +1199,7 @@ Experimental
 
 ##### Description
 
-Calculates a 64 bit hash code from a rank 1 integer array or a default
+Calculates a 64 bit hash code from a rank-1 integer array or a default
 character string.
 
 ##### Syntax
@@ -1213,7 +1213,7 @@ Pure/elemental function
 ##### Argument
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank 1 integer array expression of kind `INT8`, `INT16`,
+or a rank-1 integer array expression of kind `INT8`, `INT16`,
 `INT32`, or `INT64`.
 It is an `intent(in)` argument.
 
@@ -1263,7 +1263,7 @@ Experimental
 
 ##### Description
 
-Calculates a 64 bit hash code from a rank 1 integer array or a default
+Calculates a 64 bit hash code from a rank-1 integer array or a default
 character string.
 
 ##### Syntax
@@ -1277,7 +1277,7 @@ Pure/elemental function
 ##### Argument
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank 1 integer array expression of kind `INT8`, `INT16`,
+or a rank-1 integer array expression of kind `INT8`, `INT16`,
 `INT32`, or `INT64`.
 It is an `intent(in)` argument.
 
@@ -1452,7 +1452,7 @@ Pure/elemental function
 ##### Arguments
 
 `key`: shall be a scalar  expression of type default character or a
-rank 1 integer vector expression of kind `INt8`, `INT16`, `INT32`, or
+rank-1 integer vector expression of kind `INt8`, `INT16`, `INT32`, or
 `INTT64`. It is an `intent(in)` argument.
 
 `seed`: shall be an integer expression of kind `INT64`. It is
@@ -1512,7 +1512,7 @@ Function
 ##### Arguments
 
 `key`: shall be a scalar of type default character expression or a
-Rank 1 integer vector expression of kind `INT8`, `INT16`, `INT32`, or
+Rank-1 integer vector expression of kind `INT8`, `INT16`, `INT32`, or
 `INT64`. It is an `intent(in)` argument.
 
 `seed`: shall be a two element integer vector expression of kind
