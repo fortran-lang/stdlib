@@ -1512,7 +1512,7 @@ Function
 ##### Arguments
 
 `key`: shall be a scalar of type default character expression or a
-Rank-1 integer vector expression of kind `INT8`, `INT16`, `INT32`, or
+rank-1 integer vector expression of kind `INT8`, `INT16`, `INT32`, or
 `INT64`. It is an `intent(in)` argument.
 
 `seed`: shall be a two element integer vector expression of kind
