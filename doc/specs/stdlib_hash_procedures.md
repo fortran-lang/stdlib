@@ -1204,7 +1204,7 @@ character string.
 
 ##### Syntax
 
-`code = [[stdlib_64_bit_hash_codes:fnv_1]]( key )`
+`code = [[stdlib_64_bit_hash_codes:fnv_1_hash]]( key )`
 
 ##### Class
 
@@ -1268,7 +1268,7 @@ character string.
 
 ##### Syntax
 
-`code = [[stdlib_64_bit_hash_codes:fnv_1a]]( key )`
+`code = [[stdlib_64_bit_hash_codes:fnv_1a_hash]]( key )`
 
 ##### Class
 
@@ -1331,7 +1331,7 @@ seed for `PENGY_HASH` and is also different from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_32_bit_hash_codes:new_pengy_hash_seed]]( seed )`
+`code = call [[stdlib_64_bit_hash_codes:new_pengy_hash_seed]]( seed )`
 
 ##### Class
 
@@ -1370,7 +1370,7 @@ from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_32_bit_hash_codes:new_spooky_hash_seed]]( seed )`
+`code = call [[stdlib_64_bit_hash_codes:new_spooky_hash_seed]]( seed )`
 
 ##### Class
 
