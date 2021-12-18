@@ -240,7 +240,7 @@ the hash function used to generate the code and the resulting codes.
 Non-cryptographic codes, in some circumstances, are believed to be
 reversible.
 The modules only implement hash
-functions that are believed to be non-cryptographic, with
+functions that are considered non-cryptographic, with
 implementations available in the public domain.
 
 There are a number of algorithms available for the computation of
