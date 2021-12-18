@@ -356,7 +356,7 @@ contains
     !> Error message
     character(len=:), allocatable, optional :: iomsg
 
-    integer, parameter :: bufsize = 512
+    integer, parameter :: bufsize = 4096
     character(len=bufsize) :: buffer, msg
     integer :: chunk, stat
     logical :: opened
