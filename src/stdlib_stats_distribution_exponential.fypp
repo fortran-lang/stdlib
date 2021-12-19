@@ -41,7 +41,7 @@ module stdlib_stats_distribution_exponential
 
 
     interface pdf_expon
-    !! Version experimental
+    !! Version: experimental
     !!
     !! Exponential Distribution Probability Density Function
     !! ([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
