@@ -21,7 +21,7 @@ module stdlib_stats_distribution_exponential
 
 
     interface rvs_expon
-    !! Version experimental
+    !! Version: experimental
     !!
     !! Exponential Distribution Random Variates
     !! ([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
