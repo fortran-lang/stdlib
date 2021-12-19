@@ -95,6 +95,7 @@ stdlib_io.o: \
     stdlib_error.o \
     stdlib_optval.o \
     stdlib_kinds.o \
+    stdlib_string_type.o \
     stdlib_ascii.o
 stdlib_io_npy.o: \
     stdlib_kinds.o

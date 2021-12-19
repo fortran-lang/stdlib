@@ -6,6 +6,7 @@ SRCGEN = $(SRCFYPP:.fypp=.f90)
 
 PROGS_SRC = test_loadtxt.f90 \
             test_savetxt.f90 \
+            test_getline.f90 \
             test_npy.f90 \
             test_parse_mode.f90 \
             test_open.f90 \
