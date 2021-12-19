@@ -1421,7 +1421,7 @@ argument.
 ##### Note
 
 `odd_random_integer` is intended to generate seeds for
- `universal_mult_hash`. `ODD_random_number` uses Fortran's intrinsic
+ `universal_mult_hash`. `odd_random_integer` uses Fortran's intrinsic
  `random_number` and the values returned can be changed by calling the
  intrinsic `random_init`.
 
