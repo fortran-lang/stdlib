@@ -29,7 +29,7 @@ contains
 
         integer(int64) :: i
 
-hash-        hash_code = offset_basis
+        hash_code = offset_basis
         do i=1_int64, size(key, kind=int64)
             hash_code = hash_code * prime
             if ( little_endian ) then
