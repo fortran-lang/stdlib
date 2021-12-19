@@ -7,6 +7,9 @@ Features available from the latest git source
 - new module `stdlib_selection`
   [#500](https://github.com/fortran-lang/stdlib/pull/500)
   - new procedures `select`, `arg_select`
+- updated module `stdlib_system`
+  - new procedures `get_argument`, `get_variable`, `set_variable`
+    [#604](https://github.com/fortran-lang/stdlib/pull/604)
 - new module `stdlib_version`
   [#579](https://github.com/fortran-lang/stdlib/pull/579)
   - new procedure `get_stdlib_version`

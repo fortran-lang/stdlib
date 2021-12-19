@@ -208,3 +208,4 @@ stdlib_math_all_close.o: \
 stdlib_stringlist_type.o: stdlib_string_type.o \
     stdlib_math.o \
     stdlib_optval.o
+stdlib_system.o: stdlib_error.o stdib_string_type.o
