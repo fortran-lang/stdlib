@@ -2,7 +2,7 @@
 title: Hash procedures
 ---
 
-# The `stdlib_32_bit_hash_codes` and `stdlib_64_bit_hash_codes` modules
+# The `stdlib_hash_32bit` and `stdlib_hash_64bit` modules
 
 [TOC]
 
@@ -210,19 +210,19 @@ readers of this document:
 
 The Standard Library provides two modules implementing hash
 functions and scalar hashes.
-The `stdlib_32_bit_hash_functions` module provides procedures to
+The `stdlib_hash_32bit` module provides procedures to
 compute 32 bit integer hash codes and a scalar hash. 
 The hash codes can be used for tables of up to `2**30` entries, and
 for keys with a few hundred elements, but performance has only been
 tested for tables up to `2**16` entries and performance may degrade
 for larger numbers of entries.
-The `stdlib_64_bit_hash_functions` module provides hash procedures to
+The `stdlib_hash_64bit` module provides hash procedures to
 compute 64 bit integer hash codes and a scalar hash.
 The hash codes can, in principle, be used for tables of up to `2**62`
 entries, and for keys with a few thousand elements, but testing of
 performance has only been been for tables up to `2**16`elements and
 performance may degrade for larger numbers of entries.
-While one of the codes in `stdlib_64_bit_hash_functions`,
+While one of the codes in `stdlib_hash_64bit`,
 `SPSOOKY_HASH`, can also be used to calculate 128 bit hash codes, none
 of the current codes can be used to calculate 256 bit hash codes.
 Such larger hash codes are useful for larger hash tables and keys, and
@@ -354,7 +354,7 @@ that are vectors of `INT16`, `INT32` and `INT64` integers, or default
 character strings, in the expectation that inlining will eliminate the
 overhead of transferring the other keys to `INT8` integer vectors.
 
-The `stdlib_32_bit_hash_functions` module provides
+The `stdlib_hash_32bit` module provides
 implementations of five hash code algorithms:
 the *FNV_1* and *FNV_1A* variants of Glenn Fowler, 
 Landon Curt Noll, and Kiem-Phong Vo;
@@ -374,7 +374,7 @@ generating seeds for `UNIVERSAL_MULT_HASH`.
 All assume a two's complement sign bit, and no out of
 range checks.
 
-The `stdlib_64_bit_hash_functions` module also provides
+The `stdlib_hash_64bit` module also provides
 implementations of four hash code algorithms:
 the *FNV_1* and *FNV_1A* variants of Glenn Fowler, 
 Landon Curt Noll, and Kiem-Phong Vo;
@@ -466,7 +466,7 @@ has one bad seed only when reduced to a 32 bit output.
 Its only potential problem is undefined behavior if the key is
 misaligned.
 
-## The `stdlib_32_bit_hash_codes` module
+## The `stdlib_hash_32bit` module
 
 ### Overview of the module
 
@@ -474,7 +474,7 @@ Thirty two bit hash functions are primarily useful for generating hash
 codes and hash indices for hash tables.
 They tend to be less useful for generating checksums, which generally
 benefit from having a larger number of bits.
-The `stdlib_32_bit_hash_codes` module defines five public overloaded
+The `stdlib_hash_32bit` module defines five public overloaded
 32 bit hash code functions, `FNV_1`, `FNV-1A`, `NMHASH32`, `NMHASH32x`
 and `WATER_HASH`, two scalar hash functions, `FIBONACCI_HASH` and
 `UNIVERSAL_MULT_HASH`, four seed generators, `ODD_RANDOM_INTEGER` for
@@ -488,19 +488,19 @@ the machine dependence of the hash codes.
 
 It is necessary to define the kind of integer used to return the hash
 code.
-As `stdlib_32_bit_hash_codes` deals exclusively with 32 bit hash codes,
+As `stdlib_hash_32bit` deals exclusively with 32 bit hash codes,
 `INT_HASH` is an alias for the integer kind `INT32`.
 
 ### The `LITTLE_ENDIAN` parameter
 
 In implementing hash functions it is sometimes necessary to know the
 "endianess" of the compiler's integers. To this end the
-`stdlib_32_bit_hash_codes` module defines the logical parameter
+`stdlib_hash_32bit` module defines the logical parameter
 `LITTLE_ENDIAN` that, if true, indicates that the compiler has
 little-endian integers, and that if false indicates that the integers
 are big-endian.
 
-### Specifications of the `stdlib_32_bit_hash_codes` procedures
+### Specifications of the `stdlib_hash_32bit` procedures
 
 #### `FIBONACCI_HASH` - maps an integer to a smaller number of bits
 
@@ -515,7 +515,7 @@ in mapping hash codes into small arrays.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_hash_codes:fibonacci_hash]]( key, nbits )`
+`code = [[stdlib_hash_32bit:fibonacci_hash]]( key, nbits )`
 
 ##### Class
 
@@ -545,7 +545,7 @@ E. Knuth. It multiplies the `KEY` by the odd valued approximation to
 
 ```fortran
 program demo_fibonacci_hash
-  use stdlib_32_bit_hash_codes, only: fibonacci_hash
+  use stdlib_hash_32bit, only: fibonacci_hash
   use iso_fortran_env, only: int32
   implicit none
   integer, allocatable :: array1(:)
@@ -572,7 +572,7 @@ character string.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_hash_codes:fnv_1_hash]]( key )`
+`code = [[stdlib_hash_32bit:fnv_1_hash]]( key )`
 
 ##### Class
 
@@ -611,7 +611,7 @@ function for character strings.
 
 ```fortran
 program demo_fnv_1_hash
-  use stdlib_32_bit_hash_codes, only: fnv_1_hash
+  use stdlib_hash_32bit, only: fnv_1_hash
   use iso_fortran_env, only: int32
   implicit none
   integer(int32) :: hash
@@ -634,7 +634,7 @@ character string.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_hash_codes:fnv_1a_hash]]( key )`
+`code = [[stdlib_hash_32bit:fnv_1a_hash]]( key )`
 
 ##### Class
 
@@ -672,7 +672,7 @@ function for character strings.
 
 ```fortran
 program demo_fnv_1a_hash
-  use stdlib_32_bit_hash_codes, only: fnv_1a_hash
+  use stdlib_hash_32bit, only: fnv_1a_hash
   use iso_fortran_env, only: int32
   implicit none
   integer(int32) :: hash
@@ -695,7 +695,7 @@ seed for `NMHASH32` and is also different from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_32_bit_hash_codes:new_nmhash32_seed]]( seed )`
+`code = call [[stdlib_hash_32bit:new_nmhash32_seed]]( seed )`
 
 ##### Class
 
@@ -733,7 +733,7 @@ seed for `NMHASH32X` and is also different from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_32_bit_hash_codes:new_nmhash32x_seed]]( seed )`
+`code = call [[stdlib_hash_32bit:new_nmhash32x_seed]]( seed )`
 
 ##### Class
 
@@ -771,7 +771,7 @@ seed for `WATER_HASH` and is also different from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_32_bit_hash_codes:new_water_hash_seed]]( seed )`
+`code = call [[stdlib_hash_32bit:new_water_hash_seed]]( seed )`
 
 ##### Class
 
@@ -810,7 +810,7 @@ character string, and the input `seed`.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_hash_codes:nmhash32]]( key, seed )`
+`code = [[stdlib_hash_32bit:nmhash32]]( key, seed )`
 
 ##### Class
 
@@ -846,7 +846,7 @@ function for character strings.
 
 ```fortran
 program demo_nmhash32
-  use stdlib_32_bit_hash_codes, only: nmhash32, &
+  use stdlib_hash_32bit, only: nmhash32, &
       new_nmhash32_seed
   use iso_fortran_env, only: int32
   implicit none
@@ -872,7 +872,7 @@ character string, and the input `seed`.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_hash_codes:nmhash32x]]( key, seed )`
+`code = [[stdlib_hash_32bit:nmhash32x]]( key, seed )`
 
 ##### Class
 
@@ -908,7 +908,7 @@ function for character strings.
 
 ```fortran
 program demo_nmhash32x
-  use stdlib_32_bit_hash_codes, only: nmhash32x, &
+  use stdlib_hash_32bit, only: nmhash32x, &
     new_nmhash32x_seed
   use iso_fortran_env, only: int32
   implicit none
@@ -932,7 +932,7 @@ Returns a random 32 bit integer distributed uniformly over the odd values.
 
 ##### Syntax
 
-`call [[stdlib_32_bit_hash_codes:odd_random_integer]]( harvest )`
+`call [[stdlib_hash_32bit:odd_random_integer]]( harvest )`
 
 ##### Class
 
@@ -968,7 +968,7 @@ in mapping a hash value to a range 0 to `2**nbits-1`.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_hash_codes:universal_mult_hash]]( key, seed, nbits )`
+`code = [[stdlib_hash_32bit:universal_mult_hash]]( key, seed, nbits )`
 
 ##### Class
 
@@ -1001,7 +1001,7 @@ It multiplies the `KEY` by `SEED`, and returns the
 
 ```fortran
 program demo_universal_mult_hash
-  use stdlib_32_bit_hash_codes, only: odd_random_integer, &
+  use stdlib_hash_32bit, only: odd_random_integer, &
     universal_mult_hash
   use iso_fortran_env, only: int32
   implicit none
@@ -1033,7 +1033,7 @@ character string, and the input `seed`.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_hash_codes:water_hash]]( key, seed )`
+`code = [[stdlib_hash_32bit:water_hash]]( key, seed )`
 
 ##### Class
 
@@ -1076,7 +1076,7 @@ function for character strings.
 
 ```fortran
 program demo_water_hash
-  use stdlib_32_bit_hash_codes, only: water_hash, &
+  use stdlib_hash_32bit, only: water_hash, &
     new_water_hash_seed
   use iso_fortran_env, only: int32, int64
   implicit none
@@ -1088,7 +1088,7 @@ program demo_water_hash
 end program demo_water_hash
 ```
 
-## The `stdlib_64_bit_hash_codes` module
+## The `stdlib_hash_64bit` module
 
 ### Overview of the module
 
@@ -1100,7 +1100,7 @@ directories, it is often useful to use incremental hashing as well as
 direct hashing, so 64 bit and higher hash algorithms often provide
 multiple implementations. The current module, for simplicity of API,
 doesn't provide any incremental hashes.
-The `stdlib_64_bit_hash_codes` module defines several public
+The `stdlib_hash_64bit` module defines several public
 overloaded 64 bit hash procedures, `FNV_1`, `FNV-1A`,
 `PENGY_HASH`, and `SPOOKY_HASH`, two scalar hash functions,
 `FIBONACCI_HASH` and 
@@ -1119,20 +1119,20 @@ of kind `INT64`, so it can also be used as a 128 bit hash.
 
 It is necessary to define the kind of integer used to return the hash
 code.
-As `stdlib_64_bit_hash_codes` deals exclusively with 64 bit hash codes,
+As `stdlib_haash_64bit` deals exclusively with 64 bit hash codes,
 `INT_HASH` is an alias for the integer kind `INT64`.
 
 ### The `LITTLE_ENDIAN` parameter
 
 In implementing hash functions it is sometimes necessary to know the
 "endianess" of the compiler's integers. To this end the
-`stdlib_64_bit_hash_codes` module defines the logical parameter
+`stdlib_hash_64bit` module defines the logical parameter
 `LITTLE_ENDIAN` that if true indicates that the compiler has
 little-endian integers, and that if false indicates that the integers
 are big-endian.
 
 
-### Specifications of the `stdlib_64_bit_hash_codes` procedures
+### Specifications of the `stdlib_hash_64bit` procedures
 
 #### `FIBONACCI_HASH` - maps an integer to a smaller number of bits
 
@@ -1147,7 +1147,7 @@ in mapping hash codes into small arrays.
 
 ##### Syntax
 
-`code = [[stdlib_64_bit_hash_codes:fibonacci_hash]]( key, nbits )`
+`code = [[stdlib_hash_64bit:fibonacci_hash]]( key, nbits )`
 
 ##### Class
 
@@ -1177,7 +1177,7 @@ E. Knuth. It multiplies the `KEY` by the odd valued approximation to
 
 ```fortran
 program demo_fibonacci_hash
-  use stdlib_64_bit_hash_codes, only: fibonacci_hash
+  use stdlib_hash_64bit, only: fibonacci_hash
   use iso_fortran_env, only: int64
   implicit none
   integer, allocatable :: array1(:)
@@ -1204,7 +1204,7 @@ character string.
 
 ##### Syntax
 
-`code = [[stdlib_64_bit_hash_codes:fnv_1_hash]]( key )`
+`code = [[stdlib_hash_64bit:fnv_1_hash]]( key )`
 
 ##### Class
 
@@ -1243,7 +1243,7 @@ function for character strings.
 
 ```fortran
 program demo_fnv_1_hash
-  use stdlib_64_bit_hash_codes, only: fnv_1_hash
+  use stdlib_hash_64bit, only: fnv_1_hash
     use iso_fortran_env, only: int64
   implicit none
   integer, allocatable :: array1(:)
@@ -1268,7 +1268,7 @@ character string.
 
 ##### Syntax
 
-`code = [[stdlib_64_bit_hash_codes:fnv_1a_hash]]( key )`
+`code = [[stdlib_hash_64bit:fnv_1a_hash]]( key )`
 
 ##### Class
 
@@ -1306,7 +1306,7 @@ function for character strings.
 
 ```fortran
 program demo_fnv_1a_hash
-  use stdlib_64_bit_hash_codes, only: fnv_1a_hash
+  use stdlib_hash_64bit, only: fnv_1a_hash
   use iso_fortran_env, only: int64
   implicit none
   integer, allocatable :: array1(:)
@@ -1331,7 +1331,7 @@ seed for `PENGY_HASH` and is also different from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_64_bit_hash_codes:new_pengy_hash_seed]]( seed )`
+`code = call [[stdlib_hash_64bit:new_pengy_hash_seed]]( seed )`
 
 ##### Class
 
@@ -1370,7 +1370,7 @@ from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_64_bit_hash_codes:new_spooky_hash_seed]]( seed )`
+`code = call [[stdlib_hash_64bit:new_spooky_hash_seed]]( seed )`
 
 ##### Class
 
@@ -1407,7 +1407,7 @@ Returns a random 64 bit integer distributed uniformly over the odd values.
 
 ##### Syntax
 
-`call [[stdlib_64_bit_hash_codes:odd_random_integer]]( harvest )`
+`call [[stdlib_hash_64bit:odd_random_integer]]( harvest )`
 
 ##### Class
 
@@ -1443,7 +1443,7 @@ value also depends on a scalar 32-bit integer, `seed`.
 
 ##### Syntax
 
-`code = [[stdlib_64_bit_hash_codes:pengy_hash]]( key, seed )`
+`code = [[stdlib_hash_64bit:pengy_hash]]( key, seed )`
 
 #####  Class
 
@@ -1475,7 +1475,7 @@ function for character strings.
 
 ```fortran
 program demo_pengy_hash
-  use stdlib_64_bit_hash_codes, only: new_pengy_hash_seed, pengy_hash
+  use stdlib_hash_64bit, only: new_pengy_hash_seed, pengy_hash
   use iso_fortran_env, only: int32, int64
   implicit none
   integer, allocatable :: key(:)
@@ -1503,7 +1503,7 @@ value also depends on a two element vector,  `seed`.
 
 ##### Syntax
 
-`code = [[stdlib_64_bit_hash_codes:spooky_hash]]( key, seed )`
+`code = [[stdlib_hash_64bit:spooky_hash]]( key, seed )`
 
 #####  Class
 
@@ -1537,7 +1537,7 @@ and has no known bad seeds.
 
 ```fortran
 program demo_spooky_hash
-  use stdlib_64_bit_hash_codes, only: new_spooky_hash_seed, &
+  use stdlib_hash_64bit, only: new_spooky_hash_seed, &
     spooky_hash
   use iso_fortran_env, only: int64
   implicit none
@@ -1564,7 +1564,7 @@ in mapping a hash value to a range 0 to `2**nbits-1`.
 
 ##### Syntax
 
-`code = [[stdlib_64_bit_hash_codes:universal_mult_hash]]( key, seed, nbits )`
+`code = [[stdlib_hash_64bit:universal_mult_hash]]( key, seed, nbits )`
 
 ##### Class
 
@@ -1598,7 +1598,7 @@ It multiplies the `KEY` by `SEED`, and returns the
 
 ```fortran
 program demo_universal_mult_hash
-  use stdlib_32_bit_hash_codes, only: odd_random_integer, &
+  use stdlib_hash_32bit, only: odd_random_integer, &
     universal_mult_hash
   use iso_fortran_env, only: int64
   implicit none
@@ -1626,8 +1626,8 @@ procedures that are the inspiration for the Fortran hash functions.
 
 In the `src/test/hash_functions` subdirectory, the Fortran Standard
 Library provides two performance test codes for
-the hash functions of `stdlib_32_bit_hash_functions` and
-`stdlib_64_bit_hash_functions`, `test_32_bit_hash_performance` and
+the hash functions of `stdlib_hash_32bit` and
+`stdlib_hash_64bit`, `test_32_bit_hash_performance` and
 `test_64_bit_hash_performance` respectively. These are primarily set
 up to test runtime performance of the functions. They take a sample of
 `2**18` integers of kind `INT8` and break it up into vectors of size
