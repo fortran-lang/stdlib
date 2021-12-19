@@ -320,25 +320,25 @@ program demo_logspace_rstart_cbase
 
 end program demo_logspace_rstart_cbase
 ```
-## `arange`
+### `arange`
 
-### Status
+#### Status
 
 Experimental
 
-### Class
+#### Class
 
 Pure function.
 
-### Description
+#### Description
 
 Creates a one-dimensional `array` of the `integer/real` type with fixed-spaced values of given spacing, within a given interval.
 
-### Syntax
+#### Syntax
 
 `result = [[stdlib_math(module):arange(interface)]](start [, end, step])`
 
-### Arguments
+#### Arguments
 
 All arguments should be the same type and kind.
 
@@ -354,18 +354,18 @@ The default `end` value is the inputted `start` value.
 This is an `intent(in)` and `optional` argument.   
 The default `step` value is `1`.
 
-#### Warning
+##### Warning
 If `step = 0`, the `step` argument will be corrected to `1/1.0` by the internal process of the `arange` function.   
 If `step < 0`, the `step` argument will be corrected to `abs(step)` by the internal process of the `arange` function. 
 
-### Return value
+#### Return value
 
 Returns a one-dimensional `array` of fixed-spaced values.
 
 For `integer` type arguments, the length of the result vector is `(end - start)/step + 1`.  
 For `real` type arguments, the length of the result vector is `floor((end - start)/step) + 1`.
 
-### Example
+#### Example
 
 ```fortran
 program demo_math_arange
@@ -389,37 +389,37 @@ program demo_math_arange
 end program demo_math_arange
 ```
 
-## `arg` - Computes the phase angle in radian of a complex scalar
+### `arg` - Computes the phase angle in radian of a complex scalar
 
-### Status
+#### Status
 
 Experimental
 
-### Class
+#### Class
 
 Elemental function.
 
-### Description
+#### Description
 
 `arg` computes the phase angle (radian version) of `complex` scalar in the interval (-π,π]. 
 The angles in `θ` are such that `z = abs(z)*exp((0.0, θ))`.
 
-### Syntax
+#### Syntax
 
 `result = [[stdlib_math(module):arg(interface)]](z)`
 
-### Arguments
+#### Arguments
 
 `z`: Shall be a `complex` scalar/array.
 This is an `intent(in)` argument.
 
-### Return value
+#### Return value
 
 Returns the `real` type phase angle (radian version) of the `complex` argument `z`.
 
 Notes: Although the angle of the complex number `0` is undefined, `arg((0,0))` returns the value `0`.
 
-### Example
+#### Example
 
 ```fortran
 program demo_math_arg
@@ -430,37 +430,37 @@ program demo_math_arg
 end program demo_math_arg
 ```
 
-## `argd` - Computes the phase angle in degree of a complex scalar
+### `argd` - Computes the phase angle in degree of a complex scalar
 
-### Status
+#### Status
 
 Experimental
 
-### Class
+#### Class
 
 Elemental function.
 
-### Description
+#### Description
 
 `argd` computes the phase angle (degree version) of `complex` scalar in the interval (-180.0,180.0]. 
 The angles in `θ` are such that `z = abs(z)*exp((0.0, θ*π/180.0))`.
 
-### Syntax
+#### Syntax
 
 `result = [[stdlib_math(module):argd(interface)]](z)`
 
-### Arguments
+#### Arguments
 
 `z`: Shall be a `complex` scalar/array.
 This is an `intent(in)` argument.
 
-### Return value
+#### Return value
 
 Returns the `real` type phase angle (degree version) of the `complex` argument `z`.
 
 Notes: Although the angle of the complex number `0` is undefined, `argd((0,0))` returns the value `0`.
 
-### Example
+#### Example
 
 ```fortran
 program demo_math_argd
@@ -471,37 +471,37 @@ program demo_math_argd
 end program demo_math_argd
 ```
 
-## `argpi` - Computes the phase angle in circular of a complex scalar
+### `argpi` - Computes the phase angle in circular of a complex scalar
 
-### Status
+#### Status
 
 Experimental
 
-### Class
+#### Class
 
 Elemental function.
 
-### Description
+#### Description
 
 `argpi` computes the phase angle (IEEE circular version) of `complex` scalar in the interval (-1.0,1.0]. 
 The angles in `θ` are such that `z = abs(z)*exp((0.0, θ*π))`.
 
-### Syntax
+#### Syntax
 
 `result = [[stdlib_math(module):argpi(interface)]](z)`
 
-### Arguments
+#### Arguments
 
 `z`: Shall be a `complex` scalar/array.
 This is an `intent(in)` argument.
 
-### Return value
+#### Return value
 
 Returns the `real` type phase angle (circular version) of the `complex` argument `z`.
 
 Notes: Although the angle of the complex number `0` is undefined, `argpi((0,0))` returns the value `0`.
 
-### Example
+#### Example
 
 ```fortran
 program demo_math_argpi
@@ -510,4 +510,144 @@ program demo_math_argpi
     print *, argpi((3.0, 4.0))                  !! 0.295
     print *, argpi(2.0*exp((0.0, 0.5)))         !! 0.159
 end program demo_math_argpi
+```
+
+### `is_close`
+
+#### Description
+
+Returns a boolean scalar/array where two scalars/arrays are element-wise equal within a tolerance.
+
+```fortran
+!> For `real` type
+is_close(a, b, rel_tol, abs_tol) = abs(a - b) <= max(rel_tol*(abs(a), abs(b)), abs_tol)
+
+!> and for `complex` type
+is_close(a, b, rel_tol, abs_tol) = is_close(a%re, b%re, rel_tol, abs_tol) .and. &
+                                   is_close(a%im, b%im, rel_tol, abs_tol)
+```
+
+#### Syntax
+
+`bool = [[stdlib_math(module):is_close(interface)]] (a, b [, rel_tol, abs_tol, equal_nan])`
+
+#### Status
+
+Experimental.
+
+#### Class
+
+Elemental function.
+
+#### Arguments
+
+Note: All `real/complex` arguments must have same `kind`.  
+If the value of `rel_tol/abs_tol` is negative (not recommended), 
+it will be corrected to `abs(rel_tol/abs_tol)` by the internal process of `is_close`.
+
+`a`: Shall be a `real/complex` scalar/array.
+This argument is `intent(in)`.
+
+`b`: Shall be a `real/complex` scalar/array.
+This argument is `intent(in)`.
+
+`rel_tol`: Shall be a `real` scalar/array.
+This argument is `intent(in)` and `optional`, which is `sqrt(epsilon(..))` by default.
+
+`abs_tol`: Shall be a `real` scalar/array.
+This argument is `intent(in)` and `optional`, which is `0.0` by default.
+
+`equal_nan`: Shall be a `logical` scalar/array.
+This argument is `intent(in)` and `optional`, which is `.false.` by default.
+Whether to compare `NaN` values as equal. If `.true.`, 
+`NaN` values in `a` will be considered equal to `NaN` values in `b`.
+
+#### Result value
+
+Returns a `logical` scalar/array.
+
+#### Example
+
+```fortran
+program demo_math_is_close
+
+    use stdlib_math,  only: is_close
+    use stdlib_error, only: check
+    real :: x(2) = [1, 2], y, NAN
+    
+    y   = -3
+    NAN = sqrt(y)
+    
+    print *, is_close(x,[real :: 1, 2.1])       !! [T, F]
+    print *, is_close(2.0, 2.1, abs_tol=0.1)    !! T
+    print *, NAN, is_close(2.0, NAN), is_close(2.0, NAN, equal_nan=.true.)   !! NAN, F, F
+    print *, is_close(NAN, NAN), is_close(NAN, NAN, equal_nan=.true.)        !! F, T
+        
+end program demo_math_is_close
+```
+
+### `all_close`
+
+#### Description
+
+Returns a boolean scalar where two arrays are element-wise equal within a tolerance.
+
+#### Syntax
+
+`bool = [[stdlib_math(module):all_close(interface)]] (a, b [, rel_tol, abs_tol, equal_nan])`
+
+#### Status
+
+Experimental.
+
+#### Class
+
+Pure function.
+
+#### Arguments
+
+Note: All `real/complex` arguments must have same `kind`.  
+If the value of `rel_tol/abs_tol` is negative (not recommended), 
+it will be corrected to `abs(rel_tol/abs_tol)` by the internal process of `all_close`.
+
+`a`: Shall be a `real/complex` array.
+This argument is `intent(in)`.
+
+`b`: Shall be a `real/complex` array.
+This argument is `intent(in)`.
+
+`rel_tol`: Shall be a `real` scalar.
+This argument is `intent(in)` and `optional`, which is `sqrt(epsilon(..))` by default.
+
+`abs_tol`: Shall be a `real` scalar.
+This argument is `intent(in)` and `optional`, which is `0.0` by default.
+
+`equal_nan`: Shall be a `logical` scalar.
+This argument is `intent(in)` and `optional`, which is `.false.` by default.
+Whether to compare `NaN` values as equal. If `.true.`, 
+`NaN` values in `a` will be considered equal to `NaN` values in `b`.
+
+#### Result value
+
+Returns a `logical` scalar.
+
+#### Example
+
+```fortran
+program demo_math_all_close
+
+    use stdlib_math,  only: all_close
+    use stdlib_error, only: check
+    real    :: x(2) = [1, 2], y, NAN
+    complex :: z(4, 4)
+    
+    y   = -3
+    NAN = sqrt(y)
+    z   = (1.0, 1.0)
+    
+    print *, all_close(z+cmplx(1.0e-11, 1.0e-11), z)     !! T
+    print *, NAN, all_close([NAN], [NAN]), all_close([NAN], [NAN], equal_nan=.true.) 
+                                                         !! NAN, F, T
+    
+end program demo_math_all_close
 ```

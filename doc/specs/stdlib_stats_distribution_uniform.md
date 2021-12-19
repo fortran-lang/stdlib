@@ -36,7 +36,7 @@ Return a randomized rank one array of the input type.
 
 ```fortran
 program demo_shuffle
-    use stdlib_stats_distribution_PRNG, only : random_seed
+    use stdlib_random, only : random_seed
     use stdlib_stats_distribution_uniform, only : shuffle
     implicit none
     integer :: seed_put, seed_get, i
@@ -79,13 +79,15 @@ Without argument the function returns a scalar standard uniformly distributed va
 
 With single argument `scale` of `integer` type the function returns a scalar uniformly distributed variate of `integer` type on [0,scale]. This is the standard Rectangular distribution.
 
-With single argument `scale` of `real` or `complex` type the function returns a scalar uniformly distributed variate of `real` or `complex` type on [0, scale].
+With single argument `scale` of `real` or `complex` type the function returns a scalar uniformly distributed variate of `real` type on [0, scale] or `complex` type on [(0, 0i), (scale, i(scale))].
 
-With double arguments `loc` and `scale` the function returns a scalar uniformly distributed random variates of `integer`, `real` or `complex` type on [loc, loc + scale] dependent of input type.
+With double arguments `loc` and `scale` the function returns a scalar uniformly distributed random variates of `integer` or `real` type on [loc, loc + scale], or `complex` type on [(loc, i(loc)), ((loc + scale), i(loc + scale))], dependent of input type.
 
 With triple arguments `loc`, `scale` and `array_size` the function returns a rank one array of uniformly distributed variates of `integer`, `real` or `complex` type with an array size of `array_size`.
 
 For `complex` type, the real part and imaginary part are independent of each other.
+
+Note: the algorithm used for generating uniform random variates is fundamentally limited to double precision.
 
 ### Syntax
 
@@ -101,19 +103,19 @@ Elemental function (without the third argument).
 
 `scale`: optional argument has `intent(in)` and is a scalar of type `integer`, `real` or `complex`.
 
-`array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
+`array_size`: optional argument has `intent(in)` and is a scalar of type `integer` with default kind.
 
 `loc` and `scale` must have the same type and kind when both are present.
 
 ### Return value
 
-The result is a scalar or a rank one array, with size of `array_size`, of type `integer`, `real` or `complex` depending on the input type.
+The result is a scalar or a rank one array with size of `array_size`, of type `integer`, `real` or `complex` depending on the input type.
 
 ### Example
 
 ```fortran
 program demo_uniform_rvs
-    use stdlib_stats_distribution_PRNG, only:random_seed
+    use stdlib_random, only:random_seed
     use stdlib_stats_distribution_uniform, only:uni=> rvs_uniform
 
     implicit none
@@ -193,7 +195,7 @@ program demo_uniform_rvs
 end program demo_uniform_rvs
 ```
 
-## `pdf_uniform` - Uniform probability density function
+## `pdf_uniform` - Uniform distribution probability density function
 
 ### Status
 
@@ -201,7 +203,11 @@ Experimental
 
 ### Description
 
-The probability density function of the uniform distribution.
+The probability density function of the uniform distribution:
+
+f(x) = 0       x < loc or x > loc + scale  for all types uniform distributions
+
+For random variable x in [loc, loc + scale]:
 
 f(x) = 1 / (scale + 1);            for discrete uniform distribution.
 
@@ -235,7 +241,7 @@ The result is a scalar or an array, with a shape conformable to arguments, of ty
 
 ```fortran
 program demo_uniform_pdf
-    use stdlib_stats_distribution_PRNG, only : random_seed
+    use stdlib_random, only : random_seed
     use stdlib_stats_distribution_uniform,  only : uni_pdf => pdf_uniform,     &
                                                    uni => rvs_uniform
 
@@ -286,7 +292,7 @@ end program demo_uniform_pdf
 
 ```
 
-## `cdf_uniform` - Uniform cumulative distribution function
+## `cdf_uniform` - Uniform distribution cumulative distribution function
 
 ### Status
 
@@ -294,7 +300,13 @@ Experimental
 
 ### Description
 
-Cumulative distribution function of the uniform distribution
+Cumulative distribution function of the uniform distribution:
+
+F(x) = 0             x < loc             for all types uniform distributions
+
+F(x) = 1             x > loc + scale     for all types uniform distributions
+
+For random variable x in [loc, loc + scale]:
 
 F(x) = (x - loc + 1) / (scale + 1);      for discrete uniform distribution.
 
@@ -328,7 +340,7 @@ The result is a scalar or an array, with a shape conformable to arguments, of ty
 
 ```fortran
 program demo_uniform_cdf
-    use stdlib_stats_distribution_PRNG, only : random_seed
+    use stdlib_random, only : random_seed
     use stdlib_stats_distribution_uniform, only : uni_cdf => cdf_uniform,      &
                                                   uni => rvs_uniform
 

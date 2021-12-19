@@ -28,7 +28,7 @@ extra_mods: iso_fortran_env:https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORT
 print_creation_date: true
 creation_date: %Y-%m-%d %H:%M %z
 project_github: https://github.com/fortran-lang/stdlib
-project_download: https://github.com/fortran-lang/stdlib/archive/master.zip
+project_download: https://github.com/fortran-lang/stdlib/archive/HEAD.zip
 project_website: https://stdlib.fortran-lang.org
 favicon: doc/media/favicon.ico
 license: by-sa
@@ -57,7 +57,7 @@ The documentation for comment markup in source code, running [FORD] and the [FOR
 
 [FORD]: https://github.com/Fortran-FOSS-Programmers/ford#readme
 [FORD wiki]: https://github.com/Fortran-FOSS-Programmers/ford/wiki
-[FORD project file]: https://github.com/fortran-lang/stdlib/blob/master/API-doc-FORD-file.md
+[FORD project file]: https://github.com/fortran-lang/stdlib/blob/HEAD/API-doc-FORD-file.md
 
 Goals and Motivation
 ====================

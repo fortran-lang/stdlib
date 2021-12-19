@@ -1,0 +1,25 @@
+#:include "common.fypp"
+#:set RANKS = range(1, MAXRANK + 1)
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+
+submodule (stdlib_math) stdlib_math_all_close
+
+    implicit none
+    
+contains
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    #:for r1 in RANKS
+    logical pure module function all_close_${r1}$_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol, equal_nan) result(close)
+
+        ${t1}$, intent(in) :: a${ranksuffix(r1)}$, b${ranksuffix(r1)}$
+        real(${k1}$), intent(in), optional :: rel_tol, abs_tol
+        logical, intent(in), optional :: equal_nan
+
+        close = all(is_close(a, b, rel_tol, abs_tol, equal_nan))
+
+    end function all_close_${r1}$_${t1[0]}$${k1}$
+    #:endfor
+    #:endfor
+
+end submodule stdlib_math_all_close

@@ -204,9 +204,9 @@ and if `n` is an odd number, the median is:
 median(array) = mean( array_sorted( floor( (n + 1) / 2.):floor( (n + 1) / 2.) + 1 ) )
 ```
 
-The current implementation is a quite naive implementation that relies on sorting
-the whole array, using the subroutine `[[stdlib_sorting(module):ord_sort(interface)]]`
-provided by the `[[stdlib_sorting(module)]]` module.
+The current implementation relies on a selection algorithm applied on a copy of
+the whole array, using the subroutine `[[stdlib_selection(module):select(interface)]]`
+provided by the `[[stdlib_selection(module)]]` module.
 
 ### Syntax
 
