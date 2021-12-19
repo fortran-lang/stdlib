@@ -14,8 +14,7 @@ module stdlib_math
     public :: EULERS_NUMBER_QP
 #:endif
     public :: DEFAULT_LINSPACE_LENGTH, DEFAULT_LOGSPACE_BASE, DEFAULT_LOGSPACE_LENGTH
-    public :: arange, is_close, all_close
-    public :: diff
+    public :: arange, arg, argd, argpi, is_close, all_close, diff
 
     integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
     integer, parameter :: DEFAULT_LOGSPACE_LENGTH = 50
@@ -27,6 +26,11 @@ module stdlib_math
 #:if WITH_QP
     real(qp), parameter :: EULERS_NUMBER_QP = exp(1.0_qp)
 #:endif
+
+    !> Useful constants `PI` for `argd/argpi`
+    #:for k1 in REAL_KINDS
+    real(kind=${k1}$), parameter :: PI_${k1}$ = acos(-1.0_${k1}$)
+    #:endfor
 
     interface clip
     #:for k1, t1 in IR_KINDS_TYPES
@@ -297,6 +301,34 @@ module stdlib_math
 
     !> Version: experimental
     !>
+    !> `arg` computes the phase angle in the interval (-π,π].
+    !> ([Specification](../page/specs/stdlib_math.html#arg))
+    interface arg
+        #:for k1 in CMPLX_KINDS
+        procedure :: arg_${k1}$
+        #:endfor
+    end interface arg
+
+    !> Version: experimental
+    !>
+    !> `argd` computes the phase angle of degree version in the interval (-180.0,180.0].
+    !> ([Specification](../page/specs/stdlib_math.html#argd))
+    interface argd
+        #:for k1 in CMPLX_KINDS
+        procedure :: argd_${k1}$
+        #:endfor
+    end interface argd
+
+    !> Version: experimental
+    !>
+    !> `argpi` computes the phase angle of circular version in the interval (-1.0,1.0].
+    !> ([Specification](../page/specs/stdlib_math.html#argpi))
+    interface argpi
+        #:for k1 in CMPLX_KINDS
+        procedure :: argpi_${k1}$
+        #:endfor
+    end interface argpi
+    
     !> Returns a boolean scalar/array where two scalar/arrays are element-wise equal within a tolerance.
     !> ([Specification](../page/specs/stdlib_math.html#is_close))
     interface is_close
@@ -362,6 +394,34 @@ contains
 
     #:endfor
 
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    elemental function arg_${k1}$(z) result(result) 
+        ${t1}$, intent(in) :: z
+        real(${k1}$) :: result
+
+        result = merge(0.0_${k1}$, atan2(z%im, z%re), z == (0.0_${k1}$, 0.0_${k1}$))
+
+    end function arg_${k1}$
+
+    elemental function argd_${k1}$(z) result(result) 
+        ${t1}$, intent(in) :: z
+        real(${k1}$) :: result
+
+        result = merge(0.0_${k1}$, atan2(z%im, z%re), z == (0.0_${k1}$, 0.0_${k1}$)) &
+                 *180.0_${k1}$/PI_${k1}$
+
+    end function argd_${k1}$
+
+    elemental function argpi_${k1}$(z) result(result) 
+        ${t1}$, intent(in) :: z
+        real(${k1}$) :: result
+
+        result = merge(0.0_${k1}$, atan2(z%im, z%re), z == (0.0_${k1}$, 0.0_${k1}$)) &
+                 /PI_${k1}$
+
+    end function argpi_${k1}$
+    #:endfor
+
     #:for k1, t1 in INT_KINDS_TYPES
     !> Returns the greatest common divisor of two integers of kind ${k1}$
     !> using the Euclidean algorithm.
@@ -382,4 +442,5 @@ contains
     end function gcd_${k1}$
 
     #:endfor
+    
 end module stdlib_math

@@ -4,11 +4,15 @@
 
 module test_stdlib_math
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_math, only: clip, is_close, all_close, diff
+    use stdlib_math, only: clip, arg, argd, argpi, arange, is_close, all_close, diff
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none
 
     public :: collect_stdlib_math
+    
+    #:for k1 in REAL_KINDS
+    real(kind=${k1}$), parameter :: PI_${k1}$ = acos(-1.0_${k1}$)
+    #:endfor
 
 contains
 
@@ -32,6 +36,13 @@ contains
             new_unittest("clip-real-double-bounds", test_clip_rdp_bounds), &
             new_unittest("clip-real-quad", test_clip_rqp), &
             new_unittest("clip-real-quad-bounds", test_clip_rqp_bounds) &
+            
+            !> Tests for arg/argd/argpi
+            #:for k1 in CMPLX_KINDS
+            , new_unittest("arg-cmplx-${k1}$", test_arg_${k1}$) &
+            , new_unittest("argd-cmplx-${k1}$", test_argd_${k1}$) &
+            , new_unittest("argpi-cmplx-${k1}$", test_argpi_${k1}$) &
+            #:endfor
             
             !> Tests for `is_close` and `all_close`
             #:for k1 in REAL_KINDS
@@ -219,7 +230,66 @@ contains
 #:endif
 
     end subroutine test_clip_rqp_bounds
+
+    #:for k1 in CMPLX_KINDS
+    subroutine test_arg_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+        real(${k1}$), allocatable :: theta(:)
+        
+        #! For scalar
+        call check(error, abs(arg(2*exp((0.0_${k1}$, 0.5_${k1}$))) - 0.5_${k1}$) < tol, &
+            "test_nonzero_scalar")
+        if (allocated(error)) return
+        call check(error, abs(arg((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
+            "test_zero_scalar")
+        
+        #! and for array (180.0° see scalar version)
+        theta = arange(-179.0_${k1}$, 179.0_${k1}$, 3.58_${k1}$)
+        call check(error, all(abs(arg(exp(cmplx(0.0_${k1}$, theta/180*PI_${k1}$, ${k1}$))) - theta/180*PI_${k1}$) < tol), &
+            "test_array")
+        
+    end subroutine test_arg_${k1}$
     
+    subroutine test_argd_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+        real(${k1}$), allocatable :: theta(:)
+        
+        #! For scalar
+        call check(error, abs(argd((-1.0_${k1}$, 0.0_${k1}$)) - 180.0_${k1}$) < tol, &
+            "test_nonzero_scalar")
+        if (allocated(error)) return
+        call check(error, abs(argd((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
+            "test_zero_scalar")
+        
+        #! and for array (180.0° see scalar version)
+        theta = arange(-179.0_${k1}$, 179.0_${k1}$, 3.58_${k1}$)
+        call check(error, all(abs(argd(exp(cmplx(0.0_${k1}$, theta/180*PI_${k1}$, ${k1}$))) - theta) < tol), &
+            "test_array")
+        
+    end subroutine test_argd_${k1}$
+    
+    subroutine test_argpi_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+        real(${k1}$), allocatable :: theta(:)
+        
+        #! For scalar
+        call check(error, abs(argpi((-1.0_${k1}$, 0.0_${k1}$)) - 1.0_${k1}$) < tol, &
+            "test_nonzero_scalar")
+        if (allocated(error)) return
+        call check(error, abs(argpi((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
+            "test_zero_scalar")
+        
+        #! and for array (180.0° see scalar version)
+        theta = arange(-179.0_${k1}$, 179.0_${k1}$, 3.58_${k1}$)
+        call check(error, all(abs(argpi(exp(cmplx(0.0_${k1}$, theta/180*PI_${k1}$, ${k1}$))) - theta/180) < tol), &
+            "test_array")
+        
+    end subroutine test_argpi_${k1}$
+    #:endfor
+
     #:for k1 in REAL_KINDS
     subroutine test_is_close_real_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
