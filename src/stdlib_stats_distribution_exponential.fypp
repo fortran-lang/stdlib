@@ -55,7 +55,7 @@ module stdlib_stats_distribution_exponential
 
 
     interface cdf_expon
-    !! Version experimental
+    !! Version: experimental
     !!
     !! Exponential Distribution Cumulative Distribution Function
     !! ([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
