@@ -16,6 +16,8 @@ Features available from the latest git source
 - new module `stdlib_io_npy`
   [#581](https://github.com/fortran-lang/stdlib/pull/581)
   - new procedures `save_npy`, `load_npy`
+- update module `stdlib_math`
+  - new procedure `diff`
 
 Changes to existing modules
 

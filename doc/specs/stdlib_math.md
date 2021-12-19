@@ -528,3 +528,72 @@ program demo_math_all_close
     
 end program demo_math_all_close
 ```
+
+### `diff`
+
+#### Description
+
+Computes differences between adjacent elements of the input array.
+
+#### Syntax
+
+```fortran
+!> For rank-1 array
+Y = [[stdlib_math(module):diff(interface)]](X [, n])
+!> and for rank-2 array
+Y = [[stdlib_math(module):diff(interface)]](X [, n, dim])
+```
+
+#### Status
+
+Experimental.
+
+#### Class
+
+Pure function.
+
+#### Arguments
+
+Note: If the value of `dim` is not equal to `1` or `2`,
+`1` will be used by the internal process of `diff`. (Not recommended)
+
+`X`: Shall be a `real/integer` and `rank-1/rank-2` array.
+This argument is `intent(in)`.
+
+`n`: Shall be an `integer` scalar.
+This argument is `intent(in)` and `optional`, which is `1` by default.
+It represents to calculate the n-th order difference.
+
+`dim`: Shall be an `integer` scalar.
+This argument is `intent(in)` and `optional`, which is `1` by default.
+It represents to calculate the difference along which dimension.
+
+#### Result value
+
+Note: That `Y` has one fewer element than `X`.
+
+Returns a `real/integer` and `rank-1/rank-2` array.
+
+#### Example
+
+```fortran
+program demo_diff
+
+    use stdlib_math, only: diff
+    implicit none
+    
+    integer :: i(7) = [1, 1, 2, 3, 5, 8, 13]
+    real    :: x(6) = [0, 5, 15, 30, 50, 75]
+    integer :: A(3, 3) = reshape([1, 7, 17, 3, 11, 19, 5, 13, 23], [3, 3])
+    integer :: Y(3, 2)
+    
+    print *, diff(i)        !! [0, 1, 1, 2, 3, 5]
+    print *, diff(x, 2)     !! [5.0, 5.0, 5.0, 5.0]
+    
+    Y = diff(A, n=1, dim=2)
+    print *, Y(1, :)        !! [2, 2]
+    print *, Y(2, :)        !! [4, 2]
+    print *, Y(3, :)        !! [2, 4]
+
+end program demo_diff
+```

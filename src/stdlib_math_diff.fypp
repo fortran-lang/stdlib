@@ -1,0 +1,61 @@
+#! Originally written in 2016 by Keurfon Luu (keurfonluu@outlook.com)
+#! https://github.com/keurfonluu/Forlab/blob/master/src/lib/forlab.f90#L2673
+
+#:include "common.fypp"
+#:set RI_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES
+submodule (stdlib_math) stdlib_math_diff
+
+    implicit none
+
+contains
+
+    #! `diff` computes differences of arrays of the ${t1}$ type.
+    
+    #:for k1, t1 in RI_KINDS_TYPES
+    pure module function diff_1_${k1}$(X, n) result(Y)
+        ${t1}$, intent(in) :: X(:)
+        integer, intent(in), optional :: n
+        ${t1}$, allocatable :: Y(:)
+        integer :: n_, i
+
+        n_ = optval(n, 1)
+
+        Y = X
+        do i = 1, n_
+            Y = Y(2:) - Y(:size(Y) - 1)
+        end do
+
+    end function diff_1_${k1}$
+
+    pure module function diff_2_${k1}$(X, n, dim) result(Y)
+        ${t1}$, intent(in) :: X(:, :)
+        integer, intent(in), optional :: n, dim
+        ${t1}$, allocatable :: Y(:, :)
+        integer :: n_, dim_, i
+
+        n_ = optval(n, 1)
+        if (present(dim)) then
+            if (dim == 1 .or. dim == 2) then
+                dim_ = dim
+            else
+                dim_ = 1
+            end if
+        else
+            dim_ = 1
+        end if
+        
+        Y = X
+        if (dim_ == 1) then
+            do i = 1, n_
+                Y = Y(2:, :) - Y(:size(Y, 1) - 1, :)
+            end do
+        elseif (dim == 2) then
+            do i = 1, n_
+                Y = Y(:, 2:) - Y(:, :size(Y, 2) - 1)
+            end do
+        end if
+
+    end function diff_2_${k1}$
+    #:endfor
+
+end submodule stdlib_math_diff

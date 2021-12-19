@@ -39,6 +39,7 @@ SRCFYPP = \
         stdlib_math_logspace.fypp \
         stdlib_math_is_close.fypp \
         stdlib_math_all_close.fypp \
+        stdlib_math_diff.fypp \
         stdlib_string_type.fypp \
         stdlib_string_type_constructor.fypp \
         stdlib_strings.fypp \
@@ -205,6 +206,7 @@ stdlib_math_is_close.o: \
 stdlib_math_all_close.o: \
     stdlib_math.o \
     stdlib_math_is_close.o
+stdlib_math_diff.o: stdlib_math.o
 stdlib_stringlist_type.o: stdlib_string_type.o \
     stdlib_math.o \
     stdlib_optval.o
