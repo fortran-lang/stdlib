@@ -1452,7 +1452,7 @@ Pure/elemental function
 ##### Arguments
 
 `key`: shall be a scalar  expression of type default character or a
-rank-1 integer vector expression of kind `INt8`, `int16`, `int32`, or
+rank-1 integer vector expression of kind `int8`, `int16`, `int32`, or
 `int64`. It is an `intent(in)` argument.
 
 `seed`: shall be an integer expression of kind `int64`. It is
