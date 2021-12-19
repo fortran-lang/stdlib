@@ -572,7 +572,6 @@ Returns a `logical` scalar/array.
 program demo_math_is_close
 
     use stdlib_math,  only: is_close
-    use stdlib_error, only: check
     real :: x(2) = [1, 2], y, NAN
     
     y   = -3
@@ -637,7 +636,6 @@ Returns a `logical` scalar.
 program demo_math_all_close
 
     use stdlib_math,  only: all_close
-    use stdlib_error, only: check
     real    :: x(2) = [1, 2], y, NAN
     complex :: z(4, 4)
     
