@@ -223,7 +223,7 @@ entries, and for keys with a few thousand elements, but testing of
 performance has only been been for tables up to `2**16`elements and
 performance may degrade for larger numbers of entries.
 While one of the codes in `stdlib_hash_64bit`,
-`SPSOOKY_HASH`, can also be used to calculate 128 bit hash codes, none
+`SPOOKY_HASH`, can also be used to calculate 128 bit hash codes, none
 of the current codes can be used to calculate 256 bit hash codes.
 Such larger hash codes are useful for larger hash tables and keys, and
 for checksums.
