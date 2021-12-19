@@ -415,8 +415,7 @@ allows their quick loading and retainment in the instruction cache,
 giving a performance boost where the hashing is intermittent.
 (See the
 [SMHasher discussion](https://github.com/rurban/smhasher/README.md)
-and S. Richter, V. Alvarez, and J. Dittrich,
-["A Seven-Dimensional Analysis of Hashing Methods and its Implications on Query Processing"](https://bigdata.uni-saarland.de/publications/p249-richter.pdf).
+and [S. Richter, V. Alvarez, and J. Dittrich. 2015. A Seven-Dimensional Analysis of Hashing Methods and its Implications on Query Processing, Proceedings of the VLDB Endowment, Vol. 9, No. 3.](https://bigdata.uni-saarland.de/publications/p249-richter.pdf) [https://doi.org/10.14778/2850583.2850585](https://doi.org/10.14778/2850583.2850585).
 
 The `stdlib_32_bit_nmhashes` submodule provides implementations
 of James Z.M. Gao's `nmhash32` and `nmhash32x` algorithms,
@@ -1624,7 +1623,7 @@ various hash functions. The other is a comparison of the outputs of
 the Fortran hash functions, with the outputs of the C and C++ hash
 procedures that are the inspiration for the Fortran hash functions.
 
-In the `src/test/hash_functions` subdirectory, the Fortran Standard
+In the `src/test/hash_functions_perf` subdirectory, the Fortran Standard
 Library provides two performance test codes for
 the hash functions of `stdlib_hash_32bit` and
 `stdlib_hash_64bit`, `test_32_bit_hash_performance` and
@@ -1729,20 +1728,17 @@ severely impact the performance of  `nmhash32`, `nmhash32x`,
 `water_hash`, `pengy_hash`, and `spooky_hash` relative to
 `fnv_1_hash` and `fnv_1a_hash`.
 
-In the `src/test/hash_functions/validation` subdirectory, the Fortran
-Standard Library implements three executables to test the validity of
-the Fortran codes against the original C and C++ codes. The three
-executables must be compiled manually using the makefile
-`Makefile.validation`, and the compiler suite used must be
-GCC's. The first executable, `generate_key_array` is
-based on Fortran code, and generates a random sequence of 2048
+In the `src/test/hash_functions` subdirectory, the Fortran
+Standard Library contains codes to test the validity of
+the Fortran codes against the original C and C++ codes. It consists of one
+executable `test_hash_functions` that
+1) generates a random sequence of 2048
 integers of kind `int8`, and stores that sequence in the binary file
-`key_array.bin`. The second executable, `generate_hash_arrays`, reads
-the values in `key_array.bin`, and, for each complicated hash
-procedure generates a corresponding binary file containing 2049 hash
-values generated from the values in `key_array.bin`. The third
-executable, `hash_validity_test`, reads the binary files and for each
-complicated hash procedure compares the contents of the binary file
+`key_array.bin`;
+2) reads the values in `key_array.bin`, and, for each complicated C/C++-coded
+hash procedure, generates a corresponding binary file containing 2049 hash
+values generated from the values in `key_array.bin`., and
+3) reads the binary files, and, for each complicated C/C++-coded hash procedure,
+compares the contents of the binary file
 with the results of calculating hash values using the corresponding
-Fortran hash procedure on the same keys. These executables must be run
-manually in the same order.
+Fortran hash procedure on the same keys.
