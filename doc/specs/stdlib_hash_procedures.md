@@ -415,8 +415,7 @@ allows their quick loading and retainment in the instruction cache,
 giving a performance boost where the hashing is intermittent.
 (See the
 [SMHasher discussion](https://github.com/rurban/smhasher/README.md)
-and S. Richter, V. Alvarez, and J. Dittrich,
-["A Seven-Dimensional Analysis of Hashing Methods and its Implications on Query Processing"](https://bigdata.uni-saarland.de/publications/p249-richter.pdf).
+and [S. Richter, V. Alvarez, and J. Dittrich. 2015. A Seven-Dimensional Analysis of Hashing Methods and its Implications on Query Processing, Proceedings of the VLDB Endowment, Vol. 9, No. 3.](https://bigdata.uni-saarland.de/publications/p249-richter.pdf) [https://doi.org/10.14778/2850583.2850585](https://doi.org/10.14778/2850583.2850585).
 
 The `stdlib_32_bit_nmhashes` submodule provides implementations
 of James Z.M. Gao's `nmhash32` and `nmhash32x` algorithms,
