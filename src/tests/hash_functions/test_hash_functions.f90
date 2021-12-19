@@ -1,11 +1,12 @@
 module test_hash_functions
-    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use testdrive, only : new_unittest, unittest_type, error_type, check, &
+        skip_test
     use stdlib_kinds, only: int8, int32, int64, dp
-    use stdlib_32_bit_hash_codes, only: little_endian &
+    use stdlib_hash_32bit, only: little_endian &
         , nmhash32 &
         , nmhash32x &
         , water_hash
-    use stdlib_64_bit_hash_codes, only: pengy_hash, spooky_hash
+    use stdlib_hash_64bit, only: pengy_hash, spooky_hash
  
     implicit none
     private

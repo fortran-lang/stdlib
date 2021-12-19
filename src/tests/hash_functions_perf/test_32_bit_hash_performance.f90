@@ -8,7 +8,7 @@ program test_32_bit_hash_performance
         int32,        &
         int64
 
-    use stdlib_32_bit_hash_codes
+    use stdlib_hash_32bit
 
     implicit none
 
