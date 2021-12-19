@@ -71,6 +71,7 @@ list(
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
+    stdlib_array.f90
     stdlib_error.f90
     stdlib_logger.f90
     stdlib_system.F90
