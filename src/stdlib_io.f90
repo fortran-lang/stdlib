@@ -4,15 +4,17 @@ module stdlib_io
   !! Provides a support for file handling
   !! ([Specification](../page/specs/stdlib_io.html))
 
+  use, intrinsic :: iso_fortran_env, only : input_unit
   use stdlib_kinds, only: sp, dp, xdp, qp, &
       int8, int16, int32, int64
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
   use stdlib_ascii, only: is_blank
+  use stdlib_string_type, only : string_type
   implicit none
   private
   ! Public API
-  public :: loadtxt, savetxt, open
+  public :: loadtxt, savetxt, open, getline
 
   ! Private API that is exposed so that we can test it in tests
   public :: parse_mode
@@ -28,6 +30,16 @@ module stdlib_io
     FMT_COMPLEX_DP = '(*(es24.16e3,1x,es24.16e3))', &
     FMT_COMPLEX_XDP = '(*(es26.18e3,1x,es26.18e3))', &
     FMT_COMPLEX_QP = '(*(es44.35e4,1x,es44.35e4))'
+
+  !> Version: experimental
+  !>
+  !> Read a whole line from a formatted unit into a string variable
+  interface getline
+    module procedure :: getline_char
+    module procedure :: getline_string
+    module procedure :: getline_input_char
+    module procedure :: getline_input_string
+  end interface getline
 
   interface loadtxt
     !! version: experimental
@@ -837,5 +849,99 @@ contains
     end do
 
   end function parse_mode
+
+  !> Version: experimental
+  !>
+  !> Read a whole line from a formatted unit into a deferred length character variable
+  subroutine getline_char(unit, line, iostat, iomsg)
+    !> Formatted IO unit
+    integer, intent(in) :: unit
+    !> Line to read
+    character(len=:), allocatable, intent(out) :: line
+    !> Status of operation
+    integer, intent(out), optional :: iostat
+    !> Error message
+    character(len=:), allocatable, optional :: iomsg
+
+    integer, parameter :: bufsize = 4096
+    character(len=bufsize) :: buffer, msg
+    integer :: chunk, stat
+    logical :: opened
+
+    if (unit /= -1) then
+      inquire(unit=unit, opened=opened)
+    else
+      opened = .false.
+    end if
+
+    if (opened) then
+      open(unit=unit, pad="yes", iostat=stat, iomsg=msg)
+    else
+      stat = 1
+      msg = "Unit is not connected"
+    end if
+
+    line = ""
+    do while (stat == 0)
+      read(unit, '(a)', advance='no', iostat=stat, iomsg=msg, size=chunk) buffer
+      if (stat > 0) exit
+      line = line // buffer(:chunk)
+    end do
+    if (is_iostat_eor(stat)) stat = 0
+
+    if (stat /= 0 .and. present(iomsg)) iomsg = trim(msg)
+    if (present(iostat)) then
+      iostat = stat
+    else if (stat /= 0) then
+      call error_stop(trim(msg))
+    end if
+  end subroutine getline_char
+
+  !> Version: experimental
+  !>
+  !> Read a whole line from a formatted unit into a string variable
+  subroutine getline_string(unit, line, iostat, iomsg)
+    !> Formatted IO unit
+    integer, intent(in) :: unit
+    !> Line to read
+    type(string_type), intent(out) :: line
+    !> Status of operation
+    integer, intent(out), optional :: iostat
+    !> Error message
+    character(len=:), allocatable, optional :: iomsg
+
+    character(len=:), allocatable :: buffer
+
+    call getline(unit, buffer, iostat, iomsg)
+    line = string_type(buffer)
+  end subroutine getline_string
+
+  !> Version: experimental
+  !>
+  !> Read a whole line from the standard input into a deferred length character variable
+  subroutine getline_input_char(line, iostat, iomsg)
+    !> Line to read
+    character(len=:), allocatable, intent(out) :: line
+    !> Status of operation
+    integer, intent(out), optional :: iostat
+    !> Error message
+    character(len=:), allocatable, optional :: iomsg
+
+    call getline(input_unit, line, iostat, iomsg)
+  end subroutine getline_input_char
+
+  !> Version: experimental
+  !>
+  !> Read a whole line from the standard input into a string variable
+  subroutine getline_input_string(line, iostat, iomsg)
+    !> Line to read
+    type(string_type), intent(out) :: line
+    !> Status of operation
+    integer, intent(out), optional :: iostat
+    !> Error message
+    character(len=:), allocatable, optional :: iomsg
+
+    call getline(input_unit, line, iostat, iomsg)
+  end subroutine getline_input_string
 
 end module stdlib_io
