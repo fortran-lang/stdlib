@@ -8,7 +8,7 @@ module stdlib_math
     public :: clip, gcd, linspace, logspace
     public :: EULERS_NUMBER_SP, EULERS_NUMBER_DP
     public :: DEFAULT_LINSPACE_LENGTH, DEFAULT_LOGSPACE_BASE, DEFAULT_LOGSPACE_LENGTH
-    public :: arange, is_close, all_close
+    public :: arange, arg, argd, argpi, is_close, all_close
 
     integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
     integer, parameter :: DEFAULT_LOGSPACE_LENGTH = 50
@@ -17,6 +17,10 @@ module stdlib_math
     ! Useful constants for lnspace
     real(sp), parameter :: EULERS_NUMBER_SP = exp(1.0_sp)
     real(dp), parameter :: EULERS_NUMBER_DP = exp(1.0_dp)
+
+    !> Useful constants `PI` for `argd/argpi`
+    real(kind=sp), parameter :: PI_sp = acos(-1.0_sp)
+    real(kind=dp), parameter :: PI_dp = acos(-1.0_dp)
 
     interface clip
         module procedure clip_int8
@@ -456,6 +460,31 @@ module stdlib_math
 
     !> Version: experimental
     !>
+    !> `arg` computes the phase angle in the interval (-π,π].
+    !> ([Specification](../page/specs/stdlib_math.html#arg))
+    interface arg
+        procedure :: arg_sp
+        procedure :: arg_dp
+    end interface arg
+
+    !> Version: experimental
+    !>
+    !> `argd` computes the phase angle of degree version in the interval (-180.0,180.0].
+    !> ([Specification](../page/specs/stdlib_math.html#argd))
+    interface argd
+        procedure :: argd_sp
+        procedure :: argd_dp
+    end interface argd
+
+    !> Version: experimental
+    !>
+    !> `argpi` computes the phase angle of circular version in the interval (-1.0,1.0].
+    !> ([Specification](../page/specs/stdlib_math.html#argpi))
+    interface argpi
+        procedure :: argpi_sp
+        procedure :: argpi_dp
+    end interface argpi
+    
     !> Returns a boolean scalar/array where two scalar/arrays are element-wise equal within a tolerance.
     !> ([Specification](../page/specs/stdlib_math.html#is_close))
     interface is_close
@@ -625,6 +654,57 @@ contains
     end function clip_dp
 
 
+    elemental function arg_sp(z) result(result) 
+        complex(sp), intent(in) :: z
+        real(sp) :: result
+
+        result = merge(0.0_sp, atan2(z%im, z%re), z == (0.0_sp, 0.0_sp))
+
+    end function arg_sp
+
+    elemental function argd_sp(z) result(result) 
+        complex(sp), intent(in) :: z
+        real(sp) :: result
+
+        result = merge(0.0_sp, atan2(z%im, z%re), z == (0.0_sp, 0.0_sp)) &
+                 *180.0_sp/PI_sp
+
+    end function argd_sp
+
+    elemental function argpi_sp(z) result(result) 
+        complex(sp), intent(in) :: z
+        real(sp) :: result
+
+        result = merge(0.0_sp, atan2(z%im, z%re), z == (0.0_sp, 0.0_sp)) &
+                 /PI_sp
+
+    end function argpi_sp
+    elemental function arg_dp(z) result(result) 
+        complex(dp), intent(in) :: z
+        real(dp) :: result
+
+        result = merge(0.0_dp, atan2(z%im, z%re), z == (0.0_dp, 0.0_dp))
+
+    end function arg_dp
+
+    elemental function argd_dp(z) result(result) 
+        complex(dp), intent(in) :: z
+        real(dp) :: result
+
+        result = merge(0.0_dp, atan2(z%im, z%re), z == (0.0_dp, 0.0_dp)) &
+                 *180.0_dp/PI_dp
+
+    end function argd_dp
+
+    elemental function argpi_dp(z) result(result) 
+        complex(dp), intent(in) :: z
+        real(dp) :: result
+
+        result = merge(0.0_dp, atan2(z%im, z%re), z == (0.0_dp, 0.0_dp)) &
+                 /PI_dp
+
+    end function argpi_dp
+
     !> Returns the greatest common divisor of two integers of kind int8
     !> using the Euclidean algorithm.
     elemental function gcd_int8(a, b) result(res)
@@ -697,4 +777,5 @@ contains
         end do
     end function gcd_int64
 
+    
 end module stdlib_math
