@@ -14,7 +14,7 @@ This cost is often reduced by computing a near unique integer value,
 termed a hash code, from the structure of the object using a procedure
 termed a hash function.
 Equality of hash codes is a necessary, but not sufficient, condition
-for the original objects to be equal. 
+for the original objects to be equal.
 As integer comparisons are very efficient, performing an initial
 comparison of hash codes and then performing a detailed comparison
 only if the hash codes are equal can improve performance.
@@ -42,7 +42,7 @@ MIT license (`FNV-1 Hash`, `FNV-1A Hash`, `nmhash32`, `nmhash32x`,
 `waterhash`, `pengyhash` and `SpookyHash`)
 The licensing status of the algorithms are discussed below.
 
-`FIBONACCI_HASH` is a scalar hash. It is an implementation in Fortran
+`fibonacci_hash` is a scalar hash. It is an implementation in Fortran
 2008 and signed two's complement integers of the Fibonacci Hash
 described in D. E. Knuth, "The Art of
 Computer Programming, Second Edition, Volume 3, Sorting and
@@ -50,7 +50,7 @@ Searching", Addison-Wesley, Upper Saddle River, NJ,
 pp. 517-518, 1998. The algorithms in that source are considered public
 domain, and its use is unrestricted.
 
-`UNIVERSAL_MULT_HASH` is a scalar hash. It is an implementation in
+`universal_mult_hash` is a scalar hash. It is an implementation in
 Fortran 2008 and signed two's complement integers of the
 universal multiplicative hash algorithm of M. Dietzfelbinger,
 T. Hagerup, J. Katajainen, and M. Penttonen, "A Reliable Randomized
@@ -59,7 +59,7 @@ No. 1, Oct. 1997, pp. 19-51. Because of its publication in the Journal
 of Algorithms, the universal multiplicative hash algorithm is public
 domain.
 
-`FNV_1_HASH` and `FNV_1A_HASH` are translations to Fortran 2008 and
+`fnv_1_hash` and `fnv_1a_hash` are translations to Fortran 2008 and
 signed two's complement integers of the
 `FNV-1` and `FNV-1a` hash functions of Glenn Fowler, Landon Curt Noll,
 and Phong Vo, that has been released into the public
@@ -70,7 +70,7 @@ these functions is available at
 These functions have been modified from their normal forms to also
 encode the structure size in the output hash.
 
-Similarly `SPOOKY_HASH` and associated procedures are translations to
+Similarly `spooky_hash` and associated procedures are translations to
 Fortran 2008 and signed two's complement integers of the unsigned 64
 bit version 2 `SpookyHash` functions of Bob
 Jenkins <https://burtleburtle.net/bob/hash/spooky.html> to signed 64
@@ -81,8 +81,8 @@ domain and has given permission to treat this code as public domain in
 the USA, provided the code can be used under other licenses and he is
 given appropriate credit.
 
-`NMHASH32` and `NMHASH32x` are translations to Fortran 2008 and signed
-two's complement integers of the unsigned 32 bit
+`nmhash32` and `nmhash32x` are translations to Fortran 2008 and signed
+two's complement integers of the unsigned 32-bit
 hashes of James Z. M. Gao's `nmhash32` and `nmhash32x` version of 0.2,
 <https://github.com/gzm55/hash-garage/blob/a8913138bdb3b7539c202edee30a7f0794bbd835/nmhash.h>
 James Z. M. Gao has released his code under the BSD 2 Clause
@@ -115,7 +115,7 @@ License. The BSD 2-Clause license is as follows:
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 
-`WATER_HASH` is a translation to Fortran 2008  and signed two's
+`water_hash` is a translation to Fortran 2008  and signed two's
 complement integers of the `waterhash` algorithm
 of Tommy Ettinger. This algorithm is inspired by the Wy Hash of
 Wang Yi. Tommy Ettinger's original C++ code, `waterhash.h`,
@@ -148,7 +148,7 @@ The `unlicense` reads as follows:
 
     For more information, please refer to <http://unlicense.org>
 
-`PENGY_HASH` is a translation to Fortran 2008 and signed two's
+`pengy_hash` is a translation to Fortran 2008 and signed two's
 complement arithmetic of the `pengyhash` algorithm of Alberto Fajardo,
 copyright 2020. Alberto Fajardo's original C code, `pengyhash.c`, is
 available at the URL:
@@ -211,13 +211,13 @@ readers of this document:
 The Standard Library provides two modules implementing hash
 functions and scalar hashes.
 The `stdlib_hash_32bit` module provides procedures to
-compute 32 bit integer hash codes and a scalar hash. 
+compute 32-bit integer hash codes and a scalar hash.
 The hash codes can be used for tables of up to `2**30` entries, and
 for keys with a few hundred elements, but performance has only been
 tested for tables up to `2**16` entries and performance may degrade
 for larger numbers of entries.
 The `stdlib_hash_64bit` module provides hash procedures to
-compute 64 bit integer hash codes and a scalar hash.
+compute 64-bit integer hash codes and a scalar hash.
 The hash codes can, in principle, be used for tables of up to `2**62`
 entries, and for keys with a few thousand elements, but testing of
 performance has only been been for tables up to `2**16`elements and
@@ -233,7 +233,7 @@ Fortran codes, but the larger hash codes may be added to the library
 if there is a demand for them.
 
 Hash functions are often divided into two categories
-"cryptographic" and "non-cryptographic". 
+"cryptographic" and "non-cryptographic".
 Cryptographic hash functions produce codes that are infeasible to
 reverse without additional information beyond the identity of
 the hash function used to generate the code and the resulting codes.
@@ -244,7 +244,7 @@ functions that are considered non-cryptographic, with
 implementations available in the public domain.
 
 There are a number of algorithms available for the computation of
-non-cryptographic 32 and 64 bit hash codes that differ in their
+non-cryptographic 32 and 64-bit hash codes that differ in their
 computational complexity,
 their relative performance on different size keys, and the
 expected uniqueness (randomness) of the resulting hash codes.
@@ -264,7 +264,7 @@ purpose hash functions.
 Instead hash functions are defined for some of the more common
 objects: character strings and rank-1 arrays of integers.
 Other objects can, in principle, be hashed by using `transfer` to
-map their contents to an integer array, typically one of kind `INT8`.
+map their contents to an integer array, typically one of kind `int8`.
 The other problem is that hash codes are typically defined using
 modular unsigned integer arithmetic.
 As such integers are not part of the current Fortran standard,
@@ -272,14 +272,14 @@ workarounds have to be used.
 These can take two forms.
 In one, the operations are emulated by using an integer of a
 larger size, or, for the larger integers, by dividing the integer into
-two lower and higher order halves, 
-and performing the operations on each half separately using 
+two lower and higher order halves,
+and performing the operations on each half separately using
 the larger integers.
 In the second, the unsigned integers may be replaced directly by
 the corresponding signed integers, but
 otherwise not modifying the code logic.
 The first should be standard conforming on current compilers, but
-is more computationally intensive unless the compilers recognize 
+is more computationally intensive unless the compilers recognize
 underlying idioms that are rarely used in Fortran codes. The second is
 not standard conforming as bit operations involving the sign are
 undefined,
@@ -289,7 +289,7 @@ or under flow. The codes currently use the second method.
 
 In order to compile the hash function modules, the compilers must
 implement much of Fortran 2003, and selected components of Fortran
-2008: submodules, 64 bit integers, and some bit intrinsics.
+2008: submodules, 64-bit integers, and some bit intrinsics.
 The main limitation on valid compilers is whether they
 implement the submodules enhancement of Fortran 2008.
 In order to properly run the hash functions, the compilers must
@@ -331,32 +331,32 @@ in a given hash table, but can be changed and the objects rehashed
 if collisions are unusually common.
 The *seed* can be either a scalar or a two-element array.
 Some of the hash functions have alternatives that allow incremental
-hashing. 
+hashing.
 
 |Algorithm|Seed|Result|
 |---------|----|------|
-|FNV-1|None|32 or 64 bit integer|
-|FNV-1a|None|32 or 64 bit integer|
-|nmhash32 |32 bit scalar integer|32 bit integer|
-|nmhash32x |32 bit scalar integer|32 bit integer|
-|pengyhash |32 bit scalar integer|64 bit integer|
-|Spooky Hash|64 bit two element vector|64 bit two element vector|
-|waterhash|64 bit scalar integer|32 bit integer|
+|FNV-1|None|32 or 64-bit integer|
+|FNV-1a|None|32 or 64-bit integer|
+|nmhash32 |32-bit scalar integer|32-bit integer|
+|nmhash32x |32-bit scalar integer|32-bit integer|
+|pengyhash |32-bit scalar integer|64-bit integer|
+|Spooky Hash|64-bit two element vector|64-bit two element vector|
+|waterhash|64-bit scalar integer|32-bit integer|
 
 The hash function modules each provide at least five algorithms for
-hash functions: two optimized for small (< 32 `INT8` integer elements)
-keys, and three optimized for large (> 100 `INT8` integer elements)
+hash functions: two optimized for small (< 32 `int8` integer elements)
+keys, and three optimized for large (> 100 `int8` integer elements)
 keys.
 The core implementation for each algorithm is for keys that are
-vectors of `INT8` integers.
+vectors of `int8` integers.
 These core implementations are then used in wrappers for keys
-that are vectors of `INT16`, `INT32` and `INT64` integers, or default
+that are vectors of `int16`, `int32` and `int64` integers, or default
 character strings, in the expectation that inlining will eliminate the
-overhead of transferring the other keys to `INT8` integer vectors.
+overhead of transferring the other keys to `int8` integer vectors.
 
 The `stdlib_hash_32bit` module provides
 implementations of five hash code algorithms:
-the *FNV_1* and *FNV_1A* variants of Glenn Fowler, 
+the *FNV_1* and *FNV_1A* variants of Glenn Fowler,
 Landon Curt Noll, and Kiem-Phong Vo;
 the *nmhash32* and *nmhash32x* of James Z. M. Gao;
 and the *waterhash*  of Tommy Ettinger.
@@ -367,16 +367,16 @@ respectively. The `nmhash32`, `nmhash32x`, and `waterhash` algorithms
 require seeds. The submodules provide separate seed generators
 for each algorithm.
 The module itself
-implements two scalar hash functions, `FIBONACCI_HASH` and
-`UNIVERSAL_MULT_HASH`. 
-It also implements the subroutine, `ODD_RANDOM_INTEGER`, for
-generating seeds for `UNIVERSAL_MULT_HASH`.
+implements two scalar hash functions, `fibonacci_hash` and
+`universal_mult_hash`.
+It also implements the subroutine, `odd_random_integer`, for
+generating seeds for `universal_mult_hash`.
 All assume a two's complement sign bit, and no out of
 range checks.
 
 The `stdlib_hash_64bit` module also provides
 implementations of four hash code algorithms:
-the *FNV_1* and *FNV_1A* variants of Glenn Fowler, 
+the *FNV_1* and *FNV_1A* variants of Glenn Fowler,
 Landon Curt Noll, and Kiem-Phong Vo;
 the *pengyhash* of Alberto Fajardo;
 and the *SpookyHash*  of Bob Jenkins.
@@ -388,9 +388,9 @@ The `pengyhash`, and `Spooky Hash` algorithms
 require seeds. The submodules provide separate seed generators
 for each algorithm.
 The module itself implements two scalar hash functions,
-`FIBONACCI_HASH` and `UNIVERSAL_MULT_HASH`.
-It also implements the subroutine, `ODD_RANDOM_INTEGER`, for
-generating seeds for `UNIVERSAL_MULT_HASH`.
+`fibonacci_hash` and `universal_mult_hash`.
+It also implements the subroutine, `odd_random_integer`, for
+generating seeds for `universal_mult_hash`.
 All assume a two's complement sign bit, and no out of
 range checks.
 
@@ -402,7 +402,7 @@ The FNV-1 and FNV-2 algorithms differ in their order of the
 multiplication and exclusive or operations.
 They differ from their normal implementation in that they also
 encode the structure size in the hash code.
-The 32 and 64 bit algorithms differ in their initial offsets and in
+The 32 and 64-bit algorithms differ in their initial offsets and in
 their multiplicative constants.
 Analysis suggests that `FNV_1A` should be better at randomizing the
 input, but tests with hash tables show negligible difference.
@@ -419,8 +419,8 @@ and [S. Richter, V. Alvarez, and J. Dittrich. 2015. A Seven-Dimensional Analysis
 
 The `stdlib_32_bit_nmhashes` submodule provides implementations
 of James Z.M. Gao's `nmhash32` and `nmhash32x` algorithms,
-version 0.2, 
-in the form of the overloaded functions, `NMHASH32` and `NMHASH32X`.
+version 0.2,
+in the form of the overloaded functions, `nmhash32` and `nmhash32x`.
 The implementations are based on the scalar versions of Gao's
 algorithms and not the vector versions that require access to
 the vector instructions of some compilers.
@@ -428,40 +428,40 @@ Both algorithms perform well on the SMHasher tests, and have no known
 bad seeds. The vector versions of both codes perform well on large
 keys, with the `nmhash32x` faster on short keys. To provide randomly
 generated seeds for the two functions the submodule also defines the
-subroutines `NEW_NMHASH32_SEED` and `NEW_NMHASH32X_SEED`. Gao claims
-that `NMHASH32X` is significantly faster than `NMHASH32` on short
+subroutines `new_nmhash32_seed` and `new_nmhash32x_seed`. Gao claims
+that `nmhash32x` is significantly faster than `nmhash32` on short
 seeds, but slower on long seeds, but our limited testing so far shows
-`NMHASH32X` to be significantly faster on short seeds and slightly
+`nmhash32x` to be significantly faster on short seeds and slightly
 faster on long seeds.
 
 The `stdlib_32_bit_water_hashes` submodule provides implementations
 of Tommy Ettinger's `waterhash` algorithm in the form of the overloaded
-function, `WATER_HASH`. Water Hash has not been tested by Reini Urban,
+function, `water_hash`. Water Hash has not been tested by Reini Urban,
 but Tommy Ettinger has tested it with Urban's SMHasher and presents
 results that shows Water Hash passing all the tests. So far his
 testing hasn't found any bad seeds for the algorithm. To provide
 randomly generated seeds for the hash function the submodule also
-defines the subroutine `NEW_WATER_HASH_SEED`.
+defines the subroutine `new_water_hash_seed`.
 
 The `stdlib_64_bit_pengy_hashes` submodule provides implementations of
 Alberto Fajardo's `pengyhash` in the form of the overloaded function,
-`PENGY_HASH`. Reini Urban's testing shows that PengyHash passes all
+`pengy_hash`. Reini Urban's testing shows that PengyHash passes all
 the tests and has no bad seeds.  To provide randomly generated seeds
 for the hash function the submodule also defines the subroutine
-`NEW_PENGY_HASH_SEED`. 
+`new_pengy_hash_seed`.
 
 The `stdlib_64_bit_spooky_hashes` submodule provides implementations
 of Bob Jenkins' SpookyHash in the form of the overloaded function,
-`SPOOKY_HASH`. Future implementations may provide the SpookyHash
+`spooky_hash`. Future implementations may provide the SpookyHash
 incremental hashing procedures.
-SpookyHash is optimized for large objects and should give excellent 
+SpookyHash is optimized for large objects and should give excellent
 performance for objects greater than about 96 byes, but has
 significant overhead for smaller objects.
 The code was designed for little-endian compilers, and will give
 different results on big-endian compilers, but the hash quality on
 those compilers is probably just as good.
 SpookyHash version 2 passes all of Reini Urban's SMHasher tests, and
-has one bad seed only when reduced to a 32 bit output.
+has one bad seed only when reduced to a 32-bit output.
 Its only potential problem is undefined behavior if the key is
 misaligned.
 
@@ -474,34 +474,34 @@ codes and hash indices for hash tables.
 They tend to be less useful for generating checksums, which generally
 benefit from having a larger number of bits.
 The `stdlib_hash_32bit` module defines five public overloaded
-32 bit hash code functions, `FNV_1`, `FNV-1A`, `NMHASH32`, `NMHASH32x`
-and `WATER_HASH`, two scalar hash functions, `FIBONACCI_HASH` and
-`UNIVERSAL_MULT_HASH`, four seed generators, `ODD_RANDOM_INTEGER` for
-`UNIVERSAL_MULT_HASH`, and `NEW_NMHASH32_SEED`, `NEW_NMHASH32X_SEED`,
-and `NEW_WATER_HASH_SEED`, for their respective hash code
-functions. It also defines the integer kind constant, `INT_HASH`, and
-a logical constant, `LITTLE_ENDIAN`, used to deal with one aspect of
+32-bit hash code functions, `FNV_1`, `FNV-1A`, `nmhash32`, `nmhash32x`
+and `water_hash`, two scalar hash functions, `fibonacci_hash` and
+`universal_mult_hash`, four seed generators, `odd_random_integer` for
+`universal_mult_hash`, and `new_nmhash32_seed`, `new_nmhash32x_seed`,
+and `new_water_hash_seed`, for their respective hash code
+functions. It also defines the integer kind constant, `int_hash`, and
+a logical constant, `little_endian`, used to deal with one aspect of
 the machine dependence of the hash codes.
 
-### The `INT_HASH` parameter
+### The `int_hash` parameter
 
 It is necessary to define the kind of integer used to return the hash
 code.
-As `stdlib_hash_32bit` deals exclusively with 32 bit hash codes,
-`INT_HASH` is an alias for the integer kind `INT32`.
+As `stdlib_hash_32bit` deals exclusively with 32-bit hash codes,
+`int_hash` is an alias for the integer kind `int32`.
 
-### The `LITTLE_ENDIAN` parameter
+### The `little_endian` parameter
 
 In implementing hash functions it is sometimes necessary to know the
 "endianess" of the compiler's integers. To this end the
 `stdlib_hash_32bit` module defines the logical parameter
-`LITTLE_ENDIAN` that, if true, indicates that the compiler has
+`little_endian` that, if true, indicates that the compiler has
 little-endian integers, and that if false indicates that the integers
 are big-endian.
 
 ### Specifications of the `stdlib_hash_32bit` procedures
 
-#### `FIBONACCI_HASH` - maps an integer to a smaller number of bits
+#### `fibonacci_hash` - maps an integer to a smaller number of bits
 
 ##### Status
 
@@ -509,7 +509,7 @@ Experimental
 
 ##### Description
 
-Calculates an `nbits` hash code from a 32 bit integer. This is useful
+Calculates an `nbits` hash code from a 32-bit integer. This is useful
 in mapping hash codes into small arrays.
 
 ##### Syntax
@@ -522,7 +522,7 @@ Elemental function
 
 ##### Arguments
 
-`key`: Shall be a scalar integer expression of kind `INT32`. It is an
+`key`: Shall be a scalar integer expression of kind `int32`. It is an
 `intent(in)` argument.
 
 `nbits` Shall be a scalar default integer expression with `0 < nbits <
@@ -530,13 +530,13 @@ Elemental function
 
 ##### Result
 
-The result is an integer of kind `INT32` with at most the lowest
+The result is an integer of kind `int32` with at most the lowest
 `nbits` nonzero, mapping to a range 0 to `nbits-1`.
 
 ##### Note
 
-`FIBONACCI_HASH` is an implementation of the Fibonacci Hash of Donald
-E. Knuth. It multiplies the `KEY` by the odd valued approximation to
+`fibonacci_hash` is an implementation of the Fibonacci Hash of Donald
+E. Knuth. It multiplies the `key` by the odd valued approximation to
 `2**32/phi`, where `phi` is the golden ratio 1.618..., and returns the
 `nbits` upper bits of the product as the lowest bits of the result.
 
@@ -558,7 +558,7 @@ program demo_fibonacci_hash
 end program demo_fibonacci_hash
 ```
 
-#### `FNV_1_HASH`- calculates a hash code from a key
+#### `fnv_1_hash`- calculates a hash code from a key
 
 ##### Status
 
@@ -566,7 +566,7 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit hash code from a rank-1 integer array or a default
+Calculates a 32-bit hash code from a rank-1 integer array or a default
 character string.
 
 ##### Syntax
@@ -580,19 +580,19 @@ Pure/elemental function
 ##### Argument
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank-1 integer array expression of kind `INT8`, `INT16`,
-`INT32`, or `INT64`.
+or a rank-1 integer array expression of kind `int8`, `int16`,
+`int32`, or `int64`.
 It is an `intent(in)` argument.
 
 ##### Result
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Note
 
-`FNV_1_HASH` is an implementation of the original FNV-1 hash code of Glenn
+`fnv_1_hash` is an implementation of the original FNV-1 hash code of Glenn
 Fowler, Landon Curt Noll, and Phong Vo.
-It differs from typical implementations in that it also ecodes the
+It differs from typical implementations in that it also encodes the
 size of the structure in the hash code.
 This code is relatively fast on short keys, and is small enough that it
 will often be retained in the instruction cache if hashing is
@@ -603,7 +603,7 @@ This code does not pass any of the SMHasher tests, but the resulting
 degradation in performance due to its larger number of collisions is
 expected to be minor compared to its faster hashing rate.
 It is a *pure* function for integer arrays, and an *elemental*
-function for character strings. 
+function for character strings.
 
 
 ##### Example
@@ -620,7 +620,7 @@ end program demo_fnv_1_hash
 ```
 
 
-#### `FNV_1A_HASH`- calculates a hash code from a key
+#### `fnv_1a_hash`- calculates a hash code from a key
 
 ##### Status
 
@@ -628,7 +628,7 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit hash code from a rank-1 integer array or a default
+Calculates a 32-bit hash code from a rank-1 integer array or a default
 character string.
 
 ##### Syntax
@@ -642,17 +642,17 @@ Pure/elemental function
 ##### Argument
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank-1 integer array expression of kind `INT8`, `INT16`,
-`INT32`, or `INT64`.
+or a rank-1 integer array expression of kind `int8`, `int16`,
+`int32`, or `int64`.
 It is an `intent(in)` argument.
 
 ##### Result
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Note
 
-`FNV_1A_HASH` is an implementation of the alternative FNV-1a hash code of
+`fnv_1a_hash` is an implementation of the alternative FNV-1a hash code of
 Glenn Fowler, Landon Curt Noll, and Phong Vo.
 It differs from typical implementations in that it also encodes the
 size of the structure in the hash code.
@@ -665,7 +665,7 @@ This code does not pass any of the SMHasher tests, but the resulting
 degradation in performance due to its larger number of collisions is
 expected to be minor compared to its faster hashing rate.
 It is a *pure* function for integer arrays, and an *elemental*
-function for character strings. 
+function for character strings.
 
 ##### Example
 
@@ -681,7 +681,7 @@ end program demo_fnv_1a_hash
 ```
 
 
-#### `NEW_NMHASH32_SEED`- returns a valid input seed for `NMHASH32`
+#### `new_nmhash32_seed`- returns a valid input seed for `nmhash32`
 
 ##### Status
 
@@ -689,8 +689,8 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit "random" integer that is believed to be a valid
-seed for `NMHASH32` and is also different from the input seed.
+Calculates a 32-bit "random" integer that is believed to be a valid
+seed for `nmhash32` and is also different from the input seed.
 
 ##### Syntax
 
@@ -702,24 +702,24 @@ Subroutine
 
 ##### Argument
 
-`seed`: shall be a defined integer scalar variable of kind `INT32`.
+`seed`: shall be a defined integer scalar variable of kind `int32`.
 It is an `intent(inout)` argument. On input `seed` should be defined,
 and on output it will be different from the input `seed`.
 
 ##### Note
 
-Currently there are no known bad seeds for `NMHASH32`, but if any are
+Currently there are no known bad seeds for `nmhash32`, but if any are
 identified the procedure will be revised so that they cannot be
 returned. This subroutine uses Fortran's intrinsic
- `RANDOM_NUMBER` and the values returned can be changed by calling the
- intrinsic `RANDOM_INIT`.
+ `random_number` and the values returned can be changed by calling the
+ intrinsic `random_init`.
 
 ##### Example
 
-See the example for `NMHASH32`.
+See the example for `nmhash32`.
 
 
-#### `NEW_NMHASH32X_SEED`- returns a valid input seed for `NMHASH32X`
+#### `new_nmhash32x_seed`- returns a valid input seed for `nmhash32x`
 
 ##### Status
 
@@ -727,8 +727,8 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit "random" integer that is believed to be a valid
-seed for `NMHASH32X` and is also different from the input seed.
+Calculates a 32-bit "random" integer that is believed to be a valid
+seed for `nmhash32x` and is also different from the input seed.
 
 ##### Syntax
 
@@ -740,24 +740,24 @@ Subroutine
 
 ##### Argument
 
-`seed`: shall be a defined integer scalar variable of kind `INT32`.
+`seed`: shall be a defined integer scalar variable of kind `int32`.
 It is an `intent(inout)` argument. On input `seed` should be defined,
 and on output it will be different from the input `seed`.
 
 ##### Note
 
-Currently there are no known bad seeds for `NMHASH32X`, but if any are
+Currently there are no known bad seeds for `nmhash32x`, but if any are
 identified the procedure will be revised so that they cannot be
 returned. This subroutine uses Fortran's intrinsic
- `RANDOM_NUMBER` and the values returned can be changed by calling the
- intrinsic `RANDOM_INIT`.
+ `random_number` and the values returned can be changed by calling the
+ intrinsic `random_init`.
 
 ##### Example
 
-See the example for `NMHASH32X`.
+See the example for `nmhash32x`.
 
 
-#### `NEW_WATER_HASH_SEED`- returns a valid input seed for `WATER_HASH`
+#### `new_water_hash_seed`- returns a valid input seed for `water_hash`
 
 ##### Status
 
@@ -765,8 +765,8 @@ Experimental
 
 ##### Description
 
-Calculates a 64 bit "random" integer that is believed to be a valid
-seed for `WATER_HASH` and is also different from the input seed.
+Calculates a 64-bit "random" integer that is believed to be a valid
+seed for `water_hash` and is also different from the input seed.
 
 ##### Syntax
 
@@ -778,25 +778,25 @@ Subroutine
 
 ##### Argument
 
-`seed`: shall be a defined integer scalar variable of kind `INT64`.
+`seed`: shall be a defined integer scalar variable of kind `int64`.
 It is an `intent(inout)` argument. On input `seed` should be defined,
 and on output it will be different from the input `seed`.
 
 ##### Note
 
-Currently there are no known bad seeds for `WATER_HASH`, but if any
+Currently there are no known bad seeds for `water_hash`, but if any
 are identified the procedure will be revised so that they cannot be
 returned. This subroutine uses Fortran's intrinsic
- `RANDOM_NUMBER` and the values returned can be changed by calling the
- intrinsic `RANDOM_INIT`.
- 
+ `random_number` and the values returned can be changed by calling the
+ intrinsic `random_init`.
+
 
 ##### Example
 
-See the example for `WATER_HASH`.
+See the example for `water_hash`.
 
 
-#### `NMHASH32`- calculates a hash code from a key and a seed
+#### `nmhash32`- calculates a hash code from a key and a seed
 
 ##### Status
 
@@ -804,7 +804,7 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit hash code from a rank-1 integer array or a default
+Calculates a 32-bit hash code from a rank-1 integer array or a default
 character string, and the input `seed`.
 
 ##### Syntax
@@ -818,20 +818,20 @@ Pure/elemental function
 ##### Arguments
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank-1 integer array expression of kind `INT8`, `INT16`,
-`INT32`, or `INT64`.
+or a rank-1 integer array expression of kind `int8`, `int16`,
+`int32`, or `int64`.
 It is an `intent(in)` argument.
 
-`seed`: shall be an integer scalar expression of kind `INT32`.
+`seed`: shall be an integer scalar expression of kind `int32`.
 It is an `intent(in)` argument.
 
 ##### Result
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Note
 
-`NMHASH32` is an implementation of the `nmhash32` hash code of
+`nmhash32` is an implementation of the `nmhash32` hash code of
 James Z. M. Gao.
 This code has good, but not great, performance on long keys, poorer
 performance on short keys.
@@ -839,7 +839,7 @@ As a result it should give fair performance for typical hash table
 applications.
 This code passes the SMHasher tests, and has no known bad seeds.
 It is a *pure* function for integer arrays, and an *elemental*
-function for character strings. 
+function for character strings.
 
 ##### Example
 
@@ -858,7 +858,7 @@ end program demo_nmhash32
 ```
 
 
-#### `NMHASH32X`- calculates a hash code from a key and a seed
+#### `nmhash32x`- calculates a hash code from a key and a seed
 
 ##### Status
 
@@ -866,7 +866,7 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit hash code from a rank-1 integer array or a default
+Calculates a 32-bit hash code from a rank-1 integer array or a default
 character string, and the input `seed`.
 
 ##### Syntax
@@ -880,20 +880,20 @@ Pure/elemental function
 ##### Arguments
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank-1 integer array expression of kind `INT8`, `INT16`,
-`INT32`, or `INT64`.
+or a rank-1 integer array expression of kind `int8`, `int16`,
+`int32`, or `int64`.
 It is an `intent(in)` argument.
 
-`seed`: shall be an integer scalar expression of kind `INT32`.
+`seed`: shall be an integer scalar expression of kind `int32`.
 It is an `intent(in)` argument.
 
 ##### Result
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Note
 
-`NMHASH32X` is an implementation of the `nmhash32x` hash code of
+`nmhash32x` is an implementation of the `nmhash32x` hash code of
 James Z. M. Gao.
 This code has good, but not great, performance on long keys, poorer
 performance on short keys.
@@ -901,7 +901,7 @@ As a result it should give fair performance for typical hash table
 applications.
 This code passes the SMHasher tests, and has no known bad seeds.
 It is a *pure* function for integer arrays, and an *elemental*
-function for character strings. 
+function for character strings.
 
 ##### Example
 
@@ -919,7 +919,7 @@ program demo_nmhash32x
 end program demo_nmhash32x
 ```
 
-#### `ODD_RANDOM_INTEGER` - returns an odd integer
+#### `odd_random_integer` - returns an odd integer
 
 ##### Status
 
@@ -927,7 +927,7 @@ Experimental
 
 ##### Description
 
-Returns a random 32 bit integer distributed uniformly over the odd values.
+Returns a random 32-bit integer distributed uniformly over the odd values.
 
 ##### Syntax
 
@@ -939,22 +939,22 @@ Subroutine
 
 ##### Argument
 
-`harvest`: Shall be a scalar integer variable of kind `INT32`. It is
+`harvest`: Shall be a scalar integer variable of kind `int32`. It is
 an `intent(out)` argument.
 
 ##### Note
 
-`ODD_RANDOM_INTEGER` is intended to generate seeds for
- `UNIVERSAL_MULT_HASH`. `ODD_RANDOM_NUMBER` uses Fortran's intrinsic
- `RANDOM_NUMBER` and the values returned can be changed by calling the
- intrinsic `RANDOM_INIT`.
- 
+`odd_random_integer` is intended to generate seeds for
+ `universal_mult_hash`. `odd_random_integer` uses Fortran's intrinsic
+ `random_number` and the values returned can be changed by calling the
+ intrinsic `random_init`.
+
 ##### Example
 
-See `UNIVERSAL_MULT_HASH`.
+See `universal_mult_hash`.
 
 
-#### `UNIVERSAL_MULT_HASH` - maps an integer to a smaller number of bits
+#### `universal_mult_hash` - maps an integer to a smaller number of bits
 
 ##### Status
 
@@ -962,7 +962,7 @@ Experimental
 
 ##### Description
 
-Calculates an `nbits` hash code from a 32 bit integer. This is useful
+Calculates an `nbits` hash code from a 32-bit integer. This is useful
 in mapping a hash value to a range 0 to `2**nbits-1`.
 
 ##### Syntax
@@ -975,10 +975,10 @@ Elemental function
 
 ##### Arguments
 
-`key`: Shall be a scalar integer expression of kind `INT32`. It is an
+`key`: Shall be a scalar integer expression of kind `int32`. It is an
 `intent(in)` argument.
 
-`seed`: Shall be a scalar integer expression of kind `INT32`. It is an
+`seed`: Shall be a scalar integer expression of kind `int32`. It is an
 `intent(in)` argument. It must have an odd value.
 
 `nbits` Shall be a scalar default integer expression with `0 < nbits <
@@ -986,14 +986,14 @@ Elemental function
 
 ##### Result
 
-The result is a scalar integer of kind `INT32` with at most the lowest
+The result is a scalar integer of kind `int32` with at most the lowest
 `nbits` nonzero.
 
 ##### Note
 
-`UNIVERSAL_MULT_HASH` is an implementation of the Universal
+`universal_mult_hash` is an implementation of the Universal
 Multiplicative Hash of M. Dietzfelbinger, et al.
-It multiplies the `KEY` by `SEED`, and returns the
+It multiplies the `key` by `seed`, and returns the
 `nbits` upper bits of the product as the lowest bits of the result.
 
 ##### Example
@@ -1019,7 +1019,7 @@ program demo_universal_mult_hash
 end program demo_odd_random_integer
 ```
 
-#### `WATER_HASH`- calculates a hash code from a key and a seed
+#### `water_hash`- calculates a hash code from a key and a seed
 
 ##### Status
 
@@ -1027,7 +1027,7 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit hash code from a rank-1 integer array or a default
+Calculates a 32-bit hash code from a rank-1 integer array or a default
 character string, and the input `seed`.
 
 ##### Syntax
@@ -1041,20 +1041,20 @@ Pure/elemental function
 ##### Arguments
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank-1 integer array expression of kind `INT8`, `INT16`,
-`INT32`, or `INT64`.
+or a rank-1 integer array expression of kind `int8`, `int16`,
+`int32`, or `int64`.
 It is an `intent(in)` argument.
 
-`seed`: shall be an integer scalar expression of kind `INT64`.
+`seed`: shall be an integer scalar expression of kind `int64`.
 It is an `intent(in)` argument.
 
 ##### Result
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Note
 
-`WATER_HASH` is an implementation of the `waterhash` hash code of
+`water_hash` is an implementation of the `waterhash` hash code of
 Tommy Ettinger.
 This code has excellent performance on long keys, and good performance
 on short keys.
@@ -1067,9 +1067,9 @@ output is poor,
 so far testing has not found any bad seeds for `waterhash`.
 It can have undefined behavior if the key is not word aligned,
 i.e. some computer processors can only process a given size integer if
-the address of the integer is a multiple of the integer size. 
+the address of the integer is a multiple of the integer size.
 It is a *pure* function for integer arrays, and an *elemental*
-function for character strings. 
+function for character strings.
 
 ##### Example
 
@@ -1096,44 +1096,44 @@ applications, and are primarily useful for check sums and related
 applications.
 As checksums often have to deal with extremely large files or
 directories, it is often useful to use incremental hashing as well as
-direct hashing, so 64 bit and higher hash algorithms often provide
+direct hashing, so 64-bit and higher hash algorithms often provide
 multiple implementations. The current module, for simplicity of API,
 doesn't provide any incremental hashes.
 The `stdlib_hash_64bit` module defines several public
-overloaded 64 bit hash procedures, `FNV_1`, `FNV-1A`,
-`PENGY_HASH`, and `SPOOKY_HASH`, two scalar hash functions,
-`FIBONACCI_HASH` and 
-`UNIVERSAL_MULT_HASH`, a seed generator, `ODD_RANDOM_INTEGER`, for the
-`UNIVERSAL_MULT_HASH`, and two seed generators, `NEW_PENGY_HASH_SEED`
-and `NEW_SPOOKY_HASH_SEED` for their respective hash functions. It
-also defines the integer kind constant, `INT_HASH`, used to specify
+overloaded 64-bit hash procedures, `FNV_1`, `FNV-1A`,
+`pengy_hash`, and `spooky_hash`, two scalar hash functions,
+`fibonacci_hash` and
+`universal_mult_hash`, a seed generator, `odd_random_integer`, for the
+`universal_mult_hash`, and two seed generators, `new_pengy_hash_seed`
+and `new_spooky_hash_seed` for their respective hash functions. It
+also defines the integer kind constant, `int_hash`, used to specify
 the kind of the hash function results, and a logical constant,
-`LITTLE_ENDIAN`, used to deal with one aspect of the machine
-dependence of the hash codes. 
+`little_endian`, used to deal with one aspect of the machine
+dependence of the hash codes.
 Note that while SpookyHash can be used as a sixty-four bit hash
 algorithm, its algorithms actually returns two element integer arrays
-of kind `INT64`, so it can also be used as a 128 bit hash.
+of kind `int64`, so it can also be used as a 128 bit hash.
 
-### The `INT_HASH` parameters
+### The `int_hash` parameters
 
 It is necessary to define the kind of integer used to return the hash
 code.
-As `stdlib_haash_64bit` deals exclusively with 64 bit hash codes,
-`INT_HASH` is an alias for the integer kind `INT64`.
+As `stdlib_haash_64bit` deals exclusively with 64-bit hash codes,
+`int_hash` is an alias for the integer kind `int64`.
 
-### The `LITTLE_ENDIAN` parameter
+### The `little_endian` parameter
 
 In implementing hash functions it is sometimes necessary to know the
 "endianess" of the compiler's integers. To this end the
 `stdlib_hash_64bit` module defines the logical parameter
-`LITTLE_ENDIAN` that if true indicates that the compiler has
+`little_endian` that if true indicates that the compiler has
 little-endian integers, and that if false indicates that the integers
 are big-endian.
 
 
 ### Specifications of the `stdlib_hash_64bit` procedures
 
-#### `FIBONACCI_HASH` - maps an integer to a smaller number of bits
+#### `fibonacci_hash` - maps an integer to a smaller number of bits
 
 ##### Status
 
@@ -1141,7 +1141,7 @@ Experimental
 
 ##### Description
 
-Calculates an `nbits` hash code from a 64 bit integer. This is useful
+Calculates an `nbits` hash code from a 64-bit integer. This is useful
 in mapping hash codes into small arrays.
 
 ##### Syntax
@@ -1154,7 +1154,7 @@ Elemental function
 
 ##### Arguments
 
-`key`: Shall be a scalar integer expression of kind `INT64`. It is an
+`key`: Shall be a scalar integer expression of kind `int64`. It is an
 `intent(in)` argument.
 
 `nbits` Shall be a scalar default integer expression with `0 < nbits <
@@ -1162,13 +1162,13 @@ Elemental function
 
 ##### Result
 
-The result is an integer of kind `INT64` with at most the lowest
+The result is an integer of kind `int64` with at most the lowest
 `nbits` nonzero, mapping to a range 0 to `nbits-1`.
 
 ##### Note
 
-`FIBONACCI_HASH` is an implementation of the Fibonacci Hash of Donald
-E. Knuth. It multiplies the `KEY` by the odd valued approximation to
+`fibonacci_hash` is an implementation of the Fibonacci Hash of Donald
+E. Knuth. It multiplies the `key` by the odd valued approximation to
 `2**64/phi`, where `phi` is the golden ratio 1.618..., and returns the
 `nbits` upper bits of the product as the lowest bits of the result.
 
@@ -1198,7 +1198,7 @@ Experimental
 
 ##### Description
 
-Calculates a 64 bit hash code from a rank-1 integer array or a default
+Calculates a 64-bit hash code from a rank-1 integer array or a default
 character string.
 
 ##### Syntax
@@ -1212,13 +1212,13 @@ Pure/elemental function
 ##### Argument
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank-1 integer array expression of kind `INT8`, `INT16`,
-`INT32`, or `INT64`.
+or a rank-1 integer array expression of kind `int8`, `int16`,
+`int32`, or `int64`.
 It is an `intent(in)` argument.
 
 ##### Result
 
-The result is a scalar integer of kind `INT64`. 
+The result is a scalar integer of kind `int64`.
 
 ##### Note
 
@@ -1235,7 +1235,7 @@ This code does not pass any of the SMHasher tests, but the resulting
 degradation in performance due to its larger number of collisions is
 expected to be minor compared to its faster hashing rate.
 It is a *pure* function for integer arrays, and an *elemental*
-function for character strings. 
+function for character strings.
 
 
 ##### Example
@@ -1262,7 +1262,7 @@ Experimental
 
 ##### Description
 
-Calculates a 64 bit hash code from a rank-1 integer array or a default
+Calculates a 64-bit hash code from a rank-1 integer array or a default
 character string.
 
 ##### Syntax
@@ -1276,13 +1276,13 @@ Pure/elemental function
 ##### Argument
 
 `key`: Shall be a deferred length default character scalar expression
-or a rank-1 integer array expression of kind `INT8`, `INT16`,
-`INT32`, or `INT64`.
+or a rank-1 integer array expression of kind `int8`, `int16`,
+`int32`, or `int64`.
 It is an `intent(in)` argument.
 
 ##### Result
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Note
 
@@ -1299,7 +1299,7 @@ This code does not pass any of the SMHasher tests, but the resulting
 degradation in performance due to its larger number of collisions is
 expected to be minor compared to its faster hashing rate.
 It is a *pure* function for integer arrays, and an *elemental*
-function for character strings. 
+function for character strings.
 
 ##### Example
 
@@ -1317,7 +1317,7 @@ end program demo_fnv_1a_hash
 ```
 
 
-#### `NEW_PENGY_HASH_SEED`- returns a valid input seed for `PENGY_HASH`
+#### `new_pengy_hash_seed`- returns a valid input seed for `pengy_hash`
 
 ##### Status
 
@@ -1325,8 +1325,8 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit "random" integer that is believed to be a valid
-seed for `PENGY_HASH` and is also different from the input seed.
+Calculates a 32-bit "random" integer that is believed to be a valid
+seed for `pengy_hash` and is also different from the input seed.
 
 ##### Syntax
 
@@ -1338,24 +1338,24 @@ Subroutine
 
 ##### Argument
 
-`seed`: shall be a defined integer scalar variable of kind `INT32`.
+`seed`: shall be a defined integer scalar variable of kind `int32`.
 It is an `intent(inout)` argument. On input `seed` should be defined,
 and on output it will be different from the input `seed`.
 
 ##### Note
 
-Currently there are no known bad seeds for `PENGY_HASH`, but if any are
+Currently there are no known bad seeds for `pengy_hash`, but if any are
 identified the procedure will be revised so that they cannot be
 returned.  This subroutine uses Fortran's intrinsic
- `RANDOM_NUMBER` and the values returned can be changed by calling the
- intrinsic `RANDOM_INIT`.
+ `random_number` and the values returned can be changed by calling the
+ intrinsic `random_init`.
 
 ##### Example
 
-See the example for `PENGY_HASH`.
+See the example for `pengy_hash`.
 
 
-#### `NEW_SPOOKY_HASH_SEED`- returns a valid input seed for `SPOOKY_HASH`
+#### `new_spooky_hash_seed`- returns a valid input seed for `spooky_hash`
 
 ##### Status
 
@@ -1363,9 +1363,9 @@ Experimental
 
 ##### Description
 
-Calculates a 32 bit two element vector of "random" integer values that
-is believed to be a valid seed for `SPOOKY_HASH` and is also different
-from the input seed. 
+Calculates a 32-bit two element vector of "random" integer values that
+is believed to be a valid seed for `spooky_hash` and is also different
+from the input seed.
 
 ##### Syntax
 
@@ -1378,23 +1378,23 @@ Subroutine
 ##### Argument
 
 `seed`: shall be a defined two element integer vector variable of kind
-`INT32`. It is an `intent(inout)` argument. On input `seed` should be
+`int32`. It is an `intent(inout)` argument. On input `seed` should be
 defined, and on output it will be different from the input `seed`.
 
 ##### Note
 
-Currently there are no known bad seeds for `SPOOKY_HASH`, but if any are
+Currently there are no known bad seeds for `spooky_hash`, but if any are
 identified the procedure will be revised so that they cannot be
 returned.  This subroutine uses Fortran's intrinsic
- `RANDOM_NUMBER` and the values returned can be changed by calling the
- intrinsic `RANDOM_INIT`.
+ `random_number` and the values returned can be changed by calling the
+ intrinsic `random_init`.
 
 ##### Example
 
-See the example for `SPOOKY_HASH`.
+See the example for `spooky_hash`.
 
 
-#### `ODD_RANDOM_INTEGER` - returns odd integer
+#### `odd_random_integer` - returns odd integer
 
 ##### Status
 
@@ -1402,7 +1402,7 @@ Experimental
 
 ##### Description
 
-Returns a random 64 bit integer distributed uniformly over the odd values.
+Returns a random 64-bit integer distributed uniformly over the odd values.
 
 ##### Syntax
 
@@ -1414,22 +1414,22 @@ Subroutine
 
 ##### Argument
 
-`harvest`: Shall be an integer of kind `INT64`. It is an `intent(out)`
+`harvest`: Shall be an integer of kind `int64`. It is an `intent(out)`
 argument.
 
 ##### Note
 
-`ODD_RANDOM_INTEGER` is intended to generate seeds for
- `UNIVERSAL_MULT_HASH`. `ODD_RANDOM_NUMBER` uses Fortran's intrinsic
- `RANDOM_NUMBER` and the values returned can be changed by calling the
- intrinsic `RANDOM_INIT`.
+`odd_random_integer` is intended to generate seeds for
+ `universal_mult_hash`. `odd_random_integer` uses Fortran's intrinsic
+ `random_number` and the values returned can be changed by calling the
+ intrinsic `random_init`.
 
 ##### Example
 
-See `UNIVERSAL_MULT_HASH`.
+See `universal_mult_hash`.
 
 
-#### `PENGY_HASH` - maps a character string or integer vector to an integer
+#### `pengy_hash` - maps a character string or integer vector to an integer
 
 ##### Status
 
@@ -1451,26 +1451,26 @@ Pure/elemental function
 ##### Arguments
 
 `key`: shall be a scalar  expression of type default character or a
-rank-1 integer vector expression of kind `INt8`, `INT16`, `INT32`, or
-`INTT64`. It is an `intent(in)` argument.
+rank-1 integer vector expression of kind `int8`, `int16`, `int32`, or
+`int64`. It is an `intent(in)` argument.
 
-`seed`: shall be an integer expression of kind `INT64`. It is
+`seed`: shall be an integer expression of kind `int64`. It is
 an `intent(in)` argument.
 
 ##### Result
 
-The result is an integer of kind `INT64`.
+The result is an integer of kind `int64`.
 
 ##### Note
 
-`PENGY_HASH` is an implementation of the 64 bit `pengyhash` of Alberto
+`pengy_hash` is an implementation of the 64-bit `pengyhash` of Alberto
 Fajardo. The hash has acceptable performance on small keys, and good
 performance on long keys. It passes all the SMHasher tests, and has
 no known bad seeds.
 It is a *pure* function for integer arrays, and an *elemental*
-function for character strings. 
+function for character strings.
 
-##### Exampl
+##### Example
 
 ```fortran
 program demo_pengy_hash
@@ -1489,7 +1489,7 @@ end program demo_pengy_hash
 ```
 
 
-#### `SPOOKY_HASH` - maps a character string or integer vector to an integer
+#### `spooky_hash` - maps a character string or integer vector to an integer
 
 ##### Status
 
@@ -1497,7 +1497,7 @@ Experimental
 
 ##### Description
 
-Maps a character string or integer vector to a 64 bit integer whose
+Maps a character string or integer vector to a 64-bit integer whose
 value also depends on a two element vector,  `seed`.
 
 ##### Syntax
@@ -1511,24 +1511,24 @@ Function
 ##### Arguments
 
 `key`: shall be a scalar of type default character expression or a
-rank-1 integer vector expression of kind `INT8`, `INT16`, `INT32`, or
-`INT64`. It is an `intent(in)` argument.
+rank-1 integer vector expression of kind `int8`, `int16`, `int32`, or
+`int64`. It is an `intent(in)` argument.
 
 `seed`: shall be a two element integer vector expression of kind
-`INT64`. It is an `intent(in)` argument.
+`int64`. It is an `intent(in)` argument.
 
 ##### Result
 
-The result is a two element integer vector of kind `INT64`.
+The result is a two element integer vector of kind `int64`.
 
 ##### Note
 
-`SPOOKY_HASH` is an implementation of the 64 bit version 2 of
+`spooky_hash` is an implementation of the 64-bit version 2 of
 SpookyHash of Bob Jenkins. The code was designed for little-endian
 compilers. The output is different on big-endian compilers, but still
-probably as good quality. It is often used as a 64 bit hash using the
+probably as good quality. It is often used as a 64-bit hash using the
 first element of the returned value, but can be used as a 128 bit
-hash. This version of `SPOOKY_HASH` has good performance on small keys
+hash. This version of `spooky_hash` has good performance on small keys
 and excellent performance on long keys. It passes all the SMHasher tests
 and has no known bad seeds.
 
@@ -1550,7 +1550,7 @@ program demo_spooky_hash
 end program demo_spooky_hash
 ```
 
-#### `UNIVERSAL_MULT_HASH` - maps an integer to a smaller number of bits
+#### `universal_mult_hash` - maps an integer to a smaller number of bits
 
 ##### Status
 
@@ -1558,7 +1558,7 @@ Experimental
 
 ##### Description
 
-Calculates an `nbits` hash code from a 64 bit integer. This is useful
+Calculates an `nbits` hash code from a 64-bit integer. This is useful
 in mapping a hash value to a range 0 to `2**nbits-1`.
 
 ##### Syntax
@@ -1571,10 +1571,10 @@ Elemental function
 
 ##### Arguments
 
-`key`: Shall be an integer of kind `INT64`. It is an `intent(in)`
+`key`: Shall be an integer of kind `int64`. It is an `intent(in)`
 argument.
 
-`seed`: Shall be an integer of kind `INT64`. It is an `intent(in)`
+`seed`: Shall be an integer of kind `int64`. It is an `intent(in)`
 argument. It should be an odd value.
 
 `nbits` Shall be a default integer with `0 < nbits < 64`. It is an
@@ -1582,15 +1582,15 @@ argument. It should be an odd value.
 
 ##### Result
 
-The result is an integer of kind `INT64` with at most the lowest
+The result is an integer of kind `int64` with at most the lowest
 `nbits` nonzero.
 
 ##### Note
 
-`UNIVERSAL_MULT_HASH` is an implementation of the Universal
+`universal_mult_hash` is an implementation of the Universal
 Multiplicative Hash of M. Dietzfelbinger, et al.
-It multiplies the `KEY` by `SEED`, and returns the
-`NBITS` upper bits of the product as the lowest bits of the result.
+It multiplies the `key` by `seed`, and returns the
+`nbits` upper bits of the product as the lowest bits of the result.
 
 ##### Example
 
@@ -1629,7 +1629,7 @@ the hash functions of `stdlib_hash_32bit` and
 `stdlib_hash_64bit`, `test_32_bit_hash_performance` and
 `test_64_bit_hash_performance` respectively. These are primarily set
 up to test runtime performance of the functions. They take a sample of
-`2**18` integers of kind `INT8` and break it up into vectors of size
+`2**18` integers of kind `int8` and break it up into vectors of size
 1, 2, 4, 8, 16, 64,  256, and 1024 elements, yielding `2**18`,
 `2**17`, `2**16`, `2**15`, `2**14`, `2**12`, `2**10`, and `2**8`
 vectors respectively. These are then processed by the hash functions
@@ -1738,6 +1738,7 @@ integers of kind `int8`, and stores that sequence in the binary file
 2) reads the values in `key_array.bin`, and, for each complicated C/C++-coded
 hash procedure, generates a corresponding binary file containing 2049 hash
 values generated from the values in `key_array.bin`., and
-3) reads the binary files, and, for each complicated C/C++-coded hash procedure, compares the contents of the binary file
+3) reads the binary files, and, for each complicated C/C++-coded hash procedure,
+compares the contents of the binary file
 with the results of calculating hash values using the corresponding
 Fortran hash procedure on the same keys.
