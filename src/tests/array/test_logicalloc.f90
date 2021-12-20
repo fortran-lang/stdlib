@@ -2,7 +2,8 @@
 
 module test_logicalloc
   use stdlib_array, only : trueloc, falseloc
-  use stdlib_string_type, only : string_type, len
+  use stdlib_kinds, only : dp, i8 => int64
+  use stdlib_strings, only : to_string
   use testdrive, only : new_unittest, unittest_type, error_type, check
   implicit none
   private
@@ -75,7 +76,10 @@ contains
 
     integer :: ndim
     real, allocatable :: avec(:), bvec(:), cvec(:)
+    real(dp) :: tl, tw
 
+    tl = 0.0_dp
+    tw = 0.0_dp
     do ndim = 100, 12000, 100
       allocate(avec(ndim))
 
@@ -83,15 +87,20 @@ contains
       avec(:) = avec - 0.5
 
       bvec = avec
+      tl = tl - timing()
       bvec(trueloc(bvec > 0)) = 0.0
+      tl = tl + timing()
 
       cvec = avec
+      tw = tw - timing()
       where(cvec > 0) cvec = 0.0
+      tw = tw + timing()
 
       call check(error, all(bvec == cvec))
       deallocate(avec, bvec, cvec)
       if (allocated(error)) exit
     end do
+    call report("trueloc", tl, "where", tw)
   end subroutine test_trueloc_where
 
   subroutine test_trueloc_merge(error)
@@ -100,7 +109,10 @@ contains
 
     integer :: ndim
     real, allocatable :: avec(:), bvec(:), cvec(:)
+    real(dp) :: tl, tm
 
+    tl = 0.0_dp
+    tm = 0.0_dp
     do ndim = 100, 12000, 100
       allocate(avec(ndim))
 
@@ -108,15 +120,20 @@ contains
       avec(:) = avec - 0.5
 
       bvec = avec
+      tl = tl - timing()
       bvec(trueloc(bvec > 0)) = 0.0
+      tl = tl + timing()
 
       cvec = avec
+      tm = tm - timing()
       cvec(:) = merge(0.0, cvec, cvec > 0)
+      tm = tm + timing()
 
       call check(error, all(bvec == cvec))
       deallocate(avec, bvec, cvec)
       if (allocated(error)) exit
     end do
+    call report("trueloc", tl, "merge", tm)
   end subroutine test_trueloc_merge
 
   subroutine test_falseloc_empty(error)
@@ -166,7 +183,10 @@ contains
 
     integer :: ndim
     real, allocatable :: avec(:), bvec(:), cvec(:)
+    real(dp) :: tl, tw
 
+    tl = 0.0_dp
+    tw = 0.0_dp
     do ndim = 100, 12000, 100
       allocate(avec(ndim))
 
@@ -174,15 +194,20 @@ contains
       avec(:) = avec - 0.5
 
       bvec = avec
+      tl = tl - timing()
       bvec(falseloc(bvec > 0)) = 0.0
+      tl = tl + timing()
 
       cvec = avec
+      tw = tw - timing()
       where(.not.(cvec > 0)) cvec = 0.0
+      tw = tw + timing()
 
       call check(error, all(bvec == cvec))
       deallocate(avec, bvec, cvec)
       if (allocated(error)) exit
     end do
+    call report("falseloc", tl, "where", tw)
   end subroutine test_falseloc_where
 
   subroutine test_falseloc_merge(error)
@@ -191,7 +216,10 @@ contains
 
     integer :: ndim
     real, allocatable :: avec(:), bvec(:), cvec(:)
+    real(dp) :: tl, tm
 
+    tl = 0.0_dp
+    tm = 0.0_dp
     do ndim = 100, 12000, 100
       allocate(avec(ndim))
 
@@ -199,16 +227,42 @@ contains
       avec(:) = avec - 0.5
 
       bvec = avec
+      tl = tl - timing()
       bvec(falseloc(bvec > 0)) = 0.0
+      tl = tl + timing()
 
       cvec = avec
+      tm = tm - timing()
       cvec(:) = merge(cvec, 0.0, cvec > 0)
+      tm = tm + timing()
 
       call check(error, all(bvec == cvec))
       deallocate(avec, bvec, cvec)
       if (allocated(error)) exit
     end do
+    call report("falseloc", tl, "merge", tm)
   end subroutine test_falseloc_merge
+
+  subroutine report(l1, t1, l2, t2)
+    character(len=*), intent(in) :: l1, l2
+    real(dp), intent(in) :: t1, t2
+    character(len=*), parameter :: fmt = "f6.4"
+
+    !$omp critical
+    print '(2x, "[Timing]", *(1x, g0))', &
+      l1//":", to_string(t1, fmt)//"s", &
+      l2//":", to_string(t2, fmt)//"s", &
+      "ratio:", to_string(t1/t2, "f4.1")
+    !$omp end critical
+  end subroutine report
+
+  function timing() result(time)
+    real(dp) :: time
+
+    integer(i8) :: time_count, time_rate, time_max
+    call system_clock(time_count, time_rate, time_max)
+    time = real(time_count, dp)/real(time_rate, dp)
+  end function timing
 
 end module test_logicalloc
 

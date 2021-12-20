@@ -18,7 +18,7 @@ contains
     !> Locations of true elements
     integer :: loc(count(array))
 
-    loc = logicalloc(array, .true., lbound)
+    call logicalloc(loc, array, .true., lbound)
   end function trueloc
 
   !> Return the positions of the false elements in array
@@ -30,19 +30,19 @@ contains
     !> Locations of false elements
     integer :: loc(count(.not.array))
 
-    loc = logicalloc(array, .false., lbound)
+    call logicalloc(loc, array, .false., lbound)
   end function falseloc
 
   !> Return the positions of the truthy elements in array
-  pure function logicalloc(array, truth, lbound) result(loc)
+  pure subroutine logicalloc(loc, array, truth, lbound)
+    !> Locations of truthy elements
+    integer, intent(out) :: loc(:)
     !> Mask of logicals
     logical, intent(in) :: array(:)
     !> Truthy value
     logical, intent(in) :: truth
     !> Lower bound of array to index
     integer, intent(in), optional :: lbound
-    !> Locations of truthy elements
-    integer :: loc(count(array.eqv.truth))
     integer :: i, pos, offset
 
     offset = 0
@@ -55,6 +55,6 @@ contains
         loc(i) = pos + offset
       end if
     end do
-  end function logicalloc
+  end subroutine logicalloc
 
 end module stdlib_array
