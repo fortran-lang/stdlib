@@ -10,9 +10,17 @@ Features available from the latest git source
 - new module `stdlib_version`
   [#579](https://github.com/fortran-lang/stdlib/pull/579)
   - new procedure `get_stdlib_version`
+- update module `stdlib_io`
+  [597](https://github.com/fortran-lang/stdlib/pull/597)
+  - new procedure `getline`
 - new module `stdlib_io_npy`
   [#581](https://github.com/fortran-lang/stdlib/pull/581)
   - new procedures `save_npy`, `load_npy`
+- update module `stdlib_math`
+  - new procedures `is_close` and `all_close`
+    [#488](https://github.com/fortran-lang/stdlib/pull/488)
+  - new procedures `arg`, `argd` and `argpi`
+    [#498](https://github.com/fortran-lang/stdlib/pull/498)
 
 Changes to existing modules
 

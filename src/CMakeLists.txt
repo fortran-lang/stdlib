@@ -48,6 +48,8 @@ set(fppFiles
     stdlib_math_linspace.fypp
     stdlib_math_logspace.fypp
     stdlib_math_arange.fypp
+    stdlib_math_is_close.fypp
+    stdlib_math_all_close.fypp
     stdlib_string_type.fypp
     stdlib_string_type_constructor.fypp
     stdlib_strings_to_string.fypp

@@ -128,7 +128,9 @@ contains
         end if
 
         if (present(iomsg)) then
-            iomsg = "Failed to write array to file '"//filename//"'"
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
         end if
     end subroutine save_npy_${t1[0]}$${k1}$_${rank}$
   #:endfor

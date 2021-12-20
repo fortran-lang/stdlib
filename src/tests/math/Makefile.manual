@@ -9,5 +9,4 @@ PROGS_SRC = test_linspace.f90 test_logspace.f90 \
 $(SRCGEN): %.f90: %.fypp ../../common.fypp
 	fypp -I../.. $(FYPPFLAGS) $< $@
 
-
 include ../Makefile.manual.test.mk

@@ -44,7 +44,7 @@ contains
         step_  = optval(step, 1_${k1}$)
         step_  = sign(merge(step_, 1_${k1}$, step_ /= 0_${k1}$), end_ - start_)
 
-        allocate(result((end_ - start_)/step_ + 1))
+        allocate(result((end_ - start_)/step_ + 1_${k1}$))
 
         result = [(i, i=start_, end_, step_)]
 
