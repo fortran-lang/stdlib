@@ -22,10 +22,12 @@ contains
       new_unittest("trueloc-all", test_trueloc_all), &
       new_unittest("trueloc-where", test_trueloc_where), &
       new_unittest("trueloc-merge", test_trueloc_merge), &
+      new_unittest("trueloc-pack", test_trueloc_pack), &
       new_unittest("falseloc-empty", test_falseloc_empty), &
       new_unittest("falseloc-all", test_falseloc_all), &
       new_unittest("falseloc-where", test_falseloc_where), &
-      new_unittest("falseloc-merge", test_falseloc_merge) &
+      new_unittest("falseloc-merge", test_falseloc_merge), &
+      new_unittest("falseloc-pack", test_falseloc_pack) &
       ]
   end subroutine collect_logicalloc
 
@@ -136,6 +138,42 @@ contains
     call report("trueloc", tl, "merge", tm)
   end subroutine test_trueloc_merge
 
+  subroutine test_trueloc_pack(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    integer :: ndim
+    real, allocatable :: avec(:), bvec(:), cvec(:)
+    real(dp) :: tl, tp
+
+    tl = 0.0_dp
+    tp = 0.0_dp
+    do ndim = 100, 12000, 100
+      allocate(avec(ndim))
+
+      call random_number(avec)
+      avec(:) = avec - 0.5
+
+      bvec = avec
+      tl = tl - timing()
+      bvec(trueloc(bvec > 0)) = 0.0
+      tl = tl + timing()
+
+      cvec = avec
+      tp = tp - timing()
+      block
+        integer :: i
+        cvec(pack([(i, i=1, size(cvec))], cvec > 0)) = 0.0
+      end block
+      tp = tp + timing()
+
+      call check(error, all(bvec == cvec))
+      deallocate(avec, bvec, cvec)
+      if (allocated(error)) exit
+    end do
+    call report("trueloc", tl, "pack", tp)
+  end subroutine test_trueloc_pack
+
   subroutine test_falseloc_empty(error)
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
@@ -242,6 +280,42 @@ contains
     end do
     call report("falseloc", tl, "merge", tm)
   end subroutine test_falseloc_merge
+
+  subroutine test_falseloc_pack(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    integer :: ndim
+    real, allocatable :: avec(:), bvec(:), cvec(:)
+    real(dp) :: tl, tp
+
+    tl = 0.0_dp
+    tp = 0.0_dp
+    do ndim = 100, 12000, 100
+      allocate(avec(ndim))
+
+      call random_number(avec)
+      avec(:) = avec - 0.5
+
+      bvec = avec
+      tl = tl - timing()
+      bvec(falseloc(bvec > 0)) = 0.0
+      tl = tl + timing()
+
+      cvec = avec
+      tp = tp - timing()
+      block
+        integer :: i
+        cvec(pack([(i, i=1, size(cvec))], cvec < 0)) = 0.0
+      end block
+      tp = tp + timing()
+
+      call check(error, all(bvec == cvec))
+      deallocate(avec, bvec, cvec)
+      if (allocated(error)) exit
+    end do
+    call report("falseloc", tl, "pack", tp)
+  end subroutine test_falseloc_pack
 
   subroutine report(l1, t1, l2, t2)
     character(len=*), intent(in) :: l1, l2
