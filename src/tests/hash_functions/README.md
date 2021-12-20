@@ -1,4 +1,4 @@
-The validation directory contains code to validate the Fortran hash functions against the original C/C++ codes. It consists of one executable `test_hash_functions` that:
+The hash_functions directory contains code to validate the Fortran hash functions against the original C/C++ codes. It consists of one executable `test_hash_functions` that:
 
 * creates a file containing 2048 random 8 bit integers using the subroutine
   `generate_key_array`.
