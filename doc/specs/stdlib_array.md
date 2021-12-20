@@ -33,6 +33,10 @@ Turn a logical mask into an index array by selecting all true values.
 
 `lbound`: Lower bound of the array to index. This argument is `optional` and `intent(in)`.
 
+#### Return value
+
+Returns an array of default integer size, with a maximum length of `size(array)` elements.
+
 #### Examples
 
 ```fortran
@@ -66,6 +70,10 @@ Turn a logical mask into an index array by selecting all false values.
 `array`: List of default logical arrays. This argument is `intent(in)`.
 
 `lbound`: Lower bound of the array to index. This argument is `optional` and `intent(in)`.
+
+#### Return value
+
+Returns an array of default integer size, with a maximum length of `size(array)` elements.
 
 #### Examples
 

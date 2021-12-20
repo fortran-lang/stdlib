@@ -17,12 +17,57 @@ contains
     type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
     testsuite = [ &
+      new_unittest("trueloc-empty", test_trueloc_empty), &
+      new_unittest("trueloc-all", test_trueloc_all), &
       new_unittest("trueloc-where", test_trueloc_where), &
       new_unittest("trueloc-merge", test_trueloc_merge), &
+      new_unittest("falseloc-empty", test_falseloc_empty), &
+      new_unittest("falseloc-all", test_falseloc_all), &
       new_unittest("falseloc-where", test_falseloc_where), &
       new_unittest("falseloc-merge", test_falseloc_merge) &
       ]
   end subroutine collect_logicalloc
+
+  subroutine test_trueloc_empty(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    integer :: ndim
+    real, allocatable :: avec(:), bvec(:)
+
+    do ndim = 100, 12000, 100
+      allocate(avec(ndim))
+
+      call random_number(avec)
+
+      bvec = avec
+      bvec(trueloc(bvec < 0)) = 0.0
+
+      call check(error, all(bvec == avec))
+      deallocate(avec, bvec)
+      if (allocated(error)) exit
+    end do
+  end subroutine test_trueloc_empty
+
+  subroutine test_trueloc_all(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    integer :: ndim
+    real, allocatable :: avec(:)
+
+    do ndim = 100, 12000, 100
+      allocate(avec(-ndim/2:ndim))
+
+      call random_number(avec)
+
+      avec(trueloc(avec > 0, lbound(avec, 1))) = 0.0
+
+      call check(error, all(avec == 0.0))
+      deallocate(avec)
+      if (allocated(error)) exit
+    end do
+  end subroutine test_trueloc_all
 
   subroutine test_trueloc_where(error)
     !> Error handling
@@ -73,6 +118,47 @@ contains
       if (allocated(error)) exit
     end do
   end subroutine test_trueloc_merge
+
+  subroutine test_falseloc_empty(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    integer :: ndim
+    real, allocatable :: avec(:), bvec(:)
+
+    do ndim = 100, 12000, 100
+      allocate(avec(ndim))
+
+      call random_number(avec)
+
+      bvec = avec
+      bvec(falseloc(bvec > 0)) = 0.0
+
+      call check(error, all(bvec == avec))
+      deallocate(avec, bvec)
+      if (allocated(error)) exit
+    end do
+  end subroutine test_falseloc_empty
+
+  subroutine test_falseloc_all(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    integer :: ndim
+    real, allocatable :: avec(:)
+
+    do ndim = 100, 12000, 100
+      allocate(avec(-ndim/2:ndim))
+
+      call random_number(avec)
+
+      avec(falseloc(avec < 0, lbound(avec, 1))) = 0.0
+
+      call check(error, all(avec == 0.0))
+      deallocate(avec)
+      if (allocated(error)) exit
+    end do
+  end subroutine test_falseloc_all
 
   subroutine test_falseloc_where(error)
     !> Error handling
