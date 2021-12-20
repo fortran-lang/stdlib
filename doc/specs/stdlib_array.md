@@ -25,7 +25,11 @@ Turn a logical mask into an index array by selecting all true values.
 
 #### Syntax
 
-`call [[trueloc(function)]] (array[, lbound])`
+`loc = [[trueloc(function)]] (array[, lbound])`
+
+#### Class
+
+Pure function.
 
 #### Arguments
 
@@ -40,14 +44,14 @@ Returns an array of default integer size, with a maximum length of `size(array)`
 #### Examples
 
 ```fortran
-program demo
+program demo_trueloc
   use stdlib_array, only : trueloc
   implicit none
   real, allocatable :: array(:)
   allocate(array(500))
   call random_number(array)
   array(trueloc(array > 0.5)) = 0.0
-end program demo
+end program demo_trueloc
 ```
 
 
@@ -63,7 +67,11 @@ Turn a logical mask into an index array by selecting all false values.
 
 #### Syntax
 
-`call [[falseloc(function)]] (array[, lbound])`
+`loc = [[falseloc(function)]] (array[, lbound])`
+
+#### Class
+
+Pure function.
 
 #### Arguments
 
@@ -78,12 +86,12 @@ Returns an array of default integer size, with a maximum length of `size(array)`
 #### Examples
 
 ```fortran
-program demo
+program demo_falseloc
   use stdlib_array, only : falseloc
   implicit none
   real, allocatable :: array(:)
   allocate(array(-200:200))
   call random_number(array)
   array(falseloc(array < 0.5), lbound(array)) = 0.0
-end program demo
+end program demo_falseloc
 ```

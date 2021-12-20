@@ -1,6 +1,8 @@
 ! SPDX-Identifier: MIT
 
 !> Module for index manipulation and general array handling
+!>
+!> The specification of this module is available [here](../page/specs/stdlib_array.html).
 module stdlib_array
   implicit none
   private
@@ -9,7 +11,10 @@ module stdlib_array
 
 contains
 
-  !> Return the positions of the true elements in array
+  !> Version: experimental
+  !>
+  !> Return the positions of the true elements in array.
+  !> [Specification](../page/specs/stdlib_array.html#trueloc)
   pure function trueloc(array, lbound) result(loc)
     !> Mask of logicals
     logical, intent(in) :: array(:)
@@ -21,7 +26,10 @@ contains
     call logicalloc(loc, array, .true., lbound)
   end function trueloc
 
-  !> Return the positions of the false elements in array
+  !> Version: experimental
+  !>
+  !> Return the positions of the false elements in array.
+  !> [Specification](../page/specs/stdlib_array.html#falseloc)
   pure function falseloc(array, lbound) result(loc)
     !> Mask of logicals
     logical, intent(in) :: array(:)
