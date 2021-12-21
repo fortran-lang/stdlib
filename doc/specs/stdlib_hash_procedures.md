@@ -361,8 +361,8 @@ Landon Curt Noll, and Kiem-Phong Vo;
 the *nmhash32* and *nmhash32x* of James Z. M. Gao;
 and the *waterhash*  of Tommy Ettinger.
 The detailed implementation of each algorithm is handled in a separate
-submodule: `stdlib_32_bit_fnv_hashes`,
-`stdlib_32_bit_nmhashes`, and `stdlib_32_bit_water_hashes`,
+submodule: `stdlib_hash_32bit_fnv`,
+`stdlib_hash_32bit_nm`, and `stdlib_hash_32bit_water`,
 respectively. The `nmhash32`, `nmhash32x`, and `waterhash` algorithms
 require seeds. The submodules provide separate seed generators
 for each algorithm.
@@ -381,8 +381,8 @@ Landon Curt Noll, and Kiem-Phong Vo;
 the *pengyhash* of Alberto Fajardo;
 and the *SpookyHash*  of Bob Jenkins.
 The detailed implementation of each algorithm is handled in a separate
-submodule: `stdlib_64_bit_fnv_hashes`,
-`stdlib_64_bit_pengy_hashes`, and `stdlib_64_bit_spooky_hashes`,
+submodule: `stdlib_hash_64bit_fnv`,
+`stdlib_hash_64bit_pengy`, and `stdlib_hash_64bit_spooky`,
 respectively.
 The `pengyhash`, and `Spooky Hash` algorithms
 require seeds. The submodules provide separate seed generators
@@ -394,7 +394,7 @@ generating seeds for `universal_mult_hash`.
 All assume a two's complement sign bit, and no out of
 range checks.
 
-The `stdlib_32_bit_fnv_hashes` and `stdlib_64_bits_fnv_hashes`
+The `stdlib_hash_32bit_fnv` and `stdlib_hash_64bit_fnv`
 submodules each provide implementations of the FNV-1 and FNV-1A
 algorithms in the form of two separate overloaded functions: `FNV_1`
 and `FNV_1A`.
@@ -417,7 +417,7 @@ giving a performance boost where the hashing is intermittent.
 [SMHasher discussion](https://github.com/rurban/smhasher/README.md)
 and [S. Richter, V. Alvarez, and J. Dittrich. 2015. A Seven-Dimensional Analysis of Hashing Methods and its Implications on Query Processing, Proceedings of the VLDB Endowment, Vol. 9, No. 3.](https://bigdata.uni-saarland.de/publications/p249-richter.pdf) [https://doi.org/10.14778/2850583.2850585](https://doi.org/10.14778/2850583.2850585).
 
-The `stdlib_32_bit_nmhashes` submodule provides implementations
+The `stdlib_hash_32bit_nm` submodule provides implementations
 of James Z.M. Gao's `nmhash32` and `nmhash32x` algorithms,
 version 0.2,
 in the form of the overloaded functions, `nmhash32` and `nmhash32x`.
@@ -434,7 +434,7 @@ seeds, but slower on long seeds, but our limited testing so far shows
 `nmhash32x` to be significantly faster on short seeds and slightly
 faster on long seeds.
 
-The `stdlib_32_bit_water_hashes` submodule provides implementations
+The `stdlib_hash_32bit_water` submodule provides implementations
 of Tommy Ettinger's `waterhash` algorithm in the form of the overloaded
 function, `water_hash`. Water Hash has not been tested by Reini Urban,
 but Tommy Ettinger has tested it with Urban's SMHasher and presents
@@ -443,14 +443,14 @@ testing hasn't found any bad seeds for the algorithm. To provide
 randomly generated seeds for the hash function the submodule also
 defines the subroutine `new_water_hash_seed`.
 
-The `stdlib_64_bit_pengy_hashes` submodule provides implementations of
+The `stdlib_hash_64bit_pengy` submodule provides implementations of
 Alberto Fajardo's `pengyhash` in the form of the overloaded function,
 `pengy_hash`. Reini Urban's testing shows that PengyHash passes all
 the tests and has no bad seeds.  To provide randomly generated seeds
 for the hash function the submodule also defines the subroutine
 `new_pengy_hash_seed`.
 
-The `stdlib_64_bit_spooky_hashes` submodule provides implementations
+The `stdlib_hash_64bit_spooky` submodule provides implementations
 of Bob Jenkins' SpookyHash in the form of the overloaded function,
 `spooky_hash`. Future implementations may provide the SpookyHash
 incremental hashing procedures.
