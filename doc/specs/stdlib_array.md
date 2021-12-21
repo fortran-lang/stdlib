@@ -22,6 +22,8 @@ Experimental
 #### Description
 
 Turn a logical mask into an index array by selecting all true values.
+Provides similar functionality like the built-in `where` or the intrinsic procedures `merge` and `pack` when working with logical mask.
+The built-in / intrinsics are usually preferable to `trueloc`, unless the access to the index array is required.
 
 #### Syntax
 
@@ -64,6 +66,8 @@ Experimental
 #### Description
 
 Turn a logical mask into an index array by selecting all false values.
+Provides similar functionality like the built-in `where` or the intrinsic procedures `merge` and `pack` when working with logical mask.
+The built-in / intrinsics are usually preferable to `falseloc`, unless the access to the index array is required.
 
 #### Syntax
 
