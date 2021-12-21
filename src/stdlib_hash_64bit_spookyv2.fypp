@@ -13,7 +13,7 @@
 #! Integer kinds to be considered during templating
 #:set INT_KINDS = ["int16", "int32", "int64"]
 
-submodule(stdlib_hash_64bit) stdlib_64_bit_spookyv2_hashes
+submodule(stdlib_hash_64bit) stdlib_hash_64bit_spookyv2
 
 ! I have tried to make this portable while retaining efficiency. I assume
 ! processors with two's complement integers from 8, 16, 32, and 64 bits.
@@ -712,4 +712,4 @@ contains
     end subroutine new_spooky_hash_seed
 
 
-end submodule stdlib_64_bit_spookyv2_hashes
+end submodule stdlib_hash_64bit_spookyv2

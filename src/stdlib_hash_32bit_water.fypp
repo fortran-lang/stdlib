@@ -37,7 +37,7 @@
 !!   For more information, please refer to <http://unlicense.org>
 !!
 !! `WATER_HASH` is distributed as part of the `stdlib_32_bit_hash_functions.f90`
-!! module and its `stdlib_32_bit_water_hashes.f90` submodule with the Fortran
+!! module and its `stdlib_hash_32bit_water.f90` submodule with the Fortran
 !! Standard Library at URL: https://github.com/fortran-lang/stdlib.
 !! The Fortran Standard Library, including this code, is distributed under the
 !! MIT License as described in the `LICENSE` file distributed with the library.
@@ -74,7 +74,7 @@
 #! Integer kinds to be considered during templating
 #:set INT_KINDS = ["int16", "int32", "int64"]
 
-submodule(stdlib_hash_32bit) stdlib_32_bit_water_hashes
+submodule(stdlib_hash_32bit) stdlib_hash_32bit_water
     implicit none
 
 contains
@@ -280,4 +280,4 @@ contains
 
     end subroutine new_water_hash_seed
 
-end submodule stdlib_32_bit_water_hashes
+end submodule stdlib_hash_32bit_water
