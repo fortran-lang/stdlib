@@ -44,7 +44,7 @@
 #! Integer kinds to be considered during templating
 #:set INT_KINDS = ["int16", "int32", "int64"]
 
-submodule(stdlib_hash_32bit) stdlib_32_bit_nmhashes
+submodule(stdlib_hash_32bit) stdlib_hash_32bit_nm
 
     implicit none
 
@@ -803,4 +803,4 @@ contains
 
     end subroutine new_nmhash32x_seed
 
-end submodule stdlib_32_bit_nmhashes
+end submodule stdlib_hash_32bit_nm
