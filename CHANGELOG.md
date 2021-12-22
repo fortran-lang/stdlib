@@ -2,6 +2,18 @@
 
 Features available from the latest git source
 
+- new module `stdlib_hash_32bit`
+  [#573](https://github.com/fortran-lang/stdlib/pull/573)
+  - new procedures: `fibonacci_hash`, `fnv_1_hash`, 
+    `fnv_1a_hash`, `new_nmhash32_seed`, `new_nmhash32x_seed`, 
+    `new_water_hash_seed`, `nmhash32`, `nmhash32x`, `odd_random_integer`,
+    `universal_mult_hash`, and `water_hash`
+- new module `stdlib_hash_64bit`
+  [#573](https://github.com/fortran-lang/stdlib/pull/573)
+  - new procedures: `fibonacci_hash`, `fnv_1_hash`, `fnv_1a_hash`,
+    `new_pengy_hash_seed`, `new_spooky_hash_seed`,
+    `odd_random_integer`, `pengy_hash`, `spooky_hash`, `spookyhash_128`, and
+    `universal_mult_hash`
 - new module `stdlib_array`
   [#603](https://github.com/fortran-lang/stdlib/pull/603)
   - new procedures `trueloc`, `falseloc`
