@@ -2,6 +2,10 @@
 
 Features available from the latest git source
 
+- new module `stdlib_hash_32bit`
+  [#573](https://github.com/fortran-lang/stdlib/pull/573)
+- new module `stdlib_hash_64bit`
+  [#573](https://github.com/fortran-lang/stdlib/pull/573)
 - new module `stdlib_distribution_uniform`
   [#272](https://github.com/fortran-lang/stdlib/pull/272)
 - new module `stdlib_selection`
