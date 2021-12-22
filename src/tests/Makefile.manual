@@ -12,6 +12,7 @@ testdrive.F90:
 	$(FETCH) https://github.com/fortran-lang/test-drive/raw/v0.4.0/src/testdrive.F90 > $@
 
 all test clean::
+	$(MAKE) -f Makefile.manual --directory=array $@
 	$(MAKE) -f Makefile.manual --directory=ascii $@
 	$(MAKE) -f Makefile.manual --directory=bitsets $@
 	$(MAKE) -f Makefile.manual --directory=hash_functions_perf $@

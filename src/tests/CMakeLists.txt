@@ -15,6 +15,7 @@ list(
   "-I${PROJECT_SOURCE_DIR}/src"
 )
 
+add_subdirectory(array)
 add_subdirectory(ascii)
 add_subdirectory(bitsets)
 add_subdirectory(hash_functions)

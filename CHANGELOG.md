@@ -14,6 +14,9 @@ Features available from the latest git source
     `new_pengy_hash_seed`, `new_spooky_hash_seed`,
     `odd_random_integer`, `pengy_hash`, `spooky_hash`, `spookyhash_128`, and
     `universal_mult_hash`
+- new module `stdlib_array`
+  [#603](https://github.com/fortran-lang/stdlib/pull/603)
+  - new procedures `trueloc`, `falseloc`
 - new module `stdlib_distribution_uniform`
   [#272](https://github.com/fortran-lang/stdlib/pull/272)
 - new module `stdlib_selection`
