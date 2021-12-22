@@ -1,5 +1,5 @@
 ---
-title: Selection Procedures
+title: selection
 ---
 
 # The `stdlib_selection` module

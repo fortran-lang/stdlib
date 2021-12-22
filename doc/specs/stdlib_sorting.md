@@ -1,5 +1,5 @@
 ---
-title: Sorting Procedures
+title: sorting
 ---
 
 # The `stdlib_sorting` module

@@ -1,5 +1,5 @@
 ---
-title: string handling
+title: strings
 ---
 
 # The `stdlib_strings` module

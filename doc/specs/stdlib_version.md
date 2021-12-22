@@ -1,5 +1,5 @@
 ---
-title: Version information
+title: version
 ---
 
 # The `stdlib_version` module
