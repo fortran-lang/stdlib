@@ -6,7 +6,7 @@ title: stats_distribution_exponential
 
 [TOC]
 
-## `rvs_expon` - exponential distribution random variates
+## `rvs_exp` - exponential distribution random variates
 
 ### Status
 
@@ -14,19 +14,19 @@ Experimental
 
 ### Description
 
-An exponentially distributed random variate distribution is the distribution of time between events in a Poisson point process. The inverse scale parameter `lambda` specifies the rate of change.
+An exponential distribution is the distribution of time between events in a Poisson point process. The inverse scale parameter `lambda` specifies the average time between events, also called the rate of events.
 
-Without argument the function returns a standard exponential distributed random variate E(1) with `lambda = 1`.
+Without argument the function returns a random sample from the standard exponential distribution `E(1)` with `lambda = 1`.
 
-With single argument, the function returns an exponential distributed random variate E(lambda). For complex arguments, the real and imaginary parts are independent of each other.
+With single argument, the function returns a random sample from the exponential distribution `E(lambda)`. For complex arguments, the real and imaginary parts are independent of each other.
 
-With two arguments the function returns a rank one array of exponential distributed random variates.
+With two arguments the function returns a rank one array of exponentially distributed random variates.
 
-Note: the algorithm used for generating normal random variates is fundamentally limited to double precision.
+Note: the algorithm used for generating exponetial random variates is fundamentally limited to double precision. Ref.: Marsaglia, G. & Tsang, W.W. (2000) `The ziggurat method for generating random variables', J. Statist. Software, v5(8).
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_exponential(module):rvs_expon(interface)]]([lambda] [[, array_size]])`
+`result = [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]]([lambda] [[, array_size]])`
 
 ### Class
 
@@ -34,7 +34,7 @@ Function
 
 ### Arguments
 
-`lambda`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
+`lambda`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. The value of `lambda` has to be non-negative.
 
 `array_size`: optional argument has `intent(in)` and is a scalar of type `integer` with default kind.
 
@@ -47,7 +47,7 @@ The result is a scalar or rank one array with a size of `array_size`, and as the
 ```fortran
 program demo_exponential_rvs
     use stdlib_random, only : random_seed
-    use stdlib_stats_distribution_exponential, only: rexp => rvs_expon
+    use stdlib_stats_distribution_exponential, only: rexp => rvs_exp
 
     implicit none
     real ::  a(2,3,4)
@@ -80,7 +80,7 @@ program demo_exponential_rvs
 end program demo_exponential_rvs
 ```
 
-## `pdf_expon` - exponential distribution probability density function
+## `pdf_exp` - exponential distribution probability density function
 
 ### Status
 
@@ -92,13 +92,13 @@ The probability density function (pdf) of the single real variable exponential d
 
 $$f(x)=\begin{cases} \lambda e^{-\lambda x} &x\geqslant 0 \\\\ 0 &x< 0\end{}$$
 
-For complex varible (x + y i) with independent real x and imaginary y parts, the joint probability density function is the product of corresponding marginal pdf of real and imaginary pdf (ref. "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
+For a complex varible (x + y i) with independent real x and imaginary y parts, the joint probability density function is the product of corresponding marginal pdf of real and imaginary pdf (ref. "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
 
 $$f(x+\mathit{i}y)=f(x)f(y)=\begin{cases} \lambda_{x} \lambda_{y} e^{-(\lambda_{x} x + \lambda_{y} y)} &x\geqslant 0, y\geqslant 0 \\\\ 0 &otherwise\end{}$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_exponential(module):pdf_expon(interface)]](x, lambda)`
+`result = [[stdlib_stats_distribution_exponential(module):pdf_exp(interface)]](x, lambda)`
 
 ### Class
 
@@ -121,8 +121,8 @@ The result is a scalar or an array, with a shape conformable to arguments, and a
 ```fortran
 program demo_exponential_pdf
     use stdlib_random, only : random_seed
-    use stdlib_stats_distribution_exponential, only: exp_pdf => pdf_expon,     &
-                                                     rexp => rvs_expon
+    use stdlib_stats_distribution_exponential, only: exp_pdf => pdf_exp,     &
+                                                     rexp => rvs_exp
 
     implicit none
     real :: x(2,3,4),a(2,3,4)
@@ -160,7 +160,7 @@ program demo_exponential_pdf
 end program demo_exponential_pdf
 ```
 
-## `cdf_expon` - exponential distribution cumulative distribution function
+## `cdf_exp` - exponential distribution cumulative distribution function
 
 ### Status
 
@@ -172,13 +172,13 @@ Cumulative distribution function (cdf) of the single real variable exponential d
 
 $$F(x)=\begin{cases}1 - e^{-\lambda x} &x\geqslant 0 \\\\ 0 &x< 0\end{}$$
 
-For the complex variable (x + y i) with independent real x and imaginary y parts, the joint cumulative distribution function is the product of corresponding marginal cdf of real and imaginary cdf (ref. "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
+For a complex variable (x + y i) with independent real x and imaginary y parts, the joint cumulative distribution function is the product of corresponding marginal cdf of real and imaginary cdf (ref. "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
 
 $$F(x+\mathit{i}y)=F(x)F(y)=\begin{cases} (1 - e^{-\lambda_{x} x})(1 - e^{-\lambda_{y} y}) &x\geqslant 0, \;\; y\geqslant 0 \\\\ 0 &otherwise \end{}$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_exponential(module):cdf_expon(interface)]](x, lambda)`
+`result = [[stdlib_stats_distribution_exponential(module):cdf_exp(interface)]](x, lambda)`
 
 ### Class
 
@@ -201,8 +201,8 @@ The result is a scalar or an array, with a shape conformable to arguments, and a
 ```fortran
 program demo_exponential_cdf
     use stdlib_random, only : random_seed
-    use stdlib_stats_distribution_exponential, only : exp_cdf => cdf_expon,    &
-                                                      rexp => rvs_expon
+    use stdlib_stats_distribution_exponential, only : exp_cdf => cdf_exp,    &
+                                                      rexp => rvs_exp
 
     implicit none
     real :: x(2,3,4),a(2,3,4)

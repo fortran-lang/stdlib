@@ -9,62 +9,61 @@ module stdlib_stats_distribution_exponential
     implicit none
     private
 
-    real(dp), parameter  :: ONE = 1.0_dp
     integer :: ke(0:255)
     real(dp) :: we(0:255), fe(0:255)
     logical  :: zig_exp_initialized = .false.
 
-    public :: rvs_expon
-    public :: pdf_expon
-    public :: cdf_expon
+    public :: rvs_exp
+    public :: pdf_exp
+    public :: cdf_exp
 
 
 
-    interface rvs_expon
-    !! Version: experimental
+    interface rvs_exp
+    !! Version experimental
     !!
     !! Exponential Distribution Random Variates
     !! ([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
-    !! rvs_expon-exponential-distribution-random-variates))
+    !! rvs_exp-exponential-distribution-random-variates))
     !!
-        module procedure rvs_expon_0_rsp                 !0 dummy variable
+        module procedure rvs_exp_0_rsp                 !0 dummy variable
 
         #:for k1, t1 in RC_KINDS_TYPES
-        module procedure rvs_expon_${t1[0]}$${k1}$       !1 dummy variable
+        module procedure rvs_exp_${t1[0]}$${k1}$       !1 dummy variable
         #:endfor
 
         #:for k1, t1 in RC_KINDS_TYPES
-        module procedure rvs_expon_array_${t1[0]}$${k1}$ !2 dummy variables
+        module procedure rvs_exp_array_${t1[0]}$${k1}$ !2 dummy variables
         #:endfor
-    end interface rvs_expon
+    end interface rvs_exp
 
 
 
-    interface pdf_expon
-    !! Version: experimental
+    interface pdf_exp
+    !! Version experimental
     !!
     !! Exponential Distribution Probability Density Function
     !! ([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
-    !! pdf_expon-exponential-distribution-probability-density-function))
+    !! pdf_exp-exponential-distribution-probability-density-function))
     !!
         #:for k1, t1 in RC_KINDS_TYPES
-        module procedure pdf_expon_${t1[0]}$${k1}$
+        module procedure pdf_exp_${t1[0]}$${k1}$
         #:endfor
-    end interface pdf_expon
+    end interface pdf_exp
 
 
 
-    interface cdf_expon
-    !! Version: experimental
+    interface cdf_exp
+    !! Version experimental
     !!
     !! Exponential Distribution Cumulative Distribution Function
     !! ([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
-    !! cdf_expon-exponential-distribution-cumulative-distribution-function))
+    !! cdf_exp-exponential-distribution-cumulative-distribution-function))
     !!
         #:for k1, t1 in RC_KINDS_TYPES
-        module procedure cdf_expon_${t1[0]}$${k1}$
+        module procedure cdf_exp_${t1[0]}$${k1}$
         #:endfor
-    end interface cdf_expon
+    end interface cdf_exp
 
 
 
@@ -85,6 +84,7 @@ contains
     ! Latest version - 1 January 2001
     !
         real(dp), parameter :: M2 = 2147483648.0_dp, ve = 0.003949659822581572_dp
+        real(dp), parameter :: ONE = 1.0_dp
         real(dp)            :: de, te, q
         integer :: i
 
@@ -112,7 +112,7 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    function rvs_expon_0_${t1[0]}$${k1}$( ) result(res)
+    function rvs_exp_0_${t1[0]}$${k1}$( ) result(res)
     !
     ! Standard exponential random variate (lambda=1)
     !
@@ -145,7 +145,7 @@ contains
                 end if
            end do L1
        endif
-    end function rvs_expon_0_${t1[0]}$${k1}$
+    end function rvs_exp_0_${t1[0]}$${k1}$
 
     #:endfor
 
@@ -153,7 +153,7 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    function rvs_expon_${t1[0]}$${k1}$(lambda) result(res)
+    function rvs_exp_${t1[0]}$${k1}$(lambda) result(res)
     !
     ! Exponential distributed random variate
     !
@@ -161,11 +161,11 @@ contains
         ${t1}$ :: res
 
 
-        if(lambda <= 0.0_${k1}$) call error_stop("Error(rvs_expon): Exponen"   &
+        if(lambda <= 0.0_${k1}$) call error_stop("Error(rvs_exp): Exponen"   &
             //"tial distribution lambda parameter must be greater than zero")
-        res = rvs_expon_0_${t1[0]}$${k1}$(  )
+        res = rvs_exp_0_${t1[0]}$${k1}$(  )
         res = res / lambda
-    end function rvs_expon_${t1[0]}$${k1}$
+    end function rvs_exp_${t1[0]}$${k1}$
 
     #:endfor
 
@@ -173,15 +173,15 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    function rvs_expon_${t1[0]}$${k1}$(lambda) result(res)
+    function rvs_exp_${t1[0]}$${k1}$(lambda) result(res)
         ${t1}$, intent(in) :: lambda
         ${t1}$ :: res
         real(${k1}$) :: tr, ti
 
-        tr = rvs_expon_r${k1}$(lambda % re)
-        ti = rvs_expon_r${k1}$(lambda % im)
+        tr = rvs_exp_r${k1}$(lambda % re)
+        ti = rvs_exp_r${k1}$(lambda % im)
         res = cmplx(tr, ti, kind=${k1}$)
-    end function rvs_expon_${t1[0]}$${k1}$
+    end function rvs_exp_${t1[0]}$${k1}$
 
     #:endfor
 
@@ -189,15 +189,15 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    function rvs_expon_array_${t1[0]}$${k1}$(lambda, array_size) result(res)
+    function rvs_exp_array_${t1[0]}$${k1}$(lambda, array_size) result(res)
         ${t1}$, intent(in) :: lambda
         integer, intent(in) :: array_size
         ${t1}$ :: res(array_size), x, re
         ${t1}$, parameter :: r = 7.69711747013104972_${k1}$
         integer :: jz, iz, i
 
-        if(lambda <= 0.0_${k1}$) call error_stop("Error(rvs_expon_array): Exp" &
-            //"oonential distribution lambda parameter must be greater than zero")
+        if(lambda <= 0.0_${k1}$) call error_stop("Error(rvs_exp_array): Exp" &
+            //"onential distribution lambda parameter must be greater than zero")
 
         if(.not. zig_exp_initialized) call zigset
         do i = 1, array_size
@@ -227,7 +227,7 @@ contains
             endif
             res(i) = re / lambda
         end do
-    end function rvs_expon_array_${t1[0]}$${k1}$
+    end function rvs_exp_array_${t1[0]}$${k1}$
 
     #:endfor
 
@@ -235,7 +235,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    function rvs_expon_array_${t1[0]}$${k1}$(lambda, array_size) result(res)
+    function rvs_exp_array_${t1[0]}$${k1}$(lambda, array_size) result(res)
         ${t1}$, intent(in) :: lambda
         integer, intent(in) :: array_size
         ${t1}$ :: res(array_size)
@@ -243,11 +243,11 @@ contains
         real(${k1}$) :: tr, ti
 
         do i = 1, array_size
-            tr = rvs_expon_r${k1}$(lambda % re)
-            ti = rvs_expon_r${k1}$(lambda % im)
+            tr = rvs_exp_r${k1}$(lambda % re)
+            ti = rvs_exp_r${k1}$(lambda % im)
             res(i) = cmplx(tr, ti, kind=${k1}$)
         end do
-    end function rvs_expon_array_${t1[0]}$${k1}$
+    end function rvs_exp_array_${t1[0]}$${k1}$
 
     #:endfor
 
@@ -255,19 +255,19 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function pdf_expon_${t1[0]}$${k1}$(x, lambda) result(res)
+    impure elemental function pdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
     !
     ! Exponential Distribution Probability Density Function
     !
         ${t1}$, intent(in) :: x, lambda
         real(${k1}$) :: res
 
-        if(lambda <= 0.0_${k1}$) call error_stop("Error(pdf_expon): Expon"     &
+        if(lambda <= 0.0_${k1}$) call error_stop("Error(pdf_exp): Expon"     &
             //"ential distribution lambda parameter must be greater than zero")
-        if(x < 0.0_${k1}$) call error_stop("Error(pdf_expon): Exponential"     &
+        if(x < 0.0_${k1}$) call error_stop("Error(pdf_exp): Exponential"     &
             //" distribution variate x must be non-negative")
         res = exp(- x * lambda) * lambda
-    end function pdf_expon_${t1[0]}$${k1}$
+    end function pdf_exp_${t1[0]}$${k1}$
 
     #:endfor
 
@@ -275,13 +275,13 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    impure elemental function pdf_expon_${t1[0]}$${k1}$(x, lambda) result(res)
+    impure elemental function pdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
         ${t1}$, intent(in) :: x, lambda
         real(${k1}$) :: res
 
-        res = pdf_expon_r${k1}$(x % re, lambda % re)
-        res = res * pdf_expon_r${k1}$(x % im, lambda % im)
-    end function pdf_expon_${t1[0]}$${k1}$
+        res = pdf_exp_r${k1}$(x % re, lambda % re)
+        res = res * pdf_exp_r${k1}$(x % im, lambda % im)
+    end function pdf_exp_${t1[0]}$${k1}$
 
     #:endfor
 
@@ -289,19 +289,19 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function cdf_expon_${t1[0]}$${k1}$(x, lambda) result(res)
+    impure elemental function cdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
     !
     ! Exponential Distribution Cumulative Distribution Function
     !
         ${t1}$, intent(in) :: x, lambda
         real(${k1}$) :: res
 
-        if(lambda <= 0.0_${k1}$) call error_stop("Error(cdf_expon): Expon"     &
+        if(lambda <= 0.0_${k1}$) call error_stop("Error(cdf_exp): Expon"     &
             //"ential distribution lambda parameter must be greater than zero")
-        if(x < 0.0_${k1}$) call error_stop("Error(cdf_expon): Exponential"     &
+        if(x < 0.0_${k1}$) call error_stop("Error(cdf_exp): Exponential"     &
             //" distribution variate x must be non-negative")
         res = 1.0_${k1}$ - exp(- x * lambda)
-    end function cdf_expon_${t1[0]}$${k1}$
+    end function cdf_exp_${t1[0]}$${k1}$
 
     #:endfor
 
@@ -309,13 +309,13 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    impure elemental function cdf_expon_${t1[0]}$${k1}$(x, lambda) result(res)
+    impure elemental function cdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
         ${t1}$, intent(in) :: x, lambda
         real(${k1}$) :: res
 
-        res = cdf_expon_r${k1}$(x % re, lambda % re)
-        res = res * cdf_expon_r${k1}$(x % im, lambda % im)
-    end function cdf_expon_${t1[0]}$${k1}$
+        res = cdf_exp_r${k1}$(x % re, lambda % re)
+        res = res * cdf_exp_r${k1}$(x % im, lambda % im)
+    end function cdf_exp_${t1[0]}$${k1}$
 
     #:endfor
 
