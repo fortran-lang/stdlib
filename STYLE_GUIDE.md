@@ -81,7 +81,7 @@ The following two sections are most relevant for contributing new code:
 
 To write the "spec" (specification) for a new proposal, please place it in the
 [FORD "pages"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Pages) directory at
-[`doc/specs/`](https://github.com/fortran-lang/stdlib/tree/master/doc/specs).
+[`doc/specs/`](https://github.com/fortran-lang/stdlib/tree/HEAD/doc/specs).
 To get help please see the ["Writing Pages"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Pages)
 and ["Writing Documentation"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Documentation) pages
 on the [FORD wiki](https://github.com/Fortran-FOSS-Programmers/ford/wiki).
