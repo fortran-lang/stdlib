@@ -5,8 +5,8 @@ program test_distribution_expon
     use stdlib_kinds, only : sp, dp, xdp, qp
     use stdlib_error, only : check
     use stdlib_random, only : random_seed
-    use stdlib_stats_distribution_exponential, only : expon_rvs => rvs_expon,  &
-                              expon_pdf => pdf_expon, expon_cdf => cdf_expon
+    use stdlib_stats_distribution_exponential, only : expon_rvs => rvs_exp,  &
+                              expon_pdf => pdf_exp, expon_cdf => cdf_exp
 
     implicit none
     #:for k1, t1 in REAL_KINDS_TYPES
