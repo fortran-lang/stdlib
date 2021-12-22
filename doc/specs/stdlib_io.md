@@ -1,5 +1,5 @@
 ---
-title: IO
+title: io
 ---
 
 # IO

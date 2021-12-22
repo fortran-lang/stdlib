@@ -15,9 +15,9 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [ascii](./stdlib_ascii.html) - Procedures for handling ASCII characters
  - [bitsets](./stdlib_bitsets.html) - Bitset data types and procedures
  - [error](./stdlib_error.html) - Catching and handling errors
- - [hash\_procedures](./stdlib_hash_procedures.html) - Hashing integer
+ - [hash](./stdlib_hash_procedures.html) - Hashing integer
    vectors or character strings
- - [IO](./stdlib_io.html) - Input/output helper & convenience
+ - [io](./stdlib_io.html) - Input/output helper & convenience
  - [kinds](./stdlib_kinds.html) - Kind parameters
  - [linalg](./stdlib_linalg.html) - Linear Algebra
  - [logger](./stdlib_logger.html) - Runtime logging system
@@ -30,8 +30,8 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [stats_distributions_uniform](./stdlib_stats_distribution_uniform.html) - Uniform Probability Distribution
  - [stats_distributions_normal](./stdlib_stats_distribution_normal.html) - Normal Probability Distribution
  - [string\_type](./stdlib_string_type.html) - Basic string support
- - [strings](./stdlib_strings.html) - String handling and manipulation routines
  - [stringlist_type](./stdlib_stringlist_type.html) - 1-Dimensional list of strings
+ - [strings](./stdlib_strings.html) - String handling and manipulation routines
  - [version](./stdlib_version.html) - Version information
 
 ## Released/Stable Features & Modules

@@ -1,5 +1,5 @@
 ---
-title: Hash procedures
+title: hash
 ---
 
 # The `stdlib_hash_32bit` and `stdlib_hash_64bit` modules

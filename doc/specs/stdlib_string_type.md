@@ -1,5 +1,5 @@
 ---
-title: string type
+title: string_type
 ---
 
 # The `stdlib_string_type` module

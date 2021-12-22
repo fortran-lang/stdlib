@@ -1,5 +1,5 @@
 ---
-title: stats_random
+title: random
 ---
 
 # Statistical Distributions -- Pseudorandom Number Generator Module
