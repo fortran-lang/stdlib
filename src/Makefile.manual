@@ -46,6 +46,7 @@ SRCFYPP = \
         stdlib_version.fypp
 
 SRC = f18estop.f90 \
+      stdlib_array.f90 \
       stdlib_error.f90 \
       stdlib_specialfunctions.f90 \
       stdlib_specialfunctions_legendre.f90 \
