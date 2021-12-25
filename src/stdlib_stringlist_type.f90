@@ -168,16 +168,16 @@ contains
 
     !> Constructor to convert chararray to stringlist
     !> Returns a new instance of type stringlist
-    pure function new_stringlist_carray( array )
-        character(len=*), dimension(:), intent(in)      :: array
+    pure function new_stringlist_carray( carray )
+        character(len=*), dimension(:), intent(in)      :: carray
         type(stringlist_type)                           :: new_stringlist_carray
 
-        type(string_type), allocatable                  :: sarray(:)
+        type(string_type), dimension(:), allocatable    :: sarray
         integer                                         :: i
 
-        allocate( sarray( size(array) ) )
-        do i = 1, size(array)
-            sarray(i) = string_type( array(i) )
+        allocate( sarray( size(carray) ) )
+        do i = 1, size(carray)
+            sarray(i) = string_type( carray(i) )
         end do
 
         call move_alloc( sarray, new_stringlist_carray%stringarray )
@@ -186,31 +186,31 @@ contains
 
     !> Constructor to convert stringarray to stringlist
     !> Returns a new instance of type stringlist
-    pure function new_stringlist_sarray( array )
-        type(string_type), dimension(:), intent(in)     :: array
+    pure function new_stringlist_sarray( sarray )
+        type(string_type), dimension(:), intent(in)     :: sarray
         type(stringlist_type)                           :: new_stringlist_sarray
 
-        new_stringlist_sarray%stringarray = array
+        new_stringlist_sarray%stringarray = sarray
 
     end function new_stringlist_sarray
 
   ! constructor for stringlist_index_type:
 
-    !> Returns an instance of type 'stringlist_index_type' representing forward index 'idx'
-    pure function forward_index( idx )
-        integer, intent(in) :: idx
+    !> Returns an instance of type 'stringlist_index_type' representing forward index 'idxn'
+    pure function forward_index( idxn )
+        integer, intent(in)         :: idxn
         type(stringlist_index_type) :: forward_index
 
-        forward_index = stringlist_index_type( .true., idx )
+        forward_index = stringlist_index_type( .true., idxn )
 
     end function forward_index
 
-    !> Returns an instance of type 'stringlist_index_type' representing backward index 'idx'
-    pure function backward_index( idx )
-        integer, intent(in) :: idx
+    !> Returns an instance of type 'stringlist_index_type' representing backward index 'idxn'
+    pure function backward_index( idxn )
+        integer, intent(in)         :: idxn
         type(stringlist_index_type) :: backward_index
 
-        backward_index = stringlist_index_type( .false., idx )
+        backward_index = stringlist_index_type( .false., idxn )
 
     end function backward_index
 
@@ -695,9 +695,10 @@ contains
         work_idxn = idxn
         call insert_before_engine( list, work_idxn, size( carray ) )
 
+        inew = work_idxn
         do i = 1, size( carray )
-            inew = work_idxn + i - 1
             list%stringarray(inew) = string_type( carray(i) )
+            inew = inew + 1
         end do
 
     end subroutine insert_before_chararray_idxn
@@ -718,9 +719,10 @@ contains
         work_idxn = idxn
         call insert_before_engine( list, work_idxn, size( sarray ) )
 
+        inew = work_idxn
         do i = 1, size( sarray )
-            inew = work_idxn + i - 1
             list%stringarray(inew) = sarray(i)
+            inew = inew + 1
         end do
 
     end subroutine insert_before_stringarray_idxn
@@ -729,19 +731,19 @@ contains
 
     !> Version: experimental
     !>
-    !> Returns strings present at stringlist_indexes in interval ['first', 'last']
+    !> Returns strings present at integer indexes in interval ['firstn', 'lastn']
     !> Stores requested strings in array 'capture_strings'
     !> No return
-    pure subroutine get_engine( list, first, last, capture_strings )
+    pure subroutine get_engine( list, firstn, lastn, capture_strings )
         type(stringlist_type), intent(in)                       :: list
-        type(stringlist_index_type), intent(in)                 :: first, last
+        integer, intent(in)                                     :: firstn, lastn
         type(string_type), allocatable, intent(out)             :: capture_strings(:)
 
         integer                                                 :: from, to
         integer                                                 :: i, inew
 
-        from = max( list%to_current_idxn( first ), 1 )
-        to  = min( list%to_current_idxn( last ), list%len() )
+        from = max( firstn, 1 )
+        to   = min( lastn, list%len() )
 
         ! out of bounds indexes won't be captured in 'capture_strings'
         if ( from <= to ) then
@@ -766,11 +768,13 @@ contains
     pure function get_idx( list, idx )
         class(stringlist_type), intent(in)                      :: list
         type(stringlist_index_type), intent(in)                 :: idx
-
         type(string_type)                                       :: get_idx
+
+        integer                                                 :: idxn
         type(string_type), allocatable                          :: capture_strings(:)
 
-        call get_engine( list, idx, idx, capture_strings )
+        idxn = list%to_current_idxn( idx )
+        call get_engine( list, idxn, idxn, capture_strings )
 
         ! if index 'idx' is out of bounds, returns an empty string
         if ( size(capture_strings) == 1 ) then
@@ -786,10 +790,14 @@ contains
     pure function get_range_idx( list, first, last )
         class(stringlist_type), intent(in)                      :: list
         type(stringlist_index_type), intent(in)                 :: first, last
-
         type(string_type), allocatable                          :: get_range_idx(:)
 
-        call get_engine( list, first, last, get_range_idx )
+        integer                                                 :: firstn, lastn
+
+        firstn = list%to_current_idxn( first )
+        lastn  = list%to_current_idxn( last )
+
+        call get_engine( list, firstn, lastn, get_range_idx )
 
     end function get_range_idx
 
