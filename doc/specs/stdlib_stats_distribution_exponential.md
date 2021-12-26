@@ -18,7 +18,8 @@ An exponential distribution is the distribution of time between events in a Pois
 
 Without argument the function returns a random sample from the standard exponential distribution `E(1)` with `lambda = 1`.
 
-With single argument, the function returns a random sample from the exponential distribution `E(lambda)`. For complex arguments, the real and imaginary parts are independent of each other.
+With a single argument, the function returns a random sample from the exponential distribution `E(lambda)`.
+For complex arguments, the real and imaginary parts are sampled independently of each other.
 
 With two arguments the function returns a rank one array of exponentially distributed random variates.
 
