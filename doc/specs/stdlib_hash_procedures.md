@@ -1639,9 +1639,8 @@ been on a MacBook Pro with a 2.3 GHz Quad-Core Intel Core i5 and 8 GB
 code. The results for `test_32_bit_hash_performance` is given by the
 following table:
 
-| Algorithm  | Key Size  | Key #      | Time (s) |
-|            | Bytes     |            |          |
-|------------|-----------|------------|----------|
+| Algorithm  | Key Size Bytes  | Key #      | Time (s) |
+|------------|:---------:|:----------:|:--------:|
 |     FNV-1  |       1   |    1048576 |  0.02949 |
 |     FNV-1  |       2   |     524288 |  0.02361 |
 |     FNV-1  |       4   |     262144 |  0.02016 |
@@ -1685,9 +1684,8 @@ following table:
 
 while for `test_64_bit_hash_performance` the results are:
 
-| Algorithm  | Key Size  | Key #      | Time (s) |
-|            | Bytes     |            |          |
-|------------|-----------|------------|----------|
+| Algorithm  | Key Size Bytes | Key #      | Time (s) |
+|------------|:---------:|:----------:|:--------:|
 |     FNV-1  |       1   |    1048576 |  0.02981 |
 |     FNV-1  |       2   |     524288 |  0.02697 |
 |     FNV-1  |       4   |     262144 |  0.02275 |
