@@ -175,7 +175,9 @@ Cumulative distribution function (cdf) of the single real variable exponential d
 
 $$F(x)=\begin{cases}1 - e^{-\lambda x} &x\geqslant 0 \\\\ 0 &x< 0\end{}$$
 
-For a complex variable (x + y i) with independent real x and imaginary y parts, the joint cumulative distribution function is the product of corresponding marginal cdf of real and imaginary cdf (ref. "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
+For a complex variable (x + y i) with independent real x and imaginary y parts, the joint cumulative distribution
+function is the product of corresponding marginal cdf of real and imaginary cdf (for more details, see
+"Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
 
 $$F(x+\mathit{i}y)=F(x)F(y)=\begin{cases} (1 - e^{-\lambda_{x} x})(1 - e^{-\lambda_{y} y}) &x\geqslant 0, \;\; y\geqslant 0 \\\\ 0 &otherwise \end{}$$
 
