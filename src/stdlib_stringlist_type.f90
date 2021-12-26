@@ -734,30 +734,33 @@ contains
     !> Returns strings present at integer indexes in interval ['firstn', 'lastn']
     !> Stores requested strings in array 'capture_strings'
     !> No return
-    pure subroutine get_engine( list, firstn, lastn, capture_strings )
+    pure subroutine get_engine( list, firstn, lastn, stride_vector, capture_strings )
         type(stringlist_type), intent(in)                       :: list
-        integer, intent(in)                                     :: firstn, lastn
+        integer, intent(in)                                     :: firstn, lastn, stride_vector
         type(string_type), allocatable, intent(out)             :: capture_strings(:)
 
-        integer                                                 :: from, to
+        integer                                                 :: from, to, strides_taken
         integer                                                 :: i, inew
 
-        from = max( firstn, 1 )
-        to   = min( lastn, list%len() )
-
-        ! out of bounds indexes won't be captured in 'capture_strings'
-        if ( from <= to ) then
-            allocate( capture_strings( to - from + 1 ) )
-            
-            inew = 1
-            do i = from, to
-                capture_strings(inew) = list%stringarray(i)
-                inew = inew + 1
-            end do
-
+        if (stride_vector > 0) then
+            from = max( firstn, 1 )
+            to   = min( lastn, list%len() )
+        else if (stride_vector < 0) then
+            from = min( firstn, list%len() )
+            to   = max( lastn, 1 )
         else
             allocate( capture_strings(0) )
+            stop
         end if
+
+        strides_taken = floor( real(to - from) / real(stride_vector) )
+        allocate( capture_strings( max(0, strides_taken + 1) ) )
+
+        inew = 1
+        do i = from, to, stride_vector
+            capture_strings(inew) = list%stringarray(i)
+            inew = inew + 1
+        end do
 
     end subroutine get_engine
 
@@ -774,7 +777,7 @@ contains
         type(string_type), allocatable                          :: capture_strings(:)
 
         idxn = list%to_current_idxn( idx )
-        call get_engine( list, idxn, idxn, capture_strings )
+        call get_engine( list, idxn, idxn, 1, capture_strings )
 
         ! if index 'idx' is out of bounds, returns an empty string
         if ( size(capture_strings) == 1 ) then
@@ -787,17 +790,24 @@ contains
     !>
     !> Returns strings present at stringlist_indexes in interval ['first', 'last']
     !> Returns array of string_type instances
-    pure function get_range_idx( list, first, last )
+    pure function get_range_idx( list, first, last, stride )
         class(stringlist_type), intent(in)                      :: list
         type(stringlist_index_type), intent(in)                 :: first, last
+        type(stringlist_index_type), intent(in), optional       :: stride
         type(string_type), allocatable                          :: get_range_idx(:)
 
-        integer                                                 :: firstn, lastn
+        integer                                                 :: firstn, lastn, stride_vector
 
         firstn = list%to_current_idxn( first )
         lastn  = list%to_current_idxn( last )
 
-        call get_engine( list, firstn, lastn, get_range_idx )
+        if ( present(stride) ) then
+            stride_vector = merge( stride%offset, -1 * stride%offset, stride%forward )
+        else
+            stride_vector = merge( 1, -1, firstn <= lastn )
+        end if
+
+        call get_engine( list, firstn, lastn, stride_vector, get_range_idx )
 
     end function get_range_idx
 
@@ -805,12 +815,12 @@ contains
 
     !> Version: experimental
     !>
-    !> Removes strings present at indexes in interval ['first', 'last']
+    !> Removes strings present at integer indexes in interval ['firstn', 'lastn']
     !> Stores popped strings in array 'popped_strings'
     !> No return
-    pure subroutine pop_drop_engine( list, first, last, popped_strings )
+    pure subroutine pop_drop_engine( list, firstn, lastn, popped_strings )
         class(stringlist_type), intent(inout)                   :: list
-        type(stringlist_index_type), intent(in)                 :: first, last
+        integer, intent(in)                                     :: firstn, lastn
         type(string_type), allocatable, intent(out), optional   :: popped_strings(:)
 
         integer                                                 :: from, to
@@ -818,9 +828,9 @@ contains
         type(string_type), dimension(:), allocatable            :: new_stringarray
 
         old_len = list%len()
-        from    = max( list%to_current_idxn( first ), 1 )
-        to      = min( list%to_current_idxn( last ), old_len )
-        
+        from    = max( firstn, 1 )
+        to      = min( lastn, old_len )
+
         ! out of bounds indexes won't modify stringlist
         if ( from <= to ) then
             pos     = to - from + 1
@@ -860,14 +870,16 @@ contains
     !>
     !> Removes the string present at stringlist_index 'idx' in stringlist 'list'
     !> Returns the removed string
-    function pop_idx( list, idx )
+    impure function pop_idx( list, idx )
         class(stringlist_type), intent(inout)           :: list
         type(stringlist_index_type), intent(in)         :: idx
         type(string_type)                               :: pop_idx
 
+        integer                                         :: idxn
         type(string_type), dimension(:), allocatable    :: popped_strings
 
-        call pop_drop_engine( list, idx, idx, popped_strings )
+        idxn = list%to_current_idxn( idx )
+        call pop_drop_engine( list, idxn, idxn, popped_strings )
 
         if ( size(popped_strings) == 1 ) then
             call move( pop_idx, popped_strings(1) )
@@ -880,13 +892,17 @@ contains
     !> Removes strings present at stringlist_indexes in interval ['first', 'last']
     !> in stringlist 'list'
     !> Returns removed strings
-    function pop_range_idx( list, first, last )
+    impure function pop_range_idx( list, first, last )
         class(stringlist_type), intent(inout)           :: list
         type(stringlist_index_type), intent(in)         :: first, last
 
+        integer                                         :: firstn, lastn
         type(string_type), dimension(:), allocatable    :: pop_range_idx
 
-        call pop_drop_engine( list, first, last, pop_range_idx )
+        firstn = list%to_current_idxn( first )
+        lastn  = list%to_current_idxn( last )
+
+        call pop_drop_engine( list, firstn, lastn, pop_range_idx )
 
     end function pop_range_idx
 
@@ -898,7 +914,10 @@ contains
         class(stringlist_type), intent(inout)           :: list
         type(stringlist_index_type), intent(in)         :: idx
 
-        call pop_drop_engine( list, idx, idx )
+        integer                                         :: idxn
+
+        idxn = list%to_current_idxn( idx )
+        call pop_drop_engine( list, idxn, idxn )
 
     end subroutine drop_idx
 
@@ -911,7 +930,12 @@ contains
         class(stringlist_type), intent(inout)           :: list
         type(stringlist_index_type), intent(in)         :: first, last
 
-        call pop_drop_engine( list, first, last )
+        integer                                         :: firstn, lastn
+
+        firstn = list%to_current_idxn( first )
+        lastn  = list%to_current_idxn( last )
+
+        call pop_drop_engine( list, firstn, lastn )
 
     end subroutine drop_range_idx
 
