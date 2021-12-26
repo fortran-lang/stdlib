@@ -93,7 +93,9 @@ The probability density function (pdf) of the single real variable exponential d
 
 $$f(x)=\begin{cases} \lambda e^{-\lambda x} &x\geqslant 0 \\\\ 0 &x< 0\end{}$$
 
-For a complex varible (x + y i) with independent real x and imaginary y parts, the joint probability density function is the product of corresponding marginal pdf of real and imaginary pdf (ref. "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
+For a complex variable (x + y i) with independent real x and imaginary y parts, the joint probability density function
+is the product of the corresponding marginal pdf of real and imaginary pdf (for more details, see
+"Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
 
 $$f(x+\mathit{i}y)=f(x)f(y)=\begin{cases} \lambda_{x} \lambda_{y} e^{-(\lambda_{x} x + \lambda_{y} y)} &x\geqslant 0, y\geqslant 0 \\\\ 0 &otherwise\end{}$$
 
