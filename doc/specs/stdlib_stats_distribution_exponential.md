@@ -163,7 +163,7 @@ program demo_exponential_pdf
 end program demo_exponential_pdf
 ```
 
-## `cdf_exp` - exponential distribution cumulative distribution function
+## `cdf_exp` - exponential cumulative distribution function
 
 ### Status
 
