@@ -301,8 +301,8 @@ Pure function
 `key`: Shall be a scalar integer expression of kind `INT32`. It is an
 `intent(in)` argument.
 
-`nbits` Shall be a scalar default integer expression with `0 < nbits <
-32`. It is an `intent(in)` argument.
+`nbits` Shall be a scalar default integer expression with
+`0 < nbits < 32`. It is an `intent(in)` argument.
 
 ##### Result character
 
@@ -996,8 +996,8 @@ Finally it provides procedures to inquire about the overall
 structure and performance of the table:`calls`,  `entries`,
 `get_other_data`, `loading`, `slots`, and `total_depth`. The module
 also defines a number of public constants: `inmap_probe_factor`,
-`map_probe_factor`, `default_max_bits`, `default_bits`,
-`strict_max_bits`, `int_calls`, `int_depth`, `int_index`,
+`map_probe_factor`, `default_bits`,
+`max_bits`, `int_calls`, `int_depth`, `int_index`,
 `int_probes`, `success`, `alloc_fault`, and `array_size_error`.
 
 ### The `stdlib_chaining_hash_map` module's public constants
@@ -1018,22 +1018,14 @@ the slots need expansion. The constant `map_probe_factor` is used to
 determine when inserting a new entry the ratio of the number of map
 probes to map calls is too large and the slots need expansion.
 
-The constants `default_bits`, `default_max_bits`, and
-`strict_max_bits` are used to parameterize the table's slots size. The
+The constants `default_bits`, and
+`max_bits` are used to parameterize the table's slots size. The
 `default_bits` constant defines the default initial number of slots
 with a current value of 6 resulting in an initial `2**6 == 64`
 slots. This may optionally be overridden on hash map creation. The
-`default_max_bits` is the default  value for the table's `max_bits`
-component that sets the maximum table size as `2**max_bits`. This may
-also be overridden on table creation. Finally, `strict_max_bits`
-defines the maximum value for `default_max_bits`. This cannot be
-overridden on hash map creation. Because signed 32 bit integers are
-used for the hash code, `strict_max_bits` must be no greater than 31,
-but as probably large values of `max_bits` benefit from a 64 bit hash
-code, `strict_max_size` is currently set to 24, so the current table
-is assumed to be useful only for tables up to size `2**24` slots. As
-chaining is used for this table the number of entries can be
-significantly larger than the number of slots.
+`max_bits` parameter sets the maximum table size as `2**max_bits` with
+a default value for `max_bits` of 30. The table will not work for a
+slots size greater than `2**30`.
 
 The constants `int_calls`, `int_depth`, `int_index`, and `int_probes`
 are used to define integer kind values for various contexts. The
@@ -1053,8 +1045,8 @@ Finally the error codes `success`, `alloc_fault`, and
 procedure calla. The `succes` code indicates that no problems were
 found. The `alloc_fault` code indicates that a memory allocation
 failed. Finally the `array_size_error` indicates that on table
-creation `slots_bits` or `max_bits` are less than `default_bits` or
-greater than `strict_max_bits`, respectively.
+creation `slots_bits` is less than `default_bits` or
+greater than `max_bits`.
 
 ### The `stdlib_chaining_hash_map` module's derived types
 
@@ -1119,8 +1111,8 @@ costs. The type's definition is below:
 #### The `chaining_hash_map_type` derived type
 
 The `chaining_hash_map_type` derived type implements a separate
-chaining hash map. It provides the elements `calls`, `probes`,
-`total_probes`, `entries`, `slots_bits`, and `max_bits` to keep track
+chaining hash map. It provides the components `calls`, `probes`,
+`total_probes`, `entries`, and `slots_bits` to keep track
 of the hash map's usage. The array element `slots` serves as the
 table proper. The array element `inverse` maps integers to
 entries. The linked list entry, `free_list`, keeps track of freed
@@ -1143,8 +1135,6 @@ objects of the type, `chaining_hash_map_type`.
         ! Number of entries
         integer(int32)     :: slots_bits = default_bits
         ! Bits used for slots size
-        integer(int32)     :: max_bits = default_max_bits
-        ! Maximum value of slots_bits
         type(chaining_map_entry_ptr), allocatable :: slots(:)
         ! Array of bucket lists Note # slots=size(slots)
         type(chaining_map_entry_ptr), allocatable :: inverse(:)
@@ -1181,7 +1171,7 @@ Procedure to modify the structure of a map:
 
 Procedures to modify the content of a map:
 
-* `map_entry( map, inmap, key, other )` - Inserts an entry innto the
+* `map_entry( map, inmap, key, other )` - Inserts an entry into the
   hash map.
 
 * `remove_entry(map, inmap)` - Remove the entry, if any, at map %
@@ -1462,7 +1452,7 @@ Initializes a `chaining_hash_map_type` object.
 
 ##### Syntax
 
-`call [[stdlib_chaining_hash_map:init_map]](  map, hasher [, slots_bits, max_bits, status ] ] )`
+`call [[stdlib_chaining_hash_map:init_map]](  map, hasher [, slots_bits, status ] ] )`
 
 ####@# Class
 
@@ -1483,22 +1473,11 @@ Subroutine
   slots in the table will be `2**slots_bits`.
 
 * `slots_bits` shall be a positive default integer less than
-  `max_slots_bits`, otherwise processing stops with an informative
+  `max_bits`, otherwise processing stops with an informative
   error code.
 
 * If `slots_bits` is absent then the effective value for `slots_bits`
   is `default_slots_bits`.
-
-`max_bits` (optional): shall be a scalar default integer
-  expression. It is an `intent(in)` argument. The number of slots
-  cannot exceed `2**max_bits`.
-
-* `max_bits` shall be a positive integer no greater than
-  `strict_max_bits`, otherwise processing stops with an informative
-  stop code.
-
-* If `maw_bits` is absent then the effective value for
-`max_bits` is `default_max_bits`.
 
 `status` (optional): shall be a scalar integer variable of kind
 `int32`. It is an `intent(out)` argument. On return if present it
@@ -1510,10 +1489,7 @@ shall have an error code value.
 * If allocation of memory for the `map` arrays fails then `status`
 has the value `alloc_fault`.
 
-* If `max_bits < 6` or `max_bits > strict_max_bits` then `status` has
-  the value of `array_size_error`.
-
-* If `slot_bits < 6` or `slots_bits > map % max_bits` then `status`
+* If `slot_bits < 6` or `slots_bits > max_bits` then `status`
   has the value of `array_size_error`.
 
 * If `status` is absent, but `status` would have a value other than
@@ -2083,12 +2059,11 @@ provides procedures to inquire about entries in the hash map:
 `get_other_data`, `in_map`, `unmap`.and `valid_index`. Finally it
 provides procedures to inquire about the overall structure and
 performance of the table:`calls`, `entries`, `get_other_data`,
-`load_factor`, `loading`, `slots`, and `total_depth`. The module 
+`loading`, `relative_loading`, `slots`, and `total_depth`. The module 
 also defines a number of public constants: `inmap_probe_factor`,
-`map_probe_factor`, `default_load_factor`, `default_max_bits`,
-`default_bits`, `strict_max_bits`, `int_calls`, `int_depth`,
-`int_index`, `int_probes`, `success`, `alloc_fault`,
-`array_size_error`, and `real_value_error`.
+`map_probe_factor`, `default_bits`, `max_bits`, `int_calls`,
+`int_depth`, `int_index`, `int_probes`, `load_factor`, `success`,
+`alloc_fault`, `array_size_error`, and `real_value_error`.
 
 ### The `stdlib_open_hash_map` module's public constants
 
@@ -2099,42 +2074,32 @@ integer kind values for different applications. Finally, some are used
 to report errors or success.
 
 The constants `inmap_probe_factor`, `map_probe_factor`, and
-`default_load_factor` are used to parameterize the slot expansion code
-used to determine when in a `inchain_map_call` the number 
-of slots need to be increased to decrease the lengths of the linked
-lists. The constant `inmap_probe_factor` is used to determine when
+`load_factor` are used to parameterize the slot expansion code
+used to determine when in a call on the map the number 
+of slots need to be increased to decrease the search lengths.
+The constant `inmap_probe_factor` is used to determine when
 the ratio of the number of map probes to map calls is too large and
 the slots need expansion. The constant `map_probe_factor` is used to
 determine when inserting a new entry the ratio of the number of map
 probes to map calls is too large and the slots need expansion.
+Finally, the 
+`load_factor` determines the maximum number of entries allowed 
+relative to the number of slots prior to automatically resizing the 
+table upon entry insertion. The `load_factor` is a tradeoff between 
+runtime performance and memory usage, with smaller values of 
+`load_factor` having the best runtime performance and larger.values 
+the smaller memory footprint, with common choices being `0.575 <=
+load_factor <= 0.75`. The `load_factor` currently has a value 
+of `0.5625`.
 
-The constants `default_bits`, `default_max_bits`, and
-`strict_max_bits` are used to parameterize the table's slots size. The
+The constants `default_bits`, and
+`max_bits` are used to parameterize the table's slots size. The
 `default_bits` constant defines the default initial number of slots
 with a current value of 6 resulting in an initial `2**6 == 64`
 slots. This may optionally be overridden on hash map creation. The
-`default_max_bits` is the default value for the table's `max_bits`
-component that sets the maximum table size as `2**max_bits`. This may
-also be overridden on table creation. Then `strict_max_bits`
-defines the maximum value for `default_max_bits`. This cannot be
-overridden  on hash map creation. Because signed 32 bit integers are
-used for the hash code, `strict_max_bits` must be no greater than 31,
-but as probably large values of `max_bits` benefit from a 64 bit hash
-code, `strict_max_size` is currently set to 24, so the current table
-is assumed to be useful only for tables up to size `2**24` slots. As
-open is used for this table the number of entries can be
-significantly larger than the number of slots. Finally,
-`default_load_factor` provides a default value for `load_factor`. The
-`load_factor` determines the maximum number of entries allowed
-relative to the number of slots prior to automatically  resizing the
-table upon entry insertion. The `load_factor` is a tradeoff between
-runtime performance and memory usage, with smaller values of
-`load_factor` having the best runtime performance and larger.values
-the smaller memory footprint, with common choices being `0.5 <=
-load_factor <= 0.75`. The `default_load_factor` currently has a value
-of `0.25`. This default can be overridden at table
-creation, with initialization allowing values `0.375 <= load_factor
-<= 0.75`.
+`max_bits` sets the maximum table size as `2**max_bits`. The current
+value of `max_bits` is 3o and the table will not work properly if that
+value is exceeded.
 
 The constants `int_calls`, `int_depth`, `int_index`, and `int_probes`
 are used to define integer kind values for various contexts. The
@@ -2154,10 +2119,8 @@ Finally the error codes `success`, `alloc_fault`, and
 procedure calla. The `succes` code indicates that no problems were
 found. The `alloc_fault` code indicates that a memory allocation
 failed. The `array_size_error` indicates that on table
-creation `slots_bits` or `max_bits` are less than `default_bits` or
-greater than `strict_max_bits`, respectively. Finally, on table
-creation `real_value_error` indicates that the `load_factor` exceeds
-the range `0.375 <= load_factor <= 0.75`.
+creation `slots_bits` is less than `default_bits` or
+greater than `max_bits`.
 
 ### The `stdlib_open_hash_map` module's derived types
 
@@ -2201,7 +2164,7 @@ containing the elements of the table. The type's definition is below:
 
 The `open_hash_map_type` derived type implements a separate
 open hash map. It provides the elements `calls`, `probes`,
-`total_probes`, `entries`, `slots_bits`, and `max_bits` to keep track
+`total_probes`, `entries`, and `slots_bits` to keep track
 of the hash map's usage. The array element `slots` serves as the
 table proper. The array element `inverse` maps integers to
 entries. The linked list entry, `free_list`, keeps track of freed
@@ -2226,8 +2189,6 @@ objects of the type, `open_hash_map_type`.
         ! Mask used in linear addressing
         integer(int32)     :: slots_bits = default_bits
         ! Bits used for slots size
-        integer(int32)     :: max_bits = default_max_bits
-        ! Maximum value of slots_bits
         type(open_map_entry_ptr), allocatable :: slots(:)
         ! Array of bucket lists Note # slots=size(slots)
         type(open_map_entry_ptr), allocatable :: inverse(:)
@@ -2250,7 +2211,7 @@ are listed below.
 
 Procedure to initialize a chaining hash map:
 
-* `init_map( map, hasher[, slots_bits, max_bits, load_factor, status]
+* `init_map( map, hasher[, slots_bits, status]
   )` - Routine to initialize a chaining hash map.
 
 Procedure to modify the structure of a map:
@@ -2286,14 +2247,14 @@ Procedures to report on the structure of the map:
 
 * `entries( map )`- the number of entries in a hash map.
 
-* `load_factor( mP )` - Returns the maximum number of entries relative
-  to slots in a open addressing hash map
-
 * `loading( map )` - the number of entries relative to slots in a hash
   map.
 
 * `map_probes( map )` - the total number of table probes on a hash
   map.
+
+* `relative_loading` - the ratio of the map's loading to its
+  `load_factor`. 
 
 * `slots( map )` - Returns the number of allocated slots in a hash
   map.
@@ -2542,7 +2503,7 @@ Initializes a `open_hash_map_type` object.
 
 ##### Syntax
 
-`call [[stdlib_open_hash_map:init_map]](  map, hasher[, slots_bits, max_bits, load_factor, status ] ] )`
+`call [[stdlib_open_hash_map:init_map]](  map, hasher[, slots_bits, status ] ] )`
 
 ####@# Class
 
@@ -2569,24 +2530,6 @@ Subroutine
 * If `slots_bits` is absent then the effective value for `slots_bits`
   is `default_slots_bits`.
 
-`max_bits` (optional): shall be a scalar default integer
-  expression. It is an `intent(in)` argument. The number of slots
-  cannot exceed `2**max_bits`.
-
-* `max_bits` shall be a positive integer no greater than
-  `strict_max_bits`, otherwise processing stops with an informative
-  stop code.
-
-* If `maw_bits` is absent then the effective value for
-`max_bits` is `default_max_bits`.
-
-`load_factor` (optional): shall be a scalar default real expression.
-it is an `intent(in) argument.
-
-* `load_factor` shall be a positive real such that `0.375 <=
-  load_factor <= 0.75`, otherwise processing stops with an informative
-  stop code.
-
 `status` (optional): shall be a scalar integer variable of kind
 `int32`. It is an `intent(out)` argument. On return if present it
 shall have an error code value.
@@ -2597,14 +2540,8 @@ shall have an error code value.
 * If allocation of memory for the `map` arrays fails then `status`
 has the value `alloc_fault`.
 
-* If `max_bits < 6` or `max_bits > strict_max_bits` then `status` has
-  the value of `array_size_error`.
-
-* If `slot_bits < 6` or `slots_bits > map % max_bits` then `status`
+* If `slot_bits < 6` or `slots_bits > max_bits` then `status`
   has the value of `array_size_error`.
-
-* If `load_factor < 0.375` or `load_factor > 0.75` then `status`
-  has the value of `real_value_error`.
 
 * If `status` is absent, but `status` would have a value other than
 `success`, then processing stops with an informative stop code.
@@ -2623,57 +2560,6 @@ has the value `alloc_fault`.
                        max_power=20,     &
                        load)_factor=0.5 )
     end program demo_init_map
-
-
-
-#### `load_factor` - Returns the load_factor of a hash map
-
-##### Status
-
-Experimental
-
-##### Description
-
-Returns the maximum number of entries relative to slots in a hash
-map.
-
-##### Syntax
-
-`value = [[stdlib_open_hash_map:load_factor]]( map )`
-
-##### Class
-
-Pure function
-
-##### Argument
-
-`map` - shall be an expression of type `open_hash_map_type`.
-It is an `intent(in)` argument.
-
-##### Result character
-
-The result will be a default `REAL`.
-
-##### Result value
-
-The result will be the maximum number of entries relative to slots in
-the  open  addressing hash map.
-
-##### Example
-
-```fortran
-    program demo_load_factor
-      use stdlib_open_hash_map, only: &
-         open_hash_map_type, init_map, int_index, &
-         fnv_1_hasher, load_factor
-      implicit none
-      type(open_hash_map_type) :: map
-      real :: initial_factor
-      call init_map( map, fnv_1_hasher )
-      initisl_factor = load_factor (map)
-      print *, "Initial load_factor = ", initial_factor
-    end program demo_load_factor
-```
 
 
 #### `loading` - Returns the ratio of entries to slots
@@ -2884,6 +2770,56 @@ It is the hash method to be used by `map`.
         call map_entry( map, inmap, key, other )
         call rehash_map( map, fnv_1a_hasher )
     end program demo_rehash_map
+
+
+#### `relative_loading` - Returns the ratio of `loading` to `load_factor`
+
+##### Status
+
+Experimental
+
+##### Description
+
+Returns the ratio of the loadings relative to the open hash map's
+`load_factor`. 
+
+##### Syntax
+
+`value = [[stdlib_open_hash_map:relative_loading]]( map )`
+
+##### Class
+
+Pure function
+
+##### Argument
+
+`map` - shall be an expression of type `open_hash_map_type`.
+It is an `intent(in)` argument.
+
+##### Result character
+
+The result will be a default real.
+
+##### Result value
+
+The result will be the ratio of the number of entries relative to the
+number of slots in the hash map relative to the `load_factor`.
+
+##### Example
+
+```fortran
+    program demo_relative_loading
+      use stdlib_open_hash_map, only: &
+         open_hash_map_type, init_map, int_index, &
+         fnv_1_hasher, loading
+      implicit none
+      type(open_hash_map_type) :: map
+      real :: ratio
+      call init_map( map, fnv_1_hasher )
+      ratio = relative loading (map)
+      print *, "Initial relative loading =  ", ratio
+    end program demo_relative_loading
+```
 
 
 #### `set_other_data` - replaces the other dataa for an entry
