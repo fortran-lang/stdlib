@@ -15,6 +15,18 @@ module test_linalg_matrix_property_checks
     real(qp), parameter :: qptol = 1000 * epsilon(1._qp)
 #:endif
 
+  #! create new list that contains test subroutine suffix (rsp, cdp, int64, etc.)
+  #! alongside kind and type
+  #:set RCI_KINDS_TYPES_SUFFIXES = []
+  #:for k1, t1 in RCI_KINDS_TYPES
+    #:if t1[0] == 'i'
+        #:set SUFFIX_START = ''
+    #:else
+        #:set SUFFIX_START = t1[0]
+    #:endif
+    $:RCI_KINDS_TYPES_SUFFIXES.append((k1,t1,SUFFIX_START+k1))
+  #:endfor
+
 
 contains
 
@@ -24,190 +36,193 @@ contains
         !> Collection of tests
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
+
+      #:set IMPLEMENTED_TESTS = ['is_square','is_diagonal']
+
+      #:set NUM_TESTS = int(len(IMPLEMENTED_TESTS)*len(RCI_KINDS_TYPES_SUFFIXES))
+
+        #! set testsuite dynamically
         testsuite = [ &
-            new_unittest("is_square_rsp", test_is_square_rsp), &
-            new_unittest("is_square_rdp", test_is_square_rdp), &
-            new_unittest("is_square_rqp", test_is_square_rqp), &
-            new_unittest("is_square_csp", test_is_square_csp), &
-            new_unittest("is_square_cdp", test_is_square_cdp), &
-            new_unittest("is_square_cqp", test_is_square_cqp), &
-            new_unittest("is_square_int8", test_is_square_int8), &
-            new_unittest("is_square_int16", test_is_square_int16), &
-            new_unittest("is_square_int32", test_is_square_int32), &
-            new_unittest("is_square_int64", test_is_square_int64) &
+      #:set TESTS_WRITTEN = 0
+      #:for cur_test in IMPLEMENTED_TESTS
+        #:for k1, t1, s1 in RCI_KINDS_TYPES_SUFFIXES
+          #! note that one has to use set directives to increment variable
+          #:set TESTS_WRITTEN = TESTS_WRITTEN + 1
+          #! last test in list should not have comma
+          #:if TESTS_WRITTEN < NUM_TESTS
+            new_unittest("${cur_test}$_${s1}$", test_is_square_rsp), &
+          #:else
+            new_unittest("${cur_test}$_${s1}$", test_is_square_rsp) &
+          #:endif
+        #:endfor
+      #:endfor
             ]
-        
-        !testsuite = [ &
-        !    new_unittest("is_square_rsp", test_is_square_rsp), &
-        !    new_unittest("is_square_rdp", test_is_square_rdp), &
-        !    new_unittest("is_square_rqp", test_is_square_rqp), &
-        !    new_unittest("is_square_csp", test_is_square_csp), &
-        !    new_unittest("is_square_cdp", test_is_square_cdp), &
-        !    new_unittest("is_square_cqp", test_is_square_cqp), &
-        !    new_unittest("is_square_int8", test_is_square_int8), &
-        !    new_unittest("is_square_int16", test_is_square_int16), &
-        !    new_unittest("is_square_int32", test_is_square_int32), &
-        !    new_unittest("is_square_int64", test_is_square_int64), &
-        !    new_unittest("is_diagonal_rsp", test_is_diagonal_rsp), &
-        !    new_unittest("is_diagonal_rdp", test_is_diagonal_rdp), &
-        !    new_unittest("is_diagonal_rqp", test_is_diagonal_rqp), &
-        !    new_unittest("is_diagonal_csp", test_is_diagonal_csp), &
-        !    new_unittest("is_diagonal_cdp", test_is_diagonal_cdp), &
-        !    new_unittest("is_diagonal_cqp", test_is_diagonal_cqp), &
-        !    new_unittest("is_diagonal_int8", test_is_diagonal_int8), &
-        !    new_unittest("is_diagonal_int16", test_is_diagonal_int16), &
-        !    new_unittest("is_diagonal_int32", test_is_diagonal_int32), &
-        !    new_unittest("is_diagonal_int64", test_is_diagonal_int64), &
-        !    new_unittest("is_symmetric_rsp", test_is_symmetric_rsp), &
-        !    new_unittest("is_symmetric_rdp", test_is_symmetric_rdp), &
-        !    new_unittest("is_symmetric_rqp", test_is_symmetric_rqp), &
-        !    new_unittest("is_symmetric_csp", test_is_symmetric_csp), &
-        !    new_unittest("is_symmetric_cdp", test_is_symmetric_cdp), &
-        !    new_unittest("is_symmetric_cqp", test_is_symmetric_cqp), &
-        !    new_unittest("is_symmetric_int8", test_is_symmetric_int8), &
-        !    new_unittest("is_symmetric_int16", test_is_symmetric_int16), &
-        !    new_unittest("is_symmetric_int32", test_is_symmetric_int32), &
-        !    new_unittest("is_symmetric_int64", test_is_symmetric_int64), &
-        !    new_unittest("is_skew_symmetric_rsp", test_is_skew_symmetric_rsp), &
-        !    new_unittest("is_skew_symmetric_rdp", test_is_skew_symmetric_rdp), &
-        !    new_unittest("is_skew_symmetric_rqp", test_is_skew_symmetric_rqp), &
-        !    new_unittest("is_skew_symmetric_csp", test_is_skew_symmetric_csp), &
-        !    new_unittest("is_skew_symmetric_cdp", test_is_skew_symmetric_cdp), &
-        !    new_unittest("is_skew_symmetric_cqp", test_is_skew_symmetric_cqp), &
-        !    new_unittest("is_skew_symmetric_int8", test_is_skew_symmetric_int8), &
-        !    new_unittest("is_skew_symmetric_int16", test_is_skew_symmetric_int16), &
-        !    new_unittest("is_skew_symmetric_int32", test_is_skew_symmetric_int32), &
-        !    new_unittest("is_skew_symmetric_int64", test_is_skew_symmetric_int64), &
-        !    new_unittest("is_hermitian_rsp", test_is_hermitian_rsp), &
-        !    new_unittest("is_hermitian_rdp", test_is_hermitian_rdp), &
-        !    new_unittest("is_hermitian_rqp", test_is_hermitian_rqp), &
-        !    new_unittest("is_hermitian_csp", test_is_hermitian_csp), &
-        !    new_unittest("is_hermitian_cdp", test_is_hermitian_cdp), &
-        !    new_unittest("is_hermitian_cqp", test_is_hermitian_cqp), &
-        !    new_unittest("is_hermitian_int8", test_is_hermitian_int8), &
-        !    new_unittest("is_hermitian_int16", test_is_hermitian_int16), &
-        !    new_unittest("is_hermitian_int32", test_is_hermitian_int32), &
-        !    new_unittest("is_hermitian_int64", test_is_hermitian_int64), &
-        !    new_unittest("is_triangular_rsp", test_is_triangular_rsp), &
-        !    new_unittest("is_triangular_rdp", test_is_triangular_rdp), &
-        !    new_unittest("is_triangular_rqp", test_is_triangular_rqp), &
-        !    new_unittest("is_triangular_csp", test_is_triangular_csp), &
-        !    new_unittest("is_triangular_cdp", test_is_triangular_cdp), &
-        !    new_unittest("is_triangular_cqp", test_is_triangular_cqp), &
-        !    new_unittest("is_triangular_int8", test_is_triangular_int8), &
-        !    new_unittest("is_triangular_int16", test_is_triangular_int16), &
-        !    new_unittest("is_triangular_int32", test_is_triangular_int32), &
-        !    new_unittest("is_triangular_int64", test_is_triangular_int64), &
-        !    new_unittest("is_hessenberg_rsp", test_is_hessenberg_rsp), &
-        !    new_unittest("is_hessenberg_rdp", test_is_hessenberg_rdp), &
-        !    new_unittest("is_hessenberg_rqp", test_is_hessenberg_rqp), &
-        !    new_unittest("is_hessenberg_csp", test_is_hessenberg_csp), &
-        !    new_unittest("is_hessenberg_cdp", test_is_hessenberg_cdp), &
-        !    new_unittest("is_hessenberg_cqp", test_is_hessenberg_cqp), &
-        !    new_unittest("is_hessenberg_int8", test_is_hessenberg_int8), &
-        !    new_unittest("is_hessenberg_int16", test_is_hessenberg_int16), &
-        !    new_unittest("is_hessenberg_int32", test_is_hessenberg_int32), &
-        !    new_unittest("is_hessenberg_int64", test_is_hessenberg_int64), &
-        !    ]
 
     end subroutine collect_linalg_matrix_property_checks
 
     !is_square
-  #:for k1, t1 in RCI_KINDS_TYPES 
-    #:if t1[0] == 'i'
-      #:set SUBROUTINE_LETTER = ''
-    #:else
-      #:set SUBROUTINE_LETTER = t1[0]
-    #:endif
-    
-    subroutine test_is_square_${SUBROUTINE_LETTER}$${k1}$(error)
+  #:for k1, t1, s1 in RCI_KINDS_TYPES_SUFFIXES
+    subroutine test_is_square_${s1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-      #:if t1[0] == 'r'
+      #!populate variables dependent on type/kind
+      #:if s1[0] == 'r'
         ${t1}$ :: A_true(2,2), A_false(2,3)
         A_true = reshape([1.,2.,3.,4.],[2,2])
         A_false = reshape([1.,2.,3.,4.,5.,6.],[2,3])
-      #:elif t1[0] == 'c'
+      #:elif s1[0] == 'c'
         ${t1}$ :: A_true(2,2), A_false(2,3)
         A_true = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.),cmplx(4.,1.)],[2,2])
         A_false = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.), &
             cmplx(4.,1.),cmplx(5.,0.),cmplx(6.,1.)],[2,3])
-      #:elif t1[0] == 'i'
+      #:elif s1[0] == 'i'
         ${t1}$ :: A_true(2,2), A_false(2,3)
         A_true = reshape([1,2,3,4],[2,2])
         A_false = reshape([1,2,3,4,5,6],[2,3])
       #:endif
 
+      #! all error check calls are type/kind independent
         call check(error, is_square(A_true), &
             "is_square(A_true) failed.")
         if (allocated(error)) return
-
         call check(error, (.not. is_square(A_false)), &
             "(.not. is_square(A_false)) failed.")
         if (allocated(error)) return
-    end subroutine test_is_square_${SUBROUTINE_LETTER}$${k1}$
+    end subroutine test_is_square_${s1}$
   #:endfor
 
-  !  subroutine test_is_square_r${k1}$(error)
-  !      !> Error handling
-  !      type(error_type), allocatable, intent(out) :: error
 
-  !      ${t1}$ :: A_true(2,2), A_false(2,3)
-  !      !A_true = reshape([1.,2.,3.,4.],[2,2])
-  !      A_true = reshape([1.,2.,3.,4.],[4,1])
-  !      A_false = reshape([1.,2.,3.,4.,5.,6.],[2,3])
+    !is_diagonal
+  #:for k1, t1, s1 in RCI_KINDS_TYPES_SUFFIXES
+    subroutine test_is_diagonal_${s1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
 
-  !      call check(error, is_square(A_true), &
-  !          "is_square(A_true) failed.")
-  !      if (allocated(error)) return
+      #!populate variables dependent on type/kind
+      #:if s1[0] == 'r'
+        ${t1}$ :: A_true_s(2,2), A_false_s(2,2) !square matrices
+        ${t1}$ :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+        ${t1}$ :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+        A_true_s = reshape([1.,0.,0.,4.],[2,2])
+        A_false_s = reshape([1.,0.,3.,4.],[2,2])
+        A_true_sf = reshape([1.,0.,0.,4.,0.,0.],[2,3])
+        A_false_sf = reshape([1.,0.,3.,4.,0.,0.],[2,3])
+        A_true_ts = reshape([1.,0.,0.,0.,5.,0.],[3,2])
+        A_false_ts = reshape([1.,0.,0.,0.,5.,6.],[3,2])
+      #:elif s1[0] == 'c'
+        ${t1}$ :: A_true_s(2,2), A_false_s(2,2) !square matrices
+        ${t1}$ :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+        ${t1}$ :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+        A_true_s = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+            cmplx(0.,0.),cmplx(4.,1.)],[2,2]) 
+        A_false_s = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+            cmplx(3.,1.),cmplx(4.,1.)],[2,2])
+        A_true_sf = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+            cmplx(0.,0.),cmplx(4.,1.), &
+            cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+        A_false_sf = reshape([cmplx(1.,1.),cmplx(0.,0.), &
+            cmplx(3.,1.),cmplx(4.,1.), &
+            cmplx(0.,0.),cmplx(0.,0.)],[2,3])
+        A_true_ts = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+            cmplx(0.,0.),cmplx(5.,1.),cmplx(0.,0.)],[3,2])
+        A_false_ts = reshape([cmplx(1.,1.),cmplx(0.,0.),cmplx(0.,0.), &
+            cmplx(0.,0.),cmplx(5.,1.),cmplx(6.,1.)],[3,2])
+      #:elif s1[0] == 'i'
+        ${t1}$ :: A_true_s(2,2), A_false_s(2,2) !square matrices
+        ${t1}$ :: A_true_sf(2,3), A_false_sf(2,3) !short and fat matrices
+        ${t1}$ :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
+        A_true_s = reshape([1,0,0,4],[2,2])
+        A_false_s = reshape([1,0,3,4],[2,2])
+        A_true_sf = reshape([1,0,0,4,0,0],[2,3])
+        A_false_sf = reshape([1,0,3,4,0,0],[2,3])
+        A_true_ts = reshape([1,0,0,0,5,0],[3,2])
+        A_false_ts = reshape([1,0,0,0,5,6],[3,2])
+      #:endif
 
-  !      call check(error, (.not. is_square(A_false)), &
-  !          "(.not. is_square(A_false)) failed.")
-  !      if (allocated(error)) return
+      #! all error check calls are type/kind independent
+        call check(error, is_diagonal(A_true_s), &
+            "is_diagonal(A_true_s) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_diagonal(A_false_s)), &
+            "(.not. is_diagonal(A_false_s)) failed.")
+        if (allocated(error)) return
+        call check(error, is_diagonal(A_true_sf), &
+            "is_diagonal(A_true_sf) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_diagonal(A_false_sf)), &
+            "(.not. is_diagonal(A_false_sf)) failed.")
+        if (allocated(error)) return
+        call check(error, is_diagonal(A_true_ts), &
+            "is_diagonal(A_true_ts) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_diagonal(A_false_ts)), &
+            "(.not. is_diagonal(A_false_ts)) failed.")
+        if (allocated(error)) return
+    end subroutine test_is_diagonal_${s1}$
+  #:endfor
 
-  !  end subroutine test_is_square_r${k1}$
-  !#:endfor 
-  !#:for k1, t1 in COMPLEX_KINDS_TYPES 
-  !  subroutine test_is_square_c${k1}$(error)
-  !      !> Error handling
-  !      type(error_type), allocatable, intent(out) :: error
 
-  !      ${t1}$ :: A_true(2,2), A_false(2,3)
-  !      A_true = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.),cmplx(4.,1.)],[2,2])
-  !      A_false = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.), &
-  !          cmplx(4.,1.),cmplx(5.,0.),cmplx(6.,1.)],[2,3])
+    !is_symmetric
+  #:for k1, t1, s1 in RCI_KINDS_TYPES_SUFFIXES
+    subroutine test_is_symmetric_${s1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
 
-  !      call check(error, is_square(A_true), &
-  !          "is_square(A_true) failed.")
-  !      if (allocated(error)) return
+      #!populate variables dependent on type/kind
+      #:if s1[0] == 'r'
+        ${t1}$ :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        A_true = reshape([1.,2.,2.,4.],[2,2])
+        A_false_1 = reshape([1.,2.,3.,4.],[2,2])
+        A_false_2 = reshape([1.,2.,3.,2.,5.,6.],[3,2]) !nonsquare matrix
+      #:elif s1[0] == 'c'
+        ${t1}$ :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        A_true = reshape([cmplx(1.,1.),cmplx(2.,1.), &
+            cmplx(2.,1.),cmplx(4.,1.)],[2,2])
+        A_false_1 = reshape([cmplx(1.,1.),cmplx(2.,1.), &
+            cmplx(3.,1.),cmplx(4.,1.)],[2,2])
+        A_false_2 = reshape([cmplx(1.,1.),cmplx(2.,1.),cmplx(3.,1.), &
+            cmplx(2.,1.),cmplx(5.,1.),cmplx(6.,2.)],[3,2]) !nonsquare matrix
+      #:elif s1[0] == 'i'
+        ${t1}$ :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        A_true = reshape([1,2,2,4],[2,2])
+        A_false_1 = reshape([1,2,3,4],[2,2])
+        A_false_2 = reshape([1,2,3,2,5,6],[3,2]) !nonsquare matrix
+      #:endif
 
-  !      call check(error, (.not. is_square(A_false)), &
-  !          "(.not. is_square(A_false)) failed.")
-  !      if (allocated(error)) return
+      #! all error check calls are type/kind independent
+        call check(error, is_symmetric(A_true), &
+            "is_symmetric(A_true) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_symmetric(A_false_1)), &
+            "(.not. is_symmetric(A_false_1)) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_symmetric(A_false_2)), &
+            "(.not. is_symmetric(A_false_2)) failed.")
+        if (allocated(error)) return
+    end subroutine test_is_symmetric_${s1}$
+  #:endfor
 
-  !  end subroutine test_is_square_c${k1}$
-  !#:endfor 
-  !#:for k1, t1 in INT_KINDS_TYPES 
-  !  subroutine test_is_square_${k1}$(error)
-  !      !> Error handling
-  !      type(error_type), allocatable, intent(out) :: error
 
-  !      ${t1}$ :: A_true(2,2), A_false(2,3)
-  !      write(*,*) "test_is_square_int16" 
-  !      A_true = reshape([1,2,3,4],[2,2])
-  !      A_false = reshape([1,2,3,4,5,6],[2,3])
 
-  !      call check(error, is_square(A_true), &
-  !          "is_square(A_true) failed.")
-  !      if (allocated(error)) return
 
-  !      call check(error, (.not. is_square(A_false)), &
-  !          "(.not. is_square(A_false)) failed.")
-  !      if (allocated(error)) return
 
-  !  end subroutine test_is_square_${k1}$
-  !#:endfor 
+!    !TEST TEMPLATE
+!    !is_diagonal
+!  #:for k1, t1, s1 in RCI_KINDS_TYPES_SUFFIXES
+!    subroutine test_is_diagonal_${s1}$(error)
+!        !> Error handling
+!        type(error_type), allocatable, intent(out) :: error
+!
+!      #!populate variables dependent on type/kind
+!      #:if s1[0] == 'r'
+!      #:elif s1[0] == 'c'
+!      #:elif s1[0] == 'i'
+!      #:endif
+!
+!      #! all error check calls are type/kind independent
+!    end subroutine test_is_diagonal_${s1}$
+!  #:endfor
 
 end module
 
