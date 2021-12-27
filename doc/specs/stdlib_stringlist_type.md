@@ -1,5 +1,5 @@
 ---
-title: stringlist type
+title: stringlist_type
 ---
 
 # `stdlib_stringlist_type` module (1-D list of strings)
@@ -49,8 +49,8 @@ Experimental
 
 #### Syntax
 
-For fidx: `res = [[stdlib_stringlist_type(module):fidx()]] (idx)`.  
-For bidx: `res = [[stdlib_stringlist_type(module):bidx()]] (idx)`.
+For fidx: `res = [[stdlib_stringlist_type(module):fidx(interface)]] (idx)`
+For bidx: `res = [[stdlib_stringlist_type(module):bidx(interface)]] (idx)`
 
 #### Status
 
@@ -149,7 +149,7 @@ Inserts the string `string` _AT_ the index `idx`, so that the newly added elemen
 
 #### Syntax
 
-`call [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stdlib_stringlist_type(module):insert_at(generic)]] (idx, string)`
+`call [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stringlist_type(type):insert_at(bound)]] (idx, string)`
 
 #### Status
 
@@ -205,7 +205,7 @@ Returns the string present currently at the index `idx` in a stringlist. If inde
 
 #### Syntax
 
-`res = [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stdlib_stringlist_type(module):get(generic)]] (idx)`
+`res = [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stringlist_type(type):get(bound)]] (idx)`
 
 #### Status
 
@@ -267,7 +267,7 @@ Returns the number of elements present currently in the stringlist.
 
 #### Syntax
 
-`res = [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stdlib_stringlist_type(module):len()]] ()`
+`res = [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stringlist_type(type):len(bound)]] ()`
 
 #### Status
 
@@ -319,7 +319,7 @@ Removes all elements from a stringlist.
 
 #### Syntax
 
-`call [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stdlib_stringlist_type(module):clear()]] ()`
+`call [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stringlist_type(type):clear(bound)]] ()`
 
 #### Status
 
@@ -529,7 +529,7 @@ a [[stdlib_stringlist_type(module):stringlist_type(type)]].
 
 #### Result value
 
-The result is an instance of `stringlist_type`.
+The result is an instance of `[[stdlib_stringlist_type(module):stringlist_type(type)]]`.
 
 #### Example
 

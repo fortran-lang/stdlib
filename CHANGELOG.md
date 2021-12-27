@@ -1,5 +1,53 @@
 # Unreleased
 
+Features available from the latest git source
+
+- new module `stdlib_hash_32bit`
+  [#573](https://github.com/fortran-lang/stdlib/pull/573)
+  - new procedures: `fibonacci_hash`, `fnv_1_hash`, 
+    `fnv_1a_hash`, `new_nmhash32_seed`, `new_nmhash32x_seed`, 
+    `new_water_hash_seed`, `nmhash32`, `nmhash32x`, `odd_random_integer`,
+    `universal_mult_hash`, and `water_hash`
+- new module `stdlib_hash_64bit`
+  [#573](https://github.com/fortran-lang/stdlib/pull/573)
+  - new procedures: `fibonacci_hash`, `fnv_1_hash`, `fnv_1a_hash`,
+    `new_pengy_hash_seed`, `new_spooky_hash_seed`,
+    `odd_random_integer`, `pengy_hash`, `spooky_hash`, `spookyhash_128`, and
+    `universal_mult_hash`
+- new module `stdlib_array`
+  [#603](https://github.com/fortran-lang/stdlib/pull/603)
+  - new procedures `trueloc`, `falseloc`
+- new module `stdlib_distribution_uniform`
+  [#272](https://github.com/fortran-lang/stdlib/pull/272)
+- new module `stdlib_selection`
+  [#500](https://github.com/fortran-lang/stdlib/pull/500)
+  - new procedures `select`, `arg_select`
+- new module `stdlib_version`
+  [#579](https://github.com/fortran-lang/stdlib/pull/579)
+  - new procedure `get_stdlib_version`
+- update module `stdlib_io`
+  [597](https://github.com/fortran-lang/stdlib/pull/597)
+  - new procedure `getline`
+- new module `stdlib_io_npy`
+  [#581](https://github.com/fortran-lang/stdlib/pull/581)
+  - new procedures `save_npy`, `load_npy`
+- update module `stdlib_math`
+  - new procedures `is_close` and `all_close`
+    [#488](https://github.com/fortran-lang/stdlib/pull/488)
+  - new procedures `arg`, `argd` and `argpi`
+    [#498](https://github.com/fortran-lang/stdlib/pull/498)
+
+Changes to existing modules
+
+- change in module `stdlib_math`
+  - `linspace` and `logspace` made pure
+    [#549](https://github.com/fortran-lang/stdlib/pull/549)
+- change in module `stdlib_string_type`
+  - `move` procedure made *pure*/*elemental*
+    [#562](https://github.com/fortran-lang/stdlib/pull/562)
+- support for quadruple precision made optional
+  [#565](https://github.com/fortran-lang/stdlib/pull/565)
+
 
 # Version 0.1.0
 

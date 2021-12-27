@@ -1,0 +1,2 @@
+ADDTEST(32_bit_hash_performance)
+ADDTEST(64_bit_hash_performance)

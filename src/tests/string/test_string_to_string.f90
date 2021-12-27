@@ -1,14 +1,29 @@
 ! SPDX-Identifier: MIT
 module test_string_to_string
-    
+
     use stdlib_strings, only: to_string, starts_with
-    use stdlib_error, only: check
+    use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_optval, only: optval
     implicit none
 
 contains
 
-    subroutine check_formatter(actual, expected, description, partial)
+
+    !> Collect all exported unit tests
+    subroutine collect_string_to_string(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest("to_string-complex", test_to_string_complex), &
+            new_unittest("to_string-integer", test_to_string_integer), &
+            new_unittest("to_string-logical", test_to_string_logical), &
+            new_unittest("to_string-real", test_to_string_real) &
+            ]
+    end subroutine collect_string_to_string
+
+    subroutine check_formatter(error, actual, expected, description, partial)
+        type(error_type), allocatable, intent(out) :: error
         character(len=*), intent(in) :: actual, expected, description
         logical, intent(in), optional :: partial
         logical :: stat
@@ -27,87 +42,135 @@ contains
             print '(" - ", a, /, "   Result: ''", a, "''")', description, actual
         end if
 
-        call check(stat, msg)
+        call check(error, stat, msg)
 
     end subroutine check_formatter
 
-    subroutine test_to_string_complex
-        call check_formatter(to_string((1, 1)), "(1.0", &
-                & "Default formatter for complex number", partial=.true.)
-        call check_formatter(to_string((1, 1), '(F6.2)'), "(  1.00,  1.00)", &
-                & "Formatter for complex number")
-        call check_formatter(to_string((-1, -1), 'F6.2'), "( -1.00, -1.00)", &
-                & "Formatter for negative complex number")
-        call check_formatter(to_string((1, 1), 'SP,F6.2'), "( +1.00, +1.00)", &
-                & "Formatter with sign control descriptor for complex number")
-        call check_formatter(to_string((1, 1), 'F6.2') // to_string((2, 2), '(F7.3)'), &
-                & "(  1.00,  1.00)(  2.000,  2.000)", &
-                & "Multiple formatters for complex numbers")
+    subroutine test_to_string_complex(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check_formatter(error, to_string((1, 1)), "(1.0", &
+            & "Default formatter for complex number", partial=.true.)
+        if (allocated(error)) return
+        call check_formatter(error, to_string((1, 1), '(F6.2)'), "(  1.00,  1.00)", &
+            & "Formatter for complex number")
+        if (allocated(error)) return
+        call check_formatter(error, to_string((-1, -1), 'F6.2'), "( -1.00, -1.00)", &
+            & "Formatter for negative complex number")
+        if (allocated(error)) return
+        call check_formatter(error, to_string((1, 1), 'SP,F6.2'), "( +1.00, +1.00)", &
+            & "Formatter with sign control descriptor for complex number")
+        if (allocated(error)) return
+        call check_formatter(error, to_string((1, 1), 'F6.2') // to_string((2, 2), '(F7.3)'), &
+            & "(  1.00,  1.00)(  2.000,  2.000)", &
+            & "Multiple formatters for complex numbers")
 
     end subroutine test_to_string_complex
 
-    subroutine test_to_string_integer
-        call check_formatter(to_string(100), "100", &
-                & "Default formatter for integer number")
-        call check_formatter(to_string(100, 'I6'), "   100", &
-                & "Formatter for integer number")
-        call check_formatter(to_string(100, 'I0.6'), "000100", &
-                & "Formatter with zero padding for integer number")
-        call check_formatter(to_string(100, 'I6') // to_string(1000, '(I7)'), &
-                & "   100   1000", "Multiple formatters for integers")
-        call check_formatter(to_string(34, 'B8'), "  100010", &
-                & "Binary formatter for integer number")
-        call check_formatter(to_string(34, 'O0.3'), "042", &
-                & "Octal formatter with zero padding for integer number")
-        call check_formatter(to_string(34, 'Z3'), " 22", &
-                & "Hexadecimal formatter for integer number")
+    subroutine test_to_string_integer(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check_formatter(error, to_string(100), "100", &
+            & "Default formatter for integer number")
+        if (allocated(error)) return
+        call check_formatter(error, to_string(100, 'I6'), "   100", &
+            & "Formatter for integer number")
+        if (allocated(error)) return
+        call check_formatter(error, to_string(100, 'I0.6'), "000100", &
+            & "Formatter with zero padding for integer number")
+        if (allocated(error)) return
+        call check_formatter(error, to_string(100, 'I6') // to_string(1000, '(I7)'), &
+            & "   100   1000", "Multiple formatters for integers")
+        if (allocated(error)) return
+        call check_formatter(error, to_string(34, 'B8'), "  100010", &
+            & "Binary formatter for integer number")
+        if (allocated(error)) return
+        call check_formatter(error, to_string(34, 'O0.3'), "042", &
+            & "Octal formatter with zero padding for integer number")
+        if (allocated(error)) return
+        call check_formatter(error, to_string(34, 'Z3'), " 22", &
+            & "Hexadecimal formatter for integer number")
 
     end subroutine test_to_string_integer
 
-    subroutine test_to_string_real
-        call check_formatter(to_string(100.), "100.0", &
-                & "Default formatter for real number", partial=.true.)
-        call check_formatter(to_string(100., 'F6.2'), "100.00", &
-                & "Formatter for real number")
-        call check_formatter(to_string(289., 'E7.2'), ".29E+03", &
-                & "Exponential formatter with rounding for real number")
-        call check_formatter(to_string(128., 'ES8.2'), "1.28E+02", &
-                & "Exponential formatter for real number")
-    
-      ! Wrong demonstration
-        call check_formatter(to_string(-100., 'F6.2'), "*", &
-                & "Too narrow formatter for signed real number", partial=.true.)
-        call check_formatter(to_string(1000., 'F6.3'), "*", &
-                & "Too narrow formatter for real number", partial=.true.)
-        call check_formatter(to_string(1000., '7.3'), "[*]", &
-                & "Invalid formatter for real number", partial=.true.)
+    subroutine test_to_string_real(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check_formatter(error, to_string(100.), "100.0", &
+            & "Default formatter for real number", partial=.true.)
+        if (allocated(error)) return
+        call check_formatter(error, to_string(100., 'F6.2'), "100.00", &
+            & "Formatter for real number")
+        if (allocated(error)) return
+        call check_formatter(error, to_string(289., 'E7.2'), ".29E+03", &
+            & "Exponential formatter with rounding for real number")
+        if (allocated(error)) return
+        call check_formatter(error, to_string(128., 'ES8.2'), "1.28E+02", &
+            & "Exponential formatter for real number")
+        if (allocated(error)) return
+
+        ! Wrong demonstration
+        call check_formatter(error, to_string(-100., 'F6.2'), "*", &
+            & "Too narrow formatter for signed real number", partial=.true.)
+        if (allocated(error)) return
+        call check_formatter(error, to_string(1000., 'F6.3'), "*", &
+            & "Too narrow formatter for real number", partial=.true.)
+        if (allocated(error)) return
+        call check_formatter(error, to_string(1000., '7.3'), "[*]", &
+            & "Invalid formatter for real number", partial=.true.)
+        if (allocated(error)) return
 
     end subroutine test_to_string_real
 
-    subroutine test_to_string_logical
-        call check_formatter(to_string(.true.), "T", &
-                & "Default formatter for logcal value")
-        call check_formatter(to_string(.true., 'L2'), " T", &
-                & "Formatter for logical value")
-        call check_formatter(to_string(.false., 'L2') // to_string(.true., '(L5)'), &
-                & " F    T", "Multiple formatters for logical values")
+    subroutine test_to_string_logical(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
 
-      ! Wrong demonstration
-        call check_formatter(to_string(.false., '1x'), "[*]", &
-                & "Invalid formatter for logical value", partial=.true.)
+        call check_formatter(error, to_string(.true.), "T", &
+            & "Default formatter for logcal value")
+        if (allocated(error)) return
+        call check_formatter(error, to_string(.true., 'L2'), " T", &
+            & "Formatter for logical value")
+        if (allocated(error)) return
+        call check_formatter(error, to_string(.false., 'L2') // to_string(.true., '(L5)'), &
+            & " F    T", "Multiple formatters for logical values")
+        if (allocated(error)) return
+
+        ! Wrong demonstration
+        call check_formatter(error, to_string(.false., '1x'), "[*]", &
+            & "Invalid formatter for logical value", partial=.true.)
 
     end subroutine test_to_string_logical
 
 
 end module test_string_to_string
 
+
 program tester
-    use test_string_to_string
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_string_to_string, only : collect_string_to_string
     implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
 
-    call test_to_string_complex
-    call test_to_string_integer
-    call test_to_string_logical
-    call test_to_string_real
+    stat = 0
 
-end program tester
+    testsuites = [ &
+        new_testsuite("string-to_string", collect_string_to_string) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program

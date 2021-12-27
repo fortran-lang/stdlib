@@ -1,5 +1,5 @@
 ---
-title: ASCII
+title: ascii
 ---
 
 # The `stdlib_ascii` module

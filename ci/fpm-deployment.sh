@@ -12,22 +12,32 @@ fypp="${FYPP:-$(which fypp)}"
 fyflags="${FYFLAGS:--DMAXRANK=4}"
 
 # Number of parallel jobs for preprocessing
-njob="$(nproc)"
+if [ $(uname) = "Darwin" ]; then
+  njob="$(sysctl -n hw.ncpu)"
+else
+  njob="$(nproc)"
+fi
 
 # Additional files to include
 include=(
   "ci/fpm.toml"
   "LICENSE"
+  "VERSION"
 )
 
 # Files to remove from collection
 prune=(
   "$destdir/test/test_always_fail.f90"
   "$destdir/test/test_always_skip.f90"
-  "$destdir/test/test_mean_f03.f90"
+  "$destdir/test/test_hash_functions.f90"
   "$destdir/src/common.f90"
   "$destdir/src/f18estop.f90"
 )
+
+major=$(cut -d. -f1 VERSION)
+minor=$(cut -d. -f2 VERSION)
+patch=$(cut -d. -f3 VERSION)
+fyflags="${fyflags} -DPROJECT_VERSION_MAJOR=${major} -DPROJECT_VERSION_MINOR=${minor} -DPROJECT_VERSION_PATCH=${patch}"
 
 mkdir -p "$destdir/src" "$destdir/test"
 
@@ -43,7 +53,7 @@ find src/tests -name "*.dat" -exec cp {} "$destdir/" \;
 # Include additional files
 cp "${include[@]}" "$destdir/"
 
-# Source file workarounds for fpm
+# Source file workarounds for fpm; ignore missing files
 rm "${prune[@]}"
 
 # List stdlib-fpm package contents

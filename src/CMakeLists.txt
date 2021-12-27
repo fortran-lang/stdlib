@@ -6,11 +6,24 @@ set(fppFiles
     stdlib_bitsets.fypp
     stdlib_bitsets_64.fypp
     stdlib_bitsets_large.fypp
+    stdlib_hash_32bit.fypp 
+    stdlib_hash_32bit_fnv.fypp
+    stdlib_hash_32bit_nm.fypp 
+    stdlib_hash_32bit_water.fypp 
+    stdlib_hash_64bit.fypp 
+    stdlib_hash_64bit_fnv.fypp 
+    stdlib_hash_64bit_pengy.fypp 
+    stdlib_hash_64bit_spookyv2.fypp 
     stdlib_io.fypp
+    stdlib_io_npy.fypp
+    stdlib_io_npy_load.fypp
+    stdlib_io_npy_save.fypp
+    stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
     stdlib_linalg_outer_product.fypp
     stdlib_optval.fypp
+    stdlib_selection.fypp
     stdlib_sorting.fypp
     stdlib_sorting_ord_sort.fypp
     stdlib_sorting_sort.fypp
@@ -25,6 +38,7 @@ set(fppFiles
     stdlib_stats_moment_mask.fypp
     stdlib_stats_moment_scalar.fypp
     stdlib_stats_distribution_uniform.fypp
+    stdlib_stats_distribution_normal.fypp
     stdlib_stats_var.fypp
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp
@@ -34,10 +48,13 @@ set(fppFiles
     stdlib_math_linspace.fypp
     stdlib_math_logspace.fypp
     stdlib_math_arange.fypp
+    stdlib_math_is_close.fypp
+    stdlib_math_all_close.fypp
     stdlib_string_type.fypp
     stdlib_string_type_constructor.fypp
     stdlib_strings_to_string.fypp
     stdlib_strings.fypp
+    stdlib_version.fypp
 )
 
 
@@ -50,11 +67,20 @@ else()
   set(fyppFlags "-DVERSION90")
 endif()
 
+list(
+  APPEND fyppFlags
+  "-DWITH_QP=$<BOOL:${WITH_QP}>"
+  "-DWITH_XDP=$<BOOL:${WITH_XDP}>"
+  "-DPROJECT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}"
+  "-DPROJECT_VERSION_MINOR=${PROJECT_VERSION_MINOR}"
+  "-DPROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}"
+)
+
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
+    stdlib_array.f90
     stdlib_error.f90
-    stdlib_kinds.f90
     stdlib_logger.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90

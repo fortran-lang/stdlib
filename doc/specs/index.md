@@ -11,10 +11,13 @@ This is and index/directory of the specifications (specs) for each new module/fe
 
 ## Experimental Features & Modules
 
+ - [array](./stdlib_array.html) - Procedures for index manipulation and array handling
  - [ascii](./stdlib_ascii.html) - Procedures for handling ASCII characters
  - [bitsets](./stdlib_bitsets.html) - Bitset data types and procedures
  - [error](./stdlib_error.html) - Catching and handling errors
- - [IO](./stdlib_io.html) - Input/output helper & convenience
+ - [hash](./stdlib_hash_procedures.html) - Hashing integer
+   vectors or character strings
+ - [io](./stdlib_io.html) - Input/output helper & convenience
  - [kinds](./stdlib_kinds.html) - Kind parameters
  - [linalg](./stdlib_linalg.html) - Linear Algebra
  - [logger](./stdlib_logger.html) - Runtime logging system
@@ -25,9 +28,11 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [sorting](./stdlib_sorting.html) - Sorting of rank one arrays
  - [stats](./stdlib_stats.html) - Descriptive Statistics
  - [stats_distributions_uniform](./stdlib_stats_distribution_uniform.html) - Uniform Probability Distribution
+ - [stats_distributions_normal](./stdlib_stats_distribution_normal.html) - Normal Probability Distribution
  - [string\_type](./stdlib_string_type.html) - Basic string support
- - [strings](./stdlib_strings.html) - String handling and manipulation routines
  - [stringlist_type](./stdlib_stringlist_type.html) - 1-Dimensional list of strings
+ - [strings](./stdlib_strings.html) - String handling and manipulation routines
+ - [version](./stdlib_version.html) - Version information
 
 ## Released/Stable Features & Modules
 
