@@ -1,0 +1,238 @@
+#:include "common.fypp"
+#:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
+
+module test_linalg_matrix_property_checks
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
+    use stdlib_linalg, only: is_square ,is_diagonal, is_symmetric, &
+        is_skew_symmetric, is_hermitian, is_triangular, is_hessenberg
+
+    implicit none
+
+    real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
+    real(dp), parameter :: dptol = 1000 * epsilon(1._dp)
+#:if WITH_QP
+    real(qp), parameter :: qptol = 1000 * epsilon(1._qp)
+#:endif
+
+
+contains
+
+
+    !> Collect all exported unit tests
+    subroutine collect_linalg_matrix_property_checks(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest("is_square_rsp", test_is_square_rsp), &
+            new_unittest("is_square_rdp", test_is_square_rdp), &
+            new_unittest("is_square_rqp", test_is_square_rqp), &
+            new_unittest("is_square_csp", test_is_square_csp), &
+            new_unittest("is_square_cdp", test_is_square_cdp), &
+            new_unittest("is_square_cqp", test_is_square_cqp), &
+            new_unittest("is_square_int8", test_is_square_int8), &
+            new_unittest("is_square_int16", test_is_square_int16), &
+            new_unittest("is_square_int32", test_is_square_int32), &
+            new_unittest("is_square_int64", test_is_square_int64) &
+            ]
+        
+        !testsuite = [ &
+        !    new_unittest("is_square_rsp", test_is_square_rsp), &
+        !    new_unittest("is_square_rdp", test_is_square_rdp), &
+        !    new_unittest("is_square_rqp", test_is_square_rqp), &
+        !    new_unittest("is_square_csp", test_is_square_csp), &
+        !    new_unittest("is_square_cdp", test_is_square_cdp), &
+        !    new_unittest("is_square_cqp", test_is_square_cqp), &
+        !    new_unittest("is_square_int8", test_is_square_int8), &
+        !    new_unittest("is_square_int16", test_is_square_int16), &
+        !    new_unittest("is_square_int32", test_is_square_int32), &
+        !    new_unittest("is_square_int64", test_is_square_int64), &
+        !    new_unittest("is_diagonal_rsp", test_is_diagonal_rsp), &
+        !    new_unittest("is_diagonal_rdp", test_is_diagonal_rdp), &
+        !    new_unittest("is_diagonal_rqp", test_is_diagonal_rqp), &
+        !    new_unittest("is_diagonal_csp", test_is_diagonal_csp), &
+        !    new_unittest("is_diagonal_cdp", test_is_diagonal_cdp), &
+        !    new_unittest("is_diagonal_cqp", test_is_diagonal_cqp), &
+        !    new_unittest("is_diagonal_int8", test_is_diagonal_int8), &
+        !    new_unittest("is_diagonal_int16", test_is_diagonal_int16), &
+        !    new_unittest("is_diagonal_int32", test_is_diagonal_int32), &
+        !    new_unittest("is_diagonal_int64", test_is_diagonal_int64), &
+        !    new_unittest("is_symmetric_rsp", test_is_symmetric_rsp), &
+        !    new_unittest("is_symmetric_rdp", test_is_symmetric_rdp), &
+        !    new_unittest("is_symmetric_rqp", test_is_symmetric_rqp), &
+        !    new_unittest("is_symmetric_csp", test_is_symmetric_csp), &
+        !    new_unittest("is_symmetric_cdp", test_is_symmetric_cdp), &
+        !    new_unittest("is_symmetric_cqp", test_is_symmetric_cqp), &
+        !    new_unittest("is_symmetric_int8", test_is_symmetric_int8), &
+        !    new_unittest("is_symmetric_int16", test_is_symmetric_int16), &
+        !    new_unittest("is_symmetric_int32", test_is_symmetric_int32), &
+        !    new_unittest("is_symmetric_int64", test_is_symmetric_int64), &
+        !    new_unittest("is_skew_symmetric_rsp", test_is_skew_symmetric_rsp), &
+        !    new_unittest("is_skew_symmetric_rdp", test_is_skew_symmetric_rdp), &
+        !    new_unittest("is_skew_symmetric_rqp", test_is_skew_symmetric_rqp), &
+        !    new_unittest("is_skew_symmetric_csp", test_is_skew_symmetric_csp), &
+        !    new_unittest("is_skew_symmetric_cdp", test_is_skew_symmetric_cdp), &
+        !    new_unittest("is_skew_symmetric_cqp", test_is_skew_symmetric_cqp), &
+        !    new_unittest("is_skew_symmetric_int8", test_is_skew_symmetric_int8), &
+        !    new_unittest("is_skew_symmetric_int16", test_is_skew_symmetric_int16), &
+        !    new_unittest("is_skew_symmetric_int32", test_is_skew_symmetric_int32), &
+        !    new_unittest("is_skew_symmetric_int64", test_is_skew_symmetric_int64), &
+        !    new_unittest("is_hermitian_rsp", test_is_hermitian_rsp), &
+        !    new_unittest("is_hermitian_rdp", test_is_hermitian_rdp), &
+        !    new_unittest("is_hermitian_rqp", test_is_hermitian_rqp), &
+        !    new_unittest("is_hermitian_csp", test_is_hermitian_csp), &
+        !    new_unittest("is_hermitian_cdp", test_is_hermitian_cdp), &
+        !    new_unittest("is_hermitian_cqp", test_is_hermitian_cqp), &
+        !    new_unittest("is_hermitian_int8", test_is_hermitian_int8), &
+        !    new_unittest("is_hermitian_int16", test_is_hermitian_int16), &
+        !    new_unittest("is_hermitian_int32", test_is_hermitian_int32), &
+        !    new_unittest("is_hermitian_int64", test_is_hermitian_int64), &
+        !    new_unittest("is_triangular_rsp", test_is_triangular_rsp), &
+        !    new_unittest("is_triangular_rdp", test_is_triangular_rdp), &
+        !    new_unittest("is_triangular_rqp", test_is_triangular_rqp), &
+        !    new_unittest("is_triangular_csp", test_is_triangular_csp), &
+        !    new_unittest("is_triangular_cdp", test_is_triangular_cdp), &
+        !    new_unittest("is_triangular_cqp", test_is_triangular_cqp), &
+        !    new_unittest("is_triangular_int8", test_is_triangular_int8), &
+        !    new_unittest("is_triangular_int16", test_is_triangular_int16), &
+        !    new_unittest("is_triangular_int32", test_is_triangular_int32), &
+        !    new_unittest("is_triangular_int64", test_is_triangular_int64), &
+        !    new_unittest("is_hessenberg_rsp", test_is_hessenberg_rsp), &
+        !    new_unittest("is_hessenberg_rdp", test_is_hessenberg_rdp), &
+        !    new_unittest("is_hessenberg_rqp", test_is_hessenberg_rqp), &
+        !    new_unittest("is_hessenberg_csp", test_is_hessenberg_csp), &
+        !    new_unittest("is_hessenberg_cdp", test_is_hessenberg_cdp), &
+        !    new_unittest("is_hessenberg_cqp", test_is_hessenberg_cqp), &
+        !    new_unittest("is_hessenberg_int8", test_is_hessenberg_int8), &
+        !    new_unittest("is_hessenberg_int16", test_is_hessenberg_int16), &
+        !    new_unittest("is_hessenberg_int32", test_is_hessenberg_int32), &
+        !    new_unittest("is_hessenberg_int64", test_is_hessenberg_int64), &
+        !    ]
+
+    end subroutine collect_linalg_matrix_property_checks
+
+    !is_square
+  #:for k1, t1 in RCI_KINDS_TYPES 
+    #:if t1[0] == 'i'
+      #:set SUBROUTINE_LETTER = ''
+    #:else
+      #:set SUBROUTINE_LETTER = t1[0]
+    #:endif
+    
+    subroutine test_is_square_${SUBROUTINE_LETTER}$${k1}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+      #:if t1[0] == 'r'
+        ${t1}$ :: A_true(2,2), A_false(2,3)
+        A_true = reshape([1.,2.,3.,4.],[2,2])
+        A_false = reshape([1.,2.,3.,4.,5.,6.],[2,3])
+      #:elif t1[0] == 'c'
+        ${t1}$ :: A_true(2,2), A_false(2,3)
+        A_true = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.),cmplx(4.,1.)],[2,2])
+        A_false = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.), &
+            cmplx(4.,1.),cmplx(5.,0.),cmplx(6.,1.)],[2,3])
+      #:elif t1[0] == 'i'
+        ${t1}$ :: A_true(2,2), A_false(2,3)
+        A_true = reshape([1,2,3,4],[2,2])
+        A_false = reshape([1,2,3,4,5,6],[2,3])
+      #:endif
+
+        call check(error, is_square(A_true), &
+            "is_square(A_true) failed.")
+        if (allocated(error)) return
+
+        call check(error, (.not. is_square(A_false)), &
+            "(.not. is_square(A_false)) failed.")
+        if (allocated(error)) return
+    end subroutine test_is_square_${SUBROUTINE_LETTER}$${k1}$
+  #:endfor
+
+  !  subroutine test_is_square_r${k1}$(error)
+  !      !> Error handling
+  !      type(error_type), allocatable, intent(out) :: error
+
+  !      ${t1}$ :: A_true(2,2), A_false(2,3)
+  !      !A_true = reshape([1.,2.,3.,4.],[2,2])
+  !      A_true = reshape([1.,2.,3.,4.],[4,1])
+  !      A_false = reshape([1.,2.,3.,4.,5.,6.],[2,3])
+
+  !      call check(error, is_square(A_true), &
+  !          "is_square(A_true) failed.")
+  !      if (allocated(error)) return
+
+  !      call check(error, (.not. is_square(A_false)), &
+  !          "(.not. is_square(A_false)) failed.")
+  !      if (allocated(error)) return
+
+  !  end subroutine test_is_square_r${k1}$
+  !#:endfor 
+  !#:for k1, t1 in COMPLEX_KINDS_TYPES 
+  !  subroutine test_is_square_c${k1}$(error)
+  !      !> Error handling
+  !      type(error_type), allocatable, intent(out) :: error
+
+  !      ${t1}$ :: A_true(2,2), A_false(2,3)
+  !      A_true = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.),cmplx(4.,1.)],[2,2])
+  !      A_false = reshape([cmplx(1.,0.),cmplx(2.,1.),cmplx(3.,0.), &
+  !          cmplx(4.,1.),cmplx(5.,0.),cmplx(6.,1.)],[2,3])
+
+  !      call check(error, is_square(A_true), &
+  !          "is_square(A_true) failed.")
+  !      if (allocated(error)) return
+
+  !      call check(error, (.not. is_square(A_false)), &
+  !          "(.not. is_square(A_false)) failed.")
+  !      if (allocated(error)) return
+
+  !  end subroutine test_is_square_c${k1}$
+  !#:endfor 
+  !#:for k1, t1 in INT_KINDS_TYPES 
+  !  subroutine test_is_square_${k1}$(error)
+  !      !> Error handling
+  !      type(error_type), allocatable, intent(out) :: error
+
+  !      ${t1}$ :: A_true(2,2), A_false(2,3)
+  !      write(*,*) "test_is_square_int16" 
+  !      A_true = reshape([1,2,3,4],[2,2])
+  !      A_false = reshape([1,2,3,4,5,6],[2,3])
+
+  !      call check(error, is_square(A_true), &
+  !          "is_square(A_true) failed.")
+  !      if (allocated(error)) return
+
+  !      call check(error, (.not. is_square(A_false)), &
+  !          "(.not. is_square(A_false)) failed.")
+  !      if (allocated(error)) return
+
+  !  end subroutine test_is_square_${k1}$
+  !#:endfor 
+
+end module
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_linalg_matrix_property_checks, only : collect_linalg_matrix_property_checks
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("linalg_matrix_property_checks", collect_linalg_matrix_property_checks) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program
