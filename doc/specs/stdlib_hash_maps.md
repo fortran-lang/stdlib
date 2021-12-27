@@ -46,16 +46,16 @@ with a different API. There are three modules:
 `stdlib_open_hash_map`, corresponding to the files:
 `stdlib_32_bit_key_data_wrapper.f90`, `stdlib_chaining_hash_map.f90`,
 and `stdlib_open_hash_map.f90`. The module
-`stdlib_32_bit_key_data_wrapper` providess an interface to the 32 bit
+`stdlib_32_bit_key_data_wrapper` provides an interface to the 32 bit
 hash functions of the Standard Library module,
 `stdlib_32_bit_hash_functions`, providing wrappers to some of the
 hash functions so that they no longer need to be supplied seeds. The
 module `stdlib_chaining_hash_map` defines a datatype,
 `chaining_hash_map_type`, implementing a simple separate chaining hash
-map noted more for its diagnotics than its performance. Finally the
+map noted more for its diagnostics than its performance. Finally the
 module, `stdlib_open_hash_map` defines a datatype,
 `open_hash_map_type`, implementing a simple open addressing hash
-map noted more for its diagnotics than its performance.
+map noted more for its diagnostics than its performance.
 
 These maps use separate chaining with linked lists and linear open
 addressing, respectively, to deal with hash index collisions, and are
@@ -67,7 +67,7 @@ In `open_hash_map_type`, the colliding indices are handled by searching
 from the initial hash index in increasing
 steps of one (modulo the hash map size) for an open map bin.
 
-The maps share many attributes in common.  The two types share a
+The maps share many attributes in common. The two types share a
 common Application Programers Interface (API). The maps use powers of
 two for their slot sizes, so that the function, `fibonacci_hash`, can
 be used to map the hash codes to indices in the map. This is
@@ -136,7 +136,7 @@ those types.
 ### Table of `stdlib_32_bit_key_data_wrapper` procedures
 
 The  `stdlib_32_bit_key_data_wrapper` module provides procedures in
-several categories: procedures to mamipulate data of the `key_type`;
+several categories: procedures to manipulate data of the `key_type`;
 procedures to manipulate data of the `other_type`, and 32 bit hash
 functions for keys. The procedures in each category are listed below.
 
@@ -593,7 +593,7 @@ is an `intent(in)` argument.
 `other`: shall be a scalar expression of type `other_type`. It
 is an `intent(in)` argument.
 
-`value`: shall be an allocatable default character string variabl, or
+`value`: shall be an allocatable default character string variable, or
 an allocatable vector variable of type integer and kind `INT8`. It is
 an `intent(out)` argument.
 
@@ -983,7 +983,7 @@ vector expression of type integer and kind `INT8`. It is an
 ## The `stdlib_chaining_hash_map` module
 
 The `stdlib_chaining_hash_map` module provides access to all the
-public entities of the `stdlib_32_bit_key_data_wrapper` module. It
+public entities in the `stdlib_32_bit_key_data_wrapper` module. It
 also defines a public data type and associated procedures and
 constants that implement a simple hash map using
 separate chaining hashing. The derived type is
@@ -1609,7 +1609,7 @@ Subroutine
 is an `intent(inout)` argument. It is the hash map to receive the
 entry.
 
-`inmap`: shall be a integer scalar variable of kind `int_index`. It is
+`inmap`: shall be an integer scalar variable of kind `int_index`. It is
   an `intent(out)` argument. It is the index to the table's inverse array
   associated with the `key`.
 
@@ -1617,7 +1617,7 @@ entry.
   It is an `intent(in)` argument. It is the key for the entry to be
   placed in the table.
 
-`other` (optional): shall be a scalazr expression of type `other_type`.
+`other` (optional): shall be a scalar expression of type `other_type`.
   It is an `intent(in)` argument. If present it is the other data to be
   associated with the `key`.
 
@@ -2072,7 +2072,7 @@ table of `map` and `.false.` otherwise.
 ## The `stdlib_open_hash_map` module
 
 The `stdlib_open_hash_map` module provides access to all the
-public entities of the `stdlib_32_bit_key_data_wrapper` module. It
+public entities in the `stdlib_32_bit_key_data_wrapper` module. It
 also defines a public data type and associated procedures and
 constants that implement a simple hash map using
 linear open addressing hashing. The derived type is
@@ -2750,7 +2750,7 @@ Subroutine
 is an `intent(inout)` argument. It is the hash map to receive the
 entry.
 
-`inmap`: shall be a integer scalar variable of kind `int_index`. It is
+`inmap`: shall be an integer scalar variable of kind `int_index`. It is
   an `intent(out)` argument. It is the index to the table's inverse array
   associated with the `key`.
 
@@ -2758,7 +2758,7 @@ entry.
   It is an `intent(in)` argument. It is the key for the entry to be
   placed in the table.
 
-`other` (optional): shall be a scalazr expression of type `other_type`.
+`other` (optional): shall be a scalar expression of type `other_type`.
   It is an `intent(in)` argument. If present it is the other data to be
   associated with the `key`.
 
