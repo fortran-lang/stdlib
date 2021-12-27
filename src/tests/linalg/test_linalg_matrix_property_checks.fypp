@@ -105,7 +105,7 @@ contains
         ${t1}$ :: A_true_ts(3,2), A_false_ts(3,2) !tall and skinny matrices
       #! populate variables dependent on type/kind
       #:if s1[0] == 'r'
-        A_true_s = reshape([1.,0.,0.,4.],[2,2])
+        A_true_s = reshape([1.,0.,0.,4.],[2,2]) 
         A_false_s = reshape([1.,0.,3.,4.],[2,2])
         A_true_sf = reshape([1.,0.,0.,4.,0.,0.],[2,3])
         A_false_sf = reshape([1.,0.,3.,4.,0.,0.],[2,3])
