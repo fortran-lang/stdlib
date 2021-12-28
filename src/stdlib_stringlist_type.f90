@@ -88,6 +88,11 @@ module stdlib_stringlist_type
         procedure         :: get_range_idx
         generic, public   :: get                            =>  get_idx,                        &
                                                                 get_range_idx
+
+        procedure         :: get_impl_idxn
+        procedure         :: get_impl_range_idxn
+        generic           :: get_impl                       =>  get_impl_idxn,                  &
+                                                                get_impl_range_idxn
         
         procedure         :: pop_idx
         procedure         :: pop_range_idx
@@ -731,10 +736,26 @@ contains
 
     !> Version: experimental
     !>
+    !> Returns strings present at integer indexe idxn
+    !> Stores requested string in 'capture_string'
+    !> No return
+    pure subroutine get_idxn_engine( list, idxn, capture_string )
+        type(stringlist_type), intent(in)                       :: list
+        integer, intent(in)                                     :: idxn
+        type(string_type), intent(out)                          :: capture_string
+
+        if ( 1 <= idxn .and. idxn <= list%len() ) then
+            capture_string = list%stringarray(idxn)
+        end if
+
+    end subroutine get_idxn_engine
+
+    !> Version: experimental
+    !>
     !> Returns strings present at integer indexes in interval ['firstn', 'lastn']
     !> Stores requested strings in array 'capture_strings'
     !> No return
-    pure subroutine get_engine( list, firstn, lastn, stride_vector, capture_strings )
+    pure subroutine get_range_engine( list, firstn, lastn, stride_vector, capture_strings )
         type(stringlist_type), intent(in)                       :: list
         integer, intent(in)                                     :: firstn, lastn, stride_vector
         type(string_type), allocatable, intent(out)             :: capture_strings(:)
@@ -762,7 +783,44 @@ contains
             inew = inew + 1
         end do
 
-    end subroutine get_engine
+    end subroutine get_range_engine
+
+    !> Version: experimental
+    !>
+    !> Returns the string present at integer index 'idxn' in stringlist 'list'
+    !> Stores requested string in 'capture_string'
+    !> No return
+    pure subroutine get_impl_idxn( list, idxn, capture_string )
+        class(stringlist_type), intent(in)                      :: list
+        integer, intent(in)                                     :: idxn
+        type(string_type), intent(out)                          :: capture_string
+
+        call get_idxn_engine( list, idxn, capture_string )
+
+    end subroutine get_impl_idxn
+
+    !> Version: experimental
+    !>
+    !> Returns strings present at integer indexes in interval ['firstn', 'lastn']
+    !> Stores requested strings in 'capture_strings'
+    !> No return
+    pure subroutine get_impl_range_idxn( list, firstn, lastn, stride_vector, capture_strings )
+        class(stringlist_type), intent(in)                      :: list
+        integer, intent(in)                                     :: firstn, lastn
+        integer, intent(in), optional                           :: stride_vector
+        type(string_type), allocatable, intent(out)             :: capture_strings(:)
+
+        integer                                                 :: stride_vector_mod
+
+        if ( present(stride_vector) ) then
+            stride_vector_mod = stride_vector
+        else
+            stride_vector_mod = merge( 1, -1, firstn <= lastn )
+        end if
+
+        call get_range_engine( list, firstn, lastn, stride_vector_mod, capture_strings )
+
+    end subroutine get_impl_range_idxn
 
     !> Version: experimental
     !>
@@ -773,19 +831,10 @@ contains
         type(stringlist_index_type), intent(in)                 :: idx
         type(string_type)                                       :: get_idx
 
-        integer                                                 :: idxn
-        type(string_type), allocatable                          :: capture_strings(:)
-
-        idxn = list%to_current_idxn( idx )
-        call get_engine( list, idxn, idxn, 1, capture_strings )
-
-        ! if index 'idx' is out of bounds, returns an empty string
-        if ( size(capture_strings) == 1 ) then
-            call move( capture_strings(1), get_idx )
-        end if
+        call list%get_impl( list%to_current_idxn( idx ), get_idx )
 
     end function get_idx
-
+    
     !> Version: experimental
     !>
     !> Returns strings present at stringlist_indexes in interval ['first', 'last']
@@ -807,7 +856,7 @@ contains
             stride_vector = merge( 1, -1, firstn <= lastn )
         end if
 
-        call get_engine( list, firstn, lastn, stride_vector, get_range_idx )
+        call list%get_impl( firstn, lastn, stride_vector, get_range_idx )
 
     end function get_range_idx
 
