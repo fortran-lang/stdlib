@@ -37,8 +37,8 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
 
-      #:set IMPLEMENTED_TESTS = ['is_square','is_diagonal','is_symmetric','is_skew_symmetric' &
-                                 'is_hermitian']
+      #:set IMPLEMENTED_TESTS = ['is_square','is_diagonal','is_symmetric','is_skew_symmetric', &
+                                 'is_hermitian', 'is_triangular', 'is_hessenberg']
 
       #:set NUM_TESTS = int(len(IMPLEMENTED_TESTS)*len(RCI_KINDS_TYPES_SUFFIXES))
 
@@ -51,9 +51,9 @@ contains
           #:set TESTS_WRITTEN = TESTS_WRITTEN + 1
           #! last test in list should not have comma
           #:if TESTS_WRITTEN < NUM_TESTS
-            new_unittest("${cur_test}$_${s1}$", test_is_square_rsp), &
+            new_unittest("${cur_test}$_${s1}$", test_${cur_test}$_${s1}$), &
           #:else
-            new_unittest("${cur_test}$_${s1}$", test_is_square_rsp) &
+            new_unittest("${cur_test}$_${s1}$", test_${cur_test}$_${s1}$) &
           #:endif
         #:endfor
       #:endfor
