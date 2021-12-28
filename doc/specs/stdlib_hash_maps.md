@@ -48,7 +48,7 @@ with a different API. There are three modules:
 and `stdlib_open_hash_map.f90`. The module
 `stdlib_32_bit_key_data_wrapper` provides an interface to the 32 bit
 hash functions of the Standard Library module,
-`stdlib_32_bit_hash_functions`, providing wrappers to some of the
+`stdlib_32_bit_hash_functions`, and provides wrappers to some of the
 hash functions so that they no longer need to be supplied seeds. The
 module `stdlib_chaining_hash_map` defines a datatype,
 `chaining_hash_map_type`, implementing a simple separate chaining hash
@@ -59,7 +59,7 @@ map noted more for its diagnostics than its performance.
 
 These maps use separate chaining with linked lists and linear open
 addressing, respectively, to deal with hash index collisions, and are
-largely defined in the separated modules, `stdlib_chaining_hash_maps`
+largely defined in the separated submodules, `stdlib_chaining_hash_maps`
 and `stdlib_open_hash_maps`, respectively.
 In `chaining_hash_map_type` the colliding indices are handled by using
 linked lists with their roots at the hash index.
@@ -301,8 +301,8 @@ Pure function
 `key`: Shall be a scalar integer expression of kind `INT32`. It is an
 `intent(in)` argument.
 
-`nbits` Shall be a scalar default integer expression with
-`0 < nbits < 32`. It is an `intent(in)` argument.
+`nbits` Shall be a scalar default integer expression with `0 < nbits <
+32`. It is an `intent(in)` argument.
 
 ##### Result character
 
@@ -989,7 +989,7 @@ constants that implement a simple hash map using
 separate chaining hashing. The derived type is
 `chaining_hash_map_type`. It provides 
 procedures to manipulate the structure of the hash map:
-`init_map`, `map_entry`, `rehash_map`, `remove_entry`, and
+`init`, `map_entry`, `rehash`, `remove_entry`, and
 `set_other_data`. It provides procedures to inquire about entries in
 the hash map: `get_other_data`, `in_map`, `unmap`.and `valid_index`.
 Finally it provides procedures to inquire about the overall
@@ -1054,7 +1054,7 @@ The `stdlib_chaining_hash_map` module defines several derived
 types. The only public type is the `chaining_hash_map_type`. There are
 three other private derived types used in the implementation of the
 public type: `chaining_map_entry_type`, `chaining_map_entry_ptr`, and
-`chaining_map_entry_pool`. Each of these are described below.
+`chaining_map_entry_pool`. Each of these is described below.
 
 #### The `chaining_map_entry_type` derived type
 
@@ -1161,12 +1161,12 @@ are listed below.
 
 Procedure to initialize a chaining hash map:
 
-* `init_map( map, hasher[, slots_bits, max_bits, status] )` - Routine
+* `init( map, hasher[, slots_bits, status] )` - Routine
   to initialize a chaining hash map.
 
 Procedure to modify the structure of a map:
 
-* `rehash_map( map, hasher )` - Routine to change the hash function
+* `rehash( map, hasher )` - Routine to change the hash function
   for a map.
 
 Procedures to modify the content of a map:
@@ -1200,8 +1200,8 @@ Procedures to report on the structure of the map:
 
 * `entries( map )`- the number of entries in a hash map.
 
-* `loading( map )` - the number of entries relative to slots in a hash
-  map.
+* `loading( map )` - the number of entries relative to the number of
+  slots in a hash map.
 
 * `map_probes( map )` - the total number of table probes on a hash
   map.
@@ -1250,12 +1250,12 @@ The result will be the number of procedure calls on the hash map.
 ```fortran
     program demo_calls
       use stdlib_chaining_hash_map, only: &
-         chaining_hash_map_type, calls, init_map, int_calls, &
+         chaining_hash_map_type, calls, init, int_calls, &
          fnv_1_hasher
       implicit none
       type(chaining_hash_map_type) :: map
       type(int_calls) :: initial_calls
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       initisl_calls = calls (map)
       print *, "INITIAL_CALLS =  ", initial_calls
     end program demo_calls
@@ -1298,12 +1298,12 @@ The result will be the number of entries in the hash map.
 ```fortran
     program demo_entries
       use stdlib_chaining_hash_map, only: &
-         chaining_hash_map_type, entries, init_map, int_index, &
+         chaining_hash_map_type, entries, init, int_index, &
          fnv_1_hasher
       implicit none
       type(chaining_hash_map_type) :: map
       type(int_index) :: initial_entries
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       initisl_entries = entries (map)
       print *, "INITIAL_ENTRIES =  ", initial_entries
     end program demo_entries
@@ -1359,7 +1359,7 @@ Subroutine
         type(other_type)             :: other
         type(chaining_hash_map_type) :: map
 		integer(int8), allocatable :: data(:)
-        call init_map( map, fnv_1_hasher )
+        call init( map, fnv_1_hasher )
         call set( key, [ 0_int8, 1_int8, 2_int8, 3_int8, 4_int8 ] )
         call set( other, [ 4_int8, 3_int8, 2_int8, 1_int8 ] )
         call map_entry( map, inmap, key, other )
@@ -1424,7 +1424,7 @@ Subroutine
         type(key_type)               :: key
         type(other_type)             :: other
         type(chaining_hash_map_type) :: map
-        call init_map( map, fnv_1_hasher )
+        call init( map, fnv_1_hasher )
         call set( key, [ 0_int8, 1_int8, 2_int8, 3_int8, 4_int8 ] )
         call set( other, [ 4_int8, 3_int8, 2_int8, 1_int8 ] )
         call map_entry( map, inmap, key, other )
@@ -1440,7 +1440,7 @@ Subroutine
     end program demo_in_map
 ```
 
-#### init_map - initializes a hash map
+#### init - initializes a hash map
 
 ##### Status
 
@@ -1452,7 +1452,7 @@ Initializes a `chaining_hash_map_type` object.
 
 ##### Syntax
 
-`call [[stdlib_chaining_hash_map:init_map]](  map, hasher [, slots_bits, status ] ] )`
+`call [[stdlib_chaining_hash_map:init]](  map, hasher [, slots_bits, status ] ] )`
 
 ####@# Class
 
@@ -1497,17 +1497,16 @@ has the value `alloc_fault`.
 
 ##### Example
 
-    program demo_init_map
+    program demo_init
         use stdlib_hash_tables, only: &
             chaining_map_type, fnv_1_hasher &
-            init_map
+            init
         type(fnv_1a_type)       :: fnv_1
         type(chaining_map_type) :: map
-        call init_map( init_map, &
-                       fnv_1a,         &
-                       slots_power=10, &
-                       max_power=20 )
-    end program demo_init_map
+        call init( map,           &
+                   fnv_1a,        &
+                   slots_bits=10 )
+    end program demo_init
 
 
 
@@ -1549,12 +1548,12 @@ number of slots in the hash map.?
 ```fortran
     program demo_loading
       use stdlib_chaining_hash_map, only: &
-         chaining_hash_map_type, init_map, int_index, &
+         chaining_hash_map_type, init, int_index, &
          fnv_1_hasher, loading
       implicit none
       type(chaining_hash_map_type) :: map
       real :: ratio
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       ratio = loading (map)
       print *, "Initial loading =  ", ratio
     end program demo_loading
@@ -1606,16 +1605,15 @@ is ignored.
         use, intrinsic:: iso_fortran_env, only: &
             int8
         use stdlib_chaining_hash_map, only: &
-		    chaining_hash_map_type, fnv_1_hasher, init_map, &
+		    chaining_hash_map_type, fnv_1_hasher, init, &
         	int_index, key_type, map_entry, other_type, set
         type(chaining_hash_map_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
-        call init_map( map,            &
-                       fnv_1_hasher,   &
-                       slots_power=10, &
-                       max_power=20 )
+        call init( map,           &
+                   fnv_1_hasher,  &
+                   slots_bits=10 )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         call set( other, [ 1_int8, 5_int8, 3_int8, 15_int8 ] )
         call map_entry( map, inmap, key, other )
@@ -1660,12 +1658,12 @@ The result is the number of probes of `map`.
 ```fortran
     program demo_probes
       use stdlib_chaining_hash_map, only: &
-         chaining_hash_map_type, init_map, int_index, &
+         chaining_hash_map_type, init, int_index, &
          fnv_1_hasher, probes
       implicit none
       type(chaining_hash_map_type) :: map
       real :: ratio
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       ratio = probes (map)
       print *, "Initial probes =  ", ratio
     end program demo_probes
@@ -1701,24 +1699,23 @@ It is the hash method to be used by `map`.
 
 ##### Example
 
-    program demo_rehash_map
+    program demo_rehash
         use stdlib_chaining_hash_map, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
-            init_map, int_index, key_type, map_entry, other_type, &
-            rehash_map, set
+            init, int_index, key_type, map_entry, other_type, &
+            rehash, set
         type(chaining_hash_map_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
-        call init_map( map,            &
-                       fnv_1_hasher,   &
-                       slots_power=10, &
-                       max_power=20 )
+        call init( map,           &
+                   fnv_1_hasher,  &
+                   slots_bits=10 )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         call set( other, [ 1_int8, 5_int8, 3_int8, 15_int8 ] )
         call map_entry( map, inmap, key, other )
-        call rehash_map( map, fnv_1a_hasher )
-    end program demo_rehash_map
+        call rehash( map, fnv_1a_hasher )
+    end program demo_rehash
 
 
 #### `remove_entry` - removes an entry from the hash map
@@ -1754,16 +1751,15 @@ identifying the entry to be removed.
     program demo_remove_entry
         use stdlib_chaining_hash_map, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
-            init_map, int_index, key_type, map_entry, other_type, &
+            init, int_index, key_type, map_entry, other_type, &
             remove_entry, set
         type(chaining_hash_map_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
-        call init_map( map,            &
-                       fnv_1_hasher,   &
-                       slots_power=10, &
-                       max_power=20 )
+        call init( map,           &
+                   fnv_1_hasher,  &
+                   slots_bits=10 )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         call set( other, [ 1_int8, 5_int8, 3_int8, 15_int8 ] )
         call map_entry( map, inmap, key, other )
@@ -1814,16 +1810,15 @@ the other data for the entry at the `inmap` index.
     program demo_set_other_data
         use stdlib_chaining_hash_map, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
-            init_map, int_index, key_type, map_entry, other_type, &
+            init, int_index, key_type, map_entry, other_type, &
             set, set_other_data
         type(chaining_hash_map_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
-        call init_map( map,            &
-                       fnv_1_hasher,   &
-                       slots_power=10, &
-                       max_power=20 )
+        call init( map,           &
+                   fnv_1_hasher,  &
+                   slots_bits=10 )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         Call set( other, [ 1_int8, 5_int8, 3_int8, 15_int8 ] )
         call map_entry( map, inmap, key, other )
@@ -1869,12 +1864,12 @@ The result is the number of slots in `map`.
 ```fortran
     program demo_probes
       use stdlib_chaining_hash_map, only: &
-         chaining_hash_map_type, init_map, int_index, &
+         chaining_hash_map_type, init, int_index, &
          fnv_1_hasher, slots
       implicit none
       type(chaining_hash_map_type) :: map
       integer(int_index) :: initial_slots
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       initial_slots = slots (map)
       print *, "Initial slots =  ", initial_slots
     end program demo_probes
@@ -1920,12 +1915,12 @@ from their slot index the map.
 ```fortran
     program demo_probes
       use stdlib_chaining_hash_map, only: &
-         chaining_hash_map_type, init_map, int_index, &
+         chaining_hash_map_type, init, int_index, &
          fnv_1_hasher, total_depth
       implicit none
       type(chaining_hash_map_type) :: map
       integer(int_depth) :: initial_depth
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       initial_depth = total_depth (map)
       print *, "Initial total depth =  ", initial_depth
     end program demo_probes
@@ -1971,16 +1966,15 @@ index `inmap` in the inverse table.
     program demo_unmap
         use stdlib_chaining_hash_map, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
-            init_map, int_index, key_type, map_entry, other_type, &
+            init, int_index, key_type, map_entry, other_type, &
             set, unmap
         type(chaining_hash_map_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
-        call init_map( map,            &
-                       fnv_1_hasher,   &
-                       slots_power=10, &
-                       max_power=20 )
+        call init( map,           &
+                   fnv_1_hasher,  &
+                   slots_bits=10 )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         call set( other, [ 1_int8, 5_int8, 3_int8, 15_int8 ] )
         call map_entry( map, inmap, key, other )
@@ -2031,13 +2025,13 @@ table of `map` and `.false.` otherwise.
 ```fortran
     program demo_valid_index
       use stdlib_chaining_hash_map, only: &
-         chaining_hash_map_type, init_map, int_index, &
+         chaining_hash_map_type, init, int_index, &
          fnv_1_hasher, valid_index
       implicit none
       type(chaining_hash_map_type) :: map
       integer(int_index) ::  inmap
       logocal :: valid
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       inmap = 10
       valid = valid_index (map, inmap)
       print *, "Initial index of 10 valid for empty map =  ", valid
@@ -2054,7 +2048,7 @@ constants that implement a simple hash map using
 linear open addressing hashing. The derived type is
 `open_hash_map_type`. It provides
 procedures to manipulate the structure of the hash map:
-`init_map`, `map_entry`, `rehash_map`, and `set_other_data`. It
+`init`, `map_entry`, `rehash`, and `set_other_data`. It
 provides procedures to inquire about entries in the hash map:
 `get_other_data`, `in_map`, `unmap`.and `valid_index`. Finally it
 provides procedures to inquire about the overall structure and
@@ -2216,7 +2210,7 @@ Procedure to initialize a chaining hash map:
 
 Procedure to modify the structure of a map:
 
-* `rehash_map( map, hasher )` - Routine to change the hash function
+* `rehash( map, hasher )` - Routine to change the hash function
   for a map.
 
 Procedures to modify the content of a map:
@@ -2301,12 +2295,12 @@ The result will be the number of procedure calls on the hash map.
 ```fortran
     program demo_calls
       use stdlib_open_hash_map, only: &
-         open_hash_map_type, calls, init_map, int_calls, &
+         open_hash_map_type, calls, init, int_calls, &
          fnv_1_hasher
       implicit none
       type(open_hash_map_type) :: map
       type(int_calls) :: initial_calls
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       initisl_calls = calls (map)
       print *, "INITIAL_CALLS =  ", initial_calls
     end program demo_calls
@@ -2349,12 +2343,12 @@ The result will be the number of entries in the hash map.
 ```fortran
     program demo_entries
       use stdlib_open_hash_map, only: &
-         open_hash_map_type, entries, init_map, int_index, &
+         open_hash_map_type, entries, init, int_index, &
          fnv_1_hasher
       implicit none
       type(open_hash_map_type) :: map
       type(int_index) :: initial_entries
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       initisl_entries = entries (map)
       print *, "INITIAL_ENTRIES =  ", initial_entries
     end program demo_entries
@@ -2410,7 +2404,7 @@ Subroutine
         type(other_type)           :: other
         type(open_hash_map_type)   :: map
 		integer(int8), allocatable :: data(:)
-        call init_map( map, fnv_1_hasher )
+        call init( map, fnv_1_hasher )
         call set( key, [ 0_int8, 1_int8, 2_int8, 3_int8, 4_int8 ] )
         call set( other, [ 4_int8, 3_int8, 2_int8, 1_int8 ] )
         call map_entry( map, inmap, key, other )
@@ -2475,7 +2469,7 @@ Subroutine
         type(key_type)               :: key
         type(other_type)             :: other
         type(open_hash_map_type) :: map
-        call init_map( map, fnv_1_hasher )
+        call init( map, fnv_1_hasher )
         call set( key, [ 0_int8, 1_int8, 2_int8, 3_int8, 4_int8 ] )
         call set( other, [ 4_int8, 3_int8, 2_int8, 1_int8 ] )
         call map_entry( map, inmap, key, other )
@@ -2491,7 +2485,7 @@ Subroutine
     end program demo_in_map
 ```
 
-#### init_map - initializes a hash map
+#### init - initializes a hash map
 
 ##### Status
 
@@ -2503,7 +2497,7 @@ Initializes a `open_hash_map_type` object.
 
 ##### Syntax
 
-`call [[stdlib_open_hash_map:init_map]](  map, hasher[, slots_bits, status ] ] )`
+`call [[stdlib_open_hash_map:init]](  map, hasher[, slots_bits, status ] ]`
 
 ####@# Class
 
@@ -2531,7 +2525,7 @@ Subroutine
   is `default_slots_bits`.
 
 `status` (optional): shall be a scalar integer variable of kind
-`int32`. It is an `intent(out)` argument. On return if present it
+`int32`. It is an `intent(out)` argument. On return, if present, it
 shall have an error code value.
 
 * If map was successfully initialized then `status` has the value
@@ -2548,18 +2542,18 @@ has the value `alloc_fault`.
 
 ##### Example
 
-    program demo_init_map
+    program demo_init
         use stdlib_hash_tables, only: &
             open_map_type, fnv_1_hasher &
-            init_map
+            init
         type(fnv_1a_type)       :: fnv_1
         type(open_map_type) :: map
-        call init_map( init_map,         &
-                       fnv_1a,           &
-                       slots_power=10,   &
-                       max_power=20,     &
-                       load)_factor=0.5 )
-    end program demo_init_map
+        call init( map,           &
+                   fnv_1a,        &
+                   slots_bits=10 )
+    end program demo_init
+
+
 
 
 #### `loading` - Returns the ratio of entries to slots
@@ -2600,12 +2594,12 @@ number of slots in the hash map.?
 ```fortran
     program demo_loading
       use stdlib_open_hash_map, only: &
-         open_hash_map_type, init_map, int_index, &
+         open_hash_map_type, init, int_index, &
          fnv_1_hasher, loading
       implicit none
       type(open_hash_map_type) :: map
       real :: ratio
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       ratio = loading (map)
       print *, "Initial loading =  ", ratio
     end program demo_loading
@@ -2657,16 +2651,15 @@ is ignored.
         use, intrinsic:: iso_fortran_env, only: &
             int8
         use stdlib_open_hash_map, only: &
-		    open_hash_map_type, fnv_1_hasher, init_map, &
+		    open_hash_map_type, fnv_1_hasher, init, &
         	int_index, key_type, map_entry, other_type, set
         type(open_hash_map_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
-        call init_map( map,            &
-                       fnv_1_hasher,   &
-                       slots_power=10, &
-                       max_power=20 )
+        call init( map,            &
+                   fnv_1_hasher,   &
+                   slots_bits=10 )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         call set( other, [ 1_int8, 5_int8, 3_int8, 15_int8 ] )
         call map_entry( map, inmap, key, other )
@@ -2711,12 +2704,12 @@ The result is the number of probes of `map`.
 ```fortran
     program demo_probes
       use stdlib_open_hash_map, only: &
-         open_hash_map_type, init_map, int_index, &
+         open_hash_map_type, init, int_index, &
          fnv_1_hasher, probes
       implicit none
       type(open_hash_map_type) :: map
       real :: ratio
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       ratio = probes (map)
       print *, "Initial probes =  ", ratio
     end program demo_probes
@@ -2752,24 +2745,23 @@ It is the hash method to be used by `map`.
 
 ##### Example
 
-    program demo_rehash_map
+    program demo_rehash
         use stdlib_open_hash_map, only: &
 		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
-            init_map, int_index, key_type, map_entry, other_type, &
-            rehash_map, set
+            init, int_index, key_type, map_entry, other_type, &
+            rehash, set
         type(open_hash_map_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
-        call init_map( map,            &
-                       fnv_1_hasher,   &
-                       slots_power=10, &
-                       max_power=20 )
+        call init( map,           &
+                   fnv_1_hasher,  &
+                   slots_bits=10 )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         call set( other, [ 1_int8, 5_int8, 3_int8, 15_int8 ] )
         call map_entry( map, inmap, key, other )
-        call rehash_map( map, fnv_1a_hasher )
-    end program demo_rehash_map
+        call rehash( map, fnv_1a_hasher )
+    end program demo_rehash
 
 
 #### `relative_loading` - Returns the ratio of `loading` to `load_factor`
@@ -2810,12 +2802,12 @@ number of slots in the hash map relative to the `load_factor`.
 ```fortran
     program demo_relative_loading
       use stdlib_open_hash_map, only: &
-         open_hash_map_type, init_map, int_index, &
+         open_hash_map_type, init, int_index, &
          fnv_1_hasher, loading
       implicit none
       type(open_hash_map_type) :: map
       real :: ratio
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       ratio = relative loading (map)
       print *, "Initial relative loading =  ", ratio
     end program demo_relative_loading
@@ -2865,16 +2857,15 @@ the other data for the entry at the `inmap` index.
     program demo_set_other_data
         use stdlib_open_hash_map, only: &
 		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
-            init_map, int_index, key_type, map_entry, other_type, &
+            init, int_index, key_type, map_entry, other_type, &
             set, set_other_data
         type(open_hash_map_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
-        call init_map( map,            &
-                       fnv_1_hasher,   &
-                       slots_power=10, &
-                       max_power=20 )
+        call init( map,          &
+                   fnv_1_hasher, &
+                   slots_bits=10 )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         call set( other, [ 1_int8, 5_int8, 3_int8, 15_int8 ] )
         call map_entry( map, inmap, key, other )
@@ -2920,12 +2911,12 @@ The result is the number of slots in `map`.
 ```fortran
     program demo_probes
       use stdlib_open_hash_map, only: &
-         open_hash_map_type, init_map, int_index, &
+         open_hash_map_type, init, int_index, &
          fnv_1_hasher, slots
       implicit none
       type(open_hash_map_type) :: map
       integer(int_index) :: initial_slots
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       initial_slots = slots (map)
       print *, "Initial slots =  ", initial_slots
     end program demo_probes
@@ -2971,12 +2962,12 @@ from their slot index the map.
 ```fortran
     program demo_probes
       use stdlib_open_hash_map, only: &
-         open_hash_map_type, init_map, int_index, &
+         open_hash_map_type, init, int_index, &
          fnv_1_hasher, total_depth
       implicit none
       type(open_hash_map_type) :: map
       integer(int_depth) :: initial_depth
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       initial_depth = total_depth (map)
       print *, "Initial total depth =  ", initial_depth
     end program demo_probes
@@ -3022,16 +3013,15 @@ index `inmap` in the inverse table.
     program demo_unmap
         use stdlib_open_hash_map, only: &
 		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
-            init_map, int_index, key_type, map_entry, other_type, &
+            init, int_index, key_type, map_entry, other_type, &
             unmap
         type(open_hash_map_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
-        call init_map( map,            &
-                       fnv_1_hasher,   &
-                       slots_power=10, &
-                       max_power=20 )
+        call init( map,           &
+                   fnv_1_hasher,  &
+                   slots_bits=10 )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         call set( other, [ 1_int8, 5_int8, 3_int8, 15_int8 ] )
         call map_entry( map, inmap, key, other )
@@ -3083,13 +3073,13 @@ table of `map` and `.false.` otherwise.
 ```fortran
     program demo_valid_index
       use stdlib_open_hash_map, only: &
-         open_hash_map_type, init_map, int_index, &
+         open_hash_map_type, init, int_index, &
          fnv_1_hasher, valid_index
       implicit none
       type(open_hash_map_type) :: map
       integer(int_index) ::  inmap
       logocal :: valid
-      call init_map( map, fnv_1_hasher )
+      call init( map, fnv_1_hasher )
       inmap = 10
       valid = valid_index (map, inmap)
       print *, "Initial index of 10 valid for empty map =  ", valid
