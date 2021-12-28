@@ -41,7 +41,7 @@ Function
 
 ### Return value
 
-The result is a scalar or rank one array with a size of `array_size`, and as the same type of `lambda`.
+The result is a scalar or rank one array with a size of `array_size`, and has the same type of `lambda`.
 
 ### Example
 
@@ -117,7 +117,7 @@ All arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to arguments, and as the same type of input arguments.
+The result is a scalar or an array, with a shape conformable to arguments, and has the same type of input arguments.
 
 ### Example
 
@@ -199,7 +199,7 @@ All arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to arguments, and as the same type of input arguments.
+The result is a scalar or an array, with a shape conformable to arguments, and has the same type of input arguments.
 
 ### Example
 
