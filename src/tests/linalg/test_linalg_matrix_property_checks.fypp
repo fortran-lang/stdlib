@@ -58,8 +58,8 @@ contains
         #:endfor
       #:endfor
             ]
-
     end subroutine collect_linalg_matrix_property_checks
+
 
     !is_square
   #:for k1, t1, s1 in RCI_KINDS_TYPES_SUFFIXES
@@ -518,6 +518,7 @@ contains
   #:endfor
 
 end module
+
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
