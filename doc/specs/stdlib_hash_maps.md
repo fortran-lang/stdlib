@@ -2,7 +2,7 @@
 title: Hash maps
 ---
 
-# The `stdlib_32_bit_key_data_wrapper`, `stdlib_chaining_hash_map` and `stdlib_open_hash_map` modules
+# The `stdlib_hashmap_wrappers`, `stdlib_hashmap_chaining` and `stdlib_hashmap_open` modules
 
 (TOC)
 
@@ -42,25 +42,25 @@ implementation of simple hash maps. These maps only accept hash
 functions with a single argument, the key, and that yield a 32 bit
 hash code, The modules will need to be modified to use hash functions
 with a different API. There are three modules:
-`stdlib_32_bit_key_data_wrapper`, `stdlib_chaining_hash_map` and
-`stdlib_open_hash_map`, corresponding to the files:
-`stdlib_32_bit_key_data_wrapper.f90`, `stdlib_chaining_hash_map.f90`,
-and `stdlib_open_hash_map.f90`. The module
-`stdlib_32_bit_key_data_wrapper` provides an interface to the 32 bit
+`stdlib_hashmap_wrappers`, `stdlib_hashmap_chaining` and
+`stdlib_hashmap_open`, corresponding to the files:
+`stdlib_hashmap_wrappers.f90`, `stdlib_hashmap_chaining.f90`,
+and `stdlib_hashmap_open.f90`. The module
+`stdlib_hashmap_wrappers` provides an interface to the 32 bit
 hash functions of the Standard Library module,
 `stdlib_32_bit_hash_functions`, and provides wrappers to some of the
 hash functions so that they no longer need to be supplied seeds. The
-module `stdlib_chaining_hash_map` defines a datatype,
+module `stdlib_hashmap_chaining` defines a datatype,
 `chaining_hash_map_type`, implementing a simple separate chaining hash
 map noted more for its diagnostics than its performance. Finally the
-module, `stdlib_open_hash_map` defines a datatype,
+module, `stdlib_hashmap_open` defines a datatype,
 `open_hash_map_type`, implementing a simple open addressing hash
 map noted more for its diagnostics than its performance.
 
 These maps use separate chaining with linked lists and linear open
 addressing, respectively, to deal with hash index collisions, and are
-largely defined in the separated submodules, `stdlib_chaining_hash_maps`
-and `stdlib_open_hash_maps`, respectively.
+largely defined in the separated submodules, `stdlib_hashmap_chainings`
+and `stdlib_hashmap_opens`, respectively.
 In `chaining_hash_map_type` the colliding indices are handled by using
 linked lists with their roots at the hash index.
 In `open_hash_map_type`, the colliding indices are handled by searching
@@ -86,9 +86,9 @@ of data in addition to the entry key.
 The `chaining_hash_map_type` also allows the selective removal of
 entries.
 
-## The `stdlib_32_bit_key_data_wrapper` module
+## The `stdlib_hashmap_wrappers` module
 
-The `stdlib_32_bit_key_data_wrapper` module provides data types to
+The `stdlib_hashmap_wrappers` module provides data types to
 represent keys and associated data stored in a module, but is also, a
 wrapper for the `stdlib_32_bit_hash_functions` module. It allows
 direct access to the `stdlib_32_bit_hash_functions` procedures:
@@ -102,15 +102,15 @@ as a kind value,`int_hash`. It also defines two types, `key_type` and
 `other_type`, and associated procedures, for storing and manipulating
 keys and their associated data.
 
-### The `stdlib_32_bit_key_data_wrapper` constant, `INT_HASH`
+### The `stdlib_hashmap_wrappers` constant, `INT_HASH`
 
 The constant `INT_HASH` is used to define the integer kind value for
 the returned hash codes and variables used to access them. It
 currently has the value, `INT32`.
 
-### The `stdlib_32_bit_key_data_wrapper` module derived types
+### The `stdlib_hashmap_wrappers` module derived types
 
-The `stdlib_32_bit_key_data_wrapper` module defines two derived types:
+The `stdlib_hashmap_wrappers` module defines two derived types:
 `key_type`, and `other_type`. The `key_type` is intended to be used
 for the search keys of hash tables.  The `other_type` is intended to
 store additional data associated with a key. Both types are
@@ -133,9 +133,9 @@ The  module also defines seven procedures for those types: `copy_key`,
 for use by the hash maps to manipulate or inquire of components of
 those types.
 
-### Table of `stdlib_32_bit_key_data_wrapper` procedures
+### Table of `stdlib_hashmap_wrappers` procedures
 
-The  `stdlib_32_bit_key_data_wrapper` module provides procedures in
+The  `stdlib_hashmap_wrappers` module provides procedures in
 several categories: procedures to manipulate data of the `key_type`;
 procedures to manipulate data of the `other_type`, and 32 bit hash
 functions for keys. The procedures in each category are listed below.
@@ -179,7 +179,7 @@ Procedures to hash keys to 32 bit integers:
 * `seeded_water_hasher( key )` - hashes a key using the waterhash
   algorithm.
 
-### Specifications of the `stdlib_32_bit_key_data_wrapper` procedures
+### Specifications of the `stdlib_hashmap_wrappers` procedures
 
 #### `copy_key` - Returns a copy of the key
 
@@ -193,7 +193,7 @@ Returns a copy of an input of type `key_type`
 
 ##### Syntax
 
-`call [[stdlib_32_bit_key_data_wrapper:copy_key]]( key_in, key_out )`
+`call [[stdlib_hashmap_wrappers:copy_key]]( key_in, key_out )`
 
 ##### Class
 
@@ -211,7 +211,7 @@ is an `intent(out)` argument.
 
 ```fortran
     program demo_copy_key
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
           copy_key, key_test, key_type
       use iso_fortran_env, only: int8
       implicit none
@@ -240,7 +240,7 @@ Returns a copy of an input of type `other_type`
 
 ##### Syntax
 
-`call [[stdlib_32_bit_key_data_wrapper:copy_other]]( other_in, other_out )`
+`call [[stdlib_hashmap_wrappers:copy_other]]( other_in, other_out )`
 
 ##### Class
 
@@ -258,7 +258,7 @@ is an `intent(out)` argument.
 
 ```fortran
     program demo_copy_other
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
           copy_other, get, other_type, set
       use iso_fortran_env, only: int8
       implicit none
@@ -290,7 +290,7 @@ Calculates an `nbits` hash code from a 32 bit integer.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_key_data_wrapper:fibonacci_hash]]( key, nbits )`
+`code = [[stdlib_hashmap_wrappers:fibonacci_hash]]( key, nbits )`
 
 ##### Class
 
@@ -325,7 +325,7 @@ E. Knuth. It multiplies the `KEY` by the odd valued approximation to
 
 ```fortran
     program demo_fibonacci_hash
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
           fibonacci_hash
       use iso_fortran_env, only: int32 
       implicit none
@@ -355,7 +355,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_key_data_wrapper:fnv_1_hasher]]( key )`
+`code = [[stdlib_hashmap_wrappers:fnv_1_hasher]]( key )`
 
 ##### Class
 
@@ -392,7 +392,7 @@ expected to be minor compared to its faster hashing rate.
 
 ```fortran
     program demo_fnv_1_hasher
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
           fnv_1_hasher, key_type, set
       use iso_fortran_env, only: int32 
       implicit none
@@ -419,7 +419,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_key_data_wrapper:fnv_1a_hasher]]( key )`
+`code = [[stdlib_hashmap_wrappers:fnv_1a_hasher]]( key )`
 
 ##### Class
 
@@ -456,7 +456,7 @@ expected to be minor compared to its faster hashing rate.
 
 ```fortran
     program demo_fnv_1a_hasher
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
          fnv_1a_hasher, key_type, set
       use iso_fortran_env, only: int32 
       implicit none
@@ -483,7 +483,7 @@ Deallocates the memory associated with an variable of type
 
 ##### Syntax
 
-`call [[stdlib_32_bit_key_data_wrapper:free_key]]( key )`
+`call [[stdlib_hashmap_wrappers:free_key]]( key )`
 
 ##### Class
 
@@ -498,7 +498,7 @@ is an `intent(out)` argument.
 
 ```fortran
     program demo_free_key
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
           copy_key, free_key, key_type, set
       use iso_fortran_env, only: int8
       implicit none
@@ -528,7 +528,7 @@ Deallocates the memory associated with an variable of type
 
 ##### Syntax
 
-`call [[stdlib_32_bit_key_data_wrapper:free_other]]( other )`
+`call [[stdlib_hashmap_wrappers:free_other]]( other )`
 
 ##### Class
 
@@ -543,7 +543,7 @@ is an `intent(out)` argument.
 
 ```fortran
     program demo_free_other
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
           copy_other, free_other, other_type, set
       use iso_fortran_env, only: int8
       implicit none
@@ -574,11 +574,11 @@ in the variable `value`..
 
 ##### Syntax
 
-`call [[stdlib_32_bit_key_data_wrapper:get]]( key, value )`
+`call [[stdlib_hashmap_wrappers:get]]( key, value )`
 
 or
 
-`call [[stdlib_32_bit_key_data_wrapper:get]]( other, value )`
+`call [[stdlib_hashmap_wrappers:get]]( other, value )`
 
 
 ##### Class
@@ -601,7 +601,7 @@ an `intent(out)` argument.
 
 ```fortran
     program demo_get
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
           get, key_type, set
       use iso_fortran_env, only: int8
       implicit none
@@ -632,7 +632,7 @@ argument returning an `INT322` hash value.
 
 ##### Syntax
 
-`type([[stdlib_32_bit_key_data_wrapper:hasher_fun]]), pointer :: fun_pointer`
+`type([[stdlib_hashmap_wrappers:hasher_fun]]), pointer :: fun_pointer`
 
 ##### Class
 
@@ -660,7 +660,7 @@ pointers intended for use
 
 ```fortran
     program demo_hasher_fun
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
           fnv_1a_hasher, hasher_fun, set
       use iso_fortran_env, only: int8, int32 
       implicit none
@@ -688,7 +688,7 @@ Returns `.true.` if two keys are equal, and false otherwise.
 
 ##### Syntax
 
-`test = [[stdlib_32_bit_key_data_wrapper:key_test]]( key1, key2 )`
+`test = [[stdlib_hashmap_wrappers:key_test]]( key1, key2 )`
 
 ##### Class
 
@@ -714,7 +714,7 @@ The result is `.TRUE.` if the keys are equal, otherwise `.FALSS`.
 
 ```fortran
     program demo_key_test
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
           copy_key, key_test, key_type, set
       use iso_fortran_env, only: int8
       implicit none
@@ -743,7 +743,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_key_data_wrapper:seeded_nmhash32_hasher]]( key )`
+`code = [[stdlib_hashmap_wrappers:seeded_nmhash32_hasher]]( key )`
 
 ##### Class
 
@@ -781,7 +781,7 @@ applications.
 
 ```fortran
     program demo_seeded_nmhash32_hasher
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
          seeded_nmhash32_hasher, key_type, set
       use iso_fortran_env, only: int32 
       implicit none
@@ -807,7 +807,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_key_data_wrapper:seeded_nmhash32x_hasher]]( key )`
+`code = [[stdlib_hashmap_wrappers:seeded_nmhash32x_hasher]]( key )`
 
 ##### Class
 
@@ -844,7 +844,7 @@ applications.
 
 ```fortran
     program demo_seeded_nmhash32x_hasher
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
          seeded_nmhash32x_hasher, key_type, set
       use iso_fortran_env, only: int32 
       implicit none
@@ -870,7 +870,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = [[stdlib_32_bit_key_data_wrapper:seeded_water_hasher]]( key )`
+`code = [[stdlib_hashmap_wrappers:seeded_water_hasher]]( key )`
 
 ##### Class
 
@@ -908,7 +908,7 @@ applications.
 
 ```fortran
     program demo_seeded_water_hasher
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
          seeded_water_hasher, key_type, set
       use iso_fortran_env, only: int32 
       implicit none
@@ -935,11 +935,11 @@ Places the data from `value` in a `key_type` or an `other_type`.
 
 ##### Syntax
 
-`call [[stdlib_32_bit_key_data_wrapper:set]]( key, value )`
+`call [[stdlib_hashmap_wrappers:set]]( key, value )`
 
 or
 
-`call [[stdlib_32_bit_key_data_wrapper:set]]( other, value )`
+`call [[stdlib_hashmap_wrappers:set]]( other, value )`
 
 
 ##### Class
@@ -962,7 +962,7 @@ vector expression of type integer and kind `INT8`. It is an
 
 ```fortran
     program demo_set
-      use stdlib_32_bit_key_data_wrapper, only: &
+      use stdlib_hashmap_wrappers, only: &
           get, key_type, set
       use iso_fortran_env, only: int8
       implicit none
@@ -980,10 +980,10 @@ vector expression of type integer and kind `INT8`. It is an
 ```
 
 
-## The `stdlib_chaining_hash_map` module
+## The `stdlib_hashmap_chaining` module
 
-The `stdlib_chaining_hash_map` module provides access to all the
-public entities in the `stdlib_32_bit_key_data_wrapper` module. It
+The `stdlib_hashmap_chaining` module provides access to all the
+public entities in the `stdlib_hashmap_wrappers` module. It
 also defines a public data type and associated procedures and
 constants that implement a simple hash map using
 separate chaining hashing. The derived type is
@@ -1000,7 +1000,7 @@ also defines a number of public constants: `inmap_probe_factor`,
 `max_bits`, `int_calls`, `int_depth`, `int_index`,
 `int_probes`, `success`, `alloc_fault`, and `array_size_error`.
 
-### The `stdlib_chaining_hash_map` module's public constants
+### The `stdlib_hashmap_chaining` module's public constants
 
 The module defines several categories of public constants. Some are
 used to parameterize the empirical slot expansion code. Others
@@ -1048,9 +1048,9 @@ failed. Finally the `array_size_error` indicates that on table
 creation `slots_bits` is less than `default_bits` or
 greater than `max_bits`.
 
-### The `stdlib_chaining_hash_map` module's derived types
+### The `stdlib_hashmap_chaining` module's derived types
 
-The `stdlib_chaining_hash_map` module defines several derived
+The `stdlib_hashmap_chaining` module defines several derived
 types. The only public type is the `chaining_hash_map_type`. There are
 three other private derived types used in the implementation of the
 public type: `chaining_map_entry_type`, `chaining_map_entry_ptr`, and
@@ -1150,9 +1150,9 @@ objects of the type, `chaining_hash_map_type`.
     end type chaining_hash_map_type
 ```
 
-### Table of `stdlib_chaining_hash_map` procedures
+### Table of `stdlib_hashmap_chaining` procedures
 
-The `stdlib_chaining_hash_map` module provides procedures in
+The `stdlib_hashmap_chaining` module provides procedures in
 several categories: a procedure to initialize the map; a procedure to
 modify the structure of a map; procedures to modify the content of a
 map; procedures to report on the content of a map; and procedures
@@ -1212,7 +1212,7 @@ Procedures to report on the structure of the map:
 * `total_depth( map )` - Returns the total number of one's based
 offsets of slot entries from their slot index
 
-### Specifications of the `stdlib_chaining_hash_map` procedures
+### Specifications of the `stdlib_hashmap_chaining` procedures
 
 #### `calls` - Returns the number of calls on a hash map
 
@@ -1226,7 +1226,7 @@ Returns the number of procedure calls on a hash map.
 
 ##### Syntax
 
-`value = [[stdlib_chaining_hash_map:calls]]( map )`
+`value = [[stdlib_hashmap_chaining:calls]]( map )`
 
 ##### Class
 
@@ -1249,7 +1249,7 @@ The result will be the number of procedure calls on the hash map.
 
 ```fortran
     program demo_calls
-      use stdlib_chaining_hash_map, only: &
+      use stdlib_hashmap_chaining, only: &
          chaining_hash_map_type, calls, init, int_calls, &
          fnv_1_hasher
       implicit none
@@ -1274,7 +1274,7 @@ Returns the number of entries in a hash map.
 
 ##### Syntax
 
-`value = [[stdlib_chaining_hash_map:entries]]( map )`
+`value = [[stdlib_hashmap_chaining:entries]]( map )`
 
 ##### Class
 
@@ -1297,7 +1297,7 @@ The result will be the number of entries in the hash map.
 
 ```fortran
     program demo_entries
-      use stdlib_chaining_hash_map, only: &
+      use stdlib_hashmap_chaining, only: &
          chaining_hash_map_type, entries, init, int_index, &
          fnv_1_hasher
       implicit none
@@ -1322,7 +1322,7 @@ Returns the other data associated with the inverse table index,
 
 ##### Syntax
 
-`value = [[stdlib_chaining_hash_map:get_other_data)]]( map, inmap, other )`
+`value = [[stdlib_hashmap_chaining:get_other_data)]]( map, inmap, other )`
 
 ##### Class
 
@@ -1351,7 +1351,7 @@ Subroutine
     program demo_get_other_data
         use, intrinsic:: iso_fortran_env, only: &
             int8
-        use stdlib_chaining_hash_map, only: &
+        use stdlib_hashmap_chaining, only: &
             chaining_hash_map_type, fnv_1_hasher, get, get_other_data, &
             int_index, key_type, map_entry, other_type, set
         integer(int_index)           :: inmap
@@ -1387,7 +1387,7 @@ associated index into the inverse table.
 
 ##### Syntax
 
-`call [[stdlib_chaining_hash_map:in_map]]( map, inmap, key )`
+`call [[stdlib_hashmap_chaining:in_map]]( map, inmap, key )`
 
 ##### Class
 
@@ -1417,7 +1417,7 @@ Subroutine
     program demo_in_map
         use, intrinsic:: iso_fortran_env, only: &
             int8
-        use stdlib_chaining_hash_map, only: &
+        use stdlib_hashmap_chaining, only: &
             chaining_hash_map_type, fnv_1_hasher, in_map, &
             int_index, key_type, map_entry, other_type, set
         integer(int_index)           :: inmap
@@ -1452,7 +1452,7 @@ Initializes a `chaining_hash_map_type` object.
 
 ##### Syntax
 
-`call [[stdlib_chaining_hash_map:init]](  map, hasher [, slots_bits, status ] ] )`
+`call [[stdlib_hashmap_chaining:init]](  map, hasher [, slots_bits, status ] ] )`
 
 ####@# Class
 
@@ -1523,7 +1523,7 @@ slots in a hash map.
 
 ##### Syntax
 
-`value = [[stdlib_chaining_hash_map:loading]]( map )`
+`value = [[stdlib_hashmap_chaining:loading]]( map )`
 
 ##### Class
 
@@ -1547,7 +1547,7 @@ number of slots in the hash map.?
 
 ```fortran
     program demo_loading
-      use stdlib_chaining_hash_map, only: &
+      use stdlib_hashmap_chaining, only: &
          chaining_hash_map_type, init, int_index, &
          fnv_1_hasher, loading
       implicit none
@@ -1571,7 +1571,7 @@ Inserts an entry into the hash map if it is not already present.
 
 ##### Syntax
 
-`call [[stdlib_chaining_hash_map:map_entry]]( map, inmap, key[, other ])`
+`call [[stdlib_hashmap_chaining:map_entry]]( map, inmap, key[, other ])`
 
 
 ##### Class
@@ -1604,7 +1604,7 @@ is ignored.
     program demo_map_entry
         use, intrinsic:: iso_fortran_env, only: &
             int8
-        use stdlib_chaining_hash_map, only: &
+        use stdlib_hashmap_chaining, only: &
 		    chaining_hash_map_type, fnv_1_hasher, init, &
         	int_index, key_type, map_entry, other_type, set
         type(chaining_hash_map_type) :: map
@@ -1633,7 +1633,7 @@ Returns the total number of table probes on a hash map
 
 ##### Syntax
 
-`Result = [[stdlib_chaining_hash_map:map_probes]]( map )`
+`Result = [[stdlib_hashmap_chaining:map_probes]]( map )`
 
 ##### Class
 
@@ -1657,7 +1657,7 @@ The result is the number of probes of `map`.
 
 ```fortran
     program demo_probes
-      use stdlib_chaining_hash_map, only: &
+      use stdlib_hashmap_chaining, only: &
          chaining_hash_map_type, init, int_index, &
          fnv_1_hasher, probes
       implicit none
@@ -1682,7 +1682,7 @@ Changes the hashing function for the table entries to that of `hasher`.
 
 ##### Syntax
 
-`call [[stdlib_chaining_hash_map:rehash]]( map, hasher )`
+`call [[stdlib_hashmap_chaining:rehash]]( map, hasher )`
 
 ##### Class
 
@@ -1700,7 +1700,7 @@ It is the hash method to be used by `map`.
 ##### Example
 
     program demo_rehash
-        use stdlib_chaining_hash_map, only: &
+        use stdlib_hashmap_chaining, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             rehash, set
@@ -1730,7 +1730,7 @@ Removes an entry from a hash map, `map`.
 
 ##### Syntax
 
-`call [[stdlib_chaining_hash_map:remove_entry]]( map, inmap )`
+`call [[stdlib_hashmap_chaining:remove_entry]]( map, inmap )`
 
 ##### Class
 
@@ -1749,7 +1749,7 @@ identifying the entry to be removed.
 ##### Example
 
     program demo_remove_entry
-        use stdlib_chaining_hash_map, only: &
+        use stdlib_hashmap_chaining, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             remove_entry, set
@@ -1780,7 +1780,7 @@ inverse table.
 
 ##### Syntax
 
-`call [[stdlib_chaining_hash_map:set_other_data]]( map, inmap, other )`
+`call [[stdlib_hashmap_chaining:set_other_data]]( map, inmap, other )`
 
 ##### Class
 
@@ -1808,7 +1808,7 @@ the other data for the entry at the `inmap` index.
 ##### Example
 
     program demo_set_other_data
-        use stdlib_chaining_hash_map, only: &
+        use stdlib_hashmap_chaining, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             set, set_other_data
@@ -1839,7 +1839,7 @@ Returns the total number of slots on a hash map
 
 ##### Syntax
 
-`Result = [[stdlib_chaining_hash_map:slots]]( map )`
+`Result = [[stdlib_hashmap_chaining:slots]]( map )`
 
 ##### Class
 
@@ -1863,7 +1863,7 @@ The result is the number of slots in `map`.
 
 ```fortran
     program demo_probes
-      use stdlib_chaining_hash_map, only: &
+      use stdlib_hashmap_chaining, only: &
          chaining_hash_map_type, init, int_index, &
          fnv_1_hasher, slots
       implicit none
@@ -1889,7 +1889,7 @@ their slot index for a hash map
 
 ##### Syntax
 
-`Result = [[stdlib_chaining_hash_map:total_depth]]( map )`
+`Result = [[stdlib_hashmap_chaining:total_depth]]( map )`
 
 ##### Class
 
@@ -1914,7 +1914,7 @@ from their slot index the map.
 
 ```fortran
     program demo_probes
-      use stdlib_chaining_hash_map, only: &
+      use stdlib_hashmap_chaining, only: &
          chaining_hash_map_type, init, int_index, &
          fnv_1_hasher, total_depth
       implicit none
@@ -1940,7 +1940,7 @@ inverse table.
 
 ##### Syntax
 
-`call [[stdlib_chaining_hash_map:unmap]]( map, inmap, key )`
+`call [[stdlib_hashmap_chaining:unmap]]( map, inmap, key )`
 
 ##### Class
 
@@ -1964,7 +1964,7 @@ index `inmap` in the inverse table.
 ##### Example
 
     program demo_unmap
-        use stdlib_chaining_hash_map, only: &
+        use stdlib_hashmap_chaining, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             set, unmap
@@ -1995,7 +1995,7 @@ inverse table.
 
 ##### Syntax
 
-`result = [[stdlib_chaining_hash_map:valid_index]]( map, inmap )`
+`result = [[stdlib_hashmap_chaining:valid_index]]( map, inmap )`
 
 ##### Class
 
@@ -2024,7 +2024,7 @@ table of `map` and `.false.` otherwise.
 
 ```fortran
     program demo_valid_index
-      use stdlib_chaining_hash_map, only: &
+      use stdlib_hashmap_chaining, only: &
          chaining_hash_map_type, init, int_index, &
          fnv_1_hasher, valid_index
       implicit none
@@ -2039,10 +2039,10 @@ table of `map` and `.false.` otherwise.
 ```
 
 
-## The `stdlib_open_hash_map` module
+## The `stdlib_hashmap_open` module
 
-The `stdlib_open_hash_map` module provides access to all the
-public entities in the `stdlib_32_bit_key_data_wrapper` module. It
+The `stdlib_hashmap_open` module provides access to all the
+public entities in the `stdlib_hashmap_wrappers` module. It
 also defines a public data type and associated procedures and
 constants that implement a simple hash map using
 linear open addressing hashing. The derived type is
@@ -2059,7 +2059,7 @@ also defines a number of public constants: `inmap_probe_factor`,
 `int_depth`, `int_index`, `int_probes`, `load_factor`, `success`,
 `alloc_fault`, `array_size_error`, and `real_value_error`.
 
-### The `stdlib_open_hash_map` module's public constants
+### The `stdlib_hashmap_open` module's public constants
 
 The module defines several categories of public constants. Some are
 used to parameterize the empirical slot expansion code. Others
@@ -2116,9 +2116,9 @@ failed. The `array_size_error` indicates that on table
 creation `slots_bits` is less than `default_bits` or
 greater than `max_bits`.
 
-### The `stdlib_open_hash_map` module's derived types
+### The `stdlib_hashmap_open` module's derived types
 
-The `stdlib_open_hash_map` module defines several derived
+The `stdlib_hashmap_open` module defines several derived
 types. The only public type is the `open_hash_map_type`. There are
 three other private derived types used in the implementation of the
 public type: `open_map_entry_type`, and `open_map_entry_ptr`.
@@ -2196,7 +2196,7 @@ objects of the type, `open_hash_map_type`.
 
 ### Table of `stdlib_open_ehash_map` procedures
 
-The `stdlib_open_hash_map` module provides procedures in
+The `stdlib_hashmap_open` module provides procedures in
 several categories: a procedure to initialize the map; a procedure to
 modify the structure of a map; procedures to modify the content of a
 map; procedures to report on the content of a map; and procedures
@@ -2257,7 +2257,7 @@ Procedures to report on the structure of the map:
 offsets of slot entries from their slot index
 
 
-### Specifications of the `stdlib_open_hash_map` procedures
+### Specifications of the `stdlib_hashmap_open` procedures
 
 #### `calls` - Returns the number of calls on a hash map
 
@@ -2271,7 +2271,7 @@ Returns the number of procedure calls on a hash map.
 
 ##### Syntax
 
-`value = [[stdlib_open_hash_map:calls]]( map )`
+`value = [[stdlib_hashmap_open:calls]]( map )`
 
 ##### Class
 
@@ -2294,7 +2294,7 @@ The result will be the number of procedure calls on the hash map.
 
 ```fortran
     program demo_calls
-      use stdlib_open_hash_map, only: &
+      use stdlib_hashmap_open, only: &
          open_hash_map_type, calls, init, int_calls, &
          fnv_1_hasher
       implicit none
@@ -2319,7 +2319,7 @@ Returns the number of entries in a hash map.
 
 ##### Syntax
 
-`value = [[stdlib_open_hash_map:entries]]( map )`
+`value = [[stdlib_hashmap_open:entries]]( map )`
 
 ##### Class
 
@@ -2342,7 +2342,7 @@ The result will be the number of entries in the hash map.
 
 ```fortran
     program demo_entries
-      use stdlib_open_hash_map, only: &
+      use stdlib_hashmap_open, only: &
          open_hash_map_type, entries, init, int_index, &
          fnv_1_hasher
       implicit none
@@ -2367,7 +2367,7 @@ Returns the other data associated with the inverse table index,
 
 ##### Syntax
 
-`value = [[stdlib_open_hash_map:get_other_data)]]( map, inmap, other )`
+`value = [[stdlib_hashmap_open:get_other_data)]]( map, inmap, other )`
 
 ##### Class
 
@@ -2396,7 +2396,7 @@ Subroutine
     program demo_get_other_data
         use, intrinsic:: iso_fortran_env, only: &
             int8
-        use stdlib_open_hash_map, only: &
+        use stdlib_hashmap_open, only: &
             open_hash_map_type, fnv_1_hasher, get, get_other_data, &
             int_index, key_type, map_entry, other_type, set
         integer(int_index)         :: inmap
@@ -2432,7 +2432,7 @@ associated index into the inverse table.
 
 ##### Syntax
 
-`call [[stdlib_open_hash_map:in_map]]( map, inmap, key )`
+`call [[stdlib_hashmap_open:in_map]]( map, inmap, key )`
 
 ##### Class
 
@@ -2462,7 +2462,7 @@ Subroutine
     program demo_in_map
         use, intrinsic:: iso_fortran_env, only: &
             int8
-        use stdlib_open_hash_map, only: &
+        use stdlib_hashmap_open, only: &
             open_hash_map_type, fnv_1_hasher, in_map, &
             int_index, key_type, map_entry, other_type, set
         integer(int_index)           :: inmap
@@ -2497,7 +2497,7 @@ Initializes a `open_hash_map_type` object.
 
 ##### Syntax
 
-`call [[stdlib_open_hash_map:init]](  map, hasher[, slots_bits, status ] ]`
+`call [[stdlib_hashmap_open:init]](  map, hasher[, slots_bits, status ] ]`
 
 ####@# Class
 
@@ -2569,7 +2569,7 @@ slots in a hash map.
 
 ##### Syntax
 
-`value = [[stdlib_open_hash_map:loading]]( map )`
+`value = [[stdlib_hashmap_open:loading]]( map )`
 
 ##### Class
 
@@ -2593,7 +2593,7 @@ number of slots in the hash map.?
 
 ```fortran
     program demo_loading
-      use stdlib_open_hash_map, only: &
+      use stdlib_hashmap_open, only: &
          open_hash_map_type, init, int_index, &
          fnv_1_hasher, loading
       implicit none
@@ -2617,7 +2617,7 @@ Inserts an entry into the hash map if it is not already present.
 
 ##### Syntax
 
-`call [[stdlib_open_hash_map:map_entry]]( map, inmap, key[, other ])`
+`call [[stdlib_hashmap_open:map_entry]]( map, inmap, key[, other ])`
 
 
 ##### Class
@@ -2650,7 +2650,7 @@ is ignored.
     program demo_map_entry
         use, intrinsic:: iso_fortran_env, only: &
             int8
-        use stdlib_open_hash_map, only: &
+        use stdlib_hashmap_open, only: &
 		    open_hash_map_type, fnv_1_hasher, init, &
         	int_index, key_type, map_entry, other_type, set
         type(open_hash_map_type) :: map
@@ -2679,7 +2679,7 @@ Returns the total number of table probes on a hash map
 
 ##### Syntax
 
-`Result = [[stdlib_open_hash_map:map_probes]]( map )`
+`Result = [[stdlib_hashmap_open:map_probes]]( map )`
 
 ##### Class
 
@@ -2703,7 +2703,7 @@ The result is the number of probes of `map`.
 
 ```fortran
     program demo_probes
-      use stdlib_open_hash_map, only: &
+      use stdlib_hashmap_open, only: &
          open_hash_map_type, init, int_index, &
          fnv_1_hasher, probes
       implicit none
@@ -2728,7 +2728,7 @@ Changes the hashing function for the table entries to that of `hasher`.
 
 ##### Syntax
 
-`call [[stdlib_open_hash_map:rehash]]( map, hasher )`
+`call [[stdlib_hashmap_open:rehash]]( map, hasher )`
 
 ##### Class
 
@@ -2746,7 +2746,7 @@ It is the hash method to be used by `map`.
 ##### Example
 
     program demo_rehash
-        use stdlib_open_hash_map, only: &
+        use stdlib_hashmap_open, only: &
 		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             rehash, set
@@ -2777,7 +2777,7 @@ Returns the ratio of the loadings relative to the open hash map's
 
 ##### Syntax
 
-`value = [[stdlib_open_hash_map:relative_loading]]( map )`
+`value = [[stdlib_hashmap_open:relative_loading]]( map )`
 
 ##### Class
 
@@ -2801,7 +2801,7 @@ number of slots in the hash map relative to the `load_factor`.
 
 ```fortran
     program demo_relative_loading
-      use stdlib_open_hash_map, only: &
+      use stdlib_hashmap_open, only: &
          open_hash_map_type, init, int_index, &
          fnv_1_hasher, loading
       implicit none
@@ -2827,7 +2827,7 @@ inverse table.
 
 ##### Syntax
 
-`call [[stdlib_open_hash_map:set_other_data]]( map, inmap, other )`
+`call [[stdlib_hashmap_open:set_other_data]]( map, inmap, other )`
 
 ##### Class
 
@@ -2855,7 +2855,7 @@ the other data for the entry at the `inmap` index.
 ##### Example
 
     program demo_set_other_data
-        use stdlib_open_hash_map, only: &
+        use stdlib_hashmap_open, only: &
 		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             set, set_other_data
@@ -2886,7 +2886,7 @@ Returns the total number of slots on a hash map
 
 ##### Syntax
 
-`Result = [[stdlib_open_hash_map:slots]]( map )`
+`Result = [[stdlib_hashmap_open:slots]]( map )`
 
 ##### Class
 
@@ -2910,7 +2910,7 @@ The result is the number of slots in `map`.
 
 ```fortran
     program demo_probes
-      use stdlib_open_hash_map, only: &
+      use stdlib_hashmap_open, only: &
          open_hash_map_type, init, int_index, &
          fnv_1_hasher, slots
       implicit none
@@ -2936,7 +2936,7 @@ their slot index for a hash map
 
 ##### Syntax
 
-`Result = [[stdlib_open_hash_map:total_depth]]( map )`
+`Result = [[stdlib_hashmap_open:total_depth]]( map )`
 
 ##### Class
 
@@ -2961,7 +2961,7 @@ from their slot index the map.
 
 ```fortran
     program demo_probes
-      use stdlib_open_hash_map, only: &
+      use stdlib_hashmap_open, only: &
          open_hash_map_type, init, int_index, &
          fnv_1_hasher, total_depth
       implicit none
@@ -2987,7 +2987,7 @@ inverse table.
 
 ##### Syntax
 
-`call [[stdlib_open_hash_map:unmap]]( map, inmap, key )`
+`call [[stdlib_hashmap_open:unmap]]( map, inmap, key )`
 
 ##### Class
 
@@ -3011,7 +3011,7 @@ index `inmap` in the inverse table.
 ##### Example
 
     program demo_unmap
-        use stdlib_open_hash_map, only: &
+        use stdlib_hashmap_open, only: &
 		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             unmap
@@ -3042,7 +3042,7 @@ inverse table.
 
 ##### Syntax
 
-`result = [[stdlib_open_hash_map:valid_index]]( map, inmap )`
+`result = [[stdlib_hashmap_open:valid_index]]( map, inmap )`
 
 ##### Class
 
@@ -3072,7 +3072,7 @@ table of `map` and `.false.` otherwise.
 
 ```fortran
     program demo_valid_index
-      use stdlib_open_hash_map, only: &
+      use stdlib_hashmap_open, only: &
          open_hash_map_type, init, int_index, &
          fnv_1_hasher, valid_index
       implicit none
