@@ -137,9 +137,10 @@ functions for keys. The procedures in each category are listed below.
 Procedures to manipulate `key_type` data:
 
 * `copy_key( key_in, key_out )` - Copies the contents of the key,
-  key_in, to the key, key_out.
+  `key_in`, to contents of the key, `key_out`.
 
-* `get( key, value )` - extracts the content of key into value.
+* `get( key, value )` - extracts the contents of key into value, an
+  `int8` array or character string.
 
 * `free_key( key )` - frees the memory in key.
 
@@ -150,9 +151,11 @@ Procedures to manipulate `key_type` data:
 Procedures to manipulate `other_type` data:
 
 * `copy_other( other_in, other_out )` - Copies the contents of the
-  other data in, other_in, to the other data, other_out.
+  other data, `other_in`, to the contents of the other data,
+  `other_out`.
 
-* `get( other, value )` - extracts the content of other into value.
+* `get( other, value )` - extracts the contents of other into value, an 
+  `int8` array or character string. 
 
 * `set( other, value )` - sets to content of other to value.
 
