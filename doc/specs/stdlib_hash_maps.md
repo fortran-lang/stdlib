@@ -8,20 +8,14 @@ title: Hash maps
 
 ## Overview of hash maps
 
-The comparison of lexical entities or other objects for equality
-can be computationally expensive.
-This cost is often reduced by computing a near unique integer value,
-termed a hash code, from the structure of the object using a procedure
-termed a hash function.
-Equality of hash codes is a necessary, but not sufficient, condition
-for the original objects to be equal. 
-As integer comparisons are very efficient, performing an initial
-comparison of hash codes and then performing a detailed comparison
-only if the hash codes are equal can improve performance.
-The hash codes, in turn, can be mapped to a smaller set of integers,
-that can be used as an index, termed a hash index, to a rank one
-array, often termed a hash table or hash map.
-This document discusses the hash maps in the library.
+A hash map (hash table) is a data structure that maps *keys* to
+*values*. It uses a hash function to compute a hash code from the *key*
+that serves as an index into a linear array of *slots* (buckets) from
+which the desired *value* can be extracted.
+Each key ideally maps to a unique slot, but most hash functions are
+imperfect and can map multiple keys to the same *slot* resulting in
+collisions. Hash maps differ in how they deal with such collisions.
+This document discusses the hash maps in the Fortran Standard Library.
 
 ## Licensing
 
