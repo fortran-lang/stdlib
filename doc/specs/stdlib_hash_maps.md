@@ -42,7 +42,7 @@ with a different API. There are three modules:
 and `stdlib_hashmap_open.f90`. The module
 `stdlib_hashmap_wrappers` provides an interface to the 32 bit
 hash functions of the Standard Library module,
-`stdlib_32_bit_hash_functions`, and provides wrappers to some of the
+`stdlib_hash_32bit`, and provides wrappers to some of the
 hash functions so that they no longer need to be supplied seeds. The
 module `stdlib_hashmap_chaining` defines a datatype,
 `chaining_hash_map_type`, implementing a simple separate chaining hash
@@ -84,8 +84,8 @@ entries.
 
 The `stdlib_hashmap_wrappers` module provides data types to
 represent keys and associated data stored in a module, but is also, a
-wrapper for the `stdlib_32_bit_hash_functions` module. It allows
-direct access to the `stdlib_32_bit_hash_functions` procedures:
+wrapper for the `stdlib_hash_32bit` module. It allows
+direct access to the `stdlib_hash_32bit` procedures:
 `fibonacci_hash`, `fnv_1_hasher`, `fnv_1a_hasher`; and provides
 wrapper functions, `seeded_nmhash32_hasher`,
 `seeded_nmhash32x_hasher`, and `seeded_water_hasher` to the hashing
@@ -759,7 +759,7 @@ The result is a hash code created using the `nmhash32` algorithm.
 ##### Note
 
 `SEEDED_NMHASH32_HASHER` is a wrapper to the `NMHASH32_HASH` of the
-module `stdlib_32_bit_hash_functions`, which supplies a fixed seed
+module `stdlib_hash_32bit`, which supplies a fixed seed
 to the wrapped function. `NMHASH32` is an implementation of the
 `nmhash32` hash code of James Z. M. Gao.
 This code has good, but not great, performance on long keys, poorer
@@ -823,7 +823,7 @@ The result is a hash code created using the `nmhash32x` algorithm.
 ##### Note
 
 `SEEDED_NMHASH32X_HASHER` is a wrapper to the `NMHASH32X_HASH` of the
-module `stdlib_32_bit_hash_functions`, which supplies a fixed seed
+module `stdlib_hash_32bit`, which supplies a fixed seed
 to the wrapped function. `NMHASH32X` is an implementation of the
 `nmhash32x` hash code of James Z. M. Gao.
 This code has good, but not great, performance on long keys, poorer
@@ -886,7 +886,7 @@ The result is a hash code created using the `waterhash` algorithm.
 ##### Note
 
 `SEEDED_WATER_HASHER` is a wrapper to the `WATER_HASH` of the
-module `stdlib_32_bit_hash_functions`, which supplies a fixed seed
+module `stdlib_hash_32bit`, which supplies a fixed seed
 to the wrapped function. `WATER_HASH` is an implementation of the
 `waterhash` hash code of Tommy Ettinger.
 This code has excellent performance on long keys, and good performance
