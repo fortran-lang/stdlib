@@ -33,9 +33,9 @@ his code.
 
 The Fortran Standard Library provides three modules for the
 implementation of simple hash maps. These maps only accept hash
-functions with a single argument, the key, and that yield a 32 bit
-hash code, The modules will need to be modified to use hash functions
-with a different API. There are three modules:
+functions with a single argument, the key, and yield a 32 bit
+hash code. The modules will need to be modified if it is desired to
+use hash functions with a different API. The three modules are:
 `stdlib_hashmap_wrappers`, `stdlib_hashmap_chaining` and
 `stdlib_hashmap_open`, corresponding to the files:
 `stdlib_hashmap_wrappers.f90`, `stdlib_hashmap_chaining.f90`,
@@ -45,19 +45,19 @@ hash functions of the Standard Library module,
 `stdlib_hash_32bit`, and provides wrappers to some of the
 hash functions so that they no longer need to be supplied seeds. The
 module `stdlib_hashmap_chaining` defines a datatype,
-`chaining_hash_map_type`, implementing a simple separate chaining hash
+`chaining_hashmap_type`, implementing a simple separate chaining hash
 map noted more for its diagnostics than its performance. Finally the
 module, `stdlib_hashmap_open` defines a datatype,
-`open_hash_map_type`, implementing a simple open addressing hash
+`open_hashmap_type`, implementing a simple open addressing hash
 map noted more for its diagnostics than its performance.
 
 These maps use separate chaining with linked lists and linear open
 addressing, respectively, to deal with hash index collisions, and are
 largely defined in the separated submodules, `stdlib_hashmap_chainings`
 and `stdlib_hashmap_opens`, respectively.
-In `chaining_hash_map_type` the colliding indices are handled by using
+In `chaining_hashmap_type` the colliding indices are handled by using
 linked lists with their roots at the hash index.
-In `open_hash_map_type`, the colliding indices are handled by searching
+In `open_hashmap_type`, the colliding indices are handled by searching
 from the initial hash index in increasing
 steps of one (modulo the hash map size) for an open map bin.
 
@@ -77,7 +77,7 @@ finalization subroutine avoids memory leaks.
 The maps can take entry keys of type `key_type`.
 Both maps allow the addition and lookup of entries, and the inclusion
 of data in addition to the entry key.
-The `chaining_hash_map_type` also allows the selective removal of
+The `chaining_hashmap_type` also allows the selective removal of
 entries.
 
 ## The `stdlib_hashmap_wrappers` module
@@ -100,7 +100,7 @@ keys and their associated data.
 
 The constant `INT_HASH` is used to define the integer kind value for
 the returned hash codes and variables used to access them. It
-currently has the value, `INT32`.
+currently has the value, `int32`.
 
 ### The `stdlib_hashmap_wrappers` module derived types
 
@@ -350,7 +350,7 @@ Pure function
 
 ##### Arguments
 
-`key`: Shall be a scalar integer expression of kind `INT32`. It is an
+`key`: Shall be a scalar integer expression of kind `int32`. It is an
 `intent(in)` argument.
 
 `nbits` Shall be a scalar default integer expression with `0 < nbits <
@@ -358,7 +358,7 @@ Pure function
 
 ##### Result character
 
-The result is an integer of kind `INT32`.
+The result is an integer of kind `int32`.
 
 ##### Result  value
 
@@ -420,7 +420,7 @@ It is an `intent(in)` argument.
 
 ##### Result character
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Result value
 
@@ -484,7 +484,7 @@ It is an `intent(in)` argument.
 
 ##### Result character
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Result value
 
@@ -646,7 +646,7 @@ is an `intent(in)` argument.
 is an `intent(in)` argument.
 
 `value`: shall be an allocatable default character string variable, or
-an allocatable vector variable of type integer and kind `INT8`. It is
+an allocatable vector variable of type integer and kind `int8`. It is
 an `intent(out)` argument.
 
 ##### Example
@@ -680,7 +680,7 @@ Experimental
 ##### Description
 
 Serves as a prototype for hashing functions with a single, `key`,
-argument returning an `INT32` hash value.
+argument returning an `int32` hash value.
 
 ##### Syntax
 
@@ -692,12 +692,12 @@ Pure function prototype
 
 ##### Argument
 
-`key`: Shall be a rank one array expression of type `INTEGER(INT8)`.
+`key`: Shall be a rank one array expression of type `INTEGER(int8)`.
 It is an `intent(in)` argument.
 
 ##### Result character
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Result value
 
@@ -753,7 +753,7 @@ It is an `intent(in)` argument.
 
 ##### Result character
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Result value
 
@@ -817,7 +817,7 @@ It is an `intent(in)` argument.
 
 ##### Result character
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Result value
 
@@ -880,7 +880,7 @@ It is an `intent(in)` argument.
 
 ##### Result character
 
-The result is a scalar integer of kind `INT32`.
+The result is a scalar integer of kind `int32`.
 
 ##### Result value
 
@@ -952,7 +952,7 @@ is an `intent(out)` argument.
 is an `intent(out)` argument.
 
 `value`: shall be a default character string expression, or a
-vector expression of type integer and kind `INT8`. It is an
+vector expression of type integer and kind `int8`. It is an
 `intent(in)` argument.
 
 ##### Example
@@ -984,7 +984,7 @@ public entities in the `stdlib_hashmap_wrappers` module. It
 also defines a public data type and associated procedures and
 constants that implement a simple hash map using
 separate chaining hashing. The derived type is
-`chaining_hash_map_type`. It provides 
+`chaining_hashmap_type`. It provides 
 procedures to manipulate the structure of the hash map:
 `init`, `map_entry`, `rehash`, `remove_entry`, and
 `set_other_data`. It provides procedures to inquire about entries in
@@ -1027,15 +1027,15 @@ slots size greater than `2**30`.
 The constants `int_calls`, `int_depth`, `int_index`, and `int_probes`
 are used to define integer kind values for various contexts. The
 number of calls are reported and stored in entities of kind
-`int_calls`. Currently `int_calls` has the value of `INT64`. The
+`int_calls`. Currently `int_calls` has the value of `int64`. The
 total depth, the number of inquiries needed to access all elements
 of the table, is reported and stored in entities of kind
-`int_depth`. Currently `int_depth` has the value of `INT64`. The
+`int_depth`. Currently `int_depth` has the value of `int64`. The
 number of entries in the table, is reported and stored in entities of
-kind `int_index`. Currently `int_index` has the value of `INT32`.
+kind `int_index`. Currently `int_index` has the value of `int32`.
 The number of probes, hash map enquiries, are reported and stored in
 entities of kind `int_probes`. Currently `int_probes` has the value of
-`INT64`.
+`int64`.
 
 Finally the error codes `success`, `alloc_fault`, and
 `array_size_error` are used to report the error status of certain
@@ -1048,7 +1048,7 @@ greater than `max_bits`.
 ### The `stdlib_hashmap_chaining` module's derived types
 
 The `stdlib_hashmap_chaining` module defines several derived
-types. The only public type is the `chaining_hash_map_type`. There are
+types. The only public type is the `chaining_hashmap_type`. There are
 three other private derived types used in the implementation of the
 public type: `chaining_map_entry_type`, `chaining_map_entry_ptr`, and
 `chaining_map_entry_pool`. Each of these is described below.
@@ -1071,7 +1071,7 @@ the inverse table. The type's definition is below:
             next => null() ! Next bucket
     end type chaining_map_entry_type
 ```
-Currently the `INT_HASH` and `INT_INDEX` have the value of `INT32`.
+Currently the `INT_HASH` and `INT_INDEX` have the value of `int32`.
 
 #### The `chaining_map_entry_ptr` derived type
 
@@ -1105,9 +1105,9 @@ costs. The type's definition is below:
 ```
 
 
-#### The `chaining_hash_map_type` derived type
+#### The `chaining_hashmap_type` derived type
 
-The `chaining_hash_map_type` derived type implements a separate
+The `chaining_hashmap_type` derived type implements a separate
 chaining hash map. It provides the components `calls`, `probes`,
 `total_probes`, `entries`, and `slots_bits` to keep track
 of the hash map's usage. The array element `slots` serves as the
@@ -1117,10 +1117,10 @@ elements of type `chaining_map_entry_type`. The list element, `cache`,
 stores pools of `chaining_map_entry_type` elements for reuse. The
 component `hasher` is a pointer to the hash function. Finally the
 type-bound procedure, `free_chaining_map`, serves as a finalizer for
-objects of the type, `chaining_hash_map_type`.
+objects of the type, `chaining_hashmap_type`.
 
 ```fortran
-    type :: chaining_hash_map_type
+    type :: chaining_hashmap_type
         private
         integer(int_calls) :: calls = 0
         ! Number of calls
@@ -1144,7 +1144,7 @@ objects of the type, `chaining_hash_map_type`.
         ! Hash function
     contains
         final                    :: free_chaining_map
-    end type chaining_hash_map_type
+    end type chaining_hashmap_type
 ```
 
 ### Table of `stdlib_hashmap_chaining` procedures
@@ -1231,7 +1231,7 @@ Pure function
 
 ##### Argument
 
-`map` - shall be an expression of type `chaining_hash_map_type`.
+`map` - shall be an expression of type `chaining_hashmap_type`.
 It is an `intent(in)` argument.
 
 ##### Result character
@@ -1247,10 +1247,10 @@ The result will be the number of procedure calls on the hash map.
 ```fortran
     program demo_calls
       use stdlib_hashmap_chaining, only: &
-         chaining_hash_map_type, calls, init, int_calls, &
+         chaining_hashmap_type, calls, init, int_calls, &
          fnv_1_hasher
       implicit none
-      type(chaining_hash_map_type) :: map
+      type(chaining_hashmap_type) :: map
       type(int_calls) :: initial_calls
       call init( map, fnv_1_hasher )
       initial_calls = calls (map)
@@ -1279,7 +1279,7 @@ Pure function
 
 ##### Argument
 
-`map` - shall be an expression of type `chaining_hash_map_type`.
+`map` - shall be an expression of type `chaining_hashmap_type`.
 It is an `intent(in)` argument.
 
 ##### Result character
@@ -1295,10 +1295,10 @@ The result will be the number of entries in the hash map.
 ```fortran
     program demo_entries
       use stdlib_hashmap_chaining, only: &
-         chaining_hash_map_type, entries, init, int_index, &
+         chaining_hashmap_type, entries, init, int_index, &
          fnv_1_hasher
       implicit none
-      type(chaining_hash_map_type) :: map
+      type(chaining_hashmap_type) :: map
       type(int_index) :: initial_entries
       call init( map, fnv_1_hasher )
       initial_entries = entries (map)
@@ -1328,7 +1328,7 @@ Subroutine
 ##### Arguments
 
 `map`: shall be a scalar expression of type
-  `chaining_hash_map_type`. It is an `intent(in)` argument. It will be
+  `chaining_hashmap_type`. It is an `intent(in)` argument. It will be
   the hash map used to store and access the other data.
 
 `inmap`: shall be a scalar integer expression of kind `int_index`. It
@@ -1353,12 +1353,12 @@ from the map, `other` is undefined.
         use, intrinsic:: iso_fortran_env, only: &
             int8
         use stdlib_hashmap_chaining, only: &
-            chaining_hash_map_type, fnv_1_hasher, get, get_other_data, &
+            chaining_hashmap_type, fnv_1_hasher, get, get_other_data, &
             int_index, key_type, map_entry, other_type, set
         integer(int_index)           :: inmap
         type(key_type)               :: key
         type(other_type)             :: other
-        type(chaining_hash_map_type) :: map
+        type(chaining_hashmap_type) :: map
 		integer(int8), allocatable :: data(:)
         call init( map, fnv_1_hasher )
         call set( key, [ 0_int8, 1_int8, 2_int8, 3_int8, 4_int8 ] )
@@ -1396,7 +1396,7 @@ Subroutine
 
 ##### Arguments
 
-`map`: shall be a scalar variable of type `chaining_hash_map_type`. It
+`map`: shall be a scalar variable of type `chaining_hashmap_type`. It
   is an `intent(inout)` argument. It will be the hash map used to
   store and access the entries.
 
@@ -1419,12 +1419,12 @@ Subroutine
         use, intrinsic:: iso_fortran_env, only: &
             int8
         use stdlib_hashmap_chaining, only: &
-            chaining_hash_map_type, fnv_1_hasher, in_map, &
+            chaining_hashmap_type, fnv_1_hasher, in_map, &
             int_index, key_type, map_entry, other_type, set
         integer(int_index)           :: inmap
         type(key_type)               :: key
         type(other_type)             :: other
-        type(chaining_hash_map_type) :: map
+        type(chaining_hashmap_type) :: map
         call init( map, fnv_1_hasher )
         call set( key, [ 0_int8, 1_int8, 2_int8, 3_int8, 4_int8 ] )
         call set( other, [ 4_int8, 3_int8, 2_int8, 1_int8 ] )
@@ -1449,7 +1449,7 @@ Experimental
 
 ##### Description
 
-Initializes a `chaining_hash_map_type` object.
+Initializes a `chaining_hashmap_type` object.
 
 ##### Syntax
 
@@ -1462,7 +1462,7 @@ Subroutine
 ##### Arguments
 
 `map`: shall be a scalar variable of type
-  `chaining_hash_map_type`. It is an `intent(out)` argument. It will
+  `chaining_hashmap_type`. It is an `intent(out)` argument. It will
   be a hash map used to store and access the entries.
 
 `hasher`: shall be a procedure with interface `hash_fun`.
@@ -1533,7 +1533,7 @@ Pure function
 
 ##### Argument
 
-`map` - shall be an expression of type `chaining_hash_map_type`.
+`map` - shall be an expression of type `chaining_hashmap_type`.
 It is an `intent(in)` argument.
 
 ##### Result character
@@ -1550,10 +1550,10 @@ number of slots in the hash map.?
 ```fortran
     program demo_loading
       use stdlib_hashmap_chaining, only: &
-         chaining_hash_map_type, init, int_index, &
+         chaining_hashmap_type, init, int_index, &
          fnv_1_hasher, loading
       implicit none
-      type(chaining_hash_map_type) :: map
+      type(chaining_hashmap_type) :: map
       real :: ratio
       call init( map, fnv_1_hasher )
       ratio = loading (map)
@@ -1582,7 +1582,7 @@ Subroutine
 
 ##### Arguments
 
-`map`: shall be a scalar variable of type `chaining_hash_map_type`. It
+`map`: shall be a scalar variable of type `chaining_hashmap_type`. It
 is an `intent(inout)` argument. It is the hash map to receive the
 entry.
 
@@ -1608,9 +1608,9 @@ is ignored.
         use, intrinsic:: iso_fortran_env, only: &
             int8
         use stdlib_hashmap_chaining, only: &
-		    chaining_hash_map_type, fnv_1_hasher, init, &
+		    chaining_hashmap_type, fnv_1_hasher, init, &
         	int_index, key_type, map_entry, other_type, set
-        type(chaining_hash_map_type) :: map
+        type(chaining_hashmap_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
@@ -1645,7 +1645,7 @@ Pure function
 ##### Argument
 
 `map`: shall be a scalar integer expression of type
-`chaining_hash_map_type`. It is an `intent(in)` argument. It is the
+`chaining_hashmap_type`. It is an `intent(in)` argument. It is the
 hash map of interest.
 
 ##### Result character
@@ -1661,10 +1661,10 @@ The result is the number of probes of `map`.
 ```fortran
     program demo_probes
       use stdlib_hashmap_chaining, only: &
-         chaining_hash_map_type, init, int_index, &
+         chaining_hashmap_type, init, int_index, &
          fnv_1_hasher, probes
       implicit none
-      type(chaining_hash_map_type) :: map
+      type(chaining_hashmap_type) :: map
       real :: ratio
       call init( map, fnv_1_hasher )
       ratio = probes (map)
@@ -1693,7 +1693,7 @@ Subroutine
 
 ##### Arguments
 
-`map` : shall be a scalar variable of type `chaining_hash_map_type`.
+`map` : shall be a scalar variable of type `chaining_hashmap_type`.
 It is an `intent(inout)` argument. It is the hash map whose hashing 
 method is to be changed.
 
@@ -1705,10 +1705,10 @@ It is the hash method to be used by `map`.
 ```fortran
     program demo_rehash
         use stdlib_hashmap_chaining, only: &
-		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
+		    chaining_hashmap_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             rehash, set
-        type(chaining_hash_map_type) :: map
+        type(chaining_hashmap_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
@@ -1742,7 +1742,7 @@ Subroutine
 
 ##### Arguments
 
-`map`: shall be a scalar variable of type `chaining_hash_map_type`.
+`map`: shall be a scalar variable of type `chaining_hashmap_type`.
 It is an `intent(inout)` argument. It is the hash map with the element 
 to be removed.
 
@@ -1761,10 +1761,10 @@ generation of `inmap`, `other` is undefined.
 ```fortran
     program demo_remove_entry
         use stdlib_hashmap_chaining, only: &
-		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
+		    chaining_hashmap_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             remove_entry, set
-        type(chaining_hash_map_type) :: map
+        type(chaining_hashmap_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
@@ -1799,7 +1799,7 @@ Subroutine
 
 ##### Arguments
 
-`map`: shall be a scalar variable of type `chaining_hash_map_type`. It
+`map`: shall be a scalar variable of type `chaining_hashmap_type`. It
 is an `intent(inout)` argument. It will be a hash map used to store
 and access the entry's data.
 
@@ -1821,10 +1821,10 @@ the other data for the entry at the `inmap` index.
 ```fortran
     program demo_set_other_data
         use stdlib_hashmap_chaining, only: &
-		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
+		    chaining_hashmap_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             set, set_other_data
-        type(chaining_hash_map_type) :: map
+        type(chaining_hashmap_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
@@ -1860,7 +1860,7 @@ Pure function
 ##### Argument
 
 `map`: shall be a scalar expression of type
-`chaining_hash_map_type`. It is an `intent(in)` argument. It is the
+`chaining_hashmap_type`. It is an `intent(in)` argument. It is the
 hash map of interest.
 
 ##### Result character
@@ -1876,10 +1876,10 @@ The result is the number of slots in `map`.
 ```fortran
     program demo_probes
       use stdlib_hashmap_chaining, only: &
-         chaining_hash_map_type, init, int_index, &
+         chaining_hashmap_type, init, int_index, &
          fnv_1_hasher, slots
       implicit none
-      type(chaining_hash_map_type) :: map
+      type(chaining_hashmap_type) :: map
       integer(int_index) :: initial_slots
       call init( map, fnv_1_hasher )
       initial_slots = slots (map)
@@ -1910,7 +1910,7 @@ Pure function
 ##### Argument
 
 `map`: shall be a scalar expression of type
-`chaining_hash_map_type`. It is an `intent(in)` argument. It is the
+`chaining_hashmap_type`. It is an `intent(in)` argument. It is the
 hash map of interest.
 
 ##### Result character
@@ -1927,10 +1927,10 @@ from their slot index the map.
 ```fortran
     program demo_probes
       use stdlib_hashmap_chaining, only: &
-         chaining_hash_map_type, init, int_index, &
+         chaining_hashmap_type, init, int_index, &
          fnv_1_hasher, total_depth
       implicit none
-      type(chaining_hash_map_type) :: map
+      type(chaining_hashmap_type) :: map
       integer(int_depth) :: initial_depth
       call init( map, fnv_1_hasher )
       initial_depth = total_depth (map)
@@ -1960,7 +1960,7 @@ Subroutine
 
 ##### Arguments
 
-`map`: shall be a scalar expression of type `chaining_hash_map_type`.
+`map`: shall be a scalar expression of type `chaining_hashmap_type`.
 It is an `intent(in)` argument. It is the hash map whose entry
 is unmapped.
 
@@ -1974,7 +1974,7 @@ subsequent to the generation of `inmap`, or `mp` has been rehashed
 subsequent to the generation of `inmap` then `key` is undefined.
 
 `key`: shall be a variable of type `key_type`
-`INT8`, or an allocatable length default character. It is an
+`int8`, or an allocatable length default character. It is an
 `intent(out)` argument. It is the `key` associated with the entry at
 index `inmap` in the inverse table.
 
@@ -1983,10 +1983,10 @@ index `inmap` in the inverse table.
 ```fortran
     program demo_unmap
         use stdlib_hashmap_chaining, only: &
-		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
+		    chaining_hashmap_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             set, unmap
-        type(chaining_hash_map_type) :: map
+        type(chaining_hashmap_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
@@ -2021,7 +2021,7 @@ Pure function.
 
 ##### Arguments
 
-`map`: shall be a scalar expression of type `chaining_hash_map_type`.
+`map`: shall be a scalar expression of type `chaining_hashmap_type`.
 It is an `intent(in)` argument. It is the hash map whose inverse
 table is examined.
 
@@ -2043,10 +2043,10 @@ table of `map` and `.false.` otherwise.
 ```fortran
     program demo_valid_index
       use stdlib_hashmap_chaining, only: &
-         chaining_hash_map_type, init, int_index, &
+         chaining_hashmap_type, init, int_index, &
          fnv_1_hasher, valid_index
       implicit none
-      type(chaining_hash_map_type) :: map
+      type(chaining_hashmap_type) :: map
       integer(int_index) ::  inmap
       logocal :: valid
       call init( map, fnv_1_hasher )
@@ -2064,7 +2064,7 @@ public entities in the `stdlib_hashmap_wrappers` module. It
 also defines a public data type and associated procedures and
 constants that implement a simple hash map using
 linear open addressing hashing. The derived type is
-`open_hash_map_type`. It provides
+`open_hashmap_type`. It provides
 procedures to manipulate the structure of the hash map:
 `init`, `map_entry`, `rehash`, and `set_other_data`. It
 provides procedures to inquire about entries in the hash map:
@@ -2116,15 +2116,15 @@ value is exceeded.
 The constants `int_calls`, `int_depth`, `int_index`, and `int_probes`
 are used to define integer kind values for various contexts. The
 number of calls are reported and stored in entities of kind
-`int_calls`. Currently `int_calls` has the value of `INT64`. The
+`int_calls`. Currently `int_calls` has the value of `int64`. The
 total depth, the number of inquiries needed to access all elements
 of the table, is reported and stored in entities of kind
-`int_depth`. Currently `int_depth` has the value of `INT64`. The
+`int_depth`. Currently `int_depth` has the value of `int64`. The
 number of entries in the table, is reported and stored in entities of
-kind `int_index`. Currently `int_index` has the value of `INT32`.
+kind `int_index`. Currently `int_index` has the value of `int32`.
 The number of probes, hash map enquiries, are reported and stored in
 entities of kind `int_probes`. Currently `int_probes` has the value of
-`INT64`.
+`int64`.
 
 Finally the error codes `success`, `alloc_fault`, and
 `array_size_error` are used to report the error status of certain
@@ -2137,7 +2137,7 @@ greater than `max_bits`.
 ### The `stdlib_hashmap_open` module's derived types
 
 The `stdlib_hashmap_open` module defines several derived
-types. The only public type is the `open_hash_map_type`. There are
+types. The only public type is the `open_hashmap_type`. There are
 three other private derived types used in the implementation of the
 public type: `open_map_entry_type`, and `open_map_entry_ptr`.
 
@@ -2157,7 +2157,7 @@ the inverse table. The type's definition is below:
         integer(int_index)  :: index ! Index into inverse table
     end type open_map_entry_type
 ```
-Currently the `INT_HASH` and `INT_INDEX` have the value of `INT32`.
+Currently the `INT_HASH` and `INT_INDEX` have the value of `int32`.
 
 #### The `open_map_entry_ptr` derived type
 
@@ -2172,9 +2172,9 @@ containing the elements of the table. The type's definition is below:
     end type open_map_entry_ptr
 ```
 
-#### The `open_hash_map_type` derived type
+#### The `open_hashmap_type` derived type
 
-The `open_hash_map_type` derived type implements a separate
+The `open_hashmap_type` derived type implements a separate
 open hash map. It provides the elements `calls`, `probes`,
 `total_probes`, `entries`, and `slots_bits` to keep track
 of the hash map's usage. The array element `slots` serves as the
@@ -2184,10 +2184,10 @@ elements of type `open_map_entry_type`. The list element, `cache`,
 stores pools of  `open_map_entry_type` elements for reuse. The
 component `hasher` is a pointer to the hash function. Finally the
 type-bound procedure, `free_open_map`, serves as a finalizer  for
-objects of the type, `open_hash_map_type`.
+objects of the type, `open_hashmap_type`.
 
 ```fortran
-    type :: open_hash_map_type
+    type :: open_hashmap_type
         private
         integer(int_calls) :: calls = 0
         ! Number of calls
@@ -2209,10 +2209,10 @@ objects of the type, `open_hash_map_type`.
         ! Hash function
     contains
         final                    :: free_open_map
-    end type open_hash_map_type
+    end type open_hashmap_type
 ```
 
-### Table of `stdlib_open_ehash_map` procedures
+### Table of `stdlib_open_ehashmap` procedures
 
 The `stdlib_hashmap_open` module provides procedures in
 several categories: a procedure to initialize the map; a procedure to
@@ -2297,7 +2297,7 @@ Pure function
 
 ##### Argument
 
-`map` - shall be an expression of type `open_hash_map_type`.
+`map` - shall be an expression of type `open_hashmap_type`.
 It is an `intent(in)` argument.
 
 ##### Result character
@@ -2313,10 +2313,10 @@ The result will be the number of procedure calls on the hash map.
 ```fortran
     program demo_calls
       use stdlib_hashmap_open, only: &
-         open_hash_map_type, calls, init, int_calls, &
+         open_hashmap_type, calls, init, int_calls, &
          fnv_1_hasher
       implicit none
-      type(open_hash_map_type) :: map
+      type(open_hashmap_type) :: map
       type(int_calls) :: initial_calls
       call init( map, fnv_1_hasher )
       initisl_calls = calls (map)
@@ -2345,7 +2345,7 @@ Pure function
 
 ##### Argument
 
-`map` - shall be an expression of type `open_hash_map_type`.
+`map` - shall be an expression of type `open_hashmap_type`.
 It is an `intent(in)` argument.
 
 ##### Result character
@@ -2361,10 +2361,10 @@ The result will be the number of entries in the hash map.
 ```fortran
     program demo_entries
       use stdlib_hashmap_open, only: &
-         open_hash_map_type, entries, init, int_index, &
+         open_hashmap_type, entries, init, int_index, &
          fnv_1_hasher
       implicit none
-      type(open_hash_map_type) :: map
+      type(open_hashmap_type) :: map
       type(int_index) :: initial_entries
       call init( map, fnv_1_hasher )
       initisl_entries = entries (map)
@@ -2394,7 +2394,7 @@ Subroutine
 ##### Arguments
 
 `map`: shall be a scalar expression of type
-  `open_hash_map_type`. It is an `intent(in)` argument. It will be
+  `open_hashmap_type`. It is an `intent(in)` argument. It will be
   the hash map used to store and access the other data.
 
 `inmap`: shall be a scalar integer expression of kind `int_index`. It
@@ -2419,12 +2419,12 @@ generation of `inmap`, then `other` is undefined.
         use, intrinsic:: iso_fortran_env, only: &
             int8
         use stdlib_hashmap_open, only: &
-            open_hash_map_type, fnv_1_hasher, get, get_other_data, &
+            open_hashmap_type, fnv_1_hasher, get, get_other_data, &
             int_index, key_type, map_entry, other_type, set
         integer(int_index)         :: inmap
         type(key_type)             :: key
         type(other_type)           :: other
-        type(open_hash_map_type)   :: map
+        type(open_hashmap_type)   :: map
 		integer(int8), allocatable :: data(:)
         call init( map, fnv_1_hasher )
         call set( key, [ 0_int8, 1_int8, 2_int8, 3_int8, 4_int8 ] )
@@ -2462,7 +2462,7 @@ Subroutine
 
 ##### Arguments
 
-`map`: shall be a scalar variable of type `open_hash_map_type`. It
+`map`: shall be a scalar variable of type `open_hashmap_type`. It
   is an `intent(inout)` argument. It will be the hash map used to
   store and access the entries.
 
@@ -2485,12 +2485,12 @@ Subroutine
         use, intrinsic:: iso_fortran_env, only: &
             int8
         use stdlib_hashmap_open, only: &
-            open_hash_map_type, fnv_1_hasher, in_map, &
+            open_hashmap_type, fnv_1_hasher, in_map, &
             int_index, key_type, map_entry, other_type, set
         integer(int_index)           :: inmap
         type(key_type)               :: key
         type(other_type)             :: other
-        type(open_hash_map_type) :: map
+        type(open_hashmap_type) :: map
         call init( map, fnv_1_hasher )
         call set( key, [ 0_int8, 1_int8, 2_int8, 3_int8, 4_int8 ] )
         call set( other, [ 4_int8, 3_int8, 2_int8, 1_int8 ] )
@@ -2515,7 +2515,7 @@ Experimental
 
 ##### Description
 
-Initializes a `open_hash_map_type` object.
+Initializes a `open_hashmap_type` object.
 
 ##### Syntax
 
@@ -2528,7 +2528,7 @@ Subroutine
 ##### Arguments
 
 `map`: shall be a scalar variable of type
-  `open_hash_map_type`. It is an `intent(out)` argument. It will
+  `open_hashmap_type`. It is an `intent(out)` argument. It will
   be a hash map used to store and access the entries.
 
 `hasher`: shall be a procedure with interface `hash_fun`.
@@ -2600,7 +2600,7 @@ Pure function
 
 ##### Argument
 
-`map` - shall be an expression of type `open_hash_map_type`.
+`map` - shall be an expression of type `open_hashmap_type`.
 It is an `intent(in)` argument.
 
 ##### Result character
@@ -2617,10 +2617,10 @@ number of slots in the hash map.?
 ```fortran
     program demo_loading
       use stdlib_hashmap_open, only: &
-         open_hash_map_type, init, int_index, &
+         open_hashmap_type, init, int_index, &
          fnv_1_hasher, loading
       implicit none
-      type(open_hash_map_type) :: map
+      type(open_hashmap_type) :: map
       real :: ratio
       call init( map, fnv_1_hasher )
       ratio = loading (map)
@@ -2649,7 +2649,7 @@ Subroutine
 
 ##### Arguments
 
-`map`: shall be a scalar variable of type `open_hash_map_type`. It
+`map`: shall be a scalar variable of type `open_hashmap_type`. It
 is an `intent(inout)` argument. It is the hash map to receive the
 entry.
 
@@ -2675,9 +2675,9 @@ is ignored.
         use, intrinsic:: iso_fortran_env, only: &
             int8
         use stdlib_hashmap_open, only: &
-		    open_hash_map_type, fnv_1_hasher, init, &
+		    open_hashmap_type, fnv_1_hasher, init, &
         	int_index, key_type, map_entry, other_type, set
-        type(open_hash_map_type) :: map
+        type(open_hashmap_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
@@ -2712,7 +2712,7 @@ Pure function
 ##### Argument
 
 `map`: shall be a scalar integer expression of type
-`open_hash_map_type`. It is an `intent(in)` argument. It is the
+`open_hashmap_type`. It is an `intent(in)` argument. It is the
 hash map of interest.
 
 ##### Result character
@@ -2728,10 +2728,10 @@ The result is the number of probes of `map`.
 ```fortran
     program demo_probes
       use stdlib_hashmap_open, only: &
-         open_hash_map_type, init, int_index, &
+         open_hashmap_type, init, int_index, &
          fnv_1_hasher, probes
       implicit none
-      type(open_hash_map_type) :: map
+      type(open_hashmap_type) :: map
       real :: ratio
       call init( map, fnv_1_hasher )
       ratio = probes (map)
@@ -2760,7 +2760,7 @@ Subroutine
 
 ##### Arguments
 
-`map` : shall be a scalar variable of type `open_hash_map_type`.
+`map` : shall be a scalar variable of type `open_hashmap_type`.
 It is an `intent(inout)` argument. It is the hash map whose hashing 
 method is to be changed.
 
@@ -2772,10 +2772,10 @@ It is the hash method to be used by `map`.
 ```fortran
     program demo_rehash
         use stdlib_hashmap_open, only: &
-		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
+		    open_hashmap_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             rehash, set
-        type(open_hash_map_type) :: map
+        type(open_hashmap_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
@@ -2810,7 +2810,7 @@ Pure function
 
 ##### Argument
 
-`map` - shall be an expression of type `open_hash_map_type`.
+`map` - shall be an expression of type `open_hashmap_type`.
 It is an `intent(in)` argument.
 
 ##### Result character
@@ -2827,13 +2827,13 @@ number of slots in the hash map relative to the `load_factor`.
 ```fortran
     program demo_relative_loading
       use stdlib_hashmap_open, only: &
-         open_hash_map_type, init, int_index, &
+         open_hashmap_type, init, int_index, &
          fnv_1_hasher, loading
       implicit none
-      type(open_hash_map_type) :: map
+      type(open_hashmap_type) :: map
       real :: ratio
       call init( map, fnv_1_hasher )
-      ratio = relative loading (map)
+      ratio = relative_loading (map)
       print *, "Initial relative loading =  ", ratio
     end program demo_relative_loading
 ```
@@ -2860,7 +2860,7 @@ Subroutine
 
 ##### Arguments
 
-`map`: shall be a scalar variable of type `open_hash_map_type`. It
+`map`: shall be a scalar variable of type `open_hashmap_type`. It
 is an `intent(inout)` argument. It will be a hash map used to store
 and access the entry's data.
 
@@ -2886,10 +2886,10 @@ the other data for the entry at the `inmap` index.
 ```fortran
     program demo_set_other_data
         use stdlib_hashmap_open, only: &
-		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
+		    open_hashmap_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             set, set_other_data
-        type(open_hash_map_type) :: map
+        type(open_hashmap_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
@@ -2925,7 +2925,7 @@ Pure function
 ##### Argument
 
 `map`: shall be a scalar expression of type
-`open_hash_map_type`. It is an `intent(in)` argument. It is the
+`open_hashmap_type`. It is an `intent(in)` argument. It is the
 hash map of interest.
 
 ##### Result character
@@ -2941,10 +2941,10 @@ The result is the number of slots in `map`.
 ```fortran
     program demo_probes
       use stdlib_hashmap_open, only: &
-         open_hash_map_type, init, int_index, &
+         open_hashmap_type, init, int_index, &
          fnv_1_hasher, slots
       implicit none
-      type(open_hash_map_type) :: map
+      type(open_hashmap_type) :: map
       integer(int_index) :: initial_slots
       call init( map, fnv_1_hasher )
       initial_slots = slots (map)
@@ -2975,7 +2975,7 @@ Pure function
 ##### Argument
 
 `map`: shall be a scalar expression of type
-`open_hash_map_type`. It is an `intent(in)` argument. It is the
+`open_hashmap_type`. It is an `intent(in)` argument. It is the
 hash map of interest.
 
 ##### Result character
@@ -2992,10 +2992,10 @@ from their slot index the map.
 ```fortran
     program demo_probes
       use stdlib_hashmap_open, only: &
-         open_hash_map_type, init, int_index, &
+         open_hashmap_type, init, int_index, &
          fnv_1_hasher, total_depth
       implicit none
-      type(open_hash_map_type) :: map
+      type(open_hashmap_type) :: map
       integer(int_depth) :: initial_depth
       call init( map, fnv_1_hasher )
       initial_depth = total_depth (map)
@@ -3025,7 +3025,7 @@ Subroutine
 
 ##### Arguments
 
-`map`: shall be a scalar expression of type `open_hash_map_type`.
+`map`: shall be a scalar expression of type `open_hashmap_type`.
 It is an `intent(in)` argument. It is the hash map whose entry
 is unmapped.
 
@@ -3033,12 +3033,12 @@ is unmapped.
 is an `intent(in)` argument. It is the non-zero index to the inverse
 table identifying the unmapped entry.
 
-* If ``inmap` is zero or `key` hass been eliminated from the table
+* If `inmap` is zero or `key` hass been eliminated from the table
   subsequent to the generation of `inmap`, or `map` has been rehashed
   subsequent to the generation of `inmap`, `other` is undefined.
 
 `key`: shall be a variable of type `key_type`
-`INT8`, or an allocatable length default character. It is an
+`int8`, or an allocatable length default character. It is an
 `intent(out)` argument. It is the `key` associated with the entry at
 index `inmap` in the inverse table.
 
@@ -3047,10 +3047,10 @@ index `inmap` in the inverse table.
 ```fortran
     program demo_unmap
         use stdlib_hashmap_open, only: &
-		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
+		    open_hashmap_type, fnv_1_hasher, fnv_1a_hasher,&
             init, int_index, key_type, map_entry, other_type, &
             unmap
-        type(open_hash_map_type) :: map
+        type(open_hashmap_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         integer(int_index)  :: inmap
@@ -3085,7 +3085,7 @@ Pure function.
 
 ##### Arguments
 
-`map`: shall be a scalar expression of type `open_hash_map_type`.
+`map`: shall be a scalar expression of type `open_hashmap_type`.
 It is an `intent(in)` argument. It is the hash map whose inverse
 table is examined.
 
@@ -3108,10 +3108,10 @@ table of `map` and `.false.` otherwise.
 ```fortran
     program demo_valid_index
       use stdlib_hashmap_open, only: &
-         open_hash_map_type, init, int_index, &
+         open_hashmap_type, init, int_index, &
          fnv_1_hasher, valid_index
       implicit none
-      type(open_hash_map_type) :: map
+      type(open_hashmap_type) :: map
       integer(int_index) ::  inmap
       logocal :: valid
       call init( map, fnv_1_hasher )
