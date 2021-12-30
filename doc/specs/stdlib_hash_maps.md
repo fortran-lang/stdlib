@@ -1253,7 +1253,7 @@ The result will be the number of procedure calls on the hash map.
       type(chaining_hash_map_type) :: map
       type(int_calls) :: initial_calls
       call init( map, fnv_1_hasher )
-      initisl_calls = calls (map)
+      initial_calls = calls (map)
       print *, "INITIAL_CALLS =  ", initial_calls
     end program demo_calls
 ```
@@ -1301,7 +1301,7 @@ The result will be the number of entries in the hash map.
       type(chaining_hash_map_type) :: map
       type(int_index) :: initial_entries
       call init( map, fnv_1_hasher )
-      initisl_entries = entries (map)
+      initial_entries = entries (map)
       print *, "INITIAL_ENTRIES =  ", initial_entries
     end program demo_entries
 ```
@@ -1461,7 +1461,7 @@ Subroutine
 
 ##### Arguments
 
-`map`): shall be a scalar variable of type
+`map`: shall be a scalar variable of type
   `chaining_hash_map_type`. It is an `intent(out)` argument. It will
   be a hash map used to store and access the entries.
 
@@ -1498,6 +1498,7 @@ has the value `alloc_fault`.
 
 ##### Example
 
+```fortran
     program demo_init
         use stdlib_hash_tables, only: &
             chaining_map_type, fnv_1_hasher &
@@ -1508,7 +1509,7 @@ has the value `alloc_fault`.
                    fnv_1a,        &
                    slots_bits=10 )
     end program demo_init
-
+```
 
 
 #### `loading` - Returns the ratio of entries to slots
@@ -1602,6 +1603,7 @@ is ignored.
 
 ##### Example
 
+```fortran
     program demo_map_entry
         use, intrinsic:: iso_fortran_env, only: &
             int8
@@ -1620,7 +1622,7 @@ is ignored.
         call map_entry( map, inmap, key, other )
         print *, 'INMAP = ', inmap
     end program demo_map_entry
-
+```
 
 #### `map_probes` - returns the number of hash map probes
 
@@ -1700,6 +1702,7 @@ It is the hash method to be used by `map`.
 
 ##### Example
 
+```fortran
     program demo_rehash
         use stdlib_hashmap_chaining, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
@@ -1717,7 +1720,7 @@ It is the hash method to be used by `map`.
         call map_entry( map, inmap, key, other )
         call rehash( map, fnv_1a_hasher )
     end program demo_rehash
-
+```
 
 #### `remove_entry` - removes an entry from the hash map
 
@@ -1755,6 +1758,7 @@ generation of `inmap`, `other` is undefined.
 
 ##### Example
 
+```fortran
     program demo_remove_entry
         use stdlib_hashmap_chaining, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
@@ -1772,7 +1776,7 @@ generation of `inmap`, `other` is undefined.
         call map_entry( map, inmap, key, other )
         call remove_entry( map, inmap )
     end program demo_remove_entry
-
+```
 
 #### `set_other_data` - replaces the other dataa for an entry
 
@@ -1814,6 +1818,7 @@ the other data for the entry at the `inmap` index.
 
 ##### Example
 
+```fortran
     program demo_set_other_data
         use stdlib_hashmap_chaining, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
@@ -1832,7 +1837,7 @@ the other data for the entry at the `inmap` index.
         call set( other, [ 17_int8, 5_int8, 6_int8, 15_int8, 40_int8 ] )
         call set_other_data( map, inmap, other )
     end program demo_set_other_data
-
+```
 
 #### `slots` - returns the number of hash map probes
 
@@ -1955,7 +1960,7 @@ Subroutine
 
 ##### Arguments
 
-`map`: shall be a scalar expression of type `chaining_hash_map_type.
+`map`: shall be a scalar expression of type `chaining_hash_map_type`.
 It is an `intent(in)` argument. It is the hash map whose entry
 is unmapped.
 
@@ -1975,6 +1980,7 @@ index `inmap` in the inverse table.
 
 ##### Example
 
+```fortran
     program demo_unmap
         use stdlib_hashmap_chaining, only: &
 		    chaining_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
@@ -1992,7 +1998,7 @@ index `inmap` in the inverse table.
         call map_entry( map, inmap, key, other )
         call unmap( map, inmap, key )
     end program demo_unmap
-
+```
 
 #### `valid_index` - indicates whether `inmap` is a valid index
 
@@ -2521,7 +2527,7 @@ Subroutine
 
 ##### Arguments
 
-`map`): shall be a scalar variable of type
+`map`: shall be a scalar variable of type
   `open_hash_map_type`. It is an `intent(out)` argument. It will
   be a hash map used to store and access the entries.
 
@@ -2558,6 +2564,7 @@ has the value `alloc_fault`.
 
 ##### Example
 
+```fortran
     program demo_init
         use stdlib_hash_tables, only: &
             open_map_type, fnv_1_hasher &
@@ -2568,7 +2575,7 @@ has the value `alloc_fault`.
                    fnv_1a,        &
                    slots_bits=10 )
     end program demo_init
-
+```
 
 
 
@@ -2663,6 +2670,7 @@ is ignored.
 
 ##### Example
 
+```fortran
     program demo_map_entry
         use, intrinsic:: iso_fortran_env, only: &
             int8
@@ -2681,7 +2689,7 @@ is ignored.
         call map_entry( map, inmap, key, other )
 		print *, 'INMAP = ', inmap
     end program demo_map_entry
-
+```
 
 #### `map_probes` - returns the number of hash map probes
 
@@ -2761,6 +2769,7 @@ It is the hash method to be used by `map`.
 
 ##### Example
 
+```fortran
     program demo_rehash
         use stdlib_hashmap_open, only: &
 		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
@@ -2778,7 +2787,7 @@ It is the hash method to be used by `map`.
         call map_entry( map, inmap, key, other )
         call rehash( map, fnv_1a_hasher )
     end program demo_rehash
-
+```
 
 #### `relative_loading` - Returns the ratio of `loading` to `load_factor`
 
@@ -2874,6 +2883,7 @@ the other data for the entry at the `inmap` index.
 
 ##### Example
 
+```fortran
     program demo_set_other_data
         use stdlib_hashmap_open, only: &
 		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
@@ -2892,7 +2902,7 @@ the other data for the entry at the `inmap` index.
         call set( other, [ 17_int8, 5_int8, 6_int8, 15_int8, 40_int8 ] 
         call set_other_data( map, inmap, other )
     end program demo_set_other_data
-
+```
 
 #### `slots` - returns the number of hash map probes
 
@@ -3015,7 +3025,7 @@ Subroutine
 
 ##### Arguments
 
-`map`: shall be a scalar expression of type `open_hash_map_type.
+`map`: shall be a scalar expression of type `open_hash_map_type`.
 It is an `intent(in)` argument. It is the hash map whose entry
 is unmapped.
 
@@ -3034,6 +3044,7 @@ index `inmap` in the inverse table.
 
 ##### Example
 
+```fortran
     program demo_unmap
         use stdlib_hashmap_open, only: &
 		    open_hash_map_type, fnv_1_hasher, fnv_1a_hasher,&
@@ -3051,7 +3062,7 @@ index `inmap` in the inverse table.
         call map_entry( map, inmap, key, other )
         call unmap( map, inmap, key )
     end program demo_unmap
-
+```
 
 #### `valid_index` - indicates whether `inmap` is a valid index
 
