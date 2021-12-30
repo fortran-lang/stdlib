@@ -123,7 +123,7 @@ opaque. Their current representations are as follows
 ```
 
 The  module also defines seven procedures for those types: `copy_key`,
-`copy_other`, `free_key`, `free_other`, `get`, `key_test`, and `set`
+`copy_other`, `equal_keys`, `free_key`, `free_other`, `get`, and `set`
 for use by the hash maps to manipulate or inquire of components of
 those types.
 
@@ -139,14 +139,14 @@ Procedures to manipulate `key_type` data:
 * `copy_key( key_in, key_out )` - Copies the contents of the key,
   `key_in`, to contents of the key, `key_out`.
 
+* `equal_keys( key1, key2 )` - compares two keys for equality. 
+
 * `get( key, value )` - extracts the contents of key into value, an
   `int8` array or character string.
 
 * `free_key( key )` - frees the memory in key.
 
 * `set( key, value )` - sets the content of key to value.
-
-* `key_test( key1, key2 )` - compares two keys for equality.
 
 Procedures to manipulate `other_type` data:
 
@@ -209,7 +209,7 @@ is an `intent(out)` argument.
 ```fortran
     program demo_copy_key
       use stdlib_hashmap_wrappers, only: &
-          copy_key, key_test, key_type
+          copy_key, equal_keys, key_type
       use iso_fortran_env, only: int8
       implicit none
       integer(int8), allocatable :: value(:)
@@ -221,7 +221,7 @@ is an `intent(out)` argument.
       end do
       call set( key_in, value )
       call copy_key( key_in, key_out )
-      print *, "key_in == key_out = ", key_test( key_in, key_out )
+      print *, "key_in == key_out = ", equal_keys( key_in, key_out )
     end program demo_copy_key
 ```
 
@@ -272,6 +272,61 @@ is an `intent(out)` argument.
       print *, "other_in == other_out = ", &
         all( value1 == value2 )
     end program demo_copy_other
+```
+
+#### `equal_keys` - Compares two keys for equality
+
+##### Status
+
+Experimental
+
+##### Description
+
+Returns `.true.` if two keys are equal, and false otherwise.
+
+##### Syntax
+
+`test = [[stdlib_hashmap_wrappers:equal_keys]]( key1, key2 )`
+
+##### Class
+
+Pure function.
+
+##### Arguments
+
+`key1`: shall be a scalar expression of type `key_type`. It
+is an `intent(in)` argument.
+
+`key2`: shall be a scalar expression of type `key_type`. It
+is an `intent(in)` argument.
+
+##### Result character
+
+The result is a value of type default `LOGICAL`.
+
+##### Result value
+
+The result is `.TRUE.` if the keys are equal, otherwise `.FALSS`.
+
+##### Example
+
+```fortran
+    program demo_equal_keys
+      use stdlib_hashmap_wrappers, only: &
+          copy_key, equal_keys, key_type, set
+      use iso_fortran_env, only: int8
+      implicit none
+      integer(int8), allocatable :: value(:)
+      type(key_type) :: key_in, key_out
+      integer(int_8) :: i
+      allocate( value(1:15) )
+      do i=1, 15
+          value(i) = i
+      end do
+      call set( key_in, value )
+      call copy_key( key_in, key_out )
+      print *, "key_in == key_out = ", equal_keys( key_in, key_out )
+    end program demo_equal_keys
 ```
 
 
@@ -671,61 +726,6 @@ pointers intended for use as a hash function for the hash maps.
       hash = hassher_pointer(key)
       print *, hash
     end program demo_hasher_fun
-```
-
-#### `key_test` - Compares two keys for equality
-
-##### Status
-
-Experimental
-
-##### Description
-
-Returns `.true.` if two keys are equal, and false otherwise.
-
-##### Syntax
-
-`test = [[stdlib_hashmap_wrappers:key_test]]( key1, key2 )`
-
-##### Class
-
-Pure function.
-
-##### Arguments
-
-`key1`: shall be a scalar expression of type `key_type`. It
-is an `intent(in)` argument.
-
-`key2`: shall be a scalar expression of type `key_type`. It
-is an `intent(in)` argument.
-
-##### Result character
-
-The result is a value of type default `LOGICAL`.
-
-##### Result value
-
-The result is `.TRUE.` if the keys are equal, otherwise `.FALSS`.
-
-##### Example
-
-```fortran
-    program demo_key_test
-      use stdlib_hashmap_wrappers, only: &
-          copy_key, key_test, key_type, set
-      use iso_fortran_env, only: int8
-      implicit none
-      integer(int8), allocatable :: value(:)
-      type(key_type) :: key_in, key_out
-      integer(int_8) :: i
-      allocate( value(1:15) )
-      do i=1, 15
-          value(i) = i
-      end do
-      call set( key_in, value )
-      call copy_key( key_in, key_out )
-      print *, "key_in == key_out = ", key_test( key_in, key_out )
-    end program demo_key_test
 ```
 
 #### `SEEDED_NMHASH32_HASHER`- calculates a hash code from a key
