@@ -1332,8 +1332,11 @@ Subroutine
   the hash map used to store and access the other data.
 
 `inmap`: shall be a scalar integer expression of kind `int_index`. It
-  is an `intent(in)` argument. It should be the `inmap` returned by the
-  procedure `in_map` or `map_entry`.
+  is an `intent(in)` argument. It should be a non-zero `inmap`
+  returned by either procedure `in_map` or `map_entry`.
+
+* If `inmap` is zero, or the corresponding `key` has been deleted
+from the map, `other` is undefined.
 
 `other`: shall be a variable of type `other_data`.
   It is an `intent(out)` argument. It is the other data associated
@@ -1341,6 +1344,7 @@ Subroutine
 
 * The following is an example of the retrieval of other data
   associated with an inverse table index:
+
 
 ##### Example
 
@@ -1740,8 +1744,14 @@ It is an `intent(inout)` argument. It is the hash map with the element
 to be removed.
 
 `inmap`: shall be a scalar integer expression of  kind `int_index`. It
-is an `intent(in)` argument. It is the index to the inverse table
-identifying the entry to be removed.
+is an `intent(in)` argument. It is the non-zero index to the inverse
+table returned by `in_map` or `map_entry` identifying the entry to be
+removed.
+
+* If `inmap` is zero, or the corresponding `key` has been deleted
+from the map, or the `map` has been rehashed subsequent to the
+generation of `inmap`, `other` is undefined.
+
 
 ##### Example
 
@@ -1790,8 +1800,8 @@ is an `intent(inout)` argument. It will be a hash map used to store
 and access the entry's data.
 
 `inmap`: shall be a scalar integer expression of  kind `int_index`. It
-is an `intent(in)` argument. It is the index in the inverse table to
-the entry of interest.
+is an `intent(in)` argument. It is the non-zero index in the inverse
+table to the entry of interest as returned by `ìn_map` or `map_entry`.
 
 `other`: shall be a scalar expression of type `other_type`.
 It is an `intent(in)` argument. It is the data to be stored as
@@ -1950,8 +1960,13 @@ It is an `intent(in)` argument. It is the hash map whose entry
 is unmapped.
 
 `inmap`: shall be a scalar integer expression of kind `int_index`. It
-is an `intent(in)` argument. It is the index to the inverse table
-identifying the unmapped entry.
+is an `intent(in)` argument. It is the non-zero index to the inverse
+table identifying the unmapped entry as returned by `ìn_map` or
+`map_entry`. 
+
+* If `inmap` is zero or `key` has been eliminated from the `map`
+subsequent to the generation of `inmap`, or `mp` has been rehashed
+subsequent to the generation of `inmap` then `key` is undefined.
 
 `key`: shall be a variable of type `key_type`
 `INT8`, or an allocatable length default character. It is an
@@ -2005,7 +2020,7 @@ It is an `intent(in)` argument. It is the hash map whose inverse
 table is examined.
 
 `inmap`: shall be a scalar integer expression of kind `int_index`. It
-is an `intent(in)` argument. It is the index to the inverse table whose
+is an `intent(in)` argument. It is an index to the inverse table whose
 validity is being examined.
 
 ##### Result character
@@ -2174,7 +2189,7 @@ objects of the type, `open_hash_map_type`.
         ! Number of probes since last expansion
         integer(int_calls) :: total_probes = 0
         ! Cumulative number of probes
-`       integer(int_index) :: entries = 0
+        integer(int_index) :: entries = 0
         ! Number of entries
         integer(int_index) :: index_mask = 2_int_index**default_bits-1
         ! Mask used in linear addressing
@@ -2379,6 +2394,10 @@ Subroutine
 `inmap`: shall be a scalar integer expression of kind `int_index`. It
   is an `intent(in)` argument. It should be the `inmap` returned by the
   procedure `in_map` or `map_entry`.
+
+* If `inmap` is zero or `key` has been removed subsequent to the 
+generation of `inmap`, or `map` hasbeen rehashed ssubsequent to the
+generation of `inmap`, then `other` is undefined. 
 
 `other`: shall be a variable of type `other_data`.
   It is an `intent(out)` argument. It is the other data associated
@@ -2837,8 +2856,12 @@ is an `intent(inout)` argument. It will be a hash map used to store
 and access the entry's data.
 
 `inmap`: shall be a scalar integer expression of  kind `int_index`. It
-is an `intent(in)` argument. It is the index in the inverse table to
-the entry of interest.
+is an `intent(in)` argument. It is the non-zero index in the inverse
+table to the entry of interest.
+
+* `inmap` will be invalid if zero, or `key` has been deleted from the
+  map subsequent to the generation of `inmap`, or `map` has been
+  rehashed subsequent to the generation of `inmap`.
 
 `other`: shall be a scalar expression of type `other_type`.
 It is an `intent(in)` argument. It is the data to be stored as
@@ -2997,8 +3020,12 @@ It is an `intent(in)` argument. It is the hash map whose entry
 is unmapped.
 
 `inmap`: shall be a scalar integer expression of kind `int_index`. It
-is an `intent(in)` argument. It is the index to the inverse table
-identifying the unmapped entry.
+is an `intent(in)` argument. It is the non-zero index to the inverse
+table identifying the unmapped entry.
+
+* If ``inmap` is zero or `key` hass been eliminated from the table
+  subsequent to the generation of `inmap`, or `map` has been rehashed
+  subsequent to the generation of `inmap`, `other` is undefined.
 
 `key`: shall be a variable of type `key_type`
 `INT8`, or an allocatable length default character. It is an
