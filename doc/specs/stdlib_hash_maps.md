@@ -616,7 +616,7 @@ an `intent(out)` argument.
 ```
 
 
-#### `HASHER_FUN`- serves aa function prototype.
+#### `HASHER_FUN`- serves aa a function prototype.
 
 ##### Status
 
@@ -625,7 +625,7 @@ Experimental
 ##### Description
 
 Serves as a prototype for hashing functions with a single, `key`,
-argument returning an `INT322` hash value.
+argument returning an `INT32` hash value.
 
 ##### Syntax
 
@@ -651,7 +651,7 @@ The result is a hash code.
 ##### Note
 
 `HASHER_FUN` is a prototype for defining dummy arguments and function
-pointers intended for use 
+pointers intended for use as a hash function for the hash maps.
 
 ##### Example
 
