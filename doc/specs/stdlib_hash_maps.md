@@ -219,7 +219,7 @@ is an `intent(out)` argument.
       do i=1, 15
           value(i) = i
       end do
-      call set( key, value )
+      call set( key_in, value )
       call copy_key( key_in, key_out )
       print *, "key_in == key_out = ", key_test( key_in, key_out )
     end program demo_copy_key
