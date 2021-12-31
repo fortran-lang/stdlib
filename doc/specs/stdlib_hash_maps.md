@@ -47,7 +47,7 @@ hash functions so that they no longer need to be supplied seeds. The
 module `stdlib_hashmap_chaining` defines a datatype,
 `chaining_hashmap_type`, implementing a simple separate chaining hash
 map noted more for its diagnostics than its performance. Finally the
-module, `stdlib_hashmap_open` defines a datatype,
+module `stdlib_hashmap_open` defines a datatype,
 `open_hashmap_type`, implementing a simple open addressing hash
 map noted more for its diagnostics than its performance.
 
@@ -96,9 +96,9 @@ as a kind value,`int_hash`. It also defines two types, `key_type` and
 `other_type`, and associated procedures, for storing and manipulating
 keys and their associated data.
 
-### The `stdlib_hashmap_wrappers` constant, `INT_HASH`
+### The `stdlib_hashmap_wrappers` constant, `int_hash`
 
-The constant `INT_HASH` is used to define the integer kind value for
+The constant `int_hash` is used to define the integer kind value for
 the returned hash codes and variables used to access them. It
 currently has the value, `int32`.
 
@@ -302,11 +302,11 @@ is an `intent(in)` argument.
 
 ##### Result character
 
-The result is a value of type default `LOGICAL`.
+The result is a value of type default `logical`.
 
 ##### Result value
 
-The result is `.TRUE.` if the keys are equal, otherwise `.FALSS`.
+The result is `.true.` if the keys are equal, otherwise `.falss`.
 
 ##### Example
 
@@ -330,7 +330,7 @@ The result is `.TRUE.` if the keys are equal, otherwise `.FALSS`.
 ```
 
 
-#### `FIBONACCI_HASH` - maps an integer to a smaller number of bits
+#### `fibonacci_hash` - maps an integer to a smaller number of bits
 
 ##### Status
 
@@ -367,7 +367,7 @@ an index into the hash slots.
 
 ##### Note
 
-`FIBONACCI_HASH` is an implementation of the Fibonacci Hash of Donald
+`fibonacci_hash` is an implementation of the Fibonacci Hash of Donald
 E. Knuth. It multiplies the `KEY` by the odd valued approximation to
 `2**32/phi`, where `phi` is the golden ratio 1.618..., and returns the
 `NBITS` upper bits of the product as the lowest bits of the result.
@@ -395,7 +395,7 @@ E. Knuth. It multiplies the `KEY` by the odd valued approximation to
 ```
 
 
-#### `FNV_1_HASHER`- calculates a hash code from a key
+#### `fnv_1_hasher`- calculates a hash code from a key
 
 ##### Status
 
@@ -428,7 +428,7 @@ The result is a hash code created using the FNV-1 algorithm.
 
 ##### Note
 
-`FNV_1_HASHER` is an implementation of the original FNV-1 hash code of
+`fnv_1_hasher` is an implementation of the original FNV-1 hash code of
 Glenn Fowler, Landon Curt Noll, and Phong Vo.
 This code is relatively fast on short keys, and is small enough that
 it will often be retained in the instruction cache if hashing is
@@ -459,7 +459,7 @@ expected to be minor compared to its faster hashing rate.
 ```
 
 
-#### `FNV_1A_HASHER`- calculates a hash code from a key
+#### `fnv_1a_hasher`- calculates a hash code from a key
 
 ##### Status
 
@@ -492,7 +492,7 @@ The result is a hash code created using the FNV-1a algorithm.
 
 ##### Note
 
-`FNV_1A_HASHER` is an implementation of the original FNV-1A hash code
+`fnv_1a_hasher` is an implementation of the original FNV-1A hash code
 of Glenn Fowler, Landon Curt Noll, and Phong Vo.
 This code is relatively fast on short keys, and is small enough that
 it will often be retained in the instruction cache if hashing is
@@ -671,7 +671,7 @@ an `intent(out)` argument.
 ```
 
 
-#### `HASHER_FUN`- serves aa a function prototype.
+#### `hasher_fun`- serves aa a function prototype.
 
 ##### Status
 
@@ -692,7 +692,7 @@ Pure function prototype
 
 ##### Argument
 
-`key`: Shall be a rank one array expression of type `INTEGER(int8)`.
+`key`: Shall be a rank one array expression of type `integer(int8)`.
 It is an `intent(in)` argument.
 
 ##### Result character
@@ -705,7 +705,7 @@ The result is a hash code.
 
 ##### Note
 
-`HASHER_FUN` is a prototype for defining dummy arguments and function
+`hasher_fun` is a prototype for defining dummy arguments and function
 pointers intended for use as a hash function for the hash maps.
 
 ##### Example
@@ -728,7 +728,7 @@ pointers intended for use as a hash function for the hash maps.
     end program demo_hasher_fun
 ```
 
-#### `SEEDED_NMHASH32_HASHER`- calculates a hash code from a key
+#### `seeded_nmhash32_hasher`- calculates a hash code from a key
 
 ##### Status
 
@@ -761,7 +761,7 @@ The result is a hash code created using the `nmhash32` algorithm.
 
 ##### Note
 
-`SEEDED_NMHASH32_HASHER` is a wrapper to the `NMHASH32_HASH` of the
+`seeded_nmhash32_hasher` is a wrapper to the `NMHASH32_HASH` of the
 module `stdlib_hash_32bit`, which supplies a fixed seed
 to the wrapped function. `NMHASH32` is an implementation of the
 `nmhash32` hash code of James Z. M. Gao.
@@ -792,7 +792,7 @@ applications.
     end program demo_seeded_nmhash32_hasher
 ```
 
-#### `SEEDED_NMHASH32X_HASHER`- calculates a hash code from a key
+#### `seeded_nmhash32x_hasher`- calculates a hash code from a key
 
 ##### Status
 
@@ -825,9 +825,9 @@ The result is a hash code created using the `nmhash32x` algorithm.
 
 ##### Note
 
-`SEEDED_NMHASH32X_HASHER` is a wrapper to the `NMHASH32X_HASH` of the
+`seeded_nmhash32x_hasher` is a wrapper to the `nmhash32x_hash` of the
 module `stdlib_hash_32bit`, which supplies a fixed seed
-to the wrapped function. `NMHASH32X` is an implementation of the
+to the wrapped function. `nmhash32x` is an implementation of the
 `nmhash32x` hash code of James Z. M. Gao.
 This code has good, but not great, performance on long keys, poorer
 performance on short keys.
@@ -855,7 +855,7 @@ applications.
     end program demo_seeded_nmhash32x_hasher
 ```
 
-#### `SEEDED_WATER_HASHER`- calculates a hash code from a key
+#### `seeded_water_hasher`- calculates a hash code from a key
 
 ##### Status
 
@@ -888,9 +888,9 @@ The result is a hash code created using the `waterhash` algorithm.
 
 ##### Note
 
-`SEEDED_WATER_HASHER` is a wrapper to the `WATER_HASH` of the
+`seeded_water_hasher` is a wrapper to the `water_hash` of the
 module `stdlib_hash_32bit`, which supplies a fixed seed
-to the wrapped function. `WATER_HASH` is an implementation of the
+to the wrapped function. `water_hash` is an implementation of the
 `waterhash` hash code of Tommy Ettinger.
 This code has excellent performance on long keys, and good performance
 on short keys.
@@ -1071,7 +1071,7 @@ the inverse table. The type's definition is below:
             next => null() ! Next bucket
     end type chaining_map_entry_type
 ```
-Currently the `INT_HASH` and `INT_INDEX` have the value of `int32`.
+Currently the `int_hash` and `int_index` have the value of `int32`.
 
 #### The `chaining_map_entry_ptr` derived type
 
@@ -1182,13 +1182,13 @@ Procedures to report the content of a map:
 * `get_other_data( map, inmap, other )` - Returns the other data
   associated with the inverse table index 
 
-* `in_map( map, inmap, key )` - Returns the index into the INVERSE
-  array associated with the KEY 
+* `in_map( map, inmap, key )` - Returns the index into the `inverse`
+  array associated with the `key` 
 
 * `unmap( map, inmap, key )` - Returns a copy of the key associated
 with an index to the inverse table.
 
-* `valid_index(map, inmap)` - Returns a flag indicating whether INMAP
+* `valid_index(map, inmap)` - Returns a flag indicating whether `inmap`
   is a valid index.
 
 Procedures to report on the structure of the map:
@@ -1236,7 +1236,7 @@ It is an `intent(in)` argument.
 
 ##### Result character
 
-The result will be an integer of kind `INT_CALLS`.
+The result will be an integer of kind `int_calls`.
 
 ##### Result value
 
@@ -1284,7 +1284,7 @@ It is an `intent(in)` argument.
 
 ##### Result character
 
-The result will be an integer of kind `INT_INDEX`.
+The result will be an integer of kind `int_index`.
 
 ##### Result value
 
@@ -1400,7 +1400,7 @@ Subroutine
   is an `intent(inout)` argument. It will be the hash map used to
   store and access the entries.
 
-`inmap`: shall be a scalar integer variable of  kind `INT_INDEX`. It is
+`inmap`: shall be a scalar integer variable of  kind `int_index`. It is
   an `intent(out)` argument. It will be 0 if `key` is not found,
   otherwise it will be the one's based index to the location of `key`
   in the hash map's inverse array.
@@ -2157,7 +2157,7 @@ the inverse table. The type's definition is below:
         integer(int_index)  :: index ! Index into inverse table
     end type open_map_entry_type
 ```
-Currently the `INT_HASH` and `INT_INDEX` have the value of `int32`.
+Currently `int_hash` and `int_index` have the value of `int32`.
 
 #### The `open_map_entry_ptr` derived type
 
@@ -2244,13 +2244,13 @@ Procedures to report the content of a map:
 * `get_other_data( map, inmap, other )` - Returns the other data
   associated with the inverse table index 
 
-* `in_map( map, inmap, key )` - Returns the index into the INVERSE
-  array associated with the KEY 
+* `in_map( map, inmap, key )` - Returns the index into the `inverse`
+  array associated with the `key` 
 
 * `unmap( map, inmap, key )` - Returns a copy of the key associated
 with an index to the inverse table.
 
-* `valid_index(map, inmap)` - Returns a flag indicating whether INMAP
+* `valid_index(map, inmap)` - Returns a flag indicating whether `inmap`
   is a valid index.
 
 Procedures to report on the structure of the map:
@@ -2302,7 +2302,7 @@ It is an `intent(in)` argument.
 
 ##### Result character
 
-The result will be an integer of kind `INT_CALLS`.
+The result will be an integer of kind `int_calls`.
 
 ##### Result value
 
@@ -2350,7 +2350,7 @@ It is an `intent(in)` argument.
 
 ##### Result character
 
-The result will be an integer of kind `INT_INDEX`.
+The result will be an integer of kind `int_index`.
 
 ##### Result value
 
@@ -2466,7 +2466,7 @@ Subroutine
   is an `intent(inout)` argument. It will be the hash map used to
   store and access the entries.
 
-`inmap`: shall be a scalar integer variable of  kind `INT_INDEX`. It is
+`inmap`: shall be a scalar integer variable of  kind `int_index`. It is
   an `intent(out)` argument. It will be 0 if `key` is not found,
   otherwise it will be the one's based index to the location of `key`
   in the hash map's inverse array.
