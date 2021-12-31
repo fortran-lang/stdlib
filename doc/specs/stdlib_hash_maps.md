@@ -338,61 +338,10 @@ Experimental
 
 ##### Description
 
-Calculates an `nbits` hash code from a 32 bit integer.
-
-##### Syntax
-
-`code = [[stdlib_hashmap_wrappers:fibonacci_hash]]( key, nbits )`
-
-##### Class
-
-Pure function
-
-##### Arguments
-
-`key`: Shall be a scalar integer expression of kind `int32`. It is an
-`intent(in)` argument.
-
-`nbits` Shall be a scalar default integer expression with `0 < nbits <
-32`. It is an `intent(in)` argument.
-
-##### Result character
-
-The result is an integer of kind `int32`.
-
-##### Result  value
-
-The result has at most the lowest `nbits` nonzero so it can serve as
-an index into the hash slots.
-
-##### Note
-
-`fibonacci_hash` is an implementation of the Fibonacci Hash of Donald
-E. Knuth. It multiplies the `KEY` by the odd valued approximation to
-`2**32/phi`, where `phi` is the golden ratio 1.618..., and returns the
-`NBITS` upper bits of the product as the lowest bits of the result.
-
-
-##### Example
-
-```fortran
-    program demo_fibonacci_hash
-      use stdlib_hashmap_wrappers, only: &
-          fibonacci_hash
-      use iso_fortran_env, only: int32 
-      implicit none
-      integer, allocatable :: array1(:)
-      integer(int32) :: hash, source
-	  type(key_type) :: key
-      allocate( array1(0:2**4-1) )
-      array1(:) = 0
-      source = int(Z'1FFFFFF', int32)
-      hash = fibonacci_hash(source, 4)
-      azray1(hash) = source
-      print *, hash
-	  print *, array
-    end program demo_fibonacci_hash
-```
+`fibonacci_hash` is just a re-export of the function of the same name
+implemented in
+[`stdlib_hash_32bit`](https://stdlib.fortran-lang.org/page/spec/stdlib_hash_functions.html#fibonacci_hash-maps-an-integer-to-a-smaller-number-of-bits).
+It reduces the value of a 32 bit integer to a smaller number of bits.
 
 
 #### `fnv_1_hasher`- calculates a hash code from a key
