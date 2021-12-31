@@ -27,7 +27,7 @@ program test_64_bit_hash_performance
     integer(int8) :: test_object(test_size)
 
 
-    open( newunit=lun, file="64_bit_hash_performance.txt", &
+    open( newunit=lun, file="64_bit_hash_performance_log.txt", &
           access="sequential", action="write", form="formatted", &
           position="rewind" )
 
