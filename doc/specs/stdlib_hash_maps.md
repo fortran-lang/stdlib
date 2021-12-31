@@ -770,8 +770,6 @@ performance on short keys.
 As a result it should give fair performance for typical hash map
 applications.
 This code passes the SMHasher tests.
-As a result it should give good performance for typical hash map
-applications.
 
 
 ##### Example
@@ -834,8 +832,6 @@ performance on short keys.
 As a result it should give fair performance for typical hash map
 applications.
 This code passes the SMHasher tests.
-As a result it should give good performance for typical hash map
-applications.
 
 ##### Example
 
@@ -897,8 +893,6 @@ on short keys.
 As a result it should give reasonable performance for typical hash
 table applications.
 This code passes the SMHasher tests.
-As a result it should give good performance for typical hash map
-applications.
 
 
 ##### Example
@@ -988,7 +982,7 @@ separate chaining hashing. The derived type is
 procedures to manipulate the structure of the hash map:
 `init`, `map_entry`, `rehash`, `remove_entry`, and
 `set_other_data`. It provides procedures to inquire about entries in
-the hash map: `get_other_data`, `in_map`, `unmap`.and `valid_index`.
+the hash map: `get_other_data`, `in_map`, `unmap` and `valid_index`.
 Finally it provides procedures to inquire about the overall
 structure and performance of the table:`calls`,  `entries`,
 `get_other_data`, `loading`, `slots`, and `total_depth`. The module
@@ -1001,7 +995,7 @@ also defines a number of public constants: `inmap_probe_factor`,
 
 The module defines several categories of public constants. Some are
 used to parameterize the empirical slot expansion code. Others
-parameterize the slots table size, Some are used to define
+parameterize the slots table size. Some are used to define
 integer kind values for different applications. Finally, some are used
 to report errors or success.
 
@@ -1039,7 +1033,7 @@ entities of kind `int_probes`. Currently `int_probes` has the value of
 
 Finally the error codes `success`, `alloc_fault`, and
 `array_size_error` are used to report the error status of certain
-procedure calla. The `succes` code indicates that no problems were
+procedure calls. The `succes` code indicates that no problems were
 found. The `alloc_fault` code indicates that a memory allocation
 failed. Finally the `array_size_error` indicates that on table
 creation `slots_bits` is less than `default_bits` or
@@ -1075,7 +1069,7 @@ Currently the `int_hash` and `int_index` have the value of `int32`.
 
 #### The `chaining_map_entry_ptr` derived type
 
-The type `chaining_map_entry_ptr` are used to define the elements of
+The type `chaining_map_entry_ptr` is used to define the elements of
 the hash map that are either empty or link to the linked lists
 containing the elements of the table. The type's definition is below:
 
@@ -1094,7 +1088,7 @@ costs. The type's definition is below:
 
 ```fortran
     type :: chaining_map_entry_pool
-    ! Type inplementing a pool of allocated
+    ! Type implementing a pool of allocated
     ! `chaining_map_entry_type` objects
         private
     ! Index of next bucket
@@ -1543,7 +1537,7 @@ The result will be a default real.
 ##### Result value
 
 The result will be the ratio of the number of entries relative to the
-number of slots in the hash map.?
+number of slots in the hash map.
 
 ##### Example
 
@@ -2068,7 +2062,7 @@ linear open addressing hashing. The derived type is
 procedures to manipulate the structure of the hash map:
 `init`, `map_entry`, `rehash`, and `set_other_data`. It
 provides procedures to inquire about entries in the hash map:
-`get_other_data`, `in_map`, `unmap`.and `valid_index`. Finally it
+`get_other_data`, `in_map`, `unmap` and `valid_index`. Finally it
 provides procedures to inquire about the overall structure and
 performance of the table:`calls`, `entries`, `get_other_data`,
 `loading`, `relative_loading`, `slots`, and `total_depth`. The module 
@@ -2081,7 +2075,7 @@ also defines a number of public constants: `inmap_probe_factor`,
 
 The module defines several categories of public constants. Some are
 used to parameterize the empirical slot expansion code. Others
-parameterize the slots table size, Some are used to define
+parameterize the slots table size. Some are used to define
 integer kind values for different applications. Finally, some are used
 to report errors or success.
 
@@ -2128,7 +2122,7 @@ entities of kind `int_probes`. Currently `int_probes` has the value of
 
 Finally the error codes `success`, `alloc_fault`, and
 `array_size_error` are used to report the error status of certain
-procedure calla. The `succes` code indicates that no problems were
+procedure calls. The `succes` code indicates that no problems were
 found. The `alloc_fault` code indicates that a memory allocation
 failed. The `array_size_error` indicates that on table
 creation `slots_bits` is less than `default_bits` or
@@ -2161,7 +2155,7 @@ Currently `int_hash` and `int_index` have the value of `int32`.
 
 #### The `open_map_entry_ptr` derived type
 
-The type `open_map_entry_ptr` are used to define the elements of
+The type `open_map_entry_ptr` is used to define the elements of
 the hash map that are either empty or link to the linked lists
 containing the elements of the table. The type's definition is below:
 
@@ -2319,7 +2313,7 @@ The result will be the number of procedure calls on the hash map.
       type(open_hashmap_type) :: map
       type(int_calls) :: initial_calls
       call init( map, fnv_1_hasher )
-      initisl_calls = calls (map)
+      initial_calls = calls (map)
       print *, "INITIAL_CALLS =  ", initial_calls
     end program demo_calls
 ```
@@ -2610,7 +2604,7 @@ The result will be a default real.
 ##### Result value
 
 The result will be the ratio of the number of entries relative to the
-number of slots in the hash map.?
+number of slots in the hash map.
 
 ##### Example
 
