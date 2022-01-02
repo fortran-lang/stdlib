@@ -1,0 +1,276 @@
+
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+program test_distribution_expon
+    use stdlib_kinds, only : sp, dp, xdp, qp
+    use stdlib_error, only : check
+    use stdlib_random, only : random_seed
+    use stdlib_stats_distribution_exponential, only : expon_rvs => rvs_exp,  &
+                              expon_pdf => pdf_exp, expon_cdf => cdf_exp
+
+    implicit none
+    #:for k1, t1 in REAL_KINDS_TYPES
+    ${t1}$, parameter :: ${k1}$tol = 1000 * epsilon(1.0_${k1}$)
+    #:endfor
+    logical ::  warn = .true.
+    integer :: put, get
+
+    put = 12345678
+    call random_seed(put, get)
+
+
+    call test_exponential_random_generator
+
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    call test_expon_rvs_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    call test_expon_pdf_${t1[0]}$${k1}$
+    #:endfor
+    call test_expon_pdf_rsp
+
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    call test_expon_cdf_${t1[0]}$${k1}$
+    #:endfor
+
+
+
+
+
+contains
+
+    subroutine test_exponential_random_generator
+
+        integer, parameter :: num = 10000000, array_size = 1000
+        integer :: i, j, freq(0:array_size)
+        real(dp) :: chisq, expct
+
+        print *, ""
+        print *, "Test exponential random generator with chi-squared"
+        freq = 0
+        do i = 1, num
+            j = 1000 * (1 - exp(- expon_rvs(1.0)))
+            freq(j) = freq(j) + 1
+        end do
+        chisq = 0.0_dp
+        expct = num / array_size
+        do i = 0, array_size - 1
+           chisq = chisq + (freq(i) - expct) ** 2 / expct
+        end do
+        write(*,*) "The critical values for chi-squared with 1000 d. of f. is" &
+            //" 1143.92"
+        write(*,*) "Chi-squared for exponential random generator is : ", chisq
+        call check((chisq < 1143.9), &
+            msg="exponential randomness failed chi-squared test", warn=warn)
+    end subroutine test_exponential_random_generator
+
+
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    subroutine test_expon_rvs_${t1[0]}$${k1}$
+        ${t1}$ :: res(10), scale
+        integer, parameter :: k = 5
+        integer :: i, n
+        integer :: seed, get
+        #:if t1[0] == "r"
+            #! for real type
+        ${t1}$, parameter :: ans(10) =                                         &
+                            [0.609680481289574416337018192280083895_${k1}$,    &
+                             0.137541023585612635452927558314210417_${k1}$,    &
+                             0.134921508232253721063879462841820585_${k1}$,    &
+                              1.33766060689229752493171569464417802_${k1}$,    &
+                             0.111148487576340881943792737729381770_${k1}$,    &
+                             0.533951653963536868966836361020492979_${k1}$,    &
+                              1.96897428558727671799033487332053483_${k1}$,    &
+                             0.371111977992924465160247867364281152_${k1}$,    &
+                             0.811918715695663687862785688290993341_${k1}$,    &
+                             0.404637854946697868759504975362991277_${k1}$]
+        #:else
+            #! for complex type
+        ${t1}$, parameter :: ans(10) =                                         &
+                            [(1.30645817419194517786503898345732266_${k1}$,    &
+                             0.158701181060322271676454874977935106_${k1}$),   &
+                            (0.289117517640543687994027420375329869_${k1}$,    &
+                              1.54345454641418945184428733997405138_${k1}$),   &
+                            (0.238175330520730461308127295134389521_${k1}$,    &
+                             0.616098062265619464192503493485184250_${k1}$),   &
+                             (4.21923061197273582426500329997257485_${k1}$,    &
+                             0.428206128453374382877209077728016710_${k1}$),   &
+                             (1.73982581934785075970596933205212874_${k1}$,    &
+                             0.466889832630805233184044202341912994_${k1}$),   &
+                             (2.22649889847873832288931745486999202_${k1}$,    &
+                             0.879109337848515628785697537331053851_${k1}$),   &
+                             (8.76802198822945553859296653951917464_${k1}$,    &
+                             0.200128045239398311139211728004738688_${k1}$),   &
+                            (0.694821947760945587572020290930855262_${k1}$,    &
+                             0.101964167346166995492113143812345625_${k1}$),   &
+                            (0.141476585024528208770330398432893829_${k1}$,    &
+                       3.989655879458742013468417133900891716E-0002_${k1}$),   &
+                             (2.10676792861163792685325850990401309_${k1}$,    &
+                             0.249356813451327473065187125310051027_${k1}$)]
+        #:endif
+
+        print *, "Test exponential_distribution_rvs_${t1[0]}$${k1}$"
+        seed = 593742186
+        call random_seed(seed, get)
+
+        #:if t1[0] == "r"
+            #! for real type
+        scale = 1.5_${k1}$
+        #:else
+            #! for complex type
+        scale = (0.7_${k1}$, 1.3_${k1}$)
+        #:endif
+
+        do i = 1, k
+            res(i) = expon_rvs(scale)      ! 1 dummy
+        end do
+        res(6:10) = expon_rvs(scale, k)    ! 2 dummies
+        call check(all(abs(res - ans) < ${k1}$tol),                            &
+            msg="exponential_distribution_rvs_${t1[0]}$${k1}$ failed", warn=warn)
+    end subroutine test_expon_rvs_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    subroutine test_expon_pdf_${t1[0]}$${k1}$
+
+        ${t1}$ :: x1, x2(3,4), scale
+        integer :: i, n
+        integer :: seed, get
+        real(${k1}$) :: res(3,5)
+        #:if t1[0] == "r"
+            #! for real type
+        real(${k1}$), parameter :: ans(15) =                                   &
+                             [0.362692289054629718342313806171796533_${k1}$,   &
+                              0.362692289054629718342313806171796533_${k1}$,   &
+                              0.362692289054629718342313806171796533_${k1}$,   &
+                               1.44877092399186122284289290051705535_${k1}$,   &
+                               1.08871761038277651996081144393335589_${k1}$,   &
+                              0.203258408490339213767867275283195750_${k1}$,   &
+                              0.730004225568590859263284124264208147_${k1}$,   &
+                              0.237394827760488451509080387833146683_${k1}$,   &
+                              0.301732182586179598102005265289645959_${k1}$,   &
+                               1.35079274124711914255014934401469271_${k1}$,   &
+                              0.416578245043239337295928202660090263_${k1}$,   &
+                               1.44039177901335374382803898226703593_${k1}$,   &
+                              0.196044829271295768265275728683411055_${k1}$,   &
+                              0.271373826917613661285112379170965958_${k1}$,   &
+                               1.00108987409617105109732206933052664_${k1}$]
+        #:else
+            #! for complex type
+        real(${k1}$), parameter :: ans(15) =                                   &
+                             [0.112097715784191810518066563334849515_${k1}$,   &
+                              0.112097715784191810518066563334849515_${k1}$,   &
+                              0.112097715784191810518066563334849515_${k1}$,   &
+                         4.72087485401191174735651518020251204E-0002_${k1}$,   &
+                         3.69705018439006691768174449531170720E-0002_${k1}$,   &
+                         8.69498969681198520061798177185735738E-0002_${k1}$,   &
+                              0.128007654288233028296342302153338001_${k1}$,   &
+                         1.13496395875758374774198906169957218E-0002_${k1}$,   &
+                              0.294260498264128747413785056084385424_${k1}$,   &
+                         4.66169813179250908948018478030960097E-0002_${k1}$,   &
+                         2.84438693906889813143446828488861951E-0002_${k1}$,   &
+                              0.161859307815385236742977105439660254_${k1}$,   &
+                         4.22904796362406579112752522035325397E-0002_${k1}$,   &
+                              0.176117981883470250164040199296778089_${k1}$,   &
+                              0.107352342201327219885025541854724060_${k1}$]
+        #:endif
+
+        print *, "Test exponential_distribution_pdf_${t1[0]}$${k1}$"
+        seed = 123987654
+        call random_seed(seed, get)
+        #:if t1[0] == "r"
+            #! for real type
+        scale = 1.5_${k1}$
+        #:else
+            #! for complex type
+        scale = (0.3_${k1}$, 1.6_${k1}$)
+        #:endif
+
+        x1 = expon_rvs(scale)
+        x2 = reshape(expon_rvs(scale, 12), [3,4])
+        res(:,1) = expon_pdf(x1, scale)
+        res(:, 2:5) = expon_pdf(x2, scale)
+        call check(all(abs(res - reshape(ans, [3,5])) < ${k1}$tol),            &
+            msg="exponential_distribution_pdf_${t1[0]}$${k1}$ failed", warn=warn)
+    end subroutine test_expon_pdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    subroutine test_expon_cdf_${t1[0]}$${k1}$
+
+        ${t1}$ :: x1, x2(3,4), scale
+        integer :: i, n
+        integer :: seed, get
+        real(${k1}$) :: res(3,5)
+        #:if t1[0] == "r"
+            #! for real type
+        real(${k1}$), parameter :: ans(15) =                                   &
+                           [0.109257742653704886153815776449785051_${k1}$,     &
+                            0.109257742653704886153815776449785051_${k1}$,     &
+                            0.109257742653704886153815776449785051_${k1}$,     &
+                            0.717506371795765265795319089684216215_${k1}$,     &
+                       6.82471795435370961628021592837348251E-0002_${k1}$,     &
+                            0.158022297254037860379992220663140220_${k1}$,     &
+                            0.914579543576380160727189390750289231_${k1}$,     &
+                            0.735445094339121647068624074363021598_${k1}$,     &
+                       8.69845458684957375690771394578441361E-0002_${k1}$,     &
+                            0.491195342629961409581199224477971938_${k1}$,     &
+                            0.574283568793105916250099261345264380_${k1}$,     &
+                            0.312823040527767907760475800138803955_${k1}$,     &
+                            0.640029783598040153827956625977856239_${k1}$,     &
+                       2.16202116731629451897815202649346917E-0002_${k1}$,     &
+                       7.74788145547936974757767867581111655E-0002_${k1}$]
+        #:else
+        real(${k1}$), parameter :: ans(15) =                                   &
+                        [7.83931265220552191922145459533155073E-0002_${k1}$,   &
+                         7.83931265220552191922145459533155073E-0002_${k1}$,   &
+                         7.83931265220552191922145459533155073E-0002_${k1}$,   &
+                         1.07845760925785109085652212151328215E-0002_${k1}$,   &
+                              0.672623038706161724678635394849362256_${k1}$,   &
+                         4.27264038113873579678831482902258168E-0002_${k1}$,   &
+                              0.179649132114996961326498233168917293_${k1}$,   &
+                         1.38375793985183014482681114776428612E-0002_${k1}$,   &
+                         3.49246365297941076158369468479748612E-0002_${k1}$,   &
+                              0.116869945417176368845403154176734792_${k1}$,   &
+                              0.468462732010133566674397830557697485_${k1}$,   &
+                              0.413506985517976634907329948218002431_${k1}$,   &
+                              0.665679674838121942273909342901808398_${k1}$,   &
+                              0.223748595107983772617787558595393205_${k1}$,   &
+                              0.337722969540396286456937689606849800_${k1}$]
+        #:endif
+
+        print *, "Test exponential_distribution_cdf_${t1[0]}$${k1}$"
+        seed = 621957438
+        call random_seed(seed, get)
+
+        #:if t1[0] == "r"
+            #! for real type
+        scale = 2.0_${k1}$
+        #:else
+        scale = (1.3_${k1}$, 2.1_${k1}$)
+        #:endif
+
+        x1 = expon_rvs(scale)
+        x2 = reshape(expon_rvs(scale, 12), [3,4])
+        res(:,1) = expon_cdf(x1, scale)
+        res(:, 2:5) = expon_cdf(x2, scale)
+        call check(all(abs(res - reshape(ans,[3,5])) < ${k1}$tol),             &
+            msg="exponential_distribution_cdf_${t1[0]}$${k1}$ failed", warn=warn)
+    end subroutine test_expon_cdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+end program test_distribution_expon

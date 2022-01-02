@@ -29,6 +29,7 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [stats](./stdlib_stats.html) - Descriptive Statistics
  - [stats_distributions_uniform](./stdlib_stats_distribution_uniform.html) - Uniform Probability Distribution
  - [stats_distributions_normal](./stdlib_stats_distribution_normal.html) - Normal Probability Distribution
+ - [stats_distributions_exponential](./stdlib_stats_distribution_exponential.html) - Exponential Probability Distribution
  - [string\_type](./stdlib_string_type.html) - Basic string support
  - [stringlist_type](./stdlib_stringlist_type.html) - 1-Dimensional list of strings
  - [strings](./stdlib_strings.html) - String handling and manipulation routines
