@@ -27,7 +27,7 @@ program test_32_bit_hash_performance
     integer(int32) :: rand_object(rand_size)
     integer(int8) :: test_object(test_size)
 
-    open( newunit=lun, file="32_bit_hash_performance.txt", &
+    open( newunit=lun, file="32_bit_hash_performance_log.txt", &
           access="sequential", action="write", form="formatted", &
           position="rewind" )
 
