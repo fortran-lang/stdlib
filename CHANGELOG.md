@@ -22,6 +22,7 @@ Features available from the latest git source
   - new procedures `arg`, `argd` and `argpi`
     [#498](https://github.com/fortran-lang/stdlib/pull/498)
   - new procedure `diff`
+    [#605](https://github.com/fortran-lang/stdlib/pull/605)
 
 Changes to existing modules
 

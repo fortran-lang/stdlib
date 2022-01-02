@@ -1,4 +1,4 @@
-#! Originally written in 2016 by Keurfon Luu (keurfonluu@outlook.com)
+#! Inspired by original code (MIT license) written in 2016 by Keurfon Luu (keurfonluu@outlook.com)
 #! https://github.com/keurfonluu/Forlab/blob/master/src/lib/forlab.f90#L2673
 
 #:include "common.fypp"
@@ -9,31 +9,65 @@ submodule (stdlib_math) stdlib_math_diff
 
 contains
 
-    #! `diff` computes differences of arrays of the ${t1}$ type.
+    #! `diff` computes differences of adjacent elements of an array of the ${t1}$ type.
     
     #:for k1, t1 in RI_KINDS_TYPES
-    pure module function diff_1_${k1}$(X, n) result(Y)
-        ${t1}$, intent(in) :: X(:)
+    pure module function diff_1_${k1}$(x, n, prepend, append) result(y)
+        ${t1}$, intent(in) :: x(:)
         integer, intent(in), optional :: n
-        ${t1}$, allocatable :: Y(:)
+        ${t1}$, intent(in), optional :: prepend(:), append(:)
+        ${t1}$, allocatable :: y(:)
+        integer :: size_prepend, size_append, size_x
+        ${t1}$, allocatable :: work(:)
         integer :: n_, i
 
         n_ = optval(n, 1)
+        if (n_ <= 0) then
+            y = x
+            return
+        end if
+        
+        size_prepend = 0
+        size_append = 0
+        if (present(prepend)) size_prepend = size(prepend) 
+        if (present(append)) size_append = size(append)
+        size_x = size(x)
+        
+        if (size_x + size_prepend + size_append <= n_) then
+            allocate(y(0))
+            return
+        end if
 
-        Y = X
+        allocate(work(size_x + size_prepend + size_append))
+        if (size_prepend > 0) work(:size_prepend) = prepend
+        work(size_prepend+1:size_prepend+size_x) = x
+        if (size_append > 0) work(size_prepend+size_x+1:) = append
+        
         do i = 1, n_
-            Y = Y(2:) - Y(:size(Y) - 1)
+            work(1:size(work)-i) = work(2:size(work)-i+1) - work(1:size(work)-i)
         end do
+        
+        y = work(1:size(work)-n_)
 
     end function diff_1_${k1}$
 
-    pure module function diff_2_${k1}$(X, n, dim) result(Y)
-        ${t1}$, intent(in) :: X(:, :)
+    pure module function diff_2_${k1}$(x, n, dim, prepend, append) result(y)
+        ${t1}$, intent(in) :: x(:, :)
         integer, intent(in), optional :: n, dim
-        ${t1}$, allocatable :: Y(:, :)
+        ${t1}$, intent(in), optional :: prepend(:, :), append(:, :)
+        ${t1}$, allocatable :: y(:, :)
+        integer :: size_prepend, size_append, size_x
         integer :: n_, dim_, i
+        ${t1}$, allocatable :: work(:, :)
 
         n_ = optval(n, 1)
+        if (n_ <= 0) then
+            y = x
+            return
+        end if
+        
+        size_prepend = 0
+        size_append = 0
         if (present(dim)) then
             if (dim == 1 .or. dim == 2) then
                 dim_ = dim
@@ -44,15 +78,37 @@ contains
             dim_ = 1
         end if
         
-        Y = X
+        if (present(prepend)) size_prepend = size(prepend, dim_)
+        if (present(append)) size_append = size(append, dim_)
+        size_x = size(x, dim_)
+        
+        if (size_x + size_prepend + size_append <= n_) then
+            allocate(y(0, 0))
+            return
+        end if
+        
         if (dim_ == 1) then
+            allocate(work(size_x+size_prepend+size_append, size(x, 2)))
+            if (size_prepend > 0) work(1:size_prepend, :) = prepend
+            work(size_prepend+1:size_x+size_prepend, :) = x
+            if (size_append > 0) work(size_x+size_prepend+1:, :) = append
             do i = 1, n_
-                Y = Y(2:, :) - Y(:size(Y, 1) - 1, :)
+                work(1:size(work,1)-i, :) = work(2:size(work)-i+1, :) - work(1:size(x, 1)-i, :)
             end do
-        elseif (dim == 2) then
+
+            y = work(1:size(work)-n_, :)
+            
+        elseif (dim_ == 2) then
+            allocate(work(size(x, 1), size_x+size_prepend+size_append))
+            if (size_prepend > 0) work(:, 1:size_prepend) = prepend
+            work(:, size_prepend+1:size_x+size_prepend) = x
+            if (size_append > 0) work(:, size_x+size_prepend+1:) = append
             do i = 1, n_
-                Y = Y(:, 2:) - Y(:, :size(Y, 2) - 1)
+                work(:, 1:size(work,2)-i) = work(:, 2:size(work,2)-i+1) - work(:, 1:size(work, 2)-i)
             end do
+            
+            y = work(:, 1:size(work,2)-n_)
+            
         end if
 
     end function diff_2_${k1}$

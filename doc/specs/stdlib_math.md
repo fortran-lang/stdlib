@@ -654,15 +654,17 @@ end program demo_math_all_close
 
 #### Description
 
-Computes differences between adjacent elements of the input array.
+Computes differences between adjacent elements of an array.
 
 #### Syntax
 
+For rank-1 array
 ```fortran
-!> For rank-1 array
-Y = [[stdlib_math(module):diff(interface)]](X [, n])
-!> and for rank-2 array
-Y = [[stdlib_math(module):diff(interface)]](X [, n, dim])
+y = [[stdlib_math(module):diff(interface)]](x [, n, prepend, append])
+```
+and for rank-2 array
+```fortran
+y = [[stdlib_math(module):diff(interface)]](x [, n, dim, prepend, append])
 ```
 
 #### Status
@@ -675,10 +677,9 @@ Pure function.
 
 #### Arguments
 
-Note: If the value of `dim` is not equal to `1` or `2`,
-`1` will be used by the internal process of `diff`. (Not recommended)
+Note: The `x`, `prepend` and `append` arguments must have same `type`, `kind` and `rank`.
 
-`X`: Shall be a `real/integer` and `rank-1/rank-2` array.
+`x`: Shall be a `real/integer` and `rank-1/rank-2` array.
 This argument is `intent(in)`.
 
 `n`: Shall be an `integer` scalar.
@@ -689,9 +690,20 @@ It represents to calculate the n-th order difference.
 This argument is `intent(in)` and `optional`, which is `1` by default.
 It represents to calculate the difference along which dimension.
 
+`prepend`: Shall be a `real/integer` and `rank-1/rank-2` array, which is no value by default.
+This argument is `intent(in)` and `optional`.
+
+`append`: Shall be a `real/integer` and `rank-1/rank-2` array, which is no value by default.
+This argument is `intent(in)` and `optional`.
+
+Note: 
+- If the value of `n` is less than or equal to `0`, the return value of `y` is `x`. (Not recommended)
+- If the value of `dim` is not equal to `1` or `2`,
+`1` will be used by the internal process of `diff`. (Not recommended)
+
 #### Result value
 
-Note: That `Y` has one fewer element than `X`.
+Note: That `y` generally has one fewer element than `x`.
 
 Returns a `real/integer` and `rank-1/rank-2` array.
 

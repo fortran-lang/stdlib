@@ -362,20 +362,22 @@ module stdlib_math
     
     !> Version: experimental
     !>
-    !> Computes differences between adjacent elements of the input array.
+    !> Computes differences between adjacent elements of an array.
     !> ([Specification](../page/specs/stdlib_math.html#diff))
     interface diff
         #:set RI_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES
         #:for k1, t1 in RI_KINDS_TYPES
-        pure module function diff_1_${k1}$(x, n) result(Y)
+        pure module function diff_1_${k1}$(x, n, prepend, append) result(y)
             ${t1}$, intent(in) :: x(:)
             integer, intent(in), optional :: n
-            ${t1}$, allocatable :: Y(:)
+            ${t1}$, intent(in), optional :: prepend(:), append(:)
+            ${t1}$, allocatable :: y(:)
         end function diff_1_${k1}$
-        pure module function diff_2_${k1}$(X, n, dim) result(Y)
-            ${t1}$, intent(in) :: X(:, :)
+        pure module function diff_2_${k1}$(X, n, dim, prepend, append) result(y)
+            ${t1}$, intent(in) :: x(:, :)
             integer, intent(in), optional :: n, dim
-            ${t1}$, allocatable :: Y(:,:)
+            ${t1}$, intent(in), optional :: prepend(:, :), append(:, :)
+            ${t1}$, allocatable :: y(:, :)
         end function diff_2_${k1}$
         #:endfor
     end interface diff
