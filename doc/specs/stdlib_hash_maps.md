@@ -118,7 +118,7 @@ opaque. Their current representations are as follows
 
     type :: other_type
         private
-        integer(int8), allocatable :: value(:)
+        class(*), allocatable :: value
     end type other_type
 ```
 
@@ -141,12 +141,12 @@ Procedures to manipulate `key_type` data:
 
 * `equal_keys( key1, key2 )` - compares two keys for equality. 
 
-* `get( key, value )` - extracts the contents of key into value, an
-  `int8` array or character string.
+* `get( key, value )` - extracts the contents of `key` into `value`,
+  an `int8` array or character string.
 
-* `free_key( key )` - frees the memory in key.
+* `free_key( key )` - frees the memory in `key`.
 
-* `set( key, value )` - sets the content of key to value.
+* `set( key, value )` - sets the content of `key` to `value`.
 
 Procedures to manipulate `other_type` data:
 
@@ -154,26 +154,27 @@ Procedures to manipulate `other_type` data:
   other data, `other_in`, to the contents of the other data,
   `other_out`.
 
-* `get( other, value )` - extracts the contents of other into value, an 
-  `int8` array or character string. 
+* `get( other, value )` - extracts the contents of `other` into the
+  class(*) variable `value`.
 
-* `set( other, value )` - sets to content of other to value.
+* `set( other, value )` - sets the content of `other` to the class(*)
+  variable `value`. 
 
-* `free_other( other )` - frees the memory in other.
+* `free_other( other )` - frees the memory in `other`.
 
 Procedures to hash keys to 32 bit integers:
 
-* `fnv_1_hasher( key )` - hashes a key using the FNV-1 algorithm.
+* `fnv_1_hasher( key )` - hashes a `key` using the FNV-1 algorithm.
 
-* `fnv_1a_hasher( key )` - hashes a key using the FNV-1a algorithm.
+* `fnv_1a_hasher( key )` - hashes a `key` using the FNV-1a algorithm.
 
-* `seeded_nmhash32_hasher( key )` - hashes a key using the nmhash32
+* `seeded_nmhash32_hasher( key )` - hashes a `key` using the nmhash32
   algorithm.
 
-* `seeded_nmhash32x_hasher( key )` - hashes a key using the nmhash32x
+* `seeded_nmhash32x_hasher( key )` - hashes a `key` using the nmhash32x
   algorithm.
 
-* `seeded_water_hasher( key )` - hashes a key using the waterhash
+* `seeded_water_hasher( key )` - hashes a `key` using the waterhash
   algorithm.
 
 ### Specifications of the `stdlib_hashmap_wrappers` procedures
@@ -186,7 +187,7 @@ Experimental
 
 ##### Description
 
-Returns a copy of an input of type `key_type`
+Returns a copy of an input of type `key_type`.
 
 ##### Syntax
 
@@ -233,7 +234,7 @@ Experimental
 
 ##### Description
 
-Returns a copy of an input of type `other_type`
+Returns a copy of an input of type `other_type`.
 
 ##### Syntax
 
@@ -259,18 +260,23 @@ is an `intent(out)` argument.
           copy_other, get, other_type, set
       use iso_fortran_env, only: int8
       implicit none
-      integer(int8), allocatable :: value1(:), value2(:)
       type(other_type) :: other_in, other_out
       integer(int_8) :: i
-      allocate( value1(1:15) )
+	  class(*), allocatable :: dummy
+	  type dummy_type
+          integer(int8) :: value(15)
+      end type
+	  type(dummy_type) :: dummy_val
       do i=1, 15
-          value1(i) = i
+          dummy_val % value1(i) = i
       end do
-      call set( other_in, value1 )
+      allocate(other_in % value, source=dummy_val)
       call copy_other( other_in, other_out )
-      call get( other_out, value2 )
-      print *, "other_in == other_out = ", &
-        all( value1 == value2 )
+      select type(other_out)
+	  type(dummy_type)
+          print *, "other_in == other_out = ", &
+            all( dummy_val % value == other_out % value )
+      end select
     end program demo_copy_other
 ```
 
@@ -282,7 +288,7 @@ Experimental
 
 ##### Description
 
-Returns `.true.` if two keys are equal, and false otherwise.
+Returns `.true.` if two keys are equal, and `.false.` otherwise.
 
 ##### Syntax
 
@@ -548,14 +554,16 @@ is an `intent(out)` argument.
           copy_other, free_other, other_type, set
       use iso_fortran_env, only: int8
       implicit none
-      integer(int8), allocatable :: value(:)
-      type(key_type) :: other_in, other_out
+      type dummy_type
+          integer(int8) :: value(15)
+      end type dummy_type
+      typer(dummy_type) :: dummy_val
+      type(other_type), allocatable :: other_in, other_out
       integer(int_8) :: i
-      allocate( value(1:15) )
       do i=1, 15
-          value(i) = i
+          dummy_val % value(i) = i
       end do
-      call set( other_in, value )
+      allocate(other_in, source=dummy_val)
       call copy_other( other_in, other_out )
       call free_other( other_out )
     end program demo_free_other
@@ -570,8 +578,8 @@ Experimental
 
 ##### Description
 
-Extracts the data from a `key_type` or an `other_type` and stores it
-in the variable `value`..
+Extracts the data from a `key_type` or `other_type` and stores it
+in the variable `value`.
 
 ##### Syntax
 
@@ -580,7 +588,6 @@ in the variable `value`..
 or
 
 `call [[stdlib_hashmap_wrappers:get]]( other, value )`
-
 
 ##### Class
 
@@ -594,9 +601,11 @@ is an `intent(in)` argument.
 `other`: shall be a scalar expression of type `other_type`. It
 is an `intent(in)` argument.
 
-`value`: shall be an allocatable default character string variable, or
-an allocatable vector variable of type integer and kind `int8`. It is
-an `intent(out)` argument.
+`value`: if the the first argument is of `key_type` `value` shall be
+an allocatable default character string variable, or 
+an allocatable vector variable of type integer and kind `int8`,
+otherwise the first argument is of `other_type` and `value` shall be
+an allocatable of `class(*)`. It is an `intent(out)` argument.
 
 ##### Example
 
@@ -629,7 +638,7 @@ Experimental
 ##### Description
 
 Serves as a prototype for hashing functions with a single, `key`,
-argument returning an `int32` hash value.
+argument of type `key_type` returning an `int32` hash value.
 
 ##### Syntax
 
@@ -894,9 +903,10 @@ is an `intent(out)` argument.
 `other`: shall be a scalar variable of type `other_type`. It
 is an `intent(out)` argument.
 
-`value`: shall be a default character string expression, or a
-vector expression of type integer and kind `int8`. It is an
-`intent(in)` argument.
+`value`: if the first argument is `key` `vaalue` shall be a default
+character string expression, or a vector expression of type integer
+and kind `int8`, while for a first argument of type `other` `value`
+shall be of type `class(*)`. It is an `intent(in)` argument.
 
 ##### Example
 
