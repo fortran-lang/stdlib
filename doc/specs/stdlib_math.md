@@ -677,7 +677,7 @@ Pure function.
 
 #### Arguments
 
-Note: The `x`, `prepend` and `append` arguments must have same `type`, `kind` and `rank`.
+Note: The `x`, `prepend` and `append` arguments must have the same `type`, `kind` and `rank`.
 
 `x`: Shall be a `real/integer` and `rank-1/rank-2` array.
 This argument is `intent(in)`.
@@ -688,7 +688,7 @@ It represents to calculate the n-th order difference.
 
 `dim`: Shall be an `integer` scalar.
 This argument is `intent(in)` and `optional`, which is `1` by default.
-It represents to calculate the difference along which dimension.
+It gives the dimension of the input array along which the difference is calculated, between `1` and `rank(x)`.
 
 `prepend`: Shall be a `real/integer` and `rank-1/rank-2` array, which is no value by default.
 This argument is `intent(in)` and `optional`.
@@ -728,5 +728,8 @@ program demo_diff
     print *, Y(2, :)        !! [4, 2]
     print *, Y(3, :)        !! [2, 4]
 
+    print *, diff(i, prepend=[0]) !! [1, 0, 1, 1, 2, 3, 5]
+    print *, diff(i, append=[21]) !! [0, 1, 1, 2, 3, 5, 8]
+    
 end program demo_diff
 ```

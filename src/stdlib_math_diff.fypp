@@ -1,5 +1,5 @@
-#! Inspired by original code (MIT license) written in 2016 by Keurfon Luu (keurfonluu@outlook.com)
-#! https://github.com/keurfonluu/Forlab/blob/master/src/lib/forlab.f90#L2673
+!> Inspired by original code (MIT license) written in 2016 by Keurfon Luu (keurfonluu@outlook.com)
+!> https://github.com/keurfonluu/Forlab
 
 #:include "common.fypp"
 #:set RI_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES
@@ -9,7 +9,7 @@ submodule (stdlib_math) stdlib_math_diff
 
 contains
 
-    #! `diff` computes differences of adjacent elements of an array of the ${t1}$ type.
+    !> `diff` computes differences of adjacent elements of an array.
     
     #:for k1, t1 in RI_KINDS_TYPES
     pure module function diff_1_${k1}$(x, n, prepend, append) result(y)
@@ -17,8 +17,7 @@ contains
         integer, intent(in), optional :: n
         ${t1}$, intent(in), optional :: prepend(:), append(:)
         ${t1}$, allocatable :: y(:)
-        integer :: size_prepend, size_append, size_x
-        ${t1}$, allocatable :: work(:)
+        integer :: size_prepend, size_append, size_x, size_work
         integer :: n_, i
 
         n_ = optval(n, 1)
@@ -32,22 +31,31 @@ contains
         if (present(prepend)) size_prepend = size(prepend) 
         if (present(append)) size_append = size(append)
         size_x = size(x)
+        size_work = size_x + size_prepend + size_append
         
-        if (size_x + size_prepend + size_append <= n_) then
+        if (size_work <= n_) then
             allocate(y(0))
             return
         end if
 
-        allocate(work(size_x + size_prepend + size_append))
+        !> Use a quick exit for the common case, to avoid memory allocation.
+        if (size_prepend == 0 .and. size_append == 0 .and. n_ == 1) then
+            y = x(2:) - x(1:size_x-1)
+            return
+        end if
+
+        block
+        ${t1}$ :: work(size_work)
         if (size_prepend > 0) work(:size_prepend) = prepend
         work(size_prepend+1:size_prepend+size_x) = x
         if (size_append > 0) work(size_prepend+size_x+1:) = append
         
         do i = 1, n_
-            work(1:size(work)-i) = work(2:size(work)-i+1) - work(1:size(work)-i)
+            work(1:size_work-i) = work(2:size_work-i+1) - work(1:size_work-i)
         end do
-        
-        y = work(1:size(work)-n_)
+
+        y = work(1:size_work-n_)
+        end block
 
     end function diff_1_${k1}$
 
@@ -56,9 +64,8 @@ contains
         integer, intent(in), optional :: n, dim
         ${t1}$, intent(in), optional :: prepend(:, :), append(:, :)
         ${t1}$, allocatable :: y(:, :)
-        integer :: size_prepend, size_append, size_x
+        integer :: size_prepend, size_append, size_x, size_work
         integer :: n_, dim_, i
-        ${t1}$, allocatable :: work(:, :)
 
         n_ = optval(n, 1)
         if (n_ <= 0) then
@@ -81,33 +88,48 @@ contains
         if (present(prepend)) size_prepend = size(prepend, dim_)
         if (present(append)) size_append = size(append, dim_)
         size_x = size(x, dim_)
+        size_work = size_x + size_prepend + size_append
         
-        if (size_x + size_prepend + size_append <= n_) then
+        if (size_work <= n_) then
             allocate(y(0, 0))
             return
         end if
         
+        !> Use a quick exit for the common case, to avoid memory allocation.
+        if (size_prepend == 0 .and. size_append == 0 .and. n_ == 1) then
+            if (dim_ == 1) then
+                y = x(2:, :) - x(1:size_x-1, :)
+            elseif (dim_ == 2) then
+                y = x(:, 2:) - x(:, 1:size_x-1)
+            end if
+            return
+        end if
+        
         if (dim_ == 1) then
-            allocate(work(size_x+size_prepend+size_append, size(x, 2)))
+            block
+            ${t1}$ :: work(size_work, size(x, 2))
             if (size_prepend > 0) work(1:size_prepend, :) = prepend
             work(size_prepend+1:size_x+size_prepend, :) = x
             if (size_append > 0) work(size_x+size_prepend+1:, :) = append
             do i = 1, n_
-                work(1:size(work,1)-i, :) = work(2:size(work)-i+1, :) - work(1:size(x, 1)-i, :)
+                work(1:size_work-i, :) = work(2:size_work-i+1, :) - work(1:size_work-i, :)
             end do
 
-            y = work(1:size(work)-n_, :)
+            y = work(1:size_work-n_, :)
+            end block
             
         elseif (dim_ == 2) then
-            allocate(work(size(x, 1), size_x+size_prepend+size_append))
+            block
+            ${t1}$ :: work(size(x, 1), size_work)
             if (size_prepend > 0) work(:, 1:size_prepend) = prepend
             work(:, size_prepend+1:size_x+size_prepend) = x
             if (size_append > 0) work(:, size_x+size_prepend+1:) = append
             do i = 1, n_
-                work(:, 1:size(work,2)-i) = work(:, 2:size(work,2)-i+1) - work(:, 1:size(work, 2)-i)
+                work(:, 1:size_work-i) = work(:, 2:size_work-i+1) - work(:, 1:size_work-i)
             end do
             
-            y = work(:, 1:size(work,2)-n_)
+            y = work(:, 1:size_work-n_)
+            end block
             
         end if
 
