@@ -3,45 +3,10 @@ name: CI_windows
 on: [push, pull_request]
 
 env:
-  CI: "ON"
   CTEST_TIME_TIMEOUT: "5"  # some failures hang forever
+  CMAKE_GENERATOR: Ninja
 
 jobs:
-  Build:
-    runs-on: windows-latest
-    strategy:
-      fail-fast: false
-
-    steps:
-    - uses: actions/checkout@v1
-
-    - name: Install fypp
-      run: pip install fypp
-
-    - run: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" -Wdev -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace" -DCMAKE_MAXIMUM_RANK=4
-
-      env:
-        FC: gfortran
-        CC: gcc
-        CXX: g++
-
-    - name: CMake build
-      run: cmake --build build --parallel
-
-    - name: catch build fail
-      run: cmake --build build --verbose --parallel 1
-      if: failure()
-
-    - name: CTest
-      run: ctest --output-on-failure --parallel -V -LE quadruple_precision
-      working-directory: build
-
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: WindowsCMakeTestlog
-        path: build/Testing/Temporary/LastTest.log
-
   msys2-build:
     runs-on: windows-latest
     strategy:
@@ -70,6 +35,7 @@ jobs:
           mingw-w64-${{ matrix.arch }}-gcc-fortran
           mingw-w64-${{ matrix.arch }}-python
           mingw-w64-${{ matrix.arch }}-python-pip
+          mingw-w64-${{ matrix.arch }}-python-setuptools
           mingw-w64-${{ matrix.arch }}-cmake
           mingw-w64-${{ matrix.arch }}-ninja
 
@@ -92,13 +58,12 @@ jobs:
       run: pip install fypp
 
     - run: >-
-        cmake -G Ninja
-        -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+        cmake
         -Wdev
         -B build
         -DCMAKE_BUILD_TYPE=Debug
         -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
-        -DCMAKE_MAXIMUM_RANK=4
+        -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
       env:
         FC: gfortran
@@ -113,8 +78,7 @@ jobs:
       if: failure()
 
     - name: CTest
-      run: ctest --output-on-failure --parallel -V -LE quadruple_precision
-      working-directory: build
+      run: ctest --test-dir build --output-on-failure --parallel -V -LE quadruple_precision
 
     - uses: actions/upload-artifact@v1
       if: failure()

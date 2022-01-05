@@ -1,5 +1,5 @@
 ---
-title: Bitsets
+title: bitsets
 ---
 
 # The `stdlib_bitsets` module

@@ -3,20 +3,31 @@
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
   !! ([Specification](../page/specs/stdlib_linalg.html))
-  use stdlib_kinds, only: sp, dp, qp, &
+  use stdlib_kinds, only: sp, dp, xdp, qp, &
     int8, int16, int32, int64
+  use stdlib_error, only: error_stop
+  use stdlib_optval, only: optval
   implicit none
   private
 
   public :: diag
   public :: eye
   public :: trace
+  public :: outer_product
+  public :: is_square
+  public :: is_diagonal
+  public :: is_symmetric
+  public :: is_skew_symmetric
+  public :: is_hermitian
+  public :: is_triangular
+  public :: is_hessenberg
 
   interface diag
     !! version: experimental
     !!
     !! Creates a diagonal array or extract the diagonal elements of an array
-    !! ([Specification](../page/specs/stdlib_linalg.html#description))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! diag-create-a-diagonal-array-or-extract-the-diagonal-elements-of-an-array))
       !
       ! Vector to matrix
       !
@@ -52,33 +63,151 @@ module stdlib_linalg
     #:endfor
   end interface
 
+
   ! Matrix trace
   interface trace
     !! version: experimental
     !!
     !! Computes the trace of a matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#description_2))
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! trace-trace-of-a-matrix))
     #:for k1, t1 in RCI_KINDS_TYPES
       module procedure trace_${t1[0]}$${k1}$
     #:endfor
   end interface
 
+
+  ! Outer product (of two vectors)
+  interface outer_product
+    !! version: experimental
+    !!
+    !! Computes the outer product of two vectors, returning a rank-2 array
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! outer_product-computes-the-outer-product-of-two-vectors))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure module function outer_product_${t1[0]}$${k1}$(u, v) result(res)
+        ${t1}$, intent(in) :: u(:), v(:)
+        ${t1}$ :: res(size(u),size(v))
+      end function outer_product_${t1[0]}$${k1}$
+    #:endfor
+  end interface outer_product
+
+
+  ! Check for squareness
+  interface is_square
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is square
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_square-checks-if-a-matrix-is-square))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_square_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_square
+
+
+  ! Check for diagonality
+  interface is_diagonal
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is diagonal
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_diagonal-checks-if-a-matrix-is-diagonal))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_diagonal_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_diagonal
+
+
+  ! Check for symmetry
+  interface is_symmetric
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is symmetric
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_symmetric-checks-if-a-matrix-is-symmetric))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_symmetric_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_symmetric
+
+
+  ! Check for skew-symmetry
+  interface is_skew_symmetric
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is skew-symmetric
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_skew_symmetric-checks-if-a-matrix-is-skew-symmetric))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_skew_symmetric_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_skew_symmetric
+
+
+  ! Check for Hermiticity
+  interface is_hermitian
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is Hermitian
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_hermitian-checks-if-a-matrix-is-hermitian))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_hermitian_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_hermitian
+
+
+  ! Check for triangularity
+  interface is_triangular
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is triangular
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_triangular-checks-if-a-matrix-is-triangular))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_triangular_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_triangular
+  
+
+  ! Check for matrix being Hessenberg
+  interface is_hessenberg
+    !! version: experimental
+    !!
+    !! Checks if a matrix (rank-2 array) is Hessenberg
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! is_hessenberg-checks-if-a-matrix-is-hessenberg))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure is_Hessenberg_${t1[0]}$${k1}$
+    #:endfor
+  end interface is_hessenberg
+
 contains
 
-    function eye(n) result(res)
-      !! version: experimental
-      !!
-      !! Constructs the identity matrix
-      !! ([Specification](../page/specs/stdlib_linalg.html#description_1))
-      integer, intent(in) :: n
-      integer(int8) :: res(n, n)
-      integer :: i
-      res = 0
-      do i = 1, n
-         res(i, i) = 1
-      end do
-    end function eye
 
+    !> Version: experimental
+    !>
+    !> Constructs the identity matrix.
+    !> ([Specification](../page/specs/stdlib_linalg.html#eye-construct-the-identity-matrix))
+    pure function eye(dim1, dim2) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        integer(int8), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0_int8
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1_int8
+        end do
+
+    end function eye
 
     #:for k1, t1 in RCI_KINDS_TYPES
       function trace_${t1[0]}$${k1}$(A) result(res)
@@ -91,4 +220,193 @@ contains
         end do
       end function trace_${t1[0]}$${k1}$
     #:endfor
-end module
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure function is_square_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        res = (size(A,1) == size(A,2))
+      end function is_square_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure function is_diagonal_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        ${t1}$, parameter :: zero = 0 !zero of relevant type
+        integer :: m, n, o, i, j
+        m = size(A,1)
+        n = size(A,2)
+        do j = 1, n !loop over all columns
+            o = min(j-1,m) !index of row above diagonal (or last row)
+            do i = 1, o !loop over rows above diagonal
+                if (A(i,j) /= zero) then
+                  res = .false.
+                  return
+                end if
+            end do
+            do i = o+2, m !loop over rows below diagonal
+                if (A(i,j) /= zero) then
+                  res = .false.
+                  return
+                end if
+            end do
+        end do
+        res = .true. !otherwise A is diagonal
+      end function is_diagonal_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure function is_symmetric_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        integer :: n, i, j
+        if (.not. is_square(A)) then
+           res = .false.
+           return !nonsquare matrices cannot be symmetric
+        end if
+        n = size(A,1) !symmetric dimension of A
+        do j = 1, n !loop over all columns
+            do i = 1, j-1 !loop over all rows above diagonal
+                if (A(i,j) /= A(j,i)) then
+                  res = .false.
+                  return
+                end if
+            end do
+        end do
+        res = .true. !otherwise A is symmetric
+      end function is_symmetric_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure function is_skew_symmetric_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        integer :: n, i, j
+        if (.not. is_square(A)) then
+           res = .false.
+           return !nonsquare matrices cannot be skew-symmetric
+        end if
+        n = size(A,1) !symmetric dimension of A
+        do j = 1, n !loop over all columns
+            do i = 1, j !loop over all rows above diagonal (and diagonal)
+                if (A(i,j) /= -A(j,i)) then
+                  res = .false.
+                  return
+                end if
+            end do
+        end do
+        res = .true. !otherwise A is skew-symmetric
+      end function is_skew_symmetric_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in (REAL_KINDS_TYPES + INT_KINDS_TYPES)
+      pure function is_hermitian_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        res = is_symmetric(A) !symmetry and Hermiticity are equivalent for real matrices
+      end function is_hermitian_${t1[0]}$${k1}$
+    #:endfor
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+      pure function is_hermitian_${t1[0]}$${k1}$(A) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        logical :: res
+        integer :: n, i, j
+        if (.not. is_square(A)) then
+           res = .false.
+           return !nonsquare matrices cannot be Hermitian
+        end if
+        n = size(A,1) !symmetric dimension of A
+        do j = 1, n !loop over all columns
+            do i = 1, j !loop over all rows above diagonal (and diagonal)
+                if (A(i,j) /= conjg(A(j,i))) then
+                  res = .false.
+                  return
+                end if
+            end do
+        end do
+        res = .true. !otherwise A is Hermitian
+      end function is_hermitian_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      function is_triangular_${t1[0]}$${k1}$(A,uplo) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        character, intent(in) :: uplo
+        logical :: res
+        ${t1}$, parameter :: zero = 0 !zero of relevant type
+        integer :: m, n, o, i, j
+        m = size(A,1)
+        n = size(A,2)
+        if ((uplo == 'u') .or. (uplo == 'U')) then !check for upper triangularity
+          do j = 1, n !loop over all columns
+              o = min(j-1,m) !index of row above diagonal (or last row)
+              do i = o+2, m !loop over rows below diagonal
+                  if (A(i,j) /= zero) then
+                    res = .false.
+                    return
+                  end if
+              end do
+          end do
+        else if ((uplo == 'l') .or. (uplo == 'L')) then !check for lower triangularity
+          do j=1,n !loop over all columns
+              o = min(j-1,m) !index of row above diagonal (or last row)
+              do i=1,o !loop over rows above diagonal
+                  if (A(i,j) /= zero) then
+                    res = .false.
+                    return
+                  end if
+              end do
+           end do
+        else
+           call error_stop("ERROR (is_triangular): second argument must be one of {'u','U','l','L'}")
+        end if
+     
+        res = .true. !otherwise A is triangular of the requested type
+      end function is_triangular_${t1[0]}$${k1}$
+    #:endfor
+
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+      function is_hessenberg_${t1[0]}$${k1}$(A,uplo) result(res)
+        ${t1}$, intent(in) :: A(:,:)
+        character, intent(in) :: uplo
+        logical :: res
+        ${t1}$, parameter :: zero = 0 !zero of relevant type
+        integer :: m, n, o, i, j
+        m = size(A,1)
+        n = size(A,2)
+        if ((uplo == 'u') .or. (uplo == 'U')) then !check for upper Hessenberg
+          do j = 1, n !loop over all columns
+              o = min(j-2,m) !index of row two above diagonal (or last row)
+              do i = o+4, m !loop over rows two or more below main diagonal
+                  if (A(i,j) /= zero) then
+                    res = .false.
+                    return
+                  end if
+              end do
+          end do
+        else if ((uplo == 'l') .or. (uplo == 'L')) then !check for lower Hessenberg
+          do j = 1, n !loop over all columns
+              o = min(j-2,m) !index of row two above diagonal (or last row)
+              do i = 1, o !loop over rows one or more above main diagonal
+                  if (A(i,j) /= zero) then
+                    res = .false.
+                    return
+                  end if
+              end do
+           end do
+        else
+           call error_stop("ERROR (is_hessenberg): second argument must be one of {'u','U','l','L'}")
+        end if
+        res = .true. !otherwise A is Hessenberg of the requested type
+      end function is_hessenberg_${t1[0]}$${k1}$
+    #:endfor
+    
+end module stdlib_linalg

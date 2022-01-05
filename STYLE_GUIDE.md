@@ -47,7 +47,7 @@ focus on the semantics of the proposed changes rather than style and formatting.
 <!-- ATTENTION! This section includes intentional trailing whitespace to get decent formatting with GFM and Python Markdown. -->
 
 * Always specify `intent` for dummy arguments.
-* Don't use `dimension` attribute to declare arrays because it is less verbose.
+* Don't use `dimension` attribute to declare arrays because it is more verbose.
   Use this:  
   ```
   real, allocatable :: a(:), b(:,:)
@@ -81,7 +81,7 @@ The following two sections are most relevant for contributing new code:
 
 To write the "spec" (specification) for a new proposal, please place it in the
 [FORD "pages"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Pages) directory at
-[`doc/specs/`](https://github.com/fortran-lang/stdlib/tree/master/doc/specs).
+[`doc/specs/`](https://github.com/fortran-lang/stdlib/tree/HEAD/doc/specs).
 To get help please see the ["Writing Pages"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Pages)
 and ["Writing Documentation"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Documentation) pages
 on the [FORD wiki](https://github.com/Fortran-FOSS-Programmers/ford/wiki).

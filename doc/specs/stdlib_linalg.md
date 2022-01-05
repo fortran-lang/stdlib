@@ -101,21 +101,41 @@ end program demo_diag5
 
 Experimental
 
+### Class
+
+Pure function.
+
 ### Description
 
-Construct the identity matrix
+Construct the identity matrix.
 
 ### Syntax
 
-`I = [[stdlib_linalg(module):eye(function)]](n)`
+`I = [[stdlib_linalg(module):eye(function)]](dim1 [, dim2])`
 
 ### Arguments
 
-`n`: Shall be a scalar of default type `integer`. 
+`dim1`: Shall be a scalar of default type `integer`.
+This is an `intent(in)` argument. 
+
+`dim2`: Shall be a scalar of default type `integer`.
+This is an `intent(in)` and `optional` argument. 
 
 ### Return value
 
-Returns the identity matrix, i.e. a square matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer(int8)`.
+Return the identity matrix, i.e. a matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer(int8)`.
+The use of `int8` was suggested to save storage.
+
+#### Warning
+
+Since the result of `eye` is of `integer(int8)` type, one should be careful about using it in arithmetic expressions. For example:
+```fortran
+real :: A(:,:)
+!> Be careful
+A = eye(2,2)/2     !! A == 0.0
+!> Recommend
+A = eye(2,2)/2.0   !! A == diag([0.5, 0.5])
+```
 
 ### Example
 
@@ -123,8 +143,16 @@ Returns the identity matrix, i.e. a square matrix with ones on the main diagonal
 program demo_eye1
     use stdlib_linalg, only: eye
     implicit none
+    integer :: i(2,2)
     real :: a(3,3)
-    A = eye(3)
+    real :: b(2,3)  !! Matrix is non-square.
+    complex :: c(2,2)
+    I = eye(2)              !! [1,0; 0,1]
+    A = eye(3)              !! [1.0,0.0,0.0; 0.0,1.0,0.0; 0.0,0.0,1.0]
+    A = eye(3,3)            !! [1.0,0.0,0.0; 0.0,1.0,0.0; 0.0,0.0,1.0]
+    B = eye(2,3)            !! [1.0,0.0,0.0; 0.0,1.0,0.0]
+    C = eye(2,2)            !! [(1.0,0.0),(0.0,0.0); (0.0,0.0),(1.0,0.0)]
+    C = (1.0,1.0)*eye(2,2)  !! [(1.0,1.0),(0.0,0.0); (0.0,0.0),(1.0,1.0)]
 end program demo_eye1
 ```
 
@@ -148,7 +176,7 @@ Trace of a matrix (rank-2 array)
 
 ### Syntax
 
-`result = [stdlib_linalg(module):trace(interface)](A)`
+`result = [[stdlib_linalg(module):trace(interface)]](A)`
 
 ### Arguments
 
@@ -167,4 +195,310 @@ program demo_trace
     A = reshape([1,2,3,4,5,6,7,8,9],[3,3])
     print *, trace(A) ! 1 + 5 + 9
 end program demo_trace
+```
+
+## `outer_product` - Computes the outer product of two vectors
+
+### Status
+
+Experimental
+
+### Description
+
+Computes the outer product of two vectors
+
+### Syntax
+
+`d = [[stdlib_linalg(module):outer_product(interface)]](u, v)`
+
+### Arguments
+
+`u`: Shall be a rank-1 array
+
+`v`: Shall be a rank-1 array
+
+### Return value
+
+Returns a rank-2 array equal to `u v^T` (where `u, v` are considered column vectors). The shape of the returned array is `[size(u), size(v)]`.
+
+### Example
+
+```fortran
+program demo_outer_product
+    use stdlib_linalg, only: outer_product
+    implicit none
+    real, allocatable :: A(:,:), u(:), v(:)
+    u = [1., 2., 3. ]
+    v = [3., 4.]
+    A = outer_product(u,v)
+    !A = reshape([3., 6., 9., 4., 8., 12.], [3,2])
+end program demo_outer_product
+```
+
+## `is_square` - Checks if a matrix is square
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is square
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_square(interface)]](A)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+### Return value
+
+Returns a `logical` scalar that is `.true.` if the input matrix is square, and `.false.` otherwise.
+
+### Example
+
+```fortran
+program demo_is_square
+    use stdlib_linalg, only: is_square
+    implicit none
+    real :: A(2,2), B(3,2)
+    logical :: res
+    A = reshape([1., 2., 3., 4.], shape(A))
+    B = reshape([1., 2., 3., 4., 5., 6.], shape(B))
+    res = is_square(A) ! returns .true.
+    res = is_square(B) ! returns .false.
+end program demo_is_square
+```
+
+## `is_diagonal` - Checks if a matrix is diagonal
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is diagonal
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_diagonal(interface)]](A)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+### Return value
+
+Returns a `logical` scalar that is `.true.` if the input matrix is diagonal, and `.false.` otherwise.
+Note that nonsquare matrices may be diagonal, so long as `a_ij = 0` when `i /= j`.
+
+### Example
+
+```fortran
+program demo_is_diagonal
+    use stdlib_linalg, only: is_diagonal
+    implicit none
+    real :: A(2,2), B(2,2)
+    logical :: res
+    A = reshape([1., 0., 0., 4.], shape(A))
+    B = reshape([1., 0., 3., 4.], shape(B))
+    res = is_diagonal(A) ! returns .true.
+    res = is_diagonal(B) ! returns .false.
+end program demo_is_diagonal
+```
+
+## `is_symmetric` - Checks if a matrix is symmetric
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is symmetric
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_symmetric(interface)]](A)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+### Return value
+
+Returns a `logical` scalar that is `.true.` if the input matrix is symmetric, and `.false.` otherwise.
+
+### Example
+
+```fortran
+program demo_is_symmetric
+    use stdlib_linalg, only: is_symmetric
+    implicit none
+    real :: A(2,2), B(2,2)
+    logical :: res
+    A = reshape([1., 3., 3., 4.], shape(A))
+    B = reshape([1., 0., 3., 4.], shape(B))
+    res = is_symmetric(A) ! returns .true.
+    res = is_symmetric(B) ! returns .false.
+end program demo_is_symmetric
+```
+
+## `is_skew_symmetric` - Checks if a matrix is skew-symmetric
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is skew-symmetric
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_skew_symmetric(interface)]](A)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+### Return value
+
+Returns a `logical` scalar that is `.true.` if the input matrix is skew-symmetric, and `.false.` otherwise.
+
+### Example
+
+```fortran
+program demo_is_skew_symmetric
+    use stdlib_linalg, only: is_skew_symmetric
+    implicit none
+    real :: A(2,2), B(2,2)
+    logical :: res
+    A = reshape([0., -3., 3., 0.], shape(A))
+    B = reshape([0., 3., 3., 0.], shape(B))
+    res = is_skew_symmetric(A) ! returns .true.
+    res = is_skew_symmetric(B) ! returns .false.
+end program demo_is_skew_symmetric
+```
+
+## `is_hermitian` - Checks if a matrix is Hermitian
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is Hermitian
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_hermitian(interface)]](A)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+### Return value
+
+Returns a `logical` scalar that is `.true.` if the input matrix is Hermitian, and `.false.` otherwise.
+
+### Example
+
+```fortran
+program demo_is_hermitian
+    use stdlib_linalg, only: is_hermitian
+    implicit none
+    complex :: A(2,2), B(2,2)
+    logical :: res
+    A = reshape([cmplx(1.,0.), cmplx(3.,-1.), cmplx(3.,1.), cmplx(4.,0.)], shape(A))
+    B = reshape([cmplx(1.,0.), cmplx(3.,1.), cmplx(3.,1.), cmplx(4.,0.)], shape(B))
+    res = is_hermitian(A) ! returns .true.
+    res = is_hermitian(B) ! returns .false.
+end program demo_is_hermitian
+```
+
+## `is_triangular` - Checks if a matrix is triangular
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is triangular
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_triangular(interface)]](A,uplo)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+`uplo`: Shall be a single character from `{'u','U','l','L'}`
+
+### Return value
+
+Returns a `logical` scalar that is `.true.` if the input matrix is the type of triangular specified by `uplo` (upper or lower), and `.false.` otherwise.
+Note that the definition of triangular used in this implementation allows nonsquare matrices to be triangular.
+Specifically, upper triangular matrices satisfy `a_ij = 0` when `j < i`, and lower triangular matrices satisfy `a_ij = 0` when `j > i`.
+
+### Example
+
+```fortran
+program demo_is_triangular
+    use stdlib_linalg, only: is_triangular
+    implicit none
+    real :: A(3,3), B(3,3)
+    logical :: res
+    A = reshape([1., 0., 0., 4., 5., 0., 7., 8., 9.], shape(A))
+    B = reshape([1., 0., 3., 4., 5., 0., 7., 8., 9.], shape(B))
+    res = is_triangular(A,'u') ! returns .true.
+    res = is_triangular(B,'u') ! returns .false.
+end program demo_is_triangular
+```
+
+## `is_hessenberg` - Checks if a matrix is hessenberg
+
+### Status
+
+Experimental
+
+### Description
+
+Checks if a matrix is Hessenberg
+
+### Syntax
+
+`d = [[stdlib_linalg(module):is_hessenberg(interface)]](A,uplo)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array
+
+`uplo`: Shall be a single character from `{'u','U','l','L'}`
+
+### Return value
+
+Returns a `logical` scalar that is `.true.` if the input matrix is the type of Hessenberg specified by `uplo` (upper or lower), and `.false.` otherwise.
+Note that the definition of Hessenberg used in this implementation allows nonsquare matrices to be Hessenberg.
+Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and lower Hessenberg matrices satisfy `a_ij = 0` when `j > i+1`.
+
+### Example
+
+```fortran
+program demo_is_hessenberg
+    use stdlib_linalg, only: is_hessenberg
+    implicit none
+    real :: A(3,3), B(3,3)
+    logical :: res
+    A = reshape([1., 2., 0., 4., 5., 6., 7., 8., 9.], shape(A))
+    B = reshape([1., 2., 3., 4., 5., 6., 7., 8., 9.], shape(B))
+    res = is_hessenberg(A,'u') ! returns .true.
+    res = is_hessenberg(B,'u') ! returns .false.
+end program demo_is_hessenberg
 ```

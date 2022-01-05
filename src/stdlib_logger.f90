@@ -308,6 +308,7 @@ contains
         integer :: lun
         character(12) :: specifier
         logical :: question
+        integer :: istat
 
         call validate_unit()
         if ( present(stat) ) then
@@ -350,7 +351,8 @@ contains
             end if
 
 ! Check that unit is opened
-            inquire( unit, opened=question )
+            inquire( unit, opened=question, iostat=istat )
+            if(istat /= 0) question = .false.
             if ( .not. question ) then
                 if ( present(stat) ) then
                     stat = unopened_in_error
@@ -1145,11 +1147,8 @@ contains
         character(:), allocatable :: d_and_t, m_and_p, pref
         character(:), allocatable :: buffer
 
-        if ( present(prefix) ) then
-            pref = prefix // ': '
-        else
-            pref = ''
-        end if
+        pref = optval(prefix, '')
+        if ( len(pref) > 0 ) pref = pref // ': '
 
         if ( self % time_stamp ) then
             d_and_t = time_stamp() // ': '

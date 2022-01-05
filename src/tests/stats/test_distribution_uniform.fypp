@@ -1,0 +1,358 @@
+#:include "common.fypp"
+#:set ALL_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+program test_distribution_uniform
+    use stdlib_error, only : check
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    use stdlib_random, only : random_seed, dist_rand
+    use stdlib_stats_distribution_uniform, uni_rvs => rvs_uniform,             &
+                                           uni_pdf => pdf_uniform,             &
+                                           uni_cdf => cdf_uniform
+
+    implicit none
+    logical ::  warn = .true.
+    #:for k1, t1 in REAL_KINDS_TYPES
+    ${t1}$, parameter :: ${k1}$tol = 1000 * epsilon(1.0_${k1}$)
+    #:endfor
+    integer :: put, get
+
+    put = 135792468
+
+    call test_shuffle
+
+    call test_uni_rvs_0
+
+    #:for k1, t1 in ALL_KINDS_TYPES
+    call test_uni_rvs_${t1[0]}$${k1}$
+    #:endfor
+
+    #:for k1, t1 in ALL_KINDS_TYPES
+    call test_uni_pdf_${t1[0]}$${k1}$
+    #:endfor
+
+    #:for k1, t1 in ALL_KINDS_TYPES
+    call test_uni_cdf_${t1[0]}$${k1}$
+    #:endfor
+
+
+
+
+contains
+
+    subroutine test_shuffle
+        integer :: n(10)
+        integer, parameter :: na(10) = [10, 6, 9, 2, 8, 1, 3, 5, 7, 4]
+        real :: x(10)
+        real, parameter :: xa(10) = [5.0, 10.0, 9.0, 4.0, 3.0, 8.0, 2.0, 1.0,  &
+                                     7.0, 6.0]
+        complex :: z(10)
+        complex, parameter :: za(10) = [(8.0, 8.0), (7.0, 7.0), (4.0, 4.0),    &
+                                        (1.0, 1.0), (5.0, 5.0), (9.0, 9.0),    &
+                                        (6.0, 6.0), (3.0, 3.0), (2.0, 2.0),    &
+                                        (10.0, 10.0)]
+        integer :: i, put, get
+
+        do i = 1, 10
+            n(i) = i
+            x(i) = real(i)
+            z(i) = cmplx(real(i),real(i))
+        end do
+        put = 32165498
+        call random_seed(put, get)
+        n(:) = shuffle(n)
+        x(:) = shuffle(x)
+        z(:) = shuffle(z)
+        call check(all(n == na),                                               &
+            msg = "Integer shuffle failed test", warn=warn)
+        call check(all(x == xa),                                               &
+            msg = "Real shuffle failed test", warn=warn)
+        call check(all(z == za),                                               &
+            msg = "Complex shuffle failed test", warn=warn)
+    end subroutine test_shuffle
+
+
+
+    subroutine test_uni_rvs_0
+        integer, parameter :: num = 10000000
+        integer, parameter :: array_size = 1000
+        integer :: i, j, freq(0 : array_size - 1)
+        real(dp) :: chisq, expct
+
+        print *,""
+        print *, "Test uniform random generator with chi-squared"
+        freq = 0
+        do i = 1, num
+            j = array_size * uni_rvs( )
+            freq(j) = freq(j) + 1
+        end do
+        chisq = 0.0_dp
+        expct = num / array_size
+        do i = 0, array_size - 1
+           chisq = chisq + (freq(i) - expct) ** 2 / expct
+        end do
+        write(*,*) "The critical value for chi-squared with 1000 d. of f. is"  &
+            //" 1143.92"
+        write(*,*) "Chi-squared for uniform random generator is : ", chisq
+        call check((chisq < 1143.9) ,                                          &
+            msg = "uniform randomness failed chi-squared test", warn=warn)
+    end subroutine test_uni_rvs_0
+
+
+
+    #:for k1, t1 in ALL_KINDS_TYPES
+      subroutine test_uni_rvs_${t1[0]}$${k1}$
+          ${t1}$ :: res(15), scale, loc
+          integer :: i, n, seed, get, k
+
+          #:if k1 == "int8"
+          ${t1}$, parameter :: ans(15) = [47, 99, 43, 37, 48, 30, 27, 100, 30, &
+                                          33, 21, 103, 55, 54, 110]
+          #:elif k1 == "int16"
+          ${t1}$, parameter :: ans(15) = [25, 4, 81, 98, 49, 34, 32, 62, 115,  &
+                                          112, 26, 20, 37, 100, 82]
+          #:elif k1 == "int32"
+          ${t1}$, parameter :: ans(15) = [19, 52, 56, 20, 59, 44, 34, 102, 19, &
+                                          39, 60, 50, 97, 56, 67]
+          #:elif k1 == "int64"
+          ${t1}$, parameter :: ans(15) = [76, 45, 43, 75, 76, 15, 25, 24, 114, &
+                                          113, 94, 29, 109, 93, 89]
+          #:elif t1[0] == "r"
+                #! for real type
+          ${t1}$, parameter :: ans(15) =                                       &
+                          [0.914826628538749186958511927514337003_${k1}$,      &
+                          0.367330098664966409049981166390352882_${k1}$,       &
+                          1.77591243057709280428468900936422870_${k1}$,        &
+                          0.885921308987590139238932351872790605_${k1}$,       &
+                          0.950735656542987861428173346212133765_${k1}$,       &
+                          -0.659562573857055134407545438079978339_${k1}$,      &
+                          -0.116661718506947176265953203255776316_${k1}$,      &
+                          0.837391893893859151631886561517603695_${k1}$,       &
+                          -0.703954396598600540269075054311542772_${k1}$,      &
+                          0.382592729851141566399519433616660535_${k1}$,       &
+                          -0.132472493978185168472805344208609313_${k1}$,      &
+                          -0.878723366294216184924081858298450243_${k1}$,      &
+                          -0.901660046141515819639877804547722917_${k1}$,      &
+                          -0.164090614147737401395943379611708224_${k1}$,      &
+                          -0.333886718190384290672056977200554684_${k1}$]
+          #:else
+                #! for complex type
+          ${t1}$, parameter :: ans(15) =                                       &
+                             [(0.457413314269374593479255963757168502_${k1}$,  &
+                               0.183665049332483204524990583195176441_${k1}$), &
+                              (0.887956215288546402142344504682114348_${k1}$,  &
+                               0.442960654493795069619466175936395302_${k1}$), &
+                              (0.475367828271493930714086673106066883_${k1}$,  &
+                               0.170218713071472432796227280960010830_${k1}$), &
+                              (0.441669140746526411867023398372111842_${k1}$,  &
+                               0.918695946946929575815943280758801848_${k1}$), &
+                              (0.148022801700699729865462472844228614_${k1}$,  &
+                               0.691296364925570783199759716808330268_${k1}$), &
+                       (-6.623624698909258423640267210430465639E-0002_${k1}$,  &
+                               0.560638316852891907537959070850774879_${k1}$), &
+                             (-0.450830023070757909819938902273861459_${k1}$,  &
+                               0.917954692926131299302028310194145888_${k1}$), &
+                             (-0.166943359095192145336028488600277342_${k1}$,  &
+                                1.05997401970850635422038976685144007_${k1}$), &
+                             (-0.429652190199228276035192664039641386_${k1}$,  &
+                               0.523558274341032421628217008446881664_${k1}$), &
+                              (0.427181091476823815433760955784237012_${k1}$,  &
+                                1.34628934976074521312483511792379431_${k1}$), &
+                             (-0.343281426018765739582860874179459643_${k1}$,  &
+                                1.15357331316264255516301773241139017_${k1}$), &
+                             (-0.127590074749816595467422075671493076_${k1}$,  &
+                                1.06891199479835175001340985545539297_${k1}$), &
+                              (0.262287586904722758163188700564205647_${k1}$,  &
+                                1.29508919831907332032017166056903079_${k1}$), &
+                             (-0.192677407376582732201342196276527829_${k1}$,  &
+                                1.32794925614337933073016984053538181_${k1}$), &
+                             (-0.264742129752461530234342035328154452_${k1}$,  &
+                                1.01282963412172621886497836385387927_${k1}$)]
+          #:endif
+
+          print *, "Test rvs_uniform_${t1[0]}$${k1}$"
+          seed = 258147369; k = 5
+          call random_seed(seed, get)
+          #:if t1[0] == "i"
+              #! for integer type
+          loc = 15_${k1}$; scale = 100_${k1}$
+          #:elif t1[0] == "r"
+              #! for real type
+          loc = -1.0_${k1}$; scale = 2.0_${k1}$
+          #:else
+              #! for complex type
+          loc = (-0.5_${k1}$,0.5_${k1}$); scale = (1.0_${k1}$, 1.0_${k1}$)
+          #:endif
+          do i = 1, 5
+              res(i) = uni_rvs(scale)             ! 1 dummy
+          end do
+          do i = 6,10
+              res(i) = uni_rvs(loc, scale)        ! 2 dummies
+          end do
+          res(11:15) = uni_rvs(loc, scale, k)     ! 3 dummies
+          #:if t1[0] == "i"
+              #! for integer type
+          call check(all(res == ans),                                          &
+              msg="rvs_uniform_${t1[0]}$${k1}$ failed", warn=warn)
+          #:else
+              #! for real and complex types
+          call check(all(abs(res - ans) < ${k1}$tol),                          &
+              msg="rvs_uniform_${t1[0]}$${k1}$ failed", warn=warn)
+          #:endif
+      end subroutine test_uni_rvs_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+    #:for k1, t1 in ALL_KINDS_TYPES
+    subroutine test_uni_pdf_${t1[0]}$${k1}$
+        ${t1}$ :: x1, x2(3,4), loc, scale
+        integer :: seed, get, i
+        #:if t1[0] == "i"
+            #! for integer type
+        real :: res(3, 5)
+        real, parameter :: ans(15) = [(1.96078438E-02, i=1,15)]
+        #:elif t1[0] == "r"
+            #! for real type
+        ${t1}$ :: res(3, 5)
+        ${t1}$, parameter :: ans(15) = [(0.5_${k1}$, i=1,15)]
+        #:else
+            #! for complex type
+        real(${k1}$) :: res(3, 5)
+        real(${k1}$), parameter :: ans(15) = [(1.0_${k1}$, i=1,15)]
+        #:endif
+
+        print *, "Test pdf_uniform_${t1[0]}$${k1}$"
+        seed = 147258639
+        call random_seed(seed, get)
+        #:if t1[0] == "i"
+            #! for integer type
+        loc = 0_${k1}$; scale = 50_${k1}$
+        #:elif t1[0] == "r"
+            #! for real type
+        loc = 0.0_${k1}$; scale = 2.0_${k1}$
+        #:else
+            #! for complex type
+        loc = (-0.5_${k1}$, 0.5_${k1}$); scale = (1.0_${k1}$, 1.0_${k1}$)
+        #:endif
+        x1 = uni_rvs(loc, scale)
+        x2 = reshape(uni_rvs(loc, scale, 12), [3,4])
+        res(:,1) = uni_pdf(x1, loc, scale)
+        res(:, 2:5) = uni_pdf(x2, loc, scale)
+        #:if t1[0] == "i"
+            #! for integer type
+        call check(all(abs(res - reshape(ans,[3,5])) < sptol),                 &
+            msg = "pdf_uniform_${t1[0]}$${k1}$ failed", warn=warn)
+        #:else
+            #! for real and complex types
+        call check(all(abs(res - reshape(ans,[3,5])) < ${k1}$tol),             &
+            msg = "pdf_uniform_${t1[0]}$${k1}$ failed", warn=warn)
+        #:endif
+    end subroutine test_uni_pdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+    #:for k1, t1 in ALL_KINDS_TYPES
+    subroutine test_uni_cdf_${t1[0]}$${k1}$
+        ${t1}$ :: x1, x2(3,4), loc, scale
+        integer :: seed, get
+        #:if k1 == "int8"
+        real :: res(3,5)
+        real, parameter :: ans(15) = [0.435643554, 0.435643554, 0.435643554,   &
+                                      0.702970326, 0.653465331, 0.485148519,   &
+                                      0.386138618, 0.386138618, 0.336633652,   &
+                                      0.277227730, 0.237623766, 0.524752498,   &
+                                      0.732673287, 0.534653485, 0.415841579]
+        #:elif k1 == "int16"
+        real :: res(3,5)
+        real, parameter :: ans(15) = [0.178217828, 0.178217828, 0.178217828,   &
+                                      0.465346545, 0.673267305, 0.247524753,   &
+                                      0.158415839, 0.792079210, 0.742574275,   &
+                                      0.574257433, 0.881188095, 0.663366318,   &
+                                      0.524752498, 0.623762369, 0.178217828]
+        #:elif k1 == "int32"
+        real :: res(3,5)
+        real, parameter :: ans(15) = [0.732673287, 0.732673287, 0.732673287,   &
+                                      0.722772300, 0.792079210, 5.94059415E-02,&
+                                      0.841584146, 0.405940592, 0.960396051,   &
+                                      0.534653485, 0.782178223, 0.861386120,   &
+                                      0.564356446, 0.613861382, 0.306930691]
+        #:elif k1 == "int64"
+        real :: res(3,5)
+        real, parameter :: ans(15) = [0.455445558, 0.455445558, 0.455445558,   &
+                                      0.277227730, 0.455445558, 0.930693090,   &
+                                      0.851485133, 0.623762369, 5.94059415E-02,&
+                                      0.693069279, 0.544554472, 0.207920790,   &
+                                      0.306930691, 0.356435657, 0.128712878]
+        #:elif t1[0] == "r"
+            #! for real type
+        ${t1}$ :: res(3,5)
+        ${t1}$, parameter :: ans(15) =                                         &
+                             [0.170192944297557408050991512027394492_${k1}$,   &
+                              0.170192944297557408050991512027394492_${k1}$,   &
+                              0.170192944297557408050991512027394492_${k1}$,   &
+                              0.276106146274646191418611351764411665_${k1}$,   &
+                              0.754930097473875072466853453079238534_${k1}$,   &
+                              0.406620682573118008562573777453508228_${k1}$,   &
+                              0.187742819191801080247472555129206739_${k1}$,   &
+                              0.651605526090507591874256831943057477_${k1}$,   &
+                              0.934733949732104885121941606485052034_${k1}$,   &
+                              0.151271491851613287815681019310432021_${k1}$,   &
+                              0.987674522797719611766353864368284121_${k1}$,   &
+                              0.130533899463404684526679488953959662_${k1}$,   &
+                              0.106271905921876880229959283497009892_${k1}$,   &
+                         9.27578652240113182836367400341259781E-0002_${k1}$,   &
+                              0.203399426853420439709196898547816090_${k1}$]
+        #:else
+            #! for complex type
+        real(${k1}$) :: res(3,5)
+        real(${k1}$), parameter :: ans(15) =                                   &
+                        [4.69913179731340971083526490627998168E-0002_${k1}$,   &
+                         4.69913179731340971083526490627998168E-0002_${k1}$,   &
+                         4.69913179731340971083526490627998168E-0002_${k1}$,   &
+                              0.306970191529817593217448363707416739_${k1}$,   &
+                              0.122334258469188588238756489506609443_${k1}$,   &
+                              0.141398599060326408705075175176932616_${k1}$,   &
+                              0.128925006861443729884744412460848140_${k1}$,   &
+                         9.85755512660026594506599410104817938E-0003_${k1}$,   &
+                         8.16527497645585445208592050401597260E-0002_${k1}$,   &
+                              0.163921605454974749736935624944263178_${k1}$,   &
+                         7.81712317416218284294000447064256003E-0002_${k1}$,   &
+                              0.446415807686727375005224206895756087_${k1}$,   &
+                         5.31753272901435018841591264266743165E-0004_${k1}$,   &
+                              0.101455865191097416942685556683943046_${k1}$,   &
+                              0.155276470981788516449112374966730510_${k1}$]
+        #:endif
+
+        print *, "Test cdf_uniform_${t1[0]}$${k1}$"
+        seed = 369147258
+        call random_seed(seed, get)
+        #:if t1[0] == "i"
+            #! for integer type
+        loc = 14_${k1}$; scale = 100_${k1}$
+        #:elif t1[0] == "r"
+            #! for real type
+        loc = 0.0_${k1}$; scale = 2.0_${k1}$
+        #:else
+            #! for complex type
+        loc = (-0.5_${k1}$, -0.5_${k1}$); scale = (1.0_${k1}$, 1.0_${k1}$)
+        #:endif
+        x1 = uni_rvs(loc, scale)
+        x2 = reshape(uni_rvs(loc, scale, 12), [3,4])
+        res(:,1) = uni_cdf(x1, loc, scale)
+        res(:, 2:5) = uni_cdf(x2, loc, scale)
+        #:if t1[0] == "i"
+            #! for integer type
+        call check(all(abs(res - reshape(ans,[3,5])) < sptol),                 &
+            msg = "cdf_uniform_${t1[0]}$${k1}$ failed", warn=warn)
+        #:else
+            #! for real and complex types
+        call check(all(abs(res - reshape(ans,[3,5])) < ${k1}$tol),             &
+            msg = "cdf_uniform_${t1[0]}$${k1}$ failed", warn=warn)
+        #:endif
+    end subroutine test_uni_cdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+end program test_distribution_uniform

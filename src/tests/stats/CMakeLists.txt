@@ -1,11 +1,33 @@
+### Pre-process: .fpp -> .f90 via Fypp
+
+# Create a list of the files to be preprocessed
+set(fppFiles
+    test_mean.fypp
+    test_mean_f03.fypp
+    test_median.fypp
+    test_distribution_uniform.fypp
+    test_distribution_normal.fypp
+    test_distribution_exponential.fypp
+)
+
+fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
+
 ADDTEST(corr)
 ADDTEST(cov)
 ADDTEST(mean)
+ADDTEST(median)
 ADDTEST(moment)
 ADDTEST(rawmoment)
 ADDTEST(var)
 ADDTEST(varn)
+<<<<<<< HEAD
 ADDTEST(distribution_gamma)
+=======
+ADDTEST(random)
+ADDTEST(distribution_uniform)
+ADDTEST(distribution_normal)
+ADDTEST(distribution_exponential)
+>>>>>>> upstream/master
 
 if(DEFINED CMAKE_MAXIMUM_RANK)
     if(${CMAKE_MAXIMUM_RANK} GREATER 7)

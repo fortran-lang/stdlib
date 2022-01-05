@@ -1,15 +1,24 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+<<<<<<< HEAD
 Module stdlib_stats_distribution_normal
     use stdlib_kinds
     use stdlib_error, only : error_stop
     use stdlib_stats_distribution_PRNG, only : dist_rand
     use stdlib_stats_distribution_uniform, only : uni=>uniform_distribution_rvs
+=======
+module stdlib_stats_distribution_normal
+    use stdlib_kinds, only : sp, dp, xdp, qp, int32
+    use stdlib_error, only : error_stop
+    use stdlib_random, only : dist_rand
+    use stdlib_stats_distribution_uniform, only : uni=>rvs_uniform
+>>>>>>> upstream/master
 
     implicit none
     private
 
     real(dp), parameter  :: HALF = 0.5_dp, ONE = 1.0_dp, TWO = 2.0_dp
+<<<<<<< HEAD
     integer, save :: kn(0:127)
     real(dp), save :: wn(0:127), fn(0:127)
     logical, save  :: zig_norm_initialized = .false.
@@ -66,6 +75,74 @@ Module stdlib_stats_distribution_normal
     subroutine zigset
     ! Marsaglia & Tsang generator for random normals & random exponentials.
     ! Translated from C by Alan Miller (amiller@bigpond.net.au)
+=======
+    integer :: kn(0:127)
+    real(dp) :: wn(0:127), fn(0:127)
+    logical  :: zig_norm_initialized = .false.
+
+    public :: rvs_normal
+    public :: pdf_normal
+    public :: cdf_normal
+
+
+
+    interface rvs_normal
+    !! version: experimental
+    !!
+    !! Normal Distribution Random Variates
+    !! ([Specification](../page/specs/stdlib_stats_distribution_normal.html#
+    !! rvs_normal-normal-distribution-random-variates))
+    !!
+        module procedure rvs_norm_0_rsp                  !0 dummy variable
+
+        #:for k1, t1 in RC_KINDS_TYPES
+        module procedure rvs_norm_${t1[0]}$${k1}$        !2 dummy variables
+        #:endfor
+
+        #:for k1, t1 in RC_KINDS_TYPES
+        module procedure rvs_norm_array_${t1[0]}$${k1}$  !3 dummy variables
+        #:endfor
+    end interface rvs_normal
+
+
+
+    interface pdf_normal
+    !! version: experimental
+    !!
+    !! Normal Distribution Probability Density Function
+    !! ([Specification](../page/specs/stdlib_stats_distribution_normal.html#
+    !! pdf_normal-normal-distribution-probability-density-function))
+    !!
+        #:for k1, t1 in RC_KINDS_TYPES
+        module procedure pdf_norm_${t1[0]}$${k1}$
+        #:endfor
+    end interface pdf_normal
+
+
+
+    interface cdf_normal
+    !! version: experimental
+    !!
+    !! Normal Distribution Cumulative Distribution Function
+    !! ([Specification](../page/specs/stdlib_stats_distribution_normal.html#
+    !! cdf_normal-normal-distribution-cumulative-distribution-function))
+    !!
+        #:for k1, t1 in RC_KINDS_TYPES
+        module procedure cdf_norm_${t1[0]}$${k1}$
+        #:endfor
+    end interface cdf_normal
+
+
+
+
+
+contains
+
+    subroutine zigset
+    ! Marsaglia & Tsang generator for random normals & random exponentials.
+    ! Translated from C by Alan Miller (amiller@bigpond.net.au), released as public
+    ! domain (https://jblevins.org/mirror/amiller/)
+>>>>>>> upstream/master
     !
     ! Marsaglia, G. & Tsang, W.W. (2000) `The ziggurat method for generating
     ! random variables', J. Statist. Software, v5(8).
@@ -73,6 +150,7 @@ Module stdlib_stats_distribution_normal
     ! This is an electronic journal which can be downloaded from:
     ! http://www.jstatsoft.org/v05/i08
     !
+<<<<<<< HEAD
     ! N.B. It is assumed that all integers are 32-bit.
     !
     ! Latest version - 1 January 2001
@@ -84,6 +162,17 @@ Module stdlib_stats_distribution_normal
 
         tn = dn
         !  tables for random normals
+=======
+    ! Latest version - 1 January 2001
+    !
+        real(dp), parameter :: M1 = 2147483648.0_dp, vn = 0.00991256303526217_dp
+        real(dp)            :: dn, tn, q
+        integer :: i
+
+        dn = 3.442619855899_dp
+        tn = dn
+    !tables for random normals
+>>>>>>> upstream/master
         q = vn * exp(HALF * dn * dn)
         kn(0) = int((dn / q) * M1, kind = int32)
         kn(1) = 0
@@ -99,11 +188,21 @@ Module stdlib_stats_distribution_normal
             wn(i) = dn / M1
         end do
         zig_norm_initialized = .true.
+<<<<<<< HEAD
         return
     end subroutine zigset
 
     #:for k1, t1 in REAL_KINDS_TYPES
     impure elemental function norm_dist_rvs_0_${t1[0]}$${k1}$( ) result(res)
+=======
+    end subroutine zigset
+
+
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    function rvs_norm_0_${t1[0]}$${k1}$( ) result(res)
+    !
+>>>>>>> upstream/master
     ! Standard normal random vairate (0,1)
     !
         ${t1}$ :: res
@@ -111,12 +210,19 @@ Module stdlib_stats_distribution_normal
         ${t1}$ ::  x, y
         integer :: hz, iz
 
+<<<<<<< HEAD
         if( .not. zig_norm_initialized ) call zigset
         iz = 0
         ! original algorithm use 32bit
         hz = dist_rand(1_int32)
 
         iz = iand( hz, 127 )
+=======
+        if(.not. zig_norm_initialized) call zigset
+        iz = 0
+        hz = dist_rand(1_int32)          !32bit random integer
+        iz = iand( hz, 127 )             !random integer in [0, 127]
+>>>>>>> upstream/master
         if( abs( hz ) < kn(iz) ) then
             res = hz * wn(iz)
         else
@@ -137,8 +243,11 @@ Module stdlib_stats_distribution_normal
                     res = x
                     exit L1
                 end if
+<<<<<<< HEAD
 
                 !original algorithm use 32bit
+=======
+>>>>>>> upstream/master
                 hz = dist_rand(1_int32)
                 iz = iand( hz, 127 )
                 if( abs( hz ) < kn(iz) ) then
@@ -147,6 +256,7 @@ Module stdlib_stats_distribution_normal
                 end if
             end do L1
         end if
+<<<<<<< HEAD
         return
     end function norm_dist_rvs_0_${t1[0]}$${k1}$
 
@@ -155,10 +265,22 @@ Module stdlib_stats_distribution_normal
     #:for k1, t1 in REAL_KINDS_TYPES
     impure elemental function norm_dist_rvs_${t1[0]}$${k1}$(loc, scale)         &
                      result(res)
+=======
+    end function rvs_norm_0_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    function rvs_norm_${t1[0]}$${k1}$(loc, scale) result(res)
+    !
+>>>>>>> upstream/master
     ! Normal random variate (loc, scale)
     !
         ${t1}$, intent(in) :: loc, scale
         ${t1}$ :: res
+<<<<<<< HEAD
         ${t1}$, parameter  ::  r = 3.442619855899_${k1}$, rr = 1.0_${k1}$ / r
         ${t1}$ ::  x, y
         integer :: hz, iz
@@ -211,12 +333,30 @@ Module stdlib_stats_distribution_normal
     impure elemental function norm_dist_rvs_${t1[0]}$${k1}$(loc, scale)         &
                      result(res)
     ! Normal distributed complex. The real part and imaginary part are          &
+=======
+
+        if(scale == 0._${k1}$) call error_stop("Error(rvs_norm): Normal"       &
+            //" distribution scale parameter must be non-zero")
+        res = rvs_norm_0_${t1[0]}$${k1}$(  )
+        res = res * scale + loc
+    end function rvs_norm_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    function rvs_norm_${t1[0]}$${k1}$(loc, scale) result(res)
+    !
+    ! Normally distributed complex. The real part and imaginary part are       &
+>>>>>>> upstream/master
     ! independent of each other.
     !
         ${t1}$, intent(in) :: loc, scale
         ${t1}$ :: res
         real(${k1}$) :: tr, ti
 
+<<<<<<< HEAD
         tr = norm_dist_rvs_r${k1}$(real(loc), real(scale))
         ti = norm_dist_rvs_r${k1}$(aimag(loc), aimag(scale))
         res = cmplx(tr, ti, kind=${k1}$)
@@ -231,10 +371,27 @@ Module stdlib_stats_distribution_normal
         ${t1}$, intent(in) :: loc, scale
         integer, intent(in) :: array_size
         ${t1}$, allocatable :: res(:)
+=======
+        tr = rvs_norm_r${k1}$(loc % re, scale % re)
+        ti = rvs_norm_r${k1}$(loc % im, scale % im)
+        res = cmplx(tr, ti, kind=${k1}$)
+    end function rvs_norm_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    function rvs_norm_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
+        ${t1}$, intent(in) :: loc, scale
+        integer, intent(in) :: array_size
+        ${t1}$ :: res(array_size)
+>>>>>>> upstream/master
         ${t1}$, parameter  ::  r = 3.442619855899_${k1}$, rr = 1.0_${k1}$ / r
         ${t1}$ ::  x, y, re
         integer :: hz, iz, i
 
+<<<<<<< HEAD
         if(scale==0._${k1}$) call error_stop("Error(norm_dist_rvs_array):"      &
                     //" Normal distribution scale parameter must be non-zero")
         if( .not. zig_norm_initialized ) call zigset
@@ -244,6 +401,14 @@ Module stdlib_stats_distribution_normal
             ! original algorithm use 32bit
             hz = dist_rand(1_int32)
 
+=======
+        if(scale == 0._${k1}$) call error_stop("Error(rvs_norm_array): Normal" &
+            //"distribution scale parameter must be non-zero")
+        if(.not. zig_norm_initialized) call zigset
+        do i = 1, array_size
+            iz = 0
+            hz = dist_rand(1_int32)
+>>>>>>> upstream/master
             iz = iand( hz, 127 )
             if( abs( hz ) < kn(iz) ) then
                 re = hz * wn(iz)
@@ -266,7 +431,10 @@ Module stdlib_stats_distribution_normal
                         exit L1
                     end if
 
+<<<<<<< HEAD
                     !original algorithm use 32bit
+=======
+>>>>>>> upstream/master
                     hz = dist_rand(1_int32)
                     iz = iand( hz, 127 )
                     if( abs( hz ) < kn(iz) ) then
@@ -277,6 +445,7 @@ Module stdlib_stats_distribution_normal
             end if
             res(i) = re * scale + loc
         end do
+<<<<<<< HEAD
         return
     end function norm_dist_rvs_array_${t1[0]}$${k1}$
 
@@ -364,3 +533,92 @@ Module stdlib_stats_distribution_normal
     #:endfor
 
 end module stdlib_stats_distribution_normal
+=======
+    end function rvs_norm_array_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    function rvs_norm_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
+        ${t1}$, intent(in) :: loc, scale
+        integer, intent(in) :: array_size
+        integer :: i
+        ${t1}$ :: res(array_size)
+        real(${k1}$) :: tr, ti
+
+        do i = 1, array_size
+            tr = rvs_norm_r${k1}$(loc % re, scale % re)
+            ti = rvs_norm_r${k1}$(loc % im, scale % im)
+            res(i) = cmplx(tr, ti, kind=${k1}$)
+        end do
+    end function rvs_norm_array_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    impure elemental function pdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    !
+    ! Normal distribution probability density function
+    !
+        ${t1}$, intent(in) :: x, loc, scale
+        ${t1}$ :: res
+        ${t1}$, parameter :: sqrt_2_pi = sqrt(2.0_${k1}$ * acos(-1.0_${k1}$))
+
+        if(scale == 0._${k1}$) call error_stop("Error(pdf_norm): Normal"       &
+            //"distribution scale parameter must be non-zero")
+        res = exp(- 0.5_${k1}$ * ((x - loc) / scale) * (x - loc) / scale) /    &
+              (sqrt_2_Pi * scale)
+    end function pdf_norm_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    impure elemental function pdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
+        ${t1}$, intent(in) :: x, loc, scale
+        real(${k1}$) :: res
+
+        res = pdf_norm_r${k1}$(x % re, loc % re, scale % re)
+        res = res * pdf_norm_r${k1}$(x % im, loc % im, scale % im)
+    end function pdf_norm_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    impure elemental function cdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    !
+    ! Normal distribution cumulative distribution function
+    !
+        ${t1}$, intent(in) :: x, loc, scale
+        ${t1}$ :: res
+        ${t1}$, parameter :: sqrt_2 = sqrt(2.0_${k1}$)
+
+        if(scale == 0._${k1}$) call error_stop("Error(cdf_norm): Normal"       &
+            //"distribution scale parameter must be non-zero")
+        res = erfc(- (x - loc) / (scale * sqrt_2)) / 2.0_${k1}$
+    end function cdf_norm_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    impure elemental function cdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
+        ${t1}$, intent(in) :: x, loc, scale
+        real(${k1}$) :: res
+
+        res = cdf_norm_r${k1}$(x % re, loc % re, scale % re)
+        res = res * cdf_norm_r${k1}$(x % im, loc % im, scale % im)
+    end function cdf_norm_${t1[0]}$${k1}$
+
+    #:endfor
+
+end module stdlib_stats_distribution_normal
+>>>>>>> upstream/master

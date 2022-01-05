@@ -1,0 +1,97 @@
+#:include "common.fypp"
+submodule (stdlib_math) stdlib_math_linspace
+
+implicit none
+
+contains
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:set RName = rname("linspace_default", 1, t1, k1)
+    pure module function ${RName}$(start, end) result(res)
+      ${t1}$, intent(in) :: start
+      ${t1}$, intent(in) :: end
+
+      ${t1}$ :: res(DEFAULT_LINSPACE_LENGTH)
+
+      res = linspace(start, end, DEFAULT_LINSPACE_LENGTH)
+
+    end function ${RName}$
+  #:endfor
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    #:set RName = rname("linspace_n", 1, t1, k1)
+    pure module function ${RName}$(start, end, n) result(res)
+      ${t1}$, intent(in) :: start
+      ${t1}$, intent(in) :: end
+      integer, intent(in) :: n
+
+      ${t1}$ :: res(max(n, 0))
+
+      integer :: i    ! Looping index
+      ${t1}$ :: interval ! Difference between adjacent elements
+
+
+      if(n <= 0) return ! If passed length is less than or equal to 0, return an empty (allocated with length 0) array
+      if(n == 1) then
+        res(1) = end
+        return
+      end if
+
+      interval = (end - start) / real((n - 1), ${k1}$)
+
+      res(1) = start
+      res(n) = end
+
+      do i = 2, n - 1
+
+        res(i) = real((i-1), ${k1}$) * interval + start
+
+      end do
+
+    end function ${RName}$
+  #:endfor
+
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+      #:set RName = rname("linspace_default", 1, t1, k1)
+      module procedure ${RName}$
+
+        res = linspace(start, end, DEFAULT_LINSPACE_LENGTH)
+
+      end procedure ${RName}$
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+      #:set RName = rname("linspace_n", 1, t1, k1)
+      module procedure ${RName}$
+
+        real(${k1}$) :: x(max(n, 0)) ! array of the real part of complex number
+        real(${k1}$) :: y(max(n, 0)) ! array of the imaginary part of the complex number
+
+        x = linspace(start%re, end%re, n)
+        y = linspace(start%im, end%im, n)
+
+        res = cmplx(x, y, kind=${k1}$)
+
+      end procedure ${RName}$
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:set RName = rname("linspace_default", 1, t1, k1)
+      module procedure ${RName}$
+
+        res = linspace(real(start, kind=dp), real(end, kind=dp), DEFAULT_LINSPACE_LENGTH)
+
+      end procedure ${RName}$
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:set RName = rname("linspace_n", 1, t1, k1)
+      module procedure ${RName}$
+
+        res = linspace(real(start, kind=dp), real(end, kind=dp), n)
+
+      end procedure ${RName}$
+    #:endfor
+
+end submodule
