@@ -1340,7 +1340,7 @@ Procedures to report on the structure of the map:
 * `total_depth( map )` - Returns the total number of one's based
 offsets of slot entries from their slot index
 
-### Specifications of the `stdlib_hashmap_chaining` procedures
+### Specifications of the `stdlib_hashmaps` procedures
 
 #### `calls` - Returns the number of calls on a hash map
 
@@ -1961,13 +1961,11 @@ generation of `inmap`, `other` is undefined.
         integer(int_index)  :: inmap
         class(*), allocatable :: dummy
         allocate( dummy, source=4.0 )
-        call init( map,           &
-                   fnv_1_hasher,  &
-                   slots_bits=10 )
+        call map % init( fnv_1_hasher, slots_bits=10 )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         call set( other, dummy )
-        call map_entry( map, inmap, key, other )
-        call remove_entry( map, inmap )
+        call map % map_entry( inmap, key, other )
+        call map % remove_entry( inmap )
     end program demo_remove_entry
 ```
 
@@ -2207,7 +2205,7 @@ the inverse table.
 
 ##### Syntax
 
-`result = [[stdlib_hashmaps:map % valid_index]]( map )`
+`result = [[stdlib_hashmaps:map % valid_index]]( inmap )`
 
 ##### Class
 
@@ -2245,7 +2243,7 @@ table of `map` and `.false.` otherwise.
       logocal :: valid
       call map % init( fnv_1_hasher )
       inmap = 10
-      valid = map % valid_index ( inmap)
+      valid = map % valid_index ( inmap )
       print *, "Initial index of 10 valid for empty map =  ", valid
     end program demo_valid_index
 ```
