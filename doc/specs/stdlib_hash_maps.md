@@ -350,7 +350,7 @@ The result is a hash code created using the FNV-1 algorithm.
 Glenn Fowler, Landon Curt Noll, and Phong Vo.
 This code is relatively fast on short keys, and is small enough that
 it will often be retained in the instruction cache if hashing is
-intermitent.
+intermittent.
 As a result it should give good performance for typical hash map
 applications.
 This code does not pass any of the SMHasher tests, but the resulting
@@ -414,7 +414,7 @@ The result is a hash code created using the FNV-1a algorithm.
 of Glenn Fowler, Landon Curt Noll, and Phong Vo.
 This code is relatively fast on short keys, and is small enough that
 it will often be retained in the instruction cache if hashing is
-intermitent.
+intermittent.
 As a result it should give good performance for typical hash map
 applications.
 This code does not pass any of the SMHasher tests, but the resulting
