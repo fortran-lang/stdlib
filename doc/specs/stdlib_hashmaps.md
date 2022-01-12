@@ -1450,11 +1450,12 @@ Subroutine
 `intent(out)` argument.  If `true` an entry with the given `key`
 exists in the map, if false `other` is undefined.
 
-* The following is an example of the retrieval of other data
+##### Example
+
+ The following is an example of the retrieval of other data
   associated with a `key`:
 
 
-##### Example
 
 ```Fortran
     program demo_get_other_data
