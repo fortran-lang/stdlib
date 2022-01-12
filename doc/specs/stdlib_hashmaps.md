@@ -1002,7 +1002,7 @@ entities of kind `int_probes`. Currently `int_probes` has the value of
 
 The constant `load_factor` is only used by the `open_hashmap_type`. It
 specifies the maximum fraction of the available slots that may be
-filled before expansion occurs. The current `load_factor = ).5625` so
+filled before expansion occurs. The current `load_factor = 0.5625` so
 the current implementation of `open_hashmap_type` can only hold a
 little more than `2**29` entries.
 
