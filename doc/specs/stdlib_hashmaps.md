@@ -947,7 +947,7 @@ associated procedures and constants that implement two simple hash map
 types using separate chaining hashing and open addressing hashing. The
 derived type `hashmap_type` is the parent type to its two
 extensions: `chaining_hashmap_type` and `open_hashmap_type`.
-`chaining_hashmap_type`. The extension types provide 
+The extension types provide 
 procedures to manipulate the structure of a hash map object:
 `init`, `map_entry`, `rehash`, `remove_entry`, and
 `set_other_data`. They also provide procedures to inquire about
