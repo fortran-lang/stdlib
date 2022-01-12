@@ -2,7 +2,7 @@
 title: Hash maps
 ---
 
-# The `stdlib_hashmap_wrappers`, `stdlib_hashmap_chaining` and `stdlib_hashmap_open` modules
+# The `stdlib_hashmap_wrappers`, and `stdlib_hashmaps` modules
 
 [TOC]
 
@@ -277,7 +277,7 @@ is an `intent(out)` argument.
       implicit none
       type(other_type) :: other_in, other_out
       integer(int_8) :: i
-     class(*), allocatable :: dummy
+      class(*), allocatable :: dummy
       type dummy_type
           integer(int8) :: value(15)
       end type
@@ -674,7 +674,7 @@ The result is a value of type default `logical`.
 
 ##### Result value 
 
-The result is `.true.` if the keys are equal, otherwise `.falss`. 
+The result is `.true.` if the keys are equal, otherwise `.falss.`. 
 
 ##### Example 
 
@@ -1448,8 +1448,8 @@ Subroutine
   with the `key`.
 
 `exists` (optional): shall be a variable of type logical. It is an
-`intent(out)` argument.  If `true` an entry with the given `key`
-exists in the map, if false `other` is undefined.
+`intent(out)` argument.  If `.true.` an entry with the given `key`
+exists in the map, if `.false.` `other` is undefined.
 
 ##### Example
 
@@ -1649,7 +1649,7 @@ entry.
 `conflict` (optional): shall be a scalar variable of type
 `logical`. It is an `intent(in)` argument. If present, a `.true.`
 value indicates that an entry with the value of `key` already exists
-and the entry was not entered into the map, a `.false` value indicates
+and the entry was not entered into the map, a `.false.` value indicates
 that `key` was not present in the map and the entry was added to the
 table. 
 
@@ -1852,8 +1852,8 @@ to be removed.
 
 `existed` (optional): shall be a scalar variable of type default
 logical. It is an `intent(out)` argument. If present with the value
-`true` the entry existed 
-in the map before removal, if `false` the entry was not present to be
+`.true.` the entry existed 
+in the map before removal, if `.false.` the entry was not present to be
 removed. 
 
 ##### Example
