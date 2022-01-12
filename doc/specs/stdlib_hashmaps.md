@@ -4,7 +4,7 @@ title: Hash maps
 
 # The `stdlib_hashmap_wrappers`, `stdlib_hashmap_chaining` and `stdlib_hashmap_open` modules
 
-(TOC)
+[TOC]
 
 ## Overview of hash maps
 
@@ -113,7 +113,8 @@ keys and their associated data.
 
 The constant `int_hash` is used to define the integer kind value for
 the returned hash codes and variables used to access them. It
-currently has the value, `int32`.
+currently is importedxd from `stdlib_hash_32bit` where it haas the
+value, `int32`. 
 
 ### The `stdlib_hashmap_wrappers`' module's derived types
 
