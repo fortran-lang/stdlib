@@ -1026,7 +1026,7 @@ the implementation of the `chaining_hashmap_type` public type. The
 four private derived types, `open_map_entry_type`,
 `open_map_entry_list`, `open_map_entry_ptr`, and `open_map_entry_pool`
 are used in the implementation of the `open_hashmap_type` public
-type:. Each of these types are described below. 
+type. Each of these types are described below. 
 
 #### The `hashmap_type` abstract type
 
