@@ -273,3 +273,44 @@ program demo_getline
     end do
 end program demo_getline
 ```
+
+## Formatting constants
+
+### Status
+
+Experimental
+
+### Description
+
+Formatting constants for printing out integer, floating point, and complex numbers at their full precision.
+Provides formats for all kinds as defined in stdlib_kinds
+
+### Example
+
+```fortran
+program deom_fmt_constants
+    use intrinsic, iso_fortran_env, only : int32, int64, float32, float64
+    use stdlib_io, only : FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_COMPLEX_SP, FMT_COMPLEX_DP
+    implicit none
+
+    integer(kind=int32)  :: i32
+    integer(kind=int64)  :: i64
+    real(kind=real32)    :: r32
+    real(kind=real64)    :: r64
+    complex(kind=real32) :: c32
+    complex(kind=real64) :: c64
+
+    i32 = 100_int32
+    i64 = 100_int64
+    r32 = 100.0_real32
+    r64 = 100.0_real64
+    c32 = cmplx(100.0_real32, kind=real32)
+    c64 = cmplx(100.0_real64, kind=real64)
+
+    print FMT_INT, i32, i64
+    print FMT_REAL_SP, r32
+    print FMT_REAL_DP, r64
+    print FMT_COMPLEX_SP, c32
+    print FMT_COMPLEX_DP, c64
+
+```
