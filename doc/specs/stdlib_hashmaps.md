@@ -2011,7 +2011,7 @@ Pure function
 ##### Argument
 
 `map` (pass): shall be a scalar expression of class
-`chaining_hashmap_type`. It is an `intent(in)` argument. It is the
+`hashmap_type`. It is an `intent(in)` argument. It is the
 hash map of interest.
 
 ##### Result character
