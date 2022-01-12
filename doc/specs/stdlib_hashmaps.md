@@ -113,7 +113,7 @@ keys and their associated data.
 
 The constant `int_hash` is used to define the integer kind value for
 the returned hash codes and variables used to access them. It
-currently is importedxd from `stdlib_hash_32bit` where it haas the
+currently is imported from `stdlib_hash_32bit` where it haas the
 value, `int32`. 
 
 ### The `stdlib_hashmap_wrappers`' module's derived types
@@ -580,7 +580,7 @@ an allocatable of `class(*)`. It is an `intent(out)` argument.
       end do
       call set( key, value )
       call get( key, result )
-      print *, `RESULT == VALUE = ', all( value  == result )
+      print *, `RESULT == VALUE = ', all( value == result )
     end program demo_get
 ```
 
@@ -683,11 +683,9 @@ The result is `.true.` if the keys are equal, otherwise `.falss.`.
       use stdlib_hashmap_wrappers, only: &
           copy_key, operator(==), key_type, set 
       use iso_fortran_env, only: int8 
-      implicit none 
-      integer(int8), allocatable :: value(:) 
+      implicit none
+      integer(int8) :: i, value(15) 
       type(key_type) :: key_in, key_out 
-      integer(int_8) :: i 
-      allocate( value(1:15) ) 
       do i=1, 15 
           value(i) = i 
       end do 
@@ -952,8 +950,8 @@ The extension types provide
 procedures to manipulate the structure of a hash map object:
 `init`, `map_entry`, `rehash`, `remove_entry`, and
 `set_other_data`. They also provide procedures to inquire about
-entries in the hash map: `get_other_data`, `in_map`, `unmap` and
-`valid_index`. Finally they provide procedures to inquire about the
+entries in the hash map: `get_other_data`, `in_map`, and
+`valid_key`. Finally they provide procedures to inquire about the
 overall structure and performance of the hash map object:`calls`,
 `entries`, `get_other_data`, `loading`, `slots`, and
 `total_depth`. The module also defines a number of public constants:
@@ -1076,7 +1074,6 @@ The type's definition is below:
         integer(int_calls) :: total_probes = 0
         integer(int_index) :: num_entries = 0
         integer(int_index) :: num_free = 0
-        integer(int_index) :: index_mask = 2_int_index**default_bits-1
         integer(int32)     :: nbits = default_bits
         procedure(hasher_fun), pointer, nopass :: hasher => fnv_1_hasher
     contains
@@ -1093,7 +1090,7 @@ The type's definition is below:
         procedure(remove_entry), deferred, pass(map) :: remove
         procedure(set_other), deferred, pass(map)    :: set_other_data
         procedure(total_depth), deferred, pass(map)  :: total_depth
-        procedure(valid_index), deferred, pass(map)  :: valid_key
+        procedure(valid_key), deferred, pass(map)    :: valid_key
     end type hashmap_type
 ```
 
@@ -1183,9 +1180,8 @@ as follows:
         procedure :: remove => remove_chaining_entry
         procedure :: set_other_data => set_other_chaining_data
         procedure :: total_depth => total_chaining_depth
-        procedure :: unmap => unmap_chain
-        procedure :: valid_index => valid_chaining_index
-        final                    :: free_chaining_map
+        procedure :: valid_key => valid_chaining_key
+        final     :: free_chaining_map
     end type chaining_hashmap_type
 ```
 
@@ -1199,10 +1195,10 @@ the inverse table. The type's definition is below:
 ```fortran
     type :: open_map_entry_type  ! Open hash map entry type
         private
-        integer(int_hash)   :: hash_val ! Full hash value
-        type(key_type)      :: key ! The entry's key
-        type(other_type)    :: other ! Other entry data
-        integer(int_index)  :: index ! Index into inverse table
+        integer(int_hash)  :: hash_val ! Full hash value
+        type(key_type)     :: key ! The entry's key
+        type(other_type)   :: other ! Other entry data
+        integer(int_index) :: index ! Index into inverse table
     end type open_map_entry_type
 ```
 
@@ -1216,7 +1212,7 @@ containing the elements of the table. The type's definition is below:
 
 ```fortran
     type open_map_entry_ptr ! Wrapper for a pointer to a open
-                             ! map entry type object
+                            ! map entry type object
         type(open_map_entry_type), pointer :: target => null()
     end type open_map_entry_ptr
 ```
@@ -1243,9 +1239,9 @@ as follows:
         private 
         integer(int_index) :: index_mask = 2_int_index**default_bits-1
         type(open_map_entry_pool), pointer    :: cache => null()
-        integer(int_index), allocatable        :: slots(:)
-        type(open_map_entry_ptr), allocatable  :: inverse(:)
-        type(open_map_entry_list), pointer    :: free_list => null()
+        type(open_map_entry_list), pointer    :: free_list => null() 
+        type(open_map_entry_ptr), allocatable :: inverse(:)
+        integer(int_index), allocatable       :: slots(:) 
     contains
         procedure :: get_other_data => get_other_open_data
         procedure :: in_map => in_open_map
@@ -1256,8 +1252,7 @@ as follows:
         procedure :: remove => remove_open_entry
         procedure :: set_other_data => set_other_open_data
         procedure :: total_depth => total_open_depth
-        procedure :: unmap => unmap_open
-        procedure :: valid_index => valid_open_index
+        procedure :: valid_key => valid_open_key
         final     :: free_open_map
     end type open_hashmap_type
 ```
@@ -1273,49 +1268,49 @@ are listed below.
 
 Procedure to initialize a chaining hash map:
 
-* `init( map, hasher[, slots_bits, status] )` - Routine
+* `map % init( hasher[, slots_bits, status] )` - Routine
   to initialize a chaining hash map.
 
 Procedure to modify the structure of a map:
 
-* `rehash( map, hasher )` - Routine to change the hash function
+* `map % rehash( hasher )` - Routine to change the hash function
   for a map.
 
 Procedures to modify the content of a map:
 
-* `map_entry( map, key, other, conflict )` - Inserts an entry into the
+* `map % map_entry( key, other, conflict )` - Inserts an entry into the
   hash map.
 
-* `remove_entry(map, key, existed )` - Remove the entry, if any,
+* `map % remove_entry( key, existed )` - Remove the entry, if any,
   associated with the `key`.
 
-* `set_other_data( map, key, other, exists )` - Change the other data
+* `map % set_other_data( key, other, exists )` - Change the other data
   associated with the entry.
 
 Procedures to report the content of a map:
 
-* `get_other_data( map, key, other, exists )` - Returns the other data
+* `map 5 get_other_data( key, other, exists )` - Returns the other data
   associated with the `key`;
 
-* `valid_key(map, key)` - Returns a flag indicating whether the `key`
+* `map % valid_key( key)` - Returns a flag indicating whether the `key`
   is present in the map.
 
 Procedures to report on the structure of the map:
 
-* `calls( map )` - the number of subroutine calls on the hash map.
+* `map % calls()` - the number of subroutine calls on the hash map.
 
-* `entries( map )`- the number of entries in a hash map.
+* `map % entries()`- the number of entries in a hash map.
 
-* `loading( map )` - the number of entries relative to the number of
+* `map % loading()` - the number of entries relative to the number of
   slots in a hash map.
 
-* `map_probes( map )` - the total number of table probes on a hash
+* `map % map_probes()` - the total number of table probes on a hash
   map.
 
-* `slots( map )` - Returns the number of allocated slots in a hash
+* `map % slots()` - Returns the number of allocated slots in a hash
   map.
 
-* `total_depth( map )` - Returns the total number of one's based
+* `map % total_depth()` - Returns the total number of one's based
 offsets of slot entries from their slot index
 
 
@@ -2053,7 +2048,7 @@ the map.
 
 ##### Syntax
 
-`result = [[stdlib_hashmaps:map % valid_index]]( key )`
+`result = [[stdlib_hashmaps:map % valid_key]]( key )`
 
 ##### Class
 
