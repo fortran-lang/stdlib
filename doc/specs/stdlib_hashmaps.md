@@ -1506,7 +1506,7 @@ Initializes a `chaining_hashmap_type` object.
 
 ##### Syntax
 
-`call [[stdlib_hashmaps:map%init]]( hasher [, slots_bits, status ] ] )`
+`call [[stdlib_hashmaps:map%init]]( hasher [, slots_bits, status ] )`
 
 ####@# Class
 
