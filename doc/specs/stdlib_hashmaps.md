@@ -231,13 +231,9 @@ is an `intent(out)` argument.
           copy_key, operator(==)equal_keys, key_type
       use iso_fortran_env, only: int8
       implicit none
-      integer(int8), allocatable :: value(:)
+      integer(int8) :: i, value(15)
       type(key_type) :: key_in, key_out
-      integer(int_8) :: i
-      allocate( value(1:15) )
-      do i=1, 15
-          value(i) = i
-      end do
+      value = [(i, i = 1, 15)]
       call set( key_in, value )
       call copy_key( key_in, key_out )
       print *, "key_in == key_out = ", key_in == key_out
