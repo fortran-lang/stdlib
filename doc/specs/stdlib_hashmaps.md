@@ -1477,7 +1477,7 @@ exists in the map, if false `other` is undefined.
         call map % init( fnv_1_hasher )
         call set( key, [ 0_int8, 1_int8, 2_int8, 3_int8, 4_int8 ] )
         call set( other, data )
-        call map % map_entry( key, other. conflict )
+        call map % map_entry( key, other, conflict )
         if ( .not. conflict ) then
             call map % get_other_data( key, other )
         else
