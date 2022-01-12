@@ -276,11 +276,11 @@ is an `intent(out)` argument.
       implicit none
       type(other_type) :: other_in, other_out
       integer(int_8) :: i
-	  class(*), allocatable :: dummy
-	  type dummy_type
+     class(*), allocatable :: dummy
+      type dummy_type
           integer(int8) :: value(15)
       end type
-	  type(dummy_type) :: dummy_val
+      type(dummy_type) :: dummy_val
       do i=1, 15
           dummy_val % value1(i) = i
       end do
