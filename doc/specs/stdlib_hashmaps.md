@@ -1852,7 +1852,7 @@ to be removed.
 `existed` (optional): shall be a scalar variable of type default
 logical. It is an `intent(out)` argument. If present with the value
 `true` the entry existed 
-in the map before removal, if false the entry was not present to be
+in the map before removal, if `false` the entry was not present to be
 removed. 
 
 ##### Example
