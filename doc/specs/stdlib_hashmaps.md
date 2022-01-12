@@ -232,13 +232,9 @@ is an `intent(out)` argument.
           copy_key, operator(==)equal_keys, key_type
       use iso_fortran_env, only: int8
       implicit none
-      integer(int8), allocatable :: value(:)
+      integer(int8) :: i, value(15)
       type(key_type) :: key_in, key_out
-      integer(int_8) :: i
-      allocate( value(1:15) )
-      do i=1, 15
-          value(i) = i
-      end do
+      value = [(i, i = 1, 15)]
       call set( key_in, value )
       call copy_key( key_in, key_out )
       print *, "key_in == key_out = ", key_in == key_out
@@ -281,11 +277,11 @@ is an `intent(out)` argument.
       implicit none
       type(other_type) :: other_in, other_out
       integer(int_8) :: i
-	  class(*), allocatable :: dummy
-	  type dummy_type
+     class(*), allocatable :: dummy
+      type dummy_type
           integer(int8) :: value(15)
       end type
-	  type(dummy_type) :: dummy_val
+      type(dummy_type) :: dummy_val
       do i=1, 15
           dummy_val % value1(i) = i
       end do
@@ -473,13 +469,9 @@ is an `intent(out)` argument.
           copy_key, free_key, key_type, set
       use iso_fortran_env, only: int8
       implicit none
-      integer(int8), allocatable :: value(:)
+      integer(int8) :: i, value(15)
       type(key_type) :: key_in, key_out
-      integer(int_8) :: i
-      allocate( value(1:15) )
-      do i=1, 15
-        value(i) = i
-      end do
+      value = [(i, i=1, 15)]
       call set( key_in, value )
       call copy_key( key_in, key_out )
       call free_key( key_out )
@@ -922,7 +914,7 @@ is an `intent(out)` argument.
 `other`: shall be a scalar variable of type `other_type`. It
 is an `intent(out)` argument.
 
-`value`: if the first argument is `key` `vaalue` shall be a default
+`value`: if the first argument is `key` `value` shall be a default
 character string expression, or a vector expression of type integer
 and kind `int8`, while for a first argument of type `other` `value`
 shall be of type `class(*)`. It is an `intent(in)` argument.
@@ -956,7 +948,7 @@ associated procedures and constants that implement two simple hash map
 types using separate chaining hashing and open addressing hashing. The
 derived type `hashmap_type` is the parent type to its two
 extensions: `chaining_hashmap_type` and `open_hashmap_type`.
-`chaining_hashmap_type`. The extension types provide 
+The extension types provide 
 procedures to manipulate the structure of a hash map object:
 `init`, `map_entry`, `rehash`, `remove_entry`, and
 `set_other_data`. They also provide procedures to inquire about
@@ -1011,7 +1003,7 @@ entities of kind `int_probes`. Currently `int_probes` has the value of
 
 The constant `load_factor` is only used by the `open_hashmap_type`. It
 specifies the maximum fraction of the available slots that may be
-filled before expansion occurs. The current `load_factor = ).5625` so
+filled before expansion occurs. The current `load_factor = 0.5625` so
 the current implementation of `open_hashmap_type` can only hold a
 little more than `2**29` entries.
 
@@ -1035,7 +1027,7 @@ the implementation of the `chaining_hashmap_type` public type. The
 four private derived types, `open_map_entry_type`,
 `open_map_entry_list`, `open_map_entry_ptr`, and `open_map_entry_pool`
 are used in the implementation of the `open_hashmap_type` public
-type:. Each of these types are described below. 
+type. Each of these types are described below. 
 
 #### The `hashmap_type` abstract type
 
@@ -1459,11 +1451,12 @@ Subroutine
 `intent(out)` argument.  If `true` an entry with the given `key`
 exists in the map, if false `other` is undefined.
 
-* The following is an example of the retrieval of other data
+##### Example
+
+ The following is an example of the retrieval of other data
   associated with a `key`:
 
 
-##### Example
 
 ```Fortran
     program demo_get_other_data
@@ -1485,11 +1478,11 @@ exists in the map, if false `other` is undefined.
         call map % init( fnv_1_hasher )
         call set( key, [ 0_int8, 1_int8, 2_int8, 3_int8, 4_int8 ] )
         call set( other, data )
-        call map % map_entry( key, other. conflict )
+        call map % map_entry( key, other, conflict )
         if ( .not. conflict ) then
             call map % get_other_data( key, other )
         else
-            stop 'Key is already present in the map.''
+            stop 'Key is already present in the map.'
         end if
         call get( other, data )
         select type( data )
@@ -1514,7 +1507,7 @@ Initializes a `chaining_hashmap_type` object.
 
 ##### Syntax
 
-`call [[stdlib_hashmaps:map%init]]( hasher [, slots_bits, status ] ] )`
+`call [[stdlib_hashmaps:map%init]]( hasher [, slots_bits, status ] )`
 
 ####@# Class
 
@@ -1593,7 +1586,7 @@ Pure function
 ##### Argument
 
 `map` (pass) - shall be an expression of class `chaining_hashmap_type`
-or ``open_hashmap_type`. It is an `intent(in)` argument.
+or `open_hashmap_type`. It is an `intent(in)` argument.
 
 ##### Result character
 
@@ -1860,7 +1853,7 @@ to be removed.
 `existed` (optional): shall be a scalar variable of type default
 logical. It is an `intent(out)` argument. If present with the value
 `true` the entry existed 
-in the map before removal, if false the entry was not present to be
+in the map before removal, if `false` the entry was not present to be
 removed. 
 
 ##### Example
@@ -2019,7 +2012,7 @@ Pure function
 ##### Argument
 
 `map` (pass): shall be a scalar expression of class
-`chaining_hashmap_type`. It is an `intent(in)` argument. It is the
+`hashmap_type`. It is an `intent(in)` argument. It is the
 hash map of interest.
 
 ##### Result character
