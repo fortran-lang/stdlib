@@ -307,7 +307,7 @@ program deom_fmt_constants
     c32 = cmplx(100.0_real32, kind=real32)
     c64 = cmplx(100.0_real64, kind=real64)
 
-    print FMT_INT, i32, i64
+    print "2("//FMT_INT//",1x)", i32, i64
     print FMT_REAL_SP, r32
     print FMT_REAL_DP, r64
     print FMT_COMPLEX_SP, c32
