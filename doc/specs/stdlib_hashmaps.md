@@ -913,7 +913,7 @@ is an `intent(out)` argument.
 `other`: shall be a scalar variable of type `other_type`. It
 is an `intent(out)` argument.
 
-`value`: if the first argument is `key` `vaalue` shall be a default
+`value`: if the first argument is `key` `value` shall be a default
 character string expression, or a vector expression of type integer
 and kind `int8`, while for a first argument of type `other` `value`
 shall be of type `class(*)`. It is an `intent(in)` argument.
