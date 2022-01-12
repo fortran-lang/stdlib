@@ -1481,7 +1481,7 @@ exists in the map, if false `other` is undefined.
         if ( .not. conflict ) then
             call map % get_other_data( key, other )
         else
-            stop 'Key is already present in the map.''
+            stop 'Key is already present in the map.'
         end if
         call get( other, data )
         select type( data )
