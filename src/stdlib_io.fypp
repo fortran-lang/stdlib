@@ -23,15 +23,15 @@ module stdlib_io
 
   ! Format strings with edit descriptors for each type and kind
   character(*), parameter :: &
-    FMT_INT = '(*(i0,1x))', &
-    FMT_REAL_SP = '(*(es15.8e2,1x))', &
-    FMT_REAL_DP = '(*(es24.16e3,1x))', &
-    FMT_REAL_XDP = '(*(es26.18e3,1x))', &
-    FMT_REAL_QP = '(*(es44.35e4,1x))', &
-    FMT_COMPLEX_SP = '(*(es15.8e2,1x,es15.8e2))', &
-    FMT_COMPLEX_DP = '(*(es24.16e3,1x,es24.16e3))', &
-    FMT_COMPLEX_XDP = '(*(es26.18e3,1x,es26.18e3))', &
-    FMT_COMPLEX_QP = '(*(es44.35e4,1x,es44.35e4))'
+    FMT_INT = '(i0)', &
+    FMT_REAL_SP = '(es15.8e2)', &
+    FMT_REAL_DP = '(es24.16e3)', &
+    FMT_REAL_XDP = '(es26.18e3)', &
+    FMT_REAL_QP = '(es44.35e4)', &
+    FMT_COMPLEX_SP = '(es15.8e2,1x,es15.8e2)', &
+    FMT_COMPLEX_DP = '(es24.16e3,1x,es24.16e3)', &
+    FMT_COMPLEX_XDP = '(es26.18e3,1x,es26.18e3)', &
+    FMT_COMPLEX_QP = '(es44.35e4,1x,es44.35e4)'
 
   public :: FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_REAL_XDP, FMT_REAL_QP
   public :: FMT_COMPLEX_SP, FMT_COMPLEX_DP, FMT_COMPLEX_XDP, FMT_COMPLEX_QP
@@ -115,9 +115,9 @@ contains
       allocate(d(nrow, ncol))
       do i = 1, nrow
         #:if 'real' in t1
-          read(s, FMT_REAL_${k1}$) d(i, :)
+          read(s, "(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",1x))") d(i, :)
         #:elif 'complex' in t1
-          read(s, FMT_COMPLEX_${k1}$) d(i, :)
+          read(s, "(*"//FMT_COMPLEX_${k1}$(1:len(FMT_COMPLEX_${k1}$)-1)//",1x))") d(i, :)
         #:else
           read(s, *) d(i, :)
         #:endif
@@ -153,11 +153,11 @@ contains
       s = open(filename, "w")
       do i = 1, size(d, 1)
         #:if 'real' in t1
-          write(s, FMT_REAL_${k1}$) d(i, :)
+          write(s, "(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",1x))") d(i, :)
         #:elif 'complex' in t1
-          write(s, FMT_COMPLEX_${k1}$) d(i, :)
+          write(s, "(*"//FMT_COMPLEX_${k1}$(1:len(FMT_COMPLEX_${k1}$)-1)//",1x))") d(i, :)
         #:elif 'integer' in t1
-          write(s, FMT_INT) d(i, :)
+          write(s, "(*"//FMT_INT(1:len(FMT_INT)-1)//",1x))") d(i, :)
         #:else
           write(s, *) d(i, :)
         #:endif
