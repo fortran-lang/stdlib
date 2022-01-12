@@ -1585,7 +1585,7 @@ Pure function
 ##### Argument
 
 `map` (pass) - shall be an expression of class `chaining_hashmap_type`
-or ``open_hashmap_type`. It is an `intent(in)` argument.
+or `open_hashmap_type`. It is an `intent(in)` argument.
 
 ##### Result character
 
