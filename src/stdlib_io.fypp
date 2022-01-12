@@ -33,6 +33,9 @@ module stdlib_io
     FMT_COMPLEX_XDP = '(*(es26.18e3,1x,es26.18e3))', &
     FMT_COMPLEX_QP = '(*(es44.35e4,1x,es44.35e4))'
 
+  public :: FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_REAL_XDP, FMT_REAL_QP
+  public :: FMT_COMPLEX_SP, FMT_COMPLEX_DP, FMT_COMPLEX_XDP, FMT_COMPLEX_QP
+
   !> Version: experimental
   !>
   !> Read a whole line from a formatted unit into a string variable
