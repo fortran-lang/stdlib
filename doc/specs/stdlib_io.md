@@ -313,4 +313,5 @@ program demo_fmt_constants
     print FMT_COMPLEX_SP, c32
     print FMT_COMPLEX_DP, c64
 
+end program demo_fmt_constants
 ```
