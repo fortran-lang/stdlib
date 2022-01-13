@@ -307,11 +307,11 @@ program demo_fmt_constants
     c32 = cmplx(100.0_real32, kind=real32)
     c64 = cmplx(100.0_real64, kind=real64)
 
-    print "2("//FMT_INT//",1x)", i32, i64
-    print FMT_REAL_SP, r32
-    print FMT_REAL_DP, r64
-    print FMT_COMPLEX_SP, c32
-    print FMT_COMPLEX_DP, c64
+    print "(2("//FMT_INT//",1x))", i32, i64 ! outputs: 100 100
+    print FMT_REAL_SP, r32                  ! outputs: 1.00000000E+02
+    print FMT_REAL_DP, r64                  ! outputs: 1.0000000000000000E+002
+    print FMT_COMPLEX_SP, c32               ! outputs: 1.00000000E+02  0.00000000E+00
+    print FMT_COMPLEX_DP, c64               ! outputs: 1.0000000000000000E+002  0.0000000000000000E+000
 
 end program demo_fmt_constants
 ```
