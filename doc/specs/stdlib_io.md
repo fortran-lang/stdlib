@@ -283,7 +283,7 @@ Experimental
 ### Description
 
 Formatting constants for printing out integer, floating point, and complex numbers at their full precision.
-Provides formats for all kinds as defined in stdlib_kinds
+Provides formats for all kinds as defined in the `stdlib_kinds` module.
 
 ### Example
 
