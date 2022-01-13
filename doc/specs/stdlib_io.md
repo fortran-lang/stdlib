@@ -289,7 +289,7 @@ Provides formats for all kinds as defined in the `stdlib_kinds` module.
 
 ```fortran
 program demo_fmt_constants
-    use intrinsic, iso_fortran_env, only : int32, int64, float32, float64
+    use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
     use stdlib_io, only : FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_COMPLEX_SP, FMT_COMPLEX_DP
     implicit none
 
