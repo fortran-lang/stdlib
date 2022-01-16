@@ -950,7 +950,7 @@ The extension types provide
 procedures to manipulate the structure of a hash map object:
 `init`, `map_entry`, `rehash`, `remove_entry`, and
 `set_other_data`. They also provide procedures to inquire about
-entries in the hash map: `get_other_data`, `in_map`, and
+entries in the hash map: `get_other_data`, and
 `valid_key`. Finally they provide procedures to inquire about the
 overall structure and performance of the hash map object:`calls`,
 `entries`, `get_other_data`, `loading`, `slots`, and
@@ -1172,7 +1172,6 @@ as follows:
         type(chaining_map_entry_ptr), allocatable :: slots(:)
     contains
         procedure :: get_other_data => get_other_chaining_data
-        procedure :: in_map => in_chain_map
         procedure :: init => init_chaining_map
         procedure :: loading => chaining_loading
         procedure :: map_entry => map_chain_entry
@@ -1244,7 +1243,6 @@ as follows:
         integer(int_index), allocatable       :: slots(:) 
     contains
         procedure :: get_other_data => get_other_open_data
-        procedure :: in_map => in_open_map
         procedure :: init => init_open_map
         procedure :: loading => open_loading
         procedure :: map_entry => map_open_entry
@@ -1375,7 +1373,7 @@ Returns the number of entries in a hash map.
 
 ##### Syntax
 
-`value = [[stdlib_hashmaps:map%entries]]()`
+`value = [[stdlib_hashmaps:map % entries]]()`
 
 ##### Class
 
@@ -1422,7 +1420,7 @@ Returns the other data associated with the `key`,
 
 ##### Syntax
 
-`value = [[stdlib_hashmaps:map%get_other_data)]]( key, other [, exists] )`
+`value = [[stdlib_hashmaps:map % get_other_data)]]( key, other [, exists] )`
 
 ##### Class
 
@@ -1450,7 +1448,6 @@ exists in the map, if `.false.` `other` is undefined.
 
  The following is an example of the retrieval of other data
   associated with a `key`:
-
 
 
 ```Fortran
@@ -1909,8 +1906,8 @@ the other data for the entry with the key value, `key`.
 `exists` (optional): shall be a scalar variable of type default
 logical. It is an `intent(out)` argument. If present with the value
 `.true.` an entry with that key existed in the map and its `other`
-data was replaced, otherwise if `exists` is `.false.` the entry didnot
-exisst and nothing was done.
+data was replaced, otherwise if `exists` is `.false.` the entry did
+not exist and nothing was done.
 
 
 ##### Example
