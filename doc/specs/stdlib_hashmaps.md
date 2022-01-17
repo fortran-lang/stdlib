@@ -1314,7 +1314,7 @@ offsets of slot entries from their slot index
 
 ### Specifications of the `stdlib_hashmaps` procedures
 
-#### `calls` - Returns the number of calls on a hash map
+#### `calls` - Returns the number of calls on the hash map
 
 ##### Status
 
@@ -1361,7 +1361,7 @@ The result will be the number of procedure calls on the hash map.
 ```
 
 
-#### `entries` - Returns the number of entries in a hash map
+#### `entries` - Returns the number of entries in the hash map
 
 ##### Status
 
@@ -1442,7 +1442,8 @@ Subroutine
 
 `exists` (optional): shall be a variable of type logical. It is an
 `intent(out)` argument.  If `.true.` an entry with the given `key`
-exists in the map, if `.false.` `other` is undefined.
+exists in the map and `other` is defined. If `.false.` `other` is
+undefined.
 
 ##### Example
 
@@ -1495,7 +1496,7 @@ Experimental
 
 ##### Description
 
-Initializes a `chaining_hashmap_type` object.
+Initializes a `hashmap_type` object.
 
 ##### Syntax
 
@@ -1565,7 +1566,7 @@ Experimental
 ##### Description
 
 Returns the ratio of the number of entries relative to the number of
-slots in a hash map.
+slots in the hash map.
 
 ##### Syntax
 
@@ -1643,7 +1644,7 @@ entry.
 value indicates that an entry with the value of `key` already exists
 and the entry was not entered into the map, a `.false.` value indicates
 that `key` was not present in the map and the entry was added to the
-table. 
+map. 
 
 * If `key` is already present in `map` then the presence of `other` 
 is ignored.
@@ -1677,7 +1678,7 @@ Experimental
 
 ##### Description
 
-Returns the total number of table probes on a hash map
+Returns the total number of table probes on the hash map.
 
 ##### Syntax
 
@@ -1717,7 +1718,7 @@ rehashing.
     end program demo_probes
 ```
 
-#### `num_slots` - returns the number of hash map probes
+#### `num_slots` - returns the number of hash map slots.
 
 ##### Status
 
@@ -1773,7 +1774,7 @@ Experimental
 
 ##### Description
 
-Changes the hashing function for the table entries to that of `hasher`.
+Changes the hashing function for the map entries to that of `hasher`.
 
 ##### Syntax
 
@@ -1821,7 +1822,7 @@ Experimental
 
 ##### Description
 
-Removes an entry from a hash map, `map`.
+Removes an entry from the hash map, `map`.
 
 ##### Syntax
 
@@ -1846,7 +1847,7 @@ to be removed.
 logical. It is an `intent(out)` argument. If present with the value
 `.true.` the entry existed 
 in the map before removal, if `.false.` the entry was not present to be
-removed. 
+removed and the map is unchanged. 
 
 ##### Example
 
@@ -1878,7 +1879,8 @@ Experimental
 
 ##### Description
 
-Replaces the other data for the entry with the key value, `key`.
+Replaces the other data in the map for the entry with the key value,
+`key`.
 
 ##### Syntax
 
@@ -1905,7 +1907,7 @@ the other data for the entry with the key value, `key`.
 
 `exists` (optional): shall be a scalar variable of type default
 logical. It is an `intent(out)` argument. If present with the value
-`.true.` an entry with that key existed in the map and its `other`
+`.true.` an entry with that `key` existed in the map and its `other`
 data was replaced, otherwise if `exists` is `.false.` the entry did
 not exist and nothing was done.
 
@@ -1942,7 +1944,7 @@ Experimental
 
 ##### Description
 
-Returns the total number of slots on a hash map
+Returns the total number of bits used to address the hash map slots.
 
 ##### Syntax
 
