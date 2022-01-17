@@ -289,23 +289,23 @@ Provides formats for all kinds as defined in the `stdlib_kinds` module.
 
 ```fortran
 program demo_fmt_constants
-    use, intrinsic :: iso_fortran_env, only : int32, int64, real32, real64
-    use stdlib_io, only : FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_COMPLEX_SP, FMT_COMPLEX_DP
+    use, stdlib_kinds, only : int32, int64, sp, dp 
+    use stdlib_io,     only : FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_COMPLEX_SP, FMT_COMPLEX_DP
     implicit none
 
-    integer(kind=int32)  :: i32
-    integer(kind=int64)  :: i64
-    real(kind=real32)    :: r32
-    real(kind=real64)    :: r64
-    complex(kind=real32) :: c32
-    complex(kind=real64) :: c64
+    integer(kind=int32) :: i32
+    integer(kind=int64) :: i64
+    real(kind=sp)       :: r32
+    real(kind=dp)       :: r64
+    complex(kind=sp)    :: c32
+    complex(kind=dp)    :: c64
 
     i32 = 100_int32
     i64 = 100_int64
-    r32 = 100.0_real32
-    r64 = 100.0_real64
-    c32 = cmplx(100.0_real32, kind=real32)
-    c64 = cmplx(100.0_real64, kind=real64)
+    r32 = 100.0_sp
+    r64 = 100.0_dp
+    c32 = cmplx(100.0_sp, kind=sp)
+    c64 = cmplx(100.0_dp, kind=dp)
 
     print "(2("//FMT_INT//",1x))", i32, i64 ! outputs: 100 100
     print FMT_REAL_SP, r32                  ! outputs: 1.00000000E+02
