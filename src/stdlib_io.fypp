@@ -24,7 +24,7 @@ module stdlib_io
   !> Version: experimental
   !>
   !> Format strings with edit descriptors for each type and kind
-  !> The specification of this module is available [here](../page/specs/stdlib_io.html).
+  !> ([Specification](../page/specs/stdlib_io.html))
   character(*), parameter :: &
     !> Format string for integers
     FMT_INT = '(i0)', &
