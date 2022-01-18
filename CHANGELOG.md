@@ -47,6 +47,9 @@ Changes to existing modules
     [#562](https://github.com/fortran-lang/stdlib/pull/562)
 - support for quadruple precision made optional
   [#565](https://github.com/fortran-lang/stdlib/pull/565)
+- change in module `stdlib_io`
+  - Modified format constants, and made public
+  [#617](https://github.com/fortran-lang/stdlib/pull/617)
 
 
 # Version 0.1.0
