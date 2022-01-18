@@ -2192,6 +2192,8 @@ index `inmap` in the inverse table.
     end program demo_unmap
 ```
 
+{{TOC}}
+
 #### `valid_index` - indicates whether `inmap` is a valid index
 
 ##### Status
