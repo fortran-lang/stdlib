@@ -452,6 +452,12 @@ contains
             "diff(<rank-2>, n=1, dim=2) in test_diff_int_${k1}$ failed")
         if (allocated(error)) return
         
+        call check(error, all(diff(A, n=1, dim=2, prepend=reshape([${t1}$ :: 1], [1, 1]), &
+            append=reshape([${t1}$ :: 2], [1, 1])) == reshape([${t1}$ :: 0, 2, 2, -3], [1, 4])), &
+            "diff(<rank-2>, n=1, dim=2, prepend=reshape([${t1}$ :: 1], [1, 1]), &
+            &append=reshape([${t1}$ :: 2], [1, 1])) in test_diff_int_${k1}$ failed")
+        if (allocated(error)) return
+        
         !> size(B, dim) <= n
         call check(error, size(diff(B, 2)), 0, "size(diff(B, 2)) in test_diff_int_${k1}$ failed")
         if (allocated(error)) return

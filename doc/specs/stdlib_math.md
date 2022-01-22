@@ -658,11 +658,11 @@ Computes differences between adjacent elements of an array.
 
 #### Syntax
 
-For rank-1 array
+For a rank-1 array
 ```fortran
 y = [[stdlib_math(module):diff(interface)]](x [, n, prepend, append])
 ```
-and for rank-2 array
+and for a rank-2 array
 ```fortran
 y = [[stdlib_math(module):diff(interface)]](x [, n, dim, prepend, append])
 ```
@@ -677,35 +677,36 @@ Pure function.
 
 #### Arguments
 
-Note: The `x`, `prepend` and `append` arguments must have the same `type`, `kind` and `rank`.
-
-`x`: Shall be a `real/integer` and `rank-1/rank-2` array.
+`x`: The array to take a difference of.
+Shall be a `real/integer` and `rank-1/rank-2` array.
 This argument is `intent(in)`.
 
-`n`: Shall be an `integer` scalar.
-This argument is `intent(in)` and `optional`, which is `1` by default.
-It represents to calculate the n-th order difference.
+`n`: How many times to iteratively calculate the difference.
+Shall be an `integer` scalar.
+This argument is `intent(in)` and `optional`, and has value of `1` by default.
 
-`dim`: Shall be an `integer` scalar.
-This argument is `intent(in)` and `optional`, which is `1` by default.
-It gives the dimension of the input array along which the difference is calculated, between `1` and `rank(x)`.
+`dim`: The dimension of the input array along which to calculate the difference.
+Its value must be between `1` and `rank(x)`.
+Shall be an `integer` scalar.
+This argument is `intent(in)` and `optional` and has a value of `1` by default.
 
-`prepend`: Shall be a `real/integer` and `rank-1/rank-2` array, which is no value by default.
-This argument is `intent(in)` and `optional`.
-
-`append`: Shall be a `real/integer` and `rank-1/rank-2` array, which is no value by default.
-This argument is `intent(in)` and `optional`.
+`prepend`, `append`: Arrays to prepend or append to a along axis prior to performing the difference.
+The dimension and shape must match a except along axis.
+Shall be a `real/integer` and `rank-1/rank-2` array.
+This argument is `intent(in)` and `optional`, which is no value by default.
 
 Note: 
-- If the value of `n` is less than or equal to `0`, the return value of `y` is `x`. (Not recommended)
-- If the value of `dim` is not equal to `1` or `2`,
-`1` will be used by the internal process of `diff`. (Not recommended)
+- The `x`, `prepend` and `append` arguments must have the same `type`, `kind` and `rank`.
+- If the value of `n` is less than or equal to `0` (which is not recommended), the return value of `diff` is `x`.
+- If the value of `dim` is not equal to `1` or `2` (which is not recommended),
+`1` will be used by the internal process of `diff`.
+
 
 #### Result value
 
-Note: That `y` generally has one fewer element than `x`.
-
-Returns a `real/integer` and `rank-1/rank-2` array.
+Returns the finite difference of the input array.
+Shall be a `real/integer` and `rank-1/rank-2` array.
+When both `prepend` and `append` are not present, the result `y` has one fewer element than `x` alongside the dimension `dim`.
 
 #### Example
 
@@ -720,16 +721,16 @@ program demo_diff
     integer :: A(3, 3) = reshape([1, 7, 17, 3, 11, 19, 5, 13, 23], [3, 3])
     integer :: Y(3, 2)
     
-    print *, diff(i)        !! [0, 1, 1, 2, 3, 5]
-    print *, diff(x, 2)     !! [5.0, 5.0, 5.0, 5.0]
+    print *, diff(i)        ! [0, 1, 1, 2, 3, 5]
+    print *, diff(x, 2)     ! [5.0, 5.0, 5.0, 5.0]
     
     Y = diff(A, n=1, dim=2)
-    print *, Y(1, :)        !! [2, 2]
-    print *, Y(2, :)        !! [4, 2]
-    print *, Y(3, :)        !! [2, 4]
+    print *, Y(1, :)        ! [2, 2]
+    print *, Y(2, :)        ! [4, 2]
+    print *, Y(3, :)        ! [2, 4]
 
-    print *, diff(i, prepend=[0]) !! [1, 0, 1, 1, 2, 3, 5]
-    print *, diff(i, append=[21]) !! [0, 1, 1, 2, 3, 5, 8]
+    print *, diff(i, prepend=[0]) ! [1, 0, 1, 1, 2, 3, 5]
+    print *, diff(i, append=[21]) ! [0, 1, 1, 2, 3, 5, 8]
     
 end program demo_diff
 ```
