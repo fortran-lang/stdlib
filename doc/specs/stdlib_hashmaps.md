@@ -948,7 +948,7 @@ derived type `hashmap_type` is the parent type to its two
 extensions: `chaining_hashmap_type` and `open_hashmap_type`.
 The extension types provide 
 procedures to manipulate the structure of a hash map object:
-`init`, `map_entry`, `rehash`, `remove_entry`, and
+`init`, `map_entry`, `rehash`, `remove`, and
 `set_other_data`. They also provide procedures to inquire about
 entries in the hash map: `get_other_data`, and
 `valid_key`. Finally they provide procedures to inquire about the
@@ -1279,7 +1279,7 @@ Procedures to modify the content of a map:
 * `map % map_entry( key, other, conflict )` - Inserts an entry into the
   hash map.
 
-* `map % remove_entry( key, existed )` - Remove the entry, if any,
+* `map % remove( key, existed )` - Remove the entry, if any,
   associated with the `key`.
 
 * `map % set_other_data( key, other, exists )` - Change the other data
@@ -1814,7 +1814,7 @@ It is the hash method to be used by `map`.
     end program demo_rehash
 ```
 
-#### `remove_entry` - removes an entry from the hash map
+#### `remove` - removes an entry from the hash map
 
 ##### Status
 
@@ -1826,7 +1826,7 @@ Removes an entry from the hash map, `map`.
 
 ##### Syntax
 
-`call [[stdlib_hashmaps:map%remove_entry]]( key[, existed ])`
+`call [[stdlib_hashmaps:map%remove]]( key[, existed ])`
 
 ##### Class
 
@@ -1852,7 +1852,7 @@ removed and the map is unchanged.
 ##### Example
 
 ```fortran
-    program demo_remove_entry
+    program demo_remove
         use stdlib_hashmaps, only: open_hashmap_type, int_index
         use stdlib_hashmap_wrappers, only: fnv_1_hasher, &
             fnv_1a_hasher, key_type, other_type
@@ -1866,9 +1866,9 @@ removed and the map is unchanged.
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         call set( other, dummy )
         call map % map_entry( key, other )
-        call map % remove_entry( key, existed )
+        call map % remove( key, existed )
         print *, "Removed key existed = ", existed
-    end program demo_remove_entry
+    end program demo_remove
 ```
 
 #### `set_other_data` - replaces the other dataa for an entry
