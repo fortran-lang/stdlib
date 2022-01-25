@@ -951,7 +951,7 @@ procedures to manipulate the structure of a hash map object:
 `init`, `map_entry`, `rehash`, `remove`, and
 `set_other_data`. They also provide procedures to inquire about
 entries in the hash map: `get_other_data`, and
-`valid_key`. Finally they provide procedures to inquire about the
+`key_test`. Finally they provide procedures to inquire about the
 overall structure and performance of the hash map object:`calls`,
 `entries`, `get_other_data`, `loading`, `slots`, and
 `total_depth`. The module also defines a number of public constants:
@@ -1050,8 +1050,10 @@ It also defines five non-overridable procedures:
 * `num_slots` - returns the number of slots in the map; and
 * `slots_bits` - returns the number of bits used to address the slots;
 and eleven deferred procedures:
-* `get_other_data` - gets the other data associated with the key;
+* `get_other_data` - gets the other map data associated with the key;
 * `init` - initializes the hash map;
+* `key_test` - returns a logical flag indicating whether the key is 
+  defined in the map. 
 * `loading` - returns the ratio of the number of entries to the number
   of slots;
 * `map_entry` - inserts a key and its other associated data into the
@@ -1061,8 +1063,6 @@ and eleven deferred procedures:
 * `set_other_data` - replaces the other data associated with the key;
 * `total_depth` - returns the number of probes needed to address all
   the entries in the map;
-* `valid_key` - returns a logical flag indicating whether the key is
-  defined in the map.
 
 The type's definition is below:
 
@@ -1084,13 +1084,13 @@ The type's definition is below:
         procedure, non_overridable, pass(map) :: num_slots
         procedure(get_other), deferred, pass(map)    :: get_other_data
         procedure(init_map), deferred, pass(map)     :: init
+        procedure(key_test), deferred, pass(map)     :: key_test 
         procedure(loading), deferred, pass(map)      :: loading
         procedure(map_entry), deferred, pass(map)    :: map_entry
         procedure(rehash_map), deferred, pass(map)   :: rehash
         procedure(remove_entry), deferred, pass(map) :: remove
         procedure(set_other), deferred, pass(map)    :: set_other_data
         procedure(total_depth), deferred, pass(map)  :: total_depth
-        procedure(valid_key), deferred, pass(map)    :: valid_key
     end type hashmap_type
 ```
 
@@ -1173,13 +1173,13 @@ as follows:
     contains
         procedure :: get_other_data => get_other_chaining_data
         procedure :: init => init_chaining_map
+        procedure :: key => chaining_key_test 
         procedure :: loading => chaining_loading
         procedure :: map_entry => map_chain_entry
         procedure :: rehash => rehash_chaining_map
         procedure :: remove => remove_chaining_entry
         procedure :: set_other_data => set_other_chaining_data
         procedure :: total_depth => total_chaining_depth
-        procedure :: valid_key => valid_chaining_key
         final     :: free_chaining_map
     end type chaining_hashmap_type
 ```
@@ -1244,13 +1244,13 @@ as follows:
     contains
         procedure :: get_other_data => get_other_open_data
         procedure :: init => init_open_map
+        procedure :: key_test => open_key_test 
         procedure :: loading => open_loading
         procedure :: map_entry => map_open_entry
         procedure :: rehash => rehash_open_map
         procedure :: remove => remove_open_entry
         procedure :: set_other_data => set_other_open_data
         procedure :: total_depth => total_open_depth
-        procedure :: valid_key => valid_open_key
         final     :: free_open_map
     end type open_hashmap_type
 ```
@@ -1290,8 +1290,8 @@ Procedures to report the content of a map:
 * `map 5 get_other_data( key, other, exists )` - Returns the other data
   associated with the `key`;
 
-* `map % valid_key( key)` - Returns a flag indicating whether the `key`
-  is present in the map.
+* `map % key_test( key, present)` - Returns a flag indicating whether
+  the `key` is present in the map.
 
 Procedures to report on the structure of the map:
 
@@ -1428,9 +1428,9 @@ Subroutine
 
 ##### Arguments
 
-`map` (pass): shall be a scalar expression of class
+`map` (pass): shall be a scalar variable of class
   `chaining_hashmap_type` or `open_hashmap_type`. It is an
-  `intent(in)` argument. It will be 
+  `intent(inout)` argument. It will be 
   the hash map used to store and access the other data.
 
 `key`: shall be a scalar expression of type `key_type`. It
@@ -1554,6 +1554,60 @@ has the value `alloc_fault`.
         type(chaining_map_type) :: map
         call map % init( fnv_1a, slots_bits=10 )
     end program demo_init
+```
+
+
+#### `key_test` - indicates whether `key` is present
+
+##### Status
+
+Experimental
+
+##### Description
+
+Returns a logical flag indicating whether `key` is present for an
+entry in the map.
+
+##### Syntax
+
+`result = call [[stdlib_hashmaps:map % valid_key]]( key, present )`
+
+##### Class
+
+Subroutine.
+
+##### Arguments
+
+`map` (pass): shall be a scalar variable of class
+`chaining_hashmap_type` or `open_hashmap_type`. 
+It is an `intent(inout)` argument. It is the hash map whose entries
+are examined.
+
+`key`: shall be a scalar expression of type `key_type`. It
+is an `intent(in)` argument. It is a `key` whose presence in the `map`
+is being examined.
+
+`present` (optional): shall be a scalar variable of type default
+`logical`. It is an intent(out) argument. It is a logical flag where
+`.true.` indicates that an entry with that `key` is present in the
+`map` and `.false.` indicates that no such entry is present.
+
+##### Example
+
+```fortran
+    program demo_key_test
+      use stdlib_kinds, only: int8
+      use stdlib_hashmaps, only: chaining_hashmap_type
+      use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type
+      implicit none
+      type(chaining_hashmap_type) :: map
+      type(key_type) :: key
+      logocal :: present
+      call map % init( fnv_1_hasher )
+      call set_key(key, [0_int8, 1_int8] )
+      call map % key_test ( key, present )
+      print *, "Initial key of 10 present for empty map =  ", present
+    end program demo_key_test
 ```
 
 
@@ -1845,9 +1899,9 @@ to be removed.
 
 `existed` (optional): shall be a scalar variable of type default
 logical. It is an `intent(out)` argument. If present with the value
-`.true.` the entry existed 
-in the map before removal, if `.false.` the entry was not present to be
-removed and the map is unchanged. 
+`.true.` the entry existed in the map before removal, if `.false.` the
+entry was not present to be removed and the map is unchanged. If
+absent, the procedure returns with no entry with the given key.
 
 ##### Example
 
@@ -2031,62 +2085,4 @@ from their slot index the map.
       initial_depth = map % total_depth ()
       print *, "Initial total depth =  ", initial_depth
     end program demo_total_depth
-```
-
-
-#### `valid_key` - indicates whether `key` is present
-
-##### Status
-
-Experimental
-
-##### Description
-
-Returns a logical flag indicating whether `key` exists for an entry in
-the map.
-
-##### Syntax
-
-`result = [[stdlib_hashmaps:map % valid_key]]( key )`
-
-##### Class
-
-Pure function.
-
-##### Arguments
-
-`map` (pass): shall be a scalar expression of class
-`chaining_hashmap_type` or `open_hashmap_type`. 
-It is an `intent(in)` argument. It is the hash map whose entries are
-examined.
-
-`key`: shall be a scalar expression a of type `key_type`. It
-is an `intent(in)` argument. It is a `key` whose presence in the `map`
-is being examined. 
-
-##### Result character
-
-The result is a default logical scalar.
-
-##### Result value
-
-The result is `.true.` if `key` is present in `map` and `.false.`
-otherwise.
-
-##### Example
-
-```fortran
-    program demo_valid_key
-      use stdlib_kinds, only: int8
-      use stdlib_hashmaps, only: chaining_hashmap_type
-      use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type
-      implicit none
-      type(chaining_hashmap_type) :: map
-      type(key_type) :: key
-      logocal :: valid
-      call map % init( fnv_1_hasher )
-      call set_key(key, [0_int8, 1_int8] )
-      valid = map % valid_key ( key )
-      print *, "Initial key of 10 valid for empty map =  ", valid
-    end program demo_valid_index
 ```
