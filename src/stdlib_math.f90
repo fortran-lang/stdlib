@@ -8,7 +8,7 @@ module stdlib_math
     public :: clip, gcd, linspace, logspace
     public :: EULERS_NUMBER_SP, EULERS_NUMBER_DP
     public :: DEFAULT_LINSPACE_LENGTH, DEFAULT_LOGSPACE_BASE, DEFAULT_LOGSPACE_LENGTH
-    public :: arange, arg, argd, argpi, is_close, all_close
+    public :: arange, arg, argd, argpi, is_close, all_close, diff
 
     integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
     integer, parameter :: DEFAULT_LOGSPACE_LENGTH = 50
@@ -596,6 +596,85 @@ module stdlib_math
             logical, intent(in), optional :: equal_nan
         end function all_close_4_cdp
     end interface all_close
+    
+    !> Version: experimental
+    !>
+    !> Computes differences between adjacent elements of an array.
+    !> ([Specification](../page/specs/stdlib_math.html#diff))
+    interface diff
+        pure module function diff_1_sp(x, n, prepend, append) result(y)
+            real(sp), intent(in) :: x(:)
+            integer, intent(in), optional :: n
+            real(sp), intent(in), optional :: prepend(:), append(:)
+            real(sp), allocatable :: y(:)
+        end function diff_1_sp
+        pure module function diff_2_sp(X, n, dim, prepend, append) result(y)
+            real(sp), intent(in) :: x(:, :)
+            integer, intent(in), optional :: n, dim
+            real(sp), intent(in), optional :: prepend(:, :), append(:, :)
+            real(sp), allocatable :: y(:, :)
+        end function diff_2_sp
+        pure module function diff_1_dp(x, n, prepend, append) result(y)
+            real(dp), intent(in) :: x(:)
+            integer, intent(in), optional :: n
+            real(dp), intent(in), optional :: prepend(:), append(:)
+            real(dp), allocatable :: y(:)
+        end function diff_1_dp
+        pure module function diff_2_dp(X, n, dim, prepend, append) result(y)
+            real(dp), intent(in) :: x(:, :)
+            integer, intent(in), optional :: n, dim
+            real(dp), intent(in), optional :: prepend(:, :), append(:, :)
+            real(dp), allocatable :: y(:, :)
+        end function diff_2_dp
+        pure module function diff_1_int8(x, n, prepend, append) result(y)
+            integer(int8), intent(in) :: x(:)
+            integer, intent(in), optional :: n
+            integer(int8), intent(in), optional :: prepend(:), append(:)
+            integer(int8), allocatable :: y(:)
+        end function diff_1_int8
+        pure module function diff_2_int8(X, n, dim, prepend, append) result(y)
+            integer(int8), intent(in) :: x(:, :)
+            integer, intent(in), optional :: n, dim
+            integer(int8), intent(in), optional :: prepend(:, :), append(:, :)
+            integer(int8), allocatable :: y(:, :)
+        end function diff_2_int8
+        pure module function diff_1_int16(x, n, prepend, append) result(y)
+            integer(int16), intent(in) :: x(:)
+            integer, intent(in), optional :: n
+            integer(int16), intent(in), optional :: prepend(:), append(:)
+            integer(int16), allocatable :: y(:)
+        end function diff_1_int16
+        pure module function diff_2_int16(X, n, dim, prepend, append) result(y)
+            integer(int16), intent(in) :: x(:, :)
+            integer, intent(in), optional :: n, dim
+            integer(int16), intent(in), optional :: prepend(:, :), append(:, :)
+            integer(int16), allocatable :: y(:, :)
+        end function diff_2_int16
+        pure module function diff_1_int32(x, n, prepend, append) result(y)
+            integer(int32), intent(in) :: x(:)
+            integer, intent(in), optional :: n
+            integer(int32), intent(in), optional :: prepend(:), append(:)
+            integer(int32), allocatable :: y(:)
+        end function diff_1_int32
+        pure module function diff_2_int32(X, n, dim, prepend, append) result(y)
+            integer(int32), intent(in) :: x(:, :)
+            integer, intent(in), optional :: n, dim
+            integer(int32), intent(in), optional :: prepend(:, :), append(:, :)
+            integer(int32), allocatable :: y(:, :)
+        end function diff_2_int32
+        pure module function diff_1_int64(x, n, prepend, append) result(y)
+            integer(int64), intent(in) :: x(:)
+            integer, intent(in), optional :: n
+            integer(int64), intent(in), optional :: prepend(:), append(:)
+            integer(int64), allocatable :: y(:)
+        end function diff_1_int64
+        pure module function diff_2_int64(X, n, dim, prepend, append) result(y)
+            integer(int64), intent(in) :: x(:, :)
+            integer, intent(in), optional :: n, dim
+            integer(int64), intent(in), optional :: prepend(:, :), append(:, :)
+            integer(int64), allocatable :: y(:, :)
+        end function diff_2_int64
+    end interface diff
 
 contains
 
