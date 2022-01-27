@@ -1,5 +1,7 @@
+#:set WITH_QP = False
+#:set WITH_XDP = False
 #:include "common.fypp"
-#:set ALL_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set CI_KINDS_TYPES = INT_KINDS_TYPES + CMPLX_KINDS_TYPES
 module specialfunctions_gamma
     use stdlib_kinds, only :  sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_error, only : error_stop
@@ -7,14 +9,15 @@ module specialfunctions_gamma
     implicit none
     private
 
-    integer(int8), parameter :: max_fact_int8 = 5_int8
-    integer(int16), parameter :: max_fact_int16 = 7_int16
-    integer(int32), parameter :: max_fact_int32 = 12_int32
-    integer(int64), parameter :: max_fact_int64 = 20_int64
+    integer(int8), parameter :: max_fact_int8 = 6_int8
+    integer(int16), parameter :: max_fact_int16 = 8_int16
+    integer(int32), parameter :: max_fact_int32 = 13_int32
+    integer(int64), parameter :: max_fact_int64 = 21_int64
 
     #:for k1, t1 in REAL_KINDS_TYPES
     ${t1}$, parameter :: tol_${k1}$ = epsilon(1.0_${k1}$)
     #:endfor
+    real(qp), parameter :: tol_qp = epsilon(1.0_qp)
 
 
 
@@ -22,14 +25,13 @@ module specialfunctions_gamma
     public :: lower_incomplete_gamma, log_lower_incomplete_gamma
     public :: upper_incomplete_gamma, log_upper_incomplete_gamma
     public :: regularized_gamma_p, regularized_gamma_q
-    public :: inverse_regularized_gamma_p
 
 
 
     interface gamma
-    !! Gamma function for integer, real, and complex numbers
+    !! Gamma function for integer and complex numbers
     !!
-        #:for k1, t1 in ALL_KINDS_TYPES
+        #:for k1, t1 in CI_KINDS_TYPES
         module procedure gamma_${t1[0]}$${k1}$
         #:endfor
     end interface gamma
@@ -39,14 +41,8 @@ module specialfunctions_gamma
     interface log_gamma
     !! Logarithm of gamma function
     !!
-        #:for k1, t1 in ALL_KINDS_TYPES
-        module procedure l_gamma_${t1[0]}$${k1}$           !1 dummy
-        #:endfor
-
-        #:for k1, t1 in INT_KINDS_TYPES
-          #:for k2, t2 in REAL_KINDS_TYPES
-        module procedure l_gamma_${t1[0]}$${k1}$${k2}$     !2 dummies
-          #:endfor
+        #:for k1, t1 in CI_KINDS_TYPES
+        module procedure l_gamma_${t1[0]}$${k1}$
         #:endfor
     end interface log_gamma
 
@@ -56,31 +52,9 @@ module specialfunctions_gamma
     !! Logarithm of factorial n!, integer variable
     !!
         #:for k1, t1 in INT_KINDS_TYPES
-        module procedure l_factorial_${t1[0]}$${k1}$        !1 dummy
-        #:endfor
-
-        #: for k1, t1 in INT_KINDS_TYPES
-          #:for k2, t2 in REAL_KINDS_TYPES
-        module procedure l_factorial_${t1[0]}$${k1}$${k2}$  !2 dummies
-          #:endfor
+        module procedure l_factorial_${t1[0]}$${k1}$
         #:endfor
     end interface log_factorial
-
-
-
-    interface gpx
-    ! Evaluation of incomplete gamma function
-    !
-        #:for k1, t1 in REAL_KINDS_TYPES
-        module procedure gpx_${t1[0]}$${k1}$         !for real s and x
-        #:endfor
-
-        #:for k1, t1 in INT_KINDS_TYPES
-          #:for k2, t2 in REAL_KINDS_TYPES
-        module procedure gpx_${t1[0]}$${k1}$${k2}$   !for integer s and real x
-          #:endfor
-        #:endfor
-    end interface gpx
 
 
 
@@ -180,14 +154,33 @@ module specialfunctions_gamma
 
 
 
-    interface inverse_regularized_gamma_p
-    !! Inverse regularized lower incomplete gamma function
-    !!
+    interface gpx
+    ! Incomplete gamma G function.
+    ! Internal use only
+    !
         #:for k1, t1 in REAL_KINDS_TYPES
-        module procedure inv_regamma_p_${t1[0]}$${k1}$
+        module procedure gpx_${t1[0]}$${k1}$         !for real p and x
         #:endfor
-    end interface inverse_regularized_gamma_p
 
+        #:for k1, t1 in INT_KINDS_TYPES
+          #:for k2, t2 in REAL_KINDS_TYPES
+        module procedure gpx_${t1[0]}$${k1}$${k2}$   !for integer p and real x
+          #:endfor
+        #:endfor
+    end interface gpx
+
+
+
+    interface l_gamma
+    ! Logarithm of gamma with integer argument for designated output kind.
+    ! Internal use only
+    !
+        #:for k1, t1 in INT_KINDS_TYPES
+          #:for k2, t2 in REAL_KINDS_TYPES
+          module procedure l_gamma_${t1[0]}$${k1}$${k2}$
+          #:endfor
+        #:endfor
+    end interface l_gamma
 
 
 
@@ -223,119 +216,11 @@ contains
 
 
 
-    #:for k1, t1 in REAL_KINDS_TYPES
-      #:if k1 == "sp"
-          #:set k2 = "dp"
-      #:else
-          #:set k2 = "qp"
-      #:endif
-      #:set t2 = "real({})".format(k2)
-
-    impure elemental function gamma_${t1[0]}$${k1}$(z) result(res)
-    !
-    ! Gamma function for any real number, excluding negative whole number.
-    ! Algorithm is based on Glendon Pugh, "An Analysis of The Lanczos Gamma
-    ! Approximation", The University of British Columbia, 2004
-    !
-    ! Fortran 90 program by Jim-215-Fisher
-    !
-        ${t1}$, intent(in) :: z
-        ${t1}$ :: res
-        integer :: i
-
-        ${t1}$, parameter :: zero_k1 = 0.0_${k1}$
-        ${t2}$, parameter :: zero = 0.0_${k2}$, half = 0.5_${k2}$,             &
-                             one = 1.0_${k2}$, pi = acos(- one), sqpi = sqrt(pi)
-        ${t2}$ :: y, x, sum
-
-        #:if k1 == "sp"
-          #! for single precision input, using double precision for calculation
-
-        integer, parameter :: n = 10
-        ${t2}$, parameter :: r = 10.900511_${k2}$
-        ${t2}$, parameter :: d(0 : n) =  [2.48574089138753566e-5_${k2}$,       &
-                                             1.05142378581721974_${k2}$,       &
-                                            -3.45687097222016235_${k2}$,       &
-                                             4.51227709466894824_${k2}$,       &
-                                            -2.98285225323576656_${k2}$,       &
-                                             1.05639711577126713_${k2}$,       &
-                                         -1.95428773191645870e-1_${k2}$,       &
-                                          1.70970543404441224e-2_${k2}$,       &
-                                         -5.71926117404305781e-4_${k2}$,       &
-                                          4.63399473359905637e-6_${k2}$,       &
-                                         -2.71994908488607704e-9_${k2}$]
-        ! parameters from above referenced source.
-
-        #:else
-          #! for double precision input, using quadruple precision for calculation
-
-        integer, parameter :: n = 24
-        ${t2}$, parameter :: r = 25.617904_${k2}$
-        ${t2}$, parameter :: d(0 : n)=                                         &
-                         [1.0087261714899910504854136977047144166e-11_${k2}$,  &
-                              1.6339627701280724777912729825256860624_${k2}$,  &
-                          -1.4205787702221583745972794018472259342e+1_${k2}$,  &
-                           5.6689501646428786119793943350900908698e+1_${k2}$,  &
-                          -1.3766376824252176069406853670529834070e+2_${k2}$,  &
-                           2.2739972766608392140035874845640820558e+2_${k2}$,  &
-                          -2.7058382145757164380300118233258834430e+2_${k2}$,  &
-                          2.39614374587263042692333711131832094166e+2_${k2}$,  &
-                          -1.6090450559507517723393498276315290189e+2_${k2}$,  &
-                          8.27378183187161305711485619113605553100e+1_${k2}$,  &
-                          -3.2678977082742592701862249152153110206e+1_${k2}$,  &
-                             9.89018079175824824537131521501652931756_${k2}$,  &
-                             -2.2762136356329318377213053650799013041_${k2}$,  &
-                          3.93265017303573867227590563182750070164e-1_${k2}$,  &
-                          -5.0051054352146209116457193223422284239e-2_${k2}$,  &
-                          4.57142601898244576789629257292603538238e-3_${k2}$,  &
-                          -2.8922592124650765614787233510990416584e-4_${k2}$,  &
-                          1.20833375377219592849746118012697473202e-5_${k2}$,  &
-                          -3.1220812187551248389268359432609135033e-7_${k2}$,  &
-                          4.55117045361638520378367871355819524460e-9_${k2}$,  &
-                         -3.2757632817493581828033170342853173968e-11_${k2}$,  &
-                         9.49784279240135747819870224486376897253e-14_${k2}$,  &
-                         -7.9480594917454410117072562195702526836e-17_${k2}$,  &
-                         1.04692819439870077791406760109955648941e-20_${k2}$,  &
-                         -5.8990280044857540075384586350723191533e-26_${k2}$]
-        ! parameters from above referenced source.
-
-        #:endif
-
-
-        if(z <= zero_k1 .and. abs(anint(z) - z) < tol_${k1}$)                  &
-            call error_stop("Error(gamma): Gamma function real argument must " &
-            //"NOT be negative whole number")
-
-        y = abs(z) - 1
-        x = y + half
-        sum = d(0)
-
-        do i = 1, n
-
-            sum = sum + d(i) / (y + i)
-
-        end do
-
-        x = exp(x * log(x + r) - y) * sum
-        x = x * 2 / sqpi                                  !positive z return
-
-        if(z < zero_k1) then
-
-            x = - pi / (sin(pi * (y + 1)) * (y + 1) * x)  !negative z return
-
-        end if
-
-        res = x
-    end function gamma_${t1[0]}$${k1}$
-
-    #:endfor
-
-
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
       #:if k1 == "sp"
           #:set k2 = "dp"
-      #:else
+      #:elif k1 == "dp"
           #:set k2 = "qp"
       #:endif
       #:set t2 = "real({})".format(k2)
@@ -368,7 +253,7 @@ contains
                                          -2.71994908488607704e-9_${k2}$]
         ! parameters from above referenced source.
 
-        #:else
+        #:elif k1 == "dp"
           #! for double precision input, using quadruple precision for calculation
 
         integer, parameter :: n = 24
@@ -527,88 +412,123 @@ contains
 
 
 
-    #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function l_gamma_${t1[0]}$${k1}$(z) result (res)
-    !
-    ! log_gamma function for absolute value of any real number excluding
-    ! negative whole number.
-    !
-        ${t1}$, intent(in) :: z
-        ${t1}$ :: res, y
-        ${t1}$, parameter :: zero = 0.0_${k1}$
-
-
-        if(z <= zero .and. abs(anint(z) - z) < tol_${k1}$) call error_stop(    &
-            "Error(log_gamma): Gamma function real argument must NOT be"       &
-            //" negative whole number")
-
-        res = log(abs(gamma(z)))
-    end function l_gamma_${t1[0]}$${k1}$
-
-    #:endfor
-
-
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
+      #:if k1 == "sp"
+          #:set k2 = "dp"
+      #:elif k1 == "dp"
+          #:set k2 = "qp"
+      #:endif
+      #:set t2 = "real({})".format(k2)
     impure elemental function l_gamma_${t1[0]}$${k1}$(z) result (res)
     !
     ! log_gamma function for any complex number, excluding negative whole number
+    ! "Computation of special functions", Shanjie Zhang & Jianmin Jin, 1996, p.48
+    !
+    ! Fortran 90 program by Jim-215-Fisher
     !
         ${t1}$, intent(in) :: z
-        ${t1}$ :: res
+        ${t1}$ :: res, z1, z2
+        real(${k1}$) :: d
+        integer :: m, i
+        complex(${k2}$) :: zr, zr2, sum, s
+        real(${k1}$), parameter :: z_limit = 7_${k1}$, zero_k1 = 0.0_${k1}$
+        integer, parameter :: n = 20
+        ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$,              &
+                             pi = acos(-one), ln2pi = log(2 * pi)
+        ${t2}$, parameter :: a(n) = [                                          &
+                           .8333333333333333333333333333333333333333E-1_${k2}$,&
+                          -.2777777777777777777777777777777777777778E-2_${k2}$,&
+                           .7936507936507936507936507936507936507937E-3_${k2}$,&
+                          -.5952380952380952380952380952380952380952E-3_${k2}$,&
+                           .8417508417508417508417508417508417508418E-3_${k2}$,&
+                          -.1917526917526917526917526917526917526918E-2_${k2}$,&
+                           .6410256410256410256410256410256410256410E-2_${k2}$,&
+                          -.2955065359477124183006535947712418300654E-1_${k2}$,&
+                           .1796443723688305731649384900158893966944E+0_${k2}$,&
+                          -.1392432216905901116427432216905901116427E+1_${k2}$,&
+                           .1340286404416839199447895100069013112491E+2_${k2}$,&
+                          -.1568482846260020173063651324520889738281E+3_${k2}$,&
+                           .2193103333333333333333333333333333333333E+4_${k2}$,&
+                          -.3610877125372498935717326521924223073648E+5_${k2}$,&
+                           .6914722688513130671083952507756734675533E+6_${k2}$,&
+                          -.1523822153940741619228336495888678051866E+8_${k2}$,&
+                           .3829007513914141414141414141414141414141E+9_${k2}$,&
+                         -.1088226603578439108901514916552510537473E+11_${k2}$,&
+                          .3473202837650022522522522522522522522523E+12_${k2}$,&
+                         -.1236960214226927445425171034927132488108E+14_${k2}$]
+        ! parameters from above reference
 
-        res = log(gamma(z))
+
+        if(z % re > zero_k1) then
+
+            z2 = z
+
+        else
+
+            z2 = cmplx(abs(z % re), - z % im, kind = ${k1}$)  !for Re(z) < 0
+
+        end if
+
+        d = hypot(z2 % re, z2 % im)
+        z1 = z2
+        m = 0
+
+        if(d <= z_limit) then                       !for small |z|
+
+            m = ceiling(z_limit - d)
+            z1 = z2 + m
+
+        end if
+
+        zr = one / z1
+        zr2 = zr * zr
+
+        sum = (((a(20) * zr2 + a(19)) * zr2 + a(18)) * zr2 + a(17)) * zr2
+        sum = (((sum + a(16)) * zr2 + a(15)) * zr2 + a(14)) * zr2
+        sum = (((sum + a(13)) * zr2 + a(12)) * zr2 + a(11)) * zr2
+        sum = (((sum + a(10)) * zr2 + a(9)) * zr2 + a(8)) * zr2
+        sum = (((sum + a(7)) * zr2 + a(6)) * zr2 + a(5)) * zr2
+        sum = (((sum + a(4)) * zr2 + a(3)) * zr2 + a(2)) * zr2
+        sum = (sum + a(1)) * zr + ln2pi / 2 - z1 + (z1 - 0.5_${k2}$) * log(z1)
+
+        if(m /= 0) then
+
+            s = cmplx(zero, zero, kind = ${k2}$)
+
+            do i = 1, m
+
+                s = s + log(cmplx(z1, kind = ${k2}$) - i)
+
+            end do
+
+            sum = sum - s
+
+        end if
+
+        if(z % re < zero_k1) then
+
+            sum = -pi / (sin(pi * z2) * z2 * sum)    !Re(Z) < 0
+
+        end if
+
+        res = sum
     end function l_gamma_${t1[0]}$${k1}$
 
     #:endfor
+
 
 
 
     #:for k1, t1 in INT_KINDS_TYPES
     impure elemental function l_factorial_${t1[0]}$${k1}$(n) result(res)
     !
-    ! Log(n!) with single precision result, n is integer
+    ! Log(n!)
     !
         ${t1}$, intent(in) :: n
         real :: res
         ${t1}$, parameter :: zero = 0_${k1}$, one = 1_${k1}$, two = 2_${k1}$
-
-        if(n < 0_${k1}$) call error_stop("Error(l_factorial): Logarithm of "   &
-            //"factorial function argument must be non-negative")
-
-        select case(n)
-
-        case (zero)
-
-            res = 0.0
-
-        case (one)
-
-            res = 0.0
-
-        case (two : )
-
-            res = log_gamma(real(n + 1))
-
-        end select
-    end function l_factorial_${t1[0]}$${k1}$
-
-    #:endfor
-
-
-
-    #:for k1, t1 in INT_KINDS_TYPES
-      #:for k2, t2 in REAL_KINDS_TYPES
-    impure elemental function l_factorial_${t1[0]}$${k1}$${k2}$(n,x) result(res)
-    !
-    ! Log(n!) with defined prescision output, n is integer, x is a real
-    ! for specified kind
-    !
-        ${t1}$, intent(in) :: n
-        ${t2}$, intent(in) :: x
-        ${t2}$ :: res
-        ${t1}$, parameter :: zero = 0_${k1}$, one = 1_${k1}$, two = 2_${k1}$
-        ${t2}$, parameter :: zero_k2 = 0.0_${k2}$
+        real, parameter :: zero_k2 = 0.0
 
         if(n < zero) call error_stop("Error(l_factorial): Logarithm of"        &
             //" factorial function argument must be non-negative")
@@ -625,12 +545,11 @@ contains
 
         case (two : )
 
-            res = log_gamma(real(n + 1, ${k2}$))
+            res = l_gamma(n + 1, 1.0D0)
 
         end select
-    end function l_factorial_${t1[0]}$${k1}$${k2}$
+    end function l_factorial_${t1[0]}$${k1}$
 
-      #:endfor
     #:endfor
 
 
@@ -662,7 +581,7 @@ contains
         ${t1}$, parameter :: zero_k1 = 0.0_${k1}$
 
         if(p <= zero_k1) call error_stop("Error(gpx): Incomplete gamma"        &
-            //" function must have a positive parameter p with negative x")
+            //" function must have a positive parameter p")
 
         if(x < -9.0_${k1}$) then
 
@@ -680,9 +599,9 @@ contains
 
         if(x < zero_k1 .and. p < p_lim .and. abs(anint(p) - p) > tol_${k1}$)   &
             call error_stop("Error(gpx): Incomplete gamma function with "      &
-            //"negative x must come with a whole number p")
+            //"negative x must come with a whole number p not too small")
 
-        if(p >= p_lim) then     !use modified Lentz method for continued fraction
+        if(p >= p_lim) then     !use modified Lentz method of continued fraction
                                 !for eq. (15) in the above reference.
             a = one
             b = p
@@ -805,7 +724,7 @@ contains
 
             p_lim = 5.0_${k2}$ * (sqrt(abs(x)) - 1.0_${k2}$)
 
-        elseif(x >= -9.0_${k2}$ .and. x <= zero) then
+        else if(x >= -9.0_${k2}$ .and. x <= zero) then
 
             p_lim = zero
 
@@ -813,7 +732,7 @@ contains
 
             p_lim = x
 
-        endif
+        end if
 
         if(real(p, ${k2}$) >= p_lim) then
 
@@ -907,7 +826,7 @@ contains
             if(y >= b * tol_${k2}$ .and. mod(p, two) /= zero_k1)               &
                 b = b + d * c / a
 
-            g = ((-1) ** p * exp(-a + log_gamma(p, one) - (p - 1) * log(a))    &
+            g = ((-1) ** p * exp(-a + l_gamma(p, one) - (p - 1) * log(a))      &
                 + b ) / a
 
         end if
@@ -933,24 +852,24 @@ contains
 
             res = zero
 
-        else if(x < zero) then
+        else if(x > p) then
 
-            s1 = -x + p * log(abs(x))
-            res = gpx(p, x) * exp(s1)
-            res = (-1) ** nint(p) * res
+            s1 = log_gamma(p)
+            y = one - exp(-x + p * log(x) - s1) * gpx(p, x)
+            res = exp(s1 + log(y))
 
-        else if(x <= p) then
+        else if(x <= p .and. x > zero) then
 
             s1 = -x + p * log(x)
             res = gpx(p, x) * exp(s1)
 
         else
 
-            s1 = log_gamma(p)
-            y = one - exp(-x + p * log(x) - s1) * gpx(p, x)
-            res = exp(s1 + log(y))
+            s1 = -x + p * log(abs(x))
+            res = gpx(p, x) * exp(s1)
+            res = (-1) ** nint(p) * res
 
-        endif
+        end if
     end function ingamma_low_${t1[0]}$${k1}$
 
     #:endfor
@@ -973,24 +892,24 @@ contains
 
             res = zero
 
-        else if(x < zero) then
+        else if(x > real(p, ${k2}$)) then
 
-            s1 = -x + p * log(abs(x))
-            res = gpx(p, x) * exp(s1)
-            res = (-1) ** p * res
+            s1 = l_gamma(p, one)
+            y = one - exp(-x + p * log(x) - s1) * gpx(p, x)
+            res = exp(s1 + log(y))
 
-        else if(x <= real(p, ${k2}$)) then
+        else if(x <= real(p, ${k2}$) .and. x > zero) then
 
             s1 = -x + p * log(x)
             res = gpx(p, x) * exp(s1)
 
         else
 
-            s1 = log_gamma(p, one)
-            y = one - exp(-x + p * log(x) - s1) * gpx(p, x)
-            res = exp(s1 + log(y))
+            s1 = -x + p * log(abs(x))
+            res = gpx(p, x) * exp(s1)
+            res = (-1) ** p * res
 
-        endif
+        end if
     end function ingamma_low_${t1[0]}$${k1}$${k2}$
 
       #:endfor
@@ -1010,18 +929,18 @@ contains
 
             res = zero
 
-        else if(x <= p) then
-
-            s1 = -x + p * log(abs(x))
-            res = log(abs(gpx(p, x))) + s1
-
         else if(x > p) then
 
             s1 = log_gamma(p)
             y = one - exp(-x + p * log(x) - s1) * gpx(p, x)
             res = s1 + log(y)
 
-        endif
+        else if(x <= p) then
+
+            s1 = -x + p * log(abs(x))
+            res = log(abs(gpx(p, x))) + s1
+
+        end if
     end function l_ingamma_low_${t1[0]}$${k1}$
 
     #:endfor
@@ -1043,18 +962,18 @@ contains
 
             res = zero
 
+        else if(x > real(p, ${k2}$)) then
+
+            s1 = l_gamma(p, one)
+            y = one - exp(-x + p * log(x) - s1) * gpx(p, x)
+            res = s1 + log(y)
+
         else if(x <= real(p, ${k2}$)) then
 
             s1 = -x + p * log(abs(x))
             res = log(abs(gpx(p, x))) + s1
 
-        else if(x > real(p, ${k2}$)) then
-
-            s1 = log_gamma(p, one)
-            y = one - exp(-x + p * log(x) - s1) * gpx(p, x)
-            res = s1 + log(y)
-
-        endif
+        end if
     end function l_ingamma_low_${t1[0]}$${k1}$${k2}$
 
       #:endfor
@@ -1075,14 +994,12 @@ contains
 
             res = gamma(p)
 
-        else if(x < zero) then
+        else if(x > p) then
 
-            y = log_gamma(p)
-            s1 = -x + p * log(abs(x)) - y
+            s1 = -x + p * log(x)
             res = gpx(p, x) * exp(s1)
-            res = (one - (-1) ** nint(p) * res) * exp(y)
 
-        else if(x <= p) then
+        else if(x <= p .and. x > zero) then
 
             y = log_gamma(p)
             s1 = -x + p * log(x) - y
@@ -1090,10 +1007,12 @@ contains
 
         else
 
-            s1 = -x + p * log(x)
+            y = log_gamma(p)
+            s1 = -x + p * log(abs(x)) - y
             res = gpx(p, x) * exp(s1)
+            res = (one - (-1) ** nint(p) * res) * exp(y)
 
-        endif
+        end if
     end function ingamma_up_${t1[0]}$${k1}$
 
     #:endfor
@@ -1116,26 +1035,26 @@ contains
 
             res = gamma(real(p, ${k2}$))
 
-        else if(x < zero) then
+        else if(x > real(p, ${k2}$)) then
 
-            y = log_gamma(p, one)
-            s1 = -x + p * log(abs(x)) - y
+            s1 = -x + p * log(x)
             res = gpx(p, x) * exp(s1)
-            res = (one - (-1) ** p * res) * exp(y)
 
-        else if(x <= real(p, ${k2}$)) then
+        else if(x <= real(p, ${k2}$) .and. x > zero) then
 
-            y = log_gamma(p, one)
+            y = l_gamma(p, one)
             s1 = -x + p * log(x) - y
             res = gpx(p, x) * exp(s1)
             res = (one - res) * exp(y)
 
         else
 
-            s1 = -x + p * log(x)
+            y = l_gamma(p, one)
+            s1 = -x + p * log(abs(x)) - y
             res = gpx(p, x) * exp(s1)
+            res = (one - (-1) ** p * res) * exp(y)
 
-        endif
+        end if
     end function ingamma_up_${t1[0]}$${k1}$${k2}$
 
       #:endfor
@@ -1155,14 +1074,12 @@ contains
 
             res = log_gamma(p)
 
-        else if(x < zero) then
+        else if(x > p) then
 
-            y = log_gamma(p)
-            s1 = -x + p * log(abs(x)) - y
-            res = gpx(p, x) * exp(s1)
-            res = log(one - (-1) ** nint(p) * res) + y
+            s1 = -x + p * log(x)
+            res = log(gpx(p, x)) + s1
 
-        else if(x <= p) then
+        else if(x <= p .and. x > zero) then
 
             y= log_gamma(p)
             s1 = -x + p * log(x) - y
@@ -1171,10 +1088,12 @@ contains
 
         else
 
-            s1 = -x + p * log(x)
-            res = log(gpx(p, x)) + s1
+            y = log_gamma(p)
+            s1 = -x + p * log(abs(x)) - y
+            res = gpx(p, x) * exp(s1)
+            res = log(one - (-1) ** nint(p) * res) + y
 
-        endif
+        end if
     end function l_ingamma_up_${t1[0]}$${k1}$
 
     #:endfor
@@ -1194,28 +1113,28 @@ contains
 
         if(x == zero) then
 
-            res = log_gamma(p, one)
+            res = l_gamma(p, one)
 
-        else if(x < zero) then
+        else if(x > real(p, ${k2}$)) then
 
-            y = log_gamma(p, one)
-            s1 = -x + p * log(abs(x)) - y
-            res = gpx(p, x) * exp(s1)
-            res = log(one - (-1) ** p * res) + y
+            s1 = -x + p * log(x)
+            res = log(gpx(p, x)) + s1
 
-        else if(x <= real(p, ${k2}$)) then
+        else if(x <= real(p, ${k2}$) .and. x > zero) then
 
-            y = log_gamma(p, one)
+            y = l_gamma(p, one)
             s1 = -x + p * log(x) - y
             res = gpx(p, x) * exp(s1)
             res = log(one - res) + y
 
         else
 
-            s1 = -x + p * log(x)
-            res = log(gpx(p, x)) + s1
+            y = l_gamma(p, one)
+            s1 = -x + p * log(abs(x)) - y
+            res = gpx(p, x) * exp(s1)
+            res = log(one - (-1) ** p * res) + y
 
-        endif
+        end if
     end function l_ingamma_up_${t1[0]}$${k1}$${k2}$
 
       #:endfor
@@ -1236,21 +1155,22 @@ contains
         if(x < zero) call error_stop("Error(regamma_p): Regularized gamma_p"   &
             //" function is not defined at x < 0")
 
-        s1 = -x + p * log(x) - log_gamma(p)
 
         if(x == zero) then
 
             res = zero
 
-        else if(x > zero .and. x <= p) then
-
-            res = exp(log(gpx(p, x)) + s1)
-
         else if(x > p) then
 
+            s1 = -x + p * log(x) - log_gamma(p)
             res = one - exp(s1 + log(gpx(p,x)))
 
-        endif
+        else if(x <= p) then
+
+            s1 = -x + p * log(abs(x)) - log_gamma(p)
+            res = exp(log(gpx(p, x)) + s1)
+
+        end if
     end function regamma_p_${t1[0]}$${k1}$
 
     #:endfor
@@ -1271,21 +1191,22 @@ contains
         if(x < zero) call error_stop("Error(regamma_p): Regularized gamma_p"   &
             //" function is not defined at x < 0")
 
-        s1 = -x + p * log(x) - log_gamma(p, one)
 
         if(x == zero) then
 
             res = zero
 
-        else if(x > zero .and. x <= real(p, ${k2}$)) then
-
-            res = exp(log(gpx(p, x)) + s1)
-
         else if(x > real(p, ${k2}$)) then
 
+            s1 = -x + p * log(x) - l_gamma(p, one)
             res = one - exp(s1 + log(gpx(p,x)))
 
-        endif
+        else if(x <= real(p, ${k2}$)) then
+
+            s1 = -x + p * log(abs(x)) - l_gamma(p, one)
+            res = exp(log(gpx(p, x)) + s1)
+
+        end if
     end function regamma_p_${t1[0]}$${k1}$${k2}$
 
       #:endfor
@@ -1305,21 +1226,22 @@ contains
         if(x < zero) call error_stop("Error(regamma_p): Regularized gamma_q"   &
             //" function is not defined at x < 0")
 
-        s1 = -x + p * log(x) - log_gamma(p)
 
         if(x == zero) then
 
             res = one
 
-        else if(x > zero .and. x <= p) then
-
-            res = one - exp(log(gpx(p, x)) + s1)
-
         else if(x > p) then
 
+            s1 = -x + p * log(x) - log_gamma(p)
             res = exp(s1 + log(gpx(p,x)))
 
-        endif
+        else if(x <= p) then
+
+            s1 = -x + p * log(abs(x)) - log_gamma(p)
+            res = one - exp(log(gpx(p, x)) + s1)
+
+        end if
     end function regamma_q_${t1[0]}$${k1}$
 
     #:endfor
@@ -1340,117 +1262,25 @@ contains
         if(x < zero) call error_stop("Error(regamma_q): Regularized gamma_q"   &
             //" function is not defined at x < 0")
 
-        s1 = -x + p * log(x) - log_gamma(p, one)
 
         if(x == zero) then
 
             res = one
 
-        elseif(x > zero .and. x <= real(p, ${k2}$)) then
+        else if(x > real(p, ${k2}$)) then
 
-            res = one - exp(s1 + log(gpx(p,x)))
-
-        elseif(x > real(p, ${k2}$)) then
-
+            s1 = -x + p * log(x) - l_gamma(p, one)
             res = exp(log(gpx(p,x)) + s1)
 
-        endif
+        elseif(x <= real(p, ${k2}$)) then
+
+            s1 = -x + p * log(abs(x)) - l_gamma(p, one)
+            res = one - exp(s1 + log(gpx(p,x)))
+
+        end if
      end function regamma_q_${t1[0]}$${k1}$${k2}$
 
       #:endfor
-    #:endfor
-
-
-
-    #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function inv_regamma_p_${t1[0]}$${k1}$(s, p) result(res)
-    !
-    ! Return x such that p = P(s, x) for p between 0 and 1
-    !
-    ! Numerical Recipes, William H. Press, etc., 3rd ed., 2007, p.263
-    !
-    ! "Modified Halley's Method for Solving Nonlinear Functions with Convergence
-    ! of Order Six and Efficicency Index 1.8171", Waqas Nazeer, etc.,
-    ! International Journal of Pure and Applied Mathematics, 111(1), 2016, p. 55
-    !
-        ${t1}$, intent(in) :: s
-        real, intent(in) :: p
-        ${t1}$ :: res
-        integer :: i
-        real :: pp
-        ${t1}$ :: x0, x0s, x1, x2, t, err, f1, f2
-        ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
-
-        if(s <= zero) call error_stop("Error(inv_regamma_p): Inverse "         &
-            //"regularized gamma_p function input s value must be positive")
-
-        if(p >= 1.0) then
-
-            res = max(100._${k1}$, s + 100._${k1}$ * sqrt(s))
-            return
-
-        elseif(p <= 0.) then
-
-            res = zero
-            return
-
-        end if
-
-        if(s > one) then
-
-            pp = p
-
-            if(p > 0.5) pp = 1.0 - p
-
-            t = sqrt(-2 * log(pp))
-            x0 = (2.30753_${k1}$ + t * 0.27061_${k1}$) / (one + t *            &
-                (0.99229_${k1}$ + t * 0.04481_${k1}$)) - t
-
-            if(p < 0.5) x0 = - x0
-
-            x0 = max( 1.0e-3_${k1}$, s * (one - one / (s * 9._${k1}$) - x0 /   &
-                (3._${k1}$ * sqrt(s))) ** 3 )
-
-        else
-
-            t = one - s * (0.253_${k1}$ + s * 0.12_${k1}$)
-
-            if(real(p, ${k1}$) < t) then
-
-                x0 = (p / t) ** ( one / s )
-
-            else
-
-                x0 = one - log(one - (p - t) / (one - t))
-
-            end if
-
-        end if
-
-        err = regularized_gamma_p(s, x0) - p
-        x0s = x0
-        x2 = (x0 + x0s) / 2
-        f1 = exp(-x2 + (s - 1) * log(x2) - log_gamma(x2))
-        f2 = err / (f1 - err * ((s - 1) / x2 - 1) / 2)
-        x1 = x0 - f2
-
-        do
-
-            if(abs(f2) <= tol_${k1}$) exit
-
-            x0 = x1
-            err = regularized_gamma_p(s, x0) - p
-            x0s = x0 - err / (f1 - err * ((s - 1) / x2 - 1) / 2)
-            x2 = (x0 + x0s) / 2
-            f1 = exp(-x2 + (s - 1) * log(x2) - log_gamma(x2))
-            f2 = err / (f1 - err * ((s - 1) / x2 - 1) / 2)
-            x1 = x0 - f2
-
-        end do
-
-        res = x1
-    end function inv_regamma_p_${t1[0]}$${k1}$
-
     #:endfor
 
 end module specialfunctions_gamma

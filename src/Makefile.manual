@@ -30,6 +30,7 @@ SRCFYPP = \
         stdlib_sorting_ord_sort.fypp \
         stdlib_sorting_sort.fypp \
         stdlib_sorting_sort_index.fypp \
+        stdlib_specialfunctions_gamma.fypp \
         stdlib_stats.fypp \
         stdlib_stats_corr.fypp \
         stdlib_stats_cov.fypp \
@@ -165,6 +166,9 @@ stdlib_sorting_sort.o: \
     stdlib_sorting.o
 stdlib_sorting_sort_index.o: \
     stdlib_sorting.o
+stdlib_specialfunctions_gamma.o: \
+    stdlib_kinds.o \
+    stdlib_error.o
 stdlib_stats.o: \
     stdlib_kinds.o
 stdlib_stats_corr.o: \
