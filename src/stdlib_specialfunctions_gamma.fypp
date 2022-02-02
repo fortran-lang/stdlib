@@ -3,7 +3,8 @@
 #:include "common.fypp"
 #:set CI_KINDS_TYPES = INT_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_specialfunctions_gamma
-    use stdlib_kinds, only :  sp, dp, xdp, qp, int8, int16, int32, int64
+    use iso_fortran_env, only : qp => real128
+    use stdlib_kinds, only :  sp, dp, int8, int16, int32, int64
     use stdlib_error, only : error_stop
 
     implicit none
