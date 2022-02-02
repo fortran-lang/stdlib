@@ -23,6 +23,7 @@ all test clean::
 	$(MAKE) -f Makefile.manual --directory=selection $@
 	$(MAKE) -f Makefile.manual --directory=sorting $@
 	$(MAKE) -f Makefile.manual --directory=quadrature $@
+    $(MAKE) -f Makefile.manual --directory=specialfunctions $@
 	$(MAKE) -f Makefile.manual --directory=stats $@
 	$(MAKE) -f Makefile.manual --directory=string $@
 	$(MAKE) -f Makefile.manual --directory=math $@

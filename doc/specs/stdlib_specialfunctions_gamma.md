@@ -6,7 +6,7 @@ title: specialfunctions_gamma
 
 [TOC]
 
-## `gamma` - Calculate gamma function with any number
+## `gamma` - Calculate gamma function with any type of argument
 
 ### Status
 
@@ -14,7 +14,11 @@ Experimental
 
 ### Description
 
-Intrinsic gamma function provides values for real type argument with single and double precision. Here the gamma function is extended to both integer and complex numbers.
+The gamma function is defined as the analytic continuation of a convergent improper integral function on the whole complex plane except zero and negative integers:
+
+\Gamma(z)=\int_{0}^{\infty}x^{z-1}e^{-x}dx, \;\;  z\in \mathbb{C} \setminus 0, -1, -2, \cdots
+
+Fortran 2018 standard implements intrinsic gamma function of real type argument in single and double precisions. Here the gamma function is extended to both integer and complex arguments. The values of gamma function with integer arguments are exact. The values of gamma function with complex arguments are approximated in single and double precisions by using Lanczos approxiamtion.
 
 ### Syntax
 
@@ -26,14 +30,54 @@ Elemental function
 
 ### Arguments
 
-`x`: should be an integer or a complex type number
+`x`: should be a positive integer or a complex type number
 
 ### Return value
 
 The function returns a value with the same type and kind as input argument.
 
+### Example
+```fortran
+program demo_gamma
+    use iso_fortran_env, only : real64, int64
+    use stdlib_specialfunctions_gamma, only : gamma
+    implicit none
+    
+    integer :: i
+    integer(int64) :: n
+    real :: x
+    real(real64) :: y
+    complex :: z
+    complex(real64) :: z1
+    
+    i = 10
+    n = 15_int64
+    x = 2.5
+    y = 4.3_real64
+    z = (2.3, 0.6)
+    z1 = (-4.2_real64, 3.1_real64)
+    
+    print *, gamma(i)              !integer gives exact result
+! 362880
 
-## `log_gamma` - calculate logarithm gamma function with any number
+    print *, gamma(n)
+! 87178291200
+
+    print *, gamma(x)              ! intrinsic function call
+! 1.32934034
+
+    print *, gamma(y)              ! intrinsic function call
+! 8.8553433604540341
+
+    print *, gamma(z)
+! (0.988054395, 0.383354813)
+
+    print *, gamma(z1)
+! (-2.78916032990983999E-005, 9.83164600163221218E-006)
+end program demo_gamma
+```
+
+## `log_gamma` - calculate natural logarithm of gamma function with any type of argument
 
 ### Status
 
@@ -41,7 +85,9 @@ Experimental
 
 ### Description
 
-Intrinsic log_gamma function provides values for real type arguments with single and double precisions. Here the log_gamma function is extended to both integer and complex numbers.
+Due to the different branch cut structures and a different principal branch, natural logarithm of gamma function log_gamma(z) with complex argument is different from the ln(Gamma(z)). The two have the same real part but different imaginary part. 
+
+Fortran 2018 standard implements intrinsic log_gamma function of absolute value of real type argument in single and double precision. Here the log_gamma function is extended to both integer and complex arguments. The values of log_gamma function with complex arguments are approximated in single and double precisions by using Stirling's approximation.
 
 ### Syntax
 
@@ -53,43 +99,49 @@ Elemental function
 
 ### Arguments
 
-`x`: Shall be an integer or a complex type number. 
+`x`: Shall be a positive integer or a complex type number. 
 
 ### Return value
 
-The function returns a value with the same type and kind as input argument. For integer argument, the result is single precision real type.
+The function returns real single precision values for integer input arguments, while it returns complex values with the same kind as complex input arguments.
 
 ### Example
 
 ```fortran
 program demo_log_gamma
-    use stdlib_specialfunctions_gamma, only : lg => log_gamma
+    use iso_fortran_env, only : real64
+    use stdlib_specialfunctions_gamma, only : log_gamma
     implicit none
     
     integer :: i
     real :: x
     real(real64) :: y
     complex :: z
+    complex(real64) :: z1
     
     i = 10
     x = 8.76
     y = x
     z = (5.345, -3.467)
-    print *, lg(i)            !default single precision output
+    z1 = z
+    print *, log_gamma(i)     !default single precision output
 !12.8018274
 
-    print *, lg(x)            !same kind as input
+    print *, log_gamma(x)     !intrinsic function call
     
 !10.0942659
 
-    print *, lg(y)            !same kind as input
+    print *, log_gamma(y)     !intrinsic function call
     
 !10.094265528673880
 
-    print *, lg(z)            !same kind as input
+    print *, log_gamma(z)     !same kind as input
     
-!(2.56165719, 0.549360633)
+!(2.56165648, -5.73382425)
 
+    print *, log_gamma(z1)
+    
+!(2.5616575105114614, -5.7338247782852498)
 end program demo_log_gamma
 ```
 
@@ -101,7 +153,7 @@ Experimental
 
 ### Description
 
-Compute the logarithm of factorial, log(n!)
+Compute the natural logarithm of factorial, log(n!)
 
 ### Syntax
 
@@ -113,12 +165,30 @@ Elemental function
 
 ### Arguments
 
-`x`: Shall be an integer type number. 
+`x`: Shall be a positive integer type number. 
 
 ### Return value
 
-The function returns a value with single precision real type.
+The function returns real type values with single precision.
 
+### Example
+```fortran
+program demo_log_factorial
+    use iso_fortran_env, only : int64
+    use stdlib_specialfunctions_gamma, only : lf => log_factorial
+    implicit none
+    integer :: n
+    
+    n = 10
+    print *, lf(n)
+
+! 15.1044130
+
+    print *, lf(35_int64)
+    
+! 92.1361771
+end program demo_log_factorial
+```
 
 ## `lower_incomplete_gamma` - calculate lower incomplete gamma integral
 
@@ -130,7 +200,9 @@ Experimental
 
 The lower incomplete gamma function is defined as:
 
-\gamma (p, x) = \int_{0}^{x}t^{p-1}e^{-t}dt, \; \; p >0,\; x,p\in \mathbb{R}
+\gamma(p,x)=\int_{0}^{x}t^{p-1}e^{-t}dt, \;\;  p > 0, x\in \mathbb{R}
+
+When x < 0, p must be positive integer.
 
 ### Syntax
 
@@ -150,6 +222,25 @@ Elemental function
 
 The function returns a real type value with the same kind as argument x.
 
+### Example
+```fortran
+program demo_ligamma
+    use stdlib_specialfunctions_gamma, only : lig => lower_incomplete_gamma
+    implicit none
+    integer :: p
+    real :: p1, x
+    
+    p = 3
+    p1 = 2.3
+    print *, lig(p, -5.0)
+    
+! -2521.02417
+
+    print *, lig(p1, 5.0)
+    
+! 1.09715652
+end demo_ligamma
+```
 
 ## `upper_incomplete_gamma` - calculate upper incomplete gamma integral
 
@@ -161,7 +252,9 @@ Experimental
 
 The upper incomplete gamma function is defined as:
 
-\\Gamma (p, x) = \int_{x}^{\infty }t^{p-1}e^{-t}dt, \; \; p >0,\; x,p\in \mathbb{R}
+\Gamma (p, x) = \int_{x}^{\infty }t^{p-1}e^{-t}dt, \; \; p >0,\; x \in \mathbb{R}
+
+When x < 0, p must be a positive integer.
 
 ### Syntax
 
@@ -181,6 +274,21 @@ Elemental function
 
 The function returns a real type value with the same kind as argument x.
 
+### Example
+```fortran
+program demo_uigamma
+    use stdlib_specialfunctions_gamma, only : uig => upper_incomplete_gamma
+    implicit none
+    
+    print *, uig(3, -5.0)
+
+!2523.02295
+
+    print *, uig(2.3, 5.0)
+    
+!6.95552528E-02
+end program demo_uigamma
+```
 
 ## `log_lower_incomplete_gamma` - calculate logarithm of the lower incomplete gamma integral
 
@@ -190,7 +298,7 @@ Experimental
 
 ### Description
 
-Compute the logarithm of the absolute value of the lower incomplete gamma function.
+Compute the natural logarithm of the absolute value of the lower incomplete gamma function.
 
 ### Syntax
 
@@ -219,7 +327,7 @@ Experimental
 
 ### Description
 
-Compute the logarithm of the absolute value of the upper incomplete gamma function.
+Compute the natural logarithm of the absolute value of the upper incomplete gamma function.
 
 ### Syntax
 
@@ -248,7 +356,7 @@ Experimental
 
 ### Description
 
-The regularized gamma quotient p, also known as normalized incomplete gamma function, is defined as:
+The regularized gamma quotient P, also known as normalized incomplete gamma function, is defined as:
 
 P(p,x)=\gamma(p,x)/\Gamma(p)
 
@@ -272,6 +380,17 @@ Elemental function
 
 The function returns a real type value with the same kind as argument x.
 
+### Example
+```fortran
+program demo_gamma_p
+    use stdlib_specialfunctions_gamma, only : rgp => regularized_gamma_p
+    implicit none
+    
+    print *, rgp(3.0, 5.0)
+
+! 0.875347972
+end program demo_gamma_p
+```
 
 ## `regularized_gamma_q` - calculate the gamma quotient Q
 
@@ -304,3 +423,15 @@ Elemental function
 ### Return value
 
 The function returns a real type value with the same kind as argument x.
+
+### Example
+```fortran
+program demo_gamma_q
+    use stdlib_specialfunctions_gamma, only : rgq => regularized_gamma_q
+    implicit none
+    
+    print *, rgq(3.0, 5.0)
+    
+! 0.124652028
+end program demo_gamma_q
+```
