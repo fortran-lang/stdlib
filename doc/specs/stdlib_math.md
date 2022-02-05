@@ -320,7 +320,7 @@ program demo_logspace_rstart_cbase
 
 end program demo_logspace_rstart_cbase
 ```
-### `arange`
+### `arange` function
 
 #### Status
 
@@ -332,7 +332,7 @@ Pure function.
 
 #### Description
 
-Creates a one-dimensional `array` of the `integer/real` type with fixed-spaced values of given spacing, within a given interval.
+Creates a rank-1 `array` of the `integer/real` type with fixed-spaced values of given spacing, within a given interval.
 
 #### Syntax
 
@@ -360,7 +360,7 @@ If `step < 0`, the `step` argument will be corrected to `abs(step)` by the inter
 
 #### Return value
 
-Returns a one-dimensional `array` of fixed-spaced values.
+Returns a rank-1 `array` of fixed-spaced values.
 
 For `integer` type arguments, the length of the result vector is `(end - start)/step + 1`.  
 For `real` type arguments, the length of the result vector is `floor((end - start)/step) + 1`.
@@ -371,25 +371,25 @@ For `real` type arguments, the length of the result vector is `floor((end - star
 program demo_math_arange
     use stdlib_math, only: arange
 
-    print *, arange(3)                 !! [1,2,3]
-    print *, arange(-1)                !! [1,0,-1]
-    print *, arange(0,2)               !! [0,1,2]
-    print *, arange(1,-1)              !! [1,0,-1]
-    print *, arange(0, 2, 2)           !! [0,2]
+    print *, arange(3)                 ! [1,2,3]
+    print *, arange(-1)                ! [1,0,-1]
+    print *, arange(0,2)               ! [0,1,2]
+    print *, arange(1,-1)              ! [1,0,-1]
+    print *, arange(0, 2, 2)           ! [0,2]
 
-    print *, arange(3.0)               !! [1.0,2.0,3.0]
-    print *, arange(0.0,5.0)           !! [0.0,1.0,2.0,3.0,4.0,5.0]
-    print *, arange(0.0,6.0,2.5)       !! [0.0,2.5,5.0]
+    print *, arange(3.0)               ! [1.0,2.0,3.0]
+    print *, arange(0.0,5.0)           ! [0.0,1.0,2.0,3.0,4.0,5.0]
+    print *, arange(0.0,6.0,2.5)       ! [0.0,2.5,5.0]
 
-    print *, (1.0,1.0)*arange(3)       !! [(1.0,1.0),(2.0,2.0),[3.0,3.0]]
+    print *, (1.0,1.0)*arange(3)       ! [(1.0,1.0),(2.0,2.0),[3.0,3.0]]
 
-    print *, arange(0.0,2.0,-2.0)      !! [0.0,2.0].     Not recommended: `step` argument is negative!
-    print *, arange(0.0,2.0,0.0)       !! [0.0,1.0,2.0]. Not recommended: `step` argument is zero!
+    print *, arange(0.0,2.0,-2.0)      ! [0.0,2.0].     Not recommended: `step` argument is negative!
+    print *, arange(0.0,2.0,0.0)       ! [0.0,1.0,2.0]. Not recommended: `step` argument is zero!
 
 end program demo_math_arange
 ```
 
-### `arg` - Computes the phase angle in radian of a complex scalar
+### `arg` function
 
 #### Status
 
@@ -424,13 +424,14 @@ Notes: Although the angle of the complex number `0` is undefined, `arg((0,0))` r
 ```fortran
 program demo_math_arg
     use stdlib_math, only: arg
-    print *, arg((0.0, 0.0))                  !! 0.0
-    print *, arg((3.0, 4.0))                  !! 0.927
-    print *, arg(2.0*exp((0.0, 0.5)))         !! 0.5
+    print *, arg((0.0, 0.0))                  ! 0.0
+    print *, arg((3.0, 4.0))                  ! 0.927
+    print *, arg(2.0*exp((0.0, 0.5)))         ! 0.5
+    print *, arg([(0.0, 1.0), (1.0, 0.0), (0.0, -1.0), (-1.0, 0.0)])  ! [π/2, 0.0, -π/2, π]
 end program demo_math_arg
 ```
 
-### `argd` - Computes the phase angle in degree of a complex scalar
+### `argd` function
 
 #### Status
 
@@ -465,13 +466,14 @@ Notes: Although the angle of the complex number `0` is undefined, `argd((0,0))` 
 ```fortran
 program demo_math_argd
     use stdlib_math, only: argd
-    print *, argd((0.0, 0.0))                  !! 0.0
-    print *, argd((3.0, 4.0))                  !! 53.1°
-    print *, argd(2.0*exp((0.0, 0.5)))         !! 28.64°
+    print *, argd((0.0, 0.0))                  ! 0.0°
+    print *, argd((3.0, 4.0))                  ! 53.1°
+    print *, argd(2.0*exp((0.0, 0.5)))         ! 28.64°
+    print *, argd([(0.0, 1.0), (1.0, 0.0), (0.0, -1.0), (-1.0, 0.0)])  ! [90°, 0°, -90°, 180°]
 end program demo_math_argd
 ```
 
-### `argpi` - Computes the phase angle in circular of a complex scalar
+### `argpi` function
 
 #### Status
 
@@ -506,13 +508,14 @@ Notes: Although the angle of the complex number `0` is undefined, `argpi((0,0))`
 ```fortran
 program demo_math_argpi
     use stdlib_math, only: argpi
-    print *, argpi((0.0, 0.0))                  !! 0.0
-    print *, argpi((3.0, 4.0))                  !! 0.295
-    print *, argpi(2.0*exp((0.0, 0.5)))         !! 0.159
+    print *, argpi((0.0, 0.0))                  ! 0.0
+    print *, argpi((3.0, 4.0))                  ! 0.295
+    print *, argpi(2.0*exp((0.0, 0.5)))         ! 0.159
+    print *, argpi([(0.0, 1.0), (1.0, 0.0), (0.0, -1.0), (-1.0, 0.0)])  ! [0.5, 0.0, -0.5, 1.0]
 end program demo_math_argpi
 ```
 
-### `is_close`
+### `is_close` function
 
 #### Description
 
@@ -577,15 +580,15 @@ program demo_math_is_close
     y   = -3
     NAN = sqrt(y)
     
-    print *, is_close(x,[real :: 1, 2.1])       !! [T, F]
-    print *, is_close(2.0, 2.1, abs_tol=0.1)    !! T
-    print *, NAN, is_close(2.0, NAN), is_close(2.0, NAN, equal_nan=.true.)   !! NAN, F, F
-    print *, is_close(NAN, NAN), is_close(NAN, NAN, equal_nan=.true.)        !! F, T
+    print *, is_close(x,[real :: 1, 2.1])       ! [T, F]
+    print *, is_close(2.0, 2.1, abs_tol=0.1)    ! T
+    print *, NAN, is_close(2.0, NAN), is_close(2.0, NAN, equal_nan=.true.)   ! NAN, F, F
+    print *, is_close(NAN, NAN), is_close(NAN, NAN, equal_nan=.true.)        ! F, T
         
 end program demo_math_is_close
 ```
 
-### `all_close`
+### `all_close` function
 
 #### Description
 
@@ -643,14 +646,14 @@ program demo_math_all_close
     NAN = sqrt(y)
     z   = (1.0, 1.0)
     
-    print *, all_close(z+cmplx(1.0e-11, 1.0e-11), z)     !! T
+    print *, all_close(z+cmplx(1.0e-11, 1.0e-11), z)     ! T
     print *, NAN, all_close([NAN], [NAN]), all_close([NAN], [NAN], equal_nan=.true.) 
-                                                         !! NAN, F, T
+                                                         ! NAN, F, T
     
 end program demo_math_all_close
 ```
 
-### `diff`
+### `diff` function
 
 #### Description
 
@@ -658,14 +661,11 @@ Computes differences between adjacent elements of an array.
 
 #### Syntax
 
-For a rank-1 array
-```fortran
-y = [[stdlib_math(module):diff(interface)]](x [, n, prepend, append])
-```
-and for a rank-2 array
-```fortran
-y = [[stdlib_math(module):diff(interface)]](x [, n, dim, prepend, append])
-```
+For a rank-1 array:  
+`y = [[stdlib_math(module):diff(interface)]](x [, n, prepend, append])`
+
+and for a rank-2 array:  
+`y = [[stdlib_math(module):diff(interface)]](x [, n, dim, prepend, append])`
 
 #### Status
 
@@ -696,8 +696,9 @@ Shall be a `real/integer` and `rank-1/rank-2` array.
 This argument is `intent(in)` and `optional`, which is no value by default.
 
 Note: 
-- The `x`, `prepend` and `append` arguments must have the same `type`, `kind` and `rank`.
-- If the value of `n` is less than or equal to `0` (which is not recommended), the return value of `diff` is `x`.
+
+- The `x`, `prepend` and `append` arguments must have the same `type`, `kind` and `rank`.  
+- If the value of `n` is less than or equal to `0` (which is not recommended), the return value of `diff` is `x`.  
 - If the value of `dim` is not equal to `1` or `2` (which is not recommended),
 `1` will be used by the internal process of `diff`.
 
