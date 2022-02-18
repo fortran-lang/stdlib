@@ -424,7 +424,7 @@ module stdlib_math
     !>
     !> `arange` creates a one-dimensional `array` of the `integer/real` type 
     !>  with fixed-spaced values of given spacing, within a given interval.
-    !> ([Specification](../page/specs/stdlib_math.html#arange))
+    !> ([Specification](../page/specs/stdlib_math.html#arange-function))
     interface arange
         pure module function arange_r_sp(start, end, step) result(result)
             real(sp), intent(in) :: start
@@ -461,7 +461,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> `arg` computes the phase angle in the interval (-π,π].
-    !> ([Specification](../page/specs/stdlib_math.html#arg))
+    !> ([Specification](../page/specs/stdlib_math.html#arg-function))
     interface arg
         procedure :: arg_sp
         procedure :: arg_dp
@@ -470,7 +470,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> `argd` computes the phase angle of degree version in the interval (-180.0,180.0].
-    !> ([Specification](../page/specs/stdlib_math.html#argd))
+    !> ([Specification](../page/specs/stdlib_math.html#argd-function))
     interface argd
         procedure :: argd_sp
         procedure :: argd_dp
@@ -479,14 +479,14 @@ module stdlib_math
     !> Version: experimental
     !>
     !> `argpi` computes the phase angle of circular version in the interval (-1.0,1.0].
-    !> ([Specification](../page/specs/stdlib_math.html#argpi))
+    !> ([Specification](../page/specs/stdlib_math.html#argpi-function))
     interface argpi
         procedure :: argpi_sp
         procedure :: argpi_dp
     end interface argpi
     
     !> Returns a boolean scalar/array where two scalar/arrays are element-wise equal within a tolerance.
-    !> ([Specification](../page/specs/stdlib_math.html#is_close))
+    !> ([Specification](../page/specs/stdlib_math.html#is_close-function))
     interface is_close
         elemental module logical function is_close_rsp(a, b, rel_tol, abs_tol, equal_nan) result(close)
             real(sp), intent(in) :: a, b
@@ -513,7 +513,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> Returns a boolean scalar where two arrays are element-wise equal within a tolerance.
-    !> ([Specification](../page/specs/stdlib_math.html#all_close))
+    !> ([Specification](../page/specs/stdlib_math.html#all_close-function))
     interface all_close
         logical pure module function all_close_1_rsp(a, b, rel_tol, abs_tol, equal_nan) result(close)
             real(sp), intent(in) :: a(:), b(:)
@@ -600,7 +600,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> Computes differences between adjacent elements of an array.
-    !> ([Specification](../page/specs/stdlib_math.html#diff))
+    !> ([Specification](../page/specs/stdlib_math.html#diff-function))
     interface diff
         pure module function diff_1_sp(x, n, prepend, append) result(y)
             real(sp), intent(in) :: x(:)
@@ -745,8 +745,8 @@ contains
         complex(sp), intent(in) :: z
         real(sp) :: result
 
-        result = merge(0.0_sp, atan2(z%im, z%re), z == (0.0_sp, 0.0_sp)) &
-                 *180.0_sp/PI_sp
+        result = merge(0.0_sp, atan2(z%im, z%re)*180.0_sp/PI_sp, &
+                 z == (0.0_sp, 0.0_sp))
 
     end function argd_sp
 
@@ -754,8 +754,9 @@ contains
         complex(sp), intent(in) :: z
         real(sp) :: result
 
-        result = merge(0.0_sp, atan2(z%im, z%re), z == (0.0_sp, 0.0_sp)) &
-                 /PI_sp
+        result = merge(0.0_sp, atan2(z%im, z%re)/PI_sp, &
+                 z == (0.0_sp, 0.0_sp))
+                 
 
     end function argpi_sp
     elemental function arg_dp(z) result(result) 
@@ -770,8 +771,8 @@ contains
         complex(dp), intent(in) :: z
         real(dp) :: result
 
-        result = merge(0.0_dp, atan2(z%im, z%re), z == (0.0_dp, 0.0_dp)) &
-                 *180.0_dp/PI_dp
+        result = merge(0.0_dp, atan2(z%im, z%re)*180.0_dp/PI_dp, &
+                 z == (0.0_dp, 0.0_dp))
 
     end function argd_dp
 
@@ -779,8 +780,9 @@ contains
         complex(dp), intent(in) :: z
         real(dp) :: result
 
-        result = merge(0.0_dp, atan2(z%im, z%re), z == (0.0_dp, 0.0_dp)) &
-                 /PI_dp
+        result = merge(0.0_dp, atan2(z%im, z%re)/PI_dp, &
+                 z == (0.0_dp, 0.0_dp))
+                 
 
     end function argpi_dp
 
