@@ -2,6 +2,7 @@
 project: Fortran-lang/stdlib
 summary: A community driven standard library for (modern) Fortran
 src_dir: src
+include: src
 exclude_dir: src/tests
 output_dir: API-doc
 page_dir: doc
