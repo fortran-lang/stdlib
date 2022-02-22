@@ -77,7 +77,7 @@ program demo_gamma
 end program demo_gamma
 ```
 
-## `log_gamma` - calculate natural logarithm of gamma function with any type of argument
+## `log_gamma` - Calculate the natural logarithm of the gamma function
 
 ### Status
 
