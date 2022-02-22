@@ -6,7 +6,7 @@ title: specialfunctions_gamma
 
 [TOC]
 
-## `gamma` - Calculate gamma function with any type of argument
+## `gamma` - Calculate the gamma function
 
 ### Status
 
