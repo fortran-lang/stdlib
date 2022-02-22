@@ -18,7 +18,7 @@ The gamma function is defined as the analytic continuation of a convergent impro
 
 \Gamma(z)=\int_{0}^{\infty}x^{z-1}e^{-x}dx, \;\;  z\in \mathbb{C} \setminus 0, -1, -2, \cdots
 
-Fortran 2018 standard implements intrinsic gamma function of real type argument in single and double precisions. Here the gamma function is extended to both integer and complex arguments. The values of gamma function with integer arguments are exact. The values of gamma function with complex arguments are approximated in single and double precisions by using Lanczos approxiamtion.
+Fortran 2018 standard implements the intrinsic gamma function of real type argument in single and double precisions. Here the gamma function is extended to both integer and complex arguments. The values of the gamma function with integer arguments are exact. The values of the gamma function with complex arguments are approximated in single and double precisions by using Lanczos approximation.
 
 ### Syntax
 
