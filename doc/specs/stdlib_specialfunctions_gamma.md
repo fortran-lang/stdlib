@@ -39,23 +39,23 @@ The function returns a value with the same type and kind as input argument.
 ### Example
 ```fortran
 program demo_gamma
-    use iso_fortran_env, only : real64, int64
+    use stdlib_kinds, only : dp, int64
     use stdlib_specialfunctions_gamma, only : gamma
     implicit none
     
     integer :: i
     integer(int64) :: n
     real :: x
-    real(real64) :: y
+    real(dp) :: y
     complex :: z
-    complex(real64) :: z1
+    complex(dp) :: z1
     
     i = 10
     n = 15_int64
     x = 2.5
-    y = 4.3_real64
+    y = 4.3_dp
     z = (2.3, 0.6)
-    z1 = (-4.2_real64, 3.1_real64)
+    z1 = (-4.2_dp, 3.1_dp)
     
     print *, gamma(i)              !integer gives exact result
 ! 362880
@@ -85,7 +85,7 @@ Experimental
 
 ### Description
 
-Due to the different branch cut structures and a different principal branch, natural logarithm of gamma function log_gamma(z) with complex argument is different from the ln(Gamma(z)). The two have the same real part but different imaginary part. 
+Mathematically, logarithm of gamma function is a special function with complex arguments by itself. Due to the different branch cut structures and a different principal branch, natural logarithm of gamma function log_gamma(z) with complex argument is different from the ln(Gamma(z)). The two have the same real part but different imaginary part. 
 
 Fortran 2018 standard implements intrinsic log_gamma function of absolute value of real type argument in single and double precision. Here the log_gamma function is extended to both integer and complex arguments. The values of log_gamma function with complex arguments are approximated in single and double precisions by using Stirling's approximation.
 
@@ -109,15 +109,15 @@ The function returns real single precision values for integer input arguments, w
 
 ```fortran
 program demo_log_gamma
-    use iso_fortran_env, only : real64
+    use stdlib_kinds, only : dp
     use stdlib_specialfunctions_gamma, only : log_gamma
     implicit none
     
     integer :: i
     real :: x
-    real(real64) :: y
+    real(dp) :: y
     complex :: z
-    complex(real64) :: z1
+    complex(dp) :: z1
     
     i = 10
     x = 8.76
@@ -174,7 +174,7 @@ The function returns real type values with single precision.
 ### Example
 ```fortran
 program demo_log_factorial
-    use iso_fortran_env, only : int64
+    use stdlib_kinds, only : int64
     use stdlib_specialfunctions_gamma, only : lf => log_factorial
     implicit none
     integer :: n
