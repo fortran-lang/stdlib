@@ -290,7 +290,7 @@ program demo_uigamma
 end program demo_uigamma
 ```
 
-## `log_lower_incomplete_gamma` - calculate logarithm of the lower incomplete gamma integral
+## `log_lower_incomplete_gamma` - calculate the natural logarithm of the lower incomplete gamma integral
 
 ### Status
 
