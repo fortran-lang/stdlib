@@ -242,7 +242,7 @@ program demo_ligamma
 end demo_ligamma
 ```
 
-## `upper_incomplete_gamma` - calculate upper incomplete gamma integral
+## `upper_incomplete_gamma` - calculate the upper incomplete gamma integral
 
 ### Status
 
