@@ -270,8 +270,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
-        ${t2}$ :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
+        ${t1}$, parameter :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
+        ${t2}$, parameter :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
 
         ${t2}$, parameter :: ans(n) = [0.3934693402873667_${k2}$,              &
                                        0.86411177459956675_${k2}$,             &
