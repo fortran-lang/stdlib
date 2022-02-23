@@ -145,7 +145,7 @@ program demo_log_gamma
 end program demo_log_gamma
 ```
 
-## `log_factorial` - calculate logarithm of a factorial
+## `log_factorial` - calculate the logarithm of a factorial
 
 ### Status
 
