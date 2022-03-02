@@ -114,7 +114,9 @@ else()
   target_sources(${PROJECT_NAME} PRIVATE f08estop.f90)
 endif()
 
-add_subdirectory(tests)
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
 
 install(TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}-targets

@@ -12,7 +12,7 @@ list(GET VERSION_LIST 1 PROJECT_VERSION_MINOR)
 list(GET VERSION_LIST 2 PROJECT_VERSION_PATCH)
 unset(VERSION_LIST)
 
-enable_testing()
+option(BUILD_TESTING "Define if tests should be enabled" ON)
 
 # Follow GNU conventions for installation directories
 include(GNUInstallDirs)
