@@ -1,6 +1,8 @@
-# Unreleased
+# Version 0.2.0
 
-Features available from the latest git source
+Full release notes available at [v0.2.0] tag.
+
+[v0.2.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.2.0
 
 - new module `stdlib_hash_32bit`
   [#573](https://github.com/fortran-lang/stdlib/pull/573)
