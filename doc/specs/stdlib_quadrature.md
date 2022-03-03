@@ -14,7 +14,7 @@ Experimental
 
 ### Description
 
-Returns the trapezoidal rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`.
+Returns the trapezoidal rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitrary abscissas `x`.
 
 ### Syntax
 
@@ -99,7 +99,7 @@ Experimental
 
 ### Description
 
-Returns the Simpson's rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`. 
+Returns the Simpson's rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitrary abscissas `x`. 
 
 Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length arrays, Simpson's 3/8 rule is also utilized in a way that depends on the value of `even`. If `even` is negative (positive), the 3/8 rule is used at the beginning (end) of the array. If `even` is zero or not present, the result is as if the 3/8 rule were first used at the beginning of the array, then at the end of the array, and these two results were averaged.
 

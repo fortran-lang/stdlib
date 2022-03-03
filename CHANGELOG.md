@@ -52,6 +52,9 @@ Changes to existing modules
 - change in module `stdlib_io`
   - Modified format constants, and made public
   [#617](https://github.com/fortran-lang/stdlib/pull/617)
+- change in module `stdlib_math`
+    - Minor update to `stdlib_math` module and document
+    [#624](https://github.com/fortran-lang/stdlib/pull/624)
 
 
 # Version 0.1.0
