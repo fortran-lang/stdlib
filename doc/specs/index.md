@@ -16,7 +16,8 @@ This is and index/directory of the specifications (specs) for each new module/fe
  - [bitsets](./stdlib_bitsets.html) - Bitset data types and procedures
  - [error](./stdlib_error.html) - Catching and handling errors
  - [hash](./stdlib_hash_procedures.html) - Hashing integer
-   vectors or character strings
+ vectors or character strings
+ - [hashmaps](./stdlib_hashmaps.html) - Hash maps/tables
  - [io](./stdlib_io.html) - Input/output helper & convenience
  - [kinds](./stdlib_kinds.html) - Kind parameters
  - [linalg](./stdlib_linalg.html) - Linear Algebra
