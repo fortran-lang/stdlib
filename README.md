@@ -133,6 +133,7 @@ Important options are
   The minimum required rank to compile this project is 4.
   Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
+- `-DBUILD_TESTING` set to `off` in case you want to disable the stdlib tests (default: `on`).
 
 For example, to configure a build using the Ninja backend while specifying compiler flags `FFLAGS`, generating procedures up to rank 7, and installing to your home directory, use
 

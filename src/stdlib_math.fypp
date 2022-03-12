@@ -287,7 +287,7 @@ module stdlib_math
     !>
     !> `arange` creates a one-dimensional `array` of the `integer/real` type 
     !>  with fixed-spaced values of given spacing, within a given interval.
-    !> ([Specification](../page/specs/stdlib_math.html#arange))
+    !> ([Specification](../page/specs/stdlib_math.html#arange-function))
     interface arange
         #:set RI_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES
         #:for k1, t1 in RI_KINDS_TYPES
@@ -302,7 +302,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> `arg` computes the phase angle in the interval (-π,π].
-    !> ([Specification](../page/specs/stdlib_math.html#arg))
+    !> ([Specification](../page/specs/stdlib_math.html#arg-function))
     interface arg
         #:for k1 in CMPLX_KINDS
         procedure :: arg_${k1}$
@@ -312,7 +312,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> `argd` computes the phase angle of degree version in the interval (-180.0,180.0].
-    !> ([Specification](../page/specs/stdlib_math.html#argd))
+    !> ([Specification](../page/specs/stdlib_math.html#argd-function))
     interface argd
         #:for k1 in CMPLX_KINDS
         procedure :: argd_${k1}$
@@ -322,7 +322,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> `argpi` computes the phase angle of circular version in the interval (-1.0,1.0].
-    !> ([Specification](../page/specs/stdlib_math.html#argpi))
+    !> ([Specification](../page/specs/stdlib_math.html#argpi-function))
     interface argpi
         #:for k1 in CMPLX_KINDS
         procedure :: argpi_${k1}$
@@ -330,7 +330,7 @@ module stdlib_math
     end interface argpi
     
     !> Returns a boolean scalar/array where two scalar/arrays are element-wise equal within a tolerance.
-    !> ([Specification](../page/specs/stdlib_math.html#is_close))
+    !> ([Specification](../page/specs/stdlib_math.html#is_close-function))
     interface is_close
         #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
         #:for k1, t1 in RC_KINDS_TYPES
@@ -345,7 +345,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> Returns a boolean scalar where two arrays are element-wise equal within a tolerance.
-    !> ([Specification](../page/specs/stdlib_math.html#all_close))
+    !> ([Specification](../page/specs/stdlib_math.html#all_close-function))
     interface all_close
         #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
         #:set RANKS = range(1, MAXRANK + 1)
@@ -363,7 +363,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> Computes differences between adjacent elements of an array.
-    !> ([Specification](../page/specs/stdlib_math.html#diff))
+    !> ([Specification](../page/specs/stdlib_math.html#diff-function))
     interface diff
         #:set RI_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES
         #:for k1, t1 in RI_KINDS_TYPES
@@ -409,8 +409,8 @@ contains
         ${t1}$, intent(in) :: z
         real(${k1}$) :: result
 
-        result = merge(0.0_${k1}$, atan2(z%im, z%re), z == (0.0_${k1}$, 0.0_${k1}$)) &
-                 *180.0_${k1}$/PI_${k1}$
+        result = merge(0.0_${k1}$, atan2(z%im, z%re)*180.0_${k1}$/PI_${k1}$, &
+                 z == (0.0_${k1}$, 0.0_${k1}$))
 
     end function argd_${k1}$
 
@@ -418,8 +418,9 @@ contains
         ${t1}$, intent(in) :: z
         real(${k1}$) :: result
 
-        result = merge(0.0_${k1}$, atan2(z%im, z%re), z == (0.0_${k1}$, 0.0_${k1}$)) &
-                 /PI_${k1}$
+        result = merge(0.0_${k1}$, atan2(z%im, z%re)/PI_${k1}$, &
+                 z == (0.0_${k1}$, 0.0_${k1}$))
+                 
 
     end function argpi_${k1}$
     #:endfor
