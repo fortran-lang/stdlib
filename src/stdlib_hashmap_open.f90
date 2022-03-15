@@ -1,4 +1,4 @@
-!! The module, STDLIB_HASHMAP_OPEN implements a simple open addresing hash
+!! The module, STDLIB_HASHMAP_OPEN implements a simple open addressing hash
 !! map using linear addressing. The implementation is loosely based on a
 !! C implementation by David Chase, http://chasewoerner.org/src/hasht/, for
 !! which he has given permission to use in the Fortran Standard Library.
@@ -301,7 +301,7 @@ contains
     subroutine in_open_map(map, inmap, key) ! Chase's inmap
 !! Version: Experimental
 !!
-!! Retuns the index into the INVERSE array associated with the KEY
+!! Returns the index into the INVERSE array associated with the KEY
 !! Arguments:
 !!     map   - the hash map of interest
 !!     inmap - the returned index into the INVERSE array of entry pointers
