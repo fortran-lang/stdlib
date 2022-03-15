@@ -1,6 +1,6 @@
 !! The module, STDLIB_HASH_MAPS, implements two hash maps:
 !! CHAINING_HASH_MAP_TYPE, a separate chaining hash map; and OPEN_HASH_MAP_TYPE,
-!! an open addresing hash map using linear addressing. The two hash maps are
+!! an open addressing hash map using linear addressing. The two hash maps are
 !! implementations of the abstract type, HASH_MAP_TYPE.
 
 module stdlib_hashmaps
@@ -298,7 +298,7 @@ module stdlib_hashmaps
     type, extends(hashmap_type) :: chaining_hashmap_type
 !! Version: Experimental
 !!
-!! Type inplementing the `chaining_hashmap_type` types
+!! Type implementing the `chaining_hashmap_type` types
         private
         type(chaining_map_entry_pool), pointer    :: cache => null()
 !! Pool of allocated chaining_map_entry_type objects

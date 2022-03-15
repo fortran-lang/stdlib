@@ -1,13 +1,13 @@
 !! The module STDLIB_HASHMAP_WRAPPERS provides wrappers for vqrious
 !! entities used by the hash map procedures. These include wrappers for the
-!! `key` and òther`data, and hashing procedures to operate on entities of
+!! `key` and `other` data, and hashing procedures to operate on entities of
 !! the `key_type`.
 
 module stdlib_hashmap_wrappers
 
     use, intrinsic :: iso_fortran_env, only : &
         character_storage_size
-        
+
     use stdlib_hash_32bit
 
     use stdlib_kinds, only : &
@@ -235,7 +235,7 @@ contains
         class(*), allocatable, intent(out) :: value
 
         allocate(value, source=other % value)
-        
+
     end subroutine get_other
 
 

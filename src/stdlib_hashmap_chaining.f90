@@ -679,7 +679,7 @@ contains
     end subroutine rehash_chaining_map
 
 
-    module subroutine remove_chaining_entry(map, key, existed) 
+    module subroutine remove_chaining_entry(map, key, existed)
 !! Remove the entry, if any, that has the key
 !! Arguments:
 !!    map     - the table from which the entry is to be removed
