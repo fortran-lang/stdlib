@@ -60,7 +60,7 @@ SRC = f18estop.f90 \
       stdlib_error.f90 \
       stdlib_specialfunctions.f90 \
       stdlib_specialfunctions_legendre.f90 \
-      stdlib_hashmap_wrapper.f90 \
+      stdlib_hashmap_wrappers.f90 \
       stdlib_hashmaps.f90 \
       stdlib_io.f90 \
       stdlib_logger.f90 \
