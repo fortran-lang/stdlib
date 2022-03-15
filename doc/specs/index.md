@@ -4,7 +4,7 @@ title: Specifications (specs)
 
 # Fortran stdlib Specifications (specs)
 
-This is and index/directory of the specifications (specs) for each new module/feature as described in the
+This is an index/directory of the specifications (specs) for each new module/feature as described in the
 [workflow document](../Workflow.html).
 
 [TOC]
