@@ -60,6 +60,8 @@ SRC = f18estop.f90 \
       stdlib_error.f90 \
       stdlib_specialfunctions.f90 \
       stdlib_specialfunctions_legendre.f90 \
+      stdlib_hashmap_wrapper.f90 \
+      stdlib_hashmaps.f90 \
       stdlib_io.f90 \
       stdlib_logger.f90 \
       stdlib_quadrature_gauss.f90 \
@@ -109,6 +111,16 @@ stdlib_hash_64bit_pengy.o: \
    stdlib_hash_64bit.o
 stdlib_hash_64bit_spookyv2.o: \
    stdlib_hash_64bit.o
+stdlib_hashmap_wrappers.o: \
+   stdlib_kinds.o \
+   stdlib_hash_32bit.o
+stdlib_hashmaps.o: \
+   stdlib_kinds.o \
+   stdlib_hashmap_wrappers.o
+stdlib_hashmap_chaining.o: \
+   stdlib_hashmaps.o
+stdlib_hashmap_open.o: \
+   stdlib_hashmaps.o
 stdlib_ascii.o: stdlib_kinds.o
 stdlib_bitsets.o: stdlib_kinds.o \
     stdlib_optval.o
