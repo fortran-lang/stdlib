@@ -62,6 +62,8 @@ SRC = f18estop.f90 \
       stdlib_specialfunctions_legendre.f90 \
       stdlib_hashmap_wrappers.f90 \
       stdlib_hashmaps.f90 \
+      stdlib_hashmap_chaining.f90 \
+      stdlib_hashmap_open.f90 \
       stdlib_io.f90 \
       stdlib_logger.f90 \
       stdlib_quadrature_gauss.f90 \
