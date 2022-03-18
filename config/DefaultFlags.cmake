@@ -30,9 +30,6 @@ elseif(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
     )
   else()
     set(
-      CMAKE_Fortran_FLAGS_RELEASE_INIT
-    )
-    set(
       CMAKE_Fortran_FLAGS_DEBUG_INIT
       "-stand f18"
       "-warn declarations,general,usage,interfaces,unused"
