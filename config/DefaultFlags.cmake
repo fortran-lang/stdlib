@@ -3,7 +3,6 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
     CMAKE_Fortran_FLAGS_INIT
     "-fimplicit-none"
     "-ffree-line-length-132"
-    "-fno-range-check"
   )
   set(
     CMAKE_Fortran_FLAGS_RELEASE_INIT
