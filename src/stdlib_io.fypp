@@ -81,7 +81,7 @@ module stdlib_io
 contains
 
   #:for k1, t1 in KINDS_TYPES
-    subroutine  loadtxt_${t1[0]}$${k1}$(filename, d, skiprows)
+    subroutine  loadtxt_${t1[0]}$${k1}$(filename, d, skiprows, max_rows)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -95,6 +95,8 @@ contains
       ${t1}$, allocatable, intent(out) :: d(:,:)
       !! Skip the first `skiprows` lines, default: 0.
       integer, intent(in), optional :: skiprows
+      !! Read max_rows lines of content after skiprows lines. The default is -1, to read all the lines.
+      integer, intent(in), optional :: max_rows
       !!
       !! Example
       !! -------
@@ -113,10 +115,12 @@ contains
       !!     ...
       !!
       integer :: s
-      integer :: nrow, ncol, i, skiprows_
+      integer :: nrow, ncol, i, skiprows_, max_rows_
 
       skiprows_ = optval(skiprows, 0)
       if ( skiprows_ < 0 ) call error_stop("loadtxt: skiprows needs to be non-negative.")
+
+      max_rows_ = optval(max_rows, -1)
 
       s = open(filename)
 
@@ -128,14 +132,16 @@ contains
 
       ! determine number or rows
       nrow = number_of_rows(s) - skiprows_
-
       if ( nrow < 0 ) call error_stop("loadtxt: skipping more rows than present.")
+      if ( max_rows_ < 0 .or. max_rows_ > nrow) max_rows_ = nrow
+
+      allocate(d(max_rows_, ncol))
+
       do i = 1, skiprows_
         read(s, *)
       end do
 
-      allocate(d(nrow, ncol))
-      do i = 1, nrow
+      do i = 1, max_rows_
         #:if 'real' in t1
           read(s, "(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",1x))") d(i, :)
         #:elif 'complex' in t1
