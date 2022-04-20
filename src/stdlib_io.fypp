@@ -117,9 +117,7 @@ contains
       integer :: s
       integer :: nrow, ncol, i, skiprows_, max_rows_
 
-      skiprows_ = optval(skiprows, 0)
-      if ( skiprows_ < 0 ) call error_stop("loadtxt: skiprows must be non-negative.")
-
+      skiprows_ = max(optval(skiprows, 0), 0)
       max_rows_ = optval(max_rows, -1)
 
       s = open(filename)
