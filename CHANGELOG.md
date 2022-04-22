@@ -1,3 +1,12 @@
+# Version 0.2.1
+
+Full release notes available at [v0.2.1] tag.
+
+[v0.2.1]: https://github.com/fortran-lang/stdlib/releases/tag/v0.2.1
+
+- build system related bugfixes
+
+
 # Version 0.2.0
 
 Full release notes available at [v0.2.0] tag.
