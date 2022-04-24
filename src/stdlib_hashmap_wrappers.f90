@@ -1,4 +1,4 @@
-!! The module STDLIB_HASHMAP_WRAPPERS provides wrappers for vqrious
+!! The module STDLIB_HASHMAP_WRAPPERS provides wrappers for various
 !! entities used by the hash map procedures. These include wrappers for the
 !! `key` and `other` data, and hashing procedures to operate on entities of
 !! the `key_type`.

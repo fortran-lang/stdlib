@@ -1287,7 +1287,7 @@ Procedures to modify the content of a map:
 
 Procedures to report the content of a map:
 
-* `map 5 get_other_data( key, other, exists )` - Returns the other data
+* `map % get_other_data( key, other, exists )` - Returns the other data
   associated with the `key`;
 
 * `map % key_test( key, present)` - Returns a flag indicating whether
@@ -1980,7 +1980,7 @@ not exist and nothing was done.
         call map % init( fnv_1_hasher, slots_bits=10 )
         allocate( dummy, source='A value` )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
-        Call set( other, dummy )
+        call set( other, dummy )
         call map % map_entry( key, other )
         deallocate( dummy )
         allocate( dummy, source='Another value` )
