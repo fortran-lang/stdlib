@@ -62,8 +62,8 @@ contains
 
         str = achar(mod(val, 2**8)) // &
             & achar(mod(val, 2**16) / 2**8) // &
-            & achar(mod(val, 2**32) / 2**16) // &
-            & achar(val / 2**32)
+            & achar(mod(val, 2**24) / 2**16) // &
+            & achar(val / 2**24)
     end function to_bytes_i4
 
 

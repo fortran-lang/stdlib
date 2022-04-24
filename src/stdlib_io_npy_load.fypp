@@ -136,7 +136,7 @@ contains
             header_len = ichar(buf(1)) &
                 &      + ichar(buf(2)) * 2**8 &
                 &      + ichar(buf(3)) * 2**16 &
-                &      + ichar(buf(4)) * 2**32
+                &      + ichar(buf(4)) * 2**24
         else
             header_len = ichar(buf(1)) &
                 &      + ichar(buf(2)) * 2**8
