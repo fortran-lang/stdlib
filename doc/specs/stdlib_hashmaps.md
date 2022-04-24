@@ -1980,7 +1980,7 @@ not exist and nothing was done.
         call map % init( fnv_1_hasher, slots_bits=10 )
         allocate( dummy, source='A value` )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
-        Call set( other, dummy )
+        call set( other, dummy )
         call map % map_entry( key, other )
         deallocate( dummy )
         allocate( dummy, source='Another value` )
