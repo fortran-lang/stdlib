@@ -188,6 +188,12 @@ You can also specify the compiler and compiler-flags by setting the ``FC`` and `
 make -f Makefile.manual ADD_FYPPFLAGS=-DMAXRANK=4 FC=gfortran FFLAGS="-O3"
 ```
 
+On some systems, ``make`` selects the wrong default compiler. If you encounter error messages like ``make[1]: f77: No such file or directory`` set ``FC`` to your preferred compiler (e.g., ``gfortran``) or try
+
+```sh
+make -f Makefile.manual --no-builtin-variables
+```
+
 ### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
 
 Fortran Package Manager (fpm) is a package manager and build system for Fortran.   
