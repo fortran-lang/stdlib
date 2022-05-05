@@ -129,9 +129,9 @@ contains
       #:endif
 
       ! determine number or rows
-      nrow = number_of_rows(s) - skiprows_
-      if ( nrow < 0 ) call error_stop("loadtxt: skipping more rows than present.")
-      if ( max_rows_ < 0 .or. max_rows_ > nrow) max_rows_ = nrow
+      nrow = number_of_rows(s)
+      skiprows_ = min(skiprows_, nrow)
+      if ( max_rows_ < 0 .or. max_rows_ > (nrow - skiprows_)) max_rows_ = nrow - skiprows_
 
       allocate(d(max_rows_, ncol))
 
