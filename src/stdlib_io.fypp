@@ -93,7 +93,7 @@ contains
       character(len=*), intent(in) :: filename
       !! The array 'd' will be automatically allocated with the correct dimensions
       ${t1}$, allocatable, intent(out) :: d(:,:)
-      !! Skip the first `skiprows` lines, default: 0.
+      !! Skip the first `skiprows` lines. If skipping more rows than present, a 0-sized array will be returned. The default is 0.
       integer, intent(in), optional :: skiprows
       !! Read max_rows lines of content after skiprows lines. The default is -1, to read all the lines.
       integer, intent(in), optional :: max_rows
