@@ -19,7 +19,7 @@ contains
             new_unittest("loadtxt_sp_huge", test_loadtxt_sp_huge), &
             new_unittest("loadtxt_sp_tiny", test_loadtxt_sp_tiny), &
             new_unittest("loadtxt_dp", test_loadtxt_dp), &
-            new_unittest("test_loadtxt_dp_max_skip", test_loadtxt_dp_max_skip), &
+            new_unittest("loadtxt_dp_max_skip", test_loadtxt_dp_max_skip), &
             new_unittest("loadtxt_dp_huge", test_loadtxt_dp_huge), &
             new_unittest("loadtxt_dp_tiny", test_loadtxt_dp_tiny), &
             new_unittest("loadtxt_complex", test_loadtxt_complex) &
