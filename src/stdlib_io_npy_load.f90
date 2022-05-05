@@ -2683,12 +2683,12 @@ contains
 
         if (major > 1) then
             header_len = ichar(buf(1)) &
-                &      + ichar(buf(2)) * 2**8 &
-                &      + ichar(buf(3)) * 2**16 &
-                &      + ichar(buf(4)) * 2**32
+                &      + ichar(buf(2)) * 256**1 &
+                &      + ichar(buf(3)) * 256**2 &
+                &      + ichar(buf(4)) * 256**3
         else
             header_len = ichar(buf(1)) &
-                &      + ichar(buf(2)) * 2**8
+                &      + ichar(buf(2)) * 256**1
         end if
         allocate(character(header_len) :: dict, stat=stat)
         if (stat /= 0) return
