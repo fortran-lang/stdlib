@@ -26,9 +26,6 @@ jobs:
           - os: ubuntu-latest
             gcc_v: 10
             build: cmake-inline
-          - os: ubuntu-latest
-            gcc_v: 10
-            build: make
     env:
       FC: gfortran-${{ matrix.gcc_v }}
       CC: gcc-${{ matrix.gcc_v }}
@@ -94,15 +91,6 @@ jobs:
     - name: Install project
       if: ${{ contains(matrix.build, 'cmake') }}
       run: cmake --install ${{ env.BUILD_DIR }}
-
-    - name: Test manual makefiles
-      if: ${{ matrix.build == 'make' }}
-      run: |
-        make -f Makefile.manual -j
-        make -f Makefile.manual test
-        make -f Makefile.manual clean
-      env:
-        ADD_FYPPFLAGS: "-DMAXRANK=4"
 
   intel-build:
     runs-on: ${{ matrix.os }}
