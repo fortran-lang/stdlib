@@ -10,7 +10,6 @@
   - [Requirements](#requirements)
   - [Supported compilers](#supported-compilers)
   - [Build with CMake](#build-with-cmake)
-  - [Build with make](#build-with-make)
   - [Build with fortran-lang/fpm](#build-with-fortran-langfpm)
 * [Using stdlib in your project](#using-stdlib-in-your-project)
 * [Documentation](#documentation)
@@ -167,32 +166,6 @@ Now you have a working version of stdlib you can use for your project.
 If at some point you wish to recompile `stdlib` with different options, you might
 want to delete the `build` folder. This will ensure that cached variables from
 earlier builds do not affect the new build.
-
-
-### Build with make
-
-Alternatively, you can build using provided Makefiles:
-
-```sh
-make -f Makefile.manual
-```
-
-You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``ADD_FYPPFLAGS`` environment variable (which can reduce the compilation time):
-
-```sh
-make -f Makefile.manual ADD_FYPPFLAGS=-DMAXRANK=4
-```
-
-You can also specify the compiler and compiler-flags by setting the ``FC`` and ``FFLAGS`` environmental variables. Among other things, this facilitates use of compiler optimizations that are not specified in the Makefile.manual defaults.
-```sh
-make -f Makefile.manual ADD_FYPPFLAGS=-DMAXRANK=4 FC=gfortran FFLAGS="-O3"
-```
-
-On some systems, ``make`` selects the wrong default compiler. If you encounter error messages like ``make[1]: f77: No such file or directory`` set ``FC`` to your preferred compiler (e.g., ``gfortran``) or try
-
-```sh
-make -f Makefile.manual --no-builtin-variables
-```
 
 ### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
 
