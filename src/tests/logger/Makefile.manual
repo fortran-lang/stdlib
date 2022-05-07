@@ -1,4 +1,0 @@
-PROGS_SRC = test_stdlib_logger.f90
-
-
-include ../Makefile.manual.test.mk
