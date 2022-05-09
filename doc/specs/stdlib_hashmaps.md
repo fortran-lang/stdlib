@@ -1354,7 +1354,7 @@ The result will be the number of procedure calls on the hash map.
       implicit none
       type(chaining_hashmap_type) :: map
       type(int_calls) :: initial_calls
-      call map % init(fnv_1_hasher )
+      call map % init( fnv_1_hasher )
       initial_calls = map % calls()
       print *, "INITIAL_CALLS =  ", initial_calls
     end program demo_calls
