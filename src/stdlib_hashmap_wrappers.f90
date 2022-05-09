@@ -262,7 +262,7 @@ contains
 !!     key   - the output key
 !!     value - the input CHARACTER string
         type(key_type), intent(out) :: key
-        character(*), intent(in)    :: value(:)
+        character(*), intent(in)    :: value
 
         key % value = transfer( value, key % value, &
                                 bytes_char * len( value ) )
