@@ -406,7 +406,7 @@ contains
         integer, intent(in), optional              :: slots_bits
         integer(int32), intent(out), optional      :: status
 
-        character(256)          :: errmsg = ''
+        character(256)          :: errmsg
         integer(int_index)      :: index
         character(*), parameter :: procedure = 'INIT'
         integer(int_index)      :: slots
