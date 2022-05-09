@@ -136,7 +136,7 @@ opaque. Their current representations are as follows
     end type other_type
 ```
 
-The  module also defines six procedures for those types: `copy_key`,
+The module also defines six procedures for those types: `copy_key`,
 `copy_other`, `equal_keys`, `free_key`, `free_other`, `get`, and
 `set`, and one operator, `==`,
 for use by the hash maps to manipulate or inquire of components of
@@ -210,7 +210,7 @@ Returns a copy of an input of type `key_type`.
 
 ##### Syntax
 
-`call [[stdlib_hashmap_wrappers:copy_key]]( key_in, key_out )`
+`call [[stdlib_hashmap_wrappers:copy_key]]( old_key, new_key )`
 
 ##### Class
 
@@ -218,10 +218,10 @@ Subroutine.
 
 ##### Arguments
 
-`key_in`: shall be a scalar expression of type `key_type`. It
+`old_key`: shall be a scalar expression of type `key_type`. It
 is an `intent(in)` argument.
 
-`key_out`: shall be a scalar variable of type `key_type`. It
+`new_key`: shall be a scalar variable of type `key_type`. It
 is an `intent(out)` argument.
 
 ##### Example
@@ -233,11 +233,11 @@ is an `intent(out)` argument.
       use iso_fortran_env, only: int8
       implicit none
       integer(int8) :: i, value(15)
-      type(key_type) :: key_in, key_out
+      type(key_type) :: old_key, new_key
       value = [(i, i = 1, 15)]
       call set( key_in, value )
-      call copy_key( key_in, key_out )
-      print *, "key_in == key_out = ", key_in == key_out
+      call copy_key( old_key, new_key )
+      print *, "old_key == new_key = ", old_key == new_key
     end program demo_copy_key
 ```
 
@@ -637,7 +637,7 @@ pointers intended for use as a hash function for the hash maps.
       hasher_pointer => fnv_1a_hasher
       array1 = [ 5_int8, 4_int8, 3_int8, 1_int8, 10_int8, 4_int8 ]
       call set( key, array1 )
-      hash = hassher_pointer(key)
+      hash = hasher_pointer(key)
       print *, hash
     end program demo_hasher_fun
 ```
@@ -913,9 +913,15 @@ is an `intent(out)` argument.
 is an `intent(out)` argument.
 
 `value`: if the first argument is `key` `value` shall be a default
-character string expression, or a vector expression of type integer
+character string scalar expression, or a vector expression of type integer
 and kind `int8`, while for a first argument of type `other` `value`
 shall be of type `class(*)`. It is an `intent(in)` argument.
+
+##### Note
+
+Values of types other than a scalar default character or an
+`INT8` vector can be used as the basis of a `key` by transferring the
+value to an `INT8` vector.
 
 ##### Example
 
