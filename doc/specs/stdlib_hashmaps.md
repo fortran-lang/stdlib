@@ -229,14 +229,14 @@ is an `intent(out)` argument.
 ```fortran
     program demo_copy_key
       use stdlib_hashmap_wrappers, only: &
-          copy_key, operator(==)equal_keys, key_type
+          copy_key, operator(==), equal_keys, key_type
       use iso_fortran_env, only: int8
       implicit none
       integer(int8) :: i, value(15)
       type(key_type) :: old_key, new_key
       value = [(i, i = 1, 15)]
-      call set( key_in, value )
-      call copy_key( old_key, new_key )
+      call set( key_out, value )
+      call copy_key( key_out, new_key )
       print *, "old_key == new_key = ", old_key == new_key
     end program demo_copy_key
 ```
@@ -470,11 +470,11 @@ is an `intent(out)` argument.
       use iso_fortran_env, only: int8
       implicit none
       integer(int8) :: i, value(15)
-      type(key_type) :: key_in, key_out
+      type(key_type) :: old_key, new_key
       value = [(i, i=1, 15)]
-      call set( key_in, value )
-      call copy_key( key_in, key_out )
-      call free_key( key_out )
+      call set( old_key, value )
+      call copy_key( old_key, new_key )
+      call free_key( old_key )
     end program demo_free_key
 ```
 
@@ -685,13 +685,13 @@ The result is `.true.` if the keys are equal, otherwise `.falss.`.
       use iso_fortran_env, only: int8 
       implicit none
       integer(int8) :: i, value(15) 
-      type(key_type) :: key_in, key_out 
+      type(key_type) :: old_key, new_key 
       do i=1, 15 
           value(i) = i 
       end do 
-      call set( key_in, value ) 
-      call copy_key( key_in, key_out ) 
-      print *, "key_in == key_out = ", key_in == key_out 
+      call set( old_key, value ) 
+      call copy_key( old_key, new_key ) 
+      print *, "old_key == new_key = ", old_key == new_key 
     end program demo_equal_keys 
 ```
 
@@ -1610,7 +1610,7 @@ is being examined.
       type(key_type) :: key
       logocal :: present
       call map % init( fnv_1_hasher )
-      call set_key(key, [0_int8, 1_int8] )
+      call set(key, [0_int8, 1_int8] )
       call map % key_test ( key, present )
       print *, "Initial key of 10 present for empty map =  ", present
     end program demo_key_test
