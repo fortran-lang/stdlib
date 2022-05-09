@@ -206,7 +206,9 @@ contains
             key_as_char = key_size
         case(2)
             if ( iand( key_size, 1_int64 ) > 0 ) then
-                error stop "Internal Error at stdlib_hashmaps: System uses 2 bytes per character, so key_size can't be an odd number"
+                error stop "Internal Error at stdlib_hashmaps:&
+                           & System uses 2 bytes per character, so&
+                           & key_size can't be an odd number"
             end if
             key_as_char = ishft( key_size, -1 )
         case(4)
