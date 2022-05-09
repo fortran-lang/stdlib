@@ -105,17 +105,17 @@ module stdlib_hashmap_wrappers
 contains
 
 
-    pure subroutine copy_key( key_in, key_out )
+    pure subroutine copy_key( old_key, new_key )
 !! Version: Experimental
 !!
-!! Copies the contents of the key, key_in, to the key, key_out
+!! Copies the contents of the key, old_key, to the key, out_key
 !! Arguments:
-!!     key_in  - the input key
-!!     key_out - the output key
-        type(key_type), intent(in)  :: key_in
-        type(key_type), intent(out) :: key_out
+!!     old_key - the input key
+!!     new_key - the output copy of old_key
+        type(key_type), intent(in)  :: old_key
+        type(key_type), intent(out) :: new_key
 
-        key_out % value = key_in % value
+        new_key % value = old_key % value
 
     end subroutine copy_key
 
