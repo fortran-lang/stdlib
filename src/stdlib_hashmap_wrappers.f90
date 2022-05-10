@@ -212,16 +212,22 @@ contains
                 error stop module_name // " % " // procedure // &
                           ": Internal Error at stdlib_hashmaps: " // &
                            "System uses 2 bytes per character, so " // &
-                           "key_size can't be an odd number"
+                           "key_size can't be an odd number."
             end if
             key_as_char = ishft( key_size, -1 )
         case(4)
             if ( iand( key_size, 3_int64) > 0 ) then
-                stop 'KEY does not map to a character string.'
+                error stop module_name // " % " // procedure // &
+                          ": Internal Error at stdlib_hashmaps: " // &
+                           "System uses 4 bytes per character, and " // &
+                           "key_size is not a multiple of four."
             end if
             key_as_char = ishft( key_size, -2 )
         case default
-            stop 'CHARACTER has an unrecognized size.'
+            error stop module_name // " % " // procedure // &
+                       ": Internal Error: " // &
+                       "System doesn't use a power of two for its " // &
+                       "character size as expected by stdlib_hashmaps."
         end select
 
         allocate( character( len=key_as_char ) :: value )
