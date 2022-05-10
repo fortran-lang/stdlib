@@ -559,7 +559,8 @@ contains
 
         subroutine allocate_open_map_entry(map, bucket)
 !         allocates a hash bucket
-            type(open_hashmap_type), intent(inout) :: map            type(open_map_entry_type), pointer, intent(out) :: bucket
+            type(open_hashmap_type), intent(inout) :: map
+            type(open_map_entry_type), pointer, intent(out) :: bucket
             type(open_map_entry_list), pointer :: free_list
             type(open_map_entry_pool), pointer :: pool
             character(*), parameter :: procedure_name = "ALLOCATE_MAP_ENTRY"
