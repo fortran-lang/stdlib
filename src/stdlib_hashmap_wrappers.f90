@@ -198,7 +198,7 @@ contains
 !!     value - the contents of key mapped to a CHARACTER string
         type(key_type), intent(in)             :: key
         character(:), allocatable, intent(out) :: value
-        character(*), parameter :: procedure_name = "GET"
+        character(*), parameter :: procedure = "GET"
 
         integer(int64) :: key_as_char
         integer(int64) :: key_size
@@ -209,7 +209,7 @@ contains
             key_as_char = key_size
         case(2)
             if ( iand( key_size, 1_int64 ) > 0 ) then
-                error stop module_name // " % " procedure_name // &
+                error stop module_name // " % " // procedure // &
                           ": Internal Error at stdlib_hashmaps: " // &
                            "System uses 2 bytes per character, so " // &
                            "key_size can't be an odd number"
