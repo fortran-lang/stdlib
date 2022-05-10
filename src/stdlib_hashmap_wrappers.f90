@@ -55,6 +55,8 @@ module stdlib_hashmap_wrappers
         bits_char = character_storage_size, &
         bytes_char = bits_char/bits_int8
 
+    character(*), parameter :: module_name = "STDLIB_HASHMAP_WRAPPERS"
+
     type :: key_type
 !! Version: Experimental
 !!
@@ -196,6 +198,7 @@ contains
 !!     value - the contents of key mapped to a CHARACTER string
         type(key_type), intent(in)             :: key
         character(:), allocatable, intent(out) :: value
+        character(*), parameter :: procedure_name = "GET"
 
         integer(int64) :: key_as_char
         integer(int64) :: key_size
@@ -206,9 +209,10 @@ contains
             key_as_char = key_size
         case(2)
             if ( iand( key_size, 1_int64 ) > 0 ) then
-                error stop "Internal Error at stdlib_hashmaps:&
-                           & System uses 2 bytes per character, so&
-                           & key_size can't be an odd number"
+                error stop module_name // " % " procedure_name // &
+                          ": Internal Error at stdlib_hashmaps: " // &
+                           "System uses 2 bytes per character, so " // &
+                           "key_size can't be an odd number"
             end if
             key_as_char = ishft( key_size, -1 )
         case(4)

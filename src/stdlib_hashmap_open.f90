@@ -559,11 +559,10 @@ contains
 
         subroutine allocate_open_map_entry(map, bucket)
 !         allocates a hash bucket
-            type(open_hashmap_type), intent(inout) :: map
-
-            type(open_map_entry_type), pointer, intent(out) :: bucket
+            type(open_hashmap_type), intent(inout) :: map            type(open_map_entry_type), pointer, intent(out) :: bucket
             type(open_map_entry_list), pointer :: free_list
             type(open_map_entry_pool), pointer :: pool
+            character(*), parameter :: procedure_name = "ALLOCATE_MAP_ENTRY"
 
             pool => map % cache
             map % num_entries = map % num_entries + 1
@@ -574,7 +573,9 @@ contains
                 map % free_list => free_list % next
                 free_list % target => null()
                 free_list % next => null()
-                if (bucket % inmap == 0) stop "bucket % inmap == 0"
+                if (bucket % inmap <= 0) &
+                    error stop submodule_name // " % " // procedure_name // &
+                    ": Failed consistency check: BUCKET % INMAP <= 0"
                 map % num_free = map % num_free - 1
             else
 !             Get hash bucket from pool
@@ -589,7 +590,9 @@ contains
                      size( map % inverse, kind=int_index ) ) then
                     call expand_inverse( map )
                 end if
-                if ( map % num_entries == 0 ) stop "MAP % NUM_ENTRIES == 0."
+                if ( map % num_entries <= 0 ) &
+                    error stop submodule_name // " % " // procedure_name // &
+                    ": Failed consistency check: MAP % NUM_ENTRIES <= 0."
                 bucket % inmap = map % num_entries
             end if
 
