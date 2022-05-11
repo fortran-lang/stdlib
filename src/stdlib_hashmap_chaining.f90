@@ -334,7 +334,9 @@ contains
 !! Returns the index into the INVERSE array associated with the KEY
 !! Arguments:
 !!     map   - the hash map of interest
-!!     inmap - the returned index into the INVERSE array of entry pointers
+!!     inmap - the returned index into the INVERSE array of entry pointers.
+!!             A value of zero indicates that an entry with that key was not
+!!             found.
 !!     key   - the key identifying the entry of interest
 !
         class(chaining_hashmap_type), intent(inout) :: map
@@ -360,7 +362,6 @@ contains
             gentry => pentry
             map % probe_count = map % probe_count + 1
             if (.not. associated( gentry ) ) then
-                write(error_unit,*) "gentry not associated"
                 inmap = 0
                 return
             else if ( hash_val == gentry % hash_val ) then
