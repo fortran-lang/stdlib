@@ -15,24 +15,33 @@ Support terminal escape sequences to produce styled and colored terminal output.
 ## Derived types provided
 
 
-### ``fg_color24`` type
+### ``ansi_color`` type
 
-The ``fg_color24`` type represent a true color (24-bit) foreground color.
-It contains the members ``red``, ``blue`` and ``green`` as default integer types.
-
-#### Status
-
-Experimental
-
-
-### ``bg_color24`` type
-
-The ``bg_color24`` type represent a true color (24-bit) background color.
-It contains the members ``red``, ``blue`` and ``green`` as default integer types.
+The ``ansi_color`` type represent an ANSI escape sequence with a style, forground
+color and background color attribute. By default the instances of this type are
+empty and represent no escape sequence.
 
 #### Status
 
 Experimental
+
+#### Example
+
+```fortran
+program demo_color
+  use stdlib_terminal_colors, only : fg_color_blue, style_bold, style_reset, ansi_color, &
+    & operator(//), operator(+)
+  implicit none
+  type(ansi_color) :: highlight, reset
+
+  print '(a)', highlight // "Dull text message" // reset
+
+  highlight = fg_color_blue + style_bold
+  reset = style_reset
+
+  print '(a)', highlight // "Colorful text message" // reset
+end program demo_color
+```
 
 
 ## Constants provided
@@ -52,11 +61,9 @@ Style enumerator representing a bold escape code.
 Style enumerator representing a dim escape code.
 
 
-
 ### ``style_italic``
 
 Style enumerator representing an italic escape code.
-
 
 
 ### ``style_underline``
@@ -187,7 +194,7 @@ Generic interface to turn a style, foreground or background enumerator into an a
 
 #### Syntax
 
-`string = [[stdlib_string_colors(module):to_string(interface)]] (enum)`
+`string = [[stdlib_string_colors(module):to_string(interface)]] (code)`
 
 #### Class
 
@@ -195,7 +202,8 @@ Pure function.
 
 #### Argument
 
-``enum``: Style, foreground or background enumerator, this argument is ``intent(in)``.
+``code``: Style, foreground or background code of ``ansi_color`` type,
+          this argument is ``intent(in)``.
 
 #### Result value
 
@@ -205,14 +213,25 @@ The result is a default character string.
 
 Experimental
 
+#### Example
 
-### ``to_string``
+```fortran
+program demo_string
+  use stdlib_terminal_colors, only : fg_color_green, style_reset, to_string
+  implicit none
 
-Generic interface to turn a foreground or background true color type into an actual escape code string for printout.
+  print '(a)', to_string(fg_color_green) // "Colorized text message" // to_string(style_reset)
+end program demo_string
+```
+
+
+### ``operator(+)``
+
+Add two escape sequences, attributes in the right value override the left value ones.
 
 #### Syntax
 
-`string = [[stdlib_string_colors(module):to_string(interface)]] (color24)`
+`code = lval + rval`
 
 #### Class
 
@@ -220,12 +239,66 @@ Pure function.
 
 #### Argument
 
-``color24``: Foreground or background true color instance, this argument is ``intent(in)``.
+``lval``: Style, foreground or background code of ``ansi_color`` type,
+          this argument is ``intent(in)``.
+``rval``: Style, foreground or background code of ``ansi_color`` type,
+          this argument is ``intent(in)``.
 
 #### Result value
 
-The result is a default character string.
+The result is a style, foreground or background code of ``ansi_color`` type.
 
 #### Status
 
 Experimental
+
+#### Example
+
+```fortran
+program demo_combine
+  use stdlib_terminal_colors, only : fg_color_red, style_bold, ansi_color
+  implicit none
+  type(ansi_color) :: bold_red
+
+  bold_red = fg_color_red + style_bold
+end program demo_combine
+```
+
+
+### ``operator(//)``
+
+Concatenate an escape code with a string and turn it into an actual escape sequence
+
+#### Syntax
+
+`code = lval + rval`
+
+#### Class
+
+Pure function.
+
+#### Argument
+
+``lval``: Style, foreground or background code of ``ansi_color`` type or a character string,
+          this argument is ``intent(in)``.
+``rval``: Style, foreground or background code of ``ansi_color`` type or a character string,
+          this argument is ``intent(in)``.
+
+#### Result value
+
+The result is a character string with the escape sequence prepended or appended.
+
+#### Status
+
+Experimental
+
+#### Example
+
+```fortran
+program demo_concat
+  use stdlib_terminal_colors, only : fg_color_red, style_reset, operator(//)
+  implicit none
+
+  print '(a)', fg_color_red // "Colorized text message" // style_reset
+end program demo_concat
+```

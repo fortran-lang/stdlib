@@ -88,6 +88,7 @@ set(SRC
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90
     stdlib_terminal_colors.f90
+    stdlib_terminal_colors_operator.f90
     stdlib_terminal_colors_to_string.f90
     stdlib_quadrature_gauss.f90
     stdlib_stringlist_type.f90

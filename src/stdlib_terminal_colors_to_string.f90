@@ -2,72 +2,39 @@
 
 !> Implementation of the conversion to enumerator and identifier types to strings
 submodule (stdlib_terminal_colors) stdlib_terminal_colors_to_string
-    use stdlib_strings, only : to_string_ => to_string
     implicit none
 
+    character, parameter :: chars(0:9) = &
+        ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 contains
 
+    !> Transform a color code into an actual ANSI escape sequence
+    pure module function to_string_ansi_color(code) result(str)
+        !> Color code to be used
+        type(ansi_color), intent(in) :: code
+        !> ANSI escape sequence representing the color code
+        character(len=:), allocatable :: str
 
-!> Convert the style identifier to a string
-pure module function to_string_style(style) result(str)
-    !> Identifier of style
-    type(style_enum), intent(in) :: style
-    !> Converted string
-    character(len=:), allocatable :: str
+        if (anycolor(code)) then
+            str = achar(27) // "[0"  ! Always reset the style
+            if (code%style > 0 .and. code%style < 10) str = str // ";" // chars(code%style)
+            if (code%fg >= 0 .and. code%fg < 10) str = str // ";3" // chars(code%fg)
+            if (code%bg >= 0 .and. code%bg < 10) str = str // ";4" // chars(code%bg)
+            str = str // "m"
+        else
+            str = ""
+        end if
+    end function to_string_ansi_color
 
-    str = esc // to_string_(style%id) // "m"
-end function to_string_style
+    !> Check whether the code describes any color or is just a stub
+    pure function anycolor(code)
+        !> Escape sequence
+        type(ansi_color), intent(in) :: code
+        !> Any color / style is active
+        logical :: anycolor
 
-
-!> Convert the color identifier to a string
-pure module function to_string_fg_color(fg_color) result(str)
-    !> Identifier of foreground color
-    type(fg_color_enum), intent(in) :: fg_color
-    !> Converted string
-    character(len=:), allocatable :: str
-
-    str = esc // to_string_(fg_color%id + fg_offset) // "m"
-end function to_string_fg_color
-
-
-!> Convert the background color identifier to a string
-pure module function to_string_bg_color(bg_color) result(str)
-    !> Identifier of background color
-    type(bg_color_enum), intent(in) :: bg_color
-    !> Converted string
-    character(len=:), allocatable :: str
-
-    str = esc // to_string_(bg_color%id + bg_offset) // "m"
-end function to_string_bg_color
-
-
-!> Convert foreground true color to a string
-pure module function to_string_fg_color24(fg_color) result(str)
-    !> 24-bit foreground color
-    type(fg_color24), intent(in) :: fg_color
-    !> Converted string
-    character(len=:), allocatable :: str
-
-    str = esc // fg_color24_prefix // &
-        & to_string_(abs(fg_color%red)) // ";" // &
-        & to_string_(abs(fg_color%green)) // ";" // &
-        & to_string_(abs(fg_color%blue)) // "m"
-end function to_string_fg_color24
-
-
-!> Convert background true color to a string
-pure module function to_string_bg_color24(bg_color) result(str)
-    !> 24-bit background color
-    type(bg_color24), intent(in) :: bg_color
-    !> Converted string
-    character(len=:), allocatable :: str
-
-    str = esc // bg_color24_prefix // &
-        & to_string_(abs(bg_color%red)) // ";" // &
-        & to_string_(abs(bg_color%green)) // ";" // &
-        & to_string_(abs(bg_color%blue)) // "m"
-end function to_string_bg_color24
-
+        anycolor = code%fg >= 0 .or. code%bg >= 0 .or. code%style >= 0
+    end function anycolor
 
 end submodule stdlib_terminal_colors_to_string

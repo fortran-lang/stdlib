@@ -1,8 +1,7 @@
 ! SPDX-Identifier: MIT
 
 module test_colors
-    use stdlib_terminal_colors, only : fg_color24, bg_color24, fg_color_red, &
-        & bg_color_yellow, style_bold, to_string
+    use stdlib_terminal_colors, only : fg_color_red, bg_color_yellow, style_bold, to_string
     use testdrive, only : new_unittest, unittest_type, error_type, check
     implicit none
 
@@ -14,35 +13,11 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest("fg_color24", test_fg_color24), &
-            new_unittest("bg_color24", test_bg_color24), &
             new_unittest("fg_color", test_fg_color), &
             new_unittest("bg_color", test_bg_color), &
             new_unittest("style", test_style) &
             ]
     end subroutine collect_colors
-
-    subroutine test_fg_color24(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-        character(len=:), allocatable :: str
-
-        str = to_string(fg_color24(1, 0, 0))
-        call check(error, ichar(str(1:1)), 27)
-        if (allocated(error)) return
-        call check(error, str(2:), "[38;2;1;0;0m")
-    end subroutine test_fg_color24
-
-    subroutine test_bg_color24(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-        character(len=:), allocatable :: str
-
-        str = to_string(bg_color24(0, 1, 0))
-        call check(error, ichar(str(1:1)), 27)
-        if (allocated(error)) return
-        call check(error, str(2:), "[48;2;0;1;0m")
-    end subroutine test_bg_color24
 
     subroutine test_fg_color(error)
         !> Error handling
@@ -52,7 +27,7 @@ contains
         str = to_string(fg_color_red)
         call check(error, ichar(str(1:1)), 27)
         if (allocated(error)) return
-        call check(error, str(2:), "[31m")
+        call check(error, str(2:), "[0;31m")
     end subroutine test_fg_color
 
     subroutine test_bg_color(error)
@@ -63,7 +38,7 @@ contains
         str = to_string(bg_color_yellow)
         call check(error, ichar(str(1:1)), 27)
         if (allocated(error)) return
-        call check(error, str(2:), "[43m")
+        call check(error, str(2:), "[0;43m")
     end subroutine test_bg_color
 
     subroutine test_style(error)
@@ -74,7 +49,7 @@ contains
         str = to_string(style_bold)
         call check(error, ichar(str(1:1)), 27)
         if (allocated(error)) return
-        call check(error, str(2:), "[1m")
+        call check(error, str(2:), "[0;1m")
     end subroutine test_style
 
 end module test_colors
