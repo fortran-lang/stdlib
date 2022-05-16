@@ -10,9 +10,9 @@ submodule (stdlib_terminal_colors) stdlib_terminal_colors_to_string
 contains
 
     !> Transform a color code into an actual ANSI escape sequence
-    pure module function to_string_ansi_color(code) result(str)
+    pure module function to_string_ansi_code(code) result(str)
         !> Color code to be used
-        type(ansi_color), intent(in) :: code
+        type(ansi_code), intent(in) :: code
         !> ANSI escape sequence representing the color code
         character(len=:), allocatable :: str
 
@@ -25,12 +25,12 @@ contains
         else
             str = ""
         end if
-    end function to_string_ansi_color
+    end function to_string_ansi_code
 
     !> Check whether the code describes any color or is just a stub
     pure function anycolor(code)
         !> Escape sequence
-        type(ansi_color), intent(in) :: code
+        type(ansi_code), intent(in) :: code
         !> Any color / style is active
         logical :: anycolor
 

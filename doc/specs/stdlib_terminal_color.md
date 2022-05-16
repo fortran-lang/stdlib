@@ -15,9 +15,9 @@ Support terminal escape sequences to produce styled and colored terminal output.
 ## Derived types provided
 
 
-### ``ansi_color`` type
+### ``ansi_code`` type
 
-The ``ansi_color`` type represent an ANSI escape sequence with a style, forground
+The ``ansi_code`` type represent an ANSI escape sequence with a style, forground
 color and background color attribute. By default the instances of this type are
 empty and represent no escape sequence.
 
@@ -29,10 +29,10 @@ Experimental
 
 ```fortran
 program demo_color
-  use stdlib_terminal_colors, only : fg_color_blue, style_bold, style_reset, ansi_color, &
+  use stdlib_terminal_colors, only : fg_color_blue, style_bold, style_reset, ansi_code, &
     & operator(//), operator(+)
   implicit none
-  type(ansi_color) :: highlight, reset
+  type(ansi_code) :: highlight, reset
 
   print '(a)', highlight // "Dull text message" // reset
 
@@ -202,7 +202,7 @@ Pure function.
 
 #### Argument
 
-``code``: Style, foreground or background code of ``ansi_color`` type,
+``code``: Style, foreground or background code of ``ansi_code`` type,
           this argument is ``intent(in)``.
 
 #### Result value
@@ -239,14 +239,14 @@ Pure function.
 
 #### Argument
 
-``lval``: Style, foreground or background code of ``ansi_color`` type,
+``lval``: Style, foreground or background code of ``ansi_code`` type,
           this argument is ``intent(in)``.
-``rval``: Style, foreground or background code of ``ansi_color`` type,
+``rval``: Style, foreground or background code of ``ansi_code`` type,
           this argument is ``intent(in)``.
 
 #### Result value
 
-The result is a style, foreground or background code of ``ansi_color`` type.
+The result is a style, foreground or background code of ``ansi_code`` type.
 
 #### Status
 
@@ -256,9 +256,9 @@ Experimental
 
 ```fortran
 program demo_combine
-  use stdlib_terminal_colors, only : fg_color_red, style_bold, ansi_color
+  use stdlib_terminal_colors, only : fg_color_red, style_bold, ansi_code
   implicit none
-  type(ansi_color) :: bold_red
+  type(ansi_code) :: bold_red
 
   bold_red = fg_color_red + style_bold
 end program demo_combine
@@ -279,9 +279,9 @@ Pure function.
 
 #### Argument
 
-``lval``: Style, foreground or background code of ``ansi_color`` type or a character string,
+``lval``: Style, foreground or background code of ``ansi_code`` type or a character string,
           this argument is ``intent(in)``.
-``rval``: Style, foreground or background code of ``ansi_color`` type or a character string,
+``rval``: Style, foreground or background code of ``ansi_code`` type or a character string,
           this argument is ``intent(in)``.
 
 #### Result value

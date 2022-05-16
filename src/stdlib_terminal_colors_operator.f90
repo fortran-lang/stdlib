@@ -9,16 +9,15 @@ contains
     !> Add two escape sequences, attributes in the right value override the left value ones.
     pure module function add(lval, rval) result(code)
         !> First escape code
-        type(ansi_color), intent(in) :: lval
+        type(ansi_code), intent(in) :: lval
         !> Second escape code
-        type(ansi_color), intent(in) :: rval
+        type(ansi_code), intent(in) :: rval
         !> Combined escape code
-        type(ansi_color) :: code
+        type(ansi_code) :: code
 
-        code = ansi_color( &
-            style=merge(rval%style, lval%style, rval%style >= 0), &
-            fg=merge(rval%fg, lval%fg, rval%fg >= 0), &
-            bg=merge(rval%bg, lval%bg, rval%bg >= 0))
+        code%style = merge(rval%style, lval%style, rval%style >= 0)
+        code%fg = merge(rval%fg, lval%fg, rval%fg >= 0)
+        code%bg = merge(rval%bg, lval%bg, rval%bg >= 0)
     end function add
 
     !> Concatenate an escape code with a string and turn it into an actual escape sequence
@@ -26,7 +25,7 @@ contains
         !> String to add the escape code to
         character(len=*), intent(in) :: lval
         !> Escape sequence
-        type(ansi_color), intent(in) :: code
+        type(ansi_code), intent(in) :: code
         !> Concatenated string
         character(len=:), allocatable :: str
 
@@ -38,7 +37,7 @@ contains
         !> String to add the escape code to
         character(len=*), intent(in) :: rval
         !> Escape sequence
-        type(ansi_color), intent(in) :: code
+        type(ansi_code), intent(in) :: code
         !> Concatenated string
         character(len=:), allocatable :: str
 
