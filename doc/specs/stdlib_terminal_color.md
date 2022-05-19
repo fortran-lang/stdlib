@@ -17,7 +17,7 @@ Support terminal escape sequences to produce styled and colored terminal output.
 
 ### ``ansi_code`` type
 
-The ``ansi_code`` type represent an ANSI escape sequence with a style, forground
+The ``ansi_code`` type represent an ANSI escape sequence with a style, foreground
 color and background color attribute. By default the instances of this type are
 empty and represent no escape sequence.
 
