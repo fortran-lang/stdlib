@@ -61,14 +61,10 @@ You are welcome to propose changes to this workflow by opening an
 [issue](https://github.com/fortran-lang/stdlib/issues).
 
 
-## Build system
+## Build systems
 
-This project supports two build systems right now, CMake and make.
-Eventually, stdlib will be using the Fortran package manager
-([fpm](https://github.com/fortran-lang/fpm)) as build system as well.
-The effort of supporting fpm is tracked in issue
-[#279](https://github.com/fortran-lang/stdlib/issues/279).
-
+This project supports two build systems,
+[fpm](https://github.com/fortran-lang/fpm) and CMake.
 
 ### CMake build files
 

@@ -203,15 +203,6 @@ target_link_libraries(
 To make the installed stdlib project discoverable add the stdlib directory to the ``CMAKE_PREFIX_PATH``.
 The usual install location of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
 
-For non-CMake build systems (like make) you can use the exported pkg-config file by setting ``PKG_CONFIG_PATH`` to include the directory containing the exported pc-file.
-The usual install location of the pc-file is ``$PREFIX/lib/pkgconfig``.
-In make you can obtain the required compile and link arguments with
-
-```make
-STDLIB_CFLAGS := $(shell pkg-config --cflags fortran_stdlib)
-STDLIB_LIBS := $(shell pkg-config --libs fortran_stdlib)
-```
-
 ## Documentation
 
 Documentation is a work in progress (see issue [#4](https://github.com/fortran-lang/stdlib/issues/4)) but already available at [stdlib.fortran-lang.org](https://stdlib.fortran-lang.org).
