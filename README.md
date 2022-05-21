@@ -133,14 +133,14 @@ Important options are
   Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
 - `-DBUILD_TESTING` set to `off` in case you want to disable the stdlib tests (default: `on`).
-- `-DCMAKE_BUILD_TYPE` is set to `NoConfig` by default. Set to `Release` to compile with standard optimizations, or `RelWithDebInfo` for standard options for development. Other values can be passed to avoid having the associated compiler flags being set.
-- `-DCMAKE_VERBOSE_MAKEFILE` is by default set to `Off`, but if set to `On` will show the commands used to compile the code.
+- `-DCMAKE_VERBOSE_MAKEFILE` is by default set to `Off`, but if set to `On` will show commands used to compile the code.
+- `-DCMAKE_BUILD_TYPE` is set to `NoConfig` by default. Set to `Release` to compile with standard optimizations, or `RelWithDebInfo` for standard code development options. Beware these options may override compiler flags that are specified via `FFLAGS`. To avoid this, use an unknown value such as `-DCMAKE_BUILD_TYPE=UnknownBuildType`.
 
-For example, to configure a build using the Ninja backend while specifying compiler flags `FFLAGS`, generating procedures up to rank 7, and installing to your home directory, use
+For example, to configure a build using the Ninja backend while specifying compiler flags via `FFLAGS`, generating procedures up to rank 7, installing to your home directory, using the `Release` compiler flags, and printing the compiler options, use
 
 ```sh
 export FFLAGS="-O3"
-cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK:String=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local
+cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK:String=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_VERBOSE_MAKEFILE=On -DCMAKE_BUILD_TYPE=Release
 ```
 
 To build the standard library run
