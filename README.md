@@ -134,13 +134,13 @@ Important options are
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
 - `-DBUILD_TESTING` set to `off` in case you want to disable the stdlib tests (default: `on`).
 - `-DCMAKE_VERBOSE_MAKEFILE` is by default set to `Off`, but if set to `On` will show commands used to compile the code.
-- `-DCMAKE_BUILD_TYPE` is set to `NoConfig` by default. Set to `Release` to compile with standard optimizations, or `RelWithDebInfo` for standard code development options. Beware these options may override compiler flags that are specified via `FFLAGS`. To avoid this, use an unknown value such as `-DCMAKE_BUILD_TYPE=UnknownBuildType`.
+- `-DCMAKE_BUILD_TYPE` is by default set to `RelWithDebInfo` which uses compiler flags suitable for code development (but with only `-O2` optimization). These options may override compiler flags that are specified via `FFLAGS`. To avoid this, use the value `-DCMAKE_BUILD_TYPE=NoConfig` in conjunction with `FFLAGS`.
 
-For example, to configure a build using the Ninja backend while specifying compiler flags via `FFLAGS`, generating procedures up to rank 7, installing to your home directory, using the `Release` compiler flags, and printing the compiler options, use
+For example, to configure a build using the Ninja backend while specifying compiler optimization via `FFLAGS`, generating procedures up to rank 7, installing to your home directory, using the `NoConfig` compiler flags, and printing the compiler commands, use
 
 ```sh
 export FFLAGS="-O3"
-cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK:String=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_VERBOSE_MAKEFILE=On -DCMAKE_BUILD_TYPE=Release
+cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK:String=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_VERBOSE_MAKEFILE=On -DCMAKE_BUILD_TYPE=NoConfig
 ```
 
 To build the standard library run
