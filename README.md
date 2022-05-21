@@ -133,6 +133,8 @@ Important options are
   Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
 - `-DBUILD_TESTING` set to `off` in case you want to disable the stdlib tests (default: `on`).
+- `-DCMAKE_BUILD_TYPE` is set to `NoConfig` by default. Set to `Release` to compile with standard optimizations, or `RelWithDebInfo` for standard options for development. Other values can be passed to avoid having the associated compiler flags being set.
+- `-DCMAKE_VERBOSE_MAKEFILE` is by default set to `Off`, but if set to `On` will show the commands used to compile the code.
 
 For example, to configure a build using the Ninja backend while specifying compiler flags `FFLAGS`, generating procedures up to rank 7, and installing to your home directory, use
 
