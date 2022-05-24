@@ -50,7 +50,7 @@ contains
     end subroutine
 
     subroutine test_fix_github_issue619(error)
-        !> Error handling
+        !> See github issue https://github.com/fortran-lang/stdlib/issues/619
         type(error_type), allocatable, intent(out) :: error
         integer :: i
 
