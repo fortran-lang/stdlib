@@ -95,7 +95,10 @@ contains
       ${t1}$, allocatable, intent(out) :: d(:,:)
       !! Skip the first `skiprows` lines. If skipping more rows than present, a 0-sized array will be returned. The default is 0.
       integer, intent(in), optional :: skiprows
-      !! Read max_rows lines of content after skiprows lines. The default is -1, to read all the lines.
+      !! Read `max_rows` lines of content after `skiprows` lines.
+      !! A negative value results in reading all lines.
+      !! A value of zero results in no lines to be read.
+      !! The default value is -1.
       integer, intent(in), optional :: max_rows
       !!
       !! Example
