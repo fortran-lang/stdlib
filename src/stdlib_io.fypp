@@ -125,16 +125,17 @@ contains
 
       s = open(filename)
 
-      ! determine number of columns
-      ncol = number_of_columns(s)
-      #:if 'complex' in t1
-      ncol = ncol / 2
-      #:endif
-
       ! determine number or rows
       nrow = number_of_rows(s)
       skiprows_ = min(skiprows_, nrow)
-      if ( max_rows_ < 0 .or. max_rows_ > (nrow - skiprows_)) max_rows_ = nrow - skiprows_
+      if ( max_rows_ < 0 .or. max_rows_ > (nrow - skiprows_) ) max_rows_ = nrow - skiprows_
+
+      ! determine number of columns
+      ncol = 0
+      if ( skiprows_ < nrow ) ncol = number_of_columns(s, skiprows=skiprows_)
+      #:if 'complex' in t1
+      ncol = ncol / 2
+      #:endif
 
       allocate(d(max_rows_, ncol))
 
@@ -196,17 +197,25 @@ contains
   #:endfor
 
 
-  integer function number_of_columns(s)
+  integer function number_of_columns(s, skiprows)
     !! version: experimental
     !!
     !! determine number of columns
     integer,intent(in) :: s
+    integer, intent(in), optional :: skiprows
 
-    integer :: ios
+    integer :: ios, skiprows_
     character :: c
     logical :: lastblank
 
+    skiprows_ = optval(skiprows, 0)
+
     rewind(s)
+
+    do i = 1, skiprows_
+      read(s, *)
+    end do
+
     number_of_columns = 0
     lastblank = .true.
     do
