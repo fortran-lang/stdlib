@@ -28,6 +28,7 @@ set(fppFiles
     stdlib_sorting_ord_sort.fypp
     stdlib_sorting_sort.fypp
     stdlib_sorting_sort_index.fypp
+    stdlib_specialfunctions_gamma.fypp
     stdlib_stats.fypp
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
