@@ -21,7 +21,8 @@ contains
             new_unittest("gauss-lobatto-analytic", test_gauss_lobatto_analytic), &
             new_unittest("gauss-lobatto-5", test_gauss_lobatto_5), &
             new_unittest("gauss-lobatto-32", test_gauss_lobatto_32), &
-            new_unittest("gauss-lobatto-64", test_gauss_lobatto_64) &
+            new_unittest("gauss-lobatto-64", test_gauss_lobatto_64), &
+            new_unittest("gauss-github-issue-619", test_fix_github_issue619) &
             ]
     end subroutine
 
@@ -45,6 +46,25 @@ contains
                 if (allocated(error)) return
             end block
         end do
+
+    end subroutine
+
+    subroutine test_fix_github_issue619(error)
+        !> See github issue https://github.com/fortran-lang/stdlib/issues/619
+        type(error_type), allocatable, intent(out) :: error
+        integer :: i
+
+        ! test the values of nodes and weights
+        i = 5
+        block 
+            real(dp), dimension(i) :: x1,w1,x2,w2
+            call gauss_legendre(x1,w1)
+            call gauss_legendre(x2,w2,interval=[-1._dp, 1._dp])
+
+            call check(error, all(abs(x1-x2) < 2*epsilon(x1(1))))
+            if (allocated(error)) return
+            call check(error, all(abs(w1-w2) < 2*epsilon(w1(1))))
+        end block
 
     end subroutine
 
