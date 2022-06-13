@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 3.14.0)
+
+# Include overwrites before setting up the project
+set(CMAKE_USER_MAKE_RULES_OVERRIDE ${CMAKE_CURRENT_SOURCE_DIR}/config/DefaultFlags.cmake)
+
 project(fortran_stdlib
         LANGUAGES Fortran
         DESCRIPTION "Community driven and agreed upon de facto standard library for Fortran"
@@ -22,31 +26,9 @@ include(${PROJECT_SOURCE_DIR}/cmake/stdlib.cmake)
 # --- CMake specific configuration and package data export
 add_subdirectory(config)
 
-# --- compiler options
-if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  if(CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 9.0)
-    message(FATAL_ERROR "GCC Version 9 or newer required")
-  endif()
-  add_compile_options(-fimplicit-none)
-  add_compile_options(-ffree-line-length-132)
-  add_compile_options(-fno-range-check) # Needed for gfortran 9 and
-  # earlier for hash functions 
-  add_compile_options(-Wall)
-  add_compile_options(-Wextra)
-  add_compile_options(-Wimplicit-procedure)
-  # -pedantic-errors triggers a false positive for optional arguments of elemental functions,
-  # see test_optval and https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95446
-  if(CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 11.0)
-    add_compile_options(-pedantic-errors)
-  endif()
-  add_compile_options(-std=f2018)
-elseif(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
-  if(WIN32)
-    set(fortran_flags /stand:f18 /warn:declarations,general,usage,interfaces,unused)
-  else()
-    set(fortran_flags -stand f18 -warn declarations,general,usage,interfaces,unused)
-  endif()
-  add_compile_options("$<$<COMPILE_LANGUAGE:Fortran>:${fortran_flags}>")
+# --- compiler selection
+if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU AND CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 9.0)
+  message(FATAL_ERROR "GCC Version 9 or newer required")
 endif()
 
 # --- compiler feature checks
