@@ -204,7 +204,7 @@ contains
     integer,intent(in) :: s
     integer, intent(in), optional :: skiprows
 
-    integer :: ios, skiprows_
+    integer :: ios, skiprows_, i
     character :: c
     logical :: lastblank
 
