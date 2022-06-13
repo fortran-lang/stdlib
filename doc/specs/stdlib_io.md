@@ -27,7 +27,7 @@ Loads a rank-2 `array` from a text file.
 
 `skiprows` (optional): Skip the first `skiprows` lines. If skipping more rows than present, a 0-sized array will be returned. The default is 0.
 
-`max_rows` (optional): Read `max_rows` lines of content after `skiprows` lines. The default is -1, to read all the lines.
+`max_rows` (optional): Read `max_rows` lines of content after `skiprows` lines. A negative value results in reading all lines. A value of zero results in no lines to be read. The default value is -1.
 
 ### Return value
 
