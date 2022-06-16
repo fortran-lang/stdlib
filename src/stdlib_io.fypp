@@ -81,7 +81,7 @@ module stdlib_io
 contains
 
   #:for k1, t1 in KINDS_TYPES
-    subroutine  loadtxt_${t1[0]}$${k1}$(filename, d)
+    subroutine  loadtxt_${t1[0]}$${k1}$(filename, d, skiprows, max_rows)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -93,6 +93,13 @@ contains
       character(len=*), intent(in) :: filename
       !! The array 'd' will be automatically allocated with the correct dimensions
       ${t1}$, allocatable, intent(out) :: d(:,:)
+      !! Skip the first `skiprows` lines. If skipping more rows than present, a 0-sized array will be returned. The default is 0.
+      integer, intent(in), optional :: skiprows
+      !! Read `max_rows` lines of content after `skiprows` lines.
+      !! A negative value results in reading all lines.
+      !! A value of zero results in no lines to be read.
+      !! The default value is -1.
+      integer, intent(in), optional :: max_rows
       !!
       !! Example
       !! -------
@@ -111,21 +118,32 @@ contains
       !!     ...
       !!
       integer :: s
-      integer :: nrow, ncol, i
+      integer :: nrow, ncol, i, skiprows_, max_rows_
+
+      skiprows_ = max(optval(skiprows, 0), 0)
+      max_rows_ = optval(max_rows, -1)
 
       s = open(filename)
 
+      ! determine number or rows
+      nrow = number_of_rows(s)
+      skiprows_ = min(skiprows_, nrow)
+      if ( max_rows_ < 0 .or. max_rows_ > (nrow - skiprows_) ) max_rows_ = nrow - skiprows_
+
       ! determine number of columns
-      ncol = number_of_columns(s)
+      ncol = 0
+      if ( skiprows_ < nrow ) ncol = number_of_columns(s, skiprows=skiprows_)
       #:if 'complex' in t1
       ncol = ncol / 2
       #:endif
 
-      ! determine number or rows
-      nrow = number_of_rows(s)
+      allocate(d(max_rows_, ncol))
 
-      allocate(d(nrow, ncol))
-      do i = 1, nrow
+      do i = 1, skiprows_
+        read(s, *)
+      end do
+
+      do i = 1, max_rows_
         #:if 'real' in t1
           read(s, "(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",1x))") d(i, :)
         #:elif 'complex' in t1
@@ -179,17 +197,25 @@ contains
   #:endfor
 
 
-  integer function number_of_columns(s)
+  integer function number_of_columns(s, skiprows)
     !! version: experimental
     !!
     !! determine number of columns
     integer,intent(in) :: s
+    integer, intent(in), optional :: skiprows
 
-    integer :: ios
+    integer :: ios, skiprows_, i
     character :: c
     logical :: lastblank
 
+    skiprows_ = optval(skiprows, 0)
+
     rewind(s)
+
+    do i = 1, skiprows_
+      read(s, *)
+    end do
+
     number_of_columns = 0
     lastblank = .true.
     do
