@@ -170,9 +170,9 @@ Procedures to manipulate `other_type` data:
   `other_out`.
 
 * `get( other, value )` - extracts the contents of `other` into the
-  class(*) variable `value`.
+  `class(*)` variable `value`.
 
-* `set( other, value )` - sets the content of `other` to the class(*)
+* `set( other, value )` - sets the content of `other` to the `class(*)`
   variable `value`. 
 
 * `free_other( other )` - frees the memory in `other`.
@@ -194,7 +194,7 @@ Procedures to hash keys to 32 bit integers:
 
 Operator to compare two `key_type` values for equality
 
-* `key1 == key2` - compares `key1' with 'key2' for equality
+* `key1 == key2` - compares `key1` with `key2` for equality
 
 ### Specifications of the `stdlib_hashmap_wrappers` procedures
 
@@ -445,7 +445,7 @@ Experimental
 
 ##### Description
 
-Deallocates the memory associated with an variable of type
+Deallocates the memory associated with a variable of type
 `key_type`.
 
 ##### Syntax
@@ -486,7 +486,7 @@ Experimental
 
 ##### Description
 
-Deallocates the memory associated with an variable of type
+Deallocates the memory associated with a variable of type
 `other_type`.
 
 ##### Syntax
@@ -580,7 +580,7 @@ an allocatable of `class(*)`. It is an `intent(out)` argument.
       end do
       call set( key, value )
       call get( key, result )
-      print *, `RESULT == VALUE = ', all( value == result )
+      print *, 'RESULT == VALUE = ', all( value == result )
     end program demo_get
 ```
 
@@ -654,7 +654,7 @@ Returns `.true.` if two keys are equal, and `.false.` otherwise.
 
 ##### Syntax 
 
-`test = [stdlib_hashmap_wrappers:key1==key2]`
+`test = key1 == key2`
 
 ##### Class 
 
@@ -920,8 +920,8 @@ shall be of type `class(*)`. It is an `intent(in)` argument.
 ##### Note
 
 Values of types other than a scalar default character or an
-`INT8` vector can be used as the basis of a `key` by transferring the
-value to an `INT8` vector.
+`int8` vector can be used as the basis of a `key` by transferring the
+value to an `int8` vector.
 
 ##### Example
 
@@ -940,7 +940,7 @@ value to an `INT8` vector.
       end do
       call set( key, value )
       call get( key, result )
-      print *, `RESULT == VALUE = ', all( value  == result )
+      print *, 'RESULT == VALUE = ', all( value == result )
     end program demo_set
 ```
 
@@ -1038,35 +1038,57 @@ type. Each of these types are described below.
 The `hashmap_type` abstract type serves as the parent type for the two
 types `chaining_hashmap_type` and `open_hashmap_type`. It defines
 seven private components:
+
 * `call_count` - the number of procedure calls on the map;
+
 * `nbits` - the number of bits used to address the slots; 
+
 * `num_entries` - the humber of entries in the map;
+
 * `num_free` - the number of entries in the free list of removed 
   entries;
+
 * `probe_count` - the number of map probes since the last resizing or
   initialization;
+
 * `total_probes` - the number of probes of the map up to the last
   resizing or initialization; and
+
 * `hasher` - a pointer to the hash function used by the map.
+
 It also defines five non-overridable procedures:
+
 * `calls` - returns the number of procedure calls on the map;
+
 * `entries` - returns the number of entries in the map;
+
 * `map_probes` - returns the number of map probes since
   initialization;
+
 * `num_slots` - returns the number of slots in the map; and
+
 * `slots_bits` - returns the number of bits used to address the slots;
 and eleven deferred procedures:
+
 * `get_other_data` - gets the other map data associated with the key;
+
 * `init` - initializes the hash map;
+
 * `key_test` - returns a logical flag indicating whether the key is 
   defined in the map. 
+
 * `loading` - returns the ratio of the number of entries to the number
   of slots;
+
 * `map_entry` - inserts a key and its other associated data into the
   map;
+
 * `rehash` - rehashes the map with the provided hash function;
+
 * `remove` - removes the entry associated wit the key;
+
 * `set_other_data` - replaces the other data associated with the key;
+
 * `total_depth` - returns the number of probes needed to address all
   the entries in the map;
 
@@ -1158,13 +1180,18 @@ costs. The type's definition is below:
 The `chaining_hashmap_type` derived type extends the `hashmap_type` to
 implements a separate chaining hash map. In addition to the components
 of the `hashmap_type` it provides the four components:
+
 * `cache` - a pool of `chaining_map_entry_pool` objects used to reduce
 allocation costs;
+
 * `free_list` - a free list of map entries;
+
 * `inverse` - an array of `chaining_map_entry_ptr` bucket lists
 (inverses) storing entries at fixed locations once
 entered; and
+
 * `slots` - an array of bucket lists serving as the hash map.
+
 It also implements all of the deferred procedures of the
 `hashmap_type` and a finalizer for its maps. The type's definition is
 as follows:
@@ -1227,14 +1254,20 @@ containing the elements of the table. The type's definition is below:
 The `open_hashmap_type` derived type extends the `hashmap_type` to
 implement an open addressing hash map. In addition to the components
 of the `hashmap_type` it provides the four components:
+
 * `cache` - a pool of `open_map_entry_pool` objects used to reduce
 allocation costs;
+
 * `free_list` - a free list of map entries;
+
 * `index_mask` - an `and` mask used in linear addressing;
+
 * `inverse` - an array of `open_map_entry_ptr` bucket lists
 (inverses) storing entries at fixed locations once
 entered; and
+
 * `slots` - an array of bucket lists serving as the hash map.
+
 It also implements all of the deferred procedures of the
 `hashmap_type` and a finalizer for its maps. The type's definition is
 as follows:
@@ -1332,7 +1365,7 @@ Returns the number of procedure calls on a hash map.
 
 ##### Syntax
 
-`value = [[stdlib_hashmaps:map % calls]]()`
+`value = map % [[hashmap_type(type):calls(bound)]]()`
 
 ##### Class
 
@@ -1379,7 +1412,7 @@ Returns the number of entries in a hash map.
 
 ##### Syntax
 
-`value = [[stdlib_hashmaps:map % entries]]()`
+`value = map % [[hashmap_type(type):entries(bound)]]()`
 
 ##### Class
 
@@ -1426,7 +1459,7 @@ Returns the other data associated with the `key`,
 
 ##### Syntax
 
-`value = [[stdlib_hashmaps:map % get_other_data)]]( key, other [, exists] )`
+`value = map % [[hashmap_type(type):get_other_data(bound)]]( key, other [, exists] )`
 
 ##### Class
 
@@ -1447,7 +1480,7 @@ Subroutine
   with the `key`.
 
 `exists` (optional): shall be a variable of type logical. It is an
-`intent(out)` argument.  If `.true.` an entry with the given `key`
+`intent(out)` argument. If `.true.` an entry with the given `key`
 exists in the map and `other` is defined. If `.false.` `other` is
 undefined.
 
@@ -1457,7 +1490,7 @@ undefined.
   associated with a `key`:
 
 
-```Fortran
+```fortran
     program demo_get_other_data
         use, intrinsic:: iso_fortran_env, only: &
             int8
@@ -1494,7 +1527,7 @@ undefined.
 ```
 
 
-#### init - initializes a hash map
+#### `init` - Initializes a hash map
 
 ##### Status
 
@@ -1506,9 +1539,9 @@ Initializes a `hashmap_type` object.
 
 ##### Syntax
 
-`call [[stdlib_hashmaps:map%init]]( hasher [, slots_bits, status ] )`
+`call map % [[hashmap_type(type):init(bound)]]( hasher [, slots_bits, status ] )`
 
-####@# Class
+##### Class
 
 Subroutine
 
@@ -1576,7 +1609,7 @@ entry in the map.
 
 ##### Syntax
 
-`result = call [[stdlib_hashmaps:map % valid_key]]( key, present )`
+`result = call map % [[hashmap_type(type):key_test(bound)]]( key, present )`
 
 ##### Class
 
@@ -1630,7 +1663,7 @@ slots in the hash map.
 
 ##### Syntax
 
-`value = [[stdlib_hashmaps:map%loading]]( )`
+`value = map % [[hashmap_type(type):loading(bound)]]( )`
 
 ##### Class
 
@@ -1677,7 +1710,7 @@ Inserts an entry into the hash map if it is not already present.
 
 ##### Syntax
 
-`call [[stdlib_hashmaps:map%map_entry]]( key[, other, conflict ] )`
+`call map % [[hashmap_type(type):map_entry(bound)]]( key[, other, conflict ] )`
 
 
 ##### Class
@@ -1742,7 +1775,7 @@ Returns the total number of table probes on the hash map.
 
 ##### Syntax
 
-`Result = [[stdlib_hashmap:map%map_probes]]( )`
+`result = map % [[hashmap_type(type):map_probes(bound)]]( )`
 
 ##### Class
 
@@ -1790,7 +1823,7 @@ Returns the total number of slots on a hash map
 
 ##### Syntax
 
-`Result = [[stdlib_hashmaps:map%num_slots]]( )`
+`result = map % [[hashmap_type(type):num_slots(bound)]]( )`
 
 ##### Class
 
@@ -1826,7 +1859,7 @@ The result is the number of slots in `map`.
 ```
 
 
-#### rehash - changes the hashing function
+#### `rehash` - changes the hashing function
 
 ##### Status
 
@@ -1838,7 +1871,7 @@ Changes the hashing function for the map entries to that of `hasher`.
 
 ##### Syntax
 
-`call [[stdlib_hashmaps:map%rehash]]( hasher )`
+`call map % [[hashmap_type(type):rehash(bound)]]( hasher )`
 
 ##### Class
 
@@ -1847,7 +1880,7 @@ Subroutine
 ##### Arguments
 
 `map` (pass): shall be a scalar variable of class
-`chaining_hashmap_type` oe `open_hashmap_type`.
+`chaining_hashmap_type` or `open_hashmap_type`.
 It is an `intent(inout)` argument. It is the hash map whose hashing 
 method is to be changed.
 
@@ -1886,7 +1919,7 @@ Removes an entry from the hash map, `map`.
 
 ##### Syntax
 
-`call [[stdlib_hashmaps:map%remove]]( key[, existed ])`
+`call map % [[hashmap_type(type):remove(bound)]]( key[, existed ])`
 
 ##### Class
 
@@ -1931,7 +1964,7 @@ absent, the procedure returns with no entry with the given key.
     end program demo_remove
 ```
 
-#### `set_other_data` - replaces the other dataa for an entry
+#### `set_other_data` - replaces the other data for an entry
 
 ##### Status
 
@@ -1944,7 +1977,7 @@ Replaces the other data in the map for the entry with the key value,
 
 ##### Syntax
 
-`call [[stdlib_hashmaps:map%set_other_data]]( key, other[, exists] )`
+`call map % [[hashmap_type(type):set_other_data(bound)]]( key, other[, exists] )`
 
 ##### Class
 
@@ -2008,7 +2041,7 @@ Returns the total number of bits used to address the hash map slots.
 
 ##### Syntax
 
-`Result = [[stdlib_hashmaps:map%slots_bits]]( )`
+`result = map % [[hashmap_type(type):slots_bits(bound)]]( )`
 
 ##### Class
 
@@ -2057,7 +2090,7 @@ their slot index for a hash map
 
 ##### Syntax
 
-`Result = [[stdlib_hashmaps:map%total_depth]]( )`
+`result = map % [[hashmap_type:total_depth]]( )`
 
 ##### Class
 
