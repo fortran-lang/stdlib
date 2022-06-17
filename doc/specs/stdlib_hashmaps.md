@@ -1527,7 +1527,7 @@ undefined.
 ```
 
 
-#### `init` - Initializes a hash map
+#### `init` - initializes a hash map
 
 ##### Status
 
