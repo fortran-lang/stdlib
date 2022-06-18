@@ -53,7 +53,7 @@ The module `stdlib_hashmaps` defines the API for a parent datatype,
 `hashmap_type` and two extensions of that hash map type:
 `chaining_hashmap_type` and `open_hashmap_type`.
 
-The `hashmap_type` defines the Application Programers
+The `hashmap_type` defines the Application Programmers
 Interface (API) for the procedures used by its two extensions. It
 explicitly defines five non-overridable procedures. It also defines
 the interfaces for eleven deferred procedures. It does not define the
@@ -113,7 +113,7 @@ keys and their associated data.
 
 The constant `int_hash` is used to define the integer kind value for
 the returned hash codes and variables used to access them. It
-currently is imported from `stdlib_hash_32bit` where it haas the
+currently is imported from `stdlib_hash_32bit` where it has the
 value, `int32`. 
 
 ### The `stdlib_hashmap_wrappers`' module's derived types
@@ -229,7 +229,7 @@ is an `intent(out)` argument.
 ```fortran
     program demo_copy_key
       use stdlib_hashmap_wrappers, only: &
-          copy_key, operator(==), equal_keys, key_type
+          copy_key, operator(==), key_type
       use iso_fortran_env, only: int8
       implicit none
       integer(int8) :: i, value(15)
@@ -1043,7 +1043,7 @@ seven private components:
 
 * `nbits` - the number of bits used to address the slots; 
 
-* `num_entries` - the humber of entries in the map;
+* `num_entries` - the number of entries in the map;
 
 * `num_free` - the number of entries in the free list of removed 
   entries;
@@ -1609,7 +1609,7 @@ entry in the map.
 
 ##### Syntax
 
-`result = call map % [[hashmap_type(type):key_test(bound)]]( key, present )`
+`call map % [[hashmap_type(type):key_test(bound)]]( key, present )`
 
 ##### Class
 
