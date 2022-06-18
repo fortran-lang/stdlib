@@ -10,7 +10,6 @@
   - [Requirements](#requirements)
   - [Supported compilers](#supported-compilers)
   - [Build with CMake](#build-with-cmake)
-  - [Build with make](#build-with-make)
   - [Build with fortran-lang/fpm](#build-with-fortran-langfpm)
 * [Using stdlib in your project](#using-stdlib-in-your-project)
 * [Documentation](#documentation)
@@ -133,6 +132,7 @@ Important options are
   The minimum required rank to compile this project is 4.
   Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
+- `-DBUILD_TESTING` set to `off` in case you want to disable the stdlib tests (default: `on`).
 
 For example, to configure a build using the Ninja backend while specifying compiler flags `FFLAGS`, generating procedures up to rank 7, and installing to your home directory, use
 
@@ -166,26 +166,6 @@ Now you have a working version of stdlib you can use for your project.
 If at some point you wish to recompile `stdlib` with different options, you might
 want to delete the `build` folder. This will ensure that cached variables from
 earlier builds do not affect the new build.
-
-
-### Build with make
-
-Alternatively, you can build using provided Makefiles:
-
-```sh
-make -f Makefile.manual
-```
-
-You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``ADD_FYPPFLAGS`` environment variable (which can reduce the compilation time):
-
-```sh
-make -f Makefile.manual ADD_FYPPFLAGS=-DMAXRANK=4
-```
-
-You can also specify the compiler and compiler-flags by setting the ``FC`` and ``FFLAGS`` environmental variables. Among other things, this facilitates use of compiler optimizations that are not specified in the Makefile.manual defaults.
-```sh
-make -f Makefile.manual ADD_FYPPFLAGS=-DMAXRANK=4 FC=gfortran FFLAGS="-O3"
-```
 
 ### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
 
@@ -222,15 +202,6 @@ target_link_libraries(
 
 To make the installed stdlib project discoverable add the stdlib directory to the ``CMAKE_PREFIX_PATH``.
 The usual install location of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
-
-For non-CMake build systems (like make) you can use the exported pkg-config file by setting ``PKG_CONFIG_PATH`` to include the directory containing the exported pc-file.
-The usual install location of the pc-file is ``$PREFIX/lib/pkgconfig``.
-In make you can obtain the required compile and link arguments with
-
-```make
-STDLIB_CFLAGS := $(shell pkg-config --cflags fortran_stdlib)
-STDLIB_LIBS := $(shell pkg-config --libs fortran_stdlib)
-```
 
 ## Documentation
 

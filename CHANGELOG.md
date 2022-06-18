@@ -1,6 +1,17 @@
-# Unreleased
+# Version 0.2.1
 
-Features available from the latest git source
+Full release notes available at [v0.2.1] tag.
+
+[v0.2.1]: https://github.com/fortran-lang/stdlib/releases/tag/v0.2.1
+
+- build system related bugfixes
+
+
+# Version 0.2.0
+
+Full release notes available at [v0.2.0] tag.
+
+[v0.2.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.2.0
 
 - new module `stdlib_hash_32bit`
   [#573](https://github.com/fortran-lang/stdlib/pull/573)
@@ -36,6 +47,8 @@ Features available from the latest git source
     [#488](https://github.com/fortran-lang/stdlib/pull/488)
   - new procedures `arg`, `argd` and `argpi`
     [#498](https://github.com/fortran-lang/stdlib/pull/498)
+  - new procedure `diff`
+    [#605](https://github.com/fortran-lang/stdlib/pull/605)
 
 Changes to existing modules
 
@@ -47,6 +60,12 @@ Changes to existing modules
     [#562](https://github.com/fortran-lang/stdlib/pull/562)
 - support for quadruple precision made optional
   [#565](https://github.com/fortran-lang/stdlib/pull/565)
+- change in module `stdlib_io`
+  - Modified format constants, and made public
+  [#617](https://github.com/fortran-lang/stdlib/pull/617)
+- change in module `stdlib_math`
+    - Minor update to `stdlib_math` module and document
+    [#624](https://github.com/fortran-lang/stdlib/pull/624)
 
 
 # Version 0.1.0

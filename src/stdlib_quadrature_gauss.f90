@@ -56,8 +56,6 @@ contains
         if (present(interval)) then
             associate ( a => interval(1) , b => interval(2) )
             x = 0.5_dp*(b-a)*x+0.5_dp*(b+a)
-            x(1)       = interval(1)
-            x(size(x)) = interval(2)
             w = 0.5_dp*(b-a)*w
             end associate
         end if

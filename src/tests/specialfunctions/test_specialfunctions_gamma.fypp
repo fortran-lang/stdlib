@@ -1,0 +1,587 @@
+#:set WITH_QP = False
+#:set WITH_XDP = False
+#:include "common.fypp"
+#:set CI_KINDS_TYPES = INT_KINDS_TYPES + CMPLX_KINDS_TYPES
+module test_specialfunctions_gamma
+    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use stdlib_kinds, only: sp, dp, int8, int16, int32, int64
+    use stdlib_specialfunctions_gamma, only: gamma, log_gamma, log_factorial,  &
+                                             lower_incomplete_gamma,           &
+                                             upper_incomplete_gamma,           &
+                                             log_lower_incomplete_gamma,       &
+                                             log_upper_incomplete_gamma,       &
+                                             regularized_gamma_p,              &
+                                             regularized_gamma_q
+
+    implicit none
+    private
+
+    public :: collect_specialfunctions_gamma
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    ${t1}$, parameter :: tol_${k1}$ = 1000 * epsilon(1.0_${k1}$)
+    #:endfor
+
+
+
+
+contains
+
+    subroutine collect_specialfunctions_gamma(testsuite)
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [                                                          &
+            new_unittest("log_factorial_iint8", test_logfact_iint8)            &
+
+        #:for k1, t1 in INT_KINDS_TYPES
+            , new_unittest("log_factorial_${t1[0]}$${k1}$",                    &
+                           test_logfact_${t1[0]}$${k1}$)                       &
+        #:endfor
+
+        #:for k1, t1 in CI_KINDS_TYPES
+            , new_unittest("gamma_${t1[0]}$${k1}$",                            &
+                           test_gamma_${t1[0]}$${k1}$)                         &
+            , new_unittest("log_gamma_${t1[0]}$${k1}$",                        &
+                           test_loggamma_${t1[0]}$${k1}$)                      &
+        #:endfor
+
+        #:for k1, t1 in INT_KINDS_TYPES
+          #:for k2, t2 in REAL_KINDS_TYPES
+            , new_unittest("lower_incomplete_gamma_${t1[0]}$${k1}$${k2}$",     &
+                           test_lincgamma_${t1[0]}$${k1}$${k2}$)               &
+            , new_unittest("log_lower_incomplete_gamma_${t1[0]}$${k1}$${k2}$", &
+                           test_log_lincgamma_${t1[0]}$${k1}$${k2}$)           &
+            , new_unittest("upper_incomplete_gamma_${t1[0]}$${k1}$${k2}$",     &
+                           test_uincgamma_${t1[0]}$${k1}$${k2}$)               &
+            , new_unittest("log_upper_incomplete_gamma_${t1[0]}$${k1}$${k2}$", &
+                           test_log_uincgamma_${t1[0]}$${k1}$${k2}$)           &
+            , new_unittest("regularized_gamma_p_${t1[0]}$${k1}$${k2}$",        &
+                           test_gamma_p_${t1[0]}$${k1}$${k2}$)                 &
+            , new_unittest("regularized_gamma_q_${t1[0]}$${k1}$${k2}$",        &
+                           test_gamma_q_${t1[0]}$${k1}$${k2}$)                 &
+          #:endfor
+        #:endfor
+
+        #:for k1, t1 in REAL_KINDS_TYPES
+            , new_unittest("lower_incomplete_gamma_${t1[0]}$${k1}$",           &
+                           test_lincgamma_${t1[0]}$${k1}$)                     &
+            , new_unittest("log_lower_incomplete_gamma_${t1[0]}$${k1}$",       &
+                           test_log_lincgamma_${t1[0]}$${k1}$)                 &
+            , new_unittest("upper_incomplete_gamma_${t1[0]}$${k1}$",           &
+                           test_uincgamma_${t1[0]}$${k1}$)                     &
+            , new_unittest("log_upper_incomplete_gamma_${t1[0]}$${k1}$",       &
+                           test_log_uincgamma_${t1[0]}$${k1}$)                 &
+            , new_unittest("regularized_gamma_p_${t1[0]}$${k1}$",              &
+                           test_gamma_p_${t1[0]}$${k1}$)                       &
+            , new_unittest("regularized_gamma_q_${t1[0]}$${k1}$",              &
+                           test_gamma_q_${t1[0]}$${k1}$)                       &
+        #:endfor
+            ]
+    end subroutine collect_specialfunctions_gamma
+
+
+
+    #:for k1, t1 in INT_KINDS_TYPES
+
+    subroutine test_logfact_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 6
+        integer :: i
+
+        #:if k1 == "int8"
+
+        ${t1}$, parameter :: x(n) = [0_${k1}$, 1_${k1}$, 2_${k1}$, 4_${k1}$,   &
+                                     5_${k1}$, 100_${k1}$]
+        real(sp), parameter :: ans(n) = [0.0, 0.0, 0.693147180, 3.17805383,    &
+                                         4.78749174, 3.63739376e2]
+
+        #:elif k1 == "int16"
+        
+        ${t1}$, parameter :: x(n) = [0_${k1}$, 1_${k1}$, 2_${k1}$, 4_${k1}$,   &
+                                     7_${k1}$, 500_${k1}$]
+        real(sp), parameter :: ans(n) = [0.0, 0.0, 0.693147180, 3.17805383,    &
+                                         8.52516136, 2.61133046e3]
+
+        #:elif k1 == "int32"
+        
+        ${t1}$, parameter :: x(n) = [0_${k1}$, 1_${k1}$, 2_${k1}$, 4_${k1}$,   &
+                                     12_${k1}$, 7000_${k1}$]
+        real(sp), parameter :: ans(n) = [0.0, 0.0, 0.693147180, 3.17805383,    &
+                                         1.99872145e1, 5.49810038e4]
+
+        #:elif k1 == "int64"
+        
+        ${t1}$, parameter :: x(n) = [0_${k1}$, 1_${k1}$, 2_${k1}$, 4_${k1}$,   &
+                                     20_${k1}$, 90000_${k1}$]
+        real(sp), parameter :: ans(n) = [0.0, 0.0, 0.693147180, 3.17805383,    &
+                                         4.23356165e1, 9.36687468e5]
+
+        #:endif
+
+        do i = 1, n
+
+            call check(error, log_factorial(x(i)), ans(i), "Integer kind "     &
+                       //"${k1}$ failed", thr = tol_sp, rel = .true.)
+
+        end do
+    end subroutine test_logfact_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+    #:for k1, t1 in CI_KINDS_TYPES
+
+    subroutine test_gamma_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+
+        #:if k1 == "int8"
+
+        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 4_${k1}$, 6_${k1}$]
+        ${t1}$, parameter :: ans(n) = [1_${k1}$, 1_${k1}$, 6_${k1}$, 120_${k1}$]
+
+        #:elif k1 == "int16"
+
+        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 4_${k1}$, 8_${k1}$]
+        ${t1}$, parameter :: ans(n) = [1_${k1}$, 1_${k1}$, 6_${k1}$, 5040_${k1}$]
+
+        #:elif k1 == "int32"
+
+        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 4_${k1}$, 13_${k1}$]
+        ${t1}$, parameter :: ans(n) = [1_${k1}$, 1_${k1}$, 6_${k1}$,           &
+                                      479001600_${k1}$]
+
+        #:elif k1 == "int64"
+
+        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 4_${k1}$, 21_${k1}$]
+        ${t1}$, parameter :: ans(n) = [1_${k1}$, 1_${k1}$, 6_${k1}$,           &
+                                      2432902008176640000_${k1}$]
+        #:elif t1[0] == "c"
+
+        ${t1}$, parameter :: x(n) = [(0.25_${k1}$, 0.25_${k1}$),               &
+                                     (0.5_${k1}$, -0.5_${k1}$),                &
+                                     (1.0_${k1}$, 1.0_${k1}$),                 &
+                                     (-1.254e1_${k1}$, -9.87_${k1}$)]
+
+        ${t1}$, parameter :: ans(n) =                                          &
+                     [(1.6511332803889208_${k1}$, -1.8378758749947890_${k1}$), &
+                      (0.81816399954174739_${k1}$, 0.76331382871398262_${k1}$),&
+                     (0.49801566811835604_${k1}$, -0.15494982830181069_${k1}$),&
+             (-2.18767396709283064e-21_${k1}$, 2.77577940846953455e-21_${k1}$)]
+        #:endif
+
+
+        #:if t1[0] == "i"
+
+        do i = 1, n
+
+            call check(error, gamma(x(i)), ans(i), "Integer kind ${k1}$ failed")
+
+        end do
+
+        #:elif t1[0] == "c"
+
+        do i = 1, n
+
+            call check(error, gamma(x(i)), ans(i), "Complex kind ${k1}$ failed",&
+                       thr = tol_${k1}$, rel = .true.)
+
+        end do
+
+        #:endif
+    end subroutine test_gamma_${t1[0]}$${k1}$
+
+
+
+    subroutine test_loggamma_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+
+        #:if k1 == "int8"
+
+        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 10_${k1}$, 47_${k1}$]
+        real(sp), parameter :: ans(n) = [0.0, 0.0, 1.28018274e1, 1.32952575e2]
+
+        #:elif k1 == "int16"
+
+        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 111_${k1}$, 541_${k1}$]
+        real(sp), parameter :: ans(n) = [0.0, 0.0, 4.10322777e2, 2.86151221e3]
+
+        #:elif k1 == "int32"
+
+        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 2021_${k1}$,          &
+                                     42031_${k1}$]
+        real(sp), parameter :: ans(n) = [0.0, 0.0, 1.33586470e4, 4.05433461e5]
+
+        #:elif k1 == "int64"
+
+        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 2021_${k1}$,          &
+                                     42031_${k1}$]
+        real(sp), parameter :: ans(n) = [0.0, 0.0, 1.33586470e4, 4.05433461e5]
+
+        #:elif t1[0] == "c"
+
+        ${t1}$, parameter :: x(n) = [(0.25_${k1}$, 0.25_${k1}$),               &
+                                     (0.5_${k1}$, -0.5_${k1}$),                &
+                                     (1.0_${k1}$, 1.0_${k1}$),                 &
+                                     (-1.254e1_${k1}$, -9.87_${k1}$)]
+
+        ${t1}$, parameter :: ans(n) =                                          &
+                    [(0.90447450949333889_${k1}$, -0.83887024394321282_${k1}$),&
+                     (0.11238724280962311_${k1}$, 0.75072920212205074_${k1}$), &
+                    (-0.65092319930185634_${k1}$, -0.30164032046753320_${k1}$),&
+                   (-4.7091788015763380e1_${k1}$, 1.4804627819235690e1_${k1}$)]
+        #:endif
+
+
+        #:if t1[0] == "i"
+
+        do i = 1, n
+
+            call check(error, log_gamma(x(i)), ans(i), "Integer kind ${k1}$ "  &
+              //"failed", thr = tol_sp, rel = .true.)
+
+        end do
+
+        #:elif t1[0] == "c"
+
+        do i = 1, n
+
+            call check(error, log_gamma(x(i)), ans(i), "Complex kind ${k1}$ "  &
+              //"failed", thr = tol_${k1}$, rel = .true.)
+
+        end do
+
+        #:endif
+    end subroutine test_loggamma_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:for k2, t2 in REAL_KINDS_TYPES
+
+    subroutine test_lincgamma_${t1[0]}$${k1}$${k2}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$, parameter :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
+        ${t2}$, parameter :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
+
+        ${t2}$, parameter :: ans(n) = [0.3934693402873667_${k2}$,              &
+                                       0.86411177459956675_${k2}$,             &
+                                       -2.5210237047438023e3_${k2}$,           &
+                                       1.9823919215326045e5_${k2}$]
+
+        do i = 1, n
+
+            call check(error, lower_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Lower incomplete gamma function with p(kind=${k1}$) and "       &
+              //"x(kind=${k2}$) failed", thr = tol_${k2}$, rel = .true.)
+
+        end do
+
+    end subroutine test_lincgamma_${t1[0]}$${k1}$${k2}$
+
+
+
+    subroutine test_log_lincgamma_${t1[0]}$${k1}$${k2}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
+        ${t2}$ :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
+
+        ${t2}$, parameter :: ans(n) = [-0.93275212956718857_${k2}$,            &
+                                       -0.14605314979599791_${k2}$,            &
+                                        7.8324203300567640_${k2}$,             &
+                                        1.2197229621760137e1_${k2}$]
+
+        do i = 1, n
+
+            call check(error, log_lower_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of lower incomplete gamma function with "             &
+              //"p(kind=${k1}$) and x(kind=${k2}$) failed", thr = tol_${k2}$,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_log_lincgamma_${t1[0]}$${k1}$${k2}$
+
+
+
+    subroutine test_uincgamma_${t1[0]}$${k1}$${k2}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
+        ${t2}$ :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
+
+        ${t2}$, parameter :: ans(n) = [0.60653065971263342_${k2}$,             &
+                                       0.13588822540043325_${k2}$,             &
+                                       2.5230237047438022E3_${k2}$,            &
+                                       -1.9823819215326045e5_${k2}$]
+
+        do i = 1, n
+
+            call check(error, upper_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=${k1}$) and x(kind=${k2}$) failed", thr = tol_${k2}$,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_uincgamma_${t1[0]}$${k1}$${k2}$
+
+
+
+    subroutine test_log_uincgamma_${t1[0]}$${k1}$${k2}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
+        ${t2}$ :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
+
+        ${t2}$, parameter :: ans(n) = [-0.5_${k2}$, -1.9959226032237259_${k2}$,&
+                                       7.8332133440562161_${k2}$,              &
+                                       1.2197224577336219e1_${k2}$]
+
+        do i = 1, n
+
+            call check(error, log_upper_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=${k1}$) and x(kind=${k2}$) failed", thr = tol_${k2}$,  &
+              rel = .true.)
+
+        end do
+    end subroutine test_log_uincgamma_${t1[0]}$${k1}$${k2}$
+
+
+
+
+    subroutine test_gamma_p_${t1[0]}$${k1}$${k2}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: p(n) = [1_${k1}$, 1_${k1}$, 3_${k1}$, 3_${k1}$]
+        ${t2}$ :: x(n) = [0.5_${k2}$, 1.5_${k2}$, 0.5_${k2}$, 3.5_${k2}$]
+
+        ${t2}$, parameter :: ans(n) = [0.39346934028736658_${k2}$,             &
+                                       0.77686983985157017_${k2}$,             &
+                                       1.4387677966970687e-2_${k2}$,           &
+                                       0.67915280113786593_${k2}$]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_p(p(i), x(i)), ans(i),         &
+              "Regularized gamma P function with p(kind=${k1}$) and "          &
+              //"x(kind=${k2}$) failed", thr = tol_${k2}$, rel = .true.)
+
+        end do
+    end subroutine test_gamma_p_${t1[0]}$${k1}$${k2}$
+
+
+
+    subroutine test_gamma_q_${t1[0]}$${k1}$${k2}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: p(n) = [1_${k1}$, 1_${k1}$, 3_${k1}$, 3_${k1}$]
+        ${t2}$ :: x(n) = [0.5_${k2}$, 1.5_${k2}$, 0.5_${k2}$, 3.5_${k2}$]
+
+        ${t2}$, parameter :: ans(n) = [0.60653065971263342_${k2}$,             &
+                                       0.22313016014842983_${k2}$,             &
+                                       0.98561232203302931_${k2}$,             &
+                                       0.32084719886213407_${k2}$]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_q(p(i), x(i)), ans(i),         &
+              "Regularized gamma Q function with p(kind=${k1}$) and "          &
+              //"x(kind=${k2}$) failed", thr = tol_${k2}$, rel = .true.)
+
+        end do
+    end subroutine test_gamma_q_${t1[0]}$${k1}$${k2}$
+
+      #:endfor
+    #:endfor
+
+
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+
+    subroutine test_lincgamma_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
+        ${t1}$ :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
+
+        ${t1}$, parameter :: ans(n) = [0.3934693402873667_${k1}$,              &
+                                       0.86411177459956675_${k1}$,             &
+                                       1.8980559470963281_${k1}$,              &
+                                       2.0043549563092636e1_${k1}$]
+
+        do i = 1, n
+
+            call check(error, lower_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Lower incomplete gamma function with p(kind=${k1}$) and "       &
+              //"x(kind=${k1}$) failed", thr = tol_${k1}$, rel = .true.)
+
+        end do
+
+    end subroutine test_lincgamma_${t1[0]}$${k1}$
+
+
+
+    subroutine test_log_lincgamma_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
+        ${t1}$ :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
+
+        ${t1}$, parameter :: ans(n) = [-0.93275212956718857_${k1}$,            &
+                                       -0.14605314979599791_${k1}$,            &
+                                        0.64083017662175706_${k1}$,            &
+                                        2.9979073844388951_${k1}$]
+
+        do i = 1, n
+
+            call check(error, log_lower_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of lower incomplete gamma function with "             &
+              //"p(kind=${k1}$) and x(kind=${k1}$) failed", thr = tol_${k1}$,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_log_lincgamma_${t1[0]}$${k1}$
+
+
+
+    subroutine test_uincgamma_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
+        ${t1}$ :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
+
+        ${t1}$, parameter :: ans(n) = [0.60653065971263342_${k1}$,             &
+                                       0.13588822540043325_${k1}$,             &
+                                       0.29956433129614910_${k1}$,             &
+                                       2.6784172825195172e2_${k1}$]
+
+        do i = 1, n
+
+            call check(error, upper_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=${k1}$) and x(kind=${k1}$) failed", thr = tol_${k1}$,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_uincgamma_${t1[0]}$${k1}$
+
+
+
+    subroutine test_log_uincgamma_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
+        ${t1}$ :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
+
+        ${t1}$, parameter :: ans(n) = [-0.5_${k1}$, -1.9959226032237259_${k1}$,&
+                                       -1.2054260888453405_${k1}$,             &
+                                       5.5903962398338761_${k1}$]
+
+        do i = 1, n
+
+            call check(error, log_upper_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=${k1}$) and x(kind=${k1}$) failed", thr = tol_${k1}$,  &
+              rel = .true.)
+
+        end do
+    end subroutine test_log_uincgamma_${t1[0]}$${k1}$
+
+
+
+    subroutine test_gamma_p_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: p(n) = [1.3_${k1}$, 1.3_${k1}$, 3.7_${k1}$, 3.7_${k1}$]
+        ${t1}$ :: x(n) = [0.5_${k1}$, 2.1_${k1}$, 2.6_${k1}$, 5.1_${k1}$]
+
+        ${t1}$, parameter :: ans(n) = [0.26487356764588505_${k1}$,             &
+                                       0.81011791338807457_${k1}$,             &
+                                       0.32198359288949589_${k1}$,             &
+                                       0.79435732817518852_${k1}$]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_p(p(i), x(i)), ans(i),         &
+              "Regularized gamma P function with p(kind=${k1}$) and "          &
+              //"x(kind=${k1}$) failed", thr = tol_${k1}$, rel = .true.)
+
+        end do
+    end subroutine test_gamma_p_${t1[0]}$${k1}$
+
+
+
+    subroutine test_gamma_q_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: p(n) = [1.3_${k1}$, 1.3_${k1}$, 3.7_${k1}$, 3.7_${k1}$]
+        ${t1}$ :: x(n) = [0.5_${k1}$, 2.1_${k1}$, 2.6_${k1}$, 5.1_${k1}$]
+
+        ${t1}$, parameter :: ans(n) = [0.73512643235411495_${k1}$,             &
+                                       0.18988208661192543_${k1}$,             &
+                                       0.67801640711050411_${k1}$,             &
+                                       0.20564267182481148_${k1}$]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_q(p(i), x(i)), ans(i),         &
+              "Regularized gamma Q function with p(kind=${k1}$) and "          &
+              //"x(kind=${k1}$) failed", thr = tol_${k1}$, rel = .true.)
+
+        end do
+    end subroutine test_gamma_q_${t1[0]}$${k1}$
+
+    #:endfor
+end module test_specialfunctions_gamma
+
+
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_specialfunctions_gamma, only : collect_specialfunctions_gamma
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [new_testsuite("Gamma special function",                      &
+                 collect_specialfunctions_gamma)]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program tester

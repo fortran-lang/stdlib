@@ -1,10 +1,7 @@
 SRCFYPP = \
-          test_simps.fypp \
-          test_trapz.fypp
+        test_specialfunctions_gamma.fypp
+
 SRCGEN = $(SRCFYPP:.fypp=.f90)
-PROGS_SRC = \
-            test_gauss.f90 \
-            $(SRCGEN)
 
 $(SRCGEN): %.f90: %.fypp ../../common.fypp
 	fypp -I../.. $(FYPPFLAGS) $< $@
