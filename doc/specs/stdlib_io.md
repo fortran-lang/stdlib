@@ -17,13 +17,17 @@ Loads a rank-2 `array` from a text file.
 
 ### Syntax
 
-`call [[stdlib_io(module):loadtxt(interface)]](filename, array)`
+`call [[stdlib_io(module):loadtxt(interface)]](filename, array [, skiprows] [, max_rows])`
 
 ### Arguments
 
 `filename`: Shall be  a character expression containing the file name from which to load the rank-2 `array`.
 
 `array`: Shall be an allocatable rank-2 array of type `real`, `complex` or `integer`.
+
+`skiprows` (optional): Skip the first `skiprows` lines. If skipping more rows than present, a 0-sized array will be returned. The default is 0.
+
+`max_rows` (optional): Read `max_rows` lines of content after `skiprows` lines. A negative value results in reading all lines. A value of zero results in no lines to be read. The default value is -1.
 
 ### Return value
 

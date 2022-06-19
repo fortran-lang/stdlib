@@ -19,6 +19,7 @@ contains
             new_unittest("loadtxt_sp_huge", test_loadtxt_sp_huge), &
             new_unittest("loadtxt_sp_tiny", test_loadtxt_sp_tiny), &
             new_unittest("loadtxt_dp", test_loadtxt_dp), &
+            new_unittest("loadtxt_dp_max_skip", test_loadtxt_dp_max_skip), &
             new_unittest("loadtxt_dp_huge", test_loadtxt_dp_huge), &
             new_unittest("loadtxt_dp_tiny", test_loadtxt_dp_tiny), &
             new_unittest("loadtxt_complex", test_loadtxt_complex) &
@@ -132,6 +133,29 @@ contains
         end do
 
     end subroutine test_loadtxt_dp
+
+
+    subroutine test_loadtxt_dp_max_skip(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(dp), allocatable :: input(:,:), expected(:,:)
+        integer :: n, m
+
+        allocate(input(10,10))
+
+        do m = 0, 5
+            do n = 1, 11
+                call random_number(input)
+                input = input - 0.5
+                call savetxt('test_dp_max_skip.txt', input)
+                call loadtxt('test_dp_max_skip.txt', expected, skiprows=m, max_rows=n)
+                call check(error, all(input(m+1:min(n+m,10),:) == expected))
+                deallocate(expected)
+                if (allocated(error)) return
+            end do
+        end do
+
+    end subroutine test_loadtxt_dp_max_skip
 
 
     subroutine test_loadtxt_dp_huge(error)

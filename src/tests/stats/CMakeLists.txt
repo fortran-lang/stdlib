@@ -1,4 +1,4 @@
-### Pre-process: .fpp -> .f90 via Fypp
+#### Pre-process: .fpp -> .f90 via Fypp
 
 # Create a list of the files to be preprocessed
 set(fppFiles
