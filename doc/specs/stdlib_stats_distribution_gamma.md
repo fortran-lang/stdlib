@@ -1,13 +1,13 @@
 ---
 
-title: stats_distribution
+title: stats_distribution_gamma
 ---
 
 # Statistical Distributions -- Gamma Distribution Module
 
 [TOC]
 
-## `gamma_distribution_rvs` - gamma distribution random variates
+## `rvs_gamma` - gamma distribution random variates
 
 ### Status
 
@@ -15,13 +15,22 @@ Experimental
 
 ### Description
 
-With one augument for shape parameter, the function returns a standard gamma distributed random variate \(\gamma\)(shape) with `rate = 1.0`. The function is elemental. For complex auguments, the real and imaginary parts are independent of each other.
+With one argument for shape parameter, the function returns a random sample from the standard gamma distribution `Gam(shape)` with `rate = 1.0`. 
 
-With two auguments, the function return a scalar gamma distributed random variate \(\gamma\)(shape, rate).
+With two arguments, the function returns a random sample from gamma distribution `Gam(shape, rate)`.
+
+With three arguments, the function returns a rank one array of gamma distributed random variates.
+
+For complex shape and rate parameters, the real and imaginary parts are sampled independently of each other.
+
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_gamma(module):gamma_distribution_rvs(interface)]](shape [, rate] [[, array_size]])`
+`result = [[stdlib_stats_distribution_gamma(module):rvs_gamma(interface)]](shape [, rate] [[, array_size]])`
+
+### Class
+
+Function
 
 ### Arguments
 
@@ -29,18 +38,18 @@ With two auguments, the function return a scalar gamma distributed random variat
 
 `rate`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
+`array_size`: optional argument has `intent(in)` and is a scalar of type `integer` with default kind.
 
 ### Return value
 
-The result is a scalar or rank one array, with a size of `array_size`, of type `real` or `complex`.
+The result is a scalar or rank one array, with a size of `array_size`, and has the same type of `shape`.
 
 ### Example
 
 ```fortran
 program demo_gamma_rvs
-    use stdlib_stats_distribution_PRNG, only : random_seed
-    use stdlib_stats_distribution_gamma, only: rgamma => gamma_distribution_rvs
+    use stdlib_random, only : random_seed
+    use stdlib_stats_distribution_gamma, only: rgamma => rvs_gamma
 
     implicit none
     real ::  g(2,3,4)
@@ -61,7 +70,7 @@ program demo_gamma_rvs
 
     g(:,:,:) = 0.5
     print *, rgamma(g)
-    !a rank 3 array of 60 standard gamma random variates with rate=0.5
+    !a rank 3 array of 60 standard gamma random variates with shape=0.5
 
 !  1.03841162  1.33044529  0.912742674  0.131288037  0.638593793 
 !  1.03565669E-02  0.624804378  1.12179172  4.91380468E-02  6.69969944E-03 
@@ -86,7 +95,7 @@ program demo_gamma_rvs
 end program demo_gamma_rvs
 ```
 
-## `gamma_distribution_pdf` - gamma probability density function
+## `pdf_gamma` - gamma distribution probability density function
 
 ### Status
 
@@ -94,13 +103,22 @@ Experimental
 
 ### Description
 
-The probability density function of the continuous gamma distribution.
+The probability density function (pdf) of the single real variable gamma distribution:
 
 $$ f(x)= \frac{scale^{shape}}{\Gamma (shape)}x^{shape-1}e^{-scale \times x} , for \;\;  x>0, shape, scale>0$$
 
+For a complex variable (x + y i) with independent real x and imaginary y parts, the joint probability density function is the product of the corresponding marginal pdf of real and imaginary pdf (for more details, see
+"Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
+
+$$f(x+\mathit{i}y)=f(x)f(y)$$
+
 ### Syntax
 
-`result = [[stdlib_stats_distribution_gamma(module):gamma_distribution_pdf(interface)]](x, shape, rate)`
+`result = [[stdlib_stats_distribution_gamma(module):pdf_gamma(interface)]](x, shape, rate)`
+
+### Class
+
+Elemental function
 
 ### Arguments
 
@@ -110,19 +128,19 @@ $$ f(x)= \frac{scale^{shape}}{\Gamma (shape)}x^{shape-1}e^{-scale \times x} , fo
 
 `rate`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-The function is elemental, i.e., all auguments could be arrays conformable to each other. All arguments must have the same type.
+All arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to auguments, of type `real`.
+The result is a scalar or an array, with a shape conformable to arguments, of type `real`.
 
 ### Example
 
 ```fortran
 program demo_gamma_pdf
-    use stdlib_stats_distribution_PRNG, onyl : random_seed
-    use stdlib_stats_distribution_gamma, only: rgamma => gamma_distribution_rvs,&
-                                             gamma_pdf => gamma_distribution_pdf
+    use stdlib_random, only : random_seed
+    use stdlib_stats_distribution_gamma, only: rgamma => rvs_gamma,&
+                                             gamma_pdf => pdf_gamma
 
     implicit none
     real :: x(2,3,4),g(2,3,4),s(2,3,4)
@@ -159,7 +177,7 @@ program demo_gamma_pdf
 end program demo_gamma_pdf
 ```
 
-## `gamma_distribution_cdf` - gamma cumulative distribution function
+## `cdf_gamma` - gamma distribution cumulative distribution function
 
 ### Status
 
@@ -167,13 +185,22 @@ Experimental
 
 ### Description
 
-Cumulative distribution function of the gamma continuous distribution
+Cumulative distribution function (cdf) of the single real variable gamma distribution:
 
 $$ F(x)= \frac{\gamma (shape, scale \times x)}{\Gamma (shape)}, for \;\;  x>0, shape, scale>0} $$
 
+For a complex variable (x + y i) with independent real x and imaginary y parts, the joint cumulative distribution function is the product of corresponding marginal cdf of real and imaginary cdf (for more details, see
+"Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
+
+$$F(x+\mathit{i}y)=F(x)F(y)$$
+
 ### Syntax
 
-`result = [[stdlib_stats_distribution_gamma(module):gamma_distribution_cdf(interface)]](x, shape, rate)`
+`result = [[stdlib_stats_distribution_gamma(module):cdf_gamma(interface)]](x, shape, rate)`
+
+### Class
+
+Elemental function
 
 ### Arguments
 
@@ -183,19 +210,19 @@ $$ F(x)= \frac{\gamma (shape, scale \times x)}{\Gamma (shape)}, for \;\;  x>0, s
 
 `rate`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-The function is elemental, i.e., all auguments could be arrays conformable to each other. All arguments must have the same type.
+All arguments must have the same type.
 
 ### Return value
 
-The result is a scalar of type `real` with a shape conformable to auguments.
+The result is a scalar of type `real` with the same kind of input arguments.
 
 ### Example
 
 ```fortran
 program demo_gamma_cdf
-    use stdlib_stats_distribution_PRNG, onyl : random_seed
-    use stdlib_stats_distribution_gamma, only: rgamma => gamma_distribution_rvs,&
-                                             gamma_cdf => gamma_distribution_cdf
+    use stdlib_random, only : random_seed
+    use stdlib_stats_distribution_gamma, only: rgamma => rvs_gamma,&
+                                             gamma_cdf => cdf_gamma
 
     implicit none
     real :: x(2,3,4),g(2,3,4),s(2,3,4)
