@@ -45,7 +45,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-program demo
+program demo_strip
   use stdlib_ascii, only : TAB, VT, NUL, LF, CR, FF
   use stdlib_strings, only : strip
   implicit none
@@ -54,7 +54,7 @@ program demo
   print'(a)', strip(" "//TAB//LF//VT//FF//CR)  ! ""
   print'(a)', strip("  !  ")//"!"              ! "!!"
   print'(a)', strip("Hello")                   ! "Hello"
-end program demo
+end program demo_strip
 ```
 
 
@@ -93,7 +93,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-program demo
+program demo_chomp
   use stdlib_ascii, only : TAB, VT, NUL, LF, CR, FF
   use stdlib_strings, only : chomp
   implicit none
@@ -106,7 +106,7 @@ program demo
   print'(a)', chomp("hello", set=["l", "o"])   ! "he"
   print'(a)', chomp("hello", "lo")             ! "hel"
   print'(a)', chomp("hello", substring="lo")   ! "hel"
-end program demo
+end program demo_chomp
 ```
 
 
@@ -143,12 +143,12 @@ The result is of scalar logical type.
 #### Example
 
 ```fortran
-program demo
+program demo_starts_with
   use stdlib_strings, only : starts_with
   implicit none
   print'(a)', starts_with("pattern", "pat")  ! T
   print'(a)', starts_with("pattern", "ern")  ! F
-end program demo
+end program demo_starts_with
 ```
 
 
@@ -185,12 +185,12 @@ The result is of scalar logical type.
 #### Example
 
 ```fortran
-program demo
+program demo_ends_with
   use stdlib_strings, only : ends_with
   implicit none
   print'(a)', ends_with("pattern", "ern")  ! T
   print'(a)', ends_with("pattern", "pat")  ! F
-end program demo
+end program demo_ends_with
 ```
 
 

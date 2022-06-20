@@ -222,7 +222,7 @@ If not specified, the default integral is -1 to 1.
 ### Example
 
 ```fortran
-program integrate
+program demo_gauss_legendre
 	use iso_fortran_env, dp => real64
 	implicit none
 
@@ -230,7 +230,7 @@ program integrate
 	real(dp), dimension(N) :: x,w
 	call gauss_legendre(x,w)
 	print *, "integral of x**2 from -1 to 1 is",  sum(x**2 * w)
-end program
+end program demo_gauss_legendre
 ```
 
 ## `gauss_legendre_lobatto` - Gauss-Legendre-Lobatto quadrature nodes and weights
@@ -268,7 +268,7 @@ If not specified, the default integral is -1 to 1.
 ### Example
 
 ```fortran
-program integrate
+program demo_gauss_legendre_lobatto
 	use iso_fortran_env, dp => real64
 	implicit none
 
@@ -276,5 +276,5 @@ program integrate
 	real(dp), dimension(N) :: x,w
 	call gauss_legendre_lobatto(x,w)
 	print *, "integral of x**2 from -1 to 1 is",  sum(x**2 * w)
-end program
+end program demo_gauss_legendre_lobatto
 ```

@@ -1016,7 +1016,7 @@ program demo_universal_mult_hash
   hash = universal_mult_hash(source, seed, 6)
   array1(hash) = source
   print *, seed, hash, array1
-end program demo_odd_random_integer
+end program demo_universal_mult_hash
 ```
 
 #### `water_hash`- calculates a hash code from a key and a seed
@@ -1175,7 +1175,7 @@ E. Knuth. It multiplies the `key` by the odd valued approximation to
 ##### Example
 
 ```fortran
-program demo_fibonacci_hash
+program demo_fibonacci_hash_64
   use stdlib_hash_64bit, only: fibonacci_hash
   use iso_fortran_env, only: int64
   implicit none
@@ -1187,7 +1187,7 @@ program demo_fibonacci_hash
   hash = fibonacci_hash(source, 6)
   array1(hash) = source
   print *, hash
-end program demo_fibonacci_hash
+end program demo_fibonacci_hash_64
 ```
 
 #### `FNV_1`- calculates a hash code from a key
@@ -1241,7 +1241,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-program demo_fnv_1_hash
+program demo_fnv_1_hash_64
   use stdlib_hash_64bit, only: fnv_1_hash
     use iso_fortran_env, only: int64
   implicit none
@@ -1250,7 +1250,7 @@ program demo_fnv_1_hash
   array1 = [ 5, 4, 3, 1, 10, 4, 9]
   hash = fnv_1_hash(array1)
   print *, hash
-end program demo_fnv_1_hash
+end program demo_fnv_1_hash_64
 ```
 
 
@@ -1304,7 +1304,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-program demo_fnv_1a_hash
+program demo_fnv_1a_hash_64
   use stdlib_hash_64bit, only: fnv_1a_hash
   use iso_fortran_env, only: int64
   implicit none
@@ -1313,7 +1313,7 @@ program demo_fnv_1a_hash
   array1 = [ 5, 4, 3, 1, 10, 4, 9]
   hash = fnv_1a_hash(array1)
   print *, hash
-end program demo_fnv_1a_hash
+end program demo_fnv_1a_hash_64
 ```
 
 
@@ -1596,7 +1596,7 @@ It multiplies the `key` by `seed`, and returns the
 
 
 ```fortran
-program demo_universal_mult_hash
+program demo_universal_mult_hash_64
   use stdlib_hash_32bit, only: odd_random_integer, &
     universal_mult_hash
   use iso_fortran_env, only: int64
@@ -1611,7 +1611,7 @@ program demo_universal_mult_hash
   hash = universal_mult_hash(source, seed, 6)
   array1(hash) = source
   print *, seed, hash, array1
-end program demo_universal_mult_hash
+end program demo_universal_mult_hash_64
 ```
 
 
