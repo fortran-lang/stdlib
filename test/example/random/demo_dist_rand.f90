@@ -1,4 +1,5 @@
 program demo_dist_rand
+use stdlib_kinds, only: int8, int16, int32, int64
 use stdlib_random, only : dist_rand, random_seed
 implicit none
 integer :: put, get

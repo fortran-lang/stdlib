@@ -1,0 +1,5 @@
+ADD_DEMO(ascii_reverse)
+ADD_DEMO(ascii_to_lower)
+ADD_DEMO(ascii_to_sentence)
+ADD_DEMO(ascii_to_title)
+ADD_DEMO(ascii_to_upper)

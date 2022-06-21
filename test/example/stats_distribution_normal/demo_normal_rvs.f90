@@ -4,7 +4,7 @@ use stdlib_stats_distribution_normal, only: norm => rvs_normal
 
 implicit none
 real ::  a(2,3,4), b(2,3,4)
-complx :: loc, scale
+complex :: loc, scale
 integer :: seed_put, seed_get
 
 seed_put = 1234567

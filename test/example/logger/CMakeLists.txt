@@ -1,0 +1,5 @@
+ADD_DEMO(add_log_unit)
+ADD_DEMO(configure)
+ADD_DEMO(global_logger)
+ADD_DEMO(log_io_error)
+#ADD_DEMO(log_text_error)

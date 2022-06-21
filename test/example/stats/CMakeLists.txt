@@ -1,0 +1,6 @@
+ADD_DEMO(corr)
+ADD_DEMO(cov)
+ADD_DEMO(mean)
+ADD_DEMO(median)
+ADD_DEMO(moment)
+ADD_DEMO(var)

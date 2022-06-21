@@ -1,5 +1,5 @@
 program demo_universal_mult_hash_64
-use stdlib_hash_32bit, only: odd_random_integer, &
+use stdlib_hash_64bit, only: odd_random_integer, &
 universal_mult_hash
 use iso_fortran_env, only: int64
 implicit none

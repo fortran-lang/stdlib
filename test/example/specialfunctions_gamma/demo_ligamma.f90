@@ -13,4 +13,4 @@ print *, lig(p, -5.0)
 print *, lig(p1, 5.0)
 
 ! 1.09715652
-end demo_ligamma
+end program demo_ligamma

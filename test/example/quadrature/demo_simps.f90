@@ -1,7 +1,7 @@
 program demo_simps
 use stdlib_quadrature, only: simps
 implicit none
-real :: x(5) = [0., 1., 2., 3., 4.]
+real, parameter :: x(5) = [0., 1., 2., 3., 4.]
 real :: y(5) = 3.*x**2
 print *, simps(y, x)
 ! 64.0

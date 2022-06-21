@@ -1,0 +1,6 @@
+ADD_DEMO(check1)
+ADD_DEMO(check2)
+ADD_DEMO(check3)
+ADD_DEMO(check4)
+ADD_DEMO(error_stop1)
+ADD_DEMO(error_stop2)

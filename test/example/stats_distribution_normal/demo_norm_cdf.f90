@@ -5,7 +5,7 @@ norm => rvs_normal
 
 implicit none
 real :: x(2,3,4),a(2,3,4),b(2,3,4)
-complx :: loc, scale
+complex :: loc, scale
 integer :: seed_put, seed_get
 
 seed_put = 1234567

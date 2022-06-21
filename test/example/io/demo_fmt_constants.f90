@@ -1,5 +1,5 @@
 program demo_fmt_constants
-use, stdlib_kinds, only : int32, int64, sp, dp
+use stdlib_kinds, only : int32, int64, sp, dp
 use stdlib_io,     only : FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_COMPLEX_SP, FMT_COMPLEX_DP
 implicit none
 

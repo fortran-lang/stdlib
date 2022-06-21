@@ -49,6 +49,7 @@ if(NOT FYPP)
 endif()
 
 add_subdirectory(src)
+add_subdirectory(test)
 
 install(EXPORT ${PROJECT_NAME}-targets
         NAMESPACE ${PROJECT_NAME}::

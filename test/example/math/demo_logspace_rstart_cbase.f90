@@ -5,7 +5,7 @@ implicit none
 
 real(dp) :: start = 0.0_dp
 real(dp) :: end = 3.0_dp
-integer :: n = 4
+integer, parameter :: n = 4
 complex(dp) :: base = (0.0_dp, 1.0_dp)
 
 complex(dp) :: z(n) ! complex values raised to real powers result in complex values
