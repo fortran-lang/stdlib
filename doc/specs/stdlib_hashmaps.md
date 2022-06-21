@@ -1565,7 +1565,7 @@ Subroutine
   error code.
 
 * If `slots_bits` is absent then the effective value for `slots_bits`
-  is `default_slots_bits`.
+  is `default_bits`.
 
 `status` (optional): shall be a scalar integer variable of kind
 `int32`. It is an `intent(out)` argument. On return if present it
