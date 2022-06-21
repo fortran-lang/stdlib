@@ -87,7 +87,8 @@ module stdlib_hashmap_wrappers
     interface get
 
         module procedure get_char_key,   &
-                         get_int8_key
+                         get_int8_key,   &
+                         get_other
 
     end interface get
 
