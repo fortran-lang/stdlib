@@ -195,18 +195,7 @@ an `intent(in)` argument. It shall be the name of the file to be opened.
 #### Example
 
 ```fortran
-program demo_global_logger
-    use stdlib_logger, global => global_logger
-
-    integer :: unit, stat
-
-    call global % add_log_file( 'error_log.txt', unit, &
-        position='asis', stat=stat )
-    if ( stat /= success ) then
-         error stop 'Unable to open "error_log.txt".'
-    end if
-
-end program demo_global_logger
+{!test/examples/logger/demo_global_logger.f90!}
 ```
 
 ### `add_log_unit` - add a unit to the array `self % log_units`
@@ -262,28 +251,7 @@ to `unit`.
 #### Example
 
 ```fortran
-program demo_add_log_unit
-    use stdlib_logger, only: global_logger, read_only_error
-
-     character(256) :: iomsg
-     integer :: iostat, unit, stat
-
-     open( newunit=unit, 'error_log.txt',      &
-          form='formatted', status='replace', &
-          position='rewind', err=999,         &
-          action='read', iostat=iostat, iomsg=iomsg )
-
-     call global_logger % add_log_unit( unit, stat )
-     select case ( stat )
-
-     case ( read_only_error )
-         error stop 'Unable to write to "error_log.txt".'
-
-     end select
-
-     999 error stop 'Unable to open "error_log.txt".
-
-end program demo_add_log_unit
+{!test/examples/logger/demo_add_log_unit.f90!}
 ```
 
 ### `configuration` - report a logger's configuration
@@ -410,12 +378,7 @@ Pure subroutine
 #### Example
 
 ```fortran
-program demo_configure
-    use stdlib_logger, only: global => global_logger
-      
-    call global % configure( indent=.false., max_width=72 )
-      
-end program demo_configure
+{!test/examples/logger/demo_configure.f90!}
 ```
 
 ### `log_debug` - Writes the string `message` to `self % log_units`
@@ -705,26 +668,7 @@ Subroutine
 #### Example
 
 ```fortran
-program demo_log_io_error
-    use stdlib_logger, global=>global_logger
-    
-    character(*), parameter :: filename = 'dummy.txt'
-    integer                 :: iostat, lun
-    character(128)          :: iomsg
-    character(*), parameter :: message = &
-	    'Failure in opening "dummy.txt".'
-
-    open( newunit=lun, file = filename, form='formatted', &
-            status='old', iostat=iostat, iomsg=iomsg )
-    if ( iostat /= 0 ) then
-        call global % log_io_error( message,               &
-                                    procedure = 'EXAMPLE', &
-                                    iostat=iostat,         &
-                                    iomsg = iomsg )
-         error stop 'Error on opening a file'
-    end if
-
-end program demo_log_io_error
+{!test/examples/logger/demo_log_io_error.f90!}
 ```
 
 ### `log_message` - write the string `message` to `self % log_units` 
@@ -873,30 +817,7 @@ Subroutine
 #### Example
 
 ```fortran
-program demo_log_text_error
-    use stdlib_logger
-    
-    character(*), parameter :: filename = 'dummy.txt'
-    integer                 :: col_no, line_no, lun
-    character(128)          :: line
-    character(*), parameter :: message = 'Bad text found.'
-
-    open( newunit=lun, file = filename, statu='old', &
-		    form='formatted' )
-    line_no = 0
-    do
-        read( lun, fmt='(a)', end=900 ) line
-        line_no = line_no + 1
-        call check_line( line, status, col_no )
-        if ( status /= 0 )
-            call global_logger % log_text_error( line, &
-                  col_no, message, filename, line_no )
-            error stop 'Error in reading ' // filename
-        end if
-    end do
-    900 continue
-   
-end program demo_log_text_error
+{!test/examples/logger/demo_log_text_error.f90!}
 ```
 
 ### `log_units_assigned` - returns the number of active I/O units

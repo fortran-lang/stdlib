@@ -53,40 +53,16 @@ If `condition` is `.false.`, and:
 #### Examples
 
 ```fortran
-program demo_check1
-    use stdlib_error, only: check
-    implicit none
-    integer :: a = 1
-    ! If a /= 5, stops the program with exit code 1 and prints 'Check failed.'
-    call check(a == 5)
-end program demo_check1
+{!test/examples/error/demo_check1.f90!}
 ```
 ```fortran
-program demo_check2
-    use stdlib_error, only: check
-    implicit none
-    integer :: a = 1
-    ! If a /= 5, stops the program with exit code 1 and prints  'a == 5 failed.'
-    call check(a == 5, msg='a == 5 failed.')
-end program demo_check2
+{!test/examples/error/demo_check2.f90!}
 ```
 ```fortran
-program demo_check3
-    use stdlib_error, only: check
-    implicit none
-    integer :: a = 1
-    ! If a /= 5,  prints 'a == 5 failed.', but doesn't stop the program.
-    call check(a == 5, msg='a == 5 failed.', warn=.true.)
-end program demo_check3
+{!test/examples/error/demo_check3.f90!}
 ```
 ```fortran
-program demo_check4
-    use stdlib_error, only: check
-    implicit none
-    integer :: a = 1
-    ! If a /= 5, stops the program with exit code 77 and prints 'a == 5 failed.'
-    call check(a == 5, msg='a == 5 failed.', code=77)
-end program demo_check4
+{!test/examples/error/demo_check4.f90!}
 ```
 
 ### `error_stop` - aborts the program
@@ -118,19 +94,11 @@ Aborts the program with printing the message `msg` to `stderr` and a nonzero exi
 Without error code:
 
 ```fortran
-program demo_error_stop1
-    use stdlib_error, only: error_stop
-    implicit none
-    call error_stop("Invalid argument")
-end program demo_error_stop1
+{!test/examples/error/demo_error_stop1.f90!}
 ```
 
 With error code:
 
 ```fortran
-program demo_error_stop2
-    use stdlib_error, only: error_stop
-    implicit none
-    call error_stop("Invalid argument", code = 123)
-end program demo_error_stop2
+{!test/examples/error/demo_error_stop2.f90!}
 ```

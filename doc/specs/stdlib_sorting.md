@@ -261,16 +261,7 @@ function `LGT`.
 ##### Example
 
 ```fortran
-    program demo_ord_sort
-      use stdlib_sorting, only: ord_sort
-      implicit none
-      integer, allocatable :: array1(:), work(:)
-    
-      array1 = [ 5, 4, 3, 1, 10, 4, 9]
-      allocate(work, mold = array1)
-      call ord_sort(array1, work)
-      print*, array1   !print [1, 3, 4, 4, 5, 9, 10]
-    end program demo_ord_sort
+{!test/examples/sorting/demo_ord_sort.f90!}
 ```
 
 #### `sort` - sorts an input array
@@ -324,15 +315,7 @@ element of `array` is a `NaN`.  Sorting of `CHARACTER(*)` and
 
 
 ```fortran
-    program demo_sort
-      use stdlib_sorting, only: sort
-      implicit none
-      integer, allocatable :: array(:)
-    
-      array = [ 5, 4, 3, 1, 10, 4, 9]
-      call sort(array)
-      print*, array   !print [1, 3, 4, 4, 5, 9, 10]
-    end program demo_sort
+{!test/examples/sorting/demo_sort.f90!}
 ```
 
 #### `sort_index` - creates an array of sorting indices for an input array, while also sorting the array.
@@ -453,21 +436,21 @@ Sorting a rank 2 array based on the data in a column
 Sorting an array of a derived type based on the data in one component
 
 ```fortran
-	subroutine sort_a_data( a_data, a, work, index, iwork )
-	    ! Sort `a_data` in terms or its component `a`
-	    type(a_type), intent(inout)      :: a_data(:)
-		integer(int32), intent(inout)    :: a(:)
-		integer(int32), intent(out)    :: work(:)
-		integer(int_size), intent(out) :: index(:)
-		integer(int_size), intent(out) :: iwork(:)
-		! Extract a component of `a_data`
-		a(1:size(a_data)) = a_data(:) % a
-		! Find the indices to sort the component
-		call sort_index(a(1:size(a_data)), index(1:size(a_data)),&
-		    work(1:size(a_data)/2), iwork(1:size(a_data)/2))
-		! Sort a_data based on the sorting of that component
-		a_data(:) = a_data( index(1:size(a_data)) )
-	end subroutine sort_a_data
+       subroutine sort_a_data( a_data, a, work, index, iwork )
+           ! Sort `a_data` in terms or its component `a`
+           type(a_type), intent(inout)      :: a_data(:)
+               integer(int32), intent(inout)    :: a(:)
+               integer(int32), intent(out)    :: work(:)
+               integer(int_size), intent(out) :: index(:)
+               integer(int_size), intent(out) :: iwork(:)
+               ! Extract a component of `a_data`
+               a(1:size(a_data)) = a_data(:) % a
+               ! Find the indices to sort the component
+               call sort_index(a(1:size(a_data)), index(1:size(a_data)),&
+                   work(1:size(a_data)/2), iwork(1:size(a_data)/2))
+               ! Sort a_data based on the sorting of that component
+               a_data(:) = a_data( index(1:size(a_data)) )
+       end subroutine sort_a_data
 ```
 
 

@@ -33,14 +33,7 @@ Return a scalar of type `integer`.
 ### Example
 
 ```fortran
-program demo_random_seed
-    use stdlib_random, only : random_seed
-    implicit none
-    integer :: seed_put, seed_get
-
-    seed_put = 1234567
-    call random_seed(seed_put, seed_get)     ! set and get current value of seed
-end program demo_random_seed
+{!test/examples/random/demo_random_seed.f90!}
 ```
 
 ## `dist_rand` - Get a random integer with specified kind
@@ -68,20 +61,5 @@ Return a scalar of type `integer`.
 ### Example
 
 ```fortran
-program demo_dist_rand
-    use stdlib_random, only : dist_rand, random_seed
-    implicit none
-    integer :: put, get
-
-    put = 135792468
-    call random_seed(put, get)     ! set and get current value of seed
-    print *, dist_rand(1_int8)     ! random integer in [-2^7, 2^7 - 1]
-! -90
-    print *, dist_rand(1_int16)    ! random integer in [-2^15, 2^15 - 1]
-! -32725
-    print *, dist_rand(1_int32)    ! random integer in [-2^31, 2^31 - 1]
-! -1601563881
-    print *, dist_rand(1_int64)    ! random integer in [-2^63, 2^63 - 1]
-! 180977695517992208
-end program demo_dist_rand
+{!test/examples/random/demo_dist_rand.f90!}
 ```

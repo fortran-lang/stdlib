@@ -543,19 +543,7 @@ E. Knuth. It multiplies the `key` by the odd valued approximation to
 ##### Example
 
 ```fortran
-program demo_fibonacci_hash
-  use stdlib_hash_32bit, only: fibonacci_hash
-  use iso_fortran_env, only: int32
-  implicit none
-  integer, allocatable :: array1(:)
-  integer(int32) :: hash, source
-  allocate( array1(0:2**6-1) )
-  array1(:) = 0
-  source = 42_int32
-  hash = fibonacci_hash(source, 6)
-  array1(hash) = source
-  print *, hash
-end program demo_fibonacci_hash
+{!test/examples/hash_procedures/demo_fibonacci_hash.f90!}
 ```
 
 #### `fnv_1_hash`- calculates a hash code from a key
@@ -609,14 +597,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-program demo_fnv_1_hash
-  use stdlib_hash_32bit, only: fnv_1_hash
-  use iso_fortran_env, only: int32
-  implicit none
-  integer(int32) :: hash
-  hash = fnv_1_hash([ 5, 4, 3, 1, 10, 4, 9])
-  print *, hash
-end program demo_fnv_1_hash
+{!test/examples/hash_procedures/demo_fnv_1_hash.f90!}
 ```
 
 
@@ -670,14 +651,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-program demo_fnv_1a_hash
-  use stdlib_hash_32bit, only: fnv_1a_hash
-  use iso_fortran_env, only: int32
-  implicit none
-  integer(int32) :: hash
-  hash = fnv_1a_hash( [ 5, 4, 3, 1, 10, 4, 9] )
-  print *, hash
-end program demo_fnv_1a_hash
+{!test/examples/hash_procedures/demo_fnv_1a_hash.f90!}
 ```
 
 
@@ -844,17 +818,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-program demo_nmhash32
-  use stdlib_hash_32bit, only: nmhash32, &
-      new_nmhash32_seed
-  use iso_fortran_env, only: int32
-  implicit none
-  integer(int32) :: hash
-  integer(int32) :: seed = 42_int32
-  call new_nmhash32_seed(seed)
-  hash = nmhash32([ 5, 4, 3, 1, 10, 4, 9], seed)
-  print *, seed, hash
-end program demo_nmhash32
+{!test/examples/hash_procedures/demo_nmhash32.f90!}
 ```
 
 
@@ -906,17 +870,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-program demo_nmhash32x
-  use stdlib_hash_32bit, only: nmhash32x, &
-    new_nmhash32x_seed
-  use iso_fortran_env, only: int32
-  implicit none
-  integer(int32) :: hash
-  integer(int32) :: seed = 42_int32
-  call new_nmhash32x_seed(seed)
-  hash = nmhash32x([ 5, 4, 3, 1, 10, 4, 9], seed)
-  print *, seed, hash
-end program demo_nmhash32x
+{!test/examples/hash_procedures/demo_nmhash32x.f90!}
 ```
 
 #### `odd_random_integer` - returns an odd integer
@@ -999,24 +953,7 @@ It multiplies the `key` by `seed`, and returns the
 ##### Example
 
 ```fortran
-program demo_universal_mult_hash
-  use stdlib_hash_32bit, only: odd_random_integer, &
-    universal_mult_hash
-  use iso_fortran_env, only: int32
-  implicit none
-  integer, allocatable :: array1(:)
-  integer(int32) :: hash, i, seed, source
-  seed = 0
-  allocate( array1(0:2**6-1) )
-  do i = 0, 2**6-1
-    array1(i) = i
-  end do
-  call odd_random_integer( seed )
-  source = 42_int32
-  hash = universal_mult_hash(source, seed, 6)
-  array1(hash) = source
-  print *, seed, hash, array1
-end program demo_universal_mult_hash
+{!test/examples/hash_procedures/demo_universal_mult_hash.f90!}
 ```
 
 #### `water_hash`- calculates a hash code from a key and a seed
@@ -1074,17 +1011,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-program demo_water_hash
-  use stdlib_hash_32bit, only: water_hash, &
-    new_water_hash_seed
-  use iso_fortran_env, only: int32, int64
-  implicit none
-  integer(int32) :: hash
-  integer(int64) :: seed = 42_int64
-  call new_water_hash_seed( seed )
-  hash = water_hash([ 5, 4, 3, 1, 10, 4, 9], seed)
-  print *, hash, seed
-end program demo_water_hash
+{!test/examples/hash_procedures/demo_water_hash.f90!}
 ```
 
 ## The `stdlib_hash_64bit` module
@@ -1175,19 +1102,7 @@ E. Knuth. It multiplies the `key` by the odd valued approximation to
 ##### Example
 
 ```fortran
-program demo_fibonacci_hash_64
-  use stdlib_hash_64bit, only: fibonacci_hash
-  use iso_fortran_env, only: int64
-  implicit none
-  integer, allocatable :: array1(:)
-  integer(int64) :: hash, source
-  allocate( array1(0:2**6-1) )
-  array1(:) = 0
-  source = int(Z'1FFFFFFFF', int64)
-  hash = fibonacci_hash(source, 6)
-  array1(hash) = source
-  print *, hash
-end program demo_fibonacci_hash_64
+{!test/examples/hash_procedures/demo_fibonacci_hash_64.f90!}
 ```
 
 #### `FNV_1`- calculates a hash code from a key
@@ -1241,16 +1156,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-program demo_fnv_1_hash_64
-  use stdlib_hash_64bit, only: fnv_1_hash
-    use iso_fortran_env, only: int64
-  implicit none
-  integer, allocatable :: array1(:)
-  integer(int64) :: hash
-  array1 = [ 5, 4, 3, 1, 10, 4, 9]
-  hash = fnv_1_hash(array1)
-  print *, hash
-end program demo_fnv_1_hash_64
+{!test/examples/hash_procedures/demo_fnv_1_hash_64.f90!}
 ```
 
 
@@ -1304,16 +1210,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-program demo_fnv_1a_hash_64
-  use stdlib_hash_64bit, only: fnv_1a_hash
-  use iso_fortran_env, only: int64
-  implicit none
-  integer, allocatable :: array1(:)
-  integer(int64) :: hash
-  array1 = [ 5, 4, 3, 1, 10, 4, 9]
-  hash = fnv_1a_hash(array1)
-  print *, hash
-end program demo_fnv_1a_hash_64
+{!test/examples/hash_procedures/demo_fnv_1a_hash_64.f90!}
 ```
 
 
@@ -1473,19 +1370,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-program demo_pengy_hash
-  use stdlib_hash_64bit, only: new_pengy_hash_seed, pengy_hash
-  use iso_fortran_env, only: int32, int64
-  implicit none
-  integer, allocatable :: key(:)
-  integer(int64) :: hash
-  integer(int32)  ::  seed
-  key = [ 0, 1, 2, 3 ]
-  seed = 0_int32
-  call new_pengy_hash_seed( seed )
-  hash = pengy_hash( key, seed )
-  print *, seed, hash
-end program demo_pengy_hash
+{!test/examples/hash_procedures/demo_pengy_hash.f90!}
 ```
 
 
@@ -1535,19 +1420,7 @@ and has no known bad seeds.
 ##### Example
 
 ```fortran
-program demo_spooky_hash
-  use stdlib_hash_64bit, only: new_spooky_hash_seed, &
-    spooky_hash
-  use iso_fortran_env, only: int64
-  implicit none
-  integer, allocatable :: key(:)
-  integer(int64) :: hash(2), seed(2)
-  key = [ 0, 1, 2, 3 ]
-  seed = [ 119_int64, 2_int64**41-1 ]
-  call new_spooky_hash_seed( seed )
-  hash = spooky_hash( key, seed )
-  print *, seed, hash
-end program demo_spooky_hash
+{!test/examples/hash_procedures/demo_spooky_hash.f90!}
 ```
 
 #### `universal_mult_hash` - maps an integer to a smaller number of bits
@@ -1596,22 +1469,7 @@ It multiplies the `key` by `seed`, and returns the
 
 
 ```fortran
-program demo_universal_mult_hash_64
-  use stdlib_hash_32bit, only: odd_random_integer, &
-    universal_mult_hash
-  use iso_fortran_env, only: int64
-  implicit none
-  integer, allocatable :: array1(:)
-  integer(int64) :: hash, i, seed, source
-  seed = 0
-  allocate( array1(0:2**6-1) )
-  array1 = 0
-  call odd_random_integer( seed )
-  source = 42_int64
-  hash = universal_mult_hash(source, seed, 6)
-  array1(hash) = source
-  print *, seed, hash, array1
-end program demo_universal_mult_hash_64
+{!test/examples/hash_procedures/demo_universal_mult_hash_64.f90!}
 ```
 
 
