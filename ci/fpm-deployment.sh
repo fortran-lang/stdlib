@@ -39,7 +39,7 @@ minor=$(cut -d. -f2 VERSION)
 patch=$(cut -d. -f3 VERSION)
 fyflags="${fyflags} -DPROJECT_VERSION_MAJOR=${major} -DPROJECT_VERSION_MINOR=${minor} -DPROJECT_VERSION_PATCH=${patch}"
 
-mkdir -p "$destdir/src" "$destdir/test"
+mkdir -p "$destdir/src" "$destdir/test" "$destdir/example"
 
 # Preprocess stdlib sources
 find src -maxdepth 1 -iname "*.fypp" \
@@ -49,6 +49,7 @@ find src -maxdepth 1 -iname "*.fypp" \
 find src -maxdepth 1 -iname "*.f90" -exec cp {} "$destdir/src/" \;
 find src/tests -name "test_*.f90" -exec cp {} "$destdir/test/" \;
 find src/tests -name "*.dat" -exec cp {} "$destdir/" \;
+find test/example -name "demo_*.f90" -exec cp {} "$destdir/example/" \;
 
 # Include additional files
 cp "${include[@]}" "$destdir/"
