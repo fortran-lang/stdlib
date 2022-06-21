@@ -51,44 +51,14 @@ The output is a scalar of `type` and `kind` same as to that of the arguments.
 
 Here inputs are of type `integer` and kind `int32`
 ```fortran
-program demo_clip_integer
-  use stdlib_math, only: clip
-  use stdlib_kinds, only: int32
-  implicit none
-  integer(int32) :: x
-  integer(int32) :: xmin
-  integer(int32) :: xmax
-  integer(int32) :: clipped_value
-
-  xmin = -5_int32
-  xmax = 5_int32
-  x = 12_int32
-
-  clipped_value = clip(x, xmin, xmax)
-  ! clipped_value <- 5
-end program demo_clip_integer
+{!test/examples/math/demo_clip_integer.f90!}
 ```
 
 ##### Example 2:
 
 Here inputs are of type `real` and kind `sp`
 ```fortran
-program demo_clip_real
-  use stdlib_math, only: clip
-  use stdlib_kinds, only: sp
-  implicit none
-  real(sp) :: x
-  real(sp) :: xmin
-  real(sp) :: xmax
-  real(sp) :: clipped_value
-
-  xmin = -5.769_sp
-  xmax = 3.025_sp
-  x = 3.025_sp
-
-  clipped_value = clip(x, xmin, xmax)
-  ! clipped_value <- 3.02500010
-end program demo_clip_real
+{!test/examples/math/demo_clip_real.f90!}
 ```
 
 ### `gcd` function
@@ -125,15 +95,7 @@ Returns an integer of the same `kind` as that of the arguments.
 ##### Example 1:
 
 ```fortran
-program demo_gcd
-  use stdlib_math, only: gcd
-  implicit none
-  integer :: a, b, c
-  
-  a = 48
-  b = 18
-  c = gcd(a, b) ! returns 6
-end program demo_gcd
+{!test/examples/math/demo_gcd.f90!}
 ```
 
 ### `linspace` - Create a linearly spaced rank one array
@@ -176,36 +138,14 @@ If `start`/`end` are `integer` types, the `result` will default to a `real(dp)` 
 
 Here inputs are of type `complex` and kind `dp`
 ```fortran
-program demo_linspace_complex
-  use stdlib_math, only: linspace
-  use stdlib_kinds, only: dp
-  implicit none
-
-  complex(dp) :: start = complex(10.0_dp, 5.0_dp)
-  complex(dp) :: end = complex(-10.0_dp, 15.0_dp)
-
-  complex(dp) :: z(11)
-
-  z = linspace(start, end, 11)
-end program demo_linspace_complex
+{!test/examples/math/demo_linspace_complex.f90!}
 ```
 
 ##### Example 2:
 
 Here inputs are of type `integer` and kind `int16`, with the result defaulting to `real(dp)`.
 ```fortran
-program demo_linspace_int16
-  use stdlib_math, only: linspace
-  use stdlib_kinds, only: int16, dp
-  implicit none
-
-  integer(int16) :: start = 10_int16
-  integer(int16) :: end = 23_int16
-
-  real(dp) :: r(15)
-
-  r = linspace(start, end, 15)
-end program demo_linspace_int16
+{!test/examples/math/demo_linspace_int16.f90!}
 ```
 
 ### `logspace` - Create a logarithmically spaced rank one array
@@ -267,58 +207,21 @@ For function calls where the `base` is specified, the `type` and `kind` of the r
 
 Here inputs are of type `complex` and kind `dp`. `n` and `base` is not specified and thus default to 50 and 10, respectively.
 ```fortran
-program demo_logspace_complex
-  use stdlib_math, only: logspace
-  use stdlib_kinds, only: dp
-  implicit none
-
-  complex(dp) :: start = (10.0_dp, 5.0_dp)
-  complex(dp) :: end = (-10.0_dp, 15.0_dp)
-
-  complex(dp) :: z(11) ! Complex values raised to complex powers results in complex values
-
-  z = logspace(start, end, 11)
-end program demo_logspace_complex
+{!test/examples/math/demo_logspace_complex.f90!}
 ```
 
 ##### Example 2:
 
 Here inputs are of type `integer` and default kind. `base` is not specified and thus defaults to 10.
 ```fortran
-program demo_logspace_int
-  use stdlib_math, only: logspace
-  use stdlib_kinds, only: dp
-  implicit none
-
-  integer :: start = 10
-  integer :: end = 23
-  integer :: n = 15
-
-  real(dp) :: r(n) ! Integer values raised to real powers results in real values
-
-  r = logspace(start, end, n)
-end program demo_logspace_int
+{!test/examples/math/demo_logspace_int.f90!}
 ```
 
 ##### Example 3:
 
 Here `start`/`end` are of type `real` and double precision. `base` is type `complex` and also double precision.
 ```fortran
-program demo_logspace_rstart_cbase
-  use stdlib_math, only: logspace
-  use stdlib_kinds, only: dp
-  implicit none
-
-  real(dp) :: start = 0.0_dp
-  real(dp) :: end = 3.0_dp
-  integer :: n = 4
-  complex(dp) :: base = (0.0_dp, 1.0_dp)
-
-  complex(dp) :: z(n) ! complex values raised to real powers result in complex values
-
-  z = logspace(start, end, n, base)
-
-end program demo_logspace_rstart_cbase
+{!test/examples/math/demo_logspace_rstart_cbase.f90!}
 ```
 ### `arange` function
 
@@ -368,25 +271,7 @@ For `real` type arguments, the length of the result vector is `floor((end - star
 #### Example
 
 ```fortran
-program demo_math_arange
-    use stdlib_math, only: arange
-
-    print *, arange(3)                 ! [1,2,3]
-    print *, arange(-1)                ! [1,0,-1]
-    print *, arange(0,2)               ! [0,1,2]
-    print *, arange(1,-1)              ! [1,0,-1]
-    print *, arange(0, 2, 2)           ! [0,2]
-
-    print *, arange(3.0)               ! [1.0,2.0,3.0]
-    print *, arange(0.0,5.0)           ! [0.0,1.0,2.0,3.0,4.0,5.0]
-    print *, arange(0.0,6.0,2.5)       ! [0.0,2.5,5.0]
-
-    print *, (1.0,1.0)*arange(3)       ! [(1.0,1.0),(2.0,2.0),[3.0,3.0]]
-
-    print *, arange(0.0,2.0,-2.0)      ! [0.0,2.0].     Not recommended: `step` argument is negative!
-    print *, arange(0.0,2.0,0.0)       ! [0.0,1.0,2.0]. Not recommended: `step` argument is zero!
-
-end program demo_math_arange
+{!test/examples/math/demo_math_arange.f90!}
 ```
 
 ### `arg` function
@@ -422,13 +307,7 @@ Notes: Although the angle of the complex number `0` is undefined, `arg((0,0))` r
 #### Example
 
 ```fortran
-program demo_math_arg
-    use stdlib_math, only: arg
-    print *, arg((0.0, 0.0))                  ! 0.0
-    print *, arg((3.0, 4.0))                  ! 0.927
-    print *, arg(2.0*exp((0.0, 0.5)))         ! 0.5
-    print *, arg([(0.0, 1.0), (1.0, 0.0), (0.0, -1.0), (-1.0, 0.0)])  ! [π/2, 0.0, -π/2, π]
-end program demo_math_arg
+{!test/examples/math/demo_math_arg.f90!}
 ```
 
 ### `argd` function
@@ -464,13 +343,7 @@ Notes: Although the angle of the complex number `0` is undefined, `argd((0,0))` 
 #### Example
 
 ```fortran
-program demo_math_argd
-    use stdlib_math, only: argd
-    print *, argd((0.0, 0.0))                  ! 0.0°
-    print *, argd((3.0, 4.0))                  ! 53.1°
-    print *, argd(2.0*exp((0.0, 0.5)))         ! 28.64°
-    print *, argd([(0.0, 1.0), (1.0, 0.0), (0.0, -1.0), (-1.0, 0.0)])  ! [90°, 0°, -90°, 180°]
-end program demo_math_argd
+{!test/examples/math/demo_math_argd.f90!}
 ```
 
 ### `argpi` function
@@ -506,13 +379,7 @@ Notes: Although the angle of the complex number `0` is undefined, `argpi((0,0))`
 #### Example
 
 ```fortran
-program demo_math_argpi
-    use stdlib_math, only: argpi
-    print *, argpi((0.0, 0.0))                  ! 0.0
-    print *, argpi((3.0, 4.0))                  ! 0.295
-    print *, argpi(2.0*exp((0.0, 0.5)))         ! 0.159
-    print *, argpi([(0.0, 1.0), (1.0, 0.0), (0.0, -1.0), (-1.0, 0.0)])  ! [0.5, 0.0, -0.5, 1.0]
-end program demo_math_argpi
+{!test/examples/math/demo_math_argpi.f90!}
 ```
 
 ### `is_close` function
@@ -572,20 +439,7 @@ Returns a `logical` scalar/array.
 #### Example
 
 ```fortran
-program demo_math_is_close
-
-    use stdlib_math,  only: is_close
-    real :: x(2) = [1, 2], y, NAN
-    
-    y   = -3
-    NAN = sqrt(y)
-    
-    print *, is_close(x,[real :: 1, 2.1])       ! [T, F]
-    print *, is_close(2.0, 2.1, abs_tol=0.1)    ! T
-    print *, NAN, is_close(2.0, NAN), is_close(2.0, NAN, equal_nan=.true.)   ! NAN, F, F
-    print *, is_close(NAN, NAN), is_close(NAN, NAN, equal_nan=.true.)        ! F, T
-        
-end program demo_math_is_close
+{!test/examples/math/demo_math_is_close.f90!}
 ```
 
 ### `all_close` function
@@ -636,21 +490,7 @@ Returns a `logical` scalar.
 #### Example
 
 ```fortran
-program demo_math_all_close
-
-    use stdlib_math,  only: all_close
-    real    :: x(2) = [1, 2], y, NAN
-    complex :: z(4, 4)
-    
-    y   = -3
-    NAN = sqrt(y)
-    z   = (1.0, 1.0)
-    
-    print *, all_close(z+cmplx(1.0e-11, 1.0e-11), z)     ! T
-    print *, NAN, all_close([NAN], [NAN]), all_close([NAN], [NAN], equal_nan=.true.) 
-                                                         ! NAN, F, T
-    
-end program demo_math_all_close
+{!test/examples/math/demo_math_all_close.f90!}
 ```
 
 ### `diff` function
@@ -712,26 +552,5 @@ When both `prepend` and `append` are not present, the result `y` has one fewer e
 #### Example
 
 ```fortran
-program demo_diff
-
-    use stdlib_math, only: diff
-    implicit none
-    
-    integer :: i(7) = [1, 1, 2, 3, 5, 8, 13]
-    real    :: x(6) = [0, 5, 15, 30, 50, 75]
-    integer :: A(3, 3) = reshape([1, 7, 17, 3, 11, 19, 5, 13, 23], [3, 3])
-    integer :: Y(3, 2)
-    
-    print *, diff(i)        ! [0, 1, 1, 2, 3, 5]
-    print *, diff(x, 2)     ! [5.0, 5.0, 5.0, 5.0]
-    
-    Y = diff(A, n=1, dim=2)
-    print *, Y(1, :)        ! [2, 2]
-    print *, Y(2, :)        ! [4, 2]
-    print *, Y(3, :)        ! [2, 4]
-
-    print *, diff(i, prepend=[0]) ! [1, 0, 1, 1, 2, 3, 5]
-    print *, diff(i, append=[21]) ! [0, 1, 1, 2, 3, 5, 8]
-    
-end program demo_diff
+{!test/examples/math/demo_diff.f90!}
 ```

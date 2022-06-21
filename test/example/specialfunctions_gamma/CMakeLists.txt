@@ -1,0 +1,7 @@
+ADD_DEMO(gamma)
+ADD_DEMO(gamma_p)
+ADD_DEMO(gamma_q)
+ADD_DEMO(ligamma)
+ADD_DEMO(log_factorial)
+ADD_DEMO(log_gamma)
+ADD_DEMO(uigamma)

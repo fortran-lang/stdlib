@@ -1,0 +1,7 @@
+ADD_DEMO(fmt_constants)
+ADD_DEMO(getline)
+ADD_DEMO(loadnpy)
+ADD_DEMO(loadtxt)
+ADD_DEMO(open)
+ADD_DEMO(savenpy)
+ADD_DEMO(savetxt)

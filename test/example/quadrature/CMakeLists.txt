@@ -1,0 +1,6 @@
+ADD_DEMO(gauss_legendre)
+ADD_DEMO(gauss_legendre_lobatto)
+ADD_DEMO(simps)
+ADD_DEMO(simps_weights)
+ADD_DEMO(trapz)
+ADD_DEMO(trapz_weights)

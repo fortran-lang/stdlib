@@ -39,16 +39,7 @@ If the size of `y` is zero or one, the result is zero.
 ### Example
 
 ```fortran
-program demo_trapz
-    use stdlib_quadrature, only: trapz
-    implicit none
-    real :: x(5) = [0., 1., 2., 3., 4.]
-    real :: y(5) = x**2
-    print *, trapz(y, x) 
-! 22.0
-    print *, trapz(y, 0.5) 
-! 11.0
-end program demo_trapz
+{!test/examples/quadrature/demo_trapz.f90!}
 ```
 
 ## `trapz_weights` - trapezoidal rule weights for given abscissas
@@ -78,17 +69,7 @@ If the size of `x` is one, then the sole element of the result is zero.
 ### Example
 
 ```fortran
-program demo_trapz_weights
-    use stdlib_quadrature, only: trapz_weights
-    implicit none
-    real :: x(5) = [0., 1., 2., 3., 4.]
-    real :: y(5) = x**2
-    real :: w(5) 
-    w = trapz_weights(x)
-    print *, sum(w*y)
-! 22.0
-end program demo_trapz_weights
-
+{!test/examples/quadrature/demo_trapz_weights.f90!}
 ```
 
 ## `simps` - integrate sampled values using Simpson's rule
@@ -130,16 +111,7 @@ If the size of `y` is two, the result is the same as if `trapz` had been called 
 ### Example
 
 ```fortran
-program demo_simps
-    use stdlib_quadrature, only: simps
-    implicit none
-    real :: x(5) = [0., 1., 2., 3., 4.]
-    real :: y(5) = 3.*x**2
-    print *, simps(y, x) 
-! 64.0
-    print *, simps(y, 0.5) 
-! 32.0
-end program demo_simps
+{!test/examples/quadrature/demo_simps.f90!}
 ```
 
 ## `simps_weights` - Simpson's rule weights for given abscissas
@@ -175,16 +147,7 @@ If the size of `x` is two, then the result is the same as if `trapz_weights` had
 ### Example
 
 ```fortran
-program demo_simps_weights
-    use stdlib_quadrature, only: simps_weights
-    implicit none
-    real :: x(5) = [0., 1., 2., 3., 4.]
-    real :: y(5) = 3.*x**2
-    real :: w(5) 
-    w = simps_weights(x)
-    print *, sum(w*y)
-! 64.0
-end program demo_simps_weights
+{!test/examples/quadrature/demo_simps_weights.f90!}
 ```
 
 ## `gauss_legendre` - Gauss-Legendre quadrature (a.k.a. Gaussian quadrature) nodes and weights
@@ -222,15 +185,7 @@ If not specified, the default integral is -1 to 1.
 ### Example
 
 ```fortran
-program integrate
-	use iso_fortran_env, dp => real64
-	implicit none
-
-	integer, parameter :: N = 6
-	real(dp), dimension(N) :: x,w
-	call gauss_legendre(x,w)
-	print *, "integral of x**2 from -1 to 1 is",  sum(x**2 * w)
-end program
+{!test/examples/quadrature/demo_gauss_legendre.f90!}
 ```
 
 ## `gauss_legendre_lobatto` - Gauss-Legendre-Lobatto quadrature nodes and weights
@@ -268,13 +223,5 @@ If not specified, the default integral is -1 to 1.
 ### Example
 
 ```fortran
-program integrate
-	use iso_fortran_env, dp => real64
-	implicit none
-
-	integer, parameter :: N = 6
-	real(dp), dimension(N) :: x,w
-	call gauss_legendre_lobatto(x,w)
-	print *, "integral of x**2 from -1 to 1 is",  sum(x**2 * w)
-end program
+{!test/examples/quadrature/demo_gauss_legendre_lobatto.f90!}
 ```
