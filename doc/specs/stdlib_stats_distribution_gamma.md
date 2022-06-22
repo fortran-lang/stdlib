@@ -124,7 +124,7 @@ Elemental function
 
 `x`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`shape` has `intent(in)` and is a scalar of type real` or `complex`.
+`shape` has `intent(in)` and is a scalar of type `real` or `complex`.
 
 `rate`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
