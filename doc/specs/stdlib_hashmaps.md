@@ -609,7 +609,7 @@ exists] )`
 
 Subroutine.
 
-##### Argument
+##### Arguments
 
 `other`: shall be a scalar expression of type `other_type`. It
 is an `intent(in)` argument.
@@ -644,25 +644,19 @@ other_type are of the same type. Otherwise, `exists` is `.false.`
 ##### Example
 
 ```fortran
-    program demo_get
+    program demo_get_other_scalar
       use stdlib_hashmap_wrappers, only: &
-          get, key_type, set
-      use iso_fortran_env, only: int8
+          get_other_scalar, other_type, set
+      use stdlib_kinds, only: int32
       implicit none
-      integer(int8), allocatable :: value(:), result(:)
-      type(key_type) :: key
-      integer(int_8) :: i
-      allocate( value(1:15) )
-      do i=1, 15
-        value(i) = i
-      end do
-      call set( key, value )
-      call get( key, result )
-      print *, 'RESULT == VALUE = ', all( value == result )
+      integer(int32) :: value, result
+      type(other_type) :: other
+      value = 15
+      call set( other, value )
+      call get_other_scalar( other, result )
+      print *, 'RESULT == VALUE = ', ( value == result )
     end program demo_get
 ```
-
-
 
 #### `hasher_fun`- serves aa a function prototype.
 
