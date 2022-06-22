@@ -301,6 +301,11 @@ contains
         end if
         
         select type(d => other % value)
+            type is ( character(*) )
+                if (present(value_char)) then
+                   value_char = d
+                   exists_ = .true.
+                end if
             #:for k1, t1 in IRL_KINDS_TYPES
             type is ( ${t1}$ )
                 if (present(value_${k1}$)) then
@@ -310,7 +315,7 @@ contains
             #:endfor
             #:for k1, t1 in CMPLX_KINDS_TYPES
             type is ( ${t1}$ )
-                if (present(value_${k1}$)) then
+                if (present(value_c${k1}$)) then
                    value_c${k1}$ = d
                    exists_ = .true.
                 end if

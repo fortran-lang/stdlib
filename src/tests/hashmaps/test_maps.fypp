@@ -1,5 +1,146 @@
+#:include "common.fypp"
 #:set HASH_NAME = ["fnv_1_hasher", "fnv_1a_hasher", "seeded_nmhash32_hasher", "seeded_nmhash32x_hasher", "seeded_water_hasher"]
 #:set SIZE_NAME = ["16", "256"]
+
+#:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
+
+module test_stdlib_hashmap_wrappers
+    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk
+
+    use stdlib_hashmap_wrappers, only: other_type, set, get_other_scalar
+
+    implicit none
+    private
+
+    public :: collect_stdlib_wrappers
+
+contains
+
+    !> Collect all exported unit tests
+    subroutine collect_stdlib_wrappers(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest("hashmap-get-other-scalar-char", test_get_other_scalar_char) &
+            #:for k1, t1 in IR_KINDS_TYPES
+                , new_unittest("hashmap-get-other-scalar-${k1}$", test_get_other_scalar_${k1}$) &
+            #:endfor
+            #:for k1, t1 in CMPLX_KINDS_TYPES
+                , new_unittest("hashmap-get-other-scalar-c${k1}$", test_get_other_scalar_c${k1}$) &
+            #:endfor
+                , new_unittest("hashmap-get-other-scalar-lk", test_get_other_scalar_lk) &
+            ]
+
+    end subroutine collect_stdlib_wrappers
+
+    subroutine test_get_other_scalar_char(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=:), allocatable :: value_in, value_out
+        type(other_type) :: other
+        logical :: exists
+
+        value_in = 'abcdef'
+
+        call set ( other, value_in )
+
+        call get_other_scalar(other, value_char = value_out)
+        print*,'aaa ',value_in, value_out
+        call check(error, value_in, value_out, "get_other_scalar char: value_in not equal to value_out")
+        return
+
+        call get_other_scalar(other, value_char = value_out, exists = exists)
+        call check(error, value_in, value_out, "get_other_scalar char: value_in not equal to value_out")
+        return
+        call check(error, exists, "get_other_scalar char: exists should be .true.")
+
+    end subroutine
+
+    #:for k1, t1 in IR_KINDS_TYPES
+    subroutine test_get_other_scalar_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        ${t1}$ :: value_in, value_out
+        type(other_type) :: other
+        logical :: exists
+
+        value_in = 13
+
+        call set ( other, value_in )
+
+        call get_other_scalar(other, value_${k1}$ = value_out)
+
+        call check(error, value_in, value_out, "get_other_scalar ${k1}$: value_in not equal to value_out")
+        return
+
+        call get_other_scalar(other, value_${k1}$ = value_out, exists = exists)
+
+        call check(error, value_in, value_out, "get_other_scalar ${k1}$: value_in not equal to value_out")
+        return
+        call check(error, exists, "get_other_scalar ${k1}$: exists should be .true.")
+        return
+
+    end subroutine
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    subroutine test_get_other_scalar_c${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        ${t1}$ :: value_in, value_out
+        type(other_type) :: other
+        logical :: exists
+
+        value_in = (13._${k1}$, -3._${k1}$)
+
+        call set ( other, value_in )
+
+        call get_other_scalar(other, value_c${k1}$ = value_out)
+
+        call check(error, value_in, value_out, "get_other_scalar c${k1}$: value_in not equal to value_out")
+        return
+
+        call get_other_scalar(other, value_c${k1}$ = value_out, exists = exists)
+
+        call check(error, value_in, value_out, "get_other_scalar c${k1}$: value_in not equal to value_out")
+        return
+        call check(error, exists, "get_other_scalar c${k1}$: exists should be .true.")
+        return
+
+    end subroutine
+    #:endfor
+
+
+    subroutine test_get_other_scalar_lk(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        logical(lk) :: value_in, value_out
+        type(other_type) :: other
+        logical :: exists
+
+        value_in = .true.
+
+        call set ( other, value_in )
+
+        call get_other_scalar(other, value_lk = value_out)
+
+        call check(error, value_in .eqv. value_out, "get_other_scalar lk: value_in not equal to value_out")
+        return
+
+        call get_other_scalar(other, value_lk = value_out, exists = exists)
+
+        call check(error, value_in .eqv. value_out, "get_other_scalar lk: value_in not equal to value_out")
+        return
+        call check(error, exists, "get_other_scalar lk: exists should be .true.")
+        return
+
+    end subroutine
+
+end module
+
+
 module test_stdlib_chaining_maps
 !! Test various aspects of the runtime system.
 !! Running this program may require increasing the stack size to above 48 MBytes
@@ -354,6 +495,7 @@ program tester
     use testdrive, only : run_testsuite, new_testsuite, testsuite_type
     use test_stdlib_open_maps, only : collect_stdlib_open_maps
     use test_stdlib_chaining_maps, only : collect_stdlib_chaining_maps
+    use test_stdlib_hashmap_wrappers, only : collect_stdlib_wrappers
     implicit none
     integer :: stat, is
     type(testsuite_type), allocatable :: testsuites(:)
@@ -364,6 +506,7 @@ program tester
     testsuites = [ &
         new_testsuite("stdlib-open-maps", collect_stdlib_open_maps) &
         , new_testsuite("stdlib-chaining-maps", collect_stdlib_chaining_maps) &
+        , new_testsuite("stdlib-hashmap-wrappers", collect_stdlib_wrappers) &
         ]
 
     do is = 1, size(testsuites)
