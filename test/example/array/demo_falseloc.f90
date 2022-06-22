@@ -4,5 +4,5 @@ program demo_falseloc
     real, allocatable :: array(:)
     allocate (array(-200:200))
     call random_number(array)
-    array(falseloc(array < 0.5), lbound(array)) = 0.0
+    array(falseloc(array < 0.5, lbound(array,1))) = 0.0
 end program demo_falseloc
