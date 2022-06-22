@@ -1,3 +1,4 @@
+#:include "common.fypp"
 !! The module STDLIB_HASHMAP_WRAPPERS provides wrappers for various
 !! entities used by the hash map procedures. These include wrappers for the
 !! `key` and `other` data, and hashing procedures to operate on entities of
@@ -15,7 +16,12 @@ module stdlib_hashmap_wrappers
         int16,               &
         int32,               &
         int64,               &
-        dp
+        sp,                  &
+        dp,                  &
+        xdp,                 &
+        qp,                  &
+        lk,                  &
+        c_bool
 
     implicit none
 
@@ -31,6 +37,7 @@ module stdlib_hashmap_wrappers
         free_key,                &
         free_other,              &
         get,                     &
+        get_other_scalar,        &
         hasher_fun,              &
         operator(==),            &
         seeded_nmhash32_hasher,  &
@@ -87,6 +94,7 @@ module stdlib_hashmap_wrappers
     interface get
 
         module procedure get_char_key,   &
+                         get_other, &
                          get_int8_key
 
     end interface get
@@ -260,6 +268,58 @@ contains
 
     end subroutine get_other
 
+    
+    subroutine get_other_scalar(other, value_char &
+    #:set IRL_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + LOG_KINDS_TYPES
+    #:for k1, t1 in IRL_KINDS_TYPES
+                                , value_${k1}$    &
+    #:endfor
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+                                , value_c${k1}$   &
+    #:endfor
+                                , exists)
+!! Version: Experimental
+!!
+!! Gets the content of the other as a scalar of a kind provided by stdlib_kinds
+        class(other_type), intent(in) :: other
+        character(len=:), allocatable, intent(out), optional :: value_char
+        #:for k1, t1 in IRL_KINDS_TYPES
+        ${t1}$, intent(out), optional :: value_${k1}$
+        #:endfor
+        #:for k1, t1 in CMPLX_KINDS_TYPES
+        ${t1}$, intent(out), optional :: value_c${k1}$
+        #:endfor
+        logical, intent(out), optional :: exists
+
+        logical :: exists_
+
+        exists_ = .false.
+
+        if (.not.allocated(other % value)) then
+            if (present(exists)) exists = exists_
+            return
+        end if
+        
+        select type(d => other % value)
+            #:for k1, t1 in IRL_KINDS_TYPES
+            type is ( ${t1}$ )
+                if (present(value_${k1}$)) then
+                   value_${k1}$ = d
+                   exists_ = .true.
+                end if
+            #:endfor
+            #:for k1, t1 in CMPLX_KINDS_TYPES
+            type is ( ${t1}$ )
+                if (present(value_${k1}$)) then
+                   value_c${k1}$ = d
+                   exists_ = .true.
+                end if
+            #:endfor
+        end select
+
+        if (present(exists)) exists = exists_
+
+    end subroutine
 
     subroutine get_int8_key( key, value )
 !! Version: Experimental

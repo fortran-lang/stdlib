@@ -14,6 +14,7 @@ set(fppFiles
     stdlib_hash_64bit_fnv.fypp 
     stdlib_hash_64bit_pengy.fypp 
     stdlib_hash_64bit_spookyv2.fypp 
+    stdlib_hashmap_wrappers.fypp
     stdlib_io.fypp
     stdlib_io_npy.fypp
     stdlib_io_npy_load.fypp
@@ -84,7 +85,6 @@ fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 set(SRC
     stdlib_array.f90
     stdlib_error.f90
-    stdlib_hashmap_wrappers.f90
     stdlib_hashmaps.f90
     stdlib_hashmap_chaining.f90
     stdlib_hashmap_open.f90
