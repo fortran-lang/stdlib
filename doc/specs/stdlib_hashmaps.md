@@ -172,6 +172,10 @@ Procedures to manipulate `other_type` data:
 * `get( other, value )` - extracts the contents of `other` into the
   `class(*)` variable `value`.
 
+* `get_other_scalar( other, value [, exists])` - extracts the content of
+  `other` into the scalar variable `value` of a kind provided by the module
+  `stdlib_kinds`.
+
 * `set( other, value )` - sets the content of `other` to the `class(*)`
   variable `value`. 
 
@@ -583,6 +587,81 @@ an allocatable of `class(*)`. It is an `intent(out)` argument.
       print *, 'RESULT == VALUE = ', all( value == result )
     end program demo_get
 ```
+
+#### `get_other_scalar` - extracts a scalar value from a derived type
+
+##### Status
+
+Experimental
+
+##### Description
+
+Extracts a scalar value from a `other_type` and stores it in the scalar variable
+`value`.
+
+##### Syntax
+
+`call [[stdlib_hashmap_wrappers:get_other_scalar]]( other[, value_char,
+value_int8, value_int16, value_int32, value_int64, value_sp, value_dp, value_csp, value_cdp, value_lk,
+exists] )`
+
+##### Class
+
+Subroutine.
+
+##### Argument
+
+`other`: shall be a scalar expression of type `other_type`. It
+is an `intent(in)` argument.
+
+`value_char`: shall be a scalar `character(len=:), allocatable) variable. It is an
+`intent(out)` `optional` argument.
+
+`value_int8`, `value_int16`, `value_int32`, `value_int64`: shall be a scalar
+`integer` of kind `int8`, `int16`, `int32`, `int64`, respectively. It is an
+`intent(out)` `optional` argument.
+
+`value_sp`, `value_dp`: shall be a scalar `real` of kind `sp`, `dp` respectively.
+It is an `intent(out)` `optional` argument.
+
+`value_csp`, `value_cdp`: shall be a scalar `complex` of kind `sp`, `dp` respectively.
+It is an `intent(out)` `optional` argument.
+
+`value_lk`: shall be a scalar `logical` of kind `lk`. It is an `intent(out)`
+`optional` argument.
+
+`exists`: shall be a scalar `logical`. It is an `intent(out)` `optional`
+argument.
+
+#### Result
+
+The provided scalar variable contains the value of the `other_type` if both are of
+the same type; otherwise the provided scalar variable is undefined.
+
+`exists` is `.true.` if the provided scalar variable and the value of the
+other_type are of the same type. Otherwise, `exists` is `.false.`
+
+##### Example
+
+```fortran
+    program demo_get
+      use stdlib_hashmap_wrappers, only: &
+          get, key_type, set
+      use iso_fortran_env, only: int8
+      implicit none
+      integer(int8), allocatable :: value(:), result(:)
+      type(key_type) :: key
+      integer(int_8) :: i
+      allocate( value(1:15) )
+      do i=1, 15
+        value(i) = i
+      end do
+      call set( key, value )
+      call get( key, result )
+      print *, 'RESULT == VALUE = ', all( value == result )
+    end program demo_get
+```
+
 
 
 #### `hasher_fun`- serves aa a function prototype.

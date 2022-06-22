@@ -47,7 +47,7 @@ contains
         call set ( other, value_in )
 
         call get_other_scalar(other, value_char = value_out)
-        print*,'aaa ',value_in, value_out
+
         call check(error, value_in, value_out, "get_other_scalar char: value_in not equal to value_out")
         return
 
