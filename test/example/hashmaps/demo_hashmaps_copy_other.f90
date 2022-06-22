@@ -1,11 +1,10 @@
 program demo_copy_other
     use stdlib_hashmap_wrappers, only: &
-        copy_other, get, other_type, set
+        copy_other, other_type
     use iso_fortran_env, only: int8
     implicit none
     type(other_type) :: other_in, other_out
     integer(int8) :: i
-    class(*), allocatable :: dummy
     type dummy_type
         integer(int8) :: value(15)
     end type
@@ -15,9 +14,9 @@ program demo_copy_other
     end do
     allocate (other_in%value, source=dummy_val)
     call copy_other(other_in, other_out)
-    select type (other_out)
-        typeis(dummy_type)
-        print *, "other_in == other_out = ", &
-            all(other_in%value == other_out%value)
+    select type (out => other_out%value)
+        type is (dummy_type)
+            print *, "other_in == other_out = ", &
+              all(dummy_val % value == out%value)
     end select
 end program demo_copy_other

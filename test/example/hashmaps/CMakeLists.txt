@@ -1,6 +1,6 @@
 ADD_DEMO(hashmaps_calls)
 ADD_DEMO(hashmaps_copy_key)
-#ADD_DEMO(hashmaps_copy_other)
+ADD_DEMO(hashmaps_copy_other)
 ADD_DEMO(hashmaps_entries)
 ADD_DEMO(hashmaps_equal_keys)
 ADD_DEMO(hashmaps_fnv_1a_hasher)
