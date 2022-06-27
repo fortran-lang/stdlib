@@ -1,5 +1,5 @@
 program demo_padl
-    use stdlib_string_type, only: string_type, assignment(=)
+    use stdlib_string_type, only: string_type, assignment(=), write(formatted)
     use stdlib_strings, only: padl
     implicit none
     type(string_type) :: string
