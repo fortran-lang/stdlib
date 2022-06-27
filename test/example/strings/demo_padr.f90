@@ -1,5 +1,5 @@
 program demo_padr
-    use stdlib_string_type, only: string_type, assignment(=)
+    use stdlib_string_type, only: string_type, assignment(=), write(formatted)
     use stdlib_strings, only: padr
     implicit none
     type(string_type) :: string
