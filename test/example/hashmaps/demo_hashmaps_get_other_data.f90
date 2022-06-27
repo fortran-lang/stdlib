@@ -2,7 +2,7 @@ program demo_get_other_data
     use stdlib_kinds, only: int8
     use stdlib_hashmaps, only: chaining_hashmap_type, int_index
     use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type, other_type, set, get
-    logical                     :: conflict, exists
+    logical                     :: conflict
     type(key_type)              :: key
     type(other_type)            :: other
     type(chaining_hashmap_type) :: map

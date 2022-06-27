@@ -3,7 +3,6 @@ program demo_exponential_rvs
     use stdlib_stats_distribution_exponential, only: rexp => rvs_exp
 
     implicit none
-    real ::  a(2, 3, 4)
     complex :: scale
     integer :: seed_put, seed_get
 

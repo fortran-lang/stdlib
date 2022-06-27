@@ -1,7 +1,7 @@
 program demo_math_all_close
 
     use stdlib_math, only: all_close
-    real    :: x(2) = [1, 2], y, NAN
+    real    :: y, NAN
     complex :: z(4, 4)
 
     y = -3

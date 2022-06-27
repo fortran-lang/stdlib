@@ -4,7 +4,7 @@ program demo_universal_mult_hash_64
     use iso_fortran_env, only: int64
     implicit none
     integer, allocatable :: array1(:)
-    integer(int64) :: hash, i, seed, source
+    integer(int64) :: hash, seed, source
     seed = 0
     allocate (array1(0:2**6 - 1))
     array1 = 0

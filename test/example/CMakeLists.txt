@@ -1,9 +1,9 @@
 macro(ADD_DEMO name)
     add_executable(demo_${name} demo_${name}.f90)
     target_link_libraries(demo_${name} "${PROJECT_NAME}")
-#    add_test(NAME ${name}
-#             COMMAND $<TARGET_FILE:demo_${name}> ${CMAKE_CURRENT_BINARY_DIR}
-#             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    add_test(NAME ${name}
+             COMMAND $<TARGET_FILE:demo_${name}> ${CMAKE_CURRENT_BINARY_DIR}
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endmacro(ADD_DEMO)
 
 add_subdirectory(array)

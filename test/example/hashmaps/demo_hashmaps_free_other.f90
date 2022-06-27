@@ -7,7 +7,7 @@ program demo_free_other
         integer(int8) :: value(15)
     end type dummy_type
     type(dummy_type) :: dummy_val
-    type(other_type), allocatable :: other_in, other_out
+    type(other_type) :: other_in, other_out
     integer(int8) :: i
     do i = 1, 15
         dummy_val%value(i) = i

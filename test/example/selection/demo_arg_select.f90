@@ -5,7 +5,7 @@ program demo_arg_select
     real, allocatable :: array(:)
     integer, allocatable :: indx(:)
     integer :: kth_smallest
-    integer :: k, left, right
+    integer :: k
 
     array = [3., 2., 7., 4., 5., 1., 4., -1.]
     indx = [(k, k=1, size(array))]

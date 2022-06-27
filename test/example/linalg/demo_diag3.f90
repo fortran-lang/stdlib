@@ -4,7 +4,6 @@ program demo_diag3
     integer, parameter :: n = 10
     real :: c(n), ul(n - 1)
     real :: A(n, n)
-    integer :: i
     c = 2
     ul = -1
     A = diag(ul, -1) + diag(c) + diag(ul, 1) ! Gil Strang's favorite matrix

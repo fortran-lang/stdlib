@@ -1,5 +1,5 @@
 program demo_chomp
-    use stdlib_ascii, only: TAB, VT, NUL, LF, CR, FF
+    use stdlib_ascii, only: TAB, VT, LF, CR, FF
     use stdlib_strings, only: chomp
     implicit none
     print'(a)', chomp("   hello   ")             ! "   hello"

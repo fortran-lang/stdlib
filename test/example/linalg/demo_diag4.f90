@@ -4,7 +4,6 @@ program demo_diag4
     integer, parameter :: n = 12
     real :: A(n, n)
     real :: v(n)
-    integer :: i
     call random_number(A)
     v = diag(A) ! v contains diagonal elements of A
 end program demo_diag4
