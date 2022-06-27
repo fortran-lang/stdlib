@@ -2,7 +2,7 @@ program demo_log_text_error
     use stdlib_logger
 
     character(*), parameter :: filename = 'dummy.txt'
-    integer                 :: col_no, line_no, lun
+    integer                 :: col_no, line_no, lun, status
     character(128)          :: line
     character(*), parameter :: message = 'Bad text found.'
 
