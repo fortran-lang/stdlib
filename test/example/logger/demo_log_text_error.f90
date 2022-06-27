@@ -30,7 +30,7 @@ contains
         ! scan the line for forbidden characters
         col_no = scan(line,".$/")
         ! col_no > 0 means there is a forbidden character
-        status = int(col_no > 0)
+        status = col_no > 0
     end subroutine
 
 end program demo_log_text_error
