@@ -160,6 +160,7 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
+    impure elemental &
     function rvs_norm_${t1[0]}$${k1}$(loc, scale) result(res)
     !
     ! Normal random variate (loc, scale)
@@ -178,6 +179,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
+    impure elemental &
     function rvs_norm_${t1[0]}$${k1}$(loc, scale) result(res)
     !
     ! Normally distributed complex. The real part and imaginary part are       &
