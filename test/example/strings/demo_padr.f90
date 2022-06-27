@@ -7,7 +7,7 @@ program demo_padr
     string = "right pad this string"
 ! string <-- "right pad this string"
 
-    print *, padr(string, 25, "$") ! "right pad this string$$$$"
+    print '(a)', padr(string, 25, "$") ! "right pad this string$$$$"
 
     string = padr(string, 25)
 ! string <-- "right pad this string    "
