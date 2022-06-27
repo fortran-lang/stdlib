@@ -2,7 +2,7 @@ program demo_padr
     use stdlib_string_type, only: string_type, assignment(=)
     use stdlib_strings, only: padr
     implicit none
-    string_type :: string
+    type(string_type) :: string
 
     string = "right pad this string"
 ! string <-- "right pad this string"
