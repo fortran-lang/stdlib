@@ -24,7 +24,7 @@ program demo_get_other_data
     end if
     call get(other, data)
     select type (data)
-        typeis(dummy_type)
+        type is (dummy_type)
         print *, 'Other data % value = ', data%value
     class default
         print *, 'Invalid data type in other'
