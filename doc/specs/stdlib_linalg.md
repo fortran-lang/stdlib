@@ -33,23 +33,23 @@ Returns a diagonal array or a vector with the extracted diagonal elements.
 ### Example
 
 ```fortran
-{!test/examples/linalg/demo_diag1.f90!}
+{!test/example/linalg/example_diag1.f90!}
 ```
 
 ```fortran
-{!test/examples/linalg/demo_diag2.f90!}
+{!test/example/linalg/example_diag2.f90!}
 ```
 
 ```fortran
-{!test/examples/linalg/demo_diag3.f90!}
+{!test/example/linalg/example_diag3.f90!}
 ```
 
 ```fortran
-{!test/examples/linalg/demo_diag4.f90!}
+{!test/example/linalg/example_diag4.f90!}
 ```
 
 ```fortran
-{!test/examples/linalg/demo_diag5.f90!}
+{!test/example/linalg/example_diag5.f90!}
 ```
 
 ## `eye` - Construct the identity matrix
@@ -96,11 +96,11 @@ A = eye(2,2)/2.0   !! A == diag([0.5, 0.5])
 ### Example
 
 ```fortran
-{!test/examples/linalg/demo_eye1.f90!}
+{!test/example/linalg/example_eye1.f90!}
 ```
 
 ```fortran
-{!test/examples/linalg/demo_eye2.f90!}
+{!test/example/linalg/example_eye2.f90!}
 ```
 
 ## `trace` - Trace of a matrix
@@ -127,7 +127,7 @@ Returns the trace of the matrix, i.e. the sum of diagonal elements.
 
 ### Example
 ```fortran
-{!test/examples/linalg/demo_trace.f90!}
+{!test/example/linalg/example_trace.f90!}
 ```
 
 ## `outer_product` - Computes the outer product of two vectors
@@ -157,7 +157,7 @@ Returns a rank-2 array equal to `u v^T` (where `u, v` are considered column vect
 ### Example
 
 ```fortran
-{!test/examples/linalg/demo_outer_product.f90!}
+{!test/example/linalg/example_outer_product.f90!}
 ```
 
 ## `is_square` - Checks if a matrix is square
@@ -185,7 +185,7 @@ Returns a `logical` scalar that is `.true.` if the input matrix is square, and `
 ### Example
 
 ```fortran
-{!test/examples/linalg/demo_is_square.f90!}
+{!test/example/linalg/example_is_square.f90!}
 ```
 
 ## `is_diagonal` - Checks if a matrix is diagonal
@@ -214,7 +214,7 @@ Note that nonsquare matrices may be diagonal, so long as `a_ij = 0` when `i /= j
 ### Example
 
 ```fortran
-{!test/examples/linalg/demo_is_diagonal.f90!}
+{!test/example/linalg/example_is_diagonal.f90!}
 ```
 
 ## `is_symmetric` - Checks if a matrix is symmetric
@@ -242,7 +242,7 @@ Returns a `logical` scalar that is `.true.` if the input matrix is symmetric, an
 ### Example
 
 ```fortran
-{!test/examples/linalg/demo_is_symmetric.f90!}
+{!test/example/linalg/example_is_symmetric.f90!}
 ```
 
 ## `is_skew_symmetric` - Checks if a matrix is skew-symmetric
@@ -270,7 +270,7 @@ Returns a `logical` scalar that is `.true.` if the input matrix is skew-symmetri
 ### Example
 
 ```fortran
-{!test/examples/linalg/demo_is_skew_symmetric.f90!}
+{!test/example/linalg/example_is_skew_symmetric.f90!}
 ```
 
 ## `is_hermitian` - Checks if a matrix is Hermitian
@@ -298,7 +298,7 @@ Returns a `logical` scalar that is `.true.` if the input matrix is Hermitian, an
 ### Example
 
 ```fortran
-{!test/examples/linalg/demo_is_hermitian.f90!}
+{!test/example/linalg/example_is_hermitian.f90!}
 ```
 
 ## `is_triangular` - Checks if a matrix is triangular
@@ -330,7 +330,7 @@ Specifically, upper triangular matrices satisfy `a_ij = 0` when `j < i`, and low
 ### Example
 
 ```fortran
-{!test/examples/linalg/demo_is_triangular.f90!}
+{!test/example/linalg/example_is_triangular.f90!}
 ```
 
 ## `is_hessenberg` - Checks if a matrix is hessenberg
@@ -362,5 +362,5 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 ### Example
 
 ```fortran
-{!test/examples/linalg/demo_is_hessenberg.f90!}
+{!test/example/linalg/example_is_hessenberg.f90!}
 ```

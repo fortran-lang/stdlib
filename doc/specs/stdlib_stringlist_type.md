@@ -72,7 +72,7 @@ The result is of type `stringlist_index_type`.
 #### Example
 
 ```fortran
-{!test/examples/stringlist_type/demo_fidx_bidx.f90!}
+{!test/example/stringlist_type/example_stringlist_type_fidx_bidx.f90!}
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -108,7 +108,7 @@ The result is an instance of type `stringlist_type`.
 #### Example
 
 ```fortran
-{!test/examples/stringlist_type/demo_constructor.f90!}
+{!test/example/stringlist_type/example_stringlist_type_constructor.f90!}
 ```
 
 
@@ -142,7 +142,7 @@ Pure subroutine.
 #### Example
 
 ```fortran
-{!test/examples/stringlist_type/demo_insert_at.f90!}
+{!test/example/stringlist_type/example_stringlist_type_insert_at.f90!}
 ```
 
 
@@ -177,7 +177,7 @@ The result is a string of type `string_type`.
 #### Example
 
 ```fortran
-{!test/examples/stringlist_type/demo_get.f90!}
+{!test/example/stringlist_type/example_stringlist_type_get.f90!}
 ```
 
 
@@ -211,7 +211,7 @@ The result is of type `integer`.
 #### Example
 
 ```fortran
-{!test/examples/stringlist_type/demo_len.f90!}
+{!test/example/stringlist_type/example_stringlist_type_len.f90!}
 ```
 
 
@@ -241,7 +241,7 @@ No arguments.
 #### Example
 
 ```fortran
-{!test/examples/stringlist_type/demo_clear.f90!}
+{!test/example/stringlist_type/example_stringlist_type_clear.f90!}
 ```
 
 
@@ -283,7 +283,7 @@ The result is a default `logical` scalar value.
 #### Example
 
 ```fortran
-{!test/examples/stringlist_type/demo_equality_operator.f90!}
+{!test/example/stringlist_type/example_stringlist_type_equality_operator.f90!}
 ```
 
 
@@ -325,7 +325,7 @@ The result is a default `logical` scalar value.
 #### Example
 
 ```fortran
-{!test/examples/stringlist_type/demo_inequality_operator.f90!}
+{!test/example/stringlist_type/example_stringlist_type_inequality_operator.f90!}
 ```
 
 
@@ -365,5 +365,5 @@ The result is an instance of `[[stdlib_stringlist_type(module):stringlist_type(t
 #### Example
 
 ```fortran
-{!test/examples/stringlist_type/demo_concatenate_operator.f90!}
+{!test/example/stringlist_type/example_stringlist_type_concatenate_operator.f90!}
 ```

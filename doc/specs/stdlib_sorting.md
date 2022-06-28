@@ -261,7 +261,7 @@ function `LGT`.
 ##### Example
 
 ```fortran
-{!test/examples/sorting/demo_ord_sort.f90!}
+{!test/example/sorting/example_ord_sort.f90!}
 ```
 
 #### `sort` - sorts an input array
@@ -315,7 +315,7 @@ element of `array` is a `NaN`.  Sorting of `CHARACTER(*)` and
 
 
 ```fortran
-{!test/examples/sorting/demo_sort.f90!}
+{!test/example/sorting/example_sort.f90!}
 ```
 
 #### `sort_index` - creates an array of sorting indices for an input array, while also sorting the array.

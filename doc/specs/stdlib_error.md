@@ -53,16 +53,16 @@ If `condition` is `.false.`, and:
 #### Examples
 
 ```fortran
-{!test/examples/error/demo_check1.f90!}
+{!test/example/error/example_check1.f90!}
 ```
 ```fortran
-{!test/examples/error/demo_check2.f90!}
+{!test/example/error/example_check2.f90!}
 ```
 ```fortran
-{!test/examples/error/demo_check3.f90!}
+{!test/example/error/example_check3.f90!}
 ```
 ```fortran
-{!test/examples/error/demo_check4.f90!}
+{!test/example/error/example_check4.f90!}
 ```
 
 ### `error_stop` - aborts the program
@@ -94,11 +94,11 @@ Aborts the program with printing the message `msg` to `stderr` and a nonzero exi
 Without error code:
 
 ```fortran
-{!test/examples/error/demo_error_stop1.f90!}
+{!test/example/error/example_error_stop1.f90!}
 ```
 
 With error code:
 
 ```fortran
-{!test/examples/error/demo_error_stop2.f90!}
+{!test/example/error/example_error_stop2.f90!}
 ```

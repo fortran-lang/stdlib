@@ -1,2 +1,2 @@
-ADD_DEMO(ord_sort)
-ADD_DEMO(sort)
+ADD_EXAMPLE(ord_sort)
+ADD_EXAMPLE(sort)

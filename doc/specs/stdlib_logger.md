@@ -195,7 +195,7 @@ an `intent(in)` argument. It shall be the name of the file to be opened.
 #### Example
 
 ```fortran
-{!test/examples/logger/demo_global_logger.f90!}
+{!test/example/logger/example_global_logger.f90!}
 ```
 
 ### `add_log_unit` - add a unit to the array `self % log_units`
@@ -251,7 +251,7 @@ to `unit`.
 #### Example
 
 ```fortran
-{!test/examples/logger/demo_add_log_unit.f90!}
+{!test/example/logger/example_add_log_unit.f90!}
 ```
 
 ### `configuration` - report a logger's configuration
@@ -378,7 +378,7 @@ Pure subroutine
 #### Example
 
 ```fortran
-{!test/examples/logger/demo_configure.f90!}
+{!test/example/logger/example_configure.f90!}
 ```
 
 ### `log_debug` - Writes the string `message` to `self % log_units`
@@ -668,7 +668,7 @@ Subroutine
 #### Example
 
 ```fortran
-{!test/examples/logger/demo_log_io_error.f90!}
+{!test/example/logger/example_log_io_error.f90!}
 ```
 
 ### `log_message` - write the string `message` to `self % log_units` 
@@ -817,7 +817,7 @@ Subroutine
 #### Example
 
 ```fortran
-{!test/examples/logger/demo_log_text_error.f90!}
+{!test/example/logger/example_log_text_error.f90!}
 ```
 
 ### `log_units_assigned` - returns the number of active I/O units

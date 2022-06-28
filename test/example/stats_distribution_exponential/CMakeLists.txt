@@ -1,3 +1,3 @@
-ADD_DEMO(exponential_cdf)
-ADD_DEMO(exponential_pdf)
-ADD_DEMO(exponential_rvs)
+ADD_EXAMPLE(exponential_cdf)
+ADD_EXAMPLE(exponential_pdf)
+ADD_EXAMPLE(exponential_rvs)

@@ -107,7 +107,7 @@ code here to be released under stdlib's MIT license.
 ### Example
 
 ```fortran
-{!test/examples/selection/demo_select.f90!}
+{!test/example/selection/example_select.f90!}
 ```
 
 ## `arg_select` - find the index of the k-th smallest value in an input array
@@ -190,7 +190,7 @@ code here to be released under stdlib's MIT license.
 
 
 ```fortran
-{!test/examples/selection/demo_arg_select.f90!}
+{!test/example/selection/example_arg_select.f90!}
 ```
 
 ## Comparison with using `sort`
@@ -201,7 +201,7 @@ should see a speed improvement with the selection routines which grows like
 LOG(size(`array`)).
 
 ```fortran
-{!test/examples/selection/selection_vs_sort.f90!}
+{!test/example/selection/selection_vs_sort.f90!}
 ```
 
 The results seem consistent with expectations when the `array` is large; the program prints:

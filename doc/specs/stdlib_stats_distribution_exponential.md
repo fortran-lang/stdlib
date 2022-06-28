@@ -46,7 +46,7 @@ The result is a scalar or rank one array with a size of `array_size`, and has th
 ### Example
 
 ```fortran
-{!test/examples/stats_distribution_exponential/demo_exponential_rvs.f90!}
+{!test/example/stats_distribution_exponential/example_exponential_rvs.f90!}
 ```
 
 ## `pdf_exp` - exponential distribution probability density function
@@ -90,7 +90,7 @@ The result is a scalar or an array, with a shape conformable to arguments, and h
 ### Example
 
 ```fortran
-{!test/examples/stats_distribution_exponential/demo_exponential_pdf.f90!}
+{!test/example/stats_distribution_exponential/example_exponential_pdf.f90!}
 ```
 
 ## `cdf_exp` - exponential cumulative distribution function
@@ -134,5 +134,5 @@ The result is a scalar or an array, with a shape conformable to arguments, and h
 ### Example
 
 ```fortran
-{!test/examples/stats_distribution_exponential/demo_exponential_cdf.f90!}
+{!test/example/stats_distribution_exponential/example_exponential_cdf.f90!}
 ```

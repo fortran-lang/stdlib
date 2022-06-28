@@ -33,7 +33,7 @@ Return a scalar of type `integer`.
 ### Example
 
 ```fortran
-{!test/examples/random/demo_random_seed.f90!}
+{!test/example/random/example_random_seed.f90!}
 ```
 
 ## `dist_rand` - Get a random integer with specified kind
@@ -61,5 +61,5 @@ Return a scalar of type `integer`.
 ### Example
 
 ```fortran
-{!test/examples/random/demo_dist_rand.f90!}
+{!test/example/random/example_dist_rand.f90!}
 ```

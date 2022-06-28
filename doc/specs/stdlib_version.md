@@ -54,5 +54,5 @@ Pure subroutine.
 #### Example
 
 ```fortran
-{!test/examples/version/demo_version.f90!}
+{!test/example/version/example_version.f90!}
 ``` 

@@ -227,7 +227,7 @@ is an `intent(out)` argument.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_copy_key.f90!}
+{!test/example/hashmaps/example_hashmaps_copy_key.f90!}
 ```
 
 #### `copy_other` - Returns a copy of the other data
@@ -259,7 +259,7 @@ is an `intent(out)` argument.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_copy_other.f90!}
+{!test/example/hashmaps/example_hashmaps_copy_other.f90!}
 ```
 
 
@@ -325,7 +325,7 @@ expected to be minor compared to its faster hashing rate.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_fnv_1_hasher.f90!}
+{!test/example/hashmaps/example_hashmaps_fnv_1_hasher.f90!}
 ```
 
 
@@ -377,7 +377,7 @@ expected to be minor compared to its faster hashing rate.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_fnv_1a_hasher.f90!}
+{!test/example/hashmaps/example_hashmaps_fnv_1a_hasher.f90!}
 ```
 
 #### `free_key` - frees the memory associated with a key
@@ -407,7 +407,7 @@ is an `intent(out)` argument.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_free_key.f90!}
+{!test/example/hashmaps/example_hashmaps_free_key.f90!}
 ```
 
 #### `free_other` - frees the memory associated with other data
@@ -437,7 +437,7 @@ is an `intent(out)` argument.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_free_other.f90!}
+{!test/example/hashmaps/example_hashmaps_free_other.f90!}
 ```
 
 
@@ -481,7 +481,7 @@ an allocatable of `class(*)`. It is an `intent(out)` argument.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_get.f90!}
+{!test/example/hashmaps/example_hashmaps_get.f90!}
 ```
 
 
@@ -525,7 +525,7 @@ pointers intended for use as a hash function for the hash maps.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_hasher_fun.f90!}
+{!test/example/hashmaps/example_hashmaps_hasher_fun.f90!}
 ```
 
 #### `operator(==)` - Compares two keys for equality 
@@ -565,7 +565,7 @@ The result is `.true.` if the keys are equal, otherwise `.falss.`.
 ##### Example 
 
 ```fortran 
-{!test/examples/hashmaps/demo_equal_keys.f90!}
+{!test/example/hashmaps/example_hashmaps_equal_keys.f90!}
 ```
 
 #### `seeded_nmhash32_hasher`- calculates a hash code from a key
@@ -615,7 +615,7 @@ This code passes the SMHasher tests.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_seeded_nmhash32_hasher.f90!}
+{!test/example/hashmaps/example_hashmaps_seeded_nmhash32_hasher.f90!}
 ```
 
 #### `seeded_nmhash32x_hasher`- calculates a hash code from a key
@@ -664,7 +664,7 @@ This code passes the SMHasher tests.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_seeded_nmhash32x_hasher.f90!}
+{!test/example/hashmaps/example_hashmaps_seeded_nmhash32x_hasher.f90!}
 ```
 
 #### `seeded_water_hasher`- calculates a hash code from a key
@@ -714,7 +714,7 @@ This code passes the SMHasher tests.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_seeded_water_hasher.f90!}
+{!test/example/hashmaps/example_hashmaps_seeded_water_hasher.f90!}
 ```
 
 
@@ -763,7 +763,7 @@ value to an `int8` vector.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_set.f90!}
+{!test/example/hashmaps/example_hashmaps_set.f90!}
 ```
 
 
@@ -1209,7 +1209,7 @@ The result will be the number of procedure calls on the hash map.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_calls.f90!}
+{!test/example/hashmaps/example_hashmaps_calls.f90!}
 ```
 
 
@@ -1247,7 +1247,7 @@ The result will be the number of entries in the hash map.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_entries.f90!}
+{!test/example/hashmaps/example_hashmaps_entries.f90!}
 ```
 
 
@@ -1295,7 +1295,7 @@ undefined.
 
 
 ```fortran
-{!test/examples/hashmaps/demo_get_other_data.f90!}
+{!test/example/hashmaps/example_hashmaps_get_other_data.f90!}
 ```
 
 
@@ -1358,7 +1358,7 @@ has the value `alloc_fault`.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_init.f90!}
+{!test/example/hashmaps/example_hashmaps_init.f90!}
 ```
 
 
@@ -1400,7 +1400,7 @@ is being examined.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_key_test.f90!}
+{!test/example/hashmaps/example_hashmaps_key_test.f90!}
 ```
 
 
@@ -1440,7 +1440,7 @@ number of slots in the hash map.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_loading.f90!}
+{!test/example/hashmaps/example_hashmaps_loading.f90!}
 ```
 
 #### `map_entry` - inserts an entry into the hash map
@@ -1490,7 +1490,7 @@ is ignored.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_map_entry.f90!}
+{!test/example/hashmaps/example_hashmaps_map_entry.f90!}
 ```
 
 #### `map_probes` - returns the number of hash map probes
@@ -1529,7 +1529,7 @@ rehashing.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_probes.f90!}
+{!test/example/hashmaps/example_hashmaps_probes.f90!}
 ```
 
 #### `num_slots` - returns the number of hash map slots.
@@ -1567,7 +1567,7 @@ The result is the number of slots in `map`.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_num_slots.f90!}
+{!test/example/hashmaps/example_hashmaps_num_slots.f90!}
 ```
 
 
@@ -1602,7 +1602,7 @@ It is the hash method to be used by `map`.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_rehash.f90!}
+{!test/example/hashmaps/example_hashmaps_rehash.f90!}
 ```
 
 #### `remove` - removes an entry from the hash map
@@ -1643,7 +1643,7 @@ absent, the procedure returns with no entry with the given key.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_remove.f90!}
+{!test/example/hashmaps/example_hashmaps_remove.f90!}
 ```
 
 #### `set_other_data` - replaces the other data for an entry
@@ -1690,7 +1690,7 @@ not exist and nothing was done.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_set_other_data.f90!}
+{!test/example/hashmaps/example_hashmaps_set_other_data.f90!}
 ```
 
 #### `slots_bits` - returns the number of bits used to address the hash map slots 
@@ -1728,7 +1728,7 @@ The result is the number of bits used in addressing the slots in `map`.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_slots_bits.f90!}
+{!test/example/hashmaps/example_hashmaps_slots_bits.f90!}
 ```
 
 
@@ -1769,5 +1769,5 @@ from their slot index the map.
 ##### Example
 
 ```fortran
-{!test/examples/hashmaps/demo_total_depth.f90!}
+{!test/example/hashmaps/example_hashmaps_total_depth.f90!}
 ```

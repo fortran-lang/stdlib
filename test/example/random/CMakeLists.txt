@@ -1,2 +1,2 @@
-ADD_DEMO(dist_rand)
-ADD_DEMO(random_seed)
+ADD_EXAMPLE(dist_rand)
+ADD_EXAMPLE(random_seed)

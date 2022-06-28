@@ -543,7 +543,7 @@ E. Knuth. It multiplies the `key` by the odd valued approximation to
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_fibonacci_hash.f90!}
+{!test/example/hash_procedures/example_fibonacci_hash.f90!}
 ```
 
 #### `fnv_1_hash`- calculates a hash code from a key
@@ -597,7 +597,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_fnv_1_hash.f90!}
+{!test/example/hash_procedures/example_fnv_1_hash.f90!}
 ```
 
 
@@ -651,7 +651,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_fnv_1a_hash.f90!}
+{!test/example/hash_procedures/example_fnv_1a_hash.f90!}
 ```
 
 
@@ -818,7 +818,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_nmhash32.f90!}
+{!test/example/hash_procedures/example_nmhash32.f90!}
 ```
 
 
@@ -870,7 +870,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_nmhash32x.f90!}
+{!test/example/hash_procedures/example_nmhash32x.f90!}
 ```
 
 #### `odd_random_integer` - returns an odd integer
@@ -953,7 +953,7 @@ It multiplies the `key` by `seed`, and returns the
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_universal_mult_hash.f90!}
+{!test/example/hash_procedures/example_universal_mult_hash.f90!}
 ```
 
 #### `water_hash`- calculates a hash code from a key and a seed
@@ -1011,7 +1011,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_water_hash.f90!}
+{!test/example/hash_procedures/example_water_hash.f90!}
 ```
 
 ## The `stdlib_hash_64bit` module
@@ -1102,7 +1102,7 @@ E. Knuth. It multiplies the `key` by the odd valued approximation to
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_fibonacci_hash_64.f90!}
+{!test/example/hash_procedures/example_fibonacci_hash_64.f90!}
 ```
 
 #### `FNV_1`- calculates a hash code from a key
@@ -1156,7 +1156,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_fnv_1_hash_64.f90!}
+{!test/example/hash_procedures/example_fnv_1_hash_64.f90!}
 ```
 
 
@@ -1210,7 +1210,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_fnv_1a_hash_64.f90!}
+{!test/example/hash_procedures/example_fnv_1a_hash_64.f90!}
 ```
 
 
@@ -1370,7 +1370,7 @@ function for character strings.
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_pengy_hash.f90!}
+{!test/example/hash_procedures/example_pengy_hash.f90!}
 ```
 
 
@@ -1420,7 +1420,7 @@ and has no known bad seeds.
 ##### Example
 
 ```fortran
-{!test/examples/hash_procedures/demo_spooky_hash.f90!}
+{!test/example/hash_procedures/example_spooky_hash.f90!}
 ```
 
 #### `universal_mult_hash` - maps an integer to a smaller number of bits
@@ -1469,7 +1469,7 @@ It multiplies the `key` by `seed`, and returns the
 
 
 ```fortran
-{!test/examples/hash_procedures/demo_universal_mult_hash_64.f90!}
+{!test/example/hash_procedures/example_universal_mult_hash_64.f90!}
 ```
 
 

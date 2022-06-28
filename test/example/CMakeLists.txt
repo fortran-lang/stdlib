@@ -1,10 +1,10 @@
-macro(ADD_DEMO name)
-    add_executable(demo_${name} demo_${name}.f90)
-    target_link_libraries(demo_${name} "${PROJECT_NAME}")
+macro(ADD_EXAMPLE name)
+    add_executable(example_${name} example_${name}.f90)
+    target_link_libraries(example_${name} "${PROJECT_NAME}")
     add_test(NAME ${name}
-             COMMAND $<TARGET_FILE:demo_${name}> ${CMAKE_CURRENT_BINARY_DIR}
+             COMMAND $<TARGET_FILE:example_${name}> ${CMAKE_CURRENT_BINARY_DIR}
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-endmacro(ADD_DEMO)
+endmacro(ADD_EXAMPLE)
 
 add_subdirectory(array)
 add_subdirectory(ascii)

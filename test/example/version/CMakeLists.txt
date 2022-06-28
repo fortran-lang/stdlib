@@ -1,1 +1,1 @@
-ADD_DEMO(version)
+ADD_EXAMPLE(version)

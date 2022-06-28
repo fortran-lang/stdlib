@@ -1,1 +1,1 @@
-ADD_DEMO(optval)
+ADD_EXAMPLE(optval)

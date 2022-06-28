@@ -46,7 +46,7 @@ Returns an array of default integer size, with a maximum length of `size(array)`
 #### Examples
 
 ```fortran
-{!test/examples/array/demo_trueloc.f90!}
+{!test/example/array/example_trueloc.f90!}
 ```
 
 
@@ -83,5 +83,5 @@ Returns an array of default integer size, with a maximum length of `size(array)`
 #### Examples
 
 ```fortran
-{!test/examples/array/demo_falseloc.f90!}
+{!test/example/array/example_falseloc.f90!}
 ```

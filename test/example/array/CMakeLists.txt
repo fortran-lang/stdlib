@@ -1,2 +1,2 @@
-ADD_DEMO(falseloc)
-ADD_DEMO(trueloc)
+ADD_EXAMPLE(falseloc)
+ADD_EXAMPLE(trueloc)
