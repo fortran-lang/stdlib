@@ -1,22 +1,22 @@
 program demo_verify
-    use stdlib_string_type
-    implicit none
-    type(string_type) :: string
-    integer :: pos
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  integer :: pos
 
-    string = "fortran"
-    pos = verify(string, "ao")
+  string = "fortran"
+  pos = verify(string, "ao")
 ! pos == 1
 
-    pos = verify(string, "fo")
+  pos = verify(string, "fo")
 ! pos == 3
 
-    pos = verify(string, "c++")
+  pos = verify(string, "c++")
 ! pos == 1
 
-    pos = verify(string, "c++", back=.true.)
+  pos = verify(string, "c++", back=.true.)
 ! pos == 7
 
-    pos = verify(string, string)
+  pos = verify(string, string)
 ! pos == 0
 end program demo_verify

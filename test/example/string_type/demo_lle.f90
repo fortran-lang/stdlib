@@ -1,16 +1,16 @@
 program demo_lle
-    use stdlib_string_type
-    implicit none
-    type(string_type) :: string
-    logical :: res
+  use stdlib_string_type
+  implicit none
+  type(string_type) :: string
+  logical :: res
 
-    string = "bcd"
-    res = lle(string, "abc")
+  string = "bcd"
+  res = lle(string, "abc")
 ! res .eqv. .false.
 
-    res = lle(string, "bcd")
+  res = lle(string, "bcd")
 ! res .eqv. .true.
 
-    res = lle(string, "cde")
+  res = lle(string, "cde")
 ! res .eqv. .true.
 end program demo_lle
