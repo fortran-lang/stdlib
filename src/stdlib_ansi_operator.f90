@@ -1,7 +1,8 @@
 ! SPDX-Identifier: MIT
 
 !> Implementation of the conversion to enumerator and identifier types to strings
-submodule (stdlib_terminal_colors) stdlib_terminal_colors_operator
+submodule (stdlib_ansi) stdlib_ansi_operator
+    use stdlib_string_type, only : operator(//)
     implicit none
 
 contains
@@ -44,4 +45,28 @@ contains
         str = to_string(code) // rval
     end function concat_right
 
-end submodule stdlib_terminal_colors_operator
+    !> Concatenate an escape code with a string and turn it into an actual escape sequence
+    pure module function concat_left_str(lval, code) result(str)
+        !> String to add the escape code to
+        type(string_type), intent(in) :: lval
+        !> Escape sequence
+        type(ansi_code), intent(in) :: code
+        !> Concatenated string
+        type(string_type) :: str
+
+        str = lval // to_string(code)
+    end function concat_left_str
+
+    !> Concatenate an escape code with a string and turn it into an actual escape sequence
+    pure module function concat_right_str(code, rval) result(str)
+        !> String to add the escape code to
+        type(string_type), intent(in) :: rval
+        !> Escape sequence
+        type(ansi_code), intent(in) :: code
+        !> Concatenated string
+        type(string_type) :: str
+
+        str = to_string(code) // rval
+    end function concat_right_str
+
+end submodule stdlib_ansi_operator

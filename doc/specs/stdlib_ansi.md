@@ -3,7 +3,7 @@ title: terminal colors
 ...
 
 
-# The `stdlib_terminal_colors` module
+# The `stdlib_ansi` module
 
 [TOC]
 
@@ -29,7 +29,7 @@ Experimental
 
 ```fortran
 program demo_color
-  use stdlib_terminal_colors, only : fg_color_blue, style_bold, style_reset, ansi_code, &
+  use stdlib_ansi, only : fg_color_blue, style_bold, style_reset, ansi_code, &
     & operator(//), operator(+)
   implicit none
   type(ansi_code) :: highlight, reset
@@ -217,7 +217,7 @@ Experimental
 
 ```fortran
 program demo_string
-  use stdlib_terminal_colors, only : fg_color_green, style_reset, to_string
+  use stdlib_ansi, only : fg_color_green, style_reset, to_string
   implicit none
 
   print '(a)', to_string(fg_color_green) // "Colorized text message" // to_string(style_reset)
@@ -256,7 +256,7 @@ Experimental
 
 ```fortran
 program demo_combine
-  use stdlib_terminal_colors, only : fg_color_red, style_bold, ansi_code
+  use stdlib_ansi, only : fg_color_red, style_bold, ansi_code
   implicit none
   type(ansi_code) :: bold_red
 
@@ -296,7 +296,7 @@ Experimental
 
 ```fortran
 program demo_concat
-  use stdlib_terminal_colors, only : fg_color_red, style_reset, operator(//)
+  use stdlib_ansi, only : fg_color_red, style_reset, operator(//)
   implicit none
 
   print '(a)', fg_color_red // "Colorized text message" // style_reset

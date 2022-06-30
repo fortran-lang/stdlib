@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 
 !> Implementation of the conversion to enumerator and identifier types to strings
-submodule (stdlib_terminal_colors) stdlib_terminal_colors_to_string
+submodule (stdlib_ansi) stdlib_ansi_to_string
     implicit none
 
     character, parameter :: esc = achar(27), chars(0:9) = &
@@ -37,4 +37,4 @@ contains
         anycolor = code%fg >= 0 .or. code%bg >= 0 .or. code%style >= 0
     end function anycolor
 
-end submodule stdlib_terminal_colors_to_string
+end submodule stdlib_ansi_to_string

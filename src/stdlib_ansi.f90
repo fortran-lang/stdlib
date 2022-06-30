@@ -1,8 +1,9 @@
 ! SPDX-Identifier: MIT
 
 !> Terminal color and style escape sequences
-module stdlib_terminal_colors
+module stdlib_ansi
     use stdlib_kinds, only : i1 => int8
+    use stdlib_string_type, only : string_type
     implicit none
     private
 
@@ -133,6 +134,26 @@ module stdlib_terminal_colors
             !> Concatenated string
             character(len=:), allocatable :: str
         end function concat_right
+
+        !> Concatenate an escape code with a string and turn it into an actual escape sequence
+        pure module function concat_left_str(lval, code) result(str)
+            !> String to add the escape code to
+            type(string_type), intent(in) :: lval
+            !> Escape sequence
+            type(ansi_code), intent(in) :: code
+            !> Concatenated string
+            type(string_type) :: str
+        end function concat_left_str
+
+        !> Concatenate an escape code with a string and turn it into an actual escape sequence
+        pure module function concat_right_str(code, rval) result(str)
+            !> String to add the escape code to
+            type(string_type), intent(in) :: rval
+            !> Escape sequence
+            type(ansi_code), intent(in) :: code
+            !> Concatenated string
+            type(string_type) :: str
+        end function concat_right_str
     end interface operator(//)
 
-end module stdlib_terminal_colors
+end module stdlib_ansi

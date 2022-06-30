@@ -81,15 +81,15 @@ list(
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
+    stdlib_ansi.f90
+    stdlib_ansi_operator.f90
+    stdlib_ansi_to_string.f90
     stdlib_array.f90
     stdlib_error.f90
     stdlib_logger.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90
-    stdlib_terminal_colors.f90
-    stdlib_terminal_colors_operator.f90
-    stdlib_terminal_colors_to_string.f90
     stdlib_quadrature_gauss.f90
     stdlib_stringlist_type.f90
     ${outFiles}
