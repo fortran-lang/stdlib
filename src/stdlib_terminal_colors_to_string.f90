@@ -4,7 +4,7 @@
 submodule (stdlib_terminal_colors) stdlib_terminal_colors_to_string
     implicit none
 
-    character, parameter :: chars(0:9) = &
+    character, parameter :: esc = achar(27), chars(0:9) = &
         ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 contains
@@ -17,7 +17,7 @@ contains
         character(len=:), allocatable :: str
 
         if (anycolor(code)) then
-            str = achar(27) // "[0"  ! Always reset the style
+            str = esc // "[0"  ! Always reset the style
             if (code%style > 0 .and. code%style < 10) str = str // ";" // chars(code%style)
             if (code%fg >= 0 .and. code%fg < 10) str = str // ";3" // chars(code%fg)
             if (code%bg >= 0 .and. code%bg < 10) str = str // ";4" // chars(code%bg)
