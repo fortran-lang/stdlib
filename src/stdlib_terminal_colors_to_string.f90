@@ -27,7 +27,7 @@ contains
         end if
     end function to_string_ansi_code
 
-    !> Check whether the code describes any color or is just a stub
+    !> Check whether the code describes any color / style or is just a stub
     pure function anycolor(code)
         !> Escape sequence
         type(ansi_code), intent(in) :: code
