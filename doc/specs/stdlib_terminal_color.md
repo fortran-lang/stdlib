@@ -271,7 +271,7 @@ Concatenate an escape code with a string and turn it into an actual escape seque
 
 #### Syntax
 
-`code = lval + rval`
+`str = lval // rval`
 
 #### Class
 

@@ -25,7 +25,7 @@ contains
         character(len=:), allocatable :: str
 
         str = to_string(fg_color_red)
-        call check(error, ichar(str(1:1)), 27)
+        call check(error, iachar(str(1:1)), 27)
         if (allocated(error)) return
         call check(error, str(2:), "[0;31m")
     end subroutine test_fg_color
@@ -36,7 +36,7 @@ contains
         character(len=:), allocatable :: str
 
         str = to_string(bg_color_yellow)
-        call check(error, ichar(str(1:1)), 27)
+        call check(error, iachar(str(1:1)), 27)
         if (allocated(error)) return
         call check(error, str(2:), "[0;43m")
     end subroutine test_bg_color
@@ -47,7 +47,7 @@ contains
         character(len=:), allocatable :: str
 
         str = to_string(style_bold)
-        call check(error, ichar(str(1:1)), 27)
+        call check(error, iachar(str(1:1)), 27)
         if (allocated(error)) return
         call check(error, str(2:), "[0;1m")
     end subroutine test_style
