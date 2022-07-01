@@ -30,7 +30,7 @@ Note: the algorithm used for generating normal random variates is fundamentally 
 
 ### Class
 
-Elemental function (passing both loc and scale).
+Elemental function (passing both `loc` and `scale`).
 
 ### Arguments
 
