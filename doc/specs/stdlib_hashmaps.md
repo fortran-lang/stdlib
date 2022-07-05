@@ -21,7 +21,7 @@ This document discusses the hash maps in the Fortran Standard Library.
 
 The Fortran Standard Library is distributed under the MIT License.
 However components of the library should be evaluated as to whether
-they are compatible with the MTI License.
+they are compatible with the MIT License.
 The current hash maps were inspired by an
 [implementation](http://chasewoerner.org/src/hasht/) of David
 Chase. While the code has been greatly modified from his
@@ -229,14 +229,14 @@ is an `intent(out)` argument.
 ```fortran
     program demo_copy_key
       use stdlib_hashmap_wrappers, only: &
-          copy_key, operator(==), key_type
+          copy_key, operator(==), key_type, set
       use iso_fortran_env, only: int8
       implicit none
       integer(int8) :: i, value(15)
       type(key_type) :: old_key, new_key
       value = [(i, i = 1, 15)]
-      call set( key_out, value )
-      call copy_key( key_out, new_key )
+      call set( old_key, value )
+      call copy_key( old_key, new_key )
       print *, "old_key == new_key = ", old_key == new_key
     end program demo_copy_key
 ```
@@ -271,26 +271,24 @@ is an `intent(out)` argument.
 
 ```fortran
     program demo_copy_other
-      use stdlib_hashmap_wrappers, only: &
-          copy_other, get, other_type, set
+      use stdlib_hashmap_wrappers, only: copy_other, other_type
       use iso_fortran_env, only: int8
       implicit none
       type(other_type) :: other_in, other_out
-      integer(int_8) :: i
-      class(*), allocatable :: dummy
+      integer(int8) :: i
       type dummy_type
           integer(int8) :: value(15)
       end type
       type(dummy_type) :: dummy_val
-      do i=1, 15
+      do i = 1, 15
           dummy_val % value1(i) = i
       end do
       allocate(other_in % value, source=dummy_val)
       call copy_other( other_in, other_out )
-      select type(other_out)
-	  type(dummy_type)
+      select type(out => other_out % value)
+	  type is (dummy_type)
           print *, "other_in == other_out = ", &
-            all( dummy_val % value == other_out % value )
+            all( dummy_val % value == out % value )
       end select
     end program demo_copy_other
 ```
@@ -507,19 +505,19 @@ is an `intent(out)` argument.
 ```fortran
     program demo_free_other
       use stdlib_hashmap_wrappers, only: &
-          copy_other, free_other, other_type, set
+          copy_other, free_other, other_type
       use iso_fortran_env, only: int8
       implicit none
       type dummy_type
           integer(int8) :: value(15)
       end type dummy_type
-      typer(dummy_type) :: dummy_val
+      type(dummy_type) :: dummy_val
       type(other_type), allocatable :: other_in, other_out
-      integer(int_8) :: i
+      integer(int8) :: i
       do i=1, 15
           dummy_val % value(i) = i
       end do
-      allocate(other_in, source=dummy_val)
+      allocate(other_in % value, source=dummy_val)
       call copy_other( other_in, other_out )
       call free_other( other_out )
     end program demo_free_other
@@ -573,7 +571,7 @@ an allocatable of `class(*)`. It is an `intent(out)` argument.
       implicit none
       integer(int8), allocatable :: value(:), result(:)
       type(key_type) :: key
-      integer(int_8) :: i
+      integer(int8) :: i
       allocate( value(1:15) )
       do i=1, 15
         value(i) = i
@@ -585,7 +583,7 @@ an allocatable of `class(*)`. It is an `intent(out)` argument.
 ```
 
 
-#### `hasher_fun`- serves aa a function prototype.
+#### `hasher_fun`- serves as a function prototype.
 
 ##### Status
 
@@ -933,7 +931,7 @@ value to an `int8` vector.
       implicit none
       integer(int8), allocatable :: value(:), result(:)
       type(key_type) :: key
-      integer(int_8) :: i
+      integer(int8) :: i
       allocate( value(1:15) )
       do i=1, 15
         value(i) = i
@@ -1392,7 +1390,7 @@ The result will be the number of procedure calls on the hash map.
       use stdlib_hashmap_wrappers, only: fnv_1_hasher
       implicit none
       type(chaining_hashmap_type) :: map
-      type(int_calls) :: initial_calls
+      integer(int_calls) :: initial_calls
       call map % init( fnv_1_hasher )
       initial_calls = map % calls()
       print *, "INITIAL_CALLS =  ", initial_calls
@@ -1518,9 +1516,9 @@ undefined.
         end if
         call get( other, data )
         select type( data )
-        type (dummy_type)
+        type is (dummy_type)
             print *, 'Other data % value = ', data % value
-        type default
+        class default
             print *, 'Invalid data type in other'
         end select
     end program demo_get_other_data
@@ -1565,7 +1563,7 @@ Subroutine
   error code.
 
 * If `slots_bits` is absent then the effective value for `slots_bits`
-  is `default_slots_bits`.
+  is `default_bits`.
 
 `status` (optional): shall be a scalar integer variable of kind
 `int32`. It is an `intent(out)` argument. On return if present it
@@ -1587,11 +1585,11 @@ has the value `alloc_fault`.
 
 ```fortran
     program demo_init
-        use stdlib_hashmaps, only: chaining_map_type
+        use stdlib_hashmaps, only: chaining_hashmap_type
         use stdlib_hashmap_wrappers, only: fnv_1_hasher
-        type(fnv_1a_type)       :: fnv_1
-        type(chaining_map_type) :: map
-        call map % init( fnv_1a, slots_bits=10 )
+	implicit none
+        type(chaining_hashmap_type) :: map
+        call map % init( fnv_1_hasher, slots_bits=10 )
     end program demo_init
 ```
 
@@ -1748,7 +1746,7 @@ is ignored.
     program demo_map_entry
         use, intrinsic:: iso_fortran_env, only: int8
         use stdlib_hashmaps, only: chaining_hashmap_type
-        use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type, other_type
+        use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type, other_type, set
         type(chaining_hashmap_type) :: map
         type(key_type)      :: key
         logical             :: conflict
@@ -1806,7 +1804,7 @@ rehashing.
       type(chaining_hashmap_type) :: map
       real :: nprobes
       call map % init( fnv_1_hasher )
-      nprobes = map % probes()
+      nprobes = map % map_probes()
       print *, "Initial probes =  ", nprobes
     end program demo_probes
 ```
@@ -1855,7 +1853,7 @@ The result is the number of slots in `map`.
       call map % init( fnv_1_hasher )
       initial_slots = map % num_slots ()
       print *, "Initial slots =  ", initial_slots
-    end program num_slots
+    end program demo_num_slots
 ```
 
 
@@ -1891,10 +1889,12 @@ It is the hash method to be used by `map`.
 
 ```fortran
     program demo_rehash
+	use stdlib_kinds, only: int8
         use stdlib_hashmaps, only: open_hashmap_type
-        use stdlib_hasmap_wrappers, only: fnv_1_hasher, fnv_1a_hasher,&
-            key_type, other_type
-        type(openn_hashmap_type) :: map
+        use stdlib_hashmap_wrappers, only: fnv_1_hasher, fnv_1a_hasher,&
+            key_type, other_type, set
+	implicit none
+        type(open_hashmap_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         class(*), allocatable :: dummy
@@ -2009,20 +2009,23 @@ not exist and nothing was done.
 
 ```fortran
     program demo_set_other_data
+	use stdlib_kinds, only: int8
         use stdlib_hashmaps, only: open_hashmap_type
         use stdlib_hashmap_wrappers, only: fnv_1_hasher, &
             fnv_1a_hasher, key_type, other_type, set
+	implicit none
+	logical :: exists
         type(open_hashmap_type) :: map
         type(key_type)      :: key
         type(other_type)    :: other
         class(*), allocatable :: dummy
         call map % init( fnv_1_hasher, slots_bits=10 )
-        allocate( dummy, source='A value` )
+        allocate( dummy, source='A value' )
         call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
         call set( other, dummy )
         call map % map_entry( key, other )
         deallocate( dummy )
-        allocate( dummy, source='Another value` )
+        allocate( dummy, source='Another value' )
         call set( other, dummy )
         call map % set_other_data( key, other, exists )
         print *, 'The entry to have its other data replaced exists = ', exists
