@@ -7,7 +7,7 @@ program example_padl
   string = "left pad this string"
 ! string <-- "left pad this string"
 
-  print '(a)', padl(string, 25, "$") ! "$$$$$left pad this string"
+  print '(dt)', padl(string, 25, "$") ! "$$$$$left pad this string"
 
   string = padl(string, 25)
 ! string <-- "     left pad this string"

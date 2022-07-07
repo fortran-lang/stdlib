@@ -7,7 +7,7 @@ program example_replace_all
   string = "hurdles here, hurdles there, hurdles everywhere"
 ! string <-- "hurdles here, hurdles there, hurdles everywhere"
 
-  print'(a)', replace_all(string, "hurdles", "learn from")
+  print'(dt)', replace_all(string, "hurdles", "learn from")
 ! "learn from here, learn from there, learn from everywhere"
 
   string = replace_all(string, "hurdles", "technology")
