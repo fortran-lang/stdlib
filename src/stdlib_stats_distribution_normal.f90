@@ -202,6 +202,7 @@ contains
 
 
 
+    impure elemental &
     function rvs_norm_rsp(loc, scale) result(res)
     !
     ! Normal random variate (loc, scale)
@@ -215,6 +216,7 @@ contains
         res = res * scale + loc
     end function rvs_norm_rsp
 
+    impure elemental &
     function rvs_norm_rdp(loc, scale) result(res)
     !
     ! Normal random variate (loc, scale)
@@ -231,6 +233,7 @@ contains
 
 
 
+    impure elemental &
     function rvs_norm_csp(loc, scale) result(res)
     !
     ! Normally distributed complex. The real part and imaginary part are       &
@@ -245,6 +248,7 @@ contains
         res = cmplx(tr, ti, kind=sp)
     end function rvs_norm_csp
 
+    impure elemental &
     function rvs_norm_cdp(loc, scale) result(res)
     !
     ! Normally distributed complex. The real part and imaginary part are       &
