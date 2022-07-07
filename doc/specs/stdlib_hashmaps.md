@@ -21,7 +21,7 @@ This document discusses the hash maps in the Fortran Standard Library.
 
 The Fortran Standard Library is distributed under the MIT License.
 However components of the library should be evaluated as to whether
-they are compatible with the MTI License.
+they are compatible with the MIT License.
 The current hash maps were inspired by an
 [implementation](http://chasewoerner.org/src/hasht/) of David
 Chase. While the code has been greatly modified from his
@@ -485,7 +485,7 @@ an allocatable of `class(*)`. It is an `intent(out)` argument.
 ```
 
 
-#### `hasher_fun`- serves aa a function prototype.
+#### `hasher_fun`- serves as a function prototype.
 
 ##### Status
 
@@ -1337,7 +1337,7 @@ Subroutine
   error code.
 
 * If `slots_bits` is absent then the effective value for `slots_bits`
-  is `default_slots_bits`.
+  is `default_bits`.
 
 `status` (optional): shall be a scalar integer variable of kind
 `int32`. It is an `intent(out)` argument. On return if present it
