@@ -30,15 +30,15 @@ Note: the algorithm used for generating normal random variates is fundamentally 
 
 ### Class
 
-Function
+Elemental function (passing both `loc` and `scale`).
 
 ### Arguments
-
-`array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
 
 `loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
 
 `scale`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
+
+`array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
 
 `loc` and `scale` arguments must be of the same type.
 
