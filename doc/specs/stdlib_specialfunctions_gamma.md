@@ -38,7 +38,7 @@ The function returns a value with the same type and kind as input argument.
 
 ### Example
 ```fortran
-{!test/example/specialfunctions_gamma/example_gamma.f90!}
+{!src/examples/specialfunctions_gamma/example_gamma.f90!}
 ```
 
 ## `log_gamma` - Calculate the natural logarithm of the gamma function
@@ -72,7 +72,7 @@ The function returns real single precision values for integer input arguments, w
 ### Example
 
 ```fortran
-{!test/example/specialfunctions_gamma/example_log_gamma.f90!}
+{!src/examples/specialfunctions_gamma/example_log_gamma.f90!}
 ```
 
 ## `log_factorial` - calculate the logarithm of a factorial
@@ -103,7 +103,7 @@ The function returns real type values with single precision.
 
 ### Example
 ```fortran
-{!test/example/specialfunctions_gamma/example_log_factorial.f90!}
+{!src/examples/specialfunctions_gamma/example_log_factorial.f90!}
 ```
 
 ## `lower_incomplete_gamma` - calculate lower incomplete gamma integral
@@ -140,7 +140,7 @@ The function returns a real type value with the same kind as argument x.
 
 ### Example
 ```fortran
-{!test/example/specialfunctions_gamma/example_ligamma.f90!}
+{!src/examples/specialfunctions_gamma/example_ligamma.f90!}
 ```
 
 ## `upper_incomplete_gamma` - calculate the upper incomplete gamma integral
@@ -177,7 +177,7 @@ The function returns a real type value with the same kind as argument x.
 
 ### Example
 ```fortran
-{!test/example/specialfunctions_gamma/example_uigamma.f90!}
+{!src/examples/specialfunctions_gamma/example_uigamma.f90!}
 ```
 
 ## `log_lower_incomplete_gamma` - calculate the natural logarithm of the lower incomplete gamma integral
@@ -272,7 +272,7 @@ The function returns a real type value with the same kind as argument x.
 
 ### Example
 ```fortran
-{!test/example/specialfunctions_gamma/example_gamma_p.f90!}
+{!src/examples/specialfunctions_gamma/example_gamma_p.f90!}
 ```
 
 ## `regularized_gamma_q` - calculate the gamma quotient Q
@@ -309,5 +309,5 @@ The function returns a real type value with the same kind as argument x.
 
 ### Example
 ```fortran
-{!test/example/specialfunctions_gamma/example_gamma_q.f90!}
+{!src/examples/specialfunctions_gamma/example_gamma_q.f90!}
 ```

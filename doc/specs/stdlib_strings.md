@@ -45,7 +45,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-{!test/example/strings/example_strip.f90!}
+{!src/examples/strings/example_strip.f90!}
 ```
 
 
@@ -84,7 +84,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-{!test/example/strings/example_chomp.f90!}
+{!src/examples/strings/example_chomp.f90!}
 ```
 
 
@@ -121,7 +121,7 @@ The result is of scalar logical type.
 #### Example
 
 ```fortran
-{!test/example/strings/example_starts_with.f90!}
+{!src/examples/strings/example_starts_with.f90!}
 ```
 
 
@@ -158,7 +158,7 @@ The result is of scalar logical type.
 #### Example
 
 ```fortran
-{!test/example/strings/example_ends_with.f90!}
+{!src/examples/strings/example_ends_with.f90!}
 ```
 
 
@@ -213,7 +213,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-{!test/example/strings/example_slice.f90!}
+{!src/examples/strings/example_slice.f90!}
 ```
 
 
@@ -258,7 +258,7 @@ The result is a scalar of integer type or an integer array of rank equal to the 
 #### Example
 
 ```fortran
-{!test/example/strings/example_find.f90!}
+{!src/examples/strings/example_find.f90!}
 ```
 
 
@@ -298,7 +298,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-{!test/example/strings/example_replace_all.f90!}
+{!src/examples/strings/example_replace_all.f90!}
 ```
 
 
@@ -338,7 +338,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-{!test/example/strings/example_padl.f90!}
+{!src/examples/strings/example_padl.f90!}
 ```
 
 
@@ -378,7 +378,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-{!test/example/strings/example_padr.f90!}
+{!src/examples/strings/example_padr.f90!}
 ```
 
 
@@ -418,7 +418,7 @@ The result is a scalar of integer type or an integer array of rank equal to the 
 #### Example
 
 ```fortran
-{!test/example/strings/example_count.f90!}
+{!src/examples/strings/example_count.f90!}
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -457,5 +457,5 @@ The result is an `allocatable` length `character` scalar with up to `128` cached
 #### Example
 
 ```fortran
-{!test/example/strings/example_to_string.f90!}
+{!src/examples/strings/example_to_string.f90!}
 ```

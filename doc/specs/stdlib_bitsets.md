@@ -205,7 +205,7 @@ is mapped to a set bit, and `.false.` is mapped to an unset bit.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_assignment.f90!}
+{!src/examples/bitsets/example_bitsets_assignment.f90!}
 ```
 
 ### Table of the non-member comparison operations
@@ -259,7 +259,7 @@ otherwise it is `.false.`.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_all.f90!}
+{!src/examples/bitsets/example_bitsets_all.f90!}
 ```
 
 ### `and` - bitwise `and` of the bits of two bitsets
@@ -296,7 +296,7 @@ number of bits as `set1`.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_and.f90!}
+{!src/examples/bitsets/example_bitsets_and.f90!}
 ```
 
 ### `and_not` - Bitwise `and` of one bitset with the negation of another
@@ -334,7 +334,7 @@ number of bits as `set1`, otherwise the result is undefined.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_and_not.f90!}
+{!src/examples/bitsets/example_bitsets_and_not.f90!}
 ```
 
 ### `any` - determine whether any bits are set
@@ -368,7 +368,7 @@ is `.false.`.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_any.f90!}
+{!src/examples/bitsets/example_bitsets_any.f90!}
 ```
 
 ### `bit_count` - return the number of bits that are set
@@ -402,7 +402,7 @@ equal to the number of bits that are set in `self`.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_bit_count.f90!}
+{!src/examples/bitsets/example_bitsets_bit_count.f90!}
 ```
 
 #### `bits` - returns the number of bits
@@ -436,7 +436,7 @@ the number of defined bits in `self`.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_bits.f90!}
+{!src/examples/bitsets/example_bitsets_bits.f90!}
 ```
 
 ### `clear` - clears a sequence of one or more bits
@@ -487,7 +487,7 @@ an `intent(in)` argument.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_clear.f90!}
+{!src/examples/bitsets/example_bitsets_clear.f90!}
 ```
 
 ### `extract` - create a new bitset from a range in an old bitset
@@ -538,7 +538,7 @@ an `intent(out)` argument. If present it shall have one of the values:
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_extract.f90!}
+{!src/examples/bitsets/example_bitsets_extract.f90!}
 ```
 
 ### `flip` - flip the values of a sequence of one or more bits
@@ -590,7 +590,7 @@ an `intent(in)` argument.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_flip.f90!}
+{!src/examples/bitsets/example_bitsets_flip.f90!}
 ```
 
 ### `from_string` - initializes a bitset from a binary literal
@@ -640,7 +640,7 @@ codes:
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_from_string.f90!}
+{!src/examples/bitsets/example_bitsets_from_string.f90!}
 ```
 
 ### `init` - `bitset_type` initialization routines
@@ -689,7 +689,7 @@ stop code. It can have any of the following error codes:
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_init.f90!}
+{!src/examples/bitsets/example_bitsets_init.f90!}
 ```
 
 ### `input` - reads a bitset from an unformatted file
@@ -742,7 +742,7 @@ values for this `status` are:
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_input.f90!}
+{!src/examples/bitsets/example_bitsets_input.f90!}
 ```
 
 ### `none` - determines whether no bits are set
@@ -777,7 +777,7 @@ The result is `.true.` if no bits in `self` are set, otherwise it is
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_none.f90!}
+{!src/examples/bitsets/example_bitsets_none.f90!}
 ```
 
 ### `not` - Performs the logical complement on a bitset
@@ -807,7 +807,7 @@ complement of their values on input.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_not.f90!}
+{!src/examples/bitsets/example_bitsets_not.f90!}
 ```
 
 ### `or` - Bitwise OR of the bits of two bitsets
@@ -844,7 +844,7 @@ otherwise the results are undefined.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_or.f90!}
+{!src/examples/bitsets/example_bitsets_or.f90!}
 ```
 
 ### `output` - Writes a binary representation of a bitset to a file
@@ -887,7 +887,7 @@ code. The two code values have the meaning:
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_output.f90!}
+{!src/examples/bitsets/example_bitsets_output.f90!}
 ```
 
 ### `read_bitset` - initializes `self` with the value of a *bitset_literal*
@@ -968,7 +968,7 @@ as its error code. The possible error codes are:
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_read_bitset.f90!}
+{!src/examples/bitsets/example_bitsets_read_bitset.f90!}
 ```
 
 ### `set` - sets a sequence of one or more bits to 1
@@ -1022,7 +1022,7 @@ Elemental subroutine
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_set.f90!}
+{!src/examples/bitsets/example_bitsets_set.f90!}
 ```
 
 ### `test` - determine whether a bit is set
@@ -1062,7 +1062,7 @@ otherwise it is `.false.`. If `pos` is outside the range
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_test.f90!}
+{!src/examples/bitsets/example_bitsets_test.f90!}
 ```
 
 ### `to_string` - represent a bitset as a binary literal
@@ -1106,7 +1106,7 @@ the stop code. The values have the following meanings:
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_to_string.f90!}
+{!src/examples/bitsets/example_bitsets_to_string.f90!}
 ```
 
 ### `value` - determine the value of a bit
@@ -1145,7 +1145,7 @@ is zero.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_value.f90!}
+{!src/examples/bitsets/example_bitsets_value.f90!}
 ```
 
 ### `write_bitset` - writes a *bitset-literal*
@@ -1212,7 +1212,7 @@ the following error code values:
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_write_bitset.f90!}
+{!src/examples/bitsets/example_bitsets_write_bitset.f90!}
 ```
 
 ### `xor` - bitwise exclusive `or`
@@ -1249,7 +1249,7 @@ samee number of bits, otherwise the result is undefined.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_xor.f90!}
+{!src/examples/bitsets/example_bitsets_xor.f90!}
 ```
 
 ## Specification of the `stdlib_bitsets` operators
@@ -1295,7 +1295,7 @@ to the same value, otherwise the result is `.false.`.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_equality.f90!}
+{!src/examples/bitsets/example_bitsets_equality.f90!}
 ```
 
 ### `/=` - compare two bitsets to determine whether any bits differ in value
@@ -1339,7 +1339,7 @@ the result is `.false.`.
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_inequality.f90!}
+{!src/examples/bitsets/example_bitsets_inequality.f90!}
 ```
 
 ### `>=` - compare two bitsets to determine whether the first is greater than or equal to the second
@@ -1386,7 +1386,7 @@ or the highest order different bit is set to 1 in `set1` and to 0 in
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_ge.f90!}
+{!src/examples/bitsets/example_bitsets_ge.f90!}
 ```
 
 ### `>` - compare two bitsets to determine whether the first is greater than the other
@@ -1433,7 +1433,7 @@ highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_gt.f90!}
+{!src/examples/bitsets/example_bitsets_gt.f90!}
 ```
 
 ### `<=` - compare two bitsets to determine whether the first is less than or equal to the other
@@ -1480,7 +1480,7 @@ or the highest order different bit is set to 0 in `set1` and to 1 in
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_le.f90!}
+{!src/examples/bitsets/example_bitsets_le.f90!}
 ```
 
 ### `<` - compare two bitsets to determine whether the first is less than the other
@@ -1527,5 +1527,5 @@ highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 #### Example
 
 ```fortran
-{!test/example/bitsets/example_bitsets_lt.f90!}
+{!src/examples/bitsets/example_bitsets_lt.f90!}
 ```

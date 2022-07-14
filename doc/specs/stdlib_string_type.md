@@ -67,7 +67,7 @@ The result is an instance of `string_type` with zero length.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_constructor_empty.f90!}
+{!src/examples/string_type/example_constructor_empty.f90!}
 ```
 
 
@@ -105,7 +105,7 @@ The result is an instance of `string_type`.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_constructor_scalar.f90!}
+{!src/examples/string_type/example_constructor_scalar.f90!}
 ```
 
 
@@ -139,7 +139,7 @@ The result is an instance of `string_type`.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_constructor_integer.f90!}
+{!src/examples/string_type/example_constructor_integer.f90!}
 ```
 
 
@@ -173,7 +173,7 @@ The result is an instance of `string_type`.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_constructor_logical.f90!}
+{!src/examples/string_type/example_constructor_logical.f90!}
 ```
 
 
@@ -202,7 +202,7 @@ Elemental subroutine, `assignment(=)`.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_constructor_character.f90!}
+{!src/examples/string_type/example_constructor_character.f90!}
 ```
 
 
@@ -236,7 +236,7 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_len.f90!}
+{!src/examples/string_type/example_len.f90!}
 ```
 
 
@@ -271,7 +271,7 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_len_trim.f90!}
+{!src/examples/string_type/example_len_trim.f90!}
 ```
 
 
@@ -306,7 +306,7 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_trim.f90!}
+{!src/examples/string_type/example_trim.f90!}
 ```
 
 
@@ -341,7 +341,7 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_adjustl.f90!}
+{!src/examples/string_type/example_adjustl.f90!}
 ```
 
 
@@ -376,7 +376,7 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_adjustr.f90!}
+{!src/examples/string_type/example_adjustr.f90!}
 ```
 
 
@@ -412,7 +412,7 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_repeat.f90!}
+{!src/examples/string_type/example_repeat.f90!}
 ```
 
 
@@ -446,7 +446,7 @@ The result is a scalar character value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_char.f90!}
+{!src/examples/string_type/example_char.f90!}
 ```
 
 
@@ -481,7 +481,7 @@ The result is a scalar character value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_char_position.f90!}
+{!src/examples/string_type/example_char_position.f90!}
 ```
 
 
@@ -517,7 +517,7 @@ The result is a scalar character value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_char_range.f90!}
+{!src/examples/string_type/example_char_range.f90!}
 ```
 
 
@@ -554,7 +554,7 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_ichar.f90!}
+{!src/examples/string_type/example_ichar.f90!}
 ```
 
 
@@ -591,7 +591,7 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_iachar.f90!}
+{!src/examples/string_type/example_iachar.f90!}
 ```
 
 
@@ -631,7 +631,7 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_index.f90!}
+{!src/examples/string_type/example_index.f90!}
 ```
 
 
@@ -671,7 +671,7 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_scan.f90!}
+{!src/examples/string_type/example_scan.f90!}
 ```
 
 
@@ -711,7 +711,7 @@ The result is a default integer scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_verify.f90!}
+{!src/examples/string_type/example_verify.f90!}
 ```
 
 
@@ -750,7 +750,7 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_lgt.f90!}
+{!src/examples/string_type/example_lgt.f90!}
 ```
 
 
@@ -789,7 +789,7 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_llt.f90!}
+{!src/examples/string_type/example_llt.f90!}
 ```
 
 
@@ -829,7 +829,7 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_lge.f90!}
+{!src/examples/string_type/example_lge.f90!}
 ```
 
 
@@ -869,7 +869,7 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_lle.f90!}
+{!src/examples/string_type/example_lle.f90!}
 ```
 
 
@@ -904,7 +904,7 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_to_lower.f90!}
+{!src/examples/string_type/example_to_lower.f90!}
 ```
 
 
@@ -939,7 +939,7 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_to_upper.f90!}
+{!src/examples/string_type/example_to_upper.f90!}
 ```
 
 
@@ -979,7 +979,7 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_to_title.f90!}
+{!src/examples/string_type/example_to_title.f90!}
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -1016,7 +1016,7 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_to_sentence.f90!}
+{!src/examples/string_type/example_to_sentence.f90!}
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -1050,7 +1050,7 @@ The result is a scalar `string_type` value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_reverse.f90!}
+{!src/examples/string_type/example_reverse.f90!}
 ```
 
 
@@ -1092,7 +1092,7 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_gt.f90!}
+{!src/examples/string_type/example_gt.f90!}
 ```
 
 
@@ -1134,7 +1134,7 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_lt.f90!}
+{!src/examples/string_type/example_lt.f90!}
 ```
 
 
@@ -1176,7 +1176,7 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_ge.f90!}
+{!src/examples/string_type/example_ge.f90!}
 ```
 
 
@@ -1218,7 +1218,7 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_le.f90!}
+{!src/examples/string_type/example_le.f90!}
 ```
 
 
@@ -1260,7 +1260,7 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_eq.f90!}
+{!src/examples/string_type/example_eq.f90!}
 ```
 
 
@@ -1302,7 +1302,7 @@ The result is a default logical scalar value.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_ne.f90!}
+{!src/examples/string_type/example_ne.f90!}
 ```
 
 
@@ -1341,7 +1341,7 @@ The result is an instance of `string_type`.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_cont.f90!}
+{!src/examples/string_type/example_cont.f90!}
 ```
 
 
@@ -1378,7 +1378,7 @@ Unformatted user defined derived type output.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_uwrite.f90!}
+{!src/examples/string_type/example_uwrite.f90!}
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -1421,7 +1421,7 @@ Formatted user defined derived type output.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_fwrite.f90!}
+{!src/examples/string_type/example_fwrite.f90!}
 ```
 
 
@@ -1460,7 +1460,7 @@ Unformatted derived type input.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_uread.f90!}
+{!src/examples/string_type/example_uread.f90!}
 ```
 
 
@@ -1507,7 +1507,7 @@ Formatted derived type input.
 #### Example
 
 ```fortran
-{!test/example/string_type/example_fread.f90!}
+{!src/examples/string_type/example_fread.f90!}
 ```
 
 
@@ -1542,5 +1542,5 @@ Pure subroutine (Elemental subroutine, only when both `from` and `to` are `type(
 #### Example
 
 ```fortran
-{!test/example/string_type/example_move.f90!}
+{!src/examples/string_type/example_move.f90!}
 ```

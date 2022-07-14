@@ -51,14 +51,14 @@ The output is a scalar of `type` and `kind` same as to that of the arguments.
 
 Here inputs are of type `integer` and kind `int32`
 ```fortran
-{!test/example/math/example_clip_integer.f90!}
+{!src/examples/math/example_clip_integer.f90!}
 ```
 
 ##### Example 2:
 
 Here inputs are of type `real` and kind `sp`
 ```fortran
-{!test/example/math/example_clip_real.f90!}
+{!src/examples/math/example_clip_real.f90!}
 ```
 
 ### `gcd` function
@@ -95,7 +95,7 @@ Returns an integer of the same `kind` as that of the arguments.
 ##### Example 1:
 
 ```fortran
-{!test/example/math/example_gcd.f90!}
+{!src/examples/math/example_gcd.f90!}
 ```
 
 ### `linspace` - Create a linearly spaced rank one array
@@ -138,14 +138,14 @@ If `start`/`end` are `integer` types, the `result` will default to a `real(dp)` 
 
 Here inputs are of type `complex` and kind `dp`
 ```fortran
-{!test/example/math/example_linspace_complex.f90!}
+{!src/examples/math/example_linspace_complex.f90!}
 ```
 
 ##### Example 2:
 
 Here inputs are of type `integer` and kind `int16`, with the result defaulting to `real(dp)`.
 ```fortran
-{!test/example/math/example_linspace_int16.f90!}
+{!src/examples/math/example_linspace_int16.f90!}
 ```
 
 ### `logspace` - Create a logarithmically spaced rank one array
@@ -207,21 +207,21 @@ For function calls where the `base` is specified, the `type` and `kind` of the r
 
 Here inputs are of type `complex` and kind `dp`. `n` and `base` is not specified and thus default to 50 and 10, respectively.
 ```fortran
-{!test/example/math/example_logspace_complex.f90!}
+{!src/examples/math/example_logspace_complex.f90!}
 ```
 
 ##### Example 2:
 
 Here inputs are of type `integer` and default kind. `base` is not specified and thus defaults to 10.
 ```fortran
-{!test/example/math/example_logspace_int.f90!}
+{!src/examples/math/example_logspace_int.f90!}
 ```
 
 ##### Example 3:
 
 Here `start`/`end` are of type `real` and double precision. `base` is type `complex` and also double precision.
 ```fortran
-{!test/example/math/example_logspace_rstart_cbase.f90!}
+{!src/examples/math/example_logspace_rstart_cbase.f90!}
 ```
 ### `arange` function
 
@@ -271,7 +271,7 @@ For `real` type arguments, the length of the result vector is `floor((end - star
 #### Example
 
 ```fortran
-{!test/example/math/example_math_arange.f90!}
+{!src/examples/math/example_math_arange.f90!}
 ```
 
 ### `arg` function
@@ -307,7 +307,7 @@ Notes: Although the angle of the complex number `0` is undefined, `arg((0,0))` r
 #### Example
 
 ```fortran
-{!test/example/math/example_math_arg.f90!}
+{!src/examples/math/example_math_arg.f90!}
 ```
 
 ### `argd` function
@@ -343,7 +343,7 @@ Notes: Although the angle of the complex number `0` is undefined, `argd((0,0))` 
 #### Example
 
 ```fortran
-{!test/example/math/example_math_argd.f90!}
+{!src/examples/math/example_math_argd.f90!}
 ```
 
 ### `argpi` function
@@ -379,7 +379,7 @@ Notes: Although the angle of the complex number `0` is undefined, `argpi((0,0))`
 #### Example
 
 ```fortran
-{!test/example/math/example_math_argpi.f90!}
+{!src/examples/math/example_math_argpi.f90!}
 ```
 
 ### `is_close` function
@@ -439,7 +439,7 @@ Returns a `logical` scalar/array.
 #### Example
 
 ```fortran
-{!test/example/math/example_math_is_close.f90!}
+{!src/examples/math/example_math_is_close.f90!}
 ```
 
 ### `all_close` function
@@ -490,7 +490,7 @@ Returns a `logical` scalar.
 #### Example
 
 ```fortran
-{!test/example/math/example_math_all_close.f90!}
+{!src/examples/math/example_math_all_close.f90!}
 ```
 
 ### `diff` function
@@ -552,5 +552,5 @@ When both `prepend` and `append` are not present, the result `y` has one fewer e
 #### Example
 
 ```fortran
-{!test/example/math/example_diff.f90!}
+{!src/examples/math/example_diff.f90!}
 ```

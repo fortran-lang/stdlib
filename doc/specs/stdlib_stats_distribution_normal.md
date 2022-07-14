@@ -49,7 +49,7 @@ The result is a scalar or rank one array, with a size of `array_size`, and as th
 ### Example
 
 ```fortran
-{!test/example/stats_distribution_normal/example_normal_rvs.f90!}
+{!src/examples/stats_distribution_normal/example_normal_rvs.f90!}
 ```
 
 ## `pdf_normal` - normal distribution probability density function
@@ -93,7 +93,7 @@ The result is a scalar or an array, with a shape conformable to arguments, and a
 ### Example
 
 ```fortran
-{!test/example/stats_distribution_normal/example_normal_pdf.f90!}
+{!src/examples/stats_distribution_normal/example_normal_pdf.f90!}
 ```
 
 ## `cdf_normal` - normal distribution cumulative distribution function
@@ -137,5 +137,5 @@ The result is a scalar or an array, with a shape conformable to arguments, as th
 ### Example
 
 ```fortran
-{!test/example/stats_distribution_normal/example_norm_cdf.f90!}
+{!src/examples/stats_distribution_normal/example_norm_cdf.f90!}
 ```
