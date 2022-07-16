@@ -1,9 +1,10 @@
 ! SPDX-Identifier: MIT
 module test_insert_at
     use stdlib_error, only: check
-    use stdlib_string_type, only: string_type, operator(//), operator(==)
+    use stdlib_string_type, only: string_type, operator(//), operator(==), char, operator(/=)
     use stdlib_stringlist_type, only: stringlist_type, fidx, bidx, list_head, list_tail, operator(==)
     use stdlib_strings, only: to_string
+    use stdlib_optval, only: optval
     implicit none
 
 contains
@@ -351,24 +352,85 @@ contains
 
     end subroutine test_constructor
 
+    subroutine test_insert_at_same_list
+        type(stringlist_type)           :: work_list
+        type(stringlist_type)           :: temp_list
+        integer                         :: i
+        integer, parameter              :: first = -100
+        integer, parameter              :: last = 100
+
+        write (*,*) "test_insert_at_same_list:     Starting work_list!"
+
+        call work_list%insert_at( list_head, work_list )
+        call work_list%insert_at( list_tail, work_list )
+
+        do i = -10, 10
+            call work_list%insert_at( fidx(i), work_list )
+            call work_list%insert_at( bidx(i), work_list )
+
+        end do
+
+        call compare_list( work_list, 0, 0, 13 )
+        call check( work_list%len() == 0, "test_insert_at_same_list: empty list insertion")
+
+        do i = first, last
+            call work_list%insert_at( list_tail, string_type( to_string(i) ) )
+            call check(string_type( to_string(i) ) /= "", "There is something wrong with this")
+        end do
+        temp_list = work_list
+
+        call work_list%insert_at( list_head, work_list )
+        ! call compare_list( work_list, first, last + 1, 14, to=last - first + 1 )
+        call compare_list( work_list, first, last + 1, 15, from=last - first + 2 )
+
+        work_list = temp_list
+        call work_list%insert_at( list_tail, work_list )
+        call compare_list( work_list, first, last + 1, 16, to=last - first + 1 )
+        call compare_list( work_list, first, last + 1, 17, from=last - first + 2 )
+
+        work_list = temp_list
+        call compare_list( work_list, first, last + 1, 18 )
+
+        write (*,*) "test_insert_at_same_list:     Starting temp_list!"
+
+        do i = 1, last - first + 2
+            temp_list = work_list
+            call temp_list%insert_at( fidx(i), temp_list )
+
+            call compare_list( temp_list, first, first + i - 1, 19, to=i - 1 )
+            call compare_list( temp_list, first, last + 1, 20, from=i, to=i + last - first )
+            call compare_list( temp_list, first + i - 1, last + 1, 21, from=i + last - first + 1 )
+
+        end do
+
+    end subroutine test_insert_at_same_list
+
     ! compares input stringlist 'list' with an array of consecutive integers
     ! array is 'first' inclusive and 'last' exclusive
-    subroutine compare_list(list, first, last, call_number)
+    subroutine compare_list(list, first, last, call_number, from, to)
         type(stringlist_type), intent(in)   :: list
         integer, intent(in)                 :: first, last, call_number
-        integer                             :: i, j
+        integer, intent(in), optional       :: from, to
+        integer                             :: i, j, k, work_from, work_to, length
 
-        call check( abs( last - first ) == list%len(), "compare_list: length mis-match&
+        length = list%len()
+        work_from = optval( from, 1 )
+        work_to   = optval( to, length )
+
+        call check( abs( last - first ) == max( 0, work_to - work_from + 1 ), "compare_list: length mis-match&
                                         & call_number " // to_string( call_number ) )
 
         j = merge(-1, 1, last < first)
-        do i = 1, list%len()
-            call check( list%get( fidx(i) ) == to_string( first + ( ( i - 1 ) * j ) ), &
+        do i = work_from, work_to
+            call check( list%get( fidx(i) ) == to_string( first + ( ( i - work_from ) * j ) ), &
                                     & "compare_list: call_number " // to_string( call_number ) &
-                                    & // " fidx( " // to_string( i ) // " )")
-            call check( list%get( bidx(i) ) == to_string( last - ( i * j ) ), &
+                                    & // " fidx( " // to_string( i ) // " )" )
+
+            k = length - ( work_to - ( i - work_from ) ) + 1
+            call check( list%get( bidx(k) ) == &
+                                    & to_string( last - ( ( i - work_from + 1 ) * j ) ), &
                                     & "compare_list: call_number " // to_string( call_number ) &
-                                    & // " bidx( " // to_string( i ) // " )")
+                                    & // " bidx( " // to_string( k ) // " )" )
         end do
 
     end subroutine compare_list
@@ -385,6 +447,7 @@ program tester
     call test_insert_at_string_3
     call test_insert_at_array
     call test_insert_at_list
+    call test_insert_at_same_list
     call test_constructor
 
 end program tester

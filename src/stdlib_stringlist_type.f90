@@ -642,23 +642,29 @@ contains
         type(stringlist_type), intent(in)               :: slist
 
         integer                                         :: i
-        integer                                         :: work_idxn, idxnew
-        integer                                         :: pre_length, post_length
+        integer                                         :: work_idxn, inew
+        integer                                         :: pre_length, post_length, temp
 
-        work_idxn   = idxn
         pre_length  = slist%len()
-        call insert_before_empty_positions( list, work_idxn, pre_length )
-        post_length = slist%len()
+        if (pre_length > 0) then
+            work_idxn   = idxn
 
-        do i = 1, min( work_idxn - 1, pre_length )
-            idxnew = work_idxn + i - 1
-            list%stringarray(idxnew) = slist%stringarray(i)
-        end do
+            call insert_before_empty_positions( list, work_idxn, pre_length )
+            post_length = slist%len()
 
-        do i = work_idxn + post_length - pre_length, post_length
-            idxnew = work_idxn + i - post_length + pre_length - 1
-            list%stringarray(idxnew) = slist%stringarray(i)
-        end do
+            inew = work_idxn
+            temp = min( work_idxn - 1, pre_length )
+            do i = 1, temp
+                list%stringarray(inew) = slist%stringarray(i)
+                inew = inew + 1
+            end do
+
+            temp = work_idxn + post_length - pre_length
+            do i = temp, post_length
+                list%stringarray(inew) = slist%stringarray(i)
+                inew = inew + 1
+            end do
+        end if
 
     end subroutine insert_before_stringlist_int_impl
 
