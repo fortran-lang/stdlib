@@ -149,10 +149,15 @@ To build the standard library run
 cmake --build build
 ```
 
-To test your build, run the test suite after the build has finished with
+To test your build, run the test suite and all example programs after the build has finished with
 
 ```sh
 cmake --build build --target test
+```
+
+To test only the test suite, run
+```sh
+ctest --test-dir build/src/tests
 ```
 
 Please report failing tests on our [issue tracker](https://github.com/fortran-lang/stdlib/issues/new/choose) including details of the compiler used, the operating system and platform architecture.
