@@ -11,7 +11,7 @@ contains
         real(sp), intent(in) :: value
         character(len=*), intent(in), optional :: format
         character(len=:), allocatable :: string
-        
+
         character(len=buffer_len) :: buffer
         integer :: stat
 
@@ -28,7 +28,7 @@ contains
         real(dp), intent(in) :: value
         character(len=*), intent(in), optional :: format
         character(len=:), allocatable :: string
-        
+
         character(len=buffer_len) :: buffer
         integer :: stat
 
@@ -64,30 +64,31 @@ contains
 
     !> Represent an integer of kind int8 as character sequence.
     pure module function to_string_1_i_int8(value) result(string)
-        integer(int8), intent(in) :: value
+        integer, parameter :: ik = int8
+        integer(ik), intent(in) :: value
         character(len=:), allocatable :: string
         integer, parameter :: buffer_len = range(value)+2
         character(len=buffer_len) :: buffer
         integer :: pos
-        integer(int8) :: n
-        character(len=1), parameter :: numbers(0:9) = &
-            ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        integer(ik) :: n
+        character(len=1), parameter :: numbers(-9:0) = &
+            ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
-        if (value == 0_int8) then
+        if (value == 0_ik) then
             string = numbers(0)
             return
         end if
 
-        n = abs(value)
+        n = sign(value, -1_ik)
         buffer = ""
-
         pos = buffer_len + 1
-        do while (n > 0_int8)
+        do while (n < 0_ik)
             pos = pos - 1
-            buffer(pos:pos) = numbers(mod(n, 10_int8))
-            n = n/10_int8
+            buffer(pos:pos) = numbers(mod(n, 10_ik))
+            n = n/10_ik
         end do
-        if (value < 0_int8) then
+
+        if (value < 0_ik) then
             pos = pos - 1
             buffer(pos:pos) = '-'
         end if
@@ -99,7 +100,7 @@ contains
         integer(int8), intent(in) :: value
         character(len=*), intent(in) :: format
         character(len=:), allocatable :: string
-        
+
         character(len=buffer_len) :: buffer
         integer :: stat
 
@@ -113,30 +114,31 @@ contains
     end function to_string_2_i_int8
     !> Represent an integer of kind int16 as character sequence.
     pure module function to_string_1_i_int16(value) result(string)
-        integer(int16), intent(in) :: value
+        integer, parameter :: ik = int16
+        integer(ik), intent(in) :: value
         character(len=:), allocatable :: string
         integer, parameter :: buffer_len = range(value)+2
         character(len=buffer_len) :: buffer
         integer :: pos
-        integer(int16) :: n
-        character(len=1), parameter :: numbers(0:9) = &
-            ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        integer(ik) :: n
+        character(len=1), parameter :: numbers(-9:0) = &
+            ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
-        if (value == 0_int16) then
+        if (value == 0_ik) then
             string = numbers(0)
             return
         end if
 
-        n = abs(value)
+        n = sign(value, -1_ik)
         buffer = ""
-
         pos = buffer_len + 1
-        do while (n > 0_int16)
+        do while (n < 0_ik)
             pos = pos - 1
-            buffer(pos:pos) = numbers(mod(n, 10_int16))
-            n = n/10_int16
+            buffer(pos:pos) = numbers(mod(n, 10_ik))
+            n = n/10_ik
         end do
-        if (value < 0_int16) then
+
+        if (value < 0_ik) then
             pos = pos - 1
             buffer(pos:pos) = '-'
         end if
@@ -148,7 +150,7 @@ contains
         integer(int16), intent(in) :: value
         character(len=*), intent(in) :: format
         character(len=:), allocatable :: string
-        
+
         character(len=buffer_len) :: buffer
         integer :: stat
 
@@ -162,30 +164,31 @@ contains
     end function to_string_2_i_int16
     !> Represent an integer of kind int32 as character sequence.
     pure module function to_string_1_i_int32(value) result(string)
-        integer(int32), intent(in) :: value
+        integer, parameter :: ik = int32
+        integer(ik), intent(in) :: value
         character(len=:), allocatable :: string
         integer, parameter :: buffer_len = range(value)+2
         character(len=buffer_len) :: buffer
         integer :: pos
-        integer(int32) :: n
-        character(len=1), parameter :: numbers(0:9) = &
-            ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        integer(ik) :: n
+        character(len=1), parameter :: numbers(-9:0) = &
+            ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
-        if (value == 0_int32) then
+        if (value == 0_ik) then
             string = numbers(0)
             return
         end if
 
-        n = abs(value)
+        n = sign(value, -1_ik)
         buffer = ""
-
         pos = buffer_len + 1
-        do while (n > 0_int32)
+        do while (n < 0_ik)
             pos = pos - 1
-            buffer(pos:pos) = numbers(mod(n, 10_int32))
-            n = n/10_int32
+            buffer(pos:pos) = numbers(mod(n, 10_ik))
+            n = n/10_ik
         end do
-        if (value < 0_int32) then
+
+        if (value < 0_ik) then
             pos = pos - 1
             buffer(pos:pos) = '-'
         end if
@@ -197,7 +200,7 @@ contains
         integer(int32), intent(in) :: value
         character(len=*), intent(in) :: format
         character(len=:), allocatable :: string
-        
+
         character(len=buffer_len) :: buffer
         integer :: stat
 
@@ -211,30 +214,31 @@ contains
     end function to_string_2_i_int32
     !> Represent an integer of kind int64 as character sequence.
     pure module function to_string_1_i_int64(value) result(string)
-        integer(int64), intent(in) :: value
+        integer, parameter :: ik = int64
+        integer(ik), intent(in) :: value
         character(len=:), allocatable :: string
         integer, parameter :: buffer_len = range(value)+2
         character(len=buffer_len) :: buffer
         integer :: pos
-        integer(int64) :: n
-        character(len=1), parameter :: numbers(0:9) = &
-            ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        integer(ik) :: n
+        character(len=1), parameter :: numbers(-9:0) = &
+            ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
-        if (value == 0_int64) then
+        if (value == 0_ik) then
             string = numbers(0)
             return
         end if
 
-        n = abs(value)
+        n = sign(value, -1_ik)
         buffer = ""
-
         pos = buffer_len + 1
-        do while (n > 0_int64)
+        do while (n < 0_ik)
             pos = pos - 1
-            buffer(pos:pos) = numbers(mod(n, 10_int64))
-            n = n/10_int64
+            buffer(pos:pos) = numbers(mod(n, 10_ik))
+            n = n/10_ik
         end do
-        if (value < 0_int64) then
+
+        if (value < 0_ik) then
             pos = pos - 1
             buffer(pos:pos) = '-'
         end if
@@ -246,7 +250,7 @@ contains
         integer(int64), intent(in) :: value
         character(len=*), intent(in) :: format
         character(len=:), allocatable :: string
-        
+
         character(len=buffer_len) :: buffer
         integer :: stat
 
@@ -272,7 +276,7 @@ contains
         logical(lk), intent(in) :: value
         character(len=*), intent(in) :: format
         character(len=:), allocatable :: string
-        
+
         character(len=buffer_len) :: buffer
         integer :: stat
 
@@ -297,7 +301,7 @@ contains
         logical(c_bool), intent(in) :: value
         character(len=*), intent(in) :: format
         character(len=:), allocatable :: string
-        
+
         character(len=buffer_len) :: buffer
         integer :: stat
 
