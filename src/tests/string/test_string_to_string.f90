@@ -18,7 +18,11 @@ contains
             new_unittest("to_string-complex", test_to_string_complex), &
             new_unittest("to_string-integer", test_to_string_integer), &
             new_unittest("to_string-logical", test_to_string_logical), &
-            new_unittest("to_string-real", test_to_string_real) &
+            new_unittest("to_string-real", test_to_string_real), &
+            new_unittest("to_string-limit-i1", test_string_i1), &
+            new_unittest("to_string-limit-i2", test_string_i2), &
+            new_unittest("to_string-limit-i4", test_string_i4), &
+            new_unittest("to_string-limit-i8", test_string_i8) &
             ]
     end subroutine collect_string_to_string
 
@@ -144,6 +148,46 @@ contains
             & "Invalid formatter for logical value", partial=.true.)
 
     end subroutine test_to_string_logical
+
+
+    subroutine test_string_i1(error)
+        use stdlib_kinds, only : i1 => int8
+
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error, to_string(-huge(1_i1) - 1_i1), "-128")
+    end subroutine test_string_i1
+
+
+    subroutine test_string_i2(error)
+        use stdlib_kinds, only : i2 => int16
+
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error, to_string(-huge(1_i2) - 1_i2), "-32768")
+    end subroutine test_string_i2
+
+
+    subroutine test_string_i4(error)
+        use stdlib_kinds, only : i4 => int32
+
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error, to_string(-huge(1_i4) - 1_i4), "-2147483648")
+    end subroutine test_string_i4
+
+
+    subroutine test_string_i8(error)
+        use stdlib_kinds, only : i8 => int64
+
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        call check(error, to_string(-huge(1_i8) - 1_i8), "-9223372036854775808")
+    end subroutine test_string_i8
 
 
 end module test_string_to_string

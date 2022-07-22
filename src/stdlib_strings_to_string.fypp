@@ -13,7 +13,7 @@ contains
         ${t1}$, intent(in) :: value
         character(len=*), intent(in), optional :: format
         character(len=:), allocatable :: string
-        
+
         character(len=buffer_len) :: buffer
         integer :: stat
 
@@ -43,30 +43,31 @@ contains
     #:for k1, t1 in INT_KINDS_TYPES
     !> Represent an integer of kind ${k1}$ as character sequence.
     pure module function to_string_1_${t1[0]}$_${k1}$(value) result(string)
-        ${t1}$, intent(in) :: value
+        integer, parameter :: ik = ${k1}$
+        integer(ik), intent(in) :: value
         character(len=:), allocatable :: string
         integer, parameter :: buffer_len = range(value)+2
         character(len=buffer_len) :: buffer
         integer :: pos
-        ${t1}$ :: n
-        character(len=1), parameter :: numbers(0:9) = &
-            ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        integer(ik) :: n
+        character(len=1), parameter :: numbers(-9:0) = &
+            ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
 
-        if (value == 0_${k1}$) then
+        if (value == 0_ik) then
             string = numbers(0)
             return
         end if
 
-        n = abs(value)
+        n = sign(value, -1_ik)
         buffer = ""
-
         pos = buffer_len + 1
-        do while (n > 0_${k1}$)
+        do while (n < 0_ik)
             pos = pos - 1
-            buffer(pos:pos) = numbers(mod(n, 10_${k1}$))
-            n = n/10_${k1}$
+            buffer(pos:pos) = numbers(mod(n, 10_ik))
+            n = n/10_ik
         end do
-        if (value < 0_${k1}$) then
+
+        if (value < 0_ik) then
             pos = pos - 1
             buffer(pos:pos) = '-'
         end if
@@ -78,7 +79,7 @@ contains
         ${t1}$, intent(in) :: value
         character(len=*), intent(in) :: format
         character(len=:), allocatable :: string
-        
+
         character(len=buffer_len) :: buffer
         integer :: stat
 
@@ -106,7 +107,7 @@ contains
         ${t1}$, intent(in) :: value
         character(len=*), intent(in) :: format
         character(len=:), allocatable :: string
-        
+
         character(len=buffer_len) :: buffer
         integer :: stat
 
