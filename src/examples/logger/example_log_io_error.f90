@@ -1,11 +1,11 @@
 program example_log_io_error
   use stdlib_logger, global => global_logger
 
-  character(*), parameter :: filename = 'dummy.txt'
+  character(*), parameter :: filename = 'nodummy.txt'
   integer                 :: iostat, lun
   character(128)          :: iomsg
   character(*), parameter :: message = &
-                             'Failure in opening "dummy.txt".'
+                             'Failure in opening "nodummy.txt".'
 
   open (newunit=lun, file=filename, form='formatted', &
         status='old', iostat=iostat, iomsg=iomsg)
