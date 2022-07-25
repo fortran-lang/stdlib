@@ -184,6 +184,15 @@ git checkout stdlib-fpm
 fpm build --profile release
 ```
 
+You can run the examples with `fpm` as:
+
+```sh
+fpm run --example prog
+```
+
+with `prog` being the name of the example program (e.g., `example_sort`).
+
+
 To use `stdlib` within your `fpm` project, add the following lines to your `fpm.toml` file:
 ```toml
 [dependencies]
