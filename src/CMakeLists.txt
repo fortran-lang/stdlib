@@ -61,24 +61,6 @@ set(fppFiles
 )
 
 
-# Custom preprocessor flags
-if(DEFINED CMAKE_MAXIMUM_RANK)
-  set(fyppFlags "-DMAXRANK=${CMAKE_MAXIMUM_RANK}")
-elseif(f03rank)
-  set(fyppFlags)
-else()
-  set(fyppFlags "-DVERSION90")
-endif()
-
-list(
-  APPEND fyppFlags
-  "-DWITH_QP=$<BOOL:${WITH_QP}>"
-  "-DWITH_XDP=$<BOOL:${WITH_XDP}>"
-  "-DPROJECT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}"
-  "-DPROJECT_VERSION_MINOR=${PROJECT_VERSION_MINOR}"
-  "-DPROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}"
-)
-
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
@@ -134,11 +116,7 @@ else()
   target_sources(${PROJECT_NAME} PRIVATE f08estop.f90)
 endif()
 
-if(BUILD_TESTING)
-  enable_testing()
-  add_subdirectory(tests)
-  add_subdirectory(examples)
-endif()
+add_subdirectory(examples)
 
 install(TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}-targets

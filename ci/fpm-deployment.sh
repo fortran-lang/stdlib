@@ -47,8 +47,8 @@ find src -maxdepth 1 -iname "*.fypp" \
 
 # Collect stdlib source files
 find src -maxdepth 1 -iname "*.f90" -exec cp {} "$destdir/src/" \;
-find src/tests -name "test_*.f90" -exec cp {} "$destdir/test/" \;
-find src/tests -name "*.dat" -exec cp {} "$destdir/" \;
+find test -name "test_*.f90" -exec cp {} "$destdir/test/" \;
+find test -name "*.dat" -exec cp {} "$destdir/" \;
 find src/examples -name "example_*.f90" -exec cp {} "$destdir/example/" \;
 
 # Include additional files

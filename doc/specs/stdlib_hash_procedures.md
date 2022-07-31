@@ -1481,7 +1481,7 @@ various hash functions. The other is a comparison of the outputs of
 the Fortran hash functions, with the outputs of the C and C++ hash
 procedures that are the inspiration for the Fortran hash functions.
 
-In the `src/test/hash_functions_perf` subdirectory, the Fortran Standard
+In the `test/hash_functions_perf` subdirectory, the Fortran Standard
 Library provides two performance test codes for
 the hash functions of `stdlib_hash_32bit` and
 `stdlib_hash_64bit`, `test_32_bit_hash_performance` and
@@ -1584,7 +1584,7 @@ severely impact the performance of  `nmhash32`, `nmhash32x`,
 `water_hash`, `pengy_hash`, and `spooky_hash` relative to
 `fnv_1_hash` and `fnv_1a_hash`.
 
-In the `src/test/hash_functions` subdirectory, the Fortran
+In the `test/hash_functions` subdirectory, the Fortran
 Standard Library contains codes to test the validity of
 the Fortran codes against the original C and C++ codes. It consists of one
 executable `test_hash_functions` that
