@@ -71,6 +71,7 @@ add_subdirectory(src)
 if(BUILD_TESTING)
   enable_testing()
   add_subdirectory(test)
+  add_subdirectory(example)
 endif()
 
 install(EXPORT ${PROJECT_NAME}-targets
