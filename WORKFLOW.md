@@ -81,8 +81,8 @@ To add tests, the macro ``ADDTEST`` should be used instead of the CMake function
 ``add_test``, the macro hides creation of the executable target, linking against the 
 main library target and registering the test.
 The tests themselves are defined as standalone executables in the subdirectories
-in ``src/tests``, a new subdirectory with tests has to be registred in
-``src/tests/CMakeLists.txt``.
+in ``test``, a new subdirectory with tests has to be registered in
+``test/CMakeLists.txt``.
 
 The source tree should be considered read-only. References to ``PROJECT_SOURCE_DIR``
 and ``CMAKE_CURRENT_SOURCE_DIR`` should only be used for accessing source files,

@@ -48,7 +48,30 @@ if(NOT FYPP)
   message(FATAL_ERROR "Preprocessor fypp not found! Please install fypp following the instructions in https://fypp.readthedocs.io/en/stable/fypp.html#installing")
 endif()
 
+# Custom preprocessor flags
+if(DEFINED CMAKE_MAXIMUM_RANK)
+  set(fyppFlags "-DMAXRANK=${CMAKE_MAXIMUM_RANK}")
+elseif(f03rank)
+  set(fyppFlags)
+else()
+  set(fyppFlags "-DVERSION90")
+endif()
+
+list(
+  APPEND fyppFlags
+  "-DWITH_QP=$<BOOL:${WITH_QP}>"
+  "-DWITH_XDP=$<BOOL:${WITH_XDP}>"
+  "-DPROJECT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}"
+  "-DPROJECT_VERSION_MINOR=${PROJECT_VERSION_MINOR}"
+  "-DPROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}"
+)
+
 add_subdirectory(src)
+
+if(BUILD_TESTING)
+  enable_testing()
+  add_subdirectory(test)
+endif()
 
 install(EXPORT ${PROJECT_NAME}-targets
         NAMESPACE ${PROJECT_NAME}::
