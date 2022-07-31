@@ -157,7 +157,7 @@ cmake --build build --target test
 
 To test only the test suite, run
 ```sh
-ctest --test-dir build/src/tests
+ctest --test-dir build/test
 ```
 
 Please report failing tests on our [issue tracker](https://github.com/fortran-lang/stdlib/issues/new/choose) including details of the compiler used, the operating system and platform architecture.
