@@ -51,7 +51,7 @@ The result is an intrinsic character type of the same length as `string`.
 #### Example
 
 ```fortran
-{!src/examples/ascii/example_ascii_to_lower.f90!}
+{!example/ascii/example_ascii_to_lower.f90!}
 ``` 
 
 ### `to_upper`
@@ -83,7 +83,7 @@ The result is an intrinsic character type of the same length as `string`.
 #### Example
 
 ```fortran
-{!src/examples/ascii/example_ascii_to_upper.f90!}
+{!example/ascii/example_ascii_to_upper.f90!}
 ```
 
 ### `to_title`
@@ -120,7 +120,7 @@ The result is an intrinsic character type of the same length as `string`.
 #### Example
 
 ```fortran
-{!src/examples/ascii/example_ascii_to_title.f90!}
+{!example/ascii/example_ascii_to_title.f90!}
 ```
 
 ### `to_sentence`
@@ -155,7 +155,7 @@ The result is an intrinsic character type of the same length as `string`.
 #### Example
 
 ```fortran
-{!src/examples/ascii/example_ascii_to_sentence.f90!}
+{!example/ascii/example_ascii_to_sentence.f90!}
 ```
 
 ### `reverse`
@@ -187,5 +187,5 @@ The result is an intrinsic character type of the same length as `string`.
 #### Example
 
 ```fortran
-{!src/examples/ascii/example_ascii_reverse.f90!}
+{!example/ascii/example_ascii_reverse.f90!}
 ```

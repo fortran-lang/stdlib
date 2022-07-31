@@ -35,7 +35,7 @@ Return a randomized rank one array of the input type.
 ### Example
 
 ```fortran
-{!src/examples/stats_distribution_uniform/example_shuffle.f90!}
+{!example/stats_distribution_uniform/example_shuffle.f90!}
 ```
 
 ## `rvs_uniform` - uniform distribution random variates
@@ -85,7 +85,7 @@ The result is a scalar or a rank one array with size of `array_size`, of type `i
 ### Example
 
 ```fortran
-{!src/examples/stats_distribution_uniform/example_uniform_rvs.f90!}
+{!example/stats_distribution_uniform/example_uniform_rvs.f90!}
 ```
 
 ## `pdf_uniform` - Uniform distribution probability density function
@@ -133,7 +133,7 @@ The result is a scalar or an array, with a shape conformable to arguments, of ty
 ### Example
 
 ```fortran
-{!src/examples/stats_distribution_uniform/example_uniform_pdf.f90!}
+{!example/stats_distribution_uniform/example_uniform_pdf.f90!}
 ```
 
 ## `cdf_uniform` - Uniform distribution cumulative distribution function
@@ -183,5 +183,5 @@ The result is a scalar or an array, with a shape conformable to arguments, of ty
 ### Example
 
 ```fortran
-{!src/examples/stats_distribution_uniform/example_uniform_cdf.f90!}
+{!example/stats_distribution_uniform/example_uniform_cdf.f90!}
 ```

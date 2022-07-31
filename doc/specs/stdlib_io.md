@@ -36,7 +36,7 @@ Returns an allocated rank-2 `array` with the content of `filename`.
 ### Example
 
 ```fortran
-{!src/examples/io/example_loadtxt.f90!}
+{!example/io/example_loadtxt.f90!}
 ```
 
 
@@ -86,7 +86,7 @@ The result is a scalar of type `integer`.
 ### Example
 
 ```fortran
-{!src/examples/io/example_open.f90!}
+{!example/io/example_open.f90!}
 ```
 
 
@@ -116,7 +116,7 @@ Provides a text file called `filename` that contains the rank-2 `array`.
 ### Example
 
 ```fortran
-{!src/examples/io/example_savetxt.f90!}
+{!example/io/example_savetxt.f90!}
 ```
 
 
@@ -157,7 +157,7 @@ Returns an allocated `array` with the content of `filename` in case of success.
 ### Example
 
 ```fortran
-{!src/examples/io/example_loadnpy.f90!}
+{!example/io/example_loadnpy.f90!}
 ```
 
 
@@ -198,7 +198,7 @@ Provides a npy file called `filename` that contains the rank-2 `array`.
 ### Example
 
 ```fortran
-{!src/examples/io/example_savenpy.f90!}
+{!example/io/example_savenpy.f90!}
 ```
 
 ## `getline`
@@ -236,7 +236,7 @@ Read a whole line from a formatted unit into a string variable
 ### Example
 
 ```fortran
-{!src/examples/io/example_getline.f90!}
+{!example/io/example_getline.f90!}
 ```
 
 ## Formatting constants
@@ -253,5 +253,5 @@ Provides formats for all kinds as defined in the `stdlib_kinds` module.
 ### Example
 
 ```fortran
-{!src/examples/io/example_fmt_constants.f90!}
+{!example/io/example_fmt_constants.f90!}
 ```
