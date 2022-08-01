@@ -150,7 +150,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_all
+!!    program example_all
 !!        use stdlib_bitsets
 !!        character(*), parameter :: &
 !!            bits_all = '111111111111111111111111111111111'
@@ -166,7 +166,7 @@ module stdlib_bitsets
 !!            write(*,*) "FROM_STRING transferred BITS_ALL properly" // &
 !!                " into set0."
 !!        end if
-!!    end program demo_all
+!!    end program example_all
 !!```
             import :: bitset_type
             logical                        :: all
@@ -181,7 +181,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_any
+!!    program example_any
 !!        use stdlib_bitsets
 !!        character(*), parameter :: &
 !!            bits_0 = '0000000000000000000'
@@ -195,7 +195,7 @@ module stdlib_bitsets
 !!        if ( set0 % any() ) then
 !!            write(*,*) "ANY interpreted SET0's value properly."
 !!        end if
-!!    end program demo_any
+!!    end program example_any
 !!```
             import :: bitset_type
             logical                        :: any
@@ -210,7 +210,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_bit_count
+!!    program example_bit_count
 !!        use stdlib_bitsets
 !!        character(*), parameter :: &
 !!            bits_0 = '0000000000000000000'
@@ -224,7 +224,7 @@ module stdlib_bitsets
 !!        if ( set0 % bit_count() == 1 ) then
 !!            write(*,*) "BIT_COUNT interpreted SET0's value properly."
 !!        end if
-!!    end program demo_bit_count
+!!    end program example_bit_count
 !!```
             import :: bitset_type, bits_kind
             integer(bits_kind)             ::  bit_count
@@ -240,7 +240,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_clear
+!!    program example_clear
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0
 !!        call set0 % init(166)
@@ -250,7 +250,7 @@ module stdlib_bitsets
 !!        if ( .not. set0 % test(165) ) write(*,*) 'Bit 165 is cleared.'
 !!        call set0 % clear(0,164)
 !!        if ( set0 % none() ) write(*,*) 'All bits are cleared.'
-!!    end program demo_clear
+!!    end program example_clear
 !!```
             import :: bitset_type, bits_kind
             class(bitset_type), intent(inout) :: self
@@ -278,7 +278,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_flip
+!!    program example_flip
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0
 !!        call set0 % init(166)
@@ -287,7 +287,7 @@ module stdlib_bitsets
 !!        if ( set0 % test(165) ) write(*,*) 'Bit 165 is flipped.'
 !!        call set0 % flip(0,164)
 !!        if ( set0 % all() ) write(*,*) 'All bits are flipped.'
-!!    end program demo_flip
+!!    end program example_flip
 !!```
             import :: bitset_type, bits_kind
             class(bitset_type), intent(inout) :: self
@@ -318,7 +318,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_from_string
+!!    program example_from_string
 !!        use stdlib_bitsets
 !!        character(*), parameter :: &
 !!            bits_all = '111111111111111111111111111111111'
@@ -334,7 +334,7 @@ module stdlib_bitsets
 !!            write(*,*) "FROM_STRING transferred BITS_ALL properly" // &
 !!                " into set0."
 !!        end if
-!!    end program demo_from_string
+!!    end program example_from_string
 !!```
             import :: bitset_type
             class(bitset_type), intent(out) :: self
@@ -355,14 +355,14 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_init
+!!    program example_init
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0
 !!        call set0 % init(166)
 !!        if ( set0 % bits() == 166 ) &
 !!            write(*,*) `SET0 has the proper size.'
 !!        if ( set0 % none() ) write(*,*) 'SET0 is properly initialized.'
-!!    end program demo_init
+!!    end program example_init
 !!```
             import :: bitset_type, bits_kind
             class(bitset_type), intent(out) :: self
@@ -386,7 +386,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_input
+!!    program example_input
 !!        character(*), parameter :: &
 !!            bits_0   = '000000000000000000000000000000000', &
 !!            bits_1   = '000000000000000000000000000000001', &
@@ -415,7 +415,7 @@ module stdlib_bitsets
 !!            write(*,*) 'Transfer to and from units using ' // &
 !!                'output and input succeeded.'
 !!        end if
-!!    end program demo_input
+!!    end program example_input
 !!```
             import :: bitset_type
             class(bitset_type), intent(out) :: self
@@ -431,7 +431,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_none
+!!    program example_none
 !!        use stdlib_bitsets
 !!        character(*), parameter :: &
 !!            bits_0 = '0000000000000000000'
@@ -445,7 +445,7 @@ module stdlib_bitsets
 !!        if ( .not. set0 % none() ) then
 !!            write(*,*) "NONE interpreted SET0's value properly."
 !!        end if
-!!    end program demo_none
+!!    end program example_none
 !!```
             import :: bitset_type
             logical ::  none
@@ -460,7 +460,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_not
+!!    program example_not
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0
 !!        call set0 % init( 155 )
@@ -472,7 +472,7 @@ module stdlib_bitsets
 !!        if ( set0 % all() ) then
 !!            write(*,*) "ALL interpreted SET0's value properly."
 !!        end if
-!!    end program demo_not
+!!    end program example_not
 !!```
             import :: bitset_type
             class(bitset_type), intent(inout) :: self
@@ -490,7 +490,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_output
+!!    program example_output
 !!        character(*), parameter :: &
 !!            bits_0   = '000000000000000000000000000000000', &
 !!            bits_1   = '000000000000000000000000000000001', &
@@ -519,7 +519,7 @@ module stdlib_bitsets
 !!            write(*,*) 'Transfer to and from units using ' // &
 !!                'output and input succeeded.'
 !!        end if
-!!    end program demo_output
+!!    end program example_output
 !!```
             import :: bitset_type
             class(bitset_type), intent(in) :: self
@@ -549,7 +549,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_read_bitset
+!!    program example_read_bitset
 !!        character(*), parameter :: &
 !!            bits_0   = 'S33B000000000000000000000000000000000', &
 !!            bits_1   = 'S33B000000000000000000000000000000001', &
@@ -581,7 +581,7 @@ module stdlib_bitsets
 !!        if ( set3 == set0 .and. set4 == set1 .and. set5 == set2 ) then
 !!            write(*,*) WRITE_BITSET to READ_BITSET through unit worked.'
 !!        end if
-!!    end program demo_read_bitset
+!!    end program example_read_bitset
 !!```
             import :: bitset_type
             class(bitset_type), intent(out) :: self
@@ -629,7 +629,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_set
+!!    program example_set
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0
 !!        call set0 % init(166)
@@ -638,7 +638,7 @@ module stdlib_bitsets
 !!        if ( set0 % test(165) ) write(*,*) 'Bit 165 is set.'
 !!        call set0 % set(0,164)
 !!        if ( set0 % all() ) write(*,*) 'All bits are set.'
-!!    end program demo_set
+!!    end program example_set
 !!```
             import :: bitset_type, bits_kind
             class(bitset_type), intent(inout) :: self
@@ -665,7 +665,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_test
+!!    program example_test
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0
 !!        call set0 % init(166)
@@ -675,7 +675,7 @@ module stdlib_bitsets
 !!        if ( .not. set0 % test(165) ) write(*,*) 'Bit 165 is cleared.'
 !!        call set0 % set(165)
 !!        if ( set0 % test(165) ) write(*,*) 'Bit 165 is set.'
-!!    end program demo_test
+!!    end program example_test
 !!```
             import :: bitset_type, bits_kind
             logical ::  test
@@ -692,7 +692,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_to_string
+!!    program example_to_string
 !!        use stdlib_bitsets
 !!        character(*), parameter :: &
 !!            bits_all = '111111111111111111111111111111111'
@@ -705,7 +705,7 @@ module stdlib_bitsets
 !!            write(*,*) "TO_STRING transferred BITS0 properly" // &
 !!                " into NEW_STRING."
 !!        end if
-!!    end program demo_to_string
+!!    end program example_to_string
 !!```
             import :: bitset_type
             class(bitset_type), intent(in)         :: self
@@ -722,7 +722,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_value
+!!    program example_value
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0
 !!        call set0 % init(166)
@@ -732,7 +732,7 @@ module stdlib_bitsets
 !!        if ( set0 % value(165) == 0 ) write(*,*) 'Bit 165 is cleared.'
 !!        call set0 % set(165)
 !!        if ( set0 % value(165) == 1 ) write(*,*) 'Bit 165 is set.'
-!!    end program demo_value
+!!    end program example_value
 !!```
             import :: bitset_type, bits_kind
             integer ::  value
@@ -753,7 +753,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_write_bitset
+!!    program example_write_bitset
 !!        character(*), parameter :: &
 !!            bits_0   = 'S33B000000000000000000000000000000000', &
 !!            bits_1   = 'S33B000000000000000000000000000000001', &
@@ -785,7 +785,7 @@ module stdlib_bitsets
 !!        if ( set3 == set0 .and. set4 == set1 .and. set5 == set2 ) then
 !!            write(*,*) WRITE_BITSET to READ_BITSET through unit worked.'
 !!        end if
-!!    end program demo_write_bitset
+!!    end program example_write_bitset
 !!```
             import :: bitset_type
             class(bitset_type), intent(in)             :: self
@@ -1139,7 +1139,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_assignment
+!!    program example_assignment
 !!        use stdlib_bitsets
 !!        logical(int8)  :: logical1(64) = .true.
 !!        logical(int32), allocatable :: logical2(:)
@@ -1162,7 +1162,7 @@ module stdlib_bitsets
 !!        if ( all( logical2 ) ) then
 !!            write(*,*) 'Initialization of logical(int32) succeeded.'
 !!        end if
-!!    end program demo_assignment
+!!    end program example_assignment
 !!```
 
         pure module subroutine assign_large( set1, set2 )
@@ -1649,7 +1649,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_and
+!!    program example_and
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0, set1
 !!        call set0 % init(166)
@@ -1665,7 +1665,7 @@ module stdlib_bitsets
 !!        call set0 % not()
 !!        call and( set0, set1 ) ! all all
 !!        if ( all(set0) ) write(*,*) 'Fourth test of AND worked.'
-!!    end program demo_and
+!!    end program example_and
 !!```
         elemental module subroutine and_large(set1, set2)
             type(bitset_large), intent(inout) :: set1
@@ -1692,7 +1692,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_and_not
+!!    program example_and_not
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0, set1
 !!        call set0 % init(166)
@@ -1709,7 +1709,7 @@ module stdlib_bitsets
 !!        call set0 % not()
 !!        call and_not( set0, set1 ) ! all all
 !!        if ( none(set0) ) write(*,*) 'Fourth test of AND_NOT worked.'
-!!    end program demo_and_not
+!!    end program example_and_not
 !!```
 
         elemental module subroutine and_not_large(set1, set2)
@@ -1738,7 +1738,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_extract
+!!    program example_extract
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0, set1
 !!        call set0 % init(166)
@@ -1747,7 +1747,7 @@ module stdlib_bitsets
 !!        if ( set1 % bits() == 51 ) &
 !!            write(*,*) 'SET1 has the proper size.'
 !!        if ( set1 % all() ) write(*,*) 'SET1 has the proper values.'
-!!    end program demo_extract
+!!    end program example_extract
 !!```
 
         module subroutine extract_large(new, old, start_pos, stop_pos, status)
@@ -1778,7 +1778,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_or
+!!    program example_or
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0, set1
 !!        call set0 % init(166)
@@ -1795,7 +1795,7 @@ module stdlib_bitsets
 !!        call set0 % not()
 !!        call or( set0, set1 ) ! all all
 !!        if ( all(set0) ) write(*,*) 'Fourth test of OR worked.'
-!!    end program demo_or
+!!    end program example_or
 !!```
         elemental module subroutine or_large(set1, set2)
             type(bitset_large), intent(inout) :: set1
@@ -1821,7 +1821,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_xor
+!!    program example_xor
 !!        use stdlib_bitsets
 !!        type(bitset_large) :: set0, set1
 !!        call set0 % init(166)
@@ -1838,7 +1838,7 @@ module stdlib_bitsets
 !!        call set0 % not()
 !!        call xor( set0, set1 ) ! all all
 !!        if ( none(set0) ) write(*,*) 'Fourth test of XOR worked.'
-!!    end program demo_xor
+!!    end program example_xor
 !!```
         elemental module subroutine xor_large(set1, set2)
             type(bitset_large), intent(inout) :: set1
@@ -1864,7 +1864,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_equality
+!!    program example_equality
 !!        use stdlib_bitsets
 !!        type(bitset_64) :: set0, set1, set2
 !!        call set0 % init( 33 )
@@ -1879,7 +1879,7 @@ module stdlib_bitsets
 !!        else
 !!            error stop 'Failed 64 bit equality tests.'
 !!        end if
-!!    end program demo_equality
+!!    end program example_equality
 !!```
         elemental module function eqv_large(set1, set2) result(eqv)
             logical                        :: eqv
@@ -1905,7 +1905,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_inequality
+!!    program example_inequality
 !!        use stdlib_bitsets
 !!        type(bitset_64) :: set0, set1, set2
 !!        call set0 % init( 33 )
@@ -1920,7 +1920,7 @@ module stdlib_bitsets
 !!        else
 !!            error stop 'Failed 64 bit inequality tests.'
 !!        end if
-!!    end program demo_inequality
+!!    end program example_inequality
 !!```
         elemental module function neqv_large(set1, set2) result(neqv)
             logical                        :: neqv
@@ -1947,7 +1947,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_gt
+!!    program example_gt
 !!        use stdlib_bitsets
 !!        type(bitset_64) :: set0, set1, set2
 !!        call set0 % init( 33 )
@@ -1962,7 +1962,7 @@ module stdlib_bitsets
 !!        else
 !!            error stop 'Failed 64 bit greater than tests.'
 !!        end if
-!!    end program demo_gt
+!!    end program example_gt
 !!```
         elemental module function gt_large(set1, set2) result(gt)
             logical                        :: gt
@@ -1989,7 +1989,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_ge
+!!    program example_ge
 !!        use stdlib_bitsets
 !!        type(bitset_64) :: set0, set1, set2
 !!        call set0 % init( 33 )
@@ -2005,7 +2005,7 @@ module stdlib_bitsets
 !!        else
 !!            error stop 'Failed 64 bit greater than or equals tests.'
 !!        end if
-!!    end program demo_ge
+!!    end program example_ge
 !!```
         elemental module function ge_large(set1, set2) result(ge)
             logical                        :: ge
@@ -2032,7 +2032,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_lt
+!!    program example_lt
 !!        use stdlib_bitsets
 !!        type(bitset_64) :: set0, set1, set2
 !!        call set0 % init( 33 )
@@ -2047,7 +2047,7 @@ module stdlib_bitsets
 !!        else
 !!            error stop 'Failed 64 bit less than tests.'
 !!        end if
-!!    end program demo_lt
+!!    end program example_lt
 !!```
         elemental module function lt_large(set1, set2) result(lt)
             logical                        :: lt
@@ -2074,7 +2074,7 @@ module stdlib_bitsets
 !!#### Example
 !!
 !!```fortran
-!!    program demo_le
+!!    program example_le
 !!        use stdlib_bitsets
 !!        type(bitset_64) :: set0, set1, set2
 !!        call set0 % init( 33 )
@@ -2090,7 +2090,7 @@ module stdlib_bitsets
 !!        else
 !!            error stop 'Failed 64 bit less than or equal tests.'
 !!        end if
-!!    end program demo_le
+!!    end program example_le
 !!```
         elemental module function le_large(set1, set2) result(le)
             logical                        :: le
