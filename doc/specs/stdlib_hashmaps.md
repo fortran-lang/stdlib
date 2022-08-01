@@ -227,18 +227,7 @@ is an `intent(out)` argument.
 ##### Example
 
 ```fortran
-    program demo_copy_key
-      use stdlib_hashmap_wrappers, only: &
-          copy_key, operator(==), key_type, set
-      use iso_fortran_env, only: int8
-      implicit none
-      integer(int8) :: i, value(15)
-      type(key_type) :: old_key, new_key
-      value = [(i, i = 1, 15)]
-      call set( old_key, value )
-      call copy_key( old_key, new_key )
-      print *, "old_key == new_key = ", old_key == new_key
-    end program demo_copy_key
+{!example/hashmaps/example_hashmaps_copy_key.f90!}
 ```
 
 #### `copy_other` - Returns a copy of the other data
@@ -270,27 +259,7 @@ is an `intent(out)` argument.
 ##### Example
 
 ```fortran
-    program demo_copy_other
-      use stdlib_hashmap_wrappers, only: copy_other, other_type
-      use iso_fortran_env, only: int8
-      implicit none
-      type(other_type) :: other_in, other_out
-      integer(int8) :: i
-      type dummy_type
-          integer(int8) :: value(15)
-      end type
-      type(dummy_type) :: dummy_val
-      do i = 1, 15
-          dummy_val % value1(i) = i
-      end do
-      allocate(other_in % value, source=dummy_val)
-      call copy_other( other_in, other_out )
-      select type(out => other_out % value)
-	  type is (dummy_type)
-          print *, "other_in == other_out = ", &
-            all( dummy_val % value == out % value )
-      end select
-    end program demo_copy_other
+{!example/hashmaps/example_hashmaps_copy_other.f90!}
 ```
 
 
@@ -356,19 +325,7 @@ expected to be minor compared to its faster hashing rate.
 ##### Example
 
 ```fortran
-    program demo_fnv_1_hasher
-      use stdlib_hashmap_wrappers, only: &
-          fnv_1_hasher, key_type, set
-      use iso_fortran_env, only: int32 
-      implicit none
-      integer(int8), allocatable :: array1(:)
-      integer(int32) :: hash
-      type(key_type) :: key
-      array1 = [ 5_int8, 4_int8, 3_int8, 1_int8, 10_int8, 4_int8 ]
-      call set( key, array1 )
-      hash = fnv_1_hasher(key)
-      print *, hash
-    end program demo_fnv_1_hasher
+{!example/hashmaps/example_hashmaps_fnv_1_hasher.f90!}
 ```
 
 
@@ -420,19 +377,7 @@ expected to be minor compared to its faster hashing rate.
 ##### Example
 
 ```fortran
-    program demo_fnv_1a_hasher
-      use stdlib_hashmap_wrappers, only: &
-         fnv_1a_hasher, key_type, set
-      use iso_fortran_env, only: int32 
-      implicit none
-      integer(int8), allocatable :: array1(:)
-      integer(int32) :: hash
-      type(key_type) :: key
-      array1 = [ 5_int8, 4_int8, 3_int8, 1_int8, 10_int8, 4_int8 ]
-      call set( key, array1 )
-      hash = fnv_1a_hasher(key)
-      print *, hash
-    end program demo_fnv_1a_hasher
+{!example/hashmaps/example_hashmaps_fnv_1a_hasher.f90!}
 ```
 
 #### `free_key` - frees the memory associated with a key
@@ -462,18 +407,7 @@ is an `intent(out)` argument.
 ##### Example
 
 ```fortran
-    program demo_free_key
-      use stdlib_hashmap_wrappers, only: &
-          copy_key, free_key, key_type, set
-      use iso_fortran_env, only: int8
-      implicit none
-      integer(int8) :: i, value(15)
-      type(key_type) :: old_key, new_key
-      value = [(i, i=1, 15)]
-      call set( old_key, value )
-      call copy_key( old_key, new_key )
-      call free_key( old_key )
-    end program demo_free_key
+{!example/hashmaps/example_hashmaps_free_key.f90!}
 ```
 
 #### `free_other` - frees the memory associated with other data
@@ -503,24 +437,7 @@ is an `intent(out)` argument.
 ##### Example
 
 ```fortran
-    program demo_free_other
-      use stdlib_hashmap_wrappers, only: &
-          copy_other, free_other, other_type
-      use iso_fortran_env, only: int8
-      implicit none
-      type dummy_type
-          integer(int8) :: value(15)
-      end type dummy_type
-      type(dummy_type) :: dummy_val
-      type(other_type), allocatable :: other_in, other_out
-      integer(int8) :: i
-      do i=1, 15
-          dummy_val % value(i) = i
-      end do
-      allocate(other_in % value, source=dummy_val)
-      call copy_other( other_in, other_out )
-      call free_other( other_out )
-    end program demo_free_other
+{!example/hashmaps/example_hashmaps_free_other.f90!}
 ```
 
 
@@ -564,22 +481,7 @@ an allocatable of `class(*)`. It is an `intent(out)` argument.
 ##### Example
 
 ```fortran
-    program demo_get
-      use stdlib_hashmap_wrappers, only: &
-          get, key_type, set
-      use iso_fortran_env, only: int8
-      implicit none
-      integer(int8), allocatable :: value(:), result(:)
-      type(key_type) :: key
-      integer(int8) :: i
-      allocate( value(1:15) )
-      do i=1, 15
-        value(i) = i
-      end do
-      call set( key, value )
-      call get( key, result )
-      print *, 'RESULT == VALUE = ', all( value == result )
-    end program demo_get
+{!example/hashmaps/example_hashmaps_get.f90!}
 ```
 
 
@@ -623,21 +525,7 @@ pointers intended for use as a hash function for the hash maps.
 ##### Example
 
 ```fortran
-    program demo_hasher_fun
-      use stdlib_hashmap_wrappers, only: &
-          fnv_1a_hasher, hasher_fun, set
-      use iso_fortran_env, only: int8, int32 
-      implicit none
-      type(hasher_fun), pointer :: hasher_pointer
-      integer(int8), allocatable :: array1(:)
-      integer(int32) :: hash
-      type(key_type) :: key
-      hasher_pointer => fnv_1a_hasher
-      array1 = [ 5_int8, 4_int8, 3_int8, 1_int8, 10_int8, 4_int8 ]
-      call set( key, array1 )
-      hash = hasher_pointer(key)
-      print *, hash
-    end program demo_hasher_fun
+{!example/hashmaps/example_hashmaps_hasher_fun.f90!}
 ```
 
 #### `operator(==)` - Compares two keys for equality 
@@ -677,20 +565,7 @@ The result is `.true.` if the keys are equal, otherwise `.falss.`.
 ##### Example 
 
 ```fortran 
-    program demo_equal_keys 
-      use stdlib_hashmap_wrappers, only: &
-          copy_key, operator(==), key_type, set 
-      use iso_fortran_env, only: int8 
-      implicit none
-      integer(int8) :: i, value(15) 
-      type(key_type) :: old_key, new_key 
-      do i=1, 15 
-          value(i) = i 
-      end do 
-      call set( old_key, value ) 
-      call copy_key( old_key, new_key ) 
-      print *, "old_key == new_key = ", old_key == new_key 
-    end program demo_equal_keys 
+{!example/hashmaps/example_hashmaps_equal_keys.f90!}
 ```
 
 #### `seeded_nmhash32_hasher`- calculates a hash code from a key
@@ -740,19 +615,7 @@ This code passes the SMHasher tests.
 ##### Example
 
 ```fortran
-    program demo_seeded_nmhash32_hasher
-      use stdlib_hashmap_wrappers, only: &
-         seeded_nmhash32_hasher, key_type, set
-      use iso_fortran_env, only: int32 
-      implicit none
-      integer(int8), allocatable :: array1(:)
-      integer(int32) :: hash
-      type(key_type) :: key
-      array1 = [ 5_int8, 4_int8, 3_int8, 1_int8, 10_int8, 4_int8 ]
-      call set( key, array1 )
-      hash = seeded_nmhash32_hasher (key)
-      print *, hash
-    end program demo_seeded_nmhash32_hasher
+{!example/hashmaps/example_hashmaps_seeded_nmhash32_hasher.f90!}
 ```
 
 #### `seeded_nmhash32x_hasher`- calculates a hash code from a key
@@ -801,19 +664,7 @@ This code passes the SMHasher tests.
 ##### Example
 
 ```fortran
-    program demo_seeded_nmhash32x_hasher
-      use stdlib_hashmap_wrappers, only: &
-         seeded_nmhash32x_hasher, key_type, set
-      use iso_fortran_env, only: int32 
-      implicit none
-      integer(int8), allocatable :: array1(:)
-      integer(int32) :: hash
-      type(key_type) :: key
-      array1 = [ 5_int8, 4_int8, 3_int8, 1_int8, 10_int8, 4_int8 ]
-      call set( key, array1 )
-      hash = seeded_nmhash32x_hasher (key)
-      print *, hash
-    end program demo_seeded_nmhash32x_hasher
+{!example/hashmaps/example_hashmaps_seeded_nmhash32x_hasher.f90!}
 ```
 
 #### `seeded_water_hasher`- calculates a hash code from a key
@@ -863,19 +714,7 @@ This code passes the SMHasher tests.
 ##### Example
 
 ```fortran
-    program demo_seeded_water_hasher
-      use stdlib_hashmap_wrappers, only: &
-         seeded_water_hasher, key_type, set
-      use iso_fortran_env, only: int32 
-      implicit none
-      integer(int8), allocatable :: array1(:)
-      integer(int32) :: hash
-      type(key_type) :: key
-      array1 = [ 5_int8, 4_int8, 3_int8, 1_int8, 10_int8, 4_int8 ]
-      call set( key, array1 )
-      hash = seeded_water_hasher (key)
-      print *, hash
-    end program demo_seeded_water_hasher
+{!example/hashmaps/example_hashmaps_seeded_water_hasher.f90!}
 ```
 
 
@@ -924,22 +763,7 @@ value to an `int8` vector.
 ##### Example
 
 ```fortran
-    program demo_set
-      use stdlib_hashmap_wrappers, only: &
-          get, key_type, set
-      use iso_fortran_env, only: int8
-      implicit none
-      integer(int8), allocatable :: value(:), result(:)
-      type(key_type) :: key
-      integer(int8) :: i
-      allocate( value(1:15) )
-      do i=1, 15
-        value(i) = i
-      end do
-      call set( key, value )
-      call get( key, result )
-      print *, 'RESULT == VALUE = ', all( value == result )
-    end program demo_set
+{!example/hashmaps/example_hashmaps_set.f90!}
 ```
 
 
@@ -1385,16 +1209,7 @@ The result will be the number of procedure calls on the hash map.
 ##### Example
 
 ```fortran
-    program demo_calls
-      use stdlib_hashmaps, only: chaining_hashmap_type, int_calls
-      use stdlib_hashmap_wrappers, only: fnv_1_hasher
-      implicit none
-      type(chaining_hashmap_type) :: map
-      integer(int_calls) :: initial_calls
-      call map % init( fnv_1_hasher )
-      initial_calls = map % calls()
-      print *, "INITIAL_CALLS =  ", initial_calls
-    end program demo_calls
+{!example/hashmaps/example_hashmaps_calls.f90!}
 ```
 
 
@@ -1432,16 +1247,7 @@ The result will be the number of entries in the hash map.
 ##### Example
 
 ```fortran
-    program demo_entries
-      use stdlib_hashmaps, only: open_hashmap_type, int_index
-      use stdlib_hashmap_wrappers, only: fnv_1_hasher
-      implicit none
-      type(open_hashmap_type) :: map
-      type(int_index) :: initial_entries
-      call map % init( fnv_1_hasher )
-      initial_entries = map % entries ()
-      print *, "INITIAL_ENTRIES =  ", initial_entries
-    end program demo_entries
+{!example/hashmaps/example_hashmaps_entries.f90!}
 ```
 
 
@@ -1489,39 +1295,7 @@ undefined.
 
 
 ```fortran
-    program demo_get_other_data
-        use, intrinsic:: iso_fortran_env, only: &
-            int8
-        use stdlib_hashmaps, only: chaining_hashmap_type, int_index
-        use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type, other_type
-	    logical                     :: conflict, exists
-        type(key_type)              :: key
-        type(other_type)            :: other
-        type(chaining_hashmap_type) :: map
-        type dummy_type
-            integer(int8) :: value(4)
-        end type dummy_type
-		type(dummy_type) :: dummy
-        class(*), allocatable :: data
-        dummy % value = [ 4_int8, 3_int8, 2_int8, 1_int8 ]
-        allocate( data, source=dummy ) 
-        call map % init( fnv_1_hasher )
-        call set( key, [ 0_int8, 1_int8, 2_int8, 3_int8, 4_int8 ] )
-        call set( other, data )
-        call map % map_entry( key, other, conflict )
-        if ( .not. conflict ) then
-            call map % get_other_data( key, other )
-        else
-            stop 'Key is already present in the map.'
-        end if
-        call get( other, data )
-        select type( data )
-        type is (dummy_type)
-            print *, 'Other data % value = ', data % value
-        class default
-            print *, 'Invalid data type in other'
-        end select
-    end program demo_get_other_data
+{!example/hashmaps/example_hashmaps_get_other_data.f90!}
 ```
 
 
@@ -1584,13 +1358,7 @@ has the value `alloc_fault`.
 ##### Example
 
 ```fortran
-    program demo_init
-        use stdlib_hashmaps, only: chaining_hashmap_type
-        use stdlib_hashmap_wrappers, only: fnv_1_hasher
-	implicit none
-        type(chaining_hashmap_type) :: map
-        call map % init( fnv_1_hasher, slots_bits=10 )
-    end program demo_init
+{!example/hashmaps/example_hashmaps_init.f90!}
 ```
 
 
@@ -1632,19 +1400,7 @@ is being examined.
 ##### Example
 
 ```fortran
-    program demo_key_test
-      use stdlib_kinds, only: int8
-      use stdlib_hashmaps, only: chaining_hashmap_type
-      use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type
-      implicit none
-      type(chaining_hashmap_type) :: map
-      type(key_type) :: key
-      logocal :: present
-      call map % init( fnv_1_hasher )
-      call set(key, [0_int8, 1_int8] )
-      call map % key_test ( key, present )
-      print *, "Initial key of 10 present for empty map =  ", present
-    end program demo_key_test
+{!example/hashmaps/example_hashmaps_key_test.f90!}
 ```
 
 
@@ -1684,16 +1440,7 @@ number of slots in the hash map.
 ##### Example
 
 ```fortran
-    program demo_loading
-      use stdlib_hashmaps, only: open_hashmap_type
-      use stdlib_hashmap_wrappers, only:  fnv_1_hasher
-      implicit none
-      type(open_hashmap_type) :: map
-      real :: ratio
-      call map % init( fnv_1_hasher )
-      ratio = map % loading ()
-      print *, "Initial loading =  ", ratio
-    end program demo_loading
+{!example/hashmaps/example_hashmaps_loading.f90!}
 ```
 
 #### `map_entry` - inserts an entry into the hash map
@@ -1743,22 +1490,7 @@ is ignored.
 ##### Example
 
 ```fortran
-    program demo_map_entry
-        use, intrinsic:: iso_fortran_env, only: int8
-        use stdlib_hashmaps, only: chaining_hashmap_type
-        use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type, other_type, set
-        type(chaining_hashmap_type) :: map
-        type(key_type)      :: key
-        logical             :: conflict
-        type(other_type)    :: other
-        class(*), allocatable :: dummy
-        allocate( dummy, source=4 )
-        call map % init( fnv_1_hasher, slots_bits=10 )
-        call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
-        call set( other, dummy )
-        call map % map_entry( key, other, conflict )
-        print *, 'CONFLICT = ', conflict
-    end program demo_map_entry
+{!example/hashmaps/example_hashmaps_map_entry.f90!}
 ```
 
 #### `map_probes` - returns the number of hash map probes
@@ -1797,16 +1529,7 @@ rehashing.
 ##### Example
 
 ```fortran
-    program demo_probes
-      use stdlib_hashmaps, only: chaining_hashmap_type, int_index
-      use stdlib_hashmap_wrappers: fnv_1_hasher
-      implicit none
-      type(chaining_hashmap_type) :: map
-      real :: nprobes
-      call map % init( fnv_1_hasher )
-      nprobes = map % map_probes()
-      print *, "Initial probes =  ", nprobes
-    end program demo_probes
+{!example/hashmaps/example_hashmaps_probes.f90!}
 ```
 
 #### `num_slots` - returns the number of hash map slots.
@@ -1844,16 +1567,7 @@ The result is the number of slots in `map`.
 ##### Example
 
 ```fortran
-    program demo_num_slots
-      use stdlib_hashmaps, only: chaining_hashmap_type, int_index
-      use stdlib_hashmap_wrappers, only: fnv_1_hasher
-      implicit none
-      type(chaining_hashmap_type) :: map
-      integer(int_index) :: initial_slots
-      call map % init( fnv_1_hasher )
-      initial_slots = map % num_slots ()
-      print *, "Initial slots =  ", initial_slots
-    end program demo_num_slots
+{!example/hashmaps/example_hashmaps_num_slots.f90!}
 ```
 
 
@@ -1888,23 +1602,7 @@ It is the hash method to be used by `map`.
 ##### Example
 
 ```fortran
-    program demo_rehash
-	use stdlib_kinds, only: int8
-        use stdlib_hashmaps, only: open_hashmap_type
-        use stdlib_hashmap_wrappers, only: fnv_1_hasher, fnv_1a_hasher,&
-            key_type, other_type, set
-	implicit none
-        type(open_hashmap_type) :: map
-        type(key_type)      :: key
-        type(other_type)    :: other
-        class(*), allocatable :: dummy
-        allocate( dummy, source='a dummy value' )
-        call map % init( fnv_1_hasher, slots_bits=10 )
-        call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
-        call set( other, dummy )
-        call map % map_entry( key, other )
-        call map % rehash( fnv_1a_hasher )
-    end program demo_rehash
+{!example/hashmaps/example_hashmaps_rehash.f90!}
 ```
 
 #### `remove` - removes an entry from the hash map
@@ -1945,23 +1643,7 @@ absent, the procedure returns with no entry with the given key.
 ##### Example
 
 ```fortran
-    program demo_remove
-        use stdlib_hashmaps, only: open_hashmap_type, int_index
-        use stdlib_hashmap_wrappers, only: fnv_1_hasher, &
-            fnv_1a_hasher, key_type, other_type
-        type(open_hashmap_type) :: map
-        type(key_type)      :: key
-        type(other_type)    :: other
-        logical             :: existed
-        class(*), allocatable :: dummy
-        allocate( dummy, source=4.0 )
-        call map % init( fnv_1_hasher, slots_bits=10 )
-        call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
-        call set( other, dummy )
-        call map % map_entry( key, other )
-        call map % remove( key, existed )
-        print *, "Removed key existed = ", existed
-    end program demo_remove
+{!example/hashmaps/example_hashmaps_remove.f90!}
 ```
 
 #### `set_other_data` - replaces the other data for an entry
@@ -2008,28 +1690,7 @@ not exist and nothing was done.
 ##### Example
 
 ```fortran
-    program demo_set_other_data
-	use stdlib_kinds, only: int8
-        use stdlib_hashmaps, only: open_hashmap_type
-        use stdlib_hashmap_wrappers, only: fnv_1_hasher, &
-            fnv_1a_hasher, key_type, other_type, set
-	implicit none
-	logical :: exists
-        type(open_hashmap_type) :: map
-        type(key_type)      :: key
-        type(other_type)    :: other
-        class(*), allocatable :: dummy
-        call map % init( fnv_1_hasher, slots_bits=10 )
-        allocate( dummy, source='A value' )
-        call set( key, [ 5_int8, 7_int8, 4_int8, 13_int8 ] )
-        call set( other, dummy )
-        call map % map_entry( key, other )
-        deallocate( dummy )
-        allocate( dummy, source='Another value' )
-        call set( other, dummy )
-        call map % set_other_data( key, other, exists )
-        print *, 'The entry to have its other data replaced exists = ', exists
-    end program demo_set_other_data
+{!example/hashmaps/example_hashmaps_set_other_data.f90!}
 ```
 
 #### `slots_bits` - returns the number of bits used to address the hash map slots 
@@ -2067,16 +1728,7 @@ The result is the number of bits used in addressing the slots in `map`.
 ##### Example
 
 ```fortran
-    program demo_slots_bits
-      use stdlib_hashmaps, only: chaining_hashmap_type
-      use stdlib_hashmap_wrappers, only: fnv_1_hasher
-      implicit none
-      type(chaining_hashmap_type) :: map
-      integer :: bits
-      call map % init( fnv_1_hasher )
-      bits = map % slots_bits ()
-      print *, "Initial slot bits =  ", bits
-    end program demo_slots_bits
+{!example/hashmaps/example_hashmaps_slots_bits.f90!}
 ```
 
 
@@ -2117,14 +1769,5 @@ from their slot index the map.
 ##### Example
 
 ```fortran
-    program demo_total_depth
-      use stdlib_hashmaps, only: chaining_hashmap_type, int_depth
-      use stdlib_hashmap_wrappers, only: fnv_1_hasher
-      implicit none
-      type(chaining_hashmap_type) :: map
-      integer(int_depth) :: initial_depth
-      call map % init( fnv_1_hasher )
-      initial_depth = map % total_depth ()
-      print *, "Initial total depth =  ", initial_depth
-    end program demo_total_depth
+{!example/hashmaps/example_hashmaps_total_depth.f90!}
 ```

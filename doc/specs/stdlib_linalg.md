@@ -33,66 +33,23 @@ Returns a diagonal array or a vector with the extracted diagonal elements.
 ### Example
 
 ```fortran
-program demo_diag1
-    use stdlib_linalg, only: diag
-    implicit none
-    real, allocatable :: A(:,:)
-    integer :: i
-    A = diag([(1,i=1,10)]) ! creates a 10 by 10 identity matrix
-end program demo_diag1
+{!example/linalg/example_diag1.f90!}
 ```
 
 ```fortran
-program demo_diag2
-    use stdlib_linalg, only: diag
-    implicit none
-    real :: v(:)
-    real, allocatable :: A(:,:)
-    integer :: i
-    v = [1,2,3,4,5]
-    A = diag(v) ! creates a 5 by 5 matrix with elements of v on the diagonal
-end program demo_diag2
+{!example/linalg/example_diag2.f90!}
 ```
 
 ```fortran
-program demo_diag3
-    use stdlib_linalg, only: diag
-    implicit none
-    integer, parameter :: n = 10
-    real :: c(n), ul(n-1)
-    real :: A(n,n)
-    integer :: i
-    c = 2
-    ul = -1
-    A = diag(ul,-1) + diag(c) + diag(ul,1) ! Gil Strang's favorite matrix
-end program demo_diag3
+{!example/linalg/example_diag3.f90!}
 ```
 
 ```fortran
-program demo_diag4
-    use stdlib_linalg, only: diag
-    implicit none
-    integer, parameter :: n = 12
-    real :: A(n,n)
-    real :: v(n)
-    integer :: i
-    call random_number(A)
-    v = diag(A) ! v contains diagonal elements of A
-end program demo_diag4
+{!example/linalg/example_diag4.f90!}
 ```
 
 ```fortran
-program demo_diag5
-    use stdlib_linalg, only: diag
-    implicit none
-    integer, parameter :: n = 3
-    real :: A(n,n)
-    real, allocatable :: v(:)
-    integer :: i
-    A = reshape([1,2,3,4,5,6,7,8,9],[n,n])
-    v = diag(A,-1) ! v is [2,6]
-    v = diag(A,1)  ! v is [4,8]
-end program demo_diag5
+{!example/linalg/example_diag5.f90!}
 ```
 
 ## `eye` - Construct the identity matrix
@@ -130,7 +87,6 @@ The use of `int8` was suggested to save storage.
 
 Since the result of `eye` is of `integer(int8)` type, one should be careful about using it in arithmetic expressions. For example:
 ```fortran
-real :: A(:,:)
 !> Be careful
 A = eye(2,2)/2     !! A == 0.0
 !> Recommend
@@ -140,28 +96,11 @@ A = eye(2,2)/2.0   !! A == diag([0.5, 0.5])
 ### Example
 
 ```fortran
-program demo_eye1
-    use stdlib_linalg, only: eye
-    implicit none
-    integer :: i(2,2)
-    real :: a(3,3)
-    real :: b(2,3)  !! Matrix is non-square.
-    complex :: c(2,2)
-    I = eye(2)              !! [1,0; 0,1]
-    A = eye(3)              !! [1.0,0.0,0.0; 0.0,1.0,0.0; 0.0,0.0,1.0]
-    A = eye(3,3)            !! [1.0,0.0,0.0; 0.0,1.0,0.0; 0.0,0.0,1.0]
-    B = eye(2,3)            !! [1.0,0.0,0.0; 0.0,1.0,0.0]
-    C = eye(2,2)            !! [(1.0,0.0),(0.0,0.0); (0.0,0.0),(1.0,0.0)]
-    C = (1.0,1.0)*eye(2,2)  !! [(1.0,1.0),(0.0,0.0); (0.0,0.0),(1.0,1.0)]
-end program demo_eye1
+{!example/linalg/example_eye1.f90!}
 ```
 
 ```fortran
-program demo_eye2
-    use stdlib_linalg, only: eye, diag
-    implicit none
-    print *, all(eye(4) == diag([1,1,1,1])) ! prints .true.
-end program demo_eye2
+{!example/linalg/example_eye2.f90!}
 ```
 
 ## `trace` - Trace of a matrix
@@ -188,13 +127,7 @@ Returns the trace of the matrix, i.e. the sum of diagonal elements.
 
 ### Example
 ```fortran
-program demo_trace
-    use stdlib_linalg, only: trace
-    implicit none
-    real :: A(3,3)
-    A = reshape([1,2,3,4,5,6,7,8,9],[3,3])
-    print *, trace(A) ! 1 + 5 + 9
-end program demo_trace
+{!example/linalg/example_trace.f90!}
 ```
 
 ## `outer_product` - Computes the outer product of two vectors
@@ -224,15 +157,7 @@ Returns a rank-2 array equal to `u v^T` (where `u, v` are considered column vect
 ### Example
 
 ```fortran
-program demo_outer_product
-    use stdlib_linalg, only: outer_product
-    implicit none
-    real, allocatable :: A(:,:), u(:), v(:)
-    u = [1., 2., 3. ]
-    v = [3., 4.]
-    A = outer_product(u,v)
-    !A = reshape([3., 6., 9., 4., 8., 12.], [3,2])
-end program demo_outer_product
+{!example/linalg/example_outer_product.f90!}
 ```
 
 ## `is_square` - Checks if a matrix is square
@@ -260,16 +185,7 @@ Returns a `logical` scalar that is `.true.` if the input matrix is square, and `
 ### Example
 
 ```fortran
-program demo_is_square
-    use stdlib_linalg, only: is_square
-    implicit none
-    real :: A(2,2), B(3,2)
-    logical :: res
-    A = reshape([1., 2., 3., 4.], shape(A))
-    B = reshape([1., 2., 3., 4., 5., 6.], shape(B))
-    res = is_square(A) ! returns .true.
-    res = is_square(B) ! returns .false.
-end program demo_is_square
+{!example/linalg/example_is_square.f90!}
 ```
 
 ## `is_diagonal` - Checks if a matrix is diagonal
@@ -298,16 +214,7 @@ Note that nonsquare matrices may be diagonal, so long as `a_ij = 0` when `i /= j
 ### Example
 
 ```fortran
-program demo_is_diagonal
-    use stdlib_linalg, only: is_diagonal
-    implicit none
-    real :: A(2,2), B(2,2)
-    logical :: res
-    A = reshape([1., 0., 0., 4.], shape(A))
-    B = reshape([1., 0., 3., 4.], shape(B))
-    res = is_diagonal(A) ! returns .true.
-    res = is_diagonal(B) ! returns .false.
-end program demo_is_diagonal
+{!example/linalg/example_is_diagonal.f90!}
 ```
 
 ## `is_symmetric` - Checks if a matrix is symmetric
@@ -335,16 +242,7 @@ Returns a `logical` scalar that is `.true.` if the input matrix is symmetric, an
 ### Example
 
 ```fortran
-program demo_is_symmetric
-    use stdlib_linalg, only: is_symmetric
-    implicit none
-    real :: A(2,2), B(2,2)
-    logical :: res
-    A = reshape([1., 3., 3., 4.], shape(A))
-    B = reshape([1., 0., 3., 4.], shape(B))
-    res = is_symmetric(A) ! returns .true.
-    res = is_symmetric(B) ! returns .false.
-end program demo_is_symmetric
+{!example/linalg/example_is_symmetric.f90!}
 ```
 
 ## `is_skew_symmetric` - Checks if a matrix is skew-symmetric
@@ -372,16 +270,7 @@ Returns a `logical` scalar that is `.true.` if the input matrix is skew-symmetri
 ### Example
 
 ```fortran
-program demo_is_skew_symmetric
-    use stdlib_linalg, only: is_skew_symmetric
-    implicit none
-    real :: A(2,2), B(2,2)
-    logical :: res
-    A = reshape([0., -3., 3., 0.], shape(A))
-    B = reshape([0., 3., 3., 0.], shape(B))
-    res = is_skew_symmetric(A) ! returns .true.
-    res = is_skew_symmetric(B) ! returns .false.
-end program demo_is_skew_symmetric
+{!example/linalg/example_is_skew_symmetric.f90!}
 ```
 
 ## `is_hermitian` - Checks if a matrix is Hermitian
@@ -409,16 +298,7 @@ Returns a `logical` scalar that is `.true.` if the input matrix is Hermitian, an
 ### Example
 
 ```fortran
-program demo_is_hermitian
-    use stdlib_linalg, only: is_hermitian
-    implicit none
-    complex :: A(2,2), B(2,2)
-    logical :: res
-    A = reshape([cmplx(1.,0.), cmplx(3.,-1.), cmplx(3.,1.), cmplx(4.,0.)], shape(A))
-    B = reshape([cmplx(1.,0.), cmplx(3.,1.), cmplx(3.,1.), cmplx(4.,0.)], shape(B))
-    res = is_hermitian(A) ! returns .true.
-    res = is_hermitian(B) ! returns .false.
-end program demo_is_hermitian
+{!example/linalg/example_is_hermitian.f90!}
 ```
 
 ## `is_triangular` - Checks if a matrix is triangular
@@ -450,16 +330,7 @@ Specifically, upper triangular matrices satisfy `a_ij = 0` when `j < i`, and low
 ### Example
 
 ```fortran
-program demo_is_triangular
-    use stdlib_linalg, only: is_triangular
-    implicit none
-    real :: A(3,3), B(3,3)
-    logical :: res
-    A = reshape([1., 0., 0., 4., 5., 0., 7., 8., 9.], shape(A))
-    B = reshape([1., 0., 3., 4., 5., 0., 7., 8., 9.], shape(B))
-    res = is_triangular(A,'u') ! returns .true.
-    res = is_triangular(B,'u') ! returns .false.
-end program demo_is_triangular
+{!example/linalg/example_is_triangular.f90!}
 ```
 
 ## `is_hessenberg` - Checks if a matrix is hessenberg
@@ -491,14 +362,5 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 ### Example
 
 ```fortran
-program demo_is_hessenberg
-    use stdlib_linalg, only: is_hessenberg
-    implicit none
-    real :: A(3,3), B(3,3)
-    logical :: res
-    A = reshape([1., 2., 0., 4., 5., 6., 7., 8., 9.], shape(A))
-    B = reshape([1., 2., 3., 4., 5., 6., 7., 8., 9.], shape(B))
-    res = is_hessenberg(A,'u') ! returns .true.
-    res = is_hessenberg(B,'u') ! returns .false.
-end program demo_is_hessenberg
+{!example/linalg/example_is_hessenberg.f90!}
 ```

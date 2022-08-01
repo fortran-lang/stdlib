@@ -1,0 +1,6 @@
+ADD_EXAMPLE(gauss_legendre)
+ADD_EXAMPLE(gauss_legendre_lobatto)
+ADD_EXAMPLE(simps)
+ADD_EXAMPLE(simps_weights)
+ADD_EXAMPLE(trapz)
+ADD_EXAMPLE(trapz_weights)

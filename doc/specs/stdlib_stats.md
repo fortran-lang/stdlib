@@ -52,14 +52,7 @@ If `mask` is specified, the result is the Pearson correlation of all elements of
 ### Example
 
 ```fortran
-program demo_corr
-    use stdlib_stats, only: corr
-    implicit none
-    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    real :: y(1:2, 1:3) = reshape([ -1., 40., -3., 4., 10., 6. ], [ 2, 3])
-    print *, corr(x, 1)           !returns 1.
-    print *, corr(y, 2)           !returns reshape([ 1., -.32480, -.32480, 1. ], [ 2, 3])
-end program demo_corr
+{!example/stats/example_corr.f90!}
 ```
 
 ## `cov` - covariance of array elements
@@ -115,15 +108,7 @@ If `mask` is specified, the result is the covariance of all elements of `array` 
 ### Example
 
 ```fortran
-program demo_cov
-    use stdlib_stats, only: cov
-    implicit none
-    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
-    print *, cov(x, 1)                          !returns 3.5
-    print *, cov(x, 1, corrected = .false.)     !returns 2.9167
-    print *, cov(y, 1)                          !returns a square matrix of size 3 with all elements equal to 0.5
-end program demo_cov
+{!example/stats/example_cov.f90!}
 ```
 
 ## `mean` - mean of array elements
@@ -166,16 +151,7 @@ If `mask` is specified, the result is the mean of all elements of `array` corres
 ### Example
 
 ```fortran
-program demo_mean
-    use stdlib_stats, only: mean
-    implicit none
-    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
-    print *, mean(x)                                  !returns 3.5
-    print *, mean(y)                                  !returns 3.5
-    print *, mean(y, 1)                               !returns [ 1.5, 3.5, 5.5 ]
-    print *, mean(y, 1,y > 3.)                        !returns [ NaN, 4.0, 5.5 ]
-end program demo_mean
+{!example/stats/example_mean.f90!}
 ```
 
 ## `median` - median of array elements
@@ -240,16 +216,7 @@ If `mask` is specified, the result is the median of all elements of `array` corr
 ### Example
 
 ```fortran
-program demo_median
-    use stdlib_stats, only: median
-    implicit none
-    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
-    print *, median(x)                                  !returns 3.5
-    print *, median(y)                                  !returns 3.5
-    print *, median(y, 1)                               !returns [ 1.5, 3.5, 5.5 ]
-    print *, median(y, 1,y > 3.)                        !returns [ NaN, 4.0, 5.5 ]
-end program demo_median
+{!example/stats/example_median.f90!}
 ```
 
 ## `moment` - central moments of array elements
@@ -313,18 +280,7 @@ If `mask` is specified, the result is the _k_-th  (central) moment of all elemen
 ### Example
 
 ```fortran
-program demo_moment
-    use stdlib_stats, only: moment
-    implicit none
-    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
-    print *, moment(x, 2)                            !returns 2.9167
-    print *, moment(y, 2)                            !returns 2.9167
-    print *, moment(y, 2, 1)                         !returns [0.25, 0.25, 0.25]
-    print *, moment(y, 2, 1, mask = (y > 3.))        !returns [NaN, 0., 0.25]
-    print *, moment(x, 2, center = 0.)               !returns 15.1667
-    print *, moment(y, 1, 1, center = 0.)            !returns [1.5, 3.5, 5.5]
-end program demo_moment
+{!example/stats/example_moment.f90!}
 ```
 
 ## `var` - variance of array elements
@@ -382,16 +338,5 @@ If the variance is computed with only one single element, then the result is IEE
 ### Example
 
 ```fortran
-program demo_var
-    use stdlib_stats, only: var
-    implicit none
-    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
-    print *, var(x)                                  !returns 3.5
-    print *, var(x, corrected = .false.)             !returns 2.9167
-    print *, var(y)                                  !returns 3.5
-    print *, var(y, 1)                               !returns [0.5, 0.5, 0.5]
-    print *, var(y, 1, y > 3.)                       !returns [NaN, NaN, 0.5]
-    print *, var(y, 1, y > 3., corrected=.false.)    !returns [NaN, 0., 0.25]
-end program demo_var
+{!example/stats/example_var.f90!}
 ```

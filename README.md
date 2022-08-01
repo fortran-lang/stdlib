@@ -149,10 +149,15 @@ To build the standard library run
 cmake --build build
 ```
 
-To test your build, run the test suite after the build has finished with
+To test your build, run the test suite and all example programs after the build has finished with
 
 ```sh
 cmake --build build --target test
+```
+
+To test only the test suite, run
+```sh
+ctest --test-dir build/test
 ```
 
 Please report failing tests on our [issue tracker](https://github.com/fortran-lang/stdlib/issues/new/choose) including details of the compiler used, the operating system and platform architecture.
@@ -178,6 +183,15 @@ You can build `stdlib` using provided `fpm.toml`:
 git checkout stdlib-fpm
 fpm build --profile release
 ```
+
+You can run the examples with `fpm` as:
+
+```sh
+fpm run --example prog
+```
+
+with `prog` being the name of the example program (e.g., `example_sort`).
+
 
 To use `stdlib` within your `fpm` project, add the following lines to your `fpm.toml` file:
 ```toml

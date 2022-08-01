@@ -1,0 +1,7 @@
+ADD_EXAMPLE(gamma)
+ADD_EXAMPLE(gamma_p)
+ADD_EXAMPLE(gamma_q)
+ADD_EXAMPLE(ligamma)
+ADD_EXAMPLE(log_factorial)
+ADD_EXAMPLE(log_gamma)
+ADD_EXAMPLE(uigamma)

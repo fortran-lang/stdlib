@@ -1,0 +1,2 @@
+a word
+it should fail with the presence of this .$/
