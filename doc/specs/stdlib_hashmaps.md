@@ -639,7 +639,7 @@ the same type; otherwise the provided scalar variable is undefined.
       value = 15
       call set( other, value )
       call get_other_scalar( other, result )
-      print *, 'RESULT == VALUE = ', ( value == result )
+      print *, 'RESULT == VALUE = ', ( result == value )
     end program demo_get
 ```
 
