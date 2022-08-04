@@ -172,7 +172,7 @@ Procedures to manipulate `other_type` data:
 * `get( other, value )` - extracts the contents of `other` into the
   `class(*)` variable `value`.
 
-* `get_other_scalar( other, value [, exists])` - extracts the content of
+* `get( other, value [, exists])` - extracts the content of
   `other` into the scalar variable `value` of a kind provided by the module
   `stdlib_kinds`.
 
