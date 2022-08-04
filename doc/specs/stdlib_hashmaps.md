@@ -601,9 +601,7 @@ Extracts a scalar value from a `other_type` and stores it in the scalar variable
 
 ##### Syntax
 
-`call [[stdlib_hashmap_wrappers:get_other_scalar]]( other[, value_char,
-value_int8, value_int16, value_int32, value_int64, value_sp, value_dp, value_csp, value_cdp, value_lk,
-exists] )`
+`call [[stdlib_hashmap_wrappers:get_other_scalar(interface)]]( other, value[, exists] )`
 
 ##### Class
 
@@ -614,21 +612,8 @@ Subroutine.
 `other`: shall be a scalar expression of type `other_type`. It
 is an `intent(in)` argument.
 
-`value_char`: shall be a scalar `character(len=:), allocatable) variable. It is an
-`intent(out)` `optional` argument.
-
-`value_int8`, `value_int16`, `value_int32`, `value_int64`: shall be a scalar
-`integer` of kind `int8`, `int16`, `int32`, `int64`, respectively. It is an
-`intent(out)` `optional` argument.
-
-`value_sp`, `value_dp`: shall be a scalar `real` of kind `sp`, `dp` respectively.
-It is an `intent(out)` `optional` argument.
-
-`value_csp`, `value_cdp`: shall be a scalar `complex` of kind `sp`, `dp` respectively.
-It is an `intent(out)` `optional` argument.
-
-`value_lk`: shall be a scalar `logical` of kind `lk`. It is an `intent(out)`
-`optional` argument.
+`value`: shall be a scalar of type `character(*)`, or of any type of `integer`,
+`real` or `complex`, or of any type of `logical`. It is an `intent(out)` argument.
 
 `exists`: shall be a scalar `logical`. It is an `intent(out)` `optional`
 argument.
@@ -639,7 +624,7 @@ The provided scalar variable contains the value of the `other_type` if both are 
 the same type; otherwise the provided scalar variable is undefined.
 
 `exists` is `.true.` if the provided scalar variable and the value of the
-other_type are of the same type. Otherwise, `exists` is `.false.`
+`other_type` are of the same type. Otherwise, `exists` is `.false.`
 
 ##### Example
 
