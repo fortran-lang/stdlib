@@ -1,4 +1,5 @@
 #:include "common.fypp"
+#:set IRLC_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + LOG_KINDS_TYPES + CMPLX_KINDS_TYPES
 !! The module STDLIB_HASHMAP_WRAPPERS provides wrappers for various
 !! entities used by the hash map procedures. These include wrappers for the
 !! `key` and `other` data, and hashing procedures to operate on entities of
@@ -98,6 +99,15 @@ module stdlib_hashmap_wrappers
                          get_int8_key
 
     end interface get
+
+    interface get_other_scalar
+
+        module procedure get_other_scalar_char
+        #:for k1, t1 in IRLC_KINDS_TYPES
+        module procedure get_other_scalar_${t1[0]}$${k1}$
+        #:endfor
+
+    end interface get_other_scalar
 
 
     interface operator(==)
@@ -268,28 +278,13 @@ contains
 
     end subroutine get_other
 
-    
-    subroutine get_other_scalar(other, value_char &
-    #:set IRL_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES + LOG_KINDS_TYPES
-    #:for k1, t1 in IRL_KINDS_TYPES
-                                , value_${k1}$    &
-    #:endfor
-    #:for k1, t1 in CMPLX_KINDS_TYPES
-                                , value_c${k1}$   &
-    #:endfor
-                                , exists)
+    subroutine get_other_scalar_char(other, value, exists)
 !! Version: Experimental
 !!
 !! Gets the content of the other as a scalar of a kind provided by stdlib_kinds
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#get_other_scalar-extracts-a-scalar-value-from-a-derived-type))
         class(other_type), intent(in) :: other
-        character(len=:), allocatable, intent(out), optional :: value_char
-        #:for k1, t1 in IRL_KINDS_TYPES
-        ${t1}$, intent(out), optional :: value_${k1}$
-        #:endfor
-        #:for k1, t1 in CMPLX_KINDS_TYPES
-        ${t1}$, intent(out), optional :: value_c${k1}$
-        #:endfor
+        character(len=:), allocatable, intent(out) :: value
         logical, intent(out), optional :: exists
 
         logical :: exists_
@@ -303,29 +298,43 @@ contains
         
         select type(d => other % value)
             type is ( character(*) )
-                if (present(value_char)) then
-                   value_char = d
-                   exists_ = .true.
-                end if
-            #:for k1, t1 in IRL_KINDS_TYPES
-            type is ( ${t1}$ )
-                if (present(value_${k1}$)) then
-                   value_${k1}$ = d
-                   exists_ = .true.
-                end if
-            #:endfor
-            #:for k1, t1 in CMPLX_KINDS_TYPES
-            type is ( ${t1}$ )
-                if (present(value_c${k1}$)) then
-                   value_c${k1}$ = d
-                   exists_ = .true.
-                end if
-            #:endfor
+                value = d
+                exists_ = .true.
         end select
 
         if (present(exists)) exists = exists_
 
     end subroutine
+
+    #:for k1, t1 in IRLC_KINDS_TYPES
+    subroutine get_other_scalar_${t1[0]}$${k1}$(other, value, exists)
+!! Version: Experimental
+!!
+!! Gets the content of the other as a scalar of a kind provided by stdlib_kinds
+!! ([Specifications](../page/specs/stdlib_hashmaps.html#get_other_scalar-extracts-a-scalar-value-from-a-derived-type))
+        class(other_type), intent(in) :: other
+        ${t1}$, intent(out) :: value
+        logical, intent(out), optional :: exists
+
+        logical :: exists_
+
+        exists_ = .false.
+
+        if (.not.allocated(other % value)) then
+            if (present(exists)) exists = exists_
+            return
+        end if
+        
+        select type(d => other % value)
+            type is ( ${t1}$ )
+                value = d
+                exists_ = .true.
+        end select
+
+        if (present(exists)) exists = exists_
+
+    end subroutine
+    #:endfor
 
     subroutine get_int8_key( key, value )
 !! Version: Experimental
