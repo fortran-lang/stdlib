@@ -462,7 +462,7 @@ in the variable `value`.
 
 or
 
-`call [[stdlib_hashmap_wrappers:get]]( other, value )`
+`call [[stdlib_hashmap_wrappers:get]]( other, value[, exists] )`
 
 ##### Class
 
@@ -476,58 +476,36 @@ is an `intent(in)` argument.
 `other`: shall be a scalar expression of type `other_type`. It
 is an `intent(in)` argument.
 
-`value`: if the the first argument is of `key_type` `value` shall be
+`value`: if the first argument is of `key_type` `value` shall be
 an allocatable default character string variable, or 
 an allocatable vector variable of type integer and kind `int8`,
 otherwise the first argument is of `other_type` and `value` shall be
-an allocatable of `class(*)`. It is an `intent(out)` argument.
+an allocatable of `class(*)`, or a scalar of type `character(*)`,
+or of any type of `integer`, `real` or `complex`, or of any type of `logical`.
+It is an `intent(out)` argument.
 
-##### Example
-
-```fortran
-{!example/hashmaps/example_hashmaps_get.f90!}
-```
-
-#### `get_other_scalar` - extracts a scalar value from a derived type
-
-##### Status
-
-Experimental
-
-##### Description
-
-Extracts a scalar value from a `other_type` and stores it in the scalar variable
-`value`.
-
-##### Syntax
-
-`call [[stdlib_hashmap_wrappers:get_other_scalar(interface)]]( other, value[, exists] )`
-
-##### Class
-
-Subroutine.
-
-##### Arguments
-
-`other`: shall be a scalar expression of type `other_type`. It
-is an `intent(in)` argument.
-
-`value`: shall be a scalar of type `character(*)`, or of any type of `integer`,
-`real` or `complex`, or of any type of `logical`. It is an `intent(out)` argument.
-
-`exists`: shall be a scalar `logical`. It is an `intent(out)` `optional`
+`exists`: shall be a scalar `logical`. It can be only provided when the
+first argument is of `other_type` and the second argument is a scalar of 
+type `character(*)`, or of any type of `integer`, `real` or `complex`,
+or of any type of `logical`. It is an `intent(out)` `optional`
 argument.
 
 #### Result
 
-The provided scalar variable contains the value of the `other_type` if both are of
-the same type; otherwise the provided scalar variable is undefined.
+When the first argument is of `other_type`, the second argument contains
+the value of the `other_type` if both are of the same type; otherwise
+the provided scalar variable is undefined.
 
-`exists` is `.true.` if the provided scalar variable and the value of the
-`other_type` are of the same type. Otherwise, `exists` is `.false.`
+The `logical` `exists` is `.true.` if the provided scalar variable and
+the value of the `other_type` are of the same type. Otherwise, `exists` is `.false.`
 
-##### Example
+##### Examples
 
+###### Example 1:
+```fortran
+{!example/hashmaps/example_hashmaps_get.f90!}
+```
+###### Example 2:
 ```fortran
 {!example/hashmaps/example_hashmaps_get_other_scalar.f90!}
 ```

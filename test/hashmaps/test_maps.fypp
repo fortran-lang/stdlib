@@ -8,7 +8,7 @@ module test_stdlib_hashmap_wrappers
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk
 
-    use stdlib_hashmap_wrappers, only: other_type, set, get_other_scalar
+    use stdlib_hashmap_wrappers, only: other_type, set, get
 
     implicit none
     private
@@ -46,15 +46,15 @@ contains
 
         call set ( other, value_in )
 
-        call get_other_scalar(other, value_out)
+        call get(other, value_out)
 
-        call check(error, value_in, value_out, "get_other_scalar char: value_in not equal to value_out")
+        call check(error, value_in, value_out, "get char: value_in not equal to value_out")
         return
 
-        call get_other_scalar(other, value_out, exists = exists)
-        call check(error, value_in, value_out, "get_other_scalar char: value_in not equal to value_out")
+        call get(other, value_out, exists = exists)
+        call check(error, value_in, value_out, "get char: value_in not equal to value_out")
         return
-        call check(error, exists, "get_other_scalar char: exists should be .true.")
+        call check(error, exists, "get char: exists should be .true.")
 
     end subroutine
 
@@ -70,16 +70,16 @@ contains
 
         call set ( other, value_in )
 
-        call get_other_scalar(other, value_out)
+        call get(other, value_out)
 
-        call check(error, value_in, value_out, "get_other_scalar ${k1}$: value_in not equal to value_out")
+        call check(error, value_in, value_out, "get ${k1}$: value_in not equal to value_out")
         return
 
-        call get_other_scalar(other, value_out, exists = exists)
+        call get(other, value_out, exists = exists)
 
-        call check(error, value_in, value_out, "get_other_scalar ${k1}$: value_in not equal to value_out")
+        call check(error, value_in, value_out, "get ${k1}$: value_in not equal to value_out")
         return
-        call check(error, exists, "get_other_scalar ${k1}$: exists should be .true.")
+        call check(error, exists, "get ${k1}$: exists should be .true.")
         return
 
     end subroutine
@@ -97,16 +97,16 @@ contains
 
         call set ( other, value_in )
 
-        call get_other_scalar(other, value_out)
+        call get(other, value_out)
 
-        call check(error, value_in, value_out, "get_other_scalar c${k1}$: value_in not equal to value_out")
+        call check(error, value_in, value_out, "get c${k1}$: value_in not equal to value_out")
         return
 
-        call get_other_scalar(other, value_out, exists = exists)
+        call get(other, value_out, exists = exists)
 
-        call check(error, value_in, value_out, "get_other_scalar c${k1}$: value_in not equal to value_out")
+        call check(error, value_in, value_out, "get c${k1}$: value_in not equal to value_out")
         return
-        call check(error, exists, "get_other_scalar c${k1}$: exists should be .true.")
+        call check(error, exists, "get c${k1}$: exists should be .true.")
         return
 
     end subroutine
@@ -124,16 +124,16 @@ contains
 
         call set ( other, value_in )
 
-        call get_other_scalar(other, value_out)
+        call get(other, value_out)
 
-        call check(error, value_in .eqv. value_out, "get_other_scalar lk: value_in not equal to value_out")
+        call check(error, value_in .eqv. value_out, "get lk: value_in not equal to value_out")
         return
 
-        call get_other_scalar(other, value_out, exists = exists)
+        call get(other, value_out, exists = exists)
 
-        call check(error, value_in .eqv. value_out, "get_other_scalar lk: value_in not equal to value_out")
+        call check(error, value_in .eqv. value_out, "get lk: value_in not equal to value_out")
         return
-        call check(error, exists, "get_other_scalar lk: exists should be .true.")
+        call check(error, exists, "get lk: exists should be .true.")
         return
 
     end subroutine
