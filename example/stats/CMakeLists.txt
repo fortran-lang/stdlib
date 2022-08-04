@@ -1,0 +1,6 @@
+ADD_EXAMPLE(corr)
+ADD_EXAMPLE(cov)
+ADD_EXAMPLE(mean)
+ADD_EXAMPLE(median)
+ADD_EXAMPLE(moment)
+ADD_EXAMPLE(var)

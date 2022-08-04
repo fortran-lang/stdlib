@@ -72,19 +72,7 @@ The result is of type `stringlist_index_type`.
 #### Example
 
 ```fortran
-program demo_fidx_bidx
-  use stdlib_stringlist_type, only: stringlist_index_type, fidx, bidx
-  implicit none
-
-  type(stringlist_index_type) :: index
-
-  index = fidx(1)
-    ! forward index 1
-
-  index = bidx(3)
-    ! backward index 3
-
-end program demo_fidx_bidx
+{!example/stringlist_type/example_stringlist_type_fidx_bidx.f90!}
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -120,23 +108,7 @@ The result is an instance of type `stringlist_type`.
 #### Example
 
 ```fortran
-program demo_constructor
-  use stdlib_stringlist_type, only: stringlist_type
-  use stdlib_string_type, only: string_type
-  implicit none
-
-  type(stringlist_type) :: stringlist
-
-  stringlist = stringlist_type()
-    ! stringlist <-- { } (empty stringlist)
-
-  stringlist = stringlist_type(["#1", "#2", "#3"])
-    ! stringlist <-- {"#1", "#2", "#3"}
-
-  stringlist = stringlist_type([string_type("#1"), string_type("#2")])
-    ! stringlist <-- {"#1", "#2"}
-
-end program demo_constructor
+{!example/stringlist_type/example_stringlist_type_constructor.f90!}
 ```
 
 
@@ -170,29 +142,7 @@ Pure subroutine.
 #### Example
 
 ```fortran
-program demo_insert_at
-  use stdlib_stringlist_type, only: stringlist_type, stringlist_index_type, fidx, bidx
-  use stdlib_string_type, only: string_type
-  implicit none
-
-  type(stringlist_type)       :: stringlist
-  type(stringlist_index_type) :: index
-
-  index = fidx(1)
-  call stringlist%insert_at( index, "Element No. one" )
-    ! stringlist <-- {"Element No. one"}
-
-  index = bidx(1)
-  call stringlist%insert_at( index, string_type( "Element No. two" ) )
-    ! stringlist <-- {"Element No. one", "Element No. two"}
-
-  call stringlist%insert_at( fidx(2), string_type( "Element No. three" ) )
-    ! stringlist <-- {"Element No. one", "Element No. three", "Element No. two"}
-
-  call stringlist%insert_at( bidx(1), "Element No. four" )
-    ! stringlist <-- {"Element No. one", "Element No. three", "Element No. two", "Element No. four"}
-
-end program demo_insert_at
+{!example/stringlist_type/example_stringlist_type_insert_at.f90!}
 ```
 
 
@@ -227,34 +177,7 @@ The result is a string of type `string_type`.
 #### Example
 
 ```fortran
-program demo_get
-  use stdlib_stringlist_type, only: stringlist_type, fidx, bidx
-  use stdlib_string_type, only: string_type
-  implicit none
-
-  type(stringlist_type) :: stringlist
-  type(string_type)     :: output
-
-  !> inserting 4 elements to the stringlist
-  call stringlist%insert_at( fidx(1), "Element No. one" )
-  call stringlist%insert_at( fidx(1), "Element No. two" )
-  call stringlist%insert_at( fidx(1), "Element No. three" )
-  call stringlist%insert_at( fidx(1), "Element No. four" )
-    ! stringlist <-- {"Element No. four", "Element No. three", "Element No. two", "Element No. one"}
-
-  output = stringlist%get( fidx(1) )
-    ! output <-- "Element No. four"
-  
-  output = stringlist%get( bidx(1) )
-    ! output <-- "Element No. one"
-
-  !> accessing out of bounds index
-  output = stringlist%get( bidx(5) )
-    ! output <-- ""
-  output = stringlist%get( fidx(0) )
-    ! output <-- ""
-
-end program demo_get
+{!example/stringlist_type/example_stringlist_type_get.f90!}
 ```
 
 
@@ -288,25 +211,7 @@ The result is of type `integer`.
 #### Example
 
 ```fortran
-program demo_len
-  use stdlib_stringlist_type, only: stringlist_type, bidx
-  implicit none
-
-  type(stringlist_type) :: stringlist
-  integer               :: output
-
-  output = stringlist%len()
-    ! output <-- 0
-
-  !> inserting 2 elements to the stringlist
-  call stringlist%insert_at( bidx(1), "Element No. one" )
-  call stringlist%insert_at( bidx(1), "Element No. two" )
-    ! stringlist <-- {"Element No. one", "Element No. two"}
-
-  print'(a)', stringlist%len()
-    ! 2
-
-end program demo_len
+{!example/stringlist_type/example_stringlist_type_len.f90!}
 ```
 
 
@@ -336,25 +241,7 @@ No arguments.
 #### Example
 
 ```fortran
-program demo_clear
-  use stdlib_stringlist_type, only: stringlist_type, fidx
-  implicit none
-
-  type(stringlist_type) :: stringlist
-
-  !> inserting 2 elements to the stringlist
-  call stringlist%insert_at( fidx(1), "Element No. one" )
-  call stringlist%insert_at( fidx(1), "Element No. two" )
-    ! stringlist <-- {"Element No. two", "Element No. one"}
-
-  call stringlist%clear()
-    ! stringlist <-- { } (empty stringlist)
-
-  !> inserting 1 element to the stringlist
-  call stringlist%insert_at( fidx(1), "Element No. one" )
-    ! stringlist <-- {"Element No. one"}
-
-end program demo_clear
+{!example/stringlist_type/example_stringlist_type_clear.f90!}
 ```
 
 
@@ -396,35 +283,7 @@ The result is a default `logical` scalar value.
 #### Example
 
 ```fortran
-program demo_equality_operator
-  use stdlib_stringlist_type, only: stringlist_type, fidx, list_head, operator(==)
-  use stdlib_string_type, only: string_type
-  implicit none
-
-  type(stringlist_type)          :: stringlist
-  type(string_type), allocatable :: stringarray(:)
-  logical                        :: res
-
-  !> inserting 4 elements to the stringlist
-  call stringlist%insert_at( fidx(1), "#1" )
-  call stringlist%insert_at( list_head, "#2" )
-  call stringlist%insert_at( fidx(1), "#3" )
-  call stringlist%insert_at( list_head, "#4" )
-    ! stringlist <-- {"#4", "#3", "#2", "#1"}
-
-  !> creating an array of 4 string_type elements
-    stringarray = [string_type("#4"), string_type("#3"), string_type("#2"), string_type("#1")]
-  
-  res = ( stringarray == stringlist )
-    ! res <-- .true.
-  
-  res = ( stringlist == ["#4", "#3", "#2", "#1"] )
-    ! res <-- .true.
-
-  print'(a)', stringlist == ["#4", "#3", "#1"]
-    ! .false.
-
-end program demo_equality_operator
+{!example/stringlist_type/example_stringlist_type_equality_operator.f90!}
 ```
 
 
@@ -466,35 +325,7 @@ The result is a default `logical` scalar value.
 #### Example
 
 ```fortran
-program demo_inequality_operator
-  use stdlib_stringlist_type, only: stringlist_type, bidx, list_tail, operator(/=)
-  use stdlib_string_type, only: string_type
-  implicit none
-
-  type(stringlist_type)          :: stringlist
-  type(string_type), allocatable :: stringarray(:)
-  logical                        :: res
-
-  !> inserting 4 elements to the stringlist
-  call stringlist%insert_at( bidx(1), "#1" )
-  call stringlist%insert_at( list_tail, "#2" )
-  call stringlist%insert_at( bidx(1), "#3" )
-  call stringlist%insert_at( list_tail, "#4" )
-    ! stringlist <-- {"#1", "#2", "#3", "#4"}
-
-  !> creating an array of 4 string_type elements
-    stringarray = [string_type("#1"), string_type("#2"), string_type("#3"), string_type("#4")]
-  
-  res = ( stringarray /= stringlist )
-    ! res <-- .false.
-  
-  res = ( stringlist /= ["#111", "#222", "#333", "#444"] )
-    ! res <-- .true.
-
-  print'(a)', stringlist /= ["#4", "#3", "#1"]
-    ! .true.
-
-end program demo_inequality_operator
+{!example/stringlist_type/example_stringlist_type_inequality_operator.f90!}
 ```
 
 
@@ -534,31 +365,5 @@ The result is an instance of `[[stdlib_stringlist_type(module):stringlist_type(t
 #### Example
 
 ```fortran
-program demo_concatenate_operator
-  use stdlib_stringlist_type, only: stringlist_type, operator(//)
-  use stdlib_string_type, only: string_type
-  implicit none
-
-  type(stringlist_type)          :: first_stringlist, second_stringlist
-  type(string_type), allocatable :: stringarray(:)
-
-  first_stringlist = first_stringlist // "Element No. one"
-    ! first_stringlist <-- {"Element No. one"}
-
-  second_stringlist = string_type("Element No. two") // first_stringlist
-    ! second_stringlist <-- {Element No. two, "Element No. one"}
-
-  !> Creating an array of 2 string_type elements
-  stringarray = [string_type("Element No. three"), string_type("Element No. four")]
-
-  second_stringlist = first_stringlist // stringarray
-    ! second_stringlist <-- {"Element No. one", "Element No. three", "Element No. four"}
-
-  second_stringlist =  ["#1", "#2"] // second_stringlist
-    ! second_stringlist <-- {"#1", "#2", "Element No. one", "Element No. three", "Element No. four"}
-
-  first_stringlist = first_stringlist // second_stringlist
-    ! first_stringlist <-- {"Element No. one", "#1", "#2", "Element No. one", "Element No. three", "Element No. four"}
-
-end program demo_concatenate_operator
+{!example/stringlist_type/example_stringlist_type_concatenate_operator.f90!}
 ```

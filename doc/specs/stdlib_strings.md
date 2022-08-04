@@ -45,16 +45,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-program demo
-  use stdlib_ascii, only : TAB, VT, NUL, LF, CR, FF
-  use stdlib_strings, only : strip
-  implicit none
-  print'(a)', strip("   hello   ")             ! "hello"
-  print'(a)', strip(TAB//"goodbye"//CR//LF)    ! "goodbye"
-  print'(a)', strip(" "//TAB//LF//VT//FF//CR)  ! ""
-  print'(a)', strip("  !  ")//"!"              ! "!!"
-  print'(a)', strip("Hello")                   ! "Hello"
-end program demo
+{!example/strings/example_strip.f90!}
 ```
 
 
@@ -93,20 +84,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-program demo
-  use stdlib_ascii, only : TAB, VT, NUL, LF, CR, FF
-  use stdlib_strings, only : chomp
-  implicit none
-  print'(a)', chomp("   hello   ")             ! "   hello"
-  print'(a)', chomp(TAB//"goodbye"//CR//LF)    ! "\tgoodbye"
-  print'(a)', chomp(" "//TAB//LF//VT//FF//CR)  ! ""
-  print'(a)', chomp("  !  ")//"!"              ! "  !!"
-  print'(a)', chomp("Hello")                   ! "Hello"
-  print'(a)', chomp("hello", ["l", "o"])       ! "he"
-  print'(a)', chomp("hello", set=["l", "o"])   ! "he"
-  print'(a)', chomp("hello", "lo")             ! "hel"
-  print'(a)', chomp("hello", substring="lo")   ! "hel"
-end program demo
+{!example/strings/example_chomp.f90!}
 ```
 
 
@@ -143,12 +121,7 @@ The result is of scalar logical type.
 #### Example
 
 ```fortran
-program demo
-  use stdlib_strings, only : starts_with
-  implicit none
-  print'(a)', starts_with("pattern", "pat")  ! T
-  print'(a)', starts_with("pattern", "ern")  ! F
-end program demo
+{!example/strings/example_starts_with.f90!}
 ```
 
 
@@ -185,12 +158,7 @@ The result is of scalar logical type.
 #### Example
 
 ```fortran
-program demo
-  use stdlib_strings, only : ends_with
-  implicit none
-  print'(a)', ends_with("pattern", "ern")  ! T
-  print'(a)', ends_with("pattern", "pat")  ! F
-end program demo
+{!example/strings/example_ends_with.f90!}
 ```
 
 
@@ -245,26 +213,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-program demo_slice
-  use stdlib_string_type
-  use stdlib_strings, only : slice
-  implicit none
-  type(string_type) :: string
-  character(len=10) :: char
-
-  string = "abcdefghij"
-  ! string <-- "abcdefghij"
-
-  char = "abcdefghij"
-  ! char <-- "abcdefghij"
-
-  print'(a)', slice("abcdefghij", 2, 6, 2)   ! "bdf"
-  print'(a)', slice(char, 2, 6, 2)           ! "bdf"
-  
-  string = slice(string, 2, 6, 2)
-  ! string <-- "bdf"
-
-end program demo_slice
+{!example/strings/example_slice.f90!}
 ```
 
 
@@ -309,19 +258,7 @@ The result is a scalar of integer type or an integer array of rank equal to the 
 #### Example
 
 ```fortran
-program demo_find
-  use stdlib_string_type, only: string_type, assignment(=)
-  use stdlib_strings, only : find
-  implicit none
-  type(string_type) :: string
-
-  string = "needle in the character-stack"
-
-  print *, find(string, "needle")                       ! 1
-  print *, find(string, ["a", "c"], [3, 2])             ! [27, 20]
-  print *, find("qwqwqwq", "qwq", 3, [.false., .true.]) ! [0, 5]
-
-end program demo_find
+{!example/strings/example_find.f90!}
 ```
 
 
@@ -361,22 +298,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-program demo_replace_all
-  use stdlib_string_type, only: string_type, assignment(=)
-  use stdlib_strings, only : replace_all
-  implicit none
-  type(string_type) :: string
-
-  string = "hurdles here, hurdles there, hurdles everywhere"
-  ! string <-- "hurdles here, hurdles there, hurdles everywhere"
-
-  print'(a)', replace_all(string, "hurdles", "learn from")
-  ! "learn from here, learn from there, learn from everywhere"
-
-  string = replace_all(string, "hurdles", "technology")
-  ! string <-- "technology here, technology there, technology everywhere"
-
-end program demo_replace_all
+{!example/strings/example_replace_all.f90!}
 ```
 
 
@@ -416,21 +338,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-program demo_padl
-  use stdlib_string_type, only: string_type, assignment(=)
-  use stdlib_strings, only : padl
-  implicit none
-  string_type :: string
-
-  string = "left pad this string"
-  ! string <-- "left pad this string"
-
-  print *, padl(string, 25, "$") ! "$$$$$left pad this string"
-
-  string = padl(string, 25)
-  ! string <-- "     left pad this string"
-
-end program demo_padl
+{!example/strings/example_padl.f90!}
 ```
 
 
@@ -470,21 +378,7 @@ The result is of the same type as `string`.
 #### Example
 
 ```fortran
-program demo_padr
-  use stdlib_string_type, only: string_type, assignment(=)
-  use stdlib_strings, only : padr
-  implicit none
-  string_type :: string
-
-  string = "right pad this string"
-  ! string <-- "right pad this string"
-
-  print *, padr(string, 25, "$") ! "right pad this string$$$$"
-
-  string = padr(string, 25)
-  ! string <-- "right pad this string    "
-
-end program demo_padr
+{!example/strings/example_padr.f90!}
 ```
 
 
@@ -524,19 +418,7 @@ The result is a scalar of integer type or an integer array of rank equal to the 
 #### Example
 
 ```fortran
-program demo_count
-  use stdlib_string_type, only: string_type, assignment(=)
-  use stdlib_strings, only : count
-  implicit none
-  type(string_type) :: string
-
-  string = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?"
-
-  print *, count(string, "wood")                                  ! 4
-  print *, count(string, ["would", "chuck", "could"])             ! [1, 4, 1]
-  print *, count("a long queueueueue", "ueu", [.false., .true.])  ! [2, 4]
-
-end program demo_count
+{!example/strings/example_count.f90!}
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -575,35 +457,5 @@ The result is an `allocatable` length `character` scalar with up to `128` cached
 #### Example
 
 ```fortran
-program demo_to_string
-    use stdlib_strings, only: to_string
-
-    !> Example for `complex` type
-    print *, to_string((1, 1))              !! "(1.00000000,1.00000000)"
-    print *, to_string((1, 1), '(F6.2)')    !! "(  1.00,  1.00)"
-    print *, to_string((1000, 1), '(ES0.2)'), to_string((1000, 1), '(SP,F6.3)')     
-                    !! "(1.00E+3,1.00)""(******,+1.000)"
-                    !! Too narrow formatter for real number
-                    !! Normal demonstration(`******` from Fortran Standard)
-
-    !> Example for `integer` type
-    print *, to_string(-3)                  !! "-3"
-    print *, to_string(42, '(I4)')          !! "  42"
-    print *, to_string(1, '(I0.4)'), to_string(2, '(B4)')           !! "0001""  10"  
-
-    !> Example for `real` type
-    print *, to_string(1.)                  !! "1.00000000"
-    print *, to_string(1., '(F6.2)')        !! "  1.00" 
-    print *, to_string(1., 'F6.2')          !! "  1.00" 
-    print *, to_string(1., '(SP,ES9.2)'), to_string(1, '(F7.3)')    !! "+1.00E+00""[*]"
-                    !! 1 wrong demonstration (`[*]` from `to_string`)
-
-    !> Example for `logical` type
-    print *, to_string(.true.)              !! "T"
-    print *, to_string(.true., '(L2)')      !! " T"
-    print *, to_string(.true., 'L2')        !! " T"
-    print *, to_string(.false., '(I5)')     !! "[*]"
-                    !! 1 wrong demonstrations(`[*]` from `to_string`)
-
-end program demo_to_string
+{!example/strings/example_to_string.f90!}
 ```
