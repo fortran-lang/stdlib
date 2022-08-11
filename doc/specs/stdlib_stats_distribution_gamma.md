@@ -105,7 +105,7 @@ Experimental
 
 The probability density function (pdf) of the single real variable gamma distribution:
 
-$$ f(x)= \frac{scale^{shape}}{\Gamma (shape)}x^{shape-1}e^{-scale \times x} , for \;\;  x>0, shape, scale>0$$
+$$ f(x)= \frac{scale^{shape}}{\Gamma (shape)}x^{shape-1}e^{-scale \times x} , for \;  x>0, shape, scale>0$$
 
 For a complex variable (x + y i) with independent real x and imaginary y parts, the joint probability density function is the product of the corresponding marginal pdf of real and imaginary pdf (for more details, see
 "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
@@ -187,7 +187,7 @@ Experimental
 
 Cumulative distribution function (cdf) of the single real variable gamma distribution:
 
-$$ F(x)= \frac{\gamma (shape, scale \times x)}{\Gamma (shape)}, for \;\;  x>0, shape, scale>0} $$
+$$ F(x)= \frac{\gamma (shape, scale \times x)}{\Gamma (shape)}, for \;  x>0, shape, scale>0 $$
 
 For a complex variable (x + y i) with independent real x and imaginary y parts, the joint cumulative distribution function is the product of corresponding marginal cdf of real and imaginary cdf (for more details, see
 "Probability and Random Processes with Applications to Signal Processing and Communications", 2nd ed., Scott L. Miller and Donald Childers, 2012, p.197):
