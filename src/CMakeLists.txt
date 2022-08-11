@@ -62,29 +62,15 @@ set(fppFiles
 )
 
 
-# Custom preprocessor flags
-if(DEFINED CMAKE_MAXIMUM_RANK)
-  set(fyppFlags "-DMAXRANK=${CMAKE_MAXIMUM_RANK}")
-elseif(f03rank)
-  set(fyppFlags)
-else()
-  set(fyppFlags "-DVERSION90")
-endif()
-
-list(
-  APPEND fyppFlags
-  "-DWITH_QP=$<BOOL:${WITH_QP}>"
-  "-DWITH_XDP=$<BOOL:${WITH_XDP}>"
-  "-DPROJECT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}"
-  "-DPROJECT_VERSION_MINOR=${PROJECT_VERSION_MINOR}"
-  "-DPROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}"
-)
-
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
     stdlib_array.f90
     stdlib_error.f90
+    stdlib_hashmap_wrappers.f90
+    stdlib_hashmaps.f90
+    stdlib_hashmap_chaining.f90
+    stdlib_hashmap_open.f90
     stdlib_logger.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90
@@ -129,11 +115,6 @@ if(f18errorstop)
   target_sources(${PROJECT_NAME} PRIVATE f18estop.f90)
 else()
   target_sources(${PROJECT_NAME} PRIVATE f08estop.f90)
-endif()
-
-if(BUILD_TESTING)
-  enable_testing()
-  add_subdirectory(tests)
 endif()
 
 install(TARGETS ${PROJECT_NAME}
