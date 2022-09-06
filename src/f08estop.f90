@@ -1,4 +1,4 @@
-submodule (stdlib_error) estop
+submodule (stdlib_error) f08estop
 
 implicit none
 
