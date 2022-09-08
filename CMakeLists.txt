@@ -50,7 +50,7 @@ endif()
 
 # Custom preprocessor flags
 if(DEFINED CMAKE_MAXIMUM_RANK)
-  set(fyppFlags "-DMAXRANK=${CMAKE_MAXIMUM_RANK} -I${PROJECT_SOURCE_DIR}/include")
+  set(fyppFlags "-DMAXRANK=${CMAKE_MAXIMUM_RANK}")
 elseif(f03rank)
   set(fyppFlags)
 else()
@@ -64,6 +64,7 @@ list(
   "-DPROJECT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}"
   "-DPROJECT_VERSION_MINOR=${PROJECT_VERSION_MINOR}"
   "-DPROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}"
+  "-I${PROJECT_SOURCE_DIR}/include"
 )
 
 add_subdirectory(src)
