@@ -50,7 +50,7 @@ endif()
 
 # Custom preprocessor flags
 if(DEFINED CMAKE_MAXIMUM_RANK)
-  set(fyppFlags "-DMAXRANK=${CMAKE_MAXIMUM_RANK}")
+  set(fyppFlags "-DMAXRANK=${CMAKE_MAXIMUM_RANK} -I${PROJECT_SOURCE_DIR}/include")
 elseif(f03rank)
   set(fyppFlags)
 else()
