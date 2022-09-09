@@ -1,4 +1,4 @@
-#:include "common.fypp"
+#:include "../include/common.fypp"
 
 module test_simps
     use stdlib_kinds, only: sp, dp, xdp, qp

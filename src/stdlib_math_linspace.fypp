@@ -1,4 +1,4 @@
-#:include "common.fypp"
+#:include "../include/common.fypp"
 submodule (stdlib_math) stdlib_math_linspace
 
 implicit none

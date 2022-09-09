@@ -1,4 +1,4 @@
-#:include "common.fypp"
+#:include "../include/common.fypp"
 submodule(stdlib_strings) stdlib_strings_to_string
 
     integer, parameter :: buffer_len = 128

@@ -1,4 +1,4 @@
-#:include "common.fypp"
+#:include "../include/common.fypp"
 #:set RANKS = range(1, MAXRANK + 1)
 #:set IR_KINDS_TYPES_OUTPUT = list(zip(INT_KINDS,INT_TYPES, ['dp']*len(INT_KINDS))) + list(zip(REAL_KINDS, REAL_TYPES, REAL_KINDS))
 

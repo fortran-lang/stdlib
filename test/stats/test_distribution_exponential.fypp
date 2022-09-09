@@ -1,5 +1,5 @@
 
-#:include "common.fypp"
+#:include "../include/common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 program test_distribution_expon
     use stdlib_kinds, only : sp, dp, xdp, qp

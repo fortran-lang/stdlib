@@ -1,4 +1,4 @@
-#:include "common.fypp"
+#:include "../include/common.fypp"
 
 module test_optval
     use, intrinsic :: iso_fortran_env, only: &

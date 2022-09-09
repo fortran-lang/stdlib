@@ -1,5 +1,5 @@
 ! SPDX-Identifier: MIT
-#:include "common.fypp"
+#:include "../include/common.fypp"
 !> This module implements basic string handling routines.
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_strings.html).

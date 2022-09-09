@@ -1,4 +1,4 @@
-#:include "common.fypp"
+#:include "../include/common.fypp"
 
 module test_loadtxt_qp
     use stdlib_kinds, only: qp
