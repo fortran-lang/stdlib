@@ -72,7 +72,7 @@ contains
         if (allocated(error)) return
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -86,7 +86,7 @@ contains
         if (allocated(error)) return
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -105,7 +105,7 @@ contains
         #:endfor
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -126,7 +126,7 @@ contains
         #:endfor
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -142,7 +142,7 @@ contains
         if (allocated(error)) return
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -161,7 +161,7 @@ contains
         #:endfor
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
     #:endfor
@@ -178,7 +178,7 @@ contains
         if (allocated(error)) return
         
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -192,7 +192,7 @@ contains
         if (allocated(error)) return
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -211,7 +211,7 @@ contains
         #:endfor
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -227,7 +227,7 @@ contains
         #:endfor
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -243,7 +243,7 @@ contains
         if (allocated(error)) return
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -262,7 +262,7 @@ contains
         #:endfor
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
     #:endfor
@@ -279,7 +279,7 @@ contains
         if (allocated(error)) return
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -293,7 +293,7 @@ contains
         if (allocated(error)) return
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -312,7 +312,7 @@ contains
         #:endfor
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -328,7 +328,7 @@ contains
         #:endfor
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -344,7 +344,7 @@ contains
         if (allocated(error)) return
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
 
@@ -363,7 +363,7 @@ contains
         #:endfor
 
         #:else
-        call skip_test(error, "Rank 7 is not supported")
+        call skip_test(error, "Rank > 7 is not supported")
         #:endif
     end subroutine
     #:endfor
