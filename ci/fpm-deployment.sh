@@ -23,6 +23,7 @@ include=(
   "ci/fpm.toml"
   "LICENSE"
   "VERSION"
+  "include/common.fypp"
 )
 
 # Files to remove from collection
