@@ -28,7 +28,6 @@ include=(
 # Files to remove from collection
 prune=(
   "$destdir/test/test_hash_functions.f90"
-  "$destdir/include/common.f90"
   "$destdir/src/f18estop.f90"
 )
 
