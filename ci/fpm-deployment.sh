@@ -34,7 +34,7 @@ prune=(
 major=$(cut -d. -f1 VERSION)
 minor=$(cut -d. -f2 VERSION)
 patch=$(cut -d. -f3 VERSION)
-fyflags="${fyflags} -DPROJECT_VERSION_MAJOR=${major} -DPROJECT_VERSION_MINOR=${minor} -DPROJECT_VERSION_PATCH=${patch}"
+fyflags="${fyflags} -DPROJECT_VERSION_MAJOR=${major} -DPROJECT_VERSION_MINOR=${minor} -DPROJECT_VERSION_PATCH=${patch} -I include"
 
 mkdir -p "$destdir/src" "$destdir/test" "$destdir/example"
 
