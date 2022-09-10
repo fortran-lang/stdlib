@@ -1,4 +1,4 @@
-#:include "../include/common.fypp"
+#:include "common.fypp"
 #:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_TYPES, INT_KINDS))
 #:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_TYPES, REAL_KINDS))
 #:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_TYPES, STRING_KINDS))

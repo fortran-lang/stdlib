@@ -1,4 +1,4 @@
-#:include "../include/common.fypp"
+#:include "common.fypp"
 submodule(stdlib_string_type) stdlib_string_type_constructor
 
     use stdlib_strings, only: to_string

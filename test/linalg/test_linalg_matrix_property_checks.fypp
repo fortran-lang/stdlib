@@ -1,4 +1,4 @@
-#:include "../include/common.fypp"
+#:include "common.fypp"
 #:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
 
 module test_linalg_matrix_property_checks

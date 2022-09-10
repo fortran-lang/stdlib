@@ -1,6 +1,6 @@
 ! SPDX-Identifier: MIT
 
-#:include "../include/common.fypp"
+#:include "common.fypp"
 
 !> Version information on stdlib
 module stdlib_version

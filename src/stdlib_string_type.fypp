@@ -1,5 +1,5 @@
 ! SPDX-Identifier: MIT
-#:include "../include/common.fypp"
+#:include "common.fypp"
 
 !> Implementation of a string type to hold an arbitrary sequence of characters.
 !>

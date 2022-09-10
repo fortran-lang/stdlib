@@ -1,4 +1,4 @@
-#:include "../include/common.fypp"
+#:include "common.fypp"
 
 submodule (stdlib_quadrature) stdlib_quadrature_simps
     use stdlib_error, only: check

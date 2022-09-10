@@ -1,4 +1,4 @@
-#:include "../include/common.fypp"
+#:include "common.fypp"
 ! Specify kinds/types for the input array in select and arg_select
 #:set ARRAY_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
 ! The index arrays are of all INT_KINDS_TYPES

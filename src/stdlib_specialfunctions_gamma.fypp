@@ -1,6 +1,6 @@
 #:set WITH_QP = False
 #:set WITH_XDP = False
-#:include "../include/common.fypp"
+#:include "common.fypp"
 #:set CI_KINDS_TYPES = INT_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_specialfunctions_gamma
     use iso_fortran_env, only : qp => real128

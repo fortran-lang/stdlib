@@ -1,6 +1,6 @@
 ! SPDX-Identifier: MIT
 
-#:include "../include/common.fypp"
+#:include "common.fypp"
 
 module test_stdlib_math
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test

@@ -1,4 +1,4 @@
-#:include "../include/common.fypp"
+#:include "common.fypp"
 
 !> The `stdlib_ascii` module provides procedures for handling and manipulating
 !> intrinsic character variables and constants.

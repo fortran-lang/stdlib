@@ -1,4 +1,4 @@
-#:include "../include/common.fypp"
+#:include "common.fypp"
 module stdlib_bitsets
 !! Implements zero based bitsets of size up to `huge(0_int32)`.
 !! The current code uses 64 bit integers to store the bits and uses all 64 bits.

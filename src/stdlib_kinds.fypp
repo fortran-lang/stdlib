@@ -1,4 +1,4 @@
-#:include "../include/common.fypp"
+#:include "common.fypp"
 !> Version: experimental
 !>
 !> The specification of this module is available [here](../page/specs/stdlib_kinds.html).

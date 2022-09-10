@@ -1,4 +1,4 @@
-#:include "../include/common.fypp"
+#:include "common.fypp"
 submodule(stdlib_bitsets) stdlib_bitsets_large
     implicit none
 
