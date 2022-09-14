@@ -72,7 +72,7 @@ module stdlib_stats_distribution_normal
 
 contains
 
-    pure subroutine zigset
+    impure subroutine zigset
     ! Marsaglia & Tsang generator for random normals & random exponentials.
     ! Translated from C by Alan Miller (amiller@bigpond.net.au), released as public
     ! domain (https://jblevins.org/mirror/amiller/)
@@ -112,7 +112,7 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    pure function rvs_norm_0_${t1[0]}$${k1}$( ) result(res)
+    impure function rvs_norm_0_${t1[0]}$${k1}$( ) result(res)
     !
     ! Standard normal random variate (0,1)
     !
@@ -160,7 +160,7 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    elemental &
+    impure elemental &
     function rvs_norm_${t1[0]}$${k1}$(loc, scale) result(res)
     !
     ! Normal random variate (loc, scale)
@@ -179,7 +179,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    elemental function rvs_norm_${t1[0]}$${k1}$(loc, scale) result(res)
+    impure elemental function rvs_norm_${t1[0]}$${k1}$(loc, scale) result(res)
     !
     ! Normally distributed complex. The real part and imaginary part are       &
     ! independent of each other.
@@ -198,7 +198,7 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    pure function rvs_norm_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
+    impure function rvs_norm_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
         ${t1}$, intent(in) :: loc, scale
         integer, intent(in) :: array_size
         ${t1}$ :: res(array_size)
@@ -251,7 +251,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    pure function rvs_norm_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
+    impure function rvs_norm_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
         ${t1}$, intent(in) :: loc, scale
         integer, intent(in) :: array_size
         integer :: i
