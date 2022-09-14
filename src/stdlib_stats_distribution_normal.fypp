@@ -72,7 +72,7 @@ module stdlib_stats_distribution_normal
 
 contains
 
-    subroutine zigset
+    pure subroutine zigset
     ! Marsaglia & Tsang generator for random normals & random exponentials.
     ! Translated from C by Alan Miller (amiller@bigpond.net.au), released as public
     ! domain (https://jblevins.org/mirror/amiller/)
@@ -112,9 +112,9 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    function rvs_norm_0_${t1[0]}$${k1}$( ) result(res)
+    pure function rvs_norm_0_${t1[0]}$${k1}$( ) result(res)
     !
-    ! Standard normal random vairate (0,1)
+    ! Standard normal random variate (0,1)
     !
         ${t1}$ :: res
         ${t1}$, parameter  ::  r = 3.442619855899_${k1}$, rr = 1.0_${k1}$ / r
@@ -160,7 +160,7 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental &
+    elemental &
     function rvs_norm_${t1[0]}$${k1}$(loc, scale) result(res)
     !
     ! Normal random variate (loc, scale)
@@ -168,8 +168,8 @@ contains
         ${t1}$, intent(in) :: loc, scale
         ${t1}$ :: res
 
-        if(scale == 0._${k1}$) call error_stop("Error(rvs_norm): Normal"       &
-            //" distribution scale parameter must be non-zero")
+        !if(scale == 0._${k1}$) call error_stop("Error(rvs_norm): Normal"       &
+        !    //" distribution scale parameter must be non-zero")
         res = rvs_norm_0_${t1[0]}$${k1}$(  )
         res = res * scale + loc
     end function rvs_norm_${t1[0]}$${k1}$
@@ -179,8 +179,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    impure elemental &
-    function rvs_norm_${t1[0]}$${k1}$(loc, scale) result(res)
+    elemental function rvs_norm_${t1[0]}$${k1}$(loc, scale) result(res)
     !
     ! Normally distributed complex. The real part and imaginary part are       &
     ! independent of each other.
@@ -199,7 +198,7 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    function rvs_norm_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
+    pure function rvs_norm_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
         ${t1}$, intent(in) :: loc, scale
         integer, intent(in) :: array_size
         ${t1}$ :: res(array_size)
@@ -207,8 +206,8 @@ contains
         ${t1}$ ::  x, y, re
         integer :: hz, iz, i
 
-        if(scale == 0._${k1}$) call error_stop("Error(rvs_norm_array): Normal" &
-            //"distribution scale parameter must be non-zero")
+        !if(scale == 0._${k1}$) call error_stop("Error(rvs_norm_array): Normal" &
+        !    //"distribution scale parameter must be non-zero")
         if(.not. zig_norm_initialized) call zigset
         do i = 1, array_size
             iz = 0
@@ -252,7 +251,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    function rvs_norm_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
+    pure function rvs_norm_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
         ${t1}$, intent(in) :: loc, scale
         integer, intent(in) :: array_size
         integer :: i
@@ -271,7 +270,7 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function pdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    elemental function pdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
     !
     ! Normal distribution probability density function
     !
@@ -279,8 +278,8 @@ contains
         ${t1}$ :: res
         ${t1}$, parameter :: sqrt_2_pi = sqrt(2.0_${k1}$ * acos(-1.0_${k1}$))
 
-        if(scale == 0._${k1}$) call error_stop("Error(pdf_norm): Normal"       &
-            //"distribution scale parameter must be non-zero")
+        !if(scale == 0._${k1}$) call error_stop("Error(pdf_norm): Normal"       &
+        !    //"distribution scale parameter must be non-zero")
         res = exp(- 0.5_${k1}$ * ((x - loc) / scale) * (x - loc) / scale) /    &
               (sqrt_2_Pi * scale)
     end function pdf_norm_${t1[0]}$${k1}$
@@ -290,7 +289,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    impure elemental function pdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    elemental function pdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
         ${t1}$, intent(in) :: x, loc, scale
         real(${k1}$) :: res
 
@@ -303,7 +302,7 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function cdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    elemental function cdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
     !
     ! Normal distribution cumulative distribution function
     !
@@ -311,8 +310,8 @@ contains
         ${t1}$ :: res
         ${t1}$, parameter :: sqrt_2 = sqrt(2.0_${k1}$)
 
-        if(scale == 0._${k1}$) call error_stop("Error(cdf_norm): Normal"       &
-            //"distribution scale parameter must be non-zero")
+        !if(scale == 0._${k1}$) call error_stop("Error(cdf_norm): Normal"       &
+        !    //"distribution scale parameter must be non-zero")
         res = erfc(- (x - loc) / (scale * sqrt_2)) / 2.0_${k1}$
     end function cdf_norm_${t1[0]}$${k1}$
 
@@ -321,7 +320,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    impure elemental function cdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
+    elemental function cdf_norm_${t1[0]}$${k1}$(x, loc, scale) result(res)
         ${t1}$, intent(in) :: x, loc, scale
         real(${k1}$) :: res
 
