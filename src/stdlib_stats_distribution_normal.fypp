@@ -156,7 +156,7 @@ contains
          ${t1}$ :: res
 
          if (scale <= 0._${k1}$) then
-            res = ieee_quiet_nan
+            res = ieee_value(1._${k1}$, ieee_quiet_nan)
          else
             res = rvs_norm_0_${t1[0]}$${k1}$ ()
             res = res*scale + loc
@@ -196,7 +196,7 @@ contains
          if (.not. zig_norm_initialized) call zigset
 
          if (scale <= 0._${k1}$) then
-            res = ieee_quiet_nan
+            res = ieee_value(1._${k1}$, ieee_quiet_nan)
             return
          end if
 
@@ -267,7 +267,7 @@ contains
          ${t1}$, parameter :: sqrt_2_pi = sqrt(2.0_${k1}$*acos(-1.0_${k1}$))
 
          if (scale <= 0._${k1}$) then
-            res = ieee_quiet_nan
+            res = ieee_value(1._${k1}$, ieee_quiet_nan)
          else
             res = exp(-0.5_${k1}$*((x - loc)/scale)*(x - loc)/scale)/ &
                   (sqrt_2_Pi*scale)
@@ -298,7 +298,7 @@ contains
          ${t1}$, parameter :: sqrt_2 = sqrt(2.0_${k1}$)
 
          if (scale <= 0._${k1}$) then
-            res = ieee_quiet_nan
+            res = ieee_value(1._${k1}$, ieee_quiet_nan)
          else
             res = erfc(-(x - loc)/(scale*sqrt_2))/2.0_${k1}$
          end if
