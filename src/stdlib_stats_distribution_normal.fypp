@@ -1,6 +1,7 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_stats_distribution_normal
+   use ieee_arithmetic, only: ieee_quiet_nan
    use stdlib_kinds, only: sp, dp, xdp, qp, int32
    use stdlib_error, only: error_stop
    use stdlib_random, only: dist_rand
@@ -154,8 +155,13 @@ contains
          ${t1}$, intent(in) :: loc, scale
          ${t1}$ :: res
 
-         res = rvs_norm_0_${t1[0]}$${k1}$ ()
-         res = res*scale + loc
+         if (scale <= 0._${k1}$) then
+            res = ieee_quiet_nan
+         else
+            res = rvs_norm_0_${t1[0]}$${k1}$ ()
+            res = res*scale + loc
+         end if
+
       end function rvs_norm_${t1[0]}$${k1}$
 
    #:endfor
@@ -173,6 +179,7 @@ contains
          tr = rvs_norm_r${k1}$ (loc%re, scale%re)
          ti = rvs_norm_r${k1}$ (loc%im, scale%im)
          res = cmplx(tr, ti, kind=${k1}$)
+
       end function rvs_norm_${t1[0]}$${k1}$
 
    #:endfor
@@ -187,6 +194,12 @@ contains
          integer :: hz, iz, i
 
          if (.not. zig_norm_initialized) call zigset
+
+         if (scale <= 0._${k1}$) then
+            res = ieee_quiet_nan
+            return
+         end if
+
          do i = 1, array_size
             iz = 0
             hz = dist_rand(1_int32)
@@ -239,6 +252,7 @@ contains
             ti = rvs_norm_r${k1}$ (loc%im, scale%im)
             res(i) = cmplx(tr, ti, kind=${k1}$)
          end do
+
       end function rvs_norm_array_${t1[0]}$${k1}$
 
    #:endfor
@@ -252,8 +266,13 @@ contains
          ${t1}$ :: res
          ${t1}$, parameter :: sqrt_2_pi = sqrt(2.0_${k1}$*acos(-1.0_${k1}$))
 
-         res = exp(-0.5_${k1}$*((x - loc)/scale)*(x - loc)/scale)/ &
-               (sqrt_2_Pi*scale)
+         if (scale <= 0._${k1}$) then
+            res = ieee_quiet_nan
+         else
+            res = exp(-0.5_${k1}$*((x - loc)/scale)*(x - loc)/scale)/ &
+                  (sqrt_2_Pi*scale)
+         end if
+
       end function pdf_norm_${t1[0]}$${k1}$
 
    #:endfor
@@ -278,7 +297,12 @@ contains
          ${t1}$ :: res
          ${t1}$, parameter :: sqrt_2 = sqrt(2.0_${k1}$)
 
-         res = erfc(-(x - loc)/(scale*sqrt_2))/2.0_${k1}$
+         if (scale <= 0._${k1}$) then
+            res = ieee_quiet_nan
+         else
+            res = erfc(-(x - loc)/(scale*sqrt_2))/2.0_${k1}$
+         end if
+
       end function cdf_norm_${t1[0]}$${k1}$
 
    #:endfor
