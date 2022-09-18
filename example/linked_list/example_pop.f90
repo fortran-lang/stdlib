@@ -1,11 +1,8 @@
 ! example_pop.f90 --
 !     Demonstrate the pop method
 !
-include 'linked_list_aux.f90'
-
 program example_pop
     use stdlib_linked_list
-    use linked_list_aux
 
     implicit none
 
@@ -31,5 +28,8 @@ program example_pop
     !
     write(*,*) 'New list:'
     call print_list( list )
+
+contains
+include 'linked_list_aux.f90'
 
 end program example_pop

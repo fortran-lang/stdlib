@@ -1,11 +1,8 @@
 ! example_replace.f90 --
 !     Demonstrate the replace method
 !
-include 'linked_list_aux.f90'
-
 program example_replace
     use stdlib_linked_list
-    use linked_list_aux
 
     implicit none
 
@@ -31,5 +28,8 @@ program example_replace
     !
     write(*,*) 'New list:'
     call print_list( list )
+
+contains
+include 'linked_list_aux.f90'
 
 end program example_replace

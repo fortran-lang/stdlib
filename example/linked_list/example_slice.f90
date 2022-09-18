@@ -1,11 +1,8 @@
 ! example_slice.f90 --
 !     Demonstrate the slice method
 !
-include 'linked_list_aux.f90'
-
 program example_slice
     use stdlib_linked_list
-    use linked_list_aux
 
     implicit none
 
@@ -38,5 +35,8 @@ program example_slice
     ! Print the second list
     write(*,*) 'Sublist:'
     call print_list( sublist)
+
+contains
+include 'linked_list_aux.f90'
 
 end program example_slice

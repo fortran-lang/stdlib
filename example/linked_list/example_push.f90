@@ -1,11 +1,8 @@
 ! example_push.f90 --
 !     Demonstrate the push method
 !
-include 'linked_list_aux.f90'
-
 program example_push
     use stdlib_linked_list
-    use linked_list_aux
 
     implicit none
 
@@ -31,5 +28,8 @@ program example_push
     !
     write(*,*) 'New list:'
     call print_list( list )
+
+contains
+include 'linked_list_aux.f90'
 
 end program example_push

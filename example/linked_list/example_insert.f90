@@ -1,11 +1,9 @@
 ! example_insert.f90 --
 !     Demonstrate the insert method
 !
-include 'linked_list_aux.f90'
 
 program example_insert
     use stdlib_linked_list
-    use linked_list_aux
 
     implicit none
 
@@ -30,5 +28,8 @@ program example_insert
     !
     write(*,*) 'New list:'
     call print_list( list )
+
+contains
+include 'linked_list_aux.f90'
 
 end program example_insert

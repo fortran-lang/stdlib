@@ -1,12 +1,6 @@
 ! linked_list_aux.f90 --
-!     Auxiliary module for printing the contents of a linked list
+!     Auxiliary routine for printing the contents of a linked list
 !
-module linked_list_aux
-    use stdlib_linked_list
-
-    implicit none
-
-contains
 subroutine print_list( list )
     type(linked_list), intent(in) :: list
 
@@ -31,6 +25,3 @@ subroutine print_list( list )
         end select
     enddo
 end subroutine print_list
-
-end module linked_list_aux
-
