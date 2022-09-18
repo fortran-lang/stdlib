@@ -84,7 +84,7 @@ None
 #### Example
 
 ```fortran
-{!example/strings/example_clear.f90!}
+{!example/linked_list/example_clear.f90!}
 ```
 
 
@@ -124,7 +124,7 @@ Notes:
 #### Example
 
 ```fortran
-{!example/strings/example_get.f90!}
+{!example/linked_list/example_get.f90!}
 ```
 
 
@@ -166,7 +166,7 @@ Notes:
 #### Example
 
 ```fortran
-{!example/strings/example_insert.f90!}
+{!example/linked_list/example_insert.f90!}
 ```
 
 
@@ -207,7 +207,7 @@ Notes:
 #### Example
 
 ```fortran
-{!example/strings/example_replace.f90!}
+{!example/linked_list/example_replace.f90!}
 ```
 
 
@@ -246,7 +246,7 @@ Notes:
 #### Example
 
 ```fortran
-{!example/strings/example_remove.f90!}
+{!example/linked_list/example_remove.f90!}
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -280,7 +280,7 @@ The list is extended with the new data item at the tail.
 #### Example
 
 ```fortran
-{!example/strings/example_push.f90!}
+{!example/linked_list/example_push.f90!}
 ```
 
 
@@ -314,7 +314,7 @@ The list item in the list is removed.
 #### Example
 
 ```fortran
-{!example/strings/example_pop.f90!}
+{!example/linked_list/example_pop.f90!}
 ```
 
 
@@ -348,7 +348,7 @@ The list now contains the items in reverse order.
 #### Example
 
 ```fortran
-{!example/strings/example_reverse.f90!}
+{!example/linked_list/example_reverse.f90!}
 ```
 
 
@@ -383,7 +383,7 @@ The given list is extended with the data items in the second list. The second li
 #### Example
 
 ```fortran
-{!example/strings/example_concat.f90!}
+{!example/linked_list/example_concat.f90!}
 ```
 
 
@@ -418,7 +418,7 @@ The given list is extended with the data items in the second list. The second li
 #### Example
 
 ```fortran
-{!example/strings/example_absorb.f90!}
+{!example/linked_list/example_absorb.f90!}
 ```
 
 
@@ -456,7 +456,7 @@ list, so that the two lists are independent.
 #### Example
 
 ```fortran
-{!example/strings/example_slice.f90!}
+{!example/linked_list/example_slice.f90!}
 ```
 
 
@@ -493,5 +493,5 @@ The data items in the given range are removed from the list.
 #### Example
 
 ```fortran
-{!example/strings/example_splice.f90!}
+{!example/linked_list/example_splice.f90!}
 ```
