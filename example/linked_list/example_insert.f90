@@ -1,6 +1,8 @@
 ! example_insert.f90 --
 !     Demonstrate the insert method
 !
+include 'linked_list_aux.f90'
+
 program example_insert
     use stdlib_linked_list
     use linked_list_aux

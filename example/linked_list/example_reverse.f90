@@ -1,6 +1,8 @@
 ! example_reverse.f90 --
 !     Demonstrate the reverse method
 !
+include 'linked_list_aux.f90'
+
 program example_reverse
     use stdlib_linked_list
     use linked_list_aux

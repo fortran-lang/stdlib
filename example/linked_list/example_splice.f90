@@ -1,6 +1,8 @@
 ! example_splice.f90 --
 !     Demonstrate the splice method
 !
+include 'linked_list_aux.f90'
+
 program example_splice
     use stdlib_linked_list
     use linked_list_aux

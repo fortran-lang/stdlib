@@ -1,6 +1,8 @@
 ! example_push.f90 --
 !     Demonstrate the push method
 !
+include 'linked_list_aux.f90'
+
 program example_push
     use stdlib_linked_list
     use linked_list_aux

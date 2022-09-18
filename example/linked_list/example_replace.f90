@@ -1,6 +1,8 @@
 ! example_replace.f90 --
 !     Demonstrate the replace method
 !
+include 'linked_list_aux.f90'
+
 program example_replace
     use stdlib_linked_list
     use linked_list_aux

@@ -1,6 +1,8 @@
 ! example_pop.f90 --
 !     Demonstrate the pop method
 !
+include 'linked_list_aux.f90'
+
 program example_pop
     use stdlib_linked_list
     use linked_list_aux

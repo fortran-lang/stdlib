@@ -1,6 +1,8 @@
 ! example_absorb.f90 --
 !     Demonstrate the absorb method
 !
+include 'linked_list_aux.f90'
+
 program example_absorb
     use stdlib_linked_list
     use linked_list_aux
