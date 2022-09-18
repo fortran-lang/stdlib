@@ -1,5 +1,5 @@
 ---
-title: IO
+title: io
 ---
 
 # IO
@@ -17,13 +17,17 @@ Loads a rank-2 `array` from a text file.
 
 ### Syntax
 
-`call [[stdlib_io(module):loadtxt(interface)]](filename, array)`
+`call [[stdlib_io(module):loadtxt(interface)]](filename, array [, skiprows] [, max_rows])`
 
 ### Arguments
 
 `filename`: Shall be  a character expression containing the file name from which to load the rank-2 `array`.
 
 `array`: Shall be an allocatable rank-2 array of type `real`, `complex` or `integer`.
+
+`skiprows` (optional): Skip the first `skiprows` lines. If skipping more rows than present, a 0-sized array will be returned. The default is 0.
+
+`max_rows` (optional): Read `max_rows` lines of content after `skiprows` lines. A negative value results in reading all lines. A value of zero results in no lines to be read. The default value is -1.
 
 ### Return value
 
@@ -32,12 +36,7 @@ Returns an allocated rank-2 `array` with the content of `filename`.
 ### Example
 
 ```fortran
-program demo_loadtxt
-    use stdlib_io, only: loadtxt
-    implicit none
-    real, allocatable :: x(:,:)
-    call loadtxt('example.dat', x) 
-end program demo_loadtxt
+{!example/io/example_loadtxt.f90!}
 ```
 
 
@@ -87,14 +86,7 @@ The result is a scalar of type `integer`.
 ### Example
 
 ```fortran
-program demo_open
-    use stdlib_io, only: open
-    implicit none
-    integer :: u
-    u = open('example.dat', 'wt')
-    write(u,'(a)')'This is an example for open'
-    close(u)
-end program demo_open
+{!example/io/example_open.f90!}
 ```
 
 
@@ -124,10 +116,142 @@ Provides a text file called `filename` that contains the rank-2 `array`.
 ### Example
 
 ```fortran
-program demo_savetxt
-    use stdlib_io, only: savetxt
-    implicit none
-    real :: x(3,2) = 1
-    call savetxt('example.dat', x) 
-end program demo_savetxt
+{!example/io/example_savetxt.f90!}
+```
+
+
+## `load_npy`
+
+### Status
+
+Experimental
+
+### Description
+
+Loads an `array` from a npy formatted binary file.
+
+### Syntax
+
+`call [[stdlib_io_npy(module):load_npy(interface)]](filename, array[, iostat][, iomsg])`
+
+### Arguments
+
+`filename`: Shall be  a character expression containing the file name from which to load the `array`.
+            This argument is `intent(in)`.
+
+`array`: Shall be an allocatable array of any rank of type `real`, `complex` or `integer`.
+         This argument is `intent(out)`.
+
+`iostat`: Default integer, contains status of loading to file, zero in case of success.
+          It is an optional argument, in case not present the program will halt for non-zero status.
+          This argument is `intent(out)`.
+
+`iomsg`: Deferred length character value, contains error message in case `iostat` is non-zero.
+         It is an optional argument, error message will be dropped if not present.
+         This argument is `intent(out)`.
+
+### Return value
+
+Returns an allocated `array` with the content of `filename` in case of success.
+
+### Example
+
+```fortran
+{!example/io/example_loadnpy.f90!}
+```
+
+
+## `save_npy`
+
+### Status
+
+Experimental
+
+### Description
+
+Saves an `array` into a npy formatted binary file.
+
+### Syntax
+
+`call [[stdlib_io_npy(module):save_npy(interface)]](filename, array[, iostat][, iomsg])`
+
+### Arguments
+
+`filename`: Shall be  a character expression containing the name of the file that will contain the `array`.
+            This argument is `intent(in)`.
+
+`array`: Shall be an array of any rank of type `real`, `complex` or `integer`.
+         This argument is `intent(in)`.
+
+`iostat`: Default integer, contains status of saving to file, zero in case of success.
+          It is an optional argument, in case not present the program will halt for non-zero status.
+          This argument is `intent(out)`.
+
+`iomsg`: Deferred length character value, contains error message in case `iostat` is non-zero.
+         It is an optional argument, error message will be dropped if not present.
+         This argument is `intent(out)`.
+
+### Output
+
+Provides a npy file called `filename` that contains the rank-2 `array`.
+
+### Example
+
+```fortran
+{!example/io/example_savenpy.f90!}
+```
+
+## `getline`
+
+### Status
+
+Experimental
+
+### Description
+
+Read a whole line from a formatted unit into a string variable
+
+### Syntax
+
+`call [[stdlib_io(module):getline(interface)]] (unit, line[, iostat][, iomsg])`
+`call [[stdlib_io(module):getline(interface)]] (line[, iostat][, iomsg])`
+
+### Arguments
+
+`unit`: Formatted input unit.
+        This argument is `intent(in)`.
+        If `unit` is not specified standard input is used.
+
+`line`: Deferred length character or `string_type` variable.
+        This argument is `intent(out)`.
+
+`iostat`: Default integer, contains status of reading from unit, zero in case of success.
+          It is an optional argument, in case not present the program will halt for non-zero status.
+          This argument is `intent(out)`.
+
+`iomsg`: Deferred length character value, contains error message in case `iostat` is non-zero.
+         It is an optional argument, error message will be dropped if not present.
+         This argument is `intent(out)`.
+
+### Example
+
+```fortran
+{!example/io/example_getline.f90!}
+```
+
+## Formatting constants
+
+### Status
+
+Experimental
+
+### Description
+
+Formatting constants for printing out integer, floating point, and complex numbers at their full precision.
+Provides formats for all kinds as defined in the `stdlib_kinds` module.
+
+### Example
+
+```fortran
+{!example/io/example_fmt_constants.f90!}
 ```

@@ -1,0 +1,54 @@
+#:include "common.fypp"
+submodule(stdlib_math) stdlib_math_arange
+
+contains
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    !> `arange` creates a vector of the `${t1}$` type 
+    !>  with evenly spaced values within a given interval.
+    pure module function arange_${t1[0]}$_${k1}$(start, end, step) result(result)
+
+        ${t1}$, intent(in) :: start
+        ${t1}$, intent(in), optional :: end, step
+        ${t1}$, allocatable :: result(:)
+        
+        ${t1}$ :: start_, end_, step_
+        integer :: i
+
+        start_ = merge(start, 1.0_${k1}$, present(end))
+        end_   = optval(end, start)
+        step_  = optval(step, 1.0_${k1}$)
+        step_  = sign(merge(step_, 1.0_${k1}$, step_ /= 0.0_${k1}$), end_ - start_)
+
+        allocate(result(floor((end_ - start_)/step_) + 1))
+
+        result = [(start_ + (i - 1)*step_, i=1, size(result), 1)]
+
+    end function arange_${t1[0]}$_${k1}$
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+    !> `arange` creates a vector of the `${t1}$` type 
+    !>  with evenly spaced values within a given interval.
+    pure module function arange_${t1[0]}$_${k1}$(start, end, step) result(result)
+
+        ${t1}$, intent(in) :: start
+        ${t1}$, intent(in), optional :: end, step
+        ${t1}$, allocatable :: result(:)
+        
+        ${t1}$ :: start_, end_, step_
+        ${t1}$ :: i
+
+        start_ = merge(start, 1_${k1}$, present(end))
+        end_   = optval(end, start)
+        step_  = optval(step, 1_${k1}$)
+        step_  = sign(merge(step_, 1_${k1}$, step_ /= 0_${k1}$), end_ - start_)
+
+        allocate(result((end_ - start_)/step_ + 1_${k1}$))
+
+        result = [(i, i=start_, end_, step_)]
+
+    end function arange_${t1[0]}$_${k1}$
+    #:endfor
+
+end submodule stdlib_math_arange

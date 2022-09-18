@@ -14,7 +14,7 @@ Experimental
 
 ### Description
 
-Returns the trapezoidal rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`.
+Returns the trapezoidal rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitrary abscissas `x`.
 
 ### Syntax
 
@@ -39,16 +39,7 @@ If the size of `y` is zero or one, the result is zero.
 ### Example
 
 ```fortran
-program demo_trapz
-    use stdlib_quadrature, only: trapz
-    implicit none
-    real :: x(5) = [0., 1., 2., 3., 4.]
-    real :: y(5) = x**2
-    print *, trapz(y, x) 
-! 22.0
-    print *, trapz(y, 0.5) 
-! 11.0
-end program demo_trapz
+{!example/quadrature/example_trapz.f90!}
 ```
 
 ## `trapz_weights` - trapezoidal rule weights for given abscissas
@@ -78,17 +69,7 @@ If the size of `x` is one, then the sole element of the result is zero.
 ### Example
 
 ```fortran
-program demo_trapz_weights
-    use stdlib_quadrature, only: trapz_weights
-    implicit none
-    real :: x(5) = [0., 1., 2., 3., 4.]
-    real :: y(5) = x**2
-    real :: w(5) 
-    w = trapz_weights(x)
-    print *, sum(w*y)
-! 22.0
-end program demo_trapz_weights
-
+{!example/quadrature/example_trapz_weights.f90!}
 ```
 
 ## `simps` - integrate sampled values using Simpson's rule
@@ -99,7 +80,7 @@ Experimental
 
 ### Description
 
-Returns the Simpson's rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitary abscissas `x`. 
+Returns the Simpson's rule integral of an array `y` representing discrete samples of a function. The integral is computed assuming either equidistant abscissas with spacing `dx` or arbitrary abscissas `x`. 
 
 Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length arrays, Simpson's 3/8 rule is also utilized in a way that depends on the value of `even`. If `even` is negative (positive), the 3/8 rule is used at the beginning (end) of the array. If `even` is zero or not present, the result is as if the 3/8 rule were first used at the beginning of the array, then at the end of the array, and these two results were averaged.
 
@@ -130,16 +111,7 @@ If the size of `y` is two, the result is the same as if `trapz` had been called 
 ### Example
 
 ```fortran
-program demo_simps
-    use stdlib_quadrature, only: simps
-    implicit none
-    real :: x(5) = [0., 1., 2., 3., 4.]
-    real :: y(5) = 3.*x**2
-    print *, simps(y, x) 
-! 64.0
-    print *, simps(y, 0.5) 
-! 32.0
-end program demo_simps
+{!example/quadrature/example_simps.f90!}
 ```
 
 ## `simps_weights` - Simpson's rule weights for given abscissas
@@ -175,14 +147,81 @@ If the size of `x` is two, then the result is the same as if `trapz_weights` had
 ### Example
 
 ```fortran
-program demo_simps_weights
-    use stdlib_quadrature, only: simps_weights
-    implicit none
-    real :: x(5) = [0., 1., 2., 3., 4.]
-    real :: y(5) = 3.*x**2
-    real :: w(5) 
-    w = simps_weights(x)
-    print *, sum(w*y)
-! 64.0
-end program demo_simps_weights
+{!example/quadrature/example_simps_weights.f90!}
+```
+
+## `gauss_legendre` - Gauss-Legendre quadrature (a.k.a. Gaussian quadrature) nodes and weights
+
+### Status
+
+Experimental
+
+### Description
+
+Computes Gauss-Legendre quadrature (also known as simply Gaussian quadrature) nodes and weights,
+ for any `N` (number of nodes).
+Using the nodes `x` and weights `w`, you can compute the integral of some function `f` as follows:
+`integral = sum(f(x) * w)`.
+
+Only double precision is supported - if lower precision is required, you must do the appropriate conversion yourself.
+Accuracy has been validated up to N=64 by comparing computed results to tablulated values known to be accurate to machine precision
+(maximum difference from those values is 2 epsilon).
+
+### Syntax
+
+`subroutine [[stdlib_quadrature(module):gauss_legendre(interface)]] (x, w[, interval])`
+
+### Arguments
+
+`x`: Shall be a rank-one array of type `real(real64)`. It is an *output* argument, representing the quadrature nodes.
+
+`w`: Shall be a rank-one array of type `real(real64)`, with the same dimension as `x`. 
+It is an *output* argument, representing the quadrature weights.
+
+`interval`: (Optional) Shall be a two-element array of type `real(real64)`. 
+If present, the nodes and weigts are calculated for integration from `interval(1)` to `interval(2)`.
+If not specified, the default integral is -1 to 1.
+
+### Example
+
+```fortran
+{!example/quadrature/example_gauss_legendre.f90!}
+```
+
+## `gauss_legendre_lobatto` - Gauss-Legendre-Lobatto quadrature nodes and weights
+
+### Status
+
+Experimental
+
+### Description
+
+Computes Gauss-Legendre-Lobatto quadrature nodes and weights,
+ for any `N` (number of nodes).
+Using the nodes `x` and weights `w`, you can compute the integral of some function `f` as follows:
+`integral = sum(f(x) * w)`.
+
+Only double precision is supported - if lower precision is required, you must do the appropriate conversion yourself.
+Accuracy has been validated up to N=64 by comparing computed results to tablulated values known to be accurate to machine precision
+(maximum difference from those values is 2 epsilon).
+
+### Syntax
+
+`subroutine [[stdlib_quadrature(module):gauss_legendre_lobatto(interface)]] (x, w[, interval])`
+
+### Arguments
+
+`x`: Shall be a rank-one array of type `real(real64)`. It is an *output* argument, representing the quadrature nodes.
+
+`w`: Shall be a rank-one array of type `real(real64)`, with the same dimension as `x`. 
+It is an *output* argument, representing the quadrature weights.
+
+`interval`: (Optional) Shall be a two-element array of type `real(real64)`. 
+If present, the nodes and weigts are calculated for integration from `interval(1)` to `interval(2)`.
+If not specified, the default integral is -1 to 1.
+
+### Example
+
+```fortran
+{!example/quadrature/example_gauss_legendre_lobatto.f90!}
 ```

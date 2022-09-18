@@ -1,0 +1,93 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+
+submodule (stdlib_math) stdlib_math_logspace
+
+implicit none
+
+contains
+
+  #!=========================================================
+  #!=     logspace(start, end)                              =
+  #!=========================================================
+  #:for k1, t1 in RC_KINDS_TYPES
+    #:set RName = rname("logspace", 1, t1, k1, "default")
+    module procedure ${RName}$
+      res = logspace(start, end, DEFAULT_LOGSPACE_LENGTH, real(DEFAULT_LOGSPACE_BASE, ${k1}$))
+    end procedure
+  #:endfor
+  #! Integer support
+  #:set RName = rname("logspace", 1, "integer(int32)", "int32", "default")
+    module procedure ${RName}$
+      res = logspace(start, end, DEFAULT_LOGSPACE_LENGTH, DEFAULT_LOGSPACE_BASE)
+    end procedure
+
+  #!=========================================================
+  #!=     logspace(start, end, n)                           =
+  #!=========================================================
+  #:for k1, t1 in RC_KINDS_TYPES
+    #:set RName = rname("logspace", 1, t1, k1, "n")
+    module procedure ${RName}$
+      res = logspace(start, end, n, real(DEFAULT_LOGSPACE_BASE, ${k1}$))
+    end procedure
+  #:endfor
+  #! Integer support
+  #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n")
+    module procedure ${RName}$
+      res = logspace(start, end, n, DEFAULT_LOGSPACE_BASE)
+    end procedure
+
+  #!=========================================================
+  #!=     logspace(start, end, n, base)                     =
+  #!=========================================================
+  #:for k1, t1 in RC_KINDS_TYPES
+    #:set RName = rname("logspace", 1, t1, k1, "n_rbase")
+    module procedure ${RName}$
+      ${t1}$ :: exponents(max(n, 0))
+      exponents = linspace(start, end, n)
+      res = base ** exponents
+    end procedure
+
+    #:set RName = rname("logspace", 1, t1, k1, "n_cbase")
+    module procedure ${RName}$
+      ${t1}$ :: exponents(max(n, 0))
+      exponents = linspace(start, end, n)
+      res = base ** exponents
+    end procedure
+
+    #:set RName = rname("logspace", 1, t1, k1, "n_ibase")
+    module procedure ${RName}$
+      ${t1}$ :: exponents(max(n, 0))
+      exponents = linspace(start, end, n)
+      res = base ** exponents
+    end procedure
+  #:endfor
+  #! Integer support:
+    ! Generate logarithmically spaced sequence from ${k1}$ base to the powers
+    ! of ${k1}$ start and end. [base^start, ... , base^end]
+    ! RName = ${RName}$
+  #:for k1 in REAL_KINDS
+    #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_r" + str(k1) + "base")
+    module procedure ${RName}$
+      integer :: exponents(max(n, 0))
+      exponents = linspace(start, end, n)
+      res = base ** exponents
+    end procedure
+
+    #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_c" + str(k1) + "base")
+    module procedure ${RName}$
+      integer :: exponents(max(n, 0))
+      exponents = linspace(start, end, n)
+      res = base ** exponents
+    end procedure
+  #:endfor
+
+    #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_ibase")
+    module procedure ${RName}$
+      integer :: exponents(max(n, 0))
+      exponents = linspace(start, end, n)
+      res = base ** exponents
+    end procedure
+
+
+end submodule

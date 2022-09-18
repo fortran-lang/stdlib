@@ -1,2 +1,0 @@
-ADDTEST(trapz)
-ADDTEST(simps)

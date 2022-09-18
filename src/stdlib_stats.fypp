@@ -2,23 +2,24 @@
 #:set RANKS = range(1, MAXRANK + 1)
 #:set REDRANKS = range(2, MAXRANK + 1)
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set IR_KINDS_TYPES_OUTPUT = list(zip(INT_KINDS,INT_TYPES, ['dp']*len(INT_KINDS))) + list(zip(REAL_KINDS, REAL_TYPES, REAL_KINDS))
 module stdlib_stats
   !! Provides support for various statistical methods. This includes currently
   !! descriptive statistics
   !! ([Specification](../page/specs/stdlib_stats.html))
-  use stdlib_kinds, only: sp, dp, qp, &
+  use stdlib_kinds, only: sp, dp, xdp, qp, &
       int8, int16, int32, int64
   implicit none
   private
   ! Public API
-  public :: corr, cov, mean, moment, var
+  public :: corr, cov, mean, median, moment, var
 
 
   interface corr
     !! version: experimental
     !!
     !! Pearson correlation of array elements
-    !! ([Specification](../page/specs/stdlib_stats.html#description))
+    !! ([Specification](../page/specs/stdlib_stats.html#corr-pearson-correlation-of-array-elements))
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("corr",1, t1, k1)
       module function ${RName}$(x, dim, mask) result(res)
@@ -110,7 +111,7 @@ module stdlib_stats
     !! version: experimental
     !!
     !! Covariance of array elements
-    !! ([Specification](../page/specs/stdlib_stats.html#description_1))
+    !! ([Specification](../page/specs/stdlib_stats.html#cov-covariance-of-array-elements))
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("cov",1, t1, k1)
       module function ${RName}$(x, dim, mask, corrected) result(res)
@@ -209,7 +210,7 @@ module stdlib_stats
     !! version: experimental
     !!
     !! Mean of array elements
-    !! ([Specification](../page/specs/stdlib_stats.html#description_2))
+    !! ([Specification](../page/specs/stdlib_stats.html#mean-mean-of-array-elements))
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("mean_all",rank, t1, k1)
@@ -305,11 +306,65 @@ module stdlib_stats
   end interface mean
 
 
+  interface median
+    !! version: experimental
+    !!
+    !! Median of array elements
+    !! ([Specification](../page/specs/stdlib_stats.html#median-median-of-array-elements))
+    #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+      #:for rank in RANKS
+        #:set name = rname("median_all",rank, t1, k1, o1)
+        module function ${name}$ (x, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          logical, intent(in), optional :: mask
+          real(${o1}$) :: res
+        end function ${name}$
+      #:endfor
+    #:endfor
+  
+    #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+      #:for rank in RANKS
+        #:set name = rname("median",rank, t1, k1, o1)
+        module function ${name}$(x, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: dim
+          logical, intent(in), optional :: mask
+          real(${o1}$) :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${name}$
+      #:endfor
+    #:endfor
+  
+    #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+      #:for rank in RANKS
+        #:set name = rname('median_all_mask',rank, t1, k1, o1)
+        module function ${name}$(x, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          real(${o1}$) :: res
+        end function ${name}$
+      #:endfor
+    #:endfor
+  
+    #:for k1, t1, o1 in IR_KINDS_TYPES_OUTPUT
+      #:for rank in RANKS
+        #:set name = rname('median_mask',rank, t1, k1, o1)
+        module function  ${name}$(x, dim, mask) result(res)
+          ${t1}$, intent(in) :: x${ranksuffix(rank)}$
+          integer, intent(in) :: dim
+          logical, intent(in) :: mask${ranksuffix(rank)}$
+          real(${o1}$) :: res${reduced_shape('x', rank, 'dim')}$
+        end function ${name}$
+      #:endfor
+    #:endfor
+
+  end interface
+
+
   interface var
     !! version: experimental
     !!
     !! Variance of array elements
-    !! ([Specification](../page/specs/stdlib_stats.html#description_4))
+    !! ([Specification](../page/specs/stdlib_stats.html#var-variance-of-array-elements))
 
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
@@ -418,7 +473,7 @@ module stdlib_stats
     !! version: experimental
     !!
     !! Central moment of array elements
-    !! ([Specification](../page/specs/stdlib_stats.html#description_3))
+    !! ([Specification](../page/specs/stdlib_stats.html#moment-central-moments-of-array-elements))
     #:for k1, t1 in RC_KINDS_TYPES
       #:for rank in RANKS
         #:set RName = rname("moment_all",rank, t1, k1)

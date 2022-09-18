@@ -1,0 +1,47 @@
+#:include "common.fypp"
+
+submodule(stdlib_math) stdlib_math_is_close
+
+    use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+    implicit none
+    
+    #:for k1 in REAL_KINDS
+    real(${k1}$), parameter :: sqrt_eps_${k1}$ = sqrt(epsilon(1.0_${k1}$))
+    #:endfor
+    
+contains
+
+    #! Determines whether the values of `a` and `b` are close.
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    elemental module logical function is_close_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol, equal_nan) result(close)
+        ${t1}$, intent(in) :: a, b
+        real(${k1}$), intent(in), optional :: rel_tol, abs_tol
+        logical, intent(in), optional :: equal_nan
+        logical :: equal_nan_
+
+        equal_nan_ = optval(equal_nan, .false.)
+        
+        if (ieee_is_nan(a) .or. ieee_is_nan(b)) then
+            close = merge(.true., .false., equal_nan_ .and. ieee_is_nan(a) .and. ieee_is_nan(b))
+        else
+            close = abs(a - b) <= max( abs(optval(rel_tol, sqrt_eps_${k1}$)*max(abs(a), abs(b))), &
+                                       abs(optval(abs_tol, 0.0_${k1}$)) )
+        end if     
+
+    end function is_close_${t1[0]}$${k1}$
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    elemental module logical function is_close_${t1[0]}$${k1}$(a, b, rel_tol, abs_tol, equal_nan) result(close)
+        ${t1}$, intent(in) :: a, b
+        real(${k1}$), intent(in), optional :: rel_tol, abs_tol
+        logical, intent(in), optional :: equal_nan
+
+        close = is_close_r${k1}$(a%re, b%re, rel_tol, abs_tol, equal_nan) .and. &
+                is_close_r${k1}$(a%im, b%im, rel_tol, abs_tol, equal_nan)
+
+    end function is_close_${t1[0]}$${k1}$
+    #:endfor
+
+end submodule stdlib_math_is_close

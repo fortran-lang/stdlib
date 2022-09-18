@@ -1,0 +1,124 @@
+#:include "common.fypp"
+submodule(stdlib_strings) stdlib_strings_to_string
+
+    integer, parameter :: buffer_len = 128
+    character(len=*), parameter :: err_sym = "[*]"
+        !!TODO: [*]?
+
+contains
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    !> Format or transfer a ${t1}$ scalar as a string.
+    pure module function to_string_${t1[0]}$_${k1}$(value, format) result(string)
+        ${t1}$, intent(in) :: value
+        character(len=*), intent(in), optional :: format
+        character(len=:), allocatable :: string
+
+        character(len=buffer_len) :: buffer
+        integer :: stat
+
+        write(buffer, '(' // optval(format, "g0") // ')', iostat=stat) value
+        if (stat == 0) then
+            string = trim(buffer)
+        else
+            string = err_sym
+        end if
+
+    end function to_string_${t1[0]}$_${k1}$
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    !> Format or transfer a ${t1}$ scalar as a string.
+    pure module function to_string_${t1[0]}$_${k1}$(value, format) result(string)
+        ${t1}$, intent(in) :: value
+        character(len=*), intent(in), optional :: format
+        character(len=:), allocatable :: string
+
+        string = '(' // to_string_r_${k1}$(value%re, format) // ',' // &
+                      & to_string_r_${k1}$(value%im, format) // ')'
+
+    end function to_string_${t1[0]}$_${k1}$
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+    !> Represent an integer of kind ${k1}$ as character sequence.
+    pure module function to_string_1_${t1[0]}$_${k1}$(value) result(string)
+        integer, parameter :: ik = ${k1}$
+        integer(ik), intent(in) :: value
+        character(len=:), allocatable :: string
+        integer, parameter :: buffer_len = range(value)+2
+        character(len=buffer_len) :: buffer
+        integer :: pos
+        integer(ik) :: n
+        character(len=1), parameter :: numbers(-9:0) = &
+            ["9", "8", "7", "6", "5", "4", "3", "2", "1", "0"]
+
+        if (value == 0_ik) then
+            string = numbers(0)
+            return
+        end if
+
+        n = sign(value, -1_ik)
+        buffer = ""
+        pos = buffer_len + 1
+        do while (n < 0_ik)
+            pos = pos - 1
+            buffer(pos:pos) = numbers(mod(n, 10_ik))
+            n = n/10_ik
+        end do
+
+        if (value < 0_ik) then
+            pos = pos - 1
+            buffer(pos:pos) = '-'
+        end if
+
+        string = buffer(pos:)
+    end function to_string_1_${t1[0]}$_${k1}$
+
+    pure module function to_string_2_${t1[0]}$_${k1}$(value, format) result(string)
+        ${t1}$, intent(in) :: value
+        character(len=*), intent(in) :: format
+        character(len=:), allocatable :: string
+
+        character(len=buffer_len) :: buffer
+        integer :: stat
+
+        write(buffer, "(" // format // ")", iostat=stat) value
+        if (stat == 0) then
+            string = trim(buffer)
+        else
+            string = err_sym
+        end if
+
+    end function to_string_2_${t1[0]}$_${k1}$
+    #:endfor
+
+    #:for k1, t1 in LOG_KINDS_TYPES
+    !> Represent an logical of kind ${k1}$ as character sequence.
+    pure module function to_string_1_${t1[0]}$_${k1}$(value) result(string)
+        ${t1}$, intent(in) :: value
+        character(len=1) :: string
+
+        string = merge("T", "F", value)
+
+    end function to_string_1_${t1[0]}$_${k1}$
+
+    pure module function to_string_2_${t1[0]}$_${k1}$(value, format) result(string)
+        ${t1}$, intent(in) :: value
+        character(len=*), intent(in) :: format
+        character(len=:), allocatable :: string
+
+        character(len=buffer_len) :: buffer
+        integer :: stat
+
+        write(buffer, "(" // format // ")", iostat=stat) value
+        if (stat == 0) then
+            string = trim(buffer)
+        else
+            string = err_sym
+        end if
+
+    end function to_string_2_${t1[0]}$_${k1}$
+    #:endfor
+
+end submodule stdlib_strings_to_string

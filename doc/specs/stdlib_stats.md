@@ -26,13 +26,17 @@ The Pearson correlation between two rows (or columns), say `x` and `y`, of `arra
 
 `result = [[stdlib_stats(module):corr(interface)]](array, dim [, mask])`
 
+### Class
+
+Generic subroutine
+
 ### Arguments
 
-`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`.
+`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
 
-`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
-`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`.
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`. It is an `intent(in)` argument.
 
 ### Return value
 
@@ -48,14 +52,7 @@ If `mask` is specified, the result is the Pearson correlation of all elements of
 ### Example
 
 ```fortran
-program demo_corr
-    use stdlib_stats, only: corr
-    implicit none
-    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    real :: y(1:2, 1:3) = reshape([ -1., 40., -3., 4., 10., 6. ], [ 2, 3])
-    print *, corr(x, 1)           !returns 1.
-    print *, corr(y, 2)           !returns reshape([ 1., -.32480, -.32480, 1. ], [ 2, 3])
-end program demo_corr
+{!example/stats/example_corr.f90!}
 ```
 
 ## `cov` - covariance of array elements
@@ -83,15 +80,19 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 `result = [[stdlib_stats(module):cov(interface)]](array, dim [, mask [, corrected]])`
 
+### Class
+
+Generic subroutine
+
 ### Arguments
 
-`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`.
+`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
 
-`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
-`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`.
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`. It is an `intent(in)` argument.
 
-`corrected` (optional): Shall be a scalar of type `logical`. If `corrected` is `.true.` (default value), the sum is scaled with `n-1`. If `corrected` is `.false.`, then the sum is scaled with `n`.
+`corrected` (optional): Shall be a scalar of type `logical`. If `corrected` is `.true.` (default value), the sum is scaled with `n-1`. If `corrected` is `.false.`, then the sum is scaled with `n`. It is an `intent(in)` argument.
 
 ### Return value
 
@@ -107,15 +108,7 @@ If `mask` is specified, the result is the covariance of all elements of `array` 
 ### Example
 
 ```fortran
-program demo_cov
-    use stdlib_stats, only: cov
-    implicit none
-    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
-    print *, cov(x, 1)                          !returns 3.5
-    print *, cov(x, 1, corrected = .false.)     !returns 2.9167
-    print *, cov(y, 1)                          !returns a square matrix of size 3 with all elements equal to 0.5
-end program demo_cov
+{!example/stats/example_cov.f90!}
 ```
 
 ## `mean` - mean of array elements
@@ -134,13 +127,17 @@ Returns the mean of all the elements of `array`, or of the elements of `array` a
 
 `result = [[stdlib_stats(module):mean(interface)]](array, dim [, mask])`
 
+### Class
+
+Generic subroutine
+
 ### Arguments
 
-`array`: Shall be an array of type `integer`, `real`, or `complex`.
+`array`: Shall be an array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
 
-`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
-`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`.
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`. It is an `intent(in)` argument.
 
 ### Return value
 
@@ -154,16 +151,72 @@ If `mask` is specified, the result is the mean of all elements of `array` corres
 ### Example
 
 ```fortran
-program demo_mean
-    use stdlib_stats, only: mean
-    implicit none
-    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
-    print *, mean(x)                                  !returns 3.5
-    print *, mean(y)                                  !returns 3.5
-    print *, mean(y, 1)                               !returns [ 1.5, 3.5, 5.5 ]
-    print *, mean(y, 1,y > 3.)                        !returns [ NaN, 4.0, 5.5 ]
-end program demo_mean
+{!example/stats/example_mean.f90!}
+```
+
+## `median` - median of array elements
+
+### Status
+
+Experimental
+
+### Description
+
+Returns the median of all the elements of `array`, or of the elements of `array`
+along dimension `dim` if provided, and if the corresponding element in `mask` is
+`true`.
+
+The median of the elements of `array` is defined as the "middle"
+element, after that the elements are sorted in an increasing order, e.g. `array_sorted =
+sort(array)`. If `n = size(array)` is an even number, the median is:
+
+```
+median(array) = array_sorted( floor( (n + 1) / 2.))
+```
+
+and if `n` is an odd number, the median is:
+
+```
+median(array) = mean( array_sorted( floor( (n + 1) / 2.):floor( (n + 1) / 2.) + 1 ) )
+```
+
+The current implementation relies on a selection algorithm applied on a copy of
+the whole array, using the subroutine `[[stdlib_selection(module):select(interface)]]`
+provided by the `[[stdlib_selection(module)]]` module.
+
+### Syntax
+
+`result = [[stdlib_stats(module):median(interface)]](array [, mask])`
+
+`result = [[stdlib_stats(module):median(interface)]](array, dim [, mask])`
+
+### Class
+
+Generic subroutine
+
+### Arguments
+
+`array`: Shall be an array of type `integer` or `real`. It is an `intent(in)` argument.
+
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
+
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`. It is an `intent(in)` argument.
+
+### Return value
+
+If `array` is of type `real`, the result is of type `real` with the same kind as `array`.
+If `array` is of type `real` and contains IEEE `NaN`, the result is IEEE `NaN`.
+If `array` is of type `integer`, the result is of type `real(dp)`.
+
+If `dim` is absent, a scalar with the median of all elements in `array` is returned. Otherwise, an array of rank `n-1`, where `n` equals the rank of `array`, and a shape similar to that of `array` with dimension `dim` dropped is returned.
+
+If `mask` is specified, the result is the median of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
+
+
+### Example
+
+```fortran
+{!example/stats/example_median.f90!}
 ```
 
 ## `moment` - central moments of array elements
@@ -199,6 +252,10 @@ The _k_-th order moment about `center` is defined as :
 
 `result = [[stdlib_stats(module):moment(interface)]](array, order, dim [, center [, mask]])`
 
+### Class
+
+Generic subroutine
+
 ### Arguments
 
 `array`: Shall be an array of type `integer`, `real`, or `complex`.
@@ -223,18 +280,7 @@ If `mask` is specified, the result is the _k_-th  (central) moment of all elemen
 ### Example
 
 ```fortran
-program demo_moment
-    use stdlib_stats, only: moment
-    implicit none
-    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
-    print *, moment(x, 2)                            !returns 2.9167
-    print *, moment(y, 2)                            !returns 2.9167
-    print *, moment(y, 2, 1)                         !returns [0.25, 0.25, 0.25]
-    print *, moment(y, 2, 1, mask = (y > 3.))        !returns [NaN, 0., 0.25]
-    print *, moment(x, 2, center = 0.)               !returns 15.1667
-    print *, moment(y, 1, 1, center = 0.)            !returns [1.5, 3.5, 5.5]
-end program demo_moment
+{!example/stats/example_moment.f90!}
 ```
 
 ## `var` - variance of array elements
@@ -264,15 +310,19 @@ The use of the term `n-1` for scaling is called Bessel 's correction. The scalin
 
 `result = [[stdlib_stats(module):var(interface)]](array, dim [, mask [, corrected]])`
 
+### Class
+
+Generic subroutine
+
 ### Arguments
 
-`array`: Shall be an array of type `integer`, `real`, or `complex`.
+`array`: Shall be an array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
 
-`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`.
+`dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
-`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`.
+`mask` (optional): Shall be of type `logical` and either a scalar or an array of the same shape as `array`. It is an `intent(in)` argument.
 
-`corrected` (optional): Shall be a scalar of type `logical`. If `corrected` is `.true.` (default value), the sum is scaled with `n-1`. If `corrected` is `.false.`, then the sum is scaled with `n`.
+`corrected` (optional): Shall be a scalar of type `logical`. If `corrected` is `.true.` (default value), the sum is scaled with `n-1`. If `corrected` is `.false.`, then the sum is scaled with `n`. It is an `intent(in)` argument.
 
 ### Return value
 
@@ -288,16 +338,5 @@ If the variance is computed with only one single element, then the result is IEE
 ### Example
 
 ```fortran
-program demo_var
-    use stdlib_stats, only: var
-    implicit none
-    real :: x(1:6) = [ 1., 2., 3., 4., 5., 6. ]
-    real :: y(1:2, 1:3) = reshape([ 1., 2., 3., 4., 5., 6. ], [ 2, 3])
-    print *, var(x)                                  !returns 3.5
-    print *, var(x, corrected = .false.)             !returns 2.9167
-    print *, var(y)                                  !returns 3.5
-    print *, var(y, 1)                               !returns [0.5, 0.5, 0.5]
-    print *, var(y, 1, y > 3.)                       !returns [NaN, NaN, 0.5]
-    print *, var(y, 1, y > 3., corrected=.false.)    !returns [NaN, 0., 0.25]
-end program demo_var
+{!example/stats/example_var.f90!}
 ```

@@ -10,7 +10,7 @@
   - [Requirements](#requirements)
   - [Supported compilers](#supported-compilers)
   - [Build with CMake](#build-with-cmake)
-  - [Build with make](#build-with-make)
+  - [Build with fortran-lang/fpm](#build-with-fortran-langfpm)
 * [Using stdlib in your project](#using-stdlib-in-your-project)
 * [Documentation](#documentation)
 * [Contributing](#contributing)
@@ -87,9 +87,8 @@ The following combinations are tested on the default branch of stdlib:
 
 Name | Version | Platform | Architecture
 --- | --- | --- | ---
-GCC Fortran | 7, 8, 9, 10, 11 | Ubuntu 20.04 | x86_64
-GCC Fortran | 7, 8, 9, 10, 11 | MacOS Catalina 10.15 | x86_64
-GCC Fortran | 8 | Windows Server 2019 | x86_64
+GCC Fortran | 9, 10, 11 | Ubuntu 20.04 | x86_64
+GCC Fortran | 9, 10, 11 | MacOS Catalina 10.15 | x86_64
 GCC Fortran (MSYS) | 10 | Windows Server 2019 | x86_64
 GCC Fortran (MinGW) | 10 | Windows Server 2019 | x86_64, i686
 Intel oneAPI classic | 2021.1 | Ubuntu 20.04 | x86_64
@@ -99,14 +98,14 @@ The following combinations are known to work, but they are not tested in the CI:
 
 Name | Version | Platform | Architecture
 --- | --- | --- | ---
-GCC Fortran (MinGW) | 8.4.0, 9.3.0, 10.2.0 | Windows 10 | x86_64, i686
+GCC Fortran (MinGW) | 9.3.0, 10.2.0, 11.2.0 | Windows 10 | x86_64, i686
 
 We try to test as many available compilers and platforms as possible.
 A list of tested compilers which are currently not working and the respective issue are listed below.
 
 Name | Version | Platform | Architecture | Status
 --- | --- | --- | --- | ---
-GCC Fortran | 7.4 | Windows 10 | i686 | [#296](https://github.com/fortran-lang/stdlib/issues/296)
+GCC Fortran | <9 | any | any | [#296](https://github.com/fortran-lang/stdlib/issues/296), [#430](https://github.com/fortran-lang/stdlib/pull/430)
 NVIDIA HPC SDK | 20.7, 20.9, 20.11 | Manjaro Linux 20 | x86_64 | [#107](https://github.com/fortran-lang/stdlib/issues/107)
 NAG | 7.0 | RHEL | x86_64 | [#108](https://github.com/fortran-lang/stdlib/issues/108)
 Intel Parallel Studio XE | 16, 17, 18 | OpenSUSE | x86_64 | failed to compile
@@ -126,17 +125,22 @@ You can pass additional options to CMake to customize the build.
 Important options are
 
 - `-G Ninja` to use the Ninja backend instead of the default Make backend. Other build backends are available with a similar syntax.
-- `-DCMAKE_INSTALL_PREFIX` is used to provide the install location for the library.
+- `-DCMAKE_INSTALL_PREFIX` is used to provide the install location for the library. If not provided the defaults will depend on your operating system, [see here](https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html). 
 - `-DCMAKE_MAXIMUM_RANK` the maximum array rank procedures should be generated for.
-  The default is 15 for Fortran 2003 compliant compilers, otherwise 7 for compilers not supporting Fortran 2003 completely yet.
+  The default value is chosen as 4.
+  The maximum is 15 for Fortran 2003 compliant compilers, otherwise 7 for compilers not supporting Fortran 2003 completely yet.
   The minimum required rank to compile this project is 4.
   Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
+- `-DBUILD_TESTING` set to `off` in case you want to disable the stdlib tests (default: `on`).
+- `-DCMAKE_VERBOSE_MAKEFILE` is by default set to `Off`, but if set to `On` will show commands used to compile the code.
+- `-DCMAKE_BUILD_TYPE` is by default set to `RelWithDebInfo`, which uses compiler flags suitable for code development (but with only `-O2` optimization). Beware the compiler flags set this way will override any compiler flags specified via `FFLAGS`. To prevent this, use `-DCMAKE_BUILD_TYPE=NoConfig` in conjunction with `FFLAGS`.
 
-For example, to configure a build using the Ninja backend and generating procedures up to rank 7, which is installed to your home directory use
+For example, to configure a build using the Ninja backend while specifying compiler optimization via `FFLAGS`, generating procedures up to rank 7, installing to your home directory, using the `NoConfig` compiler flags, and printing the compiler commands, use
 
 ```sh
-cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local
+export FFLAGS="-O3"
+cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK:String=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_VERBOSE_MAKEFILE=On -DCMAKE_BUILD_TYPE=NoConfig
 ```
 
 To build the standard library run
@@ -145,10 +149,15 @@ To build the standard library run
 cmake --build build
 ```
 
-To test your build, run the test suite after the build has finished with
+To test your build, run the test suite and all example programs after the build has finished with
 
 ```sh
 cmake --build build --target test
+```
+
+To test only the test suite, run
+```sh
+ctest --test-dir build/test
 ```
 
 Please report failing tests on our [issue tracker](https://github.com/fortran-lang/stdlib/issues/new/choose) including details of the compiler used, the operating system and platform architecture.
@@ -161,22 +170,34 @@ cmake --install build
 
 Now you have a working version of stdlib you can use for your project.
 
+If at some point you wish to recompile `stdlib` with different options, you might
+want to delete the `build` folder. This will ensure that cached variables from
+earlier builds do not affect the new build.
 
-### Build with make
+### Build with [fortran-lang/fpm](https://github.com/fortran-lang/fpm)
 
-Alternatively, you can build using provided Makefiles:
-
-```sh
-make -f Makefile.manual
-```
-
-You can limit the maximum rank by setting ``-DMAXRANK=<num>`` in the ``FYPPFLAGS`` environment variable:
+Fortran Package Manager (fpm) is a package manager and build system for Fortran.   
+You can build `stdlib` using provided `fpm.toml`:
 
 ```sh
-make -f Makefile.manual FYPPFLAGS=-DMAXRANK=4
+git checkout stdlib-fpm
+fpm build --profile release
 ```
 
+You can run the examples with `fpm` as:
 
+```sh
+fpm run --example prog
+```
+
+with `prog` being the name of the example program (e.g., `example_sort`).
+
+
+To use `stdlib` within your `fpm` project, add the following lines to your `fpm.toml` file:
+```toml
+[dependencies]
+stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
+```
 
 ## Using stdlib in your project
 
@@ -196,16 +217,7 @@ target_link_libraries(
 ```
 
 To make the installed stdlib project discoverable add the stdlib directory to the ``CMAKE_PREFIX_PATH``.
-The usual install localtion of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
-
-For non-CMake build systems (like make) you can use the exported pkg-config file by setting ``PKG_CONFIG_PATH`` to include the directory containing the exported pc-file.
-The usual install location of the pc-file is ``$PREFIX/lib/pkgconfig``.
-In make you can obtain the required compile and link arguments with
-
-```make
-STDLIB_CFLAGS := $(shell pkg-config --cflags fortran_stdlib)
-STDLIB_LIBS := $(shell pkg-config --libs fortran_stdlib)
-```
+The usual install location of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
 
 ## Documentation
 

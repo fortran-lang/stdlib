@@ -1,0 +1,588 @@
+! SPDX-Identifier: MIT
+
+#:include "common.fypp"
+
+module test_stdlib_math
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_math, only: clip, arg, argd, argpi, arange, is_close, all_close, diff, &
+                           arange
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    implicit none
+
+    public :: collect_stdlib_math
+    
+    #:for k1 in REAL_KINDS
+    real(kind=${k1}$), parameter :: PI_${k1}$ = acos(-1.0_${k1}$)
+    #:endfor
+
+contains
+
+    !> Collect all exported unit tests
+    subroutine collect_stdlib_math(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest("clip-int8", test_clip_int8), &
+            new_unittest("clip-int8-bounds", test_clip_int8_bounds), &
+            new_unittest("clip-int16", test_clip_int16), &
+            new_unittest("clip-int16-bounds", test_clip_int16_bounds), &
+            new_unittest("clip-int32", test_clip_int32), &
+            new_unittest("clip-int32-bounds", test_clip_int32_bounds), &
+            new_unittest("clip-int64", test_clip_int64), &
+            new_unittest("clip-int64-bounds", test_clip_int64_bounds), &
+            new_unittest("clip-real-single", test_clip_rsp), &
+            new_unittest("clip-real-single-bounds", test_clip_rsp_bounds), &
+            new_unittest("clip-real-double", test_clip_rdp), &
+            new_unittest("clip-real-double-bounds", test_clip_rdp_bounds), &
+            new_unittest("clip-real-quad", test_clip_rqp), &
+            new_unittest("clip-real-quad-bounds", test_clip_rqp_bounds) &
+            
+            !> Tests for arg/argd/argpi
+            #:for k1 in CMPLX_KINDS
+            , new_unittest("arg-cmplx-${k1}$", test_arg_${k1}$) &
+            , new_unittest("argd-cmplx-${k1}$", test_argd_${k1}$) &
+            , new_unittest("argpi-cmplx-${k1}$", test_argpi_${k1}$) &
+            #:endfor
+            
+            !> Tests for `is_close` and `all_close`
+            #:for k1 in REAL_KINDS
+            , new_unittest("is_close-real-${k1}$", test_is_close_real_${k1}$) &
+            , new_unittest("is_close-cmplx-${k1}$", test_is_close_cmplx_${k1}$) &
+            , new_unittest("all_close-real-${k1}$", test_all_close_real_${k1}$) &
+            , new_unittest("all_close-cmplx-${k1}$", test_all_close_cmplx_${k1}$) &
+            #:endfor
+            
+            !> Tests for `diff`
+            #:for k1 in REAL_KINDS
+            , new_unittest("diff-real-${k1}$", test_diff_real_${k1}$) &
+            #:endfor
+            #:for k1 in INT_KINDS
+            , new_unittest("diff-int-${k1}$", test_diff_int_${k1}$) &
+            #:endfor
+            
+            !> Tests for `arange`
+            #:for k1 in REAL_KINDS
+            , new_unittest("arange-real-${k1}$", test_arange_real_${k1}$) &
+            #:endfor
+            #:for k1 in INT_KINDS
+            , new_unittest("arange-int-${k1}$", test_arange_int_${k1}$) &
+            #:endfor
+            ]
+
+    end subroutine collect_stdlib_math
+
+    subroutine test_clip_int8(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! clip function
+        ! testing format: check(clip(x, xmin, xmax) == correct answer)
+        ! valid case: xmin is not greater than xmax
+        ! invalid case: xmin is greater than xmax
+
+        ! type: integer(int8), kind: int8
+        ! valid test case
+        call check(error, clip(2_int8, -2_int8, 5_int8), 2_int8)
+        if (allocated(error)) return
+        call check(error, clip(127_int8, -127_int8, 0_int8), 0_int8)
+        if (allocated(error)) return
+    end subroutine test_clip_int8
+
+    subroutine test_clip_int8_bounds(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! invalid test case
+        call check(error, clip(2_int8, 5_int8, -2_int8), 5_int8)
+        if (allocated(error)) return
+        call check(error, clip(127_int8, 0_int8, -127_int8), 0_int8)
+        if (allocated(error)) return
+    end subroutine test_clip_int8_bounds
+
+
+    subroutine test_clip_int16(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! type: integer(int16), kind: int16
+        ! valid test case
+        call check(error, clip(2_int16, -2_int16, 5_int16), 2_int16)
+        if (allocated(error)) return
+        call check(error, clip(32767_int16, -32767_int16, 0_int16), 0_int16)
+        if (allocated(error)) return
+    end subroutine test_clip_int16
+
+    subroutine test_clip_int16_bounds(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! invalid test case
+        call check(error, clip(2_int16, 5_int16, -2_int16), 5_int16)
+        if (allocated(error)) return
+        call check(error, clip(32767_int16, 0_int16, -32767_int16), 0_int16)
+        if (allocated(error)) return
+    end subroutine test_clip_int16_bounds
+
+
+    subroutine test_clip_int32(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! type: integer(int32), kind: int32
+        ! valid test case
+        call check(error, clip(2_int32, -2_int32, 5_int32), 2_int32)
+        if (allocated(error)) return
+        call check(error, clip(-2147483647_int32, 0_int32, 2147483647_int32), 0_int32)
+        if (allocated(error)) return
+    end subroutine test_clip_int32
+
+    subroutine test_clip_int32_bounds(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! invalid test case
+        call check(error, clip(2_int32, 5_int32, -2_int32), 5_int32)
+        if (allocated(error)) return
+        call check(error, clip(-2147483647_int32, 2147483647_int32, 0_int32), 2147483647_int32)
+        if (allocated(error)) return
+    end subroutine test_clip_int32_bounds
+
+
+    subroutine test_clip_int64(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! type: integer(int64), kind: int64
+        ! valid test case
+        call check(error, clip(2_int64, -2_int64, 5_int64), 2_int64)
+        if (allocated(error)) return
+        call check(error, clip(-922337203_int64, -10_int64, 25_int64), -10_int64)
+        if (allocated(error)) return
+    end subroutine test_clip_int64
+
+    subroutine test_clip_int64_bounds(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! invalid test case
+        call check(error, clip(2_int64, 5_int64, -2_int64), 5_int64)
+        if (allocated(error)) return
+        call check(error, clip(-922337203_int64, 25_int64, -10_int64), 25_int64)
+        if (allocated(error)) return
+    end subroutine test_clip_int64_bounds
+
+
+    subroutine test_clip_rsp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! type: real(sp), kind: sp
+        ! valid test case
+        call check(error, clip(3.025_sp, -5.77_sp, 3.025_sp), 3.025_sp)
+        if (allocated(error)) return
+        call check(error, clip(0.0_sp, -1578.025_sp, -59.68_sp), -59.68_sp)
+        if (allocated(error)) return
+    end subroutine test_clip_rsp
+
+    subroutine test_clip_rsp_bounds(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! invalid test case
+        call check(error, clip(3.025_sp, 3.025_sp, -5.77_sp), 3.025_sp)
+        if (allocated(error)) return
+        call check(error, clip(0.0_sp, -59.68_sp, -1578.025_sp), -59.68_sp)
+        if (allocated(error)) return
+    end subroutine test_clip_rsp_bounds
+
+
+    subroutine test_clip_rdp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! type: real(dp), kind: dp
+        ! valid test case
+        call check(error, clip(3.025_dp, -5.77_dp, 3.025_dp), 3.025_dp)
+        if (allocated(error)) return
+        call check(error, clip(-7.0_dp, 0.059668_dp, 1.00268_dp), 0.059668_dp)
+        if (allocated(error)) return
+    end subroutine test_clip_rdp
+
+    subroutine test_clip_rdp_bounds(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        ! invalid test case
+        call check(error, clip(3.025_dp, 3.025_dp, -5.77_dp), 3.025_dp)
+        if (allocated(error)) return
+        call check(error, clip(-7.0_dp, 1.00268_dp, 0.059668_dp), 1.00268_dp)
+        if (allocated(error)) return
+    end subroutine test_clip_rdp_bounds
+
+
+    subroutine test_clip_rqp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+#:if WITH_QP
+        ! type: real(qp), kind: qp
+        ! valid test case
+        call check(error, clip(3.025_qp, -5.77_qp, 3.025_qp), 3.025_qp)
+        if (allocated(error)) return
+        call check(error, clip(-55891546.2_qp, -8958133457.23_qp, -689712245.23_qp), -689712245.23_qp)
+        if (allocated(error)) return
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
+    end subroutine test_clip_rqp
+
+
+    subroutine test_clip_rqp_bounds(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+#:if WITH_QP
+        ! invalid test case
+        call check(error, clip(3.025_qp, 3.025_qp, -5.77_qp), 3.025_qp)
+        if (allocated(error)) return
+        call check(error, clip(-55891546.2_qp, -689712245.23_qp, -8958133457.23_qp), -689712245.23_qp)
+        if (allocated(error)) return
+#:else
+        call skip_test(error, "Quadruple precision is not enabled")
+#:endif
+
+    end subroutine test_clip_rqp_bounds
+
+    #:for k1 in CMPLX_KINDS
+    subroutine test_arg_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+        real(${k1}$), allocatable :: theta(:)
+        
+        #! For scalar
+        call check(error, abs(arg(2*exp((0.0_${k1}$, 0.5_${k1}$))) - 0.5_${k1}$) < tol, &
+            "test_nonzero_scalar")
+        if (allocated(error)) return
+        call check(error, abs(arg((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
+            "test_zero_scalar")
+        if (allocated(error)) return
+        
+        #! and for array (180.0° see scalar version)
+        theta = arange(-179.0_${k1}$, 179.0_${k1}$, 3.58_${k1}$)
+        call check(error, all(abs(arg(exp(cmplx(0.0_${k1}$, theta/180*PI_${k1}$, ${k1}$))) - theta/180*PI_${k1}$) < tol), &
+            "test_array")
+        
+    end subroutine test_arg_${k1}$
+    
+    subroutine test_argd_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+        real(${k1}$), allocatable :: theta(:)
+        
+        #! For scalar
+        call check(error, abs(argd((-1.0_${k1}$, 0.0_${k1}$)) - 180.0_${k1}$) < tol, &
+            "test_nonzero_scalar")
+        if (allocated(error)) return
+        call check(error, abs(argd((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
+            "test_zero_scalar")
+        if (allocated(error)) return
+        
+        #! and for array (180.0° see scalar version)
+        theta = arange(-179.0_${k1}$, 179.0_${k1}$, 3.58_${k1}$)
+        call check(error, all(abs(argd(exp(cmplx(0.0_${k1}$, theta/180*PI_${k1}$, ${k1}$))) - theta) < tol), &
+            "test_array")
+        
+    end subroutine test_argd_${k1}$
+    
+    subroutine test_argpi_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+        real(${k1}$), allocatable :: theta(:)
+        
+        #! For scalar
+        call check(error, abs(argpi((-1.0_${k1}$, 0.0_${k1}$)) - 1.0_${k1}$) < tol, &
+            "test_nonzero_scalar")
+        if (allocated(error)) return
+        call check(error, abs(argpi((0.0_${k1}$, 0.0_${k1}$)) - 0.0_${k1}$) < tol, &
+            "test_zero_scalar")
+        if (allocated(error)) return
+        
+        #! and for array (180.0° see scalar version)
+        theta = arange(-179.0_${k1}$, 179.0_${k1}$, 3.58_${k1}$)
+        call check(error, all(abs(argpi(exp(cmplx(0.0_${k1}$, theta/180*PI_${k1}$, ${k1}$))) - theta/180) < tol), &
+            "test_array")
+        
+    end subroutine test_argpi_${k1}$
+    #:endfor
+
+    #:for k1 in REAL_KINDS
+    subroutine test_is_close_real_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$) :: x, NAN
+        x = -3; NAN = sqrt(x)
+        
+        call check(error, is_close(2.5_${k1}$, 2.5_${k1}$), .true.)
+        if (allocated(error)) return
+        call check(error, is_close(0.0_${k1}$, -0.0_${k1}$), .true.)
+        if (allocated(error)) return
+        call check(error, is_close(2.5_${k1}$, 1.2_${k1}$), .false.)
+        if (allocated(error)) return
+        call check(error, is_close(NAN, NAN), .false.)
+        if (allocated(error)) return
+        call check(error, is_close(NAN, 0.0_${k1}$), .false.)
+        if (allocated(error)) return
+        call check(error, is_close(NAN, NAN, equal_nan=.true.), .true.)
+    
+    end subroutine test_is_close_real_${k1}$
+    
+    subroutine test_is_close_cmplx_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$) :: x, NAN
+        x = -3; NAN = sqrt(x)
+        
+        call check(error, is_close((2.5_${k1}$, 1.5_${k1}$), (2.5_${k1}$, 1.5_${k1}$)), .true.)
+        if (allocated(error)) return
+        call check(error, is_close((2.5_${k1}$, 1.2_${k1}$), (2.5_${k1}$, 1.5_${k1}$)), .false.)
+        if (allocated(error)) return
+        call check(error, is_close(cmplx(NAN, NAN, ${k1}$), cmplx(NAN, NAN, ${k1}$)), .false.)
+        if (allocated(error)) return
+        call check(error, is_close(cmplx(NAN, NAN, ${k1}$), cmplx(NAN, 0.0_${k1}$, ${k1}$)), .false.)
+        if (allocated(error)) return
+        call check(error, is_close(cmplx(NAN, NAN, ${k1}$), cmplx(NAN, NAN, ${k1}$), equal_nan=.true.), .true.)
+        if (allocated(error)) return
+        call check(error, is_close(cmplx(NAN, 1.2_${k1}$, ${k1}$), cmplx(NAN, 1.2_${k1}$, ${k1}$), equal_nan=.true.), .true.)
+        
+    end subroutine test_is_close_cmplx_${k1}$
+    
+    subroutine test_all_close_real_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$) :: x(2, 2), eps, NAN
+        x = 1; eps = -3; NAN = sqrt(eps)
+        
+        eps = sqrt(epsilon(1.0_${k1}$))
+        
+        call check(error, all_close(x, x), .true.)
+        if (allocated(error)) return
+        call check(error, all_close(x + x*eps + 1.0e-6, x), .false.)
+        if (allocated(error)) return
+        call check(error, all_close(x + NAN, x), .false.)
+        if (allocated(error)) return
+        call check(error, all_close(x + NAN, x, equal_nan=.true.), .false.)
+        if (allocated(error)) return
+        call check(error, all_close(x + NAN, x + NAN), .false.)
+        if (allocated(error)) return
+        call check(error, all_close(x + NAN, x + NAN, equal_nan=.true.), .true.)
+        
+    end subroutine test_all_close_real_${k1}$
+    
+    subroutine test_all_close_cmplx_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$) :: eps, NAN
+        complex(${k1}$) :: x(2, 2)
+        x = (1, 1); eps = -3; NAN = sqrt(eps)
+        
+        eps = sqrt(epsilon(1.0_${k1}$))
+        
+        call check(error, all_close(x, x), .true.)
+        if (allocated(error)) return
+        call check(error, all_close(x + x*eps + 1.0e-6, x), .false.)
+        if (allocated(error)) return
+        call check(error, all_close(x + cmplx(NAN, NAN, ${k1}$), x), .false.)
+        if (allocated(error)) return
+        call check(error, all_close(x + cmplx(NAN, NAN, ${k1}$), x, equal_nan=.true.), .false.)
+        if (allocated(error)) return
+        call check(error, all_close(x + cmplx(NAN, NAN, ${k1}$), x + cmplx(NAN, NAN, ${k1}$), equal_nan=.true.), .true.)
+        if (allocated(error)) return
+        call check(error, all_close(x + cmplx(NAN, NAN, ${k1}$), x + cmplx(NAN, NAN, ${k1}$)), .false.)
+        
+    end subroutine test_all_close_cmplx_${k1}$
+    #:endfor
+    
+    #:for k1, t1 in REAL_KINDS_TYPES
+    subroutine test_diff_real_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        ${t1}$ :: x(6) = [${t1}$ :: 0, 5, 15, 30, 50, 75]
+        ${t1}$ :: A(1, 3) = reshape([${t1}$ :: 1, 3, 5], [1, 3])
+        ${t1}$ :: B(2) = [${t1}$ :: 1, 2]
+        
+        !> rank-1 diff
+        call check(error, all_close(diff(x), [${t1}$ :: 5, 10, 15, 20, 25]), &
+            "diff(<rank-1>) in test_diff_real_${k1}$ failed")
+        if (allocated(error)) return
+        call check(error, all_close(diff(x, n=0), x), &
+            "diff(<rank-1>, n=0) in test_diff_real_${k1}$ failed")
+        if (allocated(error)) return
+        call check(error, all_close(diff(x, n=2), [${t1}$ :: 5, 5, 5, 5]), &
+            "diff(<rank-1>, n=2) in test_diff_real_${k1}$ failed")
+        if (allocated(error)) return
+        
+        call check(error, all_close(diff(x, prepend=[${t1}$ :: 1]), [${t1}$ :: -1, 5, 10, 15, 20, 25]), &
+            "diff(<rank-1>, prepend=[${t1}$ :: 1]) in test_diff_real_${k1}$ failed")
+        if (allocated(error)) return
+        call check(error, all_close(diff(x, append=[${t1}$ :: 1]), [${t1}$ :: 5, 10, 15, 20, 25, -74]), &
+            "diff(<rank-1>, append=[${t1}$ :: 1]) in test_diff_real_${k1}$ failed")
+        if (allocated(error)) return
+        
+        !> rank-2 diff
+        call check(error, all_close(diff(reshape(A, [3,1]), n=1, dim=1), reshape([${t1}$ :: 2, 2], [2, 1])), &
+            "diff(<rank-2>, n=1, dim=1) in test_diff_real_${k1}$ failed")
+        if (allocated(error)) return
+        call check(error, all_close(diff(A, n=1, dim=2), reshape([${t1}$ :: 2, 2], [1, 2])), &
+            "diff(<rank-2>, n=1, dim=2) in test_diff_real_${k1}$ failed")
+        if (allocated(error)) return
+        
+        call check(error, all_close(diff(A, n=1, dim=2, prepend=reshape([${t1}$ :: 1], [1, 1]), &
+            append=reshape([${t1}$ :: 2], [1, 1])), reshape([${t1}$ :: 0, 2, 2, -3], [1, 4])), &
+            "diff(<rank-2>, n=1, dim=2, prepend=reshape([${t1}$ :: 1], [1, 1]), &
+            &append=reshape([${t1}$ :: 2], [1, 1])) in test_diff_real_${k1}$ failed")
+        if (allocated(error)) return
+        
+        !> size(B, dim) <= n
+        call check(error, size(diff(B, 2)), 0, "size(diff(B, 2)) in test_diff_real_${k1}$ failed")
+        if (allocated(error)) return
+        call check(error, size(diff(B, 3)), 0, "size(diff(B, 3)) in test_diff_real_${k1}$ failed")
+        
+    end subroutine test_diff_real_${k1}$
+    #:endfor
+    
+    #:for k1, t1 in INT_KINDS_TYPES
+    subroutine test_diff_int_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        ${t1}$ :: x(6) = [${t1}$ :: 0, 5, 15, 30, 50, 75]
+        ${t1}$ :: A(1, 3) = reshape([${t1}$ :: 1, 3, 5], [1, 3])
+        ${t1}$ :: B(2) = [${t1}$ :: 1, 2]
+        
+        !> rank-1 diff
+        call check(error, all(diff(x) == [${t1}$ :: 5, 10, 15, 20, 25]), &
+            "diff(<rank-1>) in test_diff_int_${k1}$ failed")
+        if (allocated(error)) return
+        call check(error, all(diff(x, n=0) == x), &
+            "diff(<rank-1>, n=0) in test_diff_int_${k1}$ failed")
+        if (allocated(error)) return
+        call check(error, all(diff(x, n=2) == [${t1}$ :: 5, 5, 5, 5]), &
+            "diff(<rank-1>, n=2) in test_diff_int_${k1}$ failed")
+        if (allocated(error)) return
+        
+        call check(error, all(diff(x, prepend=[${t1}$ :: 1]) == [${t1}$ :: -1, 5, 10, 15, 20, 25]), &
+            "diff(<rank-1>, prepend=[${t1}$ :: 1]) in test_diff_int_${k1}$ failed")
+        if (allocated(error)) return
+        call check(error, all(diff(x, append=[${t1}$ :: 1]) == [${t1}$ :: 5, 10, 15, 20, 25, -74]), &
+            "diff(<rank-1>, append=[${t1}$ :: 1]) in test_diff_int_${k1}$ failed")
+        if (allocated(error)) return
+        
+        !> rank-2 diff
+        call check(error, all(diff(reshape(A, [3,1]), n=1, dim=1) == reshape([${t1}$ :: 2, 2], [2, 1])), &
+            "diff(<rank-2>, n=1, dim=1) in test_diff_int_${k1}$ failed")
+        if (allocated(error)) return
+        call check(error, all(diff(A, n=1, dim=2) == reshape([${t1}$ :: 2, 2], [1, 2])), &
+            "diff(<rank-2>, n=1, dim=2) in test_diff_int_${k1}$ failed")
+        if (allocated(error)) return
+        
+        call check(error, all(diff(A, n=1, dim=2, prepend=reshape([${t1}$ :: 1], [1, 1]), &
+            append=reshape([${t1}$ :: 2], [1, 1])) == reshape([${t1}$ :: 0, 2, 2, -3], [1, 4])), &
+            "diff(<rank-2>, n=1, dim=2, prepend=reshape([${t1}$ :: 1], [1, 1]), &
+            &append=reshape([${t1}$ :: 2], [1, 1])) in test_diff_int_${k1}$ failed")
+        if (allocated(error)) return
+        
+        !> size(B, dim) <= n
+        call check(error, size(diff(B, 2)), 0, "size(diff(B, 2)) in test_diff_int_${k1}$ failed")
+        if (allocated(error)) return
+        call check(error, size(diff(B, 3)), 0, "size(diff(B, 3)) in test_diff_int_${k1}$ failed")
+        
+    end subroutine test_diff_int_${k1}$
+    #:endfor
+    
+    #:for k1, t1 in REAL_KINDS_TYPES
+    subroutine test_arange_real_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        
+        ! Normal
+        call check(error, all_close(arange(3.0_${k1}$), [1.0_${k1}$, 2.0_${k1}$, 3.0_${k1}$]), &
+                   "all(arange(3.0_${k1}$), [1.0_${k1}$,2.0_${k1}$,3.0_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all_close(arange(-1.0_${k1}$), [1.0_${k1}$, 0.0_${k1}$, -1.0_${k1}$]), &
+                   "all_close(arange(-1.0_${k1}$), [1.0_${k1}$,0.0_${k1}$,-1.0_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all_close(arange(0.0_${k1}$, 2.0_${k1}$), [0.0_${k1}$, 1.0_${k1}$, 2.0_${k1}$]), &
+                   "all_close(arange(0.0_${k1}$,2.0_${k1}$), [0.0_${k1}$,1.0_${k1}$,2.0_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all_close(arange(1.0_${k1}$, -1.0_${k1}$), [1.0_${k1}$, 0.0_${k1}$, -1.0_${k1}$]), &
+                   "all_close(arange(1.0_${k1}$,-1.0_${k1}$), [1.0_${k1}$,0.0_${k1}$,-1.0_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all_close(arange(1.0_${k1}$, 1.0_${k1}$), [1.0_${k1}$]), &
+                   "all_close(arange(1.0_${k1}$,1.0_${k1}$), [1.0_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all_close(arange(0.0_${k1}$, 2.0_${k1}$, 2.0_${k1}$), [0.0_${k1}$, 2.0_${k1}$]), &
+                   "all_close(arange(0.0_${k1}$,2.0_${k1}$,2.0_${k1}$), [0.0_${k1}$,2.0_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all_close(arange(1.0_${k1}$, -1.0_${k1}$, 2.0_${k1}$), [1.0_${k1}$, -1.0_${k1}$]), &
+                   "all_close(arange(1.0_${k1}$,-1.0_${k1}$,2.0_${k1}$), [1.0_${k1}$,-1.0_${k1}$]) failed.")
+        if (allocated(error)) return
+        
+        ! Not recommended
+        call check(error, all_close(arange(0.0_${k1}$, 2.0_${k1}$, -2.0_${k1}$), [0.0_${k1}$, 2.0_${k1}$]),  &
+                   "all_close(arange(0.0_${k1}$,2.0_${k1}$,-2.0_${k1}$), [0.0_${k1}$,2.0_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all_close(arange(1.0_${k1}$, -1.0_${k1}$, -2.0_${k1}$), [1.0_${k1}$, -1.0_${k1}$]), &
+                   "all_close(arange(1.0_${k1}$,-1.0_${k1}$,-2.0_${k1}$), [1.0_${k1}$,-1.0_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all_close(arange(0.0_${k1}$, 2.0_${k1}$, 0.0_${k1}$), [0.0_${k1}$,1.0_${k1}$,2.0_${k1}$]), &
+                   "all_close(arange(0.0_${k1}$, 2.0_${k1}$, 0.0_${k1}$), [0.0_${k1}$,1.0_${k1}$,2.0_${k1}$]) failed.")
+    end subroutine test_arange_real_${k1}$
+    #:endfor
+    
+    #:for k1, t1 in INT_KINDS_TYPES
+    subroutine test_arange_int_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        
+        ! Normal
+        call check(error, all(arange(3_${k1}$) == [1_${k1}$, 2_${k1}$, 3_${k1}$]), &
+                   "all(arange(3_${k1}$) == [1_${k1}$,2_${k1}$,3_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all(arange(-1_${k1}$) == [1_${k1}$, 0_${k1}$, -1_${k1}$]), &
+                   "all(arange(-1_${k1}$) == [1_${k1}$,0_${k1}$,-1_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all(arange(0_${k1}$, 2_${k1}$) == [0_${k1}$, 1_${k1}$, 2_${k1}$]), &
+                   "all(arange(0_${k1}$,2_${k1}$) == [0_${k1}$,1_${k1}$,2_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all(arange(1_${k1}$, -1_${k1}$) == [1_${k1}$, 0_${k1}$, -1_${k1}$]), &
+                   "all(arange(1_${k1}$,-1_${k1}$) == [1_${k1}$,0_${k1}$,-1_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all(arange(1_${k1}$, 1_${k1}$) == [1_${k1}$]), &
+                   "all(arange(1_${k1}$,1_${k1}$) == [1_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all(arange(0_${k1}$, 2_${k1}$, 2_${k1}$) == [0_${k1}$, 2_${k1}$]), &
+                   "all(arange(0_${k1}$,2_${k1}$,2_${k1}$) == [0_${k1}$,2_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all(arange(1_${k1}$, -1_${k1}$, 2_${k1}$) == [1_${k1}$, -1_${k1}$]), &
+                   "all(arange(1_${k1}$,-1_${k1}$,2_${k1}$) == [1_${k1}$,-1_${k1}$]) failed.")
+        if (allocated(error)) return
+        
+        ! Not recommended
+        call check(error, all(arange(0_${k1}$, 2_${k1}$, -2_${k1}$) == [0_${k1}$, 2_${k1}$]),  &
+                   "all(arange(0_${k1}$,2_${k1}$,2_${k1}$) == [0_${k1}$,2_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all(arange(1_${k1}$, -1_${k1}$, -2_${k1}$) == [1_${k1}$, -1_${k1}$]), &
+                   "all(arange(1_${k1}$,-1_${k1}$,2_${k1}$) == [1_${k1}$,-1_${k1}$]) failed.")
+        if (allocated(error)) return
+        call check(error, all(arange(0_${k1}$, 2_${k1}$, 0_${k1}$) == [0_${k1}$, 1_${k1}$, 2_${k1}$]), &
+                   "all(arange(0_${k1}$,2_${k1}$,0_${k1}$) == [0_${k1}$,1_${k1}$,2_${k1}$]) failed.")
+    
+    end subroutine test_arange_int_${k1}$
+    #:endfor
+        
+
+end module test_stdlib_math
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_stdlib_math, only : collect_stdlib_math
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("stdlib-math", collect_stdlib_math) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program tester

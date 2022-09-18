@@ -1,0 +1,7 @@
+ADD_EXAMPLE(add_log_unit)
+ADD_EXAMPLE(configure)
+ADD_EXAMPLE(global_logger)
+ADD_EXAMPLE(log_io_error)
+set_tests_properties(log_io_error PROPERTIES WILL_FAIL true)
+ADD_EXAMPLE(log_text_error)
+set_tests_properties(log_text_error PROPERTIES WILL_FAIL true)

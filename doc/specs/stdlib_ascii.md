@@ -1,5 +1,5 @@
 ---
-title: ASCII
+title: ascii
 ---
 
 # The `stdlib_ascii` module
@@ -51,11 +51,7 @@ The result is an intrinsic character type of the same length as `string`.
 #### Example
 
 ```fortran
-program demo_to_lower
-    use stdlib_ascii, only : to_lower
-    implicit none
-    print'(a)', to_lower("HELLo!") ! returns "hello!"
- end program demo_to_lower
+{!example/ascii/example_ascii_to_lower.f90!}
 ``` 
 
 ### `to_upper`
@@ -87,11 +83,7 @@ The result is an intrinsic character type of the same length as `string`.
 #### Example
 
 ```fortran
-program demo_to_upper
-    use stdlib_ascii, only : to_upper
-    implicit none
-    print'(a)', to_upper("hello!") ! returns "HELLO!"
- end program demo_to_upper
+{!example/ascii/example_ascii_to_upper.f90!}
 ```
 
 ### `to_title`
@@ -128,13 +120,7 @@ The result is an intrinsic character type of the same length as `string`.
 #### Example
 
 ```fortran
-program demo_to_title
-    use stdlib_ascii, only : to_title
-    implicit none
-    print*, to_title("hello there!") ! returns "Hello There!"
-    print*, to_title("'enquoted'") ! returns "'Enquoted'"
-    print*, to_title("1st")  ! returns "1st"
- end program demo_to_title
+{!example/ascii/example_ascii_to_title.f90!}
 ```
 
 ### `to_sentence`
@@ -169,13 +155,7 @@ The result is an intrinsic character type of the same length as `string`.
 #### Example
 
 ```fortran
-program demo_to_sentence
-    use stdlib_ascii, only : to_sentence
-    implicit none
-    print*, to_sentence("hello!") ! returns "Hello!"
-    print*, to_sentence("'enquoted'") ! returns "'Enquoted'"
-    print*, to_sentence("1st")  ! returns "1st"
- end program demo_to_sentence
+{!example/ascii/example_ascii_to_sentence.f90!}
 ```
 
 ### `reverse`
@@ -207,47 +187,5 @@ The result is an intrinsic character type of the same length as `string`.
 #### Example
 
 ```fortran
-program demo_reverse
-    use stdlib_ascii, only : reverse
-    implicit none
-    print'(a)', reverse("Hello, World!") ! returns "!dlroW ,olleH"
-end program demo_reverse
-```
-
-### `to_string`
-
-#### Status
-
-Experimental
-
-#### Description
-
-Create a character string representing the value of the provided variable.
-
-#### Syntax
-
-`res = [[stdlib_ascii(module):to_string(interface)]] (string)`
-
-#### Class
-
-Pure function.
-
-#### Argument
-
-`val`: shall be an intrinsic integer or logical type. It is an `intent(in)` argument.
-
-#### Result value
-
-The result is an intrinsic character type.
-
-#### Example
-
-```fortran
-program demo_string_value
-    use stdlib_ascii, only : to_string
-    implicit none
-    print'(a)', to_string(-3) ! returns "-3"
-    print'(a)', to_string(.true.) ! returns "T"
-    print'(a)', to_string(42) ! returns "42"
-end program demo_string_value
+{!example/ascii/example_ascii_reverse.f90!}
 ```
