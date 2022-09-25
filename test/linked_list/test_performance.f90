@@ -27,7 +27,8 @@ program test_link
   ! !Append items
   ! !-------------
   print*, "Length Of Required List"
-  read(*,*) length
+  !read(*,*) length
+  length = 1000000
 
   call system_clock( cnt1, count_rate = count_rate )
   call cpu_time(T1)
