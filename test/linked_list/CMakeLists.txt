@@ -1,0 +1,1 @@
+ADDTEST(test_performance)
