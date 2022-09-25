@@ -32,7 +32,7 @@ program test_link
   call system_clock( cnt1, count_rate = count_rate )
   call cpu_time(T1)
   do i=1,length
-    call L%append(i)
+    call L%push(i)
   end do
   call cpu_time(T2)
   call system_clock( cnt2, count_rate = count_rate )
@@ -62,7 +62,7 @@ program test_link
   !-------------
   call system_clock( cnt1, count_rate = count_rate )
   call cpu_time(T1)
-  call L%destroy()
+  call L%clear()
   call cpu_time(T2)
   call system_clock( cnt2, count_rate = count_rate )
 
