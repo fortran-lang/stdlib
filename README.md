@@ -199,6 +199,21 @@ To use `stdlib` within your `fpm` project, add the following lines to your `fpm.
 stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
 ```
 
+### Build with [fypp-script](https://github.com/fortran-lang/fpm/pull/729)
+
+Fortran Package Manager has a compiler wrapper `fypp-script` that can be used to compile stdlib without 
+switching to `stdlib-fpm` branch.
+
+```sh
+git clone https://github.com/fortran-lang/fpm.git
+```
+
+```
+fpm run -- build --compiler "$PWD/fypp-gfortran.py" -C stdlib
+```
+
+**Note** : At this stage, building using `stdlib-fpm` branch should be the preferred way of using `stdlib` with `fpm`.
+
 ## Using stdlib in your project
 
 The stdlib project exports CMake package files and pkg-config files to make stdlib usable for other projects.

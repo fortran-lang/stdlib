@@ -10,11 +10,6 @@ macro(ADDTEST name)
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endmacro(ADDTEST)
 
-list(
-  APPEND fyppFlags
-  "-I${PROJECT_SOURCE_DIR}/src"
-)
-
 add_subdirectory(array)
 add_subdirectory(ascii)
 add_subdirectory(bitsets)
@@ -34,8 +29,3 @@ add_subdirectory(system)
 add_subdirectory(quadrature)
 add_subdirectory(math)
 add_subdirectory(stringlist)
-
-ADDTEST(always_skip)
-set_tests_properties(always_skip PROPERTIES SKIP_RETURN_CODE 77)
-ADDTEST(always_fail)
-set_tests_properties(always_fail PROPERTIES WILL_FAIL true)

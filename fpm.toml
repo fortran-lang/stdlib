@@ -1,0 +1,16 @@
+name = "stdlib"
+
+[dev-dependencies]
+test-drive.git = "https://github.com/fortran-lang/test-drive.git"
+
+[build]
+auto-examples = false
+auto-tests = true
+
+[preprocess.cpp]
+macros = [
+  "PROJECT_VERSION_MAJOR=0",
+  "PROJECT_VERSION_MINOR=1",
+  "PROJECT_VERSION_PATCH=0",
+  "MAXRANK=4",
+]

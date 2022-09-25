@@ -27,17 +27,14 @@ include=(
 
 # Files to remove from collection
 prune=(
-  "$destdir/test/test_always_fail.f90"
-  "$destdir/test/test_always_skip.f90"
   "$destdir/test/test_hash_functions.f90"
-  "$destdir/src/common.f90"
   "$destdir/src/f18estop.f90"
 )
 
 major=$(cut -d. -f1 VERSION)
 minor=$(cut -d. -f2 VERSION)
 patch=$(cut -d. -f3 VERSION)
-fyflags="${fyflags} -DPROJECT_VERSION_MAJOR=${major} -DPROJECT_VERSION_MINOR=${minor} -DPROJECT_VERSION_PATCH=${patch}"
+fyflags="${fyflags} -DPROJECT_VERSION_MAJOR=${major} -DPROJECT_VERSION_MINOR=${minor} -DPROJECT_VERSION_PATCH=${patch} -I include"
 
 mkdir -p "$destdir/src" "$destdir/test" "$destdir/example"
 
