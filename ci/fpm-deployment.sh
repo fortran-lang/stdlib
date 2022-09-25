@@ -50,7 +50,7 @@ find src -maxdepth 1 -iname "*.f90" -exec cp {} "$destdir/src/" \;
 find test -name "test_*.f90" -exec cp {} "$destdir/test/" \;
 find test -name "*.dat" -exec cp {} "$destdir/" \;
 find example -name "example_*.f90" -exec cp {} "$destdir/example/" \;
-find example -name "*_aux.f90" -exec cp {} "$destdir/example/" \;
+find example -name "*.inc" -exec cp {} "$destdir/example/" \;
 
 # Include additional files
 cp "${include[@]}" "$destdir/"

@@ -35,6 +35,6 @@ program example_splice
     call print_list( list )
 
 contains
-include 'linked_list_aux.f90'
+include 'linked_list_aux.inc'
 
 end program example_splice
