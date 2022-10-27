@@ -14,6 +14,7 @@ module stdlib_linalg
   public :: eye
   public :: trace
   public :: outer_product
+  public :: repmat
   public :: is_square
   public :: is_diagonal
   public :: is_symmetric
