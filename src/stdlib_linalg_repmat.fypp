@@ -11,6 +11,7 @@ contains
       ${t1}$, intent(in) :: a(:,:)
       integer, intent(in) :: m,n
       ${t1}$ :: res(m*size(a,1),n*size(a,2))
+      integer ::i,j,k,l
       associate(ma=>size(a,1),na=>size(a,2))
          do j=1,n
             do l=1,na
