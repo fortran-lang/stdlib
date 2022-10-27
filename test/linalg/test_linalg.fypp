@@ -719,7 +719,7 @@ contains
 #:if WITH_QP
        integer, parameter :: n = 2
        real(qp) :: a(n,n)
-       real(qp),allocatable:: expected(:,:)
+       real(qp),allocatable:: expected(:,:),diff(:,:)
 
        a=reshape([1,2,3,4],shape(a),order=[2,1])
        expected = reshape([&
@@ -740,7 +740,7 @@ contains
 #:if WITH_QP
        integer, parameter :: n = 2
        complex(qp) :: a(n,n)
-       complex(qp),allocatable:: expected(:,:)
+       complex(qp),allocatable:: expected(:,:),diff(:,:)
 
        a=reshape([1,2,3,4],shape(a),order=[2,1])
        expected = reshape([&
@@ -762,7 +762,7 @@ contains
        type(error_type), allocatable, intent(out) :: error
        integer, parameter :: n = 2
        real(sp) :: a(n,n)
-       real(sp),allocatable:: expected(:,:)
+       real(sp),allocatable:: expected(:,:),diff(:,:)
 
        a=reshape([1,2,3,4],shape(a),order=[2,1])
        expected = reshape([&
@@ -780,7 +780,7 @@ contains
        type(error_type), allocatable, intent(out) :: error
        integer, parameter :: n = 2
        real(dp) :: a(n,n)
-       real(dp),allocatable:: expected(:,:)
+       real(dp),allocatable:: expected(:,:),diff(:,:)
 
        a=reshape([1,2,3,4],shape(a),order=[2,1])
        expected = reshape([&
@@ -799,7 +799,7 @@ contains
        type(error_type), allocatable, intent(out) :: error
        integer, parameter :: n = 2
        complex(sp) :: a(n,n)
-       complex(sp),allocatable:: expected(:,:)
+       complex(sp),allocatable:: expected(:,:),diff(:,:)
 
        a=reshape([1,2,3,4],shape(a),order=[2,1])
        expected = reshape([&
@@ -817,7 +817,7 @@ contains
        type(error_type), allocatable, intent(out) :: error
        integer, parameter :: n = 2
        complex(dp) :: a(n,n)
-       complex(dp),allocatable:: expected(:,:)
+       complex(dp),allocatable:: expected(:,:),diff(:,:)
 
        a=reshape([1,2,3,4],shape(a),order=[2,1])
        expected = reshape([&
@@ -835,7 +835,7 @@ contains
        type(error_type), allocatable, intent(out) :: error
        integer, parameter :: n = 2
        integer(int8) :: a(n,n)
-       integer(int8),allocatable:: expected(:,:)
+       integer(int8),allocatable:: expected(:,:),diff(:,:)
 
        a=reshape([1,2,3,4],shape(a),order=[2,1])
        expected = reshape([&
@@ -853,7 +853,7 @@ contains
        type(error_type), allocatable, intent(out) :: error
        integer, parameter :: n = 2
        integer(int16) :: a(n,n)
-       integer(int16),allocatable:: expected(:,:)
+       integer(int16),allocatable:: expected(:,:),diff(:,:)
 
        a=reshape([1,2,3,4],shape(a),order=[2,1])
        expected = reshape([&
@@ -871,7 +871,7 @@ contains
        type(error_type), allocatable, intent(out) :: error
        integer, parameter :: n = 2
        integer(int32) :: a(n,n)
-       integer(int32),allocatable:: expected(:,:)
+       integer(int32),allocatable:: expected(:,:),diff(:,:)
 
        a=reshape([1,2,3,4],shape(a),order=[2,1])
        expected = reshape([&
@@ -889,7 +889,7 @@ contains
        type(error_type), allocatable, intent(out) :: error
        integer, parameter :: n = 2
        integer(int64) :: a(n,n)
-       integer(int64),allocatable:: expected(:,:)
+       integer(int64),allocatable:: expected(:,:),diff(:,:)
 
        a=reshape([1,2,3,4],shape(a),order=[2,1])
        expected = reshape([&
