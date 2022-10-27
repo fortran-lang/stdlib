@@ -17,7 +17,7 @@ contains
             do l=1,na
                do i=1,m
                   do k=1,ma
-                     c((i-1)*ma+k,(j-1)*na+l)=a(k,l)
+                     res((i-1)*ma+k,(j-1)*na+l)=a(k,l)
                   end do
                end do
             end do
