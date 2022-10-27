@@ -9,7 +9,7 @@ contains
   #:for k1, t1 in RCI_KINDS_TYPES
     pure module function repmat_${t1[0]}$${k1}$(a, m, n) result(res)
       ${t1}$, intent(in) :: a(:,:)
-      ${t1}$, intent(in) :: m,n
+      integer, intent(in) :: m,n
       ${t1}$ :: res(m*size(a,1),n*size(a,2))
       associate(ma=>size(a,1),na=>size(a,2))
          do j=1,n
