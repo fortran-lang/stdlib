@@ -1,0 +1,5 @@
+ADD_EXAMPLE(ascii_reverse)
+ADD_EXAMPLE(ascii_to_lower)
+ADD_EXAMPLE(ascii_to_sentence)
+ADD_EXAMPLE(ascii_to_title)
+ADD_EXAMPLE(ascii_to_upper)

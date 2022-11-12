@@ -1,0 +1,9 @@
+SRCFYPP = \
+        test_specialfunctions_gamma.fypp
+
+SRCGEN = $(SRCFYPP:.fypp=.f90)
+
+$(SRCGEN): %.f90: %.fypp ../../common.fypp
+	fypp -I../.. $(FYPPFLAGS) $< $@
+
+include ../Makefile.manual.test.mk

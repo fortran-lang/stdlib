@@ -17,13 +17,17 @@ Loads a rank-2 `array` from a text file.
 
 ### Syntax
 
-`call [[stdlib_io(module):loadtxt(interface)]](filename, array)`
+`call [[stdlib_io(module):loadtxt(interface)]](filename, array [, skiprows] [, max_rows])`
 
 ### Arguments
 
 `filename`: Shall be  a character expression containing the file name from which to load the rank-2 `array`.
 
 `array`: Shall be an allocatable rank-2 array of type `real`, `complex` or `integer`.
+
+`skiprows` (optional): Skip the first `skiprows` lines. If skipping more rows than present, a 0-sized array will be returned. The default is 0.
+
+`max_rows` (optional): Read `max_rows` lines of content after `skiprows` lines. A negative value results in reading all lines. A value of zero results in no lines to be read. The default value is -1.
 
 ### Return value
 
@@ -32,12 +36,7 @@ Returns an allocated rank-2 `array` with the content of `filename`.
 ### Example
 
 ```fortran
-program demo_loadtxt
-    use stdlib_io, only: loadtxt
-    implicit none
-    real, allocatable :: x(:,:)
-    call loadtxt('example.dat', x)
-end program demo_loadtxt
+{!example/io/example_loadtxt.f90!}
 ```
 
 
@@ -87,14 +86,7 @@ The result is a scalar of type `integer`.
 ### Example
 
 ```fortran
-program demo_open
-    use stdlib_io, only: open
-    implicit none
-    integer :: u
-    u = open('example.dat', 'wt')
-    write(u,'(a)')'This is an example for open'
-    close(u)
-end program demo_open
+{!example/io/example_open.f90!}
 ```
 
 
@@ -124,12 +116,7 @@ Provides a text file called `filename` that contains the rank-2 `array`.
 ### Example
 
 ```fortran
-program demo_savetxt
-    use stdlib_io, only: savetxt
-    implicit none
-    real :: x(3,2) = 1
-    call savetxt('example.dat', x)
-end program demo_savetxt
+{!example/io/example_savetxt.f90!}
 ```
 
 
@@ -170,12 +157,7 @@ Returns an allocated `array` with the content of `filename` in case of success.
 ### Example
 
 ```fortran
-program demo_loadnpy
-    use stdlib_io_npy, only: load_npy
-    implicit none
-    real, allocatable :: x(:,:)
-    call loadtxt('example.npy', x)
-end program demo_loadnpy
+{!example/io/example_loadnpy.f90!}
 ```
 
 
@@ -216,12 +198,7 @@ Provides a npy file called `filename` that contains the rank-2 `array`.
 ### Example
 
 ```fortran
-program demo_savenpy
-    use stdlib_io_npy, only: save_npy
-    implicit none
-    real :: x(3,2) = 1
-    call save_npy('example.npy', x)
-end program demo_savenpy
+{!example/io/example_savenpy.f90!}
 ```
 
 ## `getline`
@@ -259,19 +236,7 @@ Read a whole line from a formatted unit into a string variable
 ### Example
 
 ```fortran
-program demo_getline
-    use, intrinsic :: iso_fortran_env, only : input_unit, output_unit
-    use stdlib_io, only: getline
-    implicit none
-    character(len=:), allocatable :: line
-    integer :: stat
-
-    call getline(input_unit, line, stat)
-    do while(stat == 0)
-      write(output_unit, '(a)') line
-      call getline(input_unit, line, stat)
-    end do
-end program demo_getline
+{!example/io/example_getline.f90!}
 ```
 
 ## Formatting constants
@@ -288,30 +253,5 @@ Provides formats for all kinds as defined in the `stdlib_kinds` module.
 ### Example
 
 ```fortran
-program demo_fmt_constants
-    use, stdlib_kinds, only : int32, int64, sp, dp 
-    use stdlib_io,     only : FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_COMPLEX_SP, FMT_COMPLEX_DP
-    implicit none
-
-    integer(kind=int32) :: i32
-    integer(kind=int64) :: i64
-    real(kind=sp)       :: r32
-    real(kind=dp)       :: r64
-    complex(kind=sp)    :: c32
-    complex(kind=dp)    :: c64
-
-    i32 = 100_int32
-    i64 = 100_int64
-    r32 = 100.0_sp
-    r64 = 100.0_dp
-    c32 = cmplx(100.0_sp, kind=sp)
-    c64 = cmplx(100.0_dp, kind=dp)
-
-    print "(2("//FMT_INT//",1x))", i32, i64 ! outputs: 100 100
-    print FMT_REAL_SP, r32                  ! outputs: 1.00000000E+02
-    print FMT_REAL_DP, r64                  ! outputs: 1.0000000000000000E+002
-    print FMT_COMPLEX_SP, c32               ! outputs: 1.00000000E+02  0.00000000E+00
-    print FMT_COMPLEX_DP, c64               ! outputs: 1.0000000000000000E+002  0.0000000000000000E+000
-
-end program demo_fmt_constants
+{!example/io/example_fmt_constants.f90!}
 ```

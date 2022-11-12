@@ -133,12 +133,14 @@ Important options are
   Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
 - `-DBUILD_TESTING` set to `off` in case you want to disable the stdlib tests (default: `on`).
+- `-DCMAKE_VERBOSE_MAKEFILE` is by default set to `Off`, but if set to `On` will show commands used to compile the code.
+- `-DCMAKE_BUILD_TYPE` is by default set to `RelWithDebInfo`, which uses compiler flags suitable for code development (but with only `-O2` optimization). Beware the compiler flags set this way will override any compiler flags specified via `FFLAGS`. To prevent this, use `-DCMAKE_BUILD_TYPE=NoConfig` in conjunction with `FFLAGS`.
 
-For example, to configure a build using the Ninja backend while specifying compiler flags `FFLAGS`, generating procedures up to rank 7, and installing to your home directory, use
+For example, to configure a build using the Ninja backend while specifying compiler optimization via `FFLAGS`, generating procedures up to rank 7, installing to your home directory, using the `NoConfig` compiler flags, and printing the compiler commands, use
 
 ```sh
 export FFLAGS="-O3"
-cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK:String=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local
+cmake -B build -G Ninja -DCMAKE_MAXIMUM_RANK:String=7 -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_VERBOSE_MAKEFILE=On -DCMAKE_BUILD_TYPE=NoConfig
 ```
 
 To build the standard library run
@@ -147,10 +149,15 @@ To build the standard library run
 cmake --build build
 ```
 
-To test your build, run the test suite after the build has finished with
+To test your build, run the test suite and all example programs after the build has finished with
 
 ```sh
 cmake --build build --target test
+```
+
+To test only the test suite, run
+```sh
+ctest --test-dir build/test
 ```
 
 Please report failing tests on our [issue tracker](https://github.com/fortran-lang/stdlib/issues/new/choose) including details of the compiler used, the operating system and platform architecture.
@@ -176,6 +183,15 @@ You can build `stdlib` using provided `fpm.toml`:
 git checkout stdlib-fpm
 fpm build --profile release
 ```
+
+You can run the examples with `fpm` as:
+
+```sh
+fpm run --example prog
+```
+
+with `prog` being the name of the example program (e.g., `example_sort`).
+
 
 To use `stdlib` within your `fpm` project, add the following lines to your `fpm.toml` file:
 ```toml
