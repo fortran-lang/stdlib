@@ -22,6 +22,7 @@ set(fppFiles
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
     stdlib_linalg_outer_product.fypp
+    stdlib_linalg_repmat.fypp
     stdlib_optval.fypp
     stdlib_selection.fypp
     stdlib_sorting.fypp

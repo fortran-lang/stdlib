@@ -14,6 +14,7 @@ module stdlib_linalg
   public :: eye
   public :: trace
   public :: outer_product
+  public :: repmat
   public :: is_square
   public :: is_diagonal
   public :: is_symmetric
@@ -92,6 +93,21 @@ module stdlib_linalg
     #:endfor
   end interface outer_product
 
+  ! repeat matrix (of 2d array)
+  interface repmat
+    !! version: experimental
+    !!
+    !! Creates large matrices from a small array, `repmat()` repeats the given values of the array to create the large matrix.
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! repmat-creates-large-matrices-from-a-small-array))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure module function repmat_${t1[0]}$${k1}$(a,m,n) result(res)
+        ${t1}$, intent(in) :: a(:,:)
+        integer, intent(in) :: m,n
+        ${t1}$ :: res(m*size(a,1),n*size(a,2))
+      end function repmat_${t1[0]}$${k1}$
+    #:endfor
+  end interface repmat
 
   ! Check for squareness
   interface is_square

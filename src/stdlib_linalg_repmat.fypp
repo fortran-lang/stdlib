@@ -1,0 +1,30 @@
+#:include "common.fypp"
+#:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
+submodule (stdlib_linalg) stdlib_linalg_repmat
+
+  implicit none
+
+contains
+
+  #:for k1, t1 in RCI_KINDS_TYPES
+    pure module function repmat_${t1[0]}$${k1}$(a, m, n) result(res)
+      ${t1}$, intent(in) :: a(:,:)
+      integer, intent(in) :: m,n
+      ${t1}$ :: res(m*size(a,1),n*size(a,2))
+      integer ::i,j,k,l
+      associate(ma=>size(a,1),na=>size(a,2))
+         do j=1,n
+            do l=1,na
+               do i=1,m
+                  do k=1,ma
+                     res((i-1)*ma+k,(j-1)*na+l)=a(k,l)
+                  end do
+               end do
+            end do
+         end do
+      end associate
+    end function repmat_${t1[0]}$${k1}$
+
+  #:endfor
+
+end submodule
