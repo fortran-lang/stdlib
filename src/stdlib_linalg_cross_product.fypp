@@ -1,7 +1,7 @@
 #:include "common.fypp"
 #:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
 submodule (stdlib_linalg) stdlib_linalg_cross_product
-    use stdlib_error, only: error_stop
+
     implicit none
 
 contains
