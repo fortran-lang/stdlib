@@ -57,7 +57,17 @@ contains
             new_unittest("outer_product_int8", test_outer_product_int8), &
             new_unittest("outer_product_int16", test_outer_product_int16), &
             new_unittest("outer_product_int32", test_outer_product_int32), &
-            new_unittest("outer_product_int64", test_outer_product_int64) &
+            new_unittest("outer_product_int64", test_outer_product_int64), &
+            new_unittest("cross_product_rsp", test_cross_product_rsp), &
+            new_unittest("cross_product_rdp", test_cross_product_rdp), &
+            new_unittest("cross_product_rqp", test_cross_product_rqp), &
+            new_unittest("cross_product_csp", test_cross_product_csp), &
+            new_unittest("cross_product_cdp", test_cross_product_cdp), &
+            new_unittest("cross_product_cqp", test_cross_product_cqp), &
+            new_unittest("cross_product_int8", test_cross_product_int8), &
+            new_unittest("cross_product_int16", test_cross_product_int16), &
+            new_unittest("cross_product_int32", test_cross_product_int32), &
+            new_unittest("cross_product_int64", test_cross_product_int64) &
             ]
 
     end subroutine collect_linalg
