@@ -724,7 +724,7 @@ contains
         expected = [0,0,1]
         diff = expected - cross_product(u,v)
         call check(error, all(abs(diff) == 0), &
-             "all(abs(diff) == 0) failed.")
+             "cross_product(u,v) == expected failed.")
     end subroutine test_cross_product_int8
 
     subroutine test_cross_product_int16(error)
@@ -739,7 +739,7 @@ contains
         expected = [0,0,1]
         diff = expected - cross_product(u,v)
         call check(error, all(abs(diff) == 0), &
-             "all(abs(diff) == 0) failed.")
+             "cross_product(u,v) == expected failed.")
     end subroutine test_cross_product_int16
 
     subroutine test_cross_product_int32(error)
@@ -754,7 +754,7 @@ contains
         expected = [0,0,1]
         diff = expected - cross_product(u,v)
         call check(error, all(abs(diff) == 0), &
-             "all(abs(diff) == 0) failed.")
+             "cross_product(u,v) == expected failed.")
     end subroutine test_cross_product_int32
 
     subroutine test_cross_product_int64(error)
@@ -769,7 +769,7 @@ contains
         expected = [0,0,1]
         diff = expected - cross_product(u,v)
         call check(error, all(abs(diff) == 0), &
-             "all(abs(diff) == 0) failed.")
+             "cross_product(u,v) == expected failed.")
     end subroutine test_cross_product_int64
 
     subroutine test_cross_product_rsp(error)
@@ -784,7 +784,7 @@ contains
         expected = [2.65_sp,-1.55_sp,0.4_sp]
         diff = expected - cross_product(u,v)
         call check(error, all(abs(diff) < sptol), &
-             "all(abs(diff) < sptol) failed.")
+             "all(abs(cross_product(u,v)-expected)) < sptol failed.")
     end subroutine test_cross_product_rsp
 
     subroutine test_cross_product_rdp(error)
@@ -799,7 +799,7 @@ contains
         expected = [2.65_dp,-1.55_dp,0.4_dp]
         diff = expected - cross_product(u,v)
         call check(error, all(abs(diff) < dptol), &
-             "all(abs(diff) < dptol) failed.")
+             "all(abs(cross_product(u,v)-expected)) < dptol failed.")
     end subroutine test_cross_product_rdp
 
     subroutine test_cross_product_rqp(error)
@@ -815,7 +815,7 @@ contains
         expected = [2.65_qp,-1.55_qp,0.4_qp]
         diff = expected - cross_product(u,v)
         call check(error, all(abs(diff) < qptol), &
-             "all(abs(diff) < qptol) failed.")
+             "all(abs(cross_product(u,v)-expected)) < qptol failed.")
 #:else
         call skip_test(error, "Quadruple precision is not enabled")
 #:endif
@@ -833,7 +833,7 @@ contains
         expected = [cmplx(1,0,sp),cmplx(0,-1,sp),cmplx(-1,-1,sp)]
         diff = expected - cross_product(u,v)
         call check(error, all(abs(diff) < sptol), &
-             "all(abs(diff) < sptol) failed.")
+             "all(abs(cross_product(u,v)-expected)) < sptol failed.")
     end subroutine test_cross_product_csp
 
     subroutine test_cross_product_cdp(error)
@@ -848,7 +848,7 @@ contains
         expected = [cmplx(1,0,dp),cmplx(0,-1,dp),cmplx(-1,-1,dp)]
         diff = expected - cross_product(u,v)
         call check(error, all(abs(diff) < dptol), &
-             "all(abs(diff) < dptol) failed.")
+             "all(abs(cross_product(u,v)-expected)) < dptol failed.")
     end subroutine test_cross_product_cdp
 
     subroutine test_cross_product_cqp(error)
@@ -864,7 +864,7 @@ contains
         expected = [cmplx(1,0,qp),cmplx(0,-1,qp),cmplx(-1,-1,qp)]
         diff = expected - cross_product(u,v)
         call check(error, all(abs(diff) < qptol), &
-             "all(abs(diff) < qptol) failed.")
+             "all(abs(cross_product(u,v)-expected)) < qptol failed.")
 #:else
         call skip_test(error, "Quadruple precision is not enabled")
 #:endif
