@@ -12,6 +12,7 @@ module stdlib_linalg
   public :: eye
   public :: trace
   public :: outer_product
+  public :: cross_product
   public :: is_square
   public :: is_diagonal
   public :: is_symmetric
@@ -238,6 +239,47 @@ module stdlib_linalg
         integer(int64) :: res(size(u),size(v))
       end function outer_product_iint64
   end interface outer_product
+
+
+  ! Cross product (of two vectors)
+  interface cross_product
+    !! version: experimental
+    !!
+    !! Computes the cross product of two vectors, returning a rank-1 and size-3 array
+    !! ([Specification](../page/specs/stdlib_linalg.html#cross_product-computes-the-cross-product-of-two-3-d-vectors))
+      pure module function cross_product_rsp(a, b) result(res)
+        real(sp), intent(in) :: a(3), b(3)
+        real(sp) :: res(3)
+      end function cross_product_rsp
+      pure module function cross_product_rdp(a, b) result(res)
+        real(dp), intent(in) :: a(3), b(3)
+        real(dp) :: res(3)
+      end function cross_product_rdp
+      pure module function cross_product_csp(a, b) result(res)
+        complex(sp), intent(in) :: a(3), b(3)
+        complex(sp) :: res(3)
+      end function cross_product_csp
+      pure module function cross_product_cdp(a, b) result(res)
+        complex(dp), intent(in) :: a(3), b(3)
+        complex(dp) :: res(3)
+      end function cross_product_cdp
+      pure module function cross_product_iint8(a, b) result(res)
+        integer(int8), intent(in) :: a(3), b(3)
+        integer(int8) :: res(3)
+      end function cross_product_iint8
+      pure module function cross_product_iint16(a, b) result(res)
+        integer(int16), intent(in) :: a(3), b(3)
+        integer(int16) :: res(3)
+      end function cross_product_iint16
+      pure module function cross_product_iint32(a, b) result(res)
+        integer(int32), intent(in) :: a(3), b(3)
+        integer(int32) :: res(3)
+      end function cross_product_iint32
+      pure module function cross_product_iint64(a, b) result(res)
+        integer(int64), intent(in) :: a(3), b(3)
+        integer(int64) :: res(3)
+      end function cross_product_iint64
+  end interface cross_product
 
 
   ! Check for squareness
