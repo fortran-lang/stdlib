@@ -87,12 +87,12 @@ The following combinations are tested on the default branch of stdlib:
 
 Name | Version | Platform | Architecture
 --- | --- | --- | ---
-GCC Fortran | 9, 10, 11 | Ubuntu 20.04 | x86_64
-GCC Fortran | 9, 10, 11 | MacOS Catalina 10.15 | x86_64
-GCC Fortran (MSYS) | 10 | Windows Server 2019 | x86_64
-GCC Fortran (MinGW) | 10 | Windows Server 2019 | x86_64, i686
-Intel oneAPI classic | 2021.1 | Ubuntu 20.04 | x86_64
-Intel oneAPI classic | 2021.1 | MacOS Catalina 10.15 | x86_64
+GCC Fortran | 10, 11, 12 | Ubuntu 22.04.2 LTS | x86_64
+GCC Fortran | 10, 11, 12 | macOS 12.6.3 (21G419) | x86_64
+GCC Fortran (MSYS) | 10 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64
+GCC Fortran (MinGW) | 10 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64, i686
+Intel oneAPI classic | 2021.1 | Ubuntu 22.04.2 LTS | x86_64
+Intel oneAPI classic | 2021.1 | macOS 12.6.3 (21G419) | x86_64
 
 The following combinations are known to work, but they are not tested in the CI:
 
