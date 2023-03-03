@@ -18,7 +18,9 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
 include(CheckFortranSourceRuns)
 if (NOT DEFINED WITH_CBOOL)
   check_fortran_source_runs(
-    "use, intrinsic :: iso_c_binding, only: c_bool; integer, parameter :: lk = kind(.true.); if (c_bool == lk) stop 1; end"
+    "use, intrinsic :: iso_c_binding, only: c_bool; integer, parameter :: lk = kind(.true.)
+     if (c_bool == lk) stop 1
+     end"
     WITH_CBOOL
   )
   set(WITH_CBOOL ${WITH_CBOOL} PARENT_SCOPE)
