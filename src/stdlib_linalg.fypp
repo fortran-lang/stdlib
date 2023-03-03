@@ -14,6 +14,7 @@ module stdlib_linalg
   public :: eye
   public :: trace
   public :: outer_product
+  public :: cross_product
   public :: is_square
   public :: is_diagonal
   public :: is_symmetric
@@ -91,6 +92,21 @@ module stdlib_linalg
       end function outer_product_${t1[0]}$${k1}$
     #:endfor
   end interface outer_product
+
+
+  ! Cross product (of two vectors)
+  interface cross_product
+    !! version: experimental
+    !!
+    !! Computes the cross product of two vectors, returning a rank-1 and size-3 array
+    !! ([Specification](../page/specs/stdlib_linalg.html#cross_product-computes-the-cross-product-of-two-3-d-vectors))
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure module function cross_product_${t1[0]}$${k1}$(a, b) result(res)
+        ${t1}$, intent(in) :: a(3), b(3)
+        ${t1}$ :: res(3)
+      end function cross_product_${t1[0]}$${k1}$
+    #:endfor
+  end interface cross_product
 
 
   ! Check for squareness

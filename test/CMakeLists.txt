@@ -34,6 +34,7 @@ add_subdirectory(system)
 add_subdirectory(quadrature)
 add_subdirectory(math)
 add_subdirectory(stringlist)
+add_subdirectory(terminal)
 
 ADDTEST(always_skip)
 set_tests_properties(always_skip PROPERTIES SKIP_RETURN_CODE 77)
