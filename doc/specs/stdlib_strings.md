@@ -427,7 +427,7 @@ The result is a scalar of integer type or an integer array of rank equal to the 
 
 #### Description
 
-Returns a string of length `output_length` left padded with zeros.
+Returns a string of length `output_length` left-padded with zeros.
 If `output_length` is less than or equal to the length of `string`, padding is not performed.
 
 #### Syntax
