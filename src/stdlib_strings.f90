@@ -13,7 +13,7 @@ module stdlib_strings
     public :: to_string
     public :: strip, chomp
     public :: starts_with, ends_with
-    public :: slice, find, replace_all, padl, padr, count
+    public :: slice, find, replace_all, padl, padr, count, zfill
 
     !> Version: experimental
     !>
@@ -207,6 +207,15 @@ module stdlib_strings
         module procedure :: count_char_string
         module procedure :: count_char_char
     end interface count
+
+    !> Version: experimental
+    !>
+    !> Left pad the input string with zeros.
+    !> [Specifications](../page/specs/stdlib_strings.html#zfill)
+    interface zfill
+        module procedure :: zfill_string
+        module procedure :: zfill_char
+    end interface zfill
 
 contains
 
@@ -962,6 +971,30 @@ contains
         end if
     
     end function count_char_char
+
+    !> Left pad the input string with zeros
+    !>
+    !> Returns a new string
+    pure function zfill_string(string, output_length) result(res)
+        type(string_type), intent(in) :: string
+        integer, intent(in) :: output_length
+        type(string_type) :: res
+
+        res = string_type(padl(char(string), output_length, "0"))
+
+    end function zfill_string
+
+    !> Left pad the input string with zeros
+    !>
+    !> Returns a new string
+    pure function zfill_char(string, output_length) result(res)
+        character(len=*), intent(in) :: string
+        integer, intent(in) :: output_length
+        character(len=max(len(string), output_length)) :: res
+
+        res = padl(string, output_length, "0")
+
+    end function zfill_char
     
 
 end module stdlib_strings
