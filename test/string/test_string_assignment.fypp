@@ -79,9 +79,11 @@ contains
         call check(error, string_type(.false.) == trim(flc))
         if (allocated(error)) return
 
+#:if WITH_CBOOL
         write(flc, '(g0)') .false._c_bool
         call check(error, string_type(.false._c_bool) == trim(flc))
         if (allocated(error)) return
+#:endif
 
         write(flc, '(g0)') .true._lk
         call check(error, string_type(.true._lk) == trim(flc))
