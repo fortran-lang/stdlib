@@ -75,10 +75,6 @@ module stdlib_string_type
             logical(lk), intent(in) :: val
             type(string_type) :: new
         end function new_string_from_logical_lk
-        elemental module function new_string_from_logical_c_bool(val) result(new)
-            logical(c_bool), intent(in) :: val
-            type(string_type) :: new
-        end function new_string_from_logical_c_bool
     end interface string_type        
 
     !> Returns the length of the character sequence without trailing spaces

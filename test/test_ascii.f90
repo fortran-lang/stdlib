@@ -6,7 +6,7 @@ module test_ascii
         is_digit, is_octal_digit, is_hex_digit, is_white, is_blank, &
         is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
         to_lower, to_upper, to_title, to_sentence, reverse, LF, TAB, NUL, DEL
-    use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
+    use stdlib_kinds, only : int8, int16, int32, int64, lk
     implicit none
     private
 

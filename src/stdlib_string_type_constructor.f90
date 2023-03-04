@@ -44,11 +44,5 @@ contains
         type(string_type) :: new
         new%raw = to_string(val)
     end function new_string_from_logical_lk
-    !> Constructor for new string instances from a logical of kind c_bool.
-    elemental module function new_string_from_logical_c_bool(val) result(new)
-        logical(c_bool), intent(in) :: val
-        type(string_type) :: new
-        new%raw = to_string(val)
-    end function new_string_from_logical_c_bool
 
 end submodule stdlib_string_type_constructor

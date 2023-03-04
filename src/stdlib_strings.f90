@@ -85,15 +85,6 @@ module stdlib_strings
             character(len=*), intent(in) :: format
             character(len=:), allocatable :: string
         end function to_string_2_l_lk
-        pure module function to_string_1_l_c_bool(value) result(string)
-            logical(c_bool), intent(in) :: value
-            character(len=1) :: string 
-        end function to_string_1_l_c_bool
-        pure module function to_string_2_l_c_bool(value, format) result(string)
-            logical(c_bool), intent(in) :: value
-            character(len=*), intent(in) :: format
-            character(len=:), allocatable :: string
-        end function to_string_2_l_c_bool
     end interface to_string
 
     !> Remove leading and trailing whitespace characters.

@@ -288,30 +288,5 @@ contains
         end if
 
     end function to_string_2_l_lk
-    !> Represent an logical of kind c_bool as character sequence.
-    pure module function to_string_1_l_c_bool(value) result(string)
-        logical(c_bool), intent(in) :: value
-        character(len=1) :: string
-
-        string = merge("T", "F", value)
-
-    end function to_string_1_l_c_bool
-
-    pure module function to_string_2_l_c_bool(value, format) result(string)
-        logical(c_bool), intent(in) :: value
-        character(len=*), intent(in) :: format
-        character(len=:), allocatable :: string
-
-        character(len=buffer_len) :: buffer
-        integer :: stat
-
-        write(buffer, "(" // format // ")", iostat=stat) value
-        if (stat == 0) then
-            string = trim(buffer)
-        else
-            string = err_sym
-        end if
-
-    end function to_string_2_l_c_bool
 
 end submodule stdlib_strings_to_string
