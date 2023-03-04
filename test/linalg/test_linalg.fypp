@@ -566,7 +566,7 @@ contains
     subroutine test_kronecker_product_rsp(error) 
       !> Error handling
       type(error_type), allocatable, intent(out) :: error
-      integer, parameter :: m1=1, n1=2, m2=2, n2=3
+      integer, parameter :: m1 = 1, n1 = 2, m2 = 2, n2 = 3
       real(sp), parameter :: tol = 1.e-6
 
       real(sp) :: A(m1,n1), B(m2,n2)
@@ -574,14 +574,14 @@ contains
 
       integer :: i,j
 
-      do j=1, n1
-         do i=1, m1
+      do j = 1, n1
+         do i = 1, m1
             A(i,j) = i*j ! A = [1, 2]
          end do
       end do
 
-      do j=1, n2
-         do i=1, m2
+      do j = 1, n2
+         do i = 1, m2
             B(i,j) = i*j ! B = [[1, 2, 3], [2, 4, 6]]
          end do
       end do
