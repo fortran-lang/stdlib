@@ -160,7 +160,7 @@ Returns a rank-2 array equal to `u v^T` (where `u, v` are considered column vect
 {!example/linalg/example_outer_product.f90!}
 ```
 
-## `kronecker_product` - Computes the kronecker product of two rank-2 arrays
+## `kronecker_product` - Computes the Kronecker product of two rank-2 arrays
 
 ### Status
 
