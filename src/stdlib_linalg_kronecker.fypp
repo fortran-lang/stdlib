@@ -17,8 +17,8 @@ contains
       maxM2 = size(B, dim=1)
       maxN2 = size(B, dim=2)
       
-      do n1=1, maxN1
-         do m1=1, maxM1
+      do n1 = 1, maxN1
+         do m1 = 1, maxM1
             ! We use the numpy.kron convention for ordering of the matrix elements
             C((m1-1)*maxM2+1:m1*maxM2, (n1-1)*maxN2+1:n1*maxN2) = A(m1, n1) * B(:,:)
          end do
