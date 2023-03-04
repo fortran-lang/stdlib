@@ -19,7 +19,8 @@ contains
       
       do n1=1, maxN1
          do m1=1, maxM1
-            ! We use the numpy.kron convention for ordering of the matrix elements
+            ! We use the Wikipedia convention for ordering of the matrix elements
+	    ! https://en.wikipedia.org/wiki/Kronecker_product
             C((m1-1)*maxM2+1:m1*maxM2, (n1-1)*maxN2+1:n1*maxN2) = A(m1, n1) * B(:,:)
          end do
       end do
