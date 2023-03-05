@@ -1,4 +1,5 @@
 #:include "common.fypp"
+#:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
 
 module test_linalg
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
@@ -48,16 +49,9 @@ contains
             new_unittest("trace_int16", test_trace_int16), &
             new_unittest("trace_int32", test_trace_int32), &
             new_unittest("trace_int64", test_trace_int64), &
-            new_unittest("kronecker_product_rsp", test_kronecker_product_rsp), &
-            new_unittest("kronecker_product_rdp", test_kronecker_product_rdp), &
-            new_unittest("kronecker_product_rqp", test_kronecker_product_rqp), &
-            new_unittest("kronecker_product_csp", test_kronecker_product_csp), &
-            new_unittest("kronecker_product_cdp", test_kronecker_product_cdp), &
-            new_unittest("kronecker_product_cqp", test_kronecker_product_cqp), &
-            new_unittest("kronecker_product_int8", test_kronecker_product_iint8), &
-            new_unittest("kronecker_product_int16", test_kronecker_product_iint16), &
-            new_unittest("kronecker_product_int32", test_kronecker_product_iint32), &
-            new_unittest("kronecker_product_int64", test_kronecker_product_iint64), &
+  #:for k1, t1 in RCI_KINDS_TYPES	    
+            new_unittest("kronecker_product_${t1[0]}$${k1}$", test_kronecker_product_${t1[0]}$${k1}$), &
+  #:endfor    
             new_unittest("outer_product_rsp", test_outer_product_rsp), &
             new_unittest("outer_product_rdp", test_outer_product_rdp), &
             new_unittest("outer_product_rqp", test_outer_product_rqp), &
@@ -564,7 +558,7 @@ contains
     end subroutine test_trace_int64
 
 
-#:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
+
   #:for k1, t1 in RCI_KINDS_TYPES
     subroutine test_kronecker_product_${t1[0]}$${k1}$(error) 
       !> Error handling
