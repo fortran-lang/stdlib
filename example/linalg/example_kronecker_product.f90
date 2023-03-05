@@ -2,6 +2,7 @@ program example_kronecker_product
   use stdlib_linalg, only: kronecker_product
   implicit none
   integer, parameter :: m1 = 1, n1 = 2, m2 = 2, n2 = 3
+  integer :: i, j
   real :: A(m1, n1), B(m2,n2)
   real, allocatable :: C(:,:)
 
