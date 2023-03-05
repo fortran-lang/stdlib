@@ -178,7 +178,7 @@ Computes the Kronecker product of two rank-2 arrays
 
 `A`: Shall be a rank-2 array with dimensions M1, N1
 
-`v`: Shall be a rank-2 array with dimensions M2, N2
+`B`: Shall be a rank-2 array with dimensions M2, N2
 
 ### Return value
 
