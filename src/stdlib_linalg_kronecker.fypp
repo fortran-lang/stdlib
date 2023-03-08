@@ -10,7 +10,7 @@ contains
     pure module function kronecker_product_${t1[0]}$${k1}$(A, B) result(C)
       ${t1}$, intent(in) :: A(:,:), B(:,:)
       ${t1}$ :: C(size(A,dim=1)*size(B,dim=1),size(A,dim=2)*size(B,dim=2))
-      integer :: m1, n1, m2, n2, maxM1, maxN1, maxM2, maxN2
+      integer :: m1, n1, maxM1, maxN1, maxM2, maxN2
       
       maxM1 = size(A, dim=1)
       maxN1 = size(A, dim=2)
