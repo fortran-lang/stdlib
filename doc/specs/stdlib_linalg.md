@@ -160,6 +160,37 @@ Returns a rank-2 array equal to `u v^T` (where `u, v` are considered column vect
 {!example/linalg/example_outer_product.f90!}
 ```
 
+## `kronecker_product` - Computes the Kronecker product of two rank-2 arrays
+
+### Status
+
+Experimental
+
+### Description
+
+Computes the Kronecker product of two rank-2 arrays
+
+### Syntax
+
+`C = [[stdlib_linalg(module):kronecker_product(interface)]](A, B)`
+
+### Arguments
+
+`A`: Shall be a rank-2 array with dimensions M1, N1
+
+`B`: Shall be a rank-2 array with dimensions M2, N2
+
+### Return value
+
+Returns a rank-2 array equal to `A \otimes B`. The shape of the returned array is `[M1*M2, N1*N2]`.
+
+### Example
+
+```fortran
+{!example/linalg/example_kronecker_product.f90!}
+```
+
+
 ## `cross_product` - Computes the cross product of two vectors
 
 ### Status
