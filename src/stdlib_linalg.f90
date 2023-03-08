@@ -12,6 +12,7 @@ module stdlib_linalg
   public :: eye
   public :: trace
   public :: outer_product
+  public :: kronecker_product
   public :: cross_product
   public :: is_square
   public :: is_diagonal
@@ -239,6 +240,46 @@ module stdlib_linalg
         integer(int64) :: res(size(u),size(v))
       end function outer_product_iint64
   end interface outer_product
+
+  interface kronecker_product
+    !! version: experimental
+    !!
+    !! Computes the Kronecker product of two arrays of size M1xN1, and of M2xN2, returning an (M1*M2)x(N1*N2) array
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! kronecker_product-computes-the-kronecker-product-of-two-matrices))
+      pure module function kronecker_product_rsp(A, B) result(C)
+        real(sp), intent(in) :: A(:,:), B(:,:)
+        real(sp) :: C(size(A,dim=1)*size(B,dim=1),size(A,dim=2)*size(B,dim=2))
+      end function kronecker_product_rsp
+      pure module function kronecker_product_rdp(A, B) result(C)
+        real(dp), intent(in) :: A(:,:), B(:,:)
+        real(dp) :: C(size(A,dim=1)*size(B,dim=1),size(A,dim=2)*size(B,dim=2))
+      end function kronecker_product_rdp
+      pure module function kronecker_product_csp(A, B) result(C)
+        complex(sp), intent(in) :: A(:,:), B(:,:)
+        complex(sp) :: C(size(A,dim=1)*size(B,dim=1),size(A,dim=2)*size(B,dim=2))
+      end function kronecker_product_csp
+      pure module function kronecker_product_cdp(A, B) result(C)
+        complex(dp), intent(in) :: A(:,:), B(:,:)
+        complex(dp) :: C(size(A,dim=1)*size(B,dim=1),size(A,dim=2)*size(B,dim=2))
+      end function kronecker_product_cdp
+      pure module function kronecker_product_iint8(A, B) result(C)
+        integer(int8), intent(in) :: A(:,:), B(:,:)
+        integer(int8) :: C(size(A,dim=1)*size(B,dim=1),size(A,dim=2)*size(B,dim=2))
+      end function kronecker_product_iint8
+      pure module function kronecker_product_iint16(A, B) result(C)
+        integer(int16), intent(in) :: A(:,:), B(:,:)
+        integer(int16) :: C(size(A,dim=1)*size(B,dim=1),size(A,dim=2)*size(B,dim=2))
+      end function kronecker_product_iint16
+      pure module function kronecker_product_iint32(A, B) result(C)
+        integer(int32), intent(in) :: A(:,:), B(:,:)
+        integer(int32) :: C(size(A,dim=1)*size(B,dim=1),size(A,dim=2)*size(B,dim=2))
+      end function kronecker_product_iint32
+      pure module function kronecker_product_iint64(A, B) result(C)
+        integer(int64), intent(in) :: A(:,:), B(:,:)
+        integer(int64) :: C(size(A,dim=1)*size(B,dim=1),size(A,dim=2)*size(B,dim=2))
+      end function kronecker_product_iint64
+  end interface kronecker_product
 
 
   ! Cross product (of two vectors)
