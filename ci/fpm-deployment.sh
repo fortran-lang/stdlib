@@ -20,7 +20,6 @@ fi
 
 # Additional files to include
 include=(
-  "ci/fpm.toml"
   "LICENSE"
   "VERSION"
 )
@@ -53,6 +52,9 @@ find example -name "example_*.f90" -exec cp {} "$destdir/example/" \;
 
 # Include additional files
 cp "${include[@]}" "$destdir/"
+
+# Update version in the manifest (not all systems support sed -i)
+sed -E "s,version = \"VERSION\",version = \"$major.$minor.$patch\",g" ci/fpm.toml > "$destdir/fpm.toml"
 
 # Source file workarounds for fpm; ignore missing files
 rm "${prune[@]}"
