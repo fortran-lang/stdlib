@@ -257,10 +257,13 @@ contains
     pure function to_lower(string) result(lower_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: lower_string
-        integer :: i
+        integer, parameter :: wp= 32, la=65, lz= 90
+        integer :: i, icar
 
         do i = 1, len(string)
-            lower_string(i:i) = char_to_lower(string(i:i))
+            icar= ichar(string(i:i)) 
+            if (icar>=la.and.icar<=lz) icar= icar + wp 
+            lower_string(i:i) = char(icar)
         end do
 
     end function to_lower
@@ -272,10 +275,13 @@ contains
     pure function to_upper(string) result(upper_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: upper_string
-        integer :: i
+        integer, parameter :: wp= 32, BA=97, BZ= 122
+        integer :: i, icar
 
         do i = 1, len(string)
-            upper_string(i:i) = char_to_upper(string(i:i))
+            icar= ichar(string(i:i)) 
+            if (icar>=BA.and.icar<=BZ) icar= icar - wp 
+            upper_string(i:i) = char(icar)
         end do
 
     end function to_upper
