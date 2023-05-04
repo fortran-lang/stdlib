@@ -2671,10 +2671,7 @@ contains
         character(len=8) :: header
         character :: buf(4)
         logical :: fortran_order
-        
-        ! stat should be zero if no error occurred
-        stat = 0
-        
+
         read(io, iostat=stat) header
         if (stat /= 0) return
 

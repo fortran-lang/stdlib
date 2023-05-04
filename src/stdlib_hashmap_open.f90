@@ -283,7 +283,7 @@ contains
                     invalid_inmap
             end if
         else if ( associated( map % inverse(inmap) % target ) ) then
-            exists = .true.
+            if ( present(exists) ) exists = .true.
             call copy_other( map % inverse(inmap) % target % other, other )
         else
             if ( present(exists) ) then
