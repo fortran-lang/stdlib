@@ -32,6 +32,7 @@ prune=(
   "$destdir/test/test_hash_functions.f90"
   "$destdir/src/common.f90"
   "$destdir/src/f18estop.f90"
+  "$destdir/example/example_solve.f90"
 )
 
 major=$(cut -d. -f1 VERSION)
