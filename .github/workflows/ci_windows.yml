@@ -38,6 +38,8 @@ jobs:
           mingw-w64-${{ matrix.arch }}-python-setuptools
           mingw-w64-${{ matrix.arch }}-cmake
           mingw-w64-${{ matrix.arch }}-ninja
+          mingw-w64-${{ matrix.arch }}-pkg-config
+          mingw-w64-${{ matrix.arch }}-openblas
 
     - name: Setup msys POSIX environment
       uses: msys2/setup-msys2@v2
@@ -57,7 +59,8 @@ jobs:
     - name: Install fypp
       run: pip install fypp
 
-    - run: >-
+    - name: CMake configuration
+      run: >-
         cmake
         -Wdev
         -B build
@@ -88,3 +91,33 @@ jobs:
 
     - name: Install project
       run: cmake --install build
+
+    - name: CMake configuration with OpenBLAS
+      if: contains(matrix.msystem, 'MINGW')
+      run: >-
+        cmake
+        -Wdev
+        -B build_with_openblas
+        -DCMAKE_BUILD_TYPE=Debug
+        -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
+        -DCMAKE_MAXIMUM_RANK:String=4
+        -DBUILD_OPENBLAS=ON
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+
+    - name: CMake build with OpenBLAS
+      if: contains(matrix.msystem, 'MINGW')
+      run: cmake --build build_with_openblas --parallel
+
+    - name: catch build fail with OpenBLAS
+      if: failure() && contains(matrix.msystem, 'MINGW')
+      run: cmake --build build_with_openblas --verbose --parallel 1
+
+    - name: CTest with OpenBLAS
+      if: contains(matrix.msystem, 'MINGW')
+      run: ctest --test-dir build_with_openblas --output-on-failure --parallel -V -LE quadruple_precision
+
+    - uses: actions/upload-artifact@v1
+      if: failure() && contains(matrix.msystem, 'MINGW')
+      with:
+        name: WindowsCMakeTestlog
+        path: build_with_openblas/Testing/Temporary/LastTest.log

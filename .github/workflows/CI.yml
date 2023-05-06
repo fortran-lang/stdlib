@@ -62,6 +62,12 @@ jobs:
           brew install gcc@${GCC_V} || brew upgrade gcc@${GCC_V} || true
           brew link gcc@${GCC_V}
 
+    - name: Install OpenBLAS Linux
+      if: contains( matrix.os, 'ubuntu')
+      run: |
+        sudo apt-get install pkg-config
+        sudo apt-get install libopenblas-dev
+
     - name: Configure with CMake
       if: ${{ contains(matrix.build, 'cmake') }}
       run: >-
@@ -71,19 +77,46 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -S . -B ${{ env.BUILD_DIR }}
 
+    - name: Configure with CMake and OpenBLAS
+      if: ${{ contains(matrix.build, 'cmake') && contains( matrix.os, 'ubuntu') }}
+      run: >-
+        cmake -Wdev
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_MAXIMUM_RANK:String=4
+        -DBUILD_OPENBLAS=ON
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -S . -B build_with_openblas
+
     - name: Build and compile
       if: ${{ contains(matrix.build, 'cmake') }}
       run: cmake --build ${{ env.BUILD_DIR }} --parallel
 
+    - name: Build and compile with OpenBLAS
+      if: ${{ contains(matrix.build, 'cmake') && contains( matrix.os, 'ubuntu') }}
+      run: cmake --build build_with_openblas --parallel
+
     - name: catch build fail
       run: cmake --build ${{ env.BUILD_DIR }} --verbose --parallel 1
       if: ${{ failure() && contains(matrix.build, 'cmake') }}
+
+    - name: catch build fail with OpenBLAS
+      run: cmake --build build_with_openblas --verbose --parallel 1
+      if: ${{ failure() && contains(matrix.build, 'cmake') && contains( matrix.os, 'ubuntu') }}
 
     - name: test
       if: ${{ contains(matrix.build, 'cmake') }}
       run: >-
         ctest
         --test-dir ${{ env.BUILD_DIR }}
+        --parallel
+        --output-on-failure
+        --no-tests=error
+
+    - name: test with OpenBLAS
+      if: ${{ contains(matrix.build, 'cmake') && contains( matrix.os, 'ubuntu') }}
+      run: >-
+        ctest
+        --test-dir build_with_openblas
         --parallel
         --output-on-failure
         --no-tests=error

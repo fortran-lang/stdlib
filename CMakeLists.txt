@@ -67,9 +67,7 @@ list(
   "-DPROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}"
 )
 
-if(NOT DEFINED BUILD_OPENBLAS)
-  set(BUILD_OPENBLAS OFF CACHE BOOL "Use routines based on OpenBLAS")
-endif()
+option(BUILD_OPENBLAS "Use routines based on OpenBLAS" OFF)
 if(BUILD_OPENBLAS)
   find_package(PkgConfig REQUIRED)
   pkg_check_modules(OPENBLAS REQUIRED openblas)
