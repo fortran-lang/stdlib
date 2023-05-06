@@ -1,0 +1,6 @@
+#! Define BLAS kinds and types
+#:set BLAS_REAL_KINDS = ["sp", "dp"]
+#:set BLAS_CMPLX_KINDS = ["sp", "dp"]
+
+#:set BLAS_REAL_GESV = ["sgesv", "dgesv"]
+#:set BLAS_CMPLX_GESV = ["cgesv", "zgesv"]

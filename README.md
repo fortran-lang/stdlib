@@ -133,6 +133,7 @@ Important options are
   Compiling with maximum rank 15 can be resource intensive and requires at least 16 GB of memory to allow parallel compilation or 4 GB memory for sequential compilation.
 - `-DBUILD_SHARED_LIBS` set to `on` in case you want link your application dynamically against the standard library (default: `off`).
 - `-DBUILD_TESTING` set to `off` in case you want to disable the stdlib tests (default: `on`).
+- `-DBUILD_OPENBLAS` set to `on` in case you want to use routines based on OpenBLAS (default: `off`).
 - `-DCMAKE_VERBOSE_MAKEFILE` is by default set to `Off`, but if set to `On` will show commands used to compile the code.
 - `-DCMAKE_BUILD_TYPE` is by default set to `RelWithDebInfo`, which uses compiler flags suitable for code development (but with only `-O2` optimization). Beware the compiler flags set this way will override any compiler flags specified via `FFLAGS`. To prevent this, use `-DCMAKE_BUILD_TYPE=NoConfig` in conjunction with `FFLAGS`.
 

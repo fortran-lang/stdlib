@@ -67,6 +67,19 @@ list(
   "-DPROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}"
 )
 
+if(NOT DEFINED BUILD_OPENBLAS)
+  set(BUILD_OPENBLAS OFF CACHE BOOL "Use routines based on OpenBLAS")
+endif()
+if(BUILD_OPENBLAS)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(OPENBLAS REQUIRED openblas)
+  if(OPENBLAS_FOUND)
+    list(APPEND fyppFlags "-DUSE_OPENBLAS")
+    include_directories(${OPENBLAS_INCLUDE_DIRS})
+    link_directories(${OPENBLAS_LIBRARY_DIRS})
+  endif()
+endif()
+
 add_subdirectory(src)
 
 if(BUILD_TESTING)

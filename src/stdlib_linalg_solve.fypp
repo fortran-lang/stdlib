@@ -1,0 +1,20 @@
+#:include "common.fypp"
+#:include "BLAS_common.fypp"
+#:set REAL_KINDS_TYPES_GESV = list(zip(BLAS_REAL_KINDS, REAL_TYPES, BLAS_REAL_GESV))
+#:set CMPLX_KINDS_TYPES_GESV = list(zip(BLAS_CMPLX_KINDS, CMPLX_TYPES, BLAS_CMPLX_GESV))
+#:set RC_KINDS_TYPES_GESV = REAL_KINDS_TYPES_GESV + CMPLX_KINDS_TYPES_GESV
+submodule (stdlib_linalg) stdlib_linalg_solve
+    implicit none
+contains
+    #:for k1, t1, g1 in RC_KINDS_TYPES_GESV
+    module function solve_${t1[0]}$${k1}$(a, b) result(x)
+        ${t1}$, intent(in) :: a(:, :), b(:, :)
+        ${t1}$ :: x(size(b, 1), size(b, 2))
+        ${t1}$ :: a_local(size(a, 1), size(a, 2))
+        integer :: ipiv(size(a, 1)), info
+        a_local = a
+        x = b
+        call ${g1}$(size(a, 1), size(b, 2), a_local, size(a, 1), ipiv, x, size(b, 1), info)
+    end function solve_${t1[0]}$${k1}$
+    #:endfor
+end submodule stdlib_linalg_solve

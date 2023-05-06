@@ -62,6 +62,12 @@ set(fppFiles
     stdlib_version.fypp
 )
 
+if(BUILD_OPENBLAS AND OPENBLAS_FOUND)
+  list(
+    APPEND fppFiles
+    stdlib_linalg_solve.fypp
+  )
+endif()
 
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
@@ -85,6 +91,7 @@ set(SRC
 )
 
 add_library(${PROJECT_NAME} ${SRC})
+target_link_libraries(${PROJECT_NAME} ${OPENBLAS_LIBRARIES})
 
 set_target_properties(
   ${PROJECT_NAME}

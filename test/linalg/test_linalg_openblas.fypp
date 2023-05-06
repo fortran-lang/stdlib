@@ -1,0 +1,71 @@
+#:include "common.fypp"
+#:include "BLAS_common.fypp"
+#:set REAL_KINDS_TYPES = list(zip(BLAS_REAL_KINDS, REAL_TYPES))
+#:set CMPLX_KINDS_TYPES = list(zip(BLAS_CMPLX_KINDS, CMPLX_TYPES))
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+module test_linalg_openblas
+    use testdrive, only: new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_kinds, only: sp, dp
+    use stdlib_linalg, only: solve
+    implicit none
+    real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
+    real(dp), parameter :: dptol = 1000 * epsilon(1._dp)
+contains
+    subroutine collect_linalg_openblas(testsuite)
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+        #:set IMPLEMENTED_TESTS = ['solve']
+        #:set NUM_TESTS = int(len(IMPLEMENTED_TESTS)*len(RC_KINDS_TYPES))
+        #! set testsuite dynamically
+        allocate(testsuite, source=[&
+            #:set TESTS_WRITTEN = 0
+            #:for cur_test in IMPLEMENTED_TESTS
+            #:for k1, t1 in RC_KINDS_TYPES
+            #! note that one has to use set directives to increment variable
+            #:set TESTS_WRITTEN = TESTS_WRITTEN + 1
+            #! last test in list should not have comma
+            #:if TESTS_WRITTEN < NUM_TESTS
+              new_unittest("${cur_test}$_${t1[0]}$${k1}$", test_${cur_test}$_${t1[0]}$${k1}$), &
+            #:else
+              new_unittest("${cur_test}$_${t1[0]}$${k1}$", test_${cur_test}$_${t1[0]}$${k1}$) &
+            #:endif
+        #:endfor
+      #:endfor
+        ])
+    end subroutine collect_linalg_openblas
+    #:for k1, t1 in RC_KINDS_TYPES
+    subroutine test_solve_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        ${t1}$ :: a(2, 2), b(2, 1), x(2, 1)
+        a = reshape([1, 3, 2, 5], [2, 2])
+        b = reshape([1, 2], [2, 1])
+        x = solve(a, b)
+        call check(error, sum(abs(x(:,1)-[-1, 1])) < ${k1}$tol, "sum(abs(x-[-1, 1])) < ${k1}$tol failed.")
+    end subroutine test_solve_${t1[0]}$${k1}$
+    #:endfor
+end module test_linalg_openblas
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_linalg_openblas, only : collect_linalg_openblas
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    allocate (testsuites, source=[&
+        new_testsuite("linalg_openblas", collect_linalg_openblas) &
+    ])
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program

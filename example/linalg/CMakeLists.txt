@@ -14,3 +14,7 @@ ADD_EXAMPLE(is_symmetric)
 ADD_EXAMPLE(is_triangular)
 ADD_EXAMPLE(outer_product)
 ADD_EXAMPLE(trace)
+
+if(BUILD_OPENBLAS AND OPENBLAS_FOUND)
+  ADD_EXAMPLE(solve)
+endif()
