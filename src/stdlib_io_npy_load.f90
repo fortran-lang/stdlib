@@ -2734,6 +2734,9 @@ contains
 
         integer :: minor
 
+        ! stat should be zero if no error occurred
+        stat = 0
+
         if (header(1:1) /= magic_number) then
             stat = 1
             msg = "Expected z'93' but got z'"//to_string(ichar(header(1:1)))//"' "//&
