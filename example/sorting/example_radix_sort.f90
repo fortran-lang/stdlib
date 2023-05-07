@@ -23,16 +23,7 @@ program example_radix_sort
 
     allocate (arrf64(10))
     x = 0.0 ! divide zero will arise compile error
-    arrf64(1) = 1.0/x
-    arrf64(2) = 0.0
-    arrf64(3) = 0.0/x
-    arrf64(4) = -1.0/x
-    arrf64(5) = -0.0
-    arrf64(6) = 1.0
-    arrf64(7) = -1.0
-    arrf64(8) = 3.45
-    arrf64(9) = -3.14
-    arrf64(10) = 3.44
+    arrf64 = [1.0/x, 0.0, 0.0/x, -1.0/x, -0.0, 1.0, -1.0, 3.45, -3.14, 3.44]
     call radix_sort(arrf64)
     print *, arrf64
     ! In my computer, it gives

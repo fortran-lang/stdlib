@@ -529,7 +529,7 @@ contains
         end if
         write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
-            test_size, a_name, "Sort", tdiff/rate
+            test_size, a_name, "Radix_sort", tdiff/rate
 
         ! reverse
         dummy = a
