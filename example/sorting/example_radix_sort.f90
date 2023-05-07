@@ -1,17 +1,10 @@
 program example_radix_sort
-    use iso_fortran_env
-    use iso_c_binding
-    use ieee_arithmetic
-    use stdlib_sorting, only: radix_sort, ord_sort
+    use iso_fortran_env, only: int8, int16, dp => real64
+    use stdlib_sorting, only: radix_sort
     implicit none
     integer(int8), allocatable :: arri8(:)
     integer(int16), allocatable :: arri16(:)
-    real(real64), allocatable, target :: arrf64(:), x
-
-    real(real32), dimension(:, :), allocatable :: arr1, arr2
-    real(real32), dimension(:), allocatable :: work
-    integer :: i, test_size, repeat
-    real :: start, stop
+    real(dp), allocatable, target :: arrf64(:), x
 
     arri8 = [-128, 127, 0, -1, 1]
     call radix_sort(arri8)
@@ -22,33 +15,11 @@ program example_radix_sort
     print *, arri16
 
     allocate (arrf64(10))
-    x = 0.0 ! divide zero will arise compile error
-    arrf64 = [1.0/x, 0.0, 0.0/x, -1.0/x, -0.0, 1.0, -1.0, 3.45, -3.14, 3.44]
+    x = 0.0_dp ! divide zero will arise compile error
+    arrf64 = [1.0_dp/x, 0.0_dp, 0.0_dp/x, -1.0_dp/x, -0.0_dp, 1.0_dp, -1.0_dp, 3.45_dp, -3.14_dp, 3.44_dp]
     call radix_sort(arrf64)
     print *, arrf64
     ! In my computer, it gives
     ! nan, -inf, -3.14, -1.0, -0.0, 0.0, 1.0, 3.44, 3.45, inf
     ! but the position of nan is undefined, the position of `±inf`, `±0.0` is as expected
-
-    test_size = 100000
-    repeat = 100
-    allocate (arr1(test_size, repeat))
-    allocate (arr2(test_size, repeat))
-    call random_number(arr1)
-    arr1 = arr1 - 0.5
-    arr2(:, :) = arr1(:, :)
-    allocate (work(test_size))
-    call cpu_time(start)
-    do i = 1, repeat
-        call ord_sort(arr1(:, i), work)
-    end do
-    call cpu_time(stop)
-    print *, "ord_sort time = ", (stop - start)
-    call cpu_time(start)
-    do i = 1, repeat
-        call radix_sort(arr2(:, i), work)
-    end do
-    call cpu_time(stop)
-    print *, "radix_sort time = ", (stop - start)
-    print *, all(arr1 == arr2)
 end program example_radix_sort
