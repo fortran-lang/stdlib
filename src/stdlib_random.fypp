@@ -85,7 +85,7 @@ module stdlib_random
         st(2) = ieor(st(2), st(3))
         st(1) = ieor(st(1), st(4))
         st(3) = ieor(st(3), t)
-        st(4) = ishftc(st(4),45)
+        st(4) = ishftc(st(4), 45)
     end function xoshiro256ss
 
     function splitmix64(s) result(res)
