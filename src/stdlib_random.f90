@@ -125,26 +125,15 @@ module stdlib_random
         integer(int64) :: res, t
 
         if(.not. seed_initialized) call random_distribution_seed_iint64(si,t)
-        res = rol64(st(2) * 5, 7) * 9
+        res = ishftc(st(2) * 5, 7) * 9
         t = shiftl(st(2), 17)
         st(3) = ieor(st(3), st(1))
         st(4) = ieor(st(4), st(2))
         st(2) = ieor(st(2), st(3))
         st(1) = ieor(st(1), st(4))
         st(3) = ieor(st(3), t)
-        st(4) = rol64(st(4), 45)
+        st(4) = ishftc(st(4), 45)
     end function xoshiro256ss
-
-    pure function rol64(x, k) result(res)
-        integer(int64), intent(in) :: x
-        integer, intent(in) :: k
-        integer(int64) :: t1, t2, res
-
-        t1 = shiftr(x, (64 - k))
-        t2 = shiftl(x, k)
-        res = ior(t1, t2)
-    end function rol64
-
 
     function splitmix64(s) result(res)
     ! Written in 2015 by Sebastiano Vigna (vigna@acm.org)
