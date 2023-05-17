@@ -235,8 +235,8 @@ contains
         end if
         call radix_sort_u16_helper(N, array, buffer)
 ! After calling `radix_sort_u<width>_helper. The array is sorted as unsigned integers.
-! In the view of signed arrsy, the negative numbers are sorted but in the tail of the array.
-! Use binary search to find the boundary, and move then to correct position.
+! In the view of signed array, the negative numbers are sorted but in the tail of the array.
+! Use binary search to find the boundary, and move them to correct position.
         if (array(1) >= 0 .and. array(N) < 0) then
             start = 1
             end = N
