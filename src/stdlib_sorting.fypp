@@ -430,6 +430,7 @@ module stdlib_sorting
 !! The generic subroutine interface implementing the LSD radix sort algorithm,
 !! see https://en.wikipedia.org/wiki/Radix_sort for more details.
 !! It is always O(N) in sorting random data, but need a O(N) buffer.
+!! ([Specification](../page/specs/stdlib_sorting.html#radix_sort-sorts-an-input-array))
 !!
 
         pure module subroutine int8_radix_sort(array, reverse)

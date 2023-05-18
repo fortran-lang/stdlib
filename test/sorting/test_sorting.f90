@@ -38,7 +38,7 @@ module test_sorting
         string_rand(0:string_size-1)
 
     integer(int32)          :: dummy(0:test_size-1)
-    real(sp)            :: real_dummy(0:test_size-1)
+    real(sp)                :: real_dummy(0:test_size-1)
     character(len=4)        :: char_dummy(0:char_size-1)
     type(string_type)       :: string_dummy(0:string_size-1)
     integer(int_size)       :: index(0:max(test_size, char_size, string_size)-1)
