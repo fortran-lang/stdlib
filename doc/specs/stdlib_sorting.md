@@ -201,13 +201,13 @@ low, being of order O(Ln(N)), while the memory requirements of
 #### The `RADIX_SORT` subroutine
 
 `RADIX_SORT` is a implementation of LSD [radix sort](https://en.wikipedia.org/wiki/Radix_sort),
-using `256` (one byte) as the radix. It only works for fixed width data,
+using `256` as the radix. It only works for fixed width data,
 thus integers and reals. `RADIX_SORT` is always of O(N) runtime performance
 for any input data. For large and random data, it is about five (or more)
 times faster than other sort subroutines.
 
 The `RADIX_SORT` needs a buffer that have same size of the input data.
-Your can provide it using `work` arguement, if not the subroutine will
+Your can provide it using `work` argument, if not the subroutine will
 allocate the buffer and deallocate before return.
 
 ### Specifications of the `stdlib_sorting` procedures
@@ -362,7 +362,7 @@ input elements will be sorted in order of non-decreasing value.
 array, and shall have at least `size(array)` elements. It is an
 `intent(inout)` argument, and its contents on return are undefined.
 
-`reverse` (optional): shall be a scalar of type default logical. It
+`reverse` (optional): shall be a scalar of type default `logical`. It
 is an `intent(in)` argument. If present with a value of `.true.` then
 `array` will be sorted in order of non-increasing values in unstable
 order. Otherwise index will sort `array` in order of non-decreasing
@@ -370,9 +370,9 @@ values in unstable order.
 
 ##### Notes
 
-`SORT` implements a LSD radix sort algorithm with a `256` radix. For any
+`radix_sort` implements a LSD radix sort algorithm with a `256` radix. For any
 input data it provides `O(N)` run time performance. If `array` is of
-any type `REAL` the order of its elements on return undefined if any
+any type `real` the order of its elements on return undefined if any
 element of `array` is a `NaN`.
 
 ##### Example
