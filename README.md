@@ -199,6 +199,14 @@ To use `stdlib` within your `fpm` project, add the following lines to your `fpm.
 stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
 ```
 
+> **Warning**
+> 
+> Fpm 0.8.2 and later implements stdlib as a *metapackage*.
+> To include the standard library metapackage, change the dependency to:
+> `stdlib = "*"`.
+> 
+> see also https://github.com/fortran-lang/fpm/pull/859
+
 ## Using stdlib in your project
 
 The stdlib project exports CMake package files and pkg-config files to make stdlib usable for other projects.
