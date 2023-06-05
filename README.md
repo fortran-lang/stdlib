@@ -201,11 +201,11 @@ stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
 
 > **Warning**
 > 
-> Fpm 0.8.2 and later implements stdlib as a *metapackage*.
+> Fpm 0.9.0 and later implements stdlib as a *metapackage*.
 > To include the standard library metapackage, change the dependency to:
 > `stdlib = "*"`.
 > 
-> see also https://github.com/fortran-lang/fpm/pull/859
+> see also https://fpm.fortran-lang.org/en/spec/metapackages.html
 
 ## Using stdlib in your project
 
