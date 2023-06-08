@@ -36,7 +36,7 @@ Elemental function (passing both `loc` and `scale`).
 
 `loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`scale`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
+`scale`: optional argument has `intent(in)` and is a positive scalar of type `real` or `complex`.
 
 `array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
 
@@ -44,7 +44,7 @@ Elemental function (passing both `loc` and `scale`).
 
 ### Return value
 
-The result is a scalar or rank-1 array, with a size of `array_size`, and as the same type of `scale` and `loc`.
+The result is a scalar or rank-1 array, with a size of `array_size`, and the same type as `scale` and `loc`. If `scale` is non-positive, the result is `NaN`.
 
 ### Example
 
@@ -88,7 +88,7 @@ All three arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to the arguments, and of the same type as the input arguments. If `scale` is non-positive, the result is `NaN`.
+The result is a scalar or an array, with a shape conformable to the arguments, and the same type as the input arguments. If `scale` is non-positive, the result is `NaN`.
 
 ### Example
 
@@ -134,7 +134,7 @@ All three arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to arguments, as the same type of input arguments. If `scale` is non-positive, the result is `NaN`.
+The result is a scalar or an array, with a shape conformable to arguments, as the same type as the input arguments. If `scale` is non-positive, the result is `NaN`.
 
 ### Example
 
