@@ -14,7 +14,7 @@ Experimental
 
 ### Description
 
-A normal continuous random variate distribution, also known as Gaussian, or Gauss or Laplace-Gauss distribution. The location `loc` specifies the mean or expectation ($\mu$). The `scale` specifies the standard deviation ($\sigma$). 
+A normal continuous random variate distribution, also known as Gaussian, or Gauss or Laplace-Gauss distribution. The location `loc` specifies the mean or expectation ($\mu$). The `scale` specifies the standard deviation ($\sigma$).
 
 Without argument, the function returns a standard normal distributed random variate $N(0,1)$.
 
@@ -82,13 +82,13 @@ Elemental function
 
 `loc`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`scale`: has `intent(in)` and is a scalar of type `real` or `complex`.
+`scale`: has `intent(in)` and is a positive scalar of type `real` or `complex`.
 
 All three arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to the arguments, and of the same type as the input arguments.
+The result is a scalar or an array, with a shape conformable to the arguments, and of the same type as the input arguments. If `scale` is non-positive, the result is `NaN`.
 
 ### Example
 
@@ -128,13 +128,13 @@ Elemental function
 
 `loc`: has `intent(in)` and is a scalar of type `real` or `complex`.
 
-`scale`: has `intent(in)` and is a scalar of type `real` or `complex`.
+`scale`: has `intent(in)` and is a positive scalar of type `real` or `complex`.
 
 All three arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to arguments, as the same type of input arguments.
+The result is a scalar or an array, with a shape conformable to arguments, as the same type of input arguments. If `scale` is non-positive, the result is `NaN`.
 
 ### Example
 
