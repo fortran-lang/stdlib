@@ -3,7 +3,6 @@
 module stdlib_stats_distribution_normal
     use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
     use stdlib_kinds, only: sp, dp, xdp, qp, int32
-    use stdlib_error, only: error_stop
     use stdlib_random, only: dist_rand
     use stdlib_stats_distribution_uniform, only: uni => rvs_uniform
 
