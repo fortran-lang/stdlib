@@ -134,7 +134,7 @@ All three arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to arguments, as the same type as the input arguments. If `scale` is non-positive, the result is `NaN`.
+The result is a scalar or an array, with a shape conformable to the arguments, and the same type as the input arguments. If `scale` is non-positive, the result is `NaN`.
 
 ### Example
 
