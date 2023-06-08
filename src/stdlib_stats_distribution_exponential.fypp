@@ -265,8 +265,10 @@ contains
         ${t1}$, intent(in) :: x, lambda
         real(${k1}$) :: res
 
-        if ((lambda <= 0._${k1}$) .or. (x < 0._${k1}$)) then
+        if (lambda <= 0._${k1}$) then
             res = ieee_value(1._${k1}$, ieee_quiet_nan)
+        else if (x < 0._${k1}$) then
+            res = 0._${k1}$
         else
             res = exp(- x * lambda) * lambda
         end if
@@ -299,8 +301,10 @@ contains
         ${t1}$, intent(in) :: x, lambda
         real(${k1}$) :: res
 
-        if ((lambda <= 0._${k1}$) .or. (x < 0._${k1}$)) then
+        if (lambda <= 0._${k1}$) then
             res = ieee_value(1._${k1}$, ieee_quiet_nan)
+        else if (x < 0._${k1}$) then
+            res = 0._${k1}$
         else
             res = 1.0_${k1}$ - exp(- x * lambda)
         end if
