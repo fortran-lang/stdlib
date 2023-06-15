@@ -200,7 +200,7 @@ low, being of order O(Ln(N)), while the memory requirements of
 
 #### The `RADIX_SORT` subroutine
 
-`RADIX_SORT` is a implementation of LSD [radix sort](https://en.wikipedia.org/wiki/Radix_sort),
+`RADIX_SORT` is a implementation of LSD [radix sort](https://www.growingwiththeweb.com/sorting/radix-sort-lsd/),
 using `256` as the radix. It only works for fixed width data,
 thus integers and reals. `RADIX_SORT` is always of O(N) runtime performance
 for any input data. For large and random data, it is about five (or more)
