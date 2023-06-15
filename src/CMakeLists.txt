@@ -76,6 +76,7 @@ set(SRC
     stdlib_hashmap_chaining.f90
     stdlib_hashmap_open.f90
     stdlib_logger.f90
+    stdlib_sorting_radix_sort.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90

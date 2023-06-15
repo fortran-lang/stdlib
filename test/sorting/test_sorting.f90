@@ -27,6 +27,7 @@ module test_sorting
         rand2(0:test_size-1),     &
         rand3(0:test_size-1),     &
         rand10(0:test_size-1)
+    real(sp) :: rand_r32(0:test_size-1)
     character(len=4) ::               &
         char_decrease(0:char_size-1), &
         char_increase(0:char_size-1), &
@@ -37,6 +38,7 @@ module test_sorting
         string_rand(0:string_size-1)
 
     integer(int32)          :: dummy(0:test_size-1)
+    real(sp)                :: real_dummy(0:test_size-1)
     character(len=4)        :: char_dummy(0:char_size-1)
     type(string_type)       :: string_dummy(0:string_size-1)
     integer(int_size)       :: index(0:max(test_size, char_size, string_size)-1)
@@ -64,6 +66,8 @@ contains
             new_unittest('int_ord_sorts', test_int_ord_sorts), &
             new_unittest('char_ord_sorts', test_char_ord_sorts), &
             new_unittest('string_ord_sorts', test_string_ord_sorts), &
+            new_unittest('int_radix_sorts', test_int_radix_sorts), &
+            new_unittest('real_radix_sorts', test_real_radix_sorts), &
             new_unittest('int_sorts', test_int_sorts), &
             new_unittest('char_sorts', test_char_sorts), &
             new_unittest('string_sorts', test_string_sorts), &
@@ -115,6 +119,9 @@ contains
             call random_number( arand )
             rand10(i) = int( floor( arand * test_size ), kind=int32 )
         end do
+
+        call random_number(rand_r32)
+        rand_r32 = rand_r32 - 0.5 ! to test both positive and negative numbers
 
         count = 0
         do i=0, char_set_size-1
@@ -446,6 +453,158 @@ contains
 
     end subroutine test_string_ord_sort
 
+    subroutine test_int_radix_sorts(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        integer(int64)       :: i
+        integer, allocatable :: d1(:)
+        logical              :: ltest
+
+        call test_int_radix_sort( blocks, "Blocks", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_radix_sort( decrease, "Decreasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_radix_sort( identical, "Identical", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_radix_sort( increase, "Increasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_radix_sort( rand1, "Random dense", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_radix_sort( rand2, "Random order", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_radix_sort( rand0, "Random sparse", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_radix_sort( rand3, "Random 3", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_radix_sort( rand10, "Random 10", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        !triggered an issue in  insertion
+        d1 = [10, 2, -3, -4, 6, -6, 7, -8, 9, 0, 1, 20]
+        call sort( d1 )
+        call verify_sort( d1, ltest, i )
+        call check(error, ltest)
+
+    end subroutine test_int_radix_sorts
+
+    subroutine test_int_radix_sort( a, a_name, ltest )
+        integer(int32), intent(in) :: a(:)
+        character(*), intent(in)   :: a_name
+        logical, intent(out) :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            dummy = a
+            call system_clock( t0, rate )
+            call radix_sort( dummy )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "RADIX_SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+        end if
+        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            test_size, a_name, "Radix_Sort", tdiff/rate
+
+        ! reverse
+        dummy = a
+        call radix_sort( dummy, reverse = .true.)
+        call verify_reverse_sort(dummy, valid, i)
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "reverse RADIX_SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+        end if
+
+    end subroutine test_int_radix_sort
+
+    subroutine test_real_radix_sort( a, a_name, ltest )
+        real(sp), intent(in) :: a(:)
+        character(*), intent(in)   :: a_name
+        logical, intent(out) :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            real_dummy = a
+            call system_clock( t0, rate )
+            call radix_sort( real_dummy )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_real_sort( real_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "RADIX_SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a12, 2f12.5)') 'real_dummy(i-1:i) = ', real_dummy(i-1:i)
+        end if
+        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            test_size, a_name, "Radix_Sort", tdiff/rate
+
+        ! reverse
+        real_dummy = a
+        call radix_sort( real_dummy, reverse = .true.)
+        call verify_real_reverse_sort(real_dummy, valid, i)
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "reverse RADIX_SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a12, 2f12.5)') 'real_dummy(i-1:i) = ', real_dummy(i-1:i)
+        end if
+
+    end subroutine test_real_radix_sort
+
+    subroutine test_real_radix_sorts(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical              :: ltest
+
+        call test_real_radix_sort( rand_r32, "rand-real32", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+    end subroutine test_real_radix_sorts
 
     subroutine test_int_sorts(error)
         !> Error handling
@@ -903,7 +1062,21 @@ contains
 
     end subroutine verify_sort
 
+    subroutine verify_real_sort( a, valid, i )
+        real(sp), intent(in) :: a(0:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
 
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n-1
+            if ( a(i-1) > a(i) ) return
+        end do
+        valid = .true.
+
+    end subroutine verify_real_sort
 
     subroutine verify_string_sort( a, valid, i )
         type(string_type), intent(in) :: a(0:)
@@ -968,6 +1141,22 @@ contains
         valid = .true.
 
     end subroutine verify_reverse_sort
+
+    subroutine verify_real_reverse_sort( a, valid, i )
+        real(sp), intent(in) :: a(0:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n-1
+            if ( a(i-1) < a(i) ) return
+        end do
+        valid = .true.
+
+    end subroutine verify_real_reverse_sort
 
     subroutine verify_string_reverse_sort( a, valid, i )
         type(string_type), intent(in) :: a(0:)
