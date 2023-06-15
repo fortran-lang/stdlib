@@ -229,6 +229,51 @@ module stdlib_sorting
 !!    ...
 !!```
 
+    public radix_sort
+!! Version: experimental
+!!
+!! The generic subroutine implementing the LSD radix sort algorithm to return
+!! an input array with its elements sorted in order of (non-)decreasing
+!! value. Its use has the syntax:
+!!
+!!     call radix_sort( array[, work, reverse] )
+!!
+!! with the arguments:
+!!
+!! * array: the rank 1 array to be sorted. It is an `intent(inout)`
+!!   argument of any of the types `integer(int8)`, `integer(int16)`,
+!!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`.
+!!   If both the type of `array` is real and at least one of the
+!!   elements is a `NaN`, then the ordering of the result is undefined.
+!!   Otherwise it is defined to be the original elements in
+!!   non-decreasing order. Especially, -0.0 is lesser than 0.0.
+!!
+!! * work (optional): shall be a rank 1 array of the same type as
+!!   `array`, and shall have at least `size(array)` elements. It is an
+!!   `intent(inout)` argument to be used as buffer. Its value on return is
+!!   undefined. If it is not present, `radix_sort` will allocate a
+!!   buffer for use, and deallocate it before return. If you do several
+!!   similar `radix_sort`s, reusing the `work` array is a good parctice.
+!!   This argument is not present for `int8_radix_sort` because it use
+!!   counting sort, so no buffer is needed.
+!!
+!! * `reverse` (optional): shall be a scalar of type default logical. It
+!!   is an `intent(in)` argument. If present with a value of `.true.` then
+!!   `array` will be sorted in order of non-increasing values in stable
+!!   order. Otherwise index will sort `array` in order of non-decreasing
+!!   values in stable order.
+!!
+!!#### Example
+!!
+!!```fortran
+!!    ...
+!!    ! Read random data from a file
+!!    call read_file( 'dummy_file', array )
+!!    ! Sort the random data
+!!    call radix_sort( array )
+!!    ...
+!!```
+
     public sort_index
 !! Version: experimental
 !!
@@ -438,6 +483,50 @@ module stdlib_sorting
 
 
     end interface ord_sort
+    interface radix_sort
+!! Version: experimental
+!!
+!! The generic subroutine interface implementing the LSD radix sort algorithm,
+!! see https://en.wikipedia.org/wiki/Radix_sort for more details.
+!! It is always O(N) in sorting random data, but need a O(N) buffer.
+!! ([Specification](../page/specs/stdlib_sorting.html#radix_sort-sorts-an-input-array))
+!!
+
+        pure module subroutine int8_radix_sort(array, reverse)
+            integer(kind=int8), dimension(:), intent(inout) :: array
+            logical, intent(in), optional :: reverse
+        end subroutine int8_radix_sort
+
+        pure module subroutine int16_radix_sort(array, work, reverse)
+            integer(kind=int16), dimension(:), intent(inout) :: array
+            integer(kind=int16), dimension(:), intent(inout), target, optional :: work
+            logical, intent(in), optional :: reverse
+        end subroutine int16_radix_sort
+
+        pure module subroutine int32_radix_sort(array, work, reverse)
+            integer(kind=int32), dimension(:), intent(inout) :: array
+            integer(kind=int32), dimension(:), intent(inout), target, optional :: work
+            logical, intent(in), optional :: reverse
+        end subroutine int32_radix_sort
+
+        pure module subroutine int64_radix_sort(array, work, reverse)
+            integer(kind=int64), dimension(:), intent(inout) :: array
+            integer(kind=int64), dimension(:), intent(inout), target, optional :: work
+            logical, intent(in), optional :: reverse
+        end subroutine int64_radix_sort
+
+        module subroutine sp_radix_sort(array, work, reverse)
+            real(kind=sp), dimension(:), intent(inout), target :: array
+            real(kind=sp), dimension(:), intent(inout), target, optional :: work
+            logical, intent(in), optional :: reverse
+        end subroutine sp_radix_sort
+
+        module subroutine dp_radix_sort(array, work, reverse)
+            real(kind=dp), dimension(:), intent(inout), target :: array
+            real(kind=dp), dimension(:), intent(inout), target, optional :: work
+            logical, intent(in), optional :: reverse
+        end subroutine dp_radix_sort
+    end interface radix_sort
 
     interface sort
 !! Version: experimental
