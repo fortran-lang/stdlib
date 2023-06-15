@@ -1,6 +1,6 @@
 module stdlib_stats_distribution_exponential
+    use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
     use stdlib_kinds, only : sp, dp, xdp, qp, int32
-    use stdlib_error, only : error_stop
     use stdlib_random, only : dist_rand
     use stdlib_stats_distribution_uniform, only : uni=>rvs_uniform
 
@@ -73,7 +73,7 @@ module stdlib_stats_distribution_exponential
 
 contains
 
-    subroutine zigset
+    impure subroutine zigset
     ! Marsaglia & Tsang generator for random normals & random exponentials.
     ! Translated from C by Alan Miller (amiller@bigpond.net.au)
     !
@@ -92,7 +92,7 @@ contains
 
         de = 7.697117470131487_dp
         te = de
-    !tables for random exponetials
+    ! tables for random exponentials
         q = ve * exp(de)
         ke(0) = int((de / q) * M2, kind = int32)
         ke(1) = 0
@@ -113,7 +113,7 @@ contains
 
 
 
-    function rvs_exp_0_rsp( ) result(res)
+    impure function rvs_exp_0_rsp( ) result(res)
     !
     ! Standard exponential random variate (lambda=1)
     !
@@ -123,8 +123,8 @@ contains
 
         if(.not. zig_exp_initialized ) call zigset
         iz = 0
-        jz = dist_rand(1_int32)                !32bit random integer
-        iz = iand( jz, 255 )                   !random integer in [0, 255]
+        jz = dist_rand(1_int32)                ! 32bit random integer
+        iz = iand( jz, 255 )                   ! random integer in [0, 255]
         if( abs( jz ) < ke(iz) ) then
             res = abs(jz) * we(iz)
         else
@@ -148,7 +148,7 @@ contains
        endif
     end function rvs_exp_0_rsp
 
-    function rvs_exp_0_rdp( ) result(res)
+    impure function rvs_exp_0_rdp( ) result(res)
     !
     ! Standard exponential random variate (lambda=1)
     !
@@ -158,8 +158,8 @@ contains
 
         if(.not. zig_exp_initialized ) call zigset
         iz = 0
-        jz = dist_rand(1_int32)                !32bit random integer
-        iz = iand( jz, 255 )                   !random integer in [0, 255]
+        jz = dist_rand(1_int32)                ! 32bit random integer
+        iz = iand( jz, 255 )                   ! random integer in [0, 255]
         if( abs( jz ) < ke(iz) ) then
             res = abs(jz) * we(iz)
         else
@@ -187,39 +187,41 @@ contains
 
 
 
-    function rvs_exp_rsp(lambda) result(res)
+    impure elemental function rvs_exp_rsp(lambda) result(res)
     !
     ! Exponential distributed random variate
     !
         real(sp), intent(in) :: lambda
         real(sp) :: res
 
-
-        if(lambda <= 0.0_sp) call error_stop("Error(rvs_exp): Exponen"   &
-            //"tial distribution lambda parameter must be greater than zero")
-        res = rvs_exp_0_rsp(  )
-        res = res / lambda
+        if (lambda <= 0._sp) then
+            res = ieee_value(1._sp, ieee_quiet_nan)
+        else
+            res = rvs_exp_0_rsp(  )
+            res = res / lambda
+        end if
     end function rvs_exp_rsp
 
-    function rvs_exp_rdp(lambda) result(res)
+    impure elemental function rvs_exp_rdp(lambda) result(res)
     !
     ! Exponential distributed random variate
     !
         real(dp), intent(in) :: lambda
         real(dp) :: res
 
-
-        if(lambda <= 0.0_dp) call error_stop("Error(rvs_exp): Exponen"   &
-            //"tial distribution lambda parameter must be greater than zero")
-        res = rvs_exp_0_rdp(  )
-        res = res / lambda
+        if (lambda <= 0._dp) then
+            res = ieee_value(1._dp, ieee_quiet_nan)
+        else
+            res = rvs_exp_0_rdp(  )
+            res = res / lambda
+        end if
     end function rvs_exp_rdp
 
 
 
 
 
-    function rvs_exp_csp(lambda) result(res)
+    impure elemental function rvs_exp_csp(lambda) result(res)
         complex(sp), intent(in) :: lambda
         complex(sp) :: res
         real(sp) :: tr, ti
@@ -229,7 +231,7 @@ contains
         res = cmplx(tr, ti, kind=sp)
     end function rvs_exp_csp
 
-    function rvs_exp_cdp(lambda) result(res)
+    impure elemental function rvs_exp_cdp(lambda) result(res)
         complex(dp), intent(in) :: lambda
         complex(dp) :: res
         real(dp) :: tr, ti
@@ -243,15 +245,17 @@ contains
 
 
 
-    function rvs_exp_array_rsp(lambda, array_size) result(res)
+    impure function rvs_exp_array_rsp(lambda, array_size) result(res)
         real(sp), intent(in) :: lambda
         integer, intent(in) :: array_size
         real(sp) :: res(array_size), x, re
         real(sp), parameter :: r = 7.69711747013104972_sp
         integer :: jz, iz, i
 
-        if(lambda <= 0.0_sp) call error_stop("Error(rvs_exp_array): Exp" &
-            //"onential distribution lambda parameter must be greater than zero")
+        if (lambda <= 0._sp) then
+            res = ieee_value(1._sp, ieee_quiet_nan)
+            return
+        end if
 
         if(.not. zig_exp_initialized) call zigset
         do i = 1, array_size
@@ -283,15 +287,17 @@ contains
         end do
     end function rvs_exp_array_rsp
 
-    function rvs_exp_array_rdp(lambda, array_size) result(res)
+    impure function rvs_exp_array_rdp(lambda, array_size) result(res)
         real(dp), intent(in) :: lambda
         integer, intent(in) :: array_size
         real(dp) :: res(array_size), x, re
         real(dp), parameter :: r = 7.69711747013104972_dp
         integer :: jz, iz, i
 
-        if(lambda <= 0.0_dp) call error_stop("Error(rvs_exp_array): Exp" &
-            //"onential distribution lambda parameter must be greater than zero")
+        if (lambda <= 0._dp) then
+            res = ieee_value(1._dp, ieee_quiet_nan)
+            return
+        end if
 
         if(.not. zig_exp_initialized) call zigset
         do i = 1, array_size
@@ -327,7 +333,7 @@ contains
 
 
 
-    function rvs_exp_array_csp(lambda, array_size) result(res)
+    impure function rvs_exp_array_csp(lambda, array_size) result(res)
         complex(sp), intent(in) :: lambda
         integer, intent(in) :: array_size
         complex(sp) :: res(array_size)
@@ -341,7 +347,7 @@ contains
         end do
     end function rvs_exp_array_csp
 
-    function rvs_exp_array_cdp(lambda, array_size) result(res)
+    impure function rvs_exp_array_cdp(lambda, array_size) result(res)
         complex(dp), intent(in) :: lambda
         integer, intent(in) :: array_size
         complex(dp) :: res(array_size)
@@ -359,39 +365,43 @@ contains
 
 
 
-    impure elemental function pdf_exp_rsp(x, lambda) result(res)
+    elemental function pdf_exp_rsp(x, lambda) result(res)
     !
     ! Exponential Distribution Probability Density Function
     !
         real(sp), intent(in) :: x, lambda
         real(sp) :: res
 
-        if(lambda <= 0.0_sp) call error_stop("Error(pdf_exp): Expon"     &
-            //"ential distribution lambda parameter must be greater than zero")
-        if(x < 0.0_sp) call error_stop("Error(pdf_exp): Exponential"     &
-            //" distribution variate x must be non-negative")
-        res = exp(- x * lambda) * lambda
+        if (lambda <= 0._sp) then
+            res = ieee_value(1._sp, ieee_quiet_nan)
+        else if (x < 0._sp) then
+            res = 0._sp
+        else
+            res = exp(- x * lambda) * lambda
+        end if
     end function pdf_exp_rsp
 
-    impure elemental function pdf_exp_rdp(x, lambda) result(res)
+    elemental function pdf_exp_rdp(x, lambda) result(res)
     !
     ! Exponential Distribution Probability Density Function
     !
         real(dp), intent(in) :: x, lambda
         real(dp) :: res
 
-        if(lambda <= 0.0_dp) call error_stop("Error(pdf_exp): Expon"     &
-            //"ential distribution lambda parameter must be greater than zero")
-        if(x < 0.0_dp) call error_stop("Error(pdf_exp): Exponential"     &
-            //" distribution variate x must be non-negative")
-        res = exp(- x * lambda) * lambda
+        if (lambda <= 0._dp) then
+            res = ieee_value(1._dp, ieee_quiet_nan)
+        else if (x < 0._dp) then
+            res = 0._dp
+        else
+            res = exp(- x * lambda) * lambda
+        end if
     end function pdf_exp_rdp
 
 
 
 
 
-    impure elemental function pdf_exp_csp(x, lambda) result(res)
+    elemental function pdf_exp_csp(x, lambda) result(res)
         complex(sp), intent(in) :: x, lambda
         real(sp) :: res
 
@@ -399,7 +409,7 @@ contains
         res = res * pdf_exp_rsp(x % im, lambda % im)
     end function pdf_exp_csp
 
-    impure elemental function pdf_exp_cdp(x, lambda) result(res)
+    elemental function pdf_exp_cdp(x, lambda) result(res)
         complex(dp), intent(in) :: x, lambda
         real(dp) :: res
 
@@ -411,39 +421,43 @@ contains
 
 
 
-    impure elemental function cdf_exp_rsp(x, lambda) result(res)
+    elemental function cdf_exp_rsp(x, lambda) result(res)
     !
     ! Exponential Distribution Cumulative Distribution Function
     !
         real(sp), intent(in) :: x, lambda
         real(sp) :: res
 
-        if(lambda <= 0.0_sp) call error_stop("Error(cdf_exp): Expon"     &
-            //"ential distribution lambda parameter must be greater than zero")
-        if(x < 0.0_sp) call error_stop("Error(cdf_exp): Exponential"     &
-            //" distribution variate x must be non-negative")
-        res = 1.0_sp - exp(- x * lambda)
+        if (lambda <= 0._sp) then
+            res = ieee_value(1._sp, ieee_quiet_nan)
+        else if (x < 0._sp) then
+            res = 0._sp
+        else
+            res = 1.0_sp - exp(- x * lambda)
+        end if
     end function cdf_exp_rsp
 
-    impure elemental function cdf_exp_rdp(x, lambda) result(res)
+    elemental function cdf_exp_rdp(x, lambda) result(res)
     !
     ! Exponential Distribution Cumulative Distribution Function
     !
         real(dp), intent(in) :: x, lambda
         real(dp) :: res
 
-        if(lambda <= 0.0_dp) call error_stop("Error(cdf_exp): Expon"     &
-            //"ential distribution lambda parameter must be greater than zero")
-        if(x < 0.0_dp) call error_stop("Error(cdf_exp): Exponential"     &
-            //" distribution variate x must be non-negative")
-        res = 1.0_dp - exp(- x * lambda)
+        if (lambda <= 0._dp) then
+            res = ieee_value(1._dp, ieee_quiet_nan)
+        else if (x < 0._dp) then
+            res = 0._dp
+        else
+            res = 1.0_dp - exp(- x * lambda)
+        end if
     end function cdf_exp_rdp
 
 
 
 
 
-    impure elemental function cdf_exp_csp(x, lambda) result(res)
+    elemental function cdf_exp_csp(x, lambda) result(res)
         complex(sp), intent(in) :: x, lambda
         real(sp) :: res
 
@@ -451,7 +465,7 @@ contains
         res = res * cdf_exp_rsp(x % im, lambda % im)
     end function cdf_exp_csp
 
-    impure elemental function cdf_exp_cdp(x, lambda) result(res)
+    elemental function cdf_exp_cdp(x, lambda) result(res)
         complex(dp), intent(in) :: x, lambda
         real(dp) :: res
 
