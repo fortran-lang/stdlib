@@ -22,6 +22,8 @@ set(fppFiles
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
     stdlib_linalg_outer_product.fypp
+    stdlib_linalg_kronecker.fypp
+    stdlib_linalg_cross_product.fypp
     stdlib_optval.fypp
     stdlib_selection.fypp
     stdlib_sorting.fypp
@@ -65,6 +67,9 @@ set(fppFiles
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 set(SRC
+    stdlib_ansi.f90
+    stdlib_ansi_operator.f90
+    stdlib_ansi_to_string.f90
     stdlib_array.f90
     stdlib_error.f90
     stdlib_hashmap_wrappers.f90
@@ -72,6 +77,7 @@ set(SRC
     stdlib_hashmap_chaining.f90
     stdlib_hashmap_open.f90
     stdlib_logger.f90
+    stdlib_sorting_radix_sort.f90
     stdlib_system.F90
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90

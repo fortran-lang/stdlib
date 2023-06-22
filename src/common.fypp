@@ -3,6 +3,11 @@
 #! Project version number
 #:set PROJECT_VERSION = "{}.{}.{}".format(PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH)
 
+#! Support for C_BOOL logical
+#:if not defined("WITH_CBOOL")
+#:set WITH_CBOOL = False
+#:endif
+
 #! Support for quadruple precision floating point numbers
 #:if not defined("WITH_QP")
 #:set WITH_QP = False
@@ -53,7 +58,10 @@
 #:set INT_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES))
 
 #! Logical kinds to be considered during templating
-#:set LOG_KINDS = ["lk", "c_bool"]
+#:set LOG_KINDS = ["lk"]
+#:if WITH_CBOOL
+#:set LOG_KINDS = LOG_KINDS + ["c_bool"]
+#:endif
 
 #! Logical types to be considered during templating
 #:set LOG_TYPES = ["logical({})".format(k) for k in LOG_KINDS]
