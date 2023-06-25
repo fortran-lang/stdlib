@@ -503,21 +503,21 @@ Sorting a rank 2 array based on the data in a column
 Sorting an array of a derived type based on the data in one component
 
 ```fortran
-       subroutine sort_a_data( a_data, a, work, index, iwork )
-           ! Sort `a_data` in terms or its component `a`
-           type(a_type), intent(inout)      :: a_data(:)
-               integer(int32), intent(inout)    :: a(:)
-               integer(int32), intent(out)    :: work(:)
-               integer(int_size), intent(out) :: index(:)
-               integer(int_size), intent(out) :: iwork(:)
-               ! Extract a component of `a_data`
-               a(1:size(a_data)) = a_data(:) % a
-               ! Find the indices to sort the component
-               call sort_index(a(1:size(a_data)), index(1:size(a_data)),&
-                   work(1:size(a_data)/2), iwork(1:size(a_data)/2))
-               ! Sort a_data based on the sorting of that component
-               a_data(:) = a_data( index(1:size(a_data)) )
-       end subroutine sort_a_data
+    subroutine sort_a_data( a_data, a, work, index, iwork )
+        ! Sort `a_data` in terms or its component `a`
+        type(a_type), intent(inout)      :: a_data(:)
+        integer(int32), intent(inout)    :: a(:)
+        integer(int32), intent(out)    :: work(:)
+        integer(int_size), intent(out) :: index(:)
+        integer(int_size), intent(out) :: iwork(:)
+        ! Extract a component of `a_data`
+        a(1:size(a_data)) = a_data(:) % a
+        ! Find the indices to sort the component
+        call sort_index(a(1:size(a_data)), index(1:size(a_data)),&
+            work(1:size(a_data)/2), iwork(1:size(a_data)/2))
+        ! Sort a_data based on the sorting of that component
+        a_data(:) = a_data( index(1:size(a_data)) )
+    end subroutine sort_a_data
 ```
 
 
