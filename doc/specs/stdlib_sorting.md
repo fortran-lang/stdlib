@@ -464,40 +464,40 @@ Sorting a related rank one array:
         ! Sort `a`, and  also  sort `b` to be reorderd the same way as `a`
         integer, intent(inout)         :: a(:)
         integer(int32), intent(inout)  :: b(:) ! The same size as a
-		integer(int32), intent(out)    :: work(:)
-		integer(int_size), intent(out) :: index(:)
-		integer(int_size), intent(out) :: iwork(:)
-		! Find the indices to sort a
+        integer(int32), intent(out)    :: work(:)
+        integer(int_size), intent(out) :: index(:)
+        integer(int_size), intent(out) :: iwork(:)
+        ! Find the indices to sort a
         call sort_index(a, index(1:size(a)),&
             work(1:size(a)/2), iwork(1:size(a)/2))
-		! Sort b based on the sorting of a
-		b(:) = b( index(1:size(a)) )
-	end subroutine sort_related_data
+        ! Sort b based on the sorting of a
+        b(:) = b( index(1:size(a)) )
+    end subroutine sort_related_data
 ```
 
 Sorting a rank 2 array based on the data in a column
 
 ```Fortran
-	subroutine sort_related_data( array, column, work, index, iwork )
-	    ! Reorder rows of `array` such that `array(:, column)` is  sorted
-	    integer, intent(inout)         :: array(:,:)
-		integer(int32), intent(in)     :: column
-		integer(int32), intent(out)    :: work(:)
-		integer(int_size), intent(out) :: index(:)
-		integer(int_size), intent(out) :: iwork(:)
-		integer, allocatable           :: dummy(:)
-		integer :: i
-		allocate(dummy(size(array, dim=1)))
-		! Extract a column of `array`
-		dummy(:) = array(:, column)
-		! Find the indices to sort the column
-		call sort_index(dummy, index(1:size(dummy)),&
-		    work(1:size(dummy)/2), iwork(1:size(dummy)/2))
-		! Sort a based on the sorting of its column
-		do i=1, size(array, dim=2)
-		    array(:, i) = array(index(1:size(array, dim=1)), i)
-		end do
-	end subroutine sort_related_data
+    subroutine sort_related_data( array, column, work, index, iwork )
+        ! Reorder rows of `array` such that `array(:, column)` is  sorted
+        integer, intent(inout)         :: array(:,:)
+        integer(int32), intent(in)     :: column
+        integer(int32), intent(out)    :: work(:)
+        integer(int_size), intent(out) :: index(:)
+        integer(int_size), intent(out) :: iwork(:)
+        integer, allocatable           :: dummy(:)
+        integer :: i
+        allocate(dummy(size(array, dim=1)))
+        ! Extract a column of `array`
+        dummy(:) = array(:, column)
+        ! Find the indices to sort the column
+        call sort_index(dummy, index(1:size(dummy)),&
+            work(1:size(dummy)/2), iwork(1:size(dummy)/2))
+        ! Sort a based on the sorting of its column
+        do i=1, size(array, dim=2)
+            array(:, i) = array(index(1:size(array, dim=1)), i)
+        end do
+    end subroutine sort_related_data
 ```
 
 Sorting an array of a derived type based on the data in one component
