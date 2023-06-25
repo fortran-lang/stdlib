@@ -184,7 +184,7 @@ contains
         end do
 
         do i=0, string_size-1
-            string_decrease(string_size - 1 - i) = char_increase(i)
+            string_decrease(string_size - 1 - i) = string_increase(i)
         end do
 
         string_rand(:) = string_increase(:)
