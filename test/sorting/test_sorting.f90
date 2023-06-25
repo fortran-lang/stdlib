@@ -16,7 +16,7 @@ module test_sorting
     integer(int32), parameter :: test_size = 2_int32**test_power
     integer(int32), parameter :: char_size = char_set_size**4
     integer(int32), parameter :: string_size = char_set_size**3
-    integer(int32), parameter :: bitset_size = char_set_size**4
+    integer(int32), parameter :: bitset_size = char_set_size**3
     integer(int32), parameter :: block_size = test_size/6
     integer, parameter        :: repeat = 1
 
