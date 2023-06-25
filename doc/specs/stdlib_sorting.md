@@ -41,6 +41,7 @@ to the value of `int64` from the `stdlib_kinds` module.
 The `stdlib_sorting` module provides three different overloaded
 subroutines intended to sort three different kinds of arrays of
 data:
+
 * `ORD_SORT` is intended to sort simple arrays of intrinsic data
   that have significant sections that were partially ordered before
   the sort;
