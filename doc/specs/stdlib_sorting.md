@@ -235,8 +235,9 @@ Generic subroutine.
 
 `array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
-`real(sp)`, `real(dp)`, `real(qp)`, `character(*)`, or
-`type(string_type)`. It is an `intent(inout)` argument. On input it is
+`real(sp)`, `real(dp)`, `real(qp)`, `character(*)`, `type(string_type)`,
+`type(bitset_64)`, or `type(bitset_large)`.
+It is an `intent(inout)` argument. On input it is
 the array to be sorted. If both the type of `array` is real and at
 least one of the elements is a `NaN`, then the ordering of the result
 is undefined. Otherwise on return its elements will be sorted in order
@@ -301,8 +302,9 @@ Pure generic subroutine.
 
 `array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
-`real(sp)`, `real(dp)`, `real(qp)`. `character(*)`, or
-`type(string_type)`. It is an `intent(inout)` argument. On return its
+`real(sp)`, `real(dp)`, `real(qp)`. `character(*)`, `type(string_type)`,
+`type(bitset_64)`, or `type(bitset_large)`.
+It is an `intent(inout)` argument. On return its
 input elements will be sorted in order of non-decreasing value.
 
 
@@ -405,8 +407,9 @@ Generic subroutine.
 
 `array`: shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
-`real(sp)`, `real(dp)`, `real(qp)`, `character(*)`, or
-`type(string_type)`. It is an `intent(inout)` argument. On input it
+`real(sp)`, `real(dp)`, `real(qp)`, `character(*)`, `type(string_type)`,
+`type(bitset_64)`, or `type(bitset_large)`.
+It is an `intent(inout)` argument. On input it
 will be an array whose sorting indices are to be determined. On return
 it will be the sorted array.
 

@@ -170,7 +170,8 @@ module stdlib_sorting
 !! * array: the rank 1 array to be sorted. It is an `intent(inout)`
 !!   argument of any of the types `integer(int8)`, `integer(int16)`,
 !!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
-!!   `real(real128)`, `character(*)`, `type(string_type)`. If both the 
+!!   `real(real128)`, `character(*)`, `type(string_type)`, 
+!!   `type(bitset_64)`, `type(bitset_large)`. If both the 
 !!   type of `array` is real and at least one of the elements is a 
 !!   `NaN`, then the ordering of the result is undefined. Otherwise it 
 !!   is defined to be the original elements in non-decreasing order.
@@ -220,7 +221,8 @@ module stdlib_sorting
 !! * array: the rank 1 array to be sorted. It is an `intent(inout)`
 !!   argument of any of the types `integer(int8)`, `integer(int16)`,
 !!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
-!!   `real(real128)`, `character(*)`, `type(string_type)`. If both the type
+!!   `real(real128)`, `character(*)`, `type(string_type)`, 
+!!   `type(bitset_64)`, `type(bitset_large)`. If both the type
 !!   of `array` is real and at least one of the elements is a `NaN`, then
 !!   the ordering of the result is undefined. Otherwise it is defined to be the
 !!   original elements in non-decreasing order.
@@ -304,7 +306,8 @@ module stdlib_sorting
 !! * array: the rank 1 array to be sorted. It is an `intent(inout)`
 !!   argument of any of the types `integer(int8)`, `integer(int16)`,
 !!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
-!!   `real(real128)`, `character(*)`, `type(string_type)`. If both the 
+!!   `real(real128)`, `character(*)`, `type(string_type)`, 
+!!   `type(bitset_64)`, `type(bitset_large)`. If both the 
 !!   type of `array` is real and at least one of the elements is a `NaN`, 
 !!   then the ordering of the `array` and `index` results is undefined. 
 !!   Otherwise it is defined to be as specified by reverse.
