@@ -132,7 +132,7 @@ module stdlib_sorting
         operator(>=), operator(<), operator(<=)
 
     use stdlib_bitsets, only: bitset_64, bitset_large, &
-        assignment(=), operator(>), operator(>=),operator(<),operator(<=)
+        assignment(=), operator(>), operator(>=), operator(<), operator(<=)
 
     implicit none
     private
