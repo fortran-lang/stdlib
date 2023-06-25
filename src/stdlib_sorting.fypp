@@ -9,7 +9,8 @@
 #! For better code reuse in fypp, make lists that contain the input types,
 #! with each having output types and a separate name prefix for subroutines
 #! This approach allows us to have the same code for all input types.
-#:set IRSC_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
+#:set IRSCB_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME &
+    & + BITSET_TYPES_ALT_NAME
 
 !! Licensing:
 !!
@@ -414,7 +415,7 @@ module stdlib_sorting
 !! sorted data, having O(N) performance on uniformly non-increasing or
 !! non-decreasing data.
 
-#:for t1, t2, name1 in IRSC_TYPES_ALT_NAME
+#:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
         module subroutine ${name1}$_ord_sort( array, work, reverse )
 !! Version: experimental
 !!
@@ -480,7 +481,7 @@ module stdlib_sorting
 !! on the `introsort` of David Musser.
 !! ([Specification](../page/specs/stdlib_sorting.html#sort-sorts-an-input-array))
 
-#:for t1, t2, name1 in IRSC_TYPES_ALT_NAME
+#:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
         pure module subroutine ${name1}$_sort( array, reverse )
 !! Version: experimental
 !!
@@ -511,7 +512,7 @@ module stdlib_sorting
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
 !! with a value of `.TRUE.` the indices correspond to a non-increasing sort.
 
-#:for t1, t2, name1 in IRSC_TYPES_ALT_NAME
+#:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
         module subroutine ${name1}$_sort_index( array, index, work, iwork, &
             reverse )
 !! Version: experimental

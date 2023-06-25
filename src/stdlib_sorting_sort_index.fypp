@@ -8,7 +8,8 @@
 #! For better code reuse in fypp, make lists that contain the input types,
 #! with each having output types and a separate name prefix for subroutines
 #! This approach allows us to have the same code for all input types.
-#:set IRSC_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
+#:set IRSCB_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME &
+    & + BITSET_TYPES_ALT_NAME
 
 !! Licensing:
 !!
@@ -65,7 +66,7 @@ submodule(stdlib_sorting) stdlib_sorting_sort_index
 
 contains
 
-#:for t1, t2, t3, name1 in IRSC_TYPES_ALT_NAME
+#:for t1, t2, t3, name1 in IRSCB_TYPES_ALT_NAME
 
     module subroutine ${name1}$_sort_index( array, index, work, iwork, reverse )
 ! A modification of `${name1}$_ord_sort` to return an array of indices that
