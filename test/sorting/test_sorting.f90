@@ -241,9 +241,9 @@ contains
             form='formatted', status='replace' )
         write( lun, '(a)' ) trim(compiler_version())
         write( lun, * )
-        write( lun, '("|    Type     | Elements |    Array Name   |    Method ' // &
+        write( lun, '("|     Type     | Elements |    Array Name   |    Method ' // &
             '  |  Time (s) |")' )
-        write( lun, '("|-------------|----------|-----------------|-----------' // &
+        write( lun, '("|--------------|----------|-----------------|-----------' // &
             '--|-----------|")' )
 
     end subroutine initialize_tests
@@ -330,7 +330,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
         end if
-        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Ord_Sort", tdiff/rate
 
@@ -405,7 +405,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
-        write( lun, '("|   Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|    Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             char_size, a_name, "Ord_Sort", tdiff/rate
 
@@ -484,7 +484,7 @@ contains
             write(*,'(a, 2(1x,a))') 'string_dummy(i-1:i) = ', &
                 string_dummy(i-1:i)
         end if
-        write( lun, '("| String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|  String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             string_size, a_name, "Ord_Sort", tdiff/rate
 
@@ -770,7 +770,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
         end if
-        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Radix_Sort", tdiff/rate
 
@@ -816,7 +816,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a12, 2f12.5)') 'real_dummy(i-1:i) = ', real_dummy(i-1:i)
         end if
-        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|         Real |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Radix_Sort", tdiff/rate
 
@@ -923,7 +923,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
         end if
-        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Sort", tdiff/rate
 
@@ -987,7 +987,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
-        write( lun, '("|   Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|    Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             char_size, a_name, "Sort", tdiff/rate
 
@@ -1052,7 +1052,7 @@ contains
             write(*,'(a17, 2(1x,a4))') 'string_dummy(i-1:i) = ', &
                 string_dummy(i-1:i)
         end if
-        write( lun, '("| String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|  String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             string_size, a_name, "Sort", tdiff/rate
 
@@ -1293,7 +1293,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a18, 2i7)') 'a(index(i-1:i)) = ', a(index(i-1:i))
         end if
-        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Sort_Index", tdiff/rate
 
@@ -1362,7 +1362,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
-        write( lun, '("|   Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|    Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             char_size, a_name, "Sort_Index", tdiff/rate
 
@@ -1416,7 +1416,7 @@ contains
             write(*,'(a17, 2(1x,a4))') 'string_dummy(i-1:i) = ', &
                 string_dummy(i-1:i)
         end if
-        write( lun, '("| String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|  String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             string_size, a_name, "Sort_Index", tdiff/rate
 
