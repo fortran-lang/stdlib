@@ -71,6 +71,8 @@ module test_sorting
     type(bitset_large)      :: bitsetl_temp
     type(bitset_64)         :: bitset64_temp
     logical                 :: ltest, ldummy
+    character(32)           :: bin32
+    character(64)           :: bin64
 
 contains
 
@@ -196,13 +198,10 @@ contains
             string_rand(index1) = string_temp
         end do
 
-        block
-            character(32):: bin
-            do i = 0, bitset_size-1
-                write(bin,'(b32.32)') i
-                call bitsetl_increase(i)%from_string(bin)
-            end do
-        end block
+        do i = 0, bitset_size-1
+            write(bin32,'(b32.32)') i
+            call bitsetl_increase(i)%from_string(bin32)
+        end do
         do i=0, bitset_size-1
             bitsetl_decrease(bitset_size-1-i) = bitsetl_increase(i)
         end do
@@ -216,13 +215,10 @@ contains
             bitsetl_rand(index1) = bitsetl_temp
         end do
 
-        block
-            character(64):: bin
-            do i = 0, bitset_size-1
-                write(bin,'(b64.64)') i
-                call bitset64_increase(i)%from_string(bin)
-            end do
-        end block
+        do i = 0, bitset_size-1
+            write(bin64,'(b64.64)') i
+            call bitset64_increase(i)%from_string(bin64)
+        end do
         do i=0, bitset_size-1
             bitset64_decrease(bitset_size-1-i) = bitset64_increase(i)
         end do
