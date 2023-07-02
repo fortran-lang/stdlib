@@ -1,4 +1,4 @@
-program example_sort_bitsetl
+program example_sort_bitset
   use stdlib_kinds, only: int32
   use stdlib_sorting, only: sort
   use stdlib_bitsets, only: bitset_large
@@ -44,4 +44,4 @@ contains
 
       call bitset%to_string(str)
     end function to_string
-end program example_sort_bitsetl
+end program example_sort_bitset
