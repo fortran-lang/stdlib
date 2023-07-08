@@ -1,7 +1,15 @@
 module test_stdlib_bitset_large
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use :: stdlib_kinds, only : int8, int16, int32, int64
-    use stdlib_bitsets
+    use stdlib_bitsets, only: bitset_large, bits_kind&
+                              , bits &
+                              , success &
+                              , and, and_not, or, xor&
+                              , extract&
+                              , assignment(=)&
+                              , operator(<), operator(<=)&
+                              , operator(>), operator(>=)&
+                              , operator(/=), operator(==)
     implicit none
     character(*), parameter :: &
         bitstring_0   = '000000000000000000000000000000000', &
