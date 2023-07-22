@@ -1510,13 +1510,6 @@ module stdlib_bitsets
 
     interface assignment(=)
 
-        pure module subroutine assign_64( set1, set2 )
-!! Version: experimental
-!!
-!! Used to define assignment for `bitset_64`.
-            type(bitset_64), intent(out) :: set1
-            type(bitset_64), intent(in)  :: set2
-        end subroutine assign_64
 
     #:for k1 in INT_KINDS
         module subroutine assign_log${k1}$_64( self, logical_vector )
