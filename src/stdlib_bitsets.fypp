@@ -1167,7 +1167,6 @@ module stdlib_bitsets
 !!```
 
 
-
     #:for k1 in INT_KINDS
         pure module subroutine assign_log${k1}$_large( self, logical_vector )
 !! Version: experimental
