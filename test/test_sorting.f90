@@ -5,6 +5,8 @@ module test_sorting
     use stdlib_sorting
     use stdlib_string_type, only: string_type, assignment(=), operator(>), &
         operator(<), write(formatted)
+    use stdlib_bitsets, only: bitset_64, bitset_large, &
+        assignment(=), operator(>), operator(<)
     use testdrive, only: new_unittest, unittest_type, error_type, check
 
     implicit none
@@ -14,6 +16,7 @@ module test_sorting
     integer(int32), parameter :: test_size = 2_int32**test_power
     integer(int32), parameter :: char_size = char_set_size**4
     integer(int32), parameter :: string_size = char_set_size**3
+    integer(int32), parameter :: bitset_size = char_set_size**3
     integer(int32), parameter :: block_size = test_size/6
     integer, parameter        :: repeat = 1
 
@@ -36,15 +39,27 @@ module test_sorting
         string_decrease(0:string_size-1), &
         string_increase(0:string_size-1), &
         string_rand(0:string_size-1)
+    type(bitset_large) ::                  &
+        bitsetl_decrease(0:bitset_size-1), &
+        bitsetl_increase(0:bitset_size-1), &
+        bitsetl_rand(0:bitset_size-1)
+    type(bitset_64) ::                  &
+        bitset64_decrease(0:bitset_size-1), &
+        bitset64_increase(0:bitset_size-1), &
+        bitset64_rand(0:bitset_size-1)
 
     integer(int32)          :: dummy(0:test_size-1)
     real(sp)                :: real_dummy(0:test_size-1)
     character(len=4)        :: char_dummy(0:char_size-1)
     type(string_type)       :: string_dummy(0:string_size-1)
+    type(bitset_large)      :: bitsetl_dummy(0:bitset_size-1)
+    type(bitset_64)         :: bitset64_dummy(0:bitset_size-1)
     integer(int_size)       :: index(0:max(test_size, char_size, string_size)-1)
     integer(int32)          :: work(0:test_size/2-1)
     character(len=4)        :: char_work(0:char_size/2-1)
     type(string_type)       :: string_work(0:string_size/2-1)
+    type(bitset_large)      :: bitsetl_work(0:bitset_size/2-1)
+    type(bitset_64)         :: bitset64_work(0:bitset_size/2-1)
     integer(int_size)       :: iwork(0:max(test_size, char_size, &
                                      string_size)/2-1)
     integer                 :: count, i, index1, index2, j, k, l, temp
@@ -53,7 +68,11 @@ module test_sorting
     integer                 :: lun
     character(len=4)        :: char_temp
     type(string_type)       :: string_temp
+    type(bitset_large)      :: bitsetl_temp
+    type(bitset_64)         :: bitset64_temp
     logical                 :: ltest, ldummy
+    character(32)           :: bin32
+    character(64)           :: bin64
 
 contains
 
@@ -66,14 +85,20 @@ contains
             new_unittest('int_ord_sorts', test_int_ord_sorts), &
             new_unittest('char_ord_sorts', test_char_ord_sorts), &
             new_unittest('string_ord_sorts', test_string_ord_sorts), &
+            new_unittest('bitset_large_ord_sorts', test_bitsetl_ord_sorts), &
+            new_unittest('bitset_64_ord_sorts', test_bitset64_ord_sorts), &
             new_unittest('int_radix_sorts', test_int_radix_sorts), &
             new_unittest('real_radix_sorts', test_real_radix_sorts), &
             new_unittest('int_sorts', test_int_sorts), &
             new_unittest('char_sorts', test_char_sorts), &
             new_unittest('string_sorts', test_string_sorts), &
+            new_unittest('bitset_large_sorts', test_bitsetl_sorts), &
+            new_unittest('bitset_64_sorts', test_bitset64_sorts), &
             new_unittest('int_sort_indexes', test_int_sort_indexes), &
             new_unittest('char_sort_indexes', test_char_sort_indexes), &
-            new_unittest('string_sort_indexes', test_string_sort_indexes) &
+            new_unittest('string_sort_indexes', test_string_sort_indexes), &
+            new_unittest('bitset_large_sort_indexes', test_bitsetl_sort_indexes), &
+            new_unittest('bitset_64_sort_indexes', test_bitset64_sort_indexes) &
         ]
 
     end subroutine collect_sorting
@@ -161,7 +186,7 @@ contains
         end do
 
         do i=0, string_size-1
-            string_decrease(string_size - 1 - i) = char_increase(i)
+            string_decrease(string_size - 1 - i) = string_increase(i)
         end do
 
         string_rand(:) = string_increase(:)
@@ -173,14 +198,48 @@ contains
             string_rand(index1) = string_temp
         end do
 
+        do i = 0, bitset_size-1
+            write(bin32,'(b32.32)') i
+            call bitsetl_increase(i)%from_string(bin32)
+        end do
+        do i=0, bitset_size-1
+            bitsetl_decrease(bitset_size-1-i) = bitsetl_increase(i)
+        end do
+
+        bitsetl_rand(:) = bitsetl_increase(:)
+        do i=0, bitset_size-1
+            call random_number( arand )
+            index1 = int( floor( arand * bitset_size ), kind=int32 )
+            bitsetl_temp = bitsetl_rand(i)
+            bitsetl_rand(i) = bitsetl_rand(index1)
+            bitsetl_rand(index1) = bitsetl_temp
+        end do
+
+        do i = 0, bitset_size-1
+            write(bin64,'(b64.64)') i
+            call bitset64_increase(i)%from_string(bin64)
+        end do
+        do i=0, bitset_size-1
+            bitset64_decrease(bitset_size-1-i) = bitset64_increase(i)
+        end do
+
+        bitset64_rand(:) = bitset64_increase(:)
+        do i=0, bitset_size-1
+            call random_number( arand )
+            index1 = int( floor( arand * bitset_size ), kind=int32 )
+            bitset64_temp = bitset64_rand(i)
+            bitset64_rand(i) = bitset64_rand(index1)
+            bitset64_rand(index1) = bitset64_temp
+        end do
+
         ! Create and intialize file to report the results of the sortings
         open( newunit=lun, file=filename, access='sequential', action='write', &
             form='formatted', status='replace' )
         write( lun, '(a)' ) trim(compiler_version())
         write( lun, * )
-        write( lun, '("|    Type     | Elements |    Array Name   |    Method ' // &
+        write( lun, '("|     Type     | Elements |    Array Name   |    Method ' // &
             '  |  Time (s) |")' )
-        write( lun, '("|-------------|----------|-----------------|-----------' // &
+        write( lun, '("|--------------|----------|-----------------|-----------' // &
             '--|-----------|")' )
 
     end subroutine initialize_tests
@@ -267,7 +326,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
         end if
-        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Ord_Sort", tdiff/rate
 
@@ -342,7 +401,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
-        write( lun, '("|   Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|    Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             char_size, a_name, "Ord_Sort", tdiff/rate
 
@@ -421,7 +480,7 @@ contains
             write(*,'(a, 2(1x,a))') 'string_dummy(i-1:i) = ', &
                 string_dummy(i-1:i)
         end if
-        write( lun, '("| String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|  String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             string_size, a_name, "Ord_Sort", tdiff/rate
 
@@ -452,6 +511,180 @@ contains
         end if
 
     end subroutine test_string_ord_sort
+
+    subroutine test_bitsetl_ord_sorts(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical:: ltest
+
+        call test_bitsetl_ord_sort( bitsetl_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_ord_sort( bitsetl_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_ord_sort( bitsetl_rand, "Bitset Random" , ltest)
+        call check(error, ltest)
+
+    end subroutine test_bitsetl_ord_sorts
+
+    subroutine test_bitsetl_ord_sort( a, a_name, ltest )
+        type(bitset_large), intent(in) :: a(0:)
+        character(*), intent(in)       :: a_name
+        logical, intent(out)           :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitsetl_dummy = a
+            call system_clock( t0, rate )
+            call ord_sort( bitsetl_dummy, bitsetl_work )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitsetl_sort( bitsetl_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "ORD_SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitsetl_dummy(i-1)%to_string(bin_im1)
+            call bitsetl_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Ord_Sort", tdiff/rate
+
+        !reverse
+        bitsetl_dummy = a
+        call ord_sort( bitsetl_dummy, bitsetl_work, reverse = .true. )
+
+        call verify_bitsetl_reverse_sort( bitsetl_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
+                "."
+            write(*,*) 'i = ', i
+            call bitsetl_dummy(i-1)%to_string(bin_im1)
+            call bitsetl_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+
+        bitsetl_dummy = a
+        call ord_sort( bitsetl_dummy, reverse = .true. )
+
+        call verify_bitsetl_reverse_sort( bitsetl_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "reverse ORD_SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitsetl_dummy(i-1)%to_string(bin_im1)
+            call bitsetl_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+
+    end subroutine test_bitsetl_ord_sort
+
+    subroutine test_bitset64_ord_sorts(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical:: ltest
+
+        call test_bitset64_ord_sort( bitset64_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_ord_sort( bitset64_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_ord_sort( bitset64_rand, "Bitset Random" , ltest)
+        call check(error, ltest)
+
+    end subroutine test_bitset64_ord_sorts
+
+    subroutine test_bitset64_ord_sort( a, a_name, ltest )
+        type(bitset_64), intent(in) :: a(0:)
+        character(*), intent(in)    :: a_name
+        logical, intent(out)        :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitset64_dummy = a
+            call system_clock( t0, rate )
+            call ord_sort( bitset64_dummy, bitset64_work )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitset64_sort( bitset64_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "ORD_SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitset64_dummy(i-1)%to_string(bin_im1)
+            call bitset64_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitset64_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("|    Bitset_64 |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Ord_Sort", tdiff/rate
+
+        !reverse
+        bitset64_dummy = a
+        call ord_sort( bitset64_dummy, bitset64_work, reverse = .true. )
+
+        call verify_bitset64_reverse_sort( bitset64_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
+                "."
+            write(*,*) 'i = ', i
+            call bitset64_dummy(i-1)%to_string(bin_im1)
+            call bitset64_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitset64_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+
+        bitset64_dummy = a
+        call ord_sort( bitset64_dummy, reverse = .true. )
+
+        call verify_bitset64_reverse_sort( bitset64_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "reverse ORD_SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitset64_dummy(i-1)%to_string(bin_im1)
+            call bitset64_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitset64_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+
+    end subroutine test_bitset64_ord_sort
 
     subroutine test_int_radix_sorts(error)
         !> Error handling
@@ -533,7 +766,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
         end if
-        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Radix_Sort", tdiff/rate
 
@@ -579,7 +812,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a12, 2f12.5)') 'real_dummy(i-1:i) = ', real_dummy(i-1:i)
         end if
-        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|         Real |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Radix_Sort", tdiff/rate
 
@@ -686,7 +919,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
         end if
-        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Sort", tdiff/rate
 
@@ -750,7 +983,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
-        write( lun, '("|   Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|    Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             char_size, a_name, "Sort", tdiff/rate
 
@@ -815,7 +1048,7 @@ contains
             write(*,'(a17, 2(1x,a4))') 'string_dummy(i-1:i) = ', &
                 string_dummy(i-1:i)
         end if
-        write( lun, '("| String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|  String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             string_size, a_name, "Sort", tdiff/rate
 
@@ -833,6 +1066,146 @@ contains
 
 
     end subroutine test_string_sort
+
+    subroutine test_bitsetl_sorts(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitsetl_sort( bitsetl_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort( bitsetl_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort( bitsetl_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitsetl_sorts
+
+    subroutine test_bitsetl_sort( a, a_name, ltest )
+        type(bitset_large), intent(in) :: a(0:)
+        character(*), intent(in)       :: a_name
+        logical, intent(out)           :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitsetl_dummy = a
+            call system_clock( t0, rate )
+            call sort( bitsetl_dummy )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitsetl_sort( bitsetl_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitsetl_dummy(i-1)%to_string(bin_im1)
+            call bitsetl_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort", tdiff/rate
+
+        ! reverse
+        bitsetl_dummy = a
+        call sort( bitsetl_dummy, .true.)
+        call verify_bitsetl_reverse_sort(bitsetl_dummy, valid, i)
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "reverse SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitsetl_dummy(i-1)%to_string(bin_im1)
+            call bitsetl_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+    end subroutine test_bitsetl_sort
+
+    subroutine test_bitset64_sorts(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitset64_sort( bitset64_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort( bitset64_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort( bitset64_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitset64_sorts
+
+    subroutine test_bitset64_sort( a, a_name, ltest )
+        type(bitset_64), intent(in) :: a(0:)
+        character(*), intent(in)    :: a_name
+        logical, intent(out)        :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitset64_dummy = a
+            call system_clock( t0, rate )
+            call sort( bitset64_dummy )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitset64_sort( bitset64_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitset64_dummy(i-1)%to_string(bin_im1)
+            call bitset64_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitset64_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("|    Bitset_64 |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort", tdiff/rate
+
+        ! reverse
+        bitset64_dummy = a
+        call sort( bitset64_dummy, .true.)
+        call verify_bitset64_reverse_sort(bitset64_dummy, valid, i)
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "reverse SORT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitset64_dummy(i-1)%to_string(bin_im1)
+            call bitset64_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+    end subroutine test_bitset64_sort
 
     subroutine test_int_sort_indexes(error)
         !> Error handling
@@ -916,7 +1289,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a18, 2i7)') 'a(index(i-1:i)) = ', a(index(i-1:i))
         end if
-        write( lun, '("|     Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Sort_Index", tdiff/rate
 
@@ -985,7 +1358,7 @@ contains
             write(*,*) 'i = ', i
             write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
         end if
-        write( lun, '("|   Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|    Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             char_size, a_name, "Sort_Index", tdiff/rate
 
@@ -1039,12 +1412,125 @@ contains
             write(*,'(a17, 2(1x,a4))') 'string_dummy(i-1:i) = ', &
                 string_dummy(i-1:i)
         end if
-        write( lun, '("| String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+        write( lun, '("|  String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             string_size, a_name, "Sort_Index", tdiff/rate
 
     end subroutine test_string_sort_index
 
+    subroutine test_bitsetl_sort_indexes(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitsetl_sort_index( bitsetl_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_index( bitsetl_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_index( bitsetl_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitsetl_sort_indexes
+
+    subroutine test_bitsetl_sort_index( a, a_name, ltest )
+        type(bitset_large), intent(in) :: a(0:)
+        character(*), intent(in)       :: a_name
+        logical, intent(out)           :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitsetl_dummy = a
+            call system_clock( t0, rate )
+            call sort_index( bitsetl_dummy, index, bitsetl_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitsetl_sort( bitsetl_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_INDEX did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitsetl_dummy(i-1)%to_string(bin_im1)
+            call bitsetl_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_Index", tdiff/rate
+
+    end subroutine test_bitsetl_sort_index
+
+    subroutine test_bitset64_sort_indexes(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitset64_sort_index( bitset64_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_index( bitset64_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_index( bitset64_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitset64_sort_indexes
+
+    subroutine test_bitset64_sort_index( a, a_name, ltest )
+        type(bitset_64), intent(in) :: a(0:)
+        character(*), intent(in)    :: a_name
+        logical, intent(out)        :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitset64_dummy = a
+            call system_clock( t0, rate )
+            call sort_index( bitset64_dummy, index, bitset64_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitset64_sort( bitset64_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_INDEX did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitset64_dummy(i-1)%to_string(bin_im1)
+            call bitset64_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitset64_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("|    Bitset_64 |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_Index", tdiff/rate
+
+    end subroutine test_bitset64_sort_index
 
     subroutine verify_sort( a, valid, i )
         integer(int32), intent(in) :: a(0:)
@@ -1094,6 +1580,38 @@ contains
 
     end subroutine verify_string_sort
 
+    subroutine verify_bitsetl_sort( a, valid, i )
+        type(bitset_large), intent(in) :: a(0:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n-1
+            if ( a(i-1) > a(i) ) return
+        end do
+        valid = .true.
+
+    end subroutine verify_bitsetl_sort
+
+    subroutine verify_bitset64_sort( a, valid, i )
+        type(bitset_64), intent(in) :: a(0:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n-1
+            if ( a(i-1) > a(i) ) return
+        end do
+        valid = .true.
+
+    end subroutine verify_bitset64_sort
+    
     subroutine verify_char_sort( a, valid, i )
         character(len=4), intent(in) :: a(0:)
         logical, intent(out) :: valid
@@ -1174,6 +1692,37 @@ contains
 
     end subroutine verify_string_reverse_sort
 
+    subroutine verify_bitsetl_reverse_sort( a, valid, i )
+        type(bitset_large), intent(in) :: a(0:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n-1
+            if ( a(i-1) < a(i) ) return
+        end do
+        valid = .true.
+
+    end subroutine verify_bitsetl_reverse_sort
+
+    subroutine verify_bitset64_reverse_sort( a, valid, i )
+        type(bitset_64), intent(in) :: a(0:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n-1
+            if ( a(i-1) < a(i) ) return
+        end do
+        valid = .true.
+
+    end subroutine verify_bitset64_reverse_sort
 end module test_sorting
 
 

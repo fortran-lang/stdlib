@@ -120,6 +120,9 @@ module stdlib_sorting
     use stdlib_string_type, only: string_type, assignment(=), operator(>), &
         operator(>=), operator(<), operator(<=)
 
+    use stdlib_bitsets, only: bitset_64, bitset_large, &
+        assignment(=), operator(>), operator(>=), operator(<), operator(<=)
+
     implicit none
     private
 
@@ -156,7 +159,8 @@ module stdlib_sorting
 !! * array: the rank 1 array to be sorted. It is an `intent(inout)`
 !!   argument of any of the types `integer(int8)`, `integer(int16)`,
 !!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
-!!   `real(real128)`, `character(*)`, `type(string_type)`. If both the 
+!!   `real(real128)`, `character(*)`, `type(string_type)`, 
+!!   `type(bitset_64)`, `type(bitset_large)`. If both the 
 !!   type of `array` is real and at least one of the elements is a 
 !!   `NaN`, then the ordering of the result is undefined. Otherwise it 
 !!   is defined to be the original elements in non-decreasing order.
@@ -206,7 +210,8 @@ module stdlib_sorting
 !! * array: the rank 1 array to be sorted. It is an `intent(inout)`
 !!   argument of any of the types `integer(int8)`, `integer(int16)`,
 !!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
-!!   `real(real128)`, `character(*)`, `type(string_type)`. If both the type
+!!   `real(real128)`, `character(*)`, `type(string_type)`, 
+!!   `type(bitset_64)`, `type(bitset_large)`. If both the type
 !!   of `array` is real and at least one of the elements is a `NaN`, then
 !!   the ordering of the result is undefined. Otherwise it is defined to be the
 !!   original elements in non-decreasing order.
@@ -290,7 +295,8 @@ module stdlib_sorting
 !! * array: the rank 1 array to be sorted. It is an `intent(inout)`
 !!   argument of any of the types `integer(int8)`, `integer(int16)`,
 !!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
-!!   `real(real128)`, `character(*)`, `type(string_type)`. If both the 
+!!   `real(real128)`, `character(*)`, `type(string_type)`, 
+!!   `type(bitset_64)`, `type(bitset_large)`. If both the 
 !!   type of `array` is real and at least one of the elements is a `NaN`, 
 !!   then the ordering of the `array` and `index` results is undefined. 
 !!   Otherwise it is defined to be as specified by reverse.
@@ -405,7 +411,7 @@ module stdlib_sorting
 !! Version: experimental
 !!
 !! `int8_ord_sort( array )` sorts the input `ARRAY` of type `integer(int8)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
             integer(int8), intent(inout)         :: array(0:)
             integer(int8), intent(out), optional :: work(0:)
             logical, intent(in), optional :: reverse
@@ -415,7 +421,7 @@ module stdlib_sorting
 !! Version: experimental
 !!
 !! `int16_ord_sort( array )` sorts the input `ARRAY` of type `integer(int16)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
             integer(int16), intent(inout)         :: array(0:)
             integer(int16), intent(out), optional :: work(0:)
             logical, intent(in), optional :: reverse
@@ -425,7 +431,7 @@ module stdlib_sorting
 !! Version: experimental
 !!
 !! `int32_ord_sort( array )` sorts the input `ARRAY` of type `integer(int32)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
             integer(int32), intent(inout)         :: array(0:)
             integer(int32), intent(out), optional :: work(0:)
             logical, intent(in), optional :: reverse
@@ -435,7 +441,7 @@ module stdlib_sorting
 !! Version: experimental
 !!
 !! `int64_ord_sort( array )` sorts the input `ARRAY` of type `integer(int64)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
             integer(int64), intent(inout)         :: array(0:)
             integer(int64), intent(out), optional :: work(0:)
             logical, intent(in), optional :: reverse
@@ -445,7 +451,7 @@ module stdlib_sorting
 !! Version: experimental
 !!
 !! `sp_ord_sort( array )` sorts the input `ARRAY` of type `real(sp)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
             real(sp), intent(inout)         :: array(0:)
             real(sp), intent(out), optional :: work(0:)
             logical, intent(in), optional :: reverse
@@ -455,7 +461,7 @@ module stdlib_sorting
 !! Version: experimental
 !!
 !! `dp_ord_sort( array )` sorts the input `ARRAY` of type `real(dp)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
             real(dp), intent(inout)         :: array(0:)
             real(dp), intent(out), optional :: work(0:)
             logical, intent(in), optional :: reverse
@@ -465,7 +471,7 @@ module stdlib_sorting
 !! Version: experimental
 !!
 !! `string_type_ord_sort( array )` sorts the input `ARRAY` of type `type(string_type)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
             type(string_type), intent(inout)         :: array(0:)
             type(string_type), intent(out), optional :: work(0:)
             logical, intent(in), optional :: reverse
@@ -475,11 +481,31 @@ module stdlib_sorting
 !! Version: experimental
 !!
 !! `char_ord_sort( array )` sorts the input `ARRAY` of type `character(len=*)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
             character(len=*), intent(inout)         :: array(0:)
             character(len=len(array)), intent(out), optional :: work(0:)
             logical, intent(in), optional :: reverse
         end subroutine char_ord_sort
+
+        module subroutine bitset_64_ord_sort( array, work, reverse )
+!! Version: experimental
+!!
+!! `bitset_64_ord_sort( array )` sorts the input `ARRAY` of type `type(bitset_64)`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+            type(bitset_64), intent(inout)         :: array(0:)
+            type(bitset_64), intent(out), optional :: work(0:)
+            logical, intent(in), optional :: reverse
+        end subroutine bitset_64_ord_sort
+
+        module subroutine bitset_large_ord_sort( array, work, reverse )
+!! Version: experimental
+!!
+!! `bitset_large_ord_sort( array )` sorts the input `ARRAY` of type `type(bitset_large)`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+            type(bitset_large), intent(inout)         :: array(0:)
+            type(bitset_large), intent(out), optional :: work(0:)
+            logical, intent(in), optional :: reverse
+        end subroutine bitset_large_ord_sort
 
 
     end interface ord_sort
@@ -631,6 +657,30 @@ module stdlib_sorting
             logical, intent(in), optional :: reverse
         end subroutine char_sort
 
+        pure module subroutine bitset_64_sort( array, reverse )
+!! Version: experimental
+!!
+!! `bitset_64_sort( array[, reverse] )` sorts the input `ARRAY` of type `type(bitset_64)`
+!! using a hybrid sort based on the `introsort` of David Musser.
+!! The algorithm is of order O(N Ln(N)) for all inputs.
+!! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
+!! behavior is small for random data compared to other sorting algorithms.
+            type(bitset_64), intent(inout)         :: array(0:)
+            logical, intent(in), optional :: reverse
+        end subroutine bitset_64_sort
+
+        pure module subroutine bitset_large_sort( array, reverse )
+!! Version: experimental
+!!
+!! `bitset_large_sort( array[, reverse] )` sorts the input `ARRAY` of type `type(bitset_large)`
+!! using a hybrid sort based on the `introsort` of David Musser.
+!! The algorithm is of order O(N Ln(N)) for all inputs.
+!! Because it relies on `quicksort`, the coefficient of the O(N Ln(N))
+!! behavior is small for random data compared to other sorting algorithms.
+            type(bitset_large), intent(inout)         :: array(0:)
+            logical, intent(in), optional :: reverse
+        end subroutine bitset_large_sort
+
 
     end interface sort
 
@@ -654,8 +704,8 @@ module stdlib_sorting
 !!
 !! `int8_sort_index( array, index[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `integer(int8)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-!! and returns the sorted `ARRAY` and an array `INDEX of indices in the
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+!! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
             integer(int8), intent(inout)                    :: array(0:)
             integer(int_size), intent(out)           :: index(0:)
@@ -670,8 +720,8 @@ module stdlib_sorting
 !!
 !! `int16_sort_index( array, index[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `integer(int16)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-!! and returns the sorted `ARRAY` and an array `INDEX of indices in the
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+!! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
             integer(int16), intent(inout)                    :: array(0:)
             integer(int_size), intent(out)           :: index(0:)
@@ -686,8 +736,8 @@ module stdlib_sorting
 !!
 !! `int32_sort_index( array, index[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `integer(int32)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-!! and returns the sorted `ARRAY` and an array `INDEX of indices in the
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+!! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
             integer(int32), intent(inout)                    :: array(0:)
             integer(int_size), intent(out)           :: index(0:)
@@ -702,8 +752,8 @@ module stdlib_sorting
 !!
 !! `int64_sort_index( array, index[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `integer(int64)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-!! and returns the sorted `ARRAY` and an array `INDEX of indices in the
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+!! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
             integer(int64), intent(inout)                    :: array(0:)
             integer(int_size), intent(out)           :: index(0:)
@@ -718,8 +768,8 @@ module stdlib_sorting
 !!
 !! `sp_sort_index( array, index[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `real(sp)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-!! and returns the sorted `ARRAY` and an array `INDEX of indices in the
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+!! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
             real(sp), intent(inout)                    :: array(0:)
             integer(int_size), intent(out)           :: index(0:)
@@ -734,8 +784,8 @@ module stdlib_sorting
 !!
 !! `dp_sort_index( array, index[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `real(dp)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-!! and returns the sorted `ARRAY` and an array `INDEX of indices in the
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+!! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
             real(dp), intent(inout)                    :: array(0:)
             integer(int_size), intent(out)           :: index(0:)
@@ -750,8 +800,8 @@ module stdlib_sorting
 !!
 !! `string_type_sort_index( array, index[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `type(string_type)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-!! and returns the sorted `ARRAY` and an array `INDEX of indices in the
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+!! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
             type(string_type), intent(inout)                    :: array(0:)
             integer(int_size), intent(out)           :: index(0:)
@@ -766,8 +816,8 @@ module stdlib_sorting
 !!
 !! `char_sort_index( array, index[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `character(len=*)`
-!! using a hybrid sort based on the `'Rust" sort` algorithm found in `slice.rs`
-!! and returns the sorted `ARRAY` and an array `INDEX of indices in the
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+!! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
             character(len=*), intent(inout)                    :: array(0:)
             integer(int_size), intent(out)           :: index(0:)
@@ -775,6 +825,38 @@ module stdlib_sorting
             integer(int_size), intent(out), optional :: iwork(0:)
             logical, intent(in), optional            :: reverse
         end subroutine char_sort_index
+
+        module subroutine bitset_64_sort_index( array, index, work, iwork, &
+            reverse )
+!! Version: experimental
+!!
+!! `bitset_64_sort_index( array, index[, work, iwork, reverse] )` sorts
+!! an input `ARRAY` of type `type(bitset_64)`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+!! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
+!! order that would sort the input `ARRAY` in the desired direction.
+            type(bitset_64), intent(inout)                    :: array(0:)
+            integer(int_size), intent(out)           :: index(0:)
+            type(bitset_64), intent(out), optional            :: work(0:)
+            integer(int_size), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional            :: reverse
+        end subroutine bitset_64_sort_index
+
+        module subroutine bitset_large_sort_index( array, index, work, iwork, &
+            reverse )
+!! Version: experimental
+!!
+!! `bitset_large_sort_index( array, index[, work, iwork, reverse] )` sorts
+!! an input `ARRAY` of type `type(bitset_large)`
+!! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
+!! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
+!! order that would sort the input `ARRAY` in the desired direction.
+            type(bitset_large), intent(inout)                    :: array(0:)
+            integer(int_size), intent(out)           :: index(0:)
+            type(bitset_large), intent(out), optional            :: work(0:)
+            integer(int_size), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional            :: reverse
+        end subroutine bitset_large_sort_index
 
 
     end interface sort_index
