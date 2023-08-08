@@ -89,6 +89,9 @@ contains
     end function any_large
 
 
+
+
+
     #:for k1 in INT_KINDS
     pure module subroutine assign_log${k1}$_large( self, logical_vector )
 !     Used to define assignment from an array of type logical for bitset_large
