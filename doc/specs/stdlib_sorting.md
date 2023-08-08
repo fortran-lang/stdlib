@@ -41,6 +41,7 @@ to the value of `int64` from the `stdlib_kinds` module.
 The `stdlib_sorting` module provides three different overloaded
 subroutines intended to sort three different kinds of arrays of
 data:
+
 * `ORD_SORT` is intended to sort simple arrays of intrinsic data
   that have significant sections that were partially ordered before
   the sort;
@@ -235,8 +236,9 @@ Generic subroutine.
 
 `array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
-`real(sp)`, `real(dp)`, `real(qp)`, `character(*)`, or
-`type(string_type)`. It is an `intent(inout)` argument. On input it is
+`real(sp)`, `real(dp)`, `real(qp)`, `character(*)`, `type(string_type)`,
+`type(bitset_64)`, or `type(bitset_large)`.
+It is an `intent(inout)` argument. On input it is
 the array to be sorted. If both the type of `array` is real and at
 least one of the elements is a `NaN`, then the ordering of the result
 is undefined. Otherwise on return its elements will be sorted in order
@@ -301,8 +303,9 @@ Pure generic subroutine.
 
 `array` : shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
-`real(sp)`, `real(dp)`, `real(qp)`. `character(*)`, or
-`type(string_type)`. It is an `intent(inout)` argument. On return its
+`real(sp)`, `real(dp)`, `real(qp)`. `character(*)`, `type(string_type)`,
+`type(bitset_64)`, or `type(bitset_large)`.
+It is an `intent(inout)` argument. On return its
 input elements will be sorted in order of non-decreasing value.
 
 
@@ -405,8 +408,9 @@ Generic subroutine.
 
 `array`: shall be a rank one array of any of the types:
 `integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
-`real(sp)`, `real(dp)`, `real(qp)`, `character(*)`, or
-`type(string_type)`. It is an `intent(inout)` argument. On input it
+`real(sp)`, `real(dp)`, `real(qp)`, `character(*)`, `type(string_type)`,
+`type(bitset_64)`, or `type(bitset_large)`.
+It is an `intent(inout)` argument. On input it
 will be an array whose sorting indices are to be determined. On return
 it will be the sorted array.
 
@@ -460,60 +464,60 @@ Sorting a related rank one array:
         ! Sort `a`, and  also  sort `b` to be reorderd the same way as `a`
         integer, intent(inout)         :: a(:)
         integer(int32), intent(inout)  :: b(:) ! The same size as a
-		integer(int32), intent(out)    :: work(:)
-		integer(int_size), intent(out) :: index(:)
-		integer(int_size), intent(out) :: iwork(:)
-		! Find the indices to sort a
+        integer(int32), intent(out)    :: work(:)
+        integer(int_size), intent(out) :: index(:)
+        integer(int_size), intent(out) :: iwork(:)
+        ! Find the indices to sort a
         call sort_index(a, index(1:size(a)),&
             work(1:size(a)/2), iwork(1:size(a)/2))
-		! Sort b based on the sorting of a
-		b(:) = b( index(1:size(a)) )
-	end subroutine sort_related_data
+        ! Sort b based on the sorting of a
+        b(:) = b( index(1:size(a)) )
+    end subroutine sort_related_data
 ```
 
 Sorting a rank 2 array based on the data in a column
 
 ```Fortran
-	subroutine sort_related_data( array, column, work, index, iwork )
-	    ! Reorder rows of `array` such that `array(:, column)` is  sorted
-	    integer, intent(inout)         :: array(:,:)
-		integer(int32), intent(in)     :: column
-		integer(int32), intent(out)    :: work(:)
-		integer(int_size), intent(out) :: index(:)
-		integer(int_size), intent(out) :: iwork(:)
-		integer, allocatable           :: dummy(:)
-		integer :: i
-		allocate(dummy(size(array, dim=1)))
-		! Extract a column of `array`
-		dummy(:) = array(:, column)
-		! Find the indices to sort the column
-		call sort_index(dummy, index(1:size(dummy)),&
-		    work(1:size(dummy)/2), iwork(1:size(dummy)/2))
-		! Sort a based on the sorting of its column
-		do i=1, size(array, dim=2)
-		    array(:, i) = array(index(1:size(array, dim=1)), i)
-		end do
-	end subroutine sort_related_data
+    subroutine sort_related_data( array, column, work, index, iwork )
+        ! Reorder rows of `array` such that `array(:, column)` is  sorted
+        integer, intent(inout)         :: array(:,:)
+        integer(int32), intent(in)     :: column
+        integer(int32), intent(out)    :: work(:)
+        integer(int_size), intent(out) :: index(:)
+        integer(int_size), intent(out) :: iwork(:)
+        integer, allocatable           :: dummy(:)
+        integer :: i
+        allocate(dummy(size(array, dim=1)))
+        ! Extract a column of `array`
+        dummy(:) = array(:, column)
+        ! Find the indices to sort the column
+        call sort_index(dummy, index(1:size(dummy)),&
+            work(1:size(dummy)/2), iwork(1:size(dummy)/2))
+        ! Sort a based on the sorting of its column
+        do i=1, size(array, dim=2)
+            array(:, i) = array(index(1:size(array, dim=1)), i)
+        end do
+    end subroutine sort_related_data
 ```
 
 Sorting an array of a derived type based on the data in one component
 
 ```fortran
-       subroutine sort_a_data( a_data, a, work, index, iwork )
-           ! Sort `a_data` in terms or its component `a`
-           type(a_type), intent(inout)      :: a_data(:)
-               integer(int32), intent(inout)    :: a(:)
-               integer(int32), intent(out)    :: work(:)
-               integer(int_size), intent(out) :: index(:)
-               integer(int_size), intent(out) :: iwork(:)
-               ! Extract a component of `a_data`
-               a(1:size(a_data)) = a_data(:) % a
-               ! Find the indices to sort the component
-               call sort_index(a(1:size(a_data)), index(1:size(a_data)),&
-                   work(1:size(a_data)/2), iwork(1:size(a_data)/2))
-               ! Sort a_data based on the sorting of that component
-               a_data(:) = a_data( index(1:size(a_data)) )
-       end subroutine sort_a_data
+    subroutine sort_a_data( a_data, a, work, index, iwork )
+        ! Sort `a_data` in terms or its component `a`
+        type(a_type), intent(inout)      :: a_data(:)
+        integer(int32), intent(inout)    :: a(:)
+        integer(int32), intent(out)    :: work(:)
+        integer(int_size), intent(out) :: index(:)
+        integer(int_size), intent(out) :: iwork(:)
+        ! Extract a component of `a_data`
+        a(1:size(a_data)) = a_data(:) % a
+        ! Find the indices to sort the component
+        call sort_index(a(1:size(a_data)), index(1:size(a_data)),&
+            work(1:size(a_data)/2), iwork(1:size(a_data)/2))
+        ! Sort a_data based on the sorting of that component
+        a_data(:) = a_data( index(1:size(a_data)) )
+    end subroutine sort_a_data
 ```
 
 
