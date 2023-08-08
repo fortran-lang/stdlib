@@ -71,15 +71,6 @@ contains
     end function any_64
 
 
-    pure module subroutine assign_64( set1, set2 )
-!     Used to define assignment for bitset_64
-        type(bitset_64), intent(out) :: set1
-        type(bitset_64), intent(in)  :: set2
-
-        set1 % num_bits = set2 % num_bits
-        set1 % block = set2 % block
-
-    end subroutine assign_64
 
 
     module subroutine assign_logint8_64( self, logical_vector )

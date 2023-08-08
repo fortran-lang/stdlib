@@ -1165,13 +1165,6 @@ module stdlib_bitsets
 !!    end program example_assignment
 !!```
 
-        pure module subroutine assign_large( set1, set2 )
-!! Version: experimental
-!!
-!! Used to define assignment for `bitset_large`.
-            type(bitset_large), intent(out) :: set1
-            type(bitset_large), intent(in)  :: set2
-        end subroutine assign_large
 
         pure module subroutine assign_logint8_large( self, logical_vector )
 !! Version: experimental
@@ -1558,13 +1551,6 @@ module stdlib_bitsets
 
     interface assignment(=)
 
-        pure module subroutine assign_64( set1, set2 )
-!! Version: experimental
-!!
-!! Used to define assignment for `bitset_64`.
-            type(bitset_64), intent(out) :: set1
-            type(bitset_64), intent(in)  :: set2
-        end subroutine assign_64
 
         module subroutine assign_logint8_64( self, logical_vector )
 !! Version: experimental

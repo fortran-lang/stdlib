@@ -88,16 +88,6 @@ contains
     end function any_large
 
 
-    pure module subroutine assign_large( set1, set2 )
-!     Used to define assignment for bitset_large
-        type(bitset_large), intent(out) :: set1
-        type(bitset_large), intent(in)  :: set2
-
-        set1 % num_bits = set2 % num_bits
-        allocate( set1 % blocks( size( set2 % blocks, kind=bits_kind ) ) )
-        set1 % blocks(:) = set2 % blocks(:)
-
-    end subroutine assign_large
 
     pure module subroutine assign_logint8_large( self, logical_vector )
 !     Used to define assignment from an array of type logical for bitset_large
