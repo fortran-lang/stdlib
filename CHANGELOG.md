@@ -1,3 +1,83 @@
+# Version 0.3.0
+
+Full release notes available at [v0.3.0] tag.
+
+[v0.3.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.3.0
+
+- new modules `stdlib_hashmap_wrappers` and `stdlib_hashmap`
+  [#611](https://github.com/fortran-lang/stdlib/pull/611)
+  - new procedures in `stdlib_hashmap_wrappers`: `copy_key`, `copy_other`,
+    `fibonacci_hash`, `fnv_1_hasher`, `fnv_1a_hasher`, `free_key`,
+    `free_other`, `get`, `hasher_fun`, `operator(==)`, `seeded_nmhash32_hasher`,
+    `seeded_nmhash32x_hasher`, `seeded_water_hasher`, `set`, `key_type`,
+    `other_type`
+  - new procedures in `stdlib_hashmaps`: `chaining_hashmap_type`,
+    `hashmap_type`, `open_hashmap_type
+
+
+Changes to existing scripts and modules
+
+- change in script `doc-deployment.yml`
+  - update of the script
+    [#681](https://github.com/fortran-lang/stdlib/pull/681)
+- change in script `fpm-deployment.sh`
+  - fixed a problem with `dat` and `npy` files in example dir not being deployed
+    [#713](https://github.com/fortran-lang/stdlib/pull/713)
+- change in module `stdlib_bitsets`  
+  - remove define assignment for `bitset_64` and `bitset_large`
+    [#727](https://github.com/fortran-lang/stdlib/pull/727)
+- change in module `stdlib_hashmap_open`
+  - fix access violation in a type-bound procedure of `open_hashmap_type`
+    [#707](https://github.com/fortran-lang/stdlib/pull/707)
+- change in module `stdlib_io_npy_load`
+  - fix various bugs
+    [#708](https://github.com/fortran-lang/stdlib/pull/708)
+    [#711](https://github.com/fortran-lang/stdlib/pull/711)
+- change in module `stdlib_linalg`
+  - addition of `kronecker_product`
+    [#700](https://github.com/fortran-lang/stdlib/pull/700)
+- change in module `stdlib_quadrature_gauss`
+  - fix erroneous gaussian quadrature points in `gauss_legendre`
+    [#660](https://github.com/fortran-lang/stdlib/pull/660)
+- change in module `stdlib_sorting`
+  - addition of radix sort
+    [#712](https://github.com/fortran-lang/stdlib/pull/712)
+  - support for sorting arrays of `bitset_64` and of `bitset_large`
+    [#723](https://github.com/fortran-lang/stdlib/pull/723)
+- change in module `stdlib_stats_distribution_exponential`
+  - convert `pdf_exp` and `cdf_exp` to `pure` functions
+    [#717](https://github.com/fortran-lang/stdlib/pull/717)
+- change in module `stdlib_stats_distribution_normal`
+  - convert `rvs_norm` to an `impure elemental` function
+    [#665](https://github.com/fortran-lang/stdlib/pull/665)
+  - remove unused module `stdlib_error` from module `stdlib_stats_distribution_normal`
+    [#716](https://github.com/fortran-lang/stdlib/pull/716)
+- remove support for manual make builds
+  [#657](https://github.com/fortran-lang/stdlib/pull/657)
+
+
+Changes to the existing documentation
+
+- change in README.md
+    [#656](https://github.com/fortran-lang/stdlib/pull/656)
+    [#659](https://github.com/fortran-lang/stdlib/pull/659)
+    [#715](https://github.com/fortran-lang/stdlib/pull/715)
+    [#725](https://github.com/fortran-lang/stdlib/pull/725)
+- change in `stdlib_stats_distribution_normal.md`
+  - Improvement of the documentation
+    [#718](https://github.com/fortran-lang/stdlib/pull/718)
+    [#721](https://github.com/fortran-lang/stdlib/pull/721)
+- change in `stdlib_stats_distribution_exponential.md`
+  - Improvement of the documentation
+    [#721](https://github.com/fortran-lang/stdlib/pull/721)
+- change in the structure of the project `stdlib`
+  - extraction of the demo programs from the specs in the directory example
+    [#662](https://github.com/fortran-lang/stdlib/pull/662)
+  - move the directory `src/tests` to `test`
+    [#669](https://github.com/fortran-lang/stdlib/pull/669)
+- fix various docs
+  [#663](https://github.com/fortran-lang/stdlib/pull/663)
+
 # Version 0.2.1
 
 Full release notes available at [v0.2.1] tag.
