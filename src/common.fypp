@@ -78,6 +78,11 @@
 #! Collected (kind, type) tuples for string derived types
 #:set STRING_KINDS_TYPES = list(zip(STRING_KINDS, STRING_TYPES))
 
+#! Derived type bitsets
+#:set BITSET_KINDS = ["bitset_64", "bitset_large"]
+
+#! Bitset types to be considered during templating
+#:set BITSET_TYPES = ["type({})".format(k) for k in BITSET_KINDS]
 
 #! Whether Fortran 90 compatible code should be generated
 #:set VERSION90 = defined('VERSION90')

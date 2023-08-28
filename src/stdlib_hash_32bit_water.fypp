@@ -45,9 +45,7 @@
 !! but also in its use of signed two's complement arithmetic in contrast to
 !! the unsigned arithmetic of Ettinger and Wang Yi, and in making some of the
 !! uses of `TRANSFER` endian dependent, in an attempt to make the quality of
-!! the hash endian independent. The use of signed arithmetic may change with
-!! the planned introduction of the unsigned BITS datatype in what is currently
-!! known as Fortran 202X.
+!! the hash endian independent.
 !!
 !! To be useful this code must be processed by a processor that implements two
 !! Fortran 2008 extensions to Fortran 2003: submodules, and 64 bit (`INT64`)
