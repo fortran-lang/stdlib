@@ -341,14 +341,14 @@ contains
 
         end if
 
-        if(z % re > zero_k1) then
-
-            y = z - one
-
-        else
+        if(z % re < zero_k1) then
 
             x = cmplx(abs(z % re), - z % im, kind = sp)
             y = x - one
+
+        else
+
+            y = z - one
 
         end if
 
@@ -425,14 +425,14 @@ contains
 
         end if
 
-        if(z % re > zero_k1) then
-
-            y = z - one
-
-        else
+        if(z % re < zero_k1) then
 
             x = cmplx(abs(z % re), - z % im, kind = dp)
             y = x - one
+
+        else
+
+            y = z - one
 
         end if
 
