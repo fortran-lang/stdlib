@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        gcc_v: [10, 11, 12] # Version of GFortran we want to use.
+        gcc_v: [10, 11, 12, 13] # Version of GFortran we want to use.
         build: [cmake]
         include:
           - os: ubuntu-latest
