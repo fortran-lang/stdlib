@@ -1523,6 +1523,7 @@ Experimental
 Moves the allocation from `from` to `to`, consequently deallocating `from` in this process.
 If `from` is not allocated before execution, `to` gets deallocated by the process.
 An unallocated `string_type` instance is equivalent to an empty string.
+If `from` and `to` are the same variable, then `from` remains unchanged.
 
 #### Syntax
 
