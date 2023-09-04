@@ -686,12 +686,6 @@ contains
         call move_alloc(from%raw, tmp)
         call move_alloc(tmp, to%raw)
 
-        if(from%raw .eq. to%raw)then
-         deallocate(from%raw)
-        else
-         call move_alloc(from%raw, to%raw)
-        endif
-
     end subroutine move_string_string
 
     !> Moves the allocated character scalar from 'from' to 'to'
