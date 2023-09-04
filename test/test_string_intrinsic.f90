@@ -667,6 +667,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         type(string_type) :: from_string, to_string
+        type(string_type) :: from_string_not
         type(string_type) :: from_strings(2), to_strings(2)
         character(len=:), allocatable :: from_char, to_char
 
@@ -706,7 +707,7 @@ contains
         call check(error, .not. allocated(from_char) .and. from_string == "new char", "move: test_case 6")
         if (allocated(error)) return
 
-        ! character (unallocated) --> string_type (allocated)
+        ! character (not allocated) --> string_type (allocated)
         call move(from_char, from_string)
         call check(error, from_string == "", "move: test_case 7")
         if (allocated(error)) return
@@ -714,12 +715,24 @@ contains
         from_string = "moving to self"
         ! string_type (allocated) --> string_type (allocated)
         call move(from_string, from_string)
-        call check(error, from_string == "", "move: test_case 8")
+        call check(error, from_string == "moving to self", "move: test_case 8")
         if (allocated(error)) return
         
         ! elemental: string_type (allocated) --> string_type (not allocated)
         call move(from_strings, to_strings)
         call check(error, all(from_strings(:) == "") .and. all(to_strings(:) == "Move This String"), "move: test_case 9")
+
+        ! string_type (not allocated) --> string_type (not allocated)
+        call move(from_string_not, to_string)
+        call check(error, from_string_not == "" .and. to_string == "", "move: test_case 10")
+        if (allocated(error)) return
+
+        ! string_type (not allocated) --> string_type (not allocated)
+        to_string = "to be deallocated"
+        call move(from_string_not, to_string)
+        call check(error, from_string_not == "" .and. to_string == "", "move: test_case 11")
+        if (allocated(error)) return
+
     end subroutine test_move
 
 end module test_string_intrinsic

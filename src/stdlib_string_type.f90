@@ -687,9 +687,11 @@ contains
     !> No output
     elemental subroutine move_string_string(from, to)
         type(string_type), intent(inout) :: from
-        type(string_type), intent(out) :: to
+        type(string_type), intent(inout) :: to
+        character(:), allocatable :: tmp
 
-        call move_alloc(from%raw, to%raw)
+        call move_alloc(from%raw, tmp)
+        call move_alloc(tmp, to%raw)
 
     end subroutine move_string_string
 
