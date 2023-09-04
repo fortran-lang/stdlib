@@ -715,7 +715,7 @@ contains
         from_string = "moving to self"
         ! string_type (allocated) --> string_type (allocated)
         call move(from_string, from_string)
-        call check(error, from_string == "", "move: test_case 8")
+        call check(error, from_string == "moving to self", "move: test_case 8")
         if (allocated(error)) return
         
         ! elemental: string_type (allocated) --> string_type (not allocated)
