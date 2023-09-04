@@ -681,11 +681,10 @@ contains
     elemental subroutine move_string_string(from, to)
         type(string_type), intent(inout) :: from
         type(string_type), intent(inout) :: to
+        character(:), allocatable :: tmp
 
-        if(.not.allocated(from%raw))then
-         if(allocated(to%raw))deallocate(to%raw)
-         return
-        endif
+        call move_alloc(from%raw, tmp)
+        call move_alloc(tmp, to%raw)
 
         if(from%raw .eq. to%raw)then
          deallocate(from%raw)
