@@ -223,15 +223,13 @@ contains
     pure function char_to_lower(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
+        integer, parameter :: wp= 32, la=65, lz= 90
         integer :: k
 
-        k = index( uppercase, c )
+        k = ichar(c) 
+        if (k>=la.and.k<=lz) k = k + wp 
+        t = char(k)
 
-        if ( k > 0 ) then
-            t = lowercase(k:k)
-        else
-            t = c
-        endif
     end function char_to_lower
 
     !> Returns the corresponding uppercase letter, if `c` is a lowercase
@@ -239,15 +237,13 @@ contains
     pure function char_to_upper(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
+        integer, parameter :: wp= 32, BA=97, BZ= 122
         integer :: k
 
-        k = index( lowercase, c )
+        k = ichar(c) 
+        if (k>=BA.and.k<=BZ) k = k - wp 
+        t = char(k)
 
-        if ( k > 0 ) then
-            t = uppercase(k:k)
-        else
-            t = c
-        endif
     end function char_to_upper
 
     !> Convert character variable to lower case
@@ -257,13 +253,10 @@ contains
     pure function to_lower(string) result(lower_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: lower_string
-        integer, parameter :: wp= 32, la=65, lz= 90
-        integer :: i, icar
+        integer :: i
 
         do i = 1, len(string)
-            icar= ichar(string(i:i)) 
-            if (icar>=la.and.icar<=lz) icar= icar + wp 
-            lower_string(i:i) = char(icar)
+            lower_string(i:i) = char_to_lower(string(i:i))
         end do
 
     end function to_lower
@@ -275,13 +268,10 @@ contains
     pure function to_upper(string) result(upper_string)
         character(len=*), intent(in) :: string
         character(len=len(string)) :: upper_string
-        integer, parameter :: wp= 32, BA=97, BZ= 122
-        integer :: i, icar
+        integer :: i
 
         do i = 1, len(string)
-            icar= ichar(string(i:i)) 
-            if (icar>=BA.and.icar<=BZ) icar= icar - wp 
-            upper_string(i:i) = char(icar)
+            upper_string(i:i) = char_to_upper(string(i:i))
         end do
 
     end function to_upper
