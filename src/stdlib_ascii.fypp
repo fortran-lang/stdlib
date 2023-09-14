@@ -223,11 +223,11 @@ contains
     pure function char_to_lower(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
-        integer, parameter :: wp= 32, la=65, lz= 90
+        integer, parameter :: wp= 32, BA=iachar('A'), BZ=iachar('Z')
         integer :: k
-
+        !Check whether the integer equivalent is between BA=65 and BZ=90
         k = ichar(c) 
-        if (k>=la.and.k<=lz) k = k + wp 
+        if (k>=BA.and.k<=BZ) k = k + wp 
         t = char(k)
 
     end function char_to_lower
@@ -237,11 +237,11 @@ contains
     pure function char_to_upper(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
-        integer, parameter :: wp= 32, BA=97, BZ= 122
+        integer, parameter :: wp= 32, la=iachar('a'), lz=iachar('z')
         integer :: k
-
+        !Check whether the integer equivalent is between la=97 and lz=122
         k = ichar(c) 
-        if (k>=BA.and.k<=BZ) k = k - wp 
+        if (k>=la.and.k<=lz) k = k - wp 
         t = char(k)
 
     end function char_to_upper
