@@ -1478,7 +1478,7 @@ entry.
   associated with the `key`.
 
 `conflict` (optional): shall be a scalar variable of type
-`logical`. It is an `intent(in)` argument. If present, a `.true.`
+`logical`. It is an `intent(out)` argument. If present, a `.true.`
 value indicates that an entry with the value of `key` already exists
 and the entry was not entered into the map, a `.false.` value indicates
 that `key` was not present in the map and the entry was added to the
