@@ -223,15 +223,13 @@ contains
     pure function char_to_lower(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
+        integer, parameter :: wp= iachar('a')-iachar('A'), BA=iachar('A'), BZ=iachar('Z')
         integer :: k
+        !Check whether the integer equivalent is between BA=65 and BZ=90
+        k = ichar(c) 
+        if (k>=BA.and.k<=BZ) k = k + wp 
+        t = char(k)
 
-        k = index( uppercase, c )
-
-        if ( k > 0 ) then
-            t = lowercase(k:k)
-        else
-            t = c
-        endif
     end function char_to_lower
 
     !> Returns the corresponding uppercase letter, if `c` is a lowercase
@@ -239,15 +237,13 @@ contains
     pure function char_to_upper(c) result(t)
         character(len=1), intent(in) :: c !! A character.
         character(len=1)             :: t
+        integer, parameter :: wp= iachar('a')-iachar('A'), la=iachar('a'), lz=iachar('z')
         integer :: k
+        !Check whether the integer equivalent is between la=97 and lz=122
+        k = ichar(c) 
+        if (k>=la.and.k<=lz) k = k - wp 
+        t = char(k)
 
-        k = index( lowercase, c )
-
-        if ( k > 0 ) then
-            t = uppercase(k:k)
-        else
-            t = c
-        endif
     end function char_to_upper
 
     !> Convert character variable to lower case
