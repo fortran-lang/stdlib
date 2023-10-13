@@ -586,6 +586,7 @@ module stdlib_hashmaps
         integer(int_index), allocatable        :: slots(:)
 !! Array of indices to the inverse Note # slots=size(slots)
     contains
+        procedure :: get_all_keys => get_all_open_keys
         procedure :: get_other_data => get_other_open_data
         procedure :: init => init_open_map
         procedure :: loading => open_loading
@@ -609,6 +610,19 @@ module stdlib_hashmaps
 !
             type(open_hashmap_type), intent(inout) :: map
         end subroutine free_open_map
+
+
+        module subroutine get_all_open_keys(map, all_keys)
+!! Version: Experimental
+!!
+!! Returns all the keys presented in a hashmap
+!! Arguments:
+!!     map - an open hash map
+!!     all_keys - all the keys presented in a hash map
+!
+            class(open_hashmap_type), intent(in) :: map
+            type(key_type), allocatable, intent(out) :: all_keys(:)
+        end subroutine get_all_open_keys
 
 
         module subroutine get_other_open_data( map, key, other, exists )
