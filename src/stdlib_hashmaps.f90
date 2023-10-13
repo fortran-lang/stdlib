@@ -94,6 +94,7 @@ module stdlib_hashmaps
         procedure, non_overridable, pass(map) :: map_probes
         procedure, non_overridable, pass(map) :: num_slots
         procedure, non_overridable, pass(map) :: slots_bits
+        procedure(get_all_keys), deferred, pass(map) :: get_all_keys
         procedure(get_other), deferred, pass(map)    :: get_other_data
         procedure(init_map), deferred, pass(map)     :: init
         procedure(key_test), deferred, pass(map)     :: key_test
@@ -108,6 +109,21 @@ module stdlib_hashmaps
 
 
     abstract interface
+
+        subroutine get_all_keys(map, all_keys)
+!! Version: Experimental
+!!
+!! Returns the all keys presented in a hash map
+!! ([Specifications](../page/specs/stdlib_hashmaps.html#get_all_keys-returns-all-the-keys-presented-in-a-map))
+!!
+!! Arguments:
+!!     map - a hash map
+!!     all_keys - all the keys presented in a hash map
+!
+            import hashmap_type, key_type
+            class(hashmap_type), intent(in) :: map
+            type(key_type), allocatable, intent(out) :: all_keys(:)
+        end subroutine get_all_keys
 
         subroutine get_other( map, key, other, exists )
 !! Version: Experimental
