@@ -890,7 +890,10 @@ It also defines five non-overridable procedures:
 * `num_slots` - returns the number of slots in the map; and
 
 * `slots_bits` - returns the number of bits used to address the slots;
-and eleven deferred procedures:
+
+and ten deferred procedures:
+
+* `get_all_keys` - gets all the keys presented in a map;
 
 * `get_other_data` - gets the other map data associated with the key;
 
@@ -932,6 +935,7 @@ The type's definition is below:
         procedure, non_overridable, pass(map) :: map_probes
         procedure, non_overridable, pass(map) :: slots_bits
         procedure, non_overridable, pass(map) :: num_slots
+        procedure(get_all_keys), deferred, pass(map) :: get_all_keys
         procedure(get_other), deferred, pass(map)    :: get_other_data
         procedure(init_map), deferred, pass(map)     :: init
         procedure(key_test), deferred, pass(map)     :: key_test 
@@ -1026,6 +1030,7 @@ as follows:
         type(chaining_map_entry_ptr), allocatable :: inverse(:) 
         type(chaining_map_entry_ptr), allocatable :: slots(:)
     contains
+        procedure :: get_all_keys => get_all_chaining_keys
         procedure :: get_other_data => get_other_chaining_data
         procedure :: init => init_chaining_map
         procedure :: key => chaining_key_test 
@@ -1103,6 +1108,7 @@ as follows:
         type(open_map_entry_ptr), allocatable :: inverse(:)
         integer(int_index), allocatable       :: slots(:) 
     contains
+        procedure :: get_all_keys => get_all_open_keys
         procedure :: get_other_data => get_other_open_data
         procedure :: init => init_open_map
         procedure :: key_test => open_key_test 
@@ -1147,6 +1153,9 @@ Procedures to modify the content of a map:
   associated with the entry.
 
 Procedures to report the content of a map:
+
+* `map % get_all_keys( all_keys )` - Returns all the keys
+  presented in the map;
 
 * `map % get_other_data( key, other, exists )` - Returns the other data
   associated with the `key`;
@@ -1248,6 +1257,41 @@ The result will be the number of entries in the hash map.
 
 ```fortran
 {!example/hashmaps/example_hashmaps_entries.f90!}
+```
+
+
+#### `get_all_keys` - Returns all the keys presented in a map
+
+##### Status
+
+Experimental
+
+##### Description
+
+Returns all the keys presented in a map.
+
+##### Syntax
+
+`call map % [[hashmap_type(type):get_all_keys(bound)]]( all_keys )`
+
+##### Class
+
+Subroutine
+
+##### Arguments
+
+`map` (pass): shall be a scalar variable of class
+  `chaining_hashmap_type` or `open_hashmap_type`. It is an
+  `intent(in)` argument. It will be 
+  the hash map used to store and access the other data.
+
+`all_keys`: shall be a rank-1 allocatable array of type `key_type`. 
+  It is an `intent(out)` argument.
+
+##### Example
+
+```fortran
+{!example/hashmaps/example_hashmaps_get_all_keys.f90!}
 ```
 
 
