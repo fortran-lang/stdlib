@@ -53,6 +53,7 @@ program test_open_maps
     call input_random_data( map, test_16, 'FNV-1', "16 byte words" )
     call test_inquire_data( map, test_16, 'FNV-1', "16 byte words" )
     call test_get_data( map, test_16, 'FNV-1', '16 byte words' )
+    call test_get_all_keys( map, test_16, 'FNV-1', '16 byte words' )
     call report_rehash_times( map, fnv_1_hasher, 'FNV-1', '16 byte words' )
     call report_hash_statistics( map, 'FNV-1', '16 byte words' )
     call report_removal_times( map, test_16, 'FNV-1', '16 byte words' )
@@ -61,6 +62,7 @@ program test_open_maps
     call input_random_data( map, test_256, 'FNV-1', "256 byte words" )
     call test_inquire_data( map, test_256, 'FNV-1', "256 byte words" )
     call test_get_data( map, test_256, 'FNV-1', '256 byte words' )
+    call test_get_all_keys( map, test_256, 'FNV-1', '256 byte words' )
     call report_rehash_times( map, fnv_1_hasher, 'FNV-1', '256 byte words' )
     call report_hash_statistics( map, 'FNV-1', '256 byte words' )
     call report_removal_times( map, test_256, 'FNV-1', '256 byte words' )
@@ -69,6 +71,7 @@ program test_open_maps
     call input_random_data( map, test_16, 'FNV-1A', "16 byte words" )
     call test_inquire_data( map, test_16, 'FNV-1A', "16 byte words" )
     call test_get_data( map, test_16, 'FNV-1A', '16 byte words' )
+    call test_get_all_keys( map, test_16, 'FNV-1A', '16 byte words' )
     call report_rehash_times( map, fnv_1a_hasher, 'FNV-1', '16 byte words' )
     call report_hash_statistics( map, 'FNV-1A', '16 byte words' )
     call report_removal_times( map, test_16, 'FNV-1a', '16 byte words' )
@@ -77,6 +80,7 @@ program test_open_maps
     call input_random_data( map, test_256, 'FNV-1A', "256 byte words" )
     call test_inquire_data( map, test_256, 'FNV-1A', "256 byte words" )
     call test_get_data( map, test_256, 'FNV-1A', '256 byte words' )
+    call test_get_all_keys( map, test_256, 'FNV-1A', '256 byte words' )
     call report_rehash_times( map, fnv_1_hasher, 'FNV-1A', '256 byte words' )
     call report_hash_statistics( map, 'FNV-1A', '256 byte words' )
     call report_removal_times( map, test_256, 'FNV-1A', '256 byte words' )
@@ -85,6 +89,7 @@ program test_open_maps
     call input_random_data( map, test_16, 'Seeded_Nmhash32', "16 byte words" )
     call test_inquire_data( map, test_16, 'Seeded_Nmhash32', "16 byte words" )
     call test_get_data( map, test_16, 'Seeded_Nmhash32', '16 byte words' )
+    call test_get_all_keys( map, test_16, 'Seeded_Nmhash32', '16 byte words' )
     call report_rehash_times( map, seeded_nmhash32_hasher, 'Seeded_Nmhash32', &
         '16 byte words' )
     call report_hash_statistics( map, 'Seeded_Nmhash32', '16 byte words' )
@@ -95,6 +100,7 @@ program test_open_maps
     call input_random_data( map, test_256, 'Seeded_Nmhash32', "256 byte words" )
     call test_inquire_data( map, test_256, 'Seeded_Nmhash32', "256 byte words" )
     call test_get_data( map, test_256, 'Seeded_Nmhash32', '256 byte words' )
+    call test_get_all_keys( map, test_256, 'Seeded_Nmhash32', '256 byte words' )
     call report_rehash_times( map, seeded_nmhash32_hasher, 'Seeded_Nmhash32', &
         '256 byte words' )
     call report_hash_statistics( map, 'Seeded_Nmhash32', '256 byte words' )
@@ -105,6 +111,7 @@ program test_open_maps
     call input_random_data( map, test_16, 'Seeded_Nmhash32x', "16 byte words" )
     call test_inquire_data( map, test_16, 'Seeded_Nmhash32x', "16 byte words" )
     call test_get_data( map, test_16, 'Seeded_Nmhash32x', '16 byte words' )
+    call test_get_all_keys( map, test_16, 'Seeded_Nmhash32x', '16 byte words' )
     call report_rehash_times( map, seeded_nmhash32x_hasher, &
         'Seeded_Nmhash32x', '16 byte words' )
     call report_hash_statistics( map, 'Seeded_Nmhash32x', '16 byte words' )
@@ -117,6 +124,7 @@ program test_open_maps
     call test_inquire_data( map, test_256, 'Seeded_Nmhash32x', &
         "256 byte words" )
     call test_get_data( map, test_256, 'Seeded_Nmhash32x', '256 byte words' )
+    call test_get_all_keys( map, test_256, 'Seeded_Nmhash32x', '256 byte words' )
     call report_rehash_times( map, seeded_nmhash32x_hasher, &
         'Seeded_Nmhash32x', '256 byte words' )
     call report_hash_statistics( map, 'Seeded_Nmhash32x', '256 byte words' )
@@ -127,6 +135,7 @@ program test_open_maps
     call input_random_data( map, test_16, 'Seeded_Water', "16 byte words" )
     call test_inquire_data( map, test_16, 'Seeded_Water', "16 byte words" )
     call test_get_data( map, test_16, 'Seeded_Water', '16 byte words' )
+    call test_get_all_keys( map, test_16, 'Seeded_Water', '16 byte words' )
     call report_rehash_times( map, seeded_water_hasher, &
         'Seeded_Water', '16 byte words' )
     call report_hash_statistics( map, 'Seeded_Water', '16 byte words' )
@@ -139,6 +148,7 @@ program test_open_maps
     call test_inquire_data( map, test_256, 'Seeded_Water', &
         "256 byte words" )
     call test_get_data( map, test_256, 'Seeded_Water', '256 byte words' )
+    call test_get_all_keys( map, test_256, 'Seeded_Water', '256 byte words' )
     call report_rehash_times( map, seeded_water_hasher, &
         'Seeded_Water', '256 byte words' )
     call report_hash_statistics( map, 'Seeded_Water', '256 byte words' )
@@ -226,6 +236,37 @@ contains
             trim(hash_name), 'Get data', size_name, tdiff
 
     end subroutine test_get_data
+
+
+    subroutine test_get_all_keys( map, test_block, hash_name, size_name )
+        type(open_hashmap_type), intent(inout) :: map
+        integer(int_index), intent(in)          :: test_block
+        character(*), intent(in)                :: hash_name, size_name
+        integer :: index2, key_idx
+        type(key_type) :: key
+        type(key_type), allocatable :: all_keys(:)
+        real :: t1, t2, tdiff
+
+        call cpu_time(t1)
+        call map % get_all_keys(all_keys)
+        call cpu_time(t2)
+        tdiff = t2-t1
+
+        if (size( all_keys ) /= size( test_8_bits )/test_block) &
+            error stop "Number of keys is different from that of keys in a map."
+
+        do index2=1, size(test_8_bits), test_block
+            call set( key, test_8_bits( index2:index2+test_block-1 ) )
+
+            key_idx = ( index2/test_block ) + 1
+            if (.not. ( all_keys(key_idx) == key )) &
+                error stop "Invalid value of a key."
+        end do
+
+        write(lun, '("|", a18, " | ", a12, " | ", a15, " | ", f10.5, " |")') &
+            trim(hash_name), 'Get all keys', size_name, tdiff
+
+    end subroutine test_get_all_keys
 
 
     subroutine report_rehash_times( map, hasher, hash_name, size_name )
