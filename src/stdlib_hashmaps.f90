@@ -335,6 +335,7 @@ module stdlib_hashmaps
         type(chaining_map_entry_ptr), allocatable :: slots(:)
 !! Array of bucket lists Note # slots=size(slots)
     contains
+        procedure :: get_all_keys => get_all_chaining_keys
         procedure :: get_other_data => get_other_chaining_data
         procedure :: init => init_chaining_map
         procedure :: loading => chaining_loading
@@ -359,6 +360,19 @@ module stdlib_hashmaps
 !
             type(chaining_hashmap_type), intent(inout) :: map
         end subroutine free_chaining_map
+
+
+        module subroutine get_all_chaining_keys(map, all_keys)
+!! Version: Experimental
+!!
+!! Returns all the keys presented in a hashmap
+!! Arguments:
+!!     map - an chaining hash map
+!!     all_keys - all the keys presented in a hash map
+!
+            class(chaining_hashmap_type), intent(in) :: map
+            type(key_type), allocatable, intent(out) :: all_keys(:)
+        end subroutine get_all_chaining_keys
 
 
         module subroutine get_other_chaining_data( map, key, other, exists )
