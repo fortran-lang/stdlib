@@ -42,7 +42,6 @@ program example_set_other_data
 contains
   !Converts key type to character type
   function key_to_char(key) result(str)
-    implicit none
     type(key_type), intent(in) :: key
     character(:), allocatable :: str
     character(:), allocatable :: str_mold
