@@ -41,7 +41,7 @@ program example_hashmaps_get_all_keys
 
 contains
   !Converts key type to character type
-  function key_to_char(key) result(str)
+  pure function key_to_char(key) result(str)
     type(key_type), intent(in) :: key
     character(:), allocatable :: str
     character(:), allocatable :: str_mold
