@@ -1,4 +1,4 @@
-program example_set_other_data
+program example_hashmaps_get_all_keys
   use stdlib_kinds, only: int32
   use stdlib_hashmaps, only: chaining_hashmap_type
   use stdlib_hashmap_wrappers, only: fnv_1_hasher, &
@@ -49,4 +49,4 @@ contains
     allocate( character(len=size(key%value)) :: str_mold )
     str = transfer(key%value, str_mold)
   end function key_to_char
-end program example_set_other_data
+end program example_hashmaps_get_all_keys
