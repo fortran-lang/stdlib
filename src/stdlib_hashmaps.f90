@@ -113,12 +113,12 @@ module stdlib_hashmaps
         subroutine get_all_keys(map, all_keys)
 !! Version: Experimental
 !!
-!! Returns the all keys presented in a hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#get_all_keys-returns-all-the-keys-presented-in-a-map))
+!! Returns the all keys contained in a hash map
+!! ([Specifications](../page/specs/stdlib_hashmaps.html#get_all_keys-returns-all-the-keys-contained-in-a-map))
 !!
 !! Arguments:
 !!     map - a hash map
-!!     all_keys - all the keys presented in a hash map
+!!     all_keys - all the keys contained in a hash map
 !
             import hashmap_type, key_type
             class(hashmap_type), intent(in) :: map
@@ -365,10 +365,10 @@ module stdlib_hashmaps
         module subroutine get_all_chaining_keys(map, all_keys)
 !! Version: Experimental
 !!
-!! Returns all the keys presented in a hashmap
+!! Returns all the keys contained in a hashmap
 !! Arguments:
 !!     map - an chaining hash map
-!!     all_keys - all the keys presented in a hash map
+!!     all_keys - all the keys contained in a hash map
 !
             class(chaining_hashmap_type), intent(in) :: map
             type(key_type), allocatable, intent(out) :: all_keys(:)
@@ -615,10 +615,10 @@ module stdlib_hashmaps
         module subroutine get_all_open_keys(map, all_keys)
 !! Version: Experimental
 !!
-!! Returns all the keys presented in a hashmap
+!! Returns all the keys contained in a hashmap
 !! Arguments:
 !!     map - an open hash map
-!!     all_keys - all the keys presented in a hash map
+!!     all_keys - all the keys contained in a hash map
 !
             class(open_hashmap_type), intent(in) :: map
             type(key_type), allocatable, intent(out) :: all_keys(:)

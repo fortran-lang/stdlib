@@ -893,7 +893,7 @@ It also defines five non-overridable procedures:
 
 and ten deferred procedures:
 
-* `get_all_keys` - gets all the keys presented in a map;
+* `get_all_keys` - gets all the keys contained in a map;
 
 * `get_other_data` - gets the other map data associated with the key;
 
@@ -1155,7 +1155,7 @@ Procedures to modify the content of a map:
 Procedures to report the content of a map:
 
 * `map % get_all_keys( all_keys )` - Returns all the keys
-  presented in the map;
+  contained in the map;
 
 * `map % get_other_data( key, other, exists )` - Returns the other data
   associated with the `key`;
@@ -1260,7 +1260,7 @@ The result will be the number of entries in the hash map.
 ```
 
 
-#### `get_all_keys` - Returns all the keys presented in a map
+#### `get_all_keys` - Returns all the keys contained in a map
 
 ##### Status
 
@@ -1268,7 +1268,7 @@ Experimental
 
 ##### Description
 
-Returns all the keys presented in a map.
+Returns all the keys contained in a map.
 
 ##### Syntax
 

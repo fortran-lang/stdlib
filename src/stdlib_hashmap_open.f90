@@ -257,10 +257,10 @@ contains
     module subroutine get_all_open_keys(map, all_keys)
 !! Version: Experimental
 !!
-!! Returns all the keys presented in a hash map
+!! Returns all the keys contained in a hash map
 !! Arguments:
 !!     map - an open hash map
-!!     all_keys - all the keys presented in a hash map
+!!     all_keys - all the keys contained in a hash map
 !
         class(open_hashmap_type), intent(in) :: map
         type(key_type), allocatable, intent(out) :: all_keys(:)

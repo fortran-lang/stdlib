@@ -287,10 +287,10 @@ contains
     module subroutine get_all_chaining_keys(map, all_keys)
 !! Version: Experimental
 !!
-!! Returns all the keys presented in a hash map
+!! Returns all the keys contained in a hash map
 !! Arguments:
 !!     map - a chaining hash map
-!!     all_keys - all the keys presented in a hash map
+!!     all_keys - all the keys contained in a hash map
 !
         class(chaining_hashmap_type), intent(in) :: map
         type(key_type), allocatable, intent(out) :: all_keys(:)
