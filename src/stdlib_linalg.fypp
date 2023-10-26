@@ -1,4 +1,5 @@
 #:include "common.fypp"
+#:include "BLAS_common.fypp"
 #:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
@@ -23,6 +24,10 @@ module stdlib_linalg
   public :: is_hermitian
   public :: is_triangular
   public :: is_hessenberg
+
+  #:if defined("USE_OPENBLAS")
+  public :: solve
+  #:endif
 
   interface diag
     !! version: experimental
@@ -213,6 +218,25 @@ module stdlib_linalg
       module procedure is_Hessenberg_${t1[0]}$${k1}$
     #:endfor
   end interface is_hessenberg
+
+  #:if defined("USE_OPENBLAS")
+  interface solve
+    !! version: experimental
+    !!
+    !! Solve a linear matrix equation, or system of linear scalar equations
+    !! ([Specification](../page/specs/stdlib_linalg.html#
+    !! solve-solve-a-linear-matrix-equation))
+    #:set REAL_KINDS_TYPES_GESV = list(zip(BLAS_REAL_KINDS, REAL_TYPES, BLAS_REAL_GESV))
+    #:set CMPLX_KINDS_TYPES_GESV = list(zip(BLAS_CMPLX_KINDS, CMPLX_TYPES, BLAS_CMPLX_GESV))
+    #:set RC_KINDS_TYPES_GESV = REAL_KINDS_TYPES_GESV + CMPLX_KINDS_TYPES_GESV
+    #:for k1, t1, g1 in RC_KINDS_TYPES_GESV
+    module function solve_${t1[0]}$${k1}$(a, b) result(x)
+        ${t1}$, intent(in) :: a(:, :), b(:, :)
+        ${t1}$ :: x(size(b, 1), size(b, 2))
+    end function solve_${t1[0]}$${k1}$
+    #:endfor
+  end interface solve
+  #:endif
 
 contains
 

@@ -6,6 +6,17 @@ title: linalg
 
 [TOC]
 
+The stdlib linear algebra functions rely on BLAS and LAPACK to provide
+efficient low level implementations of standard linear algebra algorithms.
+
+If possible, highly optimized libraries that take advantage of specialized processor functionality are preferred.
+Examples of such libraries are [OpenBLAS][1], [oneAPI MKL(TM)][2].
+Because these libraries are multithreaded and processor dependent,
+environment variables may be required to control the number of threads or to specify the processor architecture.
+
+[1]: https://www.openblas.net/
+[2]: https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.html
+
 ## `diag` - Create a diagonal array or extract the diagonal elements of an array
 
 ### Status
@@ -424,4 +435,44 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 
 ```fortran
 {!example/linalg/example_is_hessenberg.f90!}
+```
+
+## `solve` - Solve a-linear-matrix-equation
+
+### Status
+
+Experimental
+
+### Description
+
+Solve a linear matrix equation, or system of linear scalar equations.
+
+Note: `solve` supports only single and double precision floating point types.
+
+### Class
+
+Impure function.
+
+### Synatx
+
+`x = [[stdlib_linalg(module):solve(interface)]](a,b)`
+
+### Arguments
+
+`a`: Shall be a rank-2 array of either `real` or `complex` type. This argument is `intent(in)`. Coefficient matrix.
+
+`b`: Shall be a rank-2 array of either `real` or `complex` type. This argument is `intent(in)`. Ordinate or “dependent variable” values.
+
+Note: `a` and `b` shall be of the same type.
+
+### Return value
+
+Returns a rank-2 array. Solution to the system `ax = b`. Returned shape is identical to `b`.
+
+### Example
+
+Solve the system of equations `x1 + 2 * x2 = 1` and `3 * x1 + 5 * x2 = 2`.
+
+```fortran
+{!example/linalg/example_solve.f90!}
 ```
