@@ -42,11 +42,14 @@ if(NOT DEFINED CMAKE_MAXIMUM_RANK)
   set(CMAKE_MAXIMUM_RANK 4 CACHE STRING "Maximum array rank for generated procedures")
 endif()
 
-# --- find preprocessor
-find_program(FYPP fypp)
-if(NOT FYPP)
-  message(FATAL_ERROR "Preprocessor fypp not found! Please install fypp following the instructions in https://fypp.readthedocs.io/en/stable/fypp.html#installing")
-endif()
+# Find python.  Python 3.5 or higher required for ftypp
+find_package(Python3 3.5 REQUIRED COMPONENTS Interpreter)
+
+# Find fypp file
+find_file(FYPP fypp REQUIRED)
+
+# Cmd line string to run fypp
+SET(FYPP ${Python3_EXECUTABLE} ${FYPP})
 
 # Custom preprocessor flags
 if(DEFINED CMAKE_MAXIMUM_RANK)
