@@ -47,6 +47,9 @@ find_package(Python3 3.5 REQUIRED COMPONENTS Interpreter)
 
 # Find fypp file
 find_file(FYPP fypp REQUIRED)
+if(NOT FYPP)
+  message(FATAL_ERROR "Preprocessor fypp not found! Please install fypp following the instructions in https://fypp.readthedocs.io/en/stable/fypp.html#installing.")
+endif()
 
 # Cmd line string to run fypp
 SET(FYPP ${Python3_EXECUTABLE} ${FYPP})
