@@ -19,7 +19,7 @@ module stdlib_ascii
     public :: is_lower, is_upper
 
     ! Character conversion functions
-    public :: to_lower, to_upper, to_title, to_sentence, reverse
+    public :: to_lower, to_upper, to_title, to_sentence
 
     ! All control characters in the ASCII table (see www.asciitable.com).
     character(len=1), public, parameter :: NUL = achar(int(z'00')) !! Null
@@ -95,14 +95,6 @@ module stdlib_ascii
     interface to_sentence
         module procedure :: to_sentence
     end interface to_sentence
-
-    !> Returns a new character sequence which is reverse of
-    !> the input charater sequence
-    !> This method is pure and returns a character sequence
-    interface reverse
-        module procedure :: reverse
-    end interface reverse
-    
 
 contains
 
@@ -328,21 +320,5 @@ contains
         end do
 
     end function to_sentence
-
-    !> Reverse the character order in the input character variable
-    !> ([Specification](../page/specs/stdlib_ascii.html#reverse))
-    !>
-    !> Version: experimental
-    pure function reverse(string) result(reverse_string)
-        character(len=*), intent(in) :: string
-        character(len=len(string)) :: reverse_string
-        integer :: i, n
-
-        n = len(string)
-        do i = 1, n
-            reverse_string(n-i+1:n-i+1) = string(i:i)
-        end do
-
-    end function reverse
 
 end module stdlib_ascii
