@@ -8,13 +8,13 @@ program example_str2num
 
     chain = " 1.234   1.E1 1e0     0.1234E0  12.21e+001 -34.5E1"
     allocate( r(6), p(6) )
-    !> Example for streamline conversion using `str2float_p`
+    !> Example for streamline conversion using `to_num_p`
     cptr => chain
     do i =1, 6
-        r(i) = str2float_p( cptr ) !> the pointer is shifted within the function
+        r(i) = to_num_p( cptr , r(i) ) !> the pointer is shifted within the function
     end do
     read(chain,*) p
-    print *, "Reading with str2num"
+    print *, "Reading with to_num"
     print *, r
     print *, "Reading with formatted read"
     print *, p
