@@ -6,7 +6,7 @@
 !>
 
 module stdlib_str2num
-    use iso_fortran_env, only: int32, int64, sp => real32, dp => real64
+    use iso_fortran_env, only: sp => real32, dp => real64
     implicit none
     private
     public :: to_num, to_num_p
@@ -174,7 +174,8 @@ module stdlib_str2num
         integer(1), intent(out)  :: stat !> status upon success or failure to read
 
         ! -- Internal Variables
-        real(sp), parameter :: rnan =  transfer(int(B'01111111101000000000000000000000',int32), 1._sp)
+        real(wp), parameter :: rNaN = real(z'7fc00000',wp)
+        real(wp), parameter :: rInf = real(z'7f800000',wp) ! neginf = real(z'ff800000',wp)
         integer(kind=ikind), parameter :: nwnb = 39 !> number of whole number factors
         integer(kind=ikind), parameter :: nfnb = 37 !> number of fractional number factors
         integer :: e
@@ -199,7 +200,7 @@ module stdlib_str2num
             sign = -1 ; p = p + 1
         end if
         if( iachar(s(p:p)) == Inf ) then
-            v = sign*huge(1_wp); return
+            v = sign*rInf; return
         else if( iachar(s(p:p)) == NaN ) then
             v = rNaN; return
         end if
@@ -270,7 +271,8 @@ module stdlib_str2num
         integer(1), intent(out)  :: stat !> status upon success or failure to read
 
         ! -- Internal Variables
-        real(dp), parameter :: rNaN = TRANSFER(9218868437227405313_int64, 1._dp)
+        real(wp), parameter :: rNaN = real(z'7ff8000000000000',wp)
+        real(wp), parameter :: rInf = real(z'fff0000000000000',wp) ! neginf = real(z'fff0000000000000',wp)
         integer(kind=ikind), parameter :: nwnb = 40 !> number of whole number factors
         integer(kind=ikind), parameter :: nfnb = 64 !> number of fractional number factors
         integer :: e
@@ -295,7 +297,7 @@ module stdlib_str2num
             sign = -1 ; p = p + 1
         end if
         if( iachar(s(p:p)) == Inf ) then
-            v = sign*huge(1_wp); return
+            v = sign*rInf; return
         else if( iachar(s(p:p)) == NaN ) then
             v = rNaN; return
         end if
