@@ -3,10 +3,10 @@ module test_string_functions
     use, intrinsic :: iso_fortran_env, only : error_unit
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_string_type, only : string_type, assignment(=), operator(==), &
-                                    to_lower, to_upper, to_title, to_sentence, reverse
+                                    to_lower, to_upper, to_title, to_sentence
     use stdlib_strings, only: slice, find, replace_all, padl, padr, count, zfill
     use stdlib_optval, only: optval
-    use stdlib_strings, only : to_string
+    use stdlib_strings, only : to_string, reverse
     implicit none
 
 contains
