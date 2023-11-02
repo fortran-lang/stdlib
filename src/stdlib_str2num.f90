@@ -49,7 +49,7 @@ module stdlib_str2num
     ! String To Number interfaces
     !---------------------------------------------
 
-    function to_int(s,mold) result(v)
+    elemental function to_int(s,mold) result(v)
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
         integer, intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
@@ -77,7 +77,7 @@ module stdlib_str2num
         if(present(stat)) stat = err
     end function
 
-    function to_float(s,mold) result(r)
+    elemental function to_float(s,mold) result(r)
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
         real(sp), intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
@@ -105,7 +105,7 @@ module stdlib_str2num
         if(present(stat)) stat = err
     end function
 
-    function to_double(s,mold) result(r)
+    elemental function to_double(s,mold) result(r)
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
         real(dp), intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
@@ -137,7 +137,7 @@ module stdlib_str2num
     ! String To Number Implementations
     !---------------------------------------------
 
-    subroutine to_int_32(s,v,p,stat)
+    elemental subroutine to_int_32(s,v,p,stat)
         !> Return an unsigned 32-bit integer
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
@@ -164,7 +164,7 @@ module stdlib_str2num
         stat = 0
     end subroutine
 
-    subroutine to_real_sp(s,v,p,stat)
+    elemental subroutine to_real_sp(s,v,p,stat)
         integer, parameter :: wp    = sp
         !> Sequentially unroll the character and get the sub integers composing the whole number, fraction and exponent
         ! -- In/out Variables
@@ -260,7 +260,7 @@ module stdlib_str2num
         stat = 0
     end subroutine
 
-    subroutine to_real_dp(s,v,p,stat)
+    elemental subroutine to_real_dp(s,v,p,stat)
         integer, parameter :: wp    = dp
         !> Sequentially unroll the character and get the sub integers composing the whole number, fraction and exponent
         ! -- In/out Variables
