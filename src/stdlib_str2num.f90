@@ -184,7 +184,8 @@ module stdlib_str2num
         real(dp), parameter :: expbase(nwnb+nfnb) = [whole_number_base, fractional_base]
 
         integer(1)  :: sign, sige !> sign of integer number and exponential
-        integer(wp) :: int_wp !> long integer to capture fractional part
+        integer, parameter :: maxdpt = 11 !> Maximum depth to read values on int_wp
+        integer(dp) :: int_wp !> long integer to capture fractional part
         integer     :: i_exp !> integer to capture whole number part
         integer     :: exp_aux
         integer(1)  :: i, pP, pE, val , resp
@@ -208,7 +209,7 @@ module stdlib_str2num
         ! read whole and fractional number in a single integer
         pP = 127
         int_wp = 0
-        do i = p, min(10+p-1,len(s))
+        do i = p, min(maxdpt+p-1,len(s))
             val = iachar(s(i:i))-digit_0
             if( val >= 0 .and. val <= 9 ) then
                 int_wp = int_wp*10 + val
@@ -279,6 +280,7 @@ module stdlib_str2num
         real(wp), parameter :: expbase(nwnb+nfnb) = [whole_number_base, fractional_base]
 
         integer(1)  :: sign, sige !> sign of integer number and exponential
+        integer, parameter :: maxdpt = 19 !> Maximum depth to read values on int_wp
         integer(wp) :: int_wp !> long integer to capture fractional part
         integer     :: i_exp !> integer to capture whole number part
         integer     :: exp_aux
@@ -303,7 +305,7 @@ module stdlib_str2num
         ! read whole and fractional number in a single integer
         pP = 127
         int_wp = 0
-        do i = p, min(19+p-1,len(s))
+        do i = p, min(maxdpt+p-1,len(s))
             val = iachar(s(i:i))-digit_0
             if( val >= 0 .and. val <= 9 ) then
                 int_wp = int_wp*10 + val
