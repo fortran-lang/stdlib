@@ -17,8 +17,8 @@ module stdlib_str2num
     integer(kind=ikind), parameter :: comma      = ichar(',',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: minus_sign = ichar('-',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: plus_sign  = ichar('+',kind=ikind) - digit_0
-    integer(kind=ikind), parameter :: Inf        = ichar('I',kind=ikind) - digit_0
-    integer(kind=ikind), parameter :: NaN        = ichar('N',kind=ikind) - digit_0
+    integer(kind=ikind), parameter :: Inf        = ichar('I',kind=ikind) 
+    integer(kind=ikind), parameter :: NaN        = ichar('N',kind=ikind) 
     integer(kind=ikind), parameter :: le         = ichar('e',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: BE         = ichar('E',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: ld         = ichar('d',kind=ikind) - digit_0
