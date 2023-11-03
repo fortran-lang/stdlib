@@ -179,9 +179,9 @@ module stdlib_str2num
         integer(kind=ikind), parameter :: nwnb = 39 !> number of whole number factors
         integer(kind=ikind), parameter :: nfnb = 37 !> number of fractional number factors
         integer :: e
-        real(wp), parameter :: whole_number_base(nwnb)   = [(10._wp**(nwnb-e),e=1,nwnb)]
-        real(wp), parameter :: fractional_base(nfnb)   = [(10._wp**(-e),e=1,nfnb)]
-        real(wp), parameter :: expbase(nwnb+nfnb) = [whole_number_base, fractional_base]
+        real(dp), parameter :: whole_number_base(nwnb)   = [(10._dp**(nwnb-e),e=1,nwnb)]
+        real(dp), parameter :: fractional_base(nfnb)   = [(10._dp**(-e),e=1,nfnb)]
+        real(dp), parameter :: expbase(nwnb+nfnb) = [whole_number_base, fractional_base]
 
         integer(1)  :: sign, sige !> sign of integer number and exponential
         integer(wp) :: int_wp !> long integer to capture fractional part
@@ -253,10 +253,8 @@ module stdlib_str2num
         exp_aux = nwnb-1+resp-sige*max(0,i_exp)
         if( exp_aux>0 .and. exp_aux<=nwnb+nfnb) then
             v = sign*int_wp*expbase(exp_aux)
-        else if(exp_aux>nwnb+nfnb) then
-            v = sign*int_wp*fractional_base(exp_aux-(nwnb+nfnb))*expbase(nwnb+nfnb)
         else
-            v = sign*int_wp*10._wp**(sige*max(0,i_exp)-resp)
+            v = sign*int_wp*10._dp**(sige*max(0,i_exp)-resp+1)
         end if
         stat = 0
     end subroutine
@@ -350,10 +348,8 @@ module stdlib_str2num
         exp_aux = nwnb-1+resp-sige*max(0,i_exp)
         if( exp_aux>0 .and. exp_aux<=nwnb+nfnb) then
             v = sign*int_wp*expbase(exp_aux)
-        else if(exp_aux>nwnb+nfnb) then
-            v = sign*int_wp*fractional_base(exp_aux-(nwnb+nfnb))*expbase(nwnb+nfnb)
         else
-            v = sign*int_wp*10._wp**(sige*max(0,i_exp)-resp)
+            v = sign*int_wp*10._wp**(sige*max(0,i_exp)-resp+1)
         end if
         stat = 0
     end subroutine
