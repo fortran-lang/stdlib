@@ -51,8 +51,8 @@ jobs:
           mingw-w64-${{ matrix.arch }}-gcc-fortran
           python
           python-pip
-          mingw-w64-${{ matrix.arch }}-cmake
-          mingw-w64-${{ matrix.arch }}-ninja
+          cmake
+          ninja
 
     - name: Install fypp
       run: pip install fypp
