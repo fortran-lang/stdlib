@@ -7,6 +7,7 @@
 
 module stdlib_str2num
     use iso_fortran_env, only: sp => real32, dp => real64
+    use ieee_arithmetic
     implicit none
     private
     public :: to_num, to_num_p
@@ -174,8 +175,6 @@ module stdlib_str2num
         integer(1), intent(out)  :: stat !> status upon success or failure to read
 
         ! -- Internal Variables
-        real(wp), parameter :: rNaN = real(z'7fc00000',wp)
-        real(wp), parameter :: rInf = real(z'7f800000',wp) ! neginf = real(z'ff800000',wp)
         integer(kind=ikind), parameter :: nwnb = 39 !> number of whole number factors
         integer(kind=ikind), parameter :: nfnb = 37 !> number of fractional number factors
         integer :: e
@@ -201,9 +200,9 @@ module stdlib_str2num
             sign = -1 ; p = p + 1
         end if
         if( iachar(s(p:p)) == Inf ) then
-            v = sign*rInf; return
+            v = sign*ieee_value(v,  ieee_positive_inf); return
         else if( iachar(s(p:p)) == NaN ) then
-            v = rNaN; return
+            v = ieee_value(v,  ieee_quiet_nan); return
         end if
         !----------------------------------------------
         ! read whole and fractional number in a single integer
@@ -251,11 +250,11 @@ module stdlib_str2num
             end if
         end do
         
-        exp_aux = nwnb-1+resp-sige*max(0,i_exp)
+        exp_aux = nwnb-1+resp-sige*i_exp
         if( exp_aux>0 .and. exp_aux<=nwnb+nfnb) then
             v = sign*int_wp*expbase(exp_aux)
         else
-            v = sign*int_wp*10._dp**(sige*max(0,i_exp)-resp+1)
+            v = sign*int_wp*10._dp**(sige*i_exp-resp+1)
         end if
         stat = 0
     end subroutine
@@ -270,8 +269,6 @@ module stdlib_str2num
         integer(1), intent(out)  :: stat !> status upon success or failure to read
 
         ! -- Internal Variables
-        real(wp), parameter :: rNaN = real(z'7ff8000000000000',wp)
-        real(wp), parameter :: rInf = real(z'fff0000000000000',wp) ! neginf = real(z'fff0000000000000',wp)
         integer(kind=ikind), parameter :: nwnb = 40 !> number of whole number factors
         integer(kind=ikind), parameter :: nfnb = 64 !> number of fractional number factors
         integer :: e
@@ -297,9 +294,9 @@ module stdlib_str2num
             sign = -1 ; p = p + 1
         end if
         if( iachar(s(p:p)) == Inf ) then
-            v = sign*rInf; return
+            v = sign*ieee_value(v,  ieee_positive_inf); return
         else if( iachar(s(p:p)) == NaN ) then
-            v = rNaN; return
+            v = ieee_value(v,  ieee_quiet_nan); return
         end if
         !----------------------------------------------
         ! read whole and fractional number in a single integer
@@ -347,11 +344,11 @@ module stdlib_str2num
             end if
         end do
         
-        exp_aux = nwnb-1+resp-sige*max(0,i_exp)
+        exp_aux = nwnb-1+resp-sige*i_exp
         if( exp_aux>0 .and. exp_aux<=nwnb+nfnb) then
             v = sign*int_wp*expbase(exp_aux)
         else
-            v = sign*int_wp*10._wp**(sige*max(0,i_exp)-resp+1)
+            v = sign*int_wp*10._wp**(sige*i_exp-resp+1)
         end if
         stat = 0
     end subroutine
