@@ -46,10 +46,7 @@ endif()
 find_package(Python3 3.5 REQUIRED COMPONENTS Interpreter)
 
 # Find fypp file
-find_file(FYPP fypp REQUIRED)
-if(NOT FYPP)
-  message(FATAL_ERROR "Preprocessor fypp not found! Please install fypp following the instructions in https://fypp.readthedocs.io/en/stable/fypp.html#installing.")
-endif()
+find_file(FYPP fypp.py REQUIRED HINTS ${CMAKE_CURRENT_SOURCE_DIR}/fypp )
 
 # Cmd line string to run fypp
 SET(FYPP ${Python3_EXECUTABLE} ${FYPP})
