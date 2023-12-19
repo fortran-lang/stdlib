@@ -4,6 +4,8 @@ title: str2num
 
 # The `stdlib_str2num` module
 
+This module proposes a function-style interface for string-to-number conversion. It also profits from Fortran's interfaces to implement precision-dependant algorithms to maximize runtime efficiency.
+
 [TOC]
 
 ## `to_num` - conversion of strings to numbers
@@ -24,7 +26,7 @@ Convert a string or an array of strings to numerical types.
 
 `string`: argument has `intent(in)` and is of type `character(*)`.
 
-`mold`: argument has `intent(in)` and is of numerical type. currently: `integer`, `real32` or `real64`.
+`mold`: argument has `intent(in)` and is of numerical type. currently: `integer`, `real32`, `real64` or `real128`. **Note**: the mold argument is included to help compilers chose the correct implementation at compile-time. Currently, compilers are not able to disambiguate functions with respect to the left-hand-side of an assignment.
 
 ### Return value
 
@@ -63,7 +65,7 @@ Convert a stream of values in a string to an array of values.
 
 `string`: argument has `intent(in)` and is of type `character(*), pointer`.
 
-`mold`: argument has `intent(in)` and is of numerical type. currently: `integer`, `real32` or `real64`.
+`mold`: argument has `intent(in)` and is of numerical type. currently: `integer`, `real32`, `real64` or `real128`. **Note**: the mold argument is included to help compilers chose the correct implementation at compile-time. Currently, compilers are not able to disambiguate functions with respect to the left-hand-side of an assignment.
 
 ### Return value
 
@@ -88,3 +90,16 @@ program example_str2num
     end do
 end program
 ```
+
+## Note
+The accuracy of the conversion is implementation dependent; it is recommend that implementers guarantee precision down to the last 3 bits.
+
+**The current implementation has been tested to provide for** :
+
+`real32`  : exact match
+
+`real64`  : precision up-to epsilon(0.0_real64)
+
+`real128` : precision around 200*epsilon(0.0_real128)
+
+Where precision refers to the relative difference between `to_num` and `read`. On the other hand, `to_num` provides speed-ups ranging from 4x to >10x compared to the intrinsic `read`.
