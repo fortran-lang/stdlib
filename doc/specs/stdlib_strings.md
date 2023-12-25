@@ -421,6 +421,45 @@ The result is a scalar of integer type or an integer array of rank equal to the 
 {!example/strings/example_count.f90!}
 ```
 
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `zfill`
+
+#### Description
+
+Returns a string of length `output_length` left-padded with zeros.
+If `output_length` is less than or equal to the length of `string`, padding is not performed.
+
+#### Syntax
+
+`string = [[stdlib_strings(module):zfill(interface)]] (string, output_length)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+  This argument is intent(in).
+- `output_length`: integer.
+  This argument is intent(in).
+
+#### Result value
+
+The result is of the same type as `string`.
+
+#### Example
+
+```fortran
+{!example/strings/example_zfill.f90!}
+```
+
+
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### `to_string`
 

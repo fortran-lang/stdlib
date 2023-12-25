@@ -4,7 +4,7 @@ module test_string_functions
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_string_type, only : string_type, assignment(=), operator(==), &
                                     to_lower, to_upper, to_title, to_sentence, reverse
-    use stdlib_strings, only: slice, find, replace_all, padl, padr, count
+    use stdlib_strings, only: slice, find, replace_all, padl, padr, count, zfill
     use stdlib_optval, only: optval
     use stdlib_strings, only : to_string
     implicit none
@@ -29,7 +29,8 @@ contains
             new_unittest("replace_all", test_replace_all), &
             new_unittest("padl", test_padl), &
             new_unittest("padr", test_padr), &
-            new_unittest("count", test_count) &
+            new_unittest("count", test_count), &
+            new_unittest("zfill", test_zfill) &
             ]
     end subroutine collect_string_functions
 
@@ -658,6 +659,54 @@ contains
             & 'count: all 2 character scalar, test case 3')
 
     end subroutine test_count
+
+    subroutine test_zfill(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        type(string_type) :: test_string
+        character(len=:), allocatable :: test_char
+
+        test_string = "left pad this string"
+        test_char = "  left pad this string  "
+
+        ! output_length > len(string)
+        call check(error, zfill(test_string, 25) == "00000left pad this string", &
+            & 'zfill: output_length > len(string), test_case 1')
+        if (allocated(error)) return
+        call check(error, zfill(test_string, 22) == "00left pad this string", &
+            & 'zfill: output_length > len(string), test_case 2')
+        if (allocated(error)) return
+        call check(error, zfill(test_string, 23) == "000left pad this string", &
+            & 'zfill: output_length > len(string), test_case 3')
+        if (allocated(error)) return
+        call check(error, zfill(test_char, 26) == "00  left pad this string  ", &
+            & 'zfill: output_length > len(string), test_case 4')
+        if (allocated(error)) return
+        call check(error, zfill("", 10) == "0000000000", &
+            & 'zfill: output_length > len(string), test_case 5')
+        if (allocated(error)) return
+
+        ! output_length <= len(string)
+        call check(error, zfill(test_string, 18) == "left pad this string", &
+            & 'zfill: output_length <= len(string), test_case 1')
+        if (allocated(error)) return
+        call check(error, zfill(test_string, -4) == "left pad this string", &
+            & 'zfill: output_length <= len(string), test_case 2')
+        if (allocated(error)) return
+        call check(error, zfill(test_char, 20) == "  left pad this string  ", &
+            & 'zfill: output_length <= len(string), test_case 3')
+        if (allocated(error)) return
+        call check(error, zfill(test_char, 17) == "  left pad this string  ", &
+            & 'zfill: output_length <= len(string), test_case 4')
+        if (allocated(error)) return
+        call check(error, zfill("", 0) == "", &
+            & 'zfill: output_length <= len(string), test_case 5')
+        if (allocated(error)) return
+        call check(error, zfill("", -12) == "", &
+            & 'zfill: output_length <= len(string), test_case 6')
+
+    end subroutine test_zfill
 
 end module test_string_functions
 

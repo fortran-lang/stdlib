@@ -1523,6 +1523,7 @@ Experimental
 Moves the allocation from `from` to `to`, consequently deallocating `from` in this process.
 If `from` is not allocated before execution, `to` gets deallocated by the process.
 An unallocated `string_type` instance is equivalent to an empty string.
+If `from` and `to` are the same variable, then `from` remains unchanged.
 
 #### Syntax
 
@@ -1537,7 +1538,8 @@ Pure subroutine (Elemental subroutine, only when both `from` and `to` are `type(
 - `from`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
   This argument is `intent(inout)`.
 - `to`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
-  This argument is `intent(out)`.
+  This argument is `intent(inout)` when both `from` and `to` are `type(string_type)`,
+  otherwise `intent(out)`.
 
 #### Example
 

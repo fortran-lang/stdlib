@@ -284,6 +284,37 @@ contains
     end subroutine free_map_entry_pool
 
 
+    module subroutine get_all_chaining_keys(map, all_keys)
+!! Version: Experimental
+!!
+!! Returns all the keys contained in a hash map
+!! Arguments:
+!!     map - a chaining hash map
+!!     all_keys - all the keys contained in a hash map
+!
+        class(chaining_hashmap_type), intent(in) :: map
+        type(key_type), allocatable, intent(out) :: all_keys(:)
+        
+        integer(int32) :: num_keys
+        integer(int_index) :: i, key_idx
+
+        num_keys = map % entries()
+        allocate( all_keys(num_keys) )
+        if ( num_keys == 0 ) return
+
+        if( allocated( map % inverse ) ) then
+            key_idx = 1_int_index
+            do i=1_int_index, size( map % inverse, kind=int_index )
+                if ( associated( map % inverse(i) % target ) ) then
+                    all_keys(key_idx) = map % inverse(i) % target % key
+                    key_idx = key_idx + 1_int_index
+                end if
+            end do 
+        end if
+
+    end subroutine get_all_chaining_keys
+
+
     module subroutine get_other_chaining_data( map, key, other, exists )
 !! Version: Experimental
 !!
