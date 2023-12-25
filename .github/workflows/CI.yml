@@ -154,7 +154,8 @@ jobs:
     - name: Configure with CMake
       run: >-
          cmake -Wdev
-         -DCMAKE_BUILD_TYPE=Release
+         -DCMAKE_BUILD_TYPE=Debug
+         -DCMAKE_Fortran_FLAGS_DEBUG="-warn all -check all -error-limit 1 -O0 -g -assume byterecl -standard-semantics -traceback"
          -DCMAKE_MAXIMUM_RANK:String=4
          -DCMAKE_INSTALL_PREFIX=$PWD/_dist
          -S . -B build
