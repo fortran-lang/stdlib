@@ -128,21 +128,6 @@ jobs:
         sudo apt-get install intel-oneapi-compiler-fortran
         sudo apt-get install intel-oneapi-compiler-dpcpp-cpp
 
-    - name: Install Intel oneAPI compiler (OSX)
-      if: contains(matrix.os, 'macos') && steps.cache-install.outputs.cache-hit != 'true'
-      run: |
-        curl --output webimage.dmg --url "$URL" --retry 5 --retry-delay 5
-        hdiutil attach webimage.dmg
-        if [ -z "$COMPONENTS" ]; then
-          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --eula=accept --continue-with-optional-error=yes --log-dir=.
-          installer_exit_code=$?
-        else
-          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$COMPONENTS" --eula=accept --continue-with-optional-error=yes --log-dir=.
-          installer_exit_code=$?
-        fi
-        hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
-        exit $installer_exit_code
-
     - name: Setup Intel oneAPI environment
       run: |
         source /opt/intel/oneapi/setvars.sh
