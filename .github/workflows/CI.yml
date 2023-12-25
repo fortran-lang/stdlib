@@ -92,7 +92,7 @@ jobs:
       if: ${{ contains(matrix.build, 'cmake') }}
       run: cmake --install ${{ env.BUILD_DIR }}
 
-  intel-build:
+  intel-build-llvm:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -173,7 +173,7 @@ jobs:
     - name: Install project
       run: cmake --install build
 
-  intel-build-osx:
+  intel-build-classic:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
