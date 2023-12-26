@@ -37,7 +37,7 @@ Return a scalar of numerical type (`integer`, `real32` or `real64`).
 ```fortran
 program example_string_to_number
   use stdlib_kinds, only: dp
-  use stdlib_str2num
+  use stdlib_str2num, only: to_num
   implicit none
   character(:), allocatable :: txt
   real(dp) :: x
