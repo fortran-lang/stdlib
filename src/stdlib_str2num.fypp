@@ -22,7 +22,7 @@
 !>   difference rel :                                 0.3300E-029%
 
 module stdlib_str2num
-    use iso_fortran_env, only: sp => real32, dp => real64, qp => real128
+    use stdlib_kinds, only: sp, dp, qp, int8, int32
     use ieee_arithmetic
     implicit none
     private
@@ -46,21 +46,27 @@ module stdlib_str2num
         module procedure to_int
         module procedure to_float
         module procedure to_double
+#:if WITH_QP
         module procedure to_quad
+#:endif
     end interface
 
     interface to_num_p
         module procedure to_int_p
         module procedure to_float_p
         module procedure to_double_p
+#:if WITH_QP
         module procedure to_quad_p
+#:endif
     end interface
 
     interface to_num_base
         module procedure to_int_32
         module procedure to_real_sp
         module procedure to_real_dp
+#:if WITH_QP
         module procedure to_real_qp
+#:endif
     end interface
     
     contains
@@ -153,6 +159,7 @@ module stdlib_str2num
         if(present(stat)) stat = err
     end function
 
+#:if WITH_QP
     function to_quad(s,mold) result(r)
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
@@ -180,6 +187,7 @@ module stdlib_str2num
         s => s(p:)
         if(present(stat)) stat = err
     end function
+#:endif
 
     !---------------------------------------------
     ! String To Number Implementations
@@ -400,6 +408,7 @@ module stdlib_str2num
         stat = 0
     end subroutine
 
+#:if WITH_QP
     subroutine to_real_qp(s,v,p,stat)
         integer, parameter :: wp    = qp
         !> Sequentially unroll the character and get the sub integers composing the whole number, fraction and exponent
@@ -502,6 +511,7 @@ module stdlib_str2num
         end if
         stat = 0
     end subroutine
+#:endif
     
     !---------------------------------------------
     ! Internal Utility functions
