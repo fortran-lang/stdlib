@@ -323,7 +323,7 @@ module stdlib_str2num
         real(wp), parameter :: fractional_base(nfnb)   = [(10._wp**(-e),e=1,nfnb)]
         real(wp), parameter :: expbase(nwnb+nfnb) = [whole_number_base, fractional_base]
 
-        integer(1)  :: sign, sige !> sign of integer number and exponential
+        integer(int8)  :: sign, sige !> sign of integer number and exponential
         integer, parameter :: maxdpt = 19 !> Maximum depth to read values on int_wp
         integer(wp) :: int_wp !> long integer to capture fractional part
         integer     :: i_exp !> integer to capture whole number part
