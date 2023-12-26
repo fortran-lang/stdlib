@@ -189,7 +189,7 @@ module stdlib_str2num
         !> Return an unsigned 32-bit integer
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
-        integer, intent(inout)  :: v !> Output real value
+        integer(int32), intent(inout)  :: v !> Output real value
         integer(int8), intent(out)  :: p !> position within the number
         integer(int8), intent(out)  :: stat !> status upon succes or failure to read
         ! -- Internal Variables
