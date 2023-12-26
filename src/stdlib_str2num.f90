@@ -422,7 +422,7 @@ module stdlib_str2num
         integer(dp) :: int_dp1, int_dp2 !> long integers to capture whole and fractional part
         integer     :: i_exp !> integer to capture exponent number
         integer     :: exp_aux
-        integer(1)  :: i, pP, pE, val , resp, icount, aux
+        integer(int8)  :: i, pP, pE, val , resp, icount, aux
         !----------------------------------------------
         stat = 23 !> initialize error status with any number > 0
         !----------------------------------------------
