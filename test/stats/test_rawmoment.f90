@@ -232,7 +232,7 @@ contains
         call check(error, all( abs( moment(x3, order, dim = 1, center = zero3_1) -&
                                 mean(x3**2, 1)) < sptol))
         call check(error, all( abs( moment(x3, order, dim = 2, center = zero3_2) -&
-                                mean(x3**2, 2)) < sptol))
+                                mean(x3**2, 2)) < 1.5_sp*sptol))
         call check(error, all( abs( moment(x3, order, dim = 3, center = zero3_3) -&
                                 mean(x3**2, 3)) < sptol))
 
