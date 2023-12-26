@@ -218,8 +218,8 @@ module stdlib_str2num
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
         real(wp), intent(inout)  :: v !> Output real value
-        integer(1), intent(out)  :: p !> last position within the string
-        integer(1), intent(out)  :: stat !> status upon success or failure to read
+        integer(int8), intent(out)  :: p !> last position within the string
+        integer(int8), intent(out)  :: stat !> status upon success or failure to read
 
         ! -- Internal Variables
         integer(kind=ikind), parameter :: nwnb = 39 !> number of whole number factors
