@@ -190,10 +190,10 @@ module stdlib_str2num
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
         integer, intent(inout)  :: v !> Output real value
-        integer(1), intent(out)  :: p !> position within the number
-        integer(1), intent(out)  :: stat !> status upon succes or failure to read
+        integer(int8), intent(out)  :: p !> position within the number
+        integer(int8), intent(out)  :: stat !> status upon succes or failure to read
         ! -- Internal Variables
-        integer(1)  :: val 
+        integer(int8)  :: val 
         !----------------------------------------------
         stat = 23 !> initialize error status with any number > 0
         !----------------------------------------------
