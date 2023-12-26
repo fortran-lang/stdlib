@@ -92,7 +92,7 @@ end program
 ```
 
 ## Note
-The accuracy of the conversion is implementation dependent; it is recommend that implementers guarantee precision down to the last 3 bits.
+The accuracy of the conversion is implementation dependent; it is recommended that implementers guarantee precision down to the last 3 bits.
 
 **The current implementation has been tested to provide for** :
 
