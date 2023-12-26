@@ -1,5 +1,5 @@
 module test_string_to_number
-    use iso_fortran_env, only: sp=>real32, dp=>real64, qp=>real128
+    use stdlib_kinds, only: sp, dp, qp
     use stdlib_str2num
     use testdrive, only : new_unittest, unittest_type, error_type, check
     implicit none
@@ -14,6 +14,9 @@ contains
         testsuite = [ &
             new_unittest("to_float", test_to_float), &
             new_unittest("to_double", test_to_double) &
+#:if WITH_QP
+            , new_unittest("to_quadruple", test_to_quadruple) &
+#:endif
             ]
     end subroutine collect_string_to_number
 
@@ -215,6 +218,7 @@ contains
         end function
     end subroutine
 
+#:if WITH_QP
     subroutine test_to_quadruple(error)
         use stdlib_str2num
         type(error_type), allocatable, intent(out) :: error
@@ -313,6 +317,7 @@ contains
             end if
         end function
     end subroutine
+#:endif
     
 end module test_string_to_number
 
