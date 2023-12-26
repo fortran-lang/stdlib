@@ -23,7 +23,7 @@
 !>   difference rel :                                 0.3300E-029%
 
 module stdlib_str2num
-    use stdlib_kinds, only: sp, dp, qp, int8, int32
+    use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
     use ieee_arithmetic
     implicit none
     private
@@ -67,7 +67,7 @@ module stdlib_str2num
 
     interface to_num_base
         #:for k1, t1 in INT_KINDS_TYPES
-        module procedure to_${k1}$
+        module procedure to_int_${k1}$
         #:endfor
         module procedure to_real_sp
         module procedure to_real_dp
@@ -203,7 +203,7 @@ module stdlib_str2num
     !---------------------------------------------
 
     #:for k1, t1 in INT_KINDS_TYPES
-    elemental subroutine to_${k1}$(s,v,p,stat)
+    elemental subroutine to_int_${k1}$(s,v,p,stat)
         !> Return an unsigned 32-bit integer
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
