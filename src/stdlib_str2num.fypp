@@ -44,7 +44,9 @@ module stdlib_str2num
     integer(kind=ikind), parameter :: LF = 10, CR = 13, WS = 32
 
     interface to_num
-        module procedure to_int
+        #:for k1, t1 in INT_KINDS_TYPES
+        module procedure to_${k1}$
+        #:endfor
         module procedure to_float
         module procedure to_double
 #:if WITH_QP
@@ -53,7 +55,9 @@ module stdlib_str2num
     end interface
 
     interface to_num_p
-        module procedure to_int_p
+        #:for k1, t1 in INT_KINDS_TYPES
+        module procedure to_${k1}$_p
+        #:endfor
         module procedure to_float_p
         module procedure to_double_p
 #:if WITH_QP
@@ -78,33 +82,35 @@ module stdlib_str2num
     ! String To Number interfaces
     !---------------------------------------------
 
-    elemental function to_int(s,mold) result(v)
+    #:for k1, t1 in INT_KINDS_TYPES
+    elemental function to_${k1}$(s,mold) result(v)
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
-        integer, intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
-        integer :: v !> Output integer 32 value
+        ${t1}$, intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
+        ${t1}$ :: v !> Output integer 32 value
         ! -- Internal Variables
-        integer(1) :: p !> position within the number
-        integer(1)  :: stat !> error status
+        integer(int8) :: p !> position within the number
+        integer(int8)  :: stat !> error status
         !----------------------------------------------
         call to_num_base(s,v,p,stat)
     end function
     
-    function to_int_p(s,mold,stat) result(v)
+    function to_${k1}$_p(s,mold,stat) result(v)
         ! -- In/out Variables
         character(len=:), pointer :: s !> input string
-        integer, intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
-        integer :: v !> Output integer 32 value
-        integer(1),intent(inout), optional :: stat
+        ${t1}$, intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
+        ${t1}$ :: v !> Output ${t1}$ value
+        integer(int8),intent(inout), optional :: stat
         ! -- Internal Variables
-        integer(1) :: p !> position within the number
-        integer(1) :: err
+        integer(int8) :: p !> position within the number
+        integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
         p = min( p , len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
+    #:endfor
 
     elemental function to_float(s,mold) result(r)
         ! -- In/out Variables
