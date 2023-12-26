@@ -44,7 +44,7 @@ program example_string_to_number
 
   txt = ' 8.8541878128e−12 '
   x = to_num( txt , x )
-end program example_random_seed
+end program example_string_to_number
 ```
 
 ## `to_num_p` - conversion of a stream of values in a string to numbers
