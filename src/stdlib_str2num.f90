@@ -328,7 +328,7 @@ module stdlib_str2num
         integer(wp) :: int_wp !> long integer to capture fractional part
         integer     :: i_exp !> integer to capture whole number part
         integer     :: exp_aux
-        integer(1)  :: i, pP, pE, val , resp
+        integer(int8)  :: i, pP, pE, val , resp
         !----------------------------------------------
         stat = 23 !> initialize error status with any number > 0
         !----------------------------------------------
