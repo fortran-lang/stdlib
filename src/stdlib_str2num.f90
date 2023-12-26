@@ -521,7 +521,7 @@ module stdlib_str2num
     elemental function mvs2wsp(s) result(p)
         !> move string to position of the next white space character
         character(*),intent(in) :: s !> character chain
-        integer(1) :: p !> position
+        integer(int8) :: p !> position
         !----------------------------------------------
         p = 1
         do while( p<len(s) .and. .not.(iachar(s(p:p))==WS.or.iachar(s(p:p))==LF.or.iachar(s(p:p))==CR) ) 
