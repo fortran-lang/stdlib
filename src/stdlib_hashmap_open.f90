@@ -254,6 +254,37 @@ contains
     end subroutine free_open_map
 
 
+    module subroutine get_all_open_keys(map, all_keys)
+!! Version: Experimental
+!!
+!! Returns all the keys contained in a hash map
+!! Arguments:
+!!     map - an open hash map
+!!     all_keys - all the keys contained in a hash map
+!
+        class(open_hashmap_type), intent(in) :: map
+        type(key_type), allocatable, intent(out) :: all_keys(:)
+        
+        integer(int32) :: num_keys
+        integer(int_index) :: i, key_idx
+
+        num_keys = map % entries()
+        allocate( all_keys(num_keys) )
+        if ( num_keys == 0 ) return
+
+        if ( allocated( map % inverse) ) then
+            key_idx = 1_int_index
+            do i=1_int_index, size( map % inverse, kind=int_index )
+                if ( associated( map % inverse(i) % target ) ) then
+                    all_keys(key_idx) = map % inverse(i) % target % key
+                    key_idx = key_idx + 1_int_index
+                end if
+            end do 
+        end if
+
+    end subroutine get_all_open_keys
+
+
     module subroutine get_other_open_data( map, key, other, exists )
 !! Version: Experimental
 !!
@@ -283,7 +314,7 @@ contains
                     invalid_inmap
             end if
         else if ( associated( map % inverse(inmap) % target ) ) then
-            exists = .true.
+            if ( present(exists) ) exists = .true.
             call copy_other( map % inverse(inmap) % target % other, other )
         else
             if ( present(exists) ) then

@@ -11,6 +11,7 @@ This is an index/directory of the specifications (specs) for each new module/fea
 
 ## Experimental Features & Modules
 
+ - [ansi](./stdlib_ansi.html) - Terminal color and style escape sequences
  - [array](./stdlib_array.html) - Procedures for index manipulation and array handling
  - [ascii](./stdlib_ascii.html) - Procedures for handling ASCII characters
  - [bitsets](./stdlib_bitsets.html) - Bitset data types and procedures

@@ -3,11 +3,13 @@
 #:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS))
 #:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS))
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"],  ["character(len=len(array))"], ["char"]))
+#:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_KINDS))
 
 #! For better code reuse in fypp, make lists that contain the input types,
 #! with each having output types and a separate name prefix for subroutines
 #! This approach allows us to have the same code for all input types.
-#:set IRSC_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
+#:set IRSCB_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME &
+    & + BITSET_TYPES_ALT_NAME
 
 #:set SIGN_NAME = ["increase", "decrease"]
 #:set SIGN_TYPE = [">", "<"]
@@ -73,7 +75,7 @@ submodule(stdlib_sorting) stdlib_sorting_sort
 
 contains
 
-#:for t1, t2, name1 in IRSC_TYPES_ALT_NAME
+#:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
     pure module subroutine ${name1}$_sort( array, reverse )
             ${t1}$, intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
@@ -87,7 +89,7 @@ contains
 #:endfor
 
 #:for sname, signt, signoppt in SIGN_NAME_TYPE
-#:for t1, t2, name1 in IRSC_TYPES_ALT_NAME
+#:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
 
     pure subroutine ${name1}$_${sname}$_sort( array )
 ! `${name1}$_${sname}$_sort( array )` sorts the input `ARRAY` of type `${t1}$`

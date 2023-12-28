@@ -194,8 +194,8 @@ undefined. These procedures are summarized in the following table:
 
 ### Assignments
 
-The module defines an assignment operation, `=`, that creates a
-duplicate of an original bitset. It also defines assignments to and
+The module uses the intrinsic assignment operation, `=`, to create a
+duplicate of an original bitset. It additionally defines assignments to and
 from rank one arrays of logical type of kinds `int8`, `int16`,
 `int32`, and `int64`. In the assignment to and from logical arrays
 array index, `i`, is mapped to bit position, `pos=i-1`, and `.true.`

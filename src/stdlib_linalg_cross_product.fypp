@@ -1,0 +1,21 @@
+#:include "common.fypp"
+#:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
+submodule (stdlib_linalg) stdlib_linalg_cross_product
+
+    implicit none
+
+contains
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+    pure module function cross_product_${t1[0]}$${k1}$(a, b) result(res)
+        ${t1}$, intent(in) :: a(3), b(3)
+        ${t1}$ :: res(3)
+
+        res(1) = a(2) * b(3) - a(3) * b(2)
+        res(2) = a(3) * b(1) - a(1) * b(3)
+        res(3) = a(1) * b(2) - a(2) * b(1)
+
+    end function cross_product_${t1[0]}$${k1}$
+    #:endfor
+
+end submodule

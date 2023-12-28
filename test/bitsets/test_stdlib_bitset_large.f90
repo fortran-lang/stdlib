@@ -1,7 +1,15 @@
 module test_stdlib_bitset_large
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use :: stdlib_kinds, only : int8, int16, int32, int64
-    use stdlib_bitsets
+    use stdlib_bitsets, only: bitset_large, bits_kind&
+                              , bits &
+                              , success &
+                              , and, and_not, or, xor&
+                              , extract&
+                              , assignment(=)&
+                              , operator(<), operator(<=)&
+                              , operator(>), operator(>=)&
+                              , operator(/=), operator(==)
     implicit none
     character(*), parameter :: &
         bitstring_0   = '000000000000000000000000000000000', &
@@ -20,6 +28,7 @@ contains
             new_unittest("string-operations", test_string_operations), &
             new_unittest("io", test_io), &
             new_unittest("initialization", test_initialization), &
+            new_unittest("bitset-assignment-array", test_assignment_array), &
             new_unittest("bitset-inquiry", test_bitset_inquiry), &
             new_unittest("bit-operations", test_bit_operations), &
             new_unittest("bitset-comparisons", test_bitset_comparisons), &
@@ -549,6 +558,36 @@ contains
         if (allocated(error)) return
 
     end subroutine test_initialization
+
+    subroutine test_assignment_array(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        logical(int8)  :: log1(64) = .true.
+        
+        integer :: i
+        type(bitset_large) :: set1(0:4)
+
+        do i = 0, size(set1) - 1
+           set1(i) = log1
+        enddo
+
+        do i = 0, size(set1) - 1
+            call check(error, set1(i) % bits(), 64, &
+                ' initialization with logical(int8) failed to set' // &
+                ' the right size in a bitset array.')
+            if (allocated(error)) return
+        enddo
+
+        !Test added following issue https://github.com/fortran-lang/stdlib/issues/726
+        set1(0) = set1(0)
+
+        call check(error, set1(0) % bits(), 64, &
+            ' initialization from bitset_large failed to set' // &
+            ' the right size in a bitset array.')
+        if (allocated(error)) return
+
+    end subroutine test_assignment_array
 
     subroutine test_bitset_inquiry(error)
         !> Error handling

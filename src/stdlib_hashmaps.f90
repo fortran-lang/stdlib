@@ -94,6 +94,7 @@ module stdlib_hashmaps
         procedure, non_overridable, pass(map) :: map_probes
         procedure, non_overridable, pass(map) :: num_slots
         procedure, non_overridable, pass(map) :: slots_bits
+        procedure(get_all_keys), deferred, pass(map) :: get_all_keys
         procedure(get_other), deferred, pass(map)    :: get_other_data
         procedure(init_map), deferred, pass(map)     :: init
         procedure(key_test), deferred, pass(map)     :: key_test
@@ -108,6 +109,21 @@ module stdlib_hashmaps
 
 
     abstract interface
+
+        subroutine get_all_keys(map, all_keys)
+!! Version: Experimental
+!!
+!! Returns the all keys contained in a hash map
+!! ([Specifications](../page/specs/stdlib_hashmaps.html#get_all_keys-returns-all-the-keys-contained-in-a-map))
+!!
+!! Arguments:
+!!     map - a hash map
+!!     all_keys - all the keys contained in a hash map
+!
+            import hashmap_type, key_type
+            class(hashmap_type), intent(in) :: map
+            type(key_type), allocatable, intent(out) :: all_keys(:)
+        end subroutine get_all_keys
 
         subroutine get_other( map, key, other, exists )
 !! Version: Experimental
@@ -319,6 +335,7 @@ module stdlib_hashmaps
         type(chaining_map_entry_ptr), allocatable :: slots(:)
 !! Array of bucket lists Note # slots=size(slots)
     contains
+        procedure :: get_all_keys => get_all_chaining_keys
         procedure :: get_other_data => get_other_chaining_data
         procedure :: init => init_chaining_map
         procedure :: loading => chaining_loading
@@ -343,6 +360,19 @@ module stdlib_hashmaps
 !
             type(chaining_hashmap_type), intent(inout) :: map
         end subroutine free_chaining_map
+
+
+        module subroutine get_all_chaining_keys(map, all_keys)
+!! Version: Experimental
+!!
+!! Returns all the keys contained in a hashmap
+!! Arguments:
+!!     map - an chaining hash map
+!!     all_keys - all the keys contained in a hash map
+!
+            class(chaining_hashmap_type), intent(in) :: map
+            type(key_type), allocatable, intent(out) :: all_keys(:)
+        end subroutine get_all_chaining_keys
 
 
         module subroutine get_other_chaining_data( map, key, other, exists )
@@ -556,6 +586,7 @@ module stdlib_hashmaps
         integer(int_index), allocatable        :: slots(:)
 !! Array of indices to the inverse Note # slots=size(slots)
     contains
+        procedure :: get_all_keys => get_all_open_keys
         procedure :: get_other_data => get_other_open_data
         procedure :: init => init_open_map
         procedure :: loading => open_loading
@@ -579,6 +610,19 @@ module stdlib_hashmaps
 !
             type(open_hashmap_type), intent(inout) :: map
         end subroutine free_open_map
+
+
+        module subroutine get_all_open_keys(map, all_keys)
+!! Version: Experimental
+!!
+!! Returns all the keys contained in a hashmap
+!! Arguments:
+!!     map - an open hash map
+!!     all_keys - all the keys contained in a hash map
+!
+            class(open_hashmap_type), intent(in) :: map
+            type(key_type), allocatable, intent(out) :: all_keys(:)
+        end subroutine get_all_open_keys
 
 
         module subroutine get_other_open_data( map, key, other, exists )

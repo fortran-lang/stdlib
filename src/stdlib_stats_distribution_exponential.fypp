@@ -1,8 +1,8 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_stats_distribution_exponential
+    use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
     use stdlib_kinds, only : sp, dp, xdp, qp, int32
-    use stdlib_error, only : error_stop
     use stdlib_random, only : dist_rand
     use stdlib_stats_distribution_uniform, only : uni=>rvs_uniform
 
@@ -71,7 +71,7 @@ module stdlib_stats_distribution_exponential
 
 contains
 
-    subroutine zigset
+    impure subroutine zigset
     ! Marsaglia & Tsang generator for random normals & random exponentials.
     ! Translated from C by Alan Miller (amiller@bigpond.net.au)
     !
@@ -90,7 +90,7 @@ contains
 
         de = 7.697117470131487_dp
         te = de
-    !tables for random exponetials
+    ! tables for random exponentials
         q = ve * exp(de)
         ke(0) = int((de / q) * M2, kind = int32)
         ke(1) = 0
@@ -112,7 +112,7 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    function rvs_exp_0_${t1[0]}$${k1}$( ) result(res)
+    impure function rvs_exp_0_${t1[0]}$${k1}$( ) result(res)
     !
     ! Standard exponential random variate (lambda=1)
     !
@@ -122,8 +122,8 @@ contains
 
         if(.not. zig_exp_initialized ) call zigset
         iz = 0
-        jz = dist_rand(1_int32)                !32bit random integer
-        iz = iand( jz, 255 )                   !random integer in [0, 255]
+        jz = dist_rand(1_int32)                ! 32bit random integer
+        iz = iand( jz, 255 )                   ! random integer in [0, 255]
         if( abs( jz ) < ke(iz) ) then
             res = abs(jz) * we(iz)
         else
@@ -153,18 +153,19 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    function rvs_exp_${t1[0]}$${k1}$(lambda) result(res)
+    impure elemental function rvs_exp_${t1[0]}$${k1}$(lambda) result(res)
     !
     ! Exponential distributed random variate
     !
         ${t1}$, intent(in) :: lambda
         ${t1}$ :: res
 
-
-        if(lambda <= 0.0_${k1}$) call error_stop("Error(rvs_exp): Exponen"   &
-            //"tial distribution lambda parameter must be greater than zero")
-        res = rvs_exp_0_${t1[0]}$${k1}$(  )
-        res = res / lambda
+        if (lambda <= 0._${k1}$) then
+            res = ieee_value(1._${k1}$, ieee_quiet_nan)
+        else
+            res = rvs_exp_0_${t1[0]}$${k1}$(  )
+            res = res / lambda
+        end if
     end function rvs_exp_${t1[0]}$${k1}$
 
     #:endfor
@@ -173,7 +174,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    function rvs_exp_${t1[0]}$${k1}$(lambda) result(res)
+    impure elemental function rvs_exp_${t1[0]}$${k1}$(lambda) result(res)
         ${t1}$, intent(in) :: lambda
         ${t1}$ :: res
         real(${k1}$) :: tr, ti
@@ -189,15 +190,17 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    function rvs_exp_array_${t1[0]}$${k1}$(lambda, array_size) result(res)
+    impure function rvs_exp_array_${t1[0]}$${k1}$(lambda, array_size) result(res)
         ${t1}$, intent(in) :: lambda
         integer, intent(in) :: array_size
         ${t1}$ :: res(array_size), x, re
         ${t1}$, parameter :: r = 7.69711747013104972_${k1}$
         integer :: jz, iz, i
 
-        if(lambda <= 0.0_${k1}$) call error_stop("Error(rvs_exp_array): Exp" &
-            //"onential distribution lambda parameter must be greater than zero")
+        if (lambda <= 0._${k1}$) then
+            res = ieee_value(1._${k1}$, ieee_quiet_nan)
+            return
+        end if
 
         if(.not. zig_exp_initialized) call zigset
         do i = 1, array_size
@@ -235,7 +238,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    function rvs_exp_array_${t1[0]}$${k1}$(lambda, array_size) result(res)
+    impure function rvs_exp_array_${t1[0]}$${k1}$(lambda, array_size) result(res)
         ${t1}$, intent(in) :: lambda
         integer, intent(in) :: array_size
         ${t1}$ :: res(array_size)
@@ -255,18 +258,20 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function pdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
+    elemental function pdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
     !
     ! Exponential Distribution Probability Density Function
     !
         ${t1}$, intent(in) :: x, lambda
         real(${k1}$) :: res
 
-        if(lambda <= 0.0_${k1}$) call error_stop("Error(pdf_exp): Expon"     &
-            //"ential distribution lambda parameter must be greater than zero")
-        if(x < 0.0_${k1}$) call error_stop("Error(pdf_exp): Exponential"     &
-            //" distribution variate x must be non-negative")
-        res = exp(- x * lambda) * lambda
+        if (lambda <= 0._${k1}$) then
+            res = ieee_value(1._${k1}$, ieee_quiet_nan)
+        else if (x < 0._${k1}$) then
+            res = 0._${k1}$
+        else
+            res = exp(- x * lambda) * lambda
+        end if
     end function pdf_exp_${t1[0]}$${k1}$
 
     #:endfor
@@ -275,7 +280,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    impure elemental function pdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
+    elemental function pdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
         ${t1}$, intent(in) :: x, lambda
         real(${k1}$) :: res
 
@@ -289,18 +294,20 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function cdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
+    elemental function cdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
     !
     ! Exponential Distribution Cumulative Distribution Function
     !
         ${t1}$, intent(in) :: x, lambda
         real(${k1}$) :: res
 
-        if(lambda <= 0.0_${k1}$) call error_stop("Error(cdf_exp): Expon"     &
-            //"ential distribution lambda parameter must be greater than zero")
-        if(x < 0.0_${k1}$) call error_stop("Error(cdf_exp): Exponential"     &
-            //" distribution variate x must be non-negative")
-        res = 1.0_${k1}$ - exp(- x * lambda)
+        if (lambda <= 0._${k1}$) then
+            res = ieee_value(1._${k1}$, ieee_quiet_nan)
+        else if (x < 0._${k1}$) then
+            res = 0._${k1}$
+        else
+            res = 1.0_${k1}$ - exp(- x * lambda)
+        end if
     end function cdf_exp_${t1[0]}$${k1}$
 
     #:endfor
@@ -309,7 +316,7 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    impure elemental function cdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
+    elemental function cdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
         ${t1}$, intent(in) :: x, lambda
         real(${k1}$) :: res
 
