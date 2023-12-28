@@ -8,8 +8,8 @@ module stdlib_linked_list
     implicit none
 
     ! making Parent_Node and linked_list struct globally available
-    public :: Parent_Node
-    public  :: linked_list
+    public :: parent_node_type
+    public  :: linked_list_type
 
     ! Maximum size of the child linked list
     integer, private, parameter :: MAX_SIZE = 10000
@@ -21,21 +21,21 @@ module stdlib_linked_list
     !>
     !> The purpose of this node is to hold a child list
     !> and links to previous and next Parent Node.
-    type Parent_Node
-        type(Parent_Node_type), pointer :: next => null()
-        type(Parent_Node_type), pointer :: prev => null()
+    type parent_node_type
+        type(parent_node_type), pointer :: next => null()
+        type(parent_node_type), pointer :: prev => null()
         type(child_list_type) , allocatable :: child
         contains
         procedure :: size => child_length
         procedure :: split => split_into_two_nodes
         procedure, private :: destroy => parent_node_destroyed
-    end type Parent_Node
+    end type parent_node_type
 
     !> Defining Linked List
     !>
     !> This linked list is single-dimensional chain of Parent Nodes.
     !> It is a doubly-linked heterogeneous generic list .
-    type linked_list
+    type linked_list_type
         integer, private           :: num_parent_nodes = 0
         integer, private           :: total_nodes = 0
         type(Parent_Node_type), pointer :: head => null()
@@ -57,7 +57,7 @@ module stdlib_linked_list
         procedure :: absorb => absorb_another_list
         procedure :: slice => slice_a_part_of_list
         procedure :: splice => splice_a_part_of_list
-    end type linked_list
+    end type linked_list_type
 
     contains
 
@@ -355,7 +355,7 @@ module stdlib_linked_list
     !>
     !> Returns a pointer
     function get_element_at_index_in_parent( this_linked_list, node_index ) result ( return_item )
-        class(linked_list_type), intent(inout) :: this_linked_list
+        class(linked_list_type), intent(in) :: this_linked_list
         integer, intent(in):: node_index
         class(*), pointer :: return_item
         type(Parent_Node_type), pointer:: current_node

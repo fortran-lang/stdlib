@@ -6,7 +6,7 @@ program example_slice
 
     implicit none
 
-    type(linked_list) :: list, sublist
+    type(linked_list_type) :: list, sublist
 
     !
     ! Add a few elements to the list

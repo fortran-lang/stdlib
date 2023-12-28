@@ -6,9 +6,9 @@ program example_get
 
     implicit none
 
-    type(linked_list) :: list
-    class(*), pointer :: list_item
-    integer           :: i
+    type(linked_list_type) :: list
+    class(*), pointer      :: list_item
+    integer                :: i
 
     !
     ! Add a few elements

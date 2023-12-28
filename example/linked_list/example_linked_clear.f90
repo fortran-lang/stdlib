@@ -6,7 +6,7 @@ program example_clear
 
     implicit none
 
-    type(linked_list) :: list
+    type(linked_list_type) :: list
 
     !
     ! Add a few elements

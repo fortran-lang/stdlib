@@ -6,7 +6,7 @@ program example_concat
 
     implicit none
 
-    type(linked_list) :: list, list_to_concat
+    type(linked_list_type) :: list, list_to_concat
 
     !
     ! Add a few elements to the two lists

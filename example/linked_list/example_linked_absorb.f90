@@ -6,7 +6,7 @@ program example_absorb
 
     implicit none
 
-    type(linked_list) :: list, list_to_absorb
+    type(linked_list_type) :: list, list_to_absorb
 
     !
     ! Add a few elements to the two lists

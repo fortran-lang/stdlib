@@ -8,7 +8,7 @@ module stdlib_child_list
     implicit none
 
     ! making Node and child_list struct globally available
-    public:: Node, child_list
+    public:: node_type, child_list_type
 
     !> Defining Node
     !>
@@ -27,7 +27,7 @@ module stdlib_child_list
     !>
     !> This linked list is single-dimensional chain of Nodes.
     !> It is a doubly-linked heterogeneous generic list .
-    type child_list
+    type child_list_type
         integer, private :: num_nodes = 0
         type(node_type), pointer :: head => null()
         type(node_type), pointer :: tail => null()
@@ -42,7 +42,7 @@ module stdlib_child_list
         procedure:: replace => replace_at_index
         procedure:: reverse => reverse_child_list
         procedure:: clear => destroy_whole_child_list
-    end type child_list
+    end type child_list_type
 
     contains
 

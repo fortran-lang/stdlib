@@ -2,7 +2,7 @@
 !     Auxiliary routine for printing the contents of a linked list
 !
 subroutine print_list( list )
-    type(linked_list), intent(in) :: list
+    type(linked_list_type), intent(in) :: list
 
     integer           :: i
     class(*), pointer :: list_item
