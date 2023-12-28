@@ -1,4 +1,4 @@
-#include_directories(${CMAKE_CURRENT_LIST_DIR})
+include_directories(${CMAKE_CURRENT_LIST_DIR})
 
 ADD_EXAMPLE(linked_absorb)
 ADD_EXAMPLE(linked_clear)
