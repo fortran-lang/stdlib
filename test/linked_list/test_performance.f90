@@ -6,14 +6,14 @@ program test_link
       integer:: a=1,b=2,c=3
       double precision::d=5
   end type struct
-  type(struct):: Vel2
+  type(struct) :: Vel2
 
   type vector
       double precision, dimension(3):: vec
   end type vector
-  type(vector)::Vel
+  type(vector) ::Vel
 
-  type(linked_list):: L
+  type(linked_list_type) :: L
   integer :: i,j,length
   real    :: T1,T2,F, r
   integer :: cnt1, cnt2, count_rate

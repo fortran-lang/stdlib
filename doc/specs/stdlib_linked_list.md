@@ -14,9 +14,9 @@ store any type of data. The list may contain data of the same type or of various
 
 ## Types
 
-### `type(linked_list)`
+### `type(linked_list_type)`
 
-Linked lists are variables of the type `linked_list`. The type provides all the methods
+Linked lists are variables of the type `linked_list_type`. The type provides all the methods
 required for storing and retrieving data.
 
 
@@ -24,7 +24,7 @@ required for storing and retrieving data.
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `size`
+### `size` - Return the number of data items in the list
 
 #### Description
 
@@ -48,7 +48,7 @@ None
 
 #### Result value
 
-The result is the number of items currently contained in the list.
+The result is an integer scalar, equal to the number of items currently contained in the list.
 
 #### Example
 
@@ -58,7 +58,7 @@ The result is the number of items currently contained in the list.
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `clear`
+### `clear` - Remove all items from the list
 
 #### Description
 
@@ -89,7 +89,7 @@ None
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `get`
+### `get` - Get the data item at a given position (node) in the list
 
 #### Description
 
@@ -109,12 +109,12 @@ Function.
 
 #### Argument
 
-- `node_index`: Position in the list for the new item (integer)
-  This argument is intent(in).
+- `node_index`: Shall be a scalar integer equal to the position in the list for the new item.
+  This argument is `intent(in)`.
 
 #### Result value
 
-The data item (of type class(*)) that is stored at the given position.
+The data item (of type `class(*)`) that is stored at the given position.
 
 Notes:
 
@@ -129,7 +129,7 @@ Notes:
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `insert`
+### `insert` - Insert a new item at a given position (node) in the list
 
 #### Description
 
@@ -150,9 +150,9 @@ Subroutine.
 #### Argument
 
 - `item`: Data item to be stored (any type).
-  This argument is intent(in).
-- `node_index`: Position in the list for the new item (integer)
-  This argument is intent(in).
+  This argument is `intent(in)`.
+- `node_index`: Shall be an integer scalar equal to the position in the list for the new item.
+  This argument is `intent(in)`.
 
 #### Result value
 
@@ -171,7 +171,7 @@ Notes:
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `replace`
+### `replace` - Replace an existing data by a new item at a given position (node) in the list
 
 #### Description
 
@@ -191,10 +191,10 @@ Subroutine.
 
 #### Argument
 
-- `item`: The new data item to be stored (any type).
-  This argument is intent(in).
-- `node_index`: Position in the list for the item to be replaced (integer)
-  This argument is intent(in).
+- `new_item`: The new data item to be stored (any type).
+  This argument is `intent(in)`.
+- `node_index`: Shall be an integer scalar equal to the position in the list for the item to be replaced.
+  This argument is `intent(in)`.
 
 #### Result value
 
@@ -212,7 +212,7 @@ Notes:
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `remove`
+### `remove` - Remove an items at a given position (node) in the list
 
 #### Description
 
@@ -232,8 +232,8 @@ Subroutine.
 
 #### Argument
 
-- `node_index`: Position in the list for the item to be removed (integer)
-  This argument is intent(in).
+- `node_index`: Shall be an integer scalar equal to the position in the list for the item to be removed.
+  This argument is `intent(in)`.
 
 #### Result value
 
@@ -250,7 +250,7 @@ Notes:
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `push`
+### `push` - Append a new item to the end of the list
 
 #### Description
 
@@ -271,7 +271,7 @@ Subroutine.
 #### Argument
 
 - `item`: Data item to be stored (any type).
-  This argument is intent(in).
+  This argument is `intent(in)`.
 
 #### Result value
 
@@ -285,7 +285,7 @@ The list is extended with the new data item at the tail.
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `pop`
+### `pop` - Remove the last item in the list
 
 #### Description
 
@@ -319,7 +319,7 @@ The list item in the list is removed.
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `reverse`
+### `reverse` - Reconstruct the list in reverse order
 
 #### Description
 
@@ -353,7 +353,7 @@ The list now contains the items in reverse order.
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `concat`
+### `concat` - Concatenate a list to another list
 
 #### Description
 
@@ -373,8 +373,8 @@ Subroutine.
 
 #### Argument
 
-- `list_to_concat`: list whose data items are to be appended to the given list (type(linked_list)
-  this argument is intent(in).
+- `list_to_concat`: list whose data items are to be appended to the given `linked_list_type` derived type.
+  this argument is `intent(in)`.
 
 #### Result value
 
@@ -388,7 +388,7 @@ The given list is extended with the data items in the second list. The second li
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `absorb`
+### `absorb` - Absorb a list into another list
 
 #### Description
 
@@ -396,7 +396,7 @@ Absorb a list into another list
 
 #### Syntax
 
-`call [[stdlib_linked_list(module):list%absorb(interface)]] (list_to_concat)`
+`call [[stdlib_linked_list(module):list%absorb(interface)]] (list_to_absorb)`
 
 #### Status
 
@@ -408,8 +408,8 @@ Subroutine.
 
 #### Argument
 
-- `list_to_absorb`: list whose data items will be appended to the given list (type(linked_list)
-  this argument is intent(inout).
+- `list_to_absorb`: list whose data items will be appended to the given `linked_list_type` derived type.
+  this argument is `intent(inout)`.
 
 #### Result value
 
@@ -423,7 +423,7 @@ The given list is extended with the data items in the second list. The second li
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `slice`
+### `slice` - Return a sublist of a list
 
 #### Description
 
@@ -443,10 +443,10 @@ Subroutine.
 
 #### Argument
 
-- `start`: first item to store in the sublist (integer)
-  this argument is intent(in).
-- `end`: last item to store in the sublist (integer)
-  this argument is intent(in).
+- `start`: Shall be an integer scalar equal to the first item to store in the sublist.
+  this argument is `intent(in)`.
+- `end`: Shall be an integer scalar equal to the last item to store in the sublist.
+  this argument is `intent(in)`.
 
 #### Result value
 
@@ -461,7 +461,7 @@ list, so that the two lists are independent.
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `splice`
+### `splice` - Remove a sublist from a list, based on a start and end index.
 
 #### Description
 
@@ -481,10 +481,10 @@ Subroutine.
 
 #### Argument
 
-- `start`: first item to be removed in the sublist (integer)
-  this argument is intent(in).
-- `end`: last item to be removed in the sublist (integer)
-  this argument is intent(in).
+- `start`: Shall be an integer scalar equal to the first item to be removed from the list.
+  this argument is `intent(in)`.
+- `end`: Shall be an integer scalar equal to the last item to be removed from the list.
+  this argument is `intent(in)`.
 
 #### Result value
 
