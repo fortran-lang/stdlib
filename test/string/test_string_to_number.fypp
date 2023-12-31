@@ -21,7 +21,6 @@ contains
     end subroutine collect_string_to_number
 
     subroutine test_to_float(error)
-        use stdlib_str2num
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: wp = sp
 
