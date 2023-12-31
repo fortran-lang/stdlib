@@ -186,10 +186,10 @@ module stdlib_str2num
         character(len=:), pointer :: s !> input string
         real(qp), intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
         real(qp) :: r    !> Output real value
-        integer(1),intent(inout), optional :: stat
+        integer(int8),intent(inout), optional :: stat
         ! -- Internal Variables
-        integer(1) :: p !> position within the number
-        integer(1) :: err
+        integer(int8) :: p !> position within the number
+        integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,r,p,err)
         p = min( p , len(s) )
