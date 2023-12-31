@@ -146,8 +146,8 @@ module stdlib_str2num
         real(dp), intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
         real(dp) :: r    !> Output real value
         ! -- Internal Variables
-        integer(1) :: p !> position within the number
-        integer(1) :: stat ! error status
+        integer(int8) :: p !> position within the number
+        integer(int8) :: stat ! error status
         !----------------------------------------------
         call to_num_base(s,r,p,stat)
     end function
