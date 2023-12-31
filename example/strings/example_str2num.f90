@@ -1,6 +1,6 @@
 program example_str2num
     use stdlib_kinds, only: dp
-    use stdlib_str2num
+    use stdlib_str2num, only: to_num_p
     character(:), allocatable, target :: chain
     character(len=:), pointer :: cptr
     real(dp), allocatable :: r(:), p(:)
