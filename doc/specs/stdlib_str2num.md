@@ -65,7 +65,7 @@ Convert a stream of values in a string to an array of values.
 
 `string`: argument has `intent(in)` and is of type `character(*), pointer`.
 
-`mold`: argument has `intent(in)` and is of numerical type. currently: `integer`, `real32`, `real64` or `real128`. **Note**: the mold argument is included to help compilers chose the correct implementation at compile-time. Currently, compilers are not able to disambiguate functions with respect to the left-hand-side of an assignment.
+`mold`: argument has `intent(in)` and is of numerical type. currently: `int8`, `int16`,`int32`, `int64`, `real32`, `real64` or `real128`. **Note**: the mold argument is included to help compilers chose the correct implementation at compile-time. Currently, compilers are not able to disambiguate functions with respect to the left-hand-side of an assignment.
 
 ### Return value
 
