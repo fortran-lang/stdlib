@@ -96,10 +96,10 @@ The accuracy of the conversion is implementation dependent; it is recommended th
 
 **The current implementation has been tested to provide for** :
 
-`real32`  : exact match
+`sp`  : exact match
 
-`real64`  : precision up-to epsilon(0.0_real64)
+`dp`  : precision up-to epsilon(0.0_dp)
 
-`real128` : precision around 200*epsilon(0.0_real128)
+`qp` : precision around 200*epsilon(0.0_qp)
 
 Where precision refers to the relative difference between `to_num` and `read`. On the other hand, `to_num` provides speed-ups ranging from 4x to >10x compared to the intrinsic `read`.
