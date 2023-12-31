@@ -24,7 +24,7 @@
 
 module stdlib_str2num
     use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
-    use ieee_arithmetic
+    use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_positive_inf, ieee_quiet_nan
     implicit none
     private
     public :: to_num, to_num_p
