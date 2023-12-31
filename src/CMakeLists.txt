@@ -55,6 +55,7 @@ set(fppFiles
     stdlib_math_is_close.fypp
     stdlib_math_all_close.fypp
     stdlib_math_diff.fypp
+    stdlib_str2num.fypp
     stdlib_string_type.fypp
     stdlib_string_type_constructor.fypp
     stdlib_strings_to_string.fypp
@@ -82,7 +83,6 @@ set(SRC
     stdlib_specialfunctions_legendre.f90
     stdlib_quadrature_gauss.f90
     stdlib_stringlist_type.f90
-    stdlib_str2num.f90
     ${outFiles}
 )
 
