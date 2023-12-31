@@ -119,7 +119,6 @@ contains
     end subroutine
 
     subroutine test_to_double(error)
-        use stdlib_str2num
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: wp = dp
 
