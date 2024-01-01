@@ -79,11 +79,10 @@ program example_str2num
     use stdlib_str2num, only: to_num_p
     character(:), allocatable, target :: chain
     character(len=:), pointer :: cptr
-    real(dp), allocatable :: r(:)
+    real(dp) :: r(6)
     integer :: i 
 
     chain = " 1.234   1.E1 1e0     0.1234E0  12.21e+001 -34.5E1"
-    allocate( r(6) )
     cptr => chain
     do i =1, 6
         r(i) = to_num_p( cptr , r(i) ) !> the cptr pointer is shifted within the function
