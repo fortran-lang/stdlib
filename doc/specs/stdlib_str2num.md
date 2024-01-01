@@ -30,7 +30,7 @@ Convert a string or an array of strings to numerical types.
 
 ### Return value
 
-Return a scalar of numerical type (`integer`, `real32` or `real64`).
+Return a scalar of numerical type (i.e., `integer`, or `real`).
 
 ### Example
 
