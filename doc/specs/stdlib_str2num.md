@@ -63,7 +63,7 @@ Convert a stream of values in a string to an array of values.
 
 ### Arguments
 
-`string`: argument has `intent(in)` and is of type `character(*), pointer`.
+`string`: argument has `intent(in)` and is of type `character(:), pointer`.
 
 `mold`: argument has `intent(in)` and is of numerical type (currently of `integer` or `real`). **Note**: The type of the `mold` argument defines the type of the result.
 
