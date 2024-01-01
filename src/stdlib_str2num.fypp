@@ -44,19 +44,25 @@ module stdlib_str2num
 
     interface to_num
         #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
+        #:if k1 != "xdp"
         module procedure to_${k1}$
+        #:endif
         #:endfor
     end interface
 
     interface to_num_p
         #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
+        #:if k1 != "xdp"
         module procedure to_${k1}$_p
+        #:endif
         #:endfor
     end interface
 
     interface to_num_base
         #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
+        #:if k1 != "xdp"
         module procedure to_${k1}$_base
+        #:endif
         #:endfor
     end interface
     
@@ -67,6 +73,7 @@ module stdlib_str2num
     !---------------------------------------------
 
     #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
+    #:if k1 != "xdp"
     elemental function to_${k1}$(s,mold) result(v)
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
@@ -95,12 +102,14 @@ module stdlib_str2num
         if(present(stat)) stat = err
     end function
 
+    #:endif
     #:endfor
     !---------------------------------------------
     ! String To Number Implementations
     !---------------------------------------------
 
     #:for k1, t1 in INT_KINDS_TYPES
+    #:if k1 != "xdp"
     elemental subroutine to_${k1}$_base(s,v,p,stat)
         !> Return an unsigned 32-bit integer
         ! -- In/out Variables
@@ -128,6 +137,7 @@ module stdlib_str2num
         stat = 0
     end subroutine
 
+    #:endif
     #:endfor
 
     elemental subroutine to_sp_base(s,v,p,stat)
@@ -322,7 +332,7 @@ module stdlib_str2num
     end subroutine
 
 #:if WITH_QP
-    subroutine to_qp_base(s,v,p,stat)
+    elemental subroutine to_qp_base(s,v,p,stat)
         integer, parameter :: wp    = qp
         !> Sequentially unroll the character and get the sub integers composing the whole number, fraction and exponent
         ! -- In/out Variables
