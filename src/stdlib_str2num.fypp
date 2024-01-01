@@ -23,7 +23,7 @@
 !>   difference rel :                                 0.3300E-029%
 
 module stdlib_str2num
-    use stdlib_kinds, only: sp, dp, qp, int8, int16, int32, int64
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_positive_inf, ieee_quiet_nan
     implicit none
     private
@@ -44,25 +44,19 @@ module stdlib_str2num
 
     interface to_num
         #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
-        #:if k1 != "xdp"
         module procedure to_${k1}$
-        #:endif
         #:endfor
     end interface
 
     interface to_num_p
         #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
-        #:if k1 != "xdp"
         module procedure to_${k1}$_p
-        #:endif
         #:endfor
     end interface
 
     interface to_num_base
         #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
-        #:if k1 != "xdp"
         module procedure to_${k1}$_base
-        #:endif
         #:endfor
     end interface
     
@@ -73,7 +67,6 @@ module stdlib_str2num
     !---------------------------------------------
 
     #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
-    #:if k1 != "xdp"
     elemental function to_${k1}$(s,mold) result(v)
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
@@ -102,14 +95,12 @@ module stdlib_str2num
         if(present(stat)) stat = err
     end function
 
-    #:endif
     #:endfor
     !---------------------------------------------
     ! String To Number Implementations
     !---------------------------------------------
 
     #:for k1, t1 in INT_KINDS_TYPES
-    #:if k1 != "xdp"
     elemental subroutine to_${k1}$_base(s,v,p,stat)
         !> Return an unsigned 32-bit integer
         ! -- In/out Variables
@@ -137,7 +128,6 @@ module stdlib_str2num
         stat = 0
     end subroutine
 
-    #:endif
     #:endfor
 
     elemental subroutine to_sp_base(s,v,p,stat)
@@ -330,6 +320,111 @@ module stdlib_str2num
         end if
         stat = 0
     end subroutine
+
+#:if WITH_XDP
+    elemental subroutine to_xdp_base(s,v,p,stat)
+        integer, parameter :: wp    = xdp
+        !> Sequentially unroll the character and get the sub integers composing the whole number, fraction and exponent
+        ! -- In/out Variables
+        character(*), intent(in) :: s !> input string
+        real(wp), intent(inout)  :: v !> Output real value
+        integer(int8), intent(out)  :: p !> last position within the string
+        integer(int8), intent(out)  :: stat !> status upon success or failure to read
+
+        ! -- Internal Variables
+        integer(int8), parameter :: nwnb = 50 !> number of whole number factors
+        integer(int8), parameter :: nfnb = 64 !> number of fractional number factors
+        integer :: e
+        real(wp), parameter :: whole_number_base(nwnb)   = [(10._wp**(nwnb-e),e=1,nwnb)]
+        real(wp), parameter :: fractional_base(nfnb)   = [(10._wp**(-e),e=1,nfnb)]
+        real(wp), parameter :: expbase(nwnb+nfnb) = [whole_number_base, fractional_base]
+
+        integer(int8)  :: sign, sige !> sign of integer number and exponential
+        integer, parameter :: maxdpt = 19 !> Maximum depth to read values on int_dp
+        integer(dp) :: int_dp1, int_dp2 !> long integers to capture whole and fractional part
+        integer     :: i_exp !> integer to capture exponent number
+        integer     :: exp_aux
+        integer(int8)  :: i, pP, pE, val , resp, icount, aux
+        !----------------------------------------------
+        stat = 23 !> initialize error status with any number > 0
+        !----------------------------------------------
+        ! Find first non white space
+        p = mvs2nwsp(s)
+        !----------------------------------------------
+        ! Verify leading negative
+        sign = 1
+        if( iachar(s(p:p)) == minus_sign+digit_0 ) then
+            sign = -1 ; p = p + 1
+        end if
+        if( iachar(s(p:p)) == Inf ) then
+            v = sign*ieee_value(v,  ieee_positive_inf); return
+        else if( iachar(s(p:p)) == NaN ) then
+            v = ieee_value(v,  ieee_quiet_nan); return
+        end if
+        !----------------------------------------------
+        ! read whole and fractional number using two int64 values
+        pP = 127
+        int_dp1 = 0; int_dp2 = 0; icount = 0; aux = 1
+        do i = p, min(2*maxdpt+p-1,len(s))
+            val = iachar(s(i:i))-digit_0
+            if( val >= 0 .and. val <= 9 ) then
+                icount = icount + 1
+                if(icount<=maxdpt)then
+                    int_dp1 = int_dp1*10 + val
+                else if(icount<2*maxdpt)then
+                    int_dp2 = int_dp2*10 + val
+                end if
+            else if( val == period ) then
+                pP = i; aux = 0
+            else
+                exit
+            end if
+        end do
+        pE = i ! Fix the exponent position
+        do while( i<=len(s) )
+           val = iachar(s(i:i))-digit_0
+           if( val < 0 .or. val > 9 ) exit
+           i = i + 1
+        end do
+        p = i
+        resp = pE-min(pP,p) ! If no decimal indicator found it is taken as being in the current p position
+        if( resp <= 0 ) resp = resp+1 
+        !----------------------------------------------
+        ! Get exponential
+        sige = 1
+        if( p<len(s) ) then
+            if( any([le,BE,ld,BD]+digit_0==iachar(s(p:p))) ) p = p + 1
+            if( iachar(s(p:p)) == minus_sign+digit_0 ) then
+                sige = -1
+                p = p + 1
+            else if( iachar(s(p:p)) == plus_sign+digit_0 ) then
+                p = p + 1
+            end if
+        end if
+        
+        i_exp = 0
+        do while( p<=len(s) )
+            val = iachar(s(p:p))-digit_0
+            if( val >= 0 .and. val <= 9) then
+                i_exp = i_exp*10_int8 + val ; p = p + 1
+            else
+                exit
+            end if
+        end do
+        
+        exp_aux = nwnb-1+resp-sige*i_exp
+        if( exp_aux>0 .and. exp_aux<=nwnb+nfnb) then
+            if(icount<=maxdpt)then
+                v = sign*int_dp1*expbase(exp_aux)
+            else
+                v = sign*(int_dp1 + int_dp2*fractional_base(maxdpt-1))*expbase(exp_aux-icount+maxdpt)
+            end if
+        else
+            v = sign*(int_dp1 + int_dp2*fractional_base(maxdpt-1))*10._wp**(sige*i_exp-resp+maxdpt+aux)
+        end if
+        stat = 0
+    end subroutine
+#:endif
 
 #:if WITH_QP
     elemental subroutine to_qp_base(s,v,p,stat)
