@@ -29,51 +29,35 @@ module stdlib_str2num
     private
     public :: to_num, to_num_p
     
-    integer, parameter :: ikind = selected_int_kind(2)
-    integer(kind=ikind), parameter :: digit_0    = ichar('0',kind=ikind)
-    integer(kind=ikind), parameter :: period     = ichar('.',kind=ikind) - digit_0
-    integer(kind=ikind), parameter :: comma      = ichar(',',kind=ikind) - digit_0
-    integer(kind=ikind), parameter :: minus_sign = ichar('-',kind=ikind) - digit_0
-    integer(kind=ikind), parameter :: plus_sign  = ichar('+',kind=ikind) - digit_0
-    integer(kind=ikind), parameter :: Inf        = ichar('I',kind=ikind) 
-    integer(kind=ikind), parameter :: NaN        = ichar('N',kind=ikind) 
-    integer(kind=ikind), parameter :: le         = ichar('e',kind=ikind) - digit_0
-    integer(kind=ikind), parameter :: BE         = ichar('E',kind=ikind) - digit_0
-    integer(kind=ikind), parameter :: ld         = ichar('d',kind=ikind) - digit_0
-    integer(kind=ikind), parameter :: BD         = ichar('D',kind=ikind) - digit_0
-    integer(kind=ikind), parameter :: LF = 10, CR = 13, WS = 32
+    integer(int8), parameter :: digit_0    = ichar('0',int8)
+    integer(int8), parameter :: period     = ichar('.',int8) - digit_0
+    integer(int8), parameter :: comma      = ichar(',',int8) - digit_0
+    integer(int8), parameter :: minus_sign = ichar('-',int8) - digit_0
+    integer(int8), parameter :: plus_sign  = ichar('+',int8) - digit_0
+    integer(int8), parameter :: Inf        = ichar('I',int8) 
+    integer(int8), parameter :: NaN        = ichar('N',int8) 
+    integer(int8), parameter :: le         = ichar('e',int8) - digit_0
+    integer(int8), parameter :: BE         = ichar('E',int8) - digit_0
+    integer(int8), parameter :: ld         = ichar('d',int8) - digit_0
+    integer(int8), parameter :: BD         = ichar('D',int8) - digit_0
+    integer(int8), parameter :: LF = 10, CR = 13, WS = 32
 
     interface to_num
-        #:for k1, t1 in INT_KINDS_TYPES
+        #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
         module procedure to_${k1}$
         #:endfor
-        module procedure to_float
-        module procedure to_double
-#:if WITH_QP
-        module procedure to_quad
-#:endif
     end interface
 
     interface to_num_p
-        #:for k1, t1 in INT_KINDS_TYPES
+        #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
         module procedure to_${k1}$_p
         #:endfor
-        module procedure to_float_p
-        module procedure to_double_p
-#:if WITH_QP
-        module procedure to_quad_p
-#:endif
     end interface
 
     interface to_num_base
-        #:for k1, t1 in INT_KINDS_TYPES
-        module procedure to_int_${k1}$
+        #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
+        module procedure to_${k1}$_base
         #:endfor
-        module procedure to_real_sp
-        module procedure to_real_dp
-#:if WITH_QP
-        module procedure to_real_qp
-#:endif
     end interface
     
     contains
@@ -82,12 +66,12 @@ module stdlib_str2num
     ! String To Number interfaces
     !---------------------------------------------
 
-    #:for k1, t1 in INT_KINDS_TYPES
+    #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
     elemental function to_${k1}$(s,mold) result(v)
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
         ${t1}$, intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
-        ${t1}$ :: v !> Output integer 32 value
+        ${t1}$ :: v !> Output ${t1}$ value
         ! -- Internal Variables
         integer(int8) :: p !> position within the number
         integer(int8)  :: stat !> error status
@@ -110,100 +94,14 @@ module stdlib_str2num
         s => s(p:)
         if(present(stat)) stat = err
     end function
+
     #:endfor
-
-    elemental function to_float(s,mold) result(r)
-        ! -- In/out Variables
-        character(*), intent(in) :: s !> input string
-        real(sp), intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
-        real(sp) :: r !> Output real value
-        ! -- Internal Variables
-        integer(int8) :: p !> position within the number
-        integer(int8) :: stat ! error status
-        !----------------------------------------------
-        call to_num_base(s,r,p,stat)
-    end function
-    
-    function to_float_p(s,mold,stat) result(r)
-        ! -- In/out Variables
-        character(len=:), pointer :: s !> input string
-        real(sp), intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
-        real(sp) :: r    !> Output real value
-        integer(int8), intent(inout), optional :: stat
-        ! -- Internal Variables
-        integer(int8) :: p !> position within the number
-        integer(int8) :: err
-        !----------------------------------------------
-        call to_num_base(s,r,p,err)
-        p = min( p , len(s) )
-        s => s(p:)
-        if(present(stat)) stat = err
-    end function
-
-    elemental function to_double(s,mold) result(r)
-        ! -- In/out Variables
-        character(*), intent(in) :: s !> input string
-        real(dp), intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
-        real(dp) :: r    !> Output real value
-        ! -- Internal Variables
-        integer(int8) :: p !> position within the number
-        integer(int8) :: stat ! error status
-        !----------------------------------------------
-        call to_num_base(s,r,p,stat)
-    end function
-    
-    function to_double_p(s,mold,stat) result(r)
-        ! -- In/out Variables
-        character(len=:), pointer :: s !> input string
-        real(dp), intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
-        real(dp) :: r    !> Output real value
-        integer(int8),intent(inout), optional :: stat
-        ! -- Internal Variables
-        integer(int8) :: p !> position within the number
-        integer(int8) :: err
-        !----------------------------------------------
-        call to_num_base(s,r,p,err)
-        p = min( p , len(s) )
-        s => s(p:)
-        if(present(stat)) stat = err
-    end function
-
-#:if WITH_QP
-    function to_quad(s,mold) result(r)
-        ! -- In/out Variables
-        character(*), intent(in) :: s !> input string
-        real(qp), intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
-        real(qp) :: r    !> Output real value
-        ! -- Internal Variables
-        integer(1) :: p !> position within the number
-        integer(1) :: stat ! error status
-        !----------------------------------------------
-        call to_num_base(s,r,p,stat)
-    end function
-    
-    function to_quad_p(s,mold,stat) result(r)
-        ! -- In/out Variables
-        character(len=:), pointer :: s !> input string
-        real(qp), intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
-        real(qp) :: r    !> Output real value
-        integer(int8),intent(inout), optional :: stat
-        ! -- Internal Variables
-        integer(int8) :: p !> position within the number
-        integer(int8) :: err
-        !----------------------------------------------
-        call to_num_base(s,r,p,err)
-        p = min( p , len(s) )
-        s => s(p:)
-        if(present(stat)) stat = err
-    end function
-#:endif
-
     !---------------------------------------------
     ! String To Number Implementations
     !---------------------------------------------
 
     #:for k1, t1 in INT_KINDS_TYPES
-    elemental subroutine to_int_${k1}$(s,v,p,stat)
+    elemental subroutine to_${k1}$_base(s,v,p,stat)
         !> Return an unsigned 32-bit integer
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
@@ -229,9 +127,10 @@ module stdlib_str2num
         end do
         stat = 0
     end subroutine
+
     #:endfor
 
-    elemental subroutine to_real_sp(s,v,p,stat)
+    elemental subroutine to_sp_base(s,v,p,stat)
         integer, parameter :: wp    = sp
         !> Sequentially unroll the character and get the sub integers composing the whole number, fraction and exponent
         ! -- In/out Variables
@@ -241,9 +140,12 @@ module stdlib_str2num
         integer(int8), intent(out)  :: stat !> status upon success or failure to read
 
         ! -- Internal Variables
-        integer(kind=ikind), parameter :: nwnb = 39 !> number of whole number factors
-        integer(kind=ikind), parameter :: nfnb = 37 !> number of fractional number factors
+        integer(int8), parameter :: nwnb = 39 !> number of whole number factors
+        integer(int8), parameter :: nfnb = 37 !> number of fractional number factors
         integer :: e
+        ! Notice: We use dp here to obtain exact precision for sp.
+        ! Otherwise errors may appear in comparison to formatted read.
+        ! See https://github.com/fortran-lang/stdlib/pull/743#issuecomment-1791953430 for more details
         real(dp), parameter :: whole_number_base(nwnb)   = [(10._dp**(nwnb-e),e=1,nwnb)]
         real(dp), parameter :: fractional_base(nfnb)   = [(10._dp**(-e),e=1,nfnb)]
         real(dp), parameter :: expbase(nwnb+nfnb) = [whole_number_base, fractional_base]
@@ -310,7 +212,7 @@ module stdlib_str2num
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
             if( val >= 0 .and. val <= 9) then
-                i_exp = i_exp*10_ikind + val ; p = p + 1
+                i_exp = i_exp*10_int8 + val ; p = p + 1
             else
                 exit
             end if
@@ -325,7 +227,7 @@ module stdlib_str2num
         stat = 0
     end subroutine
 
-    elemental subroutine to_real_dp(s,v,p,stat)
+    elemental subroutine to_dp_base(s,v,p,stat)
         integer, parameter :: wp    = dp
         !> Sequentially unroll the character and get the sub integers composing the whole number, fraction and exponent
         ! -- In/out Variables
@@ -335,8 +237,8 @@ module stdlib_str2num
         integer(int8), intent(out)  :: stat !> status upon success or failure to read
 
         ! -- Internal Variables
-        integer(kind=ikind), parameter :: nwnb = 40 !> number of whole number factors
-        integer(kind=ikind), parameter :: nfnb = 64 !> number of fractional number factors
+        integer(int8), parameter :: nwnb = 40 !> number of whole number factors
+        integer(int8), parameter :: nfnb = 64 !> number of fractional number factors
         integer :: e
         real(wp), parameter :: whole_number_base(nwnb)   = [(10._wp**(nwnb-e),e=1,nwnb)]
         real(wp), parameter :: fractional_base(nfnb)   = [(10._wp**(-e),e=1,nfnb)]
@@ -404,7 +306,7 @@ module stdlib_str2num
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
             if( val >= 0 .and. val <= 9) then
-                i_exp = i_exp*10_ikind + val ; p = p + 1
+                i_exp = i_exp*10_int8 + val ; p = p + 1
             else
                 exit
             end if
@@ -420,7 +322,7 @@ module stdlib_str2num
     end subroutine
 
 #:if WITH_QP
-    subroutine to_real_qp(s,v,p,stat)
+    subroutine to_qp_base(s,v,p,stat)
         integer, parameter :: wp    = qp
         !> Sequentially unroll the character and get the sub integers composing the whole number, fraction and exponent
         ! -- In/out Variables
@@ -430,8 +332,8 @@ module stdlib_str2num
         integer(int8), intent(out)  :: stat !> status upon success or failure to read
 
         ! -- Internal Variables
-        integer(kind=ikind), parameter :: nwnb = 50 !> number of whole number factors
-        integer(kind=ikind), parameter :: nfnb = 64 !> number of fractional number factors
+        integer(int8), parameter :: nwnb = 50 !> number of whole number factors
+        integer(int8), parameter :: nfnb = 64 !> number of fractional number factors
         integer :: e
         real(wp), parameter :: whole_number_base(nwnb)   = [(10._wp**(nwnb-e),e=1,nwnb)]
         real(wp), parameter :: fractional_base(nfnb)   = [(10._wp**(-e),e=1,nfnb)]
@@ -504,7 +406,7 @@ module stdlib_str2num
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
             if( val >= 0 .and. val <= 9) then
-                i_exp = i_exp*10_ikind + val ; p = p + 1
+                i_exp = i_exp*10_int8 + val ; p = p + 1
             else
                 exit
             end if
