@@ -84,7 +84,7 @@ program example_str2num
 
     chain = " 1.234   1.E1 1e0     0.1234E0  12.21e+001 -34.5E1"
     cptr => chain
-    do i =1, 6
+    do i = 1, 6
         r(i) = to_num_p( cptr , r(i) ) !> the cptr pointer is shifted within the function
     end do
 end program
