@@ -69,7 +69,7 @@ Convert a stream of values in a string to an array of values.
 
 ### Return value
 
-Return a scalar of numerical type (`integer`, `real32` or `real64`).
+Return a scalar of numerical type (i.e., `integer` or `real`).
 
 ### Example
 
