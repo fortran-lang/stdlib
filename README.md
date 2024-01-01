@@ -184,6 +184,14 @@ git checkout stdlib-fpm
 fpm build --profile release
 ```
 
+Or alternatively:
+
+```sh
+source ./ci/fpm-deployment.sh
+cd stdlib-fpm/
+fpm build --profile release
+```
+
 You can run the examples with `fpm` as:
 
 ```sh
