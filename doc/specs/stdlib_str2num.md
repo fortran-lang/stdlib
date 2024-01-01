@@ -26,7 +26,7 @@ Convert a string or an array of strings to numerical types.
 
 `string`: argument has `intent(in)` and is of type `character(*)`.
 
-`mold`: argument has `intent(in)` and is of numerical type (that is of `integer` or of `real`). **Note**: the mold argument is included to help compilers chose the correct implementation at compile-time. Currently, compilers are not able to disambiguate functions with respect to the left-hand-side of an assignment.
+`mold`: argument has `intent(in)` and is of numerical type (that is of `integer` or of `real`). **Note**: The type of the `mold` argument defines the type of the result.
 
 ### Return value
 
@@ -65,7 +65,7 @@ Convert a stream of values in a string to an array of values.
 
 `string`: argument has `intent(in)` and is of type `character(*), pointer`.
 
-`mold`: argument has `intent(in)` and is of numerical type (currently of `integer` or `real`). **Note**: the mold argument is included to help compilers chose the correct implementation at compile-time. Currently, compilers are not able to disambiguate functions with respect to the left-hand-side of an assignment.
+`mold`: argument has `intent(in)` and is of numerical type (currently of `integer` or `real`). **Note**: The type of the `mold` argument defines the type of the result.
 
 ### Return value
 
