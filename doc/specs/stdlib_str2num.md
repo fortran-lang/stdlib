@@ -26,7 +26,7 @@ Convert a string or an array of strings to numerical types.
 
 `string`: argument has `intent(in)` and is of type `character(*)`.
 
-`mold`: argument has `intent(in)` and is of numerical type. currently: `integer`, `real32`, `real64` or `real128`. **Note**: the mold argument is included to help compilers chose the correct implementation at compile-time. Currently, compilers are not able to disambiguate functions with respect to the left-hand-side of an assignment.
+`mold`: argument has `intent(in)` and is of numerical type (that is of `integer` or of `real`). **Note**: the mold argument is included to help compilers chose the correct implementation at compile-time. Currently, compilers are not able to disambiguate functions with respect to the left-hand-side of an assignment.
 
 ### Return value
 
