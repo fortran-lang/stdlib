@@ -1,3 +1,4 @@
+#: include "common.fypp"
 #:set HASH_NAME = ["fnv_1_hasher", "fnv_1a_hasher", "seeded_nmhash32_hasher", "seeded_nmhash32x_hasher", "seeded_water_hasher"]
 #:set SIZE_NAME = ["16", "256"]
 module test_stdlib_chaining_maps
