@@ -1,6 +1,6 @@
 #: include "common.fypp"
 module test_string_to_number
-    use stdlib_kinds, only: sp, dp, qp
+    use stdlib_kinds, only: sp, dp, xdp, qp
     use stdlib_str2num, only: to_num
     use testdrive, only : new_unittest, unittest_type, error_type, check
     implicit none
