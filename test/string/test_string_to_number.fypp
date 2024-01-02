@@ -22,7 +22,6 @@ contains
     end subroutine collect_string_to_number
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    #:if k1 != "xdp"
     subroutine test_to_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: wp = ${k1}$
@@ -115,6 +114,8 @@ contains
             if(abs(rel_err) > 0.0_wp) then
             #:elif k1 == "dp"
             if(abs(rel_err) > epsilon(0.0_wp)) then
+            #:elif k1 == "xdp"
+            if(abs(rel_err) > 200*epsilon(0.0_wp)) then
             #:elif k1 == "qp"
             if(abs(rel_err) > 200*epsilon(0.0_wp)) then
             #:endif
@@ -126,8 +127,7 @@ contains
             end if
         end function
     end subroutine
-    
-    #:endif
+
     #:endfor
     
 end module test_string_to_number
