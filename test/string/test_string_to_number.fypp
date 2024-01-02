@@ -18,6 +18,9 @@ contains
 #:if WITH_QP
             , new_unittest("to_qp", test_to_qp) &
 #:endif
+#:if WITH_XDP
+            , new_unittest("to_xdp", test_to_xdp) &
+#:endif
             ]
     end subroutine collect_string_to_number
 
