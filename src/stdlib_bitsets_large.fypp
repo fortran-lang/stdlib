@@ -146,7 +146,7 @@ contains
 
         integer(bits_kind) :: nblocks, pos
 
-        nblocks = size( self % blocks )
+        nblocks = size( self % blocks, kind=bits_kind )
         bit_count = sum( popcnt( self % blocks(1:nblocks-1) ) )
 
         do pos = 0_bits_kind, self % num_bits - (nblocks-1)*block_size - 1
