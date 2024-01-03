@@ -280,11 +280,11 @@ contains
 
         bit_count = 0
         do block_ = 1_bits_kind, size(self % blocks, kind=bits_kind) - 1
-            do pos = 0, block_size-1
-                if ( btest( self % blocks(block_), pos ) ) &
-                    bit_count = bit_count + 1
-            end do
-
+            !do pos = 0, block_size-1
+            !    if ( btest( self % blocks(block_), pos ) ) &
+            !        bit_count = bit_count + 1
+            !end do
+            bit_count = bit_count + popcnt( self % blocks(block_) )
         end do
 
         do pos = 0_bits_kind, self % num_bits - (block_-1)*block_size - 1
