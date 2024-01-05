@@ -87,7 +87,7 @@ program example_to_num_p
     do i = 1, 6
         r(i) = to_num_p( cptr , r(i) ) !> the cptr pointer is shifted within the function
     end do
-end program
+end program example_to_num_p
 ```
 
 ## Note
