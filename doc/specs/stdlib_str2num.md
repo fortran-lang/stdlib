@@ -74,7 +74,7 @@ Return a scalar of numerical type (i.e., `integer` or `real`).
 ### Example
 
 ```fortran
-program example_str2num
+program example_to_num_p
     use stdlib_kinds, only: dp
     use stdlib_str2num, only: to_num_p
     character(:), allocatable, target :: chain
