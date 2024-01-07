@@ -184,7 +184,7 @@ git checkout stdlib-fpm
 fpm build --profile release
 ```
 
-**Alternative**: as fpm does not currently support fypp natively, building stdlib is done in two steps (a) launch the preprocessor through the fpm-deployment.sh script, which creates a subfolder `stdlib-fpm` (b) build the project using the processed files within the latter subfolder. Which can be done with the following commands:
+**Alternative**: as `fpm` does not currently support `fypp` natively, building `stdlib` with `fpm` can be done in two steps: a) launch the preprocessor through the `fpm-deployment.sh` script, which creates a subfolder `stdlib-fpm` and b) build the project using the processed files within the latter subfolder. This process can be done with the following commands:
 
 ```sh
 source ./ci/fpm-deployment.sh
