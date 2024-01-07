@@ -54,6 +54,10 @@ module stdlib_str2num
     end interface
 
     interface to_num_p
+        !! version: experimental
+        !!
+        !! Conversion of a stream of values in a string to numbers
+        !! ([Specification](../page/specs/stdlib_str2num.html#to-num-p-conversion-of-a-stream-of-values-in-a-strings-to-numbers)) 
         #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
         module procedure to_${k1}$_p
         #:endfor
