@@ -44,6 +44,10 @@ module stdlib_str2num
     integer(int8), parameter :: LF = 10, CR = 13, WS = 32
 
     interface to_num
+        !! version: experimental
+        !!
+        !! Conversion of strings to numbers
+        !! ([Specification](../page/specs/stdlib_str2num.html#to-num-conversion-of-strings-to-numbers)) 
         #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
         module procedure to_${k1}$
         #:endfor
