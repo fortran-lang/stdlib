@@ -99,7 +99,7 @@ module stdlib_bitsets
 !! Parent type for bitset_64 and bitset_large ([Specification](../page/specs/stdlib_bitsets.html#the-stdlib_bitsets-derived-types))
 
         private
-        integer(bits_kind) :: num_bits
+        integer(bits_kind) :: num_bits = 0_bits_kind
 
     contains
 

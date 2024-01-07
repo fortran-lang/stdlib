@@ -1183,7 +1183,7 @@ contains
     pure module subroutine set_range_large(self, start_pos, stop_pos)
 !
 !     Sets all valid bits to 1 from the START_POS to the STOP_POS positions
-!     in SELF. If STOP_POA < START_POS no bits are changed. Positions outside
+!     in SELF. If STOP_POS < START_POS no bits are changed. Positions outside
 !     the range 0 to BITS(SELF)-1 are ignored.
 !
         class(bitset_large), intent(inout) :: self
