@@ -1,6 +1,7 @@
 #:include "common.fypp"
 !> The `stdlib_str2num` module provides procedures and interfaces for conversion
-!> of characters to numerical types. Currently supported: int32, real32 and real64
+!> of characters to numerical types. Currently supported: `integer` and `real`.
+!! ([Specification](../page/specs/stdlib_str2num.html)
 !>
 !> This code was modified from https://github.com/jalvesz/Fortran-String-to-Num by Alves Jose
 !> And was possible thanks to all the discussions in this thread https://fortran-lang.discourse.group/t/faster-string-to-double/
