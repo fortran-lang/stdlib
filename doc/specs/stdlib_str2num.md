@@ -35,16 +35,7 @@ Return a scalar of numerical type (i.e., `integer`, or `real`).
 ### Example
 
 ```fortran
-program example_string_to_number
-  use stdlib_kinds, only: dp
-  use stdlib_str2num, only: to_num
-  implicit none
-  character(:), allocatable :: txt
-  real(dp) :: x
-
-  txt = ' 8.8541878128e−12 '
-  x = to_num( txt , x )
-end program example_string_to_number
+{!example/strings/example_string_to_number.f90!}
 ```
 
 ## `to_num_p` - conversion of a stream of values in a string to numbers
@@ -74,20 +65,7 @@ Return a scalar of numerical type (i.e., `integer` or `real`).
 ### Example
 
 ```fortran
-program example_to_num_p
-    use stdlib_kinds, only: dp
-    use stdlib_str2num, only: to_num_p
-    character(:), allocatable, target :: chain
-    character(len=:), pointer :: cptr
-    real(dp) :: r(6)
-    integer :: i 
-
-    chain = " 1.234   1.E1 1e0     0.1234E0  12.21e+001 -34.5E1"
-    cptr => chain
-    do i = 1, 6
-        r(i) = to_num_p( cptr , r(i) ) !> the cptr pointer is shifted within the function
-    end do
-end program example_to_num_p
+{!example/strings/example_stream_of_strings_to_numbers.f90!}
 ```
 
 ## Note

@@ -1,4 +1,4 @@
-program example_str2num
+program example_stream_of_strings_to_numbers
     use stdlib_kinds, only: dp
     use stdlib_str2num, only: to_num_p
     character(:), allocatable, target :: chain
@@ -14,9 +14,9 @@ program example_str2num
         r(i) = to_num_p( cptr , r(i) ) !> the pointer is shifted within the function
     end do
     read(chain,*) p
-    print *, "Reading with to_num"
+    print *, "Reading with to_num_p"
     print *, r
     print *, "Reading with formatted read"
     print *, p
 
-end program
+end program example_stream_of_strings_to_numbers
