@@ -9,7 +9,8 @@ destdir="${DESTDIR:-stdlib-fpm}"
 fypp="${FYPP:-$(which fypp)}"
 
 # Arguments for the fypp preprocessor
-fyflags="${FYFLAGS:--DMAXRANK=8}"
+maxrank=4
+fyflags="${FYFLAGS:--DMAXRANK=$maxrank}"
 
 # Number of parallel jobs for preprocessing
 if [ $(uname) = "Darwin" ]; then
@@ -33,6 +34,10 @@ prune=(
   "$destdir/src/common.f90"
   "$destdir/src/f18estop.f90"
 )
+
+if [ ${maxrank} -lt 8 ]; then
+  prune+=("$destdir/test/test_mean_f03.f90")
+fi
 
 major=$(cut -d. -f1 VERSION)
 minor=$(cut -d. -f2 VERSION)
