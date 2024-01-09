@@ -1,0 +1,244 @@
+#:include "common.fypp"
+#:set KINDS_TYPES = REAL_KINDS_TYPES
+!> The `stdlib_sparse_kinds` module provides derived type definitions for different sparse matrices
+!>
+!> This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
+module stdlib_sparse_kinds
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    implicit none
+    
+    private
+  
+    ! -- Global parameters
+    enum, bind(C)
+        enumerator :: k_NOSYMMETRY !! Full Sparse matrix (no symmetry considerations)
+        enumerator :: k_SYMTRIINF  !! Symmetric Sparse matrix with triangular inferior storage
+        enumerator :: k_SYMTRISUP  !! Symmetric Sparse matrix with triangular supperior storage
+    end enum
+    public :: k_NOSYMMETRY, k_SYMTRIINF, k_SYMTRISUP
+    ! -- Classes
+    type, public, abstract :: sparse_t
+      integer :: nrows = 0 !! number of rows
+      integer :: ncols = 0 !! number of columns
+      integer :: nnz   = 0 !! number of non-zero values
+      integer :: sym   = k_NOSYMMETRY !! assumed storage symmetry
+      integer :: base  = 1 !! index base = 0 for (C) or 1 (Fortran)
+    end type
+
+    !! COO: COOrdinates compresed format
+    type, public, extends(sparse_t) :: COO_t
+      logical               :: isOrdered = .false. !! wether the matrix is ordered or not
+      integer, allocatable  :: index(:,:) !! Matrix coordinates index(2,nnz)
+    contains
+      procedure :: malloc => malloc_coo
+    end type
+
+    #:for k1, t1 in (KINDS_TYPES)
+    type, public, extends(COO_t) :: COO_${k1}$
+        ${t1}$, allocatable :: data(:) !! single precision values
+    end type
+    #:endfor
+
+    !! CSR: Compressed sparse row or Yale format
+    type, extends(sparse_t) :: CSR_t  
+      integer, allocatable  :: col(:)    !! matrix column pointer
+      integer, allocatable  :: rowptr(:) !! matrix row pointer
+    contains
+      procedure :: malloc => malloc_csr
+    end type
+  
+    #:for k1, t1 in (KINDS_TYPES)
+    type, public, extends(CSR_t) :: CSR_${k1}$
+        ${t1}$, allocatable :: data(:) !! single precision values
+    end type
+    #:endfor
+
+    !! CSC: Compressed sparse column
+    type, extends(sparse_t) :: CSC_t  
+      integer, allocatable  :: colptr(:) !! matrix column pointer
+      integer, allocatable  :: row(:)    !! matrix row pointer
+    contains
+      procedure :: malloc => malloc_csc
+    end type
+  
+    #:for k1, t1 in (KINDS_TYPES)
+    type, public, extends(CSC_t) :: CSC_${k1}$
+        ${t1}$, allocatable :: data(:) !! single precision values
+    end type
+    #:endfor
+  
+    !! Compressed ELLPACK
+    type, extends(sparse_t) :: ELL_t 
+      integer               :: K = 0 !! maximum number of nonzeros per row
+      integer, allocatable  :: index(:,:) !! column indices
+    contains
+      procedure :: malloc => malloc_ell
+    end type
+  
+    #:for k1, t1 in (KINDS_TYPES)
+    type, public, extends(ELL_t) :: ELL_${k1}$
+        ${t1}$, allocatable :: data(:,:) !! single precision values
+    end type
+    #:endfor
+
+contains
+
+    subroutine malloc_coo(self,num_rows,num_cols,nnz)
+        class(COO_t) :: self
+        integer, intent(in) :: num_rows
+        integer, intent(in) :: num_cols
+        integer, intent(in) :: nnz
+
+        integer,  allocatable :: temp_idx(:,:)
+        !-----------------------------------------------------
+
+        self%nrows = num_rows
+        self%ncols = num_cols
+        self%nnz   = nnz
+
+        if(.not.allocated(self%index)) then
+            allocate(temp_idx(2,nnz) , source = 0 )
+        else
+            allocate(temp_idx(2,nnz) , source = self%index )
+        end if
+        call move_alloc(from=temp_idx,to=self%index)
+
+        select type(self)
+            #:for k1, t1 in (KINDS_TYPES)
+            type is(COO_${k1}$)
+                block
+                ${t1}$, allocatable :: temp_data_${k1}$(:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_${k1}$(nnz) , source = 0._${k1}$ )
+                else
+                    allocate(temp_data_${k1}$(nnz) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_${k1}$,to=self%data)
+                end block
+            #:endfor
+        end select
+    end subroutine
+
+    subroutine malloc_csr(self,num_rows,num_cols,nnz)
+        class(CSR_t) :: self
+        integer, intent(in) :: num_rows
+        integer, intent(in) :: num_cols
+        integer, intent(in) :: nnz
+
+        integer,  allocatable :: temp_idx(:)
+        !-----------------------------------------------------
+
+        self%nrows = num_rows
+        self%ncols = num_cols
+        self%nnz   = nnz
+
+        if(.not.allocated(self%col)) then
+            allocate(temp_idx(nnz) , source = 0 )
+        else
+            allocate(temp_idx(nnz) , source = self%col )
+        end if
+        call move_alloc(from=temp_idx,to=self%col)
+
+        if(.not.allocated(self%rowptr)) then
+            allocate(temp_idx(num_rows+1) , source = 0 )
+        else
+            allocate(temp_idx(num_rows+1) , source = self%rowptr )
+        end if
+        call move_alloc(from=temp_idx,to=self%rowptr)
+
+        select type(self)
+            #:for k1, t1 in (KINDS_TYPES)
+            type is(CSR_${k1}$)
+                block
+                ${t1}$, allocatable :: temp_data_${k1}$(:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_${k1}$(nnz) , source = 0._${k1}$ )
+                else
+                    allocate(temp_data_${k1}$(nnz) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_${k1}$,to=self%data)
+                end block
+            #:endfor
+        end select
+    end subroutine
+
+    subroutine malloc_csc(self,num_rows,num_cols,nnz)
+        class(CSC_t) :: self
+        integer, intent(in) :: num_rows
+        integer, intent(in) :: num_cols
+        integer, intent(in) :: nnz
+
+        integer,  allocatable :: temp_idx(:)
+        !-----------------------------------------------------
+
+        self%nrows = num_rows
+        self%ncols = num_cols
+        self%nnz   = nnz
+
+        if(.not.allocated(self%row)) then
+            allocate(temp_idx(nnz) , source = 0 )
+        else
+            allocate(temp_idx(nnz) , source = self%row )
+        end if
+        call move_alloc(from=temp_idx,to=self%row)
+
+        if(.not.allocated(self%colptr)) then
+            allocate(temp_idx(num_cols+1) , source = 0 )
+        else
+            allocate(temp_idx(num_cols+1) , source = self%colptr )
+        end if
+        call move_alloc(from=temp_idx,to=self%colptr)
+
+        select type(self)
+            #:for k1, t1 in (KINDS_TYPES)
+            type is(CSC_${k1}$)
+                block
+                ${t1}$, allocatable :: temp_data_${k1}$(:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_${k1}$(nnz) , source = 0._${k1}$ )
+                else
+                    allocate(temp_data_${k1}$(nnz) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_${k1}$,to=self%data)
+                end block
+            #:endfor
+        end select
+    end subroutine
+
+    subroutine malloc_ell(self,num_rows,num_cols,num_nz_rows)
+        class(ELL_t) :: self
+        integer, intent(in) :: num_rows    !! number of rows
+        integer, intent(in) :: num_cols    !! number of columns
+        integer, intent(in) :: num_nz_rows !! number of non zeros per row
+
+        integer,  allocatable :: temp_idx(:,:)
+        !-----------------------------------------------------
+
+        self%nrows = num_rows
+        self%ncols = num_cols
+        self%K     = num_nz_rows
+
+        if(.not.allocated(self%index)) then
+            allocate(temp_idx(num_rows,num_nz_rows) , source = 0 )
+        else
+            allocate(temp_idx(num_rows,num_nz_rows) , source = self%index )
+        end if
+        call move_alloc(from=temp_idx,to=self%index)
+
+        select type(self)
+            #:for k1, t1 in (KINDS_TYPES)
+            type is(ELL_${k1}$)
+                block
+                ${t1}$, allocatable :: temp_data_${k1}$(:,:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_${k1}$(num_rows,num_nz_rows) , source = 0._${k1}$ )
+                else
+                    allocate(temp_data_${k1}$(num_rows,num_nz_rows) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_${k1}$,to=self%data)
+                end block
+            #:endfor
+        end select
+    end subroutine
+    
+end module stdlib_sparse_kinds

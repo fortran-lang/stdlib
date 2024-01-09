@@ -1,0 +1,88 @@
+#:include "common.fypp"
+#:set KINDS_TYPES = REAL_KINDS_TYPES
+module test_sparse_matvec
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
+    use stdlib_sparse
+
+    implicit none
+
+contains
+
+
+    !> Collect all exported unit tests
+    subroutine collect_suite(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest("coo", test_coo) &
+            ]
+
+    end subroutine collect_suite
+
+    subroutine test_coo(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k1, t1 in (KINDS_TYPES)
+        block
+            ${t1}$, allocatable :: dense(:,:)
+            type(COO_${k1}$) :: COO
+            ${t1}$, allocatable :: vec_x(:)
+            ${t1}$, allocatable :: vec_y1(:), vec_y2(:)
+
+            allocate( dense(4,5) , source = &
+                reshape([9._${k1}$,4._${k1}$, 0._${k1}$,4._${k1}$, &
+                         0._${k1}$,7._${k1}$, 8._${k1}$,0._${k1}$, &
+                         0._${k1}$,0._${k1}$,-1._${k1}$,5._${k1}$, &
+                         0._${k1}$,0._${k1}$, 8._${k1}$,6._${k1}$, &
+                        -3._${k1}$,0._${k1}$, 0._${k1}$,0._${k1}$],[4,5]) )
+            
+            call dense2coo(dense , COO)
+            
+            allocate( vec_x(5)  , source = 1._${k1}$ )
+            allocate( vec_y1(4) , source = 0._${k1}$ )
+            allocate( vec_y2(4) , source = 0._${k1}$ )
+
+            vec_y1 = matmul( dense, vec_x )
+            call matvec( vec_y2 , COO , vec_x )
+            
+            call check(error, all(vec_y1 == [6._${k1}$,11._${k1}$,15._${k1}$,15._${k1}$]) )
+            if (allocated(error)) return
+
+            call check(error, all(vec_y1 == vec_y2) )
+            if (allocated(error)) return
+        end block
+        #:endfor
+        
+    end subroutine
+
+end module
+
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_sparse_matvec, only : collect_suite
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("sparse", collect_suite) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program

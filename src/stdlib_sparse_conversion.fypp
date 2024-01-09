@@ -1,0 +1,141 @@
+#:include "common.fypp"
+#:set KINDS_TYPES = REAL_KINDS_TYPES
+!> The `stdlib_sparse_conversion` module provides sparse to sparse matrix conversion utilities.
+!>
+!> This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
+module sparse_stdlib_conversion
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    use stdlib_sparse_kinds
+    implicit none
+    private
+
+    public :: dense2coo, coo2dense, coo2csr, csr2coo
+    interface dense2coo
+        #:for k1, t1 in (KINDS_TYPES)
+        module procedure dense2coo_${k1}$
+        #:endfor
+    end interface
+
+    interface coo2dense
+        #:for k1, t1 in (KINDS_TYPES)
+        module procedure coo2dense_${k1}$
+        #:endfor
+    end interface
+
+    interface coo2csr
+        #:for k1, t1 in (KINDS_TYPES)
+        module procedure coo2csr_${k1}$
+        #:endfor
+    end interface
+
+    interface csr2coo
+        #:for k1, t1 in (KINDS_TYPES)
+        module procedure csr2coo_${k1}$
+        #:endfor
+    end interface
+
+contains
+
+    #:for k1, t1 in (KINDS_TYPES)
+    subroutine dense2coo_${k1}$(dense,COO)
+        ${t1}$, intent(in) :: dense(:,:)
+        type(COO_${k1}$), intent(inout) :: COO
+        integer :: num_rows, num_cols, nnz
+        integer :: i, j, idx
+
+        num_rows = size(dense,dim=1)
+        num_cols = size(dense,dim=2)
+        nnz      = count( abs(dense) > tiny(1._${k1}$) )
+
+        call COO%malloc(num_rows,num_cols,nnz)
+
+        idx = 1
+        do i = 1, num_rows
+            do j = 1, num_cols
+                if(abs(dense(i,j)) < tiny(1._${k1}$)) cycle
+                COO%index(1,idx) = i
+                COO%index(2,idx) = j
+                COO%data(idx) = dense(i,j)
+                idx = idx + 1
+            end do
+        end do
+        COO%isOrdered = .true.
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1 in (KINDS_TYPES)
+    subroutine coo2dense_${k1}$(COO,dense)
+        type(COO_${k1}$), intent(in) :: COO
+        ${t1}$, allocatable, intent(inout) :: dense(:,:)
+        integer :: idx
+
+        if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%nrows),source=0._${k1}$)
+        do concurrent(idx = 1:COO%nnz)
+            dense( COO%index(1,idx) , COO%index(2,idx) ) = COO%data(idx)
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1 in (KINDS_TYPES)
+    subroutine coo2csr_${k1}$(COO,CSR)
+        !! coo2csr: This function enables transfering data from a COO matrix to a CSR matrix
+        !! under the hypothesis that the COO is already ordered.
+        type(COO_${k1}$), intent(in)    :: COO
+        type(CSR_${k1}$), intent(inout) :: CSR
+        integer :: i
+
+        CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
+        CSR%base = COO%base; CSR%sym = COO%sym
+
+        if( allocated(CSR%col) ) then
+            CSR%col(1:COO%nnz)  = COO%index(2,1:COO%nnz)
+            CSR%rowptr(1:CSR%nrows) = 0
+            CSR%data(1:CSR%nnz) = COO%data(1:COO%nnz)
+        else 
+            allocate( CSR%col(CSR%nnz)  , source = COO%index(2,1:COO%nnz) )
+            allocate( CSR%rowptr(CSR%nrows+1) , source = 0 )
+            allocate( CSR%data(CSR%nnz) , source = COO%data(1:COO%nnz) )
+        end if
+
+        CSR%rowptr(1) = 1
+        do i = 1, COO%nnz
+            CSR%rowptr( COO%index(1,i)+1 ) = CSR%rowptr( COO%index(1,i)+1 ) + 1
+        end do
+        do i = 1, CSR%nrows
+            CSR%rowptr( i+1 ) = CSR%rowptr( i+1 ) + CSR%rowptr( i )
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1 in (KINDS_TYPES)
+    subroutine csr2coo_${k1}$(CSR,COO)
+        !! csr2coo: This function enables transfering data from a CSR matrix to a COO matrix
+        !! under the hypothesis that the CSR is already ordered.
+        type(CSR_${k1}$), intent(in)    :: CSR
+        type(COO_${k1}$), intent(inout) :: COO
+        integer :: i, j
+
+        COO%nnz = CSR%nnz; COO%nrows = CSR%nrows; COO%ncols = CSR%ncols
+        COO%base = CSR%base; COO%sym = CSR%sym
+
+        if( .not.allocated(COO%data) ) then
+            allocate( COO%data(CSR%nnz) , source = CSR%data(1:CSR%nnz) )
+        else 
+            COO%data(1:CSR%nnz) = CSR%data(1:CSR%nnz)
+        end if
+
+        if( .not.allocated(COO%index) ) allocate( COO%index(2,CSR%nnz) )
+        
+        do i = 1, CSR%nrows
+            do j = CSR%rowptr(i), CSR%rowptr(i+1)-1
+                COO%index(1:2,j) = [i,CSR%col(j)]
+            end do
+        end do
+    end subroutine
+
+    #:endfor
+    
+end module sparse_stdlib_conversion

@@ -1,0 +1,193 @@
+#:include "common.fypp"
+#:set RANKS = range(1, 2+1)
+#:set KINDS_TYPES = REAL_KINDS_TYPES
+#! define ranks without parentheses
+#:def rksfx2(rank)
+#{if rank > 0}#${":," + ":," * (rank - 1)}$#{endif}#
+#:enddef
+!> The `stdlib_sparse_matvec` module provides matrix-vector product kernels.
+!>
+!> This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
+module stdlib_sparse_matvec
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    use stdlib_sparse_kinds
+    implicit none
+    private
+
+    public :: matvec
+    interface matvec ! call matvec(vec_y,matrix,vec_x) => Y = M * X
+        #:for k1, t1 in (KINDS_TYPES)
+        #:for rank in RANKS
+        module procedure matvec_coo_${rank}$d_${k1}$
+        module procedure matvec_csr_${rank}$d_${k1}$
+        module procedure matvec_csc_${rank}$d_${k1}$
+        module procedure matvec_ell_${rank}$d_${k1}$
+
+        #:endfor
+        #:endfor
+    end interface
+
+contains
+
+    !! matvec_coo
+    #:for k1, t1 in (KINDS_TYPES)
+    #:for rank in RANKS
+    subroutine matvec_coo_${rank}$d_${k1}$(vec_y,matrix,vec_x)
+        type(COO_${k1}$), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        integer :: k, ik, jk
+
+        associate( data => matrix%data, index => matrix%index, sym => matrix%sym, nnz => matrix%nnz )
+            if( sym == k_NOSYMMETRY) then
+                do concurrent (k = 1:nnz)
+                    ik = index(1,k)
+                    jk = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + data(k) * vec_x(${rksfx2(rank-1)}$jk)
+                end do
+
+            else 
+                do concurrent (k = 1:nnz)
+                    ik = index(1,k)
+                    jk = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + data(k) * vec_x(${rksfx2(rank-1)}$jk)
+                    if( ik==jk ) cycle
+                    vec_y(${rksfx2(rank-1)}$jk) = vec_y(${rksfx2(rank-1)}$jk) + data(k) * vec_x(${rksfx2(rank-1)}$ik)
+                end do
+
+            end if
+        end associate
+    end subroutine
+
+    #:endfor
+    #:endfor
+
+    !! matvec_csr
+    #:for k1, t1 in (KINDS_TYPES)
+    #:for rank in RANKS
+    subroutine matvec_csr_${rank}$d_${k1}$(vec_y,matrix,vec_x)
+        type(CSR_${k1}$), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        integer :: i, j
+        #:if rank == 1
+        ${t1}$ :: aux
+        #:else
+        ${t1}$ :: aux(size(vec_x,dim=1))
+        #:endif
+
+        associate( data => matrix%data, col => matrix%col, rowptr => matrix%rowptr, &
+            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, sym => matrix%sym )
+            if( sym == k_NOSYMMETRY) then
+                do concurrent(i=1:nrows)
+                    do j = rowptr(i), rowptr(i+1)-1
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
+                    end do
+                end do
+
+            else if( sym == k_SYMTRIINF )then
+                do i = 1 , nrows
+                    aux  = 0._${k1}$
+                    do j = rowptr(i), rowptr(i+1)-2
+                        aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * vec_x(${rksfx2(rank-1)}$i)
+                    end do
+                    aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$i)
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + aux
+                end do
+
+            else if( sym == k_SYMTRISUP )then
+                do i = 1 , nrows
+                    aux  = vec_x(${rksfx2(rank-1)}$i) * data(rowptr(i))
+                    do j = rowptr(i)+1, rowptr(i+1)-1
+                        aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * vec_x(${rksfx2(rank-1)}$i)
+                    end do
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + aux
+                end do
+
+            end if
+        end associate
+    end subroutine
+    
+    #:endfor
+    #:endfor
+
+    !! matvec_csc
+    #:for k1, t1 in (KINDS_TYPES)
+    #:for rank in RANKS
+    subroutine matvec_csc_${rank}$d_${k1}$(vec_y,matrix,vec_x)
+        type(CSC_${k1}$), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        integer :: i, j
+        #:if rank == 1
+        ${t1}$ :: aux
+        #:else
+        ${t1}$ :: aux(size(vec_x,dim=1))
+        #:endif
+
+        associate( data => matrix%data, colptr => matrix%colptr, row => matrix%row, &
+            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, sym => matrix%sym )
+            if( sym == k_NOSYMMETRY) then
+                do concurrent(j=1:ncols)
+                    do i = colptr(j), colptr(j+1)-1
+                        vec_y(${rksfx2(rank-1)}$row(i)) = vec_y(${rksfx2(rank-1)}$row(i)) + data(i) * vec_x(${rksfx2(rank-1)}$j)
+                    end do
+                end do
+
+            else if( sym == k_SYMTRIINF )then
+                ! NOT TESTED
+                do j = 1 , ncols
+                    aux  = vec_x(${rksfx2(rank-1)}$j) * data(colptr(j))
+                    do i = colptr(j)+1, colptr(j+1)-1
+                        aux = aux + data(i) * vec_x(${rksfx2(rank-1)}$row(i))
+                        vec_y(${rksfx2(rank-1)}$row(i)) = vec_y(${rksfx2(rank-1)}$row(i)) + data(i) * vec_x(${rksfx2(rank-1)}$j)
+                    end do
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + aux
+                end do
+
+            else if( sym == k_SYMTRISUP )then
+                ! NOT TESTED
+                do j = 1 , ncols
+                    aux  = 0._${k1}$
+                    do i = colptr(j), colptr(i+1)-2
+                        aux = aux + data(i) * vec_x(${rksfx2(rank-1)}$j)
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + data(i) * vec_x(${rksfx2(rank-1)}$row(i))
+                    end do
+                    aux = aux + data(colptr(j)) * vec_x(${rksfx2(rank-1)}$j)
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + aux
+                end do
+                
+            end if
+        end associate
+    end subroutine
+    
+    #:endfor
+    #:endfor
+
+    !! matvec_ell
+    #:for k1, t1 in (KINDS_TYPES)
+    #:for rank in RANKS
+    subroutine matvec_ell_${rank}$d_${k1}$(vec_y,matrix,vec_x)
+        type(ELL_${k1}$), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        integer :: i, j, k
+
+        associate( data => matrix%data, index => matrix%index, MNZ_P_ROW => matrix%K, &
+            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, sym => matrix%sym )
+            if( sym == k_NOSYMMETRY) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + data(i,k) * vec_x(${rksfx2(rank-1)}$j)
+                end do
+                
+            end if
+        end associate
+    end subroutine
+    
+    #:endfor
+    #:endfor
+    
+end module stdlib_sparse_matvec
