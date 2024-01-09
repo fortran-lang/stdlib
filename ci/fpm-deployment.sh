@@ -34,10 +34,6 @@ prune=(
   "$destdir/src/f18estop.f90"
 )
 
-if [ ${maxrank} -lt 8 ]; then
-  prune+=("$destdir/test/test_mean_f03.f90")
-fi
-
 major=$(cut -d. -f1 VERSION)
 minor=$(cut -d. -f2 VERSION)
 patch=$(cut -d. -f3 VERSION)
