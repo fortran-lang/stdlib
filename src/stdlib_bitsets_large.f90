@@ -276,19 +276,13 @@ contains
         integer(bits_kind)              ::  bit_count
         class(bitset_large), intent(in) :: self
 
-        integer(bits_kind) :: block_, pos
+        integer(bits_kind) :: nblocks, pos
 
-        bit_count = 0
-        do block_ = 1_bits_kind, size(self % blocks, kind=bits_kind) - 1
-            do pos = 0, block_size-1
-                if ( btest( self % blocks(block_), pos ) ) &
-                    bit_count = bit_count + 1
-            end do
+        nblocks = size( self % blocks, kind=bits_kind )
+        bit_count = sum( popcnt( self % blocks(1:nblocks-1) ) )
 
-        end do
-
-        do pos = 0_bits_kind, self % num_bits - (block_-1)*block_size - 1
-            if ( btest( self % blocks(block_), pos ) ) bit_count = bit_count + 1
+        do pos = 0_bits_kind, self % num_bits - (nblocks-1)*block_size - 1
+            if ( btest( self % blocks(nblocks), pos ) ) bit_count = bit_count + 1
         end do
 
     end function bit_count_large
