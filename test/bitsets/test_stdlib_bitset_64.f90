@@ -231,6 +231,15 @@ contains
 
         type(bitset_64) :: set4, set5
 
+        !The following block triggers an issue in gfortran 11 and 12
+        block
+        type(bitset_64) :: set6
+        call check(error, set6 % bits(), 0, &
+            'set6 % bits() returned non-zero value '//&
+            'even though set6 was not initialized.')
+        if (allocated(error)) return
+        end block
+
         set5 = log1
         call check(error, set5%bits(), 64, &
             'initialization with logical(int8) failed to set the right size.')

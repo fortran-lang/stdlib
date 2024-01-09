@@ -1,4 +1,4 @@
-submodule (stdlib_error) estop
+submodule (stdlib_error) f18estop
 
 implicit none
 
@@ -26,4 +26,4 @@ else
 endif
 end procedure
 
-end submodule estop
+end submodule f18estop

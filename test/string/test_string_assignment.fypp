@@ -1,4 +1,4 @@
-#: include "common.fypp"
+#:include "common.fypp"
 ! SPDX-Identifier: MIT
 module test_string_assignment
     use testdrive, only : new_unittest, unittest_type, error_type, check
