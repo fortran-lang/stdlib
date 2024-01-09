@@ -4,7 +4,7 @@
 #:set NRANK = 4
 
 module test_stats_meanf03
-    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_stats, only: mean
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp, xdp, qp
     use, intrinsic :: ieee_arithmetic, only : ieee_is_nan
@@ -65,25 +65,36 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         call check(error, mean(d8_${k1}$), sum(real(d8_${k1}$, dp))/real(size(d8_${k1}$), dp)&
                     , 'mean(d8_${k1}$): uncorrect answer'&
                     , thr = dptol)
         if (allocated(error)) return
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_all_optmask_${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         call check(error, ieee_is_nan(mean(d8_${k1}$, .false.))&
                     , 'mean(d8_${k1}$, .false.): uncorrect answer')
         if (allocated(error)) return
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         #:for dim in range(1, 9)
         call check(error&
                     , sum(abs(mean(d8_${k1}$, ${dim}$) -&
@@ -92,12 +103,17 @@ contains
                     )
         if (allocated(error)) return
         #:endfor
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_optmask_${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         call check(error, ieee_is_nan(mean(d1_${k1}$, 1, .false.))&
                     , 'mean(d1_${k1}$, 1, .false.): uncorrect answer'&
                     )
@@ -108,23 +124,33 @@ contains
                     , 'mean(d8_${k1}$, ${dim}$, .false.): uncorrect answer')
         if (allocated(error)) return
         #:endfor
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_mask_all_${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         call check(error, mean(d8_${k1}$, d8_${k1}$ > 0)&
                     , sum(real(d8_${k1}$, dp), d8_${k1}$ > 0)/real(count(d8_${k1}$ > 0), dp)&
                     , 'mean(d8_${k1}$, d8_${k1}$ > 0): uncorrect answer'&
                     , thr = dptol)
         if (allocated(error)) return
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_mask_${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         #:for dim in range(1, 9)
         call check(error&
                     , sum(abs(mean(d8_${k1}$, ${dim}$, d8_${k1}$ > 0) -&
@@ -133,6 +159,10 @@ contains
                     )
         if (allocated(error)) return
         #:endfor
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
     #:endfor
 
@@ -141,25 +171,36 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         call check(error, mean(d8_${k1}$), sum(d8_${k1}$)/real(size(d8_${k1}$), ${k1}$)&
                     , 'mean(d8_${k1}$): uncorrect answer'&
                     , thr = ${k1}$tol)
         if (allocated(error)) return
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_all_optmask_${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         call check(error, ieee_is_nan(mean(d8_${k1}$, .false.))&
                     , 'mean(d8_${k1}$, .false.): uncorrect answer')
         if (allocated(error)) return
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         #:for dim in range(1, 9)
         call check(error&
                     , sum(abs(mean(d8_${k1}$, ${dim}$) -&
@@ -168,34 +209,49 @@ contains
                     )
         if (allocated(error)) return
         #:endfor
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_optmask_${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         #:for dim in range(1, 9)
         call check(error, any(ieee_is_nan(mean(d8_${k1}$, ${dim}$, .false.)))&
                     , 'mean(d8_${k1}$, ${dim}$, .false.): uncorrect answer')
         if (allocated(error)) return
         #:endfor
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_mask_all_${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         call check(error, mean(d8_${k1}$, d8_${k1}$ > 0)&
                     , sum(d8_${k1}$, d8_${k1}$ > 0)/real(count(d8_${k1}$ > 0), ${k1}$)&
                     , 'mean(d8_${k1}$, d8_${k1}$ > 0): uncorrect answer'&
                     , thr = ${k1}$tol)
         if (allocated(error)) return
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_mask_${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         #:for dim in range(1, 9)
         call check(error&
                     , sum(abs(mean(d8_${k1}$, ${dim}$, d8_${k1}$ > 0) -&
@@ -204,6 +260,10 @@ contains
                     )
         if (allocated(error)) return
         #:endfor
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
     #:endfor
 
@@ -212,25 +272,36 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         call check(error, mean(d8_c${k1}$), sum(d8_c${k1}$)/real(size(d8_c${k1}$), ${k1}$)&
                     , 'mean(d8_c${k1}$): uncorrect answer'&
                     , thr = ${k1}$tol)
         if (allocated(error)) return
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_all_optmask_c${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         call check(error, ieee_is_nan(real(mean(d8_c${k1}$, .false.)))&
                     , 'mean(d8_c${k1}$, .false.): uncorrect answer')
         if (allocated(error)) return
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_c${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         #:for dim in range(1, 9)
         call check(error&
                     , sum(abs(mean(d8_c${k1}$, ${dim}$) -&
@@ -239,34 +310,49 @@ contains
                     )
         if (allocated(error)) return
         #:endfor
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_optmask_c${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         #:for dim in range(1, 9)
         call check(error, any(ieee_is_nan(real(mean(d8_c${k1}$, ${dim}$, .false.))))&
                     , 'mean(d8_c${k1}$, ${dim}$, .false.): uncorrect answer')
         if (allocated(error)) return
         #:endfor
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_mask_all_c${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         call check(error, mean(d8_c${k1}$, d8_c${k1}$%re > 0)&
                     , sum(d8_c${k1}$, d8_c${k1}$%re > 0)/real(count(d8_c${k1}$%re > 0), ${k1}$)&
                     , 'mean(d8_c${k1}$, d8_c${k1}$%re > 0): uncorrect answer'&
                     , thr = ${k1}$tol)
         if (allocated(error)) return
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
 
     subroutine test_stats_meanf03_mask_c${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+        #:if MAXRANK > 7
         #:for dim in range(1, 9)
         call check(error&
                     , sum(abs(mean(d8_c${k1}$, ${dim}$, d8_c${k1}$%re > 0) -&
@@ -275,6 +361,10 @@ contains
                     )
         if (allocated(error)) return
         #:endfor
+
+        #:else
+        call skip_test(error, "Rank > 7 is not supported")
+        #:endif
     end subroutine
     #:endfor
 
