@@ -35,10 +35,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Python 3.x
-      uses: actions/setup-python@v1 # Use pip to install latest CMake, & FORD/Jin2For, etc.
+      uses: actions/setup-python@v5 # Use pip to install latest CMake, & FORD/Jin2For, etc.
       with:
         python-version: 3.x
 
@@ -92,12 +92,78 @@ jobs:
       if: ${{ contains(matrix.build, 'cmake') }}
       run: cmake --install ${{ env.BUILD_DIR }}
 
-  intel-build:
+  intel-build-llvm:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
+        fc: [ifx]
+        cc: [icx]
+        cxx: [icpx]
+    env:
+      FC: ${{ matrix.fc }}
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.x
+
+    - name: Add Intel repository (Linux)
+      if: contains(matrix.os, 'ubuntu')
+      run: |
+        wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB \ | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
+        echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+        sudo apt-get update
+
+    - name: Install Intel oneAPI compiler (Linux)
+      if: contains(matrix.os, 'ubuntu')
+      run: |
+        sudo apt-get install intel-oneapi-compiler-fortran
+        sudo apt-get install intel-oneapi-compiler-dpcpp-cpp
+
+    - name: Setup Intel oneAPI environment
+      run: |
+        source /opt/intel/oneapi/setvars.sh
+        printenv >> $GITHUB_ENV
+
+    - name: Install fypp
+      run: pip install --upgrade fypp
+
+    - name: Configure with CMake
+      run: >-
+         cmake -Wdev
+         -DCMAKE_BUILD_TYPE=Release
+         -DCMAKE_MAXIMUM_RANK:String=4
+         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+         -S . -B build
+
+    - name: Build and compile
+      run: cmake --build build
+
+    - name: catch build fail
+      run: cmake --build build --verbose --parallel 1
+      if: failure()
+
+    - name: test
+      run: ctest --parallel --output-on-failure --no-tests=error
+      working-directory: build
+
+    - name: Install project
+      run: cmake --install build
+
+  intel-build-classic:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
         fc: [ifort]
         cc: [icc]
         cxx: [icpc]
@@ -111,10 +177,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Python 3.x
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v5
       with:
         python-version: 3.x
 
@@ -131,21 +197,6 @@ jobs:
       with:
         path: /opt/intel/oneapi
         key: install-${{ env.MACOS_HPCKIT_URL }}-${{ env.MACOS_FORTRAN_COMPONENTS }}
-
-    - name: Add Intel repository (Linux)
-      if: contains(matrix.os, 'ubuntu')
-      run: |
-        wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-        sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-        rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-        echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
-        sudo apt-get update
-
-    - name: Install Intel oneAPI compiler (Linux)
-      if: contains(matrix.os, 'ubuntu')
-      run: |
-        sudo apt-get install intel-oneapi-compiler-fortran
-        sudo apt-get install intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
 
     - name: Install Intel oneAPI compiler (OSX)
       if: contains(matrix.os, 'macos') && steps.cache-install.outputs.cache-hit != 'true'
