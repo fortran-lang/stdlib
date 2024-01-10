@@ -3,7 +3,6 @@
 
 extern "C" {
   #include "nmhash.h"
-  #include "nmhash_scalar.h"
   #include "pengyhash.h"
   #include "waterhash.h"
   int generate_all_c_hash();

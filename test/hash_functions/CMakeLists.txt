@@ -7,7 +7,7 @@ ADDTEST(hash_functions)
 target_sources(
   test_hash_functions
   PRIVATE
-  nmhash_scalar.c
+  nmhash.c
   pengyhash.c
   SpookyV2.cpp
   SpookyV2Test.cpp
