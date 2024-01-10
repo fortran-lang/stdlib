@@ -2,6 +2,7 @@ set(
   fppFiles
   "test_linalg.fypp"
   "test_linalg_matrix_property_checks.fypp"
+  "test_sparse_matvec.fypp"
 )
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 

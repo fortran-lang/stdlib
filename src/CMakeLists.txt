@@ -30,6 +30,9 @@ set(fppFiles
     stdlib_sorting_ord_sort.fypp
     stdlib_sorting_sort.fypp
     stdlib_sorting_sort_index.fypp
+    stdlib_sparse_conversion.fypp
+    stdlib_sparse_kinds.fypp
+    stdlib_sparse_matvec.fypp
     stdlib_specialfunctions_gamma.fypp
     stdlib_stats.fypp
     stdlib_stats_corr.fypp
@@ -78,6 +81,7 @@ set(SRC
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
     stdlib_system.F90
+    stdlib_sparse.f90
     stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90
     stdlib_quadrature_gauss.f90
