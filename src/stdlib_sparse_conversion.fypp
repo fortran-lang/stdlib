@@ -80,7 +80,7 @@ contains
 
     #:for k1, t1 in (KINDS_TYPES)
     subroutine coo2csr_${k1}$(COO,CSR)
-        !! coo2csr: This function enables transfering data from a COO matrix to a CSR matrix
+        !! coo2csr: This function enables transferring data from a COO matrix to a CSR matrix
         !! under the hypothesis that the COO is already ordered.
         type(COO_${k1}$), intent(in)    :: COO
         type(CSR_${k1}$), intent(inout) :: CSR
@@ -112,7 +112,7 @@ contains
 
     #:for k1, t1 in (KINDS_TYPES)
     subroutine csr2coo_${k1}$(CSR,COO)
-        !! csr2coo: This function enables transfering data from a CSR matrix to a COO matrix
+        !! csr2coo: This function enables transferring data from a CSR matrix to a COO matrix
         !! under the hypothesis that the CSR is already ordered.
         type(CSR_${k1}$), intent(in)    :: CSR
         type(COO_${k1}$), intent(inout) :: COO
