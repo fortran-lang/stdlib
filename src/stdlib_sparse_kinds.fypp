@@ -35,7 +35,10 @@ module stdlib_sparse_kinds
 
     #:for k1, t1 in (KINDS_TYPES)
     type, public, extends(COO_t) :: COO_${k1}$
-        ${t1}$, allocatable :: data(:) !! single precision values
+        ${t1}$, allocatable :: data(:) 
+    contains
+        procedure :: get => get_value_coo_${k1}$
+        procedure :: set => set_value_coo_${k1}$
     end type
     #:endfor
 
@@ -49,7 +52,10 @@ module stdlib_sparse_kinds
   
     #:for k1, t1 in (KINDS_TYPES)
     type, public, extends(CSR_t) :: CSR_${k1}$
-        ${t1}$, allocatable :: data(:) !! single precision values
+        ${t1}$, allocatable :: data(:) 
+    contains
+        procedure :: get => get_value_csr_${k1}$
+        procedure :: set => set_value_csr_${k1}$
     end type
     #:endfor
 
@@ -63,7 +69,10 @@ module stdlib_sparse_kinds
   
     #:for k1, t1 in (KINDS_TYPES)
     type, public, extends(CSC_t) :: CSC_${k1}$
-        ${t1}$, allocatable :: data(:) !! single precision values
+        ${t1}$, allocatable :: data(:) 
+    contains
+        procedure :: get => get_value_csc_${k1}$
+        procedure :: set => set_value_csc_${k1}$
     end type
     #:endfor
   
@@ -77,7 +86,10 @@ module stdlib_sparse_kinds
   
     #:for k1, t1 in (KINDS_TYPES)
     type, public, extends(ELL_t) :: ELL_${k1}$
-        ${t1}$, allocatable :: data(:,:) !! single precision values
+        ${t1}$, allocatable :: data(:,:) 
+    contains
+        procedure :: get => get_value_ell_${k1}$
+        procedure :: set => set_value_ell_${k1}$
     end type
     #:endfor
 
@@ -240,5 +252,133 @@ contains
             #:endfor
         end select
     end subroutine
+
+    !==================================================================
+    ! data accessors
+    !==================================================================
+
+    #:for k1, t1 in (KINDS_TYPES)
+    pure ${t1}$ function get_value_coo_${k1}$(self,ik,jk) result(y)
+        class(COO_${k1}$), intent(in) :: self
+        integer, intent(in) :: ik, jk
+        integer :: k
+        ! naive implementation
+        do k = 1,self%nnz
+            if( ik == self%index(1,k) .and. jk == self%index(2,k) ) then
+                y = self%data(k)
+                return
+            end if
+        end do
+        y = 0._${k1}$
+    end function
+
+    subroutine set_value_coo_${k1}$(self,ik,jk,val)
+        class(COO_${k1}$), intent(inout) :: self
+        integer, intent(in)  :: ik, jk
+        ${t1}$, intent(in) :: val
+        integer :: k
+        ! naive implementation
+        do k = 1,self%nnz
+            if( ik == self%index(1,k) .and. jk == self%index(2,k) ) then
+                self%data(k) = val
+                return
+            end if
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1 in (KINDS_TYPES)
+    pure ${t1}$ function get_value_csr_${k1}$(self,ik,jk) result(y)
+        class(CSR_${k1}$), intent(in) :: self
+        integer, intent(in) :: ik, jk
+        integer :: k
+        ! naive implementation
+        do k = self%rowptr(ik), self%rowptr(ik+1)-1
+            if( jk == self%col(k) ) then
+                y = self%data(k)
+                return
+            end if
+        end do
+        y = 0._${k1}$
+    end function
+
+    subroutine set_value_csr_${k1}$(self,ik,jk,val)
+        class(CSR_${k1}$), intent(inout) :: self
+        integer, intent(in)  :: ik, jk
+        ${t1}$, intent(in) :: val
+        integer :: k
+        ! naive implementation
+        do k = self%rowptr(ik), self%rowptr(ik+1)-1
+            if( jk == self%col(k) ) then
+                self%data(k) = val
+                return
+            end if
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1 in (KINDS_TYPES)
+    pure ${t1}$ function get_value_csc_${k1}$(self,ik,jk) result(y)
+        class(CSC_${k1}$), intent(in) :: self
+        integer, intent(in) :: ik, jk
+        integer :: k
+        ! naive implementation
+        do k = self%colptr(jk), self%colptr(jk+1)-1
+            if( ik == self%row(k) ) then
+                y = self%data(k)
+                return
+            end if
+        end do
+        y = 0._${k1}$
+    end function
+
+    subroutine set_value_csc_${k1}$(self,ik,jk,val)
+        class(CSC_${k1}$), intent(inout) :: self
+        integer, intent(in)  :: ik, jk
+        ${t1}$, intent(in) :: val
+        integer :: k
+        ! naive implementation
+        do k = self%colptr(jk), self%colptr(jk+1)-1
+            if( ik == self%row(k) ) then
+                self%data(k) = val
+                return
+            end if
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1 in (KINDS_TYPES)
+    pure ${t1}$ function get_value_ell_${k1}$(self,ik,jk) result(y)
+        class(ELL_${k1}$), intent(in) :: self
+        integer, intent(in) :: ik, jk
+        integer :: k
+        ! naive implementation
+        do k = 1 , self%K
+            if( jk == self%index(ik,k) ) then
+                y = self%data(ik,k)
+                return
+            end if
+        end do
+        y = 0._${k1}$
+    end function
+
+    subroutine set_value_ell_${k1}$(self,ik,jk,val)
+        class(ELL_${k1}$), intent(inout) :: self
+        integer, intent(in)  :: ik, jk
+        ${t1}$, intent(in) :: val
+        integer :: k
+        ! naive implementation
+        do k = 1 , self%K
+            if( jk == self%index(ik,k) ) then
+                self%data(ik,k) = val
+                return
+            end if
+        end do
+    end subroutine
+
+    #:endfor
     
 end module stdlib_sparse_kinds
