@@ -31,6 +31,7 @@ contains
             type(COO_${k1}$) :: COO
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y1(:), vec_y2(:)
+            ${t1}$ :: val, err
 
             allocate( dense(4,5) , source = &
                 reshape([9._${k1}$,4._${k1}$, 0._${k1}$,4._${k1}$, &
@@ -41,6 +42,18 @@ contains
             
             call dense2coo(dense , COO)
             
+            !> Test assigned values
+            err = 0._${k1}$
+            do j = 1, size(dense,dim=2)
+                do i = 1, size(dense,dim=1)
+                    call COO%get(val,i,j)
+                    err = err + abs( val - dense(i,j) )
+                end do
+            end do
+            call check(error, err <= epsilon(0._${k1}$) )
+            if (allocated(error)) return
+
+            !> Test matvec
             allocate( vec_x(5)  , source = 1._${k1}$ )
             allocate( vec_y1(4) , source = 0._${k1}$ )
             allocate( vec_y2(4) , source = 0._${k1}$ )
@@ -50,7 +63,7 @@ contains
             
             call check(error, all(vec_y1 == [6._${k1}$,11._${k1}$,15._${k1}$,15._${k1}$]) )
             if (allocated(error)) return
-
+            
             call check(error, all(vec_y1 == vec_y2) )
             if (allocated(error)) return
         end block

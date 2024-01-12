@@ -258,24 +258,25 @@ contains
     !==================================================================
 
     #:for k1, t1 in (KINDS_TYPES)
-    pure ${t1}$ function get_value_coo_${k1}$(self,ik,jk) result(y)
+    pure subroutine get_value_coo_${k1}$(self,val,ik,jk)
         class(COO_${k1}$), intent(in) :: self
+        ${t1}$, intent(out) :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
         do k = 1,self%nnz
             if( ik == self%index(1,k) .and. jk == self%index(2,k) ) then
-                y = self%data(k)
+                val = self%data(k)
                 return
             end if
         end do
-        y = 0._${k1}$
-    end function
+        val = 0._${k1}$
+    end subroutine
 
-    subroutine set_value_coo_${k1}$(self,ik,jk,val)
+    subroutine set_value_coo_${k1}$(self,val,ik,jk)
         class(COO_${k1}$), intent(inout) :: self
-        integer, intent(in)  :: ik, jk
         ${t1}$, intent(in) :: val
+        integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
         do k = 1,self%nnz
@@ -289,24 +290,25 @@ contains
     #:endfor
 
     #:for k1, t1 in (KINDS_TYPES)
-    pure ${t1}$ function get_value_csr_${k1}$(self,ik,jk) result(y)
+    pure subroutine get_value_csr_${k1}$(self,val,ik,jk)
         class(CSR_${k1}$), intent(in) :: self
+        ${t1}$, intent(out) :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
         do k = self%rowptr(ik), self%rowptr(ik+1)-1
             if( jk == self%col(k) ) then
-                y = self%data(k)
+                val = self%data(k)
                 return
             end if
         end do
-        y = 0._${k1}$
-    end function
+        val = 0._${k1}$
+    end subroutine
 
-    subroutine set_value_csr_${k1}$(self,ik,jk,val)
+    subroutine set_value_csr_${k1}$(self,val,ik,jk)
         class(CSR_${k1}$), intent(inout) :: self
-        integer, intent(in)  :: ik, jk
         ${t1}$, intent(in) :: val
+        integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
         do k = self%rowptr(ik), self%rowptr(ik+1)-1
@@ -320,24 +322,25 @@ contains
     #:endfor
 
     #:for k1, t1 in (KINDS_TYPES)
-    pure ${t1}$ function get_value_csc_${k1}$(self,ik,jk) result(y)
+    pure subroutine get_value_csc_${k1}$(self,val,ik,jk)
         class(CSC_${k1}$), intent(in) :: self
+        ${t1}$, intent(out) :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
         do k = self%colptr(jk), self%colptr(jk+1)-1
             if( ik == self%row(k) ) then
-                y = self%data(k)
+                val = self%data(k)
                 return
             end if
         end do
-        y = 0._${k1}$
-    end function
+        val = 0._${k1}$
+    end subroutine
 
-    subroutine set_value_csc_${k1}$(self,ik,jk,val)
+    subroutine set_value_csc_${k1}$(self,val,ik,jk)
         class(CSC_${k1}$), intent(inout) :: self
-        integer, intent(in)  :: ik, jk
         ${t1}$, intent(in) :: val
+        integer, intent(in)  :: ik, jk
         integer :: k
         ! naive implementation
         do k = self%colptr(jk), self%colptr(jk+1)-1
@@ -351,24 +354,25 @@ contains
     #:endfor
 
     #:for k1, t1 in (KINDS_TYPES)
-    pure ${t1}$ function get_value_ell_${k1}$(self,ik,jk) result(y)
+    pure subroutine get_value_ell_${k1}$(self,val,ik,jk)
         class(ELL_${k1}$), intent(in) :: self
+        ${t1}$, intent(out) :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
         do k = 1 , self%K
             if( jk == self%index(ik,k) ) then
-                y = self%data(ik,k)
+                val = self%data(ik,k)
                 return
             end if
         end do
-        y = 0._${k1}$
-    end function
+        val = 0._${k1}$
+    end subroutine
 
-    subroutine set_value_ell_${k1}$(self,ik,jk,val)
+    subroutine set_value_ell_${k1}$(self,val,ik,jk)
         class(ELL_${k1}$), intent(inout) :: self
-        integer, intent(in)  :: ik, jk
         ${t1}$, intent(in) :: val
+        integer, intent(in)  :: ik, jk
         integer :: k
         ! naive implementation
         do k = 1 , self%K
