@@ -38,7 +38,7 @@ Return a scalar of numerical type (i.e., `integer`, or `real`).
 {!example/strings/example_string_to_number.f90!}
 ```
 
-## `to_num_p` - conversion of a stream of values in a string to numbers
+## `to_num_from_stream` - conversion of a stream of values in a string to numbers
 
 ### Status
 
@@ -50,7 +50,7 @@ Convert a stream of values in a string to an array of values.
 
 ### Syntax
 
-`number = [[stdlib_str2num(module):to_num_p(interface)]](string, mold)`
+`number = [[stdlib_str2num(module):to_num_from_stream(interface)]](string, mold)`
 
 ### Arguments
 

@@ -28,7 +28,7 @@ module stdlib_str2num
     use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_positive_inf, ieee_quiet_nan
     implicit none
     private
-    public :: to_num, to_num_p
+    public :: to_num, to_num_from_stream
     
     integer(int8), parameter :: digit_0    = ichar('0',int8)
     integer(int8), parameter :: period     = ichar('.',int8) - digit_0
@@ -53,13 +53,13 @@ module stdlib_str2num
         #:endfor
     end interface
 
-    interface to_num_p
+    interface to_num_from_stream
         !! version: experimental
         !!
         !! Conversion of a stream of values in a string to numbers
         !! ([Specification](../page/specs/stdlib_str2num.html#to-num-p-conversion-of-a-stream-of-values-in-a-strings-to-numbers)) 
         #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
-        module procedure to_${k1}$_p
+        module procedure to_${k1}$_from_stream
         #:endfor
     end interface
 
@@ -88,7 +88,7 @@ module stdlib_str2num
         call to_num_base(s,v,p,stat)
     end function
     
-    function to_${k1}$_p(s,mold,stat) result(v)
+    function to_${k1}$_from_stream(s,mold,stat) result(v)
         ! -- In/out Variables
         character(len=:), pointer :: s !> input string
         ${t1}$, intent(in) :: mold !> dummy argument to disambiguate at compile time the generic interface
@@ -123,13 +123,14 @@ module stdlib_str2num
         stat = 23 !> initialize error status with any number > 0
         !----------------------------------------------
         ! Find first non white space
-        p = mvs2nwsp(s)
+        p = shift_to_nonwhitespace(s)
         !----------------------------------------------
         v = 0
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
             if( val >= 0 .and. val <= 9) then
-                v = v*10 + val ; p = p + 1
+                v = v*10 + val
+                p = p + 1
             else
                 exit
             end if
@@ -169,17 +170,20 @@ module stdlib_str2num
         stat = 23 !> initialize error status with any number > 0
         !----------------------------------------------
         ! Find first non white space
-        p = mvs2nwsp(s)
+        p = shift_to_nonwhitespace(s)
         !----------------------------------------------
         ! Verify leading negative
         sign = 1
         if( iachar(s(p:p)) == minus_sign+digit_0 ) then
-            sign = -1 ; p = p + 1
+            sign = -1
+            p = p + 1
         end if
         if( iachar(s(p:p)) == Inf ) then
-            v = sign*ieee_value(v,  ieee_positive_inf); return
+            v = sign*ieee_value(v,  ieee_positive_inf)
+            return
         else if( iachar(s(p:p)) == NaN ) then
-            v = ieee_value(v,  ieee_quiet_nan); return
+            v = ieee_value(v,  ieee_quiet_nan)
+            return
         end if
         !----------------------------------------------
         ! read whole and fractional number in a single integer
@@ -221,7 +225,8 @@ module stdlib_str2num
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
             if( val >= 0 .and. val <= 9) then
-                i_exp = i_exp*10_int8 + val ; p = p + 1
+                i_exp = i_exp*10_int8 + val
+                p = p + 1
             else
                 exit
             end if
@@ -263,17 +268,20 @@ module stdlib_str2num
         stat = 23 !> initialize error status with any number > 0
         !----------------------------------------------
         ! Find first non white space
-        p = mvs2nwsp(s)
+        p = shift_to_nonwhitespace(s)
         !----------------------------------------------
         ! Verify leading negative
         sign = 1
         if( iachar(s(p:p)) == minus_sign+digit_0 ) then
-            sign = -1 ; p = p + 1
+            sign = -1
+            p = p + 1
         end if
         if( iachar(s(p:p)) == Inf ) then
-            v = sign*ieee_value(v,  ieee_positive_inf); return
+            v = sign*ieee_value(v,  ieee_positive_inf)
+            return
         else if( iachar(s(p:p)) == NaN ) then
-            v = ieee_value(v,  ieee_quiet_nan); return
+            v = ieee_value(v,  ieee_quiet_nan)
+            return
         end if
         !----------------------------------------------
         ! read whole and fractional number in a single integer
@@ -315,7 +323,8 @@ module stdlib_str2num
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
             if( val >= 0 .and. val <= 9) then
-                i_exp = i_exp*10_int8 + val ; p = p + 1
+                i_exp = i_exp*10_int8 + val
+                p = p + 1
             else
                 exit
             end if
@@ -358,22 +367,28 @@ module stdlib_str2num
         stat = 23 !> initialize error status with any number > 0
         !----------------------------------------------
         ! Find first non white space
-        p = mvs2nwsp(s)
+        p = shift_to_nonwhitespace(s)
         !----------------------------------------------
         ! Verify leading negative
         sign = 1
         if( iachar(s(p:p)) == minus_sign+digit_0 ) then
-            sign = -1 ; p = p + 1
+            sign = -1
+            p = p + 1
         end if
         if( iachar(s(p:p)) == Inf ) then
-            v = sign*ieee_value(v,  ieee_positive_inf); return
+            v = sign*ieee_value(v,  ieee_positive_inf)
+            return
         else if( iachar(s(p:p)) == NaN ) then
-            v = ieee_value(v,  ieee_quiet_nan); return
+            v = ieee_value(v,  ieee_quiet_nan)
+            return
         end if
         !----------------------------------------------
         ! read whole and fractional number using two int64 values
         pP = 127
-        int_dp1 = 0; int_dp2 = 0; icount = 0; aux = 1
+        int_dp1 = 0
+        int_dp2 = 0
+        icount = 0
+        aux = 1
         do i = p, min(2*maxdpt+p-1,len(s))
             val = iachar(s(i:i))-digit_0
             if( val >= 0 .and. val <= 9 ) then
@@ -384,7 +399,8 @@ module stdlib_str2num
                     int_dp2 = int_dp2*10 + val
                 end if
             else if( val == period ) then
-                pP = i; aux = 0
+                pP = i
+                aux = 0
             else
                 exit
             end if
@@ -415,7 +431,8 @@ module stdlib_str2num
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
             if( val >= 0 .and. val <= 9) then
-                i_exp = i_exp*10_int8 + val ; p = p + 1
+                i_exp = i_exp*10_int8 + val
+                p = p + 1
             else
                 exit
             end if
@@ -463,22 +480,28 @@ module stdlib_str2num
         stat = 23 !> initialize error status with any number > 0
         !----------------------------------------------
         ! Find first non white space
-        p = mvs2nwsp(s)
+        p = shift_to_nonwhitespace(s)
         !----------------------------------------------
         ! Verify leading negative
         sign = 1
         if( iachar(s(p:p)) == minus_sign+digit_0 ) then
-            sign = -1 ; p = p + 1
+            sign = -1
+            p = p + 1
         end if
         if( iachar(s(p:p)) == Inf ) then
-            v = sign*ieee_value(v,  ieee_positive_inf); return
+            v = sign*ieee_value(v,  ieee_positive_inf)
+            return
         else if( iachar(s(p:p)) == NaN ) then
-            v = ieee_value(v,  ieee_quiet_nan); return
+            v = ieee_value(v,  ieee_quiet_nan)
+            return
         end if
         !----------------------------------------------
         ! read whole and fractional number using two int64 values
         pP = 127
-        int_dp1 = 0; int_dp2 = 0; icount = 0; aux = 1
+        int_dp1 = 0
+        int_dp2 = 0
+        icount = 0
+        aux = 1
         do i = p, min(2*maxdpt+p-1,len(s))
             val = iachar(s(i:i))-digit_0
             if( val >= 0 .and. val <= 9 ) then
@@ -489,7 +512,8 @@ module stdlib_str2num
                     int_dp2 = int_dp2*10 + val
                 end if
             else if( val == period ) then
-                pP = i; aux = 0
+                pP = i
+                aux = 0
             else
                 exit
             end if
@@ -520,7 +544,8 @@ module stdlib_str2num
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
             if( val >= 0 .and. val <= 9) then
-                i_exp = i_exp*10_int8 + val ; p = p + 1
+                i_exp = i_exp*10_int8 + val
+                p = p + 1
             else
                 exit
             end if
@@ -544,7 +569,7 @@ module stdlib_str2num
     ! Internal Utility functions
     !---------------------------------------------
     
-    elemental function mvs2nwsp(s) result(p)
+    elemental function shift_to_nonwhitespace(s) result(p)
         !> move string to position of the next non white space character
         character(*),intent(in) :: s !> character chain
         integer(int8) :: p !> position
@@ -555,7 +580,7 @@ module stdlib_str2num
         end do
     end function
     
-    elemental function mvs2wsp(s) result(p)
+    elemental function shift_to_whitespace(s) result(p)
         !> move string to position of the next white space character
         character(*),intent(in) :: s !> character chain
         integer(int8) :: p !> position
