@@ -111,7 +111,7 @@ module stdlib_str2num
 
     #:for k1, t1 in INT_KINDS_TYPES
     elemental subroutine to_${k1}$_base(s,v,p,stat)
-        !> Return an unsigned 32-bit integer
+        !> Return an ${k1}$ integer
         ! -- In/out Variables
         character(*), intent(in) :: s !> input string
         ${t1}$, intent(out)  :: v !> Output real value
@@ -128,7 +128,7 @@ module stdlib_str2num
         v = 0
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
-            if( val >= 0 .and. val <= 9) then
+            if( val >= 0 .and. val <= 9 ) then
                 v = v*10 + val
                 p = p + 1
             else
@@ -224,7 +224,7 @@ module stdlib_str2num
         i_exp = 0
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
-            if( val >= 0 .and. val <= 9) then
+            if( val >= 0 .and. val <= 9 ) then
                 i_exp = i_exp*10_int8 + val
                 p = p + 1
             else
@@ -233,7 +233,7 @@ module stdlib_str2num
         end do
         
         exp_aux = nwnb-1+resp-sige*i_exp
-        if( exp_aux>0 .and. exp_aux<=nwnb+nfnb) then
+        if( exp_aux>0 .and. exp_aux<=nwnb+nfnb ) then
             v = sign*int_wp*expbase(exp_aux)
         else
             v = sign*int_wp*10._dp**(sige*i_exp-resp+1)
@@ -322,7 +322,7 @@ module stdlib_str2num
         i_exp = 0
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
-            if( val >= 0 .and. val <= 9) then
+            if( val >= 0 .and. val <= 9 ) then
                 i_exp = i_exp*10_int8 + val
                 p = p + 1
             else
@@ -331,7 +331,7 @@ module stdlib_str2num
         end do
         
         exp_aux = nwnb-1+resp-sige*i_exp
-        if( exp_aux>0 .and. exp_aux<=nwnb+nfnb) then
+        if( exp_aux>0 .and. exp_aux<=nwnb+nfnb ) then
             v = sign*int_wp*expbase(exp_aux)
         else
             v = sign*int_wp*10._wp**(sige*i_exp-resp+1)
@@ -393,9 +393,9 @@ module stdlib_str2num
             val = iachar(s(i:i))-digit_0
             if( val >= 0 .and. val <= 9 ) then
                 icount = icount + 1
-                if(icount<=maxdpt)then
+                if( icount<=maxdpt ) then
                     int_dp1 = int_dp1*10 + val
-                else if(icount<2*maxdpt)then
+                else if( icount<2*maxdpt ) then
                     int_dp2 = int_dp2*10 + val
                 end if
             else if( val == period ) then
@@ -430,7 +430,7 @@ module stdlib_str2num
         i_exp = 0
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
-            if( val >= 0 .and. val <= 9) then
+            if( val >= 0 .and. val <= 9 ) then
                 i_exp = i_exp*10_int8 + val
                 p = p + 1
             else
@@ -439,8 +439,8 @@ module stdlib_str2num
         end do
         
         exp_aux = nwnb-1+resp-sige*i_exp
-        if( exp_aux>0 .and. exp_aux<=nwnb+nfnb) then
-            if(icount<=maxdpt)then
+        if( exp_aux>0 .and. exp_aux<=nwnb+nfnb ) then
+            if( icount<=maxdpt ) then
                 v = sign*int_dp1*expbase(exp_aux)
             else
                 v = sign*(int_dp1 + int_dp2*fractional_base(maxdpt-1))*expbase(exp_aux-icount+maxdpt)
@@ -506,9 +506,9 @@ module stdlib_str2num
             val = iachar(s(i:i))-digit_0
             if( val >= 0 .and. val <= 9 ) then
                 icount = icount + 1
-                if(icount<=maxdpt)then
+                if( icount<=maxdpt ) then
                     int_dp1 = int_dp1*10 + val
-                else if(icount<2*maxdpt)then
+                else if( icount<2*maxdpt ) then
                     int_dp2 = int_dp2*10 + val
                 end if
             else if( val == period ) then
@@ -543,7 +543,7 @@ module stdlib_str2num
         i_exp = 0
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
-            if( val >= 0 .and. val <= 9) then
+            if( val >= 0 .and. val <= 9 ) then
                 i_exp = i_exp*10_int8 + val
                 p = p + 1
             else
@@ -552,8 +552,8 @@ module stdlib_str2num
         end do
         
         exp_aux = nwnb-1+resp-sige*i_exp
-        if( exp_aux>0 .and. exp_aux<=nwnb+nfnb) then
-            if(icount<=maxdpt)then
+        if( exp_aux>0 .and. exp_aux<=nwnb+nfnb ) then
+            if( icount<=maxdpt ) then
                 v = sign*int_dp1*expbase(exp_aux)
             else
                 v = sign*(int_dp1 + int_dp2*fractional_base(maxdpt-1))*expbase(exp_aux-icount+maxdpt)
@@ -575,7 +575,7 @@ module stdlib_str2num
         integer(int8) :: p !> position
         !----------------------------------------------
         p = 1
-        do while( p<len(s) .and. (iachar(s(p:p))==WS.or.iachar(s(p:p))==LF.or.iachar(s(p:p))==CR) ) 
+        do while( p<len(s) .and. (iachar(s(p:p))==WS .or. iachar(s(p:p))==LF .or. iachar(s(p:p))==CR) ) 
             p = p + 1
         end do
     end function
@@ -586,7 +586,7 @@ module stdlib_str2num
         integer(int8) :: p !> position
         !----------------------------------------------
         p = 1
-        do while( p<len(s) .and. .not.(iachar(s(p:p))==WS.or.iachar(s(p:p))==LF.or.iachar(s(p:p))==CR) ) 
+        do while( p<len(s) .and. .not.(iachar(s(p:p))==WS .or. iachar(s(p:p))==LF .or. iachar(s(p:p))==CR) ) 
             p = p + 1
         end do
     end function
