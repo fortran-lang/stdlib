@@ -14,7 +14,7 @@ module stdlib_math
     public :: EULERS_NUMBER_QP
 #:endif
     public :: DEFAULT_LINSPACE_LENGTH, DEFAULT_LOGSPACE_BASE, DEFAULT_LOGSPACE_LENGTH
-    public :: arange, arg, argd, argpi, is_close, all_close, diff
+    public :: arange, arg, argd, argpi, is_close, all_close, diff, meshgrid
 
     integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
     integer, parameter :: DEFAULT_LOGSPACE_LENGTH = 50
@@ -382,6 +382,30 @@ module stdlib_math
         #:endfor
     end interface diff
 
+
+    !> Version: experimental
+    !>
+    !> Computes a list of coordinate matrices from coordinate vectors.
+    !> ([Specification](../page/specs/stdlib_math.html#meshgrid))
+    interface meshgrid
+        #:set RANKS = range(1, MAXRANK + 1)
+        #:for k1, t1 in IR_KINDS_TYPES
+        #:for rank in RANKS
+        #:set RName = rname("meshgrid", rank, t1, k1)
+        module subroutine ${RName}$(&
+                ${"".join(f"x{i}, " for i in range(1, rank + 1))}$ &
+                ${"".join(f"xm{i}, " for i in range(1, rank + 1))}$ &
+                indexing &
+        )
+            #:for i in range(1, rank + 1)
+            ${t1}$, intent(in) :: x${i}$(:)
+            ${t1}$, intent(out) :: xm${i}$ ${ranksuffix(rank)}$
+            #:endfor
+            character(len=2), intent(in), optional :: indexing
+        end subroutine ${RName}$
+        #:endfor
+        #:endfor
+    end interface meshgrid
 contains
 
     #:for k1, t1 in IR_KINDS_TYPES

@@ -55,6 +55,7 @@ set(fppFiles
     stdlib_math_is_close.fypp
     stdlib_math_all_close.fypp
     stdlib_math_diff.fypp
+    stdlib_math_meshgrid.fypp
     stdlib_string_type.fypp
     stdlib_string_type_constructor.fypp
     stdlib_strings_to_string.fypp

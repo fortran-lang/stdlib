@@ -554,3 +554,59 @@ When both `prepend` and `append` are not present, the result `y` has one fewer e
 ```fortran
 {!example/math/example_diff.f90!}
 ```
+
+### `meshgrid` subroutine
+
+#### Description
+
+Computes a list of coordinate matrices from coordinate vectors.
+
+For $n \geq 1$ coordinate vectors $(x_1, x_2, ..., x_n)$ of sizes $(s_1, s_2, ..., s_n)$, `meshgrid` computes $N$ coordinate matrices $(X_1, X_2, ..., X_n)$ with identical shape corresponding to the selected indexing:
+- Cartesian indexing (default behavior): the shape of the coordinate matrices is $(s_2, s_1, s_3, s_4, ... s_n)$.
+- matrix indexing: the shape of the coordinate matrices is $(s_1, s_2, s_3, s_4, ... s_n)$.
+
+#### Syntax
+
+For a 2D problem in Cartesian indexing:
+`call [[stdlib_math(module):meshgrid(interface)]](x, y, xm, ym)`
+
+For a 3D problem in Cartesian indexing:
+`call [[stdlib_math(module):meshgrid(interface)]](x, y, z, xm, ym, zm)`
+
+For a 3D problem in matrix indexing:
+`call [[stdlib_math(module):meshgrid(interface)]](x, y, z, xm, ym, zm, indexing="ij")`
+
+The subroutine can be called in $n$-dimensional situations, as long as $n$ is inferior to the maximum allowed array rank.
+
+#### Status
+
+Experimental.
+
+#### Class
+
+Subroutine.
+
+#### Arguments
+
+For a `n`-dimensional problem, with `n >= 1`:
+
+`x1, x2, ..., xn`: The coordinate vectors.
+Shall be a `real/integer` and `rank-1` array.
+These arguments are `intent(in)`.
+
+`xm1, xm2, ..., xmn`: The coordinate matrices.
+Shall be `real/integer` arrays of adequate shape:
+- for Cartesian indexing, the shape of the coordinate matrices must be `[size(x2), size(x1), size(x3), ..., size(xn)]`.
+- for matrix indexing, the shape of the coordinate matrices must be `[size(x1), size(x2), size(x3), ..., size(xn)]`.
+
+These argument are `intent(out)`.
+
+`indexing`: the selected indexing.
+Shall be a `character(len=2)` equal to `"xy"` for Cartesian indexing (default), or `"ij"` for matrix indexing.
+This argument is `intent(in)` and `optional`, and is equal to `"xy"` by default.
+
+#### Example
+
+```fortran
+{!example/math/example_meshgrid.f90!}
+```

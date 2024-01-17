@@ -1,0 +1,50 @@
+#:include "common.fypp"
+#:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
+#:set RANKS = range(1, MAXRANK + 1)
+
+#:def meshgrid_loop(indices)
+  #:for j in reversed(indices)
+  do i${j}$ = 1, size(x${j}$)
+  #:endfor
+  #:for j in indices
+  xm${j}$(${"".join(f"i{j}," for j in indices).removesuffix(",")}$) = &
+          x${j}$(i${j}$)
+  #:endfor
+  #:for j in indices
+  end do
+  #:endfor
+#:enddef
+
+submodule(stdlib_math) stdlib_math_meshgrid
+
+contains
+
+    #:for k1, t1 in IR_KINDS_TYPES
+    #:for rank in RANKS
+    #:if rank == 1
+      #:set XY_INDICES = [1]
+      #:set IJ_INDICES = [1]
+    #:else
+      #:set XY_INDICES = [2, 1] + [j for j in range(3, rank + 1)]
+      #:set IJ_INDICES = [1, 2] + [j for j in range(3, rank + 1)]
+    #:endif
+    #: set RName = rname("meshgrid", rank, t1, k1)
+    module procedure ${RName}$
+        use stdlib_optval, only: optval
+        use stdlib_error, only: error_stop
+
+        integer :: ${"".join(f"i{j}," for j in range(1, rank + 1)).removesuffix(",")}$
+
+        select case (optval(indexing, "xy"))
+        case ("xy")
+            $:meshgrid_loop(XY_INDICES)
+        case ("ij")
+            $:meshgrid_loop(IJ_INDICES)
+        case default
+            call error_stop("ERROR (meshgrid): unexpected indexing.")
+        end select
+    end procedure
+    #:endfor
+    #:endfor
+
+end submodule
