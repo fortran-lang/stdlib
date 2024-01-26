@@ -591,7 +591,7 @@ Subroutine.
 For a `n`-dimensional problem, with `n >= 1`:
 
 `x1, x2, ..., xn`: The coordinate vectors.
-Shall be a `real/integer` and `rank-1` array.
+Shall be `real/integer` and `rank-1` arrays.
 These arguments are `intent(in)`.
 
 `xm1, xm2, ..., xmn`: The coordinate matrices.

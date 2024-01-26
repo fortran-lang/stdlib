@@ -18,10 +18,6 @@ module test_meshgrid
     implicit none
 
     public :: collect_meshgrid
-    
-    #:for k1 in REAL_KINDS
-    real(kind=${k1}$), parameter :: PI_${k1}$ = acos(-1.0_${k1}$)
-    #:endfor
 
 contains
 
@@ -56,8 +52,8 @@ contains
         #:set INDICES = [1, 2] + [j for j in range(3, rank + 1)]
       #:endif
     #:endif
-    #: set RName = rname(f"meshgrid_{INDEXING}", rank, t1, k1)
-    #: set GRIDSHAPE = "".join("length," for j in range(rank)).removesuffix(",")
+    #:set RName = rname(f"meshgrid_{INDEXING}", rank, t1, k1)
+    #:set GRIDSHAPE = "".join("length," for j in range(rank)).removesuffix(",")
     subroutine test_${RName}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -83,7 +79,7 @@ contains
                 ${"".join(f"xm{j}," for j in range(1, rank + 1)).removesuffix(",")}$ &
                 ${OPTIONAL_PART_IN_SIGNATURE(INDEXING)}$ )
         #:for j in range(1, rank + 1)
-            call check(error, abs(maxval(xm${j}$ - xm${j}$_exact)), ZERO)
+            call check(error, maxval(abs(xm${j}$ - xm${j}$_exact)), ZERO)
             if (allocated(error)) return
         #:endfor
     end subroutine test_${RName}$
