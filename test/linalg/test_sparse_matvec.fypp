@@ -32,7 +32,8 @@ contains
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y1(:), vec_y2(:)
             ${t1}$ :: val, err
-
+            integer :: i, j
+            
             allocate( dense(4,5) , source = &
                 reshape([9._${k1}$,4._${k1}$, 0._${k1}$,4._${k1}$, &
                          0._${k1}$,7._${k1}$, 8._${k1}$,0._${k1}$, &
