@@ -49,3 +49,5 @@ API-doc/
 *log*.txt
 *test*.txt
 scratch.txt
+*.dat
+*.stream
