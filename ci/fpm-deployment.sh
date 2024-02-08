@@ -22,6 +22,7 @@ fi
 # Additional files to include
 include=(
   "ci/fpm.toml"
+  "ci/.gitignore"
   "LICENSE"
   "VERSION"
 )
