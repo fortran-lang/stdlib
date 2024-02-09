@@ -602,8 +602,8 @@ Shall be arrays of type `real` or `integer` of adequate shape:
 These argument are `intent(out)`.
 
 `indexing`: the selected indexing.
-Shall be a `character(len=2)` equal to `"xy"` for Cartesian indexing (default), or `"ij"` for matrix indexing.
-This argument is `intent(in)` and `optional`, and is equal to `"xy"` by default.
+Shall be an `integer` equal to `stdlib_meshgrid_xy` for Cartesian indexing (default), or `stdlib_meshgrid_ij` for matrix indexing. `stdlib_meshgrid_xy` and `stdlib_meshgrid_ij` are public constants defined in the module.
+This argument is `intent(in)` and `optional`, and is equal to `stdlib_meshgrid_xy` by default.
 
 #### Example
 

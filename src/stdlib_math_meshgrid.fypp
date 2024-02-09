@@ -17,6 +17,8 @@
 
 submodule(stdlib_math) stdlib_math_meshgrid
 
+    use stdlib_error, only: error_stop
+
 contains
 
     #:for k1, t1 in IR_KINDS_TYPES
@@ -30,15 +32,13 @@ contains
     #:endif
     #: set RName = rname("meshgrid", rank, t1, k1)
     module procedure ${RName}$
-        use stdlib_optval, only: optval
-        use stdlib_error, only: error_stop
 
         integer :: ${"".join(f"i{j}," for j in range(1, rank + 1)).removesuffix(",")}$
 
-        select case (optval(indexing, "xy"))
-        case ("xy")
+        select case (optval(indexing, stdlib_meshgrid_xy))
+        case (stdlib_meshgrid_xy)
             $:meshgrid_loop(XY_INDICES)
-        case ("ij")
+        case (stdlib_meshgrid_ij)
             $:meshgrid_loop(IJ_INDICES)
         case default
             call error_stop("ERROR (meshgrid): unexpected indexing.")

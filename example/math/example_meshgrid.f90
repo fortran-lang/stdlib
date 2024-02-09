@@ -1,6 +1,6 @@
 program example_meshgrid
 
-    use stdlib_math, only: meshgrid, linspace
+    use stdlib_math, only: meshgrid, linspace, stdlib_meshgrid_ij
     use stdlib_kinds, only: sp
 
     implicit none
@@ -19,7 +19,7 @@ program example_meshgrid
     print *, "ym_cart = "
     call print_2d_array(ym_cart)
 
-    call meshgrid(x, y, xm_mat, ym_mat, indexing="ij")
+    call meshgrid(x, y, xm_mat, ym_mat, indexing=stdlib_meshgrid_ij)
     print *, "xm_mat = "
     call print_2d_array(xm_mat)
     print *, "ym_mat = "

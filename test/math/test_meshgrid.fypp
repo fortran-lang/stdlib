@@ -7,13 +7,13 @@
 
 #:def OPTIONAL_PART_IN_SIGNATURE(indexing)
 #:if indexing in ("xy", "ij")
-  ${f', "{indexing}"'}$
+  ${f', stdlib_meshgrid_{indexing}'}$
 #:endif
 #:enddef
 
 module test_meshgrid
     use testdrive, only : new_unittest, unittest_type, error_type, check
-    use stdlib_math, only: meshgrid
+    use stdlib_math, only: meshgrid, stdlib_meshgrid_ij, stdlib_meshgrid_xy
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none
 
