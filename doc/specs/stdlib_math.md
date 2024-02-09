@@ -576,7 +576,7 @@ For a 3D problem in Cartesian indexing:
 For a 3D problem in matrix indexing:
 `call [[stdlib_math(module):meshgrid(interface)]](x, y, z, xm, ym, zm, indexing="ij")`
 
-The subroutine can be called in $n$-dimensional situations, as long as $n$ is inferior to the maximum allowed array rank.
+The subroutine can be called in `n`-dimensional situations, as long as `n` is inferior to the maximum allowed array rank.
 
 #### Status
 
