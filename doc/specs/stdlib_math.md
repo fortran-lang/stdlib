@@ -595,7 +595,7 @@ Shall be `real/integer` and `rank-1` arrays.
 These arguments are `intent(in)`.
 
 `xm1, xm2, ..., xmn`: The coordinate matrices.
-Shall be `real/integer` arrays of adequate shape:
+Shall be arrays of type `real` or `integer` of adequate shape:
 - for Cartesian indexing, the shape of the coordinate matrices must be `[size(x2), size(x1), size(x3), ..., size(xn)]`.
 - for matrix indexing, the shape of the coordinate matrices must be `[size(x1), size(x2), size(x3), ..., size(xn)]`.
 
