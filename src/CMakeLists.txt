@@ -17,11 +17,8 @@ set(fppFiles
     stdlib_hash_64bit_spookyv2.fypp 
     stdlib_io.fypp
     stdlib_io_np.fypp
-    stdlib_io_npy_load.fypp
-    stdlib_io_npz_load.fypp
-    stdlib_io_npy_save.fypp
-    stdlib_io_npz_load.fypp
-    stdlib_io_npz_save.fypp
+    stdlib_io_np_load.fypp
+    stdlib_io_np_save.fypp
     stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
