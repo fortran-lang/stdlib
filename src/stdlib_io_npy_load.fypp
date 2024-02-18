@@ -5,7 +5,7 @@
 #:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES
 
 !> Implementation of loading npy files into multidimensional arrays
-submodule (stdlib_io_npy) stdlib_io_npy_load
+submodule (stdlib_io_np) stdlib_io_npy_load
     use stdlib_error, only : error_stop
     use stdlib_strings, only : to_string, starts_with
     implicit none
@@ -69,8 +69,7 @@ contains
             iostat = stat
         else if (stat /= 0) then
             if (allocated(msg)) then
-                call error_stop("Failed to read array from file '"//filename//"'"//nl//&
-                    & msg)
+                call error_stop("Failed to read array from file '"//filename//"'"//nl//msg)
             else
                 call error_stop("Failed to read array from file '"//filename//"'")
             end if

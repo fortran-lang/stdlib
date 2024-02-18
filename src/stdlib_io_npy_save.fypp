@@ -5,7 +5,7 @@
 #:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES
 
 !> Implementation of saving multidimensional arrays to npy files
-submodule (stdlib_io_npy) stdlib_io_npy_save
+submodule (stdlib_io_np) stdlib_io_npy_save
     use stdlib_error, only : error_stop
     use stdlib_strings, only : to_string
     implicit none

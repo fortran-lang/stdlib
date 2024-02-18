@@ -48,6 +48,9 @@ if(NOT FYPP)
   message(FATAL_ERROR "Preprocessor fypp not found! Please install fypp following the instructions in https://fypp.readthedocs.io/en/stable/fypp.html#installing")
 endif()
 
+# --- find dependencies
+find_library(MINIZIP_LIBRARY NAMES minizip HINTS /opt/homebrew/Caskroom/miniconda/base/envs/minizip/lib)
+
 # Custom preprocessor flags
 if(DEFINED CMAKE_MAXIMUM_RANK)
   set(fyppFlags "-DMAXRANK=${CMAKE_MAXIMUM_RANK}")

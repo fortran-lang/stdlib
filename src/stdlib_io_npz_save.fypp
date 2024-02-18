@@ -1,0 +1,35 @@
+! SPDX-Identifier: MIT
+
+#:include "common.fypp"
+#:set RANKS = range(1, MAXRANK + 1)
+#:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES
+
+!> Implementation of loading uncompressed and compressed npz files into multidimensional arrays.
+submodule(stdlib_io_np) stdlib_io_npz_save
+    use stdlib_error, only: error_stop
+    use stdlib_strings, only: to_string, starts_with
+    implicit none
+
+contains
+
+    !> Version: experimental
+    !>
+    !> Save multidimensional arrays to a compressed or an uncompressed npz file.
+    !> ([Specification](../page/specs/stdlib_io.html#save_npz))
+    module subroutine save_npz_from_bundle(filename, array_bundle, compressed, iostat, iomsg)
+        character(len=*), intent(in) :: filename
+        type(t_array_bundle), intent(in) :: array_bundle
+        !> If true, the file is saved in compressed format. The default is false.
+        logical, intent(in), optional :: compressed
+        integer, intent(out), optional :: iostat
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        logical :: is_compressed
+
+        if (present(compressed)) then
+            is_compressed = compressed
+        else
+            is_compressed = .false.
+        end if
+    end
+end

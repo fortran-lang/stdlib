@@ -68,59 +68,79 @@
 !>
 !> This version replaces the ASCII string (which in practice was latin1) with a
 !> utf8-encoded string, so supports structured types with any unicode field names.
-module stdlib_io_npy
-    use stdlib_kinds, only : int8, int16, int32, int64, sp, dp, xdp, qp
+module stdlib_io_np
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    use stdlib_array, only: t_array_bundle
     implicit none
     private
 
-    public :: save_npy, load_npy
+    public :: load_npy, save_npy, load_npz, save_npz
 
-
-    !> Version: experimental
-    !>
-    !> Save multidimensional array in npy format
-    !> ([Specification](../page/specs/stdlib_io.html#save_npy))
-    interface save_npy
-    #:for k1, t1 in KINDS_TYPES
-      #:for rank in RANKS
-        module subroutine save_npy_${t1[0]}$${k1}$_${rank}$(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            ${t1}$, intent(in) :: array${ranksuffix(rank)}$
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_${t1[0]}$${k1}$_${rank}$
-      #:endfor
-    #:endfor
-    end interface save_npy
+    character(len=*), parameter :: &
+        type_iint8 = "<i1", type_iint16 = "<i2", type_iint32 = "<i4", type_iint64 = "<i8", &
+        type_rsp = "<f4", type_rdp = "<f8", type_rxdp = "<f10", type_rqp = "<f16", &
+        type_csp = "<c8", type_cdp = "<c16", type_cxdp = "<c20", type_cqp = "<c32", &
+        nl = achar(10), magic_number = char(int(z"93")), magic_string = "NUMPY"
 
     !> Version: experimental
     !>
     !> Load multidimensional array in npy format
     !> ([Specification](../page/specs/stdlib_io.html#load_npy))
     interface load_npy
-    #:for k1, t1 in KINDS_TYPES
-      #:for rank in RANKS
-        module subroutine load_npy_${t1[0]}$${k1}$_${rank}$(filename, array, iostat, iomsg)
+        #:for k1, t1 in KINDS_TYPES
+            #:for rank in RANKS
+                module subroutine load_npy_${t1[0]}$${k1}$_${rank}$ (filename, array, iostat, iomsg)
+                    character(len=*), intent(in) :: filename
+                    ${t1}$, allocatable, intent(out) :: array${ranksuffix(rank)}$
+                    integer, intent(out), optional :: iostat
+                    character(len=:), allocatable, intent(out), optional :: iomsg
+                end
+            #:endfor
+        #:endfor
+    end interface
+
+    !> Version: experimental
+    !>
+    !> Save multidimensional array in npy format
+    !> ([Specification](../page/specs/stdlib_io.html#save_npy))
+    interface save_npy
+        #:for k1, t1 in KINDS_TYPES
+            #:for rank in RANKS
+                module subroutine save_npy_${t1[0]}$${k1}$_${rank}$ (filename, array, iostat, iomsg)
+                    character(len=*), intent(in) :: filename
+                    ${t1}$, intent(in) :: array${ranksuffix(rank)}$
+                    integer, intent(out), optional :: iostat
+                    character(len=:), allocatable, intent(out), optional :: iomsg
+                end
+            #:endfor
+        #:endfor
+    end interface
+
+    !> Version: experimental
+    !>
+    !> Load multiple multidimensional arrays from a (compressed) npz file.
+    !> ([Specification](../page/specs/stdlib_io.html#load_npz))
+    interface load_npz
+        module subroutine load_npz_to_bundle(filename, array_bundle, iostat, iomsg)
             character(len=*), intent(in) :: filename
-            ${t1}$, allocatable, intent(out) :: array${ranksuffix(rank)}$
+            type(t_array_bundle), intent(out) :: array_bundle
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_${t1[0]}$${k1}$_${rank}$
-      #:endfor
-    #:endfor
-    end interface load_npy
+        end
+    end interface
 
-
-    character(len=*), parameter :: nl = achar(10)
-
-    character(len=*), parameter :: &
-        type_iint8 = "<i1", type_iint16 = "<i2", type_iint32 = "<i4", type_iint64 = "<i8", &
-        type_rsp = "<f4", type_rdp = "<f8", type_rxdp = "<f10", type_rqp = "<f16", &
-        type_csp = "<c8", type_cdp = "<c16", type_cxdp = "<c20", type_cqp = "<c32"
-
-    character(len=*), parameter :: &
-        & magic_number = char(int(z"93")), &
-        & magic_string = "NUMPY"
-
-
-end module stdlib_io_npy
+    !> Version: experimental
+    !>
+    !> Save multidimensional arrays to a compressed or an uncompressed npz file.
+    !> ([Specification](../page/specs/stdlib_io.html#save_npz))
+    interface save_npz
+        module subroutine save_npz_from_bundle(filename, array_bundle, compressed, iostat, iomsg)
+            character(len=*), intent(in) :: filename
+            type(t_array_bundle), intent(in) :: array_bundle
+            !> If true, the file is saved in compressed format. The default is false.
+            logical, intent(in), optional :: compressed
+            integer, intent(out), optional :: iostat
+            character(len=:), allocatable, intent(out), optional :: iomsg
+        end
+    end interface
+end

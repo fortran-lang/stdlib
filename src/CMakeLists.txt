@@ -2,6 +2,7 @@
 
 # Create a list of the files to be preprocessed
 set(fppFiles
+    stdlib_array.fypp
     stdlib_ascii.fypp
     stdlib_bitsets.fypp
     stdlib_bitsets_64.fypp
@@ -15,9 +16,12 @@ set(fppFiles
     stdlib_hash_64bit_pengy.fypp 
     stdlib_hash_64bit_spookyv2.fypp 
     stdlib_io.fypp
-    stdlib_io_npy.fypp
+    stdlib_io_np.fypp
     stdlib_io_npy_load.fypp
+    stdlib_io_npz_load.fypp
     stdlib_io_npy_save.fypp
+    stdlib_io_npz_load.fypp
+    stdlib_io_npz_save.fypp
     stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
@@ -83,6 +87,8 @@ set(SRC
     stdlib_specialfunctions_legendre.f90
     stdlib_quadrature_gauss.f90
     stdlib_stringlist_type.f90
+    stdlib_io_zip.f90
+    stdlib_io_minizip.f90
     ${outFiles}
 )
 
