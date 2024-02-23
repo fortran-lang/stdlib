@@ -1,6 +1,6 @@
 module test_np
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp
-    use stdlib_array, only: t_array_bundle
+    use stdlib_array, only: t_array_wrapper
     use stdlib_io_np, only: load_npy, save_npy, load_npz
     use testdrive, only: new_unittest, unittest_type, error_type, check
     implicit none
@@ -40,7 +40,9 @@ contains
                     new_unittest("npz-nonexistent-file", test_npz_nonexistent_file, should_fail=.true.), &
                     new_unittest("npz-small-file", test_npz_small_file, should_fail=.true.), &
                     new_unittest("npz-empty-zip", test_npz_empty_zip, should_fail=.true.), &
-                    new_unittest("npz-not-zip", test_npz_not_zip, should_fail=.true.) &
+                    new_unittest("npz-not-zip", test_npz_not_zip, should_fail=.true.), &
+                    new_unittest("npz-empty-array", test_npz_empty_array), &
+                    new_unittest("npz-exceeded-rank", test_npz_exceeded_rank, should_fail=.true.) &
                     ]
     end subroutine collect_np
 
@@ -650,11 +652,11 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         character(len=*), parameter :: filename = 'test_nonexistent_file.npz'
-        type(t_array_bundle) :: bundle
+        type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat
         character(len=:), allocatable :: msg
 
-        call load_npz(filename, bundle, stat, msg)
+        call load_npz(filename, arrays, stat, msg)
         call check(error, stat, msg)
     end
 
@@ -665,13 +667,13 @@ contains
         integer :: io, stat
         character(len=:), allocatable :: msg
         character(len=*), parameter :: filename = '.test-small-file.npz'
-        type(t_array_bundle) :: bundle
+        type(t_array_wrapper), allocatable :: arrays(:)
 
         open (newunit=io, file=filename, form='unformatted', access='stream')
         write (io) header
         close (io)
 
-        call load_npz(filename, bundle, stat, msg)
+        call load_npz(filename, arrays, stat, msg)
         call delete_file(filename)
 
         call check(error, stat, msg)
@@ -684,13 +686,13 @@ contains
         integer :: io, stat
         character(len=:), allocatable :: msg
         character(len=*), parameter :: filename = '.test-empty-zip.npz'
-        type(t_array_bundle) :: bundle
+        type(t_array_wrapper), allocatable :: arrays(:)
 
         open (newunit=io, file=filename, form='unformatted', access='stream')
         write (io) header
         close (io)
 
-        call load_npz(filename, bundle, stat, msg)
+        call load_npz(filename, arrays, stat, msg)
         call delete_file(filename)
 
         call check(error, stat, msg)
@@ -703,13 +705,70 @@ contains
         integer :: io, stat
         character(len=:), allocatable :: msg
         character(len=*), parameter :: filename = '.test-not-zip.npz'
-        type(t_array_bundle) :: bundle
+        type(t_array_wrapper), allocatable :: arrays(:)
 
         open (newunit=io, file=filename, form='unformatted', access='stream')
         write (io) header
         close (io)
 
-        call load_npz(filename, bundle, stat, msg)
+        call load_npz(filename, arrays, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat, msg)
+    end
+
+    subroutine test_npz_empty_array(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        character(*), parameter :: binary_data = 'PK'//char(3)//char(4)//'-'//repeat(char(0), 7)//'!'//char(0)//'6H[s'// &
+            & repeat(char(int(z'ff')), 8)//char(9)//char(0)//char(int(z'14'))//char(0)//'arr_0.npy'//char(1)//char(0)// &
+            & char(int(z'10'))//char(0)//char(int(z'80'))//repeat(char(0), 7)//char(int(z'80'))//repeat(char(0), 7)// &
+            & char(int(z'93'))//'NUMPY'//char(1)//char(0)//'v'//char(0)// &
+            & "{'descr': '<f8', 'fortran_order': False, 'shape': (0,), }"//repeat(' ', 60)//char(int(z'0a'))//'PK'// &
+            & char(1)//char(2)//'-'//char(3)//'-'//repeat(char(0), 7)//'!'//char(0)//'6H[s'//char(int(z'80'))// &
+            & repeat(char(0), 3)//char(int(z'80'))//repeat(char(0), 3)//char(9)//repeat(char(0), 11)// &
+            & char(int(z'80'))//char(1)//repeat(char(0), 4)//'arr_0.npyPK'//char(5)//char(6)//repeat(char(0), 4)// &
+            & char(1)//char(0)//char(1)//char(0)//'7'//repeat(char(0), 3)//char(int(z'bb'))//repeat(char(0), 5)
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = '.test-empty-array.npz'
+        type(t_array_wrapper), allocatable :: arrays(:)
+
+        open (newunit=io, file=filename, form='unformatted', access='stream')
+        write (io) binary_data
+        close (io)
+
+        call load_npz(filename, arrays, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat, msg)
+    end
+
+    subroutine test_npz_exceeded_rank(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        character(*), parameter :: binary_data = 'PK'//char(3)//char(4)//'-'//repeat(char(0), 7)//'!'//char(0)//'8'// &
+            & char(int(z'17'))//char(int(z'a4'))//'r'//repeat(char(int(z'ff')), 8)//char(9)//char(0)//char(int(z'14'))// &
+            & char(0)//'arr_0.npy'//char(1)//char(0)//char(int(z'10'))//char(0)//char(int(z'80'))//repeat(char(0), 7)// &
+            & char(int(z'80'))//repeat(char(0), 7)//char(int(z'93'))//'NUMPY'//char(1)//char(0)//'v'//char(0)// &
+            & "{'descr': '<f8', 'fortran_order': False, 'shape': (0, 0, 0, 0, 0), }"//repeat(' ', 49)//char(int(z'0a'))//'PK'// &
+            & char(1)//char(2)//'-'//char(3)//'-'//repeat(char(0), 7)//'!'//char(0)//'8'//char(int(z'17'))// &
+            & char(int(z'a4'))//'r'//char(int(z'80'))//repeat(char(0), 3)//char(int(z'80'))//repeat(char(0), 3)//char(9)// &
+            & repeat(char(0), 11)//char(int(z'80'))//char(1)//repeat(char(0), 4)//'arr_0.npyPK'//char(5)//char(6)// &
+            & repeat(char(0), 4)//char(1)//char(0)//char(1)//char(0)//'7'//repeat(char(0), 3)//char(int(z'bb'))// &
+            & repeat(char(0), 5)
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = '.test-exceeded-rank.npz'
+        type(t_array_wrapper), allocatable :: arrays(:)
+
+        open (newunit=io, file=filename, form='unformatted', access='stream')
+        write (io) binary_data
+        close (io)
+
+        call load_npz(filename, arrays, stat, msg)
         call delete_file(filename)
 
         call check(error, stat, msg)

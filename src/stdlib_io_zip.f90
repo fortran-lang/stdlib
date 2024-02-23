@@ -1,5 +1,4 @@
 module stdlib_io_zip
-    use stdlib_array, only: t_array_bundle
     use stdlib_io_minizip
     use iso_c_binding, only: c_ptr, c_associated, c_int, c_long, c_char
     implicit none
@@ -13,7 +12,7 @@ module stdlib_io_zip
     integer(kind=c_long), parameter :: buffer_size = 1024
 
     interface unzip
-        module procedure unzip_to_raw
+        module procedure unzip_to_bundle
     end interface
 
     !> Contains extracted raw data from a zip file.
@@ -32,7 +31,7 @@ module stdlib_io_zip
 
 contains
 
-    module subroutine unzip_to_raw(filename, bundle, iostat, iomsg)
+    module subroutine unzip_to_bundle(filename, bundle, iostat, iomsg)
         character(len=*), intent(in) :: filename
         type(t_unzipped_bundle), intent(out) :: bundle
         integer, intent(out), optional :: iostat

@@ -70,7 +70,7 @@
 !> utf8-encoded string, so supports structured types with any unicode field names.
 module stdlib_io_np
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
-    use stdlib_array, only: t_array_bundle
+    use stdlib_array, only: t_array_wrapper
     implicit none
     private
 
@@ -121,9 +121,9 @@ module stdlib_io_np
     !> Load multiple multidimensional arrays from a (compressed) npz file.
     !> ([Specification](../page/specs/stdlib_io.html#load_npz))
     interface load_npz
-        module subroutine load_npz_to_bundle(filename, array_bundle, iostat, iomsg)
+        module subroutine load_npz_to_arrays(filename, arrays, iostat, iomsg)
             character(len=*), intent(in) :: filename
-            type(t_array_bundle), intent(out) :: array_bundle
+            type(t_array_wrapper), allocatable, intent(out) :: arrays(:)
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end
@@ -134,9 +134,9 @@ module stdlib_io_np
     !> Save multidimensional arrays to a compressed or an uncompressed npz file.
     !> ([Specification](../page/specs/stdlib_io.html#save_npz))
     interface save_npz
-        module subroutine save_npz_from_bundle(filename, array_bundle, compressed, iostat, iomsg)
+        module subroutine save_npz_from_arrays(filename, arrays, compressed, iostat, iomsg)
             character(len=*), intent(in) :: filename
-            type(t_array_bundle), intent(in) :: array_bundle
+            type(t_array_wrapper), intent(in) :: arrays(*)
             !> If true, the file is saved in compressed format. The default is false.
             logical, intent(in), optional :: compressed
             integer, intent(out), optional :: iostat

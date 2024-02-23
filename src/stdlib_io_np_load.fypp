@@ -36,10 +36,26 @@ contains
 
         open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
         catch: block
+            character(len=:), allocatable :: this_type
             integer, allocatable :: vshape(:)
 
-            call verify_npy_file(io, filename, vtype, vshape, rank, stat, msg)
+            call get_descriptor(io, filename, this_type, vshape, stat, msg)
             if (stat /= 0) exit catch
+
+            if (this_type /= vtype) then
+                stat = 1
+                msg = "File '"//filename//"' contains data of type '"//this_type//"', "//&
+                    & "but expected '"//vtype//"'"
+                exit catch
+            end if
+
+            if (size(vshape) /= rank) then
+                stat = 1
+                msg = "File '"//filename//"' contains data of rank "//&
+                    & to_string(size(vshape))//", but expected "//&
+                    & to_string(rank)
+                exit catch
+            end if
 
             call allocate_array(array, vshape, stat)
             if (stat /= 0) then
@@ -67,44 +83,6 @@ contains
   #:endfor
 #:endfor
 
-    !> Verify header, type and rank of the npy file.
-    subroutine verify_npy_file(io, filename, vtype, vshape, rank, stat, msg)
-        !> Access unit to the npy file.
-        integer, intent(in) :: io
-        !> Name of the npy file to load from.
-        character(len=*), intent(in) :: filename
-        !> Type of the data stored, retrieved from field `descr`.
-        character(len=*), intent(in) :: vtype
-        !> Shape of the stored data, retrieved from field `shape`.
-        integer, allocatable, intent(out) :: vshape(:)
-        !> Expected rank of the data.
-        integer, intent(in) :: rank
-        !> Status of operation.
-        integer, intent(out) :: stat
-        !> Associated error message in case of non-zero status.
-        character(len=:), allocatable, intent(out) :: msg
-
-        character(len=:), allocatable :: this_type
-
-        call get_descriptor(io, filename, this_type, vshape, stat, msg)
-        if (stat /= 0) return
-
-        if (this_type /= vtype) then
-            stat = 1
-            msg = "File '"//filename//"' contains data of type '"//this_type//"', "//&
-                & "but expected '"//vtype//"'"
-            return
-        end if
-
-        if (size(vshape) /= rank) then
-            stat = 1
-            msg = "File '"//filename//"' contains data of rank "//&
-                & to_string(size(vshape))//", but expected "//&
-                & to_string(rank)
-            return
-        end if
-    end
-
     #:for k1, t1 in KINDS_TYPES
         #:for rank in RANKS
             module subroutine allocate_array_${t1[0]}$${k1}$_${rank}$(array, vshape, stat)
@@ -126,9 +104,9 @@ contains
     !>
     !> Load multidimensional arrays from a compressed or uncompressed npz file.
     !> ([Specification](../page/specs/stdlib_io.html#load_npz))
-    module subroutine load_npz_to_bundle(filename, array_bundle, iostat, iomsg)
+    module subroutine load_npz_to_arrays(filename, arrays, iostat, iomsg)
         character(len=*), intent(in) :: filename
-        type(t_array_bundle), intent(out) :: array_bundle
+        type(t_array_wrapper), allocatable, intent(out) :: arrays(:)
         integer, intent(out), optional :: iostat
         character(len=:), allocatable, intent(out), optional :: iomsg
 
@@ -138,9 +116,9 @@ contains
 
         call unzip(filename, unzipped_bundle, stat, msg)
         if (stat == 0) then
-            call load_raw_to_bundle(unzipped_bundle, array_bundle, stat, msg)
+            call load_unzipped_bundle_to_arrays(unzipped_bundle, arrays, stat, msg)
         else
-            call identify_problem(filename, stat, msg)
+            call identify_unzip_problem(filename, stat, msg)
         end if
 
         if (present(iostat)) then
@@ -156,64 +134,77 @@ contains
         if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
     end
 
-    module subroutine load_raw_to_bundle(unzipped_bundle, array_bundle, stat, msg)
+    module subroutine load_unzipped_bundle_to_arrays(unzipped_bundle, arrays, stat, msg)
         type(t_unzipped_bundle), intent(in) :: unzipped_bundle
-        type(t_array_bundle), intent(out) :: array_bundle
+        type(t_array_wrapper), allocatable, intent(out) :: arrays(:)
         integer, intent(out) :: stat
         character(len=:), allocatable, intent(out) :: msg
 
         integer :: i, io
+        integer, allocatable :: vshape(:)
+        character(len=:), allocatable :: this_type
 
-        allocate (array_bundle%files(size(unzipped_bundle%files)))
+        allocate (arrays(size(unzipped_bundle%files)))
+
         do i = 1, size(unzipped_bundle%files)
-            array_bundle%files(i)%name = unzipped_bundle%files(i)%name
-            open (newunit=io, status='scratch', form='unformatted', access='stream', iostat=stat)
+            open (newunit=io, status='scratch', form='unformatted', access='stream', iostat=stat, iomsg=msg)
             if (stat /= 0) return
-            write (io) unzipped_bundle%files(i)%data
-            call load_string_to_array(io, unzipped_bundle%files(i), array_bundle%files(i), stat, msg)
-            close (io, status='delete', iostat=stat)
+
+            write (io, iostat=stat) unzipped_bundle%files(i)%data
+            if (stat /= 0) then
+                msg = 'Failed to write unzipped data to scratch file.'
+                close (io, status='delete'); return
+            end if
+
+            rewind (io)
+            call get_descriptor(io, unzipped_bundle%files(i)%name, this_type, vshape, stat, msg)
+            if (stat /= 0) return
+
+            select case (this_type)
+            #:for k1, t1 in KINDS_TYPES
+            case (type_${t1[0]}$${k1}$)
+                select case (size(vshape))
+                #:for rank in RANKS
+                case (${rank}$)
+                    block
+                        ${t1}$, allocatable :: array${ranksuffix(rank)}$
+
+                        call allocate_array(array, vshape, stat)
+                        if (stat /= 0) then
+                            msg = "Failed to allocate array of type '"//this_type//"'."; return
+                        end if
+
+                        read (io, iostat=stat) array
+                        if (stat /= 0) then
+                            msg = "Failed to read array of type '"//this_type//"' "//&
+                                & 'with total size of '//to_string(product(vshape)); return
+                        end if
+
+                        call arrays(i)%allocate_array(array, stat, msg)
+                        if (stat /= 0) then
+                            msg = "Failed to allocate array of type '"//this_type//"' "//&
+                                & 'with total size of '//to_string(product(vshape)); return
+                        end if
+
+                        arrays(i)%array%name = unzipped_bundle%files(i)%name
+                    end block
+                #:endfor
+                case default
+                    stat = 1; msg = 'Unsupported rank for array of type '//this_type//': '// &
+                    & to_string(size(vshape))//'.'; return
+                end select
+            #:endfor
+            case default
+                stat = 1; msg = 'Unsupported array type: '//this_type//'.'; return
+            end select
+
+            close (io, status='delete')
             if (stat /= 0) return
         end do
     end
 
-    module subroutine load_string_to_array(io, unzipped_file, array, stat, msg)
-        integer, intent(in) :: io
-        type(t_unzipped_file), intent(in) :: unzipped_file
-        class(t_array), intent(inout) :: array
-        integer, intent(out) :: stat
-        character(len=:), allocatable, intent(out) :: msg
-
-        #:for k1, t1 in KINDS_TYPES
-            #:for rank in RANKS
-                ${t1}$, allocatable :: array_${t1[0]}$${k1}$_${rank}$${ranksuffix(rank)}$
-            #:endfor
-        #:endfor
-
-        integer, allocatable :: vshape(:)
-
-        select type (arr => array)
-            #:for k1, t1 in KINDS_TYPES
-                #:for rank in RANKS
-                    type is (t_array_${t1[0]}$${k1}$_${rank}$)
-                    call verify_npy_file(io, unzipped_file%name, type_${t1[0]}$${k1}$, vshape, ${rank}$, stat, msg)
-                    if (stat /= 0) return
-                    call allocate_array(array_${t1[0]}$${k1}$_${rank}$, vshape, stat)
-                    if (stat /= 0) then
-                        msg = "Failed to allocate array of type '"//type_${t1[0]}$${k1}$//"' "//&
-                            & "with total size of "//to_string(product(vshape))
-                        return
-                    end if
-                    read (io, iostat=stat) array_${t1[0]}$${k1}$_${rank}$${ranksuffix(rank)}$
-                    arr%values = array_${t1[0]}$${k1}$_${rank}$${ranksuffix(rank)}$
-                #:endfor
-            #:endfor
-        class default
-            stat = 1; msg = 'Unsupported array type.'; return
-        end select
-    end
-
-    !> Open file and try to identify the problem.
-    module subroutine identify_problem(filename, stat, msg)
+    !> Open file and try to identify the cause of the error that occurred during unzip.
+    module subroutine identify_unzip_problem(filename, stat, msg)
         character(len=*), intent(in) :: filename
         integer, intent(inout) :: stat
         character(len=:), allocatable, intent(inout) :: msg
@@ -291,7 +282,7 @@ contains
         
         ! stat should be zero if no error occurred
         stat = 0
-        
+
         read(io, iostat=stat) header
         if (stat /= 0) return
 
