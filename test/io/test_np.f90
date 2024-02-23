@@ -1,8 +1,9 @@
 module test_np
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp
-    use stdlib_array, only: t_array_wrapper
+    use stdlib_array
+    use stdlib_strings, only: to_string
     use stdlib_io_np, only: load_npy, save_npy, load_npz
-    use testdrive, only: new_unittest, unittest_type, error_type, check
+    use testdrive, only: new_unittest, unittest_type, error_type, check, test_failed
     implicit none
     private
 
@@ -42,7 +43,9 @@ contains
                     new_unittest("npz-empty-zip", test_npz_empty_zip, should_fail=.true.), &
                     new_unittest("npz-not-zip", test_npz_not_zip, should_fail=.true.), &
                     new_unittest("npz-empty-array", test_npz_empty_array), &
-                    new_unittest("npz-exceeded-rank", test_npz_exceeded_rank, should_fail=.true.) &
+                    new_unittest("npz-exceeded-rank", test_npz_exceeded_rank, should_fail=.true.), &
+                    new_unittest("npz-single-file-one-dim", test_npz_single_file_one_dim), &
+                    new_unittest("npz-two-files-one-dim", test_npz_two_files) &
                     ]
     end subroutine collect_np
 
@@ -743,6 +746,16 @@ contains
         call delete_file(filename)
 
         call check(error, stat, msg)
+        call check(error, size(arrays) == 1, 'Size of arrays not 1: '//trim(to_string(size(arrays))))
+        call check(error, allocated(arrays(1)%array), 'Array not allocated.')
+
+        select type (array => arrays(1)%array)
+        type is (t_array_rdp_1)
+            call check(error, allocated(array%values), 'Values not allocated.')
+            call check(error, size(array%values) == 0, 'Values not empty: '//trim(to_string(size(array%values))))
+        class default
+            call test_failed(error, 'Array not allocated for correct type.')
+        end select
     end
 
     subroutine test_npz_exceeded_rank(error)
@@ -772,6 +785,118 @@ contains
         call delete_file(filename)
 
         call check(error, stat, msg)
+    end
+
+    subroutine test_npz_single_file_one_dim(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        ! arr_0.npy = [2,4,8]
+        character(*), parameter :: binary_data = 'PK'//char(3)//char(4)//'-'//repeat(char(0), 7)//'!'//char(0)//'&M'// &
+            & char(int(z'b0'))//char(int(z'd8'))//repeat(char(int(z'ff')), 8)//char(9)//char(0)//char(int(z'14'))// &
+            & char(0)//'arr_0.npy'//char(1)//char(0)//char(int(z'10'))//char(0)//char(int(z'98'))//repeat(char(0), 7)// &
+            & char(int(z'98'))//repeat(char(0), 7)//char(int(z'93'))//'NUMPY'//char(1)//char(0)//'v'//char(0)// &
+            & "{'descr': '<i8', 'fortran_order': False, 'shape': (3,), }"//repeat(' ', 60)//char(int(z'0a'))// &
+            & char(2)//repeat(char(0), 7)//char(4)//repeat(char(0), 7)//char(8)//repeat(char(0), 7)//'PK'//char(1)//char(2)// &
+            & '-'//char(3)//'-'//repeat(char(0), 7)//'!'//char(0)//'&M'//char(int(z'b0'))//char(int(z'd8'))//char(int(z'98'))// &
+            & repeat(char(0), 3)//char(int(z'98'))//repeat(char(0), 3)//char(9)//repeat(char(0), 11)//char(int(z'80'))//char(1)// &
+            & repeat(char(0), 4)//'arr_0.npyPK'//char(5)//char(6)//repeat(char(0), 4)//char(1)//char(0)//char(1)// &
+            & char(0)//'7'//repeat(char(0), 3)//char(int(z'd3'))//repeat(char(0), 5)
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = '.test-single-file-one-dim.npz'
+        type(t_array_wrapper), allocatable :: arrays(:)
+
+        open (newunit=io, file=filename, form='unformatted', access='stream')
+        write (io) binary_data
+        close (io)
+
+        call load_npz(filename, arrays, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat, msg)
+        call check(error, size(arrays) == 1, 'Size of arrays not 1: '//trim(to_string(size(arrays))))
+        call check(error, allocated(arrays(1)%array), 'Array not allocated.')
+
+        select type (array => arrays(1)%array)
+        type is (t_array_iint64_1)
+            call check(error, array%name == 'arr_0.npy', 'Wrong name: '//trim(array%name))
+            call check(error, allocated(array%values), 'Values not allocated.')
+            call check(error, size(array%values) == 3, 'Not 3 entries in values: '//trim(to_string(size(array%values))))
+            call check(error, array%values(1) == 2, 'First value is not 2: '//trim(to_string(array%values(1))))
+            call check(error, array%values(2) == 4, 'Second value is not 4: '//trim(to_string(array%values(2))))
+            call check(error, array%values(3) == 8, 'Third value is not 8: '//trim(to_string(array%values(3))))
+        class default
+            call test_failed(error, 'Array not allocated for correct type.')
+        end select
+    end
+
+    subroutine test_npz_two_files(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        ! arr_0.npy = [[1,2],[3,4]]
+        ! arr_1.npy = [1.2,3.4]
+        character(*), parameter :: binary_data = 'PK'//char(3)//char(4)//'-'//repeat(char(0), 7)//'!'//char(0)//char(int(z'a0'))// &
+            & 'DK['//repeat(char(int(z'ff')), 8)//char(9)//char(0)//char(int(z'14'))//char(0)//'arr_0.npy'//char(1)// &
+            & char(0)//char(int(z'10'))//char(0)//char(int(z'a0'))//repeat(char(0), 7)//char(int(z'a0'))// &
+            & repeat(char(0), 7)//char(int(z'93'))//'NUMPY'//char(1)//char(0)//'v'//char(0)// &
+            & "{'descr': '<i8', 'fortran_order': False, 'shape': (2, 2), }"//repeat(' ', 58)//char(int(z'0a'))//char(1)// &
+            & repeat(char(0), 7)//char(2)//repeat(char(0), 7)//char(3)//repeat(char(0), 7)//char(4)//repeat(char(0), 7)//'PK'// &
+            & char(3)//char(4)//'-'//repeat(char(0), 7)//'!'//char(0)//char(int(z'f0'))//'zM?'//repeat(char(int(z'ff')), 8)// &
+            & char(9)//char(0)//char(int(z'14'))//char(0)//'arr_1.npy'//char(1)//char(0)//char(int(z'10'))//char(0)// &
+            & char(int(z'90'))//repeat(char(0), 7)//char(int(z'90'))//repeat(char(0), 7)//char(int(z'93'))//'NUMPY'//char(1)// &
+            & char(0)//'v'//char(0)//"{'descr': '<f8', 'fortran_order': False, 'shape': (2,), }"//repeat(' ', 60)// &
+            & char(int(z'0a'))//'333333'//char(int(z'f3'))//'?333333'//char(int(z'0b'))//'@PK'//char(1)//char(2)//'-'// &
+            & char(3)//'-'//repeat(char(0), 7)//'!'//char(0)//char(int(z'a0'))//'DK['//char(int(z'a0'))//repeat(char(0), 3)// &
+            & char(int(z'a0'))//repeat(char(0), 3)//char(9)//repeat(char(0), 11)//char(int(z'80'))//char(1)//repeat(char(0), 4)// &
+            & 'arr_0.npyPK'//char(1)//char(2)//'-'//char(3)//'-'//repeat(char(0), 7)//'!'//char(0)//char(int(z'f0'))//'zM?'// &
+            & char(int(z'90'))//repeat(char(0), 3)//char(int(z'90'))//repeat(char(0), 3)//char(9)//repeat(char(0), 11)// &
+            & char(int(z'80'))//char(1)//char(int(z'db'))//repeat(char(0), 3)//'arr_1.npyPK'//char(5)//char(6)// &
+            & repeat(char(0), 4)//char(2)//char(0)//char(2)//char(0)//'n'//repeat(char(0), 3)//char(int(z'a6'))//char(1)// &
+            & repeat(char(0), 4)
+
+        integer :: io, stat
+        character(len=:), allocatable :: msg
+        character(len=*), parameter :: filename = '.test-two-files.npz'
+        type(t_array_wrapper), allocatable :: arrays(:)
+
+        open (newunit=io, file=filename, form='unformatted', access='stream')
+        write (io) binary_data
+        close (io)
+
+        call load_npz(filename, arrays, stat, msg)
+        call delete_file(filename)
+
+        call check(error, stat, msg)
+        call check(error, size(arrays) == 2, 'Size of arrays not 2: '//trim(to_string(size(arrays))))
+        call check(error, allocated(arrays(1)%array), 'Array 1 not allocated.')
+        call check(error, allocated(arrays(2)%array), 'Array 2 not allocated.')
+
+        select type (array => arrays(1)%array)
+        type is (t_array_iint64_2)
+            call check(error, array%name == 'arr_0.npy', 'Wrong name: '//trim(array%name))
+            call check(error, allocated(array%values), 'Values not allocated.')
+            call check(error, size(array%values) == 4, 'Not 4 entries in values: '//trim(to_string(size(array%values))))
+            call check(error, size(array%values, 1) == 2, 'Not 2 entries in dim 1: '//trim(to_string(size(array%values, 2))))
+            call check(error, size(array%values, 2) == 2, 'Not 2 entries in dim 2: '//trim(to_string(size(array%values, 2))))
+            call check(error, array%values(1, 1) == 1, 'First value in dim 1 not 1: '//trim(to_string(array%values(1, 1))))
+            call check(error, array%values(2, 1) == 2, 'Second value in dim 1 not 2: '//trim(to_string(array%values(2, 1))))
+            call check(error, array%values(1, 2) == 3, 'First value in dim 2 not 3: '//trim(to_string(array%values(1, 2))))
+            call check(error, array%values(2, 2) == 4, 'Second value in dim 2 not 4: '//trim(to_string(array%values(2, 2))))
+        class default
+            call test_failed(error, 'Array not allocated for correct type.')
+        end select
+
+        select type (array => arrays(2)%array)
+        type is (t_array_rdp_1)
+            call check(error, array%name == 'arr_1.npy', 'Wrong name: '//trim(array%name))
+            call check(error, allocated(array%values), 'Values not allocated.')
+            call check(error, size(array%values) == 2, 'Not 2 entries in values: '//trim(to_string(size(array%values))))
+            call check(error, array%values(1) == 1.2_dp, 'First value in dim 1 not 1.2: '//trim(to_string(array%values(1))))
+            call check(error, array%values(2) == 3.4_dp, 'Second value in dim 1 not 3.4: '//trim(to_string(array%values(2))))
+        class default
+            call test_failed(error, 'Array not allocated for correct type.')
+        end select
     end
 
     subroutine delete_file(filename)
