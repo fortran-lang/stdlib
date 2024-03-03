@@ -49,7 +49,9 @@ if(NOT FYPP)
 endif()
 
 # --- find dependencies
-find_library(MINIZIP_LIBRARY NAMES minizip HINTS /opt/homebrew/Caskroom/miniconda/base/envs/minizip/lib)
+if (NOT TARGET "minizip::minizip")
+  find_package("minizip" REQUIRED)
+endif()
 
 # Custom preprocessor flags
 if(DEFINED CMAKE_MAXIMUM_RANK)

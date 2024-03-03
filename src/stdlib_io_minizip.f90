@@ -1,4 +1,6 @@
-!> Interface to the minizip library for creating and extracting zip files.
+!> Interface to the minizip-ng library for creating and extracting zip files.
+!>
+!> https://github.com/zlib-ng/minizip-ng
 module stdlib_io_minizip
     use, intrinsic :: iso_c_binding, only: c_char, c_ptr, c_int, c_long
     implicit none
@@ -12,6 +14,7 @@ module stdlib_io_minizip
     integer, parameter, public :: UNZ_BADZIPFILE = -103
     integer, parameter, public :: UNZ_INTERNALERROR = -104
     integer, parameter, public :: UNZ_CRCERROR = -105
+    integer, parameter, public :: UNZ_BADPASSWORD = -106
 
     public :: unz_get_global_info
     public :: unz_open
