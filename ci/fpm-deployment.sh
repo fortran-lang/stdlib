@@ -9,7 +9,8 @@ destdir="${DESTDIR:-stdlib-fpm}"
 fypp="${FYPP:-$(which fypp)}"
 
 # Arguments for the fypp preprocessor
-fyflags="${FYFLAGS:--DMAXRANK=4}"
+maxrank=4
+fyflags="${FYFLAGS:--DMAXRANK=$maxrank}"
 
 # Number of parallel jobs for preprocessing
 if [ $(uname) = "Darwin" ]; then
@@ -21,6 +22,7 @@ fi
 # Additional files to include
 include=(
   "ci/fpm.toml"
+  "ci/.gitignore"
   "LICENSE"
   "VERSION"
 )
@@ -43,6 +45,12 @@ mkdir -p "$destdir/src" "$destdir/test" "$destdir/example"
 # Preprocess stdlib sources
 find src -maxdepth 1 -iname "*.fypp" \
   | cut -f1 -d. | xargs -P "$njob" -I{} "$fypp" "{}.fypp" "$destdir/{}.f90" $fyflags
+
+find test -name "test_*.fypp" -exec cp {} "$destdir/test/" \;
+fyflags="${fyflags} -I src"
+find $destdir/test -maxdepth 1 -iname "*.fypp" \
+  | cut -f1 -d. | xargs -P "$njob" -I{} "$fypp" "{}.fypp" "{}.f90" $fyflags
+find $destdir/test -name "test_*.fypp" -exec rm {} \;
 
 # Collect stdlib source files
 find src -maxdepth 1 -iname "*.f90" -exec cp {} "$destdir/src/" \;
