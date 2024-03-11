@@ -478,7 +478,9 @@ module stdlib_linalg_lapack_d
      public :: stdlib_dtrttp
      public :: stdlib_dtzrzf
      public :: stdlib_dzsum1
+#:if WITH_QP
      public :: stdlib_dlag2q
+#:endif
 
      ! 64-bit real constants 
      real(dp),    parameter, private ::     negone = -1.00_dp
@@ -24148,6 +24150,7 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dzsum1
 
+#:if WITH_QP
      !> DLAG2Q: converts a SINGLE PRECISION matrix, SA, to a DOUBLE
      !> PRECISION matrix, A.
      !> Note that while it is possible to overflow while converting
@@ -24177,6 +24180,7 @@ module stdlib_linalg_lapack_d
            end do
            return
      end subroutine stdlib_dlag2q
+#:endif
 
      !> DBBCSD: computes the CS decomposition of an orthogonal matrix in
      !> bidiagonal-block form,
