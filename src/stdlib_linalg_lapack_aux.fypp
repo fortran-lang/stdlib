@@ -89,7 +89,8 @@ module stdlib_linalg_lapack_aux
             import sp,dp,qp,lk 
             implicit none 
             real(dp), intent(in) :: alphar,alphai 
-        end function stdlib_select_d 
+        end function stdlib_select_d
+#:if WITH_QP 
         pure logical(lk) function stdlib_selctg_q(alphar,alphai,beta) 
             import sp,dp,qp,lk 
             implicit none 
@@ -100,6 +101,7 @@ module stdlib_linalg_lapack_aux
             implicit none 
             real(qp), intent(in) :: alphar,alphai 
         end function stdlib_select_q 
+#:endif
         pure logical(lk) function stdlib_selctg_c(alpha,beta) 
             import sp,dp,qp,lk 
             implicit none 
@@ -120,6 +122,7 @@ module stdlib_linalg_lapack_aux
             implicit none 
             complex(dp), intent(in) :: alpha 
         end function stdlib_select_z 
+#:if WITH_QP
         pure logical(lk) function stdlib_selctg_w(alpha,beta) 
             import sp,dp,qp,lk 
             implicit none 
@@ -129,7 +132,8 @@ module stdlib_linalg_lapack_aux
             import sp,dp,qp,lk 
             implicit none 
             complex(qp), intent(in) :: alpha 
-        end function stdlib_select_w 
+        end function stdlib_select_w
+#:endif 
      end interface 
 
 
