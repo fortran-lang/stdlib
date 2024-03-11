@@ -20,7 +20,24 @@ set(fppFiles
     stdlib_io_npy_save.fypp
     stdlib_kinds.fypp
     stdlib_linalg.fypp
+    stdlib_linalg_constants.fypp
+    stdlib_linalg_blas.fypp
+    stdlib_linalg_blas_aux.fypp
+    stdlib_linalg_blas_s.fypp
+    stdlib_linalg_blas_d.fypp
+    stdlib_linalg_blas_q.fypp
+    stdlib_linalg_blas_c.fypp
+    stdlib_linalg_blas_z.fypp
+    stdlib_linalg_blas_w.fypp
     stdlib_linalg_diag.fypp
+    stdlib_linalg_lapack.fypp
+    stdlib_linalg_lapack_aux.fypp
+    stdlib_linalg_lapack_s.fypp
+    stdlib_linalg_lapack_d.fypp
+    stdlib_linalg_lapack_q.fypp
+    stdlib_linalg_lapack_c.fypp
+    stdlib_linalg_lapack_z.fypp
+    stdlib_linalg_lapack_w.fypp
     stdlib_linalg_outer_product.fypp
     stdlib_linalg_kronecker.fypp
     stdlib_linalg_cross_product.fypp
