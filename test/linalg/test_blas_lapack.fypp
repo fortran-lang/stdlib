@@ -41,6 +41,9 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
+#:if k1=="xdp"
+        call skip_test(error, "Extended precision is not enabled")
+#:else
         ${t1}$ :: A(3,3),x(3),y(3),ylap(3),yintr(3),alpha,beta
         call random_number(alpha)
         call random_number(beta)
@@ -54,13 +57,17 @@ contains
         call check(error, sum(abs(ylap - yintr)) < sptol, &
             "blas vs. intrinsics axpy: sum() < sptol failed")
         if (allocated(error)) return
-
+#:endif
     end subroutine test_gemv${t1[0]}$${k1}$
 
     ! Find matrix inverse from LU decomposition
     subroutine test_getri${t1[0]}$${k1}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
+
+#:if k1=="xdp"
+        call skip_test(error, "Extended precision is not enabled")
+#:else
 
         integer(ilp), parameter :: n = 3
         ${t1}$ :: A(n,n)
@@ -89,7 +96,7 @@ contains
         call check(error, sum(abs(A - eye(3))) < sptol, &
             "lapack eye inversion: tolerance check failed")
         if (allocated(error)) return
-
+#:endif
     end subroutine test_getri${t1[0]}$${k1}$
   #:endfor
 
