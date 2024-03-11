@@ -28,7 +28,7 @@ contains
         testsuite = [ &
   #:for k1, t1 in REAL_KINDS_TYPES
             new_unittest("test_gemv${t1[0]}$${k1}$", test_gemv${t1[0]}$${k1}$), &
-            new_unittest("test_getri${t1[0]}$${k1}$", test_gemv${t1[0]}$${k1}$), &
+            new_unittest("test_getri${t1[0]}$${k1}$", test_getri${t1[0]}$${k1}$), &
   #:endfor
             new_unittest("test_idamax", test_idamax) &
             ]
