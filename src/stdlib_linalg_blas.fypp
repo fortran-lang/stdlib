@@ -17,10 +17,7 @@ module stdlib_linalg_blas
 
           !> AXPY: constant times a vector plus a vector.
           interface axpy
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine caxpy(n,ca,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -28,20 +25,10 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(sp), intent(inout) :: cy(*)
                end subroutine caxpy
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_caxpy
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine daxpy(n,da,dx,incx,dy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -49,23 +36,13 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(inout) :: dy(*)
                end subroutine daxpy
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_daxpy
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qaxpy
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine saxpy(n,sa,sx,incx,sy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -73,23 +50,13 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(inout) :: sy(*)
                end subroutine saxpy
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_saxpy
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_waxpy
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zaxpy(n,za,zx,incx,zy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -97,26 +64,16 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(dp), intent(inout) :: zy(*)
                end subroutine zaxpy
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zaxpy
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface axpy
 
 
 
           !> COPY: copies a vector x to a vector y.
           interface copy
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ccopy(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -124,20 +81,10 @@ module stdlib_linalg_blas
                     complex(sp), intent(in) :: cx(*)
                     complex(sp), intent(out) :: cy(*)
                end subroutine ccopy
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ccopy
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dcopy(n,dx,incx,dy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -145,23 +92,13 @@ module stdlib_linalg_blas
                     real(dp), intent(in) :: dx(*)
                     real(dp), intent(out) :: dy(*)
                end subroutine dcopy
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dcopy
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qcopy
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine scopy(n,sx,incx,sy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -169,23 +106,13 @@ module stdlib_linalg_blas
                     real(sp), intent(in) :: sx(*)
                     real(sp), intent(out) :: sy(*)
                end subroutine scopy
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_scopy
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wcopy
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zcopy(n,zx,incx,zy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -193,16 +120,9 @@ module stdlib_linalg_blas
                     complex(dp), intent(in) :: zx(*)
                     complex(dp), intent(out) :: zy(*)
                end subroutine zcopy
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zcopy
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface copy
 
 
@@ -210,49 +130,29 @@ module stdlib_linalg_blas
           !> DOT: forms the dot product of two vectors.
           !> uses unrolled loops for increments equal to one.
           interface dot
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure real(dp) function ddot(n,dx,incx,dy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(in) :: dx(*),dy(*)
                end function ddot
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ddot
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qdot
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure real(sp) function sdot(n,sx,incx,sy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: sx(*),sy(*)
                end function sdot
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_sdot
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface dot
 
 
@@ -260,49 +160,29 @@ module stdlib_linalg_blas
           !> DOTC: forms the dot product of two complex vectors
           !> DOTC = X^H * Y
           interface dotc
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure complex(sp) function cdotc(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(sp), intent(in) :: cx(*),cy(*)
                end function cdotc
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cdotc
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wdotc
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure complex(dp) function zdotc(n,zx,incx,zy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(dp), intent(in) :: zx(*),zy(*)
                end function zdotc
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zdotc
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface dotc
 
 
@@ -310,49 +190,29 @@ module stdlib_linalg_blas
           !> DOTU: forms the dot product of two complex vectors
           !> DOTU = X^T * Y
           interface dotu
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure complex(sp) function cdotu(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(sp), intent(in) :: cx(*),cy(*)
                end function cdotu
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cdotu
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wdotu
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure complex(dp) function zdotu(n,zx,incx,zy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(dp), intent(in) :: zx(*),zy(*)
                end function zdotu
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zdotu
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface dotu
 
 
@@ -363,10 +223,7 @@ module stdlib_linalg_blas
           !> where alpha and beta are scalars, x and y are vectors and A is an
           !> m by n band matrix, with kl sub-diagonals and ku super-diagonals.
           interface gbmv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine cgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -375,20 +232,10 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans
                     complex(sp), intent(inout) :: y(*)
                end subroutine cgbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cgbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -397,23 +244,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans
                     real(dp), intent(inout) :: y(*)
                end subroutine dgbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dgbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qgbmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine sgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -422,23 +259,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans
                     real(sp), intent(inout) :: y(*)
                end subroutine sgbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_sgbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wgbmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -447,16 +274,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans
                     complex(dp), intent(inout) :: y(*)
                end subroutine zgbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zgbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface gbmv
 
 
@@ -468,10 +288,7 @@ module stdlib_linalg_blas
           !> alpha and beta are scalars, and A, B and C are matrices, with op( A )
           !> an m by k matrix,  op( B )  a  k by n matrix and  C an m by n matrix.
           interface gemm
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine cgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -480,20 +297,10 @@ module stdlib_linalg_blas
                     character, intent(in) :: transa,transb
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine cgemm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cgemm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -502,23 +309,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: transa,transb
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dgemm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dgemm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qgemm
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine sgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -527,23 +324,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: transa,transb
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine sgemm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_sgemm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wgemm
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -552,16 +339,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: transa,transb
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zgemm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zgemm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface gemm
 
 
@@ -572,10 +352,7 @@ module stdlib_linalg_blas
           !> where alpha and beta are scalars, x and y are vectors and A is an
           !> m by n matrix.
           interface gemv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine cgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -584,20 +361,10 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans
                     complex(sp), intent(inout) :: y(*)
                end subroutine cgemv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cgemv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -606,23 +373,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans
                     real(dp), intent(inout) :: y(*)
                end subroutine dgemv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dgemv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qgemv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine sgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -631,23 +388,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans
                     real(sp), intent(inout) :: y(*)
                end subroutine sgemv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_sgemv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wgemv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -656,16 +403,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans
                     complex(dp), intent(inout) :: y(*)
                end subroutine zgemv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zgemv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface gemv
 
 
@@ -675,10 +415,7 @@ module stdlib_linalg_blas
           !> where alpha is a scalar, x is an m element vector, y is an n element
           !> vector and A is an m by n matrix.
           interface ger
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dger(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -686,23 +423,13 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
                end subroutine dger
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dger
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qger
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine sger(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -710,16 +437,9 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     real(sp), intent(inout) :: a(lda,*)
                end subroutine sger
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_sger
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface ger
 
 
@@ -729,10 +449,7 @@ module stdlib_linalg_blas
           !> where alpha is a scalar, x is an m element vector, y is an n element
           !> vector and A is an m by n matrix.
           interface gerc
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine cgerc(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -740,23 +457,13 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
                end subroutine cgerc
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cgerc
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wgerc
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zgerc(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -764,16 +471,9 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
                end subroutine zgerc
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zgerc
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface gerc
 
 
@@ -783,10 +483,7 @@ module stdlib_linalg_blas
           !> where alpha is a scalar, x is an m element vector, y is an n element
           !> vector and A is an m by n matrix.
           interface geru
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine cgeru(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -794,23 +491,13 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
                end subroutine cgeru
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cgeru
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wgeru
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zgeru(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -818,16 +505,9 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
                end subroutine zgeru
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zgeru
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface geru
 
 
@@ -837,10 +517,7 @@ module stdlib_linalg_blas
           !> where alpha and beta are scalars, x and y are n element vectors and
           !> A is an n by n hermitian band matrix, with k super-diagonals.
           interface hbmv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine chbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -849,23 +526,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: y(*)
                end subroutine chbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_chbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_whbmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zhbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -874,16 +541,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: y(*)
                end subroutine zhbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zhbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface hbmv
 
 
@@ -895,10 +555,7 @@ module stdlib_linalg_blas
           !> where alpha and beta are scalars, A is an hermitian matrix and  B and
           !> C are m by n matrices.
           interface hemm
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine chemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -907,23 +564,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: side,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine chemm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_chemm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_whemm
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zhemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -932,16 +579,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: side,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zhemm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zhemm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface hemm
 
 
@@ -951,10 +591,7 @@ module stdlib_linalg_blas
           !> where alpha and beta are scalars, x and y are n element vectors and
           !> A is an n by n hermitian matrix.
           interface hemv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine chemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -963,23 +600,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: y(*)
                end subroutine chemv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_chemv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_whemv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zhemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -988,16 +615,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: y(*)
                end subroutine zhemv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zhemv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface hemv
 
 
@@ -1007,10 +627,7 @@ module stdlib_linalg_blas
           !> where alpha is a real scalar, x is an n element vector and A is an
           !> n by n hermitian matrix.
           interface her
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine cher(uplo,n,alpha,x,incx,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1020,23 +637,13 @@ module stdlib_linalg_blas
                     complex(sp), intent(inout) :: a(lda,*)
                     complex(sp), intent(in) :: x(*)
                end subroutine cher
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cher
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wher
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zher(uplo,n,alpha,x,incx,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1046,16 +653,9 @@ module stdlib_linalg_blas
                     complex(dp), intent(inout) :: a(lda,*)
                     complex(dp), intent(in) :: x(*)
                end subroutine zher
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zher
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface her
 
 
@@ -1065,10 +665,7 @@ module stdlib_linalg_blas
           !> where alpha is a scalar, x and y are n element vectors and A is an n
           !> by n hermitian matrix.
           interface her2
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine cher2(uplo,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1077,23 +674,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: a(lda,*)
                end subroutine cher2
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cher2
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wher2
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zher2(uplo,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1102,16 +689,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: a(lda,*)
                end subroutine zher2
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zher2
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface her2
 
 
@@ -1124,10 +704,7 @@ module stdlib_linalg_blas
           !> hermitian matrix and  A and B  are  n by k matrices in the first case
           !> and  k by n  matrices in the second case.
           interface her2k
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine cher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1137,23 +714,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine cher2k
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cher2k
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wher2k
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1163,16 +730,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zher2k
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zher2k
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface her2k
 
 
@@ -1185,10 +745,7 @@ module stdlib_linalg_blas
           !> matrix and  A  is an  n by k  matrix in the  first case and a  k by n
           !> matrix in the second case.
           interface herk
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine cherk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1198,23 +755,13 @@ module stdlib_linalg_blas
                     complex(sp), intent(in) :: a(lda,*)
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine cherk
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cherk
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wherk
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zherk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1224,16 +771,9 @@ module stdlib_linalg_blas
                     complex(dp), intent(in) :: a(lda,*)
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zherk
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zherk
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface herk
 
 
@@ -1243,10 +783,7 @@ module stdlib_linalg_blas
           !> where alpha and beta are scalars, x and y are n element vectors and
           !> A is an n by n hermitian matrix, supplied in packed form.
           interface hpmv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine chpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1255,23 +792,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: y(*)
                end subroutine chpmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_chpmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_whpmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zhpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1280,16 +807,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: y(*)
                end subroutine zhpmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zhpmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface hpmv
 
 
@@ -1299,10 +819,7 @@ module stdlib_linalg_blas
           !> where alpha is a real scalar, x is an n element vector and A is an
           !> n by n hermitian matrix, supplied in packed form.
           interface hpr
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine chpr(uplo,n,alpha,x,incx,ap)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1312,23 +829,13 @@ module stdlib_linalg_blas
                     complex(sp), intent(inout) :: ap(*)
                     complex(sp), intent(in) :: x(*)
                end subroutine chpr
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_chpr
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_whpr
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zhpr(uplo,n,alpha,x,incx,ap)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1338,16 +845,9 @@ module stdlib_linalg_blas
                     complex(dp), intent(inout) :: ap(*)
                     complex(dp), intent(in) :: x(*)
                end subroutine zhpr
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zhpr
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface hpr
 
 
@@ -1357,10 +857,7 @@ module stdlib_linalg_blas
           !> where alpha is a scalar, x and y are n element vectors and A is an
           !> n by n hermitian matrix, supplied in packed form.
           interface hpr2
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine chpr2(uplo,n,alpha,x,incx,y,incy,ap)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1369,23 +866,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: ap(*)
                end subroutine chpr2
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_chpr2
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_whpr2
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zhpr2(uplo,n,alpha,x,incx,y,incy,ap)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1394,16 +881,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: ap(*)
                end subroutine zhpr2
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zhpr2
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface hpr2
 
 
@@ -1414,59 +894,36 @@ module stdlib_linalg_blas
           !> name, so that
           !> NRM2 := sqrt( x'*x )
           interface nrm2
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure function dnrm2( n, x, incx )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,n
                     real(dp), intent(in) :: x(*)
                end function dnrm2
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dnrm2
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qnrm2
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure function snrm2( n, x, incx )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,n
                     real(sp), intent(in) :: x(*)
                end function snrm2
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_snrm2
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface nrm2
 
 
 
           !> ROT: applies a plane rotation.
           interface rot
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine drot(n,dx,incx,dy,incy,c,s)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1474,23 +931,13 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(inout) :: dx(*),dy(*)
                end subroutine drot
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_drot
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qrot
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine srot(n,sx,incx,sy,incy,c,s)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1498,16 +945,9 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(inout) :: sx(*),sy(*)
                end subroutine srot
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_srot
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface rot
 
 
@@ -1528,10 +968,7 @@ module stdlib_linalg_blas
           !> sign of c and s will be different from those computed by SROTG
           !> if the signs of a and b are not the same.
           interface rotg
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine crotg( a, b, c, s )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1540,66 +977,36 @@ module stdlib_linalg_blas
                     complex(sp), intent(in) :: b
                     complex(sp), intent(out) :: s
                end subroutine crotg
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_crotg
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine drotg( a, b, c, s )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     real(dp), intent(inout) :: a,b
                     real(dp), intent(out) :: c,s
                end subroutine drotg
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_drotg
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qrotg
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine srotg( a, b, c, s )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     real(sp), intent(inout) :: a,b
                     real(sp), intent(out) :: c,s
                end subroutine srotg
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_srotg
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wrotg
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zrotg( a, b, c, s )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1608,16 +1015,9 @@ module stdlib_linalg_blas
                     complex(dp), intent(in) :: b
                     complex(dp), intent(out) :: s
                end subroutine zrotg
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zrotg
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface rotg
 
 
@@ -1634,10 +1034,7 @@ module stdlib_linalg_blas
           !> (DH21  DH22),   (DH21  1._dp),   (-1._dp DH22),   (0._dp  1._dp).
           !> SEE ROTMG FOR A DESCRIPTION OF DATA STORAGE IN DPARAM.
           interface rotm
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine drotm(n,dx,incx,dy,incy,dparam)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1645,23 +1042,13 @@ module stdlib_linalg_blas
                     real(dp), intent(in) :: dparam(5)
                     real(dp), intent(inout) :: dx(*),dy(*)
                end subroutine drotm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_drotm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qrotm
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine srotm(n,sx,incx,sy,incy,sparam)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1669,16 +1056,9 @@ module stdlib_linalg_blas
                     real(sp), intent(in) :: sparam(5)
                     real(sp), intent(inout) :: sx(*),sy(*)
                end subroutine srotm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_srotm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface rotm
 
 
@@ -1697,10 +1077,7 @@ module stdlib_linalg_blas
           !> INEXACT.  THIS IS OK AS THEY ARE ONLY USED FOR TESTING THE SIZE
           !> OF DD1 AND DD2.  ALL ACTUAL SCALING OF DATA IS DONE USING GAM.
           interface rotmg
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine drotmg(dd1,dd2,dx1,dy1,dparam)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1708,23 +1085,13 @@ module stdlib_linalg_blas
                     real(dp), intent(in) :: dy1
                     real(dp), intent(out) :: dparam(5)
                end subroutine drotmg
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_drotmg
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qrotmg
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine srotmg(sd1,sd2,sx1,sy1,sparam)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1732,16 +1099,9 @@ module stdlib_linalg_blas
                     real(sp), intent(in) :: sy1
                     real(sp), intent(out) :: sparam(5)
                end subroutine srotmg
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_srotmg
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface rotmg
 
 
@@ -1751,10 +1111,7 @@ module stdlib_linalg_blas
           !> where alpha and beta are scalars, x and y are n element vectors and
           !> A is an n by n symmetric band matrix, with k super-diagonals.
           interface sbmv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dsbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1763,23 +1120,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: y(*)
                end subroutine dsbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dsbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qsbmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ssbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1788,26 +1135,16 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: y(*)
                end subroutine ssbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ssbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface sbmv
 
 
 
           !> SCAL: scales a vector by a constant.
           interface scal
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine cscal(n,ca,cx,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1815,20 +1152,10 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,n
                     complex(sp), intent(inout) :: cx(*)
                end subroutine cscal
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cscal
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dscal(n,da,dx,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1836,23 +1163,13 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,n
                     real(dp), intent(inout) :: dx(*)
                end subroutine dscal
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dscal
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qscal
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine sscal(n,sa,sx,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1860,23 +1177,13 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,n
                     real(sp), intent(inout) :: sx(*)
                end subroutine sscal
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_sscal
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wscal
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zscal(n,za,zx,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1884,16 +1191,9 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,n
                     complex(dp), intent(inout) :: zx(*)
                end subroutine zscal
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zscal
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface scal
 
 
@@ -1905,26 +1205,16 @@ module stdlib_linalg_blas
           !> where LX = 1 if INCX >= 0, else LX = 1+(1-N)*INCX, and LY is
           !> defined in a similar way using INCY.
           interface sdot
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure real(dp) function dsdot(n,sx,incx,sy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: sx(*),sy(*)
                end function dsdot
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dsdot
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qsdot
 #:endif
@@ -1937,10 +1227,7 @@ module stdlib_linalg_blas
           !> where alpha and beta are scalars, x and y are n element vectors and
           !> A is an n by n symmetric matrix, supplied in packed form.
           interface spmv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dspmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1949,23 +1236,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: y(*)
                end subroutine dspmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dspmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qspmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine sspmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -1974,16 +1251,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: y(*)
                end subroutine sspmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_sspmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface spmv
 
 
@@ -1993,10 +1263,7 @@ module stdlib_linalg_blas
           !> where alpha is a real scalar, x is an n element vector and A is an
           !> n by n symmetric matrix, supplied in packed form.
           interface spr
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dspr(uplo,n,alpha,x,incx,ap)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2005,23 +1272,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: ap(*)
                end subroutine dspr
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dspr
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qspr
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine sspr(uplo,n,alpha,x,incx,ap)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2030,16 +1287,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: ap(*)
                end subroutine sspr
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_sspr
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface spr
 
 
@@ -2049,10 +1299,7 @@ module stdlib_linalg_blas
           !> where alpha is a scalar, x and y are n element vectors and A is an
           !> n by n symmetric matrix, supplied in packed form.
           interface spr2
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dspr2(uplo,n,alpha,x,incx,y,incy,ap)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2061,23 +1308,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: ap(*)
                end subroutine dspr2
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dspr2
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qspr2
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine sspr2(uplo,n,alpha,x,incx,y,incy,ap)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2086,16 +1323,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: ap(*)
                end subroutine sspr2
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_sspr2
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface spr2
 
 
@@ -2104,10 +1334,7 @@ module stdlib_linalg_blas
           !> and the vectors cx and cy are complex.
           !> jack dongarra, linpack, 3/11/78.
           interface srot
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine csrot( n, cx, incx, cy, incy, c, s )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2115,26 +1342,16 @@ module stdlib_linalg_blas
                     real(sp), intent(in) :: c,s
                     complex(sp), intent(inout) :: cx(*),cy(*)
                end subroutine csrot
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_csrot
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface srot
 
 
 
           !> SSCAL: scales a complex vector by a real constant.
           interface sscal
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine csscal(n,sa,cx,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2142,108 +1359,61 @@ module stdlib_linalg_blas
                     integer(ilp), intent(in) :: incx,n
                     complex(sp), intent(inout) :: cx(*)
                end subroutine csscal
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_csscal
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface sscal
 
 
 
           !> SWAP: interchanges two vectors.
           interface swap
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine cswap(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(sp), intent(inout) :: cx(*),cy(*)
                end subroutine cswap
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_cswap
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dswap(n,dx,incx,dy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(inout) :: dx(*),dy(*)
                end subroutine dswap
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dswap
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qswap
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine sswap(n,sx,incx,sy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(inout) :: sx(*),sy(*)
                end subroutine sswap
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_sswap
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wswap
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zswap(n,zx,incx,zy,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(dp), intent(inout) :: zx(*),zy(*)
                end subroutine zswap
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zswap
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface swap
 
 
@@ -2255,10 +1425,7 @@ module stdlib_linalg_blas
           !> where  alpha and beta are scalars, A is a symmetric matrix and  B and
           !> C are m by n matrices.
           interface symm
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine csymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2267,20 +1434,10 @@ module stdlib_linalg_blas
                     character, intent(in) :: side,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csymm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_csymm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2289,23 +1446,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: side,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsymm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dsymm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qsymm
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ssymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2314,23 +1461,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: side,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssymm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ssymm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wsymm
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2339,16 +1476,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: side,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsymm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zsymm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface symm
 
 
@@ -2358,10 +1488,7 @@ module stdlib_linalg_blas
           !> where alpha and beta are scalars, x and y are n element vectors and
           !> A is an n by n symmetric matrix.
           interface symv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dsymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2370,23 +1497,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: y(*)
                end subroutine dsymv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dsymv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qsymv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ssymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2395,16 +1512,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: y(*)
                end subroutine ssymv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ssymv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface symv
 
 
@@ -2414,10 +1524,7 @@ module stdlib_linalg_blas
           !> where alpha is a real scalar, x is an n element vector and A is an
           !> n by n symmetric matrix.
           interface syr
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dsyr(uplo,n,alpha,x,incx,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2426,23 +1533,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: a(lda,*)
                end subroutine dsyr
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dsyr
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qsyr
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ssyr(uplo,n,alpha,x,incx,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2451,16 +1548,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: a(lda,*)
                end subroutine ssyr
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ssyr
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface syr
 
 
@@ -2470,10 +1560,7 @@ module stdlib_linalg_blas
           !> where alpha is a scalar, x and y are n element vectors and A is an n
           !> by n symmetric matrix.
           interface syr2
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dsyr2(uplo,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2482,23 +1569,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: a(lda,*)
                end subroutine dsyr2
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dsyr2
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qsyr2
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ssyr2(uplo,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2507,16 +1584,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: a(lda,*)
                end subroutine ssyr2
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ssyr2
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface syr2
 
 
@@ -2529,10 +1599,7 @@ module stdlib_linalg_blas
           !> and  A and B  are  n by k  matrices  in the  first  case  and  k by n
           !> matrices in the second case.
           interface syr2k
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine csyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2541,20 +1608,10 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csyr2k
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_csyr2k
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2563,23 +1620,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsyr2k
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dsyr2k
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qsyr2k
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ssyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2588,23 +1635,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssyr2k
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ssyr2k
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wsyr2k
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2613,16 +1650,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsyr2k
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zsyr2k
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface syr2k
 
 
@@ -2635,10 +1665,7 @@ module stdlib_linalg_blas
           !> and  A  is an  n by k  matrix in the first case and a  k by n  matrix
           !> in the second case.
           interface syrk
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine csyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2647,20 +1674,10 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csyrk
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_csyrk
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2669,23 +1686,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsyrk
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dsyrk
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qsyrk
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ssyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2694,23 +1701,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssyrk
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ssyrk
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wsyrk
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine zsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2719,16 +1716,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsyrk
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_zsyrk
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface syrk
 
 
@@ -2738,10 +1728,7 @@ module stdlib_linalg_blas
           !> where x is an n element vector and  A is an n by n unit, or non-unit,
           !> upper or lower triangular band matrix, with ( k + 1 ) diagonals.
           interface tbmv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ctbmv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2750,20 +1737,10 @@ module stdlib_linalg_blas
                     complex(sp), intent(in) :: a(lda,*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ctbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dtbmv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2772,23 +1749,13 @@ module stdlib_linalg_blas
                     real(dp), intent(in) :: a(lda,*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dtbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qtbmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine stbmv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2797,23 +1764,13 @@ module stdlib_linalg_blas
                     real(sp), intent(in) :: a(lda,*)
                     real(sp), intent(inout) :: x(*)
                end subroutine stbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_stbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wtbmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ztbmv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2822,16 +1779,9 @@ module stdlib_linalg_blas
                     complex(dp), intent(in) :: a(lda,*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztbmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ztbmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface tbmv
 
 
@@ -2844,10 +1794,7 @@ module stdlib_linalg_blas
           !> No test for singularity or near-singularity is included in this
           !> routine. Such tests must be performed before calling this routine.
           interface tbsv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ctbsv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2856,20 +1803,10 @@ module stdlib_linalg_blas
                     complex(sp), intent(in) :: a(lda,*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctbsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ctbsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dtbsv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2878,23 +1815,13 @@ module stdlib_linalg_blas
                     real(dp), intent(in) :: a(lda,*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtbsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dtbsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qtbsv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine stbsv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2903,23 +1830,13 @@ module stdlib_linalg_blas
                     real(sp), intent(in) :: a(lda,*)
                     real(sp), intent(inout) :: x(*)
                end subroutine stbsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_stbsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wtbsv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ztbsv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2928,16 +1845,9 @@ module stdlib_linalg_blas
                     complex(dp), intent(in) :: a(lda,*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztbsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ztbsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface tbsv
 
 
@@ -2947,10 +1857,7 @@ module stdlib_linalg_blas
           !> where x is an n element vector and  A is an n by n unit, or non-unit,
           !> upper or lower triangular matrix, supplied in packed form.
           interface tpmv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ctpmv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2959,20 +1866,10 @@ module stdlib_linalg_blas
                     complex(sp), intent(in) :: ap(*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctpmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ctpmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dtpmv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -2981,23 +1878,13 @@ module stdlib_linalg_blas
                     real(dp), intent(in) :: ap(*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtpmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dtpmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qtpmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine stpmv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3006,23 +1893,13 @@ module stdlib_linalg_blas
                     real(sp), intent(in) :: ap(*)
                     real(sp), intent(inout) :: x(*)
                end subroutine stpmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_stpmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wtpmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ztpmv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3031,16 +1908,9 @@ module stdlib_linalg_blas
                     complex(dp), intent(in) :: ap(*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztpmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ztpmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface tpmv
 
 
@@ -3052,10 +1922,7 @@ module stdlib_linalg_blas
           !> No test for singularity or near-singularity is included in this
           !> routine. Such tests must be performed before calling this routine.
           interface tpsv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ctpsv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3064,20 +1931,10 @@ module stdlib_linalg_blas
                     complex(sp), intent(in) :: ap(*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctpsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ctpsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dtpsv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3086,23 +1943,13 @@ module stdlib_linalg_blas
                     real(dp), intent(in) :: ap(*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtpsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dtpsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qtpsv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine stpsv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3111,23 +1958,13 @@ module stdlib_linalg_blas
                     real(sp), intent(in) :: ap(*)
                     real(sp), intent(inout) :: x(*)
                end subroutine stpsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_stpsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wtpsv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ztpsv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3136,16 +1973,9 @@ module stdlib_linalg_blas
                     complex(dp), intent(in) :: ap(*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztpsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ztpsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface tpsv
 
 
@@ -3156,10 +1986,7 @@ module stdlib_linalg_blas
           !> non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
           !> op( A ) = A   or   op( A ) = A**T   or   op( A ) = A**H.
           interface trmm
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ctrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3168,20 +1995,10 @@ module stdlib_linalg_blas
                     character, intent(in) :: diag,side,transa,uplo
                     complex(sp), intent(inout) :: b(ldb,*)
                end subroutine ctrmm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ctrmm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dtrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3190,23 +2007,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: diag,side,transa,uplo
                     real(dp), intent(inout) :: b(ldb,*)
                end subroutine dtrmm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dtrmm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qtrmm
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine strmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3215,23 +2022,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: diag,side,transa,uplo
                     real(sp), intent(inout) :: b(ldb,*)
                end subroutine strmm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_strmm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wtrmm
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ztrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3240,16 +2037,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: diag,side,transa,uplo
                     complex(dp), intent(inout) :: b(ldb,*)
                end subroutine ztrmm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ztrmm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface trmm
 
 
@@ -3259,10 +2049,7 @@ module stdlib_linalg_blas
           !> where x is an n element vector and  A is an n by n unit, or non-unit,
           !> upper or lower triangular matrix.
           interface trmv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ctrmv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3271,20 +2058,10 @@ module stdlib_linalg_blas
                     complex(sp), intent(in) :: a(lda,*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctrmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ctrmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dtrmv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3293,23 +2070,13 @@ module stdlib_linalg_blas
                     real(dp), intent(in) :: a(lda,*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtrmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dtrmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qtrmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine strmv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3318,23 +2085,13 @@ module stdlib_linalg_blas
                     real(sp), intent(in) :: a(lda,*)
                     real(sp), intent(inout) :: x(*)
                end subroutine strmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_strmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wtrmv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ztrmv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3343,16 +2100,9 @@ module stdlib_linalg_blas
                     complex(dp), intent(in) :: a(lda,*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztrmv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ztrmv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface trmv
 
 
@@ -3364,10 +2114,7 @@ module stdlib_linalg_blas
           !> op( A ) = A   or   op( A ) = A**T   or   op( A ) = A**H.
           !> The matrix X is overwritten on B.
           interface trsm
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ctrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3376,20 +2123,10 @@ module stdlib_linalg_blas
                     character, intent(in) :: diag,side,transa,uplo
                     complex(sp), intent(inout) :: b(ldb,*)
                end subroutine ctrsm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ctrsm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dtrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3398,23 +2135,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: diag,side,transa,uplo
                     real(dp), intent(inout) :: b(ldb,*)
                end subroutine dtrsm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dtrsm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qtrsm
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine strsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3423,23 +2150,13 @@ module stdlib_linalg_blas
                     character, intent(in) :: diag,side,transa,uplo
                     real(sp), intent(inout) :: b(ldb,*)
                end subroutine strsm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_strsm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wtrsm
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ztrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3448,16 +2165,9 @@ module stdlib_linalg_blas
                     character, intent(in) :: diag,side,transa,uplo
                     complex(dp), intent(inout) :: b(ldb,*)
                end subroutine ztrsm
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ztrsm
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface trsm
 
 
@@ -3469,10 +2179,7 @@ module stdlib_linalg_blas
           !> No test for singularity or near-singularity is included in this
           !> routine. Such tests must be performed before calling this routine.
           interface trsv
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ctrsv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3481,20 +2188,10 @@ module stdlib_linalg_blas
                     complex(sp), intent(in) :: a(lda,*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctrsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ctrsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine dtrsv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3503,23 +2200,13 @@ module stdlib_linalg_blas
                     real(dp), intent(in) :: a(lda,*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtrsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_dtrsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_qtrsv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine strsv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3528,23 +2215,13 @@ module stdlib_linalg_blas
                     real(sp), intent(in) :: a(lda,*)
                     real(sp), intent(inout) :: x(*)
                end subroutine strsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_strsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
 #:if WITH_QP
                module procedure stdlib_wtrsv
 #:endif
-#:if FPM_DEPLOYMENT
 #ifdef STDLIB_EXTERNAL_BLAS
-#:endif
-#:if FPM_DEPLOYMENT or STDLIB_EXTERNAL_BLAS
                pure subroutine ztrsv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -3553,16 +2230,9 @@ module stdlib_linalg_blas
                     complex(dp), intent(in) :: a(lda,*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztrsv
-#:endif 
-#:if FPM_DEPLOYMENT
 #else 
-#:endif
-#:if FPM_DEPLOYMENT or not STDLIB_EXTERNAL_BLAS
                module procedure stdlib_ztrsv
-#:endif
-#:if FPM_DEPLOYMENT 
 #endif
-#:endif
           end interface trsv
 
 

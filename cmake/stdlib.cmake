@@ -40,3 +40,10 @@ function (fypp_f90 fyppopts fyppfiles f90files)
   preprocess("${FYPP}" "${fyppopts}" "fypp" "f90" "${fyppfiles}" _f90files)
   set(${f90files} ${_f90files} PARENT_SCOPE)
 endfunction()
+
+# For fortran sources that contain C preprocessor flags: create ".F90" files 
+function (fypp_f90pp fyppopts fyppfiles F90files)
+  preprocess("${FYPP}" "${fyppopts}" "fypp" "F90" "${fyppfiles}" _F90files)
+  set(${F90files} ${_F90files} PARENT_SCOPE)
+endfunction()
+

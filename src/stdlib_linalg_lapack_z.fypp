@@ -36636,6 +36636,8 @@ module stdlib_linalg_lapack_z
 
      pure subroutine stdlib_zhetrd_hb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
                work, lwork, info )
+#if defined(_OPENMP)
+#endif
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -36813,7 +36815,6 @@ module stdlib_linalg_lapack_z
            call stdlib_zlacpy( "A", kd+1, n, ab, ldab, work( apos ), lda )
            call stdlib_zlaset( "A", kd,   n, czero, czero, work( awpos ), lda )
            ! openmp parallelisation start here
-#:if FPM_DEPLOYMENT
 #if defined(_OPENMP)
 !$OMP PARALLEL PRIVATE( TID, THGRID, BLKLASTIND )
 !$OMP$         PRIVATE( THED, I, M, K, ST, ED, STT, SWEEPID )
@@ -36823,7 +36824,6 @@ module stdlib_linalg_lapack_z
 !$OMP$         SHARED ( STEPERCOL, THGRNB, THGRSIZ, GRSIZ, SHIFT )
 !$OMP MASTER
 #endif
-#:endif
            ! main bulge chasing loop
            loop_100: do thgrid = 1, thgrnb
                stt  = (thgrid-1)*thgrsiz+1
@@ -36857,7 +36857,6 @@ module stdlib_linalg_lapack_z
                                    endif
                                endif
                                ! call the kernel
-#:if FPM_DEPLOYMENT
 #if defined(_OPENMP) &&  _OPENMP >= 201307
                                if( ttype/=1 ) then
 !$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1))
@@ -36878,13 +36877,10 @@ module stdlib_linalg_lapack_z
 !$OMP END TASK
                                endif
 #else
-#:endif
                                call stdlib_zhb2st_kernels( uplo, wantq, ttype,stind, edind, &
                                sweepid, n, kd, ib,work ( inda ), lda,hous( indv ), hous( indtau ),&
                                           ldv,work( indw + tid*kd ) )
-#:if FPM_DEPLOYMENT
 #endif
-#:endif
                                if ( blklastind>=(n-1) ) then
                                    stt = stt + 1
                                    exit
@@ -36894,12 +36890,10 @@ module stdlib_linalg_lapack_z
                    end do loop_120
                end do loop_110
            end do loop_100
-#:if FPM_DEPLOYMENT
 #if defined(_OPENMP)
 !$OMP END MASTER
 !$OMP END PARALLEL
 #endif
-#:endif
            ! copy the diagonal from a to d. note that d is real thus only
            ! the real part is needed, the imaginary part should be czero.
            do i = 1, n
