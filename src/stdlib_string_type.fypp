@@ -17,6 +17,7 @@ module stdlib_string_type
        & to_title_ => to_title, to_sentence_ => to_sentence, reverse_ => reverse
     use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
     use stdlib_optval, only: optval
+    use iso_c_binding, only: c_loc,c_associated
     implicit none
     private
 
@@ -679,10 +680,12 @@ contains
     !> Moves the allocated character scalar from 'from' to 'to'
     !> No output
     elemental subroutine move_string_string(from, to)
-        type(string_type), intent(inout) :: from
-        type(string_type), intent(inout) :: to
-        character(:), allocatable :: tmp
+        type(string_type), intent(inout), target :: from
+        type(string_type), intent(inout), target :: to
+        character(:), allocatable :: tmp 
 
+        if (c_associated(c_loc(from),c_loc(to))) return
+       
         call move_alloc(from%raw, tmp)
         call move_alloc(tmp, to%raw)
 
