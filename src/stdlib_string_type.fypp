@@ -682,12 +682,9 @@ contains
     elemental subroutine move_string_string(from, to)
         type(string_type), intent(inout), target :: from
         type(string_type), intent(inout), target :: to
-        character(:), allocatable :: tmp 
 
         if (c_associated(c_loc(from),c_loc(to))) return
-       
-        call move_alloc(from%raw, tmp)
-        call move_alloc(tmp, to%raw)
+        call move_alloc(from%raw, to%raw)
 
     end subroutine move_string_string
 
