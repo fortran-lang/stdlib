@@ -1762,12 +1762,9 @@ module stdlib_linalg_lapack_aux
            endif
            ! get the number of threads
            nthreads = 1
-#if defined(_OPENMP)
-!$OMP PARALLEL
-           nthreads = omp_get_num_threads()
-!$OMP END PARALLEL
-#endif
-            ! write(*,*) 'iparam voici nthreads ispec ',nthreads, ispec
+!$         nthreads = omp_get_num_threads()
+
+           ! write(*,*) 'iparam voici nthreads ispec ',nthreads, ispec
            if( ispec /= 19 ) then
               ! convert name to upper case if the first character is lower case.
               stdlib_iparam2stage = -1

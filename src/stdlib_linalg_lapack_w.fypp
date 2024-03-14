@@ -28578,8 +28578,6 @@ module stdlib_linalg_lapack_w
 
      pure subroutine stdlib_whetrd_hb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
                work, lwork, info )
-#if defined(_OPENMP)
-#endif
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -28757,7 +28755,6 @@ module stdlib_linalg_lapack_w
            call stdlib_wlacpy( "A", kd+1, n, ab, ldab, work( apos ), lda )
            call stdlib_wlaset( "A", kd,   n, czero, czero, work( awpos ), lda )
            ! openmp parallelisation start here
-#if defined(_OPENMP)
 !$OMP PARALLEL PRIVATE( TID, THGRID, BLKLASTIND )
 !$OMP$         PRIVATE( THED, I, M, K, ST, ED, STT, SWEEPID )
 !$OMP$         PRIVATE( MYID, TTYPE, COLPT, STIND, EDIND )
@@ -28765,7 +28762,6 @@ module stdlib_linalg_lapack_w
 !$OMP$         SHARED ( N, KD, IB, NBTILES, LDA, LDV, INDA )
 !$OMP$         SHARED ( STEPERCOL, THGRNB, THGRSIZ, GRSIZ, SHIFT )
 !$OMP MASTER
-#endif
            ! main bulge chasing loop
            loop_100: do thgrid = 1, thgrnb
                stt  = (thgrid-1)*thgrsiz+1
@@ -28799,30 +28795,24 @@ module stdlib_linalg_lapack_w
                                    endif
                                endif
                                ! call the kernel
-#if defined(_OPENMP) &&  _OPENMP >= 201307
-                               if( ttype/=1 ) then
+!$                             if( ttype/=1 ) then
 !$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1))
 !$OMP$     DEPEND(in:WORK(MYID-1))
 !$OMP$     DEPEND(out:WORK(MYID))
-                                   tid      = omp_get_thread_num()
-                                   call stdlib_whb2st_kernels( uplo, wantq, ttype,stind, edind, &
-                                   sweepid, n, kd, ib,work ( inda ), lda,hous( indv ), hous( &
-                                             indtau ), ldv,work( indw + tid*kd ) )
+!$                                 tid      = omp_get_thread_num()
+!$                                 call stdlib_whb2st_kernels( uplo, wantq, ttype,stind, edind, &
+!$                                 sweepid, n, kd, ib,work ( inda ), lda,hous( indv ), hous( &
+!$                                           indtau ), ldv,work( indw + tid*kd ) )
 !$OMP END TASK
-                               else
+!$                             else
 !$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1))
 !$OMP$     DEPEND(out:WORK(MYID))
-                                   tid      = omp_get_thread_num()
+!$                                 tid      = omp_get_thread_num()
                                    call stdlib_whb2st_kernels( uplo, wantq, ttype,stind, edind, &
                                    sweepid, n, kd, ib,work ( inda ), lda,hous( indv ), hous( &
                                              indtau ), ldv,work( indw + tid*kd ) )
 !$OMP END TASK
-                               endif
-#else
-                               call stdlib_whb2st_kernels( uplo, wantq, ttype,stind, edind, &
-                               sweepid, n, kd, ib,work ( inda ), lda,hous( indv ), hous( indtau ),&
-                                          ldv,work( indw + tid*kd ) )
-#endif
+!$                             endif
                                if ( blklastind>=(n-1) ) then
                                    stt = stt + 1
                                    exit
@@ -28832,10 +28822,8 @@ module stdlib_linalg_lapack_w
                    end do loop_120
                end do loop_110
            end do loop_100
-#if defined(_OPENMP)
 !$OMP END MASTER
 !$OMP END PARALLEL
-#endif
            ! copy the diagonal from a to d. note that d is real thus only
            ! the real part is needed, the imaginary part should be czero.
            do i = 1, n
