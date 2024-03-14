@@ -72808,12 +72808,12 @@ module stdlib_linalg_lapack_q
            call stdlib_qlacpy( "A", kd+1, n, ab, ldab, work( apos ), lda )
            call stdlib_qlaset( "A", kd,   n, zero, zero, work( awpos ), lda )
            ! openmp parallelisation start here
-!$OMP PARALLEL PRIVATE( TID, THGRID, BLKLASTIND )
-!$OMP$         PRIVATE( THED, I, M, K, ST, ED, STT, SWEEPID )
-!$OMP$         PRIVATE( MYID, TTYPE, COLPT, STIND, EDIND )
-!$OMP$         SHARED ( UPLO, WANTQ, INDV, INDTAU, HOUS, WORK)
-!$OMP$         SHARED ( N, KD, IB, NBTILES, LDA, LDV, INDA )
-!$OMP$         SHARED ( STEPERCOL, THGRNB, THGRSIZ, GRSIZ, SHIFT )
+!$OMP PARALLEL PRIVATE( TID, THGRID, BLKLASTIND ) &
+!$OMP&         PRIVATE( THED, I, M, K, ST, ED, STT, SWEEPID ) &
+!$OMP&         PRIVATE( MYID, TTYPE, COLPT, STIND, EDIND ) &
+!$OMP&         SHARED ( UPLO, WANTQ, INDV, INDTAU, HOUS, WORK) &
+!$OMP&         SHARED ( N, KD, IB, NBTILES, LDA, LDV, INDA ) &
+!$OMP&         SHARED ( STEPERCOL, THGRNB, THGRSIZ, GRSIZ, SHIFT )
 !$OMP MASTER
            ! main bulge chasing loop
            loop_100: do thgrid = 1, thgrnb
@@ -72849,17 +72849,17 @@ module stdlib_linalg_lapack_q
                                endif
                                ! call the kernel
 !$                             if( ttype/=1 ) then
-!$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1))
-!$OMP$     DEPEND(in:WORK(MYID-1))
-!$OMP$     DEPEND(out:WORK(MYID))
+!$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1)) &
+!$OMP&     DEPEND(in:WORK(MYID-1)) &
+!$OMP&     DEPEND(out:WORK(MYID))
 !$                                 tid      = omp_get_thread_num()
 !$                                 call stdlib_qsb2st_kernels( uplo, wantq, ttype,stind, edind, &
 !$                                 sweepid, n, kd, ib,work ( inda ), lda,hous( indv ), hous( &
 !$                                           indtau ), ldv,work( indw + tid*kd ) )
 !$OMP END TASK
 !$                             else
-!$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1))
-!$OMP$     DEPEND(out:WORK(MYID))
+!$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1)) &
+!$OMP&     DEPEND(out:WORK(MYID))
 !$                                 tid      = omp_get_thread_num()
                                    call stdlib_qsb2st_kernels( uplo, wantq, ttype,stind, edind, &
                                    sweepid, n, kd, ib,work ( inda ), lda,hous( indv ), hous( &
