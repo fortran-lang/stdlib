@@ -44,7 +44,7 @@ module stdlib_linalg_state
      !> `linalg_state` defines a state return type for a
      !> linear algebra routine. State contains a status flag, a comment, and a
      !> procedure specifier that can be used to mark where the error happened
-     type,public :: linalg_state
+     type :: linalg_state
 
          !> The current exit state
          integer(ilp) :: state = LINALG_SUCCESS
