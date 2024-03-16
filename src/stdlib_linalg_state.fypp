@@ -1,6 +1,15 @@
+#:include "common.fypp"
+#:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_linalg_state
+     !! Version: experimental
+     !!
+     !! Provides a state/error handling derived type for advanced error handling of
+     !! BLAS/LAPACK based linear algebra procedures
+     !! !! ([Specification](../page/specs/stdlib_linalg.html))
      use stdlib_linalg_constants,only:ilp,lk
-     use iso_fortran_env,only:real32,real64,real128,int8,int16,int32,int64,stderr => error_unit
+     use stdlib_kinds
+     use stdlib_io
+     use iso_fortran_env,only: stderr => error_unit
      implicit none(type,external)
      private
 
@@ -143,7 +152,7 @@ module stdlib_linalg_state
 
      end function state_print
 
-     !> Cleanup object
+     !> Cleanup the object
      elemental subroutine state_destroy(this)
         class(linalg_state),intent(inout) :: this
 
@@ -165,62 +174,84 @@ module stdlib_linalg_state
         state_is_error = this%state /= LINALG_SUCCESS
      end function state_is_error
 
-     !> Compare an error flag with an integer
+     !> Compare an error state with an integer flag
      elemental logical(lk) function state_eq_flag(err,flag)
         type(linalg_state),intent(in) :: err
         integer,intent(in) :: flag
         state_eq_flag = err%state == flag
      end function state_eq_flag
+
+     !> Compare an integer flag with the error state
      elemental logical(lk) function flag_eq_state(flag,err)
         integer,intent(in) :: flag
         type(linalg_state),intent(in) :: err
         flag_eq_state = err%state == flag
      end function flag_eq_state
+
+     !> Compare the error state with an integer flag
      elemental logical(lk) function state_neq_flag(err,flag)
         type(linalg_state),intent(in) :: err
         integer,intent(in) :: flag
         state_neq_flag = .not. state_eq_flag(err,flag)
      end function state_neq_flag
+
+     !> Compare an integer flag with the error state
      elemental logical(lk) function flag_neq_state(flag,err)
         integer,intent(in) :: flag
         type(linalg_state),intent(in) :: err
         flag_neq_state = .not. state_eq_flag(err,flag)
      end function flag_neq_state
+
+     !> Compare the error state with an integer flag
      elemental logical(lk) function state_lt_flag(err,flag)
         type(linalg_state),intent(in) :: err
         integer,intent(in) :: flag
         state_lt_flag = err%state < flag
      end function state_lt_flag
+
+     !> Compare the error state with an integer flag
      elemental logical(lk) function state_le_flag(err,flag)
         type(linalg_state),intent(in) :: err
         integer,intent(in) :: flag
         state_le_flag = err%state <= flag
      end function state_le_flag
+
+     !> Compare an integer flag with the error state
      elemental logical(lk) function flag_lt_state(flag,err)
         integer,intent(in) :: flag
         type(linalg_state),intent(in) :: err
         flag_lt_state = err%state < flag
      end function flag_lt_state
+
+     !> Compare an integer flag with the error state
      elemental logical(lk) function flag_le_state(flag,err)
         integer,intent(in) :: flag
         type(linalg_state),intent(in) :: err
         flag_le_state = err%state <= flag
      end function flag_le_state
+
+     !> Compare the error state with an integer flag
      elemental logical(lk) function state_gt_flag(err,flag)
         type(linalg_state),intent(in) :: err
         integer,intent(in) :: flag
         state_gt_flag = err%state > flag
      end function state_gt_flag
+
+     !> Compare the error state with an integer flag
      elemental logical(lk) function state_ge_flag(err,flag)
         type(linalg_state),intent(in) :: err
         integer,intent(in) :: flag
         state_ge_flag = err%state >= flag
      end function state_ge_flag
+
+     !> Compare an integer flag with the error state
      elemental logical(lk) function flag_gt_state(flag,err)
         integer,intent(in) :: flag
         type(linalg_state),intent(in) :: err
         flag_gt_state = err%state > flag
      end function flag_gt_state
+
+     !> Compare an integer flag with the error state
      elemental logical(lk) function flag_ge_state(flag,err)
         integer,intent(in) :: flag
         type(linalg_state),intent(in) :: err
@@ -313,65 +344,24 @@ module stdlib_linalg_state
 
        select type (aa => a)
 
+        !> String type
         type is (character(len=*))
-
             msg = trim(msg)//sep(:ls)//aa
 
-        type is (integer(int8))
-
+        !> Numeric types
+#:for k1, t1 in KINDS_TYPES
+        type is (${t1}$)
+        #:if 'real' in t1
+            write (buffer,FMT_REAL_${k1}$) aa
+        #:elif 'complex' in t1
+            write (buffer,FMT_COMPLEX_${k1}$) aa
+        #:else
             write (buffer,'(i0)') aa
+        #:endif
             msg = trim(msg)//sep(:ls)//trim(adjustl(buffer))
 
-        type is (integer(int16))
-
-            write (buffer,'(i0)') aa
-            msg = trim(msg)//sep(:ls)//trim(adjustl(buffer))
-
-        type is (integer(int32))
-
-            write (buffer,'(i0)') aa
-            msg = trim(msg)//sep(:ls)//trim(adjustl(buffer))
-
-        type is (integer(int64))
-
-            write (buffer,'(i0)') aa
-            msg = trim(msg)//sep(:ls)//trim(adjustl(buffer))
-
-        type is (real(real32))
-
-            write (buffer,'(es15.8e2)') aa
-            msg = trim(msg)//sep(:ls)//trim(adjustl(buffer))
-
-        type is (real(real64))
-
-            write (buffer,'(es24.16e3)') aa
-            msg = trim(msg)//sep(:ls)//trim(adjustl(buffer))
-
-        type is (real(real128))
-
-            write (buffer,'(es44.35e4)') aa
-            msg = trim(msg)//sep(:ls)//trim(adjustl(buffer))
-
-        type is (complex(real32))
-
-            write (buffer,'(es15.8e2)') aa%re
-            write (buffer2,'(es15.8e2)') aa%im
-            msg = trim(msg)//sep(:ls)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
-
-        type is (complex(real64))
-
-            write (buffer,'(es24.16e3)') aa%re
-            write (buffer2,'(es24.16e3)') aa%im
-            msg = trim(msg)//sep(:ls)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
-
-        type is (complex(real128))
-
-            write (buffer,'(es44.35e4)') aa%re
-            write (buffer2,'(es44.35e4)') aa%im
-            msg = trim(msg)//sep(:ls)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
-
+#:endfor
         class default
-
             msg = trim(msg)//' <ERROR: INVALID TYPE>'
 
        end select
@@ -384,7 +374,7 @@ module stdlib_linalg_state
        character(len=*),intent(inout) :: msg
 
        integer :: j,ls
-       character(len=MSG_LENGTH) :: buffer,buffer2
+       character(len=MSG_LENGTH) :: buffer,buffer2,buffer_format
        character(len=2) :: sep
 
        if (.not. present(a)) return
@@ -400,111 +390,33 @@ module stdlib_linalg_state
        ! Do not call append(msg(aa(j))), it will crash gfortran
        select type (aa => a)
 
+        !> Strings (cannot use string_type due to `sequence`)
         type is (character(len=*))
-
             msg = trim(msg)//adjustl(aa(1))
             do j = 2,size(a)
                msg = trim(msg)//sep(:ls)//adjustl(aa(j))
             end do
 
-        type is (integer(int8))
-
-            write (buffer,'(i0)') aa(1)
+        !> Numeric types
+#:for k1, t1 in KINDS_TYPES
+        type is (${t1}$)
+        #:if 'real' in t1
+            buffer_format = FMT_REAL_${k1}$
+        #:elif 'complex' in t1
+            buffer_format = FMT_COMPLEX_${k1}$
+        #:else
+            buffer_format = '(i0)'
+        #:endif
+            write (buffer,buffer_format) aa(1)
             msg = trim(msg)//adjustl(buffer)
             do j = 2,size(a)
-               write (buffer,'(i0)') aa(j)
+               write (buffer,buffer_format) aa(j)
                msg = trim(msg)//sep(:ls)//adjustl(buffer)
             end do
+            msg = trim(msg)//sep(:ls)//trim(adjustl(buffer))
 
-        type is (integer(int16))
-
-            write (buffer,'(i0)') aa(1)
-            msg = trim(msg)//adjustl(buffer)
-            do j = 2,size(a)
-               write (buffer,'(i0)') aa(j)
-               msg = trim(msg)//sep(:ls)//adjustl(buffer)
-            end do
-
-        type is (integer(int32))
-
-            write (buffer,'(i0)') aa(1)
-            msg = trim(msg)//adjustl(buffer)
-            do j = 2,size(a)
-               write (buffer,'(i0)') aa(j)
-               msg = trim(msg)//sep(:ls)//adjustl(buffer)
-            end do
-
-        type is (integer(int64))
-
-            write (buffer,'(i0)') aa(1)
-            msg = trim(msg)//adjustl(buffer)
-            do j = 2,size(a)
-               write (buffer,'(i0)') aa(j)
-               msg = trim(msg)//sep(:ls)//adjustl(buffer)
-            end do
-
-        type is (real(real32))
-
-            write (buffer,'(es15.8e2)') aa(1)
-            msg = trim(msg)//adjustl(buffer)
-            do j = 2,size(a)
-               write (buffer,'(es15.8e2)') aa(j)
-               msg = trim(msg)//sep(:ls)//adjustl(buffer)
-            end do
-
-        type is (real(real64))
-
-            write (buffer,'(es24.16e3)') aa(1)
-            msg = trim(msg)//adjustl(buffer)
-            do j = 2,size(a)
-               write (buffer,'(es24.16e3)') aa(j)
-               msg = trim(msg)//sep(:ls)//adjustl(buffer)
-            end do
-
-        type is (real(real128))
-
-            write (buffer,'(es44.35e4)') aa(1)
-            msg = trim(msg)//adjustl(buffer)
-            do j = 2,size(a)
-               write (buffer,'(es44.35e4)') aa(j)
-               msg = trim(msg)//sep(:ls)//adjustl(buffer)
-            end do
-
-        type is (complex(real32))
-
-            write (buffer,'(es15.8e2)') aa(1)%re
-            write (buffer2,'(es15.8e2)') aa(1)%im
-            msg = trim(msg)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
-            do j = 2,size(a)
-                write (buffer,'(es15.8e2)') aa(j)%re
-                write (buffer2,'(es15.8e2)') aa(j)%im
-                msg = trim(msg)//sep(:ls)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
-            end do
-
-        type is (complex(real64))
-
-            write (buffer,'(es24.16e3)') aa(1)%re
-            write (buffer2,'(es24.16e3)') aa(1)%im
-            msg = trim(msg)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
-            do j = 2,size(a)
-                write (buffer,'(es24.16e3)') aa(j)%re
-                write (buffer2,'(es24.16e3)') aa(j)%im
-                msg = trim(msg)//sep(:ls)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
-            end do
-
-        type is (complex(real128))
-
-            write (buffer,'(es44.35e4)') aa(1)%re
-            write (buffer2,'(es44.35e4)') aa(1)%im
-            msg = trim(msg)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
-            do j = 2,size(a)
-                write (buffer,'(es44.35e4)') aa(j)%re
-                write (buffer2,'(es44.35e4)') aa(j)%im
-                msg = trim(msg)//sep(:ls)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
-            end do
-
+#:endfor
         class default
-
             msg = trim(msg)//' <ERROR: INVALID TYPE>'
 
        end select
