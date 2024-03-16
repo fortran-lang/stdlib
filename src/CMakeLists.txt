@@ -23,7 +23,9 @@ set(fppFiles
     stdlib_linalg_diag.fypp
     stdlib_linalg_outer_product.fypp
     stdlib_linalg_kronecker.fypp
+    stdlib_linalg_constants.fypp
     stdlib_linalg_cross_product.fypp
+    stdlib_linalg_state.fypp 
     stdlib_optval.fypp
     stdlib_selection.fypp
     stdlib_sorting.fypp
