@@ -4,7 +4,7 @@ module stdlib_linalg_state
      !! Version: experimental
      !!
      !! Provides a state/error handling derived type for advanced error handling of
-     !! BLAS/LAPACK based linear algebra procedures
+     !! BLAS/LAPACK based linear algebra procedures. All procedures are pure.
      !! !! ([Specification](../page/specs/stdlib_linalg.html))
      use stdlib_linalg_constants,only:ilp,lk
      use stdlib_kinds
@@ -13,9 +13,20 @@ module stdlib_linalg_state
      implicit none(type,external)
      private
 
-     !> Public interfaces
+     !> Version: experimental
+     !>
+     !> A fixed-storage state variable for error handling of linear algebra routines
      public :: linalg_state
+
+     !> Version: experimental
+     !>
+     !> Error state handling: if the user requested the error state variable on
+     !> output, just return it to the user. Otherwise, halt the program on error.
      public :: linalg_error_handling
+
+     !> Version: experimental
+     !>
+     !> Interfaces for comparison operators of error states with integer flags
      public :: operator(==),operator(/=)
      public :: operator(<),operator(<=)
      public :: operator(>),operator(>=)
