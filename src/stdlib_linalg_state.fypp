@@ -362,14 +362,18 @@ module stdlib_linalg_state
         !> Numeric types
 #:for k1, t1 in KINDS_TYPES
         type is (${t1}$)
-        #:if 'real' in t1
-            write (buffer,FMT_REAL_${k1}$) aa
-        #:elif 'complex' in t1
-            write (buffer,FMT_COMPLEX_${k1}$) aa
+        #:if 'complex' in t1
+            write (buffer, FMT_REAL_${k1}$) aa%re
+            write (buffer2,FMT_REAL_${k1}$) aa%im
+            msg = trim(msg)//sep(:ls)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
         #:else
+            #:if 'real' in t1
+            write (buffer,FMT_REAL_${k1}$) aa
+            #:else
             write (buffer,'(i0)') aa
-        #:endif
+            #:endif
             msg = trim(msg)//sep(:ls)//trim(adjustl(buffer))
+        #:endif
 
 #:endfor
         class default
@@ -411,13 +415,22 @@ module stdlib_linalg_state
         !> Numeric types
 #:for k1, t1 in KINDS_TYPES
         type is (${t1}$)
-        #:if 'real' in t1
-            buffer_format = FMT_REAL_${k1}$
-        #:elif 'complex' in t1
-            buffer_format = FMT_COMPLEX_${k1}$
+        #:if 'complex' in t1
+            write (buffer,FMT_REAL_${k1}$)  aa(1)%re
+            write (buffer2,FMT_REAL_${k1}$) aa(1)%im
+            msg = trim(msg)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
+            do j = 2,size(a)
+                write (buffer,FMT_REAL_${k1}$)  aa(j)%re
+                write (buffer2,FMT_REAL_${k1}$) aa(j)%im
+                msg = trim(msg)//sep(:ls)//'('//trim(adjustl(buffer))//','//trim(adjustl(buffer2))//')'
+            end do
         #:else
+            #:if 'real' in t1
+            buffer_format = FMT_REAL_${k1}$
+            #:else
             buffer_format = '(i0)'
-        #:endif
+            #:endif
+
             write (buffer,buffer_format) aa(1)
             msg = trim(msg)//adjustl(buffer)
             do j = 2,size(a)
@@ -425,7 +438,7 @@ module stdlib_linalg_state
                msg = trim(msg)//sep(:ls)//adjustl(buffer)
             end do
             msg = trim(msg)//sep(:ls)//trim(adjustl(buffer))
-
+        #:endif
 #:endfor
         class default
             msg = trim(msg)//' <ERROR: INVALID TYPE>'
