@@ -686,12 +686,13 @@ contains
     !> Moves the allocated character scalar from 'from' to 'to'
     !> No output
     elemental subroutine move_string_string(from, to)
-        type(string_type), intent(inout) :: from
-        type(string_type), intent(inout) :: to
-        character(:), allocatable :: tmp
+        type(string_type), intent(inout), target :: from
+        type(string_type), intent(inout), target :: to
+        type(string_type), pointer :: fromp
 
-        call move_alloc(from%raw, tmp)
-        call move_alloc(tmp, to%raw)
+        fromp => from
+        if (associated(fromp,to)) return
+        call move_alloc(from%raw, to%raw)
 
     end subroutine move_string_string
 
