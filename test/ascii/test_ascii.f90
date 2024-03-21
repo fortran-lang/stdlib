@@ -5,7 +5,7 @@ module test_ascii
         whitespace, letters, is_alphanum, is_alpha, is_lower, is_upper, &
         is_digit, is_octal_digit, is_hex_digit, is_white, is_blank, &
         is_control, is_punctuation, is_graphical, is_printable, is_ascii, &
-        to_lower, to_upper, to_title, to_sentence, reverse, LF, TAB, NUL, DEL
+        to_lower, to_upper, to_title, to_sentence, LF, TAB, NUL, DEL
     use stdlib_kinds, only : int8, int16, int32, int64, lk
     implicit none
     private
@@ -55,8 +55,8 @@ contains
             new_unittest("to_upper_string", test_to_upper_string), &
             new_unittest("to_lower_string", test_to_lower_string), &
             new_unittest("to_title_string", test_to_title_string), &
-            new_unittest("to_sentence_string", test_to_sentence_string), &
-            new_unittest("reverse_string", test_reverse_string) &
+            new_unittest("to_sentence_string", test_to_sentence_string) &
+            ! new_unittest("reverse_string", test_reverse_string) &
             ]
     end subroutine collect_ascii
 
@@ -901,30 +901,30 @@ contains
         if (allocated(error)) return
     end subroutine test_to_sentence_string
 
-    subroutine test_reverse_string(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
+    ! subroutine test_reverse_string(error)
+    !     !> Error handling
+    !     type(error_type), allocatable, intent(out) :: error
 
-        character(len=:), allocatable :: dlc
-        character(len=32), parameter :: input = "reversed"
+    !     character(len=:), allocatable :: dlc
+    !     character(len=32), parameter :: input = "reversed"
 
-        dlc = reverse("reversed")
-        call check(error, dlc, "desrever")
-        if (allocated(error)) return
+    !     dlc = reverse("reversed")
+    !     call check(error, dlc, "desrever")
+    !     if (allocated(error)) return
 
-        dlc = reverse(input)
-        call check(error, len(dlc), 32)
-        if (allocated(error)) return
+    !     dlc = reverse(input)
+    !     call check(error, len(dlc), 32)
+    !     if (allocated(error)) return
 
-        call check(error, len_trim(dlc), 32)
-        if (allocated(error)) return
+    !     call check(error, len_trim(dlc), 32)
+    !     if (allocated(error)) return
 
-        call check(error, trim(dlc), "                        desrever")
-        if (allocated(error)) return
+    !     call check(error, trim(dlc), "                        desrever")
+    !     if (allocated(error)) return
 
-        call check(error, trim(adjustl(dlc)), "desrever")
-        if (allocated(error)) return
-    end subroutine test_reverse_string
+    !     call check(error, trim(adjustl(dlc)), "desrever")
+    !     if (allocated(error)) return
+    ! end subroutine test_reverse_string
 
 
 end module test_ascii

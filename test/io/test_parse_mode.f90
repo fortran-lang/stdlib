@@ -1,5 +1,6 @@
 module test_parse_mode
-    use stdlib_ascii, only: reverse
+    ! use stdlib_ascii, only: reverse
+    use stdlib_strings, only: reverse
     use stdlib_io, only: parse_mode
     use testdrive, only: new_unittest, unittest_type, error_type, check
     implicit none
