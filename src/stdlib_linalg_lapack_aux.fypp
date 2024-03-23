@@ -1762,7 +1762,7 @@ module stdlib_linalg_lapack_aux
            endif
            ! get the number of threads
            nthreads = 1
-!$         nthreads = omp_get_num_threads()
+           !$ nthreads = omp_get_num_threads()
 
            ! write(*,*) 'iparam voici nthreads ispec ',nthreads, ispec
            if( ispec /= 19 ) then
