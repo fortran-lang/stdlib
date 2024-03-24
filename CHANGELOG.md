@@ -1,3 +1,65 @@
+# Version 0.4.0
+
+Full release notes available at [v0.4.0] tag.
+
+[v0.4.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.4.0
+
+- new module `stdlib_str2num`
+  [#743](https://github.com/fortran-lang/stdlib/pull/743)
+  - new procedures: `to_num`, `to_num_from_stream`
+
+Changes to existing scripts and modules
+
+- change in .gitignore
+  - addition of the file extensions `.dat` and `.stream`
+    [#768](https://github.com/fortran-lang/stdlib/pull/768)
+  - addition of `.gitignore` to `stdlib-fpm`
+    [#769](https://github.com/fortran-lang/stdlib/pull/769)
+- change in CI/CD
+  - support of GCC 13
+    [#737](https://github.com/fortran-lang/stdlib/pull/737)
+  - support of Intel compiler `ifx`
+    [#752](https://github.com/fortran-lang/stdlib/pull/752)
+- change in script `fpm-deployment.sh`
+  - changes to facilitate `fypp` preprocessing for the `fpm` deployment
+    [#758](https://github.com/fortran-lang/stdlib/pull/758)
+- change in module `stdlib_ascii`
+  - Improved procedures `to_lower` and `to_upper`
+    [#733](https://github.com/fortran-lang/stdlib/pull/733)
+- change in module `stdlib_bitsets`
+  - initialization in `bitset_type`
+    [#753](https://github.com/fortran-lang/stdlib/pull/753)
+  - improved procedure `bit_count_large`
+    [#756](https://github.com/fortran-lang/stdlib/pull/756)
+- change in module `stdlib_hashmaps`
+  - new procedure `get_all_keys`
+    [#741](https://github.com/fortran-lang/stdlib/pull/741)
+  - new file permissions
+    [#762](https://github.com/fortran-lang/stdlib/pull/762)
+- change in module `stdlib_math`
+  - new procedure `meshgrid`
+    [#764](https://github.com/fortran-lang/stdlib/pull/764)
+- change in module `stdlib_specialfunctions_gamma`
+  - fix procedure `gamma`
+    [#730](https://github.com/fortran-lang/stdlib/pull/730)
+- change in module `stdlib_string_type`
+  - fix procedure `move`
+    [#736](https://github.com/fortran-lang/stdlib/pull/736)
+    [#773](https://github.com/fortran-lang/stdlib/pull/773)
+- change in `SpookyV2Test.cpp`
+  - Fix undefined use of <cstdint> types
+    [#747](https://github.com/fortran-lang/stdlib/pull/747)
+
+Changes to the existing documentation
+
+- change in the specs `stdlib_hashmaps`
+  - Correction of an intent of the variable "conflict"
+    [#739](https://github.com/fortran-lang/stdlib/pull/739)
+- change in README.md
+  - instructions to build `stdlib` with `fpm` through the `fpm-deployment.sh` script
+    [#757](https://github.com/fortran-lang/stdlib/pull/757)
+
+
 # Version 0.3.0
 
 Full release notes available at [v0.3.0] tag.
