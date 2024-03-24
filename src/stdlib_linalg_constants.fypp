@@ -12,10 +12,4 @@ module stdlib_linalg_constants
      integer, parameter :: ilp = int32
      private            :: int32, int64
 
-
-
-
-
-
-
 end module stdlib_linalg_constants
