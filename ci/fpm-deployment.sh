@@ -11,7 +11,6 @@ fypp="${FYPP:-$(which fypp)}"
 # Arguments for the fypp preprocessor
 maxrank=4
 fyflags="${FYFLAGS:--DMAXRANK=$maxrank}"
-fyflags="${fyflags} -DFPM_DEPLOYMENT=True"
 
 # Number of parallel jobs for preprocessing
 if [ $(uname) = "Darwin" ]; then
