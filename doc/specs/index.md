@@ -22,6 +22,7 @@ This is an index/directory of the specifications (specs) for each new module/fea
  - [io](./stdlib_io.html) - Input/output helper & convenience
  - [kinds](./stdlib_kinds.html) - Kind parameters
  - [linalg](./stdlib_linalg.html) - Linear Algebra
+ - [linalg_state_type](./stdlib_linalg_state_type.html) - Linear Algebra state and error handling 
  - [logger](./stdlib_logger.html) - Runtime logging system
  - [math](./stdlib_math.html) - General purpose mathematical functions
  - [optval](./stdlib_optval.html) - Fallback value for optional arguments
