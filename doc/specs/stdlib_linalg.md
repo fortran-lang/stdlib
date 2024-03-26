@@ -39,7 +39,6 @@ These can be enabled during the build process. For example, with CMake, one can 
 The same is possible from the `fpm` branch, where the `cpp` preprocessor is enabled by default. For example, the macros can be added to the project's manifest:
 
 ```toml
-
 [dependencies]
 stdlib="*"
 
