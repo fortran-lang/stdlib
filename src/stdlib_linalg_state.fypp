@@ -271,7 +271,7 @@ module stdlib_linalg_state
 
     !> Error creation message, with location location
     pure type(linalg_state_type) function new_state(where_at,flag,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10, &
-                                               v1,v2,v3,v4,v5)
+                                                    a11,a12,a13,a14,a15,a16,a17,a18,a19,a20) 
 
        !> Location
        character(len=*),intent(in) :: where_at
@@ -279,14 +279,13 @@ module stdlib_linalg_state
        !> Input error flag
        integer,intent(in) :: flag
 
-       !> Optional scalar arguments
-       class(*),optional,intent(in) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10
-
-       !> Optional vector arguments
-       class(*),optional,intent(in),dimension(:) :: v1,v2,v3,v4,v5
+       !> Optional rank-agnostic arguments
+       class(*),optional,intent(in),dimension(..) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10, &
+                                                     a11,a12,a13,a14,a15,a16,a17,a18,a19,a20  
 
        !> Create state with no message
-       new_state = new_state_nowhere(flag,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,v1,v2,v3,v4,v5)
+       new_state = new_state_nowhere(flag,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10, &
+                                     a11,a12,a13,a14,a15,a16,a17,a18,a19,a20)
 
        !> Add location
        if (len_trim(where_at) > 0) new_state%where_at = adjustl(where_at)
@@ -295,16 +294,15 @@ module stdlib_linalg_state
 
     !> Error creation message, from N input variables (numeric or strings)
     pure type(linalg_state_type) function new_state_nowhere(flag,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10, &
-                                               v1,v2,v3,v4,v5) result(new_state)
+                                                            a11,a12,a13,a14,a15,a16,a17,a18,a19,a20) &
+                                                            result(new_state)
 
        !> Input error flag
        integer,intent(in) :: flag
 
-       !> Optional scalar arguments
-       class(*),optional,intent(in) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10
-
-       !> Optional vector arguments
-       class(*),optional,intent(in),dimension(:) :: v1,v2,v3,v4,v5
+       !> Optional rank-agnostic arguments
+       class(*),optional,intent(in),dimension(..) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10, &
+                                                     a11,a12,a13,a14,a15,a16,a17,a18,a19,a20  
 
        ! Init object
        call new_state%destroy()
@@ -314,35 +312,61 @@ module stdlib_linalg_state
 
        !> Set chain
        new_state%message = ""
-       call append(new_state%message,a1)
-       call append(new_state%message,a2)
-       call append(new_state%message,a3)
-       call append(new_state%message,a4)
-       call append(new_state%message,a5)
-       call append(new_state%message,a6)
-       call append(new_state%message,a7)
-       call append(new_state%message,a8)
-       call append(new_state%message,a9)
-       call append(new_state%message,a10)
-       call appendv(new_state%message,v1)
-       call appendv(new_state%message,v2)
-       call appendv(new_state%message,v3)
-       call appendv(new_state%message,v4)
-       call appendv(new_state%message,v5)
+       call appendr(new_state%message,a1)
+       call appendr(new_state%message,a2)
+       call appendr(new_state%message,a3)
+       call appendr(new_state%message,a4)
+       call appendr(new_state%message,a5)
+       call appendr(new_state%message,a6)
+       call appendr(new_state%message,a7)
+       call appendr(new_state%message,a8)
+       call appendr(new_state%message,a9)
+       call appendr(new_state%message,a10)
+       call appendr(new_state%message,a11)
+       call appendr(new_state%message,a12)
+       call appendr(new_state%message,a13)
+       call appendr(new_state%message,a14)
+       call appendr(new_state%message,a15)
+       call appendr(new_state%message,a16)
+       call appendr(new_state%message,a17)
+       call appendr(new_state%message,a18)
+       call appendr(new_state%message,a19)
+       call appendr(new_state%message,a20)
 
     end function new_state_nowhere
 
+    ! Append a generic value to the error flag (rank-agnostic)
+    pure subroutine appendr(msg,a,prefix)
+       class(*),optional,intent(in) :: a(..)
+       character(len=*),intent(inout) :: msg
+       character,optional,intent(in) :: prefix
+       
+       character(len=MSG_LENGTH) :: buffer
+       
+       if (present(a)) then 
+          select rank (v=>a)
+             rank (0)
+                call append (msg,v,prefix)
+             rank (1)
+                call appendv(msg,v)
+             rank default
+                write (buffer,'(i0)') rank(v)
+                msg = trim(msg)//' <ERROR: INVALID RANK>'
+          
+          end select   
+       endif
+       
+    end subroutine appendr
+
     ! Append a generic value to the error flag
     pure subroutine append(msg,a,prefix)
-       class(*),optional,intent(in) :: a
+       class(*),intent(in) :: a
        character(len=*),intent(inout) :: msg
        character,optional,intent(in) :: prefix
 
        character(len=MSG_LENGTH) :: buffer,buffer2
        character(len=2) :: sep
        integer :: ls
-
-       if (.not. present(a)) return
 
        ! Do not add separator if this is the first instance
        sep = '  '
@@ -385,14 +409,13 @@ module stdlib_linalg_state
 
     ! Append a generic vector to the error flag
     pure subroutine appendv(msg,a)
-       class(*),optional,intent(in) :: a(:)
+       class(*),intent(in) :: a(:)
        character(len=*),intent(inout) :: msg
 
        integer :: j,ls
        character(len=MSG_LENGTH) :: buffer,buffer2,buffer_format
        character(len=2) :: sep
 
-       if (.not. present(a)) return
        if (size(a) <= 0) return
 
        ! Default: separate elements with one space

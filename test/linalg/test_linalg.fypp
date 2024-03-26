@@ -959,7 +959,7 @@ contains
 
 #:endif
 
-        state = linalg_state_type(LINALG_SUCCESS,' 32-bit array: ',v1=[(1.0_sp,0.0_sp),(0.0_sp,1.0_sp)])
+        state = linalg_state_type(LINALG_SUCCESS,' 32-bit array: ',[(1.0_sp,0.0_sp),(0.0_sp,1.0_sp)])
         call check(error, state%message== &
         ' 32-bit array: [(1.00000000E+00,0.00000000E+00) (0.00000000E+00,1.00000000E+00)]', &
         "malformed state message with 32-bit real array.")
