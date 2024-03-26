@@ -20,7 +20,7 @@ Experimental
 A Modern Fortran version of the [Reference-LAPACK 3.10.1](http://github.com/reference-LAPACK) implementation is provided as a backend. 
 Modern Fortran modules with full explicit typing features are provided after an automated conversion of the legacy codes: 
 - [stdlib_linalg_blas(module)], [stdlib_linalg_lapack(module)] provide kind-agnostic interfaces to all functions.
-- Both libraries are available for 32- (`sp`), 64- (`sp`) and 128-bit (`qp`) `real` and `complex` numbers (the latter if available in the current build)
+- Both libraries are available for 32- (`sp`), 64- (`dp`) and 128-bit (`qp`) `real` and `complex` numbers (the latter if available in the current build)
 - Free format, lower-case style
 - `implicit none(type, external)` applied to all procedures and modules
 - `intent` added and all `pure` procedures where possible
