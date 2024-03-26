@@ -9,6 +9,6 @@ program example_gemv
   ! Use legacy BLAS interface 
   call gemv('No transpose',m=size(A,1),n=size(A,2),alpha=1.0,a=A,lda=size(A,1),x=B,incx=1,beta=0.0,y=B,incy=1)
 
-  print *, x ! returns 1.0 2.0
-  	  
+  print *, B ! returns 1.0 2.0
+
 end program example_gemv
