@@ -49,7 +49,55 @@ macros = ["STDLIB_EXTERNAL_BLAS", "STDLIB_EXTERNAL_LAPACK"]
 
 or directly via compiler flags: 
 
-`fpm build --flag "-DSTDLIB_EXTERNAL_BLAS -DSTDLIB_EXTERNAL_LAPACK -framework Accelerate"`.
+`fpm build --flag "-DSTDLIB_EXTERNAL_BLAS -DSTDLIB_EXTERNAL_LAPACK -lblas -llapack"`.
+
+### Syntax 
+
+All procedures in the `BLAS` and `LAPACK` backends follow the standard interfaces from the 
+[Reference LAPACK](https://www.netlib.org/lapack/). So, the online [Users Guide](https://www.netlib.org/lapack/explore-html/)
+should be consulted for the full API and descriptions of procedure arguments and their usage. 
+
+The `stdlib` implementation makes both kind-agnostic and specific procedure interfaces available via modules
+[stdlib_linalg_blas(module)] and [stdlib_linalg_lapack(module)]. Because all procedures start with a letter 
+[that indicates the base datatype](https://www.netlib.org/lapack/lug/node24.html), the `stdlib` generic
+interface drops the heading letter and contains all kind-dependent implementations. For example, the generic 
+interface to the `axpy` function looks like: 
+
+```fortran  
+!> AXPY: constant times a vector plus a vector.
+interface axpy
+    module procedure stdlib_saxpy
+    module procedure stdlib_daxpy
+    module procedure stdlib_qaxpy
+    module procedure stdlib_caxpy
+    module procedure stdlib_zaxpy
+    module procedure stdlib_waxpy
+end interface axpy
+```
+
+The generic interface is the endpoint for using an external library. Whenever the latter is used, references
+to the internal `module procedure`s are replaced with interfaces to the external library, 
+for example: 
+
+```fortran  
+!> AXPY: constant times a vector plus a vector.
+interface axpy
+    pure subroutine caxpy(n,ca,cx,incx,cy,incy)
+        import sp,dp,qp,ilp,lk 
+        implicit none(type,external) 
+        complex(sp), intent(in) :: ca,cx(*)
+        integer(ilp), intent(in) :: incx,incy,n
+        complex(sp), intent(inout) :: cy(*)
+    end subroutine caxpy
+    ! [....]
+    module procedure stdlib_qaxpy
+end interface axpy
+```
+
+Note that the 128-bit functions are only provided by `stdlib` and always point to the internal implementation. 
+Because 128-bit precision is identified as [stdlib_kinds(module):qp], initials for 128-bit procedures were 
+labelled as `q` (quadruple-precision reals) and `w` ("wide" or quadruple-precision complex numbers). 
+Extended precision ([stdlib_kinds(module):xdp]) calculations are currently not supported.
 
 ### Example
 
