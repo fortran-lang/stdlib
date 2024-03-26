@@ -5,7 +5,7 @@ module test_linalg
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_linalg, only: diag, eye, trace, outer_product, cross_product, kronecker_product
-    use stdlib_linalg_state
+    use stdlib_linalg_state, only: linalg_state_type, LINALG_SUCCESS, linalg_error_handling
 
     implicit none
 
@@ -917,56 +917,56 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        type(linalg_state) :: state,state_out
+        type(linalg_state_type) :: state,state_out
 
-        state = linalg_state(LINALG_SUCCESS,' 32-bit real: ',1.0_sp)
+        state = linalg_state_type(LINALG_SUCCESS,' 32-bit real: ',1.0_sp)
         call check(error, &
         state%message==' 32-bit real: 1.00000000E+00', &
         "malformed state message with 32-bit reals.")
         if (allocated(error)) return
 
-        state = linalg_state(LINALG_SUCCESS,' 64-bit real: ',1.0_dp)
+        state = linalg_state_type(LINALG_SUCCESS,' 64-bit real: ',1.0_dp)
         call check(error, &
         state%message==' 64-bit real: 1.0000000000000000E+000', &
         "malformed state message with 64-bit reals.")
         if (allocated(error)) return
 
 #:if WITH_QP
-        state = linalg_state(LINALG_SUCCESS,' 128-bit real: ',1.0_qp)
+        state = linalg_state_type(LINALG_SUCCESS,' 128-bit real: ',1.0_qp)
         call check(error, &
         state%message==' 128-bit real: 1.00000000000000000000000000000000000E+0000', &
         "malformed state message with 128-bit reals.")
         if (allocated(error)) return
 #:endif
 
-        state = linalg_state(LINALG_SUCCESS,' 32-bit complex: ',(1.0_sp,1.0_sp))
+        state = linalg_state_type(LINALG_SUCCESS,' 32-bit complex: ',(1.0_sp,1.0_sp))
         call check(error, &
         state%message==' 32-bit complex: (1.00000000E+00,1.00000000E+00)', &
         "malformed state message with 32-bit complex: "//trim(state%message))
         if (allocated(error)) return
 
-        state = linalg_state(LINALG_SUCCESS,' 64-bit complex: ',(1.0_dp,1.0_dp))
+        state = linalg_state_type(LINALG_SUCCESS,' 64-bit complex: ',(1.0_dp,1.0_dp))
         call check(error, &
         state%message==' 64-bit complex: (1.0000000000000000E+000,1.0000000000000000E+000)', &
         "malformed state message with 64-bit complex.")
         if (allocated(error)) return
 
 #:if WITH_QP
-        state = linalg_state(LINALG_SUCCESS,'128-bit complex: ',(1.0_qp,1.0_qp))
+        state = linalg_state_type(LINALG_SUCCESS,'128-bit complex: ',(1.0_qp,1.0_qp))
         call check(error, state%message== &
         '128-bit complex: (1.00000000000000000000000000000000000E+0000,1.00000000000000000000000000000000000E+0000)', &
         "malformed state message with 128-bit complex.")
 
 #:endif
 
-        state = linalg_state(LINALG_SUCCESS,' 32-bit array: ',v1=[(1.0_sp,0.0_sp),(0.0_sp,1.0_sp)])
+        state = linalg_state_type(LINALG_SUCCESS,' 32-bit array: ',v1=[(1.0_sp,0.0_sp),(0.0_sp,1.0_sp)])
         call check(error, state%message== &
         ' 32-bit array: [(1.00000000E+00,0.00000000E+00) (0.00000000E+00,1.00000000E+00)]', &
         "malformed state message with 32-bit real array.")
         if (allocated(error)) return
 
         !> State flag with location
-        state = linalg_state('test_formats',LINALG_SUCCESS,' 32-bit real: ',1.0_sp)
+        state = linalg_state_type('test_formats',LINALG_SUCCESS,' 32-bit real: ',1.0_sp)
         call check(error, &
         state%print()=='[test_formats] returned Success!', &
         "malformed state message with 32-bit real and location.")

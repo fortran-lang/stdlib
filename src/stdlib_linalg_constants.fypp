@@ -1,7 +1,7 @@
 #:include "common.fypp"
 module stdlib_linalg_constants
      use stdlib_kinds, only: sp, dp, qp, int32, int64, lk
-!$   use omp_lib
+     !$ use omp_lib
      implicit none(type,external)
      public
 
