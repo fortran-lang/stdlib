@@ -341,8 +341,6 @@ module stdlib_linalg_state
        character(len=*),intent(inout) :: msg
        character,optional,intent(in) :: prefix
        
-       character(len=MSG_LENGTH) :: buffer
-       
        if (present(a)) then 
           select rank (v=>a)
              rank (0)
@@ -350,7 +348,6 @@ module stdlib_linalg_state
              rank (1)
                 call appendv(msg,v)
              rank default
-                write (buffer,'(i0)') rank(v)
                 msg = trim(msg)//' <ERROR: INVALID RANK>'
           
           end select   
