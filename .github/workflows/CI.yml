@@ -169,7 +169,7 @@ jobs:
         cxx: [icpc]
     env:
       MACOS_HPCKIT_URL: >-
-        https:/registrationcenter-download.intel.com/akdlm/IRC_NAS/a99cb1c5-5af6-4824-9811-ae172d24e594/m_HPCKit_p_2023.1.0.44543.dmg
+        https://registrationcenter-download.intel.com/akdlm/IRC_NAS/a99cb1c5-5af6-4824-9811-ae172d24e594/m_HPCKit_p_2023.1.0.44543.dmg
       MACOS_FORTRAN_COMPONENTS: all
       FC: ${{ matrix.fc }}
       CC: ${{ matrix.cc }}
