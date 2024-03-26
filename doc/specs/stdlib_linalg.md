@@ -6,6 +6,62 @@ title: linalg
 
 [TOC]
 
+The `stdlib` linear algebra library provides high-level APIs for dealing with common linear algebra operations.
+
+## BLAS and LAPACK
+
+### Status
+
+Experimental
+
+### Description
+
+`BLAS` and `LAPACK` backends provide efficient low level implementations of many linear algebra algorithms, and are employed for non-trivial operators. 
+A Modern Fortran version of the [Reference-LAPACK 3.10.1](http://github.com/reference-LAPACK) implementation is provided as a backend. 
+Modern Fortran modules with full explicit typing features are provided after an automated conversion of the legacy codes: 
+- [stdlib_linalg_blas(module)], [stdlib_linalg_lapack(module)] provide kind-agnostic interfaces to all functions.
+- Both libraries are available for 32- (`sp`), 64- (`sp`) and 128-bit (`qp`) `real` and `complex` numbers (the latter if available in the current build)
+- Free format, lower-case style
+- `implicit none(type, external)` applied to all procedures and modules
+- `intent` added and all `pure` procedures where possible
+- All procedure names are prefixed with `stdlib_`, while their generic interface is the same as the BLAS/LAPACK default, with the header character dropped. For example, `stdlib_dgemv`, `stdlib_sgemv`, etc. provide implementations for matrix-vector multiply, while the generic interface is named `gemv`
+- F77-style `parameter`s removed, and all numeric constants have been generalized with KIND-dependent Fortran intrinsics. 
+- preprocessor-based OpenMP directives retained.
+The single-source module structure hopefully allows for cross-procedural inlining which is otherwise impossible without link-time optimization.
+
+When available, highly optimized libraries that take advantage of specialized processor instructions should preferred. 
+Examples of such libraries are: OpenBLAS, MKL (TM), Accelerate, and ATLAS. In order to enable their usage, simply ensure that the following pre-processor macros are defined: 
+
+- `STDLIB_EXTERNAL_BLAS`   wraps all BLAS procedures (except for the 128-bit ones) to an external library
+- `STDLIB_EXTERNAL_LAPACK` wraps all LAPACK procedures (except for the 128-bit ones) to an external library
+
+These can be enabled during the build process. For example, with CMake, one can enable these preprocessor directives using `add_compile_definitions(STDLIB_EXTERNAL_BLAS STDLIB_EXTERNAL_LAPACK)`.
+The same is possible from the `fpm` branch, where the `cpp` preprocessor is enabled by default. For example, the macros can be added to the project's manifest:
+
+```toml
+
+[dependencies]
+stdlib="*"
+
+[preprocess]
+[preprocess.cpp]
+macros = ["STDLIB_EXTERNAL_BLAS", "STDLIB_EXTERNAL_LAPACK"]
+```
+
+or directly via compiler flags: 
+
+`fpm build --flag "-DSTDLIB_EXTERNAL_BLAS -DSTDLIB_EXTERNAL_LAPACK -framework Accelerate"`.
+
+### Example
+
+```fortran
+{!example/linalg/example_blas_gemv.f90!}
+```
+
+```fortran
+{!example/linalg/example_lapack_getrf.f90!}
+```
+
 ## `diag` - Create a diagonal array or extract the diagonal elements of an array
 
 ### Status
