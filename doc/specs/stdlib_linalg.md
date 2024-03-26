@@ -42,6 +42,7 @@ The same is possible from the `fpm` branch, where the `cpp` preprocessor is enab
 [dependencies]
 stdlib="*"
 
+# Macros are only needed if using an external library
 [preprocess]
 [preprocess.cpp]
 macros = ["STDLIB_EXTERNAL_BLAS", "STDLIB_EXTERNAL_LAPACK"]
