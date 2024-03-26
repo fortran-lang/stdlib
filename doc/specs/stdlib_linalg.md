@@ -29,7 +29,7 @@ Modern Fortran modules with full explicit typing features are provided after an 
 - preprocessor-based OpenMP directives retained.
 The single-source module structure hopefully allows for cross-procedural inlining which is otherwise impossible without link-time optimization.
 
-When available, highly optimized libraries that take advantage of specialized processor instructions should preferred. 
+When available, highly optimized libraries that take advantage of specialized processor instructions should be preferred over the `stdlib` implementation. 
 Examples of such libraries are: OpenBLAS, MKL (TM), Accelerate, and ATLAS. In order to enable their usage, simply ensure that the following pre-processor macros are defined: 
 
 - `STDLIB_EXTERNAL_BLAS`   wraps all BLAS procedures (except for the 128-bit ones) to an external library
