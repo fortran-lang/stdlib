@@ -18,7 +18,9 @@ Experimental
 
 `BLAS` and `LAPACK` backends provide efficient low level implementations of many linear algebra algorithms, and are employed for non-trivial operators. 
 A Modern Fortran version of the [Reference-LAPACK 3.10.1](http://github.com/reference-LAPACK) implementation is provided as a backend. 
-Modern Fortran modules with full explicit typing features are provided after an automated conversion of the legacy codes: 
+Modern Fortran modules with full explicit typing features are provided after an 
+[automated conversion](https://github.com/perazz/fortran-lapack/blob/main/scripts/modularize_blas.py) 
+of the legacy codes: 
 - [stdlib_linalg_blas(module)], [stdlib_linalg_lapack(module)] provide kind-agnostic interfaces to all functions.
 - Both libraries are available for 32- (`sp`), 64- (`dp`) and 128-bit (`qp`) `real` and `complex` numbers (the latter if available in the current build)
 - Free format, lower-case style
