@@ -101,7 +101,8 @@ module stdlib_hashmap_wrappers
 
         module procedure set_char_key,   &
                          set_int8_key,   &
-                         set_other
+                         set_other,      &
+                         set_int32_key
 
     end interface set
 
@@ -306,6 +307,21 @@ contains
         allocate(other % value, source=value)
 
     end subroutine set_other
+
+
+    subroutine set_int32_key( key, value )
+        !! Version: Experimental
+        !!
+        !! Sets the contents of the key from an INTEGER(INT8) vector
+        !! Arguments:
+        !!     key   - the output key
+        !!     value - the input INTEGER(INT32) vector
+                type(key_type), intent(out) :: key
+                integer(int32), intent(in)   :: value(:)
+        
+                key % value = transfer(value, key % value)
+        
+        end subroutine set_int32_key
 
 
     subroutine set_int8_key( key, value )
