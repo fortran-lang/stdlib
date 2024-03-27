@@ -1308,7 +1308,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine cgees( jobvs, sort, select, n, a, lda, sdim, w, vs,ldvs, work, lwork, &
                          rwork, bwork, info )
-                    import sp,dp,qp,ilp,lk 
+                    import sp,dp,qp,ilp,lk,stdlib_select_c
                     implicit none(type,external) 
                     character, intent(in) :: jobvs,sort
                     integer(ilp), intent(out) :: info,sdim
@@ -1325,7 +1325,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dgees( jobvs, sort, select, n, a, lda, sdim, wr, wi,vs, ldvs, work, &
                          lwork, bwork, info )
-                    import sp,dp,qp,ilp,lk 
+                    import sp,dp,qp,ilp,lk,stdlib_select_d
                     implicit none(type,external) 
                     character, intent(in) :: jobvs,sort
                     integer(ilp), intent(out) :: info,sdim
@@ -1344,7 +1344,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine sgees( jobvs, sort, select, n, a, lda, sdim, wr, wi,vs, ldvs, work, &
                          lwork, bwork, info )
-                    import sp,dp,qp,ilp,lk 
+                    import sp,dp,qp,ilp,lk,stdlib_select_s 
                     implicit none(type,external) 
                     character, intent(in) :: jobvs,sort
                     integer(ilp), intent(out) :: info,sdim
@@ -1363,7 +1363,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zgees( jobvs, sort, select, n, a, lda, sdim, w, vs,ldvs, work, lwork, &
                          rwork, bwork, info )
-                    import sp,dp,qp,ilp,lk 
+                    import sp,dp,qp,ilp,lk,stdlib_select_z 
                     implicit none(type,external) 
                     character, intent(in) :: jobvs,sort
                     integer(ilp), intent(out) :: info,sdim
@@ -4164,7 +4164,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine cgges( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb,sdim, alpha, &
                          beta, vsl, ldvsl, vsr, ldvsr, work,lwork, rwork, bwork, info )
-                    import sp,dp,qp,ilp,lk 
+                    import sp,dp,qp,ilp,lk,stdlib_selctg_c 
                     implicit none(type,external) 
                     character, intent(in) :: jobvsl,jobvsr,sort
                     integer(ilp), intent(out) :: info,sdim
@@ -4182,7 +4182,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dgges( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb,sdim, alphar, &
                          alphai, beta, vsl, ldvsl, vsr,ldvsr, work, lwork, bwork, info )
-                    import sp,dp,qp,ilp,lk 
+                    import sp,dp,qp,ilp,lk,stdlib_selctg_d 
                     implicit none(type,external) 
                     character, intent(in) :: jobvsl,jobvsr,sort
                     integer(ilp), intent(out) :: info,sdim
@@ -4202,7 +4202,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine sgges( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb,sdim, alphar, &
                          alphai, beta, vsl, ldvsl, vsr,ldvsr, work, lwork, bwork, info )
-                    import sp,dp,qp,ilp,lk 
+                    import sp,dp,qp,ilp,lk,stdlib_selctg_s 
                     implicit none(type,external) 
                     character, intent(in) :: jobvsl,jobvsr,sort
                     integer(ilp), intent(out) :: info,sdim
@@ -4222,7 +4222,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zgges( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb,sdim, alpha, &
                          beta, vsl, ldvsl, vsr, ldvsr, work,lwork, rwork, bwork, info )
-                    import sp,dp,qp,ilp,lk 
+                    import sp,dp,qp,ilp,lk,stdlib_selctg_z
                     implicit none(type,external) 
                     character, intent(in) :: jobvsl,jobvsr,sort
                     integer(ilp), intent(out) :: info,sdim
