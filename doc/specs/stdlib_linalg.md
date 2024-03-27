@@ -26,7 +26,7 @@ of the legacy codes:
 - Free format, lower-case style
 - `implicit none(type, external)` applied to all procedures and modules
 - `intent` added and all `pure` procedures where possible
-- All procedure names are prefixed with `stdlib_`, while their generic interface is the same as the BLAS/LAPACK default, with the header character dropped. For example, `stdlib_dgemv`, `stdlib_sgemv`, etc. provide implementations for matrix-vector multiply, while the generic interface is named `gemv`
+- `stdlib` provides all procedures in two different flavors: (a) original BLAS/LAPACK names with a prefix `stdlib_?<name>` (ex: `stdlib_dgemv`, `stdlib_sgemv`); (b) A generic, kind agnostic `<name>`, i.e. `gemv`. 
 - F77-style `parameter`s removed, and all numeric constants have been generalized with KIND-dependent Fortran intrinsics. 
 - preprocessor-based OpenMP directives retained.
 The single-source module structure hopefully allows for cross-procedural inlining which is otherwise impossible without link-time optimization.
