@@ -31,9 +31,9 @@ jobs:
         --slave /usr/bin/gcov gcov /usr/bin/gcov-${{ env.GCC_V }}
 
     - name: Install fpm latest release
-      uses: fortran-lang/setup-fpm@v3
+      uses: fortran-lang/setup-fpm@v5
       with:
-        fpm-version: 'v0.4.0'
+        fpm-version: 'v0.10.0'
 
     - name: Run fpm test ⚙
       run: |

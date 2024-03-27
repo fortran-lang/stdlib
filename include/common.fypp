@@ -87,7 +87,6 @@
 #! Whether Fortran 90 compatible code should be generated
 #:set VERSION90 = defined('VERSION90')
 
-
 #! Ranks to be generated when templates are created
 #:if not defined('MAXRANK')
   #:if VERSION90

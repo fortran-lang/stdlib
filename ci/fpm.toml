@@ -8,3 +8,6 @@ copyright = "2019-2021 stdlib contributors"
 [dev-dependencies]
 test-drive.git = "https://github.com/fortran-lang/test-drive"
 test-drive.tag = "v0.4.0"
+
+[preprocess]
+[preprocess.cpp]
