@@ -101,8 +101,8 @@ module stdlib_hashmap_wrappers
 
         module procedure set_char_key,   &
                          set_int8_key,   &
-                         set_other,      &
-                         set_int32_key
+                         set_int32_key, &
+                         set_other
 
     end interface set
 
