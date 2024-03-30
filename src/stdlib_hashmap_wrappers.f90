@@ -291,7 +291,7 @@ contains
         
         value = transfer( key % value, value )
         
-    end subroutine get_int8_key
+    end subroutine get_int32_key
 
 
     subroutine set_char_key( key, value )
