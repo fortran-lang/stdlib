@@ -1,0 +1,14 @@
+module stdlib_linalg_constants
+     use stdlib_kinds, only: sp, dp, qp, int32, int64, lk
+     use, intrinsic :: ieee_arithmetic, only: ieee_is_nan 
+     !$ use omp_lib
+     implicit none(type,external)
+     public
+
+
+
+     ! Integer size support for ILP64 builds should be done here
+     integer, parameter :: ilp = int32
+     private            :: int32, int64
+
+end module stdlib_linalg_constants
