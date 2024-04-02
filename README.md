@@ -217,6 +217,8 @@ stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
 
 ## Using stdlib in your project
 
+### Using stdlib with CMake
+
 The stdlib project exports CMake package files and pkg-config files to make stdlib usable for other projects.
 The package files are located in the library directory in the installation prefix.
 
@@ -234,6 +236,18 @@ target_link_libraries(
 
 To make the installed stdlib project discoverable add the stdlib directory to the ``CMAKE_PREFIX_PATH``.
 The usual install location of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
+
+### Using stdlib with a regular Makefile
+
+The library can be included in a regular Makefile, for example with
+```make
+STDLIB_PATH := path/to/build
+LIBDIRS := $(STDLIB_PATH)/src
+INCDIRS := $(STDLIB_PATH)/src/mod_files
+...
+```
+Here it is assumed that the compiler will look for libraries in `LIBDIRS` and for module files in `INCDIRS`.
+A flag `-lfortran_stdlib` should be included to link against `libfortran_stdlib.a` or `libfortran_stdlib.so`.
 
 ## Documentation
 
