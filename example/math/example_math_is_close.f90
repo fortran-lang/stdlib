@@ -1,6 +1,7 @@
 program example_math_is_close
 
   use stdlib_math, only: is_close
+  implicit none
   real :: x(2) = [1, 2], y, NAN
 
   y = -3
