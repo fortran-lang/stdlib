@@ -201,20 +201,6 @@ fpm run --example prog
 with `prog` being the name of the example program (e.g., `example_sort`).
 
 
-To use `stdlib` within your `fpm` project, add the following lines to your `fpm.toml` file:
-```toml
-[dependencies]
-stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
-```
-
-> **Warning**
-> 
-> Fpm 0.9.0 and later implements stdlib as a *metapackage*.
-> To include the standard library metapackage, change the dependency to:
-> `stdlib = "*"`.
-> 
-> [see also](https://fpm.fortran-lang.org/spec/metapackages.html)
-
 ## Using stdlib in your project
 
 ### Using stdlib with CMake
@@ -237,17 +223,38 @@ target_link_libraries(
 To make the installed stdlib project discoverable add the stdlib directory to the ``CMAKE_PREFIX_PATH``.
 The usual install location of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
 
+### Using stdlib with with fpm
+
+To use `stdlib` within your `fpm` project, add the following lines to your `fpm.toml` file:
+```toml
+[dependencies]
+stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
+```
+
+> **Warning**
+> 
+> Fpm 0.9.0 and later implements stdlib as a *metapackage*.
+> To include the standard library metapackage, change the dependency to:
+> `stdlib = "*"`.
+> 
+> [see also](https://fpm.fortran-lang.org/spec/metapackages.html)
+
 ### Using stdlib with a regular Makefile
 
-The library can be included in a regular Makefile, for example with
+After the library has been built, it can be included in a regular Makefile.
+If the library has been installed in a directory inside the compiler's search path,
+only a flag `-lfortran_stdlib` is required to link against `libfortran_stdlib.a` or `libfortran_stdlib.so`.
+If the installation directory is not in the compiler's search path, one can add for example
 ```make
-STDLIB_PATH := path/to/build
-LIBDIRS := $(STDLIB_PATH)/src
-INCDIRS := $(STDLIB_PATH)/src/mod_files
-...
+libdir=${install_dir}/lib
+moduledir=${install_dir}/include/fortran_stdlib/<compiler name and version>
 ```
-Here it is assumed that the compiler will look for libraries in `LIBDIRS` and for module files in `INCDIRS`.
-A flag `-lfortran_stdlib` should be included to link against `libfortran_stdlib.a` or `libfortran_stdlib.so`.
+Here it is assumed that the compiler will look for libraries in `libdir` and for module files in `moduledir`.
+The library can also be included from a build directory without installation:
+```make
+libdir=$(build_dir)/src
+moduledir=$(build_dir)/src/mod_files
+```
 
 ## Documentation
 
