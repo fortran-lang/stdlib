@@ -1,3 +1,16 @@
+# Version 0.5.0
+
+Full release notes available at [v0.5.0] tag.
+
+[v0.5.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.5.0
+
+Changes to existing scripts and modules
+- change in module `stdlib_linalg`
+  - addition of the BLAS/LAPACK backends and interfaces
+    [#772](https://github.com/fortran-lang/stdlib/pull/772)
+- upgrade of the Intel-classic compiler in macOS CI 
+  [#777](https://github.com/fortran-lang/stdlib/pull/777)
+
 # Version 0.4.0
 
 Full release notes available at [v0.4.0] tag.
