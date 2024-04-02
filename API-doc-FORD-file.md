@@ -38,7 +38,7 @@ favicon: doc/media/favicon.ico
 license: by-sa
 author: fortran-lang/stdlib contributors
 author_pic: https://fortran-lang.org/assets/img/fortran_logo_512x512.png
-author_email: fortran-lang@groups.io
+email: fortran-lang@groups.io
 github: https://github.com/fortran-lang
 twitter: https://twitter.com/fortranlang
 website: https://fortran-lang.org
