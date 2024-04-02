@@ -223,7 +223,7 @@ target_link_libraries(
 To make the installed stdlib project discoverable add the stdlib directory to the ``CMAKE_PREFIX_PATH``.
 The usual install location of the package files is ``$PREFIX/lib/cmake/fortran_stdlib``.
 
-### Using stdlib with with fpm
+### Using stdlib with fpm
 
 To use `stdlib` within your `fpm` project, add the following lines to your `fpm.toml` file:
 ```toml
