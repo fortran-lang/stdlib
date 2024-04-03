@@ -282,7 +282,7 @@ contains
     subroutine get_int32_key( key, value )
 !! Version: Experimental
 !!
-!! Gets the contents of the key as an INTEGER(INT8) vector
+!! Gets the contents of the key as an INTEGER(INT32) vector
 !! Arguments:
 !!     key   - the input key
 !!     value - the contents of key mapped to an INTEGER(INT32) vector
@@ -343,7 +343,7 @@ contains
     subroutine set_int32_key( key, value )
 !! Version: Experimental
 !!
-!! Sets the contents of the key from an INTEGER(INT8) vector
+!! Sets the contents of the key from an INTEGER(INT32) vector
 !! Arguments:
 !!     key   - the output key
 !!     value - the input INTEGER(INT32) vector
