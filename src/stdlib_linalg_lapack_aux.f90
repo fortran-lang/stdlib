@@ -89,14 +89,14 @@ module stdlib_linalg_lapack_aux
 
      contains
 
-     !> This subroutine translates from a BLAST-specified integer constant to
-     !> the character string specifying a transposition operation.
-     !> CHLA_TRANSTYPE: returns an CHARACTER*1.  If CHLA_TRANSTYPE: is 'X',
-     !> then input is not an integer indicating a transposition operator.
-     !> Otherwise CHLA_TRANSTYPE returns the constant value corresponding to
-     !> TRANS.
 
      pure character function stdlib_chla_transtype( trans )
+     !! This subroutine translates from a BLAST-specified integer constant to
+     !! the character string specifying a transposition operation.
+     !! CHLA_TRANSTYPE returns an CHARACTER*1.  If CHLA_TRANSTYPE: is 'X',
+     !! then input is not an integer indicating a transposition operator.
+     !! Otherwise CHLA_TRANSTYPE returns the constant value corresponding to
+     !! TRANS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -121,18 +121,10 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_chla_transtype
 
-     !> DROUNDUP_LWORK: deals with a subtle bug with returning LWORK as a Float.
-     !> This routine guarantees it is rounded up instead of down by
-     !> multiplying LWORK by 1+eps when it is necessary, where eps is the relative machine precision.
-     !> E.g.,
-     !> float( 9007199254740993            ) == 9007199254740992
-     !> float( 9007199254740993 ) * (1.+eps) == 9007199254740994
-     !> \return DROUNDUP_LWORK
-     !>
-     !> DROUNDUP_LWORK >= LWORK.
-     !> DROUNDUP_LWORK is guaranteed to have zero decimal part.
 
      pure real(dp) function stdlib_droundup_lwork( lwork )
+     !! DROUNDUP_LWORK >= LWORK.
+     !! DROUNDUP_LWORK is guaranteed to have zero decimal part.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -151,11 +143,11 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_droundup_lwork
 
-     !> ICMAX1: finds the index of the first vector element of maximum absolute value.
-     !> Based on ICAMAX from Level 1 BLAS.
-     !> The change is to use the 'genuine' absolute value.
 
      pure integer(ilp) function stdlib_icmax1( n, cx, incx )
+     !! ICMAX1 finds the index of the first vector element of maximum absolute value.
+     !! Based on ICAMAX from Level 1 BLAS.
+     !! The change is to use the 'genuine' absolute value.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -199,10 +191,10 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_icmax1
 
-     !> IEEECK: is called from the ILAENV to verify that Infinity and
-     !> possibly NaN arithmetic is safe (i.e. will not trap).
 
      pure integer(ilp)          function stdlib_ieeeck( ispec, zero, one )
+     !! IEEECK is called from the ILAENV to verify that Infinity and
+     !! possibly NaN arithmetic is safe (i.e. will not trap).
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -289,9 +281,9 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ieeeck
 
-     !> ILACLC: scans A for its last non-zero column.
 
      pure integer(ilp) function stdlib_ilaclc( m, n, a, lda )
+     !! ILACLC scans A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -322,9 +314,9 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilaclc
 
-     !> ILACLR: scans A for its last non-zero row.
 
      pure integer(ilp) function stdlib_ilaclr( m, n, a, lda )
+     !! ILACLR scans A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -358,14 +350,14 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilaclr
 
-     !> This subroutine translated from a character string specifying if a
-     !> matrix has unit diagonal or not to the relevant BLAST-specified
-     !> integer constant.
-     !> ILADIAG: returns an INTEGER.  If ILADIAG: < 0, then the input is not a
-     !> character indicating a unit or non-unit diagonal.  Otherwise ILADIAG
-     !> returns the constant value corresponding to DIAG.
 
      integer(ilp) function stdlib_iladiag( diag )
+     !! This subroutine translated from a character string specifying if a
+     !! matrix has unit diagonal or not to the relevant BLAST-specified
+     !! integer constant.
+     !! ILADIAG returns an INTEGER.  If ILADIAG: < 0, then the input is not a
+     !! character indicating a unit or non-unit diagonal.  Otherwise ILADIAG
+     !! returns the constant value corresponding to DIAG.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -387,9 +379,9 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_iladiag
 
-     !> ILADLC: scans A for its last non-zero column.
 
      pure integer(ilp) function stdlib_iladlc( m, n, a, lda )
+     !! ILADLC scans A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -420,9 +412,9 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_iladlc
 
-     !> ILADLR: scans A for its last non-zero row.
 
      pure integer(ilp) function stdlib_iladlr( m, n, a, lda )
+     !! ILADLR scans A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -456,14 +448,14 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_iladlr
 
-     !> This subroutine translated from a character string specifying an
-     !> intermediate precision to the relevant BLAST-specified integer
-     !> constant.
-     !> ILAPREC: returns an INTEGER.  If ILAPREC: < 0, then the input is not a
-     !> character indicating a supported intermediate precision.  Otherwise
-     !> ILAPREC returns the constant value corresponding to PREC.
 
      integer(ilp) function stdlib_ilaprec( prec )
+     !! This subroutine translated from a character string specifying an
+     !! intermediate precision to the relevant BLAST-specified integer
+     !! constant.
+     !! ILAPREC returns an INTEGER.  If ILAPREC: < 0, then the input is not a
+     !! character indicating a supported intermediate precision.  Otherwise
+     !! ILAPREC returns the constant value corresponding to PREC.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -491,9 +483,9 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilaprec
 
-     !> ILASLC: scans A for its last non-zero column.
 
      pure integer(ilp) function stdlib_ilaslc( m, n, a, lda )
+     !! ILASLC scans A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -524,9 +516,9 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilaslc
 
-     !> ILASLR: scans A for its last non-zero row.
 
      pure integer(ilp) function stdlib_ilaslr( m, n, a, lda )
+     !! ILASLR scans A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -560,14 +552,14 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilaslr
 
-     !> This subroutine translates from a character string specifying a
-     !> transposition operation to the relevant BLAST-specified integer
-     !> constant.
-     !> ILATRANS: returns an INTEGER.  If ILATRANS: < 0, then the input is not
-     !> a character indicating a transposition operator.  Otherwise ILATRANS
-     !> returns the constant value corresponding to TRANS.
 
      integer(ilp) function stdlib_ilatrans( trans )
+     !! This subroutine translates from a character string specifying a
+     !! transposition operation to the relevant BLAST-specified integer
+     !! constant.
+     !! ILATRANS returns an INTEGER.  If ILATRANS: < 0, then the input is not
+     !! a character indicating a transposition operator.  Otherwise ILATRANS
+     !! returns the constant value corresponding to TRANS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -592,14 +584,14 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilatrans
 
-     !> This subroutine translated from a character string specifying a
-     !> upper- or lower-triangular matrix to the relevant BLAST-specified
-     !> integer constant.
-     !> ILAUPLO: returns an INTEGER.  If ILAUPLO: < 0, then the input is not
-     !> a character indicating an upper- or lower-triangular matrix.
-     !> Otherwise ILAUPLO returns the constant value corresponding to UPLO.
 
      integer(ilp) function stdlib_ilauplo( uplo )
+     !! This subroutine translated from a character string specifying a
+     !! upper- or lower-triangular matrix to the relevant BLAST-specified
+     !! integer constant.
+     !! ILAUPLO returns an INTEGER.  If ILAUPLO: < 0, then the input is not
+     !! a character indicating an upper- or lower-triangular matrix.
+     !! Otherwise ILAUPLO returns the constant value corresponding to UPLO.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -621,9 +613,9 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilauplo
 
-     !> ILAZLC: scans A for its last non-zero column.
 
      pure integer(ilp) function stdlib_ilazlc( m, n, a, lda )
+     !! ILAZLC scans A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -654,9 +646,9 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilazlc
 
-     !> ILAZLR: scans A for its last non-zero row.
 
      pure integer(ilp) function stdlib_ilazlr( m, n, a, lda )
+     !! ILAZLR scans A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -690,12 +682,12 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilazlr
 
-     !> This program sets problem and machine dependent parameters
-     !> useful for xHSEQR and related subroutines for eigenvalue
-     !> problems. It is called whenever
-     !> IPARMQ: is called with 12 <= ISPEC <= 16
 
      pure integer(ilp) function stdlib_iparmq( ispec, name, opts, n, ilo, ihi, lwork )
+     !! This program sets problem and machine dependent parameters
+     !! useful for xHSEQR and related subroutines for eigenvalue
+     !! problems. It is called whenever
+     !! IPARMQ is called with 12 <= ISPEC <= 16
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -822,11 +814,11 @@ module stdlib_linalg_lapack_aux
            end if
      end function stdlib_iparmq
 
-     !> IZMAX1: finds the index of the first vector element of maximum absolute value.
-     !> Based on IZAMAX from Level 1 BLAS.
-     !> The change is to use the 'genuine' absolute value.
 
      pure integer(ilp) function stdlib_izmax1( n, zx, incx )
+     !! IZMAX1 finds the index of the first vector element of maximum absolute value.
+     !! Based on IZAMAX from Level 1 BLAS.
+     !! The change is to use the 'genuine' absolute value.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -870,13 +862,13 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_izmax1
 
-     !> LSAMEN:  tests if the first N letters of CA are the same as the
-     !> first N letters of CB, regardless of case.
-     !> LSAMEN returns .TRUE. if CA and CB are equivalent except for case
-     !> and .FALSE. otherwise.  LSAMEN also returns .FALSE. if LEN( CA )
-     !> or LEN( CB ) is less than N.
 
      pure logical(lk)          function stdlib_lsamen( n, ca, cb )
+     !! LSAMEN tests if the first N letters of CA are the same as the
+     !! first N letters of CB, regardless of case.
+     !! LSAMEN returns .TRUE. if CA and CB are equivalent except for case
+     !! and .FALSE. otherwise.  LSAMEN also returns .FALSE. if LEN( CA )
+     !! or LEN( CB ) is less than N.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -901,18 +893,10 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_lsamen
 
-     !> SROUNDUP_LWORK: deals with a subtle bug with returning LWORK as a Float.
-     !> This routine guarantees it is rounded up instead of down by
-     !> multiplying LWORK by 1+eps when it is necessary, where eps is the relative machine precision.
-     !> E.g.,
-     !> float( 16777217            ) == 16777216
-     !> float( 16777217 ) * (1.+eps) == 16777218
-     !> \return SROUNDUP_LWORK
-     !>
-     !> SROUNDUP_LWORK >= LWORK.
-     !> SROUNDUP_LWORK is guaranteed to have zero decimal part.
 
      pure real(sp)             function stdlib_sroundup_lwork( lwork )
+     !! SROUNDUP_LWORK >= LWORK.
+     !! SROUNDUP_LWORK is guaranteed to have zero decimal part.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -938,21 +922,21 @@ module stdlib_linalg_lapack_aux
 
 
 
-     !> ILAENV: is called from the LAPACK routines to choose problem-dependent
-     !> parameters for the local environment.  See ISPEC for a description of
-     !> the parameters.
-     !> ILAENV returns an INTEGER
-     !> if ILAENV >= 0: ILAENV returns the value of the parameter specified by ISPEC
-     !> if ILAENV < 0:  if ILAENV = -k, the k-th argument had an illegal value.
-     !> This version provides a set of parameters which should give good,
-     !> but not optimal, performance on many of the currently available
-     !> computers.  Users are encouraged to modify this subroutine to set
-     !> the tuning parameters for their particular machine using the option
-     !> and problem size information in the arguments.
-     !> This routine will not function correctly if it is converted to all
-     !> lower case.  Converting it to all upper case is allowed.
 
      pure integer(ilp) function stdlib_ilaenv( ispec, name, opts, n1, n2, n3, n4 )
+     !! ILAENV is called from the LAPACK routines to choose problem-dependent
+     !! parameters for the local environment.  See ISPEC for a description of
+     !! the parameters.
+     !! ILAENV returns an INTEGER
+     !! if ILAENV >= 0: ILAENV returns the value of the parameter specified by ISPEC
+     !! if ILAENV < 0:  if ILAENV = -k, the k-th argument had an illegal value.
+     !! This version provides a set of parameters which should give good,
+     !! but not optimal, performance on many of the currently available
+     !! computers.  Users are encouraged to modify this subroutine to set
+     !! the tuning parameters for their particular machine using the option
+     !! and problem size information in the arguments.
+     !! This routine will not function correctly if it is converted to all
+     !! lower case.  Converting it to all upper case is allowed.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1418,15 +1402,15 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilaenv
 
-     !> This program sets problem and machine dependent parameters
-     !> useful for xHETRD_2STAGE, xHETRD_HE2HB, xHETRD_HB2ST,
-     !> xGEBRD_2STAGE, xGEBRD_GE2GB, xGEBRD_GB2BD
-     !> and related subroutines for eigenvalue problems.
-     !> It is called whenever ILAENV is called with 17 <= ISPEC <= 21.
-     !> It is called whenever ILAENV2STAGE is called with 1 <= ISPEC <= 5
-     !> with a direct conversion ISPEC + 16.
 
      pure integer(ilp) function stdlib_iparam2stage( ispec, name, opts,ni, nbi, ibi, nxi )
+     !! This program sets problem and machine dependent parameters
+     !! useful for xHETRD_2STAGE, xHETRD_HE2HB, xHETRD_HB2ST,
+     !! xGEBRD_2STAGE, xGEBRD_GE2GB, xGEBRD_GB2BD
+     !! and related subroutines for eigenvalue problems.
+     !! It is called whenever ILAENV is called with 17 <= ISPEC <= 21.
+     !! It is called whenever ILAENV2STAGE is called with 1 <= ISPEC <= 5
+     !! with a direct conversion ISPEC + 16.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1602,25 +1586,25 @@ module stdlib_linalg_lapack_aux
            endif
      end function stdlib_iparam2stage
 
-     !> ILAENV2STAGE: is called from the LAPACK routines to choose problem-dependent
-     !> parameters for the local environment.  See ISPEC for a description of
-     !> the parameters.
-     !> It sets problem and machine dependent parameters useful for *_2STAGE and
-     !> related subroutines.
-     !> ILAENV2STAGE returns an INTEGER
-     !> if ILAENV2STAGE >= 0: ILAENV2STAGE returns the value of the parameter
-     !> specified by ISPEC
-     !> if ILAENV2STAGE < 0:  if ILAENV2STAGE = -k, the k-th argument had an
-     !> illegal value.
-     !> This version provides a set of parameters which should give good,
-     !> but not optimal, performance on many of the currently available
-     !> computers for the 2-stage solvers. Users are encouraged to modify this
-     !> subroutine to set the tuning parameters for their particular machine using
-     !> the option and problem size information in the arguments.
-     !> This routine will not function correctly if it is converted to all
-     !> lower case.  Converting it to all upper case is allowed.
 
      pure integer(ilp) function stdlib_ilaenv2stage( ispec, name, opts, n1, n2, n3, n4 )
+     !! ILAENV2STAGE is called from the LAPACK routines to choose problem-dependent
+     !! parameters for the local environment.  See ISPEC for a description of
+     !! the parameters.
+     !! It sets problem and machine dependent parameters useful for *_2STAGE and
+     !! related subroutines.
+     !! ILAENV2STAGE returns an INTEGER
+     !! if ILAENV2STAGE >= 0: ILAENV2STAGE returns the value of the parameter
+     !! specified by ISPEC
+     !! if ILAENV2STAGE < 0:  if ILAENV2STAGE = -k, the k-th argument had an
+     !! illegal value.
+     !! This version provides a set of parameters which should give good,
+     !! but not optimal, performance on many of the currently available
+     !! computers for the 2-stage solvers. Users are encouraged to modify this
+     !! subroutine to set the tuning parameters for their particular machine using
+     !! the option and problem size information in the arguments.
+     !! This routine will not function correctly if it is converted to all
+     !! lower case.  Converting it to all upper case is allowed.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--

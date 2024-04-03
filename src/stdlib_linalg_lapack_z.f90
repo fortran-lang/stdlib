@@ -502,11 +502,11 @@ module stdlib_linalg_lapack_z
      contains
 
 
-     !> ZDRSCL: multiplies an n-element complex vector x by the real scalar
-     !> 1/a.  This is done without overflow or underflow as long as
-     !> the final result x/a does not overflow or underflow.
 
      pure subroutine stdlib_zdrscl( n, sa, sx, incx )
+     !! ZDRSCL multiplies an n-element complex vector x by the real scalar
+     !! 1/a.  This is done without overflow or underflow as long as
+     !! the final result x/a does not overflow or underflow.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -556,17 +556,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zdrscl
 
-     !> ZGBEQU: computes row and column scalings intended to equilibrate an
-     !> M-by-N band matrix A and reduce its condition number.  R returns the
-     !> row scale factors and C the column scale factors, chosen to try to
-     !> make the largest element in each row and column of the matrix B with
-     !> elements B(i,j)=R(i)*A(i,j)*C(j) have absolute value 1.
-     !> R(i) and C(j) are restricted to be between SMLNUM = smallest safe
-     !> number and BIGNUM = largest safe number.  Use of these scaling
-     !> factors is not guaranteed to reduce the condition number of A but
-     !> works well in practice.
 
      pure subroutine stdlib_zgbequ( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
+     !! ZGBEQU computes row and column scalings intended to equilibrate an
+     !! M-by-N band matrix A and reduce its condition number.  R returns the
+     !! row scale factors and C the column scale factors, chosen to try to
+     !! make the largest element in each row and column of the matrix B with
+     !! elements B(i,j)=R(i)*A(i,j)*C(j) have absolute value 1.
+     !! R(i) and C(j) are restricted to be between SMLNUM = smallest safe
+     !! number and BIGNUM = largest safe number.  Use of these scaling
+     !! factors is not guaranteed to reduce the condition number of A but
+     !! works well in practice.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -691,23 +691,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgbequ
 
-     !> ZGBEQUB: computes row and column scalings intended to equilibrate an
-     !> M-by-N matrix A and reduce its condition number.  R returns the row
-     !> scale factors and C the column scale factors, chosen to try to make
-     !> the largest element in each row and column of the matrix B with
-     !> elements B(i,j)=R(i)*A(i,j)*C(j) have an absolute value of at most
-     !> the radix.
-     !> R(i) and C(j) are restricted to be a power of the radix between
-     !> SMLNUM = smallest safe number and BIGNUM = largest safe number.  Use
-     !> of these scaling factors is not guaranteed to reduce the condition
-     !> number of A but works well in practice.
-     !> This routine differs from ZGEEQU by restricting the scaling factors
-     !> to a power of the radix.  Barring over- and underflow, scaling by
-     !> these factors introduces no additional rounding errors.  However, the
-     !> scaled entries' magnitudes are no longer approximately 1 but lie
-     !> between sqrt(radix) and 1/sqrt(radix).
 
      pure subroutine stdlib_zgbequb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
+     !! ZGBEQUB computes row and column scalings intended to equilibrate an
+     !! M-by-N matrix A and reduce its condition number.  R returns the row
+     !! scale factors and C the column scale factors, chosen to try to make
+     !! the largest element in each row and column of the matrix B with
+     !! elements B(i,j)=R(i)*A(i,j)*C(j) have an absolute value of at most
+     !! the radix.
+     !! R(i) and C(j) are restricted to be a power of the radix between
+     !! SMLNUM = smallest safe number and BIGNUM = largest safe number.  Use
+     !! of these scaling factors is not guaranteed to reduce the condition
+     !! number of A but works well in practice.
+     !! This routine differs from ZGEEQU by restricting the scaling factors
+     !! to a power of the radix.  Barring over- and underflow, scaling by
+     !! these factors introduces no additional rounding errors.  However, the
+     !! scaled entries' magnitudes are no longer approximately 1 but lie
+     !! between sqrt(radix) and 1/sqrt(radix).
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -841,11 +841,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgbequb
 
-     !> ZGBTF2: computes an LU factorization of a complex m-by-n band matrix
-     !> A using partial pivoting with row interchanges.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_zgbtf2( m, n, kl, ku, ab, ldab, ipiv, info )
+     !! ZGBTF2 computes an LU factorization of a complex m-by-n band matrix
+     !! A using partial pivoting with row interchanges.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -927,11 +927,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgbtf2
 
-     !> ZGEBAK: forms the right or left eigenvectors of a complex general
-     !> matrix by backward transformation on the computed eigenvectors of the
-     !> balanced matrix output by ZGEBAL.
 
      pure subroutine stdlib_zgebak( job, side, n, ilo, ihi, scale, m, v, ldv,info )
+     !! ZGEBAK forms the right or left eigenvectors of a complex general
+     !! matrix by backward transformation on the computed eigenvectors of the
+     !! balanced matrix output by ZGEBAL.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1024,16 +1024,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgebak
 
-     !> ZGEBAL: balances a general complex matrix A.  This involves, first,
-     !> permuting A by a similarity transformation to isolate eigenvalues
-     !> in the first 1 to ILO-1 and last IHI+1 to N elements on the
-     !> diagonal; and second, applying a diagonal similarity transformation
-     !> to rows and columns ILO to IHI to make the rows and columns as
-     !> close in norm as possible.  Both steps are optional.
-     !> Balancing may reduce the 1-norm of the matrix, and improve the
-     !> accuracy of the computed eigenvalues and/or eigenvectors.
 
      pure subroutine stdlib_zgebal( job, n, a, lda, ilo, ihi, scale, info )
+     !! ZGEBAL balances a general complex matrix A.  This involves, first,
+     !! permuting A by a similarity transformation to isolate eigenvalues
+     !! in the first 1 to ILO-1 and last IHI+1 to N elements on the
+     !! diagonal; and second, applying a diagonal similarity transformation
+     !! to rows and columns ILO to IHI to make the rows and columns as
+     !! close in norm as possible.  Both steps are optional.
+     !! Balancing may reduce the 1-norm of the matrix, and improve the
+     !! accuracy of the computed eigenvalues and/or eigenvectors.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1194,17 +1194,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgebal
 
-     !> ZGEEQU: computes row and column scalings intended to equilibrate an
-     !> M-by-N matrix A and reduce its condition number.  R returns the row
-     !> scale factors and C the column scale factors, chosen to try to make
-     !> the largest element in each row and column of the matrix B with
-     !> elements B(i,j)=R(i)*A(i,j)*C(j) have absolute value 1.
-     !> R(i) and C(j) are restricted to be between SMLNUM = smallest safe
-     !> number and BIGNUM = largest safe number.  Use of these scaling
-     !> factors is not guaranteed to reduce the condition number of A but
-     !> works well in practice.
 
      pure subroutine stdlib_zgeequ( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
+     !! ZGEEQU computes row and column scalings intended to equilibrate an
+     !! M-by-N matrix A and reduce its condition number.  R returns the row
+     !! scale factors and C the column scale factors, chosen to try to make
+     !! the largest element in each row and column of the matrix B with
+     !! elements B(i,j)=R(i)*A(i,j)*C(j) have absolute value 1.
+     !! R(i) and C(j) are restricted to be between SMLNUM = smallest safe
+     !! number and BIGNUM = largest safe number.  Use of these scaling
+     !! factors is not guaranteed to reduce the condition number of A but
+     !! works well in practice.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1322,23 +1322,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeequ
 
-     !> ZGEEQUB: computes row and column scalings intended to equilibrate an
-     !> M-by-N matrix A and reduce its condition number.  R returns the row
-     !> scale factors and C the column scale factors, chosen to try to make
-     !> the largest element in each row and column of the matrix B with
-     !> elements B(i,j)=R(i)*A(i,j)*C(j) have an absolute value of at most
-     !> the radix.
-     !> R(i) and C(j) are restricted to be a power of the radix between
-     !> SMLNUM = smallest safe number and BIGNUM = largest safe number.  Use
-     !> of these scaling factors is not guaranteed to reduce the condition
-     !> number of A but works well in practice.
-     !> This routine differs from ZGEEQU by restricting the scaling factors
-     !> to a power of the radix.  Barring over- and underflow, scaling by
-     !> these factors introduces no additional rounding errors.  However, the
-     !> scaled entries' magnitudes are no longer approximately 1 but lie
-     !> between sqrt(radix) and 1/sqrt(radix).
 
      pure subroutine stdlib_zgeequb( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
+     !! ZGEEQUB computes row and column scalings intended to equilibrate an
+     !! M-by-N matrix A and reduce its condition number.  R returns the row
+     !! scale factors and C the column scale factors, chosen to try to make
+     !! the largest element in each row and column of the matrix B with
+     !! elements B(i,j)=R(i)*A(i,j)*C(j) have an absolute value of at most
+     !! the radix.
+     !! R(i) and C(j) are restricted to be a power of the radix between
+     !! SMLNUM = smallest safe number and BIGNUM = largest safe number.  Use
+     !! of these scaling factors is not guaranteed to reduce the condition
+     !! number of A but works well in practice.
+     !! This routine differs from ZGEEQU by restricting the scaling factors
+     !! to a power of the radix.  Barring over- and underflow, scaling by
+     !! these factors introduces no additional rounding errors.  However, the
+     !! scaled entries' magnitudes are no longer approximately 1 but lie
+     !! between sqrt(radix) and 1/sqrt(radix).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1466,13 +1466,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeequb
 
-     !> ZGETC2: computes an LU factorization, using complete pivoting, of the
-     !> n-by-n matrix A. The factorization has the form A = P * L * U * Q,
-     !> where P and Q are permutation matrices, L is lower triangular with
-     !> unit diagonal elements and U is upper triangular.
-     !> This is a level 1 BLAS version of the algorithm.
 
      pure subroutine stdlib_zgetc2( n, a, lda, ipiv, jpiv, info )
+     !! ZGETC2 computes an LU factorization, using complete pivoting, of the
+     !! n-by-n matrix A. The factorization has the form A = P * L * U * Q,
+     !! where P and Q are permutation matrices, L is lower triangular with
+     !! unit diagonal elements and U is upper triangular.
+     !! This is a level 1 BLAS version of the algorithm.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1550,16 +1550,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgetc2
 
-     !> ZGETF2: computes an LU factorization of a general m-by-n matrix A
-     !> using partial pivoting with row interchanges.
-     !> The factorization has the form
-     !> A = P * L * U
-     !> where P is a permutation matrix, L is lower triangular with unit
-     !> diagonal elements (lower trapezoidal if m > n), and U is upper
-     !> triangular (upper trapezoidal if m < n).
-     !> This is the right-looking Level 2 BLAS version of the algorithm.
 
      pure subroutine stdlib_zgetf2( m, n, a, lda, ipiv, info )
+     !! ZGETF2 computes an LU factorization of a general m-by-n matrix A
+     !! using partial pivoting with row interchanges.
+     !! The factorization has the form
+     !! A = P * L * U
+     !! where P is a permutation matrix, L is lower triangular with unit
+     !! diagonal elements (lower trapezoidal if m > n), and U is upper
+     !! triangular (upper trapezoidal if m < n).
+     !! This is the right-looking Level 2 BLAS version of the algorithm.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1623,12 +1623,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgetf2
 
-     !> ZGGBAK: forms the right or left eigenvectors of a complex generalized
-     !> eigenvalue problem A*x = lambda*B*x, by backward transformation on
-     !> the computed eigenvectors of the balanced pair of matrices output by
-     !> ZGGBAL.
 
      pure subroutine stdlib_zggbak( job, side, n, ilo, ihi, lscale, rscale, m, v,ldv, info )
+     !! ZGGBAK forms the right or left eigenvectors of a complex generalized
+     !! eigenvalue problem A*x = lambda*B*x, by backward transformation on
+     !! the computed eigenvectors of the balanced pair of matrices output by
+     !! ZGGBAL.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -1736,17 +1736,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zggbak
 
-     !> ZGGBAL: balances a pair of general complex matrices (A,B).  This
-     !> involves, first, permuting A and B by similarity transformations to
-     !> isolate eigenvalues in the first 1 to ILO$-$1 and last IHI+1 to N
-     !> elements on the diagonal; and second, applying a diagonal similarity
-     !> transformation to rows and columns ILO to IHI to make the rows
-     !> and columns as close in norm as possible. Both steps are optional.
-     !> Balancing may reduce the 1-norm of the matrices, and improve the
-     !> accuracy of the computed eigenvalues and/or eigenvectors in the
-     !> generalized eigenvalue problem A*x = lambda*B*x.
 
      pure subroutine stdlib_zggbal( job, n, a, lda, b, ldb, ilo, ihi, lscale,rscale, work, info )
+     !! ZGGBAL balances a pair of general complex matrices (A,B).  This
+     !! involves, first, permuting A and B by similarity transformations to
+     !! isolate eigenvalues in the first 1 to ILO$-$1 and last IHI+1 to N
+     !! elements on the diagonal; and second, applying a diagonal similarity
+     !! transformation to rows and columns ILO to IHI to make the rows
+     !! and columns as close in norm as possible. Both steps are optional.
+     !! Balancing may reduce the 1-norm of the matrices, and improve the
+     !! accuracy of the computed eigenvalues and/or eigenvectors in the
+     !! generalized eigenvalue problem A*x = lambda*B*x.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -2040,14 +2040,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zggbal
 
-     !> ZGTSV:  solves the equation
-     !> A*X = B,
-     !> where A is an N-by-N tridiagonal matrix, by Gaussian elimination with
-     !> partial pivoting.
-     !> Note that the equation  A**T *X = B  may be solved by interchanging the
-     !> order of the arguments DU and DL.
 
      pure subroutine stdlib_zgtsv( n, nrhs, dl, d, du, b, ldb, info )
+     !! ZGTSV solves the equation
+     !! A*X = B,
+     !! where A is an N-by-N tridiagonal matrix, by Gaussian elimination with
+     !! partial pivoting.
+     !! Note that the equation  A**T *X = B  may be solved by interchanging the
+     !! order of the arguments DU and DL.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2132,15 +2132,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgtsv
 
-     !> ZGTTRF: computes an LU factorization of a complex tridiagonal matrix A
-     !> using elimination with partial pivoting and row interchanges.
-     !> The factorization has the form
-     !> A = L * U
-     !> where L is a product of permutation and unit lower bidiagonal
-     !> matrices and U is upper triangular with nonzeros in only the main
-     !> diagonal and first two superdiagonals.
 
      pure subroutine stdlib_zgttrf( n, dl, d, du, du2, ipiv, info )
+     !! ZGTTRF computes an LU factorization of a complex tridiagonal matrix A
+     !! using elimination with partial pivoting and row interchanges.
+     !! The factorization has the form
+     !! A = L * U
+     !! where L is a product of permutation and unit lower bidiagonal
+     !! matrices and U is upper triangular with nonzeros in only the main
+     !! diagonal and first two superdiagonals.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2228,12 +2228,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgttrf
 
-     !> ZGTTS2: solves one of the systems of equations
-     !> A * X = B,  A**T * X = B,  or  A**H * X = B,
-     !> with a tridiagonal matrix A using the LU factorization computed
-     !> by ZGTTRF.
 
      pure subroutine stdlib_zgtts2( itrans, n, nrhs, dl, d, du, du2, ipiv, b, ldb )
+     !! ZGTTS2 solves one of the systems of equations
+     !! A * X = B,  A**T * X = B,  or  A**H * X = B,
+     !! with a tridiagonal matrix A using the LU factorization computed
+     !! by ZGTTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2399,10 +2399,10 @@ module stdlib_linalg_lapack_z
            end if
      end subroutine stdlib_zgtts2
 
-     !> ZHESWAPR: applies an elementary permutation on the rows and the columns of
-     !> a hermitian matrix.
 
      pure subroutine stdlib_zheswapr( uplo, n, a, lda, i1, i2)
+     !! ZHESWAPR applies an elementary permutation on the rows and the columns of
+     !! a hermitian matrix.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2471,15 +2471,15 @@ module stdlib_linalg_lapack_z
            endif
      end subroutine stdlib_zheswapr
 
-     !> ZHETF2: computes the factorization of a complex Hermitian matrix A
-     !> using the Bunch-Kaufman diagonal pivoting method:
-     !> A = U*D*U**H  or  A = L*D*L**H
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, U**H is the conjugate transpose of U, and D is
-     !> Hermitian and block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_zhetf2( uplo, n, a, lda, ipiv, info )
+     !! ZHETF2 computes the factorization of a complex Hermitian matrix A
+     !! using the Bunch-Kaufman diagonal pivoting method:
+     !! A = U*D*U**H  or  A = L*D*L**H
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, U**H is the conjugate transpose of U, and D is
+     !! Hermitian and block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2797,17 +2797,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetf2
 
-     !> ZHETF2_RK: computes the factorization of a complex Hermitian matrix A
-     !> using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
-     !> A = P*U*D*(U**H)*(P**T) or A = P*L*D*(L**H)*(P**T),
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**H (or L**H) is the conjugate of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is Hermitian and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
-     !> For more information see Further Details section.
 
      pure subroutine stdlib_zhetf2_rk( uplo, n, a, lda, e, ipiv, info )
+     !! ZHETF2_RK computes the factorization of a complex Hermitian matrix A
+     !! using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
+     !! A = P*U*D*(U**H)*(P**T) or A = P*L*D*(L**H)*(P**T),
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**H (or L**H) is the conjugate of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is Hermitian and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
+     !! For more information see Further Details section.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3328,15 +3328,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetf2_rk
 
-     !> ZHETF2_ROOK: computes the factorization of a complex Hermitian matrix A
-     !> using the bounded Bunch-Kaufman ("rook") diagonal pivoting method:
-     !> A = U*D*U**H  or  A = L*D*L**H
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, U**H is the conjugate transpose of U, and D is
-     !> Hermitian and block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_zhetf2_rook( uplo, n, a, lda, ipiv, info )
+     !! ZHETF2_ROOK computes the factorization of a complex Hermitian matrix A
+     !! using the bounded Bunch-Kaufman ("rook") diagonal pivoting method:
+     !! A = U*D*U**H  or  A = L*D*L**H
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, U**H is the conjugate transpose of U, and D is
+     !! Hermitian and block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3817,11 +3817,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetf2_rook
 
-     !> ZHETRI: computes the inverse of a complex Hermitian indefinite matrix
-     !> A using the factorization A = U*D*U**H or A = L*D*L**H computed by
-     !> ZHETRF.
 
      pure subroutine stdlib_zhetri( uplo, n, a, lda, ipiv, work, info )
+     !! ZHETRI computes the inverse of a complex Hermitian indefinite matrix
+     !! A using the factorization A = U*D*U**H or A = L*D*L**H computed by
+     !! ZHETRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -4021,11 +4021,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetri
 
-     !> ZHETRI_ROOK: computes the inverse of a complex Hermitian indefinite matrix
-     !> A using the factorization A = U*D*U**H or A = L*D*L**H computed by
-     !> ZHETRF_ROOK.
 
      pure subroutine stdlib_zhetri_rook( uplo, n, a, lda, ipiv, work, info )
+     !! ZHETRI_ROOK computes the inverse of a complex Hermitian indefinite matrix
+     !! A using the factorization A = U*D*U**H or A = L*D*L**H computed by
+     !! ZHETRF_ROOK.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -4289,17 +4289,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetri_rook
 
-     !> ZHETRS_3: solves a system of linear equations A * X = B with a complex
-     !> Hermitian matrix A using the factorization computed
-     !> by ZHETRF_RK or ZHETRF_BK:
-     !> A = P*U*D*(U**H)*(P**T) or A = P*L*D*(L**H)*(P**T),
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**H (or L**H) is the conjugate of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is Hermitian and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This algorithm is using Level 3 BLAS.
 
      pure subroutine stdlib_zhetrs_3( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,info )
+     !! ZHETRS_3 solves a system of linear equations A * X = B with a complex
+     !! Hermitian matrix A using the factorization computed
+     !! by ZHETRF_RK or ZHETRF_BK:
+     !! A = P*U*D*(U**H)*(P**T) or A = P*L*D*(L**H)*(P**T),
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**H (or L**H) is the conjugate of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is Hermitian and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This algorithm is using Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -4449,16 +4449,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrs_3
 
-     !> Level 3 BLAS like routine for C in RFP Format.
-     !> ZHFRK: performs one of the Hermitian rank--k operations
-     !> C := alpha*A*A**H + beta*C,
-     !> or
-     !> C := alpha*A**H*A + beta*C,
-     !> where alpha and beta are real scalars, C is an n--by--n Hermitian
-     !> matrix and A is an n--by--k matrix in the first case and a k--by--n
-     !> matrix in the second case.
 
      pure subroutine stdlib_zhfrk( transr, uplo, trans, n, k, alpha, a, lda, beta,c )
+     !! Level 3 BLAS like routine for C in RFP Format.
+     !! ZHFRK performs one of the Hermitian rank--k operations
+     !! C := alpha*A*A**H + beta*C,
+     !! or
+     !! C := alpha*A**H*A + beta*C,
+     !! where alpha and beta are real scalars, C is an n--by--n Hermitian
+     !! matrix and A is an n--by--k matrix in the first case and a k--by--n
+     !! matrix in the second case.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -4709,15 +4709,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhfrk
 
-     !> ZHPGST: reduces a complex Hermitian-definite generalized
-     !> eigenproblem to standard form, using packed storage.
-     !> If ITYPE = 1, the problem is A*x = lambda*B*x,
-     !> and A is overwritten by inv(U**H)*A*inv(U) or inv(L)*A*inv(L**H)
-     !> If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
-     !> B*A*x = lambda*x, and A is overwritten by U*A*U**H or L**H*A*L.
-     !> B must have been previously factorized as U**H*U or L*L**H by ZPPTRF.
 
      pure subroutine stdlib_zhpgst( itype, uplo, n, ap, bp, info )
+     !! ZHPGST reduces a complex Hermitian-definite generalized
+     !! eigenproblem to standard form, using packed storage.
+     !! If ITYPE = 1, the problem is A*x = lambda*B*x,
+     !! and A is overwritten by inv(U**H)*A*inv(U) or inv(L)*A*inv(L**H)
+     !! If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
+     !! B*A*x = lambda*x, and A is overwritten by U*A*U**H or L**H*A*L.
+     !! B must have been previously factorized as U**H*U or L*L**H by ZPPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -4838,14 +4838,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhpgst
 
-     !> ZHPTRF: computes the factorization of a complex Hermitian packed
-     !> matrix A using the Bunch-Kaufman diagonal pivoting method:
-     !> A = U*D*U**H  or  A = L*D*L**H
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is Hermitian and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
 
      pure subroutine stdlib_zhptrf( uplo, n, ap, ipiv, info )
+     !! ZHPTRF computes the factorization of a complex Hermitian packed
+     !! matrix A using the Bunch-Kaufman diagonal pivoting method:
+     !! A = U*D*U**H  or  A = L*D*L**H
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is Hermitian and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -5188,11 +5188,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhptrf
 
-     !> ZHPTRI: computes the inverse of a complex Hermitian indefinite matrix
-     !> A in packed storage using the factorization A = U*D*U**H or
-     !> A = L*D*L**H computed by ZHPTRF.
 
      pure subroutine stdlib_zhptri( uplo, n, ap, ipiv, work, info )
+     !! ZHPTRI computes the inverse of a complex Hermitian indefinite matrix
+     !! A in packed storage using the factorization A = U*D*U**H or
+     !! A = L*D*L**H computed by ZHPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -5407,21 +5407,21 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhptri
 
-     !> ZLA_GBAMV:  performs one of the matrix-vector operations
-     !> y := alpha*abs(A)*abs(x) + beta*abs(y),
-     !> or   y := alpha*abs(A)**T*abs(x) + beta*abs(y),
-     !> where alpha and beta are scalars, x and y are vectors and A is an
-     !> m by n matrix.
-     !> This function is primarily used in calculating error bounds.
-     !> To protect against underflow during evaluation, components in
-     !> the resulting vector are perturbed away from zero by (N+1)
-     !> times the underflow threshold.  To prevent unnecessarily large
-     !> errors for block-structure embedded in general matrices,
-     !> "symbolically" zero components are not perturbed.  A zero
-     !> entry is considered "symbolic" if all multiplications involved
-     !> in computing that entry have at least one zero multiplicand.
 
      subroutine stdlib_zla_gbamv( trans, m, n, kl, ku, alpha, ab, ldab, x,incx, beta, y, incy )
+     !! ZLA_GBAMV performs one of the matrix-vector operations
+     !! y := alpha*abs(A)*abs(x) + beta*abs(y),
+     !! or   y := alpha*abs(A)**T*abs(x) + beta*abs(y),
+     !! where alpha and beta are scalars, x and y are vectors and A is an
+     !! m by n matrix.
+     !! This function is primarily used in calculating error bounds.
+     !! To protect against underflow during evaluation, components in
+     !! the resulting vector are perturbed away from zero by (N+1)
+     !! times the underflow threshold.  To prevent unnecessarily large
+     !! errors for block-structure embedded in general matrices,
+     !! "symbolically" zero components are not perturbed.  A zero
+     !! entry is considered "symbolic" if all multiplications involved
+     !! in computing that entry have at least one zero multiplicand.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -5602,14 +5602,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zla_gbamv
 
-     !> ZLA_GBRPVGRW: computes the reciprocal pivot growth factor
-     !> norm(A)/norm(U). The "max absolute element" norm is used. If this is
-     !> much less than 1, the stability of the LU factorization of the
-     !> (equilibrated) matrix A could be poor. This also means that the
-     !> solution X, estimated condition numbers, and error bounds could be
-     !> unreliable.
 
      pure real(dp) function stdlib_zla_gbrpvgrw( n, kl, ku, ncols, ab,ldab, afb, ldafb )
+     !! ZLA_GBRPVGRW computes the reciprocal pivot growth factor
+     !! norm(A)/norm(U). The "max absolute element" norm is used. If this is
+     !! much less than 1, the stability of the LU factorization of the
+     !! (equilibrated) matrix A could be poor. This also means that the
+     !! solution X, estimated condition numbers, and error bounds could be
+     !! unreliable.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -5647,21 +5647,21 @@ module stdlib_linalg_lapack_z
            stdlib_zla_gbrpvgrw = rpvgrw
      end function stdlib_zla_gbrpvgrw
 
-     !> ZLA_GEAMV:  performs one of the matrix-vector operations
-     !> y := alpha*abs(A)*abs(x) + beta*abs(y),
-     !> or   y := alpha*abs(A)**T*abs(x) + beta*abs(y),
-     !> where alpha and beta are scalars, x and y are vectors and A is an
-     !> m by n matrix.
-     !> This function is primarily used in calculating error bounds.
-     !> To protect against underflow during evaluation, components in
-     !> the resulting vector are perturbed away from zero by (N+1)
-     !> times the underflow threshold.  To prevent unnecessarily large
-     !> errors for block-structure embedded in general matrices,
-     !> "symbolically" zero components are not perturbed.  A zero
-     !> entry is considered "symbolic" if all multiplications involved
-     !> in computing that entry have at least one zero multiplicand.
 
      subroutine stdlib_zla_geamv( trans, m, n, alpha, a, lda, x, incx, beta,y, incy )
+     !! ZLA_GEAMV performs one of the matrix-vector operations
+     !! y := alpha*abs(A)*abs(x) + beta*abs(y),
+     !! or   y := alpha*abs(A)**T*abs(x) + beta*abs(y),
+     !! where alpha and beta are scalars, x and y are vectors and A is an
+     !! m by n matrix.
+     !! This function is primarily used in calculating error bounds.
+     !! To protect against underflow during evaluation, components in
+     !! the resulting vector are perturbed away from zero by (N+1)
+     !! times the underflow threshold.  To prevent unnecessarily large
+     !! errors for block-structure embedded in general matrices,
+     !! "symbolically" zero components are not perturbed.  A zero
+     !! entry is considered "symbolic" if all multiplications involved
+     !! in computing that entry have at least one zero multiplicand.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -5836,14 +5836,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zla_geamv
 
-     !> ZLA_GERPVGRW: computes the reciprocal pivot growth factor
-     !> norm(A)/norm(U). The "max absolute element" norm is used. If this is
-     !> much less than 1, the stability of the LU factorization of the
-     !> (equilibrated) matrix A could be poor. This also means that the
-     !> solution X, estimated condition numbers, and error bounds could be
-     !> unreliable.
 
      pure real(dp) function stdlib_zla_gerpvgrw( n, ncols, a, lda, af,ldaf )
+     !! ZLA_GERPVGRW computes the reciprocal pivot growth factor
+     !! norm(A)/norm(U). The "max absolute element" norm is used. If this is
+     !! much less than 1, the stability of the LU factorization of the
+     !! (equilibrated) matrix A could be poor. This also means that the
+     !! solution X, estimated condition numbers, and error bounds could be
+     !! unreliable.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -5880,20 +5880,20 @@ module stdlib_linalg_lapack_z
            stdlib_zla_gerpvgrw = rpvgrw
      end function stdlib_zla_gerpvgrw
 
-     !> ZLA_SYAMV  performs the matrix-vector operation
-     !> y := alpha*abs(A)*abs(x) + beta*abs(y),
-     !> where alpha and beta are scalars, x and y are vectors and A is an
-     !> n by n symmetric matrix.
-     !> This function is primarily used in calculating error bounds.
-     !> To protect against underflow during evaluation, components in
-     !> the resulting vector are perturbed away from zero by (N+1)
-     !> times the underflow threshold.  To prevent unnecessarily large
-     !> errors for block-structure embedded in general matrices,
-     !> "symbolically" zero components are not perturbed.  A zero
-     !> entry is considered "symbolic" if all multiplications involved
-     !> in computing that entry have at least one zero multiplicand.
 
      subroutine stdlib_zla_heamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
+     !! ZLA_SYAMV  performs the matrix-vector operation
+     !! y := alpha*abs(A)*abs(x) + beta*abs(y),
+     !! where alpha and beta are scalars, x and y are vectors and A is an
+     !! n by n symmetric matrix.
+     !! This function is primarily used in calculating error bounds.
+     !! To protect against underflow during evaluation, components in
+     !! the resulting vector are perturbed away from zero by (N+1)
+     !! times the underflow threshold.  To prevent unnecessarily large
+     !! errors for block-structure embedded in general matrices,
+     !! "symbolically" zero components are not perturbed.  A zero
+     !! entry is considered "symbolic" if all multiplications involved
+     !! in computing that entry have at least one zero multiplicand.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6074,13 +6074,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zla_heamv
 
-     !> ZLA_LIN_BERR: computes componentwise relative backward error from
-     !> the formula
-     !> max(i) ( abs(R(i)) / ( abs(op(A_s))*abs(Y) + abs(B_s) )(i) )
-     !> where abs(Z) is the componentwise absolute value of the matrix
-     !> or vector Z.
 
      pure subroutine stdlib_zla_lin_berr( n, nz, nrhs, res, ayb, berr )
+     !! ZLA_LIN_BERR computes componentwise relative backward error from
+     !! the formula
+     !! max(i) ( abs(R(i)) / ( abs(op(A_s))*abs(Y) + abs(B_s) )(i) )
+     !! where abs(Z) is the componentwise absolute value of the matrix
+     !! or vector Z.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6120,14 +6120,14 @@ module stdlib_linalg_lapack_z
            end do
      end subroutine stdlib_zla_lin_berr
 
-     !> ZLA_PORPVGRW: computes the reciprocal pivot growth factor
-     !> norm(A)/norm(U). The "max absolute element" norm is used. If this is
-     !> much less than 1, the stability of the LU factorization of the
-     !> (equilibrated) matrix A could be poor. This also means that the
-     !> solution X, estimated condition numbers, and error bounds could be
-     !> unreliable.
 
      real(dp) function stdlib_zla_porpvgrw( uplo, ncols, a, lda, af,ldaf, work )
+     !! ZLA_PORPVGRW computes the reciprocal pivot growth factor
+     !! norm(A)/norm(U). The "max absolute element" norm is used. If this is
+     !! much less than 1, the stability of the LU factorization of the
+     !! (equilibrated) matrix A could be poor. This also means that the
+     !! solution X, estimated condition numbers, and error bounds could be
+     !! unreliable.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6213,20 +6213,20 @@ module stdlib_linalg_lapack_z
            stdlib_zla_porpvgrw = rpvgrw
      end function stdlib_zla_porpvgrw
 
-     !> ZLA_SYAMV:  performs the matrix-vector operation
-     !> y := alpha*abs(A)*abs(x) + beta*abs(y),
-     !> where alpha and beta are scalars, x and y are vectors and A is an
-     !> n by n symmetric matrix.
-     !> This function is primarily used in calculating error bounds.
-     !> To protect against underflow during evaluation, components in
-     !> the resulting vector are perturbed away from zero by (N+1)
-     !> times the underflow threshold.  To prevent unnecessarily large
-     !> errors for block-structure embedded in general matrices,
-     !> "symbolically" zero components are not perturbed.  A zero
-     !> entry is considered "symbolic" if all multiplications involved
-     !> in computing that entry have at least one zero multiplicand.
 
      subroutine stdlib_zla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
+     !! ZLA_SYAMV performs the matrix-vector operation
+     !! y := alpha*abs(A)*abs(x) + beta*abs(y),
+     !! where alpha and beta are scalars, x and y are vectors and A is an
+     !! n by n symmetric matrix.
+     !! This function is primarily used in calculating error bounds.
+     !! To protect against underflow during evaluation, components in
+     !! the resulting vector are perturbed away from zero by (N+1)
+     !! times the underflow threshold.  To prevent unnecessarily large
+     !! errors for block-structure embedded in general matrices,
+     !! "symbolically" zero components are not perturbed.  A zero
+     !! entry is considered "symbolic" if all multiplications involved
+     !! in computing that entry have at least one zero multiplicand.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6408,11 +6408,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zla_syamv
 
-     !> ZLA_WWADDW: adds a vector W into a doubled-single vector (X, Y).
-     !> This works for all extant IBM's hex and binary floating point
-     !> arithmetic, but not for decimal.
 
      pure subroutine stdlib_zla_wwaddw( n, x, y, w )
+     !! ZLA_WWADDW adds a vector W into a doubled-single vector (X, Y).
+     !! This works for all extant IBM's hex and binary floating point
+     !! arithmetic, but not for decimal.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6435,9 +6435,9 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zla_wwaddw
 
-     !> ZLACGV: conjugates a complex vector of length N.
 
      pure subroutine stdlib_zlacgv( n, x, incx )
+     !! ZLACGV conjugates a complex vector of length N.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6466,10 +6466,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlacgv
 
-     !> ZLACN2: estimates the 1-norm of a square, complex matrix A.
-     !> Reverse communication is used for evaluating matrix-vector products.
 
      pure subroutine stdlib_zlacn2( n, v, x, est, kase, isave )
+     !! ZLACN2 estimates the 1-norm of a square, complex matrix A.
+     !! Reverse communication is used for evaluating matrix-vector products.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6593,10 +6593,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlacn2
 
-     !> ZLACON: estimates the 1-norm of a square, complex matrix A.
-     !> Reverse communication is used for evaluating matrix-vector products.
 
      subroutine stdlib_zlacon( n, v, x, est, kase )
+     !! ZLACON estimates the 1-norm of a square, complex matrix A.
+     !! Reverse communication is used for evaluating matrix-vector products.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6720,10 +6720,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlacon
 
-     !> ZLACP2: copies all or part of a real two-dimensional matrix A to a
-     !> complex matrix B.
 
      pure subroutine stdlib_zlacp2( uplo, m, n, a, lda, b, ldb )
+     !! ZLACP2 copies all or part of a real two-dimensional matrix A to a
+     !! complex matrix B.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6761,10 +6761,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlacp2
 
-     !> ZLACPY: copies all or part of a two-dimensional matrix A to another
-     !> matrix B.
 
      pure subroutine stdlib_zlacpy( uplo, m, n, a, lda, b, ldb )
+     !! ZLACPY copies all or part of a two-dimensional matrix A to another
+     !! matrix B.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6802,12 +6802,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlacpy
 
-     !> ZLACRM: performs a very simple matrix-matrix multiplication:
-     !> C := A * B,
-     !> where A is M by N and complex; B is N by N and real;
-     !> C is M by N and complex.
 
      pure subroutine stdlib_zlacrm( m, n, a, lda, b, ldb, c, ldc, rwork )
+     !! ZLACRM performs a very simple matrix-matrix multiplication:
+     !! C := A * B,
+     !! where A is M by N and complex; B is N by N and real;
+     !! C is M by N and complex.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6856,12 +6856,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlacrm
 
-     !> ZLACRT: performs the operation
-     !> (  c  s )( x )  ==> ( x )
-     !> ( -s  c )( y )      ( y )
-     !> where c and s are complex and the vectors x and y are complex.
 
      pure subroutine stdlib_zlacrt( n, cx, incx, cy, incy, c, s )
+     !! ZLACRT performs the operation
+     !! (  c  s )( x )  ==> ( x )
+     !! ( -s  c )( y )      ( y )
+     !! where c and s are complex and the vectors x and y are complex.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6900,11 +6900,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlacrt
 
-     !> ZLADIV: := X / Y, where X and Y are complex.  The computation of X / Y
-     !> will not overflow on an intermediary step unless the results
-     !> overflows.
 
      pure complex(dp)     function stdlib_zladiv( x, y )
+     !! ZLADIV := X / Y, where X and Y are complex.  The computation of X / Y
+     !! will not overflow on an intermediary step unless the results
+     !! overflows.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6922,14 +6922,14 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zladiv
 
-     !> ZLAED8: merges the two sets of eigenvalues together into a single
-     !> sorted set.  Then it tries to deflate the size of the problem.
-     !> There are two ways in which deflation can occur:  when two or more
-     !> eigenvalues are close together or if there is a tiny element in the
-     !> Z vector.  For each such occurrence the order of the related secular
-     !> equation problem is reduced by one.
 
      pure subroutine stdlib_zlaed8( k, n, qsiz, q, ldq, d, rho, cutpnt, z, dlamda,q2, ldq2, w, &
+     !! ZLAED8 merges the two sets of eigenvalues together into a single
+     !! sorted set.  Then it tries to deflate the size of the problem.
+     !! There are two ways in which deflation can occur:  when two or more
+     !! eigenvalues are close together or if there is a tiny element in the
+     !! Z vector.  For each such occurrence the order of the related secular
+     !! equation problem is reduced by one.
                indxp, indx, indxq, perm, givptr,givcol, givnum, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -7125,17 +7125,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaed8
 
-     !> ZLAESY: computes the eigendecomposition of a 2-by-2 symmetric matrix
-     !> ( ( A, B );( B, C ) )
-     !> provided the norm of the matrix of eigenvectors is larger than
-     !> some threshold value.
-     !> RT1 is the eigenvalue of larger absolute value, and RT2 of
-     !> smaller absolute value.  If the eigenvectors are computed, then
-     !> on return ( CS1, SN1 ) is the unit eigenvector for RT1, hence
-     !> [  CS1     SN1   ] . [ A  B ] . [ CS1    -SN1   ] = [ RT1  0  ]
-     !> [ -SN1     CS1   ]   [ B  C ]   [ SN1     CS1   ]   [  0  RT2 ]
 
      pure subroutine stdlib_zlaesy( a, b, c, rt1, rt2, evscal, cs1, sn1 )
+     !! ZLAESY computes the eigendecomposition of a 2-by-2 symmetric matrix
+     !! ( ( A, B );( B, C ) )
+     !! provided the norm of the matrix of eigenvectors is larger than
+     !! some threshold value.
+     !! RT1 is the eigenvalue of larger absolute value, and RT2 of
+     !! smaller absolute value.  If the eigenvectors are computed, then
+     !! on return ( CS1, SN1 ) is the unit eigenvector for RT1, hence
+     !! [  CS1     SN1   ] . [ A  B ] . [ CS1    -SN1   ] = [ RT1  0  ]
+     !! [ -SN1     CS1   ]   [ B  C ]   [ SN1     CS1   ]   [  0  RT2 ]
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -7215,16 +7215,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaesy
 
-     !> ZLAEV2: computes the eigendecomposition of a 2-by-2 Hermitian matrix
-     !> [  A         B  ]
-     !> [  CONJG(B)  C  ].
-     !> On return, RT1 is the eigenvalue of larger absolute value, RT2 is the
-     !> eigenvalue of smaller absolute value, and (CS1,SN1) is the unit right
-     !> eigenvector for RT1, giving the decomposition
-     !> [ CS1  CONJG(SN1) ] [    A     B ] [ CS1 -CONJG(SN1) ] = [ RT1  0  ]
-     !> [-SN1     CS1     ] [ CONJG(B) C ] [ SN1     CS1     ]   [  0  RT2 ].
 
      pure subroutine stdlib_zlaev2( a, b, c, rt1, rt2, cs1, sn1 )
+     !! ZLAEV2 computes the eigendecomposition of a 2-by-2 Hermitian matrix
+     !! [  A         B  ]
+     !! [  CONJG(B)  C  ].
+     !! On return, RT1 is the eigenvalue of larger absolute value, RT2 is the
+     !! eigenvalue of smaller absolute value, and (CS1,SN1) is the unit right
+     !! eigenvector for RT1, giving the decomposition
+     !! [ CS1  CONJG(SN1) ] [    A     B ] [ CS1 -CONJG(SN1) ] = [ RT1  0  ]
+     !! [-SN1     CS1     ] [ CONJG(B) C ] [ SN1     CS1     ]   [  0  RT2 ].
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -7252,13 +7252,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaev2
 
-     !> ZLAG2C: converts a COMPLEX*16 matrix, SA, to a COMPLEX matrix, A.
-     !> RMAX is the overflow for the SINGLE PRECISION arithmetic
-     !> ZLAG2C checks that all the entries of A are between -RMAX and
-     !> RMAX. If not the conversion is aborted and a flag is raised.
-     !> This is an auxiliary routine so there is no argument checking.
 
      pure subroutine stdlib_zlag2c( m, n, a, lda, sa, ldsa, info )
+     !! ZLAG2C converts a COMPLEX*16 matrix, SA, to a COMPLEX matrix, A.
+     !! RMAX is the overflow for the SINGLE PRECISION arithmetic
+     !! ZLAG2C checks that all the entries of A are between -RMAX and
+     !! RMAX. If not the conversion is aborted and a flag is raised.
+     !! This is an auxiliary routine so there is no argument checking.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -7291,13 +7291,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlag2c
 
-     !> ZLAGTM: performs a matrix-vector product of the form
-     !> B := alpha * A * X + beta * B
-     !> where A is a tridiagonal matrix of order N, B and X are N by NRHS
-     !> matrices, and alpha and beta are real scalars, each of which may be
-     !> 0., 1., or -1.
 
      pure subroutine stdlib_zlagtm( trans, n, nrhs, alpha, dl, d, du, x, ldx, beta,b, ldb )
+     !! ZLAGTM performs a matrix-vector product of the form
+     !! B := alpha * A * X + beta * B
+     !! where A is a tridiagonal matrix of order N, B and X are N by NRHS
+     !! matrices, and alpha and beta are real scalars, each of which may be
+     !! 0., 1., or -1.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -7427,21 +7427,21 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlagtm
 
-     !> ZLAHEF: computes a partial factorization of a complex Hermitian
-     !> matrix A using the Bunch-Kaufman diagonal pivoting method. The
-     !> partial factorization has the form:
-     !> A  =  ( I  U12 ) ( A11  0  ) (  I      0     )  if UPLO = 'U', or:
-     !> ( 0  U22 ) (  0   D  ) ( U12**H U22**H )
-     !> A  =  ( L11  0 ) (  D   0  ) ( L11**H L21**H )  if UPLO = 'L'
-     !> ( L21  I ) (  0  A22 ) (  0      I     )
-     !> where the order of D is at most NB. The actual order is returned in
-     !> the argument KB, and is either NB or NB-1, or N if N <= NB.
-     !> Note that U**H denotes the conjugate transpose of U.
-     !> ZLAHEF is an auxiliary routine called by ZHETRF. It uses blocked code
-     !> (calling Level 3 BLAS) to update the submatrix A11 (if UPLO = 'U') or
-     !> A22 (if UPLO = 'L').
 
      pure subroutine stdlib_zlahef( uplo, n, nb, kb, a, lda, ipiv, w, ldw, info )
+     !! ZLAHEF computes a partial factorization of a complex Hermitian
+     !! matrix A using the Bunch-Kaufman diagonal pivoting method. The
+     !! partial factorization has the form:
+     !! A  =  ( I  U12 ) ( A11  0  ) (  I      0     )  if UPLO = 'U', or:
+     !! ( 0  U22 ) (  0   D  ) ( U12**H U22**H )
+     !! A  =  ( L11  0 ) (  D   0  ) ( L11**H L21**H )  if UPLO = 'L'
+     !! ( L21  I ) (  0  A22 ) (  0      I     )
+     !! where the order of D is at most NB. The actual order is returned in
+     !! the argument KB, and is either NB or NB-1, or N if N <= NB.
+     !! Note that U**H denotes the conjugate transpose of U.
+     !! ZLAHEF is an auxiliary routine called by ZHETRF. It uses blocked code
+     !! (calling Level 3 BLAS) to update the submatrix A11 (if UPLO = 'U') or
+     !! A22 (if UPLO = 'L').
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -7966,20 +7966,20 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlahef
 
-     !> ZLAHEF_RK: computes a partial factorization of a complex Hermitian
-     !> matrix A using the bounded Bunch-Kaufman (rook) diagonal
-     !> pivoting method. The partial factorization has the form:
-     !> A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
-     !> ( 0  U22 ) (  0   D  ) ( U12**H U22**H )
-     !> A  =  ( L11  0 ) (  D   0  ) ( L11**H L21**H )  if UPLO = 'L',
-     !> ( L21  I ) (  0  A22 ) (  0       I    )
-     !> where the order of D is at most NB. The actual order is returned in
-     !> the argument KB, and is either NB or NB-1, or N if N <= NB.
-     !> ZLAHEF_RK is an auxiliary routine called by ZHETRF_RK. It uses
-     !> blocked code (calling Level 3 BLAS) to update the submatrix
-     !> A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
 
      pure subroutine stdlib_zlahef_rk( uplo, n, nb, kb, a, lda, e, ipiv, w, ldw,info )
+     !! ZLAHEF_RK computes a partial factorization of a complex Hermitian
+     !! matrix A using the bounded Bunch-Kaufman (rook) diagonal
+     !! pivoting method. The partial factorization has the form:
+     !! A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
+     !! ( 0  U22 ) (  0   D  ) ( U12**H U22**H )
+     !! A  =  ( L11  0 ) (  D   0  ) ( L11**H L21**H )  if UPLO = 'L',
+     !! ( L21  I ) (  0  A22 ) (  0       I    )
+     !! where the order of D is at most NB. The actual order is returned in
+     !! the argument KB, and is either NB or NB-1, or N if N <= NB.
+     !! ZLAHEF_RK is an auxiliary routine called by ZHETRF_RK. It uses
+     !! blocked code (calling Level 3 BLAS) to update the submatrix
+     !! A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -8606,21 +8606,21 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlahef_rk
 
-     !> ZLAHEF_ROOK: computes a partial factorization of a complex Hermitian
-     !> matrix A using the bounded Bunch-Kaufman ("rook") diagonal pivoting
-     !> method. The partial factorization has the form:
-     !> A  =  ( I  U12 ) ( A11  0  ) (  I      0     )  if UPLO = 'U', or:
-     !> ( 0  U22 ) (  0   D  ) ( U12**H U22**H )
-     !> A  =  ( L11  0 ) (  D   0  ) ( L11**H L21**H )  if UPLO = 'L'
-     !> ( L21  I ) (  0  A22 ) (  0      I     )
-     !> where the order of D is at most NB. The actual order is returned in
-     !> the argument KB, and is either NB or NB-1, or N if N <= NB.
-     !> Note that U**H denotes the conjugate transpose of U.
-     !> ZLAHEF_ROOK is an auxiliary routine called by ZHETRF_ROOK. It uses
-     !> blocked code (calling Level 3 BLAS) to update the submatrix
-     !> A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
 
      pure subroutine stdlib_zlahef_rook( uplo, n, nb, kb, a, lda, ipiv, w, ldw,info )
+     !! ZLAHEF_ROOK computes a partial factorization of a complex Hermitian
+     !! matrix A using the bounded Bunch-Kaufman ("rook") diagonal pivoting
+     !! method. The partial factorization has the form:
+     !! A  =  ( I  U12 ) ( A11  0  ) (  I      0     )  if UPLO = 'U', or:
+     !! ( 0  U22 ) (  0   D  ) ( U12**H U22**H )
+     !! A  =  ( L11  0 ) (  D   0  ) ( L11**H L21**H )  if UPLO = 'L'
+     !! ( L21  I ) (  0  A22 ) (  0      I     )
+     !! where the order of D is at most NB. The actual order is returned in
+     !! the argument KB, and is either NB or NB-1, or N if N <= NB.
+     !! Note that U**H denotes the conjugate transpose of U.
+     !! ZLAHEF_ROOK is an auxiliary routine called by ZHETRF_ROOK. It uses
+     !! blocked code (calling Level 3 BLAS) to update the submatrix
+     !! A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -9278,28 +9278,28 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlahef_rook
 
-     !> ZLAIC1: applies one step of incremental condition estimation in
-     !> its simplest version:
-     !> Let x, twonorm(x) = 1, be an approximate singular vector of an j-by-j
-     !> lower triangular matrix L, such that
-     !> twonorm(L*x) = sest
-     !> Then ZLAIC1 computes sestpr, s, c such that
-     !> the vector
-     !> [ s*x ]
-     !> xhat = [  c  ]
-     !> is an approximate singular vector of
-     !> [ L       0  ]
-     !> Lhat = [ w**H gamma ]
-     !> in the sense that
-     !> twonorm(Lhat*xhat) = sestpr.
-     !> Depending on JOB, an estimate for the largest or smallest singular
-     !> value is computed.
-     !> Note that [s c]**H and sestpr**2 is an eigenpair of the system
-     !> diag(sest*sest, 0) + [alpha  gamma] * [ conjg(alpha) ]
-     !> [ conjg(gamma) ]
-     !> where  alpha =  x**H * w.
 
      pure subroutine stdlib_zlaic1( job, j, x, sest, w, gamma, sestpr, s, c )
+     !! ZLAIC1 applies one step of incremental condition estimation in
+     !! its simplest version:
+     !! Let x, twonorm(x) = 1, be an approximate singular vector of an j-by-j
+     !! lower triangular matrix L, such that
+     !! twonorm(L*x) = sest
+     !! Then ZLAIC1 computes sestpr, s, c such that
+     !! the vector
+     !! [ s*x ]
+     !! xhat = [  c  ]
+     !! is an approximate singular vector of
+     !! [ L       0  ]
+     !! Lhat = [ w**H gamma ]
+     !! in the sense that
+     !! twonorm(Lhat*xhat) = sestpr.
+     !! Depending on JOB, an estimate for the largest or smallest singular
+     !! value is computed.
+     !! Note that [s c]**H and sestpr**2 is an eigenpair of the system
+     !! diag(sest*sest, 0) + [alpha  gamma] * [ conjg(alpha) ]
+     !! [ conjg(gamma) ]
+     !! where  alpha =  x**H * w.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -9494,14 +9494,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaic1
 
-     !> ZLAPMR: rearranges the rows of the M by N matrix X as specified
-     !> by the permutation K(1),K(2),...,K(M) of the integers 1,...,M.
-     !> If FORWRD = .TRUE.,  forward permutation:
-     !> X(K(I),*) is moved X(I,*) for I = 1,2,...,M.
-     !> If FORWRD = .FALSE., backward permutation:
-     !> X(I,*) is moved to X(K(I),*) for I = 1,2,...,M.
 
      pure subroutine stdlib_zlapmr( forwrd, m, n, x, ldx, k )
+     !! ZLAPMR rearranges the rows of the M by N matrix X as specified
+     !! by the permutation K(1),K(2),...,K(M) of the integers 1,...,M.
+     !! If FORWRD = .TRUE.,  forward permutation:
+     !! X(K(I),*) is moved X(I,*) for I = 1,2,...,M.
+     !! If FORWRD = .FALSE., backward permutation:
+     !! X(I,*) is moved to X(K(I),*) for I = 1,2,...,M.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -9562,14 +9562,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlapmr
 
-     !> ZLAPMT: rearranges the columns of the M by N matrix X as specified
-     !> by the permutation K(1),K(2),...,K(N) of the integers 1,...,N.
-     !> If FORWRD = .TRUE.,  forward permutation:
-     !> X(*,K(J)) is moved X(*,J) for J = 1,2,...,N.
-     !> If FORWRD = .FALSE., backward permutation:
-     !> X(*,J) is moved to X(*,K(J)) for J = 1,2,...,N.
 
      pure subroutine stdlib_zlapmt( forwrd, m, n, x, ldx, k )
+     !! ZLAPMT rearranges the columns of the M by N matrix X as specified
+     !! by the permutation K(1),K(2),...,K(N) of the integers 1,...,N.
+     !! If FORWRD = .TRUE.,  forward permutation:
+     !! X(*,K(J)) is moved X(*,J) for J = 1,2,...,N.
+     !! If FORWRD = .FALSE., backward permutation:
+     !! X(*,J) is moved to X(*,K(J)) for J = 1,2,...,N.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -9630,11 +9630,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlapmt
 
-     !> ZLAQGB: equilibrates a general M by N band matrix A with KL
-     !> subdiagonals and KU superdiagonals using the row and scaling factors
-     !> in the vectors R and C.
 
      pure subroutine stdlib_zlaqgb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, equed )
+     !! ZLAQGB equilibrates a general M by N band matrix A with KL
+     !! subdiagonals and KU superdiagonals using the row and scaling factors
+     !! in the vectors R and C.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -9700,10 +9700,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaqgb
 
-     !> ZLAQGE: equilibrates a general M by N matrix A using the row and
-     !> column scaling factors in the vectors R and C.
 
      pure subroutine stdlib_zlaqge( m, n, a, lda, r, c, rowcnd, colcnd, amax,equed )
+     !! ZLAQGE equilibrates a general M by N matrix A using the row and
+     !! column scaling factors in the vectors R and C.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -9766,10 +9766,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaqge
 
-     !> ZLAQHB: equilibrates a Hermitian band matrix A
-     !> using the scaling factors in the vector S.
 
      pure subroutine stdlib_zlaqhb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
+     !! ZLAQHB equilibrates a Hermitian band matrix A
+     !! using the scaling factors in the vector S.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -9828,10 +9828,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaqhb
 
-     !> ZLAQHE: equilibrates a Hermitian matrix A using the scaling factors
-     !> in the vector S.
 
      pure subroutine stdlib_zlaqhe( uplo, n, a, lda, s, scond, amax, equed )
+     !! ZLAQHE equilibrates a Hermitian matrix A using the scaling factors
+     !! in the vector S.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -9890,10 +9890,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaqhe
 
-     !> ZLAQHP: equilibrates a Hermitian matrix A using the scaling factors
-     !> in the vector S.
 
      pure subroutine stdlib_zlaqhp( uplo, n, ap, s, scond, amax, equed )
+     !! ZLAQHP equilibrates a Hermitian matrix A using the scaling factors
+     !! in the vector S.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -9956,14 +9956,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaqhp
 
-     !> Given a 2-by-2 or 3-by-3 matrix H, ZLAQR1: sets v to a
-     !> scalar multiple of the first column of the product
-     !> (*)  K = (H - s1*I)*(H - s2*I)
-     !> scaling to avoid overflows and most underflows.
-     !> This is useful for starting double implicit shift bulges
-     !> in the QR algorithm.
 
      pure subroutine stdlib_zlaqr1( n, h, ldh, s1, s2, v )
+     !! Given a 2-by-2 or 3-by-3 matrix H, ZLAQR1: sets v to a
+     !! scalar multiple of the first column of the product
+     !! (*)  K = (H - s1*I)*(H - s2*I)
+     !! scaling to avoid overflows and most underflows.
+     !! This is useful for starting double implicit shift bulges
+     !! in the QR algorithm.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -10019,10 +10019,10 @@ module stdlib_linalg_lapack_z
            end if
      end subroutine stdlib_zlaqr1
 
-     !> ZLAQSB: equilibrates a symmetric band matrix A using the scaling
-     !> factors in the vector S.
 
      pure subroutine stdlib_zlaqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
+     !! ZLAQSB equilibrates a symmetric band matrix A using the scaling
+     !! factors in the vector S.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -10079,10 +10079,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaqsb
 
-     !> ZLAQSP: equilibrates a symmetric matrix A using the scaling factors
-     !> in the vector S.
 
      pure subroutine stdlib_zlaqsp( uplo, n, ap, s, scond, amax, equed )
+     !! ZLAQSP equilibrates a symmetric matrix A using the scaling factors
+     !! in the vector S.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -10141,10 +10141,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaqsp
 
-     !> ZLAQSY: equilibrates a symmetric matrix A using the scaling factors
-     !> in the vector S.
 
      pure subroutine stdlib_zlaqsy( uplo, n, a, lda, s, scond, amax, equed )
+     !! ZLAQSY equilibrates a symmetric matrix A using the scaling factors
+     !! in the vector S.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -10199,23 +10199,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaqsy
 
-     !> ZLAR1V: computes the (scaled) r-th column of the inverse of
-     !> the sumbmatrix in rows B1 through BN of the tridiagonal matrix
-     !> L D L**T - sigma I. When sigma is close to an eigenvalue, the
-     !> computed vector is an accurate eigenvector. Usually, r corresponds
-     !> to the index where the eigenvector is largest in magnitude.
-     !> The following steps accomplish this computation :
-     !> (a) Stationary qd transform,  L D L**T - sigma I = L(+) D(+) L(+)**T,
-     !> (b) Progressive qd transform, L D L**T - sigma I = U(-) D(-) U(-)**T,
-     !> (c) Computation of the diagonal elements of the inverse of
-     !> L D L**T - sigma I by combining the above transforms, and choosing
-     !> r as the index where the diagonal of the inverse is (one of the)
-     !> largest in magnitude.
-     !> (d) Computation of the (scaled) r-th column of the inverse using the
-     !> twisted factorization obtained by combining the top part of the
-     !> the stationary and the bottom part of the progressive transform.
 
      pure subroutine stdlib_zlar1v( n, b1, bn, lambda, d, l, ld, lld,pivmin, gaptol, z, wantnc, &
+     !! ZLAR1V computes the (scaled) r-th column of the inverse of
+     !! the sumbmatrix in rows B1 through BN of the tridiagonal matrix
+     !! L D L**T - sigma I. When sigma is close to an eigenvalue, the
+     !! computed vector is an accurate eigenvector. Usually, r corresponds
+     !! to the index where the eigenvector is largest in magnitude.
+     !! The following steps accomplish this computation :
+     !! (a) Stationary qd transform,  L D L**T - sigma I = L(+) D(+) L(+)**T,
+     !! (b) Progressive qd transform, L D L**T - sigma I = U(-) D(-) U(-)**T,
+     !! (c) Computation of the diagonal elements of the inverse of
+     !! L D L**T - sigma I by combining the above transforms, and choosing
+     !! r as the index where the diagonal of the inverse is (one of the)
+     !! largest in magnitude.
+     !! (d) Computation of the (scaled) r-th column of the inverse using the
+     !! twisted factorization obtained by combining the top part of the
+     !! the stationary and the bottom part of the progressive transform.
                negcnt, ztz, mingma,r, isuppz, nrminv, resid, rqcorr, work )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -10422,15 +10422,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlar1v
 
-     !> ZLAR2V: applies a vector of complex plane rotations with real cosines
-     !> from both sides to a sequence of 2-by-2 complex Hermitian matrices,
-     !> defined by the elements of the vectors x, y and z. For i = 1,2,...,n
-     !> (       x(i)  z(i) ) :=
-     !> ( conjg(z(i)) y(i) )
-     !> (  c(i) conjg(s(i)) ) (       x(i)  z(i) ) ( c(i) -conjg(s(i)) )
-     !> ( -s(i)       c(i)  ) ( conjg(z(i)) y(i) ) ( s(i)        c(i)  )
 
      pure subroutine stdlib_zlar2v( n, x, y, z, incx, c, s, incc )
+     !! ZLAR2V applies a vector of complex plane rotations with real cosines
+     !! from both sides to a sequence of 2-by-2 complex Hermitian matrices,
+     !! defined by the elements of the vectors x, y and z. For i = 1,2,...,n
+     !! (       x(i)  z(i) ) :=
+     !! ( conjg(z(i)) y(i) )
+     !! (  c(i) conjg(s(i)) ) (       x(i)  z(i) ) ( c(i) -conjg(s(i)) )
+     !! ( -s(i)       c(i)  ) ( conjg(z(i)) y(i) ) ( s(i)        c(i)  )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -10476,12 +10476,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlar2v
 
-     !> ZLARCM: performs a very simple matrix-matrix multiplication:
-     !> C := A * B,
-     !> where A is M by M and real; B is M by N and complex;
-     !> C is M by N and complex.
 
      pure subroutine stdlib_zlarcm( m, n, a, lda, b, ldb, c, ldc, rwork )
+     !! ZLARCM performs a very simple matrix-matrix multiplication:
+     !! C := A * B,
+     !! where A is M by M and real; B is M by N and complex;
+     !! C is M by N and complex.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -10530,16 +10530,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarcm
 
-     !> ZLARF: applies a complex elementary reflector H to a complex M-by-N
-     !> matrix C, from either the left or the right. H is represented in the
-     !> form
-     !> H = I - tau * v * v**H
-     !> where tau is a complex scalar and v is a complex vector.
-     !> If tau = 0, then H is taken to be the unit matrix.
-     !> To apply H**H, supply conjg(tau) instead
-     !> tau.
 
      pure subroutine stdlib_zlarf( side, m, n, v, incv, tau, c, ldc, work )
+     !! ZLARF applies a complex elementary reflector H to a complex M-by-N
+     !! matrix C, from either the left or the right. H is represented in the
+     !! form
+     !! H = I - tau * v * v**H
+     !! where tau is a complex scalar and v is a complex vector.
+     !! If tau = 0, then H is taken to be the unit matrix.
+     !! To apply H**H, supply conjg(tau) instead
+     !! tau.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -10610,10 +10610,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarf
 
-     !> ZLARFB: applies a complex block reflector H or its transpose H**H to a
-     !> complex M-by-N matrix C, from either the left or the right.
 
      pure subroutine stdlib_zlarfb( side, trans, direct, storev, m, n, k, v, ldv,t, ldt, c, ldc, &
+     !! ZLARFB applies a complex block reflector H or its transpose H**H to a
+     !! complex M-by-N matrix C, from either the left or the right.
                work, ldwork )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -10938,15 +10938,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarfb
 
-     !> ZLARFB_GETT: applies a complex Householder block reflector H from the
-     !> left to a complex (K+M)-by-N  "triangular-pentagonal" matrix
-     !> composed of two block matrices: an upper trapezoidal K-by-N matrix A
-     !> stored in the array A, and a rectangular M-by-(N-K) matrix B, stored
-     !> in the array B. The block reflector H is stored in a compact
-     !> WY-representation, where the elementary reflectors are in the
-     !> arrays A, B and T. See Further Details section.
 
      pure subroutine stdlib_zlarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
+     !! ZLARFB_GETT applies a complex Householder block reflector H from the
+     !! left to a complex (K+M)-by-N  "triangular-pentagonal" matrix
+     !! composed of two block matrices: an upper trapezoidal K-by-N matrix A
+     !! stored in the array A, and a rectangular M-by-(N-K) matrix B, stored
+     !! in the array B. The block reflector H is stored in a compact
+     !! WY-representation, where the elementary reflectors are in the
+     !! arrays A, B and T. See Further Details section.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -11077,21 +11077,21 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarfb_gett
 
-     !> ZLARFG: generates a complex elementary reflector H of order n, such
-     !> that
-     !> H**H * ( alpha ) = ( beta ),   H**H * H = I.
-     !> (   x   )   (   0  )
-     !> where alpha and beta are scalars, with beta real, and x is an
-     !> (n-1)-element complex vector. H is represented in the form
-     !> H = I - tau * ( 1 ) * ( 1 v**H ) ,
-     !> ( v )
-     !> where tau is a complex scalar and v is a complex (n-1)-element
-     !> vector. Note that H is not hermitian.
-     !> If the elements of x are all zero and alpha is real, then tau = 0
-     !> and H is taken to be the unit matrix.
-     !> Otherwise  1 <= real(tau) <= 2  and  abs(tau-1) <= 1 .
 
      pure subroutine stdlib_zlarfg( n, alpha, x, incx, tau )
+     !! ZLARFG generates a complex elementary reflector H of order n, such
+     !! that
+     !! H**H * ( alpha ) = ( beta ),   H**H * H = I.
+     !! (   x   )   (   0  )
+     !! where alpha and beta are scalars, with beta real, and x is an
+     !! (n-1)-element complex vector. H is represented in the form
+     !! H = I - tau * ( 1 ) * ( 1 v**H ) ,
+     !! ( v )
+     !! where tau is a complex scalar and v is a complex (n-1)-element
+     !! vector. Note that H is not hermitian.
+     !! If the elements of x are all zero and alpha is real, then tau = 0
+     !! and H is taken to be the unit matrix.
+     !! Otherwise  1 <= real(tau) <= 2  and  abs(tau-1) <= 1 .
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11151,20 +11151,20 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarfg
 
-     !> ZLARFGP: generates a complex elementary reflector H of order n, such
-     !> that
-     !> H**H * ( alpha ) = ( beta ),   H**H * H = I.
-     !> (   x   )   (   0  )
-     !> where alpha and beta are scalars, beta is real and non-negative, and
-     !> x is an (n-1)-element complex vector.  H is represented in the form
-     !> H = I - tau * ( 1 ) * ( 1 v**H ) ,
-     !> ( v )
-     !> where tau is a complex scalar and v is a complex (n-1)-element
-     !> vector. Note that H is not hermitian.
-     !> If the elements of x are all zero and alpha is real, then tau = 0
-     !> and H is taken to be the unit matrix.
 
      subroutine stdlib_zlarfgp( n, alpha, x, incx, tau )
+     !! ZLARFGP generates a complex elementary reflector H of order n, such
+     !! that
+     !! H**H * ( alpha ) = ( beta ),   H**H * H = I.
+     !! (   x   )   (   0  )
+     !! where alpha and beta are scalars, beta is real and non-negative, and
+     !! x is an (n-1)-element complex vector.  H is represented in the form
+     !! H = I - tau * ( 1 ) * ( 1 v**H ) ,
+     !! ( v )
+     !! where tau is a complex scalar and v is a complex (n-1)-element
+     !! vector. Note that H is not hermitian.
+     !! If the elements of x are all zero and alpha is real, then tau = 0
+     !! and H is taken to be the unit matrix.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11287,18 +11287,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarfgp
 
-     !> ZLARFT: forms the triangular factor T of a complex block reflector H
-     !> of order n, which is defined as a product of k elementary reflectors.
-     !> If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
-     !> If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
-     !> If STOREV = 'C', the vector which defines the elementary reflector
-     !> H(i) is stored in the i-th column of the array V, and
-     !> H  =  I - V * T * V**H
-     !> If STOREV = 'R', the vector which defines the elementary reflector
-     !> H(i) is stored in the i-th row of the array V, and
-     !> H  =  I - V**H * T * V
 
      pure subroutine stdlib_zlarft( direct, storev, n, k, v, ldv, tau, t, ldt )
+     !! ZLARFT forms the triangular factor T of a complex block reflector H
+     !! of order n, which is defined as a product of k elementary reflectors.
+     !! If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
+     !! If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
+     !! If STOREV = 'C', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th column of the array V, and
+     !! H  =  I - V * T * V**H
+     !! If STOREV = 'R', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th row of the array V, and
+     !! H  =  I - V**H * T * V
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11414,15 +11414,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarft
 
-     !> ZLARFX: applies a complex elementary reflector H to a complex m by n
-     !> matrix C, from either the left or the right. H is represented in the
-     !> form
-     !> H = I - tau * v * v**H
-     !> where tau is a complex scalar and v is a complex vector.
-     !> If tau = 0, then H is taken to be the unit matrix
-     !> This version uses inline code if H has order < 11.
 
      pure subroutine stdlib_zlarfx( side, m, n, v, tau, c, ldc, work )
+     !! ZLARFX applies a complex elementary reflector H to a complex m by n
+     !! matrix C, from either the left or the right. H is represented in the
+     !! form
+     !! H = I - tau * v * v**H
+     !! where tau is a complex scalar and v is a complex vector.
+     !! If tau = 0, then H is taken to be the unit matrix
+     !! This version uses inline code if H has order < 11.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11919,14 +11919,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarfx
 
-     !> ZLARFY: applies an elementary reflector, or Householder matrix, H,
-     !> to an n x n Hermitian matrix C, from both the left and the right.
-     !> H is represented in the form
-     !> H = I - tau * v * v'
-     !> where  tau  is a scalar and  v  is a vector.
-     !> If  tau  is  zero, then  H  is taken to be the unit matrix.
 
      pure subroutine stdlib_zlarfy( uplo, n, v, incv, tau, c, ldc, work )
+     !! ZLARFY applies an elementary reflector, or Householder matrix, H,
+     !! to an n x n Hermitian matrix C, from both the left and the right.
+     !! H is represented in the form
+     !! H = I - tau * v * v'
+     !! where  tau  is a scalar and  v  is a vector.
+     !! If  tau  is  zero, then  H  is taken to be the unit matrix.
         ! -- lapack test routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11953,10 +11953,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarfy
 
-     !> ZLARNV: returns a vector of n random complex numbers from a uniform or
-     !> normal distribution.
 
      pure subroutine stdlib_zlarnv( idist, iseed, n, x )
+     !! ZLARNV returns a vector of n random complex numbers from a uniform or
+     !! normal distribution.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12018,32 +12018,30 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarnv
 
-     !> !
-     !>
-     !> ZLARTG: generates a plane rotation so that
-     !> [  C         S  ] . [ F ]  =  [ R ]
-     !> [ -conjg(S)  C  ]   [ G ]     [ 0 ]
-     !> where C is real and C**2 + |S|**2 = 1.
-     !> The mathematical formulas used for C and S are
-     !> sgn(x) = {  x / |x|,   x != 0
-     !> {  1,         x = 0
-     !> R = sgn(F) * sqrt(|F|**2 + |G|**2)
-     !> C = |F| / sqrt(|F|**2 + |G|**2)
-     !> S = sgn(F) * conjg(G) / sqrt(|F|**2 + |G|**2)
-     !> When F and G are real, the formulas simplify to C = F/R and
-     !> S = G/R, and the returned values of C, S, and R should be
-     !> identical to those returned by DLARTG.
-     !> The algorithm used to compute these quantities incorporates scaling
-     !> to avoid overflow or underflow in computing the square root of the
-     !> sum of squares.
-     !> This is a faster version of the BLAS1 routine ZROTG, except for
-     !> the following differences:
-     !> F and G are unchanged on return.
-     !> If G=0, then C=1 and S=0.
-     !> If F=0, then C=0 and S is chosen so that R is real.
-     !> Below, wp=>dp stands for double precision from LA_CONSTANTS module.
 
      pure subroutine stdlib_zlartg( f, g, c, s, r )
+     !! ZLARTG generates a plane rotation so that
+     !! [  C         S  ] . [ F ]  =  [ R ]
+     !! [ -conjg(S)  C  ]   [ G ]     [ 0 ]
+     !! where C is real and C**2 + |S|**2 = 1.
+     !! The mathematical formulas used for C and S are
+     !! sgn(x) = {  x / |x|,   x != 0
+     !! {  1,         x = 0
+     !! R = sgn(F) * sqrt(|F|**2 + |G|**2)
+     !! C = |F| / sqrt(|F|**2 + |G|**2)
+     !! S = sgn(F) * conjg(G) / sqrt(|F|**2 + |G|**2)
+     !! When F and G are real, the formulas simplify to C = F/R and
+     !! S = G/R, and the returned values of C, S, and R should be
+     !! identical to those returned by DLARTG.
+     !! The algorithm used to compute these quantities incorporates scaling
+     !! to avoid overflow or underflow in computing the square root of the
+     !! sum of squares.
+     !! This is a faster version of the BLAS1 routine ZROTG, except for
+     !! the following differences:
+     !! F and G are unchanged on return.
+     !! If G=0, then C=1 and S=0.
+     !! If F=0, then C=0 and S is chosen so that R is real.
+     !! Below, wp=>dp stands for double precision from LA_CONSTANTS module.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12138,12 +12136,12 @@ module stdlib_linalg_lapack_z
         return
      end subroutine stdlib_zlartg
 
-     !> ZLARTV: applies a vector of complex plane rotations with real cosines
-     !> to elements of the complex vectors x and y. For i = 1,2,...,n
-     !> ( x(i) ) := (        c(i)   s(i) ) ( x(i) )
-     !> ( y(i) )    ( -conjg(s(i))  c(i) ) ( y(i) )
 
      pure subroutine stdlib_zlartv( n, x, incx, y, incy, c, s, incc )
+     !! ZLARTV applies a vector of complex plane rotations with real cosines
+     !! to elements of the complex vectors x and y. For i = 1,2,...,n
+     !! ( x(i) ) := (        c(i)   s(i) ) ( x(i) )
+     !! ( y(i) )    ( -conjg(s(i))  c(i) ) ( y(i) )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12175,17 +12173,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlartv
 
-     !> ZLARZ: applies a complex elementary reflector H to a complex
-     !> M-by-N matrix C, from either the left or the right. H is represented
-     !> in the form
-     !> H = I - tau * v * v**H
-     !> where tau is a complex scalar and v is a complex vector.
-     !> If tau = 0, then H is taken to be the unit matrix.
-     !> To apply H**H (the conjugate transpose of H), supply conjg(tau) instead
-     !> tau.
-     !> H is a product of k elementary reflectors as returned by ZTZRZF.
 
      pure subroutine stdlib_zlarz( side, m, n, l, v, incv, tau, c, ldc, work )
+     !! ZLARZ applies a complex elementary reflector H to a complex
+     !! M-by-N matrix C, from either the left or the right. H is represented
+     !! in the form
+     !! H = I - tau * v * v**H
+     !! where tau is a complex scalar and v is a complex vector.
+     !! If tau = 0, then H is taken to be the unit matrix.
+     !! To apply H**H (the conjugate transpose of H), supply conjg(tau) instead
+     !! tau.
+     !! H is a product of k elementary reflectors as returned by ZTZRZF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12234,11 +12232,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarz
 
-     !> ZLARZB: applies a complex block reflector H or its transpose H**H
-     !> to a complex distributed M-by-N  C from the left or the right.
-     !> Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
 
      pure subroutine stdlib_zlarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+     !! ZLARZB applies a complex block reflector H or its transpose H**H
+     !! to a complex distributed M-by-N  C from the left or the right.
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
                ldc, work, ldwork )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -12336,20 +12334,20 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarzb
 
-     !> ZLARZT: forms the triangular factor T of a complex block reflector
-     !> H of order > n, which is defined as a product of k elementary
-     !> reflectors.
-     !> If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
-     !> If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
-     !> If STOREV = 'C', the vector which defines the elementary reflector
-     !> H(i) is stored in the i-th column of the array V, and
-     !> H  =  I - V * T * V**H
-     !> If STOREV = 'R', the vector which defines the elementary reflector
-     !> H(i) is stored in the i-th row of the array V, and
-     !> H  =  I - V**H * T * V
-     !> Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
 
      pure subroutine stdlib_zlarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+     !! ZLARZT forms the triangular factor T of a complex block reflector
+     !! H of order > n, which is defined as a product of k elementary
+     !! reflectors.
+     !! If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
+     !! If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
+     !! If STOREV = 'C', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th column of the array V, and
+     !! H  =  I - V * T * V**H
+     !! If STOREV = 'R', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th row of the array V, and
+     !! H  =  I - V**H * T * V
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12400,13 +12398,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarzt
 
-     !> ZLASCL: multiplies the M by N complex matrix A by the real scalar
-     !> CTO/CFROM.  This is done without over/underflow as long as the final
-     !> result CTO*A(I,J)/CFROM does not over/underflow. TYPE specifies that
-     !> A may be full, upper triangular, lower triangular, upper Hessenberg,
-     !> or banded.
 
      pure subroutine stdlib_zlascl( type, kl, ku, cfrom, cto, m, n, a, lda, info )
+     !! ZLASCL multiplies the M by N complex matrix A by the real scalar
+     !! CTO/CFROM.  This is done without over/underflow as long as the final
+     !! result CTO*A(I,J)/CFROM does not over/underflow. TYPE specifies that
+     !! A may be full, upper triangular, lower triangular, upper Hessenberg,
+     !! or banded.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12570,10 +12568,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlascl
 
-     !> ZLASET: initializes a 2-D array A to BETA on the diagonal and
-     !> ALPHA on the offdiagonals.
 
      pure subroutine stdlib_zlaset( uplo, m, n, alpha, beta, a, lda )
+     !! ZLASET initializes a 2-D array A to BETA on the diagonal and
+     !! ALPHA on the offdiagonals.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12626,59 +12624,59 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaset
 
-     !> ZLASR: applies a sequence of real plane rotations to a complex matrix
-     !> A, from either the left or the right.
-     !> When SIDE = 'L', the transformation takes the form
-     !> A := P*A
-     !> and when SIDE = 'R', the transformation takes the form
-     !> A := A*P**T
-     !> where P is an orthogonal matrix consisting of a sequence of z plane
-     !> rotations, with z = M when SIDE = 'L' and z = N when SIDE = 'R',
-     !> and P**T is the transpose of P.
-     !> When DIRECT = 'F' (Forward sequence), then
-     !> P = P(z-1) * ... * P(2) * P(1)
-     !> and when DIRECT = 'B' (Backward sequence), then
-     !> P = P(1) * P(2) * ... * P(z-1)
-     !> where P(k) is a plane rotation matrix defined by the 2-by-2 rotation
-     !> R(k) = (  c(k)  s(k) )
-     !> = ( -s(k)  c(k) ).
-     !> When PIVOT = 'V' (Variable pivot), the rotation is performed
-     !> for the plane (k,k+1), i.e., P(k) has the form
-     !> P(k) = (  1                                            )
-     !> (       ...                                     )
-     !> (              1                                )
-     !> (                   c(k)  s(k)                  )
-     !> (                  -s(k)  c(k)                  )
-     !> (                                1              )
-     !> (                                     ...       )
-     !> (                                            1  )
-     !> where R(k) appears as a rank-2 modification to the identity matrix in
-     !> rows and columns k and k+1.
-     !> When PIVOT = 'T' (Top pivot), the rotation is performed for the
-     !> plane (1,k+1), so P(k) has the form
-     !> P(k) = (  c(k)                    s(k)                 )
-     !> (         1                                     )
-     !> (              ...                              )
-     !> (                     1                         )
-     !> ( -s(k)                    c(k)                 )
-     !> (                                 1             )
-     !> (                                      ...      )
-     !> (                                             1 )
-     !> where R(k) appears in rows and columns 1 and k+1.
-     !> Similarly, when PIVOT = 'B' (Bottom pivot), the rotation is
-     !> performed for the plane (k,z), giving P(k) the form
-     !> P(k) = ( 1                                             )
-     !> (      ...                                      )
-     !> (             1                                 )
-     !> (                  c(k)                    s(k) )
-     !> (                         1                     )
-     !> (                              ...              )
-     !> (                                     1         )
-     !> (                 -s(k)                    c(k) )
-     !> where R(k) appears in rows and columns k and z.  The rotations are
-     !> performed without ever forming P(k) explicitly.
 
      pure subroutine stdlib_zlasr( side, pivot, direct, m, n, c, s, a, lda )
+     !! ZLASR applies a sequence of real plane rotations to a complex matrix
+     !! A, from either the left or the right.
+     !! When SIDE = 'L', the transformation takes the form
+     !! A := P*A
+     !! and when SIDE = 'R', the transformation takes the form
+     !! A := A*P**T
+     !! where P is an orthogonal matrix consisting of a sequence of z plane
+     !! rotations, with z = M when SIDE = 'L' and z = N when SIDE = 'R',
+     !! and P**T is the transpose of P.
+     !! When DIRECT = 'F' (Forward sequence), then
+     !! P = P(z-1) * ... * P(2) * P(1)
+     !! and when DIRECT = 'B' (Backward sequence), then
+     !! P = P(1) * P(2) * ... * P(z-1)
+     !! where P(k) is a plane rotation matrix defined by the 2-by-2 rotation
+     !! R(k) = (  c(k)  s(k) )
+     !! = ( -s(k)  c(k) ).
+     !! When PIVOT = 'V' (Variable pivot), the rotation is performed
+     !! for the plane (k,k+1), i.e., P(k) has the form
+     !! P(k) = (  1                                            )
+     !! (       ...                                     )
+     !! (              1                                )
+     !! (                   c(k)  s(k)                  )
+     !! (                  -s(k)  c(k)                  )
+     !! (                                1              )
+     !! (                                     ...       )
+     !! (                                            1  )
+     !! where R(k) appears as a rank-2 modification to the identity matrix in
+     !! rows and columns k and k+1.
+     !! When PIVOT = 'T' (Top pivot), the rotation is performed for the
+     !! plane (1,k+1), so P(k) has the form
+     !! P(k) = (  c(k)                    s(k)                 )
+     !! (         1                                     )
+     !! (              ...                              )
+     !! (                     1                         )
+     !! ( -s(k)                    c(k)                 )
+     !! (                                 1             )
+     !! (                                      ...      )
+     !! (                                             1 )
+     !! where R(k) appears in rows and columns 1 and k+1.
+     !! Similarly, when PIVOT = 'B' (Bottom pivot), the rotation is
+     !! performed for the plane (k,z), giving P(k) the form
+     !! P(k) = ( 1                                             )
+     !! (      ...                                      )
+     !! (             1                                 )
+     !! (                  c(k)                    s(k) )
+     !! (                         1                     )
+     !! (                              ...              )
+     !! (                                     1         )
+     !! (                 -s(k)                    c(k) )
+     !! where R(k) appears in rows and columns k and z.  The rotations are
+     !! performed without ever forming P(k) explicitly.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12886,28 +12884,26 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlasr
 
-     !> !
-     !>
-     !> ZLASSQ:  returns the values  scl  and  smsq  such that
-     !> ( scl**2 )*smsq = x( 1 )**2 +...+ x( n )**2 + ( scale**2 )*sumsq,
-     !> where  x( i ) = X( 1 + ( i - 1 )*INCX ). The value of  sumsq  is
-     !> assumed to be non-negative.
-     !> scale and sumsq must be supplied in SCALE and SUMSQ and
-     !> scl and smsq are overwritten on SCALE and SUMSQ respectively.
-     !> If scale * sqrt( sumsq ) > tbig then
-     !> we require:   scale >= sqrt( TINY*EPS ) / sbig   on entry,
-     !> and if 0 < scale * sqrt( sumsq ) < tsml then
-     !> we require:   scale <= sqrt( HUGE ) / ssml       on entry,
-     !> where
-     !> tbig -- upper threshold for values whose square is representable;
-     !> sbig -- scaling constant for big numbers; \see la_constants.f90
-     !> tsml -- lower threshold for values whose square is representable;
-     !> ssml -- scaling constant for small numbers; \see la_constants.f90
-     !> and
-     !> TINY*EPS -- tiniest representable number;
-     !> HUGE     -- biggest representable number.
 
      pure subroutine stdlib_zlassq( n, x, incx, scl, sumsq )
+     !! ZLASSQ returns the values  scl  and  smsq  such that
+     !! ( scl**2 )*smsq = x( 1 )**2 +...+ x( n )**2 + ( scale**2 )*sumsq,
+     !! where  x( i ) = X( 1 + ( i - 1 )*INCX ). The value of  sumsq  is
+     !! assumed to be non-negative.
+     !! scale and sumsq must be supplied in SCALE and SUMSQ and
+     !! scl and smsq are overwritten on SCALE and SUMSQ respectively.
+     !! If scale * sqrt( sumsq ) > tbig then
+     !! we require:   scale >= sqrt( TINY*EPS ) / sbig   on entry,
+     !! and if 0 < scale * sqrt( sumsq ) < tsml then
+     !! we require:   scale <= sqrt( HUGE ) / ssml       on entry,
+     !! where
+     !! tbig -- upper threshold for values whose square is representable;
+     !! sbig -- scaling constant for big numbers; \see la_constants.f90
+     !! tsml -- lower threshold for values whose square is representable;
+     !! ssml -- scaling constant for small numbers; \see la_constants.f90
+     !! and
+     !! TINY*EPS -- tiniest representable number;
+     !! HUGE     -- biggest representable number.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -13012,10 +13008,10 @@ module stdlib_linalg_lapack_z
         return
      end subroutine stdlib_zlassq
 
-     !> ZLASWP: performs a series of row interchanges on the matrix A.
-     !> One row interchange is initiated for each of rows K1 through K2 of A.
 
      pure subroutine stdlib_zlaswp( n, a, lda, k1, k2, ipiv, incx )
+     !! ZLASWP performs a series of row interchanges on the matrix A.
+     !! One row interchange is initiated for each of rows K1 through K2 of A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -13079,21 +13075,21 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaswp
 
-     !> ZLASYF: computes a partial factorization of a complex symmetric matrix
-     !> A using the Bunch-Kaufman diagonal pivoting method. The partial
-     !> factorization has the form:
-     !> A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
-     !> ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
-     !> A  =  ( L11  0 ) ( D    0  ) ( L11**T L21**T )  if UPLO = 'L'
-     !> ( L21  I ) ( 0   A22 ) (  0       I    )
-     !> where the order of D is at most NB. The actual order is returned in
-     !> the argument KB, and is either NB or NB-1, or N if N <= NB.
-     !> Note that U**T denotes the transpose of U.
-     !> ZLASYF is an auxiliary routine called by ZSYTRF. It uses blocked code
-     !> (calling Level 3 BLAS) to update the submatrix A11 (if UPLO = 'U') or
-     !> A22 (if UPLO = 'L').
 
      pure subroutine stdlib_zlasyf( uplo, n, nb, kb, a, lda, ipiv, w, ldw, info )
+     !! ZLASYF computes a partial factorization of a complex symmetric matrix
+     !! A using the Bunch-Kaufman diagonal pivoting method. The partial
+     !! factorization has the form:
+     !! A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
+     !! ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
+     !! A  =  ( L11  0 ) ( D    0  ) ( L11**T L21**T )  if UPLO = 'L'
+     !! ( L21  I ) ( 0   A22 ) (  0       I    )
+     !! where the order of D is at most NB. The actual order is returned in
+     !! the argument KB, and is either NB or NB-1, or N if N <= NB.
+     !! Note that U**T denotes the transpose of U.
+     !! ZLASYF is an auxiliary routine called by ZSYTRF. It uses blocked code
+     !! (calling Level 3 BLAS) to update the submatrix A11 (if UPLO = 'U') or
+     !! A22 (if UPLO = 'L').
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -13519,20 +13515,20 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlasyf
 
-     !> ZLASYF_RK: computes a partial factorization of a complex symmetric
-     !> matrix A using the bounded Bunch-Kaufman (rook) diagonal
-     !> pivoting method. The partial factorization has the form:
-     !> A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
-     !> ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
-     !> A  =  ( L11  0 ) (  D   0  ) ( L11**T L21**T )  if UPLO = 'L',
-     !> ( L21  I ) (  0  A22 ) (  0       I    )
-     !> where the order of D is at most NB. The actual order is returned in
-     !> the argument KB, and is either NB or NB-1, or N if N <= NB.
-     !> ZLASYF_RK is an auxiliary routine called by ZSYTRF_RK. It uses
-     !> blocked code (calling Level 3 BLAS) to update the submatrix
-     !> A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
 
      pure subroutine stdlib_zlasyf_rk( uplo, n, nb, kb, a, lda, e, ipiv, w, ldw,info )
+     !! ZLASYF_RK computes a partial factorization of a complex symmetric
+     !! matrix A using the bounded Bunch-Kaufman (rook) diagonal
+     !! pivoting method. The partial factorization has the form:
+     !! A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
+     !! ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
+     !! A  =  ( L11  0 ) (  D   0  ) ( L11**T L21**T )  if UPLO = 'L',
+     !! ( L21  I ) (  0  A22 ) (  0       I    )
+     !! where the order of D is at most NB. The actual order is returned in
+     !! the argument KB, and is either NB or NB-1, or N if N <= NB.
+     !! ZLASYF_RK is an auxiliary routine called by ZSYTRF_RK. It uses
+     !! blocked code (calling Level 3 BLAS) to update the submatrix
+     !! A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -13965,20 +13961,20 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlasyf_rk
 
-     !> ZLASYF_ROOK: computes a partial factorization of a complex symmetric
-     !> matrix A using the bounded Bunch-Kaufman ("rook") diagonal
-     !> pivoting method. The partial factorization has the form:
-     !> A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
-     !> ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
-     !> A  =  ( L11  0 ) (  D   0  ) ( L11**T L21**T )  if UPLO = 'L'
-     !> ( L21  I ) (  0  A22 ) (  0       I    )
-     !> where the order of D is at most NB. The actual order is returned in
-     !> the argument KB, and is either NB or NB-1, or N if N <= NB.
-     !> ZLASYF_ROOK is an auxiliary routine called by ZSYTRF_ROOK. It uses
-     !> blocked code (calling Level 3 BLAS) to update the submatrix
-     !> A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
 
      pure subroutine stdlib_zlasyf_rook( uplo, n, nb, kb, a, lda, ipiv, w, ldw,info )
+     !! ZLASYF_ROOK computes a partial factorization of a complex symmetric
+     !! matrix A using the bounded Bunch-Kaufman ("rook") diagonal
+     !! pivoting method. The partial factorization has the form:
+     !! A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
+     !! ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
+     !! A  =  ( L11  0 ) (  D   0  ) ( L11**T L21**T )  if UPLO = 'L'
+     !! ( L21  I ) (  0  A22 ) (  0       I    )
+     !! where the order of D is at most NB. The actual order is returned in
+     !! the argument KB, and is either NB or NB-1, or N if N <= NB.
+     !! ZLASYF_ROOK is an auxiliary routine called by ZSYTRF_ROOK. It uses
+     !! blocked code (calling Level 3 BLAS) to update the submatrix
+     !! A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -14431,14 +14427,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlasyf_rook
 
-     !> ZLAT2C: converts a COMPLEX*16 triangular matrix, SA, to a COMPLEX
-     !> triangular matrix, A.
-     !> RMAX is the overflow for the SINGLE PRECISION arithmetic
-     !> ZLAT2C checks that all the entries of A are between -RMAX and
-     !> RMAX. If not the conversion is aborted and a flag is raised.
-     !> This is an auxiliary routine so there is no argument checking.
 
      pure subroutine stdlib_zlat2c( uplo, n, a, lda, sa, ldsa, info )
+     !! ZLAT2C converts a COMPLEX*16 triangular matrix, SA, to a COMPLEX
+     !! triangular matrix, A.
+     !! RMAX is the overflow for the SINGLE PRECISION arithmetic
+     !! ZLAT2C checks that all the entries of A are between -RMAX and
+     !! RMAX. If not the conversion is aborted and a flag is raised.
+     !! This is an auxiliary routine so there is no argument checking.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -14488,18 +14484,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlat2c
 
-     !> ZLATBS: solves one of the triangular systems
-     !> A * x = s*b,  A**T * x = s*b,  or  A**H * x = s*b,
-     !> with scaling to prevent overflow, where A is an upper or lower
-     !> triangular band matrix.  Here A**T denotes the transpose of A, x and b
-     !> are n-element vectors, and s is a scaling factor, usually less than
-     !> or equal to 1, chosen so that the components of x will be less than
-     !> the overflow threshold.  If the unscaled problem will not cause
-     !> overflow, the Level 2 BLAS routine ZTBSV is called.  If the matrix A
-     !> is singular (A(j,j) = 0 for some j), then s is set to 0 and a
-     !> non-trivial solution to A*x = 0 is returned.
 
      pure subroutine stdlib_zlatbs( uplo, trans, diag, normin, n, kd, ab, ldab, x,scale, cnorm, &
+     !! ZLATBS solves one of the triangular systems
+     !! A * x = s*b,  A**T * x = s*b,  or  A**H * x = s*b,
+     !! with scaling to prevent overflow, where A is an upper or lower
+     !! triangular band matrix.  Here A**T denotes the transpose of A, x and b
+     !! are n-element vectors, and s is a scaling factor, usually less than
+     !! or equal to 1, chosen so that the components of x will be less than
+     !! the overflow threshold.  If the unscaled problem will not cause
+     !! overflow, the Level 2 BLAS routine ZTBSV is called.  If the matrix A
+     !! is singular (A(j,j) = 0 for some j), then s is set to 0 and a
+     !! non-trivial solution to A*x = 0 is returned.
                info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -15044,19 +15040,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlatbs
 
-     !> ZLATPS: solves one of the triangular systems
-     !> A * x = s*b,  A**T * x = s*b,  or  A**H * x = s*b,
-     !> with scaling to prevent overflow, where A is an upper or lower
-     !> triangular matrix stored in packed form.  Here A**T denotes the
-     !> transpose of A, A**H denotes the conjugate transpose of A, x and b
-     !> are n-element vectors, and s is a scaling factor, usually less than
-     !> or equal to 1, chosen so that the components of x will be less than
-     !> the overflow threshold.  If the unscaled problem will not cause
-     !> overflow, the Level 2 BLAS routine ZTPSV is called. If the matrix A
-     !> is singular (A(j,j) = 0 for some j), then s is set to 0 and a
-     !> non-trivial solution to A*x = 0 is returned.
 
      pure subroutine stdlib_zlatps( uplo, trans, diag, normin, n, ap, x, scale,cnorm, info )
+     !! ZLATPS solves one of the triangular systems
+     !! A * x = s*b,  A**T * x = s*b,  or  A**H * x = s*b,
+     !! with scaling to prevent overflow, where A is an upper or lower
+     !! triangular matrix stored in packed form.  Here A**T denotes the
+     !! transpose of A, A**H denotes the conjugate transpose of A, x and b
+     !! are n-element vectors, and s is a scaling factor, usually less than
+     !! or equal to 1, chosen so that the components of x will be less than
+     !! the overflow threshold.  If the unscaled problem will not cause
+     !! overflow, the Level 2 BLAS routine ZTPSV is called. If the matrix A
+     !! is singular (A(j,j) = 0 for some j), then s is set to 0 and a
+     !! non-trivial solution to A*x = 0 is returned.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -15595,17 +15591,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlatps
 
-     !> ZLATRD: reduces NB rows and columns of a complex Hermitian matrix A to
-     !> Hermitian tridiagonal form by a unitary similarity
-     !> transformation Q**H * A * Q, and returns the matrices V and W which are
-     !> needed to apply the transformation to the unreduced part of A.
-     !> If UPLO = 'U', ZLATRD reduces the last NB rows and columns of a
-     !> matrix, of which the upper triangle is supplied;
-     !> if UPLO = 'L', ZLATRD reduces the first NB rows and columns of a
-     !> matrix, of which the lower triangle is supplied.
-     !> This is an auxiliary routine called by ZHETRD.
 
      pure subroutine stdlib_zlatrd( uplo, n, nb, a, lda, e, tau, w, ldw )
+     !! ZLATRD reduces NB rows and columns of a complex Hermitian matrix A to
+     !! Hermitian tridiagonal form by a unitary similarity
+     !! transformation Q**H * A * Q, and returns the matrices V and W which are
+     !! needed to apply the transformation to the unreduced part of A.
+     !! If UPLO = 'U', ZLATRD reduces the last NB rows and columns of a
+     !! matrix, of which the upper triangle is supplied;
+     !! if UPLO = 'L', ZLATRD reduces the first NB rows and columns of a
+     !! matrix, of which the lower triangle is supplied.
+     !! This is an auxiliary routine called by ZHETRD.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -15711,18 +15707,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlatrd
 
-     !> ZLATRS: solves one of the triangular systems
-     !> A * x = s*b,  A**T * x = s*b,  or  A**H * x = s*b,
-     !> with scaling to prevent overflow.  Here A is an upper or lower
-     !> triangular matrix, A**T denotes the transpose of A, A**H denotes the
-     !> conjugate transpose of A, x and b are n-element vectors, and s is a
-     !> scaling factor, usually less than or equal to 1, chosen so that the
-     !> components of x will be less than the overflow threshold.  If the
-     !> unscaled problem will not cause overflow, the Level 2 BLAS routine
-     !> ZTRSV is called. If the matrix A is singular (A(j,j) = 0 for some j),
-     !> then s is set to 0 and a non-trivial solution to A*x = 0 is returned.
 
      pure subroutine stdlib_zlatrs( uplo, trans, diag, normin, n, a, lda, x, scale,cnorm, info )
+     !! ZLATRS solves one of the triangular systems
+     !! A * x = s*b,  A**T * x = s*b,  or  A**H * x = s*b,
+     !! with scaling to prevent overflow.  Here A is an upper or lower
+     !! triangular matrix, A**T denotes the transpose of A, A**H denotes the
+     !! conjugate transpose of A, x and b are n-element vectors, and s is a
+     !! scaling factor, usually less than or equal to 1, chosen so that the
+     !! components of x will be less than the overflow threshold.  If the
+     !! unscaled problem will not cause overflow, the Level 2 BLAS routine
+     !! ZTRSV is called. If the matrix A is singular (A(j,j) = 0 for some j),
+     !! then s is set to 0 and a non-trivial solution to A*x = 0 is returned.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -16240,12 +16236,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlatrs
 
-     !> ZLATRZ: factors the M-by-(M+L) complex upper trapezoidal matrix
-     !> [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R  0 ) * Z by means
-     !> of unitary transformations, where  Z is an (M+L)-by-(M+L) unitary
-     !> matrix and, R and A1 are M-by-M upper triangular matrices.
 
      pure subroutine stdlib_zlatrz( m, n, l, a, lda, tau, work )
+     !! ZLATRZ factors the M-by-(M+L) complex upper trapezoidal matrix
+     !! [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R  0 ) * Z by means
+     !! of unitary transformations, where  Z is an (M+L)-by-(M+L) unitary
+     !! matrix and, R and A1 are M-by-M upper triangular matrices.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -16286,56 +16282,56 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlatrz
 
-     !> ZLAUNHR_COL_GETRFNP2: computes the modified LU factorization without
-     !> pivoting of a complex general M-by-N matrix A. The factorization has
-     !> the form:
-     !> A - S = L * U,
-     !> where:
-     !> S is a m-by-n diagonal sign matrix with the diagonal D, so that
-     !> D(i) = S(i,i), 1 <= i <= min(M,N). The diagonal D is constructed
-     !> as D(i)=-SIGN(A(i,i)), where A(i,i) is the value after performing
-     !> i-1 steps of Gaussian elimination. This means that the diagonal
-     !> element at each step of "modified" Gaussian elimination is at
-     !> least one in absolute value (so that division-by-zero not
-     !> possible during the division by the diagonal element);
-     !> L is a M-by-N lower triangular matrix with unit diagonal elements
-     !> (lower trapezoidal if M > N);
-     !> and U is a M-by-N upper triangular matrix
-     !> (upper trapezoidal if M < N).
-     !> This routine is an auxiliary routine used in the Householder
-     !> reconstruction routine ZUNHR_COL. In ZUNHR_COL, this routine is
-     !> applied to an M-by-N matrix A with orthonormal columns, where each
-     !> element is bounded by one in absolute value. With the choice of
-     !> the matrix S above, one can show that the diagonal element at each
-     !> step of Gaussian elimination is the largest (in absolute value) in
-     !> the column on or below the diagonal, so that no pivoting is required
-     !> for numerical stability [1].
-     !> For more details on the Householder reconstruction algorithm,
-     !> including the modified LU factorization, see [1].
-     !> This is the recursive version of the LU factorization algorithm.
-     !> Denote A - S by B. The algorithm divides the matrix B into four
-     !> submatrices:
-     !> [  B11 | B12  ]  where B11 is n1 by n1,
-     !> B = [ -----|----- ]        B21 is (m-n1) by n1,
-     !> [  B21 | B22  ]        B12 is n1 by n2,
-     !> B22 is (m-n1) by n2,
-     !> with n1 = min(m,n)/2, n2 = n-n1.
-     !> The subroutine calls itself to factor B11, solves for B21,
-     !> solves for B12, updates B22, then calls itself to factor B22.
-     !> For more details on the recursive LU algorithm, see [2].
-     !> ZLAUNHR_COL_GETRFNP2 is called to factorize a block by the blocked
-     !> routine ZLAUNHR_COL_GETRFNP, which uses blocked code calling
-     !> Level 3 BLAS to update the submatrix. However, ZLAUNHR_COL_GETRFNP2
-     !> is self-sufficient and can be used without ZLAUNHR_COL_GETRFNP.
-     !> [1] "Reconstructing Householder vectors from tall-skinny QR",
-     !> G. Ballard, J. Demmel, L. Grigori, M. Jacquelin, H.D. Nguyen,
-     !> E. Solomonik, J. Parallel Distrib. Comput.,
-     !> vol. 85, pp. 3-31, 2015.
-     !> [2] "Recursion leads to automatic variable blocking for dense linear
-     !> algebra algorithms", F. Gustavson, IBM J. of Res. and Dev.,
-     !> vol. 41, no. 6, pp. 737-755, 1997.
 
      pure recursive subroutine stdlib_zlaunhr_col_getrfnp2( m, n, a, lda, d, info )
+     !! ZLAUNHR_COL_GETRFNP2 computes the modified LU factorization without
+     !! pivoting of a complex general M-by-N matrix A. The factorization has
+     !! the form:
+     !! A - S = L * U,
+     !! where:
+     !! S is a m-by-n diagonal sign matrix with the diagonal D, so that
+     !! D(i) = S(i,i), 1 <= i <= min(M,N). The diagonal D is constructed
+     !! as D(i)=-SIGN(A(i,i)), where A(i,i) is the value after performing
+     !! i-1 steps of Gaussian elimination. This means that the diagonal
+     !! element at each step of "modified" Gaussian elimination is at
+     !! least one in absolute value (so that division-by-zero not
+     !! possible during the division by the diagonal element);
+     !! L is a M-by-N lower triangular matrix with unit diagonal elements
+     !! (lower trapezoidal if M > N);
+     !! and U is a M-by-N upper triangular matrix
+     !! (upper trapezoidal if M < N).
+     !! This routine is an auxiliary routine used in the Householder
+     !! reconstruction routine ZUNHR_COL. In ZUNHR_COL, this routine is
+     !! applied to an M-by-N matrix A with orthonormal columns, where each
+     !! element is bounded by one in absolute value. With the choice of
+     !! the matrix S above, one can show that the diagonal element at each
+     !! step of Gaussian elimination is the largest (in absolute value) in
+     !! the column on or below the diagonal, so that no pivoting is required
+     !! for numerical stability [1].
+     !! For more details on the Householder reconstruction algorithm,
+     !! including the modified LU factorization, see [1].
+     !! This is the recursive version of the LU factorization algorithm.
+     !! Denote A - S by B. The algorithm divides the matrix B into four
+     !! submatrices:
+     !! [  B11 | B12  ]  where B11 is n1 by n1,
+     !! B = [ -----|----- ]        B21 is (m-n1) by n1,
+     !! [  B21 | B22  ]        B12 is n1 by n2,
+     !! B22 is (m-n1) by n2,
+     !! with n1 = min(m,n)/2, n2 = n-n1.
+     !! The subroutine calls itself to factor B11, solves for B21,
+     !! solves for B12, updates B22, then calls itself to factor B22.
+     !! For more details on the recursive LU algorithm, see [2].
+     !! ZLAUNHR_COL_GETRFNP2 is called to factorize a block by the blocked
+     !! routine ZLAUNHR_COL_GETRFNP, which uses blocked code calling
+     !! Level 3 BLAS to update the submatrix. However, ZLAUNHR_COL_GETRFNP2
+     !! is self-sufficient and can be used without ZLAUNHR_COL_GETRFNP.
+     !! [1] "Reconstructing Householder vectors from tall-skinny QR",
+     !! G. Ballard, J. Demmel, L. Grigori, M. Jacquelin, H.D. Nguyen,
+     !! E. Solomonik, J. Parallel Distrib. Comput.,
+     !! vol. 85, pp. 3-31, 2015.
+     !! [2] "Recursion leads to automatic variable blocking for dense linear
+     !! algebra algorithms", F. Gustavson, IBM J. of Res. and Dev.,
+     !! vol. 41, no. 6, pp. 737-755, 1997.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -16422,16 +16418,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaunhr_col_getrfnp2
 
-     !> ZLAUU2: computes the product U * U**H or L**H * L, where the triangular
-     !> factor U or L is stored in the upper or lower triangular part of
-     !> the array A.
-     !> If UPLO = 'U' or 'u' then the upper triangle of the result is stored,
-     !> overwriting the factor U in A.
-     !> If UPLO = 'L' or 'l' then the lower triangle of the result is stored,
-     !> overwriting the factor L in A.
-     !> This is the unblocked form of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_zlauu2( uplo, n, a, lda, info )
+     !! ZLAUU2 computes the product U * U**H or L**H * L, where the triangular
+     !! factor U or L is stored in the upper or lower triangular part of
+     !! the array A.
+     !! If UPLO = 'U' or 'u' then the upper triangle of the result is stored,
+     !! overwriting the factor U in A.
+     !! If UPLO = 'L' or 'l' then the lower triangle of the result is stored,
+     !! overwriting the factor L in A.
+     !! This is the unblocked form of the algorithm, calling Level 2 BLAS.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -16500,16 +16496,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlauu2
 
-     !> ZLAUUM: computes the product U * U**H or L**H * L, where the triangular
-     !> factor U or L is stored in the upper or lower triangular part of
-     !> the array A.
-     !> If UPLO = 'U' or 'u' then the upper triangle of the result is stored,
-     !> overwriting the factor U in A.
-     !> If UPLO = 'L' or 'l' then the lower triangle of the result is stored,
-     !> overwriting the factor L in A.
-     !> This is the blocked form of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_zlauum( uplo, n, a, lda, info )
+     !! ZLAUUM computes the product U * U**H or L**H * L, where the triangular
+     !! factor U or L is stored in the upper or lower triangular part of
+     !! the array A.
+     !! If UPLO = 'U' or 'u' then the upper triangle of the result is stored,
+     !! overwriting the factor U in A.
+     !! If UPLO = 'L' or 'l' then the lower triangle of the result is stored,
+     !! overwriting the factor L in A.
+     !! This is the blocked form of the algorithm, calling Level 3 BLAS.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -16584,14 +16580,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlauum
 
-     !> ZPBCON: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a complex Hermitian positive definite band matrix using
-     !> the Cholesky factorization A = U**H*U or A = L*L**H computed by
-     !> ZPBTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_zpbcon( uplo, n, kd, ab, ldab, anorm, rcond, work,rwork, info )
+     !! ZPBCON estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a complex Hermitian positive definite band matrix using
+     !! the Cholesky factorization A = U**H*U or A = L*L**H computed by
+     !! ZPBTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -16688,16 +16684,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpbcon
 
-     !> ZPBEQU: computes row and column scalings intended to equilibrate a
-     !> Hermitian positive definite band matrix A and reduce its condition
-     !> number (with respect to the two-norm).  S contains the scale factors,
-     !> S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
-     !> elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
-     !> choice of S puts the condition number of B within a factor N of the
-     !> smallest possible condition number over all possible diagonal
-     !> scalings.
 
      pure subroutine stdlib_zpbequ( uplo, n, kd, ab, ldab, s, scond, amax, info )
+     !! ZPBEQU computes row and column scalings intended to equilibrate a
+     !! Hermitian positive definite band matrix A and reduce its condition
+     !! number (with respect to the two-norm).  S contains the scale factors,
+     !! S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
+     !! elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
+     !! choice of S puts the condition number of B within a factor N of the
+     !! smallest possible condition number over all possible diagonal
+     !! scalings.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -16775,17 +16771,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpbequ
 
-     !> ZPBSTF: computes a split Cholesky factorization of a complex
-     !> Hermitian positive definite band matrix A.
-     !> This routine is designed to be used in conjunction with ZHBGST.
-     !> The factorization has the form  A = S**H*S  where S is a band matrix
-     !> of the same bandwidth as A and the following structure:
-     !> S = ( U    )
-     !> ( M  L )
-     !> where U is upper triangular of order m = (n+kd)/2, and L is lower
-     !> triangular of order n-m.
 
      pure subroutine stdlib_zpbstf( uplo, n, kd, ab, ldab, info )
+     !! ZPBSTF computes a split Cholesky factorization of a complex
+     !! Hermitian positive definite band matrix A.
+     !! This routine is designed to be used in conjunction with ZHBGST.
+     !! The factorization has the form  A = S**H*S  where S is a band matrix
+     !! of the same bandwidth as A and the following structure:
+     !! S = ( U    )
+     !! ( M  L )
+     !! where U is upper triangular of order m = (n+kd)/2, and L is lower
+     !! triangular of order n-m.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -16909,16 +16905,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpbstf
 
-     !> ZPBTF2: computes the Cholesky factorization of a complex Hermitian
-     !> positive definite band matrix A.
-     !> The factorization has the form
-     !> A = U**H * U ,  if UPLO = 'U', or
-     !> A = L  * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular matrix, U**H is the conjugate transpose
-     !> of U, and L is lower triangular.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_zpbtf2( uplo, n, kd, ab, ldab, info )
+     !! ZPBTF2 computes the Cholesky factorization of a complex Hermitian
+     !! positive definite band matrix A.
+     !! The factorization has the form
+     !! A = U**H * U ,  if UPLO = 'U', or
+     !! A = L  * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular matrix, U**H is the conjugate transpose
+     !! of U, and L is lower triangular.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17004,11 +17000,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpbtf2
 
-     !> ZPBTRS: solves a system of linear equations A*X = B with a Hermitian
-     !> positive definite band matrix A using the Cholesky factorization
-     !> A = U**H *U or A = L*L**H computed by ZPBTRF.
 
      pure subroutine stdlib_zpbtrs( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
+     !! ZPBTRS solves a system of linear equations A*X = B with a Hermitian
+     !! positive definite band matrix A using the Cholesky factorization
+     !! A = U**H *U or A = L*L**H computed by ZPBTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17072,13 +17068,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpbtrs
 
-     !> ZPOCON: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a complex Hermitian positive definite matrix using the
-     !> Cholesky factorization A = U**H*U or A = L*L**H computed by ZPOTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_zpocon( uplo, n, a, lda, anorm, rcond, work, rwork,info )
+     !! ZPOCON estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a complex Hermitian positive definite matrix using the
+     !! Cholesky factorization A = U**H*U or A = L*L**H computed by ZPOTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17172,16 +17168,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpocon
 
-     !> ZPOEQU: computes row and column scalings intended to equilibrate a
-     !> Hermitian positive definite matrix A and reduce its condition number
-     !> (with respect to the two-norm).  S contains the scale factors,
-     !> S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
-     !> elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
-     !> choice of S puts the condition number of B within a factor N of the
-     !> smallest possible condition number over all possible diagonal
-     !> scalings.
 
      pure subroutine stdlib_zpoequ( n, a, lda, s, scond, amax, info )
+     !! ZPOEQU computes row and column scalings intended to equilibrate a
+     !! Hermitian positive definite matrix A and reduce its condition number
+     !! (with respect to the two-norm).  S contains the scale factors,
+     !! S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
+     !! elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
+     !! choice of S puts the condition number of B within a factor N of the
+     !! smallest possible condition number over all possible diagonal
+     !! scalings.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17246,21 +17242,21 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpoequ
 
-     !> ZPOEQUB: computes row and column scalings intended to equilibrate a
-     !> Hermitian positive definite matrix A and reduce its condition number
-     !> (with respect to the two-norm).  S contains the scale factors,
-     !> S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
-     !> elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
-     !> choice of S puts the condition number of B within a factor N of the
-     !> smallest possible condition number over all possible diagonal
-     !> scalings.
-     !> This routine differs from ZPOEQU by restricting the scaling factors
-     !> to a power of the radix.  Barring over- and underflow, scaling by
-     !> these factors introduces no additional rounding errors.  However, the
-     !> scaled diagonal entries are no longer approximately 1 but lie
-     !> between sqrt(radix) and 1/sqrt(radix).
 
      pure subroutine stdlib_zpoequb( n, a, lda, s, scond, amax, info )
+     !! ZPOEQUB computes row and column scalings intended to equilibrate a
+     !! Hermitian positive definite matrix A and reduce its condition number
+     !! (with respect to the two-norm).  S contains the scale factors,
+     !! S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
+     !! elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
+     !! choice of S puts the condition number of B within a factor N of the
+     !! smallest possible condition number over all possible diagonal
+     !! scalings.
+     !! This routine differs from ZPOEQU by restricting the scaling factors
+     !! to a power of the radix.  Barring over- and underflow, scaling by
+     !! these factors introduces no additional rounding errors.  However, the
+     !! scaled diagonal entries are no longer approximately 1 but lie
+     !! between sqrt(radix) and 1/sqrt(radix).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17328,15 +17324,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpoequb
 
-     !> ZPOTF2: computes the Cholesky factorization of a complex Hermitian
-     !> positive definite matrix A.
-     !> The factorization has the form
-     !> A = U**H * U ,  if UPLO = 'U', or
-     !> A = L  * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_zpotf2( uplo, n, a, lda, info )
+     !! ZPOTF2 computes the Cholesky factorization of a complex Hermitian
+     !! positive definite matrix A.
+     !! The factorization has the form
+     !! A = U**H * U ,  if UPLO = 'U', or
+     !! A = L  * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17422,21 +17418,21 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpotf2
 
-     !> ZPOTRF2: computes the Cholesky factorization of a Hermitian
-     !> positive definite matrix A using the recursive algorithm.
-     !> The factorization has the form
-     !> A = U**H * U,  if UPLO = 'U', or
-     !> A = L  * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
-     !> This is the recursive version of the algorithm. It divides
-     !> the matrix into four submatrices:
-     !> [  A11 | A12  ]  where A11 is n1 by n1 and A22 is n2 by n2
-     !> A = [ -----|----- ]  with n1 = n/2
-     !> [  A21 | A22  ]       n2 = n-n1
-     !> The subroutine calls itself to factor A11. Update and scale A21
-     !> or A12, update A22 then call itself to factor A22.
 
      pure recursive subroutine stdlib_zpotrf2( uplo, n, a, lda, info )
+     !! ZPOTRF2 computes the Cholesky factorization of a Hermitian
+     !! positive definite matrix A using the recursive algorithm.
+     !! The factorization has the form
+     !! A = U**H * U,  if UPLO = 'U', or
+     !! A = L  * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
+     !! This is the recursive version of the algorithm. It divides
+     !! the matrix into four submatrices:
+     !! [  A11 | A12  ]  where A11 is n1 by n1 and A22 is n2 by n2
+     !! A = [ -----|----- ]  with n1 = n/2
+     !! [  A21 | A22  ]       n2 = n-n1
+     !! The subroutine calls itself to factor A11. Update and scale A21
+     !! or A12, update A22 then call itself to factor A22.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17523,11 +17519,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpotrf2
 
-     !> ZPOTRS: solves a system of linear equations A*X = B with a Hermitian
-     !> positive definite matrix A using the Cholesky factorization
-     !> A = U**H * U or A = L * L**H computed by ZPOTRF.
 
      pure subroutine stdlib_zpotrs( uplo, n, nrhs, a, lda, b, ldb, info )
+     !! ZPOTRS solves a system of linear equations A*X = B with a Hermitian
+     !! positive definite matrix A using the Cholesky factorization
+     !! A = U**H * U or A = L * L**H computed by ZPOTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17585,14 +17581,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpotrs
 
-     !> ZPPCON: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a complex Hermitian positive definite packed matrix using
-     !> the Cholesky factorization A = U**H*U or A = L*L**H computed by
-     !> ZPPTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_zppcon( uplo, n, ap, anorm, rcond, work, rwork, info )
+     !! ZPPCON estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a complex Hermitian positive definite packed matrix using
+     !! the Cholesky factorization A = U**H*U or A = L*L**H computed by
+     !! ZPPTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17684,16 +17680,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zppcon
 
-     !> ZPPEQU: computes row and column scalings intended to equilibrate a
-     !> Hermitian positive definite matrix A in packed storage and reduce
-     !> its condition number (with respect to the two-norm).  S contains the
-     !> scale factors, S(i)=1/sqrt(A(i,i)), chosen so that the scaled matrix
-     !> B with elements B(i,j)=S(i)*A(i,j)*S(j) has ones on the diagonal.
-     !> This choice of S puts the condition number of B within a factor N of
-     !> the smallest possible condition number over all possible diagonal
-     !> scalings.
 
      pure subroutine stdlib_zppequ( uplo, n, ap, s, scond, amax, info )
+     !! ZPPEQU computes row and column scalings intended to equilibrate a
+     !! Hermitian positive definite matrix A in packed storage and reduce
+     !! its condition number (with respect to the two-norm).  S contains the
+     !! scale factors, S(i)=1/sqrt(A(i,i)), chosen so that the scaled matrix
+     !! B with elements B(i,j)=S(i)*A(i,j)*S(j) has ones on the diagonal.
+     !! This choice of S puts the condition number of B within a factor N of
+     !! the smallest possible condition number over all possible diagonal
+     !! scalings.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17777,14 +17773,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zppequ
 
-     !> ZPPTRF: computes the Cholesky factorization of a complex Hermitian
-     !> positive definite matrix A stored in packed format.
-     !> The factorization has the form
-     !> A = U**H * U,  if UPLO = 'U', or
-     !> A = L  * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
 
      pure subroutine stdlib_zpptrf( uplo, n, ap, info )
+     !! ZPPTRF computes the Cholesky factorization of a complex Hermitian
+     !! positive definite matrix A stored in packed format.
+     !! The factorization has the form
+     !! A = U**H * U,  if UPLO = 'U', or
+     !! A = L  * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17863,11 +17859,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpptrf
 
-     !> ZPPTRS: solves a system of linear equations A*X = B with a Hermitian
-     !> positive definite matrix A in packed storage using the Cholesky
-     !> factorization A = U**H * U or A = L * L**H computed by ZPPTRF.
 
      pure subroutine stdlib_zpptrs( uplo, n, nrhs, ap, b, ldb, info )
+     !! ZPPTRS solves a system of linear equations A*X = B with a Hermitian
+     !! positive definite matrix A in packed storage using the Cholesky
+     !! factorization A = U**H * U or A = L * L**H computed by ZPPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17927,17 +17923,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpptrs
 
-     !> ZPSTF2: computes the Cholesky factorization with complete
-     !> pivoting of a complex Hermitian positive semidefinite matrix A.
-     !> The factorization has the form
-     !> P**T * A * P = U**H * U ,  if UPLO = 'U',
-     !> P**T * A * P = L  * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular, and
-     !> P is stored as vector PIV.
-     !> This algorithm does not attempt to check that A is positive
-     !> semidefinite. This version of the algorithm calls level 2 BLAS.
 
      pure subroutine stdlib_zpstf2( uplo, n, a, lda, piv, rank, tol, work, info )
+     !! ZPSTF2 computes the Cholesky factorization with complete
+     !! pivoting of a complex Hermitian positive semidefinite matrix A.
+     !! The factorization has the form
+     !! P**T * A * P = U**H * U ,  if UPLO = 'U',
+     !! P**T * A * P = L  * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular, and
+     !! P is stored as vector PIV.
+     !! This algorithm does not attempt to check that A is positive
+     !! semidefinite. This version of the algorithm calls level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18121,17 +18117,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpstf2
 
-     !> ZPSTRF: computes the Cholesky factorization with complete
-     !> pivoting of a complex Hermitian positive semidefinite matrix A.
-     !> The factorization has the form
-     !> P**T * A * P = U**H * U ,  if UPLO = 'U',
-     !> P**T * A * P = L  * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular, and
-     !> P is stored as vector PIV.
-     !> This algorithm does not attempt to check that A is positive
-     !> semidefinite. This version of the algorithm calls level 3 BLAS.
 
      pure subroutine stdlib_zpstrf( uplo, n, a, lda, piv, rank, tol, work, info )
+     !! ZPSTRF computes the Cholesky factorization with complete
+     !! pivoting of a complex Hermitian positive semidefinite matrix A.
+     !! The factorization has the form
+     !! P**T * A * P = U**H * U ,  if UPLO = 'U',
+     !! P**T * A * P = L  * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular, and
+     !! P is stored as vector PIV.
+     !! This algorithm does not attempt to check that A is positive
+     !! semidefinite. This version of the algorithm calls level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18347,15 +18343,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpstrf
 
-     !> ZPTCON: computes the reciprocal of the condition number (in the
-     !> 1-norm) of a complex Hermitian positive definite tridiagonal matrix
-     !> using the factorization A = L*D*L**H or A = U**H*D*U computed by
-     !> ZPTTRF.
-     !> Norm(inv(A)) is computed by a direct method, and the reciprocal of
-     !> the condition number is computed as
-     !> RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_zptcon( n, d, e, anorm, rcond, rwork, info )
+     !! ZPTCON computes the reciprocal of the condition number (in the
+     !! 1-norm) of a complex Hermitian positive definite tridiagonal matrix
+     !! using the factorization A = L*D*L**H or A = U**H*D*U computed by
+     !! ZPTTRF.
+     !! Norm(inv(A)) is computed by a direct method, and the reciprocal of
+     !! the condition number is computed as
+     !! RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18421,11 +18417,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zptcon
 
-     !> ZPTTRF: computes the L*D*L**H factorization of a complex Hermitian
-     !> positive definite tridiagonal matrix A.  The factorization may also
-     !> be regarded as having the form A = U**H *D*U.
 
      pure subroutine stdlib_zpttrf( n, d, e, info )
+     !! ZPTTRF computes the L*D*L**H factorization of a complex Hermitian
+     !! positive definite tridiagonal matrix A.  The factorization may also
+     !! be regarded as having the form A = U**H *D*U.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18520,14 +18516,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpttrf
 
-     !> ZPTTS2: solves a tridiagonal system of the form
-     !> A * X = B
-     !> using the factorization A = U**H *D*U or A = L*D*L**H computed by ZPTTRF.
-     !> D is a diagonal matrix specified in the vector D, U (or L) is a unit
-     !> bidiagonal matrix whose superdiagonal (subdiagonal) is specified in
-     !> the vector E, and X and B are N by NRHS matrices.
 
      pure subroutine stdlib_zptts2( iuplo, n, nrhs, d, e, b, ldb )
+     !! ZPTTS2 solves a tridiagonal system of the form
+     !! A * X = B
+     !! using the factorization A = U**H *D*U or A = L*D*L**H computed by ZPTTRF.
+     !! D is a diagonal matrix specified in the vector D, U (or L) is a unit
+     !! bidiagonal matrix whose superdiagonal (subdiagonal) is specified in
+     !! the vector E, and X and B are N by NRHS matrices.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18620,10 +18616,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zptts2
 
-     !> ZROT:   applies a plane rotation, where the cos (C) is real and the
-     !> sin (S) is complex, and the vectors CX and CY are complex.
 
      pure subroutine stdlib_zrot( n, cx, incx, cy, incy, c, s )
+     !! ZROT applies a plane rotation, where the cos (C) is real and the
+     !! sin (S) is complex, and the vectors CX and CY are complex.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18665,12 +18661,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zrot
 
-     !> ZSPMV:  performs the matrix-vector operation
-     !> y := alpha*A*x + beta*y,
-     !> where alpha and beta are scalars, x and y are n element vectors and
-     !> A is an n by n symmetric matrix, supplied in packed form.
 
      pure subroutine stdlib_zspmv( uplo, n, alpha, ap, x, incx, beta, y, incy )
+     !! ZSPMV performs the matrix-vector operation
+     !! y := alpha*A*x + beta*y,
+     !! where alpha and beta are scalars, x and y are n element vectors and
+     !! A is an n by n symmetric matrix, supplied in packed form.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18823,12 +18819,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zspmv
 
-     !> ZSPR:    performs the symmetric rank 1 operation
-     !> A := alpha*x*x**H + A,
-     !> where alpha is a complex scalar, x is an n element vector and A is an
-     !> n by n symmetric matrix, supplied in packed form.
 
      pure subroutine stdlib_zspr( uplo, n, alpha, x, incx, ap )
+     !! ZSPR performs the symmetric rank 1 operation
+     !! A := alpha*x*x**H + A,
+     !! where alpha is a complex scalar, x is an n element vector and A is an
+     !! n by n symmetric matrix, supplied in packed form.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18943,15 +18939,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zspr
 
-     !> ZSPTRF: computes the factorization of a complex symmetric matrix A
-     !> stored in packed format using the Bunch-Kaufman diagonal pivoting
-     !> method:
-     !> A = U*D*U**T  or  A = L*D*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is symmetric and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
 
      pure subroutine stdlib_zsptrf( uplo, n, ap, ipiv, info )
+     !! ZSPTRF computes the factorization of a complex symmetric matrix A
+     !! stored in packed format using the Bunch-Kaufman diagonal pivoting
+     !! method:
+     !! A = U*D*U**T  or  A = L*D*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is symmetric and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -19272,11 +19268,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsptrf
 
-     !> ZSPTRI: computes the inverse of a complex symmetric indefinite matrix
-     !> A in packed storage using the factorization A = U*D*U**T or
-     !> A = L*D*L**T computed by ZSPTRF.
 
      pure subroutine stdlib_zsptri( uplo, n, ap, ipiv, work, info )
+     !! ZSPTRI computes the inverse of a complex symmetric indefinite matrix
+     !! A in packed storage using the factorization A = U*D*U**T or
+     !! A = L*D*L**T computed by ZSPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -19483,11 +19479,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsptri
 
-     !> ZSPTRS: solves a system of linear equations A*X = B with a complex
-     !> symmetric matrix A stored in packed format using the factorization
-     !> A = U*D*U**T or A = L*D*L**T computed by ZSPTRF.
 
      pure subroutine stdlib_zsptrs( uplo, n, nrhs, ap, ipiv, b, ldb, info )
+     !! ZSPTRS solves a system of linear equations A*X = B with a complex
+     !! symmetric matrix A stored in packed format using the factorization
+     !! A = U*D*U**T or A = L*D*L**T computed by ZSPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -19703,17 +19699,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsptrs
 
-     !> ZSTEIN: computes the eigenvectors of a real symmetric tridiagonal
-     !> matrix T corresponding to specified eigenvalues, using inverse
-     !> iteration.
-     !> The maximum number of iterations allowed for each eigenvector is
-     !> specified by an internal parameter MAXITS (currently set to 5).
-     !> Although the eigenvectors are real, they are stored in a complex
-     !> array, which may be passed to ZUNMTR or ZUPMTR for back
-     !> transformation to the eigenvectors of a complex Hermitian matrix
-     !> which was reduced to tridiagonal form.
 
      pure subroutine stdlib_zstein( n, d, e, m, w, iblock, isplit, z, ldz, work,iwork, ifail, &
+     !! ZSTEIN computes the eigenvectors of a real symmetric tridiagonal
+     !! matrix T corresponding to specified eigenvalues, using inverse
+     !! iteration.
+     !! The maximum number of iterations allowed for each eigenvector is
+     !! specified by an internal parameter MAXITS (currently set to 5).
+     !! Although the eigenvectors are real, they are stored in a complex
+     !! array, which may be passed to ZUNMTR or ZUPMTR for back
+     !! transformation to the eigenvectors of a complex Hermitian matrix
+     !! which was reduced to tridiagonal form.
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -19913,13 +19909,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zstein
 
-     !> ZSTEQR: computes all eigenvalues and, optionally, eigenvectors of a
-     !> symmetric tridiagonal matrix using the implicit QL or QR method.
-     !> The eigenvectors of a full or band complex Hermitian matrix can also
-     !> be found if ZHETRD or ZHPTRD or ZHBTRD has been used to reduce this
-     !> matrix to tridiagonal form.
 
      pure subroutine stdlib_zsteqr( compz, n, d, e, z, ldz, work, info )
+     !! ZSTEQR computes all eigenvalues and, optionally, eigenvectors of a
+     !! symmetric tridiagonal matrix using the implicit QL or QR method.
+     !! The eigenvectors of a full or band complex Hermitian matrix can also
+     !! be found if ZHETRD or ZHPTRD or ZHBTRD has been used to reduce this
+     !! matrix to tridiagonal form.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -20233,11 +20229,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsteqr
 
-     !> ZSYCONV: converts A given by ZHETRF into L and D or vice-versa.
-     !> Get nondiagonal elements of D (returned in workspace) and
-     !> apply or reverse permutation done in TRF.
 
      pure subroutine stdlib_zsyconv( uplo, way, n, a, lda, ipiv, e, info )
+     !! ZSYCONV converts A given by ZHETRF into L and D or vice-versa.
+     !! Get nondiagonal elements of D (returned in workspace) and
+     !! apply or reverse permutation done in TRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -20438,25 +20434,25 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsyconv
 
-     !> If parameter WAY = 'C':
-     !> ZSYCONVF: converts the factorization output format used in
-     !> ZSYTRF provided on entry in parameter A into the factorization
-     !> output format used in ZSYTRF_RK (or ZSYTRF_BK) that is stored
-     !> on exit in parameters A and E. It also converts in place details of
-     !> the intechanges stored in IPIV from the format used in ZSYTRF into
-     !> the format used in ZSYTRF_RK (or ZSYTRF_BK).
-     !> If parameter WAY = 'R':
-     !> ZSYCONVF performs the conversion in reverse direction, i.e.
-     !> converts the factorization output format used in ZSYTRF_RK
-     !> (or ZSYTRF_BK) provided on entry in parameters A and E into
-     !> the factorization output format used in ZSYTRF that is stored
-     !> on exit in parameter A. It also converts in place details of
-     !> the intechanges stored in IPIV from the format used in ZSYTRF_RK
-     !> (or ZSYTRF_BK) into the format used in ZSYTRF.
-     !> ZSYCONVF can also convert in Hermitian matrix case, i.e. between
-     !> formats used in ZHETRF and ZHETRF_RK (or ZHETRF_BK).
 
      pure subroutine stdlib_zsyconvf( uplo, way, n, a, lda, e, ipiv, info )
+     !! If parameter WAY = 'C':
+     !! ZSYCONVF converts the factorization output format used in
+     !! ZSYTRF provided on entry in parameter A into the factorization
+     !! output format used in ZSYTRF_RK (or ZSYTRF_BK) that is stored
+     !! on exit in parameters A and E. It also converts in place details of
+     !! the intechanges stored in IPIV from the format used in ZSYTRF into
+     !! the format used in ZSYTRF_RK (or ZSYTRF_BK).
+     !! If parameter WAY = 'R':
+     !! ZSYCONVF performs the conversion in reverse direction, i.e.
+     !! converts the factorization output format used in ZSYTRF_RK
+     !! (or ZSYTRF_BK) provided on entry in parameters A and E into
+     !! the factorization output format used in ZSYTRF that is stored
+     !! on exit in parameter A. It also converts in place details of
+     !! the intechanges stored in IPIV from the format used in ZSYTRF_RK
+     !! (or ZSYTRF_BK) into the format used in ZSYTRF.
+     !! ZSYCONVF can also convert in Hermitian matrix case, i.e. between
+     !! formats used in ZHETRF and ZHETRF_RK (or ZHETRF_BK).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -20695,23 +20691,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsyconvf
 
-     !> If parameter WAY = 'C':
-     !> ZSYCONVF_ROOK: converts the factorization output format used in
-     !> ZSYTRF_ROOK provided on entry in parameter A into the factorization
-     !> output format used in ZSYTRF_RK (or ZSYTRF_BK) that is stored
-     !> on exit in parameters A and E. IPIV format for ZSYTRF_ROOK and
-     !> ZSYTRF_RK (or ZSYTRF_BK) is the same and is not converted.
-     !> If parameter WAY = 'R':
-     !> ZSYCONVF_ROOK performs the conversion in reverse direction, i.e.
-     !> converts the factorization output format used in ZSYTRF_RK
-     !> (or ZSYTRF_BK) provided on entry in parameters A and E into
-     !> the factorization output format used in ZSYTRF_ROOK that is stored
-     !> on exit in parameter A. IPIV format for ZSYTRF_ROOK and
-     !> ZSYTRF_RK (or ZSYTRF_BK) is the same and is not converted.
-     !> ZSYCONVF_ROOK can also convert in Hermitian matrix case, i.e. between
-     !> formats used in ZHETRF_ROOK and ZHETRF_RK (or ZHETRF_BK).
 
      pure subroutine stdlib_zsyconvf_rook( uplo, way, n, a, lda, e, ipiv, info )
+     !! If parameter WAY = 'C':
+     !! ZSYCONVF_ROOK converts the factorization output format used in
+     !! ZSYTRF_ROOK provided on entry in parameter A into the factorization
+     !! output format used in ZSYTRF_RK (or ZSYTRF_BK) that is stored
+     !! on exit in parameters A and E. IPIV format for ZSYTRF_ROOK and
+     !! ZSYTRF_RK (or ZSYTRF_BK) is the same and is not converted.
+     !! If parameter WAY = 'R':
+     !! ZSYCONVF_ROOK performs the conversion in reverse direction, i.e.
+     !! converts the factorization output format used in ZSYTRF_RK
+     !! (or ZSYTRF_BK) provided on entry in parameters A and E into
+     !! the factorization output format used in ZSYTRF_ROOK that is stored
+     !! on exit in parameter A. IPIV format for ZSYTRF_ROOK and
+     !! ZSYTRF_RK (or ZSYTRF_BK) is the same and is not converted.
+     !! ZSYCONVF_ROOK can also convert in Hermitian matrix case, i.e. between
+     !! formats used in ZHETRF_ROOK and ZHETRF_RK (or ZHETRF_BK).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -20950,15 +20946,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsyconvf_rook
 
-     !> ZSYEQUB: computes row and column scalings intended to equilibrate a
-     !> symmetric matrix A (with respect to the Euclidean norm) and reduce
-     !> its condition number. The scale factors S are computed by the BIN
-     !> algorithm (see references) so that the scaled matrix B with elements
-     !> B(i,j) = S(i)*A(i,j)*S(j) has a condition number within a factor N of
-     !> the smallest possible condition number over all possible diagonal
-     !> scalings.
 
      pure subroutine stdlib_zsyequb( uplo, n, a, lda, s, scond, amax, work, info )
+     !! ZSYEQUB computes row and column scalings intended to equilibrate a
+     !! symmetric matrix A (with respect to the Euclidean norm) and reduce
+     !! its condition number. The scale factors S are computed by the BIN
+     !! algorithm (see references) so that the scaled matrix B with elements
+     !! B(i,j) = S(i)*A(i,j)*S(j) has a condition number within a factor N of
+     !! the smallest possible condition number over all possible diagonal
+     !! scalings.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -21132,12 +21128,12 @@ module stdlib_linalg_lapack_z
            scond = max( smin, smlnum ) / min( smax, bignum )
      end subroutine stdlib_zsyequb
 
-     !> ZSYMV:  performs the matrix-vector  operation
-     !> y := alpha*A*x + beta*y,
-     !> where alpha and beta are scalars, x and y are n element vectors and
-     !> A is an n by n symmetric matrix.
 
      pure subroutine stdlib_zsymv( uplo, n, alpha, a, lda, x, incx, beta, y, incy )
+     !! ZSYMV performs the matrix-vector  operation
+     !! y := alpha*A*x + beta*y,
+     !! where alpha and beta are scalars, x and y are n element vectors and
+     !! A is an n by n symmetric matrix.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -21286,12 +21282,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsymv
 
-     !> ZSYR:   performs the symmetric rank 1 operation
-     !> A := alpha*x*x**H + A,
-     !> where alpha is a complex scalar, x is an n element vector and A is an
-     !> n by n symmetric matrix.
 
      pure subroutine stdlib_zsyr( uplo, n, alpha, x, incx, a, lda )
+     !! ZSYR performs the symmetric rank 1 operation
+     !! A := alpha*x*x**H + A,
+     !! where alpha is a complex scalar, x is an n element vector and A is an
+     !! n by n symmetric matrix.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -21390,10 +21386,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsyr
 
-     !> ZSYSWAPR: applies an elementary permutation on the rows and the columns of
-     !> a symmetric matrix.
 
      pure subroutine stdlib_zsyswapr( uplo, n, a, lda, i1, i2)
+     !! ZSYSWAPR applies an elementary permutation on the rows and the columns of
+     !! a symmetric matrix.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -21458,15 +21454,15 @@ module stdlib_linalg_lapack_z
            endif
      end subroutine stdlib_zsyswapr
 
-     !> ZSYTF2: computes the factorization of a complex symmetric matrix A
-     !> using the Bunch-Kaufman diagonal pivoting method:
-     !> A = U*D*U**T  or  A = L*D*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, U**T is the transpose of U, and D is symmetric and
-     !> block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_zsytf2( uplo, n, a, lda, ipiv, info )
+     !! ZSYTF2 computes the factorization of a complex symmetric matrix A
+     !! using the Bunch-Kaufman diagonal pivoting method:
+     !! A = U*D*U**T  or  A = L*D*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, U**T is the transpose of U, and D is symmetric and
+     !! block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -21749,17 +21745,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytf2
 
-     !> ZSYTF2_RK: computes the factorization of a complex symmetric matrix A
-     !> using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
-     !> A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**T (or L**T) is the transpose of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is symmetric and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
-     !> For more information see Further Details section.
 
      pure subroutine stdlib_zsytf2_rk( uplo, n, a, lda, e, ipiv, info )
+     !! ZSYTF2_RK computes the factorization of a complex symmetric matrix A
+     !! using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
+     !! A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**T (or L**T) is the transpose of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is symmetric and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
+     !! For more information see Further Details section.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -22206,15 +22202,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytf2_rk
 
-     !> ZSYTF2_ROOK: computes the factorization of a complex symmetric matrix A
-     !> using the bounded Bunch-Kaufman ("rook") diagonal pivoting method:
-     !> A = U*D*U**T  or  A = L*D*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, U**T is the transpose of U, and D is symmetric and
-     !> block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_zsytf2_rook( uplo, n, a, lda, ipiv, info )
+     !! ZSYTF2_ROOK computes the factorization of a complex symmetric matrix A
+     !! using the bounded Bunch-Kaufman ("rook") diagonal pivoting method:
+     !! A = U*D*U**T  or  A = L*D*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, U**T is the transpose of U, and D is symmetric and
+     !! block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -22622,16 +22618,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytf2_rook
 
-     !> ZSYTRF: computes the factorization of a complex symmetric matrix A
-     !> using the Bunch-Kaufman diagonal pivoting method.  The form of the
-     !> factorization is
-     !> A = U*D*U**T  or  A = L*D*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is symmetric and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_zsytrf( uplo, n, a, lda, ipiv, work, lwork, info )
+     !! ZSYTRF computes the factorization of a complex symmetric matrix A
+     !! using the Bunch-Kaufman diagonal pivoting method.  The form of the
+     !! factorization is
+     !! A = U*D*U**T  or  A = L*D*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is symmetric and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -22748,17 +22744,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytrf
 
-     !> ZSYTRF_RK: computes the factorization of a complex symmetric matrix A
-     !> using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
-     !> A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**T (or L**T) is the transpose of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is symmetric and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
-     !> For more information see Further Details section.
 
      pure subroutine stdlib_zsytrf_rk( uplo, n, a, lda, e, ipiv, work, lwork,info )
+     !! ZSYTRF_RK computes the factorization of a complex symmetric matrix A
+     !! using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
+     !! A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**T (or L**T) is the transpose of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is symmetric and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
+     !! For more information see Further Details section.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -22914,16 +22910,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytrf_rk
 
-     !> ZSYTRF_ROOK: computes the factorization of a complex symmetric matrix A
-     !> using the bounded Bunch-Kaufman ("rook") diagonal pivoting method.
-     !> The form of the factorization is
-     !> A = U*D*U**T  or  A = L*D*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is symmetric and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_zsytrf_rook( uplo, n, a, lda, ipiv, work, lwork, info )
+     !! ZSYTRF_ROOK computes the factorization of a complex symmetric matrix A
+     !! using the bounded Bunch-Kaufman ("rook") diagonal pivoting method.
+     !! The form of the factorization is
+     !! A = U*D*U**T  or  A = L*D*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is symmetric and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -23042,11 +23038,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytrf_rook
 
-     !> ZSYTRI: computes the inverse of a complex symmetric indefinite matrix
-     !> A using the factorization A = U*D*U**T or A = L*D*L**T computed by
-     !> ZSYTRF.
 
      pure subroutine stdlib_zsytri( uplo, n, a, lda, ipiv, work, info )
+     !! ZSYTRI computes the inverse of a complex symmetric indefinite matrix
+     !! A using the factorization A = U*D*U**T or A = L*D*L**T computed by
+     !! ZSYTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -23230,11 +23226,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytri
 
-     !> ZSYTRI_ROOK: computes the inverse of a complex symmetric
-     !> matrix A using the factorization A = U*D*U**T or A = L*D*L**T
-     !> computed by ZSYTRF_ROOK.
 
      pure subroutine stdlib_zsytri_rook( uplo, n, a, lda, ipiv, work, info )
+     !! ZSYTRI_ROOK computes the inverse of a complex symmetric
+     !! matrix A using the factorization A = U*D*U**T or A = L*D*L**T
+     !! computed by ZSYTRF_ROOK.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -23458,11 +23454,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytri_rook
 
-     !> ZSYTRS: solves a system of linear equations A*X = B with a complex
-     !> symmetric matrix A using the factorization A = U*D*U**T or
-     !> A = L*D*L**T computed by ZSYTRF.
 
      pure subroutine stdlib_zsytrs( uplo, n, nrhs, a, lda, ipiv, b, ldb, info )
+     !! ZSYTRS solves a system of linear equations A*X = B with a complex
+     !! symmetric matrix A using the factorization A = U*D*U**T or
+     !! A = L*D*L**T computed by ZSYTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -23668,11 +23664,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytrs
 
-     !> ZSYTRS2: solves a system of linear equations A*X = B with a complex
-     !> symmetric matrix A using the factorization A = U*D*U**T or
-     !> A = L*D*L**T computed by ZSYTRF and converted by ZSYCONV.
 
      pure subroutine stdlib_zsytrs2( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, info )
+     !! ZSYTRS2 solves a system of linear equations A*X = B with a complex
+     !! symmetric matrix A using the factorization A = U*D*U**T or
+     !! A = L*D*L**T computed by ZSYTRF and converted by ZSYCONV.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -23846,17 +23842,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytrs2
 
-     !> ZSYTRS_3: solves a system of linear equations A * X = B with a complex
-     !> symmetric matrix A using the factorization computed
-     !> by ZSYTRF_RK or ZSYTRF_BK:
-     !> A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**T (or L**T) is the transpose of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is symmetric and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This algorithm is using Level 3 BLAS.
 
      pure subroutine stdlib_zsytrs_3( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,info )
+     !! ZSYTRS_3 solves a system of linear equations A * X = B with a complex
+     !! symmetric matrix A using the factorization computed
+     !! by ZSYTRF_RK or ZSYTRF_BK:
+     !! A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**T (or L**T) is the transpose of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is symmetric and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This algorithm is using Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -24003,11 +23999,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytrs_3
 
-     !> ZSYTRS_AA: solves a system of linear equations A*X = B with a complex
-     !> symmetric matrix A using the factorization A = U**T*T*U or
-     !> A = L*T*L**T computed by ZSYTRF_AA.
 
      pure subroutine stdlib_zsytrs_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, lwork, info )
+     !! ZSYTRS_AA solves a system of linear equations A*X = B with a complex
+     !! symmetric matrix A using the factorization A = U**T*T*U or
+     !! A = L*T*L**T computed by ZSYTRF_AA.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -24122,11 +24118,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytrs_aa
 
-     !> ZSYTRS_ROOK: solves a system of linear equations A*X = B with
-     !> a complex symmetric matrix A using the factorization A = U*D*U**T or
-     !> A = L*D*L**T computed by ZSYTRF_ROOK.
 
      pure subroutine stdlib_zsytrs_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb,info )
+     !! ZSYTRS_ROOK solves a system of linear equations A*X = B with
+     !! a complex symmetric matrix A using the factorization A = U*D*U**T or
+     !! A = L*D*L**T computed by ZSYTRF_ROOK.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -24344,14 +24340,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsytrs_rook
 
-     !> ZTBRFS: provides error bounds and backward error estimates for the
-     !> solution to a system of linear equations with a triangular band
-     !> coefficient matrix.
-     !> The solution matrix X must be computed by ZTBTRS or some other
-     !> means before entering this routine.  ZTBRFS does not do iterative
-     !> refinement because doing so cannot improve the backward error.
 
      pure subroutine stdlib_ztbrfs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, x, ldx, ferr,&
+     !! ZTBRFS provides error bounds and backward error estimates for the
+     !! solution to a system of linear equations with a triangular band
+     !! coefficient matrix.
+     !! The solution matrix X must be computed by ZTBTRS or some other
+     !! means before entering this routine.  ZTBRFS does not do iterative
+     !! refinement because doing so cannot improve the backward error.
                 berr, work, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -24587,12 +24583,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztbrfs
 
-     !> ZTBTRS: solves a triangular system of the form
-     !> A * X = B,  A**T * X = B,  or  A**H * X = B,
-     !> where A is a triangular band matrix of order N, and B is an
-     !> N-by-NRHS matrix.  A check is made to verify that A is nonsingular.
 
      pure subroutine stdlib_ztbtrs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, info )
+     !! ZTBTRS solves a triangular system of the form
+     !! A * X = B,  A**T * X = B,  or  A**H * X = B,
+     !! where A is a triangular band matrix of order N, and B is an
+     !! N-by-NRHS matrix.  A check is made to verify that A is nonsingular.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -24660,16 +24656,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztbtrs
 
-     !> Level 3 BLAS like routine for A in RFP Format.
-     !> ZTFSM:  solves the matrix equation
-     !> op( A )*X = alpha*B  or  X*op( A ) = alpha*B
-     !> where alpha is a scalar, X and B are m by n matrices, A is a unit, or
-     !> non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
-     !> op( A ) = A   or   op( A ) = A**H.
-     !> A is in Rectangular Full Packed (RFP) Format.
-     !> The matrix X is overwritten on B.
 
      pure subroutine stdlib_ztfsm( transr, side, uplo, trans, diag, m, n, alpha, a,b, ldb )
+     !! Level 3 BLAS like routine for A in RFP Format.
+     !! ZTFSM solves the matrix equation
+     !! op( A )*X = alpha*B  or  X*op( A ) = alpha*B
+     !! where alpha is a scalar, X and B are m by n matrices, A is a unit, or
+     !! non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
+     !! op( A ) = A   or   op( A ) = A**H.
+     !! A is in Rectangular Full Packed (RFP) Format.
+     !! The matrix X is overwritten on B.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -25162,10 +25158,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztfsm
 
-     !> ZTFTTP: copies a triangular matrix A from rectangular full packed
-     !> format (TF) to standard packed format (TP).
 
      pure subroutine stdlib_ztfttp( transr, uplo, n, arf, ap, info )
+     !! ZTFTTP copies a triangular matrix A from rectangular full packed
+     !! format (TF) to standard packed format (TP).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -25421,10 +25417,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztfttp
 
-     !> ZTFTTR: copies a triangular matrix A from rectangular full packed
-     !> format (TF) to standard full format (TR).
 
      pure subroutine stdlib_ztfttr( transr, uplo, n, arf, a, lda, info )
+     !! ZTFTTR copies a triangular matrix A from rectangular full packed
+     !! format (TF) to standard full format (TR).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -25671,26 +25667,26 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztfttr
 
-     !> ZTGEVC: computes some or all of the right and/or left eigenvectors of
-     !> a pair of complex matrices (S,P), where S and P are upper triangular.
-     !> Matrix pairs of this type are produced by the generalized Schur
-     !> factorization of a complex matrix pair (A,B):
-     !> A = Q*S*Z**H,  B = Q*P*Z**H
-     !> as computed by ZGGHRD + ZHGEQZ.
-     !> The right eigenvector x and the left eigenvector y of (S,P)
-     !> corresponding to an eigenvalue w are defined by:
-     !> S*x = w*P*x,  (y**H)*S = w*(y**H)*P,
-     !> where y**H denotes the conjugate tranpose of y.
-     !> The eigenvalues are not input to this routine, but are computed
-     !> directly from the diagonal elements of S and P.
-     !> This routine returns the matrices X and/or Y of right and left
-     !> eigenvectors of (S,P), or the products Z*X and/or Q*Y,
-     !> where Z and Q are input matrices.
-     !> If Q and Z are the unitary factors from the generalized Schur
-     !> factorization of a matrix pair (A,B), then Z*X and Q*Y
-     !> are the matrices of right and left eigenvectors of (A,B).
 
      pure subroutine stdlib_ztgevc( side, howmny, select, n, s, lds, p, ldp, vl,ldvl, vr, ldvr, &
+     !! ZTGEVC computes some or all of the right and/or left eigenvectors of
+     !! a pair of complex matrices (S,P), where S and P are upper triangular.
+     !! Matrix pairs of this type are produced by the generalized Schur
+     !! factorization of a complex matrix pair (A,B):
+     !! A = Q*S*Z**H,  B = Q*P*Z**H
+     !! as computed by ZGGHRD + ZHGEQZ.
+     !! The right eigenvector x and the left eigenvector y of (S,P)
+     !! corresponding to an eigenvalue w are defined by:
+     !! S*x = w*P*x,  (y**H)*S = w*(y**H)*P,
+     !! where y**H denotes the conjugate tranpose of y.
+     !! The eigenvalues are not input to this routine, but are computed
+     !! directly from the diagonal elements of S and P.
+     !! This routine returns the matrices X and/or Y of right and left
+     !! eigenvectors of (S,P), or the products Z*X and/or Q*Y,
+     !! where Z and Q are input matrices.
+     !! If Q and Z are the unitary factors from the generalized Schur
+     !! factorization of a matrix pair (A,B), then Z*X and Q*Y
+     !! are the matrices of right and left eigenvectors of (A,B).
                mm, m, work, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -26084,17 +26080,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztgevc
 
-     !> ZTGEX2: swaps adjacent diagonal 1 by 1 blocks (A11,B11) and (A22,B22)
-     !> in an upper triangular matrix pair (A, B) by an unitary equivalence
-     !> transformation.
-     !> (A, B) must be in generalized Schur canonical form, that is, A and
-     !> B are both upper triangular.
-     !> Optionally, the matrices Q and Z of generalized Schur vectors are
-     !> updated.
-     !> Q(in) * A(in) * Z(in)**H = Q(out) * A(out) * Z(out)**H
-     !> Q(in) * B(in) * Z(in)**H = Q(out) * B(out) * Z(out)**H
 
      pure subroutine stdlib_ztgex2( wantq, wantz, n, a, lda, b, ldb, q, ldq, z,ldz, j1, info )
+     !! ZTGEX2 swaps adjacent diagonal 1 by 1 blocks (A11,B11) and (A22,B22)
+     !! in an upper triangular matrix pair (A, B) by an unitary equivalence
+     !! transformation.
+     !! (A, B) must be in generalized Schur canonical form, that is, A and
+     !! B are both upper triangular.
+     !! Optionally, the matrices Q and Z of generalized Schur vectors are
+     !! updated.
+     !! Q(in) * A(in) * Z(in)**H = Q(out) * A(out) * Z(out)**H
+     !! Q(in) * B(in) * Z(in)**H = Q(out) * B(out) * Z(out)**H
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -26226,18 +26222,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztgex2
 
-     !> ZTGEXC: reorders the generalized Schur decomposition of a complex
-     !> matrix pair (A,B), using an unitary equivalence transformation
-     !> (A, B) := Q * (A, B) * Z**H, so that the diagonal block of (A, B) with
-     !> row index IFST is moved to row ILST.
-     !> (A, B) must be in generalized Schur canonical form, that is, A and
-     !> B are both upper triangular.
-     !> Optionally, the matrices Q and Z of generalized Schur vectors are
-     !> updated.
-     !> Q(in) * A(in) * Z(in)**H = Q(out) * A(out) * Z(out)**H
-     !> Q(in) * B(in) * Z(in)**H = Q(out) * B(out) * Z(out)**H
 
      pure subroutine stdlib_ztgexc( wantq, wantz, n, a, lda, b, ldb, q, ldq, z,ldz, ifst, ilst, &
+     !! ZTGEXC reorders the generalized Schur decomposition of a complex
+     !! matrix pair (A,B), using an unitary equivalence transformation
+     !! (A, B) := Q * (A, B) * Z**H, so that the diagonal block of (A, B) with
+     !! row index IFST is moved to row ILST.
+     !! (A, B) must be in generalized Schur canonical form, that is, A and
+     !! B are both upper triangular.
+     !! Optionally, the matrices Q and Z of generalized Schur vectors are
+     !! updated.
+     !! Q(in) * A(in) * Z(in)**H = Q(out) * A(out) * Z(out)**H
+     !! Q(in) * B(in) * Z(in)**H = Q(out) * B(out) * Z(out)**H
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -26310,11 +26306,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztgexc
 
-     !> ZTPLQT2: computes a LQ a factorization of a complex "triangular-pentagonal"
-     !> matrix C, which is composed of a triangular block A and pentagonal block B,
-     !> using the compact WY representation for Q.
 
      pure subroutine stdlib_ztplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+     !! ZTPLQT2 computes a LQ a factorization of a complex "triangular-pentagonal"
+     !! matrix C, which is composed of a triangular block A and pentagonal block B,
+     !! using the compact WY representation for Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -26426,11 +26422,11 @@ module stdlib_linalg_lapack_z
            end do
      end subroutine stdlib_ztplqt2
 
-     !> ZTPQRT2: computes a QR factorization of a complex "triangular-pentagonal"
-     !> matrix C, which is composed of a triangular block A and pentagonal block B,
-     !> using the compact WY representation for Q.
 
      pure subroutine stdlib_ztpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+     !! ZTPQRT2 computes a QR factorization of a complex "triangular-pentagonal"
+     !! matrix C, which is composed of a triangular block A and pentagonal block B,
+     !! using the compact WY representation for Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -26517,11 +26513,11 @@ module stdlib_linalg_lapack_z
            end do
      end subroutine stdlib_ztpqrt2
 
-     !> ZTPRFB: applies a complex "triangular-pentagonal" block reflector H or its
-     !> conjugate transpose H**H to a complex matrix C, which is composed of two
-     !> blocks A and B, either from the left or right.
 
      pure subroutine stdlib_ztprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
+     !! ZTPRFB applies a complex "triangular-pentagonal" block reflector H or its
+     !! conjugate transpose H**H to a complex matrix C, which is composed of two
+     !! blocks A and B, either from the left or right.
                lda, b, ldb, work, ldwork )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -26937,14 +26933,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztprfb
 
-     !> ZTPRFS: provides error bounds and backward error estimates for the
-     !> solution to a system of linear equations with a triangular packed
-     !> coefficient matrix.
-     !> The solution matrix X must be computed by ZTPTRS or some other
-     !> means before entering this routine.  ZTPRFS does not do iterative
-     !> refinement because doing so cannot improve the backward error.
 
      pure subroutine stdlib_ztprfs( uplo, trans, diag, n, nrhs, ap, b, ldb, x, ldx,ferr, berr, &
+     !! ZTPRFS provides error bounds and backward error estimates for the
+     !! solution to a system of linear equations with a triangular packed
+     !! coefficient matrix.
+     !! The solution matrix X must be computed by ZTPTRS or some other
+     !! means before entering this routine.  ZTPRFS does not do iterative
+     !! refinement because doing so cannot improve the backward error.
                work, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -27188,10 +27184,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztprfs
 
-     !> ZTPTRI: computes the inverse of a complex upper or lower triangular
-     !> matrix A stored in packed format.
 
      pure subroutine stdlib_ztptri( uplo, diag, n, ap, info )
+     !! ZTPTRI computes the inverse of a complex upper or lower triangular
+     !! matrix A stored in packed format.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -27278,13 +27274,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztptri
 
-     !> ZTPTRS: solves a triangular system of the form
-     !> A * X = B,  A**T * X = B,  or  A**H * X = B,
-     !> where A is a triangular matrix of order N stored in packed format,
-     !> and B is an N-by-NRHS matrix.  A check is made to verify that A is
-     !> nonsingular.
 
      pure subroutine stdlib_ztptrs( uplo, trans, diag, n, nrhs, ap, b, ldb, info )
+     !! ZTPTRS solves a triangular system of the form
+     !! A * X = B,  A**T * X = B,  or  A**H * X = B,
+     !! where A is a triangular matrix of order N stored in packed format,
+     !! and B is an N-by-NRHS matrix.  A check is made to verify that A is
+     !! nonsingular.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -27351,10 +27347,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztptrs
 
-     !> ZTPTTF: copies a triangular matrix A from standard packed format (TP)
-     !> to rectangular full packed format (TF).
 
      pure subroutine stdlib_ztpttf( transr, uplo, n, ap, arf, info )
+     !! ZTPTTF copies a triangular matrix A from standard packed format (TP)
+     !! to rectangular full packed format (TF).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -27609,10 +27605,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztpttf
 
-     !> ZTPTTR: copies a triangular matrix A from standard packed format (TP)
-     !> to standard full format (TR).
 
      pure subroutine stdlib_ztpttr( uplo, n, ap, a, lda, info )
+     !! ZTPTTR copies a triangular matrix A from standard packed format (TP)
+     !! to standard full format (TR).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -27663,23 +27659,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztpttr
 
-     !> ZTREVC: computes some or all of the right and/or left eigenvectors of
-     !> a complex upper triangular matrix T.
-     !> Matrices of this type are produced by the Schur factorization of
-     !> a complex general matrix:  A = Q*T*Q**H, as computed by ZHSEQR.
-     !> The right eigenvector x and the left eigenvector y of T corresponding
-     !> to an eigenvalue w are defined by:
-     !> T*x = w*x,     (y**H)*T = w*(y**H)
-     !> where y**H denotes the conjugate transpose of the vector y.
-     !> The eigenvalues are not input to this routine, but are read directly
-     !> from the diagonal of T.
-     !> This routine returns the matrices X and/or Y of right and left
-     !> eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
-     !> input matrix.  If Q is the unitary factor that reduces a matrix A to
-     !> Schur form T, then Q*X and Q*Y are the matrices of right and left
-     !> eigenvectors of A.
 
      pure subroutine stdlib_ztrevc( side, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, mm, m, &
+     !! ZTREVC computes some or all of the right and/or left eigenvectors of
+     !! a complex upper triangular matrix T.
+     !! Matrices of this type are produced by the Schur factorization of
+     !! a complex general matrix:  A = Q*T*Q**H, as computed by ZHSEQR.
+     !! The right eigenvector x and the left eigenvector y of T corresponding
+     !! to an eigenvalue w are defined by:
+     !! T*x = w*x,     (y**H)*T = w*(y**H)
+     !! where y**H denotes the conjugate transpose of the vector y.
+     !! The eigenvalues are not input to this routine, but are read directly
+     !! from the diagonal of T.
+     !! This routine returns the matrices X and/or Y of right and left
+     !! eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
+     !! input matrix.  If Q is the unitary factor that reduces a matrix A to
+     !! Schur form T, then Q*X and Q*Y are the matrices of right and left
+     !! eigenvectors of A.
                work, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -27863,24 +27859,24 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrevc
 
-     !> ZTREVC3: computes some or all of the right and/or left eigenvectors of
-     !> a complex upper triangular matrix T.
-     !> Matrices of this type are produced by the Schur factorization of
-     !> a complex general matrix:  A = Q*T*Q**H, as computed by ZHSEQR.
-     !> The right eigenvector x and the left eigenvector y of T corresponding
-     !> to an eigenvalue w are defined by:
-     !> T*x = w*x,     (y**H)*T = w*(y**H)
-     !> where y**H denotes the conjugate transpose of the vector y.
-     !> The eigenvalues are not input to this routine, but are read directly
-     !> from the diagonal of T.
-     !> This routine returns the matrices X and/or Y of right and left
-     !> eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
-     !> input matrix. If Q is the unitary factor that reduces a matrix A to
-     !> Schur form T, then Q*X and Q*Y are the matrices of right and left
-     !> eigenvectors of A.
-     !> This uses a Level 3 BLAS version of the back transformation.
 
      pure subroutine stdlib_ztrevc3( side, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, mm, m, &
+     !! ZTREVC3 computes some or all of the right and/or left eigenvectors of
+     !! a complex upper triangular matrix T.
+     !! Matrices of this type are produced by the Schur factorization of
+     !! a complex general matrix:  A = Q*T*Q**H, as computed by ZHSEQR.
+     !! The right eigenvector x and the left eigenvector y of T corresponding
+     !! to an eigenvalue w are defined by:
+     !! T*x = w*x,     (y**H)*T = w*(y**H)
+     !! where y**H denotes the conjugate transpose of the vector y.
+     !! The eigenvalues are not input to this routine, but are read directly
+     !! from the diagonal of T.
+     !! This routine returns the matrices X and/or Y of right and left
+     !! eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
+     !! input matrix. If Q is the unitary factor that reduces a matrix A to
+     !! Schur form T, then Q*X and Q*Y are the matrices of right and left
+     !! eigenvectors of A.
+     !! This uses a Level 3 BLAS version of the back transformation.
                work, lwork, rwork, lrwork, info)
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -28160,14 +28156,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrevc3
 
-     !> ZTREXC: reorders the Schur factorization of a complex matrix
-     !> A = Q*T*Q**H, so that the diagonal element of T with row index IFST
-     !> is moved to row ILST.
-     !> The Schur form T is reordered by a unitary similarity transformation
-     !> Z**H*T*Z, and optionally the matrix Q of Schur vectors is updated by
-     !> postmultplying it with Z.
 
      pure subroutine stdlib_ztrexc( compq, n, t, ldt, q, ldq, ifst, ilst, info )
+     !! ZTREXC reorders the Schur factorization of a complex matrix
+     !! A = Q*T*Q**H, so that the diagonal element of T with row index IFST
+     !! is moved to row ILST.
+     !! The Schur form T is reordered by a unitary similarity transformation
+     !! Z**H*T*Z, and optionally the matrix Q of Schur vectors is updated by
+     !! postmultplying it with Z.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -28239,14 +28235,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrexc
 
-     !> ZTRRFS: provides error bounds and backward error estimates for the
-     !> solution to a system of linear equations with a triangular
-     !> coefficient matrix.
-     !> The solution matrix X must be computed by ZTRTRS or some other
-     !> means before entering this routine.  ZTRRFS does not do iterative
-     !> refinement because doing so cannot improve the backward error.
 
      pure subroutine stdlib_ztrrfs( uplo, trans, diag, n, nrhs, a, lda, b, ldb, x,ldx, ferr, berr,&
+     !! ZTRRFS provides error bounds and backward error estimates for the
+     !! solution to a system of linear equations with a triangular
+     !! coefficient matrix.
+     !! The solution matrix X must be computed by ZTRTRS or some other
+     !! means before entering this routine.  ZTRRFS does not do iterative
+     !! refinement because doing so cannot improve the backward error.
                 work, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -28480,11 +28476,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrrfs
 
-     !> ZTRSNA: estimates reciprocal condition numbers for specified
-     !> eigenvalues and/or right eigenvectors of a complex upper triangular
-     !> matrix T (or of any matrix Q*T*Q**H with Q unitary).
 
      pure subroutine stdlib_ztrsna( job, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, s, sep, mm,&
+     !! ZTRSNA estimates reciprocal condition numbers for specified
+     !! eigenvalues and/or right eigenvectors of a complex upper triangular
+     !! matrix T (or of any matrix Q*T*Q**H with Q unitary).
                 m, work, ldwork, rwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -28629,11 +28625,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrsna
 
-     !> ZTRTI2: computes the inverse of a complex upper or lower triangular
-     !> matrix.
-     !> This is the Level 2 BLAS version of the algorithm.
 
      pure subroutine stdlib_ztrti2( uplo, diag, n, a, lda, info )
+     !! ZTRTI2 computes the inverse of a complex upper or lower triangular
+     !! matrix.
+     !! This is the Level 2 BLAS version of the algorithm.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -28703,11 +28699,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrti2
 
-     !> ZTRTRI: computes the inverse of a complex upper or lower triangular
-     !> matrix A.
-     !> This is the Level 3 BLAS version of the algorithm.
 
      pure subroutine stdlib_ztrtri( uplo, diag, n, a, lda, info )
+     !! ZTRTRI computes the inverse of a complex upper or lower triangular
+     !! matrix A.
+     !! This is the Level 3 BLAS version of the algorithm.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -28790,12 +28786,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrtri
 
-     !> ZTRTRS: solves a triangular system of the form
-     !> A * X = B,  A**T * X = B,  or  A**H * X = B,
-     !> where A is a triangular matrix of order N, and B is an N-by-NRHS
-     !> matrix.  A check is made to verify that A is nonsingular.
 
      pure subroutine stdlib_ztrtrs( uplo, trans, diag, n, nrhs, a, lda, b, ldb,info )
+     !! ZTRTRS solves a triangular system of the form
+     !! A * X = B,  A**T * X = B,  or  A**H * X = B,
+     !! where A is a triangular matrix of order N, and B is an N-by-NRHS
+     !! matrix.  A check is made to verify that A is nonsingular.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -28850,10 +28846,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrtrs
 
-     !> ZTRTTF: copies a triangular matrix A from standard full format (TR)
-     !> to rectangular full packed format (TF) .
 
      pure subroutine stdlib_ztrttf( transr, uplo, n, a, lda, arf, info )
+     !! ZTRTTF copies a triangular matrix A from standard full format (TR)
+     !! to rectangular full packed format (TF) .
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -29099,10 +29095,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrttf
 
-     !> ZTRTTP: copies a triangular matrix A from full format (TR) to standard
-     !> packed format (TP).
 
      pure subroutine stdlib_ztrttp( uplo, n, a, lda, ap, info )
+     !! ZTRTTP copies a triangular matrix A from full format (TR) to standard
+     !! packed format (TP).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -29153,14 +29149,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrttp
 
-     !> ZTZRZF: reduces the M-by-N ( M<=N ) complex upper trapezoidal matrix A
-     !> to upper triangular form by means of unitary transformations.
-     !> The upper trapezoidal matrix A is factored as
-     !> A = ( R  0 ) * Z,
-     !> where Z is an N-by-N unitary matrix and R is an M-by-M upper
-     !> triangular matrix.
 
      pure subroutine stdlib_ztzrzf( m, n, a, lda, tau, work, lwork, info )
+     !! ZTZRZF reduces the M-by-N ( M<=N ) complex upper trapezoidal matrix A
+     !! to upper triangular form by means of unitary transformations.
+     !! The upper trapezoidal matrix A is factored as
+     !! A = ( R  0 ) * Z,
+     !! where Z is an N-by-N unitary matrix and R is an M-by-M upper
+     !! triangular matrix.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -29269,24 +29265,24 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztzrzf
 
-     !> ZUNBDB: simultaneously bidiagonalizes the blocks of an M-by-M
-     !> partitioned unitary matrix X:
-     !> [ B11 | B12 0  0 ]
-     !> [ X11 | X12 ]   [ P1 |    ] [  0  |  0 -I  0 ] [ Q1 |    ]**H
-     !> X = [-----------] = [---------] [----------------] [---------]   .
-     !> [ X21 | X22 ]   [    | P2 ] [ B21 | B22 0  0 ] [    | Q2 ]
-     !> [  0  |  0  0  I ]
-     !> X11 is P-by-Q. Q must be no larger than P, M-P, or M-Q. (If this is
-     !> not the case, then X must be transposed and/or permuted. This can be
-     !> done in constant time using the TRANS and SIGNS options. See ZUNCSD
-     !> for details.)
-     !> The unitary matrices P1, P2, Q1, and Q2 are P-by-P, (M-P)-by-
-     !> (M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. They are
-     !> represented implicitly by Householder vectors.
-     !> B11, B12, B21, and B22 are Q-by-Q bidiagonal matrices represented
-     !> implicitly by angles THETA, PHI.
 
      subroutine stdlib_zunbdb( trans, signs, m, p, q, x11, ldx11, x12, ldx12,x21, ldx21, x22, &
+     !! ZUNBDB simultaneously bidiagonalizes the blocks of an M-by-M
+     !! partitioned unitary matrix X:
+     !! [ B11 | B12 0  0 ]
+     !! [ X11 | X12 ]   [ P1 |    ] [  0  |  0 -I  0 ] [ Q1 |    ]**H
+     !! X = [-----------] = [---------] [----------------] [---------]   .
+     !! [ X21 | X22 ]   [    | P2 ] [ B21 | B22 0  0 ] [    | Q2 ]
+     !! [  0  |  0  0  I ]
+     !! X11 is P-by-Q. Q must be no larger than P, M-P, or M-Q. (If this is
+     !! not the case, then X must be transposed and/or permuted. This can be
+     !! done in constant time using the TRANS and SIGNS options. See ZUNCSD
+     !! for details.)
+     !! The unitary matrices P1, P2, Q1, and Q2 are P-by-P, (M-P)-by-
+     !! (M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. They are
+     !! represented implicitly by Householder vectors.
+     !! B11, B12, B21, and B22 are Q-by-Q bidiagonal matrices represented
+     !! implicitly by angles THETA, PHI.
                ldx22, theta, phi, taup1,taup2, tauq1, tauq2, work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -29592,17 +29588,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunbdb
 
-     !> ZUNBDB6: orthogonalizes the column vector
-     !> X = [ X1 ]
-     !> [ X2 ]
-     !> with respect to the columns of
-     !> Q = [ Q1 ] .
-     !> [ Q2 ]
-     !> The columns of Q must be orthonormal.
-     !> If the projection is zero according to Kahan's "twice is enough"
-     !> criterion, then the zero vector is returned.
 
      pure subroutine stdlib_zunbdb6( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
+     !! ZUNBDB6 orthogonalizes the column vector
+     !! X = [ X1 ]
+     !! [ X2 ]
+     !! with respect to the columns of
+     !! Q = [ Q1 ] .
+     !! [ Q2 ]
+     !! The columns of Q must be orthonormal.
+     !! If the projection is zero according to Kahan's "twice is enough"
+     !! criterion, then the zero vector is returned.
                lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -29720,13 +29716,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunbdb6
 
-     !> ZUNG2L: generates an m by n complex matrix Q with orthonormal columns,
-     !> which is defined as the last n columns of a product of k elementary
-     !> reflectors of order m
-     !> Q  =  H(k) . . . H(2) H(1)
-     !> as returned by ZGEQLF.
 
      pure subroutine stdlib_zung2l( m, n, k, a, lda, tau, work, info )
+     !! ZUNG2L generates an m by n complex matrix Q with orthonormal columns,
+     !! which is defined as the last n columns of a product of k elementary
+     !! reflectors of order m
+     !! Q  =  H(k) . . . H(2) H(1)
+     !! as returned by ZGEQLF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -29784,13 +29780,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zung2l
 
-     !> ZUNG2R: generates an m by n complex matrix Q with orthonormal columns,
-     !> which is defined as the first n columns of a product of k elementary
-     !> reflectors of order m
-     !> Q  =  H(1) H(2) . . . H(k)
-     !> as returned by ZGEQRF.
 
      pure subroutine stdlib_zung2r( m, n, k, a, lda, tau, work, info )
+     !! ZUNG2R generates an m by n complex matrix Q with orthonormal columns,
+     !! which is defined as the first n columns of a product of k elementary
+     !! reflectors of order m
+     !! Q  =  H(1) H(2) . . . H(k)
+     !! as returned by ZGEQRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -29849,13 +29845,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zung2r
 
-     !> ZUNGL2: generates an m-by-n complex matrix Q with orthonormal rows,
-     !> which is defined as the first m rows of a product of k elementary
-     !> reflectors of order n
-     !> Q  =  H(k)**H . . . H(2)**H H(1)**H
-     !> as returned by ZGELQF.
 
      pure subroutine stdlib_zungl2( m, n, k, a, lda, tau, work, info )
+     !! ZUNGL2 generates an m-by-n complex matrix Q with orthonormal rows,
+     !! which is defined as the first m rows of a product of k elementary
+     !! reflectors of order n
+     !! Q  =  H(k)**H . . . H(2)**H H(1)**H
+     !! as returned by ZGELQF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -29920,13 +29916,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zungl2
 
-     !> ZUNGLQ: generates an M-by-N complex matrix Q with orthonormal rows,
-     !> which is defined as the first M rows of a product of K elementary
-     !> reflectors of order N
-     !> Q  =  H(k)**H . . . H(2)**H H(1)**H
-     !> as returned by ZGELQF.
 
      pure subroutine stdlib_zunglq( m, n, k, a, lda, tau, work, lwork, info )
+     !! ZUNGLQ generates an M-by-N complex matrix Q with orthonormal rows,
+     !! which is defined as the first M rows of a product of K elementary
+     !! reflectors of order N
+     !! Q  =  H(k)**H . . . H(2)**H H(1)**H
+     !! as returned by ZGELQF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30036,13 +30032,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunglq
 
-     !> ZUNGQL: generates an M-by-N complex matrix Q with orthonormal columns,
-     !> which is defined as the last N columns of a product of K elementary
-     !> reflectors of order M
-     !> Q  =  H(k) . . . H(2) H(1)
-     !> as returned by ZGEQLF.
 
      pure subroutine stdlib_zungql( m, n, k, a, lda, tau, work, lwork, info )
+     !! ZUNGQL generates an M-by-N complex matrix Q with orthonormal columns,
+     !! which is defined as the last N columns of a product of K elementary
+     !! reflectors of order M
+     !! Q  =  H(k) . . . H(2) H(1)
+     !! as returned by ZGEQLF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30157,13 +30153,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zungql
 
-     !> ZUNGQR: generates an M-by-N complex matrix Q with orthonormal columns,
-     !> which is defined as the first N columns of a product of K elementary
-     !> reflectors of order M
-     !> Q  =  H(1) H(2) . . . H(k)
-     !> as returned by ZGEQRF.
 
      pure subroutine stdlib_zungqr( m, n, k, a, lda, tau, work, lwork, info )
+     !! ZUNGQR generates an M-by-N complex matrix Q with orthonormal columns,
+     !! which is defined as the first N columns of a product of K elementary
+     !! reflectors of order M
+     !! Q  =  H(1) H(2) . . . H(k)
+     !! as returned by ZGEQRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30273,13 +30269,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zungqr
 
-     !> ZUNGR2: generates an m by n complex matrix Q with orthonormal rows,
-     !> which is defined as the last m rows of a product of k elementary
-     !> reflectors of order n
-     !> Q  =  H(1)**H H(2)**H . . . H(k)**H
-     !> as returned by ZGERQF.
 
      pure subroutine stdlib_zungr2( m, n, k, a, lda, tau, work, info )
+     !! ZUNGR2 generates an m by n complex matrix Q with orthonormal rows,
+     !! which is defined as the last m rows of a product of k elementary
+     !! reflectors of order n
+     !! Q  =  H(1)**H H(2)**H . . . H(k)**H
+     !! as returned by ZGERQF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30341,13 +30337,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zungr2
 
-     !> ZUNGRQ: generates an M-by-N complex matrix Q with orthonormal rows,
-     !> which is defined as the last M rows of a product of K elementary
-     !> reflectors of order N
-     !> Q  =  H(1)**H H(2)**H . . . H(k)**H
-     !> as returned by ZGERQF.
 
      pure subroutine stdlib_zungrq( m, n, k, a, lda, tau, work, lwork, info )
+     !! ZUNGRQ generates an M-by-N complex matrix Q with orthonormal rows,
+     !! which is defined as the last M rows of a product of K elementary
+     !! reflectors of order N
+     !! Q  =  H(1)**H H(2)**H . . . H(k)**H
+     !! as returned by ZGERQF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30463,23 +30459,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zungrq
 
-     !> ZUNGTSQR_ROW: generates an M-by-N complex matrix Q_out with
-     !> orthonormal columns from the output of ZLATSQR. These N orthonormal
-     !> columns are the first N columns of a product of complex unitary
-     !> matrices Q(k)_in of order M, which are returned by ZLATSQR in
-     !> a special format.
-     !> Q_out = first_N_columns_of( Q(1)_in * Q(2)_in * ... * Q(k)_in ).
-     !> The input matrices Q(k)_in are stored in row and column blocks in A.
-     !> See the documentation of ZLATSQR for more details on the format of
-     !> Q(k)_in, where each Q(k)_in is represented by block Householder
-     !> transformations. This routine calls an auxiliary routine ZLARFB_GETT,
-     !> where the computation is performed on each individual block. The
-     !> algorithm first sweeps NB-sized column blocks from the right to left
-     !> starting in the bottom row block and continues to the top row block
-     !> (hence _ROW in the routine name). This sweep is in reverse order of
-     !> the order in which ZLATSQR generates the output blocks.
 
      pure subroutine stdlib_zungtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
+     !! ZUNGTSQR_ROW generates an M-by-N complex matrix Q_out with
+     !! orthonormal columns from the output of ZLATSQR. These N orthonormal
+     !! columns are the first N columns of a product of complex unitary
+     !! matrices Q(k)_in of order M, which are returned by ZLATSQR in
+     !! a special format.
+     !! Q_out = first_N_columns_of( Q(1)_in * Q(2)_in * ... * Q(k)_in ).
+     !! The input matrices Q(k)_in are stored in row and column blocks in A.
+     !! See the documentation of ZLATSQR for more details on the format of
+     !! Q(k)_in, where each Q(k)_in is represented by block Householder
+     !! transformations. This routine calls an auxiliary routine ZLARFB_GETT,
+     !! where the computation is performed on each individual block. The
+     !! algorithm first sweeps NB-sized column blocks from the right to left
+     !! starting in the bottom row block and continues to the top row block
+     !! (hence _ROW in the routine name). This sweep is in reverse order of
+     !! the order in which ZLATSQR generates the output blocks.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30788,18 +30784,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunm22
 
-     !> ZUNM2L: overwrites the general complex m-by-n matrix C with
-     !> Q * C  if SIDE = 'L' and TRANS = 'N', or
-     !> Q**H* C  if SIDE = 'L' and TRANS = 'C', or
-     !> C * Q  if SIDE = 'R' and TRANS = 'N', or
-     !> C * Q**H if SIDE = 'R' and TRANS = 'C',
-     !> where Q is a complex unitary matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(k) . . . H(2) H(1)
-     !> as returned by ZGEQLF. Q is of order m if SIDE = 'L' and of order n
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_zunm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+     !! ZUNM2L overwrites the general complex m-by-n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**H* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**H if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(k) . . . H(2) H(1)
+     !! as returned by ZGEQLF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30887,18 +30883,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunm2l
 
-     !> ZUNM2R: overwrites the general complex m-by-n matrix C with
-     !> Q * C  if SIDE = 'L' and TRANS = 'N', or
-     !> Q**H* C  if SIDE = 'L' and TRANS = 'C', or
-     !> C * Q  if SIDE = 'R' and TRANS = 'N', or
-     !> C * Q**H if SIDE = 'R' and TRANS = 'C',
-     !> where Q is a complex unitary matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1) H(2) . . . H(k)
-     !> as returned by ZGEQRF. Q is of order m if SIDE = 'L' and of order n
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_zunm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+     !! ZUNM2R overwrites the general complex m-by-n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**H* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**H if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by ZGEQRF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30990,18 +30986,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunm2r
 
-     !> ZUNML2: overwrites the general complex m-by-n matrix C with
-     !> Q * C  if SIDE = 'L' and TRANS = 'N', or
-     !> Q**H* C  if SIDE = 'L' and TRANS = 'C', or
-     !> C * Q  if SIDE = 'R' and TRANS = 'N', or
-     !> C * Q**H if SIDE = 'R' and TRANS = 'C',
-     !> where Q is a complex unitary matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(k)**H . . . H(2)**H H(1)**H
-     !> as returned by ZGELQF. Q is of order m if SIDE = 'L' and of order n
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_zunml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+     !! ZUNML2 overwrites the general complex m-by-n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**H* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**H if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(k)**H . . . H(2)**H H(1)**H
+     !! as returned by ZGELQF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -31096,17 +31092,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunml2
 
-     !> ZUNMLQ: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(k)**H . . . H(2)**H H(1)**H
-     !> as returned by ZGELQF. Q is of order M if SIDE = 'L' and of order N
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_zunmlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+     !! ZUNMLQ overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(k)**H . . . H(2)**H H(1)**H
+     !! as returned by ZGELQF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -31239,17 +31235,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunmlq
 
-     !> ZUNMQL: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(k) . . . H(2) H(1)
-     !> as returned by ZGEQLF. Q is of order M if SIDE = 'L' and of order N
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_zunmql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+     !! ZUNMQL overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(k) . . . H(2) H(1)
+     !! as returned by ZGEQLF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -31376,17 +31372,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunmql
 
-     !> ZUNMQR: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1) H(2) . . . H(k)
-     !> as returned by ZGEQRF. Q is of order M if SIDE = 'L' and of order N
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_zunmqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+     !! ZUNMQR overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by ZGEQRF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -31513,18 +31509,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunmqr
 
-     !> ZUNMR2: overwrites the general complex m-by-n matrix C with
-     !> Q * C  if SIDE = 'L' and TRANS = 'N', or
-     !> Q**H* C  if SIDE = 'L' and TRANS = 'C', or
-     !> C * Q  if SIDE = 'R' and TRANS = 'N', or
-     !> C * Q**H if SIDE = 'R' and TRANS = 'C',
-     !> where Q is a complex unitary matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1)**H H(2)**H . . . H(k)**H
-     !> as returned by ZGERQF. Q is of order m if SIDE = 'L' and of order n
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_zunmr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+     !! ZUNMR2 overwrites the general complex m-by-n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**H* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**H if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1)**H H(2)**H . . . H(k)**H
+     !! as returned by ZGERQF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -31614,18 +31610,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunmr2
 
-     !> ZUNMR3: overwrites the general complex m by n matrix C with
-     !> Q * C  if SIDE = 'L' and TRANS = 'N', or
-     !> Q**H* C  if SIDE = 'L' and TRANS = 'C', or
-     !> C * Q  if SIDE = 'R' and TRANS = 'N', or
-     !> C * Q**H if SIDE = 'R' and TRANS = 'C',
-     !> where Q is a complex unitary matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1) H(2) . . . H(k)
-     !> as returned by ZTZRZF. Q is of order m if SIDE = 'L' and of order n
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_zunmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+     !! ZUNMR3 overwrites the general complex m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**H* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**H if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by ZTZRZF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -31719,17 +31715,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunmr3
 
-     !> ZUNMRQ: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1)**H H(2)**H . . . H(k)**H
-     !> as returned by ZGERQF. Q is of order M if SIDE = 'L' and of order N
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_zunmrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+     !! ZUNMRQ overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1)**H H(2)**H . . . H(k)**H
+     !! as returned by ZGERQF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -31862,17 +31858,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunmrq
 
-     !> ZUNMRZ: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1) H(2) . . . H(k)
-     !> as returned by ZTZRZF. Q is of order M if SIDE = 'L' and of order N
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_zunmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+     !! ZUNMRZ overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by ZTZRZF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -32017,29 +32013,29 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunmrz
 
-     !> ZBBCSD: computes the CS decomposition of a unitary matrix in
-     !> bidiagonal-block form,
-     !> [ B11 | B12 0  0 ]
-     !> [  0  |  0 -I  0 ]
-     !> X = [----------------]
-     !> [ B21 | B22 0  0 ]
-     !> [  0  |  0  0  I ]
-     !> [  C | -S  0  0 ]
-     !> [ U1 |    ] [  0 |  0 -I  0 ] [ V1 |    ]**H
-     !> = [---------] [---------------] [---------]   .
-     !> [    | U2 ] [  S |  C  0  0 ] [    | V2 ]
-     !> [  0 |  0  0  I ]
-     !> X is M-by-M, its top-left block is P-by-Q, and Q must be no larger
-     !> than P, M-P, or M-Q. (If Q is not the smallest index, then X must be
-     !> transposed and/or permuted. This can be done in constant time using
-     !> the TRANS and SIGNS options. See ZUNCSD for details.)
-     !> The bidiagonal matrices B11, B12, B21, and B22 are represented
-     !> implicitly by angles THETA(1:Q) and PHI(1:Q-1).
-     !> The unitary matrices U1, U2, V1T, and V2T are input/output.
-     !> The input matrices are pre- or post-multiplied by the appropriate
-     !> singular vector matrices.
 
      pure subroutine stdlib_zbbcsd( jobu1, jobu2, jobv1t, jobv2t, trans, m, p, q,theta, phi, u1, &
+     !! ZBBCSD computes the CS decomposition of a unitary matrix in
+     !! bidiagonal-block form,
+     !! [ B11 | B12 0  0 ]
+     !! [  0  |  0 -I  0 ]
+     !! X = [----------------]
+     !! [ B21 | B22 0  0 ]
+     !! [  0  |  0  0  I ]
+     !! [  C | -S  0  0 ]
+     !! [ U1 |    ] [  0 |  0 -I  0 ] [ V1 |    ]**H
+     !! = [---------] [---------------] [---------]   .
+     !! [    | U2 ] [  S |  C  0  0 ] [    | V2 ]
+     !! [  0 |  0  0  I ]
+     !! X is M-by-M, its top-left block is P-by-Q, and Q must be no larger
+     !! than P, M-P, or M-Q. (If Q is not the smallest index, then X must be
+     !! transposed and/or permuted. This can be done in constant time using
+     !! the TRANS and SIGNS options. See ZUNCSD for details.)
+     !! The bidiagonal matrices B11, B12, B21, and B22 are represented
+     !! implicitly by angles THETA(1:Q) and PHI(1:Q-1).
+     !! The unitary matrices U1, U2, V1T, and V2T are input/output.
+     !! The input matrices are pre- or post-multiplied by the appropriate
+     !! singular vector matrices.
      ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d, b22e, rwork, &
                lrwork, info )
         ! -- lapack computational routine --
@@ -32630,32 +32626,32 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zbbcsd
 
-     !> ZBDSQR: computes the singular values and, optionally, the right and/or
-     !> left singular vectors from the singular value decomposition (SVD) of
-     !> a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
-     !> zero-shift QR algorithm.  The SVD of B has the form
-     !> B = Q * S * P**H
-     !> where S is the diagonal matrix of singular values, Q is an orthogonal
-     !> matrix of left singular vectors, and P is an orthogonal matrix of
-     !> right singular vectors.  If left singular vectors are requested, this
-     !> subroutine actually returns U*Q instead of Q, and, if right singular
-     !> vectors are requested, this subroutine returns P**H*VT instead of
-     !> P**H, for given complex input matrices U and VT.  When U and VT are
-     !> the unitary matrices that reduce a general matrix A to bidiagonal
-     !> form: A = U*B*VT, as computed by ZGEBRD, then
-     !> A = (U*Q) * S * (P**H*VT)
-     !> is the SVD of A.  Optionally, the subroutine may also compute Q**H*C
-     !> for a given complex input matrix C.
-     !> See "Computing  Small Singular Values of Bidiagonal Matrices With
-     !> Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
-     !> LAPACK Working Note #3 (or SIAM J. Sci. Statist. Comput. vol. 11,
-     !> no. 5, pp. 873-912, Sept 1990) and
-     !> "Accurate singular values and differential qd algorithms," by
-     !> B. Parlett and V. Fernando, Technical Report CPAM-554, Mathematics
-     !> Department, University of California at Berkeley, July 1992
-     !> for a detailed description of the algorithm.
 
      pure subroutine stdlib_zbdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, rwork,&
+     !! ZBDSQR computes the singular values and, optionally, the right and/or
+     !! left singular vectors from the singular value decomposition (SVD) of
+     !! a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
+     !! zero-shift QR algorithm.  The SVD of B has the form
+     !! B = Q * S * P**H
+     !! where S is the diagonal matrix of singular values, Q is an orthogonal
+     !! matrix of left singular vectors, and P is an orthogonal matrix of
+     !! right singular vectors.  If left singular vectors are requested, this
+     !! subroutine actually returns U*Q instead of Q, and, if right singular
+     !! vectors are requested, this subroutine returns P**H*VT instead of
+     !! P**H, for given complex input matrices U and VT.  When U and VT are
+     !! the unitary matrices that reduce a general matrix A to bidiagonal
+     !! form: A = U*B*VT, as computed by ZGEBRD, then
+     !! A = (U*Q) * S * (P**H*VT)
+     !! is the SVD of A.  Optionally, the subroutine may also compute Q**H*C
+     !! for a given complex input matrix C.
+     !! See "Computing  Small Singular Values of Bidiagonal Matrices With
+     !! Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
+     !! LAPACK Working Note #3 (or SIAM J. Sci. Statist. Comput. vol. 11,
+     !! no. 5, pp. 873-912, Sept 1990) and
+     !! "Accurate singular values and differential qd algorithms," by
+     !! B. Parlett and V. Fernando, Technical Report CPAM-554, Mathematics
+     !! Department, University of California at Berkeley, July 1992
+     !! for a detailed description of the algorithm.
                 info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -33093,14 +33089,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zbdsqr
 
-     !> ZGBCON: estimates the reciprocal of the condition number of a complex
-     !> general band matrix A, in either the 1-norm or the infinity-norm,
-     !> using the LU factorization computed by ZGBTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as
-     !> RCOND = 1 / ( norm(A) * norm(inv(A)) ).
 
      pure subroutine stdlib_zgbcon( norm, n, kl, ku, ab, ldab, ipiv, anorm, rcond,work, rwork, &
+     !! ZGBCON estimates the reciprocal of the condition number of a complex
+     !! general band matrix A, in either the 1-norm or the infinity-norm,
+     !! using the LU factorization computed by ZGBTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as
+     !! RCOND = 1 / ( norm(A) * norm(inv(A)) ).
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -33227,11 +33223,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgbcon
 
-     !> ZGBTRF: computes an LU factorization of a complex m-by-n band matrix A
-     !> using partial pivoting with row interchanges.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_zgbtrf( m, n, kl, ku, ab, ldab, ipiv, info )
+     !! ZGBTRF computes an LU factorization of a complex m-by-n band matrix A
+     !! using partial pivoting with row interchanges.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -33477,12 +33473,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgbtrf
 
-     !> ZGBTRS: solves a system of linear equations
-     !> A * X = B,  A**T * X = B,  or  A**H * X = B
-     !> with a general band matrix A using the LU factorization computed
-     !> by ZGBTRF.
 
      pure subroutine stdlib_zgbtrs( trans, n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb,info )
+     !! ZGBTRS solves a system of linear equations
+     !! A * X = B,  A**T * X = B,  or  A**H * X = B
+     !! with a general band matrix A using the LU factorization computed
+     !! by ZGBTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -33590,11 +33586,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgbtrs
 
-     !> ZGEBD2: reduces a complex general m by n matrix A to upper or lower
-     !> real bidiagonal form B by a unitary transformation: Q**H * A * P = B.
-     !> If m >= n, B is upper bidiagonal; if m < n, B is lower bidiagonal.
 
      pure subroutine stdlib_zgebd2( m, n, a, lda, d, e, tauq, taup, work, info )
+     !! ZGEBD2 reduces a complex general m by n matrix A to upper or lower
+     !! real bidiagonal form B by a unitary transformation: Q**H * A * P = B.
+     !! If m >= n, B is upper bidiagonal; if m < n, B is lower bidiagonal.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -33688,14 +33684,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgebd2
 
-     !> ZGECON: estimates the reciprocal of the condition number of a general
-     !> complex matrix A, in either the 1-norm or the infinity-norm, using
-     !> the LU factorization computed by ZGETRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as
-     !> RCOND = 1 / ( norm(A) * norm(inv(A)) ).
 
      pure subroutine stdlib_zgecon( norm, n, a, lda, anorm, rcond, work, rwork,info )
+     !! ZGECON estimates the reciprocal of the condition number of a general
+     !! complex matrix A, in either the 1-norm or the infinity-norm, using
+     !! the LU factorization computed by ZGETRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as
+     !! RCOND = 1 / ( norm(A) * norm(inv(A)) ).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -33794,10 +33790,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgecon
 
-     !> ZGEHD2: reduces a complex general matrix A to upper Hessenberg form H
-     !> by a unitary similarity transformation:  Q**H * A * Q = H .
 
      pure subroutine stdlib_zgehd2( n, ilo, ihi, a, lda, tau, work, info )
+     !! ZGEHD2 reduces a complex general matrix A to upper Hessenberg form H
+     !! by a unitary similarity transformation:  Q**H * A * Q = H .
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -33846,14 +33842,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgehd2
 
-     !> ZGELQ2: computes an LQ factorization of a complex m-by-n matrix A:
-     !> A = ( L 0 ) *  Q
-     !> where:
-     !> Q is a n-by-n orthogonal matrix;
-     !> L is a lower-triangular m-by-m matrix;
-     !> 0 is a m-by-(n-m) zero matrix, if m < n.
 
      pure subroutine stdlib_zgelq2( m, n, a, lda, tau, work, info )
+     !! ZGELQ2 computes an LQ factorization of a complex m-by-n matrix A:
+     !! A = ( L 0 ) *  Q
+     !! where:
+     !! Q is a n-by-n orthogonal matrix;
+     !! L is a lower-triangular m-by-m matrix;
+     !! 0 is a m-by-(n-m) zero matrix, if m < n.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -33902,14 +33898,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgelq2
 
-     !> ZGELQF: computes an LQ factorization of a complex M-by-N matrix A:
-     !> A = ( L 0 ) *  Q
-     !> where:
-     !> Q is a N-by-N orthogonal matrix;
-     !> L is a lower-triangular M-by-M matrix;
-     !> 0 is a M-by-(N-M) zero matrix, if M < N.
 
      pure subroutine stdlib_zgelqf( m, n, a, lda, tau, work, lwork, info )
+     !! ZGELQF computes an LQ factorization of a complex M-by-N matrix A:
+     !! A = ( L 0 ) *  Q
+     !! where:
+     !! Q is a N-by-N orthogonal matrix;
+     !! L is a lower-triangular M-by-M matrix;
+     !! 0 is a M-by-(N-M) zero matrix, if M < N.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -33999,12 +33995,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgelqf
 
-     !> ZGELQT3: recursively computes a LQ factorization of a complex M-by-N
-     !> matrix A, using the compact WY representation of Q.
-     !> Based on the algorithm of Elmroth and Gustavson,
-     !> IBM J. Res. Develop. Vol 44 No. 4 July 2000.
 
      pure recursive subroutine stdlib_zgelqt3( m, n, a, lda, t, ldt, info )
+     !! ZGELQT3 recursively computes a LQ factorization of a complex M-by-N
+     !! matrix A, using the compact WY representation of Q.
+     !! Based on the algorithm of Elmroth and Gustavson,
+     !! IBM J. Res. Develop. Vol 44 No. 4 July 2000.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34089,17 +34085,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgelqt3
 
-     !> ZGEMLQT: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q C            C Q
-     !> TRANS = 'C':   Q**H C            C Q**H
-     !> where Q is a complex unitary matrix defined as the product of K
-     !> elementary reflectors:
-     !> Q = H(1) H(2) . . . H(K) = I - V T V**H
-     !> generated using the compact WY representation as returned by ZGELQT.
-     !> Q is of order M if SIDE = 'L' and of order N  if SIDE = 'R'.
 
      pure subroutine stdlib_zgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
+     !! ZGEMLQT overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q C            C Q
+     !! TRANS = 'C':   Q**H C            C Q**H
+     !! where Q is a complex unitary matrix defined as the product of K
+     !! elementary reflectors:
+     !! Q = H(1) H(2) . . . H(K) = I - V T V**H
+     !! generated using the compact WY representation as returned by ZGELQT.
+     !! Q is of order M if SIDE = 'L' and of order N  if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -34187,17 +34183,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgemlqt
 
-     !> ZGEMQRT: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q C            C Q
-     !> TRANS = 'C':    Q**H C            C Q**H
-     !> where Q is a complex orthogonal matrix defined as the product of K
-     !> elementary reflectors:
-     !> Q = H(1) H(2) . . . H(K) = I - V T V**H
-     !> generated using the compact WY representation as returned by ZGEQRT.
-     !> Q is of order M if SIDE = 'L' and of order N  if SIDE = 'R'.
 
      pure subroutine stdlib_zgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
+     !! ZGEMQRT overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q C            C Q
+     !! TRANS = 'C':    Q**H C            C Q**H
+     !! where Q is a complex orthogonal matrix defined as the product of K
+     !! elementary reflectors:
+     !! Q = H(1) H(2) . . . H(K) = I - V T V**H
+     !! generated using the compact WY representation as returned by ZGEQRT.
+     !! Q is of order M if SIDE = 'L' and of order N  if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -34285,10 +34281,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgemqrt
 
-     !> ZGEQL2: computes a QL factorization of a complex m by n matrix A:
-     !> A = Q * L.
 
      pure subroutine stdlib_zgeql2( m, n, a, lda, tau, work, info )
+     !! ZGEQL2 computes a QL factorization of a complex m by n matrix A:
+     !! A = Q * L.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34334,10 +34330,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeql2
 
-     !> ZGEQLF: computes a QL factorization of a complex M-by-N matrix A:
-     !> A = Q * L.
 
      pure subroutine stdlib_zgeqlf( m, n, a, lda, tau, work, lwork, info )
+     !! ZGEQLF computes a QL factorization of a complex M-by-N matrix A:
+     !! A = Q * L.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34440,15 +34436,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeqlf
 
-     !> ZGEQR2: computes a QR factorization of a complex m-by-n matrix A:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a m-by-m orthogonal matrix;
-     !> R is an upper-triangular n-by-n matrix;
-     !> 0 is a (m-n)-by-n zero matrix, if m > n.
 
      pure subroutine stdlib_zgeqr2( m, n, a, lda, tau, work, info )
+     !! ZGEQR2 computes a QR factorization of a complex m-by-n matrix A:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a m-by-m orthogonal matrix;
+     !! R is an upper-triangular n-by-n matrix;
+     !! 0 is a (m-n)-by-n zero matrix, if m > n.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34495,16 +34491,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeqr2
 
-     !> ZGEQR2P: computes a QR factorization of a complex m-by-n matrix A:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a m-by-m orthogonal matrix;
-     !> R is an upper-triangular n-by-n matrix with nonnegative diagonal
-     !> entries;
-     !> 0 is a (m-n)-by-n zero matrix, if m > n.
 
      subroutine stdlib_zgeqr2p( m, n, a, lda, tau, work, info )
+     !! ZGEQR2P computes a QR factorization of a complex m-by-n matrix A:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a m-by-m orthogonal matrix;
+     !! R is an upper-triangular n-by-n matrix with nonnegative diagonal
+     !! entries;
+     !! 0 is a (m-n)-by-n zero matrix, if m > n.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34551,15 +34547,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeqr2p
 
-     !> ZGEQRF: computes a QR factorization of a complex M-by-N matrix A:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a M-by-M orthogonal matrix;
-     !> R is an upper-triangular N-by-N matrix;
-     !> 0 is a (M-N)-by-N zero matrix, if M > N.
 
      pure subroutine stdlib_zgeqrf( m, n, a, lda, tau, work, lwork, info )
+     !! ZGEQRF computes a QR factorization of a complex M-by-N matrix A:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a M-by-M orthogonal matrix;
+     !! R is an upper-triangular N-by-N matrix;
+     !! 0 is a (M-N)-by-N zero matrix, if M > N.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34653,16 +34649,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeqrf
 
-     !> ZGEQR2P computes a QR factorization of a complex M-by-N matrix A:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a M-by-M orthogonal matrix;
-     !> R is an upper-triangular N-by-N matrix with nonnegative diagonal
-     !> entries;
-     !> 0 is a (M-N)-by-N zero matrix, if M > N.
 
      subroutine stdlib_zgeqrfp( m, n, a, lda, tau, work, lwork, info )
+     !! ZGEQR2P computes a QR factorization of a complex M-by-N matrix A:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a M-by-M orthogonal matrix;
+     !! R is an upper-triangular N-by-N matrix with nonnegative diagonal
+     !! entries;
+     !! 0 is a (M-N)-by-N zero matrix, if M > N.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34752,10 +34748,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeqrfp
 
-     !> ZGEQRT2: computes a QR factorization of a complex M-by-N matrix A,
-     !> using the compact WY representation of Q.
 
      pure subroutine stdlib_zgeqrt2( m, n, a, lda, t, ldt, info )
+     !! ZGEQRT2 computes a QR factorization of a complex M-by-N matrix A,
+     !! using the compact WY representation of Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34820,12 +34816,12 @@ module stdlib_linalg_lapack_z
            end do
      end subroutine stdlib_zgeqrt2
 
-     !> ZGEQRT3: recursively computes a QR factorization of a complex M-by-N
-     !> matrix A, using the compact WY representation of Q.
-     !> Based on the algorithm of Elmroth and Gustavson,
-     !> IBM J. Res. Develop. Vol 44 No. 4 July 2000.
 
      pure recursive subroutine stdlib_zgeqrt3( m, n, a, lda, t, ldt, info )
+     !! ZGEQRT3 recursively computes a QR factorization of a complex M-by-N
+     !! matrix A, using the compact WY representation of Q.
+     !! Based on the algorithm of Elmroth and Gustavson,
+     !! IBM J. Res. Develop. Vol 44 No. 4 July 2000.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34908,10 +34904,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeqrt3
 
-     !> ZGERQ2: computes an RQ factorization of a complex m by n matrix A:
-     !> A = R * Q.
 
      pure subroutine stdlib_zgerq2( m, n, a, lda, tau, work, info )
+     !! ZGERQ2 computes an RQ factorization of a complex m by n matrix A:
+     !! A = R * Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34959,10 +34955,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgerq2
 
-     !> ZGERQF: computes an RQ factorization of a complex M-by-N matrix A:
-     !> A = R * Q.
 
      pure subroutine stdlib_zgerqf( m, n, a, lda, tau, work, lwork, info )
+     !! ZGERQF computes an RQ factorization of a complex M-by-N matrix A:
+     !! A = R * Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -35065,12 +35061,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgerqf
 
-     !> ZGESC2: solves a system of linear equations
-     !> A * X = scale* RHS
-     !> with a general N-by-N matrix A using the LU factorization with
-     !> complete pivoting computed by ZGETC2.
 
      pure subroutine stdlib_zgesc2( n, a, lda, rhs, ipiv, jpiv, scale )
+     !! ZGESC2 solves a system of linear equations
+     !! A * X = scale* RHS
+     !! with a general N-by-N matrix A using the LU factorization with
+     !! complete pivoting computed by ZGETC2.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -35124,27 +35120,27 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgesc2
 
-     !> ZGETRF2: computes an LU factorization of a general M-by-N matrix A
-     !> using partial pivoting with row interchanges.
-     !> The factorization has the form
-     !> A = P * L * U
-     !> where P is a permutation matrix, L is lower triangular with unit
-     !> diagonal elements (lower trapezoidal if m > n), and U is upper
-     !> triangular (upper trapezoidal if m < n).
-     !> This is the recursive version of the algorithm. It divides
-     !> the matrix into four submatrices:
-     !> [  A11 | A12  ]  where A11 is n1 by n1 and A22 is n2 by n2
-     !> A = [ -----|----- ]  with n1 = min(m,n)/2
-     !> [  A21 | A22  ]       n2 = n-n1
-     !> [ A11 ]
-     !> The subroutine calls itself to factor [ --- ],
-     !> [ A12 ]
-     !> [ A12 ]
-     !> do the swaps on [ --- ], solve A12, update A22,
-     !> [ A22 ]
-     !> then calls itself to factor A22 and do the swaps on A21.
 
      pure recursive subroutine stdlib_zgetrf2( m, n, a, lda, ipiv, info )
+     !! ZGETRF2 computes an LU factorization of a general M-by-N matrix A
+     !! using partial pivoting with row interchanges.
+     !! The factorization has the form
+     !! A = P * L * U
+     !! where P is a permutation matrix, L is lower triangular with unit
+     !! diagonal elements (lower trapezoidal if m > n), and U is upper
+     !! triangular (upper trapezoidal if m < n).
+     !! This is the recursive version of the algorithm. It divides
+     !! the matrix into four submatrices:
+     !! [  A11 | A12  ]  where A11 is n1 by n1 and A22 is n2 by n2
+     !! A = [ -----|----- ]  with n1 = min(m,n)/2
+     !! [  A21 | A22  ]       n2 = n-n1
+     !! [ A11 ]
+     !! The subroutine calls itself to factor [ --- ],
+     !! [ A12 ]
+     !! [ A12 ]
+     !! do the swaps on [ --- ], solve A12, update A22,
+     !! [ A22 ]
+     !! then calls itself to factor A22 and do the swaps on A21.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -35240,12 +35236,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgetrf2
 
-     !> ZGETRI: computes the inverse of a matrix using the LU factorization
-     !> computed by ZGETRF.
-     !> This method inverts U and then computes inv(A) by solving the system
-     !> inv(A)*L = inv(U) for inv(A).
 
      pure subroutine stdlib_zgetri( n, a, lda, ipiv, work, lwork, info )
+     !! ZGETRI computes the inverse of a matrix using the LU factorization
+     !! computed by ZGETRF.
+     !! This method inverts U and then computes inv(A) by solving the system
+     !! inv(A)*L = inv(U) for inv(A).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -35342,12 +35338,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgetri
 
-     !> ZGETRS: solves a system of linear equations
-     !> A * X = B,  A**T * X = B,  or  A**H * X = B
-     !> with a general N-by-N matrix A using the LU factorization computed
-     !> by ZGETRF.
 
      pure subroutine stdlib_zgetrs( trans, n, nrhs, a, lda, ipiv, b, ldb, info )
+     !! ZGETRS solves a system of linear equations
+     !! A * X = B,  A**T * X = B,  or  A**H * X = B
+     !! with a general N-by-N matrix A using the LU factorization computed
+     !! by ZGETRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -35411,31 +35407,31 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgetrs
 
-     !> ZGGHRD: reduces a pair of complex matrices (A,B) to generalized upper
-     !> Hessenberg form using unitary transformations, where A is a
-     !> general matrix and B is upper triangular.  The form of the
-     !> generalized eigenvalue problem is
-     !> A*x = lambda*B*x,
-     !> and B is typically made upper triangular by computing its QR
-     !> factorization and moving the unitary matrix Q to the left side
-     !> of the equation.
-     !> This subroutine simultaneously reduces A to a Hessenberg matrix H:
-     !> Q**H*A*Z = H
-     !> and transforms B to another upper triangular matrix T:
-     !> Q**H*B*Z = T
-     !> in order to reduce the problem to its standard form
-     !> H*y = lambda*T*y
-     !> where y = Z**H*x.
-     !> The unitary matrices Q and Z are determined as products of Givens
-     !> rotations.  They may either be formed explicitly, or they may be
-     !> postmultiplied into input matrices Q1 and Z1, so that
-     !> Q1 * A * Z1**H = (Q1*Q) * H * (Z1*Z)**H
-     !> Q1 * B * Z1**H = (Q1*Q) * T * (Z1*Z)**H
-     !> If Q1 is the unitary matrix from the QR factorization of B in the
-     !> original equation A*x = lambda*B*x, then ZGGHRD reduces the original
-     !> problem to generalized Hessenberg form.
 
      pure subroutine stdlib_zgghrd( compq, compz, n, ilo, ihi, a, lda, b, ldb, q,ldq, z, ldz, &
+     !! ZGGHRD reduces a pair of complex matrices (A,B) to generalized upper
+     !! Hessenberg form using unitary transformations, where A is a
+     !! general matrix and B is upper triangular.  The form of the
+     !! generalized eigenvalue problem is
+     !! A*x = lambda*B*x,
+     !! and B is typically made upper triangular by computing its QR
+     !! factorization and moving the unitary matrix Q to the left side
+     !! of the equation.
+     !! This subroutine simultaneously reduces A to a Hessenberg matrix H:
+     !! Q**H*A*Z = H
+     !! and transforms B to another upper triangular matrix T:
+     !! Q**H*B*Z = T
+     !! in order to reduce the problem to its standard form
+     !! H*y = lambda*T*y
+     !! where y = Z**H*x.
+     !! The unitary matrices Q and Z are determined as products of Givens
+     !! rotations.  They may either be formed explicitly, or they may be
+     !! postmultiplied into input matrices Q1 and Z1, so that
+     !! Q1 * A * Z1**H = (Q1*Q) * H * (Z1*Z)**H
+     !! Q1 * B * Z1**H = (Q1*Q) * T * (Z1*Z)**H
+     !! If Q1 is the unitary matrix from the QR factorization of B in the
+     !! original equation A*x = lambda*B*x, then ZGGHRD reduces the original
+     !! problem to generalized Hessenberg form.
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -35543,26 +35539,26 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgghrd
 
-     !> ZGGQRF: computes a generalized QR factorization of an N-by-M matrix A
-     !> and an N-by-P matrix B:
-     !> A = Q*R,        B = Q*T*Z,
-     !> where Q is an N-by-N unitary matrix, Z is a P-by-P unitary matrix,
-     !> and R and T assume one of the forms:
-     !> if N >= M,  R = ( R11 ) M  ,   or if N < M,  R = ( R11  R12 ) N,
-     !> (  0  ) N-M                         N   M-N
-     !> M
-     !> where R11 is upper triangular, and
-     !> if N <= P,  T = ( 0  T12 ) N,   or if N > P,  T = ( T11 ) N-P,
-     !> P-N  N                           ( T21 ) P
-     !> P
-     !> where T12 or T21 is upper triangular.
-     !> In particular, if B is square and nonsingular, the GQR factorization
-     !> of A and B implicitly gives the QR factorization of inv(B)*A:
-     !> inv(B)*A = Z**H * (inv(T)*R)
-     !> where inv(B) denotes the inverse of the matrix B, and Z**H denotes the
-     !> conjugate transpose of matrix Z.
 
      pure subroutine stdlib_zggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
+     !! ZGGQRF computes a generalized QR factorization of an N-by-M matrix A
+     !! and an N-by-P matrix B:
+     !! A = Q*R,        B = Q*T*Z,
+     !! where Q is an N-by-N unitary matrix, Z is a P-by-P unitary matrix,
+     !! and R and T assume one of the forms:
+     !! if N >= M,  R = ( R11 ) M  ,   or if N < M,  R = ( R11  R12 ) N,
+     !! (  0  ) N-M                         N   M-N
+     !! M
+     !! where R11 is upper triangular, and
+     !! if N <= P,  T = ( 0  T12 ) N,   or if N > P,  T = ( T11 ) N-P,
+     !! P-N  N                           ( T21 ) P
+     !! P
+     !! where T12 or T21 is upper triangular.
+     !! In particular, if B is square and nonsingular, the GQR factorization
+     !! of A and B implicitly gives the QR factorization of inv(B)*A:
+     !! inv(B)*A = Z**H * (inv(T)*R)
+     !! where inv(B) denotes the inverse of the matrix B, and Z**H denotes the
+     !! conjugate transpose of matrix Z.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -35621,26 +35617,26 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zggqrf
 
-     !> ZGGRQF: computes a generalized RQ factorization of an M-by-N matrix A
-     !> and a P-by-N matrix B:
-     !> A = R*Q,        B = Z*T*Q,
-     !> where Q is an N-by-N unitary matrix, Z is a P-by-P unitary
-     !> matrix, and R and T assume one of the forms:
-     !> if M <= N,  R = ( 0  R12 ) M,   or if M > N,  R = ( R11 ) M-N,
-     !> N-M  M                           ( R21 ) N
-     !> N
-     !> where R12 or R21 is upper triangular, and
-     !> if P >= N,  T = ( T11 ) N  ,   or if P < N,  T = ( T11  T12 ) P,
-     !> (  0  ) P-N                         P   N-P
-     !> N
-     !> where T11 is upper triangular.
-     !> In particular, if B is square and nonsingular, the GRQ factorization
-     !> of A and B implicitly gives the RQ factorization of A*inv(B):
-     !> A*inv(B) = (R*inv(T))*Z**H
-     !> where inv(B) denotes the inverse of the matrix B, and Z**H denotes the
-     !> conjugate transpose of the matrix Z.
 
      pure subroutine stdlib_zggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
+     !! ZGGRQF computes a generalized RQ factorization of an M-by-N matrix A
+     !! and a P-by-N matrix B:
+     !! A = R*Q,        B = Z*T*Q,
+     !! where Q is an N-by-N unitary matrix, Z is a P-by-P unitary
+     !! matrix, and R and T assume one of the forms:
+     !! if M <= N,  R = ( 0  R12 ) M,   or if M > N,  R = ( R11 ) M-N,
+     !! N-M  M                           ( R21 ) N
+     !! N
+     !! where R12 or R21 is upper triangular, and
+     !! if P >= N,  T = ( T11 ) N  ,   or if P < N,  T = ( T11  T12 ) P,
+     !! (  0  ) P-N                         P   N-P
+     !! N
+     !! where T11 is upper triangular.
+     !! In particular, if B is square and nonsingular, the GRQ factorization
+     !! of A and B implicitly gives the RQ factorization of A*inv(B):
+     !! A*inv(B) = (R*inv(T))*Z**H
+     !! where inv(B) denotes the inverse of the matrix B, and Z**H denotes the
+     !! conjugate transpose of the matrix Z.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -35699,12 +35695,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zggrqf
 
-     !> ZGTTRS: solves one of the systems of equations
-     !> A * X = B,  A**T * X = B,  or  A**H * X = B,
-     !> with a tridiagonal matrix A using the LU factorization computed
-     !> by ZGTTRF.
 
      pure subroutine stdlib_zgttrs( trans, n, nrhs, dl, d, du, du2, ipiv, b, ldb,info )
+     !! ZGTTRS solves one of the systems of equations
+     !! A * X = B,  A**T * X = B,  or  A**H * X = B,
+     !! with a tridiagonal matrix A using the LU factorization computed
+     !! by ZGTTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -35765,10 +35761,10 @@ module stdlib_linalg_lapack_z
            end if
      end subroutine stdlib_zgttrs
 
-     !> ZHB2ST_KERNELS: is an internal routine used by the ZHETRD_HB2ST
-     !> subroutine.
 
      pure subroutine  stdlib_zhb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
+     !! ZHB2ST_KERNELS is an internal routine used by the ZHETRD_HB2ST
+     !! subroutine.
                v, tau, ldvt, work)
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -35910,15 +35906,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhb2st_kernels
 
-     !> ZHEEQUB: computes row and column scalings intended to equilibrate a
-     !> Hermitian matrix A (with respect to the Euclidean norm) and reduce
-     !> its condition number. The scale factors S are computed by the BIN
-     !> algorithm (see references) so that the scaled matrix B with elements
-     !> B(i,j) = S(i)*A(i,j)*S(j) has a condition number within a factor N of
-     !> the smallest possible condition number over all possible diagonal
-     !> scalings.
 
      pure subroutine stdlib_zheequb( uplo, n, a, lda, s, scond, amax, work, info )
+     !! ZHEEQUB computes row and column scalings intended to equilibrate a
+     !! Hermitian matrix A (with respect to the Euclidean norm) and reduce
+     !! its condition number. The scale factors S are computed by the BIN
+     !! algorithm (see references) so that the scaled matrix B with elements
+     !! B(i,j) = S(i)*A(i,j)*S(j) has a condition number within a factor N of
+     !! the smallest possible condition number over all possible diagonal
+     !! scalings.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -36092,15 +36088,15 @@ module stdlib_linalg_lapack_z
            scond = max( smin, smlnum ) / min( smax, bignum )
      end subroutine stdlib_zheequb
 
-     !> ZHEGS2: reduces a complex Hermitian-definite generalized
-     !> eigenproblem to standard form.
-     !> If ITYPE = 1, the problem is A*x = lambda*B*x,
-     !> and A is overwritten by inv(U**H)*A*inv(U) or inv(L)*A*inv(L**H)
-     !> If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
-     !> B*A*x = lambda*x, and A is overwritten by U*A*U**H or L**H *A*L.
-     !> B must have been previously factorized as U**H *U or L*L**H by ZPOTRF.
 
      pure subroutine stdlib_zhegs2( itype, uplo, n, a, lda, b, ldb, info )
+     !! ZHEGS2 reduces a complex Hermitian-definite generalized
+     !! eigenproblem to standard form.
+     !! If ITYPE = 1, the problem is A*x = lambda*B*x,
+     !! and A is overwritten by inv(U**H)*A*inv(U) or inv(L)*A*inv(L**H)
+     !! If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
+     !! B*A*x = lambda*x, and A is overwritten by U*A*U**H or L**H *A*L.
+     !! B must have been previously factorized as U**H *U or L*L**H by ZPOTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -36225,15 +36221,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhegs2
 
-     !> ZHEGST: reduces a complex Hermitian-definite generalized
-     !> eigenproblem to standard form.
-     !> If ITYPE = 1, the problem is A*x = lambda*B*x,
-     !> and A is overwritten by inv(U**H)*A*inv(U) or inv(L)*A*inv(L**H)
-     !> If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
-     !> B*A*x = lambda*x, and A is overwritten by U*A*U**H or L**H*A*L.
-     !> B must have been previously factorized as U**H*U or L*L**H by ZPOTRF.
 
      pure subroutine stdlib_zhegst( itype, uplo, n, a, lda, b, ldb, info )
+     !! ZHEGST reduces a complex Hermitian-definite generalized
+     !! eigenproblem to standard form.
+     !! If ITYPE = 1, the problem is A*x = lambda*B*x,
+     !! and A is overwritten by inv(U**H)*A*inv(U) or inv(L)*A*inv(L**H)
+     !! If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
+     !! B*A*x = lambda*x, and A is overwritten by U*A*U**H or L**H*A*L.
+     !! B must have been previously factorized as U**H*U or L*L**H by ZPOTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -36364,11 +36360,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhegst
 
-     !> ZHETD2: reduces a complex Hermitian matrix A to real symmetric
-     !> tridiagonal form T by a unitary similarity transformation:
-     !> Q**H * A * Q = T.
 
      pure subroutine stdlib_zhetd2( uplo, n, a, lda, d, e, tau, info )
+     !! ZHETD2 reduces a complex Hermitian matrix A to real symmetric
+     !! tridiagonal form T by a unitary similarity transformation:
+     !! Q**H * A * Q = T.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -36468,11 +36464,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetd2
 
-     !> ZHETRD: reduces a complex Hermitian matrix A to real symmetric
-     !> tridiagonal form T by a unitary similarity transformation:
-     !> Q**H * A * Q = T.
 
      pure subroutine stdlib_zhetrd( uplo, n, a, lda, d, e, tau, work, lwork, info )
+     !! ZHETRD reduces a complex Hermitian matrix A to real symmetric
+     !! tridiagonal form T by a unitary similarity transformation:
+     !! Q**H * A * Q = T.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -36596,11 +36592,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrd
 
-     !> ZHETRD_HB2ST: reduces a complex Hermitian band matrix A to real symmetric
-     !> tridiagonal form T by a unitary similarity transformation:
-     !> Q**H * A * Q = T.
 
      pure subroutine stdlib_zhetrd_hb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
+     !! ZHETRD_HB2ST reduces a complex Hermitian band matrix A to real symmetric
+     !! tridiagonal form T by a unitary similarity transformation:
+     !! Q**H * A * Q = T.
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -36869,11 +36865,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrd_hb2st
 
-     !> ZHETRD_HE2HB: reduces a complex Hermitian matrix A to complex Hermitian
-     !> band-diagonal form AB by a unitary similarity transformation:
-     !> Q**H * A * Q = AB.
 
      pure subroutine stdlib_zhetrd_he2hb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info )
+     !! ZHETRD_HE2HB reduces a complex Hermitian matrix A to complex Hermitian
+     !! band-diagonal form AB by a unitary similarity transformation:
+     !! Q**H * A * Q = AB.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -37045,16 +37041,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrd_he2hb
 
-     !> ZHETRF: computes the factorization of a complex Hermitian matrix A
-     !> using the Bunch-Kaufman diagonal pivoting method.  The form of the
-     !> factorization is
-     !> A = U*D*U**H  or  A = L*D*L**H
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is Hermitian and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_zhetrf( uplo, n, a, lda, ipiv, work, lwork, info )
+     !! ZHETRF computes the factorization of a complex Hermitian matrix A
+     !! using the Bunch-Kaufman diagonal pivoting method.  The form of the
+     !! factorization is
+     !! A = U*D*U**H  or  A = L*D*L**H
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is Hermitian and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37171,17 +37167,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrf
 
-     !> ZHETRF_RK: computes the factorization of a complex Hermitian matrix A
-     !> using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
-     !> A = P*U*D*(U**H)*(P**T) or A = P*L*D*(L**H)*(P**T),
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**H (or L**H) is the conjugate of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is Hermitian and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
-     !> For more information see Further Details section.
 
      pure subroutine stdlib_zhetrf_rk( uplo, n, a, lda, e, ipiv, work, lwork,info )
+     !! ZHETRF_RK computes the factorization of a complex Hermitian matrix A
+     !! using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
+     !! A = P*U*D*(U**H)*(P**T) or A = P*L*D*(L**H)*(P**T),
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**H (or L**H) is the conjugate of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is Hermitian and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
+     !! For more information see Further Details section.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37337,16 +37333,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrf_rk
 
-     !> ZHETRF_ROOK: computes the factorization of a complex Hermitian matrix A
-     !> using the bounded Bunch-Kaufman ("rook") diagonal pivoting method.
-     !> The form of the factorization is
-     !> A = U*D*U**T  or  A = L*D*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is Hermitian and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_zhetrf_rook( uplo, n, a, lda, ipiv, work, lwork, info )
+     !! ZHETRF_ROOK computes the factorization of a complex Hermitian matrix A
+     !! using the bounded Bunch-Kaufman ("rook") diagonal pivoting method.
+     !! The form of the factorization is
+     !! A = U*D*U**T  or  A = L*D*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is Hermitian and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37465,11 +37461,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrf_rook
 
-     !> ZHETRS: solves a system of linear equations A*X = B with a complex
-     !> Hermitian matrix A using the factorization A = U*D*U**H or
-     !> A = L*D*L**H computed by ZHETRF.
 
      pure subroutine stdlib_zhetrs( uplo, n, nrhs, a, lda, ipiv, b, ldb, info )
+     !! ZHETRS solves a system of linear equations A*X = B with a complex
+     !! Hermitian matrix A using the factorization A = U*D*U**H or
+     !! A = L*D*L**H computed by ZHETRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37696,11 +37692,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrs
 
-     !> ZHETRS2: solves a system of linear equations A*X = B with a complex
-     !> Hermitian matrix A using the factorization A = U*D*U**H or
-     !> A = L*D*L**H computed by ZHETRF and converted by ZSYCONV.
 
      pure subroutine stdlib_zhetrs2( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, info )
+     !! ZHETRS2 solves a system of linear equations A*X = B with a complex
+     !! Hermitian matrix A using the factorization A = U*D*U**H or
+     !! A = L*D*L**H computed by ZHETRF and converted by ZSYCONV.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37877,11 +37873,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrs2
 
-     !> ZHETRS_AA: solves a system of linear equations A*X = B with a complex
-     !> hermitian matrix A using the factorization A = U**H*T*U or
-     !> A = L*T*L**H computed by ZHETRF_AA.
 
      pure subroutine stdlib_zhetrs_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, lwork, info )
+     !! ZHETRS_AA solves a system of linear equations A*X = B with a complex
+     !! hermitian matrix A using the factorization A = U**H*T*U or
+     !! A = L*T*L**H computed by ZHETRF_AA.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -37998,11 +37994,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrs_aa
 
-     !> ZHETRS_ROOK: solves a system of linear equations A*X = B with a complex
-     !> Hermitian matrix A using the factorization A = U*D*U**H or
-     !> A = L*D*L**H computed by ZHETRF_ROOK.
 
      pure subroutine stdlib_zhetrs_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb,info )
+     !! ZHETRS_ROOK solves a system of linear equations A*X = B with a complex
+     !! Hermitian matrix A using the factorization A = U*D*U**H or
+     !! A = L*D*L**H computed by ZHETRF_ROOK.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -38237,11 +38233,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrs_rook
 
-     !> ZHPTRD: reduces a complex Hermitian matrix A stored in packed form to
-     !> real symmetric tridiagonal form T by a unitary similarity
-     !> transformation: Q**H * A * Q = T.
 
      pure subroutine stdlib_zhptrd( uplo, n, ap, d, e, tau, info )
+     !! ZHPTRD reduces a complex Hermitian matrix A stored in packed form to
+     !! real symmetric tridiagonal form T by a unitary similarity
+     !! transformation: Q**H * A * Q = T.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -38341,11 +38337,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhptrd
 
-     !> ZHPTRS: solves a system of linear equations A*X = B with a complex
-     !> Hermitian matrix A stored in packed format using the factorization
-     !> A = U*D*U**H or A = L*D*L**H computed by ZHPTRF.
 
      pure subroutine stdlib_zhptrs( uplo, n, nrhs, ap, ipiv, b, ldb, info )
+     !! ZHPTRS solves a system of linear equations A*X = B with a complex
+     !! Hermitian matrix A stored in packed format using the factorization
+     !! A = U*D*U**H or A = L*D*L**H computed by ZHPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -38582,10 +38578,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhptrs
 
-     !> ZLA_GBRCOND_C: Computes the infinity norm condition number of
-     !> op(A) * inv(diag(C)) where C is a DOUBLE PRECISION vector.
 
      real(dp) function stdlib_zla_gbrcond_c( trans, n, kl, ku, ab,ldab, afb, ldafb, ipiv,c, &
+     !! ZLA_GBRCOND_C Computes the infinity norm condition number of
+     !! op(A) * inv(diag(C)) where C is a DOUBLE PRECISION vector.
                capply, info, work,rwork )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -38730,10 +38726,10 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zla_gbrcond_c
 
-     !> ZLA_GERCOND_C: computes the infinity norm condition number of
-     !> op(A) * inv(diag(C)) where C is a DOUBLE PRECISION vector.
 
      real(dp) function stdlib_zla_gercond_c( trans, n, a, lda, af,ldaf, ipiv, c, capply,info, &
+     !! ZLA_GERCOND_C computes the infinity norm condition number of
+     !! op(A) * inv(diag(C)) where C is a DOUBLE PRECISION vector.
                work, rwork )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -38871,10 +38867,10 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zla_gercond_c
 
-     !> ZLA_HERCOND_C: computes the infinity norm condition number of
-     !> op(A) * inv(diag(C)) where C is a DOUBLE PRECISION vector.
 
      real(dp) function stdlib_zla_hercond_c( uplo, n, a, lda, af,ldaf, ipiv, c, capply,info, work,&
+     !! ZLA_HERCOND_C computes the infinity norm condition number of
+     !! op(A) * inv(diag(C)) where C is a DOUBLE PRECISION vector.
                 rwork )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -39021,14 +39017,14 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zla_hercond_c
 
-     !> ZLA_HERPVGRW: computes the reciprocal pivot growth factor
-     !> norm(A)/norm(U). The "max absolute element" norm is used. If this is
-     !> much less than 1, the stability of the LU factorization of the
-     !> (equilibrated) matrix A could be poor. This also means that the
-     !> solution X, estimated condition numbers, and error bounds could be
-     !> unreliable.
 
      real(dp) function stdlib_zla_herpvgrw( uplo, n, info, a, lda, af,ldaf, ipiv, work )
+     !! ZLA_HERPVGRW computes the reciprocal pivot growth factor
+     !! norm(A)/norm(U). The "max absolute element" norm is used. If this is
+     !! much less than 1, the stability of the LU factorization of the
+     !! (equilibrated) matrix A could be poor. This also means that the
+     !! solution X, estimated condition numbers, and error bounds could be
+     !! unreliable.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -39210,10 +39206,10 @@ module stdlib_linalg_lapack_z
            stdlib_zla_herpvgrw = rpvgrw
      end function stdlib_zla_herpvgrw
 
-     !> ZLA_PORCOND_C: Computes the infinity norm condition number of
-     !> op(A) * inv(diag(C)) where C is a DOUBLE PRECISION vector
 
      real(dp) function stdlib_zla_porcond_c( uplo, n, a, lda, af,ldaf, c, capply, info,work, &
+     !! ZLA_PORCOND_C Computes the infinity norm condition number of
+     !! op(A) * inv(diag(C)) where C is a DOUBLE PRECISION vector
                rwork )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -39360,10 +39356,10 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zla_porcond_c
 
-     !> ZLA_SYRCOND_C: Computes the infinity norm condition number of
-     !> op(A) * inv(diag(C)) where C is a DOUBLE PRECISION vector.
 
      real(dp) function stdlib_zla_syrcond_c( uplo, n, a, lda, af,ldaf, ipiv, c, capply,info, work,&
+     !! ZLA_SYRCOND_C Computes the infinity norm condition number of
+     !! op(A) * inv(diag(C)) where C is a DOUBLE PRECISION vector.
                 rwork )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -39511,14 +39507,14 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zla_syrcond_c
 
-     !> ZLA_SYRPVGRW: computes the reciprocal pivot growth factor
-     !> norm(A)/norm(U). The "max absolute element" norm is used. If this is
-     !> much less than 1, the stability of the LU factorization of the
-     !> (equilibrated) matrix A could be poor. This also means that the
-     !> solution X, estimated condition numbers, and error bounds could be
-     !> unreliable.
 
      real(dp) function stdlib_zla_syrpvgrw( uplo, n, info, a, lda, af,ldaf, ipiv, work )
+     !! ZLA_SYRPVGRW computes the reciprocal pivot growth factor
+     !! norm(A)/norm(U). The "max absolute element" norm is used. If this is
+     !! much less than 1, the stability of the LU factorization of the
+     !! (equilibrated) matrix A could be poor. This also means that the
+     !! solution X, estimated condition numbers, and error bounds could be
+     !! unreliable.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -39700,15 +39696,15 @@ module stdlib_linalg_lapack_z
            stdlib_zla_syrpvgrw = rpvgrw
      end function stdlib_zla_syrpvgrw
 
-     !> ZLABRD: reduces the first NB rows and columns of a complex general
-     !> m by n matrix A to upper or lower real bidiagonal form by a unitary
-     !> transformation Q**H * A * P, and returns the matrices X and Y which
-     !> are needed to apply the transformation to the unreduced part of A.
-     !> If m >= n, A is reduced to upper bidiagonal form; if m < n, to lower
-     !> bidiagonal form.
-     !> This is an auxiliary routine called by ZGEBRD
 
      pure subroutine stdlib_zlabrd( m, n, nb, a, lda, d, e, tauq, taup, x, ldx, y,ldy )
+     !! ZLABRD reduces the first NB rows and columns of a complex general
+     !! m by n matrix A to upper or lower real bidiagonal form by a unitary
+     !! transformation Q**H * A * P, and returns the matrices X and Y which
+     !! are needed to apply the transformation to the unreduced part of A.
+     !! If m >= n, A is reduced to upper bidiagonal form; if m < n, to lower
+     !! bidiagonal form.
+     !! This is an auxiliary routine called by ZGEBRD
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -39850,32 +39846,32 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlabrd
 
-     !> ZLAED7: computes the updated eigensystem of a diagonal
-     !> matrix after modification by a rank-one symmetric matrix. This
-     !> routine is used only for the eigenproblem which requires all
-     !> eigenvalues and optionally eigenvectors of a dense or banded
-     !> Hermitian matrix that has been reduced to tridiagonal form.
-     !> T = Q(in) ( D(in) + RHO * Z*Z**H ) Q**H(in) = Q(out) * D(out) * Q**H(out)
-     !> where Z = Q**Hu, u is a vector of length N with ones in the
-     !> CUTPNT and CUTPNT + 1 th elements and zeros elsewhere.
-     !> The eigenvectors of the original matrix are stored in Q, and the
-     !> eigenvalues are in D.  The algorithm consists of three stages:
-     !> The first stage consists of deflating the size of the problem
-     !> when there are multiple eigenvalues or if there is a zero in
-     !> the Z vector.  For each such occurrence the dimension of the
-     !> secular equation problem is reduced by one.  This stage is
-     !> performed by the routine DLAED2.
-     !> The second stage consists of calculating the updated
-     !> eigenvalues. This is done by finding the roots of the secular
-     !> equation via the routine DLAED4 (as called by SLAED3).
-     !> This routine also calculates the eigenvectors of the current
-     !> problem.
-     !> The final stage consists of computing the updated eigenvectors
-     !> directly using the updated eigenvalues.  The eigenvectors for
-     !> the current problem are multiplied with the eigenvectors from
-     !> the overall problem.
 
      pure subroutine stdlib_zlaed7( n, cutpnt, qsiz, tlvls, curlvl, curpbm, d, q,ldq, rho, indxq, &
+     !! ZLAED7 computes the updated eigensystem of a diagonal
+     !! matrix after modification by a rank-one symmetric matrix. This
+     !! routine is used only for the eigenproblem which requires all
+     !! eigenvalues and optionally eigenvectors of a dense or banded
+     !! Hermitian matrix that has been reduced to tridiagonal form.
+     !! T = Q(in) ( D(in) + RHO * Z*Z**H ) Q**H(in) = Q(out) * D(out) * Q**H(out)
+     !! where Z = Q**Hu, u is a vector of length N with ones in the
+     !! CUTPNT and CUTPNT + 1 th elements and zeros elsewhere.
+     !! The eigenvectors of the original matrix are stored in Q, and the
+     !! eigenvalues are in D.  The algorithm consists of three stages:
+     !! The first stage consists of deflating the size of the problem
+     !! when there are multiple eigenvalues or if there is a zero in
+     !! the Z vector.  For each such occurrence the dimension of the
+     !! secular equation problem is reduced by one.  This stage is
+     !! performed by the routine DLAED2.
+     !! The second stage consists of calculating the updated
+     !! eigenvalues. This is done by finding the roots of the secular
+     !! equation via the routine DLAED4 (as called by SLAED3).
+     !! This routine also calculates the eigenvectors of the current
+     !! problem.
+     !! The final stage consists of computing the updated eigenvectors
+     !! directly using the updated eigenvalues.  The eigenvectors for
+     !! the current problem are multiplied with the eigenvectors from
+     !! the overall problem.
                qstore, qptr, prmptr, perm,givptr, givcol, givnum, work, rwork, iwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -39977,11 +39973,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaed7
 
-     !> ZLAEIN: uses inverse iteration to find a right or left eigenvector
-     !> corresponding to the eigenvalue W of a complex upper Hessenberg
-     !> matrix H.
 
      pure subroutine stdlib_zlaein( rightv, noinit, n, h, ldh, w, v, b, ldb, rwork,eps3, smlnum, &
+     !! ZLAEIN uses inverse iteration to find a right or left eigenvector
+     !! corresponding to the eigenvalue W of a complex upper Hessenberg
+     !! matrix H.
                info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -40121,32 +40117,32 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaein
 
-     !> ZLAGS2: computes 2-by-2 unitary matrices U, V and Q, such
-     !> that if ( UPPER ) then
-     !> U**H *A*Q = U**H *( A1 A2 )*Q = ( x  0  )
-     !> ( 0  A3 )     ( x  x  )
-     !> and
-     !> V**H*B*Q = V**H *( B1 B2 )*Q = ( x  0  )
-     !> ( 0  B3 )     ( x  x  )
-     !> or if ( .NOT.UPPER ) then
-     !> U**H *A*Q = U**H *( A1 0  )*Q = ( x  x  )
-     !> ( A2 A3 )     ( 0  x  )
-     !> and
-     !> V**H *B*Q = V**H *( B1 0  )*Q = ( x  x  )
-     !> ( B2 B3 )     ( 0  x  )
-     !> where
-     !> U = (   CSU    SNU ), V = (  CSV    SNV ),
-     !> ( -SNU**H  CSU )      ( -SNV**H CSV )
-     !> Q = (   CSQ    SNQ )
-     !> ( -SNQ**H  CSQ )
-     !> The rows of the transformed A and B are parallel. Moreover, if the
-     !> input 2-by-2 matrix A is not zero, then the transformed (1,1) entry
-     !> of A is not zero. If the input matrices A and B are both not zero,
-     !> then the transformed (2,2) element of B is not zero, except when the
-     !> first rows of input A and B are parallel and the second rows are
-     !> zero.
 
      pure subroutine stdlib_zlags2( upper, a1, a2, a3, b1, b2, b3, csu, snu, csv,snv, csq, snq )
+     !! ZLAGS2 computes 2-by-2 unitary matrices U, V and Q, such
+     !! that if ( UPPER ) then
+     !! U**H *A*Q = U**H *( A1 A2 )*Q = ( x  0  )
+     !! ( 0  A3 )     ( x  x  )
+     !! and
+     !! V**H*B*Q = V**H *( B1 B2 )*Q = ( x  0  )
+     !! ( 0  B3 )     ( x  x  )
+     !! or if ( .NOT.UPPER ) then
+     !! U**H *A*Q = U**H *( A1 0  )*Q = ( x  x  )
+     !! ( A2 A3 )     ( 0  x  )
+     !! and
+     !! V**H *B*Q = V**H *( B1 0  )*Q = ( x  x  )
+     !! ( B2 B3 )     ( 0  x  )
+     !! where
+     !! U = (   CSU    SNU ), V = (  CSV    SNV ),
+     !! ( -SNU**H  CSU )      ( -SNV**H CSV )
+     !! Q = (   CSQ    SNQ )
+     !! ( -SNQ**H  CSQ )
+     !! The rows of the transformed A and B are parallel. Moreover, if the
+     !! input 2-by-2 matrix A is not zero, then the transformed (1,1) entry
+     !! of A is not zero. If the input matrices A and B are both not zero,
+     !! then the transformed (2,2) element of B is not zero, except when the
+     !! first rows of input A and B are parallel and the second rows are
+     !! zero.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -40308,12 +40304,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlags2
 
-     !> ZLAHQR: is an auxiliary routine called by CHSEQR to update the
-     !> eigenvalues and Schur decomposition already computed by CHSEQR, by
-     !> dealing with the Hessenberg submatrix in rows and columns ILO to
-     !> IHI.
 
      pure subroutine stdlib_zlahqr( wantt, wantz, n, ilo, ihi, h, ldh, w, iloz,ihiz, z, ldz, info &
+     !! ZLAHQR is an auxiliary routine called by CHSEQR to update the
+     !! eigenvalues and Schur decomposition already computed by CHSEQR, by
+     !! dealing with the Hessenberg submatrix in rows and columns ILO to
+     !! IHI.
                )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -40594,14 +40590,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlahqr
 
-     !> ZLAHR2: reduces the first NB columns of A complex general n-BY-(n-k+1)
-     !> matrix A so that elements below the k-th subdiagonal are zero. The
-     !> reduction is performed by an unitary similarity transformation
-     !> Q**H * A * Q. The routine returns the matrices V and T which determine
-     !> Q as a block reflector I - V*T*V**H, and also the matrix Y = A * V * T.
-     !> This is an auxiliary routine called by ZGEHRD.
 
      pure subroutine stdlib_zlahr2( n, k, nb, a, lda, tau, t, ldt, y, ldy )
+     !! ZLAHR2 reduces the first NB columns of A complex general n-BY-(n-k+1)
+     !! matrix A so that elements below the k-th subdiagonal are zero. The
+     !! reduction is performed by an unitary similarity transformation
+     !! Q**H * A * Q. The routine returns the matrices V and T which determine
+     !! Q as a block reflector I - V*T*V**H, and also the matrix Y = A * V * T.
+     !! This is an auxiliary routine called by ZGEHRD.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -40684,28 +40680,28 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlahr2
 
-     !> ZLALS0: applies back the multiplying factors of either the left or the
-     !> right singular vector matrix of a diagonal matrix appended by a row
-     !> to the right hand side matrix B in solving the least squares problem
-     !> using the divide-and-conquer SVD approach.
-     !> For the left singular vector matrix, three types of orthogonal
-     !> matrices are involved:
-     !> (1L) Givens rotations: the number of such rotations is GIVPTR; the
-     !> pairs of columns/rows they were applied to are stored in GIVCOL;
-     !> and the C- and S-values of these rotations are stored in GIVNUM.
-     !> (2L) Permutation. The (NL+1)-st row of B is to be moved to the first
-     !> row, and for J=2:N, PERM(J)-th row of B is to be moved to the
-     !> J-th row.
-     !> (3L) The left singular vector matrix of the remaining matrix.
-     !> For the right singular vector matrix, four types of orthogonal
-     !> matrices are involved:
-     !> (1R) The right singular vector matrix of the remaining matrix.
-     !> (2R) If SQRE = 1, one extra Givens rotation to generate the right
-     !> null space.
-     !> (3R) The inverse transformation of (2L).
-     !> (4R) The inverse transformation of (1L).
 
      pure subroutine stdlib_zlals0( icompq, nl, nr, sqre, nrhs, b, ldb, bx, ldbx,perm, givptr, &
+     !! ZLALS0 applies back the multiplying factors of either the left or the
+     !! right singular vector matrix of a diagonal matrix appended by a row
+     !! to the right hand side matrix B in solving the least squares problem
+     !! using the divide-and-conquer SVD approach.
+     !! For the left singular vector matrix, three types of orthogonal
+     !! matrices are involved:
+     !! (1L) Givens rotations: the number of such rotations is GIVPTR; the
+     !! pairs of columns/rows they were applied to are stored in GIVCOL;
+     !! and the C- and S-values of these rotations are stored in GIVNUM.
+     !! (2L) Permutation. The (NL+1)-st row of B is to be moved to the first
+     !! row, and for J=2:N, PERM(J)-th row of B is to be moved to the
+     !! J-th row.
+     !! (3L) The left singular vector matrix of the remaining matrix.
+     !! For the right singular vector matrix, four types of orthogonal
+     !! matrices are involved:
+     !! (1R) The right singular vector matrix of the remaining matrix.
+     !! (2R) If SQRE = 1, one extra Givens rotation to generate the right
+     !! null space.
+     !! (3R) The inverse transformation of (2L).
+     !! (4R) The inverse transformation of (1L).
                givcol, ldgcol, givnum, ldgnum,poles, difl, difr, z, k, c, s, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -40929,17 +40925,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlals0
 
-     !> ZLALSA: is an itermediate step in solving the least squares problem
-     !> by computing the SVD of the coefficient matrix in compact form (The
-     !> singular vectors are computed as products of simple orthorgonal
-     !> matrices.).
-     !> If ICOMPQ = 0, ZLALSA applies the inverse of the left singular vector
-     !> matrix of an upper bidiagonal matrix to the right hand side; and if
-     !> ICOMPQ = 1, ZLALSA applies the right singular vector matrix to the
-     !> right hand side. The singular vector matrices were generated in
-     !> compact form by ZLALSA.
 
      pure subroutine stdlib_zlalsa( icompq, smlsiz, n, nrhs, b, ldb, bx, ldbx, u,ldu, vt, k, difl,&
+     !! ZLALSA is an itermediate step in solving the least squares problem
+     !! by computing the SVD of the coefficient matrix in compact form (The
+     !! singular vectors are computed as products of simple orthorgonal
+     !! matrices.).
+     !! If ICOMPQ = 0, ZLALSA applies the inverse of the left singular vector
+     !! matrix of an upper bidiagonal matrix to the right hand side; and if
+     !! ICOMPQ = 1, ZLALSA applies the right singular vector matrix to the
+     !! right hand side. The singular vector matrices were generated in
+     !! compact form by ZLALSA.
                 difr, z, poles, givptr,givcol, ldgcol, perm, givnum, c, s, rwork,iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -41232,22 +41228,22 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlalsa
 
-     !> ZLALSD: uses the singular value decomposition of A to solve the least
-     !> squares problem of finding X to minimize the Euclidean norm of each
-     !> column of A*X-B, where A is N-by-N upper bidiagonal, and X and B
-     !> are N-by-NRHS. The solution X overwrites B.
-     !> The singular values of A smaller than RCOND times the largest
-     !> singular value are treated as zero in solving the least squares
-     !> problem; in this case a minimum norm solution is returned.
-     !> The actual singular values are returned in D in ascending order.
-     !> This code makes very mild assumptions about floating point
-     !> arithmetic. It will work on machines with a guard digit in
-     !> add/subtract, or on those binary machines without guard digits
-     !> which subtract like the Cray XMP, Cray YMP, Cray C 90, or Cray 2.
-     !> It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      pure subroutine stdlib_zlalsd( uplo, smlsiz, n, nrhs, d, e, b, ldb, rcond,rank, work, rwork, &
+     !! ZLALSD uses the singular value decomposition of A to solve the least
+     !! squares problem of finding X to minimize the Euclidean norm of each
+     !! column of A*X-B, where A is N-by-N upper bidiagonal, and X and B
+     !! are N-by-NRHS. The solution X overwrites B.
+     !! The singular values of A smaller than RCOND times the largest
+     !! singular value are treated as zero in solving the least squares
+     !! problem; in this case a minimum norm solution is returned.
+     !! The actual singular values are returned in D in ascending order.
+     !! This code makes very mild assumptions about floating point
+     !! arithmetic. It will work on machines with a guard digit in
+     !! add/subtract, or on those binary machines without guard digits
+     !! which subtract like the Cray XMP, Cray YMP, Cray C 90, or Cray 2.
+     !! It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -41643,11 +41639,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlalsd
 
-     !> ZLANGB:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the element of  largest absolute value  of an
-     !> n by n band matrix  A,  with kl sub-diagonals and ku super-diagonals.
 
      real(dp) function stdlib_zlangb( norm, n, kl, ku, ab, ldab,work )
+     !! ZLANGB returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the element of  largest absolute value  of an
+     !! n by n band matrix  A,  with kl sub-diagonals and ku super-diagonals.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -41718,11 +41714,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlangb
 
-     !> ZLANGE:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> complex matrix A.
 
      real(dp) function stdlib_zlange( norm, m, n, a, lda, work )
+     !! ZLANGE returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! complex matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -41790,11 +41786,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlange
 
-     !> ZLANGT:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> complex tridiagonal matrix A.
 
      pure real(dp) function stdlib_zlangt( norm, n, dl, d, du )
+     !! ZLANGT returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! complex tridiagonal matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -41866,11 +41862,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlangt
 
-     !> ZLANHB:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the element of  largest absolute value  of an
-     !> n by n hermitian band matrix A,  with k super-diagonals.
 
      real(dp) function stdlib_zlanhb( norm, uplo, n, k, ab, ldab,work )
+     !! ZLANHB returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the element of  largest absolute value  of an
+     !! n by n hermitian band matrix A,  with k super-diagonals.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -41985,11 +41981,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlanhb
 
-     !> ZLANHE:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> complex hermitian matrix A.
 
      real(dp) function stdlib_zlanhe( norm, uplo, n, a, lda, work )
+     !! ZLANHE returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! complex hermitian matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -42095,11 +42091,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlanhe
 
-     !> ZLANHF:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> complex Hermitian matrix A in RFP format.
 
      real(dp) function stdlib_zlanhf( norm, transr, uplo, n, a, work )
+     !! ZLANHF returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! complex Hermitian matrix A in RFP format.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43315,11 +43311,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlanhf
 
-     !> ZLANHP:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> complex hermitian matrix A,  supplied in packed form.
 
      real(dp) function stdlib_zlanhp( norm, uplo, n, ap, work )
+     !! ZLANHP returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! complex hermitian matrix A,  supplied in packed form.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43443,11 +43439,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlanhp
 
-     !> ZLANHS:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> Hessenberg matrix A.
 
      real(dp) function stdlib_zlanhs( norm, n, a, lda, work )
+     !! ZLANHS returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! Hessenberg matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43515,11 +43511,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlanhs
 
-     !> ZLANHT:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> complex Hermitian tridiagonal matrix A.
 
      pure real(dp) function stdlib_zlanht( norm, n, d, e )
+     !! ZLANHT returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! complex Hermitian tridiagonal matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43578,11 +43574,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlanht
 
-     !> ZLANSB:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the element of  largest absolute value  of an
-     !> n by n symmetric band matrix A,  with k super-diagonals.
 
      real(dp) function stdlib_zlansb( norm, uplo, n, k, ab, ldab,work )
+     !! ZLANSB returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the element of  largest absolute value  of an
+     !! n by n symmetric band matrix A,  with k super-diagonals.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43683,11 +43679,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlansb
 
-     !> ZLANSP:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> complex symmetric matrix A,  supplied in packed form.
 
      real(dp) function stdlib_zlansp( norm, uplo, n, ap, work )
+     !! ZLANSP returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! complex symmetric matrix A,  supplied in packed form.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43816,11 +43812,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlansp
 
-     !> ZLANSY:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> complex symmetric matrix A.
 
      real(dp) function stdlib_zlansy( norm, uplo, n, a, lda, work )
+     !! ZLANSY returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! complex symmetric matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43912,11 +43908,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlansy
 
-     !> ZLANTB:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the element of  largest absolute value  of an
-     !> n by n triangular band matrix A,  with ( k + 1 ) diagonals.
 
      real(dp) function stdlib_zlantb( norm, uplo, diag, n, k, ab,ldab, work )
+     !! ZLANTB returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the element of  largest absolute value  of an
+     !! n by n triangular band matrix A,  with ( k + 1 ) diagonals.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44105,11 +44101,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlantb
 
-     !> ZLANTP:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> triangular matrix A, supplied in packed form.
 
      real(dp) function stdlib_zlantp( norm, uplo, diag, n, ap, work )
+     !! ZLANTP returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! triangular matrix A, supplied in packed form.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44311,11 +44307,11 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlantp
 
-     !> ZLANTR:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> trapezoidal or triangular matrix A.
 
      real(dp) function stdlib_zlantr( norm, uplo, diag, m, n, a, lda,work )
+     !! ZLANTR returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! trapezoidal or triangular matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44497,14 +44493,14 @@ module stdlib_linalg_lapack_z
            return
      end function stdlib_zlantr
 
-     !> Given two column vectors X and Y, let
-     !> A = ( X Y ).
-     !> The subroutine first computes the QR factorization of A = Q*R,
-     !> and then computes the SVD of the 2-by-2 upper triangular matrix R.
-     !> The smaller singular value of R is returned in SSMIN, which is used
-     !> as the measurement of the linear dependency of the vectors X and Y.
 
      pure subroutine stdlib_zlapll( n, x, incx, y, incy, ssmin )
+     !! Given two column vectors X and Y, let
+     !! A = ( X Y ).
+     !! The subroutine first computes the QR factorization of A = Q*R,
+     !! and then computes the SVD of the 2-by-2 upper triangular matrix R.
+     !! The smaller singular value of R is returned in SSMIN, which is used
+     !! as the measurement of the linear dependency of the vectors X and Y.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44541,11 +44537,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlapll
 
-     !> ZLAQP2: computes a QR factorization with column pivoting of
-     !> the block A(OFFSET+1:M,1:N).
-     !> The block A(1:OFFSET,1:N) is accordingly pivoted, but not factorized.
 
      pure subroutine stdlib_zlaqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
+     !! ZLAQP2 computes a QR factorization with column pivoting of
+     !! the block A(OFFSET+1:M,1:N).
+     !! The block A(1:OFFSET,1:N) is accordingly pivoted, but not factorized.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44621,16 +44617,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaqp2
 
-     !> ZLAQPS: computes a step of QR factorization with column pivoting
-     !> of a complex M-by-N matrix A by using Blas-3.  It tries to factorize
-     !> NB columns from A starting from the row OFFSET+1, and updates all
-     !> of the matrix with Blas-3 xGEMM.
-     !> In some cases, due to catastrophic cancellations, it cannot
-     !> factorize NB columns.  Hence, the actual number of factorized
-     !> columns is returned in KB.
-     !> Block A(1:OFFSET,1:N) is accordingly pivoted, but not factorized.
 
      pure subroutine stdlib_zlaqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
+     !! ZLAQPS computes a step of QR factorization with column pivoting
+     !! of a complex M-by-N matrix A by using Blas-3.  It tries to factorize
+     !! NB columns from A starting from the row OFFSET+1, and updates all
+     !! of the matrix with Blas-3 xGEMM.
+     !! In some cases, due to catastrophic cancellations, it cannot
+     !! factorize NB columns.  Hence, the actual number of factorized
+     !! columns is returned in KB.
+     !! Block A(1:OFFSET,1:N) is accordingly pivoted, but not factorized.
                ldf )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -44764,10 +44760,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaqps
 
-     !> ZLAQR5:, called by ZLAQR0, performs a
-     !> single small-bulge multi-shift QR sweep.
 
      pure subroutine stdlib_zlaqr5( wantt, wantz, kacc22, n, ktop, kbot, nshfts, s,h, ldh, iloz, &
+     !! ZLAQR5 , called by ZLAQR0, performs a
+     !! single small-bulge multi-shift QR sweep.
                ihiz, z, ldz, v, ldv, u, ldu, nv,wv, ldwv, nh, wh, ldwh )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -45162,9 +45158,9 @@ module stdlib_linalg_lapack_z
            end do loop_180
      end subroutine stdlib_zlaqr5
 
-     !> ZLAQZ1: chases a 1x1 shift bulge in a matrix pencil down a single position
 
      pure subroutine stdlib_zlaqz1( ilq, ilz, k, istartm, istopm, ihi, a, lda, b,ldb, nq, qstart, &
+     !! ZLAQZ1 chases a 1x1 shift bulge in a matrix pencil down a single position
                q, ldq, nz, zstart, z, ldz )
            ! arguments
            logical(lk), intent( in ) :: ilq, ilz
@@ -45216,9 +45212,9 @@ module stdlib_linalg_lapack_z
            end if
      end subroutine stdlib_zlaqz1
 
-     !> ZLAQZ3: Executes a single multishift QZ sweep
 
      pure subroutine stdlib_zlaqz3( ilschur, ilq, ilz, n, ilo, ihi, nshifts,nblock_desired, alpha,&
+     !! ZLAQZ3 Executes a single multishift QZ sweep
                 beta, a, lda, b, ldb,q, ldq, z, ldz, qc, ldqc, zc, ldzc, work,lwork, info )
            ! function arguments
            logical(lk), intent( in ) :: ilschur, ilq, ilz
@@ -45456,18 +45452,18 @@ module stdlib_linalg_lapack_z
            end if
      end subroutine stdlib_zlaqz3
 
-     !> ZLARGV: generates a vector of complex plane rotations with real
-     !> cosines, determined by elements of the complex vectors x and y.
-     !> For i = 1,2,...,n
-     !> (        c(i)   s(i) ) ( x(i) ) = ( r(i) )
-     !> ( -conjg(s(i))  c(i) ) ( y(i) ) = (   0  )
-     !> where c(i)**2 + ABS(s(i))**2 = 1
-     !> The following conventions are used (these are the same as in ZLARTG,
-     !> but differ from the BLAS1 routine ZROTG):
-     !> If y(i)=0, then c(i)=1 and s(i)=0.
-     !> If x(i)=0, then c(i)=0 and s(i) is chosen so that r(i) is real.
 
      pure subroutine stdlib_zlargv( n, x, incx, y, incy, c, incc )
+     !! ZLARGV generates a vector of complex plane rotations with real
+     !! cosines, determined by elements of the complex vectors x and y.
+     !! For i = 1,2,...,n
+     !! (        c(i)   s(i) ) ( x(i) ) = ( r(i) )
+     !! ( -conjg(s(i))  c(i) ) ( y(i) ) = (   0  )
+     !! where c(i)**2 + ABS(s(i))**2 = 1
+     !! The following conventions are used (these are the same as in ZLARTG,
+     !! but differ from the BLAS1 routine ZROTG):
+     !! If y(i)=0, then c(i)=1 and s(i)=0.
+     !! If x(i)=0, then c(i)=0 and s(i) is chosen so that r(i) is real.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -45610,11 +45606,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlargv
 
-     !> ZLARRV: computes the eigenvectors of the tridiagonal matrix
-     !> T = L D L**T given L, D and APPROXIMATIONS to the eigenvalues of L D L**T.
-     !> The input eigenvalues should have been computed by DLARRE.
 
      pure subroutine stdlib_zlarrv( n, vl, vu, d, l, pivmin,isplit, m, dol, dou, minrgp,rtol1, &
+     !! ZLARRV computes the eigenvectors of the tridiagonal matrix
+     !! T = L D L**T given L, D and APPROXIMATIONS to the eigenvalues of L D L**T.
+     !! The input eigenvalues should have been computed by DLARRE.
                rtol2, w, werr, wgap,iblock, indexw, gers, z, ldz, isuppz,work, iwork, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -46260,16 +46256,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlarrv
 
-     !> ZLATDF: computes the contribution to the reciprocal Dif-estimate
-     !> by solving for x in Z * x = b, where b is chosen such that the norm
-     !> of x is as large as possible. It is assumed that LU decomposition
-     !> of Z has been computed by ZGETC2. On entry RHS = f holds the
-     !> contribution from earlier solved sub-systems, and on return RHS = x.
-     !> The factorization of Z returned by ZGETC2 has the form
-     !> Z = P * L * U * Q, where P and Q are permutation matrices. L is lower
-     !> triangular with unit diagonal elements and U is upper triangular.
 
      pure subroutine stdlib_zlatdf( ijob, n, z, ldz, rhs, rdsum, rdscal, ipiv,jpiv )
+     !! ZLATDF computes the contribution to the reciprocal Dif-estimate
+     !! by solving for x in Z * x = b, where b is chosen such that the norm
+     !! of x is as large as possible. It is assumed that LU decomposition
+     !! of Z has been computed by ZGETC2. On entry RHS = f holds the
+     !! contribution from earlier solved sub-systems, and on return RHS = x.
+     !! The factorization of Z returned by ZGETC2 has the form
+     !! Z = P * L * U * Q, where P and Q are permutation matrices. L is lower
+     !! triangular with unit diagonal elements and U is upper triangular.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -46374,41 +46370,41 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlatdf
 
-     !> ZLAUNHR_COL_GETRFNP: computes the modified LU factorization without
-     !> pivoting of a complex general M-by-N matrix A. The factorization has
-     !> the form:
-     !> A - S = L * U,
-     !> where:
-     !> S is a m-by-n diagonal sign matrix with the diagonal D, so that
-     !> D(i) = S(i,i), 1 <= i <= min(M,N). The diagonal D is constructed
-     !> as D(i)=-SIGN(A(i,i)), where A(i,i) is the value after performing
-     !> i-1 steps of Gaussian elimination. This means that the diagonal
-     !> element at each step of "modified" Gaussian elimination is
-     !> at least one in absolute value (so that division-by-zero not
-     !> not possible during the division by the diagonal element);
-     !> L is a M-by-N lower triangular matrix with unit diagonal elements
-     !> (lower trapezoidal if M > N);
-     !> and U is a M-by-N upper triangular matrix
-     !> (upper trapezoidal if M < N).
-     !> This routine is an auxiliary routine used in the Householder
-     !> reconstruction routine ZUNHR_COL. In ZUNHR_COL, this routine is
-     !> applied to an M-by-N matrix A with orthonormal columns, where each
-     !> element is bounded by one in absolute value. With the choice of
-     !> the matrix S above, one can show that the diagonal element at each
-     !> step of Gaussian elimination is the largest (in absolute value) in
-     !> the column on or below the diagonal, so that no pivoting is required
-     !> for numerical stability [1].
-     !> For more details on the Householder reconstruction algorithm,
-     !> including the modified LU factorization, see [1].
-     !> This is the blocked right-looking version of the algorithm,
-     !> calling Level 3 BLAS to update the submatrix. To factorize a block,
-     !> this routine calls the recursive routine ZLAUNHR_COL_GETRFNP2.
-     !> [1] "Reconstructing Householder vectors from tall-skinny QR",
-     !> G. Ballard, J. Demmel, L. Grigori, M. Jacquelin, H.D. Nguyen,
-     !> E. Solomonik, J. Parallel Distrib. Comput.,
-     !> vol. 85, pp. 3-31, 2015.
 
      pure subroutine stdlib_zlaunhr_col_getrfnp( m, n, a, lda, d, info )
+     !! ZLAUNHR_COL_GETRFNP computes the modified LU factorization without
+     !! pivoting of a complex general M-by-N matrix A. The factorization has
+     !! the form:
+     !! A - S = L * U,
+     !! where:
+     !! S is a m-by-n diagonal sign matrix with the diagonal D, so that
+     !! D(i) = S(i,i), 1 <= i <= min(M,N). The diagonal D is constructed
+     !! as D(i)=-SIGN(A(i,i)), where A(i,i) is the value after performing
+     !! i-1 steps of Gaussian elimination. This means that the diagonal
+     !! element at each step of "modified" Gaussian elimination is
+     !! at least one in absolute value (so that division-by-zero not
+     !! not possible during the division by the diagonal element);
+     !! L is a M-by-N lower triangular matrix with unit diagonal elements
+     !! (lower trapezoidal if M > N);
+     !! and U is a M-by-N upper triangular matrix
+     !! (upper trapezoidal if M < N).
+     !! This routine is an auxiliary routine used in the Householder
+     !! reconstruction routine ZUNHR_COL. In ZUNHR_COL, this routine is
+     !! applied to an M-by-N matrix A with orthonormal columns, where each
+     !! element is bounded by one in absolute value. With the choice of
+     !! the matrix S above, one can show that the diagonal element at each
+     !! step of Gaussian elimination is the largest (in absolute value) in
+     !! the column on or below the diagonal, so that no pivoting is required
+     !! for numerical stability [1].
+     !! For more details on the Householder reconstruction algorithm,
+     !! including the modified LU factorization, see [1].
+     !! This is the blocked right-looking version of the algorithm,
+     !! calling Level 3 BLAS to update the submatrix. To factorize a block,
+     !! this routine calls the recursive routine ZLAUNHR_COL_GETRFNP2.
+     !! [1] "Reconstructing Householder vectors from tall-skinny QR",
+     !! G. Ballard, J. Demmel, L. Grigori, M. Jacquelin, H.D. Nguyen,
+     !! E. Solomonik, J. Parallel Distrib. Comput.,
+     !! vol. 85, pp. 3-31, 2015.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -46468,12 +46464,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaunhr_col_getrfnp
 
-     !> ZPBRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is Hermitian positive definite
-     !> and banded, and provides error bounds and backward error estimates
-     !> for the solution.
 
      pure subroutine stdlib_zpbrfs( uplo, n, kd, nrhs, ab, ldab, afb, ldafb, b,ldb, x, ldx, ferr, &
+     !! ZPBRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is Hermitian positive definite
+     !! and banded, and provides error bounds and backward error estimates
+     !! for the solution.
                berr, work, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -46666,14 +46662,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpbrfs
 
-     !> ZPBTRF: computes the Cholesky factorization of a complex Hermitian
-     !> positive definite band matrix A.
-     !> The factorization has the form
-     !> A = U**H * U,  if UPLO = 'U', or
-     !> A = L  * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
 
      pure subroutine stdlib_zpbtrf( uplo, n, kd, ab, ldab, info )
+     !! ZPBTRF computes the Cholesky factorization of a complex Hermitian
+     !! positive definite band matrix A.
+     !! The factorization has the form
+     !! A = U**H * U,  if UPLO = 'U', or
+     !! A = L  * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -46866,11 +46862,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpbtrf
 
-     !> ZPFTRS: solves a system of linear equations A*X = B with a Hermitian
-     !> positive definite matrix A using the Cholesky factorization
-     !> A = U**H*U or A = L*L**H computed by ZPFTRF.
 
      pure subroutine stdlib_zpftrs( transr, uplo, n, nrhs, a, b, ldb, info )
+     !! ZPFTRS solves a system of linear equations A*X = B with a Hermitian
+     !! positive definite matrix A using the Cholesky factorization
+     !! A = U**H*U or A = L*L**H computed by ZPFTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -46920,12 +46916,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpftrs
 
-     !> ZPORFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is Hermitian positive definite,
-     !> and provides error bounds and backward error estimates for the
-     !> solution.
 
      pure subroutine stdlib_zporfs( uplo, n, nrhs, a, lda, af, ldaf, b, ldb, x,ldx, ferr, berr, &
+     !! ZPORFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is Hermitian positive definite,
+     !! and provides error bounds and backward error estimates for the
+     !! solution.
                work, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -47113,15 +47109,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zporfs
 
-     !> ZPOTRF: computes the Cholesky factorization of a complex Hermitian
-     !> positive definite matrix A.
-     !> The factorization has the form
-     !> A = U**H * U,  if UPLO = 'U', or
-     !> A = L  * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
-     !> This is the block version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_zpotrf( uplo, n, a, lda, info )
+     !! ZPOTRF computes the Cholesky factorization of a complex Hermitian
+     !! positive definite matrix A.
+     !! The factorization has the form
+     !! A = U**H * U,  if UPLO = 'U', or
+     !! A = L  * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
+     !! This is the block version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -47208,11 +47204,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpotrf
 
-     !> ZPOTRI: computes the inverse of a complex Hermitian positive definite
-     !> matrix A using the Cholesky factorization A = U**H*U or A = L*L**H
-     !> computed by ZPOTRF.
 
      pure subroutine stdlib_zpotri( uplo, n, a, lda, info )
+     !! ZPOTRI computes the inverse of a complex Hermitian positive definite
+     !! matrix A using the Cholesky factorization A = U**H*U or A = L*L**H
+     !! computed by ZPOTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -47249,12 +47245,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpotri
 
-     !> ZPPRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is Hermitian positive definite
-     !> and packed, and provides error bounds and backward error estimates
-     !> for the solution.
 
      pure subroutine stdlib_zpprfs( uplo, n, nrhs, ap, afp, b, ldb, x, ldx, ferr,berr, work, &
+     !! ZPPRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is Hermitian positive definite
+     !! and packed, and provides error bounds and backward error estimates
+     !! for the solution.
                rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -47445,18 +47441,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpprfs
 
-     !> ZPPSV: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N Hermitian positive definite matrix stored in
-     !> packed format and X and B are N-by-NRHS matrices.
-     !> The Cholesky decomposition is used to factor A as
-     !> A = U**H * U,  if UPLO = 'U', or
-     !> A = L * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is a lower triangular
-     !> matrix.  The factored form of A is then used to solve the system of
-     !> equations A * X = B.
 
      pure subroutine stdlib_zppsv( uplo, n, nrhs, ap, b, ldb, info )
+     !! ZPPSV computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N Hermitian positive definite matrix stored in
+     !! packed format and X and B are N-by-NRHS matrices.
+     !! The Cholesky decomposition is used to factor A as
+     !! A = U**H * U,  if UPLO = 'U', or
+     !! A = L * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is a lower triangular
+     !! matrix.  The factored form of A is then used to solve the system of
+     !! equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -47494,15 +47490,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zppsv
 
-     !> ZPPSVX: uses the Cholesky factorization A = U**H * U or A = L * L**H to
-     !> compute the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N Hermitian positive definite matrix stored in
-     !> packed format and X and B are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_zppsvx( fact, uplo, n, nrhs, ap, afp, equed, s, b, ldb,x, ldx, rcond, ferr,&
+     !! ZPPSVX uses the Cholesky factorization A = U**H * U or A = L * L**H to
+     !! compute the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N Hermitian positive definite matrix stored in
+     !! packed format and X and B are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                 berr, work, rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -47634,11 +47630,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zppsvx
 
-     !> ZPPTRI: computes the inverse of a complex Hermitian positive definite
-     !> matrix A using the Cholesky factorization A = U**H*U or A = L*L**H
-     !> computed by ZPPTRF.
 
      pure subroutine stdlib_zpptri( uplo, n, ap, info )
+     !! ZPPTRI computes the inverse of a complex Hermitian positive definite
+     !! matrix A using the Cholesky factorization A = U**H*U or A = L*L**H
+     !! computed by ZPPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -47698,23 +47694,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpptri
 
-     !> ZPTEQR: computes all eigenvalues and, optionally, eigenvectors of a
-     !> symmetric positive definite tridiagonal matrix by first factoring the
-     !> matrix using DPTTRF and then calling ZBDSQR to compute the singular
-     !> values of the bidiagonal factor.
-     !> This routine computes the eigenvalues of the positive definite
-     !> tridiagonal matrix to high relative accuracy.  This means that if the
-     !> eigenvalues range over many orders of magnitude in size, then the
-     !> small eigenvalues and corresponding eigenvectors will be computed
-     !> more accurately than, for example, with the standard QR method.
-     !> The eigenvectors of a full or band positive definite Hermitian matrix
-     !> can also be found if ZHETRD, ZHPTRD, or ZHBTRD has been used to
-     !> reduce this matrix to tridiagonal form.  (The reduction to
-     !> tridiagonal form, however, may preclude the possibility of obtaining
-     !> high relative accuracy in the small eigenvalues of the original
-     !> matrix, if these eigenvalues range over many orders of magnitude.)
 
      pure subroutine stdlib_zpteqr( compz, n, d, e, z, ldz, work, info )
+     !! ZPTEQR computes all eigenvalues and, optionally, eigenvectors of a
+     !! symmetric positive definite tridiagonal matrix by first factoring the
+     !! matrix using DPTTRF and then calling ZBDSQR to compute the singular
+     !! values of the bidiagonal factor.
+     !! This routine computes the eigenvalues of the positive definite
+     !! tridiagonal matrix to high relative accuracy.  This means that if the
+     !! eigenvalues range over many orders of magnitude in size, then the
+     !! small eigenvalues and corresponding eigenvectors will be computed
+     !! more accurately than, for example, with the standard QR method.
+     !! The eigenvectors of a full or band positive definite Hermitian matrix
+     !! can also be found if ZHETRD, ZHPTRD, or ZHBTRD has been used to
+     !! reduce this matrix to tridiagonal form.  (The reduction to
+     !! tridiagonal form, however, may preclude the possibility of obtaining
+     !! high relative accuracy in the small eigenvalues of the original
+     !! matrix, if these eigenvalues range over many orders of magnitude.)
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -47793,14 +47789,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpteqr
 
-     !> ZPTTRS: solves a tridiagonal system of the form
-     !> A * X = B
-     !> using the factorization A = U**H *D* U or A = L*D*L**H computed by ZPTTRF.
-     !> D is a diagonal matrix specified in the vector D, U (or L) is a unit
-     !> bidiagonal matrix whose superdiagonal (subdiagonal) is specified in
-     !> the vector E, and X and B are N by NRHS matrices.
 
      pure subroutine stdlib_zpttrs( uplo, n, nrhs, d, e, b, ldb, info )
+     !! ZPTTRS solves a tridiagonal system of the form
+     !! A * X = B
+     !! using the factorization A = U**H *D* U or A = L*D*L**H computed by ZPTTRF.
+     !! D is a diagonal matrix specified in the vector D, U (or L) is a unit
+     !! bidiagonal matrix whose superdiagonal (subdiagonal) is specified in
+     !! the vector E, and X and B are N by NRHS matrices.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -47860,13 +47856,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpttrs
 
-     !> ZSPCON: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a complex symmetric packed matrix A using the
-     !> factorization A = U*D*U**T or A = L*D*L**T computed by ZSPTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_zspcon( uplo, n, ap, ipiv, anorm, rcond, work, info )
+     !! ZSPCON estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a complex symmetric packed matrix A using the
+     !! factorization A = U*D*U**T or A = L*D*L**T computed by ZSPTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -47941,12 +47937,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zspcon
 
-     !> ZSPRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is symmetric indefinite
-     !> and packed, and provides error bounds and backward error estimates
-     !> for the solution.
 
      pure subroutine stdlib_zsprfs( uplo, n, nrhs, ap, afp, ipiv, b, ldb, x, ldx,ferr, berr, work,&
+     !! ZSPRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is symmetric indefinite
+     !! and packed, and provides error bounds and backward error estimates
+     !! for the solution.
                 rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -48138,19 +48134,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsprfs
 
-     !> ZSPSV: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric matrix stored in packed format and X
-     !> and B are N-by-NRHS matrices.
-     !> The diagonal pivoting method is used to factor A as
-     !> A = U * D * U**T,  if UPLO = 'U', or
-     !> A = L * D * L**T,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, D is symmetric and block diagonal with 1-by-1
-     !> and 2-by-2 diagonal blocks.  The factored form of A is then used to
-     !> solve the system of equations A * X = B.
 
      pure subroutine stdlib_zspsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
+     !! ZSPSV computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric matrix stored in packed format and X
+     !! and B are N-by-NRHS matrices.
+     !! The diagonal pivoting method is used to factor A as
+     !! A = U * D * U**T,  if UPLO = 'U', or
+     !! A = L * D * L**T,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, D is symmetric and block diagonal with 1-by-1
+     !! and 2-by-2 diagonal blocks.  The factored form of A is then used to
+     !! solve the system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -48189,14 +48185,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zspsv
 
-     !> ZSPSVX: uses the diagonal pivoting factorization A = U*D*U**T or
-     !> A = L*D*L**T to compute the solution to a complex system of linear
-     !> equations A * X = B, where A is an N-by-N symmetric matrix stored
-     !> in packed format and X and B are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_zspsvx( fact, uplo, n, nrhs, ap, afp, ipiv, b, ldb, x,ldx, rcond, ferr, &
+     !! ZSPSVX uses the diagonal pivoting factorization A = U*D*U**T or
+     !! A = L*D*L**T to compute the solution to a complex system of linear
+     !! equations A * X = B, where A is an N-by-N symmetric matrix stored
+     !! in packed format and X and B are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                berr, work, rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -48267,67 +48263,67 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zspsvx
 
-     !> ZSTEMR: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a real symmetric tridiagonal matrix T. Any such unreduced matrix has
-     !> a well defined set of pairwise different real eigenvalues, the corresponding
-     !> real eigenvectors are pairwise orthogonal.
-     !> The spectrum may be computed either completely or partially by specifying
-     !> either an interval (VL,VU] or a range of indices IL:IU for the desired
-     !> eigenvalues.
-     !> Depending on the number of desired eigenvalues, these are computed either
-     !> by bisection or the dqds algorithm. Numerically orthogonal eigenvectors are
-     !> computed by the use of various suitable L D L^T factorizations near clusters
-     !> of close eigenvalues (referred to as RRRs, Relatively Robust
-     !> Representations). An informal sketch of the algorithm follows.
-     !> For each unreduced block (submatrix) of T,
-     !> (a) Compute T - sigma I  = L D L^T, so that L and D
-     !> define all the wanted eigenvalues to high relative accuracy.
-     !> This means that small relative changes in the entries of D and L
-     !> cause only small relative changes in the eigenvalues and
-     !> eigenvectors. The standard (unfactored) representation of the
-     !> tridiagonal matrix T does not have this property in general.
-     !> (b) Compute the eigenvalues to suitable accuracy.
-     !> If the eigenvectors are desired, the algorithm attains full
-     !> accuracy of the computed eigenvalues only right before
-     !> the corresponding vectors have to be computed, see steps c) and d).
-     !> (c) For each cluster of close eigenvalues, select a new
-     !> shift close to the cluster, find a new factorization, and refine
-     !> the shifted eigenvalues to suitable accuracy.
-     !> (d) For each eigenvalue with a large enough relative separation compute
-     !> the corresponding eigenvector by forming a rank revealing twisted
-     !> factorization. Go back to (c) for any clusters that remain.
-     !> For more details, see:
-     !> - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
-     !> to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
-     !> Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
-     !> - Inderjit Dhillon and Beresford Parlett: "Orthogonal Eigenvectors and
-     !> Relative Gaps," SIAM Journal on Matrix Analysis and Applications, Vol. 25,
-     !> 2004.  Also LAPACK Working Note 154.
-     !> - Inderjit Dhillon: "A new O(n^2) algorithm for the symmetric
-     !> tridiagonal eigenvalue/eigenvector problem",
-     !> Computer Science Division Technical Report No. UCB/CSD-97-971,
-     !> UC Berkeley, May 1997.
-     !> Further Details
-     !> 1.ZSTEMR works only on machines which follow IEEE-754
-     !> floating-point standard in their handling of infinities and NaNs.
-     !> This permits the use of efficient inner loops avoiding a check for
-     !> zero divisors.
-     !> 2. LAPACK routines can be used to reduce a complex Hermitean matrix to
-     !> real symmetric tridiagonal form.
-     !> (Any complex Hermitean tridiagonal matrix has real values on its diagonal
-     !> and potentially complex numbers on its off-diagonals. By applying a
-     !> similarity transform with an appropriate diagonal matrix
-     !> diag(1,e^{i \phy_1}, ... , e^{i \phy_{n-1}}), the complex Hermitean
-     !> matrix can be transformed into a real symmetric matrix and complex
-     !> arithmetic can be entirely avoided.)
-     !> While the eigenvectors of the real symmetric tridiagonal matrix are real,
-     !> the eigenvectors of original complex Hermitean matrix have complex entries
-     !> in general.
-     !> Since LAPACK drivers overwrite the matrix data with the eigenvectors,
-     !> ZSTEMR accepts complex workspace to facilitate interoperability
-     !> with ZUNMTR or ZUPMTR.
 
      pure subroutine stdlib_zstemr( jobz, range, n, d, e, vl, vu, il, iu,m, w, z, ldz, nzc, &
+     !! ZSTEMR computes selected eigenvalues and, optionally, eigenvectors
+     !! of a real symmetric tridiagonal matrix T. Any such unreduced matrix has
+     !! a well defined set of pairwise different real eigenvalues, the corresponding
+     !! real eigenvectors are pairwise orthogonal.
+     !! The spectrum may be computed either completely or partially by specifying
+     !! either an interval (VL,VU] or a range of indices IL:IU for the desired
+     !! eigenvalues.
+     !! Depending on the number of desired eigenvalues, these are computed either
+     !! by bisection or the dqds algorithm. Numerically orthogonal eigenvectors are
+     !! computed by the use of various suitable L D L^T factorizations near clusters
+     !! of close eigenvalues (referred to as RRRs, Relatively Robust
+     !! Representations). An informal sketch of the algorithm follows.
+     !! For each unreduced block (submatrix) of T,
+     !! (a) Compute T - sigma I  = L D L^T, so that L and D
+     !! define all the wanted eigenvalues to high relative accuracy.
+     !! This means that small relative changes in the entries of D and L
+     !! cause only small relative changes in the eigenvalues and
+     !! eigenvectors. The standard (unfactored) representation of the
+     !! tridiagonal matrix T does not have this property in general.
+     !! (b) Compute the eigenvalues to suitable accuracy.
+     !! If the eigenvectors are desired, the algorithm attains full
+     !! accuracy of the computed eigenvalues only right before
+     !! the corresponding vectors have to be computed, see steps c) and d).
+     !! (c) For each cluster of close eigenvalues, select a new
+     !! shift close to the cluster, find a new factorization, and refine
+     !! the shifted eigenvalues to suitable accuracy.
+     !! (d) For each eigenvalue with a large enough relative separation compute
+     !! the corresponding eigenvector by forming a rank revealing twisted
+     !! factorization. Go back to (c) for any clusters that remain.
+     !! For more details, see:
+     !! - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
+     !! to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
+     !! Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
+     !! - Inderjit Dhillon and Beresford Parlett: "Orthogonal Eigenvectors and
+     !! Relative Gaps," SIAM Journal on Matrix Analysis and Applications, Vol. 25,
+     !! 2004.  Also LAPACK Working Note 154.
+     !! - Inderjit Dhillon: "A new O(n^2) algorithm for the symmetric
+     !! tridiagonal eigenvalue/eigenvector problem",
+     !! Computer Science Division Technical Report No. UCB/CSD-97-971,
+     !! UC Berkeley, May 1997.
+     !! Further Details
+     !! 1.ZSTEMR works only on machines which follow IEEE-754
+     !! floating-point standard in their handling of infinities and NaNs.
+     !! This permits the use of efficient inner loops avoiding a check for
+     !! zero divisors.
+     !! 2. LAPACK routines can be used to reduce a complex Hermitean matrix to
+     !! real symmetric tridiagonal form.
+     !! (Any complex Hermitean tridiagonal matrix has real values on its diagonal
+     !! and potentially complex numbers on its off-diagonals. By applying a
+     !! similarity transform with an appropriate diagonal matrix
+     !! diag(1,e^{i \phy_1}, ... , e^{i \phy_{n-1}}), the complex Hermitean
+     !! matrix can be transformed into a real symmetric matrix and complex
+     !! arithmetic can be entirely avoided.)
+     !! While the eigenvectors of the real symmetric tridiagonal matrix are real,
+     !! the eigenvectors of original complex Hermitean matrix have complex entries
+     !! in general.
+     !! Since LAPACK drivers overwrite the matrix data with the eigenvectors,
+     !! ZSTEMR accepts complex workspace to facilitate interoperability
+     !! with ZUNMTR or ZUPMTR.
                isuppz, tryrac, work, lwork,iwork, liwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -48701,13 +48697,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zstemr
 
-     !> ZSYCON: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a complex symmetric matrix A using the factorization
-     !> A = U*D*U**T or A = L*D*L**T computed by ZSYTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_zsycon( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
+     !! ZSYCON estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a complex symmetric matrix A using the factorization
+     !! A = U*D*U**T or A = L*D*L**T computed by ZSYTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -48782,13 +48778,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsycon
 
-     !> ZSYCON_ROOK: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a complex symmetric matrix A using the factorization
-     !> A = U*D*U**T or A = L*D*L**T computed by ZSYTRF_ROOK.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_zsycon_rook( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
+     !! ZSYCON_ROOK estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a complex symmetric matrix A using the factorization
+     !! A = U*D*U**T or A = L*D*L**T computed by ZSYTRF_ROOK.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -48864,11 +48860,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsycon_rook
 
-     !> ZSYRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is symmetric indefinite, and
-     !> provides error bounds and backward error estimates for the solution.
 
      pure subroutine stdlib_zsyrfs( uplo, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, ferr, &
+     !! ZSYRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is symmetric indefinite, and
+     !! provides error bounds and backward error estimates for the solution.
                berr, work, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -49057,19 +49053,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsyrfs
 
-     !> ZSYSV: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> The diagonal pivoting method is used to factor A as
-     !> A = U * D * U**T,  if UPLO = 'U', or
-     !> A = L * D * L**T,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is symmetric and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.  The factored form of A is then
-     !> used to solve the system of equations A * X = B.
 
      pure subroutine stdlib_zsysv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
+     !! ZSYSV computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! The diagonal pivoting method is used to factor A as
+     !! A = U * D * U**T,  if UPLO = 'U', or
+     !! A = L * D * L**T,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is symmetric and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.  The factored form of A is then
+     !! used to solve the system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -49135,22 +49131,22 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsysv
 
-     !> ZSYSV_RK: computes the solution to a complex system of linear
-     !> equations A * X = B, where A is an N-by-N symmetric matrix
-     !> and X and B are N-by-NRHS matrices.
-     !> The bounded Bunch-Kaufman (rook) diagonal pivoting method is used
-     !> to factor A as
-     !> A = P*U*D*(U**T)*(P**T),  if UPLO = 'U', or
-     !> A = P*L*D*(L**T)*(P**T),  if UPLO = 'L',
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**T (or L**T) is the transpose of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is symmetric and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> ZSYTRF_RK is called to compute the factorization of a complex
-     !> symmetric matrix.  The factored form of A is then used to solve
-     !> the system of equations A * X = B by calling BLAS3 routine ZSYTRS_3.
 
      pure subroutine stdlib_zsysv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb, work,lwork, info )
+     !! ZSYSV_RK computes the solution to a complex system of linear
+     !! equations A * X = B, where A is an N-by-N symmetric matrix
+     !! and X and B are N-by-NRHS matrices.
+     !! The bounded Bunch-Kaufman (rook) diagonal pivoting method is used
+     !! to factor A as
+     !! A = P*U*D*(U**T)*(P**T),  if UPLO = 'U', or
+     !! A = P*L*D*(L**T)*(P**T),  if UPLO = 'L',
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**T (or L**T) is the transpose of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is symmetric and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! ZSYTRF_RK is called to compute the factorization of a complex
+     !! symmetric matrix.  The factored form of A is then used to solve
+     !! the system of equations A * X = B by calling BLAS3 routine ZSYTRS_3.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -49212,24 +49208,24 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsysv_rk
 
-     !> ZSYSV_ROOK: computes the solution to a complex system of linear
-     !> equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> The diagonal pivoting method is used to factor A as
-     !> A = U * D * U**T,  if UPLO = 'U', or
-     !> A = L * D * L**T,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is symmetric and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
-     !> ZSYTRF_ROOK is called to compute the factorization of a complex
-     !> symmetric matrix A using the bounded Bunch-Kaufman ("rook") diagonal
-     !> pivoting method.
-     !> The factored form of A is then used to solve the system
-     !> of equations A * X = B by calling ZSYTRS_ROOK.
 
      pure subroutine stdlib_zsysv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
+     !! ZSYSV_ROOK computes the solution to a complex system of linear
+     !! equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! The diagonal pivoting method is used to factor A as
+     !! A = U * D * U**T,  if UPLO = 'U', or
+     !! A = L * D * L**T,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is symmetric and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
+     !! ZSYTRF_ROOK is called to compute the factorization of a complex
+     !! symmetric matrix A using the bounded Bunch-Kaufman ("rook") diagonal
+     !! pivoting method.
+     !! The factored form of A is then used to solve the system
+     !! of equations A * X = B by calling ZSYTRS_ROOK.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -49291,14 +49287,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsysv_rook
 
-     !> ZSYSVX: uses the diagonal pivoting factorization to compute the
-     !> solution to a complex system of linear equations A * X = B,
-     !> where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_zsysvx( fact, uplo, n, nrhs, a, lda, af, ldaf, ipiv, b,ldb, x, ldx, rcond, &
+     !! ZSYSVX uses the diagonal pivoting factorization to compute the
+     !! solution to a complex system of linear equations A * X = B,
+     !! where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                ferr, berr, work, lwork,rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -49388,14 +49384,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsysvx
 
-     !> ZTBCON: estimates the reciprocal of the condition number of a
-     !> triangular band matrix A, in either the 1-norm or the infinity-norm.
-     !> The norm of A is computed and an estimate is obtained for
-     !> norm(inv(A)), then the reciprocal of the condition number is
-     !> computed as
-     !> RCOND = 1 / ( norm(A) * norm(inv(A)) ).
 
      subroutine stdlib_ztbcon( norm, uplo, diag, n, kd, ab, ldab, rcond, work,rwork, info )
+     !! ZTBCON estimates the reciprocal of the condition number of a
+     !! triangular band matrix A, in either the 1-norm or the infinity-norm.
+     !! The norm of A is computed and an estimate is obtained for
+     !! norm(inv(A)), then the reciprocal of the condition number is
+     !! computed as
+     !! RCOND = 1 / ( norm(A) * norm(inv(A)) ).
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -49497,11 +49493,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztbcon
 
-     !> ZTFTRI: computes the inverse of a triangular matrix A stored in RFP
-     !> format.
-     !> This is a Level 3 BLAS version of the algorithm.
 
      pure subroutine stdlib_ztftri( transr, uplo, diag, n, a, info )
+     !! ZTFTRI computes the inverse of a triangular matrix A stored in RFP
+     !! format.
+     !! This is a Level 3 BLAS version of the algorithm.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -49680,70 +49676,70 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztftri
 
-     !> ZTGSJA: computes the generalized singular value decomposition (GSVD)
-     !> of two complex upper triangular (or trapezoidal) matrices A and B.
-     !> On entry, it is assumed that matrices A and B have the following
-     !> forms, which may be obtained by the preprocessing subroutine ZGGSVP
-     !> from a general M-by-N matrix A and P-by-N matrix B:
-     !> N-K-L  K    L
-     !> A =    K ( 0    A12  A13 ) if M-K-L >= 0;
-     !> L ( 0     0   A23 )
-     !> M-K-L ( 0     0    0  )
-     !> N-K-L  K    L
-     !> A =  K ( 0    A12  A13 ) if M-K-L < 0;
-     !> M-K ( 0     0   A23 )
-     !> N-K-L  K    L
-     !> B =  L ( 0     0   B13 )
-     !> P-L ( 0     0    0  )
-     !> where the K-by-K matrix A12 and L-by-L matrix B13 are nonsingular
-     !> upper triangular; A23 is L-by-L upper triangular if M-K-L >= 0,
-     !> otherwise A23 is (M-K)-by-L upper trapezoidal.
-     !> On exit,
-     !> U**H *A*Q = D1*( 0 R ),    V**H *B*Q = D2*( 0 R ),
-     !> where U, V and Q are unitary matrices.
-     !> R is a nonsingular upper triangular matrix, and D1
-     !> and D2 are ``diagonal'' matrices, which are of the following
-     !> structures:
-     !> If M-K-L >= 0,
-     !> K  L
-     !> D1 =     K ( I  0 )
-     !> L ( 0  C )
-     !> M-K-L ( 0  0 )
-     !> K  L
-     !> D2 = L   ( 0  S )
-     !> P-L ( 0  0 )
-     !> N-K-L  K    L
-     !> ( 0 R ) = K (  0   R11  R12 ) K
-     !> L (  0    0   R22 ) L
-     !> where
-     !> C = diag( ALPHA(K+1), ... , ALPHA(K+L) ),
-     !> S = diag( BETA(K+1),  ... , BETA(K+L) ),
-     !> C**2 + S**2 = I.
-     !> R is stored in A(1:K+L,N-K-L+1:N) on exit.
-     !> If M-K-L < 0,
-     !> K M-K K+L-M
-     !> D1 =   K ( I  0    0   )
-     !> M-K ( 0  C    0   )
-     !> K M-K K+L-M
-     !> D2 =   M-K ( 0  S    0   )
-     !> K+L-M ( 0  0    I   )
-     !> P-L ( 0  0    0   )
-     !> N-K-L  K   M-K  K+L-M
-     !> ( 0 R ) =    K ( 0    R11  R12  R13  )
-     !> M-K ( 0     0   R22  R23  )
-     !> K+L-M ( 0     0    0   R33  )
-     !> where
-     !> C = diag( ALPHA(K+1), ... , ALPHA(M) ),
-     !> S = diag( BETA(K+1),  ... , BETA(M) ),
-     !> C**2 + S**2 = I.
-     !> R = ( R11 R12 R13 ) is stored in A(1:M, N-K-L+1:N) and R33 is stored
-     !> (  0  R22 R23 )
-     !> in B(M-K+1:L,N+M-K-L+1:N) on exit.
-     !> The computation of the unitary transformation matrices U, V or Q
-     !> is optional.  These matrices may either be formed explicitly, or they
-     !> may be postmultiplied into input matrices U1, V1, or Q1.
 
      pure subroutine stdlib_ztgsja( jobu, jobv, jobq, m, p, n, k, l, a, lda, b,ldb, tola, tolb, &
+     !! ZTGSJA computes the generalized singular value decomposition (GSVD)
+     !! of two complex upper triangular (or trapezoidal) matrices A and B.
+     !! On entry, it is assumed that matrices A and B have the following
+     !! forms, which may be obtained by the preprocessing subroutine ZGGSVP
+     !! from a general M-by-N matrix A and P-by-N matrix B:
+     !! N-K-L  K    L
+     !! A =    K ( 0    A12  A13 ) if M-K-L >= 0;
+     !! L ( 0     0   A23 )
+     !! M-K-L ( 0     0    0  )
+     !! N-K-L  K    L
+     !! A =  K ( 0    A12  A13 ) if M-K-L < 0;
+     !! M-K ( 0     0   A23 )
+     !! N-K-L  K    L
+     !! B =  L ( 0     0   B13 )
+     !! P-L ( 0     0    0  )
+     !! where the K-by-K matrix A12 and L-by-L matrix B13 are nonsingular
+     !! upper triangular; A23 is L-by-L upper triangular if M-K-L >= 0,
+     !! otherwise A23 is (M-K)-by-L upper trapezoidal.
+     !! On exit,
+     !! U**H *A*Q = D1*( 0 R ),    V**H *B*Q = D2*( 0 R ),
+     !! where U, V and Q are unitary matrices.
+     !! R is a nonsingular upper triangular matrix, and D1
+     !! and D2 are ``diagonal'' matrices, which are of the following
+     !! structures:
+     !! If M-K-L >= 0,
+     !! K  L
+     !! D1 =     K ( I  0 )
+     !! L ( 0  C )
+     !! M-K-L ( 0  0 )
+     !! K  L
+     !! D2 = L   ( 0  S )
+     !! P-L ( 0  0 )
+     !! N-K-L  K    L
+     !! ( 0 R ) = K (  0   R11  R12 ) K
+     !! L (  0    0   R22 ) L
+     !! where
+     !! C = diag( ALPHA(K+1), ... , ALPHA(K+L) ),
+     !! S = diag( BETA(K+1),  ... , BETA(K+L) ),
+     !! C**2 + S**2 = I.
+     !! R is stored in A(1:K+L,N-K-L+1:N) on exit.
+     !! If M-K-L < 0,
+     !! K M-K K+L-M
+     !! D1 =   K ( I  0    0   )
+     !! M-K ( 0  C    0   )
+     !! K M-K K+L-M
+     !! D2 =   M-K ( 0  S    0   )
+     !! K+L-M ( 0  0    I   )
+     !! P-L ( 0  0    0   )
+     !! N-K-L  K   M-K  K+L-M
+     !! ( 0 R ) =    K ( 0    R11  R12  R13  )
+     !! M-K ( 0     0   R22  R23  )
+     !! K+L-M ( 0     0    0   R33  )
+     !! where
+     !! C = diag( ALPHA(K+1), ... , ALPHA(M) ),
+     !! S = diag( BETA(K+1),  ... , BETA(M) ),
+     !! C**2 + S**2 = I.
+     !! R = ( R11 R12 R13 ) is stored in A(1:M, N-K-L+1:N) and R33 is stored
+     !! (  0  R22 R23 )
+     !! in B(M-K+1:L,N+M-K-L+1:N) on exit.
+     !! The computation of the unitary transformation matrices U, V or Q
+     !! is optional.  These matrices may either be formed explicitly, or they
+     !! may be postmultiplied into input matrices U1, V1, or Q1.
                alpha, beta, u, ldu, v, ldv,q, ldq, work, ncycle, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -49929,33 +49925,33 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztgsja
 
-     !> ZTGSY2: solves the generalized Sylvester equation
-     !> A * R - L * B = scale * C               (1)
-     !> D * R - L * E = scale * F
-     !> using Level 1 and 2 BLAS, where R and L are unknown M-by-N matrices,
-     !> (A, D), (B, E) and (C, F) are given matrix pairs of size M-by-M,
-     !> N-by-N and M-by-N, respectively. A, B, D and E are upper triangular
-     !> (i.e., (A,D) and (B,E) in generalized Schur form).
-     !> The solution (R, L) overwrites (C, F). 0 <= SCALE <= 1 is an output
-     !> scaling factor chosen to avoid overflow.
-     !> In matrix notation solving equation (1) corresponds to solve
-     !> Zx = scale * b, where Z is defined as
-     !> Z = [ kron(In, A)  -kron(B**H, Im) ]             (2)
-     !> [ kron(In, D)  -kron(E**H, Im) ],
-     !> Ik is the identity matrix of size k and X**H is the conjuguate transpose of X.
-     !> kron(X, Y) is the Kronecker product between the matrices X and Y.
-     !> If TRANS = 'C', y in the conjugate transposed system Z**H*y = scale*b
-     !> is solved for, which is equivalent to solve for R and L in
-     !> A**H * R  + D**H * L   = scale * C           (3)
-     !> R  * B**H + L  * E**H  = scale * -F
-     !> This case is used to compute an estimate of Dif[(A, D), (B, E)] =
-     !> = sigma_min(Z) using reverse communication with ZLACON.
-     !> ZTGSY2 also (IJOB >= 1) contributes to the computation in ZTGSYL
-     !> of an upper bound on the separation between to matrix pairs. Then
-     !> the input (A, D), (B, E) are sub-pencils of two matrix pairs in
-     !> ZTGSYL.
 
      pure subroutine stdlib_ztgsy2( trans, ijob, m, n, a, lda, b, ldb, c, ldc, d,ldd, e, lde, f, &
+     !! ZTGSY2 solves the generalized Sylvester equation
+     !! A * R - L * B = scale * C               (1)
+     !! D * R - L * E = scale * F
+     !! using Level 1 and 2 BLAS, where R and L are unknown M-by-N matrices,
+     !! (A, D), (B, E) and (C, F) are given matrix pairs of size M-by-M,
+     !! N-by-N and M-by-N, respectively. A, B, D and E are upper triangular
+     !! (i.e., (A,D) and (B,E) in generalized Schur form).
+     !! The solution (R, L) overwrites (C, F). 0 <= SCALE <= 1 is an output
+     !! scaling factor chosen to avoid overflow.
+     !! In matrix notation solving equation (1) corresponds to solve
+     !! Zx = scale * b, where Z is defined as
+     !! Z = [ kron(In, A)  -kron(B**H, Im) ]             (2)
+     !! [ kron(In, D)  -kron(E**H, Im) ],
+     !! Ik is the identity matrix of size k and X**H is the conjuguate transpose of X.
+     !! kron(X, Y) is the Kronecker product between the matrices X and Y.
+     !! If TRANS = 'C', y in the conjugate transposed system Z**H*y = scale*b
+     !! is solved for, which is equivalent to solve for R and L in
+     !! A**H * R  + D**H * L   = scale * C           (3)
+     !! R  * B**H + L  * E**H  = scale * -F
+     !! This case is used to compute an estimate of Dif[(A, D), (B, E)] =
+     !! = sigma_min(Z) using reverse communication with ZLACON.
+     !! ZTGSY2 also (IJOB >= 1) contributes to the computation in ZTGSYL
+     !! of an upper bound on the separation between to matrix pairs. Then
+     !! the input (A, D), (B, E) are sub-pencils of two matrix pairs in
+     !! ZTGSYL.
                ldf, scale, rdsum, rdscal,info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -50119,35 +50115,35 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztgsy2
 
-     !> ZTGSYL: solves the generalized Sylvester equation:
-     !> A * R - L * B = scale * C            (1)
-     !> D * R - L * E = scale * F
-     !> where R and L are unknown m-by-n matrices, (A, D), (B, E) and
-     !> (C, F) are given matrix pairs of size m-by-m, n-by-n and m-by-n,
-     !> respectively, with complex entries. A, B, D and E are upper
-     !> triangular (i.e., (A,D) and (B,E) in generalized Schur form).
-     !> The solution (R, L) overwrites (C, F). 0 <= SCALE <= 1
-     !> is an output scaling factor chosen to avoid overflow.
-     !> In matrix notation (1) is equivalent to solve Zx = scale*b, where Z
-     !> is defined as
-     !> Z = [ kron(In, A)  -kron(B**H, Im) ]        (2)
-     !> [ kron(In, D)  -kron(E**H, Im) ],
-     !> Here Ix is the identity matrix of size x and X**H is the conjugate
-     !> transpose of X. Kron(X, Y) is the Kronecker product between the
-     !> matrices X and Y.
-     !> If TRANS = 'C', y in the conjugate transposed system Z**H *y = scale*b
-     !> is solved for, which is equivalent to solve for R and L in
-     !> A**H * R + D**H * L = scale * C           (3)
-     !> R * B**H + L * E**H = scale * -F
-     !> This case (TRANS = 'C') is used to compute an one-norm-based estimate
-     !> of Dif[(A,D), (B,E)], the separation between the matrix pairs (A,D)
-     !> and (B,E), using ZLACON.
-     !> If IJOB >= 1, ZTGSYL computes a Frobenius norm-based estimate of
-     !> Dif[(A,D),(B,E)]. That is, the reciprocal of a lower bound on the
-     !> reciprocal of the smallest singular value of Z.
-     !> This is a level-3 BLAS algorithm.
 
      pure subroutine stdlib_ztgsyl( trans, ijob, m, n, a, lda, b, ldb, c, ldc, d,ldd, e, lde, f, &
+     !! ZTGSYL solves the generalized Sylvester equation:
+     !! A * R - L * B = scale * C            (1)
+     !! D * R - L * E = scale * F
+     !! where R and L are unknown m-by-n matrices, (A, D), (B, E) and
+     !! (C, F) are given matrix pairs of size m-by-m, n-by-n and m-by-n,
+     !! respectively, with complex entries. A, B, D and E are upper
+     !! triangular (i.e., (A,D) and (B,E) in generalized Schur form).
+     !! The solution (R, L) overwrites (C, F). 0 <= SCALE <= 1
+     !! is an output scaling factor chosen to avoid overflow.
+     !! In matrix notation (1) is equivalent to solve Zx = scale*b, where Z
+     !! is defined as
+     !! Z = [ kron(In, A)  -kron(B**H, Im) ]        (2)
+     !! [ kron(In, D)  -kron(E**H, Im) ],
+     !! Here Ix is the identity matrix of size x and X**H is the conjugate
+     !! transpose of X. Kron(X, Y) is the Kronecker product between the
+     !! matrices X and Y.
+     !! If TRANS = 'C', y in the conjugate transposed system Z**H *y = scale*b
+     !! is solved for, which is equivalent to solve for R and L in
+     !! A**H * R + D**H * L = scale * C           (3)
+     !! R * B**H + L * E**H = scale * -F
+     !! This case (TRANS = 'C') is used to compute an one-norm-based estimate
+     !! of Dif[(A,D), (B,E)], the separation between the matrix pairs (A,D)
+     !! and (B,E), using ZLACON.
+     !! If IJOB >= 1, ZTGSYL computes a Frobenius norm-based estimate of
+     !! Dif[(A,D),(B,E)]. That is, the reciprocal of a lower bound on the
+     !! reciprocal of the smallest singular value of Z.
+     !! This is a level-3 BLAS algorithm.
                ldf, scale, dif, work, lwork,iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -50469,14 +50465,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztgsyl
 
-     !> ZTPCON: estimates the reciprocal of the condition number of a packed
-     !> triangular matrix A, in either the 1-norm or the infinity-norm.
-     !> The norm of A is computed and an estimate is obtained for
-     !> norm(inv(A)), then the reciprocal of the condition number is
-     !> computed as
-     !> RCOND = 1 / ( norm(A) * norm(inv(A)) ).
 
      subroutine stdlib_ztpcon( norm, uplo, diag, n, ap, rcond, work, rwork,info )
+     !! ZTPCON estimates the reciprocal of the condition number of a packed
+     !! triangular matrix A, in either the 1-norm or the infinity-norm.
+     !! The norm of A is computed and an estimate is obtained for
+     !! norm(inv(A)), then the reciprocal of the condition number is
+     !! computed as
+     !! RCOND = 1 / ( norm(A) * norm(inv(A)) ).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -50573,12 +50569,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztpcon
 
-     !> ZTPLQT: computes a blocked LQ factorization of a complex
-     !> "triangular-pentagonal" matrix C, which is composed of a
-     !> triangular block A and pentagonal block B, using the compact
-     !> WY representation for Q.
 
      pure subroutine stdlib_ztplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
+     !! ZTPLQT computes a blocked LQ factorization of a complex
+     !! "triangular-pentagonal" matrix C, which is composed of a
+     !! triangular block A and pentagonal block B, using the compact
+     !! WY representation for Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -50635,11 +50631,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztplqt
 
-     !> ZTPMLQT: applies a complex unitary matrix Q obtained from a
-     !> "triangular-pentagonal" complex block reflector H to a general
-     !> complex matrix C, which consists of two blocks A and B.
 
      pure subroutine stdlib_ztpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
+     !! ZTPMLQT applies a complex unitary matrix Q obtained from a
+     !! "triangular-pentagonal" complex block reflector H to a general
+     !! complex matrix C, which consists of two blocks A and B.
                work, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -50753,11 +50749,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztpmlqt
 
-     !> ZTPMQRT: applies a complex orthogonal matrix Q obtained from a
-     !> "triangular-pentagonal" complex block reflector H to a general
-     !> complex matrix C, which consists of two blocks A and B.
 
      pure subroutine stdlib_ztpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
+     !! ZTPMQRT applies a complex orthogonal matrix Q obtained from a
+     !! "triangular-pentagonal" complex block reflector H to a general
+     !! complex matrix C, which consists of two blocks A and B.
                work, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -50873,12 +50869,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztpmqrt
 
-     !> ZTPQRT: computes a blocked QR factorization of a complex
-     !> "triangular-pentagonal" matrix C, which is composed of a
-     !> triangular block A and pentagonal block B, using the compact
-     !> WY representation for Q.
 
      pure subroutine stdlib_ztpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
+     !! ZTPQRT computes a blocked QR factorization of a complex
+     !! "triangular-pentagonal" matrix C, which is composed of a
+     !! triangular block A and pentagonal block B, using the compact
+     !! WY representation for Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -50935,14 +50931,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztpqrt
 
-     !> ZTRCON: estimates the reciprocal of the condition number of a
-     !> triangular matrix A, in either the 1-norm or the infinity-norm.
-     !> The norm of A is computed and an estimate is obtained for
-     !> norm(inv(A)), then the reciprocal of the condition number is
-     !> computed as
-     !> RCOND = 1 / ( norm(A) * norm(inv(A)) ).
 
      subroutine stdlib_ztrcon( norm, uplo, diag, n, a, lda, rcond, work,rwork, info )
+     !! ZTRCON estimates the reciprocal of the condition number of a
+     !! triangular matrix A, in either the 1-norm or the infinity-norm.
+     !! The norm of A is computed and an estimate is obtained for
+     !! norm(inv(A)), then the reciprocal of the condition number is
+     !! computed as
+     !! RCOND = 1 / ( norm(A) * norm(inv(A)) ).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -51041,15 +51037,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrcon
 
-     !> ZTRSYL: solves the complex Sylvester matrix equation:
-     !> op(A)*X + X*op(B) = scale*C or
-     !> op(A)*X - X*op(B) = scale*C,
-     !> where op(A) = A or A**H, and A and B are both upper triangular. A is
-     !> M-by-M and B is N-by-N; the right hand side C and the solution X are
-     !> M-by-N; and scale is an output scale factor, set <= 1 to avoid
-     !> overflow in X.
 
      subroutine stdlib_ztrsyl( trana, tranb, isgn, m, n, a, lda, b, ldb, c,ldc, scale, info )
+     !! ZTRSYL solves the complex Sylvester matrix equation:
+     !! op(A)*X + X*op(B) = scale*C or
+     !! op(A)*X - X*op(B) = scale*C,
+     !! where op(A) = A or A**H, and A and B are both upper triangular. A is
+     !! M-by-M and B is N-by-N; the right hand side C and the solution X are
+     !! M-by-N; and scale is an output scale factor, set <= 1 to avoid
+     !! overflow in X.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -51267,19 +51263,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrsyl
 
-     !> ZUNBDB5: orthogonalizes the column vector
-     !> X = [ X1 ]
-     !> [ X2 ]
-     !> with respect to the columns of
-     !> Q = [ Q1 ] .
-     !> [ Q2 ]
-     !> The columns of Q must be orthonormal.
-     !> If the projection is zero according to Kahan's "twice is enough"
-     !> criterion, then some other vector from the orthogonal complement
-     !> is returned. This vector is chosen in an arbitrary but deterministic
-     !> way.
 
      pure subroutine stdlib_zunbdb5( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
+     !! ZUNBDB5 orthogonalizes the column vector
+     !! X = [ X1 ]
+     !! [ X2 ]
+     !! with respect to the columns of
+     !! Q = [ Q1 ] .
+     !! [ Q2 ]
+     !! The columns of Q must be orthonormal.
+     !! If the projection is zero according to Kahan's "twice is enough"
+     !! criterion, then some other vector from the orthogonal complement
+     !! is returned. This vector is chosen in an arbitrary but deterministic
+     !! way.
                lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -51366,21 +51362,21 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunbdb5
 
-     !> ZUNCSD: computes the CS decomposition of an M-by-M partitioned
-     !> unitary matrix X:
-     !> [  I  0  0 |  0  0  0 ]
-     !> [  0  C  0 |  0 -S  0 ]
-     !> [ X11 | X12 ]   [ U1 |    ] [  0  0  0 |  0  0 -I ] [ V1 |    ]**H
-     !> X = [-----------] = [---------] [---------------------] [---------]   .
-     !> [ X21 | X22 ]   [    | U2 ] [  0  0  0 |  I  0  0 ] [    | V2 ]
-     !> [  0  S  0 |  0  C  0 ]
-     !> [  0  0  I |  0  0  0 ]
-     !> X11 is P-by-Q. The unitary matrices U1, U2, V1, and V2 are P-by-P,
-     !> (M-P)-by-(M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. C and S are
-     !> R-by-R nonnegative diagonal matrices satisfying C^2 + S^2 = I, in
-     !> which R = MIN(P,M-P,Q,M-Q).
 
      recursive subroutine stdlib_zuncsd( jobu1, jobu2, jobv1t, jobv2t, trans,signs, m, p, q, x11, &
+     !! ZUNCSD computes the CS decomposition of an M-by-M partitioned
+     !! unitary matrix X:
+     !! [  I  0  0 |  0  0  0 ]
+     !! [  0  C  0 |  0 -S  0 ]
+     !! [ X11 | X12 ]   [ U1 |    ] [  0  0  0 |  0  0 -I ] [ V1 |    ]**H
+     !! X = [-----------] = [---------] [---------------------] [---------]   .
+     !! [ X21 | X22 ]   [    | U2 ] [  0  0  0 |  I  0  0 ] [    | V2 ]
+     !! [  0  S  0 |  0  C  0 ]
+     !! [  0  0  I |  0  0  0 ]
+     !! X11 is P-by-Q. The unitary matrices U1, U2, V1, and V2 are P-by-P,
+     !! (M-P)-by-(M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. C and S are
+     !! R-by-R nonnegative diagonal matrices satisfying C^2 + S^2 = I, in
+     !! which R = MIN(P,M-P,Q,M-Q).
      ldx11, x12,ldx12, x21, ldx21, x22, ldx22, theta,u1, ldu1, u2, ldu2, v1t, ldv1t, v2t,ldv2t, &
                work, lwork, rwork, lrwork,iwork, info )
         ! -- lapack computational routine --
@@ -51656,12 +51652,12 @@ module stdlib_linalg_lapack_z
            ! end stdlib_zuncsd
      end subroutine stdlib_zuncsd
 
-     !> ZUNGHR: generates a complex unitary matrix Q which is defined as the
-     !> product of IHI-ILO elementary reflectors of order N, as returned by
-     !> ZGEHRD:
-     !> Q = H(ilo) H(ilo+1) . . . H(ihi-1).
 
      pure subroutine stdlib_zunghr( n, ilo, ihi, a, lda, tau, work, lwork, info )
+     !! ZUNGHR generates a complex unitary matrix Q which is defined as the
+     !! product of IHI-ILO elementary reflectors of order N, as returned by
+     !! ZGEHRD:
+     !! Q = H(ilo) H(ilo+1) . . . H(ihi-1).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -51746,13 +51742,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunghr
 
-     !> ZUNGTR: generates a complex unitary matrix Q which is defined as the
-     !> product of n-1 elementary reflectors of order N, as returned by
-     !> ZHETRD:
-     !> if UPLO = 'U', Q = H(n-1) . . . H(2) H(1),
-     !> if UPLO = 'L', Q = H(1) H(2) . . . H(n-1).
 
      pure subroutine stdlib_zungtr( uplo, n, a, lda, tau, work, lwork, info )
+     !! ZUNGTR generates a complex unitary matrix Q which is defined as the
+     !! product of n-1 elementary reflectors of order N, as returned by
+     !! ZHETRD:
+     !! if UPLO = 'U', Q = H(n-1) . . . H(2) H(1),
+     !! if UPLO = 'L', Q = H(1) H(2) . . . H(n-1).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -51847,17 +51843,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zungtr
 
-     !> ZUNHR_COL: takes an M-by-N complex matrix Q_in with orthonormal columns
-     !> as input, stored in A, and performs Householder Reconstruction (HR),
-     !> i.e. reconstructs Householder vectors V(i) implicitly representing
-     !> another M-by-N matrix Q_out, with the property that Q_in = Q_out*S,
-     !> where S is an N-by-N diagonal matrix with diagonal entries
-     !> equal to +1 or -1. The Householder vectors (columns V(i) of V) are
-     !> stored in A on output, and the diagonal entries of S are stored in D.
-     !> Block reflectors are also returned in T
-     !> (same output format as ZGEQRT).
 
      pure subroutine stdlib_zunhr_col( m, n, nb, a, lda, t, ldt, d, info )
+     !! ZUNHR_COL takes an M-by-N complex matrix Q_in with orthonormal columns
+     !! as input, stored in A, and performs Householder Reconstruction (HR),
+     !! i.e. reconstructs Householder vectors V(i) implicitly representing
+     !! another M-by-N matrix Q_out, with the property that Q_in = Q_out*S,
+     !! where S is an N-by-N diagonal matrix with diagonal entries
+     !! equal to +1 or -1. The Householder vectors (columns V(i) of V) are
+     !! stored in A on output, and the diagonal entries of S are stored in D.
+     !! Block reflectors are also returned in T
+     !! (same output format as ZGEQRT).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -51984,16 +51980,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunhr_col
 
-     !> ZUNMHR: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix of order nq, with nq = m if
-     !> SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
-     !> IHI-ILO elementary reflectors, as returned by ZGEHRD:
-     !> Q = H(ilo) H(ilo+1) . . . H(ihi-1).
 
      pure subroutine stdlib_zunmhr( side, trans, m, n, ilo, ihi, a, lda, tau, c,ldc, work, lwork, &
+     !! ZUNMHR overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix of order nq, with nq = m if
+     !! SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
+     !! IHI-ILO elementary reflectors, as returned by ZGEHRD:
+     !! Q = H(ilo) H(ilo+1) . . . H(ihi-1).
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -52083,17 +52079,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunmhr
 
-     !> ZUNMTR: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix of order nq, with nq = m if
-     !> SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
-     !> nq-1 elementary reflectors, as returned by ZHETRD:
-     !> if UPLO = 'U', Q = H(nq-1) . . . H(2) H(1);
-     !> if UPLO = 'L', Q = H(1) H(2) . . . H(nq-1).
 
      pure subroutine stdlib_zunmtr( side, uplo, trans, m, n, a, lda, tau, c, ldc,work, lwork, &
+     !! ZUNMTR overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix of order nq, with nq = m if
+     !! SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
+     !! nq-1 elementary reflectors, as returned by ZHETRD:
+     !! if UPLO = 'U', Q = H(nq-1) . . . H(2) H(1);
+     !! if UPLO = 'L', Q = H(1) H(2) . . . H(nq-1).
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -52199,13 +52195,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunmtr
 
-     !> ZUPGTR: generates a complex unitary matrix Q which is defined as the
-     !> product of n-1 elementary reflectors H(i) of order n, as returned by
-     !> ZHPTRD using packed storage:
-     !> if UPLO = 'U', Q = H(n-1) . . . H(2) H(1),
-     !> if UPLO = 'L', Q = H(1) H(2) . . . H(n-1).
 
      pure subroutine stdlib_zupgtr( uplo, n, ap, tau, q, ldq, work, info )
+     !! ZUPGTR generates a complex unitary matrix Q which is defined as the
+     !! product of n-1 elementary reflectors H(i) of order n, as returned by
+     !! ZHPTRD using packed storage:
+     !! if UPLO = 'U', Q = H(n-1) . . . H(2) H(1),
+     !! if UPLO = 'L', Q = H(1) H(2) . . . H(n-1).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -52286,18 +52282,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zupgtr
 
-     !> ZUPMTR: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix of order nq, with nq = m if
-     !> SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
-     !> nq-1 elementary reflectors, as returned by ZHPTRD using packed
-     !> storage:
-     !> if UPLO = 'U', Q = H(nq-1) . . . H(2) H(1);
-     !> if UPLO = 'L', Q = H(1) H(2) . . . H(nq-1).
 
      pure subroutine stdlib_zupmtr( side, uplo, trans, m, n, ap, tau, c, ldc, work,info )
+     !! ZUPMTR overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix of order nq, with nq = m if
+     !! SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
+     !! nq-1 elementary reflectors, as returned by ZHPTRD using packed
+     !! storage:
+     !! if UPLO = 'U', Q = H(nq-1) . . . H(2) H(1);
+     !! if UPLO = 'L', Q = H(1) H(2) . . . H(nq-1).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -52443,36 +52439,36 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zupmtr
 
-     !> ZCPOSV: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N Hermitian positive definite matrix and X and B
-     !> are N-by-NRHS matrices.
-     !> ZCPOSV first attempts to factorize the matrix in COMPLEX and use this
-     !> factorization within an iterative refinement procedure to produce a
-     !> solution with COMPLEX*16 normwise backward error quality (see below).
-     !> If the approach fails the method switches to a COMPLEX*16
-     !> factorization and solve.
-     !> The iterative refinement is not going to be a winning strategy if
-     !> the ratio COMPLEX performance over COMPLEX*16 performance is too
-     !> small. A reasonable strategy should take the number of right-hand
-     !> sides and the size of the matrix into account. This might be done
-     !> with a call to ILAENV in the future. Up to now, we always try
-     !> iterative refinement.
-     !> The iterative refinement process is stopped if
-     !> ITER > ITERMAX
-     !> or for all the RHS we have:
-     !> RNRM < SQRT(N)*XNRM*ANRM*EPS*BWDMAX
-     !> where
-     !> o ITER is the number of the current iteration in the iterative
-     !> refinement process
-     !> o RNRM is the infinity-norm of the residual
-     !> o XNRM is the infinity-norm of the solution
-     !> o ANRM is the infinity-operator-norm of the matrix A
-     !> o EPS is the machine epsilon returned by DLAMCH('Epsilon')
-     !> The value ITERMAX and BWDMAX are fixed to 30 and 1.0D+00
-     !> respectively.
 
      subroutine stdlib_zcposv( uplo, n, nrhs, a, lda, b, ldb, x, ldx, work,swork, rwork, iter, &
+     !! ZCPOSV computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N Hermitian positive definite matrix and X and B
+     !! are N-by-NRHS matrices.
+     !! ZCPOSV first attempts to factorize the matrix in COMPLEX and use this
+     !! factorization within an iterative refinement procedure to produce a
+     !! solution with COMPLEX*16 normwise backward error quality (see below).
+     !! If the approach fails the method switches to a COMPLEX*16
+     !! factorization and solve.
+     !! The iterative refinement is not going to be a winning strategy if
+     !! the ratio COMPLEX performance over COMPLEX*16 performance is too
+     !! small. A reasonable strategy should take the number of right-hand
+     !! sides and the size of the matrix into account. This might be done
+     !! with a call to ILAENV in the future. Up to now, we always try
+     !! iterative refinement.
+     !! The iterative refinement process is stopped if
+     !! ITER > ITERMAX
+     !! or for all the RHS we have:
+     !! RNRM < SQRT(N)*XNRM*ANRM*EPS*BWDMAX
+     !! where
+     !! o ITER is the number of the current iteration in the iterative
+     !! refinement process
+     !! o RNRM is the infinity-norm of the residual
+     !! o XNRM is the infinity-norm of the solution
+     !! o ANRM is the infinity-operator-norm of the matrix A
+     !! o EPS is the machine epsilon returned by DLAMCH('Epsilon')
+     !! The value ITERMAX and BWDMAX are fixed to 30 and 1.0D+00
+     !! respectively.
                info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -52630,12 +52626,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zcposv
 
-     !> ZGBBRD: reduces a complex general m-by-n band matrix A to real upper
-     !> bidiagonal form B by a unitary transformation: Q**H * A * P = B.
-     !> The routine computes B, and optionally forms Q or P**H, or computes
-     !> Q**H*C for a given matrix C.
 
      pure subroutine stdlib_zgbbrd( vect, m, n, ncc, kl, ku, ab, ldab, d, e, q,ldq, pt, ldpt, c, &
+     !! ZGBBRD reduces a complex general m-by-n band matrix A to real upper
+     !! bidiagonal form B by a unitary transformation: Q**H * A * P = B.
+     !! The routine computes B, and optionally forms Q or P**H, or computes
+     !! Q**H*C for a given matrix C.
                ldc, work, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -52907,11 +52903,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgbbrd
 
-     !> ZGBRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is banded, and provides
-     !> error bounds and backward error estimates for the solution.
 
      pure subroutine stdlib_zgbrfs( trans, n, kl, ku, nrhs, ab, ldab, afb, ldafb,ipiv, b, ldb, x, &
+     !! ZGBRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is banded, and provides
+     !! error bounds and backward error estimates for the solution.
                ldx, ferr, berr, work, rwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -53113,16 +53109,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgbrfs
 
-     !> ZGBSV: computes the solution to a complex system of linear equations
-     !> A * X = B, where A is a band matrix of order N with KL subdiagonals
-     !> and KU superdiagonals, and X and B are N-by-NRHS matrices.
-     !> The LU decomposition with partial pivoting and row interchanges is
-     !> used to factor A as A = L * U, where L is a product of permutation
-     !> and unit lower triangular matrices with KL subdiagonals, and U is
-     !> upper triangular with KL+KU superdiagonals.  The factored form of A
-     !> is then used to solve the system of equations A * X = B.
 
      pure subroutine stdlib_zgbsv( n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb, info )
+     !! ZGBSV computes the solution to a complex system of linear equations
+     !! A * X = B, where A is a band matrix of order N with KL subdiagonals
+     !! and KU superdiagonals, and X and B are N-by-NRHS matrices.
+     !! The LU decomposition with partial pivoting and row interchanges is
+     !! used to factor A as A = L * U, where L is a product of permutation
+     !! and unit lower triangular matrices with KL subdiagonals, and U is
+     !! upper triangular with KL+KU superdiagonals.  The factored form of A
+     !! is then used to solve the system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -53165,14 +53161,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgbsv
 
-     !> ZGBSVX: uses the LU factorization to compute the solution to a complex
-     !> system of linear equations A * X = B, A**T * X = B, or A**H * X = B,
-     !> where A is a band matrix of order N with KL subdiagonals and KU
-     !> superdiagonals, and X and B are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_zgbsvx( fact, trans, n, kl, ku, nrhs, ab, ldab, afb,ldafb, ipiv, equed, r, &
+     !! ZGBSVX uses the LU factorization to compute the solution to a complex
+     !! system of linear equations A * X = B, A**T * X = B, or A**H * X = B,
+     !! where A is a band matrix of order N with KL subdiagonals and KU
+     !! superdiagonals, and X and B are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                c, b, ldb, x, ldx,rcond, ferr, berr, work, rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -53392,11 +53388,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgbsvx
 
-     !> ZGEBRD: reduces a general complex M-by-N matrix A to upper or lower
-     !> bidiagonal form B by a unitary transformation: Q**H * A * P = B.
-     !> If m >= n, B is upper bidiagonal; if m < n, B is lower bidiagonal.
 
      pure subroutine stdlib_zgebrd( m, n, a, lda, d, e, tauq, taup, work, lwork,info )
+     !! ZGEBRD reduces a general complex M-by-N matrix A to upper or lower
+     !! bidiagonal form B by a unitary transformation: Q**H * A * P = B.
+     !! If m >= n, B is upper bidiagonal; if m < n, B is lower bidiagonal.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -53499,10 +53495,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgebrd
 
-     !> ZGEHRD: reduces a complex general matrix A to upper Hessenberg form H by
-     !> an unitary similarity transformation:  Q**H * A * Q = H .
 
      pure subroutine stdlib_zgehrd( n, ilo, ihi, a, lda, tau, work, lwork, info )
+     !! ZGEHRD reduces a complex general matrix A to upper Hessenberg form H by
+     !! an unitary similarity transformation:  Q**H * A * Q = H .
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -53629,10 +53625,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgehrd
 
-     !> ZGELQT: computes a blocked LQ factorization of a complex M-by-N matrix A
-     !> using the compact WY representation of Q.
 
      pure subroutine stdlib_zgelqt( m, n, mb, a, lda, t, ldt, work, info )
+     !! ZGELQT computes a blocked LQ factorization of a complex M-by-N matrix A
+     !! using the compact WY representation of Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -53680,26 +53676,26 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgelqt
 
-     !> ZGELS: solves overdetermined or underdetermined complex linear systems
-     !> involving an M-by-N matrix A, or its conjugate-transpose, using a QR
-     !> or LQ factorization of A.  It is assumed that A has full rank.
-     !> The following options are provided:
-     !> 1. If TRANS = 'N' and m >= n:  find the least squares solution of
-     !> an overdetermined system, i.e., solve the least squares problem
-     !> minimize || B - A*X ||.
-     !> 2. If TRANS = 'N' and m < n:  find the minimum norm solution of
-     !> an underdetermined system A * X = B.
-     !> 3. If TRANS = 'C' and m >= n:  find the minimum norm solution of
-     !> an underdetermined system A**H * X = B.
-     !> 4. If TRANS = 'C' and m < n:  find the least squares solution of
-     !> an overdetermined system, i.e., solve the least squares problem
-     !> minimize || B - A**H * X ||.
-     !> Several right hand side vectors b and solution vectors x can be
-     !> handled in a single call; they are stored as the columns of the
-     !> M-by-NRHS right hand side matrix B and the N-by-NRHS solution
-     !> matrix X.
 
      subroutine stdlib_zgels( trans, m, n, nrhs, a, lda, b, ldb, work, lwork,info )
+     !! ZGELS solves overdetermined or underdetermined complex linear systems
+     !! involving an M-by-N matrix A, or its conjugate-transpose, using a QR
+     !! or LQ factorization of A.  It is assumed that A has full rank.
+     !! The following options are provided:
+     !! 1. If TRANS = 'N' and m >= n:  find the least squares solution of
+     !! an overdetermined system, i.e., solve the least squares problem
+     !! minimize || B - A*X ||.
+     !! 2. If TRANS = 'N' and m < n:  find the minimum norm solution of
+     !! an underdetermined system A * X = B.
+     !! 3. If TRANS = 'C' and m >= n:  find the minimum norm solution of
+     !! an underdetermined system A**H * X = B.
+     !! 4. If TRANS = 'C' and m < n:  find the least squares solution of
+     !! an overdetermined system, i.e., solve the least squares problem
+     !! minimize || B - A**H * X ||.
+     !! Several right hand side vectors b and solution vectors x can be
+     !! handled in a single call; they are stored as the columns of the
+     !! M-by-NRHS right hand side matrix B and the N-by-NRHS solution
+     !! matrix X.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -53898,10 +53894,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgels
 
-     !> ZGEQP3: computes a QR factorization with column pivoting of a
-     !> matrix A:  A*P = Q*R  using Level 3 BLAS.
 
      pure subroutine stdlib_zgeqp3( m, n, a, lda, jpvt, tau, work, lwork, rwork,info )
+     !! ZGEQP3 computes a QR factorization with column pivoting of a
+     !! matrix A:  A*P = Q*R  using Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -54050,10 +54046,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeqp3
 
-     !> ZGEQRT: computes a blocked QR factorization of a complex M-by-N matrix A
-     !> using the compact WY representation of Q.
 
      pure subroutine stdlib_zgeqrt( m, n, nb, a, lda, t, ldt, work, info )
+     !! ZGEQRT computes a blocked QR factorization of a complex M-by-N matrix A
+     !! using the compact WY representation of Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -54107,11 +54103,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeqrt
 
-     !> ZGERFS: improves the computed solution to a system of linear
-     !> equations and provides error bounds and backward error estimates for
-     !> the solution.
 
      pure subroutine stdlib_zgerfs( trans, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, ferr, &
+     !! ZGERFS improves the computed solution to a system of linear
+     !! equations and provides error bounds and backward error estimates for
+     !! the solution.
                berr, work, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -54304,16 +54300,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgerfs
 
-     !> ZGETRF: computes an LU factorization of a general M-by-N matrix A
-     !> using partial pivoting with row interchanges.
-     !> The factorization has the form
-     !> A = P * L * U
-     !> where P is a permutation matrix, L is lower triangular with unit
-     !> diagonal elements (lower trapezoidal if m > n), and U is upper
-     !> triangular (upper trapezoidal if m < n).
-     !> This is the right-looking Level 3 BLAS version of the algorithm.
 
      pure subroutine stdlib_zgetrf( m, n, a, lda, ipiv, info )
+     !! ZGETRF computes an LU factorization of a general M-by-N matrix A
+     !! using partial pivoting with row interchanges.
+     !! The factorization has the form
+     !! A = P * L * U
+     !! where P is a permutation matrix, L is lower triangular with unit
+     !! diagonal elements (lower trapezoidal if m > n), and U is upper
+     !! triangular (upper trapezoidal if m < n).
+     !! This is the right-looking Level 3 BLAS version of the algorithm.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -54382,26 +54378,26 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgetrf
 
-     !> ZGGGLM: solves a general Gauss-Markov linear model (GLM) problem:
-     !> minimize || y ||_2   subject to   d = A*x + B*y
-     !> x
-     !> where A is an N-by-M matrix, B is an N-by-P matrix, and d is a
-     !> given N-vector. It is assumed that M <= N <= M+P, and
-     !> rank(A) = M    and    rank( A B ) = N.
-     !> Under these assumptions, the constrained equation is always
-     !> consistent, and there is a unique solution x and a minimal 2-norm
-     !> solution y, which is obtained using a generalized QR factorization
-     !> of the matrices (A, B) given by
-     !> A = Q*(R),   B = Q*T*Z.
-     !> (0)
-     !> In particular, if matrix B is square nonsingular, then the problem
-     !> GLM is equivalent to the following weighted linear least squares
-     !> problem
-     !> minimize || inv(B)*(d-A*x) ||_2
-     !> x
-     !> where inv(B) denotes the inverse of B.
 
      pure subroutine stdlib_zggglm( n, m, p, a, lda, b, ldb, d, x, y, work, lwork,info )
+     !! ZGGGLM solves a general Gauss-Markov linear model (GLM) problem:
+     !! minimize || y ||_2   subject to   d = A*x + B*y
+     !! x
+     !! where A is an N-by-M matrix, B is an N-by-P matrix, and d is a
+     !! given N-vector. It is assumed that M <= N <= M+P, and
+     !! rank(A) = M    and    rank( A B ) = N.
+     !! Under these assumptions, the constrained equation is always
+     !! consistent, and there is a unique solution x and a minimal 2-norm
+     !! solution y, which is obtained using a generalized QR factorization
+     !! of the matrices (A, B) given by
+     !! A = Q*(R),   B = Q*T*Z.
+     !! (0)
+     !! In particular, if matrix B is square nonsingular, then the problem
+     !! GLM is equivalent to the following weighted linear least squares
+     !! problem
+     !! minimize || inv(B)*(d-A*x) ||_2
+     !! x
+     !! where inv(B) denotes the inverse of B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -54518,33 +54514,33 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zggglm
 
-     !> ZGGHD3: reduces a pair of complex matrices (A,B) to generalized upper
-     !> Hessenberg form using unitary transformations, where A is a
-     !> general matrix and B is upper triangular.  The form of the
-     !> generalized eigenvalue problem is
-     !> A*x = lambda*B*x,
-     !> and B is typically made upper triangular by computing its QR
-     !> factorization and moving the unitary matrix Q to the left side
-     !> of the equation.
-     !> This subroutine simultaneously reduces A to a Hessenberg matrix H:
-     !> Q**H*A*Z = H
-     !> and transforms B to another upper triangular matrix T:
-     !> Q**H*B*Z = T
-     !> in order to reduce the problem to its standard form
-     !> H*y = lambda*T*y
-     !> where y = Z**H*x.
-     !> The unitary matrices Q and Z are determined as products of Givens
-     !> rotations.  They may either be formed explicitly, or they may be
-     !> postmultiplied into input matrices Q1 and Z1, so that
-     !> Q1 * A * Z1**H = (Q1*Q) * H * (Z1*Z)**H
-     !> Q1 * B * Z1**H = (Q1*Q) * T * (Z1*Z)**H
-     !> If Q1 is the unitary matrix from the QR factorization of B in the
-     !> original equation A*x = lambda*B*x, then ZGGHD3 reduces the original
-     !> problem to generalized Hessenberg form.
-     !> This is a blocked variant of CGGHRD, using matrix-matrix
-     !> multiplications for parts of the computation to enhance performance.
 
      pure subroutine stdlib_zgghd3( compq, compz, n, ilo, ihi, a, lda, b, ldb, q,ldq, z, ldz, &
+     !! ZGGHD3 reduces a pair of complex matrices (A,B) to generalized upper
+     !! Hessenberg form using unitary transformations, where A is a
+     !! general matrix and B is upper triangular.  The form of the
+     !! generalized eigenvalue problem is
+     !! A*x = lambda*B*x,
+     !! and B is typically made upper triangular by computing its QR
+     !! factorization and moving the unitary matrix Q to the left side
+     !! of the equation.
+     !! This subroutine simultaneously reduces A to a Hessenberg matrix H:
+     !! Q**H*A*Z = H
+     !! and transforms B to another upper triangular matrix T:
+     !! Q**H*B*Z = T
+     !! in order to reduce the problem to its standard form
+     !! H*y = lambda*T*y
+     !! where y = Z**H*x.
+     !! The unitary matrices Q and Z are determined as products of Givens
+     !! rotations.  They may either be formed explicitly, or they may be
+     !! postmultiplied into input matrices Q1 and Z1, so that
+     !! Q1 * A * Z1**H = (Q1*Q) * H * (Z1*Z)**H
+     !! Q1 * B * Z1**H = (Q1*Q) * T * (Z1*Z)**H
+     !! If Q1 is the unitary matrix from the QR factorization of B in the
+     !! original equation A*x = lambda*B*x, then ZGGHD3 reduces the original
+     !! problem to generalized Hessenberg form.
+     !! This is a blocked variant of CGGHRD, using matrix-matrix
+     !! multiplications for parts of the computation to enhance performance.
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -55048,20 +55044,20 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgghd3
 
-     !> ZGGLSE: solves the linear equality-constrained least squares (LSE)
-     !> problem:
-     !> minimize || c - A*x ||_2   subject to   B*x = d
-     !> where A is an M-by-N matrix, B is a P-by-N matrix, c is a given
-     !> M-vector, and d is a given P-vector. It is assumed that
-     !> P <= N <= M+P, and
-     !> rank(B) = P and  rank( (A) ) = N.
-     !> ( (B) )
-     !> These conditions ensure that the LSE problem has a unique solution,
-     !> which is obtained using a generalized RQ factorization of the
-     !> matrices (B, A) given by
-     !> B = (0 R)*Q,   A = Z*T*Q.
 
      pure subroutine stdlib_zgglse( m, n, p, a, lda, b, ldb, c, d, x, work, lwork,info )
+     !! ZGGLSE solves the linear equality-constrained least squares (LSE)
+     !! problem:
+     !! minimize || c - A*x ||_2   subject to   B*x = d
+     !! where A is an M-by-N matrix, B is a P-by-N matrix, c is a given
+     !! M-vector, and d is a given P-vector. It is assumed that
+     !! P <= N <= M+P, and
+     !! rank(B) = P and  rank( (A) ) = N.
+     !! ( (B) )
+     !! These conditions ensure that the LSE problem has a unique solution,
+     !! which is obtained using a generalized RQ factorization of the
+     !! matrices (B, A) given by
+     !! B = (0 R)*Q,   A = Z*T*Q.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -55180,13 +55176,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgglse
 
-     !> ZGTCON: estimates the reciprocal of the condition number of a complex
-     !> tridiagonal matrix A using the LU factorization as computed by
-     !> ZGTTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_zgtcon( norm, n, dl, d, du, du2, ipiv, anorm, rcond,work, info )
+     !! ZGTCON estimates the reciprocal of the condition number of a complex
+     !! tridiagonal matrix A using the LU factorization as computed by
+     !! ZGTTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -55264,11 +55260,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgtcon
 
-     !> ZGTRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is tridiagonal, and provides
-     !> error bounds and backward error estimates for the solution.
 
      pure subroutine stdlib_zgtrfs( trans, n, nrhs, dl, d, du, dlf, df, duf, du2,ipiv, b, ldb, x, &
+     !! ZGTRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is tridiagonal, and provides
+     !! error bounds and backward error estimates for the solution.
                ldx, ferr, berr, work, rwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -55471,14 +55467,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgtrfs
 
-     !> ZGTSVX: uses the LU factorization to compute the solution to a complex
-     !> system of linear equations A * X = B, A**T * X = B, or A**H * X = B,
-     !> where A is a tridiagonal matrix of order N and X and B are N-by-NRHS
-     !> matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      pure subroutine stdlib_zgtsvx( fact, trans, n, nrhs, dl, d, du, dlf, df, duf,du2, ipiv, b, &
+     !! ZGTSVX uses the LU factorization to compute the solution to a complex
+     !! system of linear equations A * X = B, A**T * X = B, or A**H * X = B,
+     !! where A is a tridiagonal matrix of order N and X and B are N-by-NRHS
+     !! matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                ldb, x, ldx, rcond, ferr, berr,work, rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -55559,15 +55555,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgtsvx
 
-     !> ZHBGST: reduces a complex Hermitian-definite banded generalized
-     !> eigenproblem  A*x = lambda*B*x  to standard form  C*y = lambda*y,
-     !> such that C has the same bandwidth as A.
-     !> B must have been previously factorized as S**H*S by ZPBSTF, using a
-     !> split Cholesky factorization. A is overwritten by C = X**H*A*X, where
-     !> X = S**(-1)*Q and Q is a unitary matrix chosen to preserve the
-     !> bandwidth of A.
 
      pure subroutine stdlib_zhbgst( vect, uplo, n, ka, kb, ab, ldab, bb, ldbb, x,ldx, work, rwork,&
+     !! ZHBGST reduces a complex Hermitian-definite banded generalized
+     !! eigenproblem  A*x = lambda*B*x  to standard form  C*y = lambda*y,
+     !! such that C has the same bandwidth as A.
+     !! B must have been previously factorized as S**H*S by ZPBSTF, using a
+     !! split Cholesky factorization. A is overwritten by C = X**H*A*X, where
+     !! X = S**(-1)*Q and Q is a unitary matrix chosen to preserve the
+     !! bandwidth of A.
                 info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -56491,11 +56487,11 @@ module stdlib_linalg_lapack_z
            go to 490
      end subroutine stdlib_zhbgst
 
-     !> ZHBTRD: reduces a complex Hermitian band matrix A to real symmetric
-     !> tridiagonal form T by a unitary similarity transformation:
-     !> Q**H * A * Q = T.
 
      pure subroutine stdlib_zhbtrd( vect, uplo, n, kd, ab, ldab, d, e, q, ldq,work, info )
+     !! ZHBTRD reduces a complex Hermitian band matrix A to real symmetric
+     !! tridiagonal form T by a unitary similarity transformation:
+     !! Q**H * A * Q = T.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -56855,13 +56851,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhbtrd
 
-     !> ZHECON: estimates the reciprocal of the condition number of a complex
-     !> Hermitian matrix A using the factorization A = U*D*U**H or
-     !> A = L*D*L**H computed by ZHETRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_zhecon( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
+     !! ZHECON estimates the reciprocal of the condition number of a complex
+     !! Hermitian matrix A using the factorization A = U*D*U**H or
+     !! A = L*D*L**H computed by ZHETRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -56936,13 +56932,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhecon
 
-     !> ZHECON_ROOK: estimates the reciprocal of the condition number of a complex
-     !> Hermitian matrix A using the factorization A = U*D*U**H or
-     !> A = L*D*L**H computed by CHETRF_ROOK.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_zhecon_rook( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
+     !! ZHECON_ROOK estimates the reciprocal of the condition number of a complex
+     !! Hermitian matrix A using the factorization A = U*D*U**H or
+     !! A = L*D*L**H computed by CHETRF_ROOK.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -57017,10 +57013,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhecon_rook
 
-     !> ZHEEV: computes all eigenvalues and, optionally, eigenvectors of a
-     !> complex Hermitian matrix A.
 
      subroutine stdlib_zheev( jobz, uplo, n, a, lda, w, work, lwork, rwork,info )
+     !! ZHEEV computes all eigenvalues and, optionally, eigenvectors of a
+     !! complex Hermitian matrix A.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -57128,58 +57124,58 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zheev
 
-     !> ZHEEVR: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a complex Hermitian matrix A.  Eigenvalues and eigenvectors can
-     !> be selected by specifying either a range of values or a range of
-     !> indices for the desired eigenvalues.
-     !> ZHEEVR first reduces the matrix A to tridiagonal form T with a call
-     !> to ZHETRD.  Then, whenever possible, ZHEEVR calls ZSTEMR to compute
-     !> eigenspectrum using Relatively Robust Representations.  ZSTEMR
-     !> computes eigenvalues by the dqds algorithm, while orthogonal
-     !> eigenvectors are computed from various "good" L D L^T representations
-     !> (also known as Relatively Robust Representations). Gram-Schmidt
-     !> orthogonalization is avoided as far as possible. More specifically,
-     !> the various steps of the algorithm are as follows.
-     !> For each unreduced block (submatrix) of T,
-     !> (a) Compute T - sigma I  = L D L^T, so that L and D
-     !> define all the wanted eigenvalues to high relative accuracy.
-     !> This means that small relative changes in the entries of D and L
-     !> cause only small relative changes in the eigenvalues and
-     !> eigenvectors. The standard (unfactored) representation of the
-     !> tridiagonal matrix T does not have this property in general.
-     !> (b) Compute the eigenvalues to suitable accuracy.
-     !> If the eigenvectors are desired, the algorithm attains full
-     !> accuracy of the computed eigenvalues only right before
-     !> the corresponding vectors have to be computed, see steps c) and d).
-     !> (c) For each cluster of close eigenvalues, select a new
-     !> shift close to the cluster, find a new factorization, and refine
-     !> the shifted eigenvalues to suitable accuracy.
-     !> (d) For each eigenvalue with a large enough relative separation compute
-     !> the corresponding eigenvector by forming a rank revealing twisted
-     !> factorization. Go back to (c) for any clusters that remain.
-     !> The desired accuracy of the output can be specified by the input
-     !> parameter ABSTOL.
-     !> For more details, see ZSTEMR's documentation and:
-     !> - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
-     !> to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
-     !> Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
-     !> - Inderjit Dhillon and Beresford Parlett: "Orthogonal Eigenvectors and
-     !> Relative Gaps," SIAM Journal on Matrix Analysis and Applications, Vol. 25,
-     !> 2004.  Also LAPACK Working Note 154.
-     !> - Inderjit Dhillon: "A new O(n^2) algorithm for the symmetric
-     !> tridiagonal eigenvalue/eigenvector problem",
-     !> Computer Science Division Technical Report No. UCB/CSD-97-971,
-     !> UC Berkeley, May 1997.
-     !> Note 1 : ZHEEVR calls ZSTEMR when the full spectrum is requested
-     !> on machines which conform to the ieee-754 floating point standard.
-     !> ZHEEVR calls DSTEBZ and ZSTEIN on non-ieee machines and
-     !> when partial spectrum requests are made.
-     !> Normal execution of ZSTEMR may create NaNs and infinities and
-     !> hence may abort due to a floating point exception in environments
-     !> which do not handle NaNs and infinities in the ieee standard default
-     !> manner.
 
      subroutine stdlib_zheevr( jobz, range, uplo, n, a, lda, vl, vu, il, iu,abstol, m, w, z, ldz, &
+     !! ZHEEVR computes selected eigenvalues and, optionally, eigenvectors
+     !! of a complex Hermitian matrix A.  Eigenvalues and eigenvectors can
+     !! be selected by specifying either a range of values or a range of
+     !! indices for the desired eigenvalues.
+     !! ZHEEVR first reduces the matrix A to tridiagonal form T with a call
+     !! to ZHETRD.  Then, whenever possible, ZHEEVR calls ZSTEMR to compute
+     !! eigenspectrum using Relatively Robust Representations.  ZSTEMR
+     !! computes eigenvalues by the dqds algorithm, while orthogonal
+     !! eigenvectors are computed from various "good" L D L^T representations
+     !! (also known as Relatively Robust Representations). Gram-Schmidt
+     !! orthogonalization is avoided as far as possible. More specifically,
+     !! the various steps of the algorithm are as follows.
+     !! For each unreduced block (submatrix) of T,
+     !! (a) Compute T - sigma I  = L D L^T, so that L and D
+     !! define all the wanted eigenvalues to high relative accuracy.
+     !! This means that small relative changes in the entries of D and L
+     !! cause only small relative changes in the eigenvalues and
+     !! eigenvectors. The standard (unfactored) representation of the
+     !! tridiagonal matrix T does not have this property in general.
+     !! (b) Compute the eigenvalues to suitable accuracy.
+     !! If the eigenvectors are desired, the algorithm attains full
+     !! accuracy of the computed eigenvalues only right before
+     !! the corresponding vectors have to be computed, see steps c) and d).
+     !! (c) For each cluster of close eigenvalues, select a new
+     !! shift close to the cluster, find a new factorization, and refine
+     !! the shifted eigenvalues to suitable accuracy.
+     !! (d) For each eigenvalue with a large enough relative separation compute
+     !! the corresponding eigenvector by forming a rank revealing twisted
+     !! factorization. Go back to (c) for any clusters that remain.
+     !! The desired accuracy of the output can be specified by the input
+     !! parameter ABSTOL.
+     !! For more details, see ZSTEMR's documentation and:
+     !! - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
+     !! to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
+     !! Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
+     !! - Inderjit Dhillon and Beresford Parlett: "Orthogonal Eigenvectors and
+     !! Relative Gaps," SIAM Journal on Matrix Analysis and Applications, Vol. 25,
+     !! 2004.  Also LAPACK Working Note 154.
+     !! - Inderjit Dhillon: "A new O(n^2) algorithm for the symmetric
+     !! tridiagonal eigenvalue/eigenvector problem",
+     !! Computer Science Division Technical Report No. UCB/CSD-97-971,
+     !! UC Berkeley, May 1997.
+     !! Note 1 : ZHEEVR calls ZSTEMR when the full spectrum is requested
+     !! on machines which conform to the ieee-754 floating point standard.
+     !! ZHEEVR calls DSTEBZ and ZSTEIN on non-ieee machines and
+     !! when partial spectrum requests are made.
+     !! Normal execution of ZSTEMR may create NaNs and infinities and
+     !! hence may abort due to a floating point exception in environments
+     !! which do not handle NaNs and infinities in the ieee standard default
+     !! manner.
                isuppz, work, lwork,rwork, lrwork, iwork, liwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -57467,12 +57463,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zheevr
 
-     !> ZHEEVX: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a complex Hermitian matrix A.  Eigenvalues and eigenvectors can
-     !> be selected by specifying either a range of values or a range of
-     !> indices for the desired eigenvalues.
 
      subroutine stdlib_zheevx( jobz, range, uplo, n, a, lda, vl, vu, il, iu,abstol, m, w, z, ldz, &
+     !! ZHEEVX computes selected eigenvalues and, optionally, eigenvectors
+     !! of a complex Hermitian matrix A.  Eigenvalues and eigenvectors can
+     !! be selected by specifying either a range of values or a range of
+     !! indices for the desired eigenvalues.
                work, lwork, rwork,iwork, ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -57714,13 +57710,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zheevx
 
-     !> ZHEGV: computes all the eigenvalues, and optionally, the eigenvectors
-     !> of a complex generalized Hermitian-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.
-     !> Here A and B are assumed to be Hermitian and B is also
-     !> positive definite.
 
      subroutine stdlib_zhegv( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, rwork, info )
+     !! ZHEGV computes all the eigenvalues, and optionally, the eigenvectors
+     !! of a complex generalized Hermitian-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.
+     !! Here A and B are assumed to be Hermitian and B is also
+     !! positive definite.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -57815,14 +57811,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhegv
 
-     !> ZHEGVX: computes selected eigenvalues, and optionally, eigenvectors
-     !> of a complex generalized Hermitian-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
-     !> B are assumed to be Hermitian and B is also positive definite.
-     !> Eigenvalues and eigenvectors can be selected by specifying either a
-     !> range of values or a range of indices for the desired eigenvalues.
 
      subroutine stdlib_zhegvx( itype, jobz, range, uplo, n, a, lda, b, ldb,vl, vu, il, iu, abstol,&
+     !! ZHEGVX computes selected eigenvalues, and optionally, eigenvectors
+     !! of a complex generalized Hermitian-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
+     !! B are assumed to be Hermitian and B is also positive definite.
+     !! Eigenvalues and eigenvectors can be selected by specifying either a
+     !! range of values or a range of indices for the desired eigenvalues.
                 m, w, z, ldz, work,lwork, rwork, iwork, ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -57943,11 +57939,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhegvx
 
-     !> ZHERFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is Hermitian indefinite, and
-     !> provides error bounds and backward error estimates for the solution.
 
      pure subroutine stdlib_zherfs( uplo, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, ferr, &
+     !! ZHERFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is Hermitian indefinite, and
+     !! provides error bounds and backward error estimates for the solution.
                berr, work, rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -58136,19 +58132,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zherfs
 
-     !> ZHESV: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N Hermitian matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> The diagonal pivoting method is used to factor A as
-     !> A = U * D * U**H,  if UPLO = 'U', or
-     !> A = L * D * L**H,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is Hermitian and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.  The factored form of A is then
-     !> used to solve the system of equations A * X = B.
 
      pure subroutine stdlib_zhesv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
+     !! ZHESV computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N Hermitian matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! The diagonal pivoting method is used to factor A as
+     !! A = U * D * U**H,  if UPLO = 'U', or
+     !! A = L * D * L**H,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is Hermitian and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.  The factored form of A is then
+     !! used to solve the system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -58214,22 +58210,22 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhesv
 
-     !> ZHESV_RK: computes the solution to a complex system of linear
-     !> equations A * X = B, where A is an N-by-N Hermitian matrix
-     !> and X and B are N-by-NRHS matrices.
-     !> The bounded Bunch-Kaufman (rook) diagonal pivoting method is used
-     !> to factor A as
-     !> A = P*U*D*(U**H)*(P**T),  if UPLO = 'U', or
-     !> A = P*L*D*(L**H)*(P**T),  if UPLO = 'L',
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**H (or L**H) is the conjugate of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is Hermitian and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> ZHETRF_RK is called to compute the factorization of a complex
-     !> Hermitian matrix.  The factored form of A is then used to solve
-     !> the system of equations A * X = B by calling BLAS3 routine ZHETRS_3.
 
      pure subroutine stdlib_zhesv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb, work,lwork, info )
+     !! ZHESV_RK computes the solution to a complex system of linear
+     !! equations A * X = B, where A is an N-by-N Hermitian matrix
+     !! and X and B are N-by-NRHS matrices.
+     !! The bounded Bunch-Kaufman (rook) diagonal pivoting method is used
+     !! to factor A as
+     !! A = P*U*D*(U**H)*(P**T),  if UPLO = 'U', or
+     !! A = P*L*D*(L**H)*(P**T),  if UPLO = 'L',
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**H (or L**H) is the conjugate of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is Hermitian and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! ZHETRF_RK is called to compute the factorization of a complex
+     !! Hermitian matrix.  The factored form of A is then used to solve
+     !! the system of equations A * X = B by calling BLAS3 routine ZHETRS_3.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -58291,24 +58287,24 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhesv_rk
 
-     !> ZHESV_ROOK: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N Hermitian matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> The bounded Bunch-Kaufman ("rook") diagonal pivoting method is used
-     !> to factor A as
-     !> A = U * D * U**T,  if UPLO = 'U', or
-     !> A = L * D * L**T,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is Hermitian and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
-     !> ZHETRF_ROOK is called to compute the factorization of a complex
-     !> Hermition matrix A using the bounded Bunch-Kaufman ("rook") diagonal
-     !> pivoting method.
-     !> The factored form of A is then used to solve the system
-     !> of equations A * X = B by calling ZHETRS_ROOK (uses BLAS 2).
 
      pure subroutine stdlib_zhesv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
+     !! ZHESV_ROOK computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N Hermitian matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! The bounded Bunch-Kaufman ("rook") diagonal pivoting method is used
+     !! to factor A as
+     !! A = U * D * U**T,  if UPLO = 'U', or
+     !! A = L * D * L**T,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is Hermitian and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
+     !! ZHETRF_ROOK is called to compute the factorization of a complex
+     !! Hermition matrix A using the bounded Bunch-Kaufman ("rook") diagonal
+     !! pivoting method.
+     !! The factored form of A is then used to solve the system
+     !! of equations A * X = B by calling ZHETRS_ROOK (uses BLAS 2).
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -58370,14 +58366,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhesv_rook
 
-     !> ZHESVX: uses the diagonal pivoting factorization to compute the
-     !> solution to a complex system of linear equations A * X = B,
-     !> where A is an N-by-N Hermitian matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_zhesvx( fact, uplo, n, nrhs, a, lda, af, ldaf, ipiv, b,ldb, x, ldx, rcond, &
+     !! ZHESVX uses the diagonal pivoting factorization to compute the
+     !! solution to a complex system of linear equations A * X = B,
+     !! where A is an N-by-N Hermitian matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                ferr, berr, work, lwork,rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -58467,41 +58463,41 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhesvx
 
-     !> ZHGEQZ: computes the eigenvalues of a complex matrix pair (H,T),
-     !> where H is an upper Hessenberg matrix and T is upper triangular,
-     !> using the single-shift QZ method.
-     !> Matrix pairs of this type are produced by the reduction to
-     !> generalized upper Hessenberg form of a complex matrix pair (A,B):
-     !> A = Q1*H*Z1**H,  B = Q1*T*Z1**H,
-     !> as computed by ZGGHRD.
-     !> If JOB='S', then the Hessenberg-triangular pair (H,T) is
-     !> also reduced to generalized Schur form,
-     !> H = Q*S*Z**H,  T = Q*P*Z**H,
-     !> where Q and Z are unitary matrices and S and P are upper triangular.
-     !> Optionally, the unitary matrix Q from the generalized Schur
-     !> factorization may be postmultiplied into an input matrix Q1, and the
-     !> unitary matrix Z may be postmultiplied into an input matrix Z1.
-     !> If Q1 and Z1 are the unitary matrices from ZGGHRD that reduced
-     !> the matrix pair (A,B) to generalized Hessenberg form, then the output
-     !> matrices Q1*Q and Z1*Z are the unitary factors from the generalized
-     !> Schur factorization of (A,B):
-     !> A = (Q1*Q)*S*(Z1*Z)**H,  B = (Q1*Q)*P*(Z1*Z)**H.
-     !> To avoid overflow, eigenvalues of the matrix pair (H,T)
-     !> (equivalently, of (A,B)) are computed as a pair of complex values
-     !> (alpha,beta).  If beta is nonzero, lambda = alpha / beta is an
-     !> eigenvalue of the generalized nonsymmetric eigenvalue problem (GNEP)
-     !> A*x = lambda*B*x
-     !> and if alpha is nonzero, mu = beta / alpha is an eigenvalue of the
-     !> alternate form of the GNEP
-     !> mu*A*y = B*y.
-     !> The values of alpha and beta for the i-th eigenvalue can be read
-     !> directly from the generalized Schur form:  alpha = S(i,i),
-     !> beta = P(i,i).
-     !> Ref: C.B. Moler
-     !> Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
-     !> pp. 241--256.
 
      subroutine stdlib_zhgeqz( job, compq, compz, n, ilo, ihi, h, ldh, t, ldt,alpha, beta, q, ldq,&
+     !! ZHGEQZ computes the eigenvalues of a complex matrix pair (H,T),
+     !! where H is an upper Hessenberg matrix and T is upper triangular,
+     !! using the single-shift QZ method.
+     !! Matrix pairs of this type are produced by the reduction to
+     !! generalized upper Hessenberg form of a complex matrix pair (A,B):
+     !! A = Q1*H*Z1**H,  B = Q1*T*Z1**H,
+     !! as computed by ZGGHRD.
+     !! If JOB='S', then the Hessenberg-triangular pair (H,T) is
+     !! also reduced to generalized Schur form,
+     !! H = Q*S*Z**H,  T = Q*P*Z**H,
+     !! where Q and Z are unitary matrices and S and P are upper triangular.
+     !! Optionally, the unitary matrix Q from the generalized Schur
+     !! factorization may be postmultiplied into an input matrix Q1, and the
+     !! unitary matrix Z may be postmultiplied into an input matrix Z1.
+     !! If Q1 and Z1 are the unitary matrices from ZGGHRD that reduced
+     !! the matrix pair (A,B) to generalized Hessenberg form, then the output
+     !! matrices Q1*Q and Z1*Z are the unitary factors from the generalized
+     !! Schur factorization of (A,B):
+     !! A = (Q1*Q)*S*(Z1*Z)**H,  B = (Q1*Q)*P*(Z1*Z)**H.
+     !! To avoid overflow, eigenvalues of the matrix pair (H,T)
+     !! (equivalently, of (A,B)) are computed as a pair of complex values
+     !! (alpha,beta).  If beta is nonzero, lambda = alpha / beta is an
+     !! eigenvalue of the generalized nonsymmetric eigenvalue problem (GNEP)
+     !! A*x = lambda*B*x
+     !! and if alpha is nonzero, mu = beta / alpha is an eigenvalue of the
+     !! alternate form of the GNEP
+     !! mu*A*y = B*y.
+     !! The values of alpha and beta for the i-th eigenvalue can be read
+     !! directly from the generalized Schur form:  alpha = S(i,i),
+     !! beta = P(i,i).
+     !! Ref: C.B. Moler
+     !! Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
+     !! pp. 241--256.
                 z, ldz, work, lwork,rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -58967,13 +58963,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhgeqz
 
-     !> ZHPCON: estimates the reciprocal of the condition number of a complex
-     !> Hermitian packed matrix A using the factorization A = U*D*U**H or
-     !> A = L*D*L**H computed by ZHPTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_zhpcon( uplo, n, ap, ipiv, anorm, rcond, work, info )
+     !! ZHPCON estimates the reciprocal of the condition number of a complex
+     !! Hermitian packed matrix A using the factorization A = U*D*U**H or
+     !! A = L*D*L**H computed by ZHPTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -59048,10 +59044,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhpcon
 
-     !> ZHPEV: computes all the eigenvalues and, optionally, eigenvectors of a
-     !> complex Hermitian matrix in packed storage.
 
      subroutine stdlib_zhpev( jobz, uplo, n, ap, w, z, ldz, work, rwork,info )
+     !! ZHPEV computes all the eigenvalues and, optionally, eigenvectors of a
+     !! complex Hermitian matrix in packed storage.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -59145,12 +59141,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhpev
 
-     !> ZHPEVX: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a complex Hermitian matrix A in packed storage.
-     !> Eigenvalues/vectors can be selected by specifying either a range of
-     !> values or a range of indices for the desired eigenvalues.
 
      subroutine stdlib_zhpevx( jobz, range, uplo, n, ap, vl, vu, il, iu,abstol, m, w, z, ldz, &
+     !! ZHPEVX computes selected eigenvalues and, optionally, eigenvectors
+     !! of a complex Hermitian matrix A in packed storage.
+     !! Eigenvalues/vectors can be selected by specifying either a range of
+     !! values or a range of indices for the desired eigenvalues.
                work, rwork, iwork,ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -59362,13 +59358,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhpevx
 
-     !> ZHPGV: computes all the eigenvalues and, optionally, the eigenvectors
-     !> of a complex generalized Hermitian-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.
-     !> Here A and B are assumed to be Hermitian, stored in packed format,
-     !> and B is also positive definite.
 
      subroutine stdlib_zhpgv( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,rwork, info )
+     !! ZHPGV computes all the eigenvalues and, optionally, the eigenvectors
+     !! of a complex generalized Hermitian-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.
+     !! Here A and B are assumed to be Hermitian, stored in packed format,
+     !! and B is also positive definite.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -59447,15 +59443,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhpgv
 
-     !> ZHPGVX: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a complex generalized Hermitian-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
-     !> B are assumed to be Hermitian, stored in packed format, and B is also
-     !> positive definite.  Eigenvalues and eigenvectors can be selected by
-     !> specifying either a range of values or a range of indices for the
-     !> desired eigenvalues.
 
      subroutine stdlib_zhpgvx( itype, jobz, range, uplo, n, ap, bp, vl, vu,il, iu, abstol, m, w, &
+     !! ZHPGVX computes selected eigenvalues and, optionally, eigenvectors
+     !! of a complex generalized Hermitian-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
+     !! B are assumed to be Hermitian, stored in packed format, and B is also
+     !! positive definite.  Eigenvalues and eigenvectors can be selected by
+     !! specifying either a range of values or a range of indices for the
+     !! desired eigenvalues.
                z, ldz, work, rwork,iwork, ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -59559,12 +59555,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhpgvx
 
-     !> ZHPRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is Hermitian indefinite
-     !> and packed, and provides error bounds and backward error estimates
-     !> for the solution.
 
      pure subroutine stdlib_zhprfs( uplo, n, nrhs, ap, afp, ipiv, b, ldb, x, ldx,ferr, berr, work,&
+     !! ZHPRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is Hermitian indefinite
+     !! and packed, and provides error bounds and backward error estimates
+     !! for the solution.
                 rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -59756,19 +59752,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhprfs
 
-     !> ZHPSV: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N Hermitian matrix stored in packed format and X
-     !> and B are N-by-NRHS matrices.
-     !> The diagonal pivoting method is used to factor A as
-     !> A = U * D * U**H,  if UPLO = 'U', or
-     !> A = L * D * L**H,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, D is Hermitian and block diagonal with 1-by-1
-     !> and 2-by-2 diagonal blocks.  The factored form of A is then used to
-     !> solve the system of equations A * X = B.
 
      pure subroutine stdlib_zhpsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
+     !! ZHPSV computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N Hermitian matrix stored in packed format and X
+     !! and B are N-by-NRHS matrices.
+     !! The diagonal pivoting method is used to factor A as
+     !! A = U * D * U**H,  if UPLO = 'U', or
+     !! A = L * D * L**H,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, D is Hermitian and block diagonal with 1-by-1
+     !! and 2-by-2 diagonal blocks.  The factored form of A is then used to
+     !! solve the system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -59807,14 +59803,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhpsv
 
-     !> ZHPSVX: uses the diagonal pivoting factorization A = U*D*U**H or
-     !> A = L*D*L**H to compute the solution to a complex system of linear
-     !> equations A * X = B, where A is an N-by-N Hermitian matrix stored
-     !> in packed format and X and B are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_zhpsvx( fact, uplo, n, nrhs, ap, afp, ipiv, b, ldb, x,ldx, rcond, ferr, &
+     !! ZHPSVX uses the diagonal pivoting factorization A = U*D*U**H or
+     !! A = L*D*L**H to compute the solution to a complex system of linear
+     !! equations A * X = B, where A is an N-by-N Hermitian matrix stored
+     !! in packed format and X and B are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                berr, work, rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -59885,14 +59881,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhpsvx
 
-     !> ZHSEIN: uses inverse iteration to find specified right and/or left
-     !> eigenvectors of a complex upper Hessenberg matrix H.
-     !> The right eigenvector x and the left eigenvector y of the matrix H
-     !> corresponding to an eigenvalue w are defined by:
-     !> H * x = w * x,     y**h * H = w * y**h
-     !> where y**h denotes the conjugate transpose of the vector y.
 
      subroutine stdlib_zhsein( side, eigsrc, initv, select, n, h, ldh, w, vl,ldvl, vr, ldvr, mm, &
+     !! ZHSEIN uses inverse iteration to find specified right and/or left
+     !! eigenvectors of a complex upper Hessenberg matrix H.
+     !! The right eigenvector x and the left eigenvector y of the matrix H
+     !! corresponding to an eigenvalue w are defined by:
+     !! H * x = w * x,     y**h * H = w * y**h
+     !! where y**h denotes the conjugate transpose of the vector y.
                m, work, rwork, ifaill,ifailr, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -60059,12 +60055,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhsein
 
-     !> Using the divide and conquer method, ZLAED0: computes all eigenvalues
-     !> of a symmetric tridiagonal matrix which is one diagonal block of
-     !> those from reducing a dense or band Hermitian matrix and
-     !> corresponding eigenvectors of the dense or band matrix.
 
      pure subroutine stdlib_zlaed0( qsiz, n, d, e, q, ldq, qstore, ldqs, rwork,iwork, info )
+     !! Using the divide and conquer method, ZLAED0: computes all eigenvalues
+     !! of a symmetric tridiagonal matrix which is one diagonal block of
+     !! those from reducing a dense or band Hermitian matrix and
+     !! corresponding eigenvectors of the dense or band matrix.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -60237,15 +60233,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaed0
 
-     !> ZLAMSWLQ: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix defined as the product of blocked
-     !> elementary reflectors computed by short wide LQ
-     !> factorization (ZLASWLQ)
 
      pure subroutine stdlib_zlamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+     !! ZLAMSWLQ overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product of blocked
+     !! elementary reflectors computed by short wide LQ
+     !! factorization (ZLASWLQ)
                lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -60395,15 +60391,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlamswlq
 
-     !> ZLAMTSQR: overwrites the general complex M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix defined as the product
-     !> of blocked elementary reflectors computed by tall skinny
-     !> QR factorization (ZLATSQR)
 
      pure subroutine stdlib_zlamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+     !! ZLAMTSQR overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product
+     !! of blocked elementary reflectors computed by tall skinny
+     !! QR factorization (ZLATSQR)
                lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -60557,19 +60553,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlamtsqr
 
-     !> ZLAQR2: is identical to ZLAQR3 except that it avoids
-     !> recursion by calling ZLAHQR instead of ZLAQR4.
-     !> Aggressive early deflation:
-     !> ZLAQR2 accepts as input an upper Hessenberg matrix
-     !> H and performs an unitary similarity transformation
-     !> designed to detect and deflate fully converged eigenvalues from
-     !> a trailing principal submatrix.  On output H has been over-
-     !> written by a new Hessenberg matrix that is a perturbation of
-     !> an unitary similarity transformation of H.  It is to be
-     !> hoped that the final version of H has many zero subdiagonal
-     !> entries.
 
      pure subroutine stdlib_zlaqr2( wantt, wantz, n, ktop, kbot, nw, h, ldh, iloz,ihiz, z, ldz, &
+     !! ZLAQR2 is identical to ZLAQR3 except that it avoids
+     !! recursion by calling ZLAHQR instead of ZLAQR4.
+     !! Aggressive early deflation:
+     !! ZLAQR2 accepts as input an upper Hessenberg matrix
+     !! H and performs an unitary similarity transformation
+     !! designed to detect and deflate fully converged eigenvalues from
+     !! a trailing principal submatrix.  On output H has been over-
+     !! written by a new Hessenberg matrix that is a perturbation of
+     !! an unitary similarity transformation of H.  It is to be
+     !! hoped that the final version of H has many zero subdiagonal
+     !! entries.
                ns, nd, sh, v, ldv, nh, t, ldt,nv, wv, ldwv, work, lwork )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -60771,18 +60767,18 @@ module stdlib_linalg_lapack_z
            work( 1 ) = cmplx( lwkopt, 0,KIND=dp)
      end subroutine stdlib_zlaqr2
 
-     !> ZLASWLQ: computes a blocked Tall-Skinny LQ factorization of
-     !> a complexx M-by-N matrix A for M <= N:
-     !> A = ( L 0 ) *  Q,
-     !> where:
-     !> Q is a n-by-N orthogonal matrix, stored on exit in an implicit
-     !> form in the elements above the diagonal of the array A and in
-     !> the elements of the array T;
-     !> L is a lower-triangular M-by-M matrix stored on exit in
-     !> the elements on and below the diagonal of the array A.
-     !> 0 is a M-by-(N-M) zero matrix, if M < N, and is not stored.
 
      pure subroutine stdlib_zlaswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
+     !! ZLASWLQ computes a blocked Tall-Skinny LQ factorization of
+     !! a complexx M-by-N matrix A for M <= N:
+     !! A = ( L 0 ) *  Q,
+     !! where:
+     !! Q is a n-by-N orthogonal matrix, stored on exit in an implicit
+     !! form in the elements above the diagonal of the array A and in
+     !! the elements of the array T;
+     !! L is a lower-triangular M-by-M matrix stored on exit in
+     !! the elements on and below the diagonal of the array A.
+     !! 0 is a M-by-(N-M) zero matrix, if M < N, and is not stored.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd. --
@@ -60855,19 +60851,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlaswlq
 
-     !> ZLATSQR: computes a blocked Tall-Skinny QR factorization of
-     !> a complex M-by-N matrix A for M >= N:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a M-by-M orthogonal matrix, stored on exit in an implicit
-     !> form in the elements below the diagonal of the array A and in
-     !> the elements of the array T;
-     !> R is an upper-triangular N-by-N matrix, stored on exit in
-     !> the elements on and above the diagonal of the array A.
-     !> 0 is a (M-N)-by-N zero matrix, and is not stored.
 
      pure subroutine stdlib_zlatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
+     !! ZLATSQR computes a blocked Tall-Skinny QR factorization of
+     !! a complex M-by-N matrix A for M >= N:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a M-by-M orthogonal matrix, stored on exit in an implicit
+     !! form in the elements below the diagonal of the array A and in
+     !! the elements of the array T;
+     !! R is an upper-triangular N-by-N matrix, stored on exit in
+     !! the elements on and above the diagonal of the array A.
+     !! 0 is a (M-N)-by-N zero matrix, and is not stored.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd. --
@@ -60940,19 +60936,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlatsqr
 
-     !> ZPBSV: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N Hermitian positive definite band matrix and X
-     !> and B are N-by-NRHS matrices.
-     !> The Cholesky decomposition is used to factor A as
-     !> A = U**H * U,  if UPLO = 'U', or
-     !> A = L * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular band matrix, and L is a lower
-     !> triangular band matrix, with the same number of superdiagonals or
-     !> subdiagonals as A.  The factored form of A is then used to solve the
-     !> system of equations A * X = B.
 
      pure subroutine stdlib_zpbsv( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
+     !! ZPBSV computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N Hermitian positive definite band matrix and X
+     !! and B are N-by-NRHS matrices.
+     !! The Cholesky decomposition is used to factor A as
+     !! A = U**H * U,  if UPLO = 'U', or
+     !! A = L * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular band matrix, and L is a lower
+     !! triangular band matrix, with the same number of superdiagonals or
+     !! subdiagonals as A.  The factored form of A is then used to solve the
+     !! system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -60994,15 +60990,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpbsv
 
-     !> ZPBSVX: uses the Cholesky factorization A = U**H*U or A = L*L**H to
-     !> compute the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N Hermitian positive definite band matrix and X
-     !> and B are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_zpbsvx( fact, uplo, n, kd, nrhs, ab, ldab, afb, ldafb,equed, s, b, ldb, x, &
+     !! ZPBSVX uses the Cholesky factorization A = U**H*U or A = L*L**H to
+     !! compute the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N Hermitian positive definite band matrix and X
+     !! and B are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                ldx, rcond, ferr, berr,work, rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -61151,15 +61147,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpbsvx
 
-     !> ZPFTRF: computes the Cholesky factorization of a complex Hermitian
-     !> positive definite matrix A.
-     !> The factorization has the form
-     !> A = U**H * U,  if UPLO = 'U', or
-     !> A = L  * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
-     !> This is the block version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_zpftrf( transr, uplo, n, a, info )
+     !! ZPFTRF computes the Cholesky factorization of a complex Hermitian
+     !! positive definite matrix A.
+     !! The factorization has the form
+     !! A = U**H * U,  if UPLO = 'U', or
+     !! A = L  * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
+     !! This is the block version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -61327,11 +61323,11 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpftrf
 
-     !> ZPFTRI: computes the inverse of a complex Hermitian positive definite
-     !> matrix A using the Cholesky factorization A = U**H*U or A = L*L**H
-     !> computed by ZPFTRF.
 
      pure subroutine stdlib_zpftri( transr, uplo, n, a, info )
+     !! ZPFTRI computes the inverse of a complex Hermitian positive definite
+     !! matrix A using the Cholesky factorization A = U**H*U or A = L*L**H
+     !! computed by ZPFTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -61486,18 +61482,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zpftri
 
-     !> ZPOSV: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N Hermitian positive definite matrix and X and B
-     !> are N-by-NRHS matrices.
-     !> The Cholesky decomposition is used to factor A as
-     !> A = U**H* U,  if UPLO = 'U', or
-     !> A = L * L**H,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and  L is a lower triangular
-     !> matrix.  The factored form of A is then used to solve the system of
-     !> equations A * X = B.
 
      pure subroutine stdlib_zposv( uplo, n, nrhs, a, lda, b, ldb, info )
+     !! ZPOSV computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N Hermitian positive definite matrix and X and B
+     !! are N-by-NRHS matrices.
+     !! The Cholesky decomposition is used to factor A as
+     !! A = U**H* U,  if UPLO = 'U', or
+     !! A = L * L**H,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and  L is a lower triangular
+     !! matrix.  The factored form of A is then used to solve the system of
+     !! equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -61537,15 +61533,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zposv
 
-     !> ZPOSVX: uses the Cholesky factorization A = U**H*U or A = L*L**H to
-     !> compute the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N Hermitian positive definite matrix and X and B
-     !> are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_zposvx( fact, uplo, n, nrhs, a, lda, af, ldaf, equed,s, b, ldb, x, ldx, &
+     !! ZPOSVX uses the Cholesky factorization A = U**H*U or A = L*L**H to
+     !! compute the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N Hermitian positive definite matrix and X and B
+     !! are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                rcond, ferr, berr, work,rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -61681,12 +61677,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zposvx
 
-     !> ZPTRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is Hermitian positive definite
-     !> and tridiagonal, and provides error bounds and backward error
-     !> estimates for the solution.
 
      pure subroutine stdlib_zptrfs( uplo, n, nrhs, d, e, df, ef, b, ldb, x, ldx,ferr, berr, work, &
+     !! ZPTRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is Hermitian positive definite
+     !! and tridiagonal, and provides error bounds and backward error
+     !! estimates for the solution.
                rwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -61899,13 +61895,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zptrfs
 
-     !> ZPTSV: computes the solution to a complex system of linear equations
-     !> A*X = B, where A is an N-by-N Hermitian positive definite tridiagonal
-     !> matrix, and X and B are N-by-NRHS matrices.
-     !> A is factored as A = L*D*L**H, and the factored form of A is then
-     !> used to solve the system of equations.
 
      pure subroutine stdlib_zptsv( n, nrhs, d, e, b, ldb, info )
+     !! ZPTSV computes the solution to a complex system of linear equations
+     !! A*X = B, where A is an N-by-N Hermitian positive definite tridiagonal
+     !! matrix, and X and B are N-by-NRHS matrices.
+     !! A is factored as A = L*D*L**H, and the factored form of A is then
+     !! used to solve the system of equations.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -61941,14 +61937,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zptsv
 
-     !> ZPTSVX: uses the factorization A = L*D*L**H to compute the solution
-     !> to a complex system of linear equations A*X = B, where A is an
-     !> N-by-N Hermitian positive definite tridiagonal matrix and X and B
-     !> are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      pure subroutine stdlib_zptsvx( fact, n, nrhs, d, e, df, ef, b, ldb, x, ldx,rcond, ferr, berr,&
+     !! ZPTSVX uses the factorization A = L*D*L**H to compute the solution
+     !! to a complex system of linear equations A*X = B, where A is an
+     !! N-by-N Hermitian positive definite tridiagonal matrix and X and B
+     !! are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                 work, rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -62018,19 +62014,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zptsvx
 
-     !> ZSTEDC: computes all eigenvalues and, optionally, eigenvectors of a
-     !> symmetric tridiagonal matrix using the divide and conquer method.
-     !> The eigenvectors of a full or band complex Hermitian matrix can also
-     !> be found if ZHETRD or ZHPTRD or ZHBTRD has been used to reduce this
-     !> matrix to tridiagonal form.
-     !> This code makes very mild assumptions about floating point
-     !> arithmetic. It will work on machines with a guard digit in
-     !> add/subtract, or on those binary machines without guard digits
-     !> which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
-     !> It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.  See DLAED3 for details.
 
      pure subroutine stdlib_zstedc( compz, n, d, e, z, ldz, work, lwork, rwork,lrwork, iwork, &
+     !! ZSTEDC computes all eigenvalues and, optionally, eigenvectors of a
+     !! symmetric tridiagonal matrix using the divide and conquer method.
+     !! The eigenvectors of a full or band complex Hermitian matrix can also
+     !! be found if ZHETRD or ZHPTRD or ZHBTRD has been used to reduce this
+     !! matrix to tridiagonal form.
+     !! This code makes very mild assumptions about floating point
+     !! arithmetic. It will work on machines with a guard digit in
+     !! add/subtract, or on those binary machines without guard digits
+     !! which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
+     !! It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.  See DLAED3 for details.
                liwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -62232,24 +62228,24 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zstedc
 
-     !> ZSTEGR: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a real symmetric tridiagonal matrix T. Any such unreduced matrix has
-     !> a well defined set of pairwise different real eigenvalues, the corresponding
-     !> real eigenvectors are pairwise orthogonal.
-     !> The spectrum may be computed either completely or partially by specifying
-     !> either an interval (VL,VU] or a range of indices IL:IU for the desired
-     !> eigenvalues.
-     !> ZSTEGR is a compatibility wrapper around the improved ZSTEMR routine.
-     !> See ZSTEMR for further details.
-     !> One important change is that the ABSTOL parameter no longer provides any
-     !> benefit and hence is no longer used.
-     !> Note : ZSTEGR and ZSTEMR work only on machines which follow
-     !> IEEE-754 floating-point standard in their handling of infinities and
-     !> NaNs.  Normal execution may create these exceptiona values and hence
-     !> may abort due to a floating point exception in environments which
-     !> do not conform to the IEEE-754 standard.
 
      pure subroutine stdlib_zstegr( jobz, range, n, d, e, vl, vu, il, iu,abstol, m, w, z, ldz, &
+     !! ZSTEGR computes selected eigenvalues and, optionally, eigenvectors
+     !! of a real symmetric tridiagonal matrix T. Any such unreduced matrix has
+     !! a well defined set of pairwise different real eigenvalues, the corresponding
+     !! real eigenvectors are pairwise orthogonal.
+     !! The spectrum may be computed either completely or partially by specifying
+     !! either an interval (VL,VU] or a range of indices IL:IU for the desired
+     !! eigenvalues.
+     !! ZSTEGR is a compatibility wrapper around the improved ZSTEMR routine.
+     !! See ZSTEMR for further details.
+     !! One important change is that the ABSTOL parameter no longer provides any
+     !! benefit and hence is no longer used.
+     !! Note : ZSTEGR and ZSTEMR work only on machines which follow
+     !! IEEE-754 floating-point standard in their handling of infinities and
+     !! NaNs.  Normal execution may create these exceptiona values and hence
+     !! may abort due to a floating point exception in environments which
+     !! do not conform to the IEEE-754 standard.
                isuppz, work, lwork, iwork,liwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -62274,26 +62270,26 @@ module stdlib_linalg_lapack_z
                      tryrac, work, lwork,iwork, liwork, info )
      end subroutine stdlib_zstegr
 
-     !> ZTGSEN: reorders the generalized Schur decomposition of a complex
-     !> matrix pair (A, B) (in terms of an unitary equivalence trans-
-     !> formation Q**H * (A, B) * Z), so that a selected cluster of eigenvalues
-     !> appears in the leading diagonal blocks of the pair (A,B). The leading
-     !> columns of Q and Z form unitary bases of the corresponding left and
-     !> right eigenspaces (deflating subspaces). (A, B) must be in
-     !> generalized Schur canonical form, that is, A and B are both upper
-     !> triangular.
-     !> ZTGSEN also computes the generalized eigenvalues
-     !> w(j)= ALPHA(j) / BETA(j)
-     !> of the reordered matrix pair (A, B).
-     !> Optionally, the routine computes estimates of reciprocal condition
-     !> numbers for eigenvalues and eigenspaces. These are Difu[(A11,B11),
-     !> (A22,B22)] and Difl[(A11,B11), (A22,B22)], i.e. the separation(s)
-     !> between the matrix pairs (A11, B11) and (A22,B22) that correspond to
-     !> the selected cluster and the eigenvalues outside the cluster, resp.,
-     !> and norms of "projections" onto left and right eigenspaces w.r.t.
-     !> the selected cluster in the (1,1)-block.
 
      pure subroutine stdlib_ztgsen( ijob, wantq, wantz, select, n, a, lda, b, ldb,alpha, beta, q, &
+     !! ZTGSEN reorders the generalized Schur decomposition of a complex
+     !! matrix pair (A, B) (in terms of an unitary equivalence trans-
+     !! formation Q**H * (A, B) * Z), so that a selected cluster of eigenvalues
+     !! appears in the leading diagonal blocks of the pair (A,B). The leading
+     !! columns of Q and Z form unitary bases of the corresponding left and
+     !! right eigenspaces (deflating subspaces). (A, B) must be in
+     !! generalized Schur canonical form, that is, A and B are both upper
+     !! triangular.
+     !! ZTGSEN also computes the generalized eigenvalues
+     !! w(j)= ALPHA(j) / BETA(j)
+     !! of the reordered matrix pair (A, B).
+     !! Optionally, the routine computes estimates of reciprocal condition
+     !! numbers for eigenvalues and eigenspaces. These are Difu[(A11,B11),
+     !! (A22,B22)] and Difl[(A11,B11), (A22,B22)], i.e. the separation(s)
+     !! between the matrix pairs (A11, B11) and (A22,B22) that correspond to
+     !! the selected cluster and the eigenvalues outside the cluster, resp.,
+     !! and norms of "projections" onto left and right eigenspaces w.r.t.
+     !! the selected cluster in the (1,1)-block.
                ldq, z, ldz, m, pl, pr, dif,work, lwork, iwork, liwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -62553,12 +62549,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztgsen
 
-     !> ZTGSNA: estimates reciprocal condition numbers for specified
-     !> eigenvalues and/or eigenvectors of a matrix pair (A, B).
-     !> (A, B) must be in generalized Schur canonical form, that is, A and
-     !> B are both upper triangular.
 
      pure subroutine stdlib_ztgsna( job, howmny, select, n, a, lda, b, ldb, vl,ldvl, vr, ldvr, s, &
+     !! ZTGSNA estimates reciprocal condition numbers for specified
+     !! eigenvalues and/or eigenvectors of a matrix pair (A, B).
+     !! (A, B) must be in generalized Schur canonical form, that is, A and
+     !! B are both upper triangular.
                dif, mm, m, work, lwork,iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -62710,15 +62706,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztgsna
 
-     !> ZTRSEN: reorders the Schur factorization of a complex matrix
-     !> A = Q*T*Q**H, so that a selected cluster of eigenvalues appears in
-     !> the leading positions on the diagonal of the upper triangular matrix
-     !> T, and the leading columns of Q form an orthonormal basis of the
-     !> corresponding right invariant subspace.
-     !> Optionally the routine computes the reciprocal condition numbers of
-     !> the cluster of eigenvalues and/or the invariant subspace.
 
      subroutine stdlib_ztrsen( job, compq, select, n, t, ldt, q, ldq, w, m, s,sep, work, lwork, &
+     !! ZTRSEN reorders the Schur factorization of a complex matrix
+     !! A = Q*T*Q**H, so that a selected cluster of eigenvalues appears in
+     !! the leading positions on the diagonal of the upper triangular matrix
+     !! T, and the leading columns of Q form an orthonormal basis of the
+     !! corresponding right invariant subspace.
+     !! Optionally the routine computes the reciprocal condition numbers of
+     !! the cluster of eigenvalues and/or the invariant subspace.
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -62847,23 +62843,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_ztrsen
 
-     !> ZUNBDB1: simultaneously bidiagonalizes the blocks of a tall and skinny
-     !> matrix X with orthonomal columns:
-     !> [ B11 ]
-     !> [ X11 ]   [ P1 |    ] [  0  ]
-     !> [-----] = [---------] [-----] Q1**T .
-     !> [ X21 ]   [    | P2 ] [ B21 ]
-     !> [  0  ]
-     !> X11 is P-by-Q, and X21 is (M-P)-by-Q. Q must be no larger than P,
-     !> M-P, or M-Q. Routines ZUNBDB2, ZUNBDB3, and ZUNBDB4 handle cases in
-     !> which Q is not the minimum dimension.
-     !> The unitary matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
-     !> and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
-     !> Householder vectors.
-     !> B11 and B12 are Q-by-Q bidiagonal matrices represented implicitly by
-     !> angles THETA, PHI.
 
      subroutine stdlib_zunbdb1( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, tauq1, &
+     !! ZUNBDB1 simultaneously bidiagonalizes the blocks of a tall and skinny
+     !! matrix X with orthonomal columns:
+     !! [ B11 ]
+     !! [ X11 ]   [ P1 |    ] [  0  ]
+     !! [-----] = [---------] [-----] Q1**T .
+     !! [ X21 ]   [    | P2 ] [ B21 ]
+     !! [  0  ]
+     !! X11 is P-by-Q, and X21 is (M-P)-by-Q. Q must be no larger than P,
+     !! M-P, or M-Q. Routines ZUNBDB2, ZUNBDB3, and ZUNBDB4 handle cases in
+     !! which Q is not the minimum dimension.
+     !! The unitary matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
+     !! and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
+     !! Householder vectors.
+     !! B11 and B12 are Q-by-Q bidiagonal matrices represented implicitly by
+     !! angles THETA, PHI.
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -62952,23 +62948,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunbdb1
 
-     !> ZUNBDB2: simultaneously bidiagonalizes the blocks of a tall and skinny
-     !> matrix X with orthonomal columns:
-     !> [ B11 ]
-     !> [ X11 ]   [ P1 |    ] [  0  ]
-     !> [-----] = [---------] [-----] Q1**T .
-     !> [ X21 ]   [    | P2 ] [ B21 ]
-     !> [  0  ]
-     !> X11 is P-by-Q, and X21 is (M-P)-by-Q. P must be no larger than M-P,
-     !> Q, or M-Q. Routines ZUNBDB1, ZUNBDB3, and ZUNBDB4 handle cases in
-     !> which P is not the minimum dimension.
-     !> The unitary matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
-     !> and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
-     !> Householder vectors.
-     !> B11 and B12 are P-by-P bidiagonal matrices represented implicitly by
-     !> angles THETA, PHI.
 
      subroutine stdlib_zunbdb2( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, tauq1, &
+     !! ZUNBDB2 simultaneously bidiagonalizes the blocks of a tall and skinny
+     !! matrix X with orthonomal columns:
+     !! [ B11 ]
+     !! [ X11 ]   [ P1 |    ] [  0  ]
+     !! [-----] = [---------] [-----] Q1**T .
+     !! [ X21 ]   [    | P2 ] [ B21 ]
+     !! [  0  ]
+     !! X11 is P-by-Q, and X21 is (M-P)-by-Q. P must be no larger than M-P,
+     !! Q, or M-Q. Routines ZUNBDB1, ZUNBDB3, and ZUNBDB4 handle cases in
+     !! which P is not the minimum dimension.
+     !! The unitary matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
+     !! and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
+     !! Householder vectors.
+     !! B11 and B12 are P-by-P bidiagonal matrices represented implicitly by
+     !! angles THETA, PHI.
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -63067,23 +63063,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunbdb2
 
-     !> ZUNBDB3: simultaneously bidiagonalizes the blocks of a tall and skinny
-     !> matrix X with orthonomal columns:
-     !> [ B11 ]
-     !> [ X11 ]   [ P1 |    ] [  0  ]
-     !> [-----] = [---------] [-----] Q1**T .
-     !> [ X21 ]   [    | P2 ] [ B21 ]
-     !> [  0  ]
-     !> X11 is P-by-Q, and X21 is (M-P)-by-Q. M-P must be no larger than P,
-     !> Q, or M-Q. Routines ZUNBDB1, ZUNBDB2, and ZUNBDB4 handle cases in
-     !> which M-P is not the minimum dimension.
-     !> The unitary matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
-     !> and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
-     !> Householder vectors.
-     !> B11 and B12 are (M-P)-by-(M-P) bidiagonal matrices represented
-     !> implicitly by angles THETA, PHI.
 
      subroutine stdlib_zunbdb3( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, tauq1, &
+     !! ZUNBDB3 simultaneously bidiagonalizes the blocks of a tall and skinny
+     !! matrix X with orthonomal columns:
+     !! [ B11 ]
+     !! [ X11 ]   [ P1 |    ] [  0  ]
+     !! [-----] = [---------] [-----] Q1**T .
+     !! [ X21 ]   [    | P2 ] [ B21 ]
+     !! [  0  ]
+     !! X11 is P-by-Q, and X21 is (M-P)-by-Q. M-P must be no larger than P,
+     !! Q, or M-Q. Routines ZUNBDB1, ZUNBDB2, and ZUNBDB4 handle cases in
+     !! which M-P is not the minimum dimension.
+     !! The unitary matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
+     !! and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
+     !! Householder vectors.
+     !! B11 and B12 are (M-P)-by-(M-P) bidiagonal matrices represented
+     !! implicitly by angles THETA, PHI.
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -63181,23 +63177,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunbdb3
 
-     !> ZUNBDB4: simultaneously bidiagonalizes the blocks of a tall and skinny
-     !> matrix X with orthonomal columns:
-     !> [ B11 ]
-     !> [ X11 ]   [ P1 |    ] [  0  ]
-     !> [-----] = [---------] [-----] Q1**T .
-     !> [ X21 ]   [    | P2 ] [ B21 ]
-     !> [  0  ]
-     !> X11 is P-by-Q, and X21 is (M-P)-by-Q. M-Q must be no larger than P,
-     !> M-P, or Q. Routines ZUNBDB1, ZUNBDB2, and ZUNBDB3 handle cases in
-     !> which M-Q is not the minimum dimension.
-     !> The unitary matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
-     !> and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
-     !> Householder vectors.
-     !> B11 and B12 are (M-Q)-by-(M-Q) bidiagonal matrices represented
-     !> implicitly by angles THETA, PHI.
 
      subroutine stdlib_zunbdb4( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, tauq1, &
+     !! ZUNBDB4 simultaneously bidiagonalizes the blocks of a tall and skinny
+     !! matrix X with orthonomal columns:
+     !! [ B11 ]
+     !! [ X11 ]   [ P1 |    ] [  0  ]
+     !! [-----] = [---------] [-----] Q1**T .
+     !! [ X21 ]   [    | P2 ] [ B21 ]
+     !! [  0  ]
+     !! X11 is P-by-Q, and X21 is (M-P)-by-Q. M-Q must be no larger than P,
+     !! M-P, or Q. Routines ZUNBDB1, ZUNBDB2, and ZUNBDB3 handle cases in
+     !! which M-Q is not the minimum dimension.
+     !! The unitary matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
+     !! and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
+     !! Householder vectors.
+     !! B11 and B12 are (M-Q)-by-(M-Q) bidiagonal matrices represented
+     !! implicitly by angles THETA, PHI.
                phantom, work, lwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -63330,23 +63326,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunbdb4
 
-     !> ZUNCSD2BY1: computes the CS decomposition of an M-by-Q matrix X with
-     !> orthonormal columns that has been partitioned into a 2-by-1 block
-     !> structure:
-     !> [  I1 0  0 ]
-     !> [  0  C  0 ]
-     !> [ X11 ]   [ U1 |    ] [  0  0  0 ]
-     !> X = [-----] = [---------] [----------] V1**T .
-     !> [ X21 ]   [    | U2 ] [  0  0  0 ]
-     !> [  0  S  0 ]
-     !> [  0  0  I2]
-     !> X11 is P-by-Q. The unitary matrices U1, U2, and V1 are P-by-P,
-     !> (M-P)-by-(M-P), and Q-by-Q, respectively. C and S are R-by-R
-     !> nonnegative diagonal matrices satisfying C^2 + S^2 = I, in which
-     !> R = MIN(P,M-P,Q,M-Q). I1 is a K1-by-K1 identity matrix and I2 is a
-     !> K2-by-K2 identity matrix, where K1 = MAX(Q+P-M,0), K2 = MAX(Q-P,0).
 
      subroutine stdlib_zuncsd2by1( jobu1, jobu2, jobv1t, m, p, q, x11, ldx11,x21, ldx21, theta, &
+     !! ZUNCSD2BY1 computes the CS decomposition of an M-by-Q matrix X with
+     !! orthonormal columns that has been partitioned into a 2-by-1 block
+     !! structure:
+     !! [  I1 0  0 ]
+     !! [  0  C  0 ]
+     !! [ X11 ]   [ U1 |    ] [  0  0  0 ]
+     !! X = [-----] = [---------] [----------] V1**T .
+     !! [ X21 ]   [    | U2 ] [  0  0  0 ]
+     !! [  0  S  0 ]
+     !! [  0  0  I2]
+     !! X11 is P-by-Q. The unitary matrices U1, U2, and V1 are P-by-P,
+     !! (M-P)-by-(M-P), and Q-by-Q, respectively. C and S are R-by-R
+     !! nonnegative diagonal matrices satisfying C^2 + S^2 = I, in which
+     !! R = MIN(P,M-P,Q,M-Q). I1 is a K1-by-K1 identity matrix and I2 is a
+     !! K2-by-K2 identity matrix, where K1 = MAX(Q+P-M,0), K2 = MAX(Q-P,0).
                u1, ldu1, u2, ldu2, v1t,ldv1t, work, lwork, rwork, lrwork, iwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -63767,24 +63763,24 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zuncsd2by1
 
-     !> ZUNGBR: generates one of the complex unitary matrices Q or P**H
-     !> determined by ZGEBRD when reducing a complex matrix A to bidiagonal
-     !> form: A = Q * B * P**H.  Q and P**H are defined as products of
-     !> elementary reflectors H(i) or G(i) respectively.
-     !> If VECT = 'Q', A is assumed to have been an M-by-K matrix, and Q
-     !> is of order M:
-     !> if m >= k, Q = H(1) H(2) . . . H(k) and ZUNGBR returns the first n
-     !> columns of Q, where m >= n >= k;
-     !> if m < k, Q = H(1) H(2) . . . H(m-1) and ZUNGBR returns Q as an
-     !> M-by-M matrix.
-     !> If VECT = 'P', A is assumed to have been a K-by-N matrix, and P**H
-     !> is of order N:
-     !> if k < n, P**H = G(k) . . . G(2) G(1) and ZUNGBR returns the first m
-     !> rows of P**H, where n >= m >= k;
-     !> if k >= n, P**H = G(n-1) . . . G(2) G(1) and ZUNGBR returns P**H as
-     !> an N-by-N matrix.
 
      pure subroutine stdlib_zungbr( vect, m, n, k, a, lda, tau, work, lwork, info )
+     !! ZUNGBR generates one of the complex unitary matrices Q or P**H
+     !! determined by ZGEBRD when reducing a complex matrix A to bidiagonal
+     !! form: A = Q * B * P**H.  Q and P**H are defined as products of
+     !! elementary reflectors H(i) or G(i) respectively.
+     !! If VECT = 'Q', A is assumed to have been an M-by-K matrix, and Q
+     !! is of order M:
+     !! if m >= k, Q = H(1) H(2) . . . H(k) and ZUNGBR returns the first n
+     !! columns of Q, where m >= n >= k;
+     !! if m < k, Q = H(1) H(2) . . . H(m-1) and ZUNGBR returns Q as an
+     !! M-by-M matrix.
+     !! If VECT = 'P', A is assumed to have been a K-by-N matrix, and P**H
+     !! is of order N:
+     !! if k < n, P**H = G(k) . . . G(2) G(1) and ZUNGBR returns the first m
+     !! rows of P**H, where n >= m >= k;
+     !! if k >= n, P**H = G(n-1) . . . G(2) G(1) and ZUNGBR returns P**H as
+     !! an N-by-N matrix.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -63916,13 +63912,13 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zungbr
 
-     !> ZUNGTSQR: generates an M-by-N complex matrix Q_out with orthonormal
-     !> columns, which are the first N columns of a product of comlpex unitary
-     !> matrices of order M which are returned by ZLATSQR
-     !> Q_out = first_N_columns_of( Q(1)_in * Q(2)_in * ... * Q(k)_in ).
-     !> See the documentation for ZLATSQR.
 
      pure subroutine stdlib_zungtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
+     !! ZUNGTSQR generates an M-by-N complex matrix Q_out with orthonormal
+     !! columns, which are the first N columns of a product of comlpex unitary
+     !! matrices of order M which are returned by ZLATSQR
+     !! Q_out = first_N_columns_of( Q(1)_in * Q(2)_in * ... * Q(k)_in ).
+     !! See the documentation for ZLATSQR.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -64014,30 +64010,30 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zungtsqr
 
-     !> If VECT = 'Q', ZUNMBR: overwrites the general complex M-by-N matrix C
-     !> with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> If VECT = 'P', ZUNMBR overwrites the general complex M-by-N matrix C
-     !> with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      P * C          C * P
-     !> TRANS = 'C':      P**H * C       C * P**H
-     !> Here Q and P**H are the unitary matrices determined by ZGEBRD when
-     !> reducing a complex matrix A to bidiagonal form: A = Q * B * P**H. Q
-     !> and P**H are defined as products of elementary reflectors H(i) and
-     !> G(i) respectively.
-     !> Let nq = m if SIDE = 'L' and nq = n if SIDE = 'R'. Thus nq is the
-     !> order of the unitary matrix Q or P**H that is applied.
-     !> If VECT = 'Q', A is assumed to have been an NQ-by-K matrix:
-     !> if nq >= k, Q = H(1) H(2) . . . H(k);
-     !> if nq < k, Q = H(1) H(2) . . . H(nq-1).
-     !> If VECT = 'P', A is assumed to have been a K-by-NQ matrix:
-     !> if k < nq, P = G(1) G(2) . . . G(k);
-     !> if k >= nq, P = G(1) G(2) . . . G(nq-1).
 
      pure subroutine stdlib_zunmbr( vect, side, trans, m, n, k, a, lda, tau, c,ldc, work, lwork, &
+     !! If VECT = 'Q', ZUNMBR: overwrites the general complex M-by-N matrix C
+     !! with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! If VECT = 'P', ZUNMBR overwrites the general complex M-by-N matrix C
+     !! with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      P * C          C * P
+     !! TRANS = 'C':      P**H * C       C * P**H
+     !! Here Q and P**H are the unitary matrices determined by ZGEBRD when
+     !! reducing a complex matrix A to bidiagonal form: A = Q * B * P**H. Q
+     !! and P**H are defined as products of elementary reflectors H(i) and
+     !! G(i) respectively.
+     !! Let nq = m if SIDE = 'L' and nq = n if SIDE = 'R'. Thus nq is the
+     !! order of the unitary matrix Q or P**H that is applied.
+     !! If VECT = 'Q', A is assumed to have been an NQ-by-K matrix:
+     !! if nq >= k, Q = H(1) H(2) . . . H(k);
+     !! if nq < k, Q = H(1) H(2) . . . H(nq-1).
+     !! If VECT = 'P', A is assumed to have been a K-by-NQ matrix:
+     !! if k < nq, P = G(1) G(2) . . . G(k);
+     !! if k >= nq, P = G(1) G(2) . . . G(nq-1).
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -64175,35 +64171,35 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zunmbr
 
-     !> ZCGESV: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
-     !> ZCGESV first attempts to factorize the matrix in COMPLEX and use this
-     !> factorization within an iterative refinement procedure to produce a
-     !> solution with COMPLEX*16 normwise backward error quality (see below).
-     !> If the approach fails the method switches to a COMPLEX*16
-     !> factorization and solve.
-     !> The iterative refinement is not going to be a winning strategy if
-     !> the ratio COMPLEX performance over COMPLEX*16 performance is too
-     !> small. A reasonable strategy should take the number of right-hand
-     !> sides and the size of the matrix into account. This might be done
-     !> with a call to ILAENV in the future. Up to now, we always try
-     !> iterative refinement.
-     !> The iterative refinement process is stopped if
-     !> ITER > ITERMAX
-     !> or for all the RHS we have:
-     !> RNRM < SQRT(N)*XNRM*ANRM*EPS*BWDMAX
-     !> where
-     !> o ITER is the number of the current iteration in the iterative
-     !> refinement process
-     !> o RNRM is the infinity-norm of the residual
-     !> o XNRM is the infinity-norm of the solution
-     !> o ANRM is the infinity-operator-norm of the matrix A
-     !> o EPS is the machine epsilon returned by DLAMCH('Epsilon')
-     !> The value ITERMAX and BWDMAX are fixed to 30 and 1.0D+00
-     !> respectively.
 
      subroutine stdlib_zcgesv( n, nrhs, a, lda, ipiv, b, ldb, x, ldx, work,swork, rwork, iter, &
+     !! ZCGESV computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
+     !! ZCGESV first attempts to factorize the matrix in COMPLEX and use this
+     !! factorization within an iterative refinement procedure to produce a
+     !! solution with COMPLEX*16 normwise backward error quality (see below).
+     !! If the approach fails the method switches to a COMPLEX*16
+     !! factorization and solve.
+     !! The iterative refinement is not going to be a winning strategy if
+     !! the ratio COMPLEX performance over COMPLEX*16 performance is too
+     !! small. A reasonable strategy should take the number of right-hand
+     !! sides and the size of the matrix into account. This might be done
+     !! with a call to ILAENV in the future. Up to now, we always try
+     !! iterative refinement.
+     !! The iterative refinement process is stopped if
+     !! ITER > ITERMAX
+     !! or for all the RHS we have:
+     !! RNRM < SQRT(N)*XNRM*ANRM*EPS*BWDMAX
+     !! where
+     !! o ITER is the number of the current iteration in the iterative
+     !! refinement process
+     !! o RNRM is the infinity-norm of the residual
+     !! o XNRM is the infinity-norm of the solution
+     !! o ANRM is the infinity-operator-norm of the matrix A
+     !! o EPS is the machine epsilon returned by DLAMCH('Epsilon')
+     !! The value ITERMAX and BWDMAX are fixed to 30 and 1.0D+00
+     !! respectively.
                info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -64361,14 +64357,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zcgesv
 
-     !> ZGELQ: computes an LQ factorization of a complex M-by-N matrix A:
-     !> A = ( L 0 ) *  Q
-     !> where:
-     !> Q is a N-by-N orthogonal matrix;
-     !> L is a lower-triangular M-by-M matrix;
-     !> 0 is a M-by-(N-M) zero matrix, if M < N.
 
      pure subroutine stdlib_zgelq( m, n, a, lda, t, tsize, work, lwork,info )
+     !! ZGELQ computes an LQ factorization of a complex M-by-N matrix A:
+     !! A = ( L 0 ) *  Q
+     !! where:
+     !! Q is a N-by-N orthogonal matrix;
+     !! L is a lower-triangular M-by-M matrix;
+     !! 0 is a M-by-(N-M) zero matrix, if M < N.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd. --
@@ -64486,33 +64482,33 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgelq
 
-     !> ZGELSD: computes the minimum-norm solution to a real linear least
-     !> squares problem:
-     !> minimize 2-norm(| b - A*x |)
-     !> using the singular value decomposition (SVD) of A. A is an M-by-N
-     !> matrix which may be rank-deficient.
-     !> Several right hand side vectors b and solution vectors x can be
-     !> handled in a single call; they are stored as the columns of the
-     !> M-by-NRHS right hand side matrix B and the N-by-NRHS solution
-     !> matrix X.
-     !> The problem is solved in three steps:
-     !> (1) Reduce the coefficient matrix A to bidiagonal form with
-     !> Householder transformations, reducing the original problem
-     !> into a "bidiagonal least squares problem" (BLS)
-     !> (2) Solve the BLS using a divide and conquer approach.
-     !> (3) Apply back all the Householder transformations to solve
-     !> the original least squares problem.
-     !> The effective rank of A is determined by treating as zero those
-     !> singular values which are less than RCOND times the largest singular
-     !> value.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_zgelsd( m, n, nrhs, a, lda, b, ldb, s, rcond, rank,work, lwork, rwork, &
+     !! ZGELSD computes the minimum-norm solution to a real linear least
+     !! squares problem:
+     !! minimize 2-norm(| b - A*x |)
+     !! using the singular value decomposition (SVD) of A. A is an M-by-N
+     !! matrix which may be rank-deficient.
+     !! Several right hand side vectors b and solution vectors x can be
+     !! handled in a single call; they are stored as the columns of the
+     !! M-by-NRHS right hand side matrix B and the N-by-NRHS solution
+     !! matrix X.
+     !! The problem is solved in three steps:
+     !! (1) Reduce the coefficient matrix A to bidiagonal form with
+     !! Householder transformations, reducing the original problem
+     !! into a "bidiagonal least squares problem" (BLS)
+     !! (2) Solve the BLS using a divide and conquer approach.
+     !! (3) Apply back all the Householder transformations to solve
+     !! the original least squares problem.
+     !! The effective rank of A is determined by treating as zero those
+     !! singular values which are less than RCOND times the largest singular
+     !! value.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                iwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -64824,20 +64820,20 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgelsd
 
-     !> ZGELSS: computes the minimum norm solution to a complex linear
-     !> least squares problem:
-     !> Minimize 2-norm(| b - A*x |).
-     !> using the singular value decomposition (SVD) of A. A is an M-by-N
-     !> matrix which may be rank-deficient.
-     !> Several right hand side vectors b and solution vectors x can be
-     !> handled in a single call; they are stored as the columns of the
-     !> M-by-NRHS right hand side matrix B and the N-by-NRHS solution matrix
-     !> X.
-     !> The effective rank of A is determined by treating as zero those
-     !> singular values which are less than RCOND times the largest singular
-     !> value.
 
      subroutine stdlib_zgelss( m, n, nrhs, a, lda, b, ldb, s, rcond, rank,work, lwork, rwork, &
+     !! ZGELSS computes the minimum norm solution to a complex linear
+     !! least squares problem:
+     !! Minimize 2-norm(| b - A*x |).
+     !! using the singular value decomposition (SVD) of A. A is an M-by-N
+     !! matrix which may be rank-deficient.
+     !! Several right hand side vectors b and solution vectors x can be
+     !! handled in a single call; they are stored as the columns of the
+     !! M-by-NRHS right hand side matrix B and the N-by-NRHS solution matrix
+     !! X.
+     !! The effective rank of A is determined by treating as zero those
+     !! singular values which are less than RCOND times the largest singular
+     !! value.
                info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -65282,40 +65278,40 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgelss
 
-     !> ZGELSY: computes the minimum-norm solution to a complex linear least
-     !> squares problem:
-     !> minimize || A * X - B ||
-     !> using a complete orthogonal factorization of A.  A is an M-by-N
-     !> matrix which may be rank-deficient.
-     !> Several right hand side vectors b and solution vectors x can be
-     !> handled in a single call; they are stored as the columns of the
-     !> M-by-NRHS right hand side matrix B and the N-by-NRHS solution
-     !> matrix X.
-     !> The routine first computes a QR factorization with column pivoting:
-     !> A * P = Q * [ R11 R12 ]
-     !> [  0  R22 ]
-     !> with R11 defined as the largest leading submatrix whose estimated
-     !> condition number is less than 1/RCOND.  The order of R11, RANK,
-     !> is the effective rank of A.
-     !> Then, R22 is considered to be negligible, and R12 is annihilated
-     !> by unitary transformations from the right, arriving at the
-     !> complete orthogonal factorization:
-     !> A * P = Q * [ T11 0 ] * Z
-     !> [  0  0 ]
-     !> The minimum-norm solution is then
-     !> X = P * Z**H [ inv(T11)*Q1**H*B ]
-     !> [        0         ]
-     !> where Q1 consists of the first RANK columns of Q.
-     !> This routine is basically identical to the original xGELSX except
-     !> three differences:
-     !> o The permutation of matrix B (the right hand side) is faster and
-     !> more simple.
-     !> o The call to the subroutine xGEQPF has been substituted by the
-     !> the call to the subroutine xGEQP3. This subroutine is a Blas-3
-     !> version of the QR factorization with column pivoting.
-     !> o Matrix B (the right hand side) is updated with Blas-3.
 
      subroutine stdlib_zgelsy( m, n, nrhs, a, lda, b, ldb, jpvt, rcond, rank,work, lwork, rwork, &
+     !! ZGELSY computes the minimum-norm solution to a complex linear least
+     !! squares problem:
+     !! minimize || A * X - B ||
+     !! using a complete orthogonal factorization of A.  A is an M-by-N
+     !! matrix which may be rank-deficient.
+     !! Several right hand side vectors b and solution vectors x can be
+     !! handled in a single call; they are stored as the columns of the
+     !! M-by-NRHS right hand side matrix B and the N-by-NRHS solution
+     !! matrix X.
+     !! The routine first computes a QR factorization with column pivoting:
+     !! A * P = Q * [ R11 R12 ]
+     !! [  0  R22 ]
+     !! with R11 defined as the largest leading submatrix whose estimated
+     !! condition number is less than 1/RCOND.  The order of R11, RANK,
+     !! is the effective rank of A.
+     !! Then, R22 is considered to be negligible, and R12 is annihilated
+     !! by unitary transformations from the right, arriving at the
+     !! complete orthogonal factorization:
+     !! A * P = Q * [ T11 0 ] * Z
+     !! [  0  0 ]
+     !! The minimum-norm solution is then
+     !! X = P * Z**H [ inv(T11)*Q1**H*B ]
+     !! [        0         ]
+     !! where Q1 consists of the first RANK columns of Q.
+     !! This routine is basically identical to the original xGELSX except
+     !! three differences:
+     !! o The permutation of matrix B (the right hand side) is faster and
+     !! more simple.
+     !! o The call to the subroutine xGEQPF has been substituted by the
+     !! the call to the subroutine xGEQP3. This subroutine is a Blas-3
+     !! version of the QR factorization with column pivoting.
+     !! o Matrix B (the right hand side) is updated with Blas-3.
                info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -65507,15 +65503,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgelsy
 
-     !> ZGEMLQ: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'C':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix defined as the product
-     !> of blocked elementary reflectors computed by short wide
-     !> LQ factorization (ZGELQ)
 
      pure subroutine stdlib_zgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+     !! ZGEMLQ overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product
+     !! of blocked elementary reflectors computed by short wide
+     !! LQ factorization (ZGELQ)
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -65604,15 +65600,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgemlq
 
-     !> ZGEMQR: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**H * C       C * Q**H
-     !> where Q is a complex unitary matrix defined as the product
-     !> of blocked elementary reflectors computed by tall skinny
-     !> QR factorization (ZGEQR)
 
      pure subroutine stdlib_zgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+     !! ZGEMQR overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product
+     !! of blocked elementary reflectors computed by tall skinny
+     !! QR factorization (ZGEQR)
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -65701,15 +65697,15 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgemqr
 
-     !> ZGEQR: computes a QR factorization of a complex M-by-N matrix A:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a M-by-M orthogonal matrix;
-     !> R is an upper-triangular N-by-N matrix;
-     !> 0 is a (M-N)-by-N zero matrix, if M > N.
 
      pure subroutine stdlib_zgeqr( m, n, a, lda, t, tsize, work, lwork,info )
+     !! ZGEQR computes a QR factorization of a complex M-by-N matrix A:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a M-by-M orthogonal matrix;
+     !! R is an upper-triangular N-by-N matrix;
+     !! 0 is a (M-N)-by-N zero matrix, if M > N.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd. --
@@ -65816,25 +65812,25 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeqr
 
-     !> ZGESDD: computes the singular value decomposition (SVD) of a complex
-     !> M-by-N matrix A, optionally computing the left and/or right singular
-     !> vectors, by using divide-and-conquer method. The SVD is written
-     !> A = U * SIGMA * conjugate-transpose(V)
-     !> where SIGMA is an M-by-N matrix which is zero except for its
-     !> min(m,n) diagonal elements, U is an M-by-M unitary matrix, and
-     !> V is an N-by-N unitary matrix.  The diagonal elements of SIGMA
-     !> are the singular values of A; they are real and non-negative, and
-     !> are returned in descending order.  The first min(m,n) columns of
-     !> U and V are the left and right singular vectors of A.
-     !> Note that the routine returns VT = V**H, not V.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_zgesdd( jobz, m, n, a, lda, s, u, ldu, vt, ldvt,work, lwork, rwork, iwork, &
+     !! ZGESDD computes the singular value decomposition (SVD) of a complex
+     !! M-by-N matrix A, optionally computing the left and/or right singular
+     !! vectors, by using divide-and-conquer method. The SVD is written
+     !! A = U * SIGMA * conjugate-transpose(V)
+     !! where SIGMA is an M-by-N matrix which is zero except for its
+     !! min(m,n) diagonal elements, U is an M-by-M unitary matrix, and
+     !! V is an N-by-N unitary matrix.  The diagonal elements of SIGMA
+     !! are the singular values of A; they are real and non-negative, and
+     !! are returned in descending order.  The first min(m,n) columns of
+     !! U and V are the left and right singular vectors of A.
+     !! Note that the routine returns VT = V**H, not V.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -67311,17 +67307,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgesdd
 
-     !> ZGESV: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
-     !> The LU decomposition with partial pivoting and row interchanges is
-     !> used to factor A as
-     !> A = P * L * U,
-     !> where P is a permutation matrix, L is unit lower triangular, and U is
-     !> upper triangular.  The factored form of A is then used to solve the
-     !> system of equations A * X = B.
 
      pure subroutine stdlib_zgesv( n, nrhs, a, lda, ipiv, b, ldb, info )
+     !! ZGESV computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
+     !! The LU decomposition with partial pivoting and row interchanges is
+     !! used to factor A as
+     !! A = P * L * U,
+     !! where P is a permutation matrix, L is unit lower triangular, and U is
+     !! upper triangular.  The factored form of A is then used to solve the
+     !! system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -67359,19 +67355,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgesv
 
-     !> ZGESVD: computes the singular value decomposition (SVD) of a complex
-     !> M-by-N matrix A, optionally computing the left and/or right singular
-     !> vectors. The SVD is written
-     !> A = U * SIGMA * conjugate-transpose(V)
-     !> where SIGMA is an M-by-N matrix which is zero except for its
-     !> min(m,n) diagonal elements, U is an M-by-M unitary matrix, and
-     !> V is an N-by-N unitary matrix.  The diagonal elements of SIGMA
-     !> are the singular values of A; they are real and non-negative, and
-     !> are returned in descending order.  The first min(m,n) columns of
-     !> U and V are the left and right singular vectors of A.
-     !> Note that the routine returns V**H, not V.
 
      subroutine stdlib_zgesvd( jobu, jobvt, m, n, a, lda, s, u, ldu,vt, ldvt, work, lwork, rwork, &
+     !! ZGESVD computes the singular value decomposition (SVD) of a complex
+     !! M-by-N matrix A, optionally computing the left and/or right singular
+     !! vectors. The SVD is written
+     !! A = U * SIGMA * conjugate-transpose(V)
+     !! where SIGMA is an M-by-N matrix which is zero except for its
+     !! min(m,n) diagonal elements, U is an M-by-M unitary matrix, and
+     !! V is an N-by-N unitary matrix.  The diagonal elements of SIGMA
+     !! are the singular values of A; they are real and non-negative, and
+     !! are returned in descending order.  The first min(m,n) columns of
+     !! U and V are the left and right singular vectors of A.
+     !! Note that the routine returns V**H, not V.
                info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -69805,17 +69801,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgesvd
 
-     !> ZCGESVDQ computes the singular value decomposition (SVD) of a complex
-     !> M-by-N matrix A, where M >= N. The SVD of A is written as
-     !> [++]   [xx]   [x0]   [xx]
-     !> A = U * SIGMA * V^*,  [++] = [xx] * [ox] * [xx]
-     !> [++]   [xx]
-     !> where SIGMA is an N-by-N diagonal matrix, U is an M-by-N orthonormal
-     !> matrix, and V is an N-by-N unitary matrix. The diagonal elements
-     !> of SIGMA are the singular values of A. The columns of U and V are the
-     !> left and the right singular vectors of A, respectively.
 
      subroutine stdlib_zgesvdq( joba, jobp, jobr, jobu, jobv, m, n, a, lda,s, u, ldu, v, ldv, &
+     !! ZCGESVDQ computes the singular value decomposition (SVD) of a complex
+     !! M-by-N matrix A, where M >= N. The SVD of A is written as
+     !! [++]   [xx]   [x0]   [xx]
+     !! A = U * SIGMA * V^*,  [++] = [xx] * [ox] * [xx]
+     !! [++]   [xx]
+     !! where SIGMA is an N-by-N diagonal matrix, U is an M-by-N orthonormal
+     !! matrix, and V is an N-by-N unitary matrix. The diagonal elements
+     !! of SIGMA are the singular values of A. The columns of U and V are the
+     !! left and the right singular vectors of A, respectively.
                numrank, iwork, liwork,cwork, lcwork, rwork, lrwork, info )
            ! Scalar Arguments 
            character, intent(in) :: joba, jobp, jobr, jobu, jobv
@@ -70683,14 +70679,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgesvdq
 
-     !> ZGESVX: uses the LU factorization to compute the solution to a complex
-     !> system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_zgesvx( fact, trans, n, nrhs, a, lda, af, ldaf, ipiv,equed, r, c, b, ldb, &
+     !! ZGESVX uses the LU factorization to compute the solution to a complex
+     !! system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                x, ldx, rcond, ferr, berr,work, rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -70888,26 +70884,26 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgesvx
 
-     !> ZGETSLS: solves overdetermined or underdetermined complex linear systems
-     !> involving an M-by-N matrix A, using a tall skinny QR or short wide LQ
-     !> factorization of A.  It is assumed that A has full rank.
-     !> The following options are provided:
-     !> 1. If TRANS = 'N' and m >= n:  find the least squares solution of
-     !> an overdetermined system, i.e., solve the least squares problem
-     !> minimize || B - A*X ||.
-     !> 2. If TRANS = 'N' and m < n:  find the minimum norm solution of
-     !> an underdetermined system A * X = B.
-     !> 3. If TRANS = 'C' and m >= n:  find the minimum norm solution of
-     !> an undetermined system A**T * X = B.
-     !> 4. If TRANS = 'C' and m < n:  find the least squares solution of
-     !> an overdetermined system, i.e., solve the least squares problem
-     !> minimize || B - A**T * X ||.
-     !> Several right hand side vectors b and solution vectors x can be
-     !> handled in a single call; they are stored as the columns of the
-     !> M-by-NRHS right hand side matrix B and the N-by-NRHS solution
-     !> matrix X.
 
      subroutine stdlib_zgetsls( trans, m, n, nrhs, a, lda, b, ldb,work, lwork, info )
+     !! ZGETSLS solves overdetermined or underdetermined complex linear systems
+     !! involving an M-by-N matrix A, using a tall skinny QR or short wide LQ
+     !! factorization of A.  It is assumed that A has full rank.
+     !! The following options are provided:
+     !! 1. If TRANS = 'N' and m >= n:  find the least squares solution of
+     !! an overdetermined system, i.e., solve the least squares problem
+     !! minimize || B - A*X ||.
+     !! 2. If TRANS = 'N' and m < n:  find the minimum norm solution of
+     !! an underdetermined system A * X = B.
+     !! 3. If TRANS = 'C' and m >= n:  find the minimum norm solution of
+     !! an undetermined system A**T * X = B.
+     !! 4. If TRANS = 'C' and m < n:  find the least squares solution of
+     !! an overdetermined system, i.e., solve the least squares problem
+     !! minimize || B - A**T * X ||.
+     !! Several right hand side vectors b and solution vectors x can be
+     !! handled in a single call; they are stored as the columns of the
+     !! M-by-NRHS right hand side matrix B and the N-by-NRHS solution
+     !! matrix X.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -71125,20 +71121,20 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgetsls
 
-     !> ZGETSQRHRT: computes a NB2-sized column blocked QR-factorization
-     !> of a complex M-by-N matrix A with M >= N,
-     !> A = Q * R.
-     !> The routine uses internally a NB1-sized column blocked and MB1-sized
-     !> row blocked TSQR-factorization and perfors the reconstruction
-     !> of the Householder vectors from the TSQR output. The routine also
-     !> converts the R_tsqr factor from the TSQR-factorization output into
-     !> the R factor that corresponds to the Householder QR-factorization,
-     !> A = Q_tsqr * R_tsqr = Q * R.
-     !> The output Q and R factors are stored in the same format as in ZGEQRT
-     !> (Q is in blocked compact WY-representation). See the documentation
-     !> of ZGEQRT for more details on the format.
 
      pure subroutine stdlib_zgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
+     !! ZGETSQRHRT computes a NB2-sized column blocked QR-factorization
+     !! of a complex M-by-N matrix A with M >= N,
+     !! A = Q * R.
+     !! The routine uses internally a NB1-sized column blocked and MB1-sized
+     !! row blocked TSQR-factorization and perfors the reconstruction
+     !! of the Householder vectors from the TSQR output. The routine also
+     !! converts the R_tsqr factor from the TSQR-factorization output into
+     !! the R factor that corresponds to the Householder QR-factorization,
+     !! A = Q_tsqr * R_tsqr = Q * R.
+     !! The output Q and R factors are stored in the same format as in ZGEQRT
+     !! (Q is in blocked compact WY-representation). See the documentation
+     !! of ZGEQRT for more details on the format.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -71258,28 +71254,28 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgetsqrhrt
 
-     !> ZGGES: computes for a pair of N-by-N complex nonsymmetric matrices
-     !> (A,B), the generalized eigenvalues, the generalized complex Schur
-     !> form (S, T), and optionally left and/or right Schur vectors (VSL
-     !> and VSR). This gives the generalized Schur factorization
-     !> (A,B) = ( (VSL)*S*(VSR)**H, (VSL)*T*(VSR)**H )
-     !> where (VSR)**H is the conjugate-transpose of VSR.
-     !> Optionally, it also orders the eigenvalues so that a selected cluster
-     !> of eigenvalues appears in the leading diagonal blocks of the upper
-     !> triangular matrix S and the upper triangular matrix T. The leading
-     !> columns of VSL and VSR then form an unitary basis for the
-     !> corresponding left and right eigenspaces (deflating subspaces).
-     !> (If only the generalized eigenvalues are needed, use the driver
-     !> ZGGEV instead, which is faster.)
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
-     !> or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
-     !> usually represented as the pair (alpha,beta), as there is a
-     !> reasonable interpretation for beta=0, and even for both being zero.
-     !> A pair of matrices (S,T) is in generalized complex Schur form if S
-     !> and T are upper triangular and, in addition, the diagonal elements
-     !> of T are non-negative real numbers.
 
      subroutine stdlib_zgges( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb,sdim, alpha, beta, &
+     !! ZGGES computes for a pair of N-by-N complex nonsymmetric matrices
+     !! (A,B), the generalized eigenvalues, the generalized complex Schur
+     !! form (S, T), and optionally left and/or right Schur vectors (VSL
+     !! and VSR). This gives the generalized Schur factorization
+     !! (A,B) = ( (VSL)*S*(VSR)**H, (VSL)*T*(VSR)**H )
+     !! where (VSR)**H is the conjugate-transpose of VSR.
+     !! Optionally, it also orders the eigenvalues so that a selected cluster
+     !! of eigenvalues appears in the leading diagonal blocks of the upper
+     !! triangular matrix S and the upper triangular matrix T. The leading
+     !! columns of VSL and VSR then form an unitary basis for the
+     !! corresponding left and right eigenspaces (deflating subspaces).
+     !! (If only the generalized eigenvalues are needed, use the driver
+     !! ZGGEV instead, which is faster.)
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
+     !! or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
+     !! usually represented as the pair (alpha,beta), as there is a
+     !! reasonable interpretation for beta=0, and even for both being zero.
+     !! A pair of matrices (S,T) is in generalized complex Schur form if S
+     !! and T are upper triangular and, in addition, the diagonal elements
+     !! of T are non-negative real numbers.
                vsl, ldvsl, vsr, ldvsr, work,lwork, rwork, bwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -71510,30 +71506,30 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgges
 
-     !> ZGGESX: computes for a pair of N-by-N complex nonsymmetric matrices
-     !> (A,B), the generalized eigenvalues, the complex Schur form (S,T),
-     !> and, optionally, the left and/or right matrices of Schur vectors (VSL
-     !> and VSR).  This gives the generalized Schur factorization
-     !> (A,B) = ( (VSL) S (VSR)**H, (VSL) T (VSR)**H )
-     !> where (VSR)**H is the conjugate-transpose of VSR.
-     !> Optionally, it also orders the eigenvalues so that a selected cluster
-     !> of eigenvalues appears in the leading diagonal blocks of the upper
-     !> triangular matrix S and the upper triangular matrix T; computes
-     !> a reciprocal condition number for the average of the selected
-     !> eigenvalues (RCONDE); and computes a reciprocal condition number for
-     !> the right and left deflating subspaces corresponding to the selected
-     !> eigenvalues (RCONDV). The leading columns of VSL and VSR then form
-     !> an orthonormal basis for the corresponding left and right eigenspaces
-     !> (deflating subspaces).
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
-     !> or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
-     !> usually represented as the pair (alpha,beta), as there is a
-     !> reasonable interpretation for beta=0 or for both being zero.
-     !> A pair of matrices (S,T) is in generalized complex Schur form if T is
-     !> upper triangular with non-negative diagonal and S is upper
-     !> triangular.
 
      subroutine stdlib_zggesx( jobvsl, jobvsr, sort, selctg, sense, n, a, lda,b, ldb, sdim, alpha,&
+     !! ZGGESX computes for a pair of N-by-N complex nonsymmetric matrices
+     !! (A,B), the generalized eigenvalues, the complex Schur form (S,T),
+     !! and, optionally, the left and/or right matrices of Schur vectors (VSL
+     !! and VSR).  This gives the generalized Schur factorization
+     !! (A,B) = ( (VSL) S (VSR)**H, (VSL) T (VSR)**H )
+     !! where (VSR)**H is the conjugate-transpose of VSR.
+     !! Optionally, it also orders the eigenvalues so that a selected cluster
+     !! of eigenvalues appears in the leading diagonal blocks of the upper
+     !! triangular matrix S and the upper triangular matrix T; computes
+     !! a reciprocal condition number for the average of the selected
+     !! eigenvalues (RCONDE); and computes a reciprocal condition number for
+     !! the right and left deflating subspaces corresponding to the selected
+     !! eigenvalues (RCONDV). The leading columns of VSL and VSR then form
+     !! an orthonormal basis for the corresponding left and right eigenspaces
+     !! (deflating subspaces).
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
+     !! or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
+     !! usually represented as the pair (alpha,beta), as there is a
+     !! reasonable interpretation for beta=0 or for both being zero.
+     !! A pair of matrices (S,T) is in generalized complex Schur form if T is
+     !! upper triangular with non-negative diagonal and S is upper
+     !! triangular.
       beta, vsl, ldvsl, vsr,ldvsr, rconde, rcondv, work, lwork, rwork,iwork, liwork, bwork, info )
                 
         ! -- lapack driver routine --
@@ -71820,23 +71816,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zggesx
 
-     !> ZGGEV: computes for a pair of N-by-N complex nonsymmetric matrices
-     !> (A,B), the generalized eigenvalues, and optionally, the left and/or
-     !> right generalized eigenvectors.
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar
-     !> lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
-     !> singular. It is usually represented as the pair (alpha,beta), as
-     !> there is a reasonable interpretation for beta=0, and even for both
-     !> being zero.
-     !> The right generalized eigenvector v(j) corresponding to the
-     !> generalized eigenvalue lambda(j) of (A,B) satisfies
-     !> A * v(j) = lambda(j) * B * v(j).
-     !> The left generalized eigenvector u(j) corresponding to the
-     !> generalized eigenvalues lambda(j) of (A,B) satisfies
-     !> u(j)**H * A = lambda(j) * u(j)**H * B
-     !> where u(j)**H is the conjugate-transpose of u(j).
 
      subroutine stdlib_zggev( jobvl, jobvr, n, a, lda, b, ldb, alpha, beta,vl, ldvl, vr, ldvr, &
+     !! ZGGEV computes for a pair of N-by-N complex nonsymmetric matrices
+     !! (A,B), the generalized eigenvalues, and optionally, the left and/or
+     !! right generalized eigenvectors.
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar
+     !! lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
+     !! singular. It is usually represented as the pair (alpha,beta), as
+     !! there is a reasonable interpretation for beta=0, and even for both
+     !! being zero.
+     !! The right generalized eigenvector v(j) corresponding to the
+     !! generalized eigenvalue lambda(j) of (A,B) satisfies
+     !! A * v(j) = lambda(j) * B * v(j).
+     !! The left generalized eigenvector u(j) corresponding to the
+     !! generalized eigenvalues lambda(j) of (A,B) satisfies
+     !! u(j)**H * A = lambda(j) * u(j)**H * B
+     !! where u(j)**H is the conjugate-transpose of u(j).
                work, lwork, rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -72090,28 +72086,28 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zggev
 
-     !> ZGGEVX: computes for a pair of N-by-N complex nonsymmetric matrices
-     !> (A,B) the generalized eigenvalues, and optionally, the left and/or
-     !> right generalized eigenvectors.
-     !> Optionally, it also computes a balancing transformation to improve
-     !> the conditioning of the eigenvalues and eigenvectors (ILO, IHI,
-     !> LSCALE, RSCALE, ABNRM, and BBNRM), reciprocal condition numbers for
-     !> the eigenvalues (RCONDE), and reciprocal condition numbers for the
-     !> right eigenvectors (RCONDV).
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar
-     !> lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
-     !> singular. It is usually represented as the pair (alpha,beta), as
-     !> there is a reasonable interpretation for beta=0, and even for both
-     !> being zero.
-     !> The right eigenvector v(j) corresponding to the eigenvalue lambda(j)
-     !> of (A,B) satisfies
-     !> A * v(j) = lambda(j) * B * v(j) .
-     !> The left eigenvector u(j) corresponding to the eigenvalue lambda(j)
-     !> of (A,B) satisfies
-     !> u(j)**H * A  = lambda(j) * u(j)**H * B.
-     !> where u(j)**H is the conjugate-transpose of u(j).
 
      subroutine stdlib_zggevx( balanc, jobvl, jobvr, sense, n, a, lda, b, ldb,alpha, beta, vl, &
+     !! ZGGEVX computes for a pair of N-by-N complex nonsymmetric matrices
+     !! (A,B) the generalized eigenvalues, and optionally, the left and/or
+     !! right generalized eigenvectors.
+     !! Optionally, it also computes a balancing transformation to improve
+     !! the conditioning of the eigenvalues and eigenvectors (ILO, IHI,
+     !! LSCALE, RSCALE, ABNRM, and BBNRM), reciprocal condition numbers for
+     !! the eigenvalues (RCONDE), and reciprocal condition numbers for the
+     !! right eigenvectors (RCONDV).
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar
+     !! lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
+     !! singular. It is usually represented as the pair (alpha,beta), as
+     !! there is a reasonable interpretation for beta=0, and even for both
+     !! being zero.
+     !! The right eigenvector v(j) corresponding to the eigenvalue lambda(j)
+     !! of (A,B) satisfies
+     !! A * v(j) = lambda(j) * B * v(j) .
+     !! The left eigenvector u(j) corresponding to the eigenvalue lambda(j)
+     !! of (A,B) satisfies
+     !! u(j)**H * A  = lambda(j) * u(j)**H * B.
+     !! where u(j)**H is the conjugate-transpose of u(j).
      ldvl, vr, ldvr, ilo, ihi,lscale, rscale, abnrm, bbnrm, rconde, rcondv,work, lwork, rwork, &
                iwork, bwork, info )
         ! -- lapack driver routine --
@@ -72438,10 +72434,10 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zggevx
 
-     !> ZHBEV: computes all the eigenvalues and, optionally, eigenvectors of
-     !> a complex Hermitian band matrix A.
 
      subroutine stdlib_zhbev( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,rwork, info )
+     !! ZHBEV computes all the eigenvalues and, optionally, eigenvectors of
+     !! a complex Hermitian band matrix A.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -72542,17 +72538,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhbev
 
-     !> ZHBEVD: computes all the eigenvalues and, optionally, eigenvectors of
-     !> a complex Hermitian band matrix A.  If eigenvectors are desired, it
-     !> uses a divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_zhbevd( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,lwork, rwork, lrwork, &
+     !! ZHBEVD computes all the eigenvalues and, optionally, eigenvectors of
+     !! a complex Hermitian band matrix A.  If eigenvectors are desired, it
+     !! uses a divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                iwork, liwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -72692,12 +72688,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhbevd
 
-     !> ZHBEVX: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a complex Hermitian band matrix A.  Eigenvalues and eigenvectors
-     !> can be selected by specifying either a range of values or a range of
-     !> indices for the desired eigenvalues.
 
      subroutine stdlib_zhbevx( jobz, range, uplo, n, kd, ab, ldab, q, ldq, vl,vu, il, iu, abstol, &
+     !! ZHBEVX computes selected eigenvalues and, optionally, eigenvectors
+     !! of a complex Hermitian band matrix A.  Eigenvalues and eigenvectors
+     !! can be selected by specifying either a range of values or a range of
+     !! indices for the desired eigenvalues.
                m, w, z, ldz, work, rwork,iwork, ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -72923,12 +72919,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhbevx
 
-     !> ZHBGV: computes all the eigenvalues, and optionally, the eigenvectors
-     !> of a complex generalized Hermitian-definite banded eigenproblem, of
-     !> the form A*x=(lambda)*B*x. Here A and B are assumed to be Hermitian
-     !> and banded, and B is also positive definite.
 
      pure subroutine stdlib_zhbgv( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w, z,ldz, work, &
+     !! ZHBGV computes all the eigenvalues, and optionally, the eigenvectors
+     !! of a complex generalized Hermitian-definite banded eigenproblem, of
+     !! the form A*x=(lambda)*B*x. Here A and B are assumed to be Hermitian
+     !! and banded, and B is also positive definite.
                rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -73003,19 +72999,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhbgv
 
-     !> ZHBGVD: computes all the eigenvalues, and optionally, the eigenvectors
-     !> of a complex generalized Hermitian-definite banded eigenproblem, of
-     !> the form A*x=(lambda)*B*x. Here A and B are assumed to be Hermitian
-     !> and banded, and B is also positive definite.  If eigenvectors are
-     !> desired, it uses a divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      pure subroutine stdlib_zhbgvd( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w,z, ldz, work, &
+     !! ZHBGVD computes all the eigenvalues, and optionally, the eigenvectors
+     !! of a complex generalized Hermitian-definite banded eigenproblem, of
+     !! the form A*x=(lambda)*B*x. Here A and B are assumed to be Hermitian
+     !! and banded, and B is also positive definite.  If eigenvectors are
+     !! desired, it uses a divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                lwork, rwork, lrwork, iwork,liwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -73130,14 +73126,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhbgvd
 
-     !> ZHBGVX: computes all the eigenvalues, and optionally, the eigenvectors
-     !> of a complex generalized Hermitian-definite banded eigenproblem, of
-     !> the form A*x=(lambda)*B*x. Here A and B are assumed to be Hermitian
-     !> and banded, and B is also positive definite.  Eigenvalues and
-     !> eigenvectors can be selected by specifying either all eigenvalues,
-     !> a range of values or a range of indices for the desired eigenvalues.
 
      pure subroutine stdlib_zhbgvx( jobz, range, uplo, n, ka, kb, ab, ldab, bb,ldbb, q, ldq, vl, &
+     !! ZHBGVX computes all the eigenvalues, and optionally, the eigenvectors
+     !! of a complex generalized Hermitian-definite banded eigenproblem, of
+     !! the form A*x=(lambda)*B*x. Here A and B are assumed to be Hermitian
+     !! and banded, and B is also positive definite.  Eigenvalues and
+     !! eigenvectors can be selected by specifying either all eigenvalues,
+     !! a range of values or a range of indices for the desired eigenvalues.
                vu, il, iu, abstol, m, w, z,ldz, work, rwork, iwork, ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -73319,17 +73315,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhbgvx
 
-     !> ZHEEVD: computes all eigenvalues and, optionally, eigenvectors of a
-     !> complex Hermitian matrix A.  If eigenvectors are desired, it uses a
-     !> divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_zheevd( jobz, uplo, n, a, lda, w, work, lwork, rwork,lrwork, iwork, liwork,&
+     !! ZHEEVD computes all eigenvalues and, optionally, eigenvectors of a
+     !! complex Hermitian matrix A.  If eigenvectors are desired, it uses a
+     !! divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                 info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -73472,19 +73468,19 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zheevd
 
-     !> ZHEGVD: computes all the eigenvalues, and optionally, the eigenvectors
-     !> of a complex generalized Hermitian-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
-     !> B are assumed to be Hermitian and B is also positive definite.
-     !> If eigenvectors are desired, it uses a divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_zhegvd( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, rwork, lrwork,&
+     !! ZHEGVD computes all the eigenvalues, and optionally, the eigenvectors
+     !! of a complex generalized Hermitian-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
+     !! B are assumed to be Hermitian and B is also positive definite.
+     !! If eigenvectors are desired, it uses a divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                 iwork, liwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -73604,17 +73600,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhegvd
 
-     !> ZHPEVD: computes all the eigenvalues and, optionally, eigenvectors of
-     !> a complex Hermitian matrix A in packed storage.  If eigenvectors are
-     !> desired, it uses a divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_zhpevd( jobz, uplo, n, ap, w, z, ldz, work, lwork,rwork, lrwork, iwork, &
+     !! ZHPEVD computes all the eigenvalues and, optionally, eigenvectors of
+     !! a complex Hermitian matrix A in packed storage.  If eigenvectors are
+     !! desired, it uses a divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                liwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -73746,20 +73742,20 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhpevd
 
-     !> ZHPGVD: computes all the eigenvalues and, optionally, the eigenvectors
-     !> of a complex generalized Hermitian-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
-     !> B are assumed to be Hermitian, stored in packed format, and B is also
-     !> positive definite.
-     !> If eigenvectors are desired, it uses a divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_zhpgvd( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,lwork, rwork, lrwork,&
+     !! ZHPGVD computes all the eigenvalues and, optionally, the eigenvectors
+     !! of a complex generalized Hermitian-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
+     !! B are assumed to be Hermitian, stored in packed format, and B is also
+     !! positive definite.
+     !! If eigenvectors are desired, it uses a divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                 iwork, liwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -73879,16 +73875,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhpgvd
 
-     !> ZGEES: computes for an N-by-N complex nonsymmetric matrix A, the
-     !> eigenvalues, the Schur form T, and, optionally, the matrix of Schur
-     !> vectors Z.  This gives the Schur factorization A = Z*T*(Z**H).
-     !> Optionally, it also orders the eigenvalues on the diagonal of the
-     !> Schur form so that selected eigenvalues are at the top left.
-     !> The leading columns of Z then form an orthonormal basis for the
-     !> invariant subspace corresponding to the selected eigenvalues.
-     !> A complex matrix is in Schur form if it is upper triangular.
 
      subroutine stdlib_zgees( jobvs, sort, select, n, a, lda, sdim, w, vs,ldvs, work, lwork, &
+     !! ZGEES computes for an N-by-N complex nonsymmetric matrix A, the
+     !! eigenvalues, the Schur form T, and, optionally, the matrix of Schur
+     !! vectors Z.  This gives the Schur factorization A = Z*T*(Z**H).
+     !! Optionally, it also orders the eigenvalues on the diagonal of the
+     !! Schur form so that selected eigenvalues are at the top left.
+     !! The leading columns of Z then form an orthonormal basis for the
+     !! invariant subspace corresponding to the selected eigenvalues.
+     !! A complex matrix is in Schur form if it is upper triangular.
                rwork, bwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -74050,22 +74046,22 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgees
 
-     !> ZGEESX: computes for an N-by-N complex nonsymmetric matrix A, the
-     !> eigenvalues, the Schur form T, and, optionally, the matrix of Schur
-     !> vectors Z.  This gives the Schur factorization A = Z*T*(Z**H).
-     !> Optionally, it also orders the eigenvalues on the diagonal of the
-     !> Schur form so that selected eigenvalues are at the top left;
-     !> computes a reciprocal condition number for the average of the
-     !> selected eigenvalues (RCONDE); and computes a reciprocal condition
-     !> number for the right invariant subspace corresponding to the
-     !> selected eigenvalues (RCONDV).  The leading columns of Z form an
-     !> orthonormal basis for this invariant subspace.
-     !> For further explanation of the reciprocal condition numbers RCONDE
-     !> and RCONDV, see Section 4.10_dp of the LAPACK Users' Guide (where
-     !> these quantities are called s and sep respectively).
-     !> A complex matrix is in Schur form if it is upper triangular.
 
      subroutine stdlib_zgeesx( jobvs, sort, select, sense, n, a, lda, sdim, w,vs, ldvs, rconde, &
+     !! ZGEESX computes for an N-by-N complex nonsymmetric matrix A, the
+     !! eigenvalues, the Schur form T, and, optionally, the matrix of Schur
+     !! vectors Z.  This gives the Schur factorization A = Z*T*(Z**H).
+     !! Optionally, it also orders the eigenvalues on the diagonal of the
+     !! Schur form so that selected eigenvalues are at the top left;
+     !! computes a reciprocal condition number for the average of the
+     !! selected eigenvalues (RCONDE); and computes a reciprocal condition
+     !! number for the right invariant subspace corresponding to the
+     !! selected eigenvalues (RCONDV).  The leading columns of Z form an
+     !! orthonormal basis for this invariant subspace.
+     !! For further explanation of the reciprocal condition numbers RCONDE
+     !! and RCONDV, see Section 4.10_dp of the LAPACK Users' Guide (where
+     !! these quantities are called s and sep respectively).
+     !! A complex matrix is in Schur form if it is upper triangular.
                rcondv, work, lwork, rwork,bwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -74252,18 +74248,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeesx
 
-     !> ZGEEV: computes for an N-by-N complex nonsymmetric matrix A, the
-     !> eigenvalues and, optionally, the left and/or right eigenvectors.
-     !> The right eigenvector v(j) of A satisfies
-     !> A * v(j) = lambda(j) * v(j)
-     !> where lambda(j) is its eigenvalue.
-     !> The left eigenvector u(j) of A satisfies
-     !> u(j)**H * A = lambda(j) * u(j)**H
-     !> where u(j)**H denotes the conjugate transpose of u(j).
-     !> The computed eigenvectors are normalized to have Euclidean norm
-     !> equal to 1 and largest component real.
 
      subroutine stdlib_zgeev( jobvl, jobvr, n, a, lda, w, vl, ldvl, vr, ldvr,work, lwork, rwork, &
+     !! ZGEEV computes for an N-by-N complex nonsymmetric matrix A, the
+     !! eigenvalues and, optionally, the left and/or right eigenvectors.
+     !! The right eigenvector v(j) of A satisfies
+     !! A * v(j) = lambda(j) * v(j)
+     !! where lambda(j) is its eigenvalue.
+     !! The left eigenvector u(j) of A satisfies
+     !! u(j)**H * A = lambda(j) * u(j)**H
+     !! where u(j)**H denotes the conjugate transpose of u(j).
+     !! The computed eigenvectors are normalized to have Euclidean norm
+     !! equal to 1 and largest component real.
                info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -74501,33 +74497,33 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeev
 
-     !> ZGEEVX: computes for an N-by-N complex nonsymmetric matrix A, the
-     !> eigenvalues and, optionally, the left and/or right eigenvectors.
-     !> Optionally also, it computes a balancing transformation to improve
-     !> the conditioning of the eigenvalues and eigenvectors (ILO, IHI,
-     !> SCALE, and ABNRM), reciprocal condition numbers for the eigenvalues
-     !> (RCONDE), and reciprocal condition numbers for the right
-     !> eigenvectors (RCONDV).
-     !> The right eigenvector v(j) of A satisfies
-     !> A * v(j) = lambda(j) * v(j)
-     !> where lambda(j) is its eigenvalue.
-     !> The left eigenvector u(j) of A satisfies
-     !> u(j)**H * A = lambda(j) * u(j)**H
-     !> where u(j)**H denotes the conjugate transpose of u(j).
-     !> The computed eigenvectors are normalized to have Euclidean norm
-     !> equal to 1 and largest component real.
-     !> Balancing a matrix means permuting the rows and columns to make it
-     !> more nearly upper triangular, and applying a diagonal similarity
-     !> transformation D * A * D**(-1), where D is a diagonal matrix, to
-     !> make its rows and columns closer in norm and the condition numbers
-     !> of its eigenvalues and eigenvectors smaller.  The computed
-     !> reciprocal condition numbers correspond to the balanced matrix.
-     !> Permuting rows and columns will not change the condition numbers
-     !> (in exact arithmetic) but diagonal scaling will.  For further
-     !> explanation of balancing, see section 4.10.2_dp of the LAPACK
-     !> Users' Guide.
 
      subroutine stdlib_zgeevx( balanc, jobvl, jobvr, sense, n, a, lda, w, vl,ldvl, vr, ldvr, ilo, &
+     !! ZGEEVX computes for an N-by-N complex nonsymmetric matrix A, the
+     !! eigenvalues and, optionally, the left and/or right eigenvectors.
+     !! Optionally also, it computes a balancing transformation to improve
+     !! the conditioning of the eigenvalues and eigenvectors (ILO, IHI,
+     !! SCALE, and ABNRM), reciprocal condition numbers for the eigenvalues
+     !! (RCONDE), and reciprocal condition numbers for the right
+     !! eigenvectors (RCONDV).
+     !! The right eigenvector v(j) of A satisfies
+     !! A * v(j) = lambda(j) * v(j)
+     !! where lambda(j) is its eigenvalue.
+     !! The left eigenvector u(j) of A satisfies
+     !! u(j)**H * A = lambda(j) * u(j)**H
+     !! where u(j)**H denotes the conjugate transpose of u(j).
+     !! The computed eigenvectors are normalized to have Euclidean norm
+     !! equal to 1 and largest component real.
+     !! Balancing a matrix means permuting the rows and columns to make it
+     !! more nearly upper triangular, and applying a diagonal similarity
+     !! transformation D * A * D**(-1), where D is a diagonal matrix, to
+     !! make its rows and columns closer in norm and the condition numbers
+     !! of its eigenvalues and eigenvectors smaller.  The computed
+     !! reciprocal condition numbers correspond to the balanced matrix.
+     !! Permuting rows and columns will not change the condition numbers
+     !! (in exact arithmetic) but diagonal scaling will.  For further
+     !! explanation of balancing, see section 4.10.2_dp of the LAPACK
+     !! Users' Guide.
                ihi, scale, abnrm, rconde,rcondv, work, lwork, rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -74803,18 +74799,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgeevx
 
-     !> ZGEJSV: computes the singular value decomposition (SVD) of a complex M-by-N
-     !> matrix [A], where M >= N. The SVD of [A] is written as
-     !> [A] = [U] * [SIGMA] * [V]^*,
-     !> where [SIGMA] is an N-by-N (M-by-N) matrix which is zero except for its N
-     !> diagonal elements, [U] is an M-by-N (or M-by-M) unitary matrix, and
-     !> [V] is an N-by-N unitary matrix. The diagonal elements of [SIGMA] are
-     !> the singular values of [A]. The columns of [U] and [V] are the left and
-     !> the right singular vectors of [A], respectively. The matrices [U] and [V]
-     !> are computed and stored in the arrays U and V, respectively. The diagonal
-     !> of [SIGMA] is computed and stored in the array SVA.
 
      pure subroutine stdlib_zgejsv( joba, jobu, jobv, jobr, jobt, jobp,m, n, a, lda, sva, u, ldu, &
+     !! ZGEJSV computes the singular value decomposition (SVD) of a complex M-by-N
+     !! matrix [A], where M >= N. The SVD of [A] is written as
+     !! [A] = [U] * [SIGMA] * [V]^*,
+     !! where [SIGMA] is an N-by-N (M-by-N) matrix which is zero except for its N
+     !! diagonal elements, [U] is an M-by-N (or M-by-M) unitary matrix, and
+     !! [V] is an N-by-N unitary matrix. The diagonal elements of [SIGMA] are
+     !! the singular values of [A]. The columns of [U] and [V] are the left and
+     !! the right singular vectors of [A], respectively. The matrices [U] and [V]
+     !! are computed and stored in the arrays U and V, respectively. The diagonal
+     !! of [SIGMA] is computed and stored in the array SVA.
                v, ldv,cwork, lwork, rwork, lrwork, iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -76208,17 +76204,17 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgejsv
 
-     !> ZGESVJ: computes the singular value decomposition (SVD) of a complex
-     !> M-by-N matrix A, where M >= N. The SVD of A is written as
-     !> [++]   [xx]   [x0]   [xx]
-     !> A = U * SIGMA * V^*,  [++] = [xx] * [ox] * [xx]
-     !> [++]   [xx]
-     !> where SIGMA is an N-by-N diagonal matrix, U is an M-by-N orthonormal
-     !> matrix, and V is an N-by-N unitary matrix. The diagonal elements
-     !> of SIGMA are the singular values of A. The columns of U and V are the
-     !> left and the right singular vectors of A, respectively.
 
      pure subroutine stdlib_zgesvj( joba, jobu, jobv, m, n, a, lda, sva, mv, v,ldv, cwork, lwork, &
+     !! ZGESVJ computes the singular value decomposition (SVD) of a complex
+     !! M-by-N matrix A, where M >= N. The SVD of A is written as
+     !! [++]   [xx]   [x0]   [xx]
+     !! A = U * SIGMA * V^*,  [++] = [xx] * [ox] * [xx]
+     !! [++]   [xx]
+     !! where SIGMA is an N-by-N diagonal matrix, U is an M-by-N orthonormal
+     !! matrix, and V is an N-by-N unitary matrix. The diagonal elements
+     !! of SIGMA are the singular values of A. The columns of U and V are the
+     !! left and the right singular vectors of A, respectively.
                rwork, lrwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -77060,28 +77056,28 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgesvj
 
-     !> ZGGES3: computes for a pair of N-by-N complex nonsymmetric matrices
-     !> (A,B), the generalized eigenvalues, the generalized complex Schur
-     !> form (S, T), and optionally left and/or right Schur vectors (VSL
-     !> and VSR). This gives the generalized Schur factorization
-     !> (A,B) = ( (VSL)*S*(VSR)**H, (VSL)*T*(VSR)**H )
-     !> where (VSR)**H is the conjugate-transpose of VSR.
-     !> Optionally, it also orders the eigenvalues so that a selected cluster
-     !> of eigenvalues appears in the leading diagonal blocks of the upper
-     !> triangular matrix S and the upper triangular matrix T. The leading
-     !> columns of VSL and VSR then form an unitary basis for the
-     !> corresponding left and right eigenspaces (deflating subspaces).
-     !> (If only the generalized eigenvalues are needed, use the driver
-     !> ZGGEV instead, which is faster.)
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
-     !> or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
-     !> usually represented as the pair (alpha,beta), as there is a
-     !> reasonable interpretation for beta=0, and even for both being zero.
-     !> A pair of matrices (S,T) is in generalized complex Schur form if S
-     !> and T are upper triangular and, in addition, the diagonal elements
-     !> of T are non-negative real numbers.
 
      subroutine stdlib_zgges3( jobvsl, jobvsr, sort, selctg, n, a, lda, b,ldb, sdim, alpha, beta, &
+     !! ZGGES3 computes for a pair of N-by-N complex nonsymmetric matrices
+     !! (A,B), the generalized eigenvalues, the generalized complex Schur
+     !! form (S, T), and optionally left and/or right Schur vectors (VSL
+     !! and VSR). This gives the generalized Schur factorization
+     !! (A,B) = ( (VSL)*S*(VSR)**H, (VSL)*T*(VSR)**H )
+     !! where (VSR)**H is the conjugate-transpose of VSR.
+     !! Optionally, it also orders the eigenvalues so that a selected cluster
+     !! of eigenvalues appears in the leading diagonal blocks of the upper
+     !! triangular matrix S and the upper triangular matrix T. The leading
+     !! columns of VSL and VSR then form an unitary basis for the
+     !! corresponding left and right eigenspaces (deflating subspaces).
+     !! (If only the generalized eigenvalues are needed, use the driver
+     !! ZGGEV instead, which is faster.)
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
+     !! or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
+     !! usually represented as the pair (alpha,beta), as there is a
+     !! reasonable interpretation for beta=0, and even for both being zero.
+     !! A pair of matrices (S,T) is in generalized complex Schur form if S
+     !! and T are upper triangular and, in addition, the diagonal elements
+     !! of T are non-negative real numbers.
                vsl, ldvsl, vsr, ldvsr,work, lwork, rwork, bwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -77311,23 +77307,23 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgges3
 
-     !> ZGGEV3: computes for a pair of N-by-N complex nonsymmetric matrices
-     !> (A,B), the generalized eigenvalues, and optionally, the left and/or
-     !> right generalized eigenvectors.
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar
-     !> lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
-     !> singular. It is usually represented as the pair (alpha,beta), as
-     !> there is a reasonable interpretation for beta=0, and even for both
-     !> being zero.
-     !> The right generalized eigenvector v(j) corresponding to the
-     !> generalized eigenvalue lambda(j) of (A,B) satisfies
-     !> A * v(j) = lambda(j) * B * v(j).
-     !> The left generalized eigenvector u(j) corresponding to the
-     !> generalized eigenvalues lambda(j) of (A,B) satisfies
-     !> u(j)**H * A = lambda(j) * u(j)**H * B
-     !> where u(j)**H is the conjugate-transpose of u(j).
 
      subroutine stdlib_zggev3( jobvl, jobvr, n, a, lda, b, ldb, alpha, beta,vl, ldvl, vr, ldvr, &
+     !! ZGGEV3 computes for a pair of N-by-N complex nonsymmetric matrices
+     !! (A,B), the generalized eigenvalues, and optionally, the left and/or
+     !! right generalized eigenvectors.
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar
+     !! lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
+     !! singular. It is usually represented as the pair (alpha,beta), as
+     !! there is a reasonable interpretation for beta=0, and even for both
+     !! being zero.
+     !! The right generalized eigenvector v(j) corresponding to the
+     !! generalized eigenvalue lambda(j) of (A,B) satisfies
+     !! A * v(j) = lambda(j) * B * v(j).
+     !! The left generalized eigenvector u(j) corresponding to the
+     !! generalized eigenvalues lambda(j) of (A,B) satisfies
+     !! u(j)**H * A = lambda(j) * u(j)**H * B
+     !! where u(j)**H is the conjugate-transpose of u(j).
                work, lwork, rwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -77583,12 +77579,12 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zggev3
 
-     !> ZGSVJ0: is called from ZGESVJ as a pre-processor and that is its main
-     !> purpose. It applies Jacobi rotations in the same way as ZGESVJ does, but
-     !> it does not check convergence (stopping criterion). Few tuning
-     !> parameters (marked by [TP]) are available for the implementer.
 
      pure subroutine stdlib_zgsvj0( jobv, m, n, a, lda, d, sva, mv, v, ldv, eps,sfmin, tol, &
+     !! ZGSVJ0 is called from ZGESVJ as a pre-processor and that is its main
+     !! purpose. It applies Jacobi rotations in the same way as ZGESVJ does, but
+     !! it does not check convergence (stopping criterion). Few tuning
+     !! parameters (marked by [TP]) are available for the implementer.
                nsweep, work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -78124,32 +78120,32 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgsvj0
 
-     !> ZGSVJ1: is called from ZGESVJ as a pre-processor and that is its main
-     !> purpose. It applies Jacobi rotations in the same way as ZGESVJ does, but
-     !> it targets only particular pivots and it does not check convergence
-     !> (stopping criterion). Few tuning parameters (marked by [TP]) are
-     !> available for the implementer.
-     !> Further Details
-     !> ~~~~~~~~~~~~~~~
-     !> ZGSVJ1 applies few sweeps of Jacobi rotations in the column space of
-     !> the input M-by-N matrix A. The pivot pairs are taken from the (1,2)
-     !> off-diagonal block in the corresponding N-by-N Gram matrix A^T * A. The
-     !> block-entries (tiles) of the (1,2) off-diagonal block are marked by the
-     !> [x]'s in the following scheme:
-     !> | *  *  * [x] [x] [x]|
-     !> | *  *  * [x] [x] [x]|    Row-cycling in the nblr-by-nblc [x] blocks.
-     !> | *  *  * [x] [x] [x]|    Row-cyclic pivoting inside each [x] block.
-     !> |[x] [x] [x] *  *  * |
-     !> |[x] [x] [x] *  *  * |
-     !> |[x] [x] [x] *  *  * |
-     !> In terms of the columns of A, the first N1 columns are rotated 'against'
-     !> the remaining N-N1 columns, trying to increase the angle between the
-     !> corresponding subspaces. The off-diagonal block is N1-by(N-N1) and it is
-     !> tiled using quadratic tiles of side KBL. Here, KBL is a tuning parameter.
-     !> The number of sweeps is given in NSWEEP and the orthogonality threshold
-     !> is given in TOL.
 
      pure subroutine stdlib_zgsvj1( jobv, m, n, n1, a, lda, d, sva, mv, v, ldv,eps, sfmin, tol, &
+     !! ZGSVJ1 is called from ZGESVJ as a pre-processor and that is its main
+     !! purpose. It applies Jacobi rotations in the same way as ZGESVJ does, but
+     !! it targets only particular pivots and it does not check convergence
+     !! (stopping criterion). Few tuning parameters (marked by [TP]) are
+     !! available for the implementer.
+     !! Further Details
+     !! ~~~~~~~~~~~~~~~
+     !! ZGSVJ1 applies few sweeps of Jacobi rotations in the column space of
+     !! the input M-by-N matrix A. The pivot pairs are taken from the (1,2)
+     !! off-diagonal block in the corresponding N-by-N Gram matrix A^T * A. The
+     !! block-entries (tiles) of the (1,2) off-diagonal block are marked by the
+     !! [x]'s in the following scheme:
+     !! | *  *  * [x] [x] [x]|
+     !! | *  *  * [x] [x] [x]|    Row-cycling in the nblr-by-nblc [x] blocks.
+     !! | *  *  * [x] [x] [x]|    Row-cyclic pivoting inside each [x] block.
+     !! |[x] [x] [x] *  *  * |
+     !! |[x] [x] [x] *  *  * |
+     !! |[x] [x] [x] *  *  * |
+     !! In terms of the columns of A, the first N1 columns are rotated 'against'
+     !! the remaining N-N1 columns, trying to increase the angle between the
+     !! corresponding subspaces. The off-diagonal block is N1-by(N-N1) and it is
+     !! tiled using quadratic tiles of side KBL. Here, KBL is a tuning parameter.
+     !! The number of sweeps is given in NSWEEP and the orthogonality threshold
+     !! is given in TOL.
                nsweep, work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -78497,18 +78493,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zgsvj1
 
-     !> ZHESV_AA: computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N Hermitian matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> Aasen's algorithm is used to factor A as
-     !> A = U**H * T * U,  if UPLO = 'U', or
-     !> A = L * T * L**H,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and T is Hermitian and tridiagonal. The factored form
-     !> of A is then used to solve the system of equations A * X = B.
 
      pure subroutine stdlib_zhesv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
+     !! ZHESV_AA computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N Hermitian matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! Aasen's algorithm is used to factor A as
+     !! A = U**H * T * U,  if UPLO = 'U', or
+     !! A = L * T * L**H,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and T is Hermitian and tridiagonal. The factored form
+     !! of A is then used to solve the system of equations A * X = B.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -78569,14 +78565,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhesv_aa
 
-     !> ZHETRF_AA: computes the factorization of a complex hermitian matrix A
-     !> using the Aasen's algorithm.  The form of the factorization is
-     !> A = U**H*T*U  or  A = L*T*L**H
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and T is a hermitian tridiagonal matrix.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_zhetrf_aa( uplo, n, a, lda, ipiv, work, lwork, info)
+     !! ZHETRF_AA computes the factorization of a complex hermitian matrix A
+     !! using the Aasen's algorithm.  The form of the factorization is
+     !! A = U**H*T*U  or  A = L*T*L**H
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and T is a hermitian tridiagonal matrix.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -78798,16 +78794,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zhetrf_aa
 
-     !> ZHSEQR: computes the eigenvalues of a Hessenberg matrix H
-     !> and, optionally, the matrices T and Z from the Schur decomposition
-     !> H = Z T Z**H, where T is an upper triangular matrix (the
-     !> Schur form), and Z is the unitary matrix of Schur vectors.
-     !> Optionally Z may be postmultiplied into an input unitary
-     !> matrix Q so that this routine can give the Schur factorization
-     !> of a matrix A which has been reduced to the Hessenberg form H
-     !> by the unitary matrix Q:  A = Q*H*Q**H = (QZ)*T*(QZ)**H.
 
      pure subroutine stdlib_zhseqr( job, compz, n, ilo, ihi, h, ldh, w, z, ldz,work, lwork, info )
+     !! ZHSEQR computes the eigenvalues of a Hessenberg matrix H
+     !! and, optionally, the matrices T and Z from the Schur decomposition
+     !! H = Z T Z**H, where T is an upper triangular matrix (the
+     !! Schur form), and Z is the unitary matrix of Schur vectors.
+     !! Optionally Z may be postmultiplied into an input unitary
+     !! matrix Q so that this routine can give the Schur factorization
+     !! of a matrix A which has been reduced to the Hessenberg form H
+     !! by the unitary matrix Q:  A = Q*H*Q**H = (QZ)*T*(QZ)**H.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -78943,18 +78939,18 @@ module stdlib_linalg_lapack_z
            end if
      end subroutine stdlib_zhseqr
 
-     !> DLAHEF_AA factorizes a panel of a complex hermitian matrix A using
-     !> the Aasen's algorithm. The panel consists of a set of NB rows of A
-     !> when UPLO is U, or a set of NB columns when UPLO is L.
-     !> In order to factorize the panel, the Aasen's algorithm requires the
-     !> last row, or column, of the previous panel. The first row, or column,
-     !> of A is set to be the first row, or column, of an identity matrix,
-     !> which is used to factorize the first panel.
-     !> The resulting J-th row of U, or J-th column of L, is stored in the
-     !> (J-1)-th row, or column, of A (without the unit diagonals), while
-     !> the diagonal and subdiagonal of A are overwritten by those of T.
 
      pure subroutine stdlib_zlahef_aa( uplo, j1, m, nb, a, lda, ipiv,h, ldh, work )
+     !! DLAHEF_AA factorizes a panel of a complex hermitian matrix A using
+     !! the Aasen's algorithm. The panel consists of a set of NB rows of A
+     !! when UPLO is U, or a set of NB columns when UPLO is L.
+     !! In order to factorize the panel, the Aasen's algorithm requires the
+     !! last row, or column, of the previous panel. The first row, or column,
+     !! of A is set to be the first row, or column, of an identity matrix,
+     !! which is used to factorize the first panel.
+     !! The resulting J-th row of U, or J-th column of L, is stored in the
+     !! (J-1)-th row, or column, of A (without the unit diagonals), while
+     !! the diagonal and subdiagonal of A are overwritten by those of T.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -79187,16 +79183,16 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlahef_aa
 
-     !> ZLAQR0: computes the eigenvalues of a Hessenberg matrix H
-     !> and, optionally, the matrices T and Z from the Schur decomposition
-     !> H = Z T Z**H, where T is an upper triangular matrix (the
-     !> Schur form), and Z is the unitary matrix of Schur vectors.
-     !> Optionally Z may be postmultiplied into an input unitary
-     !> matrix Q so that this routine can give the Schur factorization
-     !> of a matrix A which has been reduced to the Hessenberg form H
-     !> by the unitary matrix Q:  A = Q*H*Q**H = (QZ)*H*(QZ)**H.
 
      pure subroutine stdlib_zlaqr0( wantt, wantz, n, ilo, ihi, h, ldh, w, iloz,ihiz, z, ldz, work,&
+     !! ZLAQR0 computes the eigenvalues of a Hessenberg matrix H
+     !! and, optionally, the matrices T and Z from the Schur decomposition
+     !! H = Z T Z**H, where T is an upper triangular matrix (the
+     !! Schur form), and Z is the unitary matrix of Schur vectors.
+     !! Optionally Z may be postmultiplied into an input unitary
+     !! matrix Q so that this routine can give the Schur factorization
+     !! of a matrix A which has been reduced to the Hessenberg form H
+     !! by the unitary matrix Q:  A = Q*H*Q**H = (QZ)*H*(QZ)**H.
                 lwork, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -79534,17 +79530,17 @@ module stdlib_linalg_lapack_z
            work( 1 ) = cmplx( lwkopt, 0,KIND=dp)
      end subroutine stdlib_zlaqr0
 
-     !> Aggressive early deflation:
-     !> ZLAQR3: accepts as input an upper Hessenberg matrix
-     !> H and performs an unitary similarity transformation
-     !> designed to detect and deflate fully converged eigenvalues from
-     !> a trailing principal submatrix.  On output H has been over-
-     !> written by a new Hessenberg matrix that is a perturbation of
-     !> an unitary similarity transformation of H.  It is to be
-     !> hoped that the final version of H has many zero subdiagonal
-     !> entries.
 
      pure subroutine stdlib_zlaqr3( wantt, wantz, n, ktop, kbot, nw, h, ldh, iloz,ihiz, z, ldz, &
+     !! Aggressive early deflation:
+     !! ZLAQR3 accepts as input an upper Hessenberg matrix
+     !! H and performs an unitary similarity transformation
+     !! designed to detect and deflate fully converged eigenvalues from
+     !! a trailing principal submatrix.  On output H has been over-
+     !! written by a new Hessenberg matrix that is a perturbation of
+     !! an unitary similarity transformation of H.  It is to be
+     !! hoped that the final version of H has many zero subdiagonal
+     !! entries.
                ns, nd, sh, v, ldv, nh, t, ldt,nv, wv, ldwv, work, lwork )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -79756,22 +79752,22 @@ module stdlib_linalg_lapack_z
            work( 1 ) = cmplx( lwkopt, 0,KIND=dp)
      end subroutine stdlib_zlaqr3
 
-     !> ZLAQR4: implements one level of recursion for ZLAQR0.
-     !> It is a complete implementation of the small bulge multi-shift
-     !> QR algorithm.  It may be called by ZLAQR0 and, for large enough
-     !> deflation window size, it may be called by ZLAQR3.  This
-     !> subroutine is identical to ZLAQR0 except that it calls ZLAQR2
-     !> instead of ZLAQR3.
-     !> ZLAQR4 computes the eigenvalues of a Hessenberg matrix H
-     !> and, optionally, the matrices T and Z from the Schur decomposition
-     !> H = Z T Z**H, where T is an upper triangular matrix (the
-     !> Schur form), and Z is the unitary matrix of Schur vectors.
-     !> Optionally Z may be postmultiplied into an input unitary
-     !> matrix Q so that this routine can give the Schur factorization
-     !> of a matrix A which has been reduced to the Hessenberg form H
-     !> by the unitary matrix Q:  A = Q*H*Q**H = (QZ)*H*(QZ)**H.
 
      pure subroutine stdlib_zlaqr4( wantt, wantz, n, ilo, ihi, h, ldh, w, iloz,ihiz, z, ldz, work,&
+     !! ZLAQR4 implements one level of recursion for ZLAQR0.
+     !! It is a complete implementation of the small bulge multi-shift
+     !! QR algorithm.  It may be called by ZLAQR0 and, for large enough
+     !! deflation window size, it may be called by ZLAQR3.  This
+     !! subroutine is identical to ZLAQR0 except that it calls ZLAQR2
+     !! instead of ZLAQR3.
+     !! ZLAQR4 computes the eigenvalues of a Hessenberg matrix H
+     !! and, optionally, the matrices T and Z from the Schur decomposition
+     !! H = Z T Z**H, where T is an upper triangular matrix (the
+     !! Schur form), and Z is the unitary matrix of Schur vectors.
+     !! Optionally Z may be postmultiplied into an input unitary
+     !! matrix Q so that this routine can give the Schur factorization
+     !! of a matrix A which has been reduced to the Hessenberg form H
+     !! by the unitary matrix Q:  A = Q*H*Q**H = (QZ)*H*(QZ)**H.
                 lwork, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -80104,48 +80100,48 @@ module stdlib_linalg_lapack_z
            work( 1 ) = cmplx( lwkopt, 0,KIND=dp)
      end subroutine stdlib_zlaqr4
 
-     !> ZLAQZ0: computes the eigenvalues of a real matrix pair (H,T),
-     !> where H is an upper Hessenberg matrix and T is upper triangular,
-     !> using the double-shift QZ method.
-     !> Matrix pairs of this type are produced by the reduction to
-     !> generalized upper Hessenberg form of a real matrix pair (A,B):
-     !> A = Q1*H*Z1**H,  B = Q1*T*Z1**H,
-     !> as computed by ZGGHRD.
-     !> If JOB='S', then the Hessenberg-triangular pair (H,T) is
-     !> also reduced to generalized Schur form,
-     !> H = Q*S*Z**H,  T = Q*P*Z**H,
-     !> where Q and Z are unitary matrices, P and S are an upper triangular
-     !> matrices.
-     !> Optionally, the unitary matrix Q from the generalized Schur
-     !> factorization may be postmultiplied into an input matrix Q1, and the
-     !> unitary matrix Z may be postmultiplied into an input matrix Z1.
-     !> If Q1 and Z1 are the unitary matrices from ZGGHRD that reduced
-     !> the matrix pair (A,B) to generalized upper Hessenberg form, then the
-     !> output matrices Q1*Q and Z1*Z are the unitary factors from the
-     !> generalized Schur factorization of (A,B):
-     !> A = (Q1*Q)*S*(Z1*Z)**H,  B = (Q1*Q)*P*(Z1*Z)**H.
-     !> To avoid overflow, eigenvalues of the matrix pair (H,T) (equivalently,
-     !> of (A,B)) are computed as a pair of values (alpha,beta), where alpha is
-     !> complex and beta real.
-     !> If beta is nonzero, lambda = alpha / beta is an eigenvalue of the
-     !> generalized nonsymmetric eigenvalue problem (GNEP)
-     !> A*x = lambda*B*x
-     !> and if alpha is nonzero, mu = beta / alpha is an eigenvalue of the
-     !> alternate form of the GNEP
-     !> mu*A*y = B*y.
-     !> Eigenvalues can be read directly from the generalized Schur
-     !> form:
-     !> alpha = S(i,i), beta = P(i,i).
-     !> Ref: C.B. Moler
-     !> Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
-     !> pp. 241--256.
-     !> Ref: B. Kagstrom, D. Kressner, "Multishift Variants of the QZ
-     !> Algorithm with Aggressive Early Deflation", SIAM J. Numer.
-     !> Anal., 29(2006), pp. 199--227.
-     !> Ref: T. Steel, D. Camps, K. Meerbergen, R. Vandebril "A multishift,
-     !> multipole rational QZ method with agressive early deflation"
 
      recursive subroutine stdlib_zlaqz0( wants, wantq, wantz, n, ilo, ihi, a,lda, b, ldb, alpha, &
+     !! ZLAQZ0 computes the eigenvalues of a real matrix pair (H,T),
+     !! where H is an upper Hessenberg matrix and T is upper triangular,
+     !! using the double-shift QZ method.
+     !! Matrix pairs of this type are produced by the reduction to
+     !! generalized upper Hessenberg form of a real matrix pair (A,B):
+     !! A = Q1*H*Z1**H,  B = Q1*T*Z1**H,
+     !! as computed by ZGGHRD.
+     !! If JOB='S', then the Hessenberg-triangular pair (H,T) is
+     !! also reduced to generalized Schur form,
+     !! H = Q*S*Z**H,  T = Q*P*Z**H,
+     !! where Q and Z are unitary matrices, P and S are an upper triangular
+     !! matrices.
+     !! Optionally, the unitary matrix Q from the generalized Schur
+     !! factorization may be postmultiplied into an input matrix Q1, and the
+     !! unitary matrix Z may be postmultiplied into an input matrix Z1.
+     !! If Q1 and Z1 are the unitary matrices from ZGGHRD that reduced
+     !! the matrix pair (A,B) to generalized upper Hessenberg form, then the
+     !! output matrices Q1*Q and Z1*Z are the unitary factors from the
+     !! generalized Schur factorization of (A,B):
+     !! A = (Q1*Q)*S*(Z1*Z)**H,  B = (Q1*Q)*P*(Z1*Z)**H.
+     !! To avoid overflow, eigenvalues of the matrix pair (H,T) (equivalently,
+     !! of (A,B)) are computed as a pair of values (alpha,beta), where alpha is
+     !! complex and beta real.
+     !! If beta is nonzero, lambda = alpha / beta is an eigenvalue of the
+     !! generalized nonsymmetric eigenvalue problem (GNEP)
+     !! A*x = lambda*B*x
+     !! and if alpha is nonzero, mu = beta / alpha is an eigenvalue of the
+     !! alternate form of the GNEP
+     !! mu*A*y = B*y.
+     !! Eigenvalues can be read directly from the generalized Schur
+     !! form:
+     !! alpha = S(i,i), beta = P(i,i).
+     !! Ref: C.B. Moler
+     !! Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
+     !! pp. 241--256.
+     !! Ref: B. Kagstrom, D. Kressner, "Multishift Variants of the QZ
+     !! Algorithm with Aggressive Early Deflation", SIAM J. Numer.
+     !! Anal., 29(2006), pp. 199--227.
+     !! Ref: T. Steel, D. Camps, K. Meerbergen, R. Vandebril "A multishift,
+     !! multipole rational QZ method with agressive early deflation"
                beta, q, ldq, z,ldz, work, lwork, rwork, rec,info )
            ! arguments
            character, intent( in ) :: wants, wantq, wantz
@@ -80457,9 +80453,9 @@ module stdlib_linalg_lapack_z
            info = norm_info
      end subroutine stdlib_zlaqz0
 
-     !> ZLAQZ2: performs AED
 
      recursive subroutine stdlib_zlaqz2( ilschur, ilq, ilz, n, ilo, ihi, nw,a, lda, b, ldb, q, &
+     !! ZLAQZ2 performs AED
                ldq, z, ldz, ns,nd, alpha, beta, qc, ldqc, zc, ldzc,work, lwork, rwork, rec, info )
            ! arguments
            logical(lk), intent( in ) :: ilschur, ilq, ilz
@@ -80646,18 +80642,18 @@ module stdlib_linalg_lapack_z
            end if
      end subroutine stdlib_zlaqz2
 
-     !> DLATRF_AA factorizes a panel of a complex symmetric matrix A using
-     !> the Aasen's algorithm. The panel consists of a set of NB rows of A
-     !> when UPLO is U, or a set of NB columns when UPLO is L.
-     !> In order to factorize the panel, the Aasen's algorithm requires the
-     !> last row, or column, of the previous panel. The first row, or column,
-     !> of A is set to be the first row, or column, of an identity matrix,
-     !> which is used to factorize the first panel.
-     !> The resulting J-th row of U, or J-th column of L, is stored in the
-     !> (J-1)-th row, or column, of A (without the unit diagonals), while
-     !> the diagonal and subdiagonal of A are overwritten by those of T.
 
      pure subroutine stdlib_zlasyf_aa( uplo, j1, m, nb, a, lda, ipiv,h, ldh, work )
+     !! DLATRF_AA factorizes a panel of a complex symmetric matrix A using
+     !! the Aasen's algorithm. The panel consists of a set of NB rows of A
+     !! when UPLO is U, or a set of NB columns when UPLO is L.
+     !! In order to factorize the panel, the Aasen's algorithm requires the
+     !! last row, or column, of the previous panel. The first row, or column,
+     !! of A is set to be the first row, or column, of an identity matrix,
+     !! which is used to factorize the first panel.
+     !! The resulting J-th row of U, or J-th column of L, is stored in the
+     !! (J-1)-th row, or column, of A (without the unit diagonals), while
+     !! the diagonal and subdiagonal of A are overwritten by those of T.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -80882,18 +80878,18 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zlasyf_aa
 
-     !> ZSYSV computes the solution to a complex system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> Aasen's algorithm is used to factor A as
-     !> A = U**T * T * U,  if UPLO = 'U', or
-     !> A = L * T * L**T,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and T is symmetric tridiagonal. The factored
-     !> form of A is then used to solve the system of equations A * X = B.
 
      pure subroutine stdlib_zsysv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
+     !! ZSYSV computes the solution to a complex system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! Aasen's algorithm is used to factor A as
+     !! A = U**T * T * U,  if UPLO = 'U', or
+     !! A = L * T * L**T,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and T is symmetric tridiagonal. The factored
+     !! form of A is then used to solve the system of equations A * X = B.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -80954,14 +80950,14 @@ module stdlib_linalg_lapack_z
            return
      end subroutine stdlib_zsysv_aa
 
-     !> ZSYTRF_AA: computes the factorization of a complex symmetric matrix A
-     !> using the Aasen's algorithm.  The form of the factorization is
-     !> A = U**T*T*U  or  A = L*T*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and T is a complex symmetric tridiagonal matrix.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_zsytrf_aa( uplo, n, a, lda, ipiv, work, lwork, info)
+     !! ZSYTRF_AA computes the factorization of a complex symmetric matrix A
+     !! using the Aasen's algorithm.  The form of the factorization is
+     !! A = U**T*T*U  or  A = L*T*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and T is a complex symmetric tridiagonal matrix.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--

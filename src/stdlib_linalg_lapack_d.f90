@@ -518,11 +518,11 @@ module stdlib_linalg_lapack_d
 
      contains
 
-     !> DGBTF2: computes an LU factorization of a real m-by-n band matrix A
-     !> using partial pivoting with row interchanges.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_dgbtf2( m, n, kl, ku, ab, ldab, ipiv, info )
+     !! DGBTF2 computes an LU factorization of a real m-by-n band matrix A
+     !! using partial pivoting with row interchanges.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -604,12 +604,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgbtf2
 
-     !> DGBTRS: solves a system of linear equations
-     !> A * X = B  or  A**T * X = B
-     !> with a general band matrix A using the LU factorization computed
-     !> by DGBTRF.
 
      pure subroutine stdlib_dgbtrs( trans, n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb,info )
+     !! DGBTRS solves a system of linear equations
+     !! A * X = B  or  A**T * X = B
+     !! with a general band matrix A using the LU factorization computed
+     !! by DGBTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -698,11 +698,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgbtrs
 
-     !> DGEBAK: forms the right or left eigenvectors of a real general matrix
-     !> by backward transformation on the computed eigenvectors of the
-     !> balanced matrix output by DGEBAL.
 
      pure subroutine stdlib_dgebak( job, side, n, ilo, ihi, scale, m, v, ldv,info )
+     !! DGEBAK forms the right or left eigenvectors of a real general matrix
+     !! by backward transformation on the computed eigenvectors of the
+     !! balanced matrix output by DGEBAL.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -795,12 +795,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgebak
 
-     !> DGGBAK: forms the right or left eigenvectors of a real generalized
-     !> eigenvalue problem A*x = lambda*B*x, by backward transformation on
-     !> the computed eigenvectors of the balanced pair of matrices output by
-     !> DGGBAL.
 
      pure subroutine stdlib_dggbak( job, side, n, ilo, ihi, lscale, rscale, m, v,ldv, info )
+     !! DGGBAK forms the right or left eigenvectors of a real generalized
+     !! eigenvalue problem A*x = lambda*B*x, by backward transformation on
+     !! the computed eigenvectors of the balanced pair of matrices output by
+     !! DGGBAL.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -908,14 +908,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dggbak
 
-     !> DGTSV:  solves the equation
-     !> A*X = B,
-     !> where A is an n by n tridiagonal matrix, by Gaussian elimination with
-     !> partial pivoting.
-     !> Note that the equation  A**T*X = B  may be solved by interchanging the
-     !> order of the arguments DU and DL.
 
      pure subroutine stdlib_dgtsv( n, nrhs, dl, d, du, b, ldb, info )
+     !! DGTSV solves the equation
+     !! A*X = B,
+     !! where A is an n by n tridiagonal matrix, by Gaussian elimination with
+     !! partial pivoting.
+     !! Note that the equation  A**T*X = B  may be solved by interchanging the
+     !! order of the arguments DU and DL.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1087,15 +1087,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgtsv
 
-     !> DGTTRF: computes an LU factorization of a real tridiagonal matrix A
-     !> using elimination with partial pivoting and row interchanges.
-     !> The factorization has the form
-     !> A = L * U
-     !> where L is a product of permutation and unit lower bidiagonal
-     !> matrices and U is upper triangular with nonzeros in only the main
-     !> diagonal and first two superdiagonals.
 
      pure subroutine stdlib_dgttrf( n, dl, d, du, du2, ipiv, info )
+     !! DGTTRF computes an LU factorization of a real tridiagonal matrix A
+     !! using elimination with partial pivoting and row interchanges.
+     !! The factorization has the form
+     !! A = L * U
+     !! where L is a product of permutation and unit lower bidiagonal
+     !! matrices and U is upper triangular with nonzeros in only the main
+     !! diagonal and first two superdiagonals.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1179,12 +1179,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgttrf
 
-     !> DGTTS2: solves one of the systems of equations
-     !> A*X = B  or  A**T*X = B,
-     !> with a tridiagonal matrix A using the LU factorization computed
-     !> by DGTTRF.
 
      pure subroutine stdlib_dgtts2( itrans, n, nrhs, dl, d, du, du2, ipiv, b, ldb )
+     !! DGTTS2 solves one of the systems of equations
+     !! A*X = B  or  A**T*X = B,
+     !! with a tridiagonal matrix A using the LU factorization computed
+     !! by DGTTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1292,14 +1292,14 @@ module stdlib_linalg_lapack_d
            end if
      end subroutine stdlib_dgtts2
 
-     !> DLA_GBRPVGRW: computes the reciprocal pivot growth factor
-     !> norm(A)/norm(U). The "max absolute element" norm is used. If this is
-     !> much less than 1, the stability of the LU factorization of the
-     !> (equilibrated) matrix A could be poor. This also means that the
-     !> solution X, estimated condition numbers, and error bounds could be
-     !> unreliable.
 
      pure real(dp) function stdlib_dla_gbrpvgrw( n, kl, ku, ncols, ab,ldab, afb, ldafb )
+     !! DLA_GBRPVGRW computes the reciprocal pivot growth factor
+     !! norm(A)/norm(U). The "max absolute element" norm is used. If this is
+     !! much less than 1, the stability of the LU factorization of the
+     !! (equilibrated) matrix A could be poor. This also means that the
+     !! solution X, estimated condition numbers, and error bounds could be
+     !! unreliable.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1332,14 +1332,14 @@ module stdlib_linalg_lapack_d
            stdlib_dla_gbrpvgrw = rpvgrw
      end function stdlib_dla_gbrpvgrw
 
-     !> DLA_GERPVGRW: computes the reciprocal pivot growth factor
-     !> norm(A)/norm(U). The "max absolute element" norm is used. If this is
-     !> much less than 1, the stability of the LU factorization of the
-     !> (equilibrated) matrix A could be poor. This also means that the
-     !> solution X, estimated condition numbers, and error bounds could be
-     !> unreliable.
 
      pure real(dp) function stdlib_dla_gerpvgrw( n, ncols, a, lda, af,ldaf )
+     !! DLA_GERPVGRW computes the reciprocal pivot growth factor
+     !! norm(A)/norm(U). The "max absolute element" norm is used. If this is
+     !! much less than 1, the stability of the LU factorization of the
+     !! (equilibrated) matrix A could be poor. This also means that the
+     !! solution X, estimated condition numbers, and error bounds could be
+     !! unreliable.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1371,11 +1371,11 @@ module stdlib_linalg_lapack_d
            stdlib_dla_gerpvgrw = rpvgrw
      end function stdlib_dla_gerpvgrw
 
-     !> DLA_WWADDW: adds a vector W into a doubled-single vector (X, Y).
-     !> This works for all extant IBM's hex and binary floating point
-     !> arithmetic, but not for decimal.
 
      pure subroutine stdlib_dla_wwaddw( n, x, y, w )
+     !! DLA_WWADDW adds a vector W into a doubled-single vector (X, Y).
+     !! This works for all extant IBM's hex and binary floating point
+     !! arithmetic, but not for decimal.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1398,16 +1398,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dla_wwaddw
 
-     !> DLABAD: takes as input the values computed by DLAMCH for underflow and
-     !> overflow, and returns the square root of each of these values if the
-     !> log of LARGE is sufficiently large.  This subroutine is intended to
-     !> identify machines with a large exponent range, such as the Crays, and
-     !> redefine the underflow and overflow limits to be the square roots of
-     !> the values computed by DLAMCH.  This subroutine is needed because
-     !> DLAMCH does not compensate for poor arithmetic in the upper half of
-     !> the exponent range, as is found on a Cray.
 
      pure subroutine stdlib_dlabad( small, large )
+     !! DLABAD takes as input the values computed by DLAMCH for underflow and
+     !! overflow, and returns the square root of each of these values if the
+     !! log of LARGE is sufficiently large.  This subroutine is intended to
+     !! identify machines with a large exponent range, such as the Crays, and
+     !! redefine the underflow and overflow limits to be the square roots of
+     !! the values computed by DLAMCH.  This subroutine is needed because
+     !! DLAMCH does not compensate for poor arithmetic in the upper half of
+     !! the exponent range, as is found on a Cray.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1426,10 +1426,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlabad
 
-     !> DLACN2: estimates the 1-norm of a square, real matrix A.
-     !> Reverse communication is used for evaluating matrix-vector products.
 
      pure subroutine stdlib_dlacn2( n, v, x, isgn, est, kase, isave )
+     !! DLACN2 estimates the 1-norm of a square, real matrix A.
+     !! Reverse communication is used for evaluating matrix-vector products.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1559,10 +1559,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlacn2
 
-     !> DLACON: estimates the 1-norm of a square, real matrix A.
-     !> Reverse communication is used for evaluating matrix-vector products.
 
      subroutine stdlib_dlacon( n, v, x, isgn, est, kase )
+     !! DLACON estimates the 1-norm of a square, real matrix A.
+     !! Reverse communication is used for evaluating matrix-vector products.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1680,10 +1680,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlacon
 
-     !> DLACPY: copies all or part of a two-dimensional matrix A to another
-     !> matrix B.
 
      pure subroutine stdlib_dlacpy( uplo, m, n, a, lda, b, ldb )
+     !! DLACPY copies all or part of a two-dimensional matrix A to another
+     !! matrix B.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1746,13 +1746,13 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dladiv2
 
-     !> DLAE2:  computes the eigenvalues of a 2-by-2 symmetric matrix
-     !> [  A   B  ]
-     !> [  B   C  ].
-     !> On return, RT1 is the eigenvalue of larger absolute value, and RT2
-     !> is the eigenvalue of smaller absolute value.
 
      pure subroutine stdlib_dlae2( a, b, c, rt1, rt2 )
+     !! DLAE2 computes the eigenvalues of a 2-by-2 symmetric matrix
+     !! [  A   B  ]
+     !! [  B   C  ].
+     !! On return, RT1 is the eigenvalue of larger absolute value, and RT2
+     !! is the eigenvalue of smaller absolute value.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1810,39 +1810,39 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlae2
 
-     !> DLAEBZ: contains the iteration loops which compute and use the
-     !> function N(w), which is the count of eigenvalues of a symmetric
-     !> tridiagonal matrix T less than or equal to its argument  w.  It
-     !> performs a choice of two types of loops:
-     !> IJOB=1, followed by
-     !> IJOB=2: It takes as input a list of intervals and returns a list of
-     !> sufficiently small intervals whose union contains the same
-     !> eigenvalues as the union of the original intervals.
-     !> The input intervals are (AB(j,1),AB(j,2)], j=1,...,MINP.
-     !> The output interval (AB(j,1),AB(j,2)] will contain
-     !> eigenvalues NAB(j,1)+1,...,NAB(j,2), where 1 <= j <= MOUT.
-     !> IJOB=3: It performs a binary search in each input interval
-     !> (AB(j,1),AB(j,2)] for a point  w(j)  such that
-     !> N(w(j))=NVAL(j), and uses  C(j)  as the starting point of
-     !> the search.  If such a w(j) is found, then on output
-     !> AB(j,1)=AB(j,2)=w.  If no such w(j) is found, then on output
-     !> (AB(j,1),AB(j,2)] will be a small interval containing the
-     !> point where N(w) jumps through NVAL(j), unless that point
-     !> lies outside the initial interval.
-     !> Note that the intervals are in all cases half-open intervals,
-     !> i.e., of the form  (a,b] , which includes  b  but not  a .
-     !> To avoid underflow, the matrix should be scaled so that its largest
-     !> element is no greater than  overflow**(1/2) * underflow**(1/4)
-     !> in absolute value.  To assure the most accurate computation
-     !> of small eigenvalues, the matrix should be scaled to be
-     !> not much smaller than that, either.
-     !> See W. Kahan "Accurate Eigenvalues of a Symmetric Tridiagonal
-     !> Matrix", Report CS41, Computer Science Dept., Stanford
-     !> University, July 21, 1966
-     !> Note: the arguments are, in general, *not* checked for unreasonable
-     !> values.
 
      pure subroutine stdlib_dlaebz( ijob, nitmax, n, mmax, minp, nbmin, abstol,reltol, pivmin, d, &
+     !! DLAEBZ contains the iteration loops which compute and use the
+     !! function N(w), which is the count of eigenvalues of a symmetric
+     !! tridiagonal matrix T less than or equal to its argument  w.  It
+     !! performs a choice of two types of loops:
+     !! IJOB=1, followed by
+     !! IJOB=2: It takes as input a list of intervals and returns a list of
+     !! sufficiently small intervals whose union contains the same
+     !! eigenvalues as the union of the original intervals.
+     !! The input intervals are (AB(j,1),AB(j,2)], j=1,...,MINP.
+     !! The output interval (AB(j,1),AB(j,2)] will contain
+     !! eigenvalues NAB(j,1)+1,...,NAB(j,2), where 1 <= j <= MOUT.
+     !! IJOB=3: It performs a binary search in each input interval
+     !! (AB(j,1),AB(j,2)] for a point  w(j)  such that
+     !! N(w(j))=NVAL(j), and uses  C(j)  as the starting point of
+     !! the search.  If such a w(j) is found, then on output
+     !! AB(j,1)=AB(j,2)=w.  If no such w(j) is found, then on output
+     !! (AB(j,1),AB(j,2)] will be a small interval containing the
+     !! point where N(w) jumps through NVAL(j), unless that point
+     !! lies outside the initial interval.
+     !! Note that the intervals are in all cases half-open intervals,
+     !! i.e., of the form  (a,b] , which includes  b  but not  a .
+     !! To avoid underflow, the matrix should be scaled so that its largest
+     !! element is no greater than  overflow**(1/2) * underflow**(1/4)
+     !! in absolute value.  To assure the most accurate computation
+     !! of small eigenvalues, the matrix should be scaled to be
+     !! not much smaller than that, either.
+     !! See W. Kahan "Accurate Eigenvalues of a Symmetric Tridiagonal
+     !! Matrix", Report CS41, Computer Science Dept., Stanford
+     !! University, July 21, 1966
+     !! Note: the arguments are, in general, *not* checked for unreasonable
+     !! values.
                e, e2, nval, ab, c, mout,nab, work, iwork, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -2081,15 +2081,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaebz
 
-     !> This subroutine computes the I-th eigenvalue of a symmetric rank-one
-     !> modification of a 2-by-2 diagonal matrix
-     !> diag( D )  +  RHO * Z * transpose(Z) .
-     !> The diagonal elements in the array D are assumed to satisfy
-     !> D(i) < D(j)  for  i < j .
-     !> We also assume RHO > 0 and that the Euclidean norm of the vector
-     !> Z is one.
 
      pure subroutine stdlib_dlaed5( i, d, z, delta, rho, dlam )
+     !! This subroutine computes the I-th eigenvalue of a symmetric rank-one
+     !! modification of a 2-by-2 diagonal matrix
+     !! diag( D )  +  RHO * Z * transpose(Z) .
+     !! The diagonal elements in the array D are assumed to satisfy
+     !! D(i) < D(j)  for  i < j .
+     !! We also assume RHO > 0 and that the Euclidean norm of the vector
+     !! Z is one.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2152,11 +2152,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaed5
 
-     !> DLAEDA: computes the Z vector corresponding to the merge step in the
-     !> CURLVLth step of the merge process with TLVLS steps for the CURPBMth
-     !> problem.
 
      pure subroutine stdlib_dlaeda( n, tlvls, curlvl, curpbm, prmptr, perm, givptr,givcol, givnum,&
+     !! DLAEDA computes the Z vector corresponding to the merge step in the
+     !! CURLVLth step of the merge process with TLVLS steps for the CURPBMth
+     !! problem.
                 q, qptr, z, ztemp, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -2257,16 +2257,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaeda
 
-     !> DLAEV2: computes the eigendecomposition of a 2-by-2 symmetric matrix
-     !> [  A   B  ]
-     !> [  B   C  ].
-     !> On return, RT1 is the eigenvalue of larger absolute value, RT2 is the
-     !> eigenvalue of smaller absolute value, and (CS1,SN1) is the unit right
-     !> eigenvector for RT1, giving the decomposition
-     !> [ CS1  SN1 ] [  A   B  ] [ CS1 -SN1 ]  =  [ RT1  0  ]
-     !> [-SN1  CS1 ] [  B   C  ] [ SN1  CS1 ]     [  0  RT2 ].
 
      pure subroutine stdlib_dlaev2( a, b, c, rt1, rt2, cs1, sn1 )
+     !! DLAEV2 computes the eigendecomposition of a 2-by-2 symmetric matrix
+     !! [  A   B  ]
+     !! [  B   C  ].
+     !! On return, RT1 is the eigenvalue of larger absolute value, RT2 is the
+     !! eigenvalue of smaller absolute value, and (CS1,SN1) is the unit right
+     !! eigenvector for RT1, giving the decomposition
+     !! [ CS1  SN1 ] [  A   B  ] [ CS1 -SN1 ]  =  [ RT1  0  ]
+     !! [-SN1  CS1 ] [  B   C  ] [ SN1  CS1 ]     [  0  RT2 ].
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2356,14 +2356,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaev2
 
-     !> DLAG2: computes the eigenvalues of a 2 x 2 generalized eigenvalue
-     !> problem  A - w B, with scaling as necessary to avoid over-/underflow.
-     !> The scaling factor "s" results in a modified eigenvalue equation
-     !> s A - w B
-     !> where  s  is a non-negative scaling factor chosen so that  w,  w B,
-     !> and  s A  do not overflow and, if possible, do not underflow, either.
 
      pure subroutine stdlib_dlag2( a, lda, b, ldb, safmin, scale1, scale2, wr1,wr2, wi )
+     !! DLAG2 computes the eigenvalues of a 2 x 2 generalized eigenvalue
+     !! problem  A - w B, with scaling as necessary to avoid over-/underflow.
+     !! The scaling factor "s" results in a modified eigenvalue equation
+     !! s A - w B
+     !! where  s  is a non-negative scaling factor chosen so that  w,  w B,
+     !! and  s A  do not overflow and, if possible, do not underflow, either.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2540,14 +2540,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlag2
 
-     !> DLAG2S: converts a DOUBLE PRECISION matrix, SA, to a SINGLE
-     !> PRECISION matrix, A.
-     !> RMAX is the overflow for the SINGLE PRECISION arithmetic
-     !> DLAG2S checks that all the entries of A are between -RMAX and
-     !> RMAX. If not the conversion is aborted and a flag is raised.
-     !> This is an auxiliary routine so there is no argument checking.
 
      pure subroutine stdlib_dlag2s( m, n, a, lda, sa, ldsa, info )
+     !! DLAG2S converts a DOUBLE PRECISION matrix, SA, to a SINGLE
+     !! PRECISION matrix, A.
+     !! RMAX is the overflow for the SINGLE PRECISION arithmetic
+     !! DLAG2S checks that all the entries of A are between -RMAX and
+     !! RMAX. If not the conversion is aborted and a flag is raised.
+     !! This is an auxiliary routine so there is no argument checking.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2577,13 +2577,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlag2s
 
-     !> DLAGTM: performs a matrix-vector product of the form
-     !> B := alpha * A * X + beta * B
-     !> where A is a tridiagonal matrix of order N, B and X are N by NRHS
-     !> matrices, and alpha and beta are real scalars, each of which may be
-     !> 0., 1., or -1.
 
      pure subroutine stdlib_dlagtm( trans, n, nrhs, alpha, dl, d, du, x, ldx, beta,b, ldb )
+     !! DLAGTM performs a matrix-vector product of the form
+     !! B := alpha * A * X + beta * B
+     !! where A is a tridiagonal matrix of order N, B and X are N by NRHS
+     !! matrices, and alpha and beta are real scalars, each of which may be
+     !! 0., 1., or -1.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -2679,19 +2679,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlagtm
 
-     !> This routine is not for general use.  It exists solely to avoid
-     !> over-optimization in DISNAN.
-     !> DLAISNAN: checks for NaNs by comparing its two arguments for
-     !> inequality.  NaN is the only floating-point value where NaN != NaN
-     !> returns .TRUE.  To check for NaNs, pass the same variable as both
-     !> arguments.
-     !> A compiler must assume that the two arguments are
-     !> not the same variable, and the test will not be optimized away.
-     !> Interprocedural or whole-program optimization may delete this
-     !> test.  The ISNAN functions will be replaced by the correct
-     !> Fortran 03 intrinsic once the intrinsic is widely available.
 
      pure logical(lk) function stdlib_dlaisnan( din1, din2 )
+     !! This routine is not for general use.  It exists solely to avoid
+     !! over-optimization in DISNAN.
+     !! DLAISNAN checks for NaNs by comparing its two arguments for
+     !! inequality.  NaN is the only floating-point value where NaN != NaN
+     !! returns .TRUE.  To check for NaNs, pass the same variable as both
+     !! arguments.
+     !! A compiler must assume that the two arguments are
+     !! not the same variable, and the test will not be optimized away.
+     !! Interprocedural or whole-program optimization may delete this
+     !! test.  The ISNAN functions will be replaced by the correct
+     !! Fortran 03 intrinsic once the intrinsic is widely available.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2703,9 +2703,9 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlaisnan
 
-     !> DLAMCH: determines double precision machine parameters.
 
      pure real(dp) function stdlib_dlamch( cmach )
+     !! DLAMCH determines double precision machine parameters.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2771,11 +2771,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlamc3
 
-     !> DLAMRG: will create a permutation list which will merge the elements
-     !> of A (which is composed of two independently sorted sets) into a
-     !> single set which is sorted in ascending order.
 
      pure subroutine stdlib_dlamrg( n1, n2, a, dtrd1, dtrd2, index )
+     !! DLAMRG will create a permutation list which will merge the elements
+     !! of A (which is composed of two independently sorted sets) into a
+     !! single set which is sorted in ascending order.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2835,56 +2835,56 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlamrg
 
-     !> DLAORHR_COL_GETRFNP2: computes the modified LU factorization without
-     !> pivoting of a real general M-by-N matrix A. The factorization has
-     !> the form:
-     !> A - S = L * U,
-     !> where:
-     !> S is a m-by-n diagonal sign matrix with the diagonal D, so that
-     !> D(i) = S(i,i), 1 <= i <= min(M,N). The diagonal D is constructed
-     !> as D(i)=-SIGN(A(i,i)), where A(i,i) is the value after performing
-     !> i-1 steps of Gaussian elimination. This means that the diagonal
-     !> element at each step of "modified" Gaussian elimination is at
-     !> least one in absolute value (so that division-by-zero not
-     !> possible during the division by the diagonal element);
-     !> L is a M-by-N lower triangular matrix with unit diagonal elements
-     !> (lower trapezoidal if M > N);
-     !> and U is a M-by-N upper triangular matrix
-     !> (upper trapezoidal if M < N).
-     !> This routine is an auxiliary routine used in the Householder
-     !> reconstruction routine DORHR_COL. In DORHR_COL, this routine is
-     !> applied to an M-by-N matrix A with orthonormal columns, where each
-     !> element is bounded by one in absolute value. With the choice of
-     !> the matrix S above, one can show that the diagonal element at each
-     !> step of Gaussian elimination is the largest (in absolute value) in
-     !> the column on or below the diagonal, so that no pivoting is required
-     !> for numerical stability [1].
-     !> For more details on the Householder reconstruction algorithm,
-     !> including the modified LU factorization, see [1].
-     !> This is the recursive version of the LU factorization algorithm.
-     !> Denote A - S by B. The algorithm divides the matrix B into four
-     !> submatrices:
-     !> [  B11 | B12  ]  where B11 is n1 by n1,
-     !> B = [ -----|----- ]        B21 is (m-n1) by n1,
-     !> [  B21 | B22  ]        B12 is n1 by n2,
-     !> B22 is (m-n1) by n2,
-     !> with n1 = min(m,n)/2, n2 = n-n1.
-     !> The subroutine calls itself to factor B11, solves for B21,
-     !> solves for B12, updates B22, then calls itself to factor B22.
-     !> For more details on the recursive LU algorithm, see [2].
-     !> DLAORHR_COL_GETRFNP2 is called to factorize a block by the blocked
-     !> routine DLAORHR_COL_GETRFNP, which uses blocked code calling
-     !> Level 3 BLAS to update the submatrix. However, DLAORHR_COL_GETRFNP2
-     !> is self-sufficient and can be used without DLAORHR_COL_GETRFNP.
-     !> [1] "Reconstructing Householder vectors from tall-skinny QR",
-     !> G. Ballard, J. Demmel, L. Grigori, M. Jacquelin, H.D. Nguyen,
-     !> E. Solomonik, J. Parallel Distrib. Comput.,
-     !> vol. 85, pp. 3-31, 2015.
-     !> [2] "Recursion leads to automatic variable blocking for dense linear
-     !> algebra algorithms", F. Gustavson, IBM J. of Res. and Dev.,
-     !> vol. 41, no. 6, pp. 737-755, 1997.
 
      pure recursive subroutine stdlib_dlaorhr_col_getrfnp2( m, n, a, lda, d, info )
+     !! DLAORHR_COL_GETRFNP2 computes the modified LU factorization without
+     !! pivoting of a real general M-by-N matrix A. The factorization has
+     !! the form:
+     !! A - S = L * U,
+     !! where:
+     !! S is a m-by-n diagonal sign matrix with the diagonal D, so that
+     !! D(i) = S(i,i), 1 <= i <= min(M,N). The diagonal D is constructed
+     !! as D(i)=-SIGN(A(i,i)), where A(i,i) is the value after performing
+     !! i-1 steps of Gaussian elimination. This means that the diagonal
+     !! element at each step of "modified" Gaussian elimination is at
+     !! least one in absolute value (so that division-by-zero not
+     !! possible during the division by the diagonal element);
+     !! L is a M-by-N lower triangular matrix with unit diagonal elements
+     !! (lower trapezoidal if M > N);
+     !! and U is a M-by-N upper triangular matrix
+     !! (upper trapezoidal if M < N).
+     !! This routine is an auxiliary routine used in the Householder
+     !! reconstruction routine DORHR_COL. In DORHR_COL, this routine is
+     !! applied to an M-by-N matrix A with orthonormal columns, where each
+     !! element is bounded by one in absolute value. With the choice of
+     !! the matrix S above, one can show that the diagonal element at each
+     !! step of Gaussian elimination is the largest (in absolute value) in
+     !! the column on or below the diagonal, so that no pivoting is required
+     !! for numerical stability [1].
+     !! For more details on the Householder reconstruction algorithm,
+     !! including the modified LU factorization, see [1].
+     !! This is the recursive version of the LU factorization algorithm.
+     !! Denote A - S by B. The algorithm divides the matrix B into four
+     !! submatrices:
+     !! [  B11 | B12  ]  where B11 is n1 by n1,
+     !! B = [ -----|----- ]        B21 is (m-n1) by n1,
+     !! [  B21 | B22  ]        B12 is n1 by n2,
+     !! B22 is (m-n1) by n2,
+     !! with n1 = min(m,n)/2, n2 = n-n1.
+     !! The subroutine calls itself to factor B11, solves for B21,
+     !! solves for B12, updates B22, then calls itself to factor B22.
+     !! For more details on the recursive LU algorithm, see [2].
+     !! DLAORHR_COL_GETRFNP2 is called to factorize a block by the blocked
+     !! routine DLAORHR_COL_GETRFNP, which uses blocked code calling
+     !! Level 3 BLAS to update the submatrix. However, DLAORHR_COL_GETRFNP2
+     !! is self-sufficient and can be used without DLAORHR_COL_GETRFNP.
+     !! [1] "Reconstructing Householder vectors from tall-skinny QR",
+     !! G. Ballard, J. Demmel, L. Grigori, M. Jacquelin, H.D. Nguyen,
+     !! E. Solomonik, J. Parallel Distrib. Comput.,
+     !! vol. 85, pp. 3-31, 2015.
+     !! [2] "Recursion leads to automatic variable blocking for dense linear
+     !! algebra algorithms", F. Gustavson, IBM J. of Res. and Dev.,
+     !! vol. 41, no. 6, pp. 737-755, 1997.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2965,14 +2965,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaorhr_col_getrfnp2
 
-     !> DLAPMR: rearranges the rows of the M by N matrix X as specified
-     !> by the permutation K(1),K(2),...,K(M) of the integers 1,...,M.
-     !> If FORWRD = .TRUE.,  forward permutation:
-     !> X(K(I),*) is moved X(I,*) for I = 1,2,...,M.
-     !> If FORWRD = .FALSE., backward permutation:
-     !> X(I,*) is moved to X(K(I),*) for I = 1,2,...,M.
 
      pure subroutine stdlib_dlapmr( forwrd, m, n, x, ldx, k )
+     !! DLAPMR rearranges the rows of the M by N matrix X as specified
+     !! by the permutation K(1),K(2),...,K(M) of the integers 1,...,M.
+     !! If FORWRD = .TRUE.,  forward permutation:
+     !! X(K(I),*) is moved X(I,*) for I = 1,2,...,M.
+     !! If FORWRD = .FALSE., backward permutation:
+     !! X(I,*) is moved to X(K(I),*) for I = 1,2,...,M.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3033,14 +3033,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlapmr
 
-     !> DLAPMT: rearranges the columns of the M by N matrix X as specified
-     !> by the permutation K(1),K(2),...,K(N) of the integers 1,...,N.
-     !> If FORWRD = .TRUE.,  forward permutation:
-     !> X(*,K(J)) is moved X(*,J) for J = 1,2,...,N.
-     !> If FORWRD = .FALSE., backward permutation:
-     !> X(*,J) is moved to X(*,K(J)) for J = 1,2,...,N.
 
      pure subroutine stdlib_dlapmt( forwrd, m, n, x, ldx, k )
+     !! DLAPMT rearranges the columns of the M by N matrix X as specified
+     !! by the permutation K(1),K(2),...,K(N) of the integers 1,...,N.
+     !! If FORWRD = .TRUE.,  forward permutation:
+     !! X(*,K(J)) is moved X(*,J) for J = 1,2,...,N.
+     !! If FORWRD = .FALSE., backward permutation:
+     !! X(*,J) is moved to X(*,K(J)) for J = 1,2,...,N.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3101,10 +3101,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlapmt
 
-     !> DLAPY3: returns sqrt(x**2+y**2+z**2), taking care not to cause
-     !> unnecessary overflow and unnecessary underflow.
 
      pure real(dp) function stdlib_dlapy3( x, y, z )
+     !! DLAPY3 returns sqrt(x**2+y**2+z**2), taking care not to cause
+     !! unnecessary overflow and unnecessary underflow.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3133,11 +3133,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlapy3
 
-     !> DLAQGB: equilibrates a general M by N band matrix A with KL
-     !> subdiagonals and KU superdiagonals using the row and scaling factors
-     !> in the vectors R and C.
 
      pure subroutine stdlib_dlaqgb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, equed )
+     !! DLAQGB equilibrates a general M by N band matrix A with KL
+     !! subdiagonals and KU superdiagonals using the row and scaling factors
+     !! in the vectors R and C.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -3203,10 +3203,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaqgb
 
-     !> DLAQGE: equilibrates a general M by N matrix A using the row and
-     !> column scaling factors in the vectors R and C.
 
      pure subroutine stdlib_dlaqge( m, n, a, lda, r, c, rowcnd, colcnd, amax,equed )
+     !! DLAQGE equilibrates a general M by N matrix A using the row and
+     !! column scaling factors in the vectors R and C.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3269,18 +3269,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaqge
 
-     !> Given a 2-by-2 or 3-by-3 matrix H, DLAQR1: sets v to a
-     !> scalar multiple of the first column of the product
-     !> (*)  K = (H - (sr1 + i*si1)*I)*(H - (sr2 + i*si2)*I)
-     !> scaling to avoid overflows and most underflows. It
-     !> is assumed that either
-     !> 1) sr1 = sr2 and si1 = -si2
-     !> or
-     !> 2) si1 = si2 = 0.
-     !> This is useful for starting double implicit shift bulges
-     !> in the QR algorithm.
 
      pure subroutine stdlib_dlaqr1( n, h, ldh, sr1, si1, sr2, si2, v )
+     !! Given a 2-by-2 or 3-by-3 matrix H, DLAQR1: sets v to a
+     !! scalar multiple of the first column of the product
+     !! (*)  K = (H - (sr1 + i*si1)*I)*(H - (sr2 + i*si2)*I)
+     !! scaling to avoid overflows and most underflows. It
+     !! is assumed that either
+     !! 1) sr1 = sr2 and si1 = -si2
+     !! or
+     !! 2) si1 = si2 = 0.
+     !! This is useful for starting double implicit shift bulges
+     !! in the QR algorithm.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3329,10 +3329,10 @@ module stdlib_linalg_lapack_d
            end if
      end subroutine stdlib_dlaqr1
 
-     !> DLAQSB: equilibrates a symmetric band matrix A using the scaling
-     !> factors in the vector S.
 
      pure subroutine stdlib_dlaqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
+     !! DLAQSB equilibrates a symmetric band matrix A using the scaling
+     !! factors in the vector S.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3389,10 +3389,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaqsb
 
-     !> DLAQSP: equilibrates a symmetric matrix A using the scaling factors
-     !> in the vector S.
 
      pure subroutine stdlib_dlaqsp( uplo, n, ap, s, scond, amax, equed )
+     !! DLAQSP equilibrates a symmetric matrix A using the scaling factors
+     !! in the vector S.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3451,10 +3451,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaqsp
 
-     !> DLAQSY: equilibrates a symmetric matrix A using the scaling factors
-     !> in the vector S.
 
      pure subroutine stdlib_dlaqsy( uplo, n, a, lda, s, scond, amax, equed )
+     !! DLAQSY equilibrates a symmetric matrix A using the scaling factors
+     !! in the vector S.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3509,13 +3509,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaqsy
 
-     !> DLAR2V: applies a vector of real plane rotations from both sides to
-     !> a sequence of 2-by-2 real symmetric matrices, defined by the elements
-     !> of the vectors x, y and z. For i = 1,2,...,n
-     !> ( x(i)  z(i) ) := (  c(i)  s(i) ) ( x(i)  z(i) ) ( c(i) -s(i) )
-     !> ( z(i)  y(i) )    ( -s(i)  c(i) ) ( z(i)  y(i) ) ( s(i)  c(i) )
 
      pure subroutine stdlib_dlar2v( n, x, y, z, incx, c, s, incc )
+     !! DLAR2V applies a vector of real plane rotations from both sides to
+     !! a sequence of 2-by-2 real symmetric matrices, defined by the elements
+     !! of the vectors x, y and z. For i = 1,2,...,n
+     !! ( x(i)  z(i) ) := (  c(i)  s(i) ) ( x(i)  z(i) ) ( c(i) -s(i) )
+     !! ( z(i)  y(i) )    ( -s(i)  c(i) ) ( z(i)  y(i) ) ( s(i)  c(i) )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3552,13 +3552,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlar2v
 
-     !> DLARF: applies a real elementary reflector H to a real m by n matrix
-     !> C, from either the left or the right. H is represented in the form
-     !> H = I - tau * v * v**T
-     !> where tau is a real scalar and v is a real vector.
-     !> If tau = 0, then H is taken to be the unit matrix.
 
      pure subroutine stdlib_dlarf( side, m, n, v, incv, tau, c, ldc, work )
+     !! DLARF applies a real elementary reflector H to a real m by n matrix
+     !! C, from either the left or the right. H is represented in the form
+     !! H = I - tau * v * v**T
+     !! where tau is a real scalar and v is a real vector.
+     !! If tau = 0, then H is taken to be the unit matrix.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -3629,10 +3629,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarf
 
-     !> DLARFB: applies a real block reflector H or its transpose H**T to a
-     !> real m by n matrix C, from either the left or the right.
 
      pure subroutine stdlib_dlarfb( side, trans, direct, storev, m, n, k, v, ldv,t, ldt, c, ldc, &
+     !! DLARFB applies a real block reflector H or its transpose H**T to a
+     !! real m by n matrix C, from either the left or the right.
                work, ldwork )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -3951,15 +3951,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarfb
 
-     !> DLARFB_GETT: applies a real Householder block reflector H from the
-     !> left to a real (K+M)-by-N  "triangular-pentagonal" matrix
-     !> composed of two block matrices: an upper trapezoidal K-by-N matrix A
-     !> stored in the array A, and a rectangular M-by-(N-K) matrix B, stored
-     !> in the array B. The block reflector H is stored in a compact
-     !> WY-representation, where the elementary reflectors are in the
-     !> arrays A, B and T. See Further Details section.
 
      pure subroutine stdlib_dlarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
+     !! DLARFB_GETT applies a real Householder block reflector H from the
+     !! left to a real (K+M)-by-N  "triangular-pentagonal" matrix
+     !! composed of two block matrices: an upper trapezoidal K-by-N matrix A
+     !! stored in the array A, and a rectangular M-by-(N-K) matrix B, stored
+     !! in the array B. The block reflector H is stored in a compact
+     !! WY-representation, where the elementary reflectors are in the
+     !! arrays A, B and T. See Further Details section.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -4088,18 +4088,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarfb_gett
 
-     !> DLARFT: forms the triangular factor T of a real block reflector H
-     !> of order n, which is defined as a product of k elementary reflectors.
-     !> If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
-     !> If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
-     !> If STOREV = 'C', the vector which defines the elementary reflector
-     !> H(i) is stored in the i-th column of the array V, and
-     !> H  =  I - V * T * V**T
-     !> If STOREV = 'R', the vector which defines the elementary reflector
-     !> H(i) is stored in the i-th row of the array V, and
-     !> H  =  I - V**T * T * V
 
      pure subroutine stdlib_dlarft( direct, storev, n, k, v, ldv, tau, t, ldt )
+     !! DLARFT forms the triangular factor T of a real block reflector H
+     !! of order n, which is defined as a product of k elementary reflectors.
+     !! If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
+     !! If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
+     !! If STOREV = 'C', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th column of the array V, and
+     !! H  =  I - V * T * V**T
+     !! If STOREV = 'R', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th row of the array V, and
+     !! H  =  I - V**T * T * V
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -4215,15 +4215,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarft
 
-     !> DLARFX: applies a real elementary reflector H to a real m by n
-     !> matrix C, from either the left or the right. H is represented in the
-     !> form
-     !> H = I - tau * v * v**T
-     !> where tau is a real scalar and v is a real vector.
-     !> If tau = 0, then H is taken to be the unit matrix
-     !> This version uses inline code if H has order < 11.
 
      pure subroutine stdlib_dlarfx( side, m, n, v, tau, c, ldc, work )
+     !! DLARFX applies a real elementary reflector H to a real m by n
+     !! matrix C, from either the left or the right. H is represented in the
+     !! form
+     !! H = I - tau * v * v**T
+     !! where tau is a real scalar and v is a real vector.
+     !! If tau = 0, then H is taken to be the unit matrix
+     !! This version uses inline code if H has order < 11.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -4718,14 +4718,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarfx
 
-     !> DLARFY: applies an elementary reflector, or Householder matrix, H,
-     !> to an n x n symmetric matrix C, from both the left and the right.
-     !> H is represented in the form
-     !> H = I - tau * v * v'
-     !> where  tau  is a scalar and  v  is a vector.
-     !> If  tau  is  zero, then  H  is taken to be the unit matrix.
 
      pure subroutine stdlib_dlarfy( uplo, n, v, incv, tau, c, ldc, work )
+     !! DLARFY applies an elementary reflector, or Householder matrix, H,
+     !! to an n x n symmetric matrix C, from both the left and the right.
+     !! H is represented in the form
+     !! H = I - tau * v * v'
+     !! where  tau  is a scalar and  v  is a vector.
+     !! If  tau  is  zero, then  H  is taken to be the unit matrix.
         ! -- lapack test routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -4752,12 +4752,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarfy
 
-     !> DLARGV: generates a vector of real plane rotations, determined by
-     !> elements of the real vectors x and y. For i = 1,2,...,n
-     !> (  c(i)  s(i) ) ( x(i) ) = ( a(i) )
-     !> ( -s(i)  c(i) ) ( y(i) ) = (   0  )
 
      pure subroutine stdlib_dlargv( n, x, incx, y, incy, c, incc )
+     !! DLARGV generates a vector of real plane rotations, determined by
+     !! elements of the real vectors x and y. For i = 1,2,...,n
+     !! (  c(i)  s(i) ) ( x(i) ) = ( a(i) )
+     !! ( -s(i)  c(i) ) ( y(i) ) = (   0  )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -4806,10 +4806,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlargv
 
-     !> Compute the splitting points with threshold SPLTOL.
-     !> DLARRA: sets any "small" off-diagonal elements to zero.
 
      pure subroutine stdlib_dlarra( n, d, e, e2, spltol, tnrm,nsplit, isplit, info )
+     !! Compute the splitting points with threshold SPLTOL.
+     !! DLARRA sets any "small" off-diagonal elements to zero.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -4864,11 +4864,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarra
 
-     !> Find the number of eigenvalues of the symmetric tridiagonal matrix T
-     !> that are in the interval (VL,VU] if JOBT = 'T', and of L D L^T
-     !> if JOBT = 'L'.
 
      pure subroutine stdlib_dlarrc( jobt, n, vl, vu, d, e, pivmin,eigcnt, lcnt, rcnt, info )
+     !! Find the number of eigenvalues of the symmetric tridiagonal matrix T
+     !! that are in the interval (VL,VU] if JOBT = 'T', and of L D L^T
+     !! if JOBT = 'L'.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -4957,20 +4957,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarrc
 
-     !> DLARRD: computes the eigenvalues of a symmetric tridiagonal
-     !> matrix T to suitable accuracy. This is an auxiliary code to be
-     !> called from DSTEMR.
-     !> The user may ask for all eigenvalues, all eigenvalues
-     !> in the half-open interval (VL, VU], or the IL-th through IU-th
-     !> eigenvalues.
-     !> To avoid overflow, the matrix must be scaled so that its
-     !> largest element is no greater than overflow**(1/2) * underflow**(1/4) in absolute value, and for greatest
-     !> accuracy, it should not be much smaller than that.
-     !> See W. Kahan "Accurate Eigenvalues of a Symmetric Tridiagonal
-     !> Matrix", Report CS41, Computer Science Dept., Stanford
-     !> University, July 21, 1966.
 
      pure subroutine stdlib_dlarrd( range, order, n, vl, vu, il, iu, gers,reltol, d, e, e2, &
+     !! DLARRD computes the eigenvalues of a symmetric tridiagonal
+     !! matrix T to suitable accuracy. This is an auxiliary code to be
+     !! called from DSTEMR.
+     !! The user may ask for all eigenvalues, all eigenvalues
+     !! in the half-open interval (VL, VU], or the IL-th through IU-th
+     !! eigenvalues.
+     !! To avoid overflow, the matrix must be scaled so that its
+     !! largest element is no greater than overflow**(1/2) * underflow**(1/4) in absolute value, and for greatest
+     !! accuracy, it should not be much smaller than that.
+     !! See W. Kahan "Accurate Eigenvalues of a Symmetric Tridiagonal
+     !! Matrix", Report CS41, Computer Science Dept., Stanford
+     !! University, July 21, 1966.
                pivmin, nsplit, isplit,m, w, werr, wl, wu, iblock, indexw,work, iwork, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -5428,15 +5428,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarrd
 
-     !> Given the initial eigenvalue approximations of T, DLARRJ:
-     !> does  bisection to refine the eigenvalues of T,
-     !> W( IFIRST-OFFSET ) through W( ILAST-OFFSET ), to more accuracy. Initial
-     !> guesses for these eigenvalues are input in W, the corresponding estimate
-     !> of the error in these guesses in WERR. During bisection, intervals
-     !> [left, right] are maintained by storing their mid-points and
-     !> semi-widths in the arrays W and WERR respectively.
 
      pure subroutine stdlib_dlarrj( n, d, e2, ifirst, ilast,rtol, offset, w, werr, work, iwork,&
+     !! Given the initial eigenvalue approximations of T, DLARRJ:
+     !! does  bisection to refine the eigenvalues of T,
+     !! W( IFIRST-OFFSET ) through W( ILAST-OFFSET ), to more accuracy. Initial
+     !! guesses for these eigenvalues are input in W, the corresponding estimate
+     !! of the error in these guesses in WERR. During bisection, intervals
+     !! [left, right] are maintained by storing their mid-points and
+     !! semi-widths in the arrays W and WERR respectively.
                pivmin, spdiam, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -5606,17 +5606,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarrj
 
-     !> DLARRK: computes one eigenvalue of a symmetric tridiagonal
-     !> matrix T to suitable accuracy. This is an auxiliary code to be
-     !> called from DSTEMR.
-     !> To avoid overflow, the matrix must be scaled so that its
-     !> largest element is no greater than overflow**(1/2) * underflow**(1/4) in absolute value, and for greatest
-     !> accuracy, it should not be much smaller than that.
-     !> See W. Kahan "Accurate Eigenvalues of a Symmetric Tridiagonal
-     !> Matrix", Report CS41, Computer Science Dept., Stanford
-     !> University, July 21, 1966.
 
      pure subroutine stdlib_dlarrk( n, iw, gl, gu,d, e2, pivmin, reltol, w, werr, info)
+     !! DLARRK computes one eigenvalue of a symmetric tridiagonal
+     !! matrix T to suitable accuracy. This is an auxiliary code to be
+     !! called from DSTEMR.
+     !! To avoid overflow, the matrix must be scaled so that its
+     !! largest element is no greater than overflow**(1/2) * underflow**(1/4) in absolute value, and for greatest
+     !! accuracy, it should not be much smaller than that.
+     !! See W. Kahan "Accurate Eigenvalues of a Symmetric Tridiagonal
+     !! Matrix", Report CS41, Computer Science Dept., Stanford
+     !! University, July 21, 1966.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -5686,11 +5686,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarrk
 
-     !> Perform tests to decide whether the symmetric tridiagonal matrix T
-     !> warrants expensive computations which guarantee high relative accuracy
-     !> in the eigenvalues.
 
      pure subroutine stdlib_dlarrr( n, d, e, info )
+     !! Perform tests to decide whether the symmetric tridiagonal matrix T
+     !! warrants expensive computations which guarantee high relative accuracy
+     !! in the eigenvalues.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -5768,32 +5768,30 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarrr
 
-     !> !
-     !>
-     !> DLARTG: generates a plane rotation so that
-     !> [  C  S  ]  .  [ F ]  =  [ R ]
-     !> [ -S  C  ]     [ G ]     [ 0 ]
-     !> where C**2 + S**2 = 1.
-     !> The mathematical formulas used for C and S are
-     !> R = sign(F) * sqrt(F**2 + G**2)
-     !> C = F / R
-     !> S = G / R
-     !> Hence C >= 0. The algorithm used to compute these quantities
-     !> incorporates scaling to avoid overflow or underflow in computing the
-     !> square root of the sum of squares.
-     !> This version is discontinuous in R at F = 0 but it returns the same
-     !> C and S as ZLARTG for complex inputs (F,0) and (G,0).
-     !> This is a more accurate version of the BLAS1 routine DROTG,
-     !> with the following other differences:
-     !> F and G are unchanged on return.
-     !> If G=0, then C=1 and S=0.
-     !> If F=0 and (G .ne. 0), then C=0 and S=sign(1,G) without doing any
-     !> floating point operations (saves work in DBDSQR when
-     !> there are zeros on the diagonal).
-     !> If F exceeds G in magnitude, C will be positive.
-     !> Below, wp=>dp stands for double precision from LA_CONSTANTS module.
 
      pure subroutine stdlib_dlartg( f, g, c, s, r )
+     !! DLARTG generates a plane rotation so that
+     !! [  C  S  ]  .  [ F ]  =  [ R ]
+     !! [ -S  C  ]     [ G ]     [ 0 ]
+     !! where C**2 + S**2 = 1.
+     !! The mathematical formulas used for C and S are
+     !! R = sign(F) * sqrt(F**2 + G**2)
+     !! C = F / R
+     !! S = G / R
+     !! Hence C >= 0. The algorithm used to compute these quantities
+     !! incorporates scaling to avoid overflow or underflow in computing the
+     !! square root of the sum of squares.
+     !! This version is discontinuous in R at F = 0 but it returns the same
+     !! C and S as ZLARTG for complex inputs (F,0) and (G,0).
+     !! This is a more accurate version of the BLAS1 routine DROTG,
+     !! with the following other differences:
+     !! F and G are unchanged on return.
+     !! If G=0, then C=1 and S=0.
+     !! If F=0 and (G .ne. 0), then C=0 and S=sign(1,G) without doing any
+     !! floating point operations (saves work in DBDSQR when
+     !! there are zeros on the diagonal).
+     !! If F exceeds G in magnitude, C will be positive.
+     !! Below, wp=>dp stands for double precision from LA_CONSTANTS module.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -5837,17 +5835,17 @@ module stdlib_linalg_lapack_d
         return
      end subroutine stdlib_dlartg
 
-     !> DLARTGP: generates a plane rotation so that
-     !> [  CS  SN  ]  .  [ F ]  =  [ R ]   where CS**2 + SN**2 = 1.
-     !> [ -SN  CS  ]     [ G ]     [ 0 ]
-     !> This is a slower, more accurate version of the Level 1 BLAS routine DROTG,
-     !> with the following other differences:
-     !> F and G are unchanged on return.
-     !> If G=0, then CS=(+/-)1 and SN=0.
-     !> If F=0 and (G .ne. 0), then CS=0 and SN=(+/-)1.
-     !> The sign is chosen so that R >= 0.
 
      pure subroutine stdlib_dlartgp( f, g, cs, sn, r )
+     !! DLARTGP generates a plane rotation so that
+     !! [  CS  SN  ]  .  [ F ]  =  [ R ]   where CS**2 + SN**2 = 1.
+     !! [ -SN  CS  ]     [ G ]     [ 0 ]
+     !! This is a slower, more accurate version of the Level 1 BLAS routine DROTG,
+     !! with the following other differences:
+     !! F and G are unchanged on return.
+     !! If G=0, then CS=(+/-)1 and SN=0.
+     !! If F=0 and (G .ne. 0), then CS=0 and SN=(+/-)1.
+     !! The sign is chosen so that R >= 0.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -5931,16 +5929,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlartgp
 
-     !> DLARTGS: generates a plane rotation designed to introduce a bulge in
-     !> Golub-Reinsch-style implicit QR iteration for the bidiagonal SVD
-     !> problem. X and Y are the top-row entries, and SIGMA is the shift.
-     !> The computed CS and SN define a plane rotation satisfying
-     !> [  CS  SN  ]  .  [ X^2 - SIGMA ]  =  [ R ],
-     !> [ -SN  CS  ]     [    X * Y    ]     [ 0 ]
-     !> with R nonnegative.  If X^2 - SIGMA and X * Y are 0, then the
-     !> rotation is by PI/2.
 
      pure subroutine stdlib_dlartgs( x, y, sigma, cs, sn )
+     !! DLARTGS generates a plane rotation designed to introduce a bulge in
+     !! Golub-Reinsch-style implicit QR iteration for the bidiagonal SVD
+     !! problem. X and Y are the top-row entries, and SIGMA is the shift.
+     !! The computed CS and SN define a plane rotation satisfying
+     !! [  CS  SN  ]  .  [ X^2 - SIGMA ]  =  [ R ],
+     !! [ -SN  CS  ]     [    X * Y    ]     [ 0 ]
+     !! with R nonnegative.  If X^2 - SIGMA and X * Y are 0, then the
+     !! rotation is by PI/2.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -5987,12 +5985,12 @@ module stdlib_linalg_lapack_d
            ! end stdlib_dlartgs
      end subroutine stdlib_dlartgs
 
-     !> DLARTV: applies a vector of real plane rotations to elements of the
-     !> real vectors x and y. For i = 1,2,...,n
-     !> ( x(i) ) := (  c(i)  s(i) ) ( x(i) )
-     !> ( y(i) )    ( -s(i)  c(i) ) ( y(i) )
 
      pure subroutine stdlib_dlartv( n, x, incx, y, incy, c, s, incc )
+     !! DLARTV applies a vector of real plane rotations to elements of the
+     !! real vectors x and y. For i = 1,2,...,n
+     !! ( x(i) ) := (  c(i)  s(i) ) ( x(i) )
+     !! ( y(i) )    ( -s(i)  c(i) ) ( y(i) )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6021,11 +6019,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlartv
 
-     !> DLARUV: returns a vector of n random real numbers from a uniform (0,1)
-     !> distribution (n <= 128).
-     !> This is an auxiliary routine called by DLARNV and ZLARNV.
 
      pure subroutine stdlib_dlaruv( iseed, n, x )
+     !! DLARUV returns a vector of n random real numbers from a uniform (0,1)
+     !! distribution (n <= 128).
+     !! This is an auxiliary routine called by DLARNV and ZLARNV.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6223,15 +6221,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaruv
 
-     !> DLARZ: applies a real elementary reflector H to a real M-by-N
-     !> matrix C, from either the left or the right. H is represented in the
-     !> form
-     !> H = I - tau * v * v**T
-     !> where tau is a real scalar and v is a real vector.
-     !> If tau = 0, then H is taken to be the unit matrix.
-     !> H is a product of k elementary reflectors as returned by DTZRZF.
 
      pure subroutine stdlib_dlarz( side, m, n, l, v, incv, tau, c, ldc, work )
+     !! DLARZ applies a real elementary reflector H to a real M-by-N
+     !! matrix C, from either the left or the right. H is represented in the
+     !! form
+     !! H = I - tau * v * v**T
+     !! where tau is a real scalar and v is a real vector.
+     !! If tau = 0, then H is taken to be the unit matrix.
+     !! H is a product of k elementary reflectors as returned by DTZRZF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6278,11 +6276,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarz
 
-     !> DLARZB: applies a real block reflector H or its transpose H**T to
-     !> a real distributed M-by-N  C from the left or the right.
-     !> Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
 
      pure subroutine stdlib_dlarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+     !! DLARZB applies a real block reflector H or its transpose H**T to
+     !! a real distributed M-by-N  C from the left or the right.
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
                ldc, work, ldwork )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -6367,20 +6365,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarzb
 
-     !> DLARZT: forms the triangular factor T of a real block reflector
-     !> H of order > n, which is defined as a product of k elementary
-     !> reflectors.
-     !> If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
-     !> If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
-     !> If STOREV = 'C', the vector which defines the elementary reflector
-     !> H(i) is stored in the i-th column of the array V, and
-     !> H  =  I - V * T * V**T
-     !> If STOREV = 'R', the vector which defines the elementary reflector
-     !> H(i) is stored in the i-th row of the array V, and
-     !> H  =  I - V**T * T * V
-     !> Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
 
      pure subroutine stdlib_dlarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+     !! DLARZT forms the triangular factor T of a real block reflector
+     !! H of order > n, which is defined as a product of k elementary
+     !! reflectors.
+     !! If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
+     !! If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
+     !! If STOREV = 'C', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th column of the array V, and
+     !! H  =  I - V * T * V**T
+     !! If STOREV = 'R', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th row of the array V, and
+     !! H  =  I - V**T * T * V
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6429,13 +6427,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarzt
 
-     !> DLAS2:  computes the singular values of the 2-by-2 matrix
-     !> [  F   G  ]
-     !> [  0   H  ].
-     !> On return, SSMIN is the smaller singular value and SSMAX is the
-     !> larger singular value.
 
      pure subroutine stdlib_dlas2( f, g, h, ssmin, ssmax )
+     !! DLAS2 computes the singular values of the 2-by-2 matrix
+     !! [  F   G  ]
+     !! [  0   H  ].
+     !! On return, SSMIN is the smaller singular value and SSMAX is the
+     !! larger singular value.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6493,16 +6491,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlas2
 
-     !> This subroutine computes the square root of the I-th eigenvalue
-     !> of a positive symmetric rank-one modification of a 2-by-2 diagonal
-     !> matrix
-     !> diag( D ) * diag( D ) +  RHO * Z * transpose(Z) .
-     !> The diagonal entries in the array D are assumed to satisfy
-     !> 0 <= D(i) < D(j)  for  i < j .
-     !> We also assume RHO > 0 and that the Euclidean norm of the vector
-     !> Z is one.
 
      pure subroutine stdlib_dlasd5( i, d, z, delta, rho, dsigma, work )
+     !! This subroutine computes the square root of the I-th eigenvalue
+     !! of a positive symmetric rank-one modification of a 2-by-2 diagonal
+     !! matrix
+     !! diag( D ) * diag( D ) +  RHO * Z * transpose(Z) .
+     !! The diagonal entries in the array D are assumed to satisfy
+     !! 0 <= D(i) < D(j)  for  i < j .
+     !! We also assume RHO > 0 and that the Euclidean norm of the vector
+     !! Z is one.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6588,10 +6586,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasd5
 
-     !> DLASDT: creates a tree of subproblems for bidiagonal divide and
-     !> conquer.
 
      pure subroutine stdlib_dlasdt( n, lvl, nd, inode, ndiml, ndimr, msub )
+     !! DLASDT creates a tree of subproblems for bidiagonal divide and
+     !! conquer.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6639,10 +6637,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasdt
 
-     !> DLASET: initializes an m-by-n matrix A to BETA on the diagonal and
-     !> ALPHA on the offdiagonals.
 
      pure subroutine stdlib_dlaset( uplo, m, n, alpha, beta, a, lda )
+     !! DLASET initializes an m-by-n matrix A to BETA on the diagonal and
+     !! ALPHA on the offdiagonals.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -6689,10 +6687,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaset
 
-     !> DLASQ4: computes an approximation TAU to the smallest eigenvalue
-     !> using values of d from the previous transform.
 
      pure subroutine stdlib_dlasq4( i0, n0, z, pp, n0in, dmin, dmin1, dmin2, dn,dn1, dn2, tau, &
+     !! DLASQ4 computes an approximation TAU to the smallest eigenvalue
+     !! using values of d from the previous transform.
                ttype, g )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -6897,10 +6895,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasq4
 
-     !> DLASQ5: computes one dqds transform in ping-pong form, one
-     !> version for IEEE machines another for non IEEE machines.
 
      pure subroutine stdlib_dlasq5( i0, n0, z, pp, tau, sigma, dmin, dmin1, dmin2,dn, dnm1, dnm2, &
+     !! DLASQ5 computes one dqds transform in ping-pong form, one
+     !! version for IEEE machines another for non IEEE machines.
                ieee, eps )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -7125,10 +7123,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasq5
 
-     !> DLASQ6: computes one dqd (shift equal to zero) transform in
-     !> ping-pong form, with protection against underflow and overflow.
 
      pure subroutine stdlib_dlasq6( i0, n0, z, pp, dmin, dmin1, dmin2, dn,dnm1, dnm2 )
+     !! DLASQ6 computes one dqd (shift equal to zero) transform in
+     !! ping-pong form, with protection against underflow and overflow.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -7235,59 +7233,59 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasq6
 
-     !> DLASR: applies a sequence of plane rotations to a real matrix A,
-     !> from either the left or the right.
-     !> When SIDE = 'L', the transformation takes the form
-     !> A := P*A
-     !> and when SIDE = 'R', the transformation takes the form
-     !> A := A*P**T
-     !> where P is an orthogonal matrix consisting of a sequence of z plane
-     !> rotations, with z = M when SIDE = 'L' and z = N when SIDE = 'R',
-     !> and P**T is the transpose of P.
-     !> When DIRECT = 'F' (Forward sequence), then
-     !> P = P(z-1) * ... * P(2) * P(1)
-     !> and when DIRECT = 'B' (Backward sequence), then
-     !> P = P(1) * P(2) * ... * P(z-1)
-     !> where P(k) is a plane rotation matrix defined by the 2-by-2 rotation
-     !> R(k) = (  c(k)  s(k) )
-     !> = ( -s(k)  c(k) ).
-     !> When PIVOT = 'V' (Variable pivot), the rotation is performed
-     !> for the plane (k,k+1), i.e., P(k) has the form
-     !> P(k) = (  1                                            )
-     !> (       ...                                     )
-     !> (              1                                )
-     !> (                   c(k)  s(k)                  )
-     !> (                  -s(k)  c(k)                  )
-     !> (                                1              )
-     !> (                                     ...       )
-     !> (                                            1  )
-     !> where R(k) appears as a rank-2 modification to the identity matrix in
-     !> rows and columns k and k+1.
-     !> When PIVOT = 'T' (Top pivot), the rotation is performed for the
-     !> plane (1,k+1), so P(k) has the form
-     !> P(k) = (  c(k)                    s(k)                 )
-     !> (         1                                     )
-     !> (              ...                              )
-     !> (                     1                         )
-     !> ( -s(k)                    c(k)                 )
-     !> (                                 1             )
-     !> (                                      ...      )
-     !> (                                             1 )
-     !> where R(k) appears in rows and columns 1 and k+1.
-     !> Similarly, when PIVOT = 'B' (Bottom pivot), the rotation is
-     !> performed for the plane (k,z), giving P(k) the form
-     !> P(k) = ( 1                                             )
-     !> (      ...                                      )
-     !> (             1                                 )
-     !> (                  c(k)                    s(k) )
-     !> (                         1                     )
-     !> (                              ...              )
-     !> (                                     1         )
-     !> (                 -s(k)                    c(k) )
-     !> where R(k) appears in rows and columns k and z.  The rotations are
-     !> performed without ever forming P(k) explicitly.
 
      pure subroutine stdlib_dlasr( side, pivot, direct, m, n, c, s, a, lda )
+     !! DLASR applies a sequence of plane rotations to a real matrix A,
+     !! from either the left or the right.
+     !! When SIDE = 'L', the transformation takes the form
+     !! A := P*A
+     !! and when SIDE = 'R', the transformation takes the form
+     !! A := A*P**T
+     !! where P is an orthogonal matrix consisting of a sequence of z plane
+     !! rotations, with z = M when SIDE = 'L' and z = N when SIDE = 'R',
+     !! and P**T is the transpose of P.
+     !! When DIRECT = 'F' (Forward sequence), then
+     !! P = P(z-1) * ... * P(2) * P(1)
+     !! and when DIRECT = 'B' (Backward sequence), then
+     !! P = P(1) * P(2) * ... * P(z-1)
+     !! where P(k) is a plane rotation matrix defined by the 2-by-2 rotation
+     !! R(k) = (  c(k)  s(k) )
+     !! = ( -s(k)  c(k) ).
+     !! When PIVOT = 'V' (Variable pivot), the rotation is performed
+     !! for the plane (k,k+1), i.e., P(k) has the form
+     !! P(k) = (  1                                            )
+     !! (       ...                                     )
+     !! (              1                                )
+     !! (                   c(k)  s(k)                  )
+     !! (                  -s(k)  c(k)                  )
+     !! (                                1              )
+     !! (                                     ...       )
+     !! (                                            1  )
+     !! where R(k) appears as a rank-2 modification to the identity matrix in
+     !! rows and columns k and k+1.
+     !! When PIVOT = 'T' (Top pivot), the rotation is performed for the
+     !! plane (1,k+1), so P(k) has the form
+     !! P(k) = (  c(k)                    s(k)                 )
+     !! (         1                                     )
+     !! (              ...                              )
+     !! (                     1                         )
+     !! ( -s(k)                    c(k)                 )
+     !! (                                 1             )
+     !! (                                      ...      )
+     !! (                                             1 )
+     !! where R(k) appears in rows and columns 1 and k+1.
+     !! Similarly, when PIVOT = 'B' (Bottom pivot), the rotation is
+     !! performed for the plane (k,z), giving P(k) the form
+     !! P(k) = ( 1                                             )
+     !! (      ...                                      )
+     !! (             1                                 )
+     !! (                  c(k)                    s(k) )
+     !! (                         1                     )
+     !! (                              ...              )
+     !! (                                     1         )
+     !! (                 -s(k)                    c(k) )
+     !! where R(k) appears in rows and columns k and z.  The rotations are
+     !! performed without ever forming P(k) explicitly.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -7494,12 +7492,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasr
 
-     !> Sort the numbers in D in increasing order (if ID = 'I') or
-     !> in decreasing order (if ID = 'D' ).
-     !> Use Quick Sort, reverting to Insertion sort on arrays of
-     !> size <= 20. Dimension of STACK limits N to about 2**32.
 
      pure subroutine stdlib_dlasrt( id, n, d, info )
+     !! Sort the numbers in D in increasing order (if ID = 'I') or
+     !! in decreasing order (if ID = 'D' ).
+     !! Use Quick Sort, reverting to Insertion sort on arrays of
+     !! size <= 20. Dimension of STACK limits N to about 2**32.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -7668,28 +7666,26 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasrt
 
-     !> !
-     !>
-     !> DLASSQ:  returns the values  scl  and  smsq  such that
-     !> ( scl**2 )*smsq = x( 1 )**2 +...+ x( n )**2 + ( scale**2 )*sumsq,
-     !> where  x( i ) = X( 1 + ( i - 1 )*INCX ). The value of  sumsq  is
-     !> assumed to be non-negative.
-     !> scale and sumsq must be supplied in SCALE and SUMSQ and
-     !> scl and smsq are overwritten on SCALE and SUMSQ respectively.
-     !> If scale * sqrt( sumsq ) > tbig then
-     !> we require:   scale >= sqrt( TINY*EPS ) / sbig   on entry,
-     !> and if 0 < scale * sqrt( sumsq ) < tsml then
-     !> we require:   scale <= sqrt( HUGE ) / ssml       on entry,
-     !> where
-     !> tbig -- upper threshold for values whose square is representable;
-     !> sbig -- scaling constant for big numbers; \see la_constants.f90
-     !> tsml -- lower threshold for values whose square is representable;
-     !> ssml -- scaling constant for small numbers; \see la_constants.f90
-     !> and
-     !> TINY*EPS -- tiniest representable number;
-     !> HUGE     -- biggest representable number.
 
      pure subroutine stdlib_dlassq( n, x, incx, scl, sumsq )
+     !! DLASSQ returns the values  scl  and  smsq  such that
+     !! ( scl**2 )*smsq = x( 1 )**2 +...+ x( n )**2 + ( scale**2 )*sumsq,
+     !! where  x( i ) = X( 1 + ( i - 1 )*INCX ). The value of  sumsq  is
+     !! assumed to be non-negative.
+     !! scale and sumsq must be supplied in SCALE and SUMSQ and
+     !! scl and smsq are overwritten on SCALE and SUMSQ respectively.
+     !! If scale * sqrt( sumsq ) > tbig then
+     !! we require:   scale >= sqrt( TINY*EPS ) / sbig   on entry,
+     !! and if 0 < scale * sqrt( sumsq ) < tsml then
+     !! we require:   scale <= sqrt( HUGE ) / ssml       on entry,
+     !! where
+     !! tbig -- upper threshold for values whose square is representable;
+     !! sbig -- scaling constant for big numbers; \see la_constants.f90
+     !! tsml -- lower threshold for values whose square is representable;
+     !! ssml -- scaling constant for small numbers; \see la_constants.f90
+     !! and
+     !! TINY*EPS -- tiniest representable number;
+     !! HUGE     -- biggest representable number.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -7785,17 +7781,17 @@ module stdlib_linalg_lapack_d
         return
      end subroutine stdlib_dlassq
 
-     !> DLASV2: computes the singular value decomposition of a 2-by-2
-     !> triangular matrix
-     !> [  F   G  ]
-     !> [  0   H  ].
-     !> On return, abs(SSMAX) is the larger singular value, abs(SSMIN) is the
-     !> smaller singular value, and (CSL,SNL) and (CSR,SNR) are the left and
-     !> right singular vectors for abs(SSMAX), giving the decomposition
-     !> [ CSL  SNL ] [  F   G  ] [ CSR -SNR ]  =  [ SSMAX   0   ]
-     !> [-SNL  CSL ] [  0   H  ] [ SNR  CSR ]     [  0    SSMIN ].
 
      pure subroutine stdlib_dlasv2( f, g, h, ssmin, ssmax, snr, csr, snl, csl )
+     !! DLASV2 computes the singular value decomposition of a 2-by-2
+     !! triangular matrix
+     !! [  F   G  ]
+     !! [  0   H  ].
+     !! On return, abs(SSMAX) is the larger singular value, abs(SSMIN) is the
+     !! smaller singular value, and (CSL,SNL) and (CSR,SNR) are the left and
+     !! right singular vectors for abs(SSMAX), giving the decomposition
+     !! [ CSL  SNL ] [  F   G  ] [ CSR -SNR ]  =  [ SSMAX   0   ]
+     !! [-SNL  CSL ] [  0   H  ] [ SNR  CSR ]     [  0    SSMIN ].
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -7930,10 +7926,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasv2
 
-     !> DLASWP: performs a series of row interchanges on the matrix A.
-     !> One row interchange is initiated for each of rows K1 through K2 of A.
 
      pure subroutine stdlib_dlaswp( n, a, lda, k1, k2, ipiv, incx )
+     !! DLASWP performs a series of row interchanges on the matrix A.
+     !! One row interchange is initiated for each of rows K1 through K2 of A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -7997,12 +7993,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaswp
 
-     !> DLASY2: solves for the N1 by N2 matrix X, 1 <= N1,N2 <= 2, in
-     !> op(TL)*X + ISGN*X*op(TR) = SCALE*B,
-     !> where TL is N1 by N1, TR is N2 by N2, B is N1 by N2, and ISGN = 1 or
-     !> -1.  op(T) = T or T**T, where T**T denotes the transpose of T.
 
      pure subroutine stdlib_dlasy2( ltranl, ltranr, isgn, n1, n2, tl, ldtl, tr,ldtr, b, ldb, &
+     !! DLASY2 solves for the N1 by N2 matrix X, 1 <= N1,N2 <= 2, in
+     !! op(TL)*X + ISGN*X*op(TR) = SCALE*B,
+     !! where TL is N1 by N1, TR is N2 by N2, B is N1 by N2, and ISGN = 1 or
+     !! -1.  op(T) = T or T**T, where T**T denotes the transpose of T.
                scale, x, ldx, xnorm, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -8257,20 +8253,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasy2
 
-     !> DLASYF: computes a partial factorization of a real symmetric matrix A
-     !> using the Bunch-Kaufman diagonal pivoting method. The partial
-     !> factorization has the form:
-     !> A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
-     !> ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
-     !> A  =  ( L11  0 ) (  D   0  ) ( L11**T L21**T )  if UPLO = 'L'
-     !> ( L21  I ) (  0  A22 ) (  0       I    )
-     !> where the order of D is at most NB. The actual order is returned in
-     !> the argument KB, and is either NB or NB-1, or N if N <= NB.
-     !> DLASYF is an auxiliary routine called by DSYTRF. It uses blocked code
-     !> (calling Level 3 BLAS) to update the submatrix A11 (if UPLO = 'U') or
-     !> A22 (if UPLO = 'L').
 
      pure subroutine stdlib_dlasyf( uplo, n, nb, kb, a, lda, ipiv, w, ldw, info )
+     !! DLASYF computes a partial factorization of a real symmetric matrix A
+     !! using the Bunch-Kaufman diagonal pivoting method. The partial
+     !! factorization has the form:
+     !! A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
+     !! ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
+     !! A  =  ( L11  0 ) (  D   0  ) ( L11**T L21**T )  if UPLO = 'L'
+     !! ( L21  I ) (  0  A22 ) (  0       I    )
+     !! where the order of D is at most NB. The actual order is returned in
+     !! the argument KB, and is either NB or NB-1, or N if N <= NB.
+     !! DLASYF is an auxiliary routine called by DSYTRF. It uses blocked code
+     !! (calling Level 3 BLAS) to update the submatrix A11 (if UPLO = 'U') or
+     !! A22 (if UPLO = 'L').
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -8694,20 +8690,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasyf
 
-     !> DLASYF_RK: computes a partial factorization of a real symmetric
-     !> matrix A using the bounded Bunch-Kaufman (rook) diagonal
-     !> pivoting method. The partial factorization has the form:
-     !> A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
-     !> ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
-     !> A  =  ( L11  0 ) (  D   0  ) ( L11**T L21**T )  if UPLO = 'L',
-     !> ( L21  I ) (  0  A22 ) (  0       I    )
-     !> where the order of D is at most NB. The actual order is returned in
-     !> the argument KB, and is either NB or NB-1, or N if N <= NB.
-     !> DLASYF_RK is an auxiliary routine called by DSYTRF_RK. It uses
-     !> blocked code (calling Level 3 BLAS) to update the submatrix
-     !> A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
 
      pure subroutine stdlib_dlasyf_rk( uplo, n, nb, kb, a, lda, e, ipiv, w, ldw,info )
+     !! DLASYF_RK computes a partial factorization of a real symmetric
+     !! matrix A using the bounded Bunch-Kaufman (rook) diagonal
+     !! pivoting method. The partial factorization has the form:
+     !! A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
+     !! ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
+     !! A  =  ( L11  0 ) (  D   0  ) ( L11**T L21**T )  if UPLO = 'L',
+     !! ( L21  I ) (  0  A22 ) (  0       I    )
+     !! where the order of D is at most NB. The actual order is returned in
+     !! the argument KB, and is either NB or NB-1, or N if N <= NB.
+     !! DLASYF_RK is an auxiliary routine called by DSYTRF_RK. It uses
+     !! blocked code (calling Level 3 BLAS) to update the submatrix
+     !! A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -9135,20 +9131,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasyf_rk
 
-     !> DLASYF_ROOK: computes a partial factorization of a real symmetric
-     !> matrix A using the bounded Bunch-Kaufman ("rook") diagonal
-     !> pivoting method. The partial factorization has the form:
-     !> A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
-     !> ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
-     !> A  =  ( L11  0 ) (  D   0  ) ( L11**T L21**T )  if UPLO = 'L'
-     !> ( L21  I ) (  0  A22 ) (  0       I    )
-     !> where the order of D is at most NB. The actual order is returned in
-     !> the argument KB, and is either NB or NB-1, or N if N <= NB.
-     !> DLASYF_ROOK is an auxiliary routine called by DSYTRF_ROOK. It uses
-     !> blocked code (calling Level 3 BLAS) to update the submatrix
-     !> A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
 
      pure subroutine stdlib_dlasyf_rook( uplo, n, nb, kb, a, lda, ipiv, w, ldw,info )
+     !! DLASYF_ROOK computes a partial factorization of a real symmetric
+     !! matrix A using the bounded Bunch-Kaufman ("rook") diagonal
+     !! pivoting method. The partial factorization has the form:
+     !! A  =  ( I  U12 ) ( A11  0  ) (  I       0    )  if UPLO = 'U', or:
+     !! ( 0  U22 ) (  0   D  ) ( U12**T U22**T )
+     !! A  =  ( L11  0 ) (  D   0  ) ( L11**T L21**T )  if UPLO = 'L'
+     !! ( L21  I ) (  0  A22 ) (  0       I    )
+     !! where the order of D is at most NB. The actual order is returned in
+     !! the argument KB, and is either NB or NB-1, or N if N <= NB.
+     !! DLASYF_ROOK is an auxiliary routine called by DSYTRF_ROOK. It uses
+     !! blocked code (calling Level 3 BLAS) to update the submatrix
+     !! A11 (if UPLO = 'U') or A22 (if UPLO = 'L').
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -9596,14 +9592,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasyf_rook
 
-     !> DLAT2S: converts a DOUBLE PRECISION triangular matrix, SA, to a SINGLE
-     !> PRECISION triangular matrix, A.
-     !> RMAX is the overflow for the SINGLE PRECISION arithmetic
-     !> DLAS2S checks that all the entries of A are between -RMAX and
-     !> RMAX. If not the conversion is aborted and a flag is raised.
-     !> This is an auxiliary routine so there is no argument checking.
 
      pure subroutine stdlib_dlat2s( uplo, n, a, lda, sa, ldsa, info )
+     !! DLAT2S converts a DOUBLE PRECISION triangular matrix, SA, to a SINGLE
+     !! PRECISION triangular matrix, A.
+     !! RMAX is the overflow for the SINGLE PRECISION arithmetic
+     !! DLAS2S checks that all the entries of A are between -RMAX and
+     !! RMAX. If not the conversion is aborted and a flag is raised.
+     !! This is an auxiliary routine so there is no argument checking.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -9647,18 +9643,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlat2s
 
-     !> DLATBS: solves one of the triangular systems
-     !> A *x = s*b  or  A**T*x = s*b
-     !> with scaling to prevent overflow, where A is an upper or lower
-     !> triangular band matrix.  Here A**T denotes the transpose of A, x and b
-     !> are n-element vectors, and s is a scaling factor, usually less than
-     !> or equal to 1, chosen so that the components of x will be less than
-     !> the overflow threshold.  If the unscaled problem will not cause
-     !> overflow, the Level 2 BLAS routine DTBSV is called.  If the matrix A
-     !> is singular (A(j,j) = 0 for some j), then s is set to 0 and a
-     !> non-trivial solution to A*x = 0 is returned.
 
      pure subroutine stdlib_dlatbs( uplo, trans, diag, normin, n, kd, ab, ldab, x,scale, cnorm, &
+     !! DLATBS solves one of the triangular systems
+     !! A *x = s*b  or  A**T*x = s*b
+     !! with scaling to prevent overflow, where A is an upper or lower
+     !! triangular band matrix.  Here A**T denotes the transpose of A, x and b
+     !! are n-element vectors, and s is a scaling factor, usually less than
+     !! or equal to 1, chosen so that the components of x will be less than
+     !! the overflow threshold.  If the unscaled problem will not cause
+     !! overflow, the Level 2 BLAS routine DTBSV is called.  If the matrix A
+     !! is singular (A(j,j) = 0 for some j), then s is set to 0 and a
+     !! non-trivial solution to A*x = 0 is returned.
                info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -10067,18 +10063,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlatbs
 
-     !> DLATPS: solves one of the triangular systems
-     !> A *x = s*b  or  A**T*x = s*b
-     !> with scaling to prevent overflow, where A is an upper or lower
-     !> triangular matrix stored in packed form.  Here A**T denotes the
-     !> transpose of A, x and b are n-element vectors, and s is a scaling
-     !> factor, usually less than or equal to 1, chosen so that the
-     !> components of x will be less than the overflow threshold.  If the
-     !> unscaled problem will not cause overflow, the Level 2 BLAS routine
-     !> DTPSV is called. If the matrix A is singular (A(j,j) = 0 for some j),
-     !> then s is set to 0 and a non-trivial solution to A*x = 0 is returned.
 
      pure subroutine stdlib_dlatps( uplo, trans, diag, normin, n, ap, x, scale,cnorm, info )
+     !! DLATPS solves one of the triangular systems
+     !! A *x = s*b  or  A**T*x = s*b
+     !! with scaling to prevent overflow, where A is an upper or lower
+     !! triangular matrix stored in packed form.  Here A**T denotes the
+     !! transpose of A, x and b are n-element vectors, and s is a scaling
+     !! factor, usually less than or equal to 1, chosen so that the
+     !! components of x will be less than the overflow threshold.  If the
+     !! unscaled problem will not cause overflow, the Level 2 BLAS routine
+     !! DTPSV is called. If the matrix A is singular (A(j,j) = 0 for some j),
+     !! then s is set to 0 and a non-trivial solution to A*x = 0 is returned.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -10485,18 +10481,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlatps
 
-     !> DLATRS: solves one of the triangular systems
-     !> A *x = s*b  or  A**T *x = s*b
-     !> with scaling to prevent overflow.  Here A is an upper or lower
-     !> triangular matrix, A**T denotes the transpose of A, x and b are
-     !> n-element vectors, and s is a scaling factor, usually less than
-     !> or equal to 1, chosen so that the components of x will be less than
-     !> the overflow threshold.  If the unscaled problem will not cause
-     !> overflow, the Level 2 BLAS routine DTRSV is called.  If the matrix A
-     !> is singular (A(j,j) = 0 for some j), then s is set to 0 and a
-     !> non-trivial solution to A*x = 0 is returned.
 
      pure subroutine stdlib_dlatrs( uplo, trans, diag, normin, n, a, lda, x, scale,cnorm, info )
+     !! DLATRS solves one of the triangular systems
+     !! A *x = s*b  or  A**T *x = s*b
+     !! with scaling to prevent overflow.  Here A is an upper or lower
+     !! triangular matrix, A**T denotes the transpose of A, x and b are
+     !! n-element vectors, and s is a scaling factor, usually less than
+     !! or equal to 1, chosen so that the components of x will be less than
+     !! the overflow threshold.  If the unscaled problem will not cause
+     !! overflow, the Level 2 BLAS routine DTRSV is called.  If the matrix A
+     !! is singular (A(j,j) = 0 for some j), then s is set to 0 and a
+     !! non-trivial solution to A*x = 0 is returned.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -10886,16 +10882,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlatrs
 
-     !> DLAUU2: computes the product U * U**T or L**T * L, where the triangular
-     !> factor U or L is stored in the upper or lower triangular part of
-     !> the array A.
-     !> If UPLO = 'U' or 'u' then the upper triangle of the result is stored,
-     !> overwriting the factor U in A.
-     !> If UPLO = 'L' or 'l' then the lower triangle of the result is stored,
-     !> overwriting the factor L in A.
-     !> This is the unblocked form of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_dlauu2( uplo, n, a, lda, info )
+     !! DLAUU2 computes the product U * U**T or L**T * L, where the triangular
+     !! factor U or L is stored in the upper or lower triangular part of
+     !! the array A.
+     !! If UPLO = 'U' or 'u' then the upper triangle of the result is stored,
+     !! overwriting the factor U in A.
+     !! If UPLO = 'L' or 'l' then the lower triangle of the result is stored,
+     !! overwriting the factor L in A.
+     !! This is the unblocked form of the algorithm, calling Level 2 BLAS.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -10958,16 +10954,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlauu2
 
-     !> DLAUUM: computes the product U * U**T or L**T * L, where the triangular
-     !> factor U or L is stored in the upper or lower triangular part of
-     !> the array A.
-     !> If UPLO = 'U' or 'u' then the upper triangle of the result is stored,
-     !> overwriting the factor U in A.
-     !> If UPLO = 'L' or 'l' then the lower triangle of the result is stored,
-     !> overwriting the factor L in A.
-     !> This is the blocked form of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_dlauum( uplo, n, a, lda, info )
+     !! DLAUUM computes the product U * U**T or L**T * L, where the triangular
+     !! factor U or L is stored in the upper or lower triangular part of
+     !! the array A.
+     !! If UPLO = 'U' or 'u' then the upper triangle of the result is stored,
+     !! overwriting the factor U in A.
+     !! If UPLO = 'L' or 'l' then the lower triangle of the result is stored,
+     !! overwriting the factor L in A.
+     !! This is the blocked form of the algorithm, calling Level 3 BLAS.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11041,17 +11037,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlauum
 
-     !> DORBDB6: orthogonalizes the column vector
-     !> X = [ X1 ]
-     !> [ X2 ]
-     !> with respect to the columns of
-     !> Q = [ Q1 ] .
-     !> [ Q2 ]
-     !> The columns of Q must be orthonormal.
-     !> If the projection is zero according to Kahan's "twice is enough"
-     !> criterion, then the zero vector is returned.
 
      pure subroutine stdlib_dorbdb6( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
+     !! DORBDB6 orthogonalizes the column vector
+     !! X = [ X1 ]
+     !! [ X2 ]
+     !! with respect to the columns of
+     !! Q = [ Q1 ] .
+     !! [ Q2 ]
+     !! The columns of Q must be orthonormal.
+     !! If the projection is zero according to Kahan's "twice is enough"
+     !! criterion, then the zero vector is returned.
                lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -11169,13 +11165,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorbdb6
 
-     !> DORG2L: generates an m by n real matrix Q with orthonormal columns,
-     !> which is defined as the last n columns of a product of k elementary
-     !> reflectors of order m
-     !> Q  =  H(k) . . . H(2) H(1)
-     !> as returned by DGEQLF.
 
      pure subroutine stdlib_dorg2l( m, n, k, a, lda, tau, work, info )
+     !! DORG2L generates an m by n real matrix Q with orthonormal columns,
+     !! which is defined as the last n columns of a product of k elementary
+     !! reflectors of order m
+     !! Q  =  H(k) . . . H(2) H(1)
+     !! as returned by DGEQLF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11233,13 +11229,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorg2l
 
-     !> DORG2R: generates an m by n real matrix Q with orthonormal columns,
-     !> which is defined as the first n columns of a product of k elementary
-     !> reflectors of order m
-     !> Q  =  H(1) H(2) . . . H(k)
-     !> as returned by DGEQRF.
 
      pure subroutine stdlib_dorg2r( m, n, k, a, lda, tau, work, info )
+     !! DORG2R generates an m by n real matrix Q with orthonormal columns,
+     !! which is defined as the first n columns of a product of k elementary
+     !! reflectors of order m
+     !! Q  =  H(1) H(2) . . . H(k)
+     !! as returned by DGEQRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11298,13 +11294,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorg2r
 
-     !> DORGL2: generates an m by n real matrix Q with orthonormal rows,
-     !> which is defined as the first m rows of a product of k elementary
-     !> reflectors of order n
-     !> Q  =  H(k) . . . H(2) H(1)
-     !> as returned by DGELQF.
 
      pure subroutine stdlib_dorgl2( m, n, k, a, lda, tau, work, info )
+     !! DORGL2 generates an m by n real matrix Q with orthonormal rows,
+     !! which is defined as the first m rows of a product of k elementary
+     !! reflectors of order n
+     !! Q  =  H(k) . . . H(2) H(1)
+     !! as returned by DGELQF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11367,13 +11363,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorgl2
 
-     !> DORGLQ: generates an M-by-N real matrix Q with orthonormal rows,
-     !> which is defined as the first M rows of a product of K elementary
-     !> reflectors of order N
-     !> Q  =  H(k) . . . H(2) H(1)
-     !> as returned by DGELQF.
 
      pure subroutine stdlib_dorglq( m, n, k, a, lda, tau, work, lwork, info )
+     !! DORGLQ generates an M-by-N real matrix Q with orthonormal rows,
+     !! which is defined as the first M rows of a product of K elementary
+     !! reflectors of order N
+     !! Q  =  H(k) . . . H(2) H(1)
+     !! as returned by DGELQF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11483,13 +11479,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorglq
 
-     !> DORGQL: generates an M-by-N real matrix Q with orthonormal columns,
-     !> which is defined as the last N columns of a product of K elementary
-     !> reflectors of order M
-     !> Q  =  H(k) . . . H(2) H(1)
-     !> as returned by DGEQLF.
 
      pure subroutine stdlib_dorgql( m, n, k, a, lda, tau, work, lwork, info )
+     !! DORGQL generates an M-by-N real matrix Q with orthonormal columns,
+     !! which is defined as the last N columns of a product of K elementary
+     !! reflectors of order M
+     !! Q  =  H(k) . . . H(2) H(1)
+     !! as returned by DGEQLF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11604,13 +11600,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorgql
 
-     !> DORGQR: generates an M-by-N real matrix Q with orthonormal columns,
-     !> which is defined as the first N columns of a product of K elementary
-     !> reflectors of order M
-     !> Q  =  H(1) H(2) . . . H(k)
-     !> as returned by DGEQRF.
 
      pure subroutine stdlib_dorgqr( m, n, k, a, lda, tau, work, lwork, info )
+     !! DORGQR generates an M-by-N real matrix Q with orthonormal columns,
+     !! which is defined as the first N columns of a product of K elementary
+     !! reflectors of order M
+     !! Q  =  H(1) H(2) . . . H(k)
+     !! as returned by DGEQRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11720,13 +11716,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorgqr
 
-     !> DORGR2: generates an m by n real matrix Q with orthonormal rows,
-     !> which is defined as the last m rows of a product of k elementary
-     !> reflectors of order n
-     !> Q  =  H(1) H(2) . . . H(k)
-     !> as returned by DGERQF.
 
      pure subroutine stdlib_dorgr2( m, n, k, a, lda, tau, work, info )
+     !! DORGR2 generates an m by n real matrix Q with orthonormal rows,
+     !! which is defined as the last m rows of a product of k elementary
+     !! reflectors of order n
+     !! Q  =  H(1) H(2) . . . H(k)
+     !! as returned by DGERQF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11786,13 +11782,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorgr2
 
-     !> DORGRQ: generates an M-by-N real matrix Q with orthonormal rows,
-     !> which is defined as the last M rows of a product of K elementary
-     !> reflectors of order N
-     !> Q  =  H(1) H(2) . . . H(k)
-     !> as returned by DGERQF.
 
      pure subroutine stdlib_dorgrq( m, n, k, a, lda, tau, work, lwork, info )
+     !! DORGRQ generates an M-by-N real matrix Q with orthonormal rows,
+     !! which is defined as the last M rows of a product of K elementary
+     !! reflectors of order N
+     !! Q  =  H(1) H(2) . . . H(k)
+     !! as returned by DGERQF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11907,23 +11903,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorgrq
 
-     !> DORGTSQR_ROW: generates an M-by-N real matrix Q_out with
-     !> orthonormal columns from the output of DLATSQR. These N orthonormal
-     !> columns are the first N columns of a product of complex unitary
-     !> matrices Q(k)_in of order M, which are returned by DLATSQR in
-     !> a special format.
-     !> Q_out = first_N_columns_of( Q(1)_in * Q(2)_in * ... * Q(k)_in ).
-     !> The input matrices Q(k)_in are stored in row and column blocks in A.
-     !> See the documentation of DLATSQR for more details on the format of
-     !> Q(k)_in, where each Q(k)_in is represented by block Householder
-     !> transformations. This routine calls an auxiliary routine DLARFB_GETT,
-     !> where the computation is performed on each individual block. The
-     !> algorithm first sweeps NB-sized column blocks from the right to left
-     !> starting in the bottom row block and continues to the top row block
-     !> (hence _ROW in the routine name). This sweep is in reverse order of
-     !> the order in which DLATSQR generates the output blocks.
 
      pure subroutine stdlib_dorgtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
+     !! DORGTSQR_ROW generates an M-by-N real matrix Q_out with
+     !! orthonormal columns from the output of DLATSQR. These N orthonormal
+     !! columns are the first N columns of a product of complex unitary
+     !! matrices Q(k)_in of order M, which are returned by DLATSQR in
+     !! a special format.
+     !! Q_out = first_N_columns_of( Q(1)_in * Q(2)_in * ... * Q(k)_in ).
+     !! The input matrices Q(k)_in are stored in row and column blocks in A.
+     !! See the documentation of DLATSQR for more details on the format of
+     !! Q(k)_in, where each Q(k)_in is represented by block Householder
+     !! transformations. This routine calls an auxiliary routine DLARFB_GETT,
+     !! where the computation is performed on each individual block. The
+     !! algorithm first sweeps NB-sized column blocks from the right to left
+     !! starting in the bottom row block and continues to the top row block
+     !! (hence _ROW in the routine name). This sweep is in reverse order of
+     !! the order in which DLATSQR generates the output blocks.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12232,18 +12228,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorm22
 
-     !> DORM2L: overwrites the general real m by n matrix C with
-     !> Q * C  if SIDE = 'L' and TRANS = 'N', or
-     !> Q**T * C  if SIDE = 'L' and TRANS = 'T', or
-     !> C * Q  if SIDE = 'R' and TRANS = 'N', or
-     !> C * Q**T if SIDE = 'R' and TRANS = 'T',
-     !> where Q is a real orthogonal matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(k) . . . H(2) H(1)
-     !> as returned by DGEQLF. Q is of order m if SIDE = 'L' and of order n
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_dorm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+     !! DORM2L overwrites the general real m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**T * C  if SIDE = 'L' and TRANS = 'T', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**T if SIDE = 'R' and TRANS = 'T',
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(k) . . . H(2) H(1)
+     !! as returned by DGEQLF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12326,18 +12322,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorm2l
 
-     !> DORM2R: overwrites the general real m by n matrix C with
-     !> Q * C  if SIDE = 'L' and TRANS = 'N', or
-     !> Q**T* C  if SIDE = 'L' and TRANS = 'T', or
-     !> C * Q  if SIDE = 'R' and TRANS = 'N', or
-     !> C * Q**T if SIDE = 'R' and TRANS = 'T',
-     !> where Q is a real orthogonal matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1) H(2) . . . H(k)
-     !> as returned by DGEQRF. Q is of order m if SIDE = 'L' and of order n
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_dorm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+     !! DORM2R overwrites the general real m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**T* C  if SIDE = 'L' and TRANS = 'T', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**T if SIDE = 'R' and TRANS = 'T',
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by DGEQRF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12425,18 +12421,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorm2r
 
-     !> DORML2: overwrites the general real m by n matrix C with
-     !> Q * C  if SIDE = 'L' and TRANS = 'N', or
-     !> Q**T* C  if SIDE = 'L' and TRANS = 'T', or
-     !> C * Q  if SIDE = 'R' and TRANS = 'N', or
-     !> C * Q**T if SIDE = 'R' and TRANS = 'T',
-     !> where Q is a real orthogonal matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(k) . . . H(2) H(1)
-     !> as returned by DGELQF. Q is of order m if SIDE = 'L' and of order n
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_dorml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+     !! DORML2 overwrites the general real m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**T* C  if SIDE = 'L' and TRANS = 'T', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**T if SIDE = 'R' and TRANS = 'T',
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(k) . . . H(2) H(1)
+     !! as returned by DGELQF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -12524,17 +12520,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorml2
 
-     !> DORMLQ: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(k) . . . H(2) H(1)
-     !> as returned by DGELQF. Q is of order M if SIDE = 'L' and of order N
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_dormlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+     !! DORMLQ overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(k) . . . H(2) H(1)
+     !! as returned by DGELQF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -12667,17 +12663,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dormlq
 
-     !> DORMQL: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(k) . . . H(2) H(1)
-     !> as returned by DGEQLF. Q is of order M if SIDE = 'L' and of order N
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_dormql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+     !! DORMQL overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(k) . . . H(2) H(1)
+     !! as returned by DGEQLF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -12804,17 +12800,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dormql
 
-     !> DORMQR: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1) H(2) . . . H(k)
-     !> as returned by DGEQRF. Q is of order M if SIDE = 'L' and of order N
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_dormqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+     !! DORMQR overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by DGEQRF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -12941,18 +12937,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dormqr
 
-     !> DORMR2: overwrites the general real m by n matrix C with
-     !> Q * C  if SIDE = 'L' and TRANS = 'N', or
-     !> Q**T* C  if SIDE = 'L' and TRANS = 'T', or
-     !> C * Q  if SIDE = 'R' and TRANS = 'N', or
-     !> C * Q**T if SIDE = 'R' and TRANS = 'T',
-     !> where Q is a real orthogonal matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1) H(2) . . . H(k)
-     !> as returned by DGERQF. Q is of order m if SIDE = 'L' and of order n
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_dormr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+     !! DORMR2 overwrites the general real m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**T* C  if SIDE = 'L' and TRANS = 'T', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**T if SIDE = 'R' and TRANS = 'T',
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by DGERQF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -13035,18 +13031,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dormr2
 
-     !> DORMR3: overwrites the general real m by n matrix C with
-     !> Q * C  if SIDE = 'L' and TRANS = 'N', or
-     !> Q**T* C  if SIDE = 'L' and TRANS = 'C', or
-     !> C * Q  if SIDE = 'R' and TRANS = 'N', or
-     !> C * Q**T if SIDE = 'R' and TRANS = 'C',
-     !> where Q is a real orthogonal matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1) H(2) . . . H(k)
-     !> as returned by DTZRZF. Q is of order m if SIDE = 'L' and of order n
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_dormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+     !! DORMR3 overwrites the general real m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**T* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**T if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by DTZRZF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -13134,17 +13130,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dormr3
 
-     !> DORMRQ: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1) H(2) . . . H(k)
-     !> as returned by DGERQF. Q is of order M if SIDE = 'L' and of order N
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_dormrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+     !! DORMRQ overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by DGERQF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -13277,17 +13273,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dormrq
 
-     !> DORMRZ: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix defined as the product of k
-     !> elementary reflectors
-     !> Q = H(1) H(2) . . . H(k)
-     !> as returned by DTZRZF. Q is of order M if SIDE = 'L' and of order N
-     !> if SIDE = 'R'.
 
      pure subroutine stdlib_dormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+     !! DORMRZ overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by DTZRZF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -13430,16 +13426,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dormrz
 
-     !> DPBEQU: computes row and column scalings intended to equilibrate a
-     !> symmetric positive definite band matrix A and reduce its condition
-     !> number (with respect to the two-norm).  S contains the scale factors,
-     !> S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
-     !> elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
-     !> choice of S puts the condition number of B within a factor N of the
-     !> smallest possible condition number over all possible diagonal
-     !> scalings.
 
      pure subroutine stdlib_dpbequ( uplo, n, kd, ab, ldab, s, scond, amax, info )
+     !! DPBEQU computes row and column scalings intended to equilibrate a
+     !! symmetric positive definite band matrix A and reduce its condition
+     !! number (with respect to the two-norm).  S contains the scale factors,
+     !! S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
+     !! elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
+     !! choice of S puts the condition number of B within a factor N of the
+     !! smallest possible condition number over all possible diagonal
+     !! scalings.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -13517,17 +13513,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpbequ
 
-     !> DPBSTF: computes a split Cholesky factorization of a real
-     !> symmetric positive definite band matrix A.
-     !> This routine is designed to be used in conjunction with DSBGST.
-     !> The factorization has the form  A = S**T*S  where S is a band matrix
-     !> of the same bandwidth as A and the following structure:
-     !> S = ( U    )
-     !> ( M  L )
-     !> where U is upper triangular of order m = (n+kd)/2, and L is lower
-     !> triangular of order n-m.
 
      pure subroutine stdlib_dpbstf( uplo, n, kd, ab, ldab, info )
+     !! DPBSTF computes a split Cholesky factorization of a real
+     !! symmetric positive definite band matrix A.
+     !! This routine is designed to be used in conjunction with DSBGST.
+     !! The factorization has the form  A = S**T*S  where S is a band matrix
+     !! of the same bandwidth as A and the following structure:
+     !! S = ( U    )
+     !! ( M  L )
+     !! where U is upper triangular of order m = (n+kd)/2, and L is lower
+     !! triangular of order n-m.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -13635,16 +13631,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpbstf
 
-     !> DPBTF2: computes the Cholesky factorization of a real symmetric
-     !> positive definite band matrix A.
-     !> The factorization has the form
-     !> A = U**T * U ,  if UPLO = 'U', or
-     !> A = L  * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular matrix, U**T is the transpose of U, and
-     !> L is lower triangular.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_dpbtf2( uplo, n, kd, ab, ldab, info )
+     !! DPBTF2 computes the Cholesky factorization of a real symmetric
+     !! positive definite band matrix A.
+     !! The factorization has the form
+     !! A = U**T * U ,  if UPLO = 'U', or
+     !! A = L  * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular matrix, U**T is the transpose of U, and
+     !! L is lower triangular.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -13722,11 +13718,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpbtf2
 
-     !> DPBTRS: solves a system of linear equations A*X = B with a symmetric
-     !> positive definite band matrix A using the Cholesky factorization
-     !> A = U**T*U or A = L*L**T computed by DPBTRF.
 
      pure subroutine stdlib_dpbtrs( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
+     !! DPBTRS solves a system of linear equations A*X = B with a symmetric
+     !! positive definite band matrix A using the Cholesky factorization
+     !! A = U**T*U or A = L*L**T computed by DPBTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -13790,16 +13786,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpbtrs
 
-     !> DPOEQU: computes row and column scalings intended to equilibrate a
-     !> symmetric positive definite matrix A and reduce its condition number
-     !> (with respect to the two-norm).  S contains the scale factors,
-     !> S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
-     !> elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
-     !> choice of S puts the condition number of B within a factor N of the
-     !> smallest possible condition number over all possible diagonal
-     !> scalings.
 
      pure subroutine stdlib_dpoequ( n, a, lda, s, scond, amax, info )
+     !! DPOEQU computes row and column scalings intended to equilibrate a
+     !! symmetric positive definite matrix A and reduce its condition number
+     !! (with respect to the two-norm).  S contains the scale factors,
+     !! S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
+     !! elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
+     !! choice of S puts the condition number of B within a factor N of the
+     !! smallest possible condition number over all possible diagonal
+     !! scalings.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -13864,21 +13860,21 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpoequ
 
-     !> DPOEQUB: computes row and column scalings intended to equilibrate a
-     !> symmetric positive definite matrix A and reduce its condition number
-     !> (with respect to the two-norm).  S contains the scale factors,
-     !> S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
-     !> elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
-     !> choice of S puts the condition number of B within a factor N of the
-     !> smallest possible condition number over all possible diagonal
-     !> scalings.
-     !> This routine differs from DPOEQU by restricting the scaling factors
-     !> to a power of the radix.  Barring over- and underflow, scaling by
-     !> these factors introduces no additional rounding errors.  However, the
-     !> scaled diagonal entries are no longer approximately 1 but lie
-     !> between sqrt(radix) and 1/sqrt(radix).
 
      pure subroutine stdlib_dpoequb( n, a, lda, s, scond, amax, info )
+     !! DPOEQUB computes row and column scalings intended to equilibrate a
+     !! symmetric positive definite matrix A and reduce its condition number
+     !! (with respect to the two-norm).  S contains the scale factors,
+     !! S(i) = 1/sqrt(A(i,i)), chosen so that the scaled matrix B with
+     !! elements B(i,j) = S(i)*A(i,j)*S(j) has ones on the diagonal.  This
+     !! choice of S puts the condition number of B within a factor N of the
+     !! smallest possible condition number over all possible diagonal
+     !! scalings.
+     !! This routine differs from DPOEQU by restricting the scaling factors
+     !! to a power of the radix.  Barring over- and underflow, scaling by
+     !! these factors introduces no additional rounding errors.  However, the
+     !! scaled diagonal entries are no longer approximately 1 but lie
+     !! between sqrt(radix) and 1/sqrt(radix).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -13946,11 +13942,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpoequb
 
-     !> DPOTRS: solves a system of linear equations A*X = B with a symmetric
-     !> positive definite matrix A using the Cholesky factorization
-     !> A = U**T*U or A = L*L**T computed by DPOTRF.
 
      pure subroutine stdlib_dpotrs( uplo, n, nrhs, a, lda, b, ldb, info )
+     !! DPOTRS solves a system of linear equations A*X = B with a symmetric
+     !! positive definite matrix A using the Cholesky factorization
+     !! A = U**T*U or A = L*L**T computed by DPOTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -14008,16 +14004,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpotrs
 
-     !> DPPEQU: computes row and column scalings intended to equilibrate a
-     !> symmetric positive definite matrix A in packed storage and reduce
-     !> its condition number (with respect to the two-norm).  S contains the
-     !> scale factors, S(i)=1/sqrt(A(i,i)), chosen so that the scaled matrix
-     !> B with elements B(i,j)=S(i)*A(i,j)*S(j) has ones on the diagonal.
-     !> This choice of S puts the condition number of B within a factor N of
-     !> the smallest possible condition number over all possible diagonal
-     !> scalings.
 
      pure subroutine stdlib_dppequ( uplo, n, ap, s, scond, amax, info )
+     !! DPPEQU computes row and column scalings intended to equilibrate a
+     !! symmetric positive definite matrix A in packed storage and reduce
+     !! its condition number (with respect to the two-norm).  S contains the
+     !! scale factors, S(i)=1/sqrt(A(i,i)), chosen so that the scaled matrix
+     !! B with elements B(i,j)=S(i)*A(i,j)*S(j) has ones on the diagonal.
+     !! This choice of S puts the condition number of B within a factor N of
+     !! the smallest possible condition number over all possible diagonal
+     !! scalings.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -14101,14 +14097,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dppequ
 
-     !> DPPTRF: computes the Cholesky factorization of a real symmetric
-     !> positive definite matrix A stored in packed format.
-     !> The factorization has the form
-     !> A = U**T * U,  if UPLO = 'U', or
-     !> A = L  * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
 
      pure subroutine stdlib_dpptrf( uplo, n, ap, info )
+     !! DPPTRF computes the Cholesky factorization of a real symmetric
+     !! positive definite matrix A stored in packed format.
+     !! The factorization has the form
+     !! A = U**T * U,  if UPLO = 'U', or
+     !! A = L  * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -14186,11 +14182,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpptrf
 
-     !> DPPTRS: solves a system of linear equations A*X = B with a symmetric
-     !> positive definite matrix A in packed storage using the Cholesky
-     !> factorization A = U**T*U or A = L*L**T computed by DPPTRF.
 
      pure subroutine stdlib_dpptrs( uplo, n, nrhs, ap, b, ldb, info )
+     !! DPPTRS solves a system of linear equations A*X = B with a symmetric
+     !! positive definite matrix A in packed storage using the Cholesky
+     !! factorization A = U**T*U or A = L*L**T computed by DPPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -14248,15 +14244,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpptrs
 
-     !> DPTCON: computes the reciprocal of the condition number (in the
-     !> 1-norm) of a real symmetric positive definite tridiagonal matrix
-     !> using the factorization A = L*D*L**T or A = U**T*D*U computed by
-     !> DPTTRF.
-     !> Norm(inv(A)) is computed by a direct method, and the reciprocal of
-     !> the condition number is computed as
-     !> RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_dptcon( n, d, e, anorm, rcond, work, info )
+     !! DPTCON computes the reciprocal of the condition number (in the
+     !! 1-norm) of a real symmetric positive definite tridiagonal matrix
+     !! using the factorization A = L*D*L**T or A = U**T*D*U computed by
+     !! DPTTRF.
+     !! Norm(inv(A)) is computed by a direct method, and the reciprocal of
+     !! the condition number is computed as
+     !! RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -14321,11 +14317,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dptcon
 
-     !> DPTTRF: computes the L*D*L**T factorization of a real symmetric
-     !> positive definite tridiagonal matrix A.  The factorization may also
-     !> be regarded as having the form A = U**T*D*U.
 
      pure subroutine stdlib_dpttrf( n, d, e, info )
+     !! DPTTRF computes the L*D*L**T factorization of a real symmetric
+     !! positive definite tridiagonal matrix A.  The factorization may also
+     !! be regarded as having the form A = U**T*D*U.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -14404,14 +14400,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpttrf
 
-     !> DPTTS2: solves a tridiagonal system of the form
-     !> A * X = B
-     !> using the L*D*L**T factorization of A computed by DPTTRF.  D is a
-     !> diagonal matrix specified in the vector D, L is a unit bidiagonal
-     !> matrix whose subdiagonal is specified in the vector E, and X and B
-     !> are N by NRHS matrices.
 
      pure subroutine stdlib_dptts2( n, nrhs, d, e, b, ldb )
+     !! DPTTS2 solves a tridiagonal system of the form
+     !! A * X = B
+     !! using the L*D*L**T factorization of A computed by DPTTRF.  D is a
+     !! diagonal matrix specified in the vector D, L is a unit bidiagonal
+     !! matrix whose subdiagonal is specified in the vector E, and X and B
+     !! are N by NRHS matrices.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -14445,11 +14441,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dptts2
 
-     !> DRSCL: multiplies an n-element real vector x by the real scalar 1/a.
-     !> This is done without overflow or underflow as long as
-     !> the final result x/a does not overflow or underflow.
 
      pure subroutine stdlib_drscl( n, sa, sx, incx )
+     !! DRSCL multiplies an n-element real vector x by the real scalar 1/a.
+     !! This is done without overflow or underflow as long as
+     !! the final result x/a does not overflow or underflow.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -14499,15 +14495,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_drscl
 
-     !> DSBGST: reduces a real symmetric-definite banded generalized
-     !> eigenproblem  A*x = lambda*B*x  to standard form  C*y = lambda*y,
-     !> such that C has the same bandwidth as A.
-     !> B must have been previously factorized as S**T*S by DPBSTF, using a
-     !> split Cholesky factorization. A is overwritten by C = X**T*A*X, where
-     !> X = S**(-1)*Q and Q is an orthogonal matrix chosen to preserve the
-     !> bandwidth of A.
 
      pure subroutine stdlib_dsbgst( vect, uplo, n, ka, kb, ab, ldab, bb, ldbb, x,ldx, work, info )
+     !! DSBGST reduces a real symmetric-definite banded generalized
+     !! eigenproblem  A*x = lambda*B*x  to standard form  C*y = lambda*y,
+     !! such that C has the same bandwidth as A.
+     !! B must have been previously factorized as S**T*S by DPBSTF, using a
+     !! split Cholesky factorization. A is overwritten by C = X**T*A*X, where
+     !! X = S**(-1)*Q and Q is an orthogonal matrix chosen to preserve the
+     !! bandwidth of A.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -15412,11 +15408,11 @@ module stdlib_linalg_lapack_d
            go to 490
      end subroutine stdlib_dsbgst
 
-     !> DSBTRD: reduces a real symmetric band matrix A to symmetric
-     !> tridiagonal form T by an orthogonal similarity transformation:
-     !> Q**T * A * Q = T.
 
      pure subroutine stdlib_dsbtrd( vect, uplo, n, kd, ab, ldab, d, e, q, ldq,work, info )
+     !! DSBTRD reduces a real symmetric band matrix A to symmetric
+     !! tridiagonal form T by an orthogonal similarity transformation:
+     !! Q**T * A * Q = T.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -15743,16 +15739,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsbtrd
 
-     !> Level 3 BLAS like routine for C in RFP Format.
-     !> DSFRK: performs one of the symmetric rank--k operations
-     !> C := alpha*A*A**T + beta*C,
-     !> or
-     !> C := alpha*A**T*A + beta*C,
-     !> where alpha and beta are real scalars, C is an n--by--n symmetric
-     !> matrix and A is an n--by--k matrix in the first case and a k--by--n
-     !> matrix in the second case.
 
      pure subroutine stdlib_dsfrk( transr, uplo, trans, n, k, alpha, a, lda, beta,c )
+     !! Level 3 BLAS like routine for C in RFP Format.
+     !! DSFRK performs one of the symmetric rank--k operations
+     !! C := alpha*A*A**T + beta*C,
+     !! or
+     !! C := alpha*A**T*A + beta*C,
+     !! where alpha and beta are real scalars, C is an n--by--n symmetric
+     !! matrix and A is an n--by--k matrix in the first case and a k--by--n
+     !! matrix in the second case.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -15999,15 +15995,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsfrk
 
-     !> DSPGST: reduces a real symmetric-definite generalized eigenproblem
-     !> to standard form, using packed storage.
-     !> If ITYPE = 1, the problem is A*x = lambda*B*x,
-     !> and A is overwritten by inv(U**T)*A*inv(U) or inv(L)*A*inv(L**T)
-     !> If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
-     !> B*A*x = lambda*x, and A is overwritten by U*A*U**T or L**T*A*L.
-     !> B must have been previously factorized as U**T*U or L*L**T by DPPTRF.
 
      pure subroutine stdlib_dspgst( itype, uplo, n, ap, bp, info )
+     !! DSPGST reduces a real symmetric-definite generalized eigenproblem
+     !! to standard form, using packed storage.
+     !! If ITYPE = 1, the problem is A*x = lambda*B*x,
+     !! and A is overwritten by inv(U**T)*A*inv(U) or inv(L)*A*inv(L**T)
+     !! If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
+     !! B*A*x = lambda*x, and A is overwritten by U*A*U**T or L**T*A*L.
+     !! B must have been previously factorized as U**T*U or L*L**T by DPPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -16121,14 +16117,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dspgst
 
-     !> DSPTRF: computes the factorization of a real symmetric matrix A stored
-     !> in packed format using the Bunch-Kaufman diagonal pivoting method:
-     !> A = U*D*U**T  or  A = L*D*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is symmetric and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
 
      pure subroutine stdlib_dsptrf( uplo, n, ap, ipiv, info )
+     !! DSPTRF computes the factorization of a real symmetric matrix A stored
+     !! in packed format using the Bunch-Kaufman diagonal pivoting method:
+     !! A = U*D*U**T  or  A = L*D*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is symmetric and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -16444,11 +16440,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsptrf
 
-     !> DSPTRI: computes the inverse of a real symmetric indefinite matrix
-     !> A in packed storage using the factorization A = U*D*U**T or
-     !> A = L*D*L**T computed by DSPTRF.
 
      pure subroutine stdlib_dsptri( uplo, n, ap, ipiv, work, info )
+     !! DSPTRI computes the inverse of a real symmetric indefinite matrix
+     !! A in packed storage using the factorization A = U*D*U**T or
+     !! A = L*D*L**T computed by DSPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -16655,11 +16651,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsptri
 
-     !> DSPTRS: solves a system of linear equations A*X = B with a real
-     !> symmetric matrix A stored in packed format using the factorization
-     !> A = U*D*U**T or A = L*D*L**T computed by DSPTRF.
 
      pure subroutine stdlib_dsptrs( uplo, n, nrhs, ap, ipiv, b, ldb, info )
+     !! DSPTRS solves a system of linear equations A*X = B with a real
+     !! symmetric matrix A stored in packed format using the factorization
+     !! A = U*D*U**T or A = L*D*L**T computed by DSPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -16875,18 +16871,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsptrs
 
-     !> DSTEBZ: computes the eigenvalues of a symmetric tridiagonal
-     !> matrix T.  The user may ask for all eigenvalues, all eigenvalues
-     !> in the half-open interval (VL, VU], or the IL-th through IU-th
-     !> eigenvalues.
-     !> To avoid overflow, the matrix must be scaled so that its
-     !> largest element is no greater than overflow**(1/2) * underflow**(1/4) in absolute value, and for greatest
-     !> accuracy, it should not be much smaller than that.
-     !> See W. Kahan "Accurate Eigenvalues of a Symmetric Tridiagonal
-     !> Matrix", Report CS41, Computer Science Dept., Stanford
-     !> University, July 21, 1966.
 
      pure subroutine stdlib_dstebz( range, order, n, vl, vu, il, iu, abstol, d, e,m, nsplit, w, &
+     !! DSTEBZ computes the eigenvalues of a symmetric tridiagonal
+     !! matrix T.  The user may ask for all eigenvalues, all eigenvalues
+     !! in the half-open interval (VL, VU], or the IL-th through IU-th
+     !! eigenvalues.
+     !! To avoid overflow, the matrix must be scaled so that its
+     !! largest element is no greater than overflow**(1/2) * underflow**(1/4) in absolute value, and for greatest
+     !! accuracy, it should not be much smaller than that.
+     !! See W. Kahan "Accurate Eigenvalues of a Symmetric Tridiagonal
+     !! Matrix", Report CS41, Computer Science Dept., Stanford
+     !! University, July 21, 1966.
                iblock, isplit, work, iwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -17268,11 +17264,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dstebz
 
-     !> DSYCONV: convert A given by TRF into L and D and vice-versa.
-     !> Get Non-diag elements of D (returned in workspace) and
-     !> apply or reverse permutation done in TRF.
 
      pure subroutine stdlib_dsyconv( uplo, way, n, a, lda, ipiv, e, info )
+     !! DSYCONV convert A given by TRF into L and D and vice-versa.
+     !! Get Non-diag elements of D (returned in workspace) and
+     !! apply or reverse permutation done in TRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17473,23 +17469,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsyconv
 
-     !> If parameter WAY = 'C':
-     !> DSYCONVF: converts the factorization output format used in
-     !> DSYTRF provided on entry in parameter A into the factorization
-     !> output format used in DSYTRF_RK (or DSYTRF_BK) that is stored
-     !> on exit in parameters A and E. It also converts in place details of
-     !> the intechanges stored in IPIV from the format used in DSYTRF into
-     !> the format used in DSYTRF_RK (or DSYTRF_BK).
-     !> If parameter WAY = 'R':
-     !> DSYCONVF performs the conversion in reverse direction, i.e.
-     !> converts the factorization output format used in DSYTRF_RK
-     !> (or DSYTRF_BK) provided on entry in parameters A and E into
-     !> the factorization output format used in DSYTRF that is stored
-     !> on exit in parameter A. It also converts in place details of
-     !> the intechanges stored in IPIV from the format used in DSYTRF_RK
-     !> (or DSYTRF_BK) into the format used in DSYTRF.
 
      pure subroutine stdlib_dsyconvf( uplo, way, n, a, lda, e, ipiv, info )
+     !! If parameter WAY = 'C':
+     !! DSYCONVF converts the factorization output format used in
+     !! DSYTRF provided on entry in parameter A into the factorization
+     !! output format used in DSYTRF_RK (or DSYTRF_BK) that is stored
+     !! on exit in parameters A and E. It also converts in place details of
+     !! the intechanges stored in IPIV from the format used in DSYTRF into
+     !! the format used in DSYTRF_RK (or DSYTRF_BK).
+     !! If parameter WAY = 'R':
+     !! DSYCONVF performs the conversion in reverse direction, i.e.
+     !! converts the factorization output format used in DSYTRF_RK
+     !! (or DSYTRF_BK) provided on entry in parameters A and E into
+     !! the factorization output format used in DSYTRF that is stored
+     !! on exit in parameter A. It also converts in place details of
+     !! the intechanges stored in IPIV from the format used in DSYTRF_RK
+     !! (or DSYTRF_BK) into the format used in DSYTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17728,21 +17724,21 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsyconvf
 
-     !> If parameter WAY = 'C':
-     !> DSYCONVF_ROOK: converts the factorization output format used in
-     !> DSYTRF_ROOK provided on entry in parameter A into the factorization
-     !> output format used in DSYTRF_RK (or DSYTRF_BK) that is stored
-     !> on exit in parameters A and E. IPIV format for DSYTRF_ROOK and
-     !> DSYTRF_RK (or DSYTRF_BK) is the same and is not converted.
-     !> If parameter WAY = 'R':
-     !> DSYCONVF_ROOK performs the conversion in reverse direction, i.e.
-     !> converts the factorization output format used in DSYTRF_RK
-     !> (or DSYTRF_BK) provided on entry in parameters A and E into
-     !> the factorization output format used in DSYTRF_ROOK that is stored
-     !> on exit in parameter A. IPIV format for DSYTRF_ROOK and
-     !> DSYTRF_RK (or DSYTRF_BK) is the same and is not converted.
 
      pure subroutine stdlib_dsyconvf_rook( uplo, way, n, a, lda, e, ipiv, info )
+     !! If parameter WAY = 'C':
+     !! DSYCONVF_ROOK converts the factorization output format used in
+     !! DSYTRF_ROOK provided on entry in parameter A into the factorization
+     !! output format used in DSYTRF_RK (or DSYTRF_BK) that is stored
+     !! on exit in parameters A and E. IPIV format for DSYTRF_ROOK and
+     !! DSYTRF_RK (or DSYTRF_BK) is the same and is not converted.
+     !! If parameter WAY = 'R':
+     !! DSYCONVF_ROOK performs the conversion in reverse direction, i.e.
+     !! converts the factorization output format used in DSYTRF_RK
+     !! (or DSYTRF_BK) provided on entry in parameters A and E into
+     !! the factorization output format used in DSYTRF_ROOK that is stored
+     !! on exit in parameter A. IPIV format for DSYTRF_ROOK and
+     !! DSYTRF_RK (or DSYTRF_BK) is the same and is not converted.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -17981,15 +17977,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsyconvf_rook
 
-     !> DSYEQUB: computes row and column scalings intended to equilibrate a
-     !> symmetric matrix A (with respect to the Euclidean norm) and reduce
-     !> its condition number. The scale factors S are computed by the BIN
-     !> algorithm (see references) so that the scaled matrix B with elements
-     !> B(i,j) = S(i)*A(i,j)*S(j) has a condition number within a factor N of
-     !> the smallest possible condition number over all possible diagonal
-     !> scalings.
 
      pure subroutine stdlib_dsyequb( uplo, n, a, lda, s, scond, amax, work, info )
+     !! DSYEQUB computes row and column scalings intended to equilibrate a
+     !! symmetric matrix A (with respect to the Euclidean norm) and reduce
+     !! its condition number. The scale factors S are computed by the BIN
+     !! algorithm (see references) so that the scaled matrix B with elements
+     !! B(i,j) = S(i)*A(i,j)*S(j) has a condition number within a factor N of
+     !! the smallest possible condition number over all possible diagonal
+     !! scalings.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18157,15 +18153,15 @@ module stdlib_linalg_lapack_d
            scond = max( smin, smlnum ) / min( smax, bignum )
      end subroutine stdlib_dsyequb
 
-     !> DSYGS2: reduces a real symmetric-definite generalized eigenproblem
-     !> to standard form.
-     !> If ITYPE = 1, the problem is A*x = lambda*B*x,
-     !> and A is overwritten by inv(U**T)*A*inv(U) or inv(L)*A*inv(L**T)
-     !> If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
-     !> B*A*x = lambda*x, and A is overwritten by U*A*U**T or L**T *A*L.
-     !> B must have been previously factorized as U**T *U or L*L**T by DPOTRF.
 
      pure subroutine stdlib_dsygs2( itype, uplo, n, a, lda, b, ldb, info )
+     !! DSYGS2 reduces a real symmetric-definite generalized eigenproblem
+     !! to standard form.
+     !! If ITYPE = 1, the problem is A*x = lambda*B*x,
+     !! and A is overwritten by inv(U**T)*A*inv(U) or inv(L)*A*inv(L**T)
+     !! If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
+     !! B*A*x = lambda*x, and A is overwritten by U*A*U**T or L**T *A*L.
+     !! B must have been previously factorized as U**T *U or L*L**T by DPOTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18280,15 +18276,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsygs2
 
-     !> DSYGST: reduces a real symmetric-definite generalized eigenproblem
-     !> to standard form.
-     !> If ITYPE = 1, the problem is A*x = lambda*B*x,
-     !> and A is overwritten by inv(U**T)*A*inv(U) or inv(L)*A*inv(L**T)
-     !> If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
-     !> B*A*x = lambda*x, and A is overwritten by U*A*U**T or L**T*A*L.
-     !> B must have been previously factorized as U**T*U or L*L**T by DPOTRF.
 
      pure subroutine stdlib_dsygst( itype, uplo, n, a, lda, b, ldb, info )
+     !! DSYGST reduces a real symmetric-definite generalized eigenproblem
+     !! to standard form.
+     !! If ITYPE = 1, the problem is A*x = lambda*B*x,
+     !! and A is overwritten by inv(U**T)*A*inv(U) or inv(L)*A*inv(L**T)
+     !! If ITYPE = 2 or 3, the problem is A*B*x = lambda*x or
+     !! B*A*x = lambda*x, and A is overwritten by U*A*U**T or L**T*A*L.
+     !! B must have been previously factorized as U**T*U or L*L**T by DPOTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18419,10 +18415,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsygst
 
-     !> DSYSWAPR: applies an elementary permutation on the rows and the columns of
-     !> a symmetric matrix.
 
      pure subroutine stdlib_dsyswapr( uplo, n, a, lda, i1, i2)
+     !! DSYSWAPR applies an elementary permutation on the rows and the columns of
+     !! a symmetric matrix.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18487,17 +18483,17 @@ module stdlib_linalg_lapack_d
            endif
      end subroutine stdlib_dsyswapr
 
-     !> DSYTF2_RK: computes the factorization of a real symmetric matrix A
-     !> using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
-     !> A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**T (or L**T) is the transpose of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is symmetric and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
-     !> For more information see Further Details section.
 
      pure subroutine stdlib_dsytf2_rk( uplo, n, a, lda, e, ipiv, info )
+     !! DSYTF2_RK computes the factorization of a real symmetric matrix A
+     !! using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
+     !! A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**T (or L**T) is the transpose of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is symmetric and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
+     !! For more information see Further Details section.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -18939,15 +18935,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytf2_rk
 
-     !> DSYTF2_ROOK: computes the factorization of a real symmetric matrix A
-     !> using the bounded Bunch-Kaufman ("rook") diagonal pivoting method:
-     !> A = U*D*U**T  or  A = L*D*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, U**T is the transpose of U, and D is symmetric and
-     !> block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_dsytf2_rook( uplo, n, a, lda, ipiv, info )
+     !! DSYTF2_ROOK computes the factorization of a real symmetric matrix A
+     !! using the bounded Bunch-Kaufman ("rook") diagonal pivoting method:
+     !! A = U*D*U**T  or  A = L*D*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, U**T is the transpose of U, and D is symmetric and
+     !! block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -19350,17 +19346,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytf2_rook
 
-     !> DSYTRF_RK: computes the factorization of a real symmetric matrix A
-     !> using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
-     !> A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**T (or L**T) is the transpose of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is symmetric and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
-     !> For more information see Further Details section.
 
      pure subroutine stdlib_dsytrf_rk( uplo, n, a, lda, e, ipiv, work, lwork,info )
+     !! DSYTRF_RK computes the factorization of a real symmetric matrix A
+     !! using the bounded Bunch-Kaufman (rook) diagonal pivoting method:
+     !! A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**T (or L**T) is the transpose of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is symmetric and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
+     !! For more information see Further Details section.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -19516,16 +19512,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytrf_rk
 
-     !> DSYTRF_ROOK: computes the factorization of a real symmetric matrix A
-     !> using the bounded Bunch-Kaufman ("rook") diagonal pivoting method.
-     !> The form of the factorization is
-     !> A = U*D*U**T  or  A = L*D*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is symmetric and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_dsytrf_rook( uplo, n, a, lda, ipiv, work, lwork, info )
+     !! DSYTRF_ROOK computes the factorization of a real symmetric matrix A
+     !! using the bounded Bunch-Kaufman ("rook") diagonal pivoting method.
+     !! The form of the factorization is
+     !! A = U*D*U**T  or  A = L*D*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is symmetric and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -19644,11 +19640,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytrf_rook
 
-     !> DSYTRI: computes the inverse of a real symmetric indefinite matrix
-     !> A using the factorization A = U*D*U**T or A = L*D*L**T computed by
-     !> DSYTRF.
 
      pure subroutine stdlib_dsytri( uplo, n, a, lda, ipiv, work, info )
+     !! DSYTRI computes the inverse of a real symmetric indefinite matrix
+     !! A using the factorization A = U*D*U**T or A = L*D*L**T computed by
+     !! DSYTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -19832,11 +19828,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytri
 
-     !> DSYTRI_ROOK: computes the inverse of a real symmetric
-     !> matrix A using the factorization A = U*D*U**T or A = L*D*L**T
-     !> computed by DSYTRF_ROOK.
 
      pure subroutine stdlib_dsytri_rook( uplo, n, a, lda, ipiv, work, info )
+     !! DSYTRI_ROOK computes the inverse of a real symmetric
+     !! matrix A using the factorization A = U*D*U**T or A = L*D*L**T
+     !! computed by DSYTRF_ROOK.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -20060,11 +20056,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytri_rook
 
-     !> DSYTRS: solves a system of linear equations A*X = B with a real
-     !> symmetric matrix A using the factorization A = U*D*U**T or
-     !> A = L*D*L**T computed by DSYTRF.
 
      pure subroutine stdlib_dsytrs( uplo, n, nrhs, a, lda, ipiv, b, ldb, info )
+     !! DSYTRS solves a system of linear equations A*X = B with a real
+     !! symmetric matrix A using the factorization A = U*D*U**T or
+     !! A = L*D*L**T computed by DSYTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -20270,11 +20266,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytrs
 
-     !> DSYTRS2: solves a system of linear equations A*X = B with a real
-     !> symmetric matrix A using the factorization A = U*D*U**T or
-     !> A = L*D*L**T computed by DSYTRF and converted by DSYCONV.
 
      pure subroutine stdlib_dsytrs2( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, info )
+     !! DSYTRS2 solves a system of linear equations A*X = B with a real
+     !! symmetric matrix A using the factorization A = U*D*U**T or
+     !! A = L*D*L**T computed by DSYTRF and converted by DSYCONV.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -20448,17 +20444,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytrs2
 
-     !> DSYTRS_3: solves a system of linear equations A * X = B with a real
-     !> symmetric matrix A using the factorization computed
-     !> by DSYTRF_RK or DSYTRF_BK:
-     !> A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**T (or L**T) is the transpose of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is symmetric and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This algorithm is using Level 3 BLAS.
 
      pure subroutine stdlib_dsytrs_3( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,info )
+     !! DSYTRS_3 solves a system of linear equations A * X = B with a real
+     !! symmetric matrix A using the factorization computed
+     !! by DSYTRF_RK or DSYTRF_BK:
+     !! A = P*U*D*(U**T)*(P**T) or A = P*L*D*(L**T)*(P**T),
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**T (or L**T) is the transpose of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is symmetric and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This algorithm is using Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -20605,11 +20601,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytrs_3
 
-     !> DSYTRS_AA: solves a system of linear equations A*X = B with a real
-     !> symmetric matrix A using the factorization A = U**T*T*U or
-     !> A = L*T*L**T computed by DSYTRF_AA.
 
      pure subroutine stdlib_dsytrs_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, lwork, info )
+     !! DSYTRS_AA solves a system of linear equations A*X = B with a real
+     !! symmetric matrix A using the factorization A = U**T*T*U or
+     !! A = L*T*L**T computed by DSYTRF_AA.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -20724,11 +20720,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytrs_aa
 
-     !> DSYTRS_ROOK: solves a system of linear equations A*X = B with
-     !> a real symmetric matrix A using the factorization A = U*D*U**T or
-     !> A = L*D*L**T computed by DSYTRF_ROOK.
 
      pure subroutine stdlib_dsytrs_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb,info )
+     !! DSYTRS_ROOK solves a system of linear equations A*X = B with
+     !! a real symmetric matrix A using the factorization A = U*D*U**T or
+     !! A = L*D*L**T computed by DSYTRF_ROOK.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -20946,14 +20942,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytrs_rook
 
-     !> DTBRFS: provides error bounds and backward error estimates for the
-     !> solution to a system of linear equations with a triangular band
-     !> coefficient matrix.
-     !> The solution matrix X must be computed by DTBTRS or some other
-     !> means before entering this routine.  DTBRFS does not do iterative
-     !> refinement because doing so cannot improve the backward error.
 
      pure subroutine stdlib_dtbrfs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, x, ldx, ferr,&
+     !! DTBRFS provides error bounds and backward error estimates for the
+     !! solution to a system of linear equations with a triangular band
+     !! coefficient matrix.
+     !! The solution matrix X must be computed by DTBTRS or some other
+     !! means before entering this routine.  DTBRFS does not do iterative
+     !! refinement because doing so cannot improve the backward error.
                 berr, work, iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -21184,12 +21180,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtbrfs
 
-     !> DTBTRS: solves a triangular system of the form
-     !> A * X = B  or  A**T * X = B,
-     !> where A is a triangular band matrix of order N, and B is an
-     !> N-by NRHS matrix.  A check is made to verify that A is nonsingular.
 
      pure subroutine stdlib_dtbtrs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, info )
+     !! DTBTRS solves a triangular system of the form
+     !! A * X = B  or  A**T * X = B,
+     !! where A is a triangular band matrix of order N, and B is an
+     !! N-by NRHS matrix.  A check is made to verify that A is nonsingular.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -21257,16 +21253,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtbtrs
 
-     !> Level 3 BLAS like routine for A in RFP Format.
-     !> DTFSM:  solves the matrix equation
-     !> op( A )*X = alpha*B  or  X*op( A ) = alpha*B
-     !> where alpha is a scalar, X and B are m by n matrices, A is a unit, or
-     !> non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
-     !> op( A ) = A   or   op( A ) = A**T.
-     !> A is in Rectangular Full Packed (RFP) Format.
-     !> The matrix X is overwritten on B.
 
      pure subroutine stdlib_dtfsm( transr, side, uplo, trans, diag, m, n, alpha, a,b, ldb )
+     !! Level 3 BLAS like routine for A in RFP Format.
+     !! DTFSM solves the matrix equation
+     !! op( A )*X = alpha*B  or  X*op( A ) = alpha*B
+     !! where alpha is a scalar, X and B are m by n matrices, A is a unit, or
+     !! non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
+     !! op( A ) = A   or   op( A ) = A**T.
+     !! A is in Rectangular Full Packed (RFP) Format.
+     !! The matrix X is overwritten on B.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -21759,10 +21755,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtfsm
 
-     !> DTFTTP: copies a triangular matrix A from rectangular full packed
-     !> format (TF) to standard packed format (TP).
 
      pure subroutine stdlib_dtfttp( transr, uplo, n, arf, ap, info )
+     !! DTFTTP copies a triangular matrix A from rectangular full packed
+     !! format (TF) to standard packed format (TP).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -22015,10 +22011,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtfttp
 
-     !> DTFTTR: copies a triangular matrix A from rectangular full packed
-     !> format (TF) to standard full format (TR).
 
      pure subroutine stdlib_dtfttr( transr, uplo, n, arf, a, lda, info )
+     !! DTFTTR copies a triangular matrix A from rectangular full packed
+     !! format (TF) to standard full format (TR).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -22244,11 +22240,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtfttr
 
-     !> DTPRFB: applies a real "triangular-pentagonal" block reflector H or its
-     !> transpose H**T to a real matrix C, which is composed of two
-     !> blocks A and B, either from the left or right.
 
      pure subroutine stdlib_dtprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
+     !! DTPRFB applies a real "triangular-pentagonal" block reflector H or its
+     !! transpose H**T to a real matrix C, which is composed of two
+     !! blocks A and B, either from the left or right.
                lda, b, ldb, work, ldwork )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -22662,14 +22658,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtprfb
 
-     !> DTPRFS: provides error bounds and backward error estimates for the
-     !> solution to a system of linear equations with a triangular packed
-     !> coefficient matrix.
-     !> The solution matrix X must be computed by DTPTRS or some other
-     !> means before entering this routine.  DTPRFS does not do iterative
-     !> refinement because doing so cannot improve the backward error.
 
      pure subroutine stdlib_dtprfs( uplo, trans, diag, n, nrhs, ap, b, ldb, x, ldx,ferr, berr, &
+     !! DTPRFS provides error bounds and backward error estimates for the
+     !! solution to a system of linear equations with a triangular packed
+     !! coefficient matrix.
+     !! The solution matrix X must be computed by DTPTRS or some other
+     !! means before entering this routine.  DTPRFS does not do iterative
+     !! refinement because doing so cannot improve the backward error.
                work, iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -22907,10 +22903,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtprfs
 
-     !> DTPTRI: computes the inverse of a real upper or lower triangular
-     !> matrix A stored in packed format.
 
      pure subroutine stdlib_dtptri( uplo, diag, n, ap, info )
+     !! DTPTRI computes the inverse of a real upper or lower triangular
+     !! matrix A stored in packed format.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -22997,13 +22993,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtptri
 
-     !> DTPTRS: solves a triangular system of the form
-     !> A * X = B  or  A**T * X = B,
-     !> where A is a triangular matrix of order N stored in packed format,
-     !> and B is an N-by-NRHS matrix.  A check is made to verify that A is
-     !> nonsingular.
 
      pure subroutine stdlib_dtptrs( uplo, trans, diag, n, nrhs, ap, b, ldb, info )
+     !! DTPTRS solves a triangular system of the form
+     !! A * X = B  or  A**T * X = B,
+     !! where A is a triangular matrix of order N stored in packed format,
+     !! and B is an N-by-NRHS matrix.  A check is made to verify that A is
+     !! nonsingular.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -23070,10 +23066,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtptrs
 
-     !> DTPTTF: copies a triangular matrix A from standard packed format (TP)
-     !> to rectangular full packed format (TF).
 
      pure subroutine stdlib_dtpttf( transr, uplo, n, ap, arf, info )
+     !! DTPTTF copies a triangular matrix A from standard packed format (TP)
+     !! to rectangular full packed format (TF).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -23312,10 +23308,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtpttf
 
-     !> DTPTTR: copies a triangular matrix A from standard packed format (TP)
-     !> to standard full format (TR).
 
      pure subroutine stdlib_dtpttr( uplo, n, ap, a, lda, info )
+     !! DTPTTR copies a triangular matrix A from standard packed format (TP)
+     !! to standard full format (TR).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -23366,14 +23362,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtpttr
 
-     !> DTRRFS: provides error bounds and backward error estimates for the
-     !> solution to a system of linear equations with a triangular
-     !> coefficient matrix.
-     !> The solution matrix X must be computed by DTRTRS or some other
-     !> means before entering this routine.  DTRRFS does not do iterative
-     !> refinement because doing so cannot improve the backward error.
 
      pure subroutine stdlib_dtrrfs( uplo, trans, diag, n, nrhs, a, lda, b, ldb, x,ldx, ferr, berr,&
+     !! DTRRFS provides error bounds and backward error estimates for the
+     !! solution to a system of linear equations with a triangular
+     !! coefficient matrix.
+     !! The solution matrix X must be computed by DTRTRS or some other
+     !! means before entering this routine.  DTRRFS does not do iterative
+     !! refinement because doing so cannot improve the backward error.
                 work, iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -23601,11 +23597,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrrfs
 
-     !> DTRTI2: computes the inverse of a real upper or lower triangular
-     !> matrix.
-     !> This is the Level 2 BLAS version of the algorithm.
 
      pure subroutine stdlib_dtrti2( uplo, diag, n, a, lda, info )
+     !! DTRTI2 computes the inverse of a real upper or lower triangular
+     !! matrix.
+     !! This is the Level 2 BLAS version of the algorithm.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -23675,11 +23671,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrti2
 
-     !> DTRTRI: computes the inverse of a real upper or lower triangular
-     !> matrix A.
-     !> This is the Level 3 BLAS version of the algorithm.
 
      pure subroutine stdlib_dtrtri( uplo, diag, n, a, lda, info )
+     !! DTRTRI computes the inverse of a real upper or lower triangular
+     !! matrix A.
+     !! This is the Level 3 BLAS version of the algorithm.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -23762,12 +23758,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrtri
 
-     !> DTRTRS: solves a triangular system of the form
-     !> A * X = B  or  A**T * X = B,
-     !> where A is a triangular matrix of order N, and B is an N-by-NRHS
-     !> matrix.  A check is made to verify that A is nonsingular.
 
      pure subroutine stdlib_dtrtrs( uplo, trans, diag, n, nrhs, a, lda, b, ldb,info )
+     !! DTRTRS solves a triangular system of the form
+     !! A * X = B  or  A**T * X = B,
+     !! where A is a triangular matrix of order N, and B is an N-by-NRHS
+     !! matrix.  A check is made to verify that A is nonsingular.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -23822,10 +23818,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrtrs
 
-     !> DTRTTF: copies a triangular matrix A from standard full format (TR)
-     !> to rectangular full packed format (TF) .
 
      pure subroutine stdlib_dtrttf( transr, uplo, n, a, lda, arf, info )
+     !! DTRTTF copies a triangular matrix A from standard full format (TR)
+     !! to rectangular full packed format (TF) .
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -24050,10 +24046,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrttf
 
-     !> DTRTTP: copies a triangular matrix A from full format (TR) to standard
-     !> packed format (TP).
 
      pure subroutine stdlib_dtrttp( uplo, n, a, lda, ap, info )
+     !! DTRTTP copies a triangular matrix A from full format (TR) to standard
+     !! packed format (TP).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -24104,12 +24100,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrttp
 
-     !> DZSUM1: takes the sum of the absolute values of a complex
-     !> vector and returns a double precision result.
-     !> Based on DZASUM from the Level 1 BLAS.
-     !> The change is to use the 'genuine' absolute value.
 
      pure real(dp) function stdlib_dzsum1( n, cx, incx )
+     !! DZSUM1 takes the sum of the absolute values of a complex
+     !! vector and returns a double precision result.
+     !! Based on DZASUM from the Level 1 BLAS.
+     !! The change is to use the 'genuine' absolute value.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -24146,29 +24142,29 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dzsum1
 
-     !> DBBCSD: computes the CS decomposition of an orthogonal matrix in
-     !> bidiagonal-block form,
-     !> [ B11 | B12 0  0 ]
-     !> [  0  |  0 -I  0 ]
-     !> X = [----------------]
-     !> [ B21 | B22 0  0 ]
-     !> [  0  |  0  0  I ]
-     !> [  C | -S  0  0 ]
-     !> [ U1 |    ] [  0 |  0 -I  0 ] [ V1 |    ]**T
-     !> = [---------] [---------------] [---------]   .
-     !> [    | U2 ] [  S |  C  0  0 ] [    | V2 ]
-     !> [  0 |  0  0  I ]
-     !> X is M-by-M, its top-left block is P-by-Q, and Q must be no larger
-     !> than P, M-P, or M-Q. (If Q is not the smallest index, then X must be
-     !> transposed and/or permuted. This can be done in constant time using
-     !> the TRANS and SIGNS options. See DORCSD for details.)
-     !> The bidiagonal matrices B11, B12, B21, and B22 are represented
-     !> implicitly by angles THETA(1:Q) and PHI(1:Q-1).
-     !> The orthogonal matrices U1, U2, V1T, and V2T are input/output.
-     !> The input matrices are pre- or post-multiplied by the appropriate
-     !> singular vector matrices.
 
      pure subroutine stdlib_dbbcsd( jobu1, jobu2, jobv1t, jobv2t, trans, m, p, q,theta, phi, u1, &
+     !! DBBCSD computes the CS decomposition of an orthogonal matrix in
+     !! bidiagonal-block form,
+     !! [ B11 | B12 0  0 ]
+     !! [  0  |  0 -I  0 ]
+     !! X = [----------------]
+     !! [ B21 | B22 0  0 ]
+     !! [  0  |  0  0  I ]
+     !! [  C | -S  0  0 ]
+     !! [ U1 |    ] [  0 |  0 -I  0 ] [ V1 |    ]**T
+     !! = [---------] [---------------] [---------]   .
+     !! [    | U2 ] [  S |  C  0  0 ] [    | V2 ]
+     !! [  0 |  0  0  I ]
+     !! X is M-by-M, its top-left block is P-by-Q, and Q must be no larger
+     !! than P, M-P, or M-Q. (If Q is not the smallest index, then X must be
+     !! transposed and/or permuted. This can be done in constant time using
+     !! the TRANS and SIGNS options. See DORCSD for details.)
+     !! The bidiagonal matrices B11, B12, B21, and B22 are represented
+     !! implicitly by angles THETA(1:Q) and PHI(1:Q-1).
+     !! The orthogonal matrices U1, U2, V1T, and V2T are input/output.
+     !! The input matrices are pre- or post-multiplied by the appropriate
+     !! singular vector matrices.
      ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d, b22e, work, &
                lwork, info )
         ! -- lapack computational routine --
@@ -24754,21 +24750,21 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dbbcsd
 
-     !> DDISNA: computes the reciprocal condition numbers for the eigenvectors
-     !> of a real symmetric or complex Hermitian matrix or for the left or
-     !> right singular vectors of a general m-by-n matrix. The reciprocal
-     !> condition number is the 'gap' between the corresponding eigenvalue or
-     !> singular value and the nearest other one.
-     !> The bound on the error, measured by angle in radians, in the I-th
-     !> computed vector is given by
-     !> DLAMCH( 'E' ) * ( ANORM / SEP( I ) )
-     !> where ANORM = 2-norm(A) = max( abs( D(j) ) ).  SEP(I) is not allowed
-     !> to be smaller than DLAMCH( 'E' )*ANORM in order to limit the size of
-     !> the error bound.
-     !> DDISNA may also be used to compute error bounds for eigenvectors of
-     !> the generalized symmetric definite eigenproblem.
 
      pure subroutine stdlib_ddisna( job, m, n, d, sep, info )
+     !! DDISNA computes the reciprocal condition numbers for the eigenvectors
+     !! of a real symmetric or complex Hermitian matrix or for the left or
+     !! right singular vectors of a general m-by-n matrix. The reciprocal
+     !! condition number is the 'gap' between the corresponding eigenvalue or
+     !! singular value and the nearest other one.
+     !! The bound on the error, measured by angle in radians, in the I-th
+     !! computed vector is given by
+     !! DLAMCH( 'E' ) * ( ANORM / SEP( I ) )
+     !! where ANORM = 2-norm(A) = max( abs( D(j) ) ).  SEP(I) is not allowed
+     !! to be smaller than DLAMCH( 'E' )*ANORM in order to limit the size of
+     !! the error bound.
+     !! DDISNA may also be used to compute error bounds for eigenvectors of
+     !! the generalized symmetric definite eigenproblem.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -24859,12 +24855,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_ddisna
 
-     !> DGBBRD: reduces a real general m-by-n band matrix A to upper
-     !> bidiagonal form B by an orthogonal transformation: Q**T * A * P = B.
-     !> The routine computes B, and optionally forms Q or P**T, or computes
-     !> Q**T*C for a given matrix C.
 
      pure subroutine stdlib_dgbbrd( vect, m, n, ncc, kl, ku, ab, ldab, d, e, q,ldq, pt, ldpt, c, &
+     !! DGBBRD reduces a real general m-by-n band matrix A to upper
+     !! bidiagonal form B by an orthogonal transformation: Q**T * A * P = B.
+     !! The routine computes B, and optionally forms Q or P**T, or computes
+     !! Q**T*C for a given matrix C.
                ldc, work, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -25116,14 +25112,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgbbrd
 
-     !> DGBCON: estimates the reciprocal of the condition number of a real
-     !> general band matrix A, in either the 1-norm or the infinity-norm,
-     !> using the LU factorization computed by DGBTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as
-     !> RCOND = 1 / ( norm(A) * norm(inv(A)) ).
 
      pure subroutine stdlib_dgbcon( norm, n, kl, ku, ab, ldab, ipiv, anorm, rcond,work, iwork, &
+     !! DGBCON estimates the reciprocal of the condition number of a real
+     !! general band matrix A, in either the 1-norm or the infinity-norm,
+     !! using the LU factorization computed by DGBTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as
+     !! RCOND = 1 / ( norm(A) * norm(inv(A)) ).
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -25245,17 +25241,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgbcon
 
-     !> DGBEQU: computes row and column scalings intended to equilibrate an
-     !> M-by-N band matrix A and reduce its condition number.  R returns the
-     !> row scale factors and C the column scale factors, chosen to try to
-     !> make the largest element in each row and column of the matrix B with
-     !> elements B(i,j)=R(i)*A(i,j)*C(j) have absolute value 1.
-     !> R(i) and C(j) are restricted to be between SMLNUM = smallest safe
-     !> number and BIGNUM = largest safe number.  Use of these scaling
-     !> factors is not guaranteed to reduce the condition number of A but
-     !> works well in practice.
 
      pure subroutine stdlib_dgbequ( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
+     !! DGBEQU computes row and column scalings intended to equilibrate an
+     !! M-by-N band matrix A and reduce its condition number.  R returns the
+     !! row scale factors and C the column scale factors, chosen to try to
+     !! make the largest element in each row and column of the matrix B with
+     !! elements B(i,j)=R(i)*A(i,j)*C(j) have absolute value 1.
+     !! R(i) and C(j) are restricted to be between SMLNUM = smallest safe
+     !! number and BIGNUM = largest safe number.  Use of these scaling
+     !! factors is not guaranteed to reduce the condition number of A but
+     !! works well in practice.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -25375,23 +25371,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgbequ
 
-     !> DGBEQUB: computes row and column scalings intended to equilibrate an
-     !> M-by-N matrix A and reduce its condition number.  R returns the row
-     !> scale factors and C the column scale factors, chosen to try to make
-     !> the largest element in each row and column of the matrix B with
-     !> elements B(i,j)=R(i)*A(i,j)*C(j) have an absolute value of at most
-     !> the radix.
-     !> R(i) and C(j) are restricted to be a power of the radix between
-     !> SMLNUM = smallest safe number and BIGNUM = largest safe number.  Use
-     !> of these scaling factors is not guaranteed to reduce the condition
-     !> number of A but works well in practice.
-     !> This routine differs from DGEEQU by restricting the scaling factors
-     !> to a power of the radix.  Barring over- and underflow, scaling by
-     !> these factors introduces no additional rounding errors.  However, the
-     !> scaled entries' magnitudes are no longer approximately 1 but lie
-     !> between sqrt(radix) and 1/sqrt(radix).
 
      pure subroutine stdlib_dgbequb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
+     !! DGBEQUB computes row and column scalings intended to equilibrate an
+     !! M-by-N matrix A and reduce its condition number.  R returns the row
+     !! scale factors and C the column scale factors, chosen to try to make
+     !! the largest element in each row and column of the matrix B with
+     !! elements B(i,j)=R(i)*A(i,j)*C(j) have an absolute value of at most
+     !! the radix.
+     !! R(i) and C(j) are restricted to be a power of the radix between
+     !! SMLNUM = smallest safe number and BIGNUM = largest safe number.  Use
+     !! of these scaling factors is not guaranteed to reduce the condition
+     !! number of A but works well in practice.
+     !! This routine differs from DGEEQU by restricting the scaling factors
+     !! to a power of the radix.  Barring over- and underflow, scaling by
+     !! these factors introduces no additional rounding errors.  However, the
+     !! scaled entries' magnitudes are no longer approximately 1 but lie
+     !! between sqrt(radix) and 1/sqrt(radix).
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -25520,11 +25516,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgbequb
 
-     !> DGBRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is banded, and provides
-     !> error bounds and backward error estimates for the solution.
 
      pure subroutine stdlib_dgbrfs( trans, n, kl, ku, nrhs, ab, ldab, afb, ldafb,ipiv, b, ldb, x, &
+     !! DGBRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is banded, and provides
+     !! error bounds and backward error estimates for the solution.
                ldx, ferr, berr, work, iwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -25721,11 +25717,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgbrfs
 
-     !> DGBTRF: computes an LU factorization of a real m-by-n band matrix A
-     !> using partial pivoting with row interchanges.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_dgbtrf( m, n, kl, ku, ab, ldab, ipiv, info )
+     !! DGBTRF computes an LU factorization of a real m-by-n band matrix A
+     !! using partial pivoting with row interchanges.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -25971,14 +25967,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgbtrf
 
-     !> DGECON: estimates the reciprocal of the condition number of a general
-     !> real matrix A, in either the 1-norm or the infinity-norm, using
-     !> the LU factorization computed by DGETRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as
-     !> RCOND = 1 / ( norm(A) * norm(inv(A)) ).
 
      pure subroutine stdlib_dgecon( norm, n, a, lda, anorm, rcond, work, iwork,info )
+     !! DGECON estimates the reciprocal of the condition number of a general
+     !! real matrix A, in either the 1-norm or the infinity-norm, using
+     !! the LU factorization computed by DGETRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as
+     !! RCOND = 1 / ( norm(A) * norm(inv(A)) ).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -26072,17 +26068,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgecon
 
-     !> DGEEQU: computes row and column scalings intended to equilibrate an
-     !> M-by-N matrix A and reduce its condition number.  R returns the row
-     !> scale factors and C the column scale factors, chosen to try to make
-     !> the largest element in each row and column of the matrix B with
-     !> elements B(i,j)=R(i)*A(i,j)*C(j) have absolute value 1.
-     !> R(i) and C(j) are restricted to be between SMLNUM = smallest safe
-     !> number and BIGNUM = largest safe number.  Use of these scaling
-     !> factors is not guaranteed to reduce the condition number of A but
-     !> works well in practice.
 
      pure subroutine stdlib_dgeequ( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
+     !! DGEEQU computes row and column scalings intended to equilibrate an
+     !! M-by-N matrix A and reduce its condition number.  R returns the row
+     !! scale factors and C the column scale factors, chosen to try to make
+     !! the largest element in each row and column of the matrix B with
+     !! elements B(i,j)=R(i)*A(i,j)*C(j) have absolute value 1.
+     !! R(i) and C(j) are restricted to be between SMLNUM = smallest safe
+     !! number and BIGNUM = largest safe number.  Use of these scaling
+     !! factors is not guaranteed to reduce the condition number of A but
+     !! works well in practice.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -26195,23 +26191,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeequ
 
-     !> DGEEQUB: computes row and column scalings intended to equilibrate an
-     !> M-by-N matrix A and reduce its condition number.  R returns the row
-     !> scale factors and C the column scale factors, chosen to try to make
-     !> the largest element in each row and column of the matrix B with
-     !> elements B(i,j)=R(i)*A(i,j)*C(j) have an absolute value of at most
-     !> the radix.
-     !> R(i) and C(j) are restricted to be a power of the radix between
-     !> SMLNUM = smallest safe number and BIGNUM = largest safe number.  Use
-     !> of these scaling factors is not guaranteed to reduce the condition
-     !> number of A but works well in practice.
-     !> This routine differs from DGEEQU by restricting the scaling factors
-     !> to a power of the radix.  Barring over- and underflow, scaling by
-     !> these factors introduces no additional rounding errors.  However, the
-     !> scaled entries' magnitudes are no longer approximately 1 but lie
-     !> between sqrt(radix) and 1/sqrt(radix).
 
      pure subroutine stdlib_dgeequb( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
+     !! DGEEQUB computes row and column scalings intended to equilibrate an
+     !! M-by-N matrix A and reduce its condition number.  R returns the row
+     !! scale factors and C the column scale factors, chosen to try to make
+     !! the largest element in each row and column of the matrix B with
+     !! elements B(i,j)=R(i)*A(i,j)*C(j) have an absolute value of at most
+     !! the radix.
+     !! R(i) and C(j) are restricted to be a power of the radix between
+     !! SMLNUM = smallest safe number and BIGNUM = largest safe number.  Use
+     !! of these scaling factors is not guaranteed to reduce the condition
+     !! number of A but works well in practice.
+     !! This routine differs from DGEEQU by restricting the scaling factors
+     !! to a power of the radix.  Barring over- and underflow, scaling by
+     !! these factors introduces no additional rounding errors.  However, the
+     !! scaled entries' magnitudes are no longer approximately 1 but lie
+     !! between sqrt(radix) and 1/sqrt(radix).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -26334,17 +26330,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeequb
 
-     !> DGEMLQT: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q C            C Q
-     !> TRANS = 'T':   Q**T C            C Q**T
-     !> where Q is a real orthogonal matrix defined as the product of K
-     !> elementary reflectors:
-     !> Q = H(1) H(2) . . . H(K) = I - V T V**T
-     !> generated using the compact WY representation as returned by DGELQT.
-     !> Q is of order M if SIDE = 'L' and of order N  if SIDE = 'R'.
 
      pure subroutine stdlib_dgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
+     !! DGEMLQT overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q C            C Q
+     !! TRANS = 'T':   Q**T C            C Q**T
+     !! where Q is a real orthogonal matrix defined as the product of K
+     !! elementary reflectors:
+     !! Q = H(1) H(2) . . . H(K) = I - V T V**T
+     !! generated using the compact WY representation as returned by DGELQT.
+     !! Q is of order M if SIDE = 'L' and of order N  if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -26432,17 +26428,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgemlqt
 
-     !> DGEMQRT: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q C            C Q
-     !> TRANS = 'T':   Q**T C            C Q**T
-     !> where Q is a real orthogonal matrix defined as the product of K
-     !> elementary reflectors:
-     !> Q = H(1) H(2) . . . H(K) = I - V T V**T
-     !> generated using the compact WY representation as returned by DGEQRT.
-     !> Q is of order M if SIDE = 'L' and of order N  if SIDE = 'R'.
 
      pure subroutine stdlib_dgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
+     !! DGEMQRT overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q C            C Q
+     !! TRANS = 'T':   Q**T C            C Q**T
+     !! where Q is a real orthogonal matrix defined as the product of K
+     !! elementary reflectors:
+     !! Q = H(1) H(2) . . . H(K) = I - V T V**T
+     !! generated using the compact WY representation as returned by DGEQRT.
+     !! Q is of order M if SIDE = 'L' and of order N  if SIDE = 'R'.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -26530,12 +26526,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgemqrt
 
-     !> DGESC2: solves a system of linear equations
-     !> A * X = scale* RHS
-     !> with a general N-by-N matrix A using the LU factorization with
-     !> complete pivoting computed by DGETC2.
 
      pure subroutine stdlib_dgesc2( n, a, lda, rhs, ipiv, jpiv, scale )
+     !! DGESC2 solves a system of linear equations
+     !! A * X = scale* RHS
+     !! with a general N-by-N matrix A using the LU factorization with
+     !! complete pivoting computed by DGETC2.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -26588,13 +26584,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgesc2
 
-     !> DGETC2: computes an LU factorization with complete pivoting of the
-     !> n-by-n matrix A. The factorization has the form A = P * L * U * Q,
-     !> where P and Q are permutation matrices, L is lower triangular with
-     !> unit diagonal elements and U is upper triangular.
-     !> This is the Level 2 BLAS algorithm.
 
      pure subroutine stdlib_dgetc2( n, a, lda, ipiv, jpiv, info )
+     !! DGETC2 computes an LU factorization with complete pivoting of the
+     !! n-by-n matrix A. The factorization has the form A = P * L * U * Q,
+     !! where P and Q are permutation matrices, L is lower triangular with
+     !! unit diagonal elements and U is upper triangular.
+     !! This is the Level 2 BLAS algorithm.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -26672,16 +26668,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgetc2
 
-     !> DGETF2: computes an LU factorization of a general m-by-n matrix A
-     !> using partial pivoting with row interchanges.
-     !> The factorization has the form
-     !> A = P * L * U
-     !> where P is a permutation matrix, L is lower triangular with unit
-     !> diagonal elements (lower trapezoidal if m > n), and U is upper
-     !> triangular (upper trapezoidal if m < n).
-     !> This is the right-looking Level 2 BLAS version of the algorithm.
 
      pure subroutine stdlib_dgetf2( m, n, a, lda, ipiv, info )
+     !! DGETF2 computes an LU factorization of a general m-by-n matrix A
+     !! using partial pivoting with row interchanges.
+     !! The factorization has the form
+     !! A = P * L * U
+     !! where P is a permutation matrix, L is lower triangular with unit
+     !! diagonal elements (lower trapezoidal if m > n), and U is upper
+     !! triangular (upper trapezoidal if m < n).
+     !! This is the right-looking Level 2 BLAS version of the algorithm.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -26745,27 +26741,27 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgetf2
 
-     !> DGETRF2: computes an LU factorization of a general M-by-N matrix A
-     !> using partial pivoting with row interchanges.
-     !> The factorization has the form
-     !> A = P * L * U
-     !> where P is a permutation matrix, L is lower triangular with unit
-     !> diagonal elements (lower trapezoidal if m > n), and U is upper
-     !> triangular (upper trapezoidal if m < n).
-     !> This is the recursive version of the algorithm. It divides
-     !> the matrix into four submatrices:
-     !> [  A11 | A12  ]  where A11 is n1 by n1 and A22 is n2 by n2
-     !> A = [ -----|----- ]  with n1 = min(m,n)/2
-     !> [  A21 | A22  ]       n2 = n-n1
-     !> [ A11 ]
-     !> The subroutine calls itself to factor [ --- ],
-     !> [ A12 ]
-     !> [ A12 ]
-     !> do the swaps on [ --- ], solve A12, update A22,
-     !> [ A22 ]
-     !> then calls itself to factor A22 and do the swaps on A21.
 
      pure recursive subroutine stdlib_dgetrf2( m, n, a, lda, ipiv, info )
+     !! DGETRF2 computes an LU factorization of a general M-by-N matrix A
+     !! using partial pivoting with row interchanges.
+     !! The factorization has the form
+     !! A = P * L * U
+     !! where P is a permutation matrix, L is lower triangular with unit
+     !! diagonal elements (lower trapezoidal if m > n), and U is upper
+     !! triangular (upper trapezoidal if m < n).
+     !! This is the recursive version of the algorithm. It divides
+     !! the matrix into four submatrices:
+     !! [  A11 | A12  ]  where A11 is n1 by n1 and A22 is n2 by n2
+     !! A = [ -----|----- ]  with n1 = min(m,n)/2
+     !! [  A21 | A22  ]       n2 = n-n1
+     !! [ A11 ]
+     !! The subroutine calls itself to factor [ --- ],
+     !! [ A12 ]
+     !! [ A12 ]
+     !! do the swaps on [ --- ], solve A12, update A22,
+     !! [ A22 ]
+     !! then calls itself to factor A22 and do the swaps on A21.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -26860,12 +26856,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgetrf2
 
-     !> DGETRI: computes the inverse of a matrix using the LU factorization
-     !> computed by DGETRF.
-     !> This method inverts U and then computes inv(A) by solving the system
-     !> inv(A)*L = inv(U) for inv(A).
 
      pure subroutine stdlib_dgetri( n, a, lda, ipiv, work, lwork, info )
+     !! DGETRI computes the inverse of a matrix using the LU factorization
+     !! computed by DGETRF.
+     !! This method inverts U and then computes inv(A) by solving the system
+     !! inv(A)*L = inv(U) for inv(A).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -26962,12 +26958,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgetri
 
-     !> DGETRS: solves a system of linear equations
-     !> A * X = B  or  A**T * X = B
-     !> with a general N-by-N matrix A using the LU factorization computed
-     !> by DGETRF.
 
      pure subroutine stdlib_dgetrs( trans, n, nrhs, a, lda, ipiv, b, ldb, info )
+     !! DGETRS solves a system of linear equations
+     !! A * X = B  or  A**T * X = B
+     !! with a general N-by-N matrix A using the LU factorization computed
+     !! by DGETRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -27031,17 +27027,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgetrs
 
-     !> DGGBAL: balances a pair of general real matrices (A,B).  This
-     !> involves, first, permuting A and B by similarity transformations to
-     !> isolate eigenvalues in the first 1 to ILO$-$1 and last IHI+1 to N
-     !> elements on the diagonal; and second, applying a diagonal similarity
-     !> transformation to rows and columns ILO to IHI to make the rows
-     !> and columns as close in norm as possible. Both steps are optional.
-     !> Balancing may reduce the 1-norm of the matrices, and improve the
-     !> accuracy of the computed eigenvalues and/or eigenvectors in the
-     !> generalized eigenvalue problem A*x = lambda*B*x.
 
      pure subroutine stdlib_dggbal( job, n, a, lda, b, ldb, ilo, ihi, lscale,rscale, work, info )
+     !! DGGBAL balances a pair of general real matrices (A,B).  This
+     !! involves, first, permuting A and B by similarity transformations to
+     !! isolate eigenvalues in the first 1 to ILO$-$1 and last IHI+1 to N
+     !! elements on the diagonal; and second, applying a diagonal similarity
+     !! transformation to rows and columns ILO to IHI to make the rows
+     !! and columns as close in norm as possible. Both steps are optional.
+     !! Balancing may reduce the 1-norm of the matrices, and improve the
+     !! accuracy of the computed eigenvalues and/or eigenvectors in the
+     !! generalized eigenvalue problem A*x = lambda*B*x.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -27325,31 +27321,31 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dggbal
 
-     !> DGGHRD: reduces a pair of real matrices (A,B) to generalized upper
-     !> Hessenberg form using orthogonal transformations, where A is a
-     !> general matrix and B is upper triangular.  The form of the
-     !> generalized eigenvalue problem is
-     !> A*x = lambda*B*x,
-     !> and B is typically made upper triangular by computing its QR
-     !> factorization and moving the orthogonal matrix Q to the left side
-     !> of the equation.
-     !> This subroutine simultaneously reduces A to a Hessenberg matrix H:
-     !> Q**T*A*Z = H
-     !> and transforms B to another upper triangular matrix T:
-     !> Q**T*B*Z = T
-     !> in order to reduce the problem to its standard form
-     !> H*y = lambda*T*y
-     !> where y = Z**T*x.
-     !> The orthogonal matrices Q and Z are determined as products of Givens
-     !> rotations.  They may either be formed explicitly, or they may be
-     !> postmultiplied into input matrices Q1 and Z1, so that
-     !> Q1 * A * Z1**T = (Q1*Q) * H * (Z1*Z)**T
-     !> Q1 * B * Z1**T = (Q1*Q) * T * (Z1*Z)**T
-     !> If Q1 is the orthogonal matrix from the QR factorization of B in the
-     !> original equation A*x = lambda*B*x, then DGGHRD reduces the original
-     !> problem to generalized Hessenberg form.
 
      pure subroutine stdlib_dgghrd( compq, compz, n, ilo, ihi, a, lda, b, ldb, q,ldq, z, ldz, &
+     !! DGGHRD reduces a pair of real matrices (A,B) to generalized upper
+     !! Hessenberg form using orthogonal transformations, where A is a
+     !! general matrix and B is upper triangular.  The form of the
+     !! generalized eigenvalue problem is
+     !! A*x = lambda*B*x,
+     !! and B is typically made upper triangular by computing its QR
+     !! factorization and moving the orthogonal matrix Q to the left side
+     !! of the equation.
+     !! This subroutine simultaneously reduces A to a Hessenberg matrix H:
+     !! Q**T*A*Z = H
+     !! and transforms B to another upper triangular matrix T:
+     !! Q**T*B*Z = T
+     !! in order to reduce the problem to its standard form
+     !! H*y = lambda*T*y
+     !! where y = Z**T*x.
+     !! The orthogonal matrices Q and Z are determined as products of Givens
+     !! rotations.  They may either be formed explicitly, or they may be
+     !! postmultiplied into input matrices Q1 and Z1, so that
+     !! Q1 * A * Z1**T = (Q1*Q) * H * (Z1*Z)**T
+     !! Q1 * B * Z1**T = (Q1*Q) * T * (Z1*Z)**T
+     !! If Q1 is the orthogonal matrix from the QR factorization of B in the
+     !! original equation A*x = lambda*B*x, then DGGHRD reduces the original
+     !! problem to generalized Hessenberg form.
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -27455,12 +27451,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgghrd
 
-     !> DGTTRS: solves one of the systems of equations
-     !> A*X = B  or  A**T*X = B,
-     !> with a tridiagonal matrix A using the LU factorization computed
-     !> by DGTTRF.
 
      pure subroutine stdlib_dgttrs( trans, n, nrhs, dl, d, du, du2, ipiv, b, ldb,info )
+     !! DGTTRS solves one of the systems of equations
+     !! A*X = B  or  A**T*X = B,
+     !! with a tridiagonal matrix A using the LU factorization computed
+     !! by DGTTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -27519,11 +27515,11 @@ module stdlib_linalg_lapack_d
            end if
      end subroutine stdlib_dgttrs
 
-     !> DISNAN: returns .TRUE. if its argument is NaN, and .FALSE.
-     !> otherwise.  To be replaced by the Fortran 2003 intrinsic in the
-     !> future.
 
      pure logical(lk) function stdlib_disnan( din )
+     !! DISNAN returns .TRUE. if its argument is NaN, and .FALSE.
+     !! otherwise.  To be replaced by the Fortran 2003 intrinsic in the
+     !! future.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -27535,21 +27531,21 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_disnan
 
-     !> DLA_GBAMV:  performs one of the matrix-vector operations
-     !> y := alpha*abs(A)*abs(x) + beta*abs(y),
-     !> or   y := alpha*abs(A)**T*abs(x) + beta*abs(y),
-     !> where alpha and beta are scalars, x and y are vectors and A is an
-     !> m by n matrix.
-     !> This function is primarily used in calculating error bounds.
-     !> To protect against underflow during evaluation, components in
-     !> the resulting vector are perturbed away from zero by (N+1)
-     !> times the underflow threshold.  To prevent unnecessarily large
-     !> errors for block-structure embedded in general matrices,
-     !> "symbolically" zero components are not perturbed.  A zero
-     !> entry is considered "symbolic" if all multiplications involved
-     !> in computing that entry have at least one zero multiplicand.
 
      subroutine stdlib_dla_gbamv( trans, m, n, kl, ku, alpha, ab, ldab, x,incx, beta, y, incy )
+     !! DLA_GBAMV performs one of the matrix-vector operations
+     !! y := alpha*abs(A)*abs(x) + beta*abs(y),
+     !! or   y := alpha*abs(A)**T*abs(x) + beta*abs(y),
+     !! where alpha and beta are scalars, x and y are vectors and A is an
+     !! m by n matrix.
+     !! This function is primarily used in calculating error bounds.
+     !! To protect against underflow during evaluation, components in
+     !! the resulting vector are perturbed away from zero by (N+1)
+     !! times the underflow threshold.  To prevent unnecessarily large
+     !! errors for block-structure embedded in general matrices,
+     !! "symbolically" zero components are not perturbed.  A zero
+     !! entry is considered "symbolic" if all multiplications involved
+     !! in computing that entry have at least one zero multiplicand.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -27721,17 +27717,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dla_gbamv
 
-     !> DLA_GBRCOND: Estimates the Skeel condition number of  op(A) * op2(C)
-     !> where op2 is determined by CMODE as follows
-     !> CMODE =  1    op2(C) = C
-     !> CMODE =  0    op2(C) = I
-     !> CMODE = -1    op2(C) = inv(C)
-     !> The Skeel condition number  cond(A) = norminf( |inv(A)||A| )
-     !> is computed by computing scaling factors R such that
-     !> diag(R)*A*op2(C) is row equilibrated and computing the standard
-     !> infinity-norm condition number.
 
      real(dp) function stdlib_dla_gbrcond( trans, n, kl, ku, ab, ldab,afb, ldafb, ipiv, cmode, c,&
+     !! DLA_GBRCOND Estimates the Skeel condition number of  op(A) * op2(C)
+     !! where op2 is determined by CMODE as follows
+     !! CMODE =  1    op2(C) = C
+     !! CMODE =  0    op2(C) = I
+     !! CMODE = -1    op2(C) = inv(C)
+     !! The Skeel condition number  cond(A) = norminf( |inv(A)||A| )
+     !! is computed by computing scaling factors R such that
+     !! diag(R)*A*op2(C) is row equilibrated and computing the standard
+     !! infinity-norm condition number.
                info, work, iwork )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -27879,21 +27875,21 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dla_gbrcond
 
-     !> DLA_GEAMV:  performs one of the matrix-vector operations
-     !> y := alpha*abs(A)*abs(x) + beta*abs(y),
-     !> or   y := alpha*abs(A)**T*abs(x) + beta*abs(y),
-     !> where alpha and beta are scalars, x and y are vectors and A is an
-     !> m by n matrix.
-     !> This function is primarily used in calculating error bounds.
-     !> To protect against underflow during evaluation, components in
-     !> the resulting vector are perturbed away from zero by (N+1)
-     !> times the underflow threshold.  To prevent unnecessarily large
-     !> errors for block-structure embedded in general matrices,
-     !> "symbolically" zero components are not perturbed.  A zero
-     !> entry is considered "symbolic" if all multiplications involved
-     !> in computing that entry have at least one zero multiplicand.
 
      subroutine stdlib_dla_geamv ( trans, m, n, alpha, a, lda, x, incx, beta,y, incy )
+     !! DLA_GEAMV performs one of the matrix-vector operations
+     !! y := alpha*abs(A)*abs(x) + beta*abs(y),
+     !! or   y := alpha*abs(A)**T*abs(x) + beta*abs(y),
+     !! where alpha and beta are scalars, x and y are vectors and A is an
+     !! m by n matrix.
+     !! This function is primarily used in calculating error bounds.
+     !! To protect against underflow during evaluation, components in
+     !! the resulting vector are perturbed away from zero by (N+1)
+     !! times the underflow threshold.  To prevent unnecessarily large
+     !! errors for block-structure embedded in general matrices,
+     !! "symbolically" zero components are not perturbed.  A zero
+     !! entry is considered "symbolic" if all multiplications involved
+     !! in computing that entry have at least one zero multiplicand.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -28058,17 +28054,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dla_geamv
 
-     !> DLA_GERCOND: estimates the Skeel condition number of op(A) * op2(C)
-     !> where op2 is determined by CMODE as follows
-     !> CMODE =  1    op2(C) = C
-     !> CMODE =  0    op2(C) = I
-     !> CMODE = -1    op2(C) = inv(C)
-     !> The Skeel condition number cond(A) = norminf( |inv(A)||A| )
-     !> is computed by computing scaling factors R such that
-     !> diag(R)*A*op2(C) is row equilibrated and computing the standard
-     !> infinity-norm condition number.
 
      real(dp) function stdlib_dla_gercond( trans, n, a, lda, af,ldaf, ipiv, cmode, c,info, work, &
+     !! DLA_GERCOND estimates the Skeel condition number of op(A) * op2(C)
+     !! where op2 is determined by CMODE as follows
+     !! CMODE =  1    op2(C) = C
+     !! CMODE =  0    op2(C) = I
+     !! CMODE = -1    op2(C) = inv(C)
+     !! The Skeel condition number cond(A) = norminf( |inv(A)||A| )
+     !! is computed by computing scaling factors R such that
+     !! diag(R)*A*op2(C) is row equilibrated and computing the standard
+     !! infinity-norm condition number.
                iwork )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -28208,13 +28204,13 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dla_gercond
 
-     !> DLA_LIN_BERR: computes component-wise relative backward error from
-     !> the formula
-     !> max(i) ( abs(R(i)) / ( abs(op(A_s))*abs(Y) + abs(B_s) )(i) )
-     !> where abs(Z) is the component-wise absolute value of the matrix
-     !> or vector Z.
 
      pure subroutine stdlib_dla_lin_berr ( n, nz, nrhs, res, ayb, berr )
+     !! DLA_LIN_BERR computes component-wise relative backward error from
+     !! the formula
+     !! max(i) ( abs(R(i)) / ( abs(op(A_s))*abs(Y) + abs(B_s) )(i) )
+     !! where abs(Z) is the component-wise absolute value of the matrix
+     !! or vector Z.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -28249,17 +28245,17 @@ module stdlib_linalg_lapack_d
            end do
      end subroutine stdlib_dla_lin_berr
 
-     !> DLA_PORCOND: Estimates the Skeel condition number of  op(A) * op2(C)
-     !> where op2 is determined by CMODE as follows
-     !> CMODE =  1    op2(C) = C
-     !> CMODE =  0    op2(C) = I
-     !> CMODE = -1    op2(C) = inv(C)
-     !> The Skeel condition number  cond(A) = norminf( |inv(A)||A| )
-     !> is computed by computing scaling factors R such that
-     !> diag(R)*A*op2(C) is row equilibrated and computing the standard
-     !> infinity-norm condition number.
 
      real(dp) function stdlib_dla_porcond( uplo, n, a, lda, af, ldaf,cmode, c, info, work,iwork )
+     !! DLA_PORCOND Estimates the Skeel condition number of  op(A) * op2(C)
+     !! where op2 is determined by CMODE as follows
+     !! CMODE =  1    op2(C) = C
+     !! CMODE =  0    op2(C) = I
+     !! CMODE = -1    op2(C) = inv(C)
+     !! The Skeel condition number  cond(A) = norminf( |inv(A)||A| )
+     !! is computed by computing scaling factors R such that
+     !! diag(R)*A*op2(C) is row equilibrated and computing the standard
+     !! infinity-norm condition number.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -28408,20 +28404,20 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dla_porcond
 
-     !> DLA_SYAMV:  performs the matrix-vector operation
-     !> y := alpha*abs(A)*abs(x) + beta*abs(y),
-     !> where alpha and beta are scalars, x and y are vectors and A is an
-     !> n by n symmetric matrix.
-     !> This function is primarily used in calculating error bounds.
-     !> To protect against underflow during evaluation, components in
-     !> the resulting vector are perturbed away from zero by (N+1)
-     !> times the underflow threshold.  To prevent unnecessarily large
-     !> errors for block-structure embedded in general matrices,
-     !> "symbolically" zero components are not perturbed.  A zero
-     !> entry is considered "symbolic" if all multiplications involved
-     !> in computing that entry have at least one zero multiplicand.
 
      subroutine stdlib_dla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
+     !! DLA_SYAMV performs the matrix-vector operation
+     !! y := alpha*abs(A)*abs(x) + beta*abs(y),
+     !! where alpha and beta are scalars, x and y are vectors and A is an
+     !! n by n symmetric matrix.
+     !! This function is primarily used in calculating error bounds.
+     !! To protect against underflow during evaluation, components in
+     !! the resulting vector are perturbed away from zero by (N+1)
+     !! times the underflow threshold.  To prevent unnecessarily large
+     !! errors for block-structure embedded in general matrices,
+     !! "symbolically" zero components are not perturbed.  A zero
+     !! entry is considered "symbolic" if all multiplications involved
+     !! in computing that entry have at least one zero multiplicand.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -28597,17 +28593,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dla_syamv
 
-     !> DLA_SYRCOND: estimates the Skeel condition number of  op(A) * op2(C)
-     !> where op2 is determined by CMODE as follows
-     !> CMODE =  1    op2(C) = C
-     !> CMODE =  0    op2(C) = I
-     !> CMODE = -1    op2(C) = inv(C)
-     !> The Skeel condition number cond(A) = norminf( |inv(A)||A| )
-     !> is computed by computing scaling factors R such that
-     !> diag(R)*A*op2(C) is row equilibrated and computing the standard
-     !> infinity-norm condition number.
 
      real(dp) function stdlib_dla_syrcond( uplo, n, a, lda, af, ldaf,ipiv, cmode, c, info, work,&
+     !! DLA_SYRCOND estimates the Skeel condition number of  op(A) * op2(C)
+     !! where op2 is determined by CMODE as follows
+     !! CMODE =  1    op2(C) = C
+     !! CMODE =  0    op2(C) = I
+     !! CMODE = -1    op2(C) = inv(C)
+     !! The Skeel condition number cond(A) = norminf( |inv(A)||A| )
+     !! is computed by computing scaling factors R such that
+     !! diag(R)*A*op2(C) is row equilibrated and computing the standard
+     !! infinity-norm condition number.
                iwork )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -28764,14 +28760,14 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dla_syrcond
 
-     !> DLA_SYRPVGRW: computes the reciprocal pivot growth factor
-     !> norm(A)/norm(U). The "max absolute element" norm is used. If this is
-     !> much less than 1, the stability of the LU factorization of the
-     !> (equilibrated) matrix A could be poor. This also means that the
-     !> solution X, estimated condition numbers, and error bounds could be
-     !> unreliable.
 
      real(dp) function stdlib_dla_syrpvgrw( uplo, n, info, a, lda, af,ldaf, ipiv, work )
+     !! DLA_SYRPVGRW computes the reciprocal pivot growth factor
+     !! norm(A)/norm(U). The "max absolute element" norm is used. If this is
+     !! much less than 1, the stability of the LU factorization of the
+     !! (equilibrated) matrix A could be poor. This also means that the
+     !! solution X, estimated condition numbers, and error bounds could be
+     !! unreliable.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -28970,19 +28966,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dladiv1
 
-     !> DLAED6: computes the positive or negative root (closest to the origin)
-     !> of
-     !> z(1)        z(2)        z(3)
-     !> f(x) =   rho + --------- + ---------- + ---------
-     !> d(1)-x      d(2)-x      d(3)-x
-     !> It is assumed that
-     !> if ORGATI = .true. the root is between d(2) and d(3);
-     !> otherwise it is between d(1) and d(2)
-     !> This routine will be called by DLAED4 when necessary. In most cases,
-     !> the root sought is the smallest in magnitude, though it might not be
-     !> in some extremely rare situations.
 
      pure subroutine stdlib_dlaed6( kniter, orgati, rho, d, z, finit, tau, info )
+     !! DLAED6 computes the positive or negative root (closest to the origin)
+     !! of
+     !! z(1)        z(2)        z(3)
+     !! f(x) =   rho + --------- + ---------- + ---------
+     !! d(1)-x      d(2)-x      d(3)-x
+     !! It is assumed that
+     !! if ORGATI = .true. the root is between d(2) and d(3);
+     !! otherwise it is between d(1) and d(2)
+     !! This routine will be called by DLAED4 when necessary. In most cases,
+     !! the root sought is the smallest in magnitude, though it might not be
+     !! in some extremely rare situations.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -29196,25 +29192,25 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaed6
 
-     !> DLAGS2: computes 2-by-2 orthogonal matrices U, V and Q, such
-     !> that if ( UPPER ) then
-     !> U**T *A*Q = U**T *( A1 A2 )*Q = ( x  0  )
-     !> ( 0  A3 )     ( x  x  )
-     !> and
-     !> V**T*B*Q = V**T *( B1 B2 )*Q = ( x  0  )
-     !> ( 0  B3 )     ( x  x  )
-     !> or if ( .NOT.UPPER ) then
-     !> U**T *A*Q = U**T *( A1 0  )*Q = ( x  x  )
-     !> ( A2 A3 )     ( 0  x  )
-     !> and
-     !> V**T*B*Q = V**T*( B1 0  )*Q = ( x  x  )
-     !> ( B2 B3 )     ( 0  x  )
-     !> The rows of the transformed A and B are parallel, where
-     !> U = (  CSU  SNU ), V = (  CSV SNV ), Q = (  CSQ   SNQ )
-     !> ( -SNU  CSU )      ( -SNV CSV )      ( -SNQ   CSQ )
-     !> Z**T denotes the transpose of Z.
 
      pure subroutine stdlib_dlags2( upper, a1, a2, a3, b1, b2, b3, csu, snu, csv,snv, csq, snq )
+     !! DLAGS2 computes 2-by-2 orthogonal matrices U, V and Q, such
+     !! that if ( UPPER ) then
+     !! U**T *A*Q = U**T *( A1 A2 )*Q = ( x  0  )
+     !! ( 0  A3 )     ( x  x  )
+     !! and
+     !! V**T*B*Q = V**T *( B1 B2 )*Q = ( x  0  )
+     !! ( 0  B3 )     ( x  x  )
+     !! or if ( .NOT.UPPER ) then
+     !! U**T *A*Q = U**T *( A1 0  )*Q = ( x  x  )
+     !! ( A2 A3 )     ( 0  x  )
+     !! and
+     !! V**T*B*Q = V**T*( B1 0  )*Q = ( x  x  )
+     !! ( B2 B3 )     ( 0  x  )
+     !! The rows of the transformed A and B are parallel, where
+     !! U = (  CSU  SNU ), V = (  CSV SNV ), Q = (  CSQ   SNQ )
+     !! ( -SNU  CSU )      ( -SNV CSV )      ( -SNQ   CSQ )
+     !! Z**T denotes the transpose of Z.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -29356,20 +29352,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlags2
 
-     !> DLAGTF: factorizes the matrix (T - lambda*I), where T is an n by n
-     !> tridiagonal matrix and lambda is a scalar, as
-     !> T - lambda*I = PLU,
-     !> where P is a permutation matrix, L is a unit lower tridiagonal matrix
-     !> with at most one non-zero sub-diagonal elements per column and U is
-     !> an upper triangular matrix with at most two non-zero super-diagonal
-     !> elements per column.
-     !> The factorization is obtained by Gaussian elimination with partial
-     !> pivoting and implicit row scaling.
-     !> The parameter LAMBDA is included in the routine so that DLAGTF may
-     !> be used, in conjunction with DLAGTS, to obtain eigenvectors of T by
-     !> inverse iteration.
 
      pure subroutine stdlib_dlagtf( n, a, lambda, b, c, tol, d, in, info )
+     !! DLAGTF factorizes the matrix (T - lambda*I), where T is an n by n
+     !! tridiagonal matrix and lambda is a scalar, as
+     !! T - lambda*I = PLU,
+     !! where P is a permutation matrix, L is a unit lower tridiagonal matrix
+     !! with at most one non-zero sub-diagonal elements per column and U is
+     !! an upper triangular matrix with at most two non-zero super-diagonal
+     !! elements per column.
+     !! The factorization is obtained by Gaussian elimination with partial
+     !! pivoting and implicit row scaling.
+     !! The parameter LAMBDA is included in the routine so that DLAGTF may
+     !! be used, in conjunction with DLAGTS, to obtain eigenvectors of T by
+     !! inverse iteration.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -29447,17 +29443,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlagtf
 
-     !> DLAGTS: may be used to solve one of the systems of equations
-     !> (T - lambda*I)*x = y   or   (T - lambda*I)**T*x = y,
-     !> where T is an n by n tridiagonal matrix, for x, following the
-     !> factorization of (T - lambda*I) as
-     !> (T - lambda*I) = P*L*U ,
-     !> by routine DLAGTF. The choice of equation to be solved is
-     !> controlled by the argument JOB, and in each case there is an option
-     !> to perturb zero or very small diagonal elements of U, this option
-     !> being intended for use in applications such as inverse iteration.
 
      pure subroutine stdlib_dlagts( job, n, a, b, c, d, in, y, tol, info )
+     !! DLAGTS may be used to solve one of the systems of equations
+     !! (T - lambda*I)*x = y   or   (T - lambda*I)**T*x = y,
+     !! where T is an n by n tridiagonal matrix, for x, following the
+     !! factorization of (T - lambda*I) as
+     !! (T - lambda*I) = P*L*U ,
+     !! by routine DLAGTF. The choice of equation to be solved is
+     !! controlled by the argument JOB, and in each case there is an option
+     !! to perturb zero or very small diagonal elements of U, this option
+     !! being intended for use in applications such as inverse iteration.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -29644,28 +29640,28 @@ module stdlib_linalg_lapack_d
            end if
      end subroutine stdlib_dlagts
 
-     !> DLAIC1: applies one step of incremental condition estimation in
-     !> its simplest version:
-     !> Let x, twonorm(x) = 1, be an approximate singular vector of an j-by-j
-     !> lower triangular matrix L, such that
-     !> twonorm(L*x) = sest
-     !> Then DLAIC1 computes sestpr, s, c such that
-     !> the vector
-     !> [ s*x ]
-     !> xhat = [  c  ]
-     !> is an approximate singular vector of
-     !> [ L       0  ]
-     !> Lhat = [ w**T gamma ]
-     !> in the sense that
-     !> twonorm(Lhat*xhat) = sestpr.
-     !> Depending on JOB, an estimate for the largest or smallest singular
-     !> value is computed.
-     !> Note that [s c]**T and sestpr**2 is an eigenpair of the system
-     !> diag(sest*sest, 0) + [alpha  gamma] * [ alpha ]
-     !> [ gamma ]
-     !> where  alpha =  x**T*w.
 
      pure subroutine stdlib_dlaic1( job, j, x, sest, w, gamma, sestpr, s, c )
+     !! DLAIC1 applies one step of incremental condition estimation in
+     !! its simplest version:
+     !! Let x, twonorm(x) = 1, be an approximate singular vector of an j-by-j
+     !! lower triangular matrix L, such that
+     !! twonorm(L*x) = sest
+     !! Then DLAIC1 computes sestpr, s, c such that
+     !! the vector
+     !! [ s*x ]
+     !! xhat = [  c  ]
+     !! is an approximate singular vector of
+     !! [ L       0  ]
+     !! Lhat = [ w**T gamma ]
+     !! in the sense that
+     !! twonorm(Lhat*xhat) = sestpr.
+     !! Depending on JOB, an estimate for the largest or smallest singular
+     !! value is computed.
+     !! Note that [s c]**T and sestpr**2 is an eigenpair of the system
+     !! diag(sest*sest, 0) + [alpha  gamma] * [ alpha ]
+     !! [ gamma ]
+     !! where  alpha =  x**T*w.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -29856,23 +29852,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaic1
 
-     !> DLANEG: computes the Sturm count, the number of negative pivots
-     !> encountered while factoring tridiagonal T - sigma I = L D L^T.
-     !> This implementation works directly on the factors without forming
-     !> the tridiagonal matrix T.  The Sturm count is also the number of
-     !> eigenvalues of T less than sigma.
-     !> This routine is called from DLARRB.
-     !> The current routine does not use the PIVMIN parameter but rather
-     !> requires IEEE-754 propagation of Infinities and NaNs.  This
-     !> routine also has no input range restrictions but does require
-     !> default exception handling such that x/0 produces Inf when x is
-     !> non-zero, and Inf/Inf produces NaN.  For more information, see:
-     !> Marques, Riedy, and Voemel, "Benefits of IEEE-754 Features in
-     !> Modern Symmetric Tridiagonal Eigensolvers," SIAM Journal on
-     !> Scientific Computing, v28, n5, 2006.  DOI 10.1137/050641624
-     !> (Tech report version in LAWN 172 with the same title.)
 
      pure integer(ilp) function stdlib_dlaneg( n, d, lld, sigma, pivmin, r )
+     !! DLANEG computes the Sturm count, the number of negative pivots
+     !! encountered while factoring tridiagonal T - sigma I = L D L^T.
+     !! This implementation works directly on the factors without forming
+     !! the tridiagonal matrix T.  The Sturm count is also the number of
+     !! eigenvalues of T less than sigma.
+     !! This routine is called from DLARRB.
+     !! The current routine does not use the PIVMIN parameter but rather
+     !! requires IEEE-754 propagation of Infinities and NaNs.  This
+     !! routine also has no input range restrictions but does require
+     !! default exception handling such that x/0 produces Inf when x is
+     !! non-zero, and Inf/Inf produces NaN.  For more information, see:
+     !! Marques, Riedy, and Voemel, "Benefits of IEEE-754 Features in
+     !! Modern Symmetric Tridiagonal Eigensolvers," SIAM Journal on
+     !! Scientific Computing, v28, n5, 2006.  DOI 10.1137/050641624
+     !! (Tech report version in LAWN 172 with the same title.)
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -29961,11 +29957,11 @@ module stdlib_linalg_lapack_d
            stdlib_dlaneg = negcnt
      end function stdlib_dlaneg
 
-     !> DLANGB:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the element of  largest absolute value  of an
-     !> n by n band matrix  A,  with kl sub-diagonals and ku super-diagonals.
 
      real(dp) function stdlib_dlangb( norm, n, kl, ku, ab, ldab,work )
+     !! DLANGB returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the element of  largest absolute value  of an
+     !! n by n band matrix  A,  with kl sub-diagonals and ku super-diagonals.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30036,11 +30032,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlangb
 
-     !> DLANGE:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> real matrix A.
 
      real(dp) function stdlib_dlange( norm, m, n, a, lda, work )
+     !! DLANGE returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! real matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30108,11 +30104,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlange
 
-     !> DLANGT:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> real tridiagonal matrix A.
 
      pure real(dp) function stdlib_dlangt( norm, n, dl, d, du )
+     !! DLANGT returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! real tridiagonal matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30184,11 +30180,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlangt
 
-     !> DLANHS:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> Hessenberg matrix A.
 
      real(dp) function stdlib_dlanhs( norm, n, a, lda, work )
+     !! DLANHS returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! Hessenberg matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30256,11 +30252,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlanhs
 
-     !> DLANSB:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the element of  largest absolute value  of an
-     !> n by n symmetric band matrix A,  with k super-diagonals.
 
      real(dp) function stdlib_dlansb( norm, uplo, n, k, ab, ldab,work )
+     !! DLANSB returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the element of  largest absolute value  of an
+     !! n by n symmetric band matrix A,  with k super-diagonals.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -30361,11 +30357,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlansb
 
-     !> DLANSF: returns the value of the one norm, or the Frobenius norm, or
-     !> the infinity norm, or the element of largest absolute value of a
-     !> real symmetric matrix A in RFP format.
 
      real(dp) function stdlib_dlansf( norm, transr, uplo, n, a, work )
+     !! DLANSF returns the value of the one norm, or the Frobenius norm, or
+     !! the infinity norm, or the element of largest absolute value of a
+     !! real symmetric matrix A in RFP format.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -31065,11 +31061,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlansf
 
-     !> DLANSP:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> real symmetric matrix A,  supplied in packed form.
 
      real(dp) function stdlib_dlansp( norm, uplo, n, ap, work )
+     !! DLANSP returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! real symmetric matrix A,  supplied in packed form.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -31189,11 +31185,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlansp
 
-     !> DLANST:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> real symmetric tridiagonal matrix A.
 
      pure real(dp) function stdlib_dlanst( norm, n, d, e )
+     !! DLANST returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! real symmetric tridiagonal matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -31251,11 +31247,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlanst
 
-     !> DLANSY:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> real symmetric matrix A.
 
      real(dp) function stdlib_dlansy( norm, uplo, n, a, lda, work )
+     !! DLANSY returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! real symmetric matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -31347,11 +31343,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlansy
 
-     !> DLANTB:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the element of  largest absolute value  of an
-     !> n by n triangular band matrix A,  with ( k + 1 ) diagonals.
 
      real(dp) function stdlib_dlantb( norm, uplo, diag, n, k, ab,ldab, work )
+     !! DLANTB returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the element of  largest absolute value  of an
+     !! n by n triangular band matrix A,  with ( k + 1 ) diagonals.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -31540,11 +31536,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlantb
 
-     !> DLANTP:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> triangular matrix A, supplied in packed form.
 
      real(dp) function stdlib_dlantp( norm, uplo, diag, n, ap, work )
+     !! DLANTP returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! triangular matrix A, supplied in packed form.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -31746,11 +31742,11 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlantp
 
-     !> DLANTR:  returns the value of the one norm,  or the Frobenius norm, or
-     !> the  infinity norm,  or the  element of  largest absolute value  of a
-     !> trapezoidal or triangular matrix A.
 
      real(dp) function stdlib_dlantr( norm, uplo, diag, m, n, a, lda,work )
+     !! DLANTR returns the value of the one norm,  or the Frobenius norm, or
+     !! the  infinity norm,  or the  element of  largest absolute value  of a
+     !! trapezoidal or triangular matrix A.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -31932,41 +31928,41 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlantr
 
-     !> DLAORHR_COL_GETRFNP: computes the modified LU factorization without
-     !> pivoting of a real general M-by-N matrix A. The factorization has
-     !> the form:
-     !> A - S = L * U,
-     !> where:
-     !> S is a m-by-n diagonal sign matrix with the diagonal D, so that
-     !> D(i) = S(i,i), 1 <= i <= min(M,N). The diagonal D is constructed
-     !> as D(i)=-SIGN(A(i,i)), where A(i,i) is the value after performing
-     !> i-1 steps of Gaussian elimination. This means that the diagonal
-     !> element at each step of "modified" Gaussian elimination is
-     !> at least one in absolute value (so that division-by-zero not
-     !> not possible during the division by the diagonal element);
-     !> L is a M-by-N lower triangular matrix with unit diagonal elements
-     !> (lower trapezoidal if M > N);
-     !> and U is a M-by-N upper triangular matrix
-     !> (upper trapezoidal if M < N).
-     !> This routine is an auxiliary routine used in the Householder
-     !> reconstruction routine DORHR_COL. In DORHR_COL, this routine is
-     !> applied to an M-by-N matrix A with orthonormal columns, where each
-     !> element is bounded by one in absolute value. With the choice of
-     !> the matrix S above, one can show that the diagonal element at each
-     !> step of Gaussian elimination is the largest (in absolute value) in
-     !> the column on or below the diagonal, so that no pivoting is required
-     !> for numerical stability [1].
-     !> For more details on the Householder reconstruction algorithm,
-     !> including the modified LU factorization, see [1].
-     !> This is the blocked right-looking version of the algorithm,
-     !> calling Level 3 BLAS to update the submatrix. To factorize a block,
-     !> this routine calls the recursive routine DLAORHR_COL_GETRFNP2.
-     !> [1] "Reconstructing Householder vectors from tall-skinny QR",
-     !> G. Ballard, J. Demmel, L. Grigori, M. Jacquelin, H.D. Nguyen,
-     !> E. Solomonik, J. Parallel Distrib. Comput.,
-     !> vol. 85, pp. 3-31, 2015.
 
      pure subroutine stdlib_dlaorhr_col_getrfnp( m, n, a, lda, d, info )
+     !! DLAORHR_COL_GETRFNP computes the modified LU factorization without
+     !! pivoting of a real general M-by-N matrix A. The factorization has
+     !! the form:
+     !! A - S = L * U,
+     !! where:
+     !! S is a m-by-n diagonal sign matrix with the diagonal D, so that
+     !! D(i) = S(i,i), 1 <= i <= min(M,N). The diagonal D is constructed
+     !! as D(i)=-SIGN(A(i,i)), where A(i,i) is the value after performing
+     !! i-1 steps of Gaussian elimination. This means that the diagonal
+     !! element at each step of "modified" Gaussian elimination is
+     !! at least one in absolute value (so that division-by-zero not
+     !! not possible during the division by the diagonal element);
+     !! L is a M-by-N lower triangular matrix with unit diagonal elements
+     !! (lower trapezoidal if M > N);
+     !! and U is a M-by-N upper triangular matrix
+     !! (upper trapezoidal if M < N).
+     !! This routine is an auxiliary routine used in the Householder
+     !! reconstruction routine DORHR_COL. In DORHR_COL, this routine is
+     !! applied to an M-by-N matrix A with orthonormal columns, where each
+     !! element is bounded by one in absolute value. With the choice of
+     !! the matrix S above, one can show that the diagonal element at each
+     !! step of Gaussian elimination is the largest (in absolute value) in
+     !! the column on or below the diagonal, so that no pivoting is required
+     !! for numerical stability [1].
+     !! For more details on the Householder reconstruction algorithm,
+     !! including the modified LU factorization, see [1].
+     !! This is the blocked right-looking version of the algorithm,
+     !! calling Level 3 BLAS to update the submatrix. To factorize a block,
+     !! this routine calls the recursive routine DLAORHR_COL_GETRFNP2.
+     !! [1] "Reconstructing Householder vectors from tall-skinny QR",
+     !! G. Ballard, J. Demmel, L. Grigori, M. Jacquelin, H.D. Nguyen,
+     !! E. Solomonik, J. Parallel Distrib. Comput.,
+     !! vol. 85, pp. 3-31, 2015.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -32026,10 +32022,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaorhr_col_getrfnp
 
-     !> DLAPY2: returns sqrt(x**2+y**2), taking care not to cause unnecessary
-     !> overflow and unnecessary underflow.
 
      pure real(dp) function stdlib_dlapy2( x, y )
+     !! DLAPY2 returns sqrt(x**2+y**2), taking care not to cause unnecessary
+     !! overflow and unnecessary underflow.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -32063,17 +32059,17 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dlapy2
 
-     !> Given a 3-by-3 matrix pencil (A,B), DLAQZ1: sets v to a
-     !> scalar multiple of the first column of the product
-     !> (*)  K = (A - (beta2*sr2 - i*si)*B)*B^(-1)*(beta1*A - (sr2 + i*si2)*B)*B^(-1).
-     !> It is assumed that either
-     !> 1) sr1 = sr2
-     !> or
-     !> 2) si = 0.
-     !> This is useful for starting double implicit shift bulges
-     !> in the QZ algorithm.
 
      pure subroutine stdlib_dlaqz1( a, lda, b, ldb, sr1, sr2, si, beta1, beta2,v )
+     !! Given a 3-by-3 matrix pencil (A,B), DLAQZ1: sets v to a
+     !! scalar multiple of the first column of the product
+     !! (*)  K = (A - (beta2*sr2 - i*si)*B)*B^(-1)*(beta1*A - (sr2 + i*si2)*B)*B^(-1).
+     !! It is assumed that either
+     !! 1) sr1 = sr2
+     !! or
+     !! 2) si = 0.
+     !! This is useful for starting double implicit shift bulges
+     !! in the QZ algorithm.
            ! arguments
            integer(ilp), intent( in ) :: lda, ldb
            real(dp), intent( in ) :: a( lda, * ), b( ldb, * ), sr1,sr2, si, beta1, beta2
@@ -32118,9 +32114,9 @@ module stdlib_linalg_lapack_d
            end if
      end subroutine stdlib_dlaqz1
 
-     !> DLAQZ2: chases a 2x2 shift bulge in a matrix pencil down a single position
 
      pure subroutine stdlib_dlaqz2( ilq, ilz, k, istartm, istopm, ihi, a, lda, b,ldb, nq, qstart, &
+     !! DLAQZ2 chases a 2x2 shift bulge in a matrix pencil down a single position
                q, ldq, nz, zstart, z, ldz )
            ! arguments
            logical(lk), intent( in ) :: ilq, ilz
@@ -32229,9 +32225,9 @@ module stdlib_linalg_lapack_d
            end if
      end subroutine stdlib_dlaqz2
 
-     !> DLAQZ4: Executes a single multishift QZ sweep
 
      pure subroutine stdlib_dlaqz4( ilschur, ilq, ilz, n, ilo, ihi, nshifts,nblock_desired, sr, &
+     !! DLAQZ4 Executes a single multishift QZ sweep
                si, ss, a, lda, b, ldb, q,ldq, z, ldz, qc, ldqc, zc, ldzc, work, lwork,info )
            ! function arguments
            logical(lk), intent( in ) :: ilschur, ilq, ilz
@@ -32486,23 +32482,23 @@ module stdlib_linalg_lapack_d
            end if
      end subroutine stdlib_dlaqz4
 
-     !> DLAR1V: computes the (scaled) r-th column of the inverse of
-     !> the sumbmatrix in rows B1 through BN of the tridiagonal matrix
-     !> L D L**T - sigma I. When sigma is close to an eigenvalue, the
-     !> computed vector is an accurate eigenvector. Usually, r corresponds
-     !> to the index where the eigenvector is largest in magnitude.
-     !> The following steps accomplish this computation :
-     !> (a) Stationary qd transform,  L D L**T - sigma I = L(+) D(+) L(+)**T,
-     !> (b) Progressive qd transform, L D L**T - sigma I = U(-) D(-) U(-)**T,
-     !> (c) Computation of the diagonal elements of the inverse of
-     !> L D L**T - sigma I by combining the above transforms, and choosing
-     !> r as the index where the diagonal of the inverse is (one of the)
-     !> largest in magnitude.
-     !> (d) Computation of the (scaled) r-th column of the inverse using the
-     !> twisted factorization obtained by combining the top part of the
-     !> the stationary and the bottom part of the progressive transform.
 
      pure subroutine stdlib_dlar1v( n, b1, bn, lambda, d, l, ld, lld,pivmin, gaptol, z, wantnc, &
+     !! DLAR1V computes the (scaled) r-th column of the inverse of
+     !! the sumbmatrix in rows B1 through BN of the tridiagonal matrix
+     !! L D L**T - sigma I. When sigma is close to an eigenvalue, the
+     !! computed vector is an accurate eigenvector. Usually, r corresponds
+     !! to the index where the eigenvector is largest in magnitude.
+     !! The following steps accomplish this computation :
+     !! (a) Stationary qd transform,  L D L**T - sigma I = L(+) D(+) L(+)**T,
+     !! (b) Progressive qd transform, L D L**T - sigma I = U(-) D(-) U(-)**T,
+     !! (c) Computation of the diagonal elements of the inverse of
+     !! L D L**T - sigma I by combining the above transforms, and choosing
+     !! r as the index where the diagonal of the inverse is (one of the)
+     !! largest in magnitude.
+     !! (d) Computation of the (scaled) r-th column of the inverse using the
+     !! twisted factorization obtained by combining the top part of the
+     !! the stationary and the bottom part of the progressive transform.
                negcnt, ztz, mingma,r, isuppz, nrminv, resid, rqcorr, work )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -32708,21 +32704,21 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlar1v
 
-     !> DLARFG: generates a real elementary reflector H of order n, such
-     !> that
-     !> H * ( alpha ) = ( beta ),   H**T * H = I.
-     !> (   x   )   (   0  )
-     !> where alpha and beta are scalars, and x is an (n-1)-element real
-     !> vector. H is represented in the form
-     !> H = I - tau * ( 1 ) * ( 1 v**T ) ,
-     !> ( v )
-     !> where tau is a real scalar and v is a real (n-1)-element
-     !> vector.
-     !> If the elements of x are all zero, then tau = 0 and H is taken to be
-     !> the unit matrix.
-     !> Otherwise  1 <= tau <= 2.
 
      pure subroutine stdlib_dlarfg( n, alpha, x, incx, tau )
+     !! DLARFG generates a real elementary reflector H of order n, such
+     !! that
+     !! H * ( alpha ) = ( beta ),   H**T * H = I.
+     !! (   x   )   (   0  )
+     !! where alpha and beta are scalars, and x is an (n-1)-element real
+     !! vector. H is represented in the form
+     !! H = I - tau * ( 1 ) * ( 1 v**T ) ,
+     !! ( v )
+     !! where tau is a real scalar and v is a real (n-1)-element
+     !! vector.
+     !! If the elements of x are all zero, then tau = 0 and H is taken to be
+     !! the unit matrix.
+     !! Otherwise  1 <= tau <= 2.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -32777,20 +32773,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarfg
 
-     !> DLARFGP: generates a real elementary reflector H of order n, such
-     !> that
-     !> H * ( alpha ) = ( beta ),   H**T * H = I.
-     !> (   x   )   (   0  )
-     !> where alpha and beta are scalars, beta is non-negative, and x is
-     !> an (n-1)-element real vector.  H is represented in the form
-     !> H = I - tau * ( 1 ) * ( 1 v**T ) ,
-     !> ( v )
-     !> where tau is a real scalar and v is a real (n-1)-element
-     !> vector.
-     !> If the elements of x are all zero, then tau = 0 and H is taken to be
-     !> the unit matrix.
 
      subroutine stdlib_dlarfgp( n, alpha, x, incx, tau )
+     !! DLARFGP generates a real elementary reflector H of order n, such
+     !! that
+     !! H * ( alpha ) = ( beta ),   H**T * H = I.
+     !! (   x   )   (   0  )
+     !! where alpha and beta are scalars, beta is non-negative, and x is
+     !! an (n-1)-element real vector.  H is represented in the form
+     !! H = I - tau * ( 1 ) * ( 1 v**T ) ,
+     !! ( v )
+     !! where tau is a real scalar and v is a real (n-1)-element
+     !! vector.
+     !! If the elements of x are all zero, then tau = 0 and H is taken to be
+     !! the unit matrix.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -32885,10 +32881,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarfgp
 
-     !> DLARNV: returns a vector of n random real numbers from a uniform or
-     !> normal distribution.
 
      pure subroutine stdlib_dlarnv( idist, iseed, n, x )
+     !! DLARNV returns a vector of n random real numbers from a uniform or
+     !! normal distribution.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -32941,16 +32937,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarnv
 
-     !> Given the relatively robust representation(RRR) L D L^T, DLARRB:
-     !> does "limited" bisection to refine the eigenvalues of L D L^T,
-     !> W( IFIRST-OFFSET ) through W( ILAST-OFFSET ), to more accuracy. Initial
-     !> guesses for these eigenvalues are input in W, the corresponding estimate
-     !> of the error in these guesses and their gaps are input in WERR
-     !> and WGAP, respectively. During bisection, intervals
-     !> [left, right] are maintained by storing their mid-points and
-     !> semi-widths in the arrays W and WERR respectively.
 
      pure subroutine stdlib_dlarrb( n, d, lld, ifirst, ilast, rtol1,rtol2, offset, w, wgap, werr, &
+     !! Given the relatively robust representation(RRR) L D L^T, DLARRB:
+     !! does "limited" bisection to refine the eigenvalues of L D L^T,
+     !! W( IFIRST-OFFSET ) through W( ILAST-OFFSET ), to more accuracy. Initial
+     !! guesses for these eigenvalues are input in W, the corresponding estimate
+     !! of the error in these guesses and their gaps are input in WERR
+     !! and WGAP, respectively. During bisection, intervals
+     !! [left, right] are maintained by storing their mid-points and
+     !! semi-widths in the arrays W and WERR respectively.
                work, iwork,pivmin, spdiam, twist, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -33114,13 +33110,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarrb
 
-     !> Given the initial representation L D L^T and its cluster of close
-     !> eigenvalues (in a relative measure), W( CLSTRT ), W( CLSTRT+1 ), ...
-     !> W( CLEND ), DLARRF: finds a new relatively robust representation
-     !> L D L^T - SIGMA I = L(+) D(+) L(+)^T such that at least one of the
-     !> eigenvalues of L(+) D(+) L(+)^T is relatively isolated.
 
      pure subroutine stdlib_dlarrf( n, d, l, ld, clstrt, clend,w, wgap, werr,spdiam, clgapl, &
+     !! Given the initial representation L D L^T and its cluster of close
+     !! eigenvalues (in a relative measure), W( CLSTRT ), W( CLSTRT+1 ), ...
+     !! W( CLEND ), DLARRF: finds a new relatively robust representation
+     !! L D L^T - SIGMA I = L(+) D(+) L(+)^T such that at least one of the
+     !! eigenvalues of L(+) D(+) L(+)^T is relatively isolated.
                clgapr, pivmin, sigma,dplus, lplus, work, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -33373,11 +33369,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarrf
 
-     !> DLARRV: computes the eigenvectors of the tridiagonal matrix
-     !> T = L D L**T given L, D and APPROXIMATIONS to the eigenvalues of L D L**T.
-     !> The input eigenvalues should have been computed by DLARRE.
 
      pure subroutine stdlib_dlarrv( n, vl, vu, d, l, pivmin,isplit, m, dol, dou, minrgp,rtol1, &
+     !! DLARRV computes the eigenvectors of the tridiagonal matrix
+     !! T = L D L**T given L, D and APPROXIMATIONS to the eigenvalues of L D L**T.
+     !! The input eigenvalues should have been computed by DLARRE.
                rtol2, w, werr, wgap,iblock, indexw, gers, z, ldz, isuppz,work, iwork, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -34004,13 +34000,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarrv
 
-     !> DLASCL: multiplies the M by N real matrix A by the real scalar
-     !> CTO/CFROM.  This is done without over/underflow as long as the final
-     !> result CTO*A(I,J)/CFROM does not over/underflow. TYPE specifies that
-     !> A may be full, upper triangular, lower triangular, upper Hessenberg,
-     !> or banded.
 
      pure subroutine stdlib_dlascl( type, kl, ku, cfrom, cto, m, n, a, lda, info )
+     !! DLASCL multiplies the M by N real matrix A by the real scalar
+     !! CTO/CFROM.  This is done without over/underflow as long as the final
+     !! result CTO*A(I,J)/CFROM does not over/underflow. TYPE specifies that
+     !! A may be full, upper triangular, lower triangular, upper Hessenberg,
+     !! or banded.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34174,19 +34170,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlascl
 
-     !> This subroutine computes the square root of the I-th updated
-     !> eigenvalue of a positive symmetric rank-one modification to
-     !> a positive diagonal matrix whose entries are given as the squares
-     !> of the corresponding entries in the array d, and that
-     !> 0 <= D(i) < D(j)  for  i < j
-     !> and that RHO > 0. This is arranged by the calling routine, and is
-     !> no loss in generality.  The rank-one modified system is thus
-     !> diag( D ) * diag( D ) +  RHO * Z * Z_transpose.
-     !> where we assume the Euclidean norm of Z is 1.
-     !> The method consists of approximating the rational functions in the
-     !> secular equation by simpler interpolating rational functions.
 
      pure subroutine stdlib_dlasd4( n, i, d, z, delta, rho, sigma, work, info )
+     !! This subroutine computes the square root of the I-th updated
+     !! eigenvalue of a positive symmetric rank-one modification to
+     !! a positive diagonal matrix whose entries are given as the squares
+     !! of the corresponding entries in the array d, and that
+     !! 0 <= D(i) < D(j)  for  i < j
+     !! and that RHO > 0. This is arranged by the calling routine, and is
+     !! no loss in generality.  The rank-one modified system is thus
+     !! diag( D ) * diag( D ) +  RHO * Z * Z_transpose.
+     !! where we assume the Euclidean norm of Z is 1.
+     !! The method consists of approximating the rational functions in the
+     !! secular equation by simpler interpolating rational functions.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -34902,15 +34898,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasd4
 
-     !> DLASD7: merges the two sets of singular values together into a single
-     !> sorted set. Then it tries to deflate the size of the problem. There
-     !> are two ways in which deflation can occur:  when two or more singular
-     !> values are close together or if there is a tiny entry in the Z
-     !> vector. For each such occurrence the order of the related
-     !> secular equation problem is reduced by one.
-     !> DLASD7 is called from DLASD6.
 
      pure subroutine stdlib_dlasd7( icompq, nl, nr, sqre, k, d, z, zw, vf, vfw, vl,vlw, alpha, &
+     !! DLASD7 merges the two sets of singular values together into a single
+     !! sorted set. Then it tries to deflate the size of the problem. There
+     !! are two ways in which deflation can occur:  when two or more singular
+     !! values are close together or if there is a tiny entry in the Z
+     !! vector. For each such occurrence the order of the related
+     !! secular equation problem is reduced by one.
+     !! DLASD7 is called from DLASD6.
      beta, dsigma, idx, idxp, idxq,perm, givptr, givcol, ldgcol, givnum, ldgnum,c, s, info )
                
         ! -- lapack auxiliary routine --
@@ -35141,15 +35137,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasd7
 
-     !> DLASD8: finds the square roots of the roots of the secular equation,
-     !> as defined by the values in DSIGMA and Z. It makes the appropriate
-     !> calls to DLASD4, and stores, for each  element in D, the distance
-     !> to its two nearest poles (elements in DSIGMA). It also updates
-     !> the arrays VF and VL, the first and last components of all the
-     !> right singular vectors of the original bidiagonal matrix.
-     !> DLASD8 is called from DLASD6.
 
      pure subroutine stdlib_dlasd8( icompq, k, d, z, vf, vl, difl, difr, lddifr,dsigma, work, &
+     !! DLASD8 finds the square roots of the roots of the secular equation,
+     !! as defined by the values in DSIGMA and Z. It makes the appropriate
+     !! calls to DLASD4, and stores, for each  element in D, the distance
+     !! to its two nearest poles (elements in DSIGMA). It also updates
+     !! the arrays VF and VL, the first and last components of all the
+     !! right singular vectors of the original bidiagonal matrix.
+     !! DLASD8 is called from DLASD6.
                info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -35277,11 +35273,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasd8
 
-     !> DLASQ3: checks for deflation, computes a shift (TAU) and calls dqds.
-     !> In case of failure it changes shifts, and tries again until output
-     !> is positive.
 
      pure subroutine stdlib_dlasq3( i0, n0, z, pp, dmin, sigma, desig, qmax, nfail,iter, ndiv, &
+     !! DLASQ3 checks for deflation, computes a shift (TAU) and calls dqds.
+     !! In case of failure it changes shifts, and tries again until output
+     !! is positive.
                ieee, ttype, dmin1, dmin2, dn, dn1,dn2, g, tau )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -35447,16 +35443,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasq3
 
-     !> DLATDF: uses the LU factorization of the n-by-n matrix Z computed by
-     !> DGETC2 and computes a contribution to the reciprocal Dif-estimate
-     !> by solving Z * x = b for x, and choosing the r.h.s. b such that
-     !> the norm of x is as large as possible. On entry RHS = b holds the
-     !> contribution from earlier solved sub-systems, and on return RHS = x.
-     !> The factorization of Z returned by DGETC2 has the form Z = P*L*U*Q,
-     !> where P and Q are permutation matrices. L is lower triangular with
-     !> unit diagonal elements and U is upper triangular.
 
      pure subroutine stdlib_dlatdf( ijob, n, z, ldz, rhs, rdsum, rdscal, ipiv,jpiv )
+     !! DLATDF uses the LU factorization of the n-by-n matrix Z computed by
+     !! DGETC2 and computes a contribution to the reciprocal Dif-estimate
+     !! by solving Z * x = b for x, and choosing the r.h.s. b such that
+     !! the norm of x is as large as possible. On entry RHS = b holds the
+     !! contribution from earlier solved sub-systems, and on return RHS = x.
+     !! The factorization of Z returned by DGETC2 has the form Z = P*L*U*Q,
+     !! where P and Q are permutation matrices. L is lower triangular with
+     !! unit diagonal elements and U is upper triangular.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -35557,17 +35553,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlatdf
 
-     !> DLATRD: reduces NB rows and columns of a real symmetric matrix A to
-     !> symmetric tridiagonal form by an orthogonal similarity
-     !> transformation Q**T * A * Q, and returns the matrices V and W which are
-     !> needed to apply the transformation to the unreduced part of A.
-     !> If UPLO = 'U', DLATRD reduces the last NB rows and columns of a
-     !> matrix, of which the upper triangle is supplied;
-     !> if UPLO = 'L', DLATRD reduces the first NB rows and columns of a
-     !> matrix, of which the lower triangle is supplied.
-     !> This is an auxiliary routine called by DSYTRD.
 
      pure subroutine stdlib_dlatrd( uplo, n, nb, a, lda, e, tau, w, ldw )
+     !! DLATRD reduces NB rows and columns of a real symmetric matrix A to
+     !! symmetric tridiagonal form by an orthogonal similarity
+     !! transformation Q**T * A * Q, and returns the matrices V and W which are
+     !! needed to apply the transformation to the unreduced part of A.
+     !! If UPLO = 'U', DLATRD reduces the last NB rows and columns of a
+     !! matrix, of which the upper triangle is supplied;
+     !! if UPLO = 'L', DLATRD reduces the first NB rows and columns of a
+     !! matrix, of which the lower triangle is supplied.
+     !! This is an auxiliary routine called by DSYTRD.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -35659,12 +35655,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlatrd
 
-     !> DLATRZ: factors the M-by-(M+L) real upper trapezoidal matrix
-     !> [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R  0 ) * Z, by means
-     !> of orthogonal transformations.  Z is an (M+L)-by-(M+L) orthogonal
-     !> matrix and, R and A1 are M-by-M upper triangular matrices.
 
      pure subroutine stdlib_dlatrz( m, n, l, a, lda, tau, work )
+     !! DLATRZ factors the M-by-(M+L) real upper trapezoidal matrix
+     !! [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R  0 ) * Z, by means
+     !! of orthogonal transformations.  Z is an (M+L)-by-(M+L) orthogonal
+     !! matrix and, R and A1 are M-by-M upper triangular matrices.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -35699,24 +35695,24 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlatrz
 
-     !> DORBDB: simultaneously bidiagonalizes the blocks of an M-by-M
-     !> partitioned orthogonal matrix X:
-     !> [ B11 | B12 0  0 ]
-     !> [ X11 | X12 ]   [ P1 |    ] [  0  |  0 -I  0 ] [ Q1 |    ]**T
-     !> X = [-----------] = [---------] [----------------] [---------]   .
-     !> [ X21 | X22 ]   [    | P2 ] [ B21 | B22 0  0 ] [    | Q2 ]
-     !> [  0  |  0  0  I ]
-     !> X11 is P-by-Q. Q must be no larger than P, M-P, or M-Q. (If this is
-     !> not the case, then X must be transposed and/or permuted. This can be
-     !> done in constant time using the TRANS and SIGNS options. See DORCSD
-     !> for details.)
-     !> The orthogonal matrices P1, P2, Q1, and Q2 are P-by-P, (M-P)-by-
-     !> (M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. They are
-     !> represented implicitly by Householder vectors.
-     !> B11, B12, B21, and B22 are Q-by-Q bidiagonal matrices represented
-     !> implicitly by angles THETA, PHI.
 
      subroutine stdlib_dorbdb( trans, signs, m, p, q, x11, ldx11, x12, ldx12,x21, ldx21, x22, &
+     !! DORBDB simultaneously bidiagonalizes the blocks of an M-by-M
+     !! partitioned orthogonal matrix X:
+     !! [ B11 | B12 0  0 ]
+     !! [ X11 | X12 ]   [ P1 |    ] [  0  |  0 -I  0 ] [ Q1 |    ]**T
+     !! X = [-----------] = [---------] [----------------] [---------]   .
+     !! [ X21 | X22 ]   [    | P2 ] [ B21 | B22 0  0 ] [    | Q2 ]
+     !! [  0  |  0  0  I ]
+     !! X11 is P-by-Q. Q must be no larger than P, M-P, or M-Q. (If this is
+     !! not the case, then X must be transposed and/or permuted. This can be
+     !! done in constant time using the TRANS and SIGNS options. See DORCSD
+     !! for details.)
+     !! The orthogonal matrices P1, P2, Q1, and Q2 are P-by-P, (M-P)-by-
+     !! (M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. They are
+     !! represented implicitly by Householder vectors.
+     !! B11, B12, B21, and B22 are Q-by-Q bidiagonal matrices represented
+     !! implicitly by angles THETA, PHI.
                ldx22, theta, phi, taup1,taup2, tauq1, tauq2, work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -36027,19 +36023,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorbdb
 
-     !> DORBDB5: orthogonalizes the column vector
-     !> X = [ X1 ]
-     !> [ X2 ]
-     !> with respect to the columns of
-     !> Q = [ Q1 ] .
-     !> [ Q2 ]
-     !> The columns of Q must be orthonormal.
-     !> If the projection is zero according to Kahan's "twice is enough"
-     !> criterion, then some other vector from the orthogonal complement
-     !> is returned. This vector is chosen in an arbitrary but deterministic
-     !> way.
 
      pure subroutine stdlib_dorbdb5( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
+     !! DORBDB5 orthogonalizes the column vector
+     !! X = [ X1 ]
+     !! [ X2 ]
+     !! with respect to the columns of
+     !! Q = [ Q1 ] .
+     !! [ Q2 ]
+     !! The columns of Q must be orthonormal.
+     !! If the projection is zero according to Kahan's "twice is enough"
+     !! criterion, then some other vector from the orthogonal complement
+     !! is returned. This vector is chosen in an arbitrary but deterministic
+     !! way.
                lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -36126,21 +36122,21 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorbdb5
 
-     !> DORCSD: computes the CS decomposition of an M-by-M partitioned
-     !> orthogonal matrix X:
-     !> [  I  0  0 |  0  0  0 ]
-     !> [  0  C  0 |  0 -S  0 ]
-     !> [ X11 | X12 ]   [ U1 |    ] [  0  0  0 |  0  0 -I ] [ V1 |    ]**T
-     !> X = [-----------] = [---------] [---------------------] [---------]   .
-     !> [ X21 | X22 ]   [    | U2 ] [  0  0  0 |  I  0  0 ] [    | V2 ]
-     !> [  0  S  0 |  0  C  0 ]
-     !> [  0  0  I |  0  0  0 ]
-     !> X11 is P-by-Q. The orthogonal matrices U1, U2, V1, and V2 are P-by-P,
-     !> (M-P)-by-(M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. C and S are
-     !> R-by-R nonnegative diagonal matrices satisfying C^2 + S^2 = I, in
-     !> which R = MIN(P,M-P,Q,M-Q).
 
      recursive subroutine stdlib_dorcsd( jobu1, jobu2, jobv1t, jobv2t, trans,signs, m, p, q, x11, &
+     !! DORCSD computes the CS decomposition of an M-by-M partitioned
+     !! orthogonal matrix X:
+     !! [  I  0  0 |  0  0  0 ]
+     !! [  0  C  0 |  0 -S  0 ]
+     !! [ X11 | X12 ]   [ U1 |    ] [  0  0  0 |  0  0 -I ] [ V1 |    ]**T
+     !! X = [-----------] = [---------] [---------------------] [---------]   .
+     !! [ X21 | X22 ]   [    | U2 ] [  0  0  0 |  I  0  0 ] [    | V2 ]
+     !! [  0  S  0 |  0  C  0 ]
+     !! [  0  0  I |  0  0  0 ]
+     !! X11 is P-by-Q. The orthogonal matrices U1, U2, V1, and V2 are P-by-P,
+     !! (M-P)-by-(M-P), Q-by-Q, and (M-Q)-by-(M-Q), respectively. C and S are
+     !! R-by-R nonnegative diagonal matrices satisfying C^2 + S^2 = I, in
+     !! which R = MIN(P,M-P,Q,M-Q).
      ldx11, x12,ldx12, x21, ldx21, x22, ldx22, theta,u1, ldu1, u2, ldu2, v1t, ldv1t, v2t,ldv2t, &
                work, lwork, iwork, info )
         ! -- lapack computational routine --
@@ -36401,12 +36397,12 @@ module stdlib_linalg_lapack_d
            ! end stdlib_dorcsd
      end subroutine stdlib_dorcsd
 
-     !> DORGHR: generates a real orthogonal matrix Q which is defined as the
-     !> product of IHI-ILO elementary reflectors of order N, as returned by
-     !> DGEHRD:
-     !> Q = H(ilo) H(ilo+1) . . . H(ihi-1).
 
      pure subroutine stdlib_dorghr( n, ilo, ihi, a, lda, tau, work, lwork, info )
+     !! DORGHR generates a real orthogonal matrix Q which is defined as the
+     !! product of IHI-ILO elementary reflectors of order N, as returned by
+     !! DGEHRD:
+     !! Q = H(ilo) H(ilo+1) . . . H(ihi-1).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -36491,17 +36487,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorghr
 
-     !> DORHR_COL: takes an M-by-N real matrix Q_in with orthonormal columns
-     !> as input, stored in A, and performs Householder Reconstruction (HR),
-     !> i.e. reconstructs Householder vectors V(i) implicitly representing
-     !> another M-by-N matrix Q_out, with the property that Q_in = Q_out*S,
-     !> where S is an N-by-N diagonal matrix with diagonal entries
-     !> equal to +1 or -1. The Householder vectors (columns V(i) of V) are
-     !> stored in A on output, and the diagonal entries of S are stored in D.
-     !> Block reflectors are also returned in T
-     !> (same output format as DGEQRT).
 
      pure subroutine stdlib_dorhr_col( m, n, nb, a, lda, t, ldt, d, info )
+     !! DORHR_COL takes an M-by-N real matrix Q_in with orthonormal columns
+     !! as input, stored in A, and performs Householder Reconstruction (HR),
+     !! i.e. reconstructs Householder vectors V(i) implicitly representing
+     !! another M-by-N matrix Q_out, with the property that Q_in = Q_out*S,
+     !! where S is an N-by-N diagonal matrix with diagonal entries
+     !! equal to +1 or -1. The Householder vectors (columns V(i) of V) are
+     !! stored in A on output, and the diagonal entries of S are stored in D.
+     !! Block reflectors are also returned in T
+     !! (same output format as DGEQRT).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -36628,16 +36624,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorhr_col
 
-     !> DORMHR: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix of order nq, with nq = m if
-     !> SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
-     !> IHI-ILO elementary reflectors, as returned by DGEHRD:
-     !> Q = H(ilo) H(ilo+1) . . . H(ihi-1).
 
      pure subroutine stdlib_dormhr( side, trans, m, n, ilo, ihi, a, lda, tau, c,ldc, work, lwork, &
+     !! DORMHR overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix of order nq, with nq = m if
+     !! SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
+     !! IHI-ILO elementary reflectors, as returned by DGEHRD:
+     !! Q = H(ilo) H(ilo+1) . . . H(ihi-1).
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -36727,13 +36723,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dormhr
 
-     !> DPBCON: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a real symmetric positive definite band matrix using the
-     !> Cholesky factorization A = U**T*U or A = L*L**T computed by DPBTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_dpbcon( uplo, n, kd, ab, ldab, anorm, rcond, work,iwork, info )
+     !! DPBCON estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a real symmetric positive definite band matrix using the
+     !! Cholesky factorization A = U**T*U or A = L*L**T computed by DPBTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -36825,12 +36821,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpbcon
 
-     !> DPBRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is symmetric positive definite
-     !> and banded, and provides error bounds and backward error estimates
-     !> for the solution.
 
      pure subroutine stdlib_dpbrfs( uplo, n, kd, nrhs, ab, ldab, afb, ldafb, b,ldb, x, ldx, ferr, &
+     !! DPBRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is symmetric positive definite
+     !! and banded, and provides error bounds and backward error estimates
+     !! for the solution.
                berr, work, iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -37019,11 +37015,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpbrfs
 
-     !> DPFTRS: solves a system of linear equations A*X = B with a symmetric
-     !> positive definite matrix A using the Cholesky factorization
-     !> A = U**T*U or A = L*L**T computed by DPFTRF.
 
      pure subroutine stdlib_dpftrs( transr, uplo, n, nrhs, a, b, ldb, info )
+     !! DPFTRS solves a system of linear equations A*X = B with a symmetric
+     !! positive definite matrix A using the Cholesky factorization
+     !! A = U**T*U or A = L*L**T computed by DPFTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37073,13 +37069,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpftrs
 
-     !> DPOCON: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a real symmetric positive definite matrix using the
-     !> Cholesky factorization A = U**T*U or A = L*L**T computed by DPOTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_dpocon( uplo, n, a, lda, anorm, rcond, work, iwork,info )
+     !! DPOCON estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a real symmetric positive definite matrix using the
+     !! Cholesky factorization A = U**T*U or A = L*L**T computed by DPOTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37168,12 +37164,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpocon
 
-     !> DPORFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is symmetric positive definite,
-     !> and provides error bounds and backward error estimates for the
-     !> solution.
 
      pure subroutine stdlib_dporfs( uplo, n, nrhs, a, lda, af, ldaf, b, ldb, x,ldx, ferr, berr, &
+     !! DPORFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is symmetric positive definite,
+     !! and provides error bounds and backward error estimates for the
+     !! solution.
                work, iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -37357,15 +37353,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dporfs
 
-     !> DPOTF2: computes the Cholesky factorization of a real symmetric
-     !> positive definite matrix A.
-     !> The factorization has the form
-     !> A = U**T * U ,  if UPLO = 'U', or
-     !> A = L  * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_dpotf2( uplo, n, a, lda, info )
+     !! DPOTF2 computes the Cholesky factorization of a real symmetric
+     !! positive definite matrix A.
+     !! The factorization has the form
+     !! A = U**T * U ,  if UPLO = 'U', or
+     !! A = L  * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37444,21 +37440,21 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpotf2
 
-     !> DPOTRF2: computes the Cholesky factorization of a real symmetric
-     !> positive definite matrix A using the recursive algorithm.
-     !> The factorization has the form
-     !> A = U**T * U,  if UPLO = 'U', or
-     !> A = L  * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
-     !> This is the recursive version of the algorithm. It divides
-     !> the matrix into four submatrices:
-     !> [  A11 | A12  ]  where A11 is n1 by n1 and A22 is n2 by n2
-     !> A = [ -----|----- ]  with n1 = n/2
-     !> [  A21 | A22  ]       n2 = n-n1
-     !> The subroutine calls itself to factor A11. Update and scale A21
-     !> or A12, update A22 then calls itself to factor A22.
 
      pure recursive subroutine stdlib_dpotrf2( uplo, n, a, lda, info )
+     !! DPOTRF2 computes the Cholesky factorization of a real symmetric
+     !! positive definite matrix A using the recursive algorithm.
+     !! The factorization has the form
+     !! A = U**T * U,  if UPLO = 'U', or
+     !! A = L  * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
+     !! This is the recursive version of the algorithm. It divides
+     !! the matrix into four submatrices:
+     !! [  A11 | A12  ]  where A11 is n1 by n1 and A22 is n2 by n2
+     !! A = [ -----|----- ]  with n1 = n/2
+     !! [  A21 | A22  ]       n2 = n-n1
+     !! The subroutine calls itself to factor A11. Update and scale A21
+     !! or A12, update A22 then calls itself to factor A22.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37542,11 +37538,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpotrf2
 
-     !> DPOTRI: computes the inverse of a real symmetric positive definite
-     !> matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
-     !> computed by DPOTRF.
 
      pure subroutine stdlib_dpotri( uplo, n, a, lda, info )
+     !! DPOTRI computes the inverse of a real symmetric positive definite
+     !! matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
+     !! computed by DPOTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37583,14 +37579,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpotri
 
-     !> DPPCON: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a real symmetric positive definite packed matrix using
-     !> the Cholesky factorization A = U**T*U or A = L*L**T computed by
-     !> DPPTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_dppcon( uplo, n, ap, anorm, rcond, work, iwork, info )
+     !! DPPCON estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a real symmetric positive definite packed matrix using
+     !! the Cholesky factorization A = U**T*U or A = L*L**T computed by
+     !! DPPTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37677,12 +37673,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dppcon
 
-     !> DPPRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is symmetric positive definite
-     !> and packed, and provides error bounds and backward error estimates
-     !> for the solution.
 
      pure subroutine stdlib_dpprfs( uplo, n, nrhs, ap, afp, b, ldb, x, ldx, ferr,berr, work, &
+     !! DPPRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is symmetric positive definite
+     !! and packed, and provides error bounds and backward error estimates
+     !! for the solution.
                iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -37869,18 +37865,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpprfs
 
-     !> DPPSV: computes the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric positive definite matrix stored in
-     !> packed format and X and B are N-by-NRHS matrices.
-     !> The Cholesky decomposition is used to factor A as
-     !> A = U**T* U,  if UPLO = 'U', or
-     !> A = L * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is a lower triangular
-     !> matrix.  The factored form of A is then used to solve the system of
-     !> equations A * X = B.
 
      pure subroutine stdlib_dppsv( uplo, n, nrhs, ap, b, ldb, info )
+     !! DPPSV computes the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric positive definite matrix stored in
+     !! packed format and X and B are N-by-NRHS matrices.
+     !! The Cholesky decomposition is used to factor A as
+     !! A = U**T* U,  if UPLO = 'U', or
+     !! A = L * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is a lower triangular
+     !! matrix.  The factored form of A is then used to solve the system of
+     !! equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -37918,15 +37914,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dppsv
 
-     !> DPPSVX: uses the Cholesky factorization A = U**T*U or A = L*L**T to
-     !> compute the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric positive definite matrix stored in
-     !> packed format and X and B are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_dppsvx( fact, uplo, n, nrhs, ap, afp, equed, s, b, ldb,x, ldx, rcond, ferr,&
+     !! DPPSVX uses the Cholesky factorization A = U**T*U or A = L*L**T to
+     !! compute the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric positive definite matrix stored in
+     !! packed format and X and B are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                 berr, work, iwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -38057,11 +38053,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dppsvx
 
-     !> DPPTRI: computes the inverse of a real symmetric positive definite
-     !> matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
-     !> computed by DPPTRF.
 
      pure subroutine stdlib_dpptri( uplo, n, ap, info )
+     !! DPPTRI computes the inverse of a real symmetric positive definite
+     !! matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
+     !! computed by DPPTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -38119,17 +38115,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpptri
 
-     !> DPSTF2: computes the Cholesky factorization with complete
-     !> pivoting of a real symmetric positive semidefinite matrix A.
-     !> The factorization has the form
-     !> P**T * A * P = U**T * U ,  if UPLO = 'U',
-     !> P**T * A * P = L  * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular, and
-     !> P is stored as vector PIV.
-     !> This algorithm does not attempt to check that A is positive
-     !> semidefinite. This version of the algorithm calls level 2 BLAS.
 
      pure subroutine stdlib_dpstf2( uplo, n, a, lda, piv, rank, tol, work, info )
+     !! DPSTF2 computes the Cholesky factorization with complete
+     !! pivoting of a real symmetric positive semidefinite matrix A.
+     !! The factorization has the form
+     !! P**T * A * P = U**T * U ,  if UPLO = 'U',
+     !! P**T * A * P = L  * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular, and
+     !! P is stored as vector PIV.
+     !! This algorithm does not attempt to check that A is positive
+     !! semidefinite. This version of the algorithm calls level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -38298,17 +38294,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpstf2
 
-     !> DPSTRF: computes the Cholesky factorization with complete
-     !> pivoting of a real symmetric positive semidefinite matrix A.
-     !> The factorization has the form
-     !> P**T * A * P = U**T * U ,  if UPLO = 'U',
-     !> P**T * A * P = L  * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular, and
-     !> P is stored as vector PIV.
-     !> This algorithm does not attempt to check that A is positive
-     !> semidefinite. This version of the algorithm calls level 3 BLAS.
 
      pure subroutine stdlib_dpstrf( uplo, n, a, lda, piv, rank, tol, work, info )
+     !! DPSTRF computes the Cholesky factorization with complete
+     !! pivoting of a real symmetric positive semidefinite matrix A.
+     !! The factorization has the form
+     !! P**T * A * P = U**T * U ,  if UPLO = 'U',
+     !! P**T * A * P = L  * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular, and
+     !! P is stored as vector PIV.
+     !! This algorithm does not attempt to check that A is positive
+     !! semidefinite. This version of the algorithm calls level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -38509,14 +38505,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpstrf
 
-     !> DPTTRS: solves a tridiagonal system of the form
-     !> A * X = B
-     !> using the L*D*L**T factorization of A computed by DPTTRF.  D is a
-     !> diagonal matrix specified in the vector D, L is a unit bidiagonal
-     !> matrix whose subdiagonal is specified in the vector E, and X and B
-     !> are N by NRHS matrices.
 
      pure subroutine stdlib_dpttrs( n, nrhs, d, e, b, ldb, info )
+     !! DPTTRS solves a tridiagonal system of the form
+     !! A * X = B
+     !! using the L*D*L**T factorization of A computed by DPTTRF.  D is a
+     !! diagonal matrix specified in the vector D, L is a unit bidiagonal
+     !! matrix whose subdiagonal is specified in the vector E, and X and B
+     !! are N by NRHS matrices.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -38564,10 +38560,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpttrs
 
-     !> DSB2ST_KERNELS: is an internal routine used by the DSYTRD_SB2ST
-     !> subroutine.
 
      pure subroutine  stdlib_dsb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
+     !! DSB2ST_KERNELS is an internal routine used by the DSYTRD_SB2ST
+     !! subroutine.
                v, tau, ldvt, work)
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -38709,13 +38705,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsb2st_kernels
 
-     !> DSPCON: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a real symmetric packed matrix A using the factorization
-     !> A = U*D*U**T or A = L*D*L**T computed by DSPTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_dspcon( uplo, n, ap, ipiv, anorm, rcond, work, iwork,info )
+     !! DSPCON estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a real symmetric packed matrix A using the factorization
+     !! A = U*D*U**T or A = L*D*L**T computed by DSPTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -38791,12 +38787,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dspcon
 
-     !> DSPRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is symmetric indefinite
-     !> and packed, and provides error bounds and backward error estimates
-     !> for the solution.
 
      pure subroutine stdlib_dsprfs( uplo, n, nrhs, ap, afp, ipiv, b, ldb, x, ldx,ferr, berr, work,&
+     !! DSPRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is symmetric indefinite
+     !! and packed, and provides error bounds and backward error estimates
+     !! for the solution.
                 iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -38984,19 +38980,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsprfs
 
-     !> DSPSV: computes the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric matrix stored in packed format and X
-     !> and B are N-by-NRHS matrices.
-     !> The diagonal pivoting method is used to factor A as
-     !> A = U * D * U**T,  if UPLO = 'U', or
-     !> A = L * D * L**T,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, D is symmetric and block diagonal with 1-by-1
-     !> and 2-by-2 diagonal blocks.  The factored form of A is then used to
-     !> solve the system of equations A * X = B.
 
      pure subroutine stdlib_dspsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
+     !! DSPSV computes the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric matrix stored in packed format and X
+     !! and B are N-by-NRHS matrices.
+     !! The diagonal pivoting method is used to factor A as
+     !! A = U * D * U**T,  if UPLO = 'U', or
+     !! A = L * D * L**T,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, D is symmetric and block diagonal with 1-by-1
+     !! and 2-by-2 diagonal blocks.  The factored form of A is then used to
+     !! solve the system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -39035,14 +39031,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dspsv
 
-     !> DSPSVX: uses the diagonal pivoting factorization A = U*D*U**T or
-     !> A = L*D*L**T to compute the solution to a real system of linear
-     !> equations A * X = B, where A is an N-by-N symmetric matrix stored
-     !> in packed format and X and B are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_dspsvx( fact, uplo, n, nrhs, ap, afp, ipiv, b, ldb, x,ldx, rcond, ferr, &
+     !! DSPSVX uses the diagonal pivoting factorization A = U*D*U**T or
+     !! A = L*D*L**T to compute the solution to a real system of linear
+     !! equations A * X = B, where A is an N-by-N symmetric matrix stored
+     !! in packed format and X and B are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                berr, work, iwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -39113,11 +39109,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dspsvx
 
-     !> DSPTRD: reduces a real symmetric matrix A stored in packed form to
-     !> symmetric tridiagonal form T by an orthogonal similarity
-     !> transformation: Q**T * A * Q = T.
 
      pure subroutine stdlib_dsptrd( uplo, n, ap, d, e, tau, info )
+     !! DSPTRD reduces a real symmetric matrix A stored in packed form to
+     !! symmetric tridiagonal form T by an orthogonal similarity
+     !! transformation: Q**T * A * Q = T.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -39210,13 +39206,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsptrd
 
-     !> DSTEIN: computes the eigenvectors of a real symmetric tridiagonal
-     !> matrix T corresponding to specified eigenvalues, using inverse
-     !> iteration.
-     !> The maximum number of iterations allowed for each eigenvector is
-     !> specified by an internal parameter MAXITS (currently set to 5).
 
      pure subroutine stdlib_dstein( n, d, e, m, w, iblock, isplit, z, ldz, work,iwork, ifail, &
+     !! DSTEIN computes the eigenvectors of a real symmetric tridiagonal
+     !! matrix T corresponding to specified eigenvalues, using inverse
+     !! iteration.
+     !! The maximum number of iterations allowed for each eigenvector is
+     !! specified by an internal parameter MAXITS (currently set to 5).
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -39408,13 +39404,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dstein
 
-     !> DSTEQR: computes all eigenvalues and, optionally, eigenvectors of a
-     !> symmetric tridiagonal matrix using the implicit QL or QR method.
-     !> The eigenvectors of a full or band symmetric matrix can also be found
-     !> if DSYTRD or DSPTRD or DSBTRD has been used to reduce this matrix to
-     !> tridiagonal form.
 
      pure subroutine stdlib_dsteqr( compz, n, d, e, z, ldz, work, info )
+     !! DSTEQR computes all eigenvalues and, optionally, eigenvectors of a
+     !! symmetric tridiagonal matrix using the implicit QL or QR method.
+     !! The eigenvectors of a full or band symmetric matrix can also be found
+     !! if DSYTRD or DSPTRD or DSBTRD has been used to reduce this matrix to
+     !! tridiagonal form.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -39725,10 +39721,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsteqr
 
-     !> DSTERF: computes all eigenvalues of a symmetric tridiagonal matrix
-     !> using the Pal-Walker-Kahan variant of the QL or QR algorithm.
 
      pure subroutine stdlib_dsterf( n, d, e, info )
+     !! DSTERF computes all eigenvalues of a symmetric tridiagonal matrix
+     !! using the Pal-Walker-Kahan variant of the QL or QR algorithm.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -39960,10 +39956,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsterf
 
-     !> DSTEV: computes all eigenvalues and, optionally, eigenvectors of a
-     !> real symmetric tridiagonal matrix A.
 
      pure subroutine stdlib_dstev( jobz, n, d, e, z, ldz, work, info )
+     !! DSTEV computes all eigenvalues and, optionally, eigenvectors of a
+     !! real symmetric tridiagonal matrix A.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -40043,12 +40039,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dstev
 
-     !> DSTEVX: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a real symmetric tridiagonal matrix A.  Eigenvalues and
-     !> eigenvectors can be selected by specifying either a range of values
-     !> or a range of indices for the desired eigenvalues.
 
      pure subroutine stdlib_dstevx( jobz, range, n, d, e, vl, vu, il, iu, abstol,m, w, z, ldz, &
+     !! DSTEVX computes selected eigenvalues and, optionally, eigenvectors
+     !! of a real symmetric tridiagonal matrix A.  Eigenvalues and
+     !! eigenvectors can be selected by specifying either a range of values
+     !! or a range of indices for the desired eigenvalues.
                work, iwork, ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -40237,13 +40233,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dstevx
 
-     !> DSYCON: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a real symmetric matrix A using the factorization
-     !> A = U*D*U**T or A = L*D*L**T computed by DSYTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_dsycon( uplo, n, a, lda, ipiv, anorm, rcond, work,iwork, info )
+     !! DSYCON estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a real symmetric matrix A using the factorization
+     !! A = U*D*U**T or A = L*D*L**T computed by DSYTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -40320,13 +40316,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsycon
 
-     !> DSYCON_ROOK: estimates the reciprocal of the condition number (in the
-     !> 1-norm) of a real symmetric matrix A using the factorization
-     !> A = U*D*U**T or A = L*D*L**T computed by DSYTRF_ROOK.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_dsycon_rook( uplo, n, a, lda, ipiv, anorm, rcond, work,iwork, info )
+     !! DSYCON_ROOK estimates the reciprocal of the condition number (in the
+     !! 1-norm) of a real symmetric matrix A using the factorization
+     !! A = U*D*U**T or A = L*D*L**T computed by DSYTRF_ROOK.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -40403,11 +40399,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsycon_rook
 
-     !> DSYRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is symmetric indefinite, and
-     !> provides error bounds and backward error estimates for the solution.
 
      pure subroutine stdlib_dsyrfs( uplo, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, ferr, &
+     !! DSYRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is symmetric indefinite, and
+     !! provides error bounds and backward error estimates for the solution.
                berr, work, iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -40592,22 +40588,22 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsyrfs
 
-     !> DSYSV_RK: computes the solution to a real system of linear
-     !> equations A * X = B, where A is an N-by-N symmetric matrix
-     !> and X and B are N-by-NRHS matrices.
-     !> The bounded Bunch-Kaufman (rook) diagonal pivoting method is used
-     !> to factor A as
-     !> A = P*U*D*(U**T)*(P**T),  if UPLO = 'U', or
-     !> A = P*L*D*(L**T)*(P**T),  if UPLO = 'L',
-     !> where U (or L) is unit upper (or lower) triangular matrix,
-     !> U**T (or L**T) is the transpose of U (or L), P is a permutation
-     !> matrix, P**T is the transpose of P, and D is symmetric and block
-     !> diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> DSYTRF_RK is called to compute the factorization of a real
-     !> symmetric matrix.  The factored form of A is then used to solve
-     !> the system of equations A * X = B by calling BLAS3 routine DSYTRS_3.
 
      pure subroutine stdlib_dsysv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,work, lwork, info )
+     !! DSYSV_RK computes the solution to a real system of linear
+     !! equations A * X = B, where A is an N-by-N symmetric matrix
+     !! and X and B are N-by-NRHS matrices.
+     !! The bounded Bunch-Kaufman (rook) diagonal pivoting method is used
+     !! to factor A as
+     !! A = P*U*D*(U**T)*(P**T),  if UPLO = 'U', or
+     !! A = P*L*D*(L**T)*(P**T),  if UPLO = 'L',
+     !! where U (or L) is unit upper (or lower) triangular matrix,
+     !! U**T (or L**T) is the transpose of U (or L), P is a permutation
+     !! matrix, P**T is the transpose of P, and D is symmetric and block
+     !! diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! DSYTRF_RK is called to compute the factorization of a real
+     !! symmetric matrix.  The factored form of A is then used to solve
+     !! the system of equations A * X = B by calling BLAS3 routine DSYTRS_3.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -40669,24 +40665,24 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsysv_rk
 
-     !> DSYSV_ROOK: computes the solution to a real system of linear
-     !> equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> The diagonal pivoting method is used to factor A as
-     !> A = U * D * U**T,  if UPLO = 'U', or
-     !> A = L * D * L**T,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is symmetric and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
-     !> DSYTRF_ROOK is called to compute the factorization of a real
-     !> symmetric matrix A using the bounded Bunch-Kaufman ("rook") diagonal
-     !> pivoting method.
-     !> The factored form of A is then used to solve the system
-     !> of equations A * X = B by calling DSYTRS_ROOK.
 
      pure subroutine stdlib_dsysv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
+     !! DSYSV_ROOK computes the solution to a real system of linear
+     !! equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! The diagonal pivoting method is used to factor A as
+     !! A = U * D * U**T,  if UPLO = 'U', or
+     !! A = L * D * L**T,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is symmetric and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
+     !! DSYTRF_ROOK is called to compute the factorization of a real
+     !! symmetric matrix A using the bounded Bunch-Kaufman ("rook") diagonal
+     !! pivoting method.
+     !! The factored form of A is then used to solve the system
+     !! of equations A * X = B by calling DSYTRS_ROOK.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -40748,10 +40744,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsysv_rook
 
-     !> DSYTD2: reduces a real symmetric matrix A to symmetric tridiagonal
-     !> form T by an orthogonal similarity transformation: Q**T * A * Q = T.
 
      pure subroutine stdlib_dsytd2( uplo, n, a, lda, d, e, tau, info )
+     !! DSYTD2 reduces a real symmetric matrix A to symmetric tridiagonal
+     !! form T by an orthogonal similarity transformation: Q**T * A * Q = T.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -40842,15 +40838,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytd2
 
-     !> DSYTF2: computes the factorization of a real symmetric matrix A using
-     !> the Bunch-Kaufman diagonal pivoting method:
-     !> A = U*D*U**T  or  A = L*D*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, U**T is the transpose of U, and D is symmetric and
-     !> block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the unblocked version of the algorithm, calling Level 2 BLAS.
 
      pure subroutine stdlib_dsytf2( uplo, n, a, lda, ipiv, info )
+     !! DSYTF2 computes the factorization of a real symmetric matrix A using
+     !! the Bunch-Kaufman diagonal pivoting method:
+     !! A = U*D*U**T  or  A = L*D*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, U**T is the transpose of U, and D is symmetric and
+     !! block diagonal with 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the unblocked version of the algorithm, calling Level 2 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -41127,11 +41123,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytf2
 
-     !> DSYTRD: reduces a real symmetric matrix A to real symmetric
-     !> tridiagonal form T by an orthogonal similarity transformation:
-     !> Q**T * A * Q = T.
 
      pure subroutine stdlib_dsytrd( uplo, n, a, lda, d, e, tau, work, lwork, info )
+     !! DSYTRD reduces a real symmetric matrix A to real symmetric
+     !! tridiagonal form T by an orthogonal similarity transformation:
+     !! Q**T * A * Q = T.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -41253,11 +41249,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytrd
 
-     !> DSYTRD_SB2ST: reduces a real symmetric band matrix A to real symmetric
-     !> tridiagonal form T by a orthogonal similarity transformation:
-     !> Q**T * A * Q = T.
 
      pure subroutine stdlib_dsytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
+     !! DSYTRD_SB2ST reduces a real symmetric band matrix A to real symmetric
+     !! tridiagonal form T by a orthogonal similarity transformation:
+     !! Q**T * A * Q = T.
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -41499,16 +41495,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytrd_sb2st
 
-     !> DSYTRF: computes the factorization of a real symmetric matrix A using
-     !> the Bunch-Kaufman diagonal pivoting method.  The form of the
-     !> factorization is
-     !> A = U**T*D*U  or  A = L*D*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is symmetric and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_dsytrf( uplo, n, a, lda, ipiv, work, lwork, info )
+     !! DSYTRF computes the factorization of a real symmetric matrix A using
+     !! the Bunch-Kaufman diagonal pivoting method.  The form of the
+     !! factorization is
+     !! A = U**T*D*U  or  A = L*D*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is symmetric and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -41625,14 +41621,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytrf
 
-     !> DTBCON: estimates the reciprocal of the condition number of a
-     !> triangular band matrix A, in either the 1-norm or the infinity-norm.
-     !> The norm of A is computed and an estimate is obtained for
-     !> norm(inv(A)), then the reciprocal of the condition number is
-     !> computed as
-     !> RCOND = 1 / ( norm(A) * norm(inv(A)) ).
 
      subroutine stdlib_dtbcon( norm, uplo, diag, n, kd, ab, ldab, rcond, work,iwork, info )
+     !! DTBCON estimates the reciprocal of the condition number of a
+     !! triangular band matrix A, in either the 1-norm or the infinity-norm.
+     !! The norm of A is computed and an estimate is obtained for
+     !! norm(inv(A)), then the reciprocal of the condition number is
+     !! computed as
+     !! RCOND = 1 / ( norm(A) * norm(inv(A)) ).
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -41729,11 +41725,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtbcon
 
-     !> DTFTRI: computes the inverse of a triangular matrix A stored in RFP
-     !> format.
-     !> This is a Level 3 BLAS version of the algorithm.
 
      pure subroutine stdlib_dtftri( transr, uplo, diag, n, a, info )
+     !! DTFTRI computes the inverse of a triangular matrix A stored in RFP
+     !! format.
+     !! This is a Level 3 BLAS version of the algorithm.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -41912,36 +41908,36 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtftri
 
-     !> DTGSY2: solves the generalized Sylvester equation:
-     !> A * R - L * B = scale * C                (1)
-     !> D * R - L * E = scale * F,
-     !> using Level 1 and 2 BLAS. where R and L are unknown M-by-N matrices,
-     !> (A, D), (B, E) and (C, F) are given matrix pairs of size M-by-M,
-     !> N-by-N and M-by-N, respectively, with real entries. (A, D) and (B, E)
-     !> must be in generalized Schur canonical form, i.e. A, B are upper
-     !> quasi triangular and D, E are upper triangular. The solution (R, L)
-     !> overwrites (C, F). 0 <= SCALE <= 1 is an output scaling factor
-     !> chosen to avoid overflow.
-     !> In matrix notation solving equation (1) corresponds to solve
-     !> Z*x = scale*b, where Z is defined as
-     !> Z = [ kron(In, A)  -kron(B**T, Im) ]             (2)
-     !> [ kron(In, D)  -kron(E**T, Im) ],
-     !> Ik is the identity matrix of size k and X**T is the transpose of X.
-     !> kron(X, Y) is the Kronecker product between the matrices X and Y.
-     !> In the process of solving (1), we solve a number of such systems
-     !> where Dim(In), Dim(In) = 1 or 2.
-     !> If TRANS = 'T', solve the transposed system Z**T*y = scale*b for y,
-     !> which is equivalent to solve for R and L in
-     !> A**T * R  + D**T * L   = scale * C           (3)
-     !> R  * B**T + L  * E**T  = scale * -F
-     !> This case is used to compute an estimate of Dif[(A, D), (B, E)] =
-     !> sigma_min(Z) using reverse communication with DLACON.
-     !> DTGSY2 also (IJOB >= 1) contributes to the computation in DTGSYL
-     !> of an upper bound on the separation between to matrix pairs. Then
-     !> the input (A, D), (B, E) are sub-pencils of the matrix pair in
-     !> DTGSYL. See DTGSYL for details.
 
      pure subroutine stdlib_dtgsy2( trans, ijob, m, n, a, lda, b, ldb, c, ldc, d,ldd, e, lde, f, &
+     !! DTGSY2 solves the generalized Sylvester equation:
+     !! A * R - L * B = scale * C                (1)
+     !! D * R - L * E = scale * F,
+     !! using Level 1 and 2 BLAS. where R and L are unknown M-by-N matrices,
+     !! (A, D), (B, E) and (C, F) are given matrix pairs of size M-by-M,
+     !! N-by-N and M-by-N, respectively, with real entries. (A, D) and (B, E)
+     !! must be in generalized Schur canonical form, i.e. A, B are upper
+     !! quasi triangular and D, E are upper triangular. The solution (R, L)
+     !! overwrites (C, F). 0 <= SCALE <= 1 is an output scaling factor
+     !! chosen to avoid overflow.
+     !! In matrix notation solving equation (1) corresponds to solve
+     !! Z*x = scale*b, where Z is defined as
+     !! Z = [ kron(In, A)  -kron(B**T, Im) ]             (2)
+     !! [ kron(In, D)  -kron(E**T, Im) ],
+     !! Ik is the identity matrix of size k and X**T is the transpose of X.
+     !! kron(X, Y) is the Kronecker product between the matrices X and Y.
+     !! In the process of solving (1), we solve a number of such systems
+     !! where Dim(In), Dim(In) = 1 or 2.
+     !! If TRANS = 'T', solve the transposed system Z**T*y = scale*b for y,
+     !! which is equivalent to solve for R and L in
+     !! A**T * R  + D**T * L   = scale * C           (3)
+     !! R  * B**T + L  * E**T  = scale * -F
+     !! This case is used to compute an estimate of Dif[(A, D), (B, E)] =
+     !! sigma_min(Z) using reverse communication with DLACON.
+     !! DTGSY2 also (IJOB >= 1) contributes to the computation in DTGSYL
+     !! of an upper bound on the separation between to matrix pairs. Then
+     !! the input (A, D), (B, E) are sub-pencils of the matrix pair in
+     !! DTGSYL. See DTGSYL for details.
                ldf, scale, rdsum, rdscal,iwork, pq, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -42552,36 +42548,36 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtgsy2
 
-     !> DTGSYL: solves the generalized Sylvester equation:
-     !> A * R - L * B = scale * C                 (1)
-     !> D * R - L * E = scale * F
-     !> where R and L are unknown m-by-n matrices, (A, D), (B, E) and
-     !> (C, F) are given matrix pairs of size m-by-m, n-by-n and m-by-n,
-     !> respectively, with real entries. (A, D) and (B, E) must be in
-     !> generalized (real) Schur canonical form, i.e. A, B are upper quasi
-     !> triangular and D, E are upper triangular.
-     !> The solution (R, L) overwrites (C, F). 0 <= SCALE <= 1 is an output
-     !> scaling factor chosen to avoid overflow.
-     !> In matrix notation (1) is equivalent to solve  Zx = scale b, where
-     !> Z is defined as
-     !> Z = [ kron(In, A)  -kron(B**T, Im) ]         (2)
-     !> [ kron(In, D)  -kron(E**T, Im) ].
-     !> Here Ik is the identity matrix of size k and X**T is the transpose of
-     !> X. kron(X, Y) is the Kronecker product between the matrices X and Y.
-     !> If TRANS = 'T', DTGSYL solves the transposed system Z**T*y = scale*b,
-     !> which is equivalent to solve for R and L in
-     !> A**T * R + D**T * L = scale * C           (3)
-     !> R * B**T + L * E**T = scale * -F
-     !> This case (TRANS = 'T') is used to compute an one-norm-based estimate
-     !> of Dif[(A,D), (B,E)], the separation between the matrix pairs (A,D)
-     !> and (B,E), using DLACON.
-     !> If IJOB >= 1, DTGSYL computes a Frobenius norm-based estimate
-     !> of Dif[(A,D),(B,E)]. That is, the reciprocal of a lower bound on the
-     !> reciprocal of the smallest singular value of Z. See [1-2] for more
-     !> information.
-     !> This is a level 3 BLAS algorithm.
 
      pure subroutine stdlib_dtgsyl( trans, ijob, m, n, a, lda, b, ldb, c, ldc, d,ldd, e, lde, f, &
+     !! DTGSYL solves the generalized Sylvester equation:
+     !! A * R - L * B = scale * C                 (1)
+     !! D * R - L * E = scale * F
+     !! where R and L are unknown m-by-n matrices, (A, D), (B, E) and
+     !! (C, F) are given matrix pairs of size m-by-m, n-by-n and m-by-n,
+     !! respectively, with real entries. (A, D) and (B, E) must be in
+     !! generalized (real) Schur canonical form, i.e. A, B are upper quasi
+     !! triangular and D, E are upper triangular.
+     !! The solution (R, L) overwrites (C, F). 0 <= SCALE <= 1 is an output
+     !! scaling factor chosen to avoid overflow.
+     !! In matrix notation (1) is equivalent to solve  Zx = scale b, where
+     !! Z is defined as
+     !! Z = [ kron(In, A)  -kron(B**T, Im) ]         (2)
+     !! [ kron(In, D)  -kron(E**T, Im) ].
+     !! Here Ik is the identity matrix of size k and X**T is the transpose of
+     !! X. kron(X, Y) is the Kronecker product between the matrices X and Y.
+     !! If TRANS = 'T', DTGSYL solves the transposed system Z**T*y = scale*b,
+     !! which is equivalent to solve for R and L in
+     !! A**T * R + D**T * L = scale * C           (3)
+     !! R * B**T + L * E**T = scale * -F
+     !! This case (TRANS = 'T') is used to compute an one-norm-based estimate
+     !! of Dif[(A,D), (B,E)], the separation between the matrix pairs (A,D)
+     !! and (B,E), using DLACON.
+     !! If IJOB >= 1, DTGSYL computes a Frobenius norm-based estimate
+     !! of Dif[(A,D),(B,E)]. That is, the reciprocal of a lower bound on the
+     !! reciprocal of the smallest singular value of Z. See [1-2] for more
+     !! information.
+     !! This is a level 3 BLAS algorithm.
                ldf, scale, dif, work, lwork,iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -42881,14 +42877,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtgsyl
 
-     !> DTPCON: estimates the reciprocal of the condition number of a packed
-     !> triangular matrix A, in either the 1-norm or the infinity-norm.
-     !> The norm of A is computed and an estimate is obtained for
-     !> norm(inv(A)), then the reciprocal of the condition number is
-     !> computed as
-     !> RCOND = 1 / ( norm(A) * norm(inv(A)) ).
 
      subroutine stdlib_dtpcon( norm, uplo, diag, n, ap, rcond, work, iwork,info )
+     !! DTPCON estimates the reciprocal of the condition number of a packed
+     !! triangular matrix A, in either the 1-norm or the infinity-norm.
+     !! The norm of A is computed and an estimate is obtained for
+     !! norm(inv(A)), then the reciprocal of the condition number is
+     !! computed as
+     !! RCOND = 1 / ( norm(A) * norm(inv(A)) ).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -42980,11 +42976,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtpcon
 
-     !> DTPLQT2: computes a LQ a factorization of a real "triangular-pentagonal"
-     !> matrix C, which is composed of a triangular block A and pentagonal block B,
-     !> using the compact WY representation for Q.
 
      pure subroutine stdlib_dtplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+     !! DTPLQT2 computes a LQ a factorization of a real "triangular-pentagonal"
+     !! matrix C, which is composed of a triangular block A and pentagonal block B,
+     !! using the compact WY representation for Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43077,11 +43073,11 @@ module stdlib_linalg_lapack_d
            end do
      end subroutine stdlib_dtplqt2
 
-     !> DTPMQRT applies a real orthogonal matrix Q obtained from a
-     !> "triangular-pentagonal" real block reflector H to a general
-     !> real matrix C, which consists of two blocks A and B.
 
      pure subroutine stdlib_dtpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
+     !! DTPMQRT applies a real orthogonal matrix Q obtained from a
+     !! "triangular-pentagonal" real block reflector H to a general
+     !! real matrix C, which consists of two blocks A and B.
                work, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -43195,11 +43191,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtpmlqt
 
-     !> DTPMQRT: applies a real orthogonal matrix Q obtained from a
-     !> "triangular-pentagonal" real block reflector H to a general
-     !> real matrix C, which consists of two blocks A and B.
 
      pure subroutine stdlib_dtpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
+     !! DTPMQRT applies a real orthogonal matrix Q obtained from a
+     !! "triangular-pentagonal" real block reflector H to a general
+     !! real matrix C, which consists of two blocks A and B.
                work, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -43315,11 +43311,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtpmqrt
 
-     !> DTPQRT2: computes a QR factorization of a real "triangular-pentagonal"
-     !> matrix C, which is composed of a triangular block A and pentagonal block B,
-     !> using the compact WY representation for Q.
 
      pure subroutine stdlib_dtpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+     !! DTPQRT2 computes a QR factorization of a real "triangular-pentagonal"
+     !! matrix C, which is composed of a triangular block A and pentagonal block B,
+     !! using the compact WY representation for Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43406,14 +43402,14 @@ module stdlib_linalg_lapack_d
            end do
      end subroutine stdlib_dtpqrt2
 
-     !> DTRCON: estimates the reciprocal of the condition number of a
-     !> triangular matrix A, in either the 1-norm or the infinity-norm.
-     !> The norm of A is computed and an estimate is obtained for
-     !> norm(inv(A)), then the reciprocal of the condition number is
-     !> computed as
-     !> RCOND = 1 / ( norm(A) * norm(inv(A)) ).
 
      subroutine stdlib_dtrcon( norm, uplo, diag, n, a, lda, rcond, work,iwork, info )
+     !! DTRCON estimates the reciprocal of the condition number of a
+     !! triangular matrix A, in either the 1-norm or the infinity-norm.
+     !! The norm of A is computed and an estimate is obtained for
+     !! norm(inv(A)), then the reciprocal of the condition number is
+     !! computed as
+     !! RCOND = 1 / ( norm(A) * norm(inv(A)) ).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43507,14 +43503,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrcon
 
-     !> DTZRZF: reduces the M-by-N ( M<=N ) real upper trapezoidal matrix A
-     !> to upper triangular form by means of orthogonal transformations.
-     !> The upper trapezoidal matrix A is factored as
-     !> A = ( R  0 ) * Z,
-     !> where Z is an N-by-N orthogonal matrix and R is an M-by-M upper
-     !> triangular matrix.
 
      pure subroutine stdlib_dtzrzf( m, n, a, lda, tau, work, lwork, info )
+     !! DTZRZF reduces the M-by-N ( M<=N ) real upper trapezoidal matrix A
+     !! to upper triangular form by means of orthogonal transformations.
+     !! The upper trapezoidal matrix A is factored as
+     !! A = ( R  0 ) * Z,
+     !! where Z is an N-by-N orthogonal matrix and R is an M-by-M upper
+     !! triangular matrix.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43623,16 +43619,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtzrzf
 
-     !> DGBSV: computes the solution to a real system of linear equations
-     !> A * X = B, where A is a band matrix of order N with KL subdiagonals
-     !> and KU superdiagonals, and X and B are N-by-NRHS matrices.
-     !> The LU decomposition with partial pivoting and row interchanges is
-     !> used to factor A as A = L * U, where L is a product of permutation
-     !> and unit lower triangular matrices with KL subdiagonals, and U is
-     !> upper triangular with KL+KU superdiagonals.  The factored form of A
-     !> is then used to solve the system of equations A * X = B.
 
      pure subroutine stdlib_dgbsv( n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb, info )
+     !! DGBSV computes the solution to a real system of linear equations
+     !! A * X = B, where A is a band matrix of order N with KL subdiagonals
+     !! and KU superdiagonals, and X and B are N-by-NRHS matrices.
+     !! The LU decomposition with partial pivoting and row interchanges is
+     !! used to factor A as A = L * U, where L is a product of permutation
+     !! and unit lower triangular matrices with KL subdiagonals, and U is
+     !! upper triangular with KL+KU superdiagonals.  The factored form of A
+     !! is then used to solve the system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -43675,14 +43671,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgbsv
 
-     !> DGBSVX: uses the LU factorization to compute the solution to a real
-     !> system of linear equations A * X = B, A**T * X = B, or A**H * X = B,
-     !> where A is a band matrix of order N with KL subdiagonals and KU
-     !> superdiagonals, and X and B are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_dgbsvx( fact, trans, n, kl, ku, nrhs, ab, ldab, afb,ldafb, ipiv, equed, r, &
+     !! DGBSVX uses the LU factorization to compute the solution to a real
+     !! system of linear equations A * X = B, A**T * X = B, or A**H * X = B,
+     !! where A is a band matrix of order N with KL subdiagonals and KU
+     !! superdiagonals, and X and B are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                c, b, ldb, x, ldx,rcond, ferr, berr, work, iwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -43898,16 +43894,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgbsvx
 
-     !> DGEBAL: balances a general real matrix A.  This involves, first,
-     !> permuting A by a similarity transformation to isolate eigenvalues
-     !> in the first 1 to ILO-1 and last IHI+1 to N elements on the
-     !> diagonal; and second, applying a diagonal similarity transformation
-     !> to rows and columns ILO to IHI to make the rows and columns as
-     !> close in norm as possible.  Both steps are optional.
-     !> Balancing may reduce the 1-norm of the matrix, and improve the
-     !> accuracy of the computed eigenvalues and/or eigenvectors.
 
      pure subroutine stdlib_dgebal( job, n, a, lda, ilo, ihi, scale, info )
+     !! DGEBAL balances a general real matrix A.  This involves, first,
+     !! permuting A by a similarity transformation to isolate eigenvalues
+     !! in the first 1 to ILO-1 and last IHI+1 to N elements on the
+     !! diagonal; and second, applying a diagonal similarity transformation
+     !! to rows and columns ILO to IHI to make the rows and columns as
+     !! close in norm as possible.  Both steps are optional.
+     !! Balancing may reduce the 1-norm of the matrix, and improve the
+     !! accuracy of the computed eigenvalues and/or eigenvectors.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44066,11 +44062,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgebal
 
-     !> DGEBD2: reduces a real general m by n matrix A to upper or lower
-     !> bidiagonal form B by an orthogonal transformation: Q**T * A * P = B.
-     !> If m >= n, B is upper bidiagonal; if m < n, B is lower bidiagonal.
 
      pure subroutine stdlib_dgebd2( m, n, a, lda, d, e, tauq, taup, work, info )
+     !! DGEBD2 reduces a real general m by n matrix A to upper or lower
+     !! bidiagonal form B by an orthogonal transformation: Q**T * A * P = B.
+     !! If m >= n, B is upper bidiagonal; if m < n, B is lower bidiagonal.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44158,10 +44154,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgebd2
 
-     !> DGEHD2: reduces a real general matrix A to upper Hessenberg form H by
-     !> an orthogonal similarity transformation:  Q**T * A * Q = H .
 
      pure subroutine stdlib_dgehd2( n, ilo, ihi, a, lda, tau, work, info )
+     !! DGEHD2 reduces a real general matrix A to upper Hessenberg form H by
+     !! an orthogonal similarity transformation:  Q**T * A * Q = H .
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44210,14 +44206,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgehd2
 
-     !> DGELQ2: computes an LQ factorization of a real m-by-n matrix A:
-     !> A = ( L 0 ) *  Q
-     !> where:
-     !> Q is a n-by-n orthogonal matrix;
-     !> L is a lower-triangular m-by-m matrix;
-     !> 0 is a m-by-(n-m) zero matrix, if m < n.
 
      pure subroutine stdlib_dgelq2( m, n, a, lda, tau, work, info )
+     !! DGELQ2 computes an LQ factorization of a real m-by-n matrix A:
+     !! A = ( L 0 ) *  Q
+     !! where:
+     !! Q is a n-by-n orthogonal matrix;
+     !! L is a lower-triangular m-by-m matrix;
+     !! 0 is a m-by-(n-m) zero matrix, if m < n.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44264,14 +44260,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgelq2
 
-     !> DGELQF: computes an LQ factorization of a real M-by-N matrix A:
-     !> A = ( L 0 ) *  Q
-     !> where:
-     !> Q is a N-by-N orthogonal matrix;
-     !> L is a lower-triangular M-by-M matrix;
-     !> 0 is a M-by-(N-M) zero matrix, if M < N.
 
      pure subroutine stdlib_dgelqf( m, n, a, lda, tau, work, lwork, info )
+     !! DGELQF computes an LQ factorization of a real M-by-N matrix A:
+     !! A = ( L 0 ) *  Q
+     !! where:
+     !! Q is a N-by-N orthogonal matrix;
+     !! L is a lower-triangular M-by-M matrix;
+     !! 0 is a M-by-(N-M) zero matrix, if M < N.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44361,12 +44357,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgelqf
 
-     !> DGELQT3: recursively computes a LQ factorization of a real M-by-N
-     !> matrix A, using the compact WY representation of Q.
-     !> Based on the algorithm of Elmroth and Gustavson,
-     !> IBM J. Res. Develop. Vol 44 No. 4 July 2000.
 
      pure recursive subroutine stdlib_dgelqt3( m, n, a, lda, t, ldt, info )
+     !! DGELQT3 recursively computes a LQ factorization of a real M-by-N
+     !! matrix A, using the compact WY representation of Q.
+     !! Based on the algorithm of Elmroth and Gustavson,
+     !! IBM J. Res. Develop. Vol 44 No. 4 July 2000.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44448,10 +44444,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgelqt3
 
-     !> DGEQL2: computes a QL factorization of a real m by n matrix A:
-     !> A = Q * L.
 
      pure subroutine stdlib_dgeql2( m, n, a, lda, tau, work, info )
+     !! DGEQL2 computes a QL factorization of a real m by n matrix A:
+     !! A = Q * L.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44497,10 +44493,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeql2
 
-     !> DGEQLF: computes a QL factorization of a real M-by-N matrix A:
-     !> A = Q * L.
 
      pure subroutine stdlib_dgeqlf( m, n, a, lda, tau, work, lwork, info )
+     !! DGEQLF computes a QL factorization of a real M-by-N matrix A:
+     !! A = Q * L.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44603,15 +44599,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeqlf
 
-     !> DGEQR2: computes a QR factorization of a real m-by-n matrix A:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a m-by-m orthogonal matrix;
-     !> R is an upper-triangular n-by-n matrix;
-     !> 0 is a (m-n)-by-n zero matrix, if m > n.
 
      pure subroutine stdlib_dgeqr2( m, n, a, lda, tau, work, info )
+     !! DGEQR2 computes a QR factorization of a real m-by-n matrix A:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a m-by-m orthogonal matrix;
+     !! R is an upper-triangular n-by-n matrix;
+     !! 0 is a (m-n)-by-n zero matrix, if m > n.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44658,16 +44654,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeqr2
 
-     !> DGEQR2P: computes a QR factorization of a real m-by-n matrix A:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a m-by-m orthogonal matrix;
-     !> R is an upper-triangular n-by-n matrix with nonnegative diagonal
-     !> entries;
-     !> 0 is a (m-n)-by-n zero matrix, if m > n.
 
      subroutine stdlib_dgeqr2p( m, n, a, lda, tau, work, info )
+     !! DGEQR2P computes a QR factorization of a real m-by-n matrix A:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a m-by-m orthogonal matrix;
+     !! R is an upper-triangular n-by-n matrix with nonnegative diagonal
+     !! entries;
+     !! 0 is a (m-n)-by-n zero matrix, if m > n.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44714,15 +44710,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeqr2p
 
-     !> DGEQRF: computes a QR factorization of a real M-by-N matrix A:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a M-by-M orthogonal matrix;
-     !> R is an upper-triangular N-by-N matrix;
-     !> 0 is a (M-N)-by-N zero matrix, if M > N.
 
      pure subroutine stdlib_dgeqrf( m, n, a, lda, tau, work, lwork, info )
+     !! DGEQRF computes a QR factorization of a real M-by-N matrix A:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a M-by-M orthogonal matrix;
+     !! R is an upper-triangular N-by-N matrix;
+     !! 0 is a (M-N)-by-N zero matrix, if M > N.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44816,16 +44812,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeqrf
 
-     !> DGEQR2P computes a QR factorization of a real M-by-N matrix A:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a M-by-M orthogonal matrix;
-     !> R is an upper-triangular N-by-N matrix with nonnegative diagonal
-     !> entries;
-     !> 0 is a (M-N)-by-N zero matrix, if M > N.
 
      subroutine stdlib_dgeqrfp( m, n, a, lda, tau, work, lwork, info )
+     !! DGEQR2P computes a QR factorization of a real M-by-N matrix A:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a M-by-M orthogonal matrix;
+     !! R is an upper-triangular N-by-N matrix with nonnegative diagonal
+     !! entries;
+     !! 0 is a (M-N)-by-N zero matrix, if M > N.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44915,10 +44911,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeqrfp
 
-     !> DGEQRT2: computes a QR factorization of a real M-by-N matrix A,
-     !> using the compact WY representation of Q.
 
      pure subroutine stdlib_dgeqrt2( m, n, a, lda, t, ldt, info )
+     !! DGEQRT2 computes a QR factorization of a real M-by-N matrix A,
+     !! using the compact WY representation of Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -44983,12 +44979,12 @@ module stdlib_linalg_lapack_d
            end do
      end subroutine stdlib_dgeqrt2
 
-     !> DGEQRT3: recursively computes a QR factorization of a real M-by-N
-     !> matrix A, using the compact WY representation of Q.
-     !> Based on the algorithm of Elmroth and Gustavson,
-     !> IBM J. Res. Develop. Vol 44 No. 4 July 2000.
 
      pure recursive subroutine stdlib_dgeqrt3( m, n, a, lda, t, ldt, info )
+     !! DGEQRT3 recursively computes a QR factorization of a real M-by-N
+     !! matrix A, using the compact WY representation of Q.
+     !! Based on the algorithm of Elmroth and Gustavson,
+     !! IBM J. Res. Develop. Vol 44 No. 4 July 2000.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -45068,11 +45064,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeqrt3
 
-     !> DGERFS: improves the computed solution to a system of linear
-     !> equations and provides error bounds and backward error estimates for
-     !> the solution.
 
      pure subroutine stdlib_dgerfs( trans, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, ferr, &
+     !! DGERFS improves the computed solution to a system of linear
+     !! equations and provides error bounds and backward error estimates for
+     !! the solution.
                berr, work, iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -45261,10 +45257,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgerfs
 
-     !> DGERQ2: computes an RQ factorization of a real m by n matrix A:
-     !> A = R * Q.
 
      pure subroutine stdlib_dgerq2( m, n, a, lda, tau, work, info )
+     !! DGERQ2 computes an RQ factorization of a real m by n matrix A:
+     !! A = R * Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -45310,10 +45306,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgerq2
 
-     !> DGERQF: computes an RQ factorization of a real M-by-N matrix A:
-     !> A = R * Q.
 
      pure subroutine stdlib_dgerqf( m, n, a, lda, tau, work, lwork, info )
+     !! DGERQF computes an RQ factorization of a real M-by-N matrix A:
+     !! A = R * Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -45416,16 +45412,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgerqf
 
-     !> DGETRF: computes an LU factorization of a general M-by-N matrix A
-     !> using partial pivoting with row interchanges.
-     !> The factorization has the form
-     !> A = P * L * U
-     !> where P is a permutation matrix, L is lower triangular with unit
-     !> diagonal elements (lower trapezoidal if m > n), and U is upper
-     !> triangular (upper trapezoidal if m < n).
-     !> This is the right-looking Level 3 BLAS version of the algorithm.
 
      pure subroutine stdlib_dgetrf( m, n, a, lda, ipiv, info )
+     !! DGETRF computes an LU factorization of a general M-by-N matrix A
+     !! using partial pivoting with row interchanges.
+     !! The factorization has the form
+     !! A = P * L * U
+     !! where P is a permutation matrix, L is lower triangular with unit
+     !! diagonal elements (lower trapezoidal if m > n), and U is upper
+     !! triangular (upper trapezoidal if m < n).
+     !! This is the right-looking Level 3 BLAS version of the algorithm.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -45494,33 +45490,33 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgetrf
 
-     !> DGGHD3: reduces a pair of real matrices (A,B) to generalized upper
-     !> Hessenberg form using orthogonal transformations, where A is a
-     !> general matrix and B is upper triangular.  The form of the
-     !> generalized eigenvalue problem is
-     !> A*x = lambda*B*x,
-     !> and B is typically made upper triangular by computing its QR
-     !> factorization and moving the orthogonal matrix Q to the left side
-     !> of the equation.
-     !> This subroutine simultaneously reduces A to a Hessenberg matrix H:
-     !> Q**T*A*Z = H
-     !> and transforms B to another upper triangular matrix T:
-     !> Q**T*B*Z = T
-     !> in order to reduce the problem to its standard form
-     !> H*y = lambda*T*y
-     !> where y = Z**T*x.
-     !> The orthogonal matrices Q and Z are determined as products of Givens
-     !> rotations.  They may either be formed explicitly, or they may be
-     !> postmultiplied into input matrices Q1 and Z1, so that
-     !> Q1 * A * Z1**T = (Q1*Q) * H * (Z1*Z)**T
-     !> Q1 * B * Z1**T = (Q1*Q) * T * (Z1*Z)**T
-     !> If Q1 is the orthogonal matrix from the QR factorization of B in the
-     !> original equation A*x = lambda*B*x, then DGGHD3 reduces the original
-     !> problem to generalized Hessenberg form.
-     !> This is a blocked variant of DGGHRD, using matrix-matrix
-     !> multiplications for parts of the computation to enhance performance.
 
      pure subroutine stdlib_dgghd3( compq, compz, n, ilo, ihi, a, lda, b, ldb, q,ldq, z, ldz, &
+     !! DGGHD3 reduces a pair of real matrices (A,B) to generalized upper
+     !! Hessenberg form using orthogonal transformations, where A is a
+     !! general matrix and B is upper triangular.  The form of the
+     !! generalized eigenvalue problem is
+     !! A*x = lambda*B*x,
+     !! and B is typically made upper triangular by computing its QR
+     !! factorization and moving the orthogonal matrix Q to the left side
+     !! of the equation.
+     !! This subroutine simultaneously reduces A to a Hessenberg matrix H:
+     !! Q**T*A*Z = H
+     !! and transforms B to another upper triangular matrix T:
+     !! Q**T*B*Z = T
+     !! in order to reduce the problem to its standard form
+     !! H*y = lambda*T*y
+     !! where y = Z**T*x.
+     !! The orthogonal matrices Q and Z are determined as products of Givens
+     !! rotations.  They may either be formed explicitly, or they may be
+     !! postmultiplied into input matrices Q1 and Z1, so that
+     !! Q1 * A * Z1**T = (Q1*Q) * H * (Z1*Z)**T
+     !! Q1 * B * Z1**T = (Q1*Q) * T * (Z1*Z)**T
+     !! If Q1 is the orthogonal matrix from the QR factorization of B in the
+     !! original equation A*x = lambda*B*x, then DGGHD3 reduces the original
+     !! problem to generalized Hessenberg form.
+     !! This is a blocked variant of DGGHRD, using matrix-matrix
+     !! multiplications for parts of the computation to enhance performance.
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -46021,26 +46017,26 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgghd3
 
-     !> DGGQRF: computes a generalized QR factorization of an N-by-M matrix A
-     !> and an N-by-P matrix B:
-     !> A = Q*R,        B = Q*T*Z,
-     !> where Q is an N-by-N orthogonal matrix, Z is a P-by-P orthogonal
-     !> matrix, and R and T assume one of the forms:
-     !> if N >= M,  R = ( R11 ) M  ,   or if N < M,  R = ( R11  R12 ) N,
-     !> (  0  ) N-M                         N   M-N
-     !> M
-     !> where R11 is upper triangular, and
-     !> if N <= P,  T = ( 0  T12 ) N,   or if N > P,  T = ( T11 ) N-P,
-     !> P-N  N                           ( T21 ) P
-     !> P
-     !> where T12 or T21 is upper triangular.
-     !> In particular, if B is square and nonsingular, the GQR factorization
-     !> of A and B implicitly gives the QR factorization of inv(B)*A:
-     !> inv(B)*A = Z**T*(inv(T)*R)
-     !> where inv(B) denotes the inverse of the matrix B, and Z**T denotes the
-     !> transpose of the matrix Z.
 
      pure subroutine stdlib_dggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
+     !! DGGQRF computes a generalized QR factorization of an N-by-M matrix A
+     !! and an N-by-P matrix B:
+     !! A = Q*R,        B = Q*T*Z,
+     !! where Q is an N-by-N orthogonal matrix, Z is a P-by-P orthogonal
+     !! matrix, and R and T assume one of the forms:
+     !! if N >= M,  R = ( R11 ) M  ,   or if N < M,  R = ( R11  R12 ) N,
+     !! (  0  ) N-M                         N   M-N
+     !! M
+     !! where R11 is upper triangular, and
+     !! if N <= P,  T = ( 0  T12 ) N,   or if N > P,  T = ( T11 ) N-P,
+     !! P-N  N                           ( T21 ) P
+     !! P
+     !! where T12 or T21 is upper triangular.
+     !! In particular, if B is square and nonsingular, the GQR factorization
+     !! of A and B implicitly gives the QR factorization of inv(B)*A:
+     !! inv(B)*A = Z**T*(inv(T)*R)
+     !! where inv(B) denotes the inverse of the matrix B, and Z**T denotes the
+     !! transpose of the matrix Z.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -46099,26 +46095,26 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dggqrf
 
-     !> DGGRQF: computes a generalized RQ factorization of an M-by-N matrix A
-     !> and a P-by-N matrix B:
-     !> A = R*Q,        B = Z*T*Q,
-     !> where Q is an N-by-N orthogonal matrix, Z is a P-by-P orthogonal
-     !> matrix, and R and T assume one of the forms:
-     !> if M <= N,  R = ( 0  R12 ) M,   or if M > N,  R = ( R11 ) M-N,
-     !> N-M  M                           ( R21 ) N
-     !> N
-     !> where R12 or R21 is upper triangular, and
-     !> if P >= N,  T = ( T11 ) N  ,   or if P < N,  T = ( T11  T12 ) P,
-     !> (  0  ) P-N                         P   N-P
-     !> N
-     !> where T11 is upper triangular.
-     !> In particular, if B is square and nonsingular, the GRQ factorization
-     !> of A and B implicitly gives the RQ factorization of A*inv(B):
-     !> A*inv(B) = (R*inv(T))*Z**T
-     !> where inv(B) denotes the inverse of the matrix B, and Z**T denotes the
-     !> transpose of the matrix Z.
 
      pure subroutine stdlib_dggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
+     !! DGGRQF computes a generalized RQ factorization of an M-by-N matrix A
+     !! and a P-by-N matrix B:
+     !! A = R*Q,        B = Z*T*Q,
+     !! where Q is an N-by-N orthogonal matrix, Z is a P-by-P orthogonal
+     !! matrix, and R and T assume one of the forms:
+     !! if M <= N,  R = ( 0  R12 ) M,   or if M > N,  R = ( R11 ) M-N,
+     !! N-M  M                           ( R21 ) N
+     !! N
+     !! where R12 or R21 is upper triangular, and
+     !! if P >= N,  T = ( T11 ) N  ,   or if P < N,  T = ( T11  T12 ) P,
+     !! (  0  ) P-N                         P   N-P
+     !! N
+     !! where T11 is upper triangular.
+     !! In particular, if B is square and nonsingular, the GRQ factorization
+     !! of A and B implicitly gives the RQ factorization of A*inv(B):
+     !! A*inv(B) = (R*inv(T))*Z**T
+     !! where inv(B) denotes the inverse of the matrix B, and Z**T denotes the
+     !! transpose of the matrix Z.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -46177,12 +46173,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dggrqf
 
-     !> DGSVJ0: is called from DGESVJ as a pre-processor and that is its main
-     !> purpose. It applies Jacobi rotations in the same way as DGESVJ does, but
-     !> it does not check convergence (stopping criterion). Few tuning
-     !> parameters (marked by [TP]) are available for the implementer.
 
      pure subroutine stdlib_dgsvj0( jobv, m, n, a, lda, d, sva, mv, v, ldv, eps,sfmin, tol, &
+     !! DGSVJ0 is called from DGESVJ as a pre-processor and that is its main
+     !! purpose. It applies Jacobi rotations in the same way as DGESVJ does, but
+     !! it does not check convergence (stopping criterion). Few tuning
+     !! parameters (marked by [TP]) are available for the implementer.
                nsweep, work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -46825,32 +46821,32 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgsvj0
 
-     !> DGSVJ1: is called from DGESVJ as a pre-processor and that is its main
-     !> purpose. It applies Jacobi rotations in the same way as DGESVJ does, but
-     !> it targets only particular pivots and it does not check convergence
-     !> (stopping criterion). Few tuning parameters (marked by [TP]) are
-     !> available for the implementer.
-     !> Further Details
-     !> ~~~~~~~~~~~~~~~
-     !> DGSVJ1 applies few sweeps of Jacobi rotations in the column space of
-     !> the input M-by-N matrix A. The pivot pairs are taken from the (1,2)
-     !> off-diagonal block in the corresponding N-by-N Gram matrix A^T * A. The
-     !> block-entries (tiles) of the (1,2) off-diagonal block are marked by the
-     !> [x]'s in the following scheme:
-     !> | *  *  * [x] [x] [x]|
-     !> | *  *  * [x] [x] [x]|    Row-cycling in the nblr-by-nblc [x] blocks.
-     !> | *  *  * [x] [x] [x]|    Row-cyclic pivoting inside each [x] block.
-     !> |[x] [x] [x] *  *  * |
-     !> |[x] [x] [x] *  *  * |
-     !> |[x] [x] [x] *  *  * |
-     !> In terms of the columns of A, the first N1 columns are rotated 'against'
-     !> the remaining N-N1 columns, trying to increase the angle between the
-     !> corresponding subspaces. The off-diagonal block is N1-by(N-N1) and it is
-     !> tiled using quadratic tiles of side KBL. Here, KBL is a tuning parameter.
-     !> The number of sweeps is given in NSWEEP and the orthogonality threshold
-     !> is given in TOL.
 
      pure subroutine stdlib_dgsvj1( jobv, m, n, n1, a, lda, d, sva, mv, v, ldv,eps, sfmin, tol, &
+     !! DGSVJ1 is called from DGESVJ as a pre-processor and that is its main
+     !! purpose. It applies Jacobi rotations in the same way as DGESVJ does, but
+     !! it targets only particular pivots and it does not check convergence
+     !! (stopping criterion). Few tuning parameters (marked by [TP]) are
+     !! available for the implementer.
+     !! Further Details
+     !! ~~~~~~~~~~~~~~~
+     !! DGSVJ1 applies few sweeps of Jacobi rotations in the column space of
+     !! the input M-by-N matrix A. The pivot pairs are taken from the (1,2)
+     !! off-diagonal block in the corresponding N-by-N Gram matrix A^T * A. The
+     !! block-entries (tiles) of the (1,2) off-diagonal block are marked by the
+     !! [x]'s in the following scheme:
+     !! | *  *  * [x] [x] [x]|
+     !! | *  *  * [x] [x] [x]|    Row-cycling in the nblr-by-nblc [x] blocks.
+     !! | *  *  * [x] [x] [x]|    Row-cyclic pivoting inside each [x] block.
+     !! |[x] [x] [x] *  *  * |
+     !! |[x] [x] [x] *  *  * |
+     !! |[x] [x] [x] *  *  * |
+     !! In terms of the columns of A, the first N1 columns are rotated 'against'
+     !! the remaining N-N1 columns, trying to increase the angle between the
+     !! corresponding subspaces. The off-diagonal block is N1-by(N-N1) and it is
+     !! tiled using quadratic tiles of side KBL. Here, KBL is a tuning parameter.
+     !! The number of sweeps is given in NSWEEP and the orthogonality threshold
+     !! is given in TOL.
                nsweep, work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -47256,13 +47252,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgsvj1
 
-     !> DGTCON: estimates the reciprocal of the condition number of a real
-     !> tridiagonal matrix A using the LU factorization as computed by
-     !> DGTTRF.
-     !> An estimate is obtained for norm(inv(A)), and the reciprocal of the
-     !> condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
 
      pure subroutine stdlib_dgtcon( norm, n, dl, d, du, du2, ipiv, anorm, rcond,work, iwork, info &
+     !! DGTCON estimates the reciprocal of the condition number of a real
+     !! tridiagonal matrix A using the LU factorization as computed by
+     !! DGTTRF.
+     !! An estimate is obtained for norm(inv(A)), and the reciprocal of the
+     !! condition number is computed as RCOND = 1 / (ANORM * norm(inv(A))).
                )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -47339,11 +47335,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgtcon
 
-     !> DGTRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is tridiagonal, and provides
-     !> error bounds and backward error estimates for the solution.
 
      pure subroutine stdlib_dgtrfs( trans, n, nrhs, dl, d, du, dlf, df, duf, du2,ipiv, b, ldb, x, &
+     !! DGTRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is tridiagonal, and provides
+     !! error bounds and backward error estimates for the solution.
                ldx, ferr, berr, work, iwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -47541,14 +47537,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgtrfs
 
-     !> DGTSVX: uses the LU factorization to compute the solution to a real
-     !> system of linear equations A * X = B or A**T * X = B,
-     !> where A is a tridiagonal matrix of order N and X and B are N-by-NRHS
-     !> matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      pure subroutine stdlib_dgtsvx( fact, trans, n, nrhs, dl, d, du, dlf, df, duf,du2, ipiv, b, &
+     !! DGTSVX uses the LU factorization to compute the solution to a real
+     !! system of linear equations A * X = B or A**T * X = B,
+     !! where A is a tridiagonal matrix of order N and X and B are N-by-NRHS
+     !! matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                ldb, x, ldx, rcond, ferr, berr,work, iwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -47630,51 +47626,51 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgtsvx
 
-     !> DHGEQZ: computes the eigenvalues of a real matrix pair (H,T),
-     !> where H is an upper Hessenberg matrix and T is upper triangular,
-     !> using the double-shift QZ method.
-     !> Matrix pairs of this type are produced by the reduction to
-     !> generalized upper Hessenberg form of a real matrix pair (A,B):
-     !> A = Q1*H*Z1**T,  B = Q1*T*Z1**T,
-     !> as computed by DGGHRD.
-     !> If JOB='S', then the Hessenberg-triangular pair (H,T) is
-     !> also reduced to generalized Schur form,
-     !> H = Q*S*Z**T,  T = Q*P*Z**T,
-     !> where Q and Z are orthogonal matrices, P is an upper triangular
-     !> matrix, and S is a quasi-triangular matrix with 1-by-1 and 2-by-2
-     !> diagonal blocks.
-     !> The 1-by-1 blocks correspond to real eigenvalues of the matrix pair
-     !> (H,T) and the 2-by-2 blocks correspond to complex conjugate pairs of
-     !> eigenvalues.
-     !> Additionally, the 2-by-2 upper triangular diagonal blocks of P
-     !> corresponding to 2-by-2 blocks of S are reduced to positive diagonal
-     !> form, i.e., if S(j+1,j) is non-zero, then P(j+1,j) = P(j,j+1) = 0,
-     !> P(j,j) > 0, and P(j+1,j+1) > 0.
-     !> Optionally, the orthogonal matrix Q from the generalized Schur
-     !> factorization may be postmultiplied into an input matrix Q1, and the
-     !> orthogonal matrix Z may be postmultiplied into an input matrix Z1.
-     !> If Q1 and Z1 are the orthogonal matrices from DGGHRD that reduced
-     !> the matrix pair (A,B) to generalized upper Hessenberg form, then the
-     !> output matrices Q1*Q and Z1*Z are the orthogonal factors from the
-     !> generalized Schur factorization of (A,B):
-     !> A = (Q1*Q)*S*(Z1*Z)**T,  B = (Q1*Q)*P*(Z1*Z)**T.
-     !> To avoid overflow, eigenvalues of the matrix pair (H,T) (equivalently,
-     !> of (A,B)) are computed as a pair of values (alpha,beta), where alpha is
-     !> complex and beta real.
-     !> If beta is nonzero, lambda = alpha / beta is an eigenvalue of the
-     !> generalized nonsymmetric eigenvalue problem (GNEP)
-     !> A*x = lambda*B*x
-     !> and if alpha is nonzero, mu = beta / alpha is an eigenvalue of the
-     !> alternate form of the GNEP
-     !> mu*A*y = B*y.
-     !> Real eigenvalues can be read directly from the generalized Schur
-     !> form:
-     !> alpha = S(i,i), beta = P(i,i).
-     !> Ref: C.B. Moler
-     !> Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
-     !> pp. 241--256.
 
      subroutine stdlib_dhgeqz( job, compq, compz, n, ilo, ihi, h, ldh, t, ldt,alphar, alphai, &
+     !! DHGEQZ computes the eigenvalues of a real matrix pair (H,T),
+     !! where H is an upper Hessenberg matrix and T is upper triangular,
+     !! using the double-shift QZ method.
+     !! Matrix pairs of this type are produced by the reduction to
+     !! generalized upper Hessenberg form of a real matrix pair (A,B):
+     !! A = Q1*H*Z1**T,  B = Q1*T*Z1**T,
+     !! as computed by DGGHRD.
+     !! If JOB='S', then the Hessenberg-triangular pair (H,T) is
+     !! also reduced to generalized Schur form,
+     !! H = Q*S*Z**T,  T = Q*P*Z**T,
+     !! where Q and Z are orthogonal matrices, P is an upper triangular
+     !! matrix, and S is a quasi-triangular matrix with 1-by-1 and 2-by-2
+     !! diagonal blocks.
+     !! The 1-by-1 blocks correspond to real eigenvalues of the matrix pair
+     !! (H,T) and the 2-by-2 blocks correspond to complex conjugate pairs of
+     !! eigenvalues.
+     !! Additionally, the 2-by-2 upper triangular diagonal blocks of P
+     !! corresponding to 2-by-2 blocks of S are reduced to positive diagonal
+     !! form, i.e., if S(j+1,j) is non-zero, then P(j+1,j) = P(j,j+1) = 0,
+     !! P(j,j) > 0, and P(j+1,j+1) > 0.
+     !! Optionally, the orthogonal matrix Q from the generalized Schur
+     !! factorization may be postmultiplied into an input matrix Q1, and the
+     !! orthogonal matrix Z may be postmultiplied into an input matrix Z1.
+     !! If Q1 and Z1 are the orthogonal matrices from DGGHRD that reduced
+     !! the matrix pair (A,B) to generalized upper Hessenberg form, then the
+     !! output matrices Q1*Q and Z1*Z are the orthogonal factors from the
+     !! generalized Schur factorization of (A,B):
+     !! A = (Q1*Q)*S*(Z1*Z)**T,  B = (Q1*Q)*P*(Z1*Z)**T.
+     !! To avoid overflow, eigenvalues of the matrix pair (H,T) (equivalently,
+     !! of (A,B)) are computed as a pair of values (alpha,beta), where alpha is
+     !! complex and beta real.
+     !! If beta is nonzero, lambda = alpha / beta is an eigenvalue of the
+     !! generalized nonsymmetric eigenvalue problem (GNEP)
+     !! A*x = lambda*B*x
+     !! and if alpha is nonzero, mu = beta / alpha is an eigenvalue of the
+     !! alternate form of the GNEP
+     !! mu*A*y = B*y.
+     !! Real eigenvalues can be read directly from the generalized Schur
+     !! form:
+     !! alpha = S(i,i), beta = P(i,i).
+     !! Ref: C.B. Moler
+     !! Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
+     !! pp. 241--256.
                beta, q, ldq, z, ldz, work,lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -48505,15 +48501,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dhgeqz
 
-     !> DLABRD: reduces the first NB rows and columns of a real general
-     !> m by n matrix A to upper or lower bidiagonal form by an orthogonal
-     !> transformation Q**T * A * P, and returns the matrices X and Y which
-     !> are needed to apply the transformation to the unreduced part of A.
-     !> If m >= n, A is reduced to upper bidiagonal form; if m < n, to lower
-     !> bidiagonal form.
-     !> This is an auxiliary routine called by DGEBRD
 
      pure subroutine stdlib_dlabrd( m, n, nb, a, lda, d, e, tauq, taup, x, ldx, y,ldy )
+     !! DLABRD reduces the first NB rows and columns of a real general
+     !! m by n matrix A to upper or lower bidiagonal form by an orthogonal
+     !! transformation Q**T * A * P, and returns the matrices X and Y which
+     !! are needed to apply the transformation to the unreduced part of A.
+     !! If m >= n, A is reduced to upper bidiagonal form; if m < n, to lower
+     !! bidiagonal form.
+     !! This is an auxiliary routine called by DGEBRD
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -48635,15 +48631,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlabrd
 
-     !> DLADIV: performs complex division in  real arithmetic
-     !> a + i*b
-     !> p + i*q = ---------
-     !> c + i*d
-     !> The algorithm is due to Michael Baudin and Robert L. Smith
-     !> and can be found in the paper
-     !> "A Robust Complex Division in Scilab"
 
      pure subroutine stdlib_dladiv( a, b, c, d, p, q )
+     !! DLADIV performs complex division in  real arithmetic
+     !! a + i*b
+     !! p + i*q = ---------
+     !! c + i*d
+     !! The algorithm is due to Michael Baudin and Robert L. Smith
+     !! and can be found in the paper
+     !! "A Robust Complex Division in Scilab"
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -48703,18 +48699,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dladiv
 
-     !> This subroutine computes the I-th updated eigenvalue of a symmetric
-     !> rank-one modification to a diagonal matrix whose elements are
-     !> given in the array d, and that
-     !> D(i) < D(j)  for  i < j
-     !> and that RHO > 0.  This is arranged by the calling routine, and is
-     !> no loss in generality.  The rank-one modified system is thus
-     !> diag( D )  +  RHO * Z * Z_transpose.
-     !> where we assume the Euclidean norm of Z is 1.
-     !> The method consists of approximating the rational functions in the
-     !> secular equation by simpler interpolating rational functions.
 
      pure subroutine stdlib_dlaed4( n, i, d, z, delta, rho, dlam, info )
+     !! This subroutine computes the I-th updated eigenvalue of a symmetric
+     !! rank-one modification to a diagonal matrix whose elements are
+     !! given in the array d, and that
+     !! D(i) < D(j)  for  i < j
+     !! and that RHO > 0.  This is arranged by the calling routine, and is
+     !! no loss in generality.  The rank-one modified system is thus
+     !! diag( D )  +  RHO * Z * Z_transpose.
+     !! where we assume the Euclidean norm of Z is 1.
+     !! The method consists of approximating the rational functions in the
+     !! secular equation by simpler interpolating rational functions.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -49308,14 +49304,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaed4
 
-     !> DLAED8: merges the two sets of eigenvalues together into a single
-     !> sorted set.  Then it tries to deflate the size of the problem.
-     !> There are two ways in which deflation can occur:  when two or more
-     !> eigenvalues are close together or if there is a tiny element in the
-     !> Z vector.  For each such occurrence the order of the related secular
-     !> equation problem is reduced by one.
 
      pure subroutine stdlib_dlaed8( icompq, k, n, qsiz, d, q, ldq, indxq, rho,cutpnt, z, dlamda, &
+     !! DLAED8 merges the two sets of eigenvalues together into a single
+     !! sorted set.  Then it tries to deflate the size of the problem.
+     !! There are two ways in which deflation can occur:  when two or more
+     !! eigenvalues are close together or if there is a tiny element in the
+     !! Z vector.  For each such occurrence the order of the related secular
+     !! equation problem is reduced by one.
                q2, ldq2, w, perm, givptr,givcol, givnum, indxp, indx, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -49531,12 +49527,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaed8
 
-     !> DLAED9: finds the roots of the secular equation, as defined by the
-     !> values in D, Z, and RHO, between KSTART and KSTOP.  It makes the
-     !> appropriate calls to DLAED4 and then stores the new matrix of
-     !> eigenvectors for use in calculating the next level of Z vectors.
 
      pure subroutine stdlib_dlaed9( k, kstart, kstop, n, d, q, ldq, rho, dlamda, w,s, lds, info )
+     !! DLAED9 finds the roots of the secular equation, as defined by the
+     !! values in D, Z, and RHO, between KSTART and KSTOP.  It makes the
+     !! appropriate calls to DLAED4 and then stores the new matrix of
+     !! eigenvectors for use in calculating the next level of Z vectors.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -49637,11 +49633,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaed9
 
-     !> DLAEIN: uses inverse iteration to find a right or left eigenvector
-     !> corresponding to the eigenvalue (WR,WI) of a real upper Hessenberg
-     !> matrix H.
 
      pure subroutine stdlib_dlaein( rightv, noinit, n, h, ldh, wr, wi, vr, vi, b,ldb, work, eps3, &
+     !! DLAEIN uses inverse iteration to find a right or left eigenvector
+     !! corresponding to the eigenvalue (WR,WI) of a real upper Hessenberg
+     !! matrix H.
                smlnum, bignum, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -49983,25 +49979,25 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaein
 
-     !> DLAGV2: computes the Generalized Schur factorization of a real 2-by-2
-     !> matrix pencil (A,B) where B is upper triangular. This routine
-     !> computes orthogonal (rotation) matrices given by CSL, SNL and CSR,
-     !> SNR such that
-     !> 1) if the pencil (A,B) has two real eigenvalues (include 0/0 or 1/0
-     !> types), then
-     !> [ a11 a12 ] := [  CSL  SNL ] [ a11 a12 ] [  CSR -SNR ]
-     !> [  0  a22 ]    [ -SNL  CSL ] [ a21 a22 ] [  SNR  CSR ]
-     !> [ b11 b12 ] := [  CSL  SNL ] [ b11 b12 ] [  CSR -SNR ]
-     !> [  0  b22 ]    [ -SNL  CSL ] [  0  b22 ] [  SNR  CSR ],
-     !> 2) if the pencil (A,B) has a pair of complex conjugate eigenvalues,
-     !> then
-     !> [ a11 a12 ] := [  CSL  SNL ] [ a11 a12 ] [  CSR -SNR ]
-     !> [ a21 a22 ]    [ -SNL  CSL ] [ a21 a22 ] [  SNR  CSR ]
-     !> [ b11  0  ] := [  CSL  SNL ] [ b11 b12 ] [  CSR -SNR ]
-     !> [  0  b22 ]    [ -SNL  CSL ] [  0  b22 ] [  SNR  CSR ]
-     !> where b11 >= b22 > 0.
 
      pure subroutine stdlib_dlagv2( a, lda, b, ldb, alphar, alphai, beta, csl, snl,csr, snr )
+     !! DLAGV2 computes the Generalized Schur factorization of a real 2-by-2
+     !! matrix pencil (A,B) where B is upper triangular. This routine
+     !! computes orthogonal (rotation) matrices given by CSL, SNL and CSR,
+     !! SNR such that
+     !! 1) if the pencil (A,B) has two real eigenvalues (include 0/0 or 1/0
+     !! types), then
+     !! [ a11 a12 ] := [  CSL  SNL ] [ a11 a12 ] [  CSR -SNR ]
+     !! [  0  a22 ]    [ -SNL  CSL ] [ a21 a22 ] [  SNR  CSR ]
+     !! [ b11 b12 ] := [  CSL  SNL ] [ b11 b12 ] [  CSR -SNR ]
+     !! [  0  b22 ]    [ -SNL  CSL ] [  0  b22 ] [  SNR  CSR ],
+     !! 2) if the pencil (A,B) has a pair of complex conjugate eigenvalues,
+     !! then
+     !! [ a11 a12 ] := [  CSL  SNL ] [ a11 a12 ] [  CSR -SNR ]
+     !! [ a21 a22 ]    [ -SNL  CSL ] [ a21 a22 ] [  SNR  CSR ]
+     !! [ b11  0  ] := [  CSL  SNL ] [ b11 b12 ] [  CSR -SNR ]
+     !! [  0  b22 ]    [ -SNL  CSL ] [  0  b22 ] [  SNR  CSR ]
+     !! where b11 >= b22 > 0.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -50147,14 +50143,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlagv2
 
-     !> DLAHR2: reduces the first NB columns of A real general n-BY-(n-k+1)
-     !> matrix A so that elements below the k-th subdiagonal are zero. The
-     !> reduction is performed by an orthogonal similarity transformation
-     !> Q**T * A * Q. The routine returns the matrices V and T which determine
-     !> Q as a block reflector I - V*T*V**T, and also the matrix Y = A * V * T.
-     !> This is an auxiliary routine called by DGEHRD.
 
      pure subroutine stdlib_dlahr2( n, k, nb, a, lda, tau, t, ldt, y, ldy )
+     !! DLAHR2 reduces the first NB columns of A real general n-BY-(n-k+1)
+     !! matrix A so that elements below the k-th subdiagonal are zero. The
+     !! reduction is performed by an orthogonal similarity transformation
+     !! Q**T * A * Q. The routine returns the matrices V and T which determine
+     !! Q as a block reflector I - V*T*V**T, and also the matrix Y = A * V * T.
+     !! This is an auxiliary routine called by DGEHRD.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -50235,33 +50231,33 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlahr2
 
-     !> DLALN2: solves a system of the form  (ca A - w D ) X = s B
-     !> or (ca A**T - w D) X = s B   with possible scaling ("s") and
-     !> perturbation of A.  (A**T means A-transpose.)
-     !> A is an NA x NA real matrix, ca is a real scalar, D is an NA x NA
-     !> real diagonal matrix, w is a real or complex value, and X and B are
-     !> NA x 1 matrices -- real if w is real, complex if w is complex.  NA
-     !> may be 1 or 2.
-     !> If w is complex, X and B are represented as NA x 2 matrices,
-     !> the first column of each being the real part and the second
-     !> being the imaginary part.
-     !> "s" is a scaling factor (<= 1), computed by DLALN2, which is
-     !> so chosen that X can be computed without overflow.  X is further
-     !> scaled if necessary to assure that norm(ca A - w D)*norm(X) is less
-     !> than overflow.
-     !> If both singular values of (ca A - w D) are less than SMIN,
-     !> SMIN*identity will be used instead of (ca A - w D).  If only one
-     !> singular value is less than SMIN, one element of (ca A - w D) will be
-     !> perturbed enough to make the smallest singular value roughly SMIN.
-     !> If both singular values are at least SMIN, (ca A - w D) will not be
-     !> perturbed.  In any case, the perturbation will be at most some small
-     !> multiple of max( SMIN, ulp*norm(ca A - w D) ).  The singular values
-     !> are computed by infinity-norm approximations, and thus will only be
-     !> correct to a factor of 2 or so.
-     !> Note: all input quantities are assumed to be smaller than overflow
-     !> by a reasonable factor.  (See BIGNUM.)
 
      pure subroutine stdlib_dlaln2( ltrans, na, nw, smin, ca, a, lda, d1, d2, b,ldb, wr, wi, x, &
+     !! DLALN2 solves a system of the form  (ca A - w D ) X = s B
+     !! or (ca A**T - w D) X = s B   with possible scaling ("s") and
+     !! perturbation of A.  (A**T means A-transpose.)
+     !! A is an NA x NA real matrix, ca is a real scalar, D is an NA x NA
+     !! real diagonal matrix, w is a real or complex value, and X and B are
+     !! NA x 1 matrices -- real if w is real, complex if w is complex.  NA
+     !! may be 1 or 2.
+     !! If w is complex, X and B are represented as NA x 2 matrices,
+     !! the first column of each being the real part and the second
+     !! being the imaginary part.
+     !! "s" is a scaling factor (<= 1), computed by DLALN2, which is
+     !! so chosen that X can be computed without overflow.  X is further
+     !! scaled if necessary to assure that norm(ca A - w D)*norm(X) is less
+     !! than overflow.
+     !! If both singular values of (ca A - w D) are less than SMIN,
+     !! SMIN*identity will be used instead of (ca A - w D).  If only one
+     !! singular value is less than SMIN, one element of (ca A - w D) will be
+     !! perturbed enough to make the smallest singular value roughly SMIN.
+     !! If both singular values are at least SMIN, (ca A - w D) will not be
+     !! perturbed.  In any case, the perturbation will be at most some small
+     !! multiple of max( SMIN, ulp*norm(ca A - w D) ).  The singular values
+     !! are computed by infinity-norm approximations, and thus will only be
+     !! correct to a factor of 2 or so.
+     !! Note: all input quantities are assumed to be smaller than overflow
+     !! by a reasonable factor.  (See BIGNUM.)
                ldx, scale, xnorm, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -50560,28 +50556,28 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaln2
 
-     !> DLALS0: applies back the multiplying factors of either the left or the
-     !> right singular vector matrix of a diagonal matrix appended by a row
-     !> to the right hand side matrix B in solving the least squares problem
-     !> using the divide-and-conquer SVD approach.
-     !> For the left singular vector matrix, three types of orthogonal
-     !> matrices are involved:
-     !> (1L) Givens rotations: the number of such rotations is GIVPTR; the
-     !> pairs of columns/rows they were applied to are stored in GIVCOL;
-     !> and the C- and S-values of these rotations are stored in GIVNUM.
-     !> (2L) Permutation. The (NL+1)-st row of B is to be moved to the first
-     !> row, and for J=2:N, PERM(J)-th row of B is to be moved to the
-     !> J-th row.
-     !> (3L) The left singular vector matrix of the remaining matrix.
-     !> For the right singular vector matrix, four types of orthogonal
-     !> matrices are involved:
-     !> (1R) The right singular vector matrix of the remaining matrix.
-     !> (2R) If SQRE = 1, one extra Givens rotation to generate the right
-     !> null space.
-     !> (3R) The inverse transformation of (2L).
-     !> (4R) The inverse transformation of (1L).
 
      pure subroutine stdlib_dlals0( icompq, nl, nr, sqre, nrhs, b, ldb, bx, ldbx,perm, givptr, &
+     !! DLALS0 applies back the multiplying factors of either the left or the
+     !! right singular vector matrix of a diagonal matrix appended by a row
+     !! to the right hand side matrix B in solving the least squares problem
+     !! using the divide-and-conquer SVD approach.
+     !! For the left singular vector matrix, three types of orthogonal
+     !! matrices are involved:
+     !! (1L) Givens rotations: the number of such rotations is GIVPTR; the
+     !! pairs of columns/rows they were applied to are stored in GIVCOL;
+     !! and the C- and S-values of these rotations are stored in GIVNUM.
+     !! (2L) Permutation. The (NL+1)-st row of B is to be moved to the first
+     !! row, and for J=2:N, PERM(J)-th row of B is to be moved to the
+     !! J-th row.
+     !! (3L) The left singular vector matrix of the remaining matrix.
+     !! For the right singular vector matrix, four types of orthogonal
+     !! matrices are involved:
+     !! (1R) The right singular vector matrix of the remaining matrix.
+     !! (2R) If SQRE = 1, one extra Givens rotation to generate the right
+     !! null space.
+     !! (3R) The inverse transformation of (2L).
+     !! (4R) The inverse transformation of (1L).
                givcol, ldgcol, givnum, ldgnum,poles, difl, difr, z, k, c, s, work, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -50757,15 +50753,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlals0
 
-     !> DLAMSWLQ: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix defined as the product of blocked
-     !> elementary reflectors computed by short wide LQ
-     !> factorization (DLASWLQ)
 
      pure subroutine stdlib_dlamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+     !! DLAMSWLQ overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product of blocked
+     !! elementary reflectors computed by short wide LQ
+     !! factorization (DLASWLQ)
                lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -50915,15 +50911,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlamswlq
 
-     !> DLAMTSQR: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix defined as the product
-     !> of blocked elementary reflectors computed by tall skinny
-     !> QR factorization (DLATSQR)
 
      pure subroutine stdlib_dlamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+     !! DLAMTSQR overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product
+     !! of blocked elementary reflectors computed by tall skinny
+     !! QR factorization (DLATSQR)
                lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -51077,16 +51073,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlamtsqr
 
-     !> DLANV2: computes the Schur factorization of a real 2-by-2 nonsymmetric
-     !> matrix in standard form:
-     !> [ A  B ] = [ CS -SN ] [ AA  BB ] [ CS  SN ]
-     !> [ C  D ]   [ SN  CS ] [ CC  DD ] [-SN  CS ]
-     !> where either
-     !> 1) CC = 0 so that AA and DD are real eigenvalues of the matrix, or
-     !> 2) AA = DD and BB*CC < 0, so that AA + or - sqrt(BB*CC) are complex
-     !> conjugate eigenvalues.
 
      pure subroutine stdlib_dlanv2( a, b, c, d, rt1r, rt1i, rt2r, rt2i, cs, sn )
+     !! DLANV2 computes the Schur factorization of a real 2-by-2 nonsymmetric
+     !! matrix in standard form:
+     !! [ A  B ] = [ CS -SN ] [ AA  BB ] [ CS  SN ]
+     !! [ C  D ]   [ SN  CS ] [ CC  DD ] [-SN  CS ]
+     !! where either
+     !! 1) CC = 0 so that AA and DD are real eigenvalues of the matrix, or
+     !! 2) AA = DD and BB*CC < 0, so that AA + or - sqrt(BB*CC) are complex
+     !! conjugate eigenvalues.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -51223,14 +51219,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlanv2
 
-     !> Given two column vectors X and Y, let
-     !> A = ( X Y ).
-     !> The subroutine first computes the QR factorization of A = Q*R,
-     !> and then computes the SVD of the 2-by-2 upper triangular matrix R.
-     !> The smaller singular value of R is returned in SSMIN, which is used
-     !> as the measurement of the linear dependency of the vectors X and Y.
 
      pure subroutine stdlib_dlapll( n, x, incx, y, incy, ssmin )
+     !! Given two column vectors X and Y, let
+     !! A = ( X Y ).
+     !! The subroutine first computes the QR factorization of A = Q*R,
+     !! and then computes the SVD of the 2-by-2 upper triangular matrix R.
+     !! The smaller singular value of R is returned in SSMIN, which is used
+     !! as the measurement of the linear dependency of the vectors X and Y.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -51263,11 +51259,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlapll
 
-     !> DLAQP2: computes a QR factorization with column pivoting of
-     !> the block A(OFFSET+1:M,1:N).
-     !> The block A(1:OFFSET,1:N) is accordingly pivoted, but not factorized.
 
      pure subroutine stdlib_dlaqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
+     !! DLAQP2 computes a QR factorization with column pivoting of
+     !! the block A(OFFSET+1:M,1:N).
+     !! The block A(1:OFFSET,1:N) is accordingly pivoted, but not factorized.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -51340,16 +51336,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaqp2
 
-     !> DLAQPS: computes a step of QR factorization with column pivoting
-     !> of a real M-by-N matrix A by using Blas-3.  It tries to factorize
-     !> NB columns from A starting from the row OFFSET+1, and updates all
-     !> of the matrix with Blas-3 xGEMM.
-     !> In some cases, due to catastrophic cancellations, it cannot
-     !> factorize NB columns.  Hence, the actual number of factorized
-     !> columns is returned in KB.
-     !> Block A(1:OFFSET,1:N) is accordingly pivoted, but not factorized.
 
      pure subroutine stdlib_dlaqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
+     !! DLAQPS computes a step of QR factorization with column pivoting
+     !! of a real M-by-N matrix A by using Blas-3.  It tries to factorize
+     !! NB columns from A starting from the row OFFSET+1, and updates all
+     !! of the matrix with Blas-3 xGEMM.
+     !! In some cases, due to catastrophic cancellations, it cannot
+     !! factorize NB columns.  Hence, the actual number of factorized
+     !! columns is returned in KB.
+     !! Block A(1:OFFSET,1:N) is accordingly pivoted, but not factorized.
                ldf )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -51474,10 +51470,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaqps
 
-     !> DLAQR5:, called by DLAQR0, performs a
-     !> single small-bulge multi-shift QR sweep.
 
      pure subroutine stdlib_dlaqr5( wantt, wantz, kacc22, n, ktop, kbot, nshfts,sr, si, h, ldh, &
+     !! DLAQR5 , called by DLAQR0, performs a
+     !! single small-bulge multi-shift QR sweep.
                iloz, ihiz, z, ldz, v, ldv, u,ldu, nv, wv, ldwv, nh, wh, ldwh )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -51881,26 +51877,26 @@ module stdlib_linalg_lapack_d
            end do loop_180
      end subroutine stdlib_dlaqr5
 
-     !> DLAQTR: solves the real quasi-triangular system
-     !> op(T)*p = scale*c,               if LREAL = .TRUE.
-     !> or the complex quasi-triangular systems
-     !> op(T + iB)*(p+iq) = scale*(c+id),  if LREAL = .FALSE.
-     !> in real arithmetic, where T is upper quasi-triangular.
-     !> If LREAL = .FALSE., then the first diagonal block of T must be
-     !> 1 by 1, B is the specially structured matrix
-     !> B = [ b(1) b(2) ... b(n) ]
-     !> [       w            ]
-     !> [           w        ]
-     !> [              .     ]
-     !> [                 w  ]
-     !> op(A) = A or A**T, A**T denotes the transpose of
-     !> matrix A.
-     !> On input, X = [ c ].  On output, X = [ p ].
-     !> [ d ]                  [ q ]
-     !> This subroutine is designed for the condition number estimation
-     !> in routine DTRSNA.
 
      subroutine stdlib_dlaqtr( ltran, lreal, n, t, ldt, b, w, scale, x, work,info )
+     !! DLAQTR solves the real quasi-triangular system
+     !! op(T)*p = scale*c,               if LREAL = .TRUE.
+     !! or the complex quasi-triangular systems
+     !! op(T + iB)*(p+iq) = scale*(c+id),  if LREAL = .FALSE.
+     !! in real arithmetic, where T is upper quasi-triangular.
+     !! If LREAL = .FALSE., then the first diagonal block of T must be
+     !! 1 by 1, B is the specially structured matrix
+     !! B = [ b(1) b(2) ... b(n) ]
+     !! [       w            ]
+     !! [           w        ]
+     !! [              .     ]
+     !! [                 w  ]
+     !! op(A) = A or A**T, A**T denotes the transpose of
+     !! matrix A.
+     !! On input, X = [ c ].  On output, X = [ p ].
+     !! [ d ]                  [ q ]
+     !! This subroutine is designed for the condition number estimation
+     !! in routine DTRSNA.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -52327,19 +52323,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaqtr
 
-     !> DLASD3: finds all the square roots of the roots of the secular
-     !> equation, as defined by the values in D and Z.  It makes the
-     !> appropriate calls to DLASD4 and then updates the singular
-     !> vectors by matrix multiplication.
-     !> This code makes very mild assumptions about floating point
-     !> arithmetic. It will work on machines with a guard digit in
-     !> add/subtract, or on those binary machines without guard digits
-     !> which subtract like the Cray XMP, Cray YMP, Cray C 90, or Cray 2.
-     !> It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
-     !> DLASD3 is called from DLASD1.
 
      pure subroutine stdlib_dlasd3( nl, nr, sqre, k, d, q, ldq, dsigma, u, ldu, u2,ldu2, vt, ldvt,&
+     !! DLASD3 finds all the square roots of the roots of the secular
+     !! equation, as defined by the values in D and Z.  It makes the
+     !! appropriate calls to DLASD4 and then updates the singular
+     !! vectors by matrix multiplication.
+     !! This code makes very mild assumptions about floating point
+     !! arithmetic. It will work on machines with a guard digit in
+     !! add/subtract, or on those binary machines without guard digits
+     !! which subtract like the Cray XMP, Cray YMP, Cray C 90, or Cray 2.
+     !! It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
+     !! DLASD3 is called from DLASD1.
                 vt2, ldvt2, idxc, ctot, z,info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -52529,43 +52525,43 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasd3
 
-     !> DLASD6: computes the SVD of an updated upper bidiagonal matrix B
-     !> obtained by merging two smaller ones by appending a row. This
-     !> routine is used only for the problem which requires all singular
-     !> values and optionally singular vector matrices in factored form.
-     !> B is an N-by-M matrix with N = NL + NR + 1 and M = N + SQRE.
-     !> A related subroutine, DLASD1, handles the case in which all singular
-     !> values and singular vectors of the bidiagonal matrix are desired.
-     !> DLASD6 computes the SVD as follows:
-     !> ( D1(in)    0    0       0 )
-     !> B = U(in) * (   Z1**T   a   Z2**T    b ) * VT(in)
-     !> (   0       0   D2(in)   0 )
-     !> = U(out) * ( D(out) 0) * VT(out)
-     !> where Z**T = (Z1**T a Z2**T b) = u**T VT**T, and u is a vector of dimension M
-     !> with ALPHA and BETA in the NL+1 and NL+2 th entries and zeros
-     !> elsewhere; and the entry b is empty if SQRE = 0.
-     !> The singular values of B can be computed using D1, D2, the first
-     !> components of all the right singular vectors of the lower block, and
-     !> the last components of all the right singular vectors of the upper
-     !> block. These components are stored and updated in VF and VL,
-     !> respectively, in DLASD6. Hence U and VT are not explicitly
-     !> referenced.
-     !> The singular values are stored in D. The algorithm consists of two
-     !> stages:
-     !> The first stage consists of deflating the size of the problem
-     !> when there are multiple singular values or if there is a zero
-     !> in the Z vector. For each such occurrence the dimension of the
-     !> secular equation problem is reduced by one. This stage is
-     !> performed by the routine DLASD7.
-     !> The second stage consists of calculating the updated
-     !> singular values. This is done by finding the roots of the
-     !> secular equation via the routine DLASD4 (as called by DLASD8).
-     !> This routine also updates VF and VL and computes the distances
-     !> between the updated singular values and the old singular
-     !> values.
-     !> DLASD6 is called from DLASDA.
 
      pure subroutine stdlib_dlasd6( icompq, nl, nr, sqre, d, vf, vl, alpha, beta,idxq, perm, &
+     !! DLASD6 computes the SVD of an updated upper bidiagonal matrix B
+     !! obtained by merging two smaller ones by appending a row. This
+     !! routine is used only for the problem which requires all singular
+     !! values and optionally singular vector matrices in factored form.
+     !! B is an N-by-M matrix with N = NL + NR + 1 and M = N + SQRE.
+     !! A related subroutine, DLASD1, handles the case in which all singular
+     !! values and singular vectors of the bidiagonal matrix are desired.
+     !! DLASD6 computes the SVD as follows:
+     !! ( D1(in)    0    0       0 )
+     !! B = U(in) * (   Z1**T   a   Z2**T    b ) * VT(in)
+     !! (   0       0   D2(in)   0 )
+     !! = U(out) * ( D(out) 0) * VT(out)
+     !! where Z**T = (Z1**T a Z2**T b) = u**T VT**T, and u is a vector of dimension M
+     !! with ALPHA and BETA in the NL+1 and NL+2 th entries and zeros
+     !! elsewhere; and the entry b is empty if SQRE = 0.
+     !! The singular values of B can be computed using D1, D2, the first
+     !! components of all the right singular vectors of the lower block, and
+     !! the last components of all the right singular vectors of the upper
+     !! block. These components are stored and updated in VF and VL,
+     !! respectively, in DLASD6. Hence U and VT are not explicitly
+     !! referenced.
+     !! The singular values are stored in D. The algorithm consists of two
+     !! stages:
+     !! The first stage consists of deflating the size of the problem
+     !! when there are multiple singular values or if there is a zero
+     !! in the Z vector. For each such occurrence the dimension of the
+     !! secular equation problem is reduced by one. This stage is
+     !! performed by the routine DLASD7.
+     !! The second stage consists of calculating the updated
+     !! singular values. This is done by finding the roots of the
+     !! secular equation via the routine DLASD4 (as called by DLASD8).
+     !! This routine also updates VF and VL and computes the distances
+     !! between the updated singular values and the old singular
+     !! values.
+     !! DLASD6 is called from DLASDA.
      givptr, givcol, ldgcol, givnum,ldgnum, poles, difl, difr, z, k, c, s, work,iwork, info )
                
         ! -- lapack auxiliary routine --
@@ -52657,13 +52653,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasd6
 
-     !> DOPGTR: generates a real orthogonal matrix Q which is defined as the
-     !> product of n-1 elementary reflectors H(i) of order n, as returned by
-     !> DSPTRD using packed storage:
-     !> if UPLO = 'U', Q = H(n-1) . . . H(2) H(1),
-     !> if UPLO = 'L', Q = H(1) H(2) . . . H(n-1).
 
      pure subroutine stdlib_dopgtr( uplo, n, ap, tau, q, ldq, work, info )
+     !! DOPGTR generates a real orthogonal matrix Q which is defined as the
+     !! product of n-1 elementary reflectors H(i) of order n, as returned by
+     !! DSPTRD using packed storage:
+     !! if UPLO = 'U', Q = H(n-1) . . . H(2) H(1),
+     !! if UPLO = 'L', Q = H(1) H(2) . . . H(n-1).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -52744,18 +52740,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dopgtr
 
-     !> DOPMTR: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix of order nq, with nq = m if
-     !> SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
-     !> nq-1 elementary reflectors, as returned by DSPTRD using packed
-     !> storage:
-     !> if UPLO = 'U', Q = H(nq-1) . . . H(2) H(1);
-     !> if UPLO = 'L', Q = H(1) H(2) . . . H(nq-1).
 
      pure subroutine stdlib_dopmtr( side, uplo, trans, m, n, ap, tau, c, ldc, work,info )
+     !! DOPMTR overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix of order nq, with nq = m if
+     !! SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
+     !! nq-1 elementary reflectors, as returned by DSPTRD using packed
+     !! storage:
+     !! if UPLO = 'U', Q = H(nq-1) . . . H(2) H(1);
+     !! if UPLO = 'L', Q = H(1) H(2) . . . H(nq-1).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -52891,23 +52887,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dopmtr
 
-     !> DORBDB1: simultaneously bidiagonalizes the blocks of a tall and skinny
-     !> matrix X with orthonomal columns:
-     !> [ B11 ]
-     !> [ X11 ]   [ P1 |    ] [  0  ]
-     !> [-----] = [---------] [-----] Q1**T .
-     !> [ X21 ]   [    | P2 ] [ B21 ]
-     !> [  0  ]
-     !> X11 is P-by-Q, and X21 is (M-P)-by-Q. Q must be no larger than P,
-     !> M-P, or M-Q. Routines DORBDB2, DORBDB3, and DORBDB4 handle cases in
-     !> which Q is not the minimum dimension.
-     !> The orthogonal matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
-     !> and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
-     !> Householder vectors.
-     !> B11 and B12 are Q-by-Q bidiagonal matrices represented implicitly by
-     !> angles THETA, PHI.
 
      subroutine stdlib_dorbdb1( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, tauq1, &
+     !! DORBDB1 simultaneously bidiagonalizes the blocks of a tall and skinny
+     !! matrix X with orthonomal columns:
+     !! [ B11 ]
+     !! [ X11 ]   [ P1 |    ] [  0  ]
+     !! [-----] = [---------] [-----] Q1**T .
+     !! [ X21 ]   [    | P2 ] [ B21 ]
+     !! [  0  ]
+     !! X11 is P-by-Q, and X21 is (M-P)-by-Q. Q must be no larger than P,
+     !! M-P, or M-Q. Routines DORBDB2, DORBDB3, and DORBDB4 handle cases in
+     !! which Q is not the minimum dimension.
+     !! The orthogonal matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
+     !! and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
+     !! Householder vectors.
+     !! B11 and B12 are Q-by-Q bidiagonal matrices represented implicitly by
+     !! angles THETA, PHI.
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -52994,23 +52990,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorbdb1
 
-     !> DORBDB2: simultaneously bidiagonalizes the blocks of a tall and skinny
-     !> matrix X with orthonomal columns:
-     !> [ B11 ]
-     !> [ X11 ]   [ P1 |    ] [  0  ]
-     !> [-----] = [---------] [-----] Q1**T .
-     !> [ X21 ]   [    | P2 ] [ B21 ]
-     !> [  0  ]
-     !> X11 is P-by-Q, and X21 is (M-P)-by-Q. P must be no larger than M-P,
-     !> Q, or M-Q. Routines DORBDB1, DORBDB3, and DORBDB4 handle cases in
-     !> which P is not the minimum dimension.
-     !> The orthogonal matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
-     !> and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
-     !> Householder vectors.
-     !> B11 and B12 are P-by-P bidiagonal matrices represented implicitly by
-     !> angles THETA, PHI.
 
      subroutine stdlib_dorbdb2( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, tauq1, &
+     !! DORBDB2 simultaneously bidiagonalizes the blocks of a tall and skinny
+     !! matrix X with orthonomal columns:
+     !! [ B11 ]
+     !! [ X11 ]   [ P1 |    ] [  0  ]
+     !! [-----] = [---------] [-----] Q1**T .
+     !! [ X21 ]   [    | P2 ] [ B21 ]
+     !! [  0  ]
+     !! X11 is P-by-Q, and X21 is (M-P)-by-Q. P must be no larger than M-P,
+     !! Q, or M-Q. Routines DORBDB1, DORBDB3, and DORBDB4 handle cases in
+     !! which P is not the minimum dimension.
+     !! The orthogonal matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
+     !! and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
+     !! Householder vectors.
+     !! B11 and B12 are P-by-P bidiagonal matrices represented implicitly by
+     !! angles THETA, PHI.
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -53107,23 +53103,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorbdb2
 
-     !> DORBDB3: simultaneously bidiagonalizes the blocks of a tall and skinny
-     !> matrix X with orthonomal columns:
-     !> [ B11 ]
-     !> [ X11 ]   [ P1 |    ] [  0  ]
-     !> [-----] = [---------] [-----] Q1**T .
-     !> [ X21 ]   [    | P2 ] [ B21 ]
-     !> [  0  ]
-     !> X11 is P-by-Q, and X21 is (M-P)-by-Q. M-P must be no larger than P,
-     !> Q, or M-Q. Routines DORBDB1, DORBDB2, and DORBDB4 handle cases in
-     !> which M-P is not the minimum dimension.
-     !> The orthogonal matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
-     !> and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
-     !> Householder vectors.
-     !> B11 and B12 are (M-P)-by-(M-P) bidiagonal matrices represented
-     !> implicitly by angles THETA, PHI.
 
      subroutine stdlib_dorbdb3( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, tauq1, &
+     !! DORBDB3 simultaneously bidiagonalizes the blocks of a tall and skinny
+     !! matrix X with orthonomal columns:
+     !! [ B11 ]
+     !! [ X11 ]   [ P1 |    ] [  0  ]
+     !! [-----] = [---------] [-----] Q1**T .
+     !! [ X21 ]   [    | P2 ] [ B21 ]
+     !! [  0  ]
+     !! X11 is P-by-Q, and X21 is (M-P)-by-Q. M-P must be no larger than P,
+     !! Q, or M-Q. Routines DORBDB1, DORBDB2, and DORBDB4 handle cases in
+     !! which M-P is not the minimum dimension.
+     !! The orthogonal matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
+     !! and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
+     !! Householder vectors.
+     !! B11 and B12 are (M-P)-by-(M-P) bidiagonal matrices represented
+     !! implicitly by angles THETA, PHI.
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -53219,23 +53215,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorbdb3
 
-     !> DORBDB4: simultaneously bidiagonalizes the blocks of a tall and skinny
-     !> matrix X with orthonomal columns:
-     !> [ B11 ]
-     !> [ X11 ]   [ P1 |    ] [  0  ]
-     !> [-----] = [---------] [-----] Q1**T .
-     !> [ X21 ]   [    | P2 ] [ B21 ]
-     !> [  0  ]
-     !> X11 is P-by-Q, and X21 is (M-P)-by-Q. M-Q must be no larger than P,
-     !> M-P, or Q. Routines DORBDB1, DORBDB2, and DORBDB3 handle cases in
-     !> which M-Q is not the minimum dimension.
-     !> The orthogonal matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
-     !> and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
-     !> Householder vectors.
-     !> B11 and B12 are (M-Q)-by-(M-Q) bidiagonal matrices represented
-     !> implicitly by angles THETA, PHI.
 
      subroutine stdlib_dorbdb4( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, tauq1, &
+     !! DORBDB4 simultaneously bidiagonalizes the blocks of a tall and skinny
+     !! matrix X with orthonomal columns:
+     !! [ B11 ]
+     !! [ X11 ]   [ P1 |    ] [  0  ]
+     !! [-----] = [---------] [-----] Q1**T .
+     !! [ X21 ]   [    | P2 ] [ B21 ]
+     !! [  0  ]
+     !! X11 is P-by-Q, and X21 is (M-P)-by-Q. M-Q must be no larger than P,
+     !! M-P, or Q. Routines DORBDB1, DORBDB2, and DORBDB3 handle cases in
+     !! which M-Q is not the minimum dimension.
+     !! The orthogonal matrices P1, P2, and Q1 are P-by-P, (M-P)-by-(M-P),
+     !! and (M-Q)-by-(M-Q), respectively. They are represented implicitly by
+     !! Householder vectors.
+     !! B11 and B12 are (M-Q)-by-(M-Q) bidiagonal matrices represented
+     !! implicitly by angles THETA, PHI.
                phantom, work, lwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -53361,23 +53357,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorbdb4
 
-     !> DORCSD2BY1: computes the CS decomposition of an M-by-Q matrix X with
-     !> orthonormal columns that has been partitioned into a 2-by-1 block
-     !> structure:
-     !> [  I1 0  0 ]
-     !> [  0  C  0 ]
-     !> [ X11 ]   [ U1 |    ] [  0  0  0 ]
-     !> X = [-----] = [---------] [----------] V1**T .
-     !> [ X21 ]   [    | U2 ] [  0  0  0 ]
-     !> [  0  S  0 ]
-     !> [  0  0  I2]
-     !> X11 is P-by-Q. The orthogonal matrices U1, U2, and V1 are P-by-P,
-     !> (M-P)-by-(M-P), and Q-by-Q, respectively. C and S are R-by-R
-     !> nonnegative diagonal matrices satisfying C^2 + S^2 = I, in which
-     !> R = MIN(P,M-P,Q,M-Q). I1 is a K1-by-K1 identity matrix and I2 is a
-     !> K2-by-K2 identity matrix, where K1 = MAX(Q+P-M,0), K2 = MAX(Q-P,0).
 
      subroutine stdlib_dorcsd2by1( jobu1, jobu2, jobv1t, m, p, q, x11, ldx11,x21, ldx21, theta, &
+     !! DORCSD2BY1 computes the CS decomposition of an M-by-Q matrix X with
+     !! orthonormal columns that has been partitioned into a 2-by-1 block
+     !! structure:
+     !! [  I1 0  0 ]
+     !! [  0  C  0 ]
+     !! [ X11 ]   [ U1 |    ] [  0  0  0 ]
+     !! X = [-----] = [---------] [----------] V1**T .
+     !! [ X21 ]   [    | U2 ] [  0  0  0 ]
+     !! [  0  S  0 ]
+     !! [  0  0  I2]
+     !! X11 is P-by-Q. The orthogonal matrices U1, U2, and V1 are P-by-P,
+     !! (M-P)-by-(M-P), and Q-by-Q, respectively. C and S are R-by-R
+     !! nonnegative diagonal matrices satisfying C^2 + S^2 = I, in which
+     !! R = MIN(P,M-P,Q,M-Q). I1 is a K1-by-K1 identity matrix and I2 is a
+     !! K2-by-K2 identity matrix, where K1 = MAX(Q+P-M,0), K2 = MAX(Q-P,0).
                u1, ldu1, u2, ldu2, v1t,ldv1t, work, lwork, iwork, info )
         ! -- lapack computational routine (3.5.0_dp) --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -53776,13 +53772,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorcsd2by1
 
-     !> DORGTR: generates a real orthogonal matrix Q which is defined as the
-     !> product of n-1 elementary reflectors of order N, as returned by
-     !> DSYTRD:
-     !> if UPLO = 'U', Q = H(n-1) . . . H(2) H(1),
-     !> if UPLO = 'L', Q = H(1) H(2) . . . H(n-1).
 
      pure subroutine stdlib_dorgtr( uplo, n, a, lda, tau, work, lwork, info )
+     !! DORGTR generates a real orthogonal matrix Q which is defined as the
+     !! product of n-1 elementary reflectors of order N, as returned by
+     !! DSYTRD:
+     !! if UPLO = 'U', Q = H(n-1) . . . H(2) H(1),
+     !! if UPLO = 'L', Q = H(1) H(2) . . . H(n-1).
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -53877,13 +53873,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorgtr
 
-     !> DORGTSQR: generates an M-by-N real matrix Q_out with orthonormal columns,
-     !> which are the first N columns of a product of real orthogonal
-     !> matrices of order M which are returned by DLATSQR
-     !> Q_out = first_N_columns_of( Q(1)_in * Q(2)_in * ... * Q(k)_in ).
-     !> See the documentation for DLATSQR.
 
      pure subroutine stdlib_dorgtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
+     !! DORGTSQR generates an M-by-N real matrix Q_out with orthonormal columns,
+     !! which are the first N columns of a product of real orthogonal
+     !! matrices of order M which are returned by DLATSQR
+     !! Q_out = first_N_columns_of( Q(1)_in * Q(2)_in * ... * Q(k)_in ).
+     !! See the documentation for DLATSQR.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -53975,17 +53971,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorgtsqr
 
-     !> DORMTR: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix of order nq, with nq = m if
-     !> SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
-     !> nq-1 elementary reflectors, as returned by DSYTRD:
-     !> if UPLO = 'U', Q = H(nq-1) . . . H(2) H(1);
-     !> if UPLO = 'L', Q = H(1) H(2) . . . H(nq-1).
 
      pure subroutine stdlib_dormtr( side, uplo, trans, m, n, a, lda, tau, c, ldc,work, lwork, &
+     !! DORMTR overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix of order nq, with nq = m if
+     !! SIDE = 'L' and nq = n if SIDE = 'R'. Q is defined as the product of
+     !! nq-1 elementary reflectors, as returned by DSYTRD:
+     !! if UPLO = 'U', Q = H(nq-1) . . . H(2) H(1);
+     !! if UPLO = 'L', Q = H(1) H(2) . . . H(nq-1).
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -54091,14 +54087,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dormtr
 
-     !> DPBTRF: computes the Cholesky factorization of a real symmetric
-     !> positive definite band matrix A.
-     !> The factorization has the form
-     !> A = U**T * U,  if UPLO = 'U', or
-     !> A = L  * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
 
      pure subroutine stdlib_dpbtrf( uplo, n, kd, ab, ldab, info )
+     !! DPBTRF computes the Cholesky factorization of a real symmetric
+     !! positive definite band matrix A.
+     !! The factorization has the form
+     !! A = U**T * U,  if UPLO = 'U', or
+     !! A = L  * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -54290,11 +54286,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpbtrf
 
-     !> DPFTRI: computes the inverse of a (real) symmetric positive definite
-     !> matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
-     !> computed by DPFTRF.
 
      pure subroutine stdlib_dpftri( transr, uplo, n, a, info )
+     !! DPFTRI computes the inverse of a (real) symmetric positive definite
+     !! matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
+     !! computed by DPFTRF.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -54448,15 +54444,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpftri
 
-     !> DPOTRF: computes the Cholesky factorization of a real symmetric
-     !> positive definite matrix A.
-     !> The factorization has the form
-     !> A = U**T * U,  if UPLO = 'U', or
-     !> A = L  * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
-     !> This is the block version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_dpotrf( uplo, n, a, lda, info )
+     !! DPOTRF computes the Cholesky factorization of a real symmetric
+     !! positive definite matrix A.
+     !! The factorization has the form
+     !! A = U**T * U,  if UPLO = 'U', or
+     !! A = L  * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
+     !! This is the block version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -54542,12 +54538,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpotrf
 
-     !> DPTRFS: improves the computed solution to a system of linear
-     !> equations when the coefficient matrix is symmetric positive definite
-     !> and tridiagonal, and provides error bounds and backward error
-     !> estimates for the solution.
 
      pure subroutine stdlib_dptrfs( n, nrhs, d, e, df, ef, b, ldb, x, ldx, ferr,berr, work, info )
+     !! DPTRFS improves the computed solution to a system of linear
+     !! equations when the coefficient matrix is symmetric positive definite
+     !! and tridiagonal, and provides error bounds and backward error
+     !! estimates for the solution.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -54714,13 +54710,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dptrfs
 
-     !> DPTSV: computes the solution to a real system of linear equations
-     !> A*X = B, where A is an N-by-N symmetric positive definite tridiagonal
-     !> matrix, and X and B are N-by-NRHS matrices.
-     !> A is factored as A = L*D*L**T, and the factored form of A is then
-     !> used to solve the system of equations.
 
      pure subroutine stdlib_dptsv( n, nrhs, d, e, b, ldb, info )
+     !! DPTSV computes the solution to a real system of linear equations
+     !! A*X = B, where A is an N-by-N symmetric positive definite tridiagonal
+     !! matrix, and X and B are N-by-NRHS matrices.
+     !! A is factored as A = L*D*L**T, and the factored form of A is then
+     !! used to solve the system of equations.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -54755,14 +54751,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dptsv
 
-     !> DPTSVX: uses the factorization A = L*D*L**T to compute the solution
-     !> to a real system of linear equations A*X = B, where A is an N-by-N
-     !> symmetric positive definite tridiagonal matrix and X and B are
-     !> N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      pure subroutine stdlib_dptsvx( fact, n, nrhs, d, e, df, ef, b, ldb, x, ldx,rcond, ferr, berr,&
+     !! DPTSVX uses the factorization A = L*D*L**T to compute the solution
+     !! to a real system of linear equations A*X = B, where A is an N-by-N
+     !! symmetric positive definite tridiagonal matrix and X and B are
+     !! N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                 work, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -54829,10 +54825,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dptsvx
 
-     !> DSBEV: computes all the eigenvalues and, optionally, eigenvectors of
-     !> a real symmetric band matrix A.
 
      subroutine stdlib_dsbev( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,info )
+     !! DSBEV computes all the eigenvalues and, optionally, eigenvectors of
+     !! a real symmetric band matrix A.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -54931,12 +54927,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsbev
 
-     !> DSBEVX: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a real symmetric band matrix A.  Eigenvalues and eigenvectors can
-     !> be selected by specifying either a range of values or a range of
-     !> indices for the desired eigenvalues.
 
      subroutine stdlib_dsbevx( jobz, range, uplo, n, kd, ab, ldab, q, ldq, vl,vu, il, iu, abstol, &
+     !! DSBEVX computes selected eigenvalues and, optionally, eigenvectors
+     !! of a real symmetric band matrix A.  Eigenvalues and eigenvectors can
+     !! be selected by specifying either a range of values or a range of
+     !! indices for the desired eigenvalues.
                m, w, z, ldz, work, iwork,ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -55157,12 +55153,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsbevx
 
-     !> DSBGV: computes all the eigenvalues, and optionally, the eigenvectors
-     !> of a real generalized symmetric-definite banded eigenproblem, of
-     !> the form A*x=(lambda)*B*x. Here A and B are assumed to be symmetric
-     !> and banded, and B is also positive definite.
 
      pure subroutine stdlib_dsbgv( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w, z,ldz, work, &
+     !! DSBGV computes all the eigenvalues, and optionally, the eigenvectors
+     !! of a real generalized symmetric-definite banded eigenproblem, of
+     !! the form A*x=(lambda)*B*x. Here A and B are assumed to be symmetric
+     !! and banded, and B is also positive definite.
                info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -55235,14 +55231,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsbgv
 
-     !> DSBGVX: computes selected eigenvalues, and optionally, eigenvectors
-     !> of a real generalized symmetric-definite banded eigenproblem, of
-     !> the form A*x=(lambda)*B*x.  Here A and B are assumed to be symmetric
-     !> and banded, and B is also positive definite.  Eigenvalues and
-     !> eigenvectors can be selected by specifying either all eigenvalues,
-     !> a range of values or a range of indices for the desired eigenvalues.
 
      pure subroutine stdlib_dsbgvx( jobz, range, uplo, n, ka, kb, ab, ldab, bb,ldbb, q, ldq, vl, &
+     !! DSBGVX computes selected eigenvalues, and optionally, eigenvectors
+     !! of a real generalized symmetric-definite banded eigenproblem, of
+     !! the form A*x=(lambda)*B*x.  Here A and B are assumed to be symmetric
+     !! and banded, and B is also positive definite.  Eigenvalues and
+     !! eigenvectors can be selected by specifying either all eigenvalues,
+     !! a range of values or a range of indices for the desired eigenvalues.
                vu, il, iu, abstol, m, w, z,ldz, work, iwork, ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -55420,35 +55416,35 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsbgvx
 
-     !> DSGESV: computes the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
-     !> DSGESV first attempts to factorize the matrix in SINGLE PRECISION
-     !> and use this factorization within an iterative refinement procedure
-     !> to produce a solution with DOUBLE PRECISION normwise backward error
-     !> quality (see below). If the approach fails the method switches to a
-     !> DOUBLE PRECISION factorization and solve.
-     !> The iterative refinement is not going to be a winning strategy if
-     !> the ratio SINGLE PRECISION performance over DOUBLE PRECISION
-     !> performance is too small. A reasonable strategy should take the
-     !> number of right-hand sides and the size of the matrix into account.
-     !> This might be done with a call to ILAENV in the future. Up to now, we
-     !> always try iterative refinement.
-     !> The iterative refinement process is stopped if
-     !> ITER > ITERMAX
-     !> or for all the RHS we have:
-     !> RNRM < SQRT(N)*XNRM*ANRM*EPS*BWDMAX
-     !> where
-     !> o ITER is the number of the current iteration in the iterative
-     !> refinement process
-     !> o RNRM is the infinity-norm of the residual
-     !> o XNRM is the infinity-norm of the solution
-     !> o ANRM is the infinity-operator-norm of the matrix A
-     !> o EPS is the machine epsilon returned by DLAMCH('Epsilon')
-     !> The value ITERMAX and BWDMAX are fixed to 30 and 1.0D+00
-     !> respectively.
 
      subroutine stdlib_dsgesv( n, nrhs, a, lda, ipiv, b, ldb, x, ldx, work,swork, iter, info )
+     !! DSGESV computes the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
+     !! DSGESV first attempts to factorize the matrix in SINGLE PRECISION
+     !! and use this factorization within an iterative refinement procedure
+     !! to produce a solution with DOUBLE PRECISION normwise backward error
+     !! quality (see below). If the approach fails the method switches to a
+     !! DOUBLE PRECISION factorization and solve.
+     !! The iterative refinement is not going to be a winning strategy if
+     !! the ratio SINGLE PRECISION performance over DOUBLE PRECISION
+     !! performance is too small. A reasonable strategy should take the
+     !! number of right-hand sides and the size of the matrix into account.
+     !! This might be done with a call to ILAENV in the future. Up to now, we
+     !! always try iterative refinement.
+     !! The iterative refinement process is stopped if
+     !! ITER > ITERMAX
+     !! or for all the RHS we have:
+     !! RNRM < SQRT(N)*XNRM*ANRM*EPS*BWDMAX
+     !! where
+     !! o ITER is the number of the current iteration in the iterative
+     !! refinement process
+     !! o RNRM is the infinity-norm of the residual
+     !! o XNRM is the infinity-norm of the solution
+     !! o ANRM is the infinity-operator-norm of the matrix A
+     !! o EPS is the machine epsilon returned by DLAMCH('Epsilon')
+     !! The value ITERMAX and BWDMAX are fixed to 30 and 1.0D+00
+     !! respectively.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -55600,10 +55596,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsgesv
 
-     !> DSPEV: computes all the eigenvalues and, optionally, eigenvectors of a
-     !> real symmetric matrix A in packed storage.
 
      subroutine stdlib_dspev( jobz, uplo, n, ap, w, z, ldz, work, info )
+     !! DSPEV computes all the eigenvalues and, optionally, eigenvectors of a
+     !! real symmetric matrix A in packed storage.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -55693,12 +55689,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dspev
 
-     !> DSPEVX: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a real symmetric matrix A in packed storage.  Eigenvalues/vectors
-     !> can be selected by specifying either a range of values or a range of
-     !> indices for the desired eigenvalues.
 
      subroutine stdlib_dspevx( jobz, range, uplo, n, ap, vl, vu, il, iu,abstol, m, w, z, ldz, &
+     !! DSPEVX computes selected eigenvalues and, optionally, eigenvectors
+     !! of a real symmetric matrix A in packed storage.  Eigenvalues/vectors
+     !! can be selected by specifying either a range of values or a range of
+     !! indices for the desired eigenvalues.
                work, iwork, ifail,info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -55906,13 +55902,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dspevx
 
-     !> DSPGV: computes all the eigenvalues and, optionally, the eigenvectors
-     !> of a real generalized symmetric-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.
-     !> Here A and B are assumed to be symmetric, stored in packed format,
-     !> and B is also positive definite.
 
      subroutine stdlib_dspgv( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,info )
+     !! DSPGV computes all the eigenvalues and, optionally, the eigenvectors
+     !! of a real generalized symmetric-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.
+     !! Here A and B are assumed to be symmetric, stored in packed format,
+     !! and B is also positive definite.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -55990,15 +55986,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dspgv
 
-     !> DSPGVX: computes selected eigenvalues, and optionally, eigenvectors
-     !> of a real generalized symmetric-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A
-     !> and B are assumed to be symmetric, stored in packed storage, and B
-     !> is also positive definite.  Eigenvalues and eigenvectors can be
-     !> selected by specifying either a range of values or a range of indices
-     !> for the desired eigenvalues.
 
      subroutine stdlib_dspgvx( itype, jobz, range, uplo, n, ap, bp, vl, vu,il, iu, abstol, m, w, &
+     !! DSPGVX computes selected eigenvalues, and optionally, eigenvectors
+     !! of a real generalized symmetric-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A
+     !! and B are assumed to be symmetric, stored in packed storage, and B
+     !! is also positive definite.  Eigenvalues and eigenvectors can be
+     !! selected by specifying either a range of values or a range of indices
+     !! for the desired eigenvalues.
                z, ldz, work, iwork,ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -56102,36 +56098,36 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dspgvx
 
-     !> DSPOSV: computes the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric positive definite matrix and X and B
-     !> are N-by-NRHS matrices.
-     !> DSPOSV first attempts to factorize the matrix in SINGLE PRECISION
-     !> and use this factorization within an iterative refinement procedure
-     !> to produce a solution with DOUBLE PRECISION normwise backward error
-     !> quality (see below). If the approach fails the method switches to a
-     !> DOUBLE PRECISION factorization and solve.
-     !> The iterative refinement is not going to be a winning strategy if
-     !> the ratio SINGLE PRECISION performance over DOUBLE PRECISION
-     !> performance is too small. A reasonable strategy should take the
-     !> number of right-hand sides and the size of the matrix into account.
-     !> This might be done with a call to ILAENV in the future. Up to now, we
-     !> always try iterative refinement.
-     !> The iterative refinement process is stopped if
-     !> ITER > ITERMAX
-     !> or for all the RHS we have:
-     !> RNRM < SQRT(N)*XNRM*ANRM*EPS*BWDMAX
-     !> where
-     !> o ITER is the number of the current iteration in the iterative
-     !> refinement process
-     !> o RNRM is the infinity-norm of the residual
-     !> o XNRM is the infinity-norm of the solution
-     !> o ANRM is the infinity-operator-norm of the matrix A
-     !> o EPS is the machine epsilon returned by DLAMCH('Epsilon')
-     !> The value ITERMAX and BWDMAX are fixed to 30 and 1.0D+00
-     !> respectively.
 
      subroutine stdlib_dsposv( uplo, n, nrhs, a, lda, b, ldb, x, ldx, work,swork, iter, info )
+     !! DSPOSV computes the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric positive definite matrix and X and B
+     !! are N-by-NRHS matrices.
+     !! DSPOSV first attempts to factorize the matrix in SINGLE PRECISION
+     !! and use this factorization within an iterative refinement procedure
+     !! to produce a solution with DOUBLE PRECISION normwise backward error
+     !! quality (see below). If the approach fails the method switches to a
+     !! DOUBLE PRECISION factorization and solve.
+     !! The iterative refinement is not going to be a winning strategy if
+     !! the ratio SINGLE PRECISION performance over DOUBLE PRECISION
+     !! performance is too small. A reasonable strategy should take the
+     !! number of right-hand sides and the size of the matrix into account.
+     !! This might be done with a call to ILAENV in the future. Up to now, we
+     !! always try iterative refinement.
+     !! The iterative refinement process is stopped if
+     !! ITER > ITERMAX
+     !! or for all the RHS we have:
+     !! RNRM < SQRT(N)*XNRM*ANRM*EPS*BWDMAX
+     !! where
+     !! o ITER is the number of the current iteration in the iterative
+     !! refinement process
+     !! o RNRM is the infinity-norm of the residual
+     !! o XNRM is the infinity-norm of the solution
+     !! o ANRM is the infinity-operator-norm of the matrix A
+     !! o EPS is the machine epsilon returned by DLAMCH('Epsilon')
+     !! The value ITERMAX and BWDMAX are fixed to 30 and 1.0D+00
+     !! respectively.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -56281,10 +56277,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsposv
 
-     !> DSYEV: computes all eigenvalues and, optionally, eigenvectors of a
-     !> real symmetric matrix A.
 
      subroutine stdlib_dsyev( jobz, uplo, n, a, lda, w, work, lwork, info )
+     !! DSYEV computes all eigenvalues and, optionally, eigenvectors of a
+     !! real symmetric matrix A.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -56388,12 +56384,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsyev
 
-     !> DSYEVX: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a real symmetric matrix A.  Eigenvalues and eigenvectors can be
-     !> selected by specifying either a range of values or a range of indices
-     !> for the desired eigenvalues.
 
      subroutine stdlib_dsyevx( jobz, range, uplo, n, a, lda, vl, vu, il, iu,abstol, m, w, z, ldz, &
+     !! DSYEVX computes selected eigenvalues and, optionally, eigenvectors
+     !! of a real symmetric matrix A.  Eigenvalues and eigenvectors can be
+     !! selected by specifying either a range of values or a range of indices
+     !! for the desired eigenvalues.
                work, lwork, iwork,ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -56635,13 +56631,13 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsyevx
 
-     !> DSYGV: computes all the eigenvalues, and optionally, the eigenvectors
-     !> of a real generalized symmetric-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.
-     !> Here A and B are assumed to be symmetric and B is also
-     !> positive definite.
 
      subroutine stdlib_dsygv( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, info )
+     !! DSYGV computes all the eigenvalues, and optionally, the eigenvectors
+     !! of a real generalized symmetric-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.
+     !! Here A and B are assumed to be symmetric and B is also
+     !! positive definite.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -56735,14 +56731,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsygv
 
-     !> DSYGVX: computes selected eigenvalues, and optionally, eigenvectors
-     !> of a real generalized symmetric-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A
-     !> and B are assumed to be symmetric and B is also positive definite.
-     !> Eigenvalues and eigenvectors can be selected by specifying either a
-     !> range of values or a range of indices for the desired eigenvalues.
 
      subroutine stdlib_dsygvx( itype, jobz, range, uplo, n, a, lda, b, ldb,vl, vu, il, iu, abstol,&
+     !! DSYGVX computes selected eigenvalues, and optionally, eigenvectors
+     !! of a real generalized symmetric-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A
+     !! and B are assumed to be symmetric and B is also positive definite.
+     !! Eigenvalues and eigenvectors can be selected by specifying either a
+     !! range of values or a range of indices for the desired eigenvalues.
                 m, w, z, ldz, work,lwork, iwork, ifail, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -56863,19 +56859,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsygvx
 
-     !> DSYSV: computes the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> The diagonal pivoting method is used to factor A as
-     !> A = U * D * U**T,  if UPLO = 'U', or
-     !> A = L * D * L**T,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and D is symmetric and block diagonal with
-     !> 1-by-1 and 2-by-2 diagonal blocks.  The factored form of A is then
-     !> used to solve the system of equations A * X = B.
 
      pure subroutine stdlib_dsysv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
+     !! DSYSV computes the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! The diagonal pivoting method is used to factor A as
+     !! A = U * D * U**T,  if UPLO = 'U', or
+     !! A = L * D * L**T,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and D is symmetric and block diagonal with
+     !! 1-by-1 and 2-by-2 diagonal blocks.  The factored form of A is then
+     !! used to solve the system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -56941,14 +56937,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsysv
 
-     !> DSYSVX: uses the diagonal pivoting factorization to compute the
-     !> solution to a real system of linear equations A * X = B,
-     !> where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_dsysvx( fact, uplo, n, nrhs, a, lda, af, ldaf, ipiv, b,ldb, x, ldx, rcond, &
+     !! DSYSVX uses the diagonal pivoting factorization to compute the
+     !! solution to a real system of linear equations A * X = B,
+     !! where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                ferr, berr, work, lwork,iwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -57038,11 +57034,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsysvx
 
-     !> DSYTRD_SY2SB: reduces a real symmetric matrix A to real symmetric
-     !> band-diagonal form AB by a orthogonal similarity transformation:
-     !> Q**T * A * Q = AB.
 
      pure subroutine stdlib_dsytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info )
+     !! DSYTRD_SY2SB reduces a real symmetric matrix A to real symmetric
+     !! band-diagonal form AB by a orthogonal similarity transformation:
+     !! Q**T * A * Q = AB.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -57214,26 +57210,26 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsytrd_sy2sb
 
-     !> DTGEVC: computes some or all of the right and/or left eigenvectors of
-     !> a pair of real matrices (S,P), where S is a quasi-triangular matrix
-     !> and P is upper triangular.  Matrix pairs of this type are produced by
-     !> the generalized Schur factorization of a matrix pair (A,B):
-     !> A = Q*S*Z**T,  B = Q*P*Z**T
-     !> as computed by DGGHRD + DHGEQZ.
-     !> The right eigenvector x and the left eigenvector y of (S,P)
-     !> corresponding to an eigenvalue w are defined by:
-     !> S*x = w*P*x,  (y**H)*S = w*(y**H)*P,
-     !> where y**H denotes the conjugate tranpose of y.
-     !> The eigenvalues are not input to this routine, but are computed
-     !> directly from the diagonal blocks of S and P.
-     !> This routine returns the matrices X and/or Y of right and left
-     !> eigenvectors of (S,P), or the products Z*X and/or Q*Y,
-     !> where Z and Q are input matrices.
-     !> If Q and Z are the orthogonal factors from the generalized Schur
-     !> factorization of a matrix pair (A,B), then Z*X and Q*Y
-     !> are the matrices of right and left eigenvectors of (A,B).
 
      pure subroutine stdlib_dtgevc( side, howmny, select, n, s, lds, p, ldp, vl,ldvl, vr, ldvr, &
+     !! DTGEVC computes some or all of the right and/or left eigenvectors of
+     !! a pair of real matrices (S,P), where S is a quasi-triangular matrix
+     !! and P is upper triangular.  Matrix pairs of this type are produced by
+     !! the generalized Schur factorization of a matrix pair (A,B):
+     !! A = Q*S*Z**T,  B = Q*P*Z**T
+     !! as computed by DGGHRD + DHGEQZ.
+     !! The right eigenvector x and the left eigenvector y of (S,P)
+     !! corresponding to an eigenvalue w are defined by:
+     !! S*x = w*P*x,  (y**H)*S = w*(y**H)*P,
+     !! where y**H denotes the conjugate tranpose of y.
+     !! The eigenvalues are not input to this routine, but are computed
+     !! directly from the diagonal blocks of S and P.
+     !! This routine returns the matrices X and/or Y of right and left
+     !! eigenvectors of (S,P), or the products Z*X and/or Q*Y,
+     !! where Z and Q are input matrices.
+     !! If Q and Z are the orthogonal factors from the generalized Schur
+     !! factorization of a matrix pair (A,B), then Z*X and Q*Y
+     !! are the matrices of right and left eigenvectors of (A,B).
                mm, m, work, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -57944,18 +57940,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtgevc
 
-     !> DTGEX2: swaps adjacent diagonal blocks (A11, B11) and (A22, B22)
-     !> of size 1-by-1 or 2-by-2 in an upper (quasi) triangular matrix pair
-     !> (A, B) by an orthogonal equivalence transformation.
-     !> (A, B) must be in generalized real Schur canonical form (as returned
-     !> by DGGES), i.e. A is block upper triangular with 1-by-1 and 2-by-2
-     !> diagonal blocks. B is upper triangular.
-     !> Optionally, the matrices Q and Z of generalized Schur vectors are
-     !> updated.
-     !> Q(in) * A(in) * Z(in)**T = Q(out) * A(out) * Z(out)**T
-     !> Q(in) * B(in) * Z(in)**T = Q(out) * B(out) * Z(out)**T
 
      pure subroutine stdlib_dtgex2( wantq, wantz, n, a, lda, b, ldb, q, ldq, z,ldz, j1, n1, n2, &
+     !! DTGEX2 swaps adjacent diagonal blocks (A11, B11) and (A22, B22)
+     !! of size 1-by-1 or 2-by-2 in an upper (quasi) triangular matrix pair
+     !! (A, B) by an orthogonal equivalence transformation.
+     !! (A, B) must be in generalized real Schur canonical form (as returned
+     !! by DGGES), i.e. A is block upper triangular with 1-by-1 and 2-by-2
+     !! diagonal blocks. B is upper triangular.
+     !! Optionally, the matrices Q and Z of generalized Schur vectors are
+     !! updated.
+     !! Q(in) * A(in) * Z(in)**T = Q(out) * A(out) * Z(out)**T
+     !! Q(in) * B(in) * Z(in)**T = Q(out) * B(out) * Z(out)**T
                work, lwork, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -58309,20 +58305,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtgex2
 
-     !> DTGEXC: reorders the generalized real Schur decomposition of a real
-     !> matrix pair (A,B) using an orthogonal equivalence transformation
-     !> (A, B) = Q * (A, B) * Z**T,
-     !> so that the diagonal block of (A, B) with row index IFST is moved
-     !> to row ILST.
-     !> (A, B) must be in generalized real Schur canonical form (as returned
-     !> by DGGES), i.e. A is block upper triangular with 1-by-1 and 2-by-2
-     !> diagonal blocks. B is upper triangular.
-     !> Optionally, the matrices Q and Z of generalized Schur vectors are
-     !> updated.
-     !> Q(in) * A(in) * Z(in)**T = Q(out) * A(out) * Z(out)**T
-     !> Q(in) * B(in) * Z(in)**T = Q(out) * B(out) * Z(out)**T
 
      pure subroutine stdlib_dtgexc( wantq, wantz, n, a, lda, b, ldb, q, ldq, z,ldz, ifst, ilst, &
+     !! DTGEXC reorders the generalized real Schur decomposition of a real
+     !! matrix pair (A,B) using an orthogonal equivalence transformation
+     !! (A, B) = Q * (A, B) * Z**T,
+     !! so that the diagonal block of (A, B) with row index IFST is moved
+     !! to row ILST.
+     !! (A, B) must be in generalized real Schur canonical form (as returned
+     !! by DGGES), i.e. A is block upper triangular with 1-by-1 and 2-by-2
+     !! diagonal blocks. B is upper triangular.
+     !! Optionally, the matrices Q and Z of generalized Schur vectors are
+     !! updated.
+     !! Q(in) * A(in) * Z(in)**T = Q(out) * A(out) * Z(out)**T
+     !! Q(in) * B(in) * Z(in)**T = Q(out) * B(out) * Z(out)**T
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -58558,28 +58554,28 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtgexc
 
-     !> DTGSEN: reorders the generalized real Schur decomposition of a real
-     !> matrix pair (A, B) (in terms of an orthonormal equivalence trans-
-     !> formation Q**T * (A, B) * Z), so that a selected cluster of eigenvalues
-     !> appears in the leading diagonal blocks of the upper quasi-triangular
-     !> matrix A and the upper triangular B. The leading columns of Q and
-     !> Z form orthonormal bases of the corresponding left and right eigen-
-     !> spaces (deflating subspaces). (A, B) must be in generalized real
-     !> Schur canonical form (as returned by DGGES), i.e. A is block upper
-     !> triangular with 1-by-1 and 2-by-2 diagonal blocks. B is upper
-     !> triangular.
-     !> DTGSEN also computes the generalized eigenvalues
-     !> w(j) = (ALPHAR(j) + i*ALPHAI(j))/BETA(j)
-     !> of the reordered matrix pair (A, B).
-     !> Optionally, DTGSEN computes the estimates of reciprocal condition
-     !> numbers for eigenvalues and eigenspaces. These are Difu[(A11,B11),
-     !> (A22,B22)] and Difl[(A11,B11), (A22,B22)], i.e. the separation(s)
-     !> between the matrix pairs (A11, B11) and (A22,B22) that correspond to
-     !> the selected cluster and the eigenvalues outside the cluster, resp.,
-     !> and norms of "projections" onto left and right eigenspaces w.r.t.
-     !> the selected cluster in the (1,1)-block.
 
      pure subroutine stdlib_dtgsen( ijob, wantq, wantz, select, n, a, lda, b, ldb,alphar, alphai, &
+     !! DTGSEN reorders the generalized real Schur decomposition of a real
+     !! matrix pair (A, B) (in terms of an orthonormal equivalence trans-
+     !! formation Q**T * (A, B) * Z), so that a selected cluster of eigenvalues
+     !! appears in the leading diagonal blocks of the upper quasi-triangular
+     !! matrix A and the upper triangular B. The leading columns of Q and
+     !! Z form orthonormal bases of the corresponding left and right eigen-
+     !! spaces (deflating subspaces). (A, B) must be in generalized real
+     !! Schur canonical form (as returned by DGGES), i.e. A is block upper
+     !! triangular with 1-by-1 and 2-by-2 diagonal blocks. B is upper
+     !! triangular.
+     !! DTGSEN also computes the generalized eigenvalues
+     !! w(j) = (ALPHAR(j) + i*ALPHAI(j))/BETA(j)
+     !! of the reordered matrix pair (A, B).
+     !! Optionally, DTGSEN computes the estimates of reciprocal condition
+     !! numbers for eigenvalues and eigenspaces. These are Difu[(A11,B11),
+     !! (A22,B22)] and Difl[(A11,B11), (A22,B22)], i.e. the separation(s)
+     !! between the matrix pairs (A11, B11) and (A22,B22) that correspond to
+     !! the selected cluster and the eigenvalues outside the cluster, resp.,
+     !! and norms of "projections" onto left and right eigenspaces w.r.t.
+     !! the selected cluster in the (1,1)-block.
                beta, q, ldq, z, ldz, m, pl,pr, dif, work, lwork, iwork, liwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -58884,69 +58880,69 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtgsen
 
-     !> DTGSJA: computes the generalized singular value decomposition (GSVD)
-     !> of two real upper triangular (or trapezoidal) matrices A and B.
-     !> On entry, it is assumed that matrices A and B have the following
-     !> forms, which may be obtained by the preprocessing subroutine DGGSVP
-     !> from a general M-by-N matrix A and P-by-N matrix B:
-     !> N-K-L  K    L
-     !> A =    K ( 0    A12  A13 ) if M-K-L >= 0;
-     !> L ( 0     0   A23 )
-     !> M-K-L ( 0     0    0  )
-     !> N-K-L  K    L
-     !> A =  K ( 0    A12  A13 ) if M-K-L < 0;
-     !> M-K ( 0     0   A23 )
-     !> N-K-L  K    L
-     !> B =  L ( 0     0   B13 )
-     !> P-L ( 0     0    0  )
-     !> where the K-by-K matrix A12 and L-by-L matrix B13 are nonsingular
-     !> upper triangular; A23 is L-by-L upper triangular if M-K-L >= 0,
-     !> otherwise A23 is (M-K)-by-L upper trapezoidal.
-     !> On exit,
-     !> U**T *A*Q = D1*( 0 R ),    V**T *B*Q = D2*( 0 R ),
-     !> where U, V and Q are orthogonal matrices.
-     !> R is a nonsingular upper triangular matrix, and D1 and D2 are
-     !> ``diagonal'' matrices, which are of the following structures:
-     !> If M-K-L >= 0,
-     !> K  L
-     !> D1 =     K ( I  0 )
-     !> L ( 0  C )
-     !> M-K-L ( 0  0 )
-     !> K  L
-     !> D2 = L   ( 0  S )
-     !> P-L ( 0  0 )
-     !> N-K-L  K    L
-     !> ( 0 R ) = K (  0   R11  R12 ) K
-     !> L (  0    0   R22 ) L
-     !> where
-     !> C = diag( ALPHA(K+1), ... , ALPHA(K+L) ),
-     !> S = diag( BETA(K+1),  ... , BETA(K+L) ),
-     !> C**2 + S**2 = I.
-     !> R is stored in A(1:K+L,N-K-L+1:N) on exit.
-     !> If M-K-L < 0,
-     !> K M-K K+L-M
-     !> D1 =   K ( I  0    0   )
-     !> M-K ( 0  C    0   )
-     !> K M-K K+L-M
-     !> D2 =   M-K ( 0  S    0   )
-     !> K+L-M ( 0  0    I   )
-     !> P-L ( 0  0    0   )
-     !> N-K-L  K   M-K  K+L-M
-     !> ( 0 R ) =    K ( 0    R11  R12  R13  )
-     !> M-K ( 0     0   R22  R23  )
-     !> K+L-M ( 0     0    0   R33  )
-     !> where
-     !> C = diag( ALPHA(K+1), ... , ALPHA(M) ),
-     !> S = diag( BETA(K+1),  ... , BETA(M) ),
-     !> C**2 + S**2 = I.
-     !> R = ( R11 R12 R13 ) is stored in A(1:M, N-K-L+1:N) and R33 is stored
-     !> (  0  R22 R23 )
-     !> in B(M-K+1:L,N+M-K-L+1:N) on exit.
-     !> The computation of the orthogonal transformation matrices U, V or Q
-     !> is optional.  These matrices may either be formed explicitly, or they
-     !> may be postmultiplied into input matrices U1, V1, or Q1.
 
      pure subroutine stdlib_dtgsja( jobu, jobv, jobq, m, p, n, k, l, a, lda, b,ldb, tola, tolb, &
+     !! DTGSJA computes the generalized singular value decomposition (GSVD)
+     !! of two real upper triangular (or trapezoidal) matrices A and B.
+     !! On entry, it is assumed that matrices A and B have the following
+     !! forms, which may be obtained by the preprocessing subroutine DGGSVP
+     !! from a general M-by-N matrix A and P-by-N matrix B:
+     !! N-K-L  K    L
+     !! A =    K ( 0    A12  A13 ) if M-K-L >= 0;
+     !! L ( 0     0   A23 )
+     !! M-K-L ( 0     0    0  )
+     !! N-K-L  K    L
+     !! A =  K ( 0    A12  A13 ) if M-K-L < 0;
+     !! M-K ( 0     0   A23 )
+     !! N-K-L  K    L
+     !! B =  L ( 0     0   B13 )
+     !! P-L ( 0     0    0  )
+     !! where the K-by-K matrix A12 and L-by-L matrix B13 are nonsingular
+     !! upper triangular; A23 is L-by-L upper triangular if M-K-L >= 0,
+     !! otherwise A23 is (M-K)-by-L upper trapezoidal.
+     !! On exit,
+     !! U**T *A*Q = D1*( 0 R ),    V**T *B*Q = D2*( 0 R ),
+     !! where U, V and Q are orthogonal matrices.
+     !! R is a nonsingular upper triangular matrix, and D1 and D2 are
+     !! ``diagonal'' matrices, which are of the following structures:
+     !! If M-K-L >= 0,
+     !! K  L
+     !! D1 =     K ( I  0 )
+     !! L ( 0  C )
+     !! M-K-L ( 0  0 )
+     !! K  L
+     !! D2 = L   ( 0  S )
+     !! P-L ( 0  0 )
+     !! N-K-L  K    L
+     !! ( 0 R ) = K (  0   R11  R12 ) K
+     !! L (  0    0   R22 ) L
+     !! where
+     !! C = diag( ALPHA(K+1), ... , ALPHA(K+L) ),
+     !! S = diag( BETA(K+1),  ... , BETA(K+L) ),
+     !! C**2 + S**2 = I.
+     !! R is stored in A(1:K+L,N-K-L+1:N) on exit.
+     !! If M-K-L < 0,
+     !! K M-K K+L-M
+     !! D1 =   K ( I  0    0   )
+     !! M-K ( 0  C    0   )
+     !! K M-K K+L-M
+     !! D2 =   M-K ( 0  S    0   )
+     !! K+L-M ( 0  0    I   )
+     !! P-L ( 0  0    0   )
+     !! N-K-L  K   M-K  K+L-M
+     !! ( 0 R ) =    K ( 0    R11  R12  R13  )
+     !! M-K ( 0     0   R22  R23  )
+     !! K+L-M ( 0     0    0   R33  )
+     !! where
+     !! C = diag( ALPHA(K+1), ... , ALPHA(M) ),
+     !! S = diag( BETA(K+1),  ... , BETA(M) ),
+     !! C**2 + S**2 = I.
+     !! R = ( R11 R12 R13 ) is stored in A(1:M, N-K-L+1:N) and R33 is stored
+     !! (  0  R22 R23 )
+     !! in B(M-K+1:L,N+M-K-L+1:N) on exit.
+     !! The computation of the orthogonal transformation matrices U, V or Q
+     !! is optional.  These matrices may either be formed explicitly, or they
+     !! may be postmultiplied into input matrices U1, V1, or Q1.
                alpha, beta, u, ldu, v, ldv,q, ldq, work, ncycle, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -59125,16 +59121,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtgsja
 
-     !> DTGSNA: estimates reciprocal condition numbers for specified
-     !> eigenvalues and/or eigenvectors of a matrix pair (A, B) in
-     !> generalized real Schur canonical form (or of any matrix pair
-     !> (Q*A*Z**T, Q*B*Z**T) with orthogonal matrices Q and Z, where
-     !> Z**T denotes the transpose of Z.
-     !> (A, B) must be in generalized real Schur form (as returned by DGGES),
-     !> i.e. A is block upper triangular with 1-by-1 and 2-by-2 diagonal
-     !> blocks. B is upper triangular.
 
      pure subroutine stdlib_dtgsna( job, howmny, select, n, a, lda, b, ldb, vl,ldvl, vr, ldvr, s, &
+     !! DTGSNA estimates reciprocal condition numbers for specified
+     !! eigenvalues and/or eigenvectors of a matrix pair (A, B) in
+     !! generalized real Schur canonical form (or of any matrix pair
+     !! (Q*A*Z**T, Q*B*Z**T) with orthogonal matrices Q and Z, where
+     !! Z**T denotes the transpose of Z.
+     !! (A, B) must be in generalized real Schur form (as returned by DGGES),
+     !! i.e. A is block upper triangular with 1-by-1 and 2-by-2 diagonal
+     !! blocks. B is upper triangular.
                dif, mm, m, work, lwork,iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -59373,12 +59369,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtgsna
 
-     !> DTPLQT: computes a blocked LQ factorization of a real
-     !> "triangular-pentagonal" matrix C, which is composed of a
-     !> triangular block A and pentagonal block B, using the compact
-     !> WY representation for Q.
 
      pure subroutine stdlib_dtplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
+     !! DTPLQT computes a blocked LQ factorization of a real
+     !! "triangular-pentagonal" matrix C, which is composed of a
+     !! triangular block A and pentagonal block B, using the compact
+     !! WY representation for Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -59435,12 +59431,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtplqt
 
-     !> DTPQRT: computes a blocked QR factorization of a real
-     !> "triangular-pentagonal" matrix C, which is composed of a
-     !> triangular block A and pentagonal block B, using the compact
-     !> WY representation for Q.
 
      pure subroutine stdlib_dtpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
+     !! DTPQRT computes a blocked QR factorization of a real
+     !! "triangular-pentagonal" matrix C, which is composed of a
+     !! triangular block A and pentagonal block B, using the compact
+     !! WY representation for Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -59497,23 +59493,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtpqrt
 
-     !> DTREVC: computes some or all of the right and/or left eigenvectors of
-     !> a real upper quasi-triangular matrix T.
-     !> Matrices of this type are produced by the Schur factorization of
-     !> a real general matrix:  A = Q*T*Q**T, as computed by DHSEQR.
-     !> The right eigenvector x and the left eigenvector y of T corresponding
-     !> to an eigenvalue w are defined by:
-     !> T*x = w*x,     (y**H)*T = w*(y**H)
-     !> where y**H denotes the conjugate transpose of y.
-     !> The eigenvalues are not input to this routine, but are read directly
-     !> from the diagonal blocks of T.
-     !> This routine returns the matrices X and/or Y of right and left
-     !> eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
-     !> input matrix.  If Q is the orthogonal factor that reduces a matrix
-     !> A to Schur form T, then Q*X and Q*Y are the matrices of right and
-     !> left eigenvectors of A.
 
      pure subroutine stdlib_dtrevc( side, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, mm, m, &
+     !! DTREVC computes some or all of the right and/or left eigenvectors of
+     !! a real upper quasi-triangular matrix T.
+     !! Matrices of this type are produced by the Schur factorization of
+     !! a real general matrix:  A = Q*T*Q**T, as computed by DHSEQR.
+     !! The right eigenvector x and the left eigenvector y of T corresponding
+     !! to an eigenvalue w are defined by:
+     !! T*x = w*x,     (y**H)*T = w*(y**H)
+     !! where y**H denotes the conjugate transpose of y.
+     !! The eigenvalues are not input to this routine, but are read directly
+     !! from the diagonal blocks of T.
+     !! This routine returns the matrices X and/or Y of right and left
+     !! eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
+     !! input matrix.  If Q is the orthogonal factor that reduces a matrix
+     !! A to Schur form T, then Q*X and Q*Y are the matrices of right and
+     !! left eigenvectors of A.
                work, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -60110,24 +60106,24 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrevc
 
-     !> DTREVC3: computes some or all of the right and/or left eigenvectors of
-     !> a real upper quasi-triangular matrix T.
-     !> Matrices of this type are produced by the Schur factorization of
-     !> a real general matrix:  A = Q*T*Q**T, as computed by DHSEQR.
-     !> The right eigenvector x and the left eigenvector y of T corresponding
-     !> to an eigenvalue w are defined by:
-     !> T*x = w*x,     (y**T)*T = w*(y**T)
-     !> where y**T denotes the transpose of the vector y.
-     !> The eigenvalues are not input to this routine, but are read directly
-     !> from the diagonal blocks of T.
-     !> This routine returns the matrices X and/or Y of right and left
-     !> eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
-     !> input matrix. If Q is the orthogonal factor that reduces a matrix
-     !> A to Schur form T, then Q*X and Q*Y are the matrices of right and
-     !> left eigenvectors of A.
-     !> This uses a Level 3 BLAS version of the back transformation.
 
      pure subroutine stdlib_dtrevc3( side, howmny, select, n, t, ldt, vl, ldvl,vr, ldvr, mm, m, &
+     !! DTREVC3 computes some or all of the right and/or left eigenvectors of
+     !! a real upper quasi-triangular matrix T.
+     !! Matrices of this type are produced by the Schur factorization of
+     !! a real general matrix:  A = Q*T*Q**T, as computed by DHSEQR.
+     !! The right eigenvector x and the left eigenvector y of T corresponding
+     !! to an eigenvalue w are defined by:
+     !! T*x = w*x,     (y**T)*T = w*(y**T)
+     !! where y**T denotes the transpose of the vector y.
+     !! The eigenvalues are not input to this routine, but are read directly
+     !! from the diagonal blocks of T.
+     !! This routine returns the matrices X and/or Y of right and left
+     !! eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
+     !! input matrix. If Q is the orthogonal factor that reduces a matrix
+     !! A to Schur form T, then Q*X and Q*Y are the matrices of right and
+     !! left eigenvectors of A.
+     !! This uses a Level 3 BLAS version of the back transformation.
                work, lwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -60932,19 +60928,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrevc3
 
-     !> DTRSYL: solves the real Sylvester matrix equation:
-     !> op(A)*X + X*op(B) = scale*C or
-     !> op(A)*X - X*op(B) = scale*C,
-     !> where op(A) = A or A**T, and  A and B are both upper quasi-
-     !> triangular. A is M-by-M and B is N-by-N; the right hand side C and
-     !> the solution X are M-by-N; and scale is an output scale factor, set
-     !> <= 1 to avoid overflow in X.
-     !> A and B must be in Schur canonical form (as returned by DHSEQR), that
-     !> is, block upper triangular with 1-by-1 and 2-by-2 diagonal blocks;
-     !> each 2-by-2 diagonal block has its diagonal elements equal and its
-     !> off-diagonal elements of opposite sign.
 
      subroutine stdlib_dtrsyl( trana, tranb, isgn, m, n, a, lda, b, ldb, c,ldc, scale, info )
+     !! DTRSYL solves the real Sylvester matrix equation:
+     !! op(A)*X + X*op(B) = scale*C or
+     !! op(A)*X - X*op(B) = scale*C,
+     !! where op(A) = A or A**T, and  A and B are both upper quasi-
+     !! triangular. A is M-by-M and B is N-by-N; the right hand side C and
+     !! the solution X are M-by-N; and scale is an output scale factor, set
+     !! <= 1 to avoid overflow in X.
+     !! A and B must be in Schur canonical form (as returned by DHSEQR), that
+     !! is, block upper triangular with 1-by-1 and 2-by-2 diagonal blocks;
+     !! each 2-by-2 diagonal block has its diagonal elements equal and its
+     !! off-diagonal elements of opposite sign.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -61593,11 +61589,11 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrsyl
 
-     !> DGEBRD: reduces a general real M-by-N matrix A to upper or lower
-     !> bidiagonal form B by an orthogonal transformation: Q**T * A * P = B.
-     !> If m >= n, B is upper bidiagonal; if m < n, B is lower bidiagonal.
 
      pure subroutine stdlib_dgebrd( m, n, a, lda, d, e, tauq, taup, work, lwork,info )
+     !! DGEBRD reduces a general real M-by-N matrix A to upper or lower
+     !! bidiagonal form B by an orthogonal transformation: Q**T * A * P = B.
+     !! If m >= n, B is upper bidiagonal; if m < n, B is lower bidiagonal.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -61698,10 +61694,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgebrd
 
-     !> DGEHRD: reduces a real general matrix A to upper Hessenberg form H by
-     !> an orthogonal similarity transformation:  Q**T * A * Q = H .
 
      pure subroutine stdlib_dgehrd( n, ilo, ihi, a, lda, tau, work, lwork, info )
+     !! DGEHRD reduces a real general matrix A to upper Hessenberg form H by
+     !! an orthogonal similarity transformation:  Q**T * A * Q = H .
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -61827,10 +61823,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgehrd
 
-     !> DGELQT: computes a blocked LQ factorization of a real M-by-N matrix A
-     !> using the compact WY representation of Q.
 
      pure subroutine stdlib_dgelqt( m, n, mb, a, lda, t, ldt, work, info )
+     !! DGELQT computes a blocked LQ factorization of a real M-by-N matrix A
+     !! using the compact WY representation of Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -61878,26 +61874,26 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgelqt
 
-     !> DGELS: solves overdetermined or underdetermined real linear systems
-     !> involving an M-by-N matrix A, or its transpose, using a QR or LQ
-     !> factorization of A.  It is assumed that A has full rank.
-     !> The following options are provided:
-     !> 1. If TRANS = 'N' and m >= n:  find the least squares solution of
-     !> an overdetermined system, i.e., solve the least squares problem
-     !> minimize || B - A*X ||.
-     !> 2. If TRANS = 'N' and m < n:  find the minimum norm solution of
-     !> an underdetermined system A * X = B.
-     !> 3. If TRANS = 'T' and m >= n:  find the minimum norm solution of
-     !> an underdetermined system A**T * X = B.
-     !> 4. If TRANS = 'T' and m < n:  find the least squares solution of
-     !> an overdetermined system, i.e., solve the least squares problem
-     !> minimize || B - A**T * X ||.
-     !> Several right hand side vectors b and solution vectors x can be
-     !> handled in a single call; they are stored as the columns of the
-     !> M-by-NRHS right hand side matrix B and the N-by-NRHS solution
-     !> matrix X.
 
      subroutine stdlib_dgels( trans, m, n, nrhs, a, lda, b, ldb, work, lwork,info )
+     !! DGELS solves overdetermined or underdetermined real linear systems
+     !! involving an M-by-N matrix A, or its transpose, using a QR or LQ
+     !! factorization of A.  It is assumed that A has full rank.
+     !! The following options are provided:
+     !! 1. If TRANS = 'N' and m >= n:  find the least squares solution of
+     !! an overdetermined system, i.e., solve the least squares problem
+     !! minimize || B - A*X ||.
+     !! 2. If TRANS = 'N' and m < n:  find the minimum norm solution of
+     !! an underdetermined system A * X = B.
+     !! 3. If TRANS = 'T' and m >= n:  find the minimum norm solution of
+     !! an underdetermined system A**T * X = B.
+     !! 4. If TRANS = 'T' and m < n:  find the least squares solution of
+     !! an overdetermined system, i.e., solve the least squares problem
+     !! minimize || B - A**T * X ||.
+     !! Several right hand side vectors b and solution vectors x can be
+     !! handled in a single call; they are stored as the columns of the
+     !! M-by-NRHS right hand side matrix B and the N-by-NRHS solution
+     !! matrix X.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -62095,15 +62091,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgels
 
-     !> DGEMLQ: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix defined as the product
-     !> of blocked elementary reflectors computed by short wide LQ
-     !> factorization (DGELQ)
 
      pure subroutine stdlib_dgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+     !! DGEMLQ overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product
+     !! of blocked elementary reflectors computed by short wide LQ
+     !! factorization (DGELQ)
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -62192,15 +62188,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgemlq
 
-     !> DGEMQR: overwrites the general real M-by-N matrix C with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> where Q is a real orthogonal matrix defined as the product
-     !> of blocked elementary reflectors computed by tall skinny
-     !> QR factorization (DGEQR)
 
      pure subroutine stdlib_dgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+     !! DGEMQR overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product
+     !! of blocked elementary reflectors computed by tall skinny
+     !! QR factorization (DGEQR)
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -62289,10 +62285,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgemqr
 
-     !> DGEQP3: computes a QR factorization with column pivoting of a
-     !> matrix A:  A*P = Q*R  using Level 3 BLAS.
 
      pure subroutine stdlib_dgeqp3( m, n, a, lda, jpvt, tau, work, lwork, info )
+     !! DGEQP3 computes a QR factorization with column pivoting of a
+     !! matrix A:  A*P = Q*R  using Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -62439,10 +62435,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeqp3
 
-     !> DGEQRT: computes a blocked QR factorization of a real M-by-N matrix A
-     !> using the compact WY representation of Q.
 
      pure subroutine stdlib_dgeqrt( m, n, nb, a, lda, t, ldt, work, info )
+     !! DGEQRT computes a blocked QR factorization of a real M-by-N matrix A
+     !! using the compact WY representation of Q.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -62496,17 +62492,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeqrt
 
-     !> DGESV: computes the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
-     !> The LU decomposition with partial pivoting and row interchanges is
-     !> used to factor A as
-     !> A = P * L * U,
-     !> where P is a permutation matrix, L is unit lower triangular, and U is
-     !> upper triangular.  The factored form of A is then used to solve the
-     !> system of equations A * X = B.
 
      pure subroutine stdlib_dgesv( n, nrhs, a, lda, ipiv, b, ldb, info )
+     !! DGESV computes the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
+     !! The LU decomposition with partial pivoting and row interchanges is
+     !! used to factor A as
+     !! A = P * L * U,
+     !! where P is a permutation matrix, L is unit lower triangular, and U is
+     !! upper triangular.  The factored form of A is then used to solve the
+     !! system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -62544,19 +62540,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgesv
 
-     !> DGESVJ: computes the singular value decomposition (SVD) of a real
-     !> M-by-N matrix A, where M >= N. The SVD of A is written as
-     !> [++]   [xx]   [x0]   [xx]
-     !> A = U * SIGMA * V^t,  [++] = [xx] * [ox] * [xx]
-     !> [++]   [xx]
-     !> where SIGMA is an N-by-N diagonal matrix, U is an M-by-N orthonormal
-     !> matrix, and V is an N-by-N orthogonal matrix. The diagonal elements
-     !> of SIGMA are the singular values of A. The columns of U and V are the
-     !> left and the right singular vectors of A, respectively.
-     !> DGESVJ can sometimes compute tiny singular values and their singular vectors much
-     !> more accurately than other SVD routines, see below under Further Details.
 
      pure subroutine stdlib_dgesvj( joba, jobu, jobv, m, n, a, lda, sva, mv, v,ldv, work, lwork, &
+     !! DGESVJ computes the singular value decomposition (SVD) of a real
+     !! M-by-N matrix A, where M >= N. The SVD of A is written as
+     !! [++]   [xx]   [x0]   [xx]
+     !! A = U * SIGMA * V^t,  [++] = [xx] * [ox] * [xx]
+     !! [++]   [xx]
+     !! where SIGMA is an N-by-N diagonal matrix, U is an M-by-N orthonormal
+     !! matrix, and V is an N-by-N orthogonal matrix. The diagonal elements
+     !! of SIGMA are the singular values of A. The columns of U and V are the
+     !! left and the right singular vectors of A, respectively.
+     !! DGESVJ can sometimes compute tiny singular values and their singular vectors much
+     !! more accurately than other SVD routines, see below under Further Details.
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -63523,14 +63519,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgesvj
 
-     !> DGESVX: uses the LU factorization to compute the solution to a real
-     !> system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_dgesvx( fact, trans, n, nrhs, a, lda, af, ldaf, ipiv,equed, r, c, b, ldb, &
+     !! DGESVX uses the LU factorization to compute the solution to a real
+     !! system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N matrix and X and B are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                x, ldx, rcond, ferr, berr,work, iwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -63727,34 +63723,34 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgesvx
 
-     !> DGGES: computes for a pair of N-by-N real nonsymmetric matrices (A,B),
-     !> the generalized eigenvalues, the generalized real Schur form (S,T),
-     !> optionally, the left and/or right matrices of Schur vectors (VSL and
-     !> VSR). This gives the generalized Schur factorization
-     !> (A,B) = ( (VSL)*S*(VSR)**T, (VSL)*T*(VSR)**T )
-     !> Optionally, it also orders the eigenvalues so that a selected cluster
-     !> of eigenvalues appears in the leading diagonal blocks of the upper
-     !> quasi-triangular matrix S and the upper triangular matrix T.The
-     !> leading columns of VSL and VSR then form an orthonormal basis for the
-     !> corresponding left and right eigenspaces (deflating subspaces).
-     !> (If only the generalized eigenvalues are needed, use the driver
-     !> DGGEV instead, which is faster.)
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
-     !> or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
-     !> usually represented as the pair (alpha,beta), as there is a
-     !> reasonable interpretation for beta=0 or both being zero.
-     !> A pair of matrices (S,T) is in generalized real Schur form if T is
-     !> upper triangular with non-negative diagonal and S is block upper
-     !> triangular with 1-by-1 and 2-by-2 blocks.  1-by-1 blocks correspond
-     !> to real generalized eigenvalues, while 2-by-2 blocks of S will be
-     !> "standardized" by making the corresponding elements of T have the
-     !> form:
-     !> [  a  0  ]
-     !> [  0  b  ]
-     !> and the pair of corresponding 2-by-2 blocks in S and T will have a
-     !> complex conjugate pair of generalized eigenvalues.
 
      subroutine stdlib_dgges( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb,sdim, alphar, &
+     !! DGGES computes for a pair of N-by-N real nonsymmetric matrices (A,B),
+     !! the generalized eigenvalues, the generalized real Schur form (S,T),
+     !! optionally, the left and/or right matrices of Schur vectors (VSL and
+     !! VSR). This gives the generalized Schur factorization
+     !! (A,B) = ( (VSL)*S*(VSR)**T, (VSL)*T*(VSR)**T )
+     !! Optionally, it also orders the eigenvalues so that a selected cluster
+     !! of eigenvalues appears in the leading diagonal blocks of the upper
+     !! quasi-triangular matrix S and the upper triangular matrix T.The
+     !! leading columns of VSL and VSR then form an orthonormal basis for the
+     !! corresponding left and right eigenspaces (deflating subspaces).
+     !! (If only the generalized eigenvalues are needed, use the driver
+     !! DGGEV instead, which is faster.)
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
+     !! or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
+     !! usually represented as the pair (alpha,beta), as there is a
+     !! reasonable interpretation for beta=0 or both being zero.
+     !! A pair of matrices (S,T) is in generalized real Schur form if T is
+     !! upper triangular with non-negative diagonal and S is block upper
+     !! triangular with 1-by-1 and 2-by-2 blocks.  1-by-1 blocks correspond
+     !! to real generalized eigenvalues, while 2-by-2 blocks of S will be
+     !! "standardized" by making the corresponding elements of T have the
+     !! form:
+     !! [  a  0  ]
+     !! [  0  b  ]
+     !! and the pair of corresponding 2-by-2 blocks in S and T will have a
+     !! complex conjugate pair of generalized eigenvalues.
                alphai, beta, vsl, ldvsl, vsr,ldvsr, work, lwork, bwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -64046,36 +64042,36 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgges
 
-     !> DGGESX: computes for a pair of N-by-N real nonsymmetric matrices
-     !> (A,B), the generalized eigenvalues, the real Schur form (S,T), and,
-     !> optionally, the left and/or right matrices of Schur vectors (VSL and
-     !> VSR).  This gives the generalized Schur factorization
-     !> (A,B) = ( (VSL) S (VSR)**T, (VSL) T (VSR)**T )
-     !> Optionally, it also orders the eigenvalues so that a selected cluster
-     !> of eigenvalues appears in the leading diagonal blocks of the upper
-     !> quasi-triangular matrix S and the upper triangular matrix T; computes
-     !> a reciprocal condition number for the average of the selected
-     !> eigenvalues (RCONDE); and computes a reciprocal condition number for
-     !> the right and left deflating subspaces corresponding to the selected
-     !> eigenvalues (RCONDV). The leading columns of VSL and VSR then form
-     !> an orthonormal basis for the corresponding left and right eigenspaces
-     !> (deflating subspaces).
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
-     !> or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
-     !> usually represented as the pair (alpha,beta), as there is a
-     !> reasonable interpretation for beta=0 or for both being zero.
-     !> A pair of matrices (S,T) is in generalized real Schur form if T is
-     !> upper triangular with non-negative diagonal and S is block upper
-     !> triangular with 1-by-1 and 2-by-2 blocks.  1-by-1 blocks correspond
-     !> to real generalized eigenvalues, while 2-by-2 blocks of S will be
-     !> "standardized" by making the corresponding elements of T have the
-     !> form:
-     !> [  a  0  ]
-     !> [  0  b  ]
-     !> and the pair of corresponding 2-by-2 blocks in S and T will have a
-     !> complex conjugate pair of generalized eigenvalues.
 
      subroutine stdlib_dggesx( jobvsl, jobvsr, sort, selctg, sense, n, a, lda,b, ldb, sdim, &
+     !! DGGESX computes for a pair of N-by-N real nonsymmetric matrices
+     !! (A,B), the generalized eigenvalues, the real Schur form (S,T), and,
+     !! optionally, the left and/or right matrices of Schur vectors (VSL and
+     !! VSR).  This gives the generalized Schur factorization
+     !! (A,B) = ( (VSL) S (VSR)**T, (VSL) T (VSR)**T )
+     !! Optionally, it also orders the eigenvalues so that a selected cluster
+     !! of eigenvalues appears in the leading diagonal blocks of the upper
+     !! quasi-triangular matrix S and the upper triangular matrix T; computes
+     !! a reciprocal condition number for the average of the selected
+     !! eigenvalues (RCONDE); and computes a reciprocal condition number for
+     !! the right and left deflating subspaces corresponding to the selected
+     !! eigenvalues (RCONDV). The leading columns of VSL and VSR then form
+     !! an orthonormal basis for the corresponding left and right eigenspaces
+     !! (deflating subspaces).
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
+     !! or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
+     !! usually represented as the pair (alpha,beta), as there is a
+     !! reasonable interpretation for beta=0 or for both being zero.
+     !! A pair of matrices (S,T) is in generalized real Schur form if T is
+     !! upper triangular with non-negative diagonal and S is block upper
+     !! triangular with 1-by-1 and 2-by-2 blocks.  1-by-1 blocks correspond
+     !! to real generalized eigenvalues, while 2-by-2 blocks of S will be
+     !! "standardized" by making the corresponding elements of T have the
+     !! form:
+     !! [  a  0  ]
+     !! [  0  b  ]
+     !! and the pair of corresponding 2-by-2 blocks in S and T will have a
+     !! complex conjugate pair of generalized eigenvalues.
      alphar, alphai, beta, vsl, ldvsl,vsr, ldvsr, rconde, rcondv, work, lwork, iwork,liwork, &
                bwork, info )
         ! -- lapack driver routine --
@@ -64416,23 +64412,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dggesx
 
-     !> DGGEV: computes for a pair of N-by-N real nonsymmetric matrices (A,B)
-     !> the generalized eigenvalues, and optionally, the left and/or right
-     !> generalized eigenvectors.
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar
-     !> lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
-     !> singular. It is usually represented as the pair (alpha,beta), as
-     !> there is a reasonable interpretation for beta=0, and even for both
-     !> being zero.
-     !> The right eigenvector v(j) corresponding to the eigenvalue lambda(j)
-     !> of (A,B) satisfies
-     !> A * v(j) = lambda(j) * B * v(j).
-     !> The left eigenvector u(j) corresponding to the eigenvalue lambda(j)
-     !> of (A,B) satisfies
-     !> u(j)**H * A  = lambda(j) * u(j)**H * B .
-     !> where u(j)**H is the conjugate-transpose of u(j).
 
      subroutine stdlib_dggev( jobvl, jobvr, n, a, lda, b, ldb, alphar, alphai,beta, vl, ldvl, vr, &
+     !! DGGEV computes for a pair of N-by-N real nonsymmetric matrices (A,B)
+     !! the generalized eigenvalues, and optionally, the left and/or right
+     !! generalized eigenvectors.
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar
+     !! lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
+     !! singular. It is usually represented as the pair (alpha,beta), as
+     !! there is a reasonable interpretation for beta=0, and even for both
+     !! being zero.
+     !! The right eigenvector v(j) corresponding to the eigenvalue lambda(j)
+     !! of (A,B) satisfies
+     !! A * v(j) = lambda(j) * B * v(j).
+     !! The left eigenvector u(j) corresponding to the eigenvalue lambda(j)
+     !! of (A,B) satisfies
+     !! u(j)**H * A  = lambda(j) * u(j)**H * B .
+     !! where u(j)**H is the conjugate-transpose of u(j).
                ldvr, work, lwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -64714,28 +64710,28 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dggev
 
-     !> DGGEVX: computes for a pair of N-by-N real nonsymmetric matrices (A,B)
-     !> the generalized eigenvalues, and optionally, the left and/or right
-     !> generalized eigenvectors.
-     !> Optionally also, it computes a balancing transformation to improve
-     !> the conditioning of the eigenvalues and eigenvectors (ILO, IHI,
-     !> LSCALE, RSCALE, ABNRM, and BBNRM), reciprocal condition numbers for
-     !> the eigenvalues (RCONDE), and reciprocal condition numbers for the
-     !> right eigenvectors (RCONDV).
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar
-     !> lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
-     !> singular. It is usually represented as the pair (alpha,beta), as
-     !> there is a reasonable interpretation for beta=0, and even for both
-     !> being zero.
-     !> The right eigenvector v(j) corresponding to the eigenvalue lambda(j)
-     !> of (A,B) satisfies
-     !> A * v(j) = lambda(j) * B * v(j) .
-     !> The left eigenvector u(j) corresponding to the eigenvalue lambda(j)
-     !> of (A,B) satisfies
-     !> u(j)**H * A  = lambda(j) * u(j)**H * B.
-     !> where u(j)**H is the conjugate-transpose of u(j).
 
      subroutine stdlib_dggevx( balanc, jobvl, jobvr, sense, n, a, lda, b, ldb,alphar, alphai, &
+     !! DGGEVX computes for a pair of N-by-N real nonsymmetric matrices (A,B)
+     !! the generalized eigenvalues, and optionally, the left and/or right
+     !! generalized eigenvectors.
+     !! Optionally also, it computes a balancing transformation to improve
+     !! the conditioning of the eigenvalues and eigenvectors (ILO, IHI,
+     !! LSCALE, RSCALE, ABNRM, and BBNRM), reciprocal condition numbers for
+     !! the eigenvalues (RCONDE), and reciprocal condition numbers for the
+     !! right eigenvectors (RCONDV).
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar
+     !! lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
+     !! singular. It is usually represented as the pair (alpha,beta), as
+     !! there is a reasonable interpretation for beta=0, and even for both
+     !! being zero.
+     !! The right eigenvector v(j) corresponding to the eigenvalue lambda(j)
+     !! of (A,B) satisfies
+     !! A * v(j) = lambda(j) * B * v(j) .
+     !! The left eigenvector u(j) corresponding to the eigenvalue lambda(j)
+     !! of (A,B) satisfies
+     !! u(j)**H * A  = lambda(j) * u(j)**H * B.
+     !! where u(j)**H is the conjugate-transpose of u(j).
      beta, vl, ldvl, vr, ldvr, ilo,ihi, lscale, rscale, abnrm, bbnrm, rconde,rcondv, work, lwork, &
                iwork, bwork, info )
         ! -- lapack driver routine --
@@ -65109,26 +65105,26 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dggevx
 
-     !> DGGGLM: solves a general Gauss-Markov linear model (GLM) problem:
-     !> minimize || y ||_2   subject to   d = A*x + B*y
-     !> x
-     !> where A is an N-by-M matrix, B is an N-by-P matrix, and d is a
-     !> given N-vector. It is assumed that M <= N <= M+P, and
-     !> rank(A) = M    and    rank( A B ) = N.
-     !> Under these assumptions, the constrained equation is always
-     !> consistent, and there is a unique solution x and a minimal 2-norm
-     !> solution y, which is obtained using a generalized QR factorization
-     !> of the matrices (A, B) given by
-     !> A = Q*(R),   B = Q*T*Z.
-     !> (0)
-     !> In particular, if matrix B is square nonsingular, then the problem
-     !> GLM is equivalent to the following weighted linear least squares
-     !> problem
-     !> minimize || inv(B)*(d-A*x) ||_2
-     !> x
-     !> where inv(B) denotes the inverse of B.
 
      pure subroutine stdlib_dggglm( n, m, p, a, lda, b, ldb, d, x, y, work, lwork,info )
+     !! DGGGLM solves a general Gauss-Markov linear model (GLM) problem:
+     !! minimize || y ||_2   subject to   d = A*x + B*y
+     !! x
+     !! where A is an N-by-M matrix, B is an N-by-P matrix, and d is a
+     !! given N-vector. It is assumed that M <= N <= M+P, and
+     !! rank(A) = M    and    rank( A B ) = N.
+     !! Under these assumptions, the constrained equation is always
+     !! consistent, and there is a unique solution x and a minimal 2-norm
+     !! solution y, which is obtained using a generalized QR factorization
+     !! of the matrices (A, B) given by
+     !! A = Q*(R),   B = Q*T*Z.
+     !! (0)
+     !! In particular, if matrix B is square nonsingular, then the problem
+     !! GLM is equivalent to the following weighted linear least squares
+     !! problem
+     !! minimize || inv(B)*(d-A*x) ||_2
+     !! x
+     !! where inv(B) denotes the inverse of B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -65245,20 +65241,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dggglm
 
-     !> DGGLSE: solves the linear equality-constrained least squares (LSE)
-     !> problem:
-     !> minimize || c - A*x ||_2   subject to   B*x = d
-     !> where A is an M-by-N matrix, B is a P-by-N matrix, c is a given
-     !> M-vector, and d is a given P-vector. It is assumed that
-     !> P <= N <= M+P, and
-     !> rank(B) = P and  rank( (A) ) = N.
-     !> ( (B) )
-     !> These conditions ensure that the LSE problem has a unique solution,
-     !> which is obtained using a generalized RQ factorization of the
-     !> matrices (B, A) given by
-     !> B = (0 R)*Q,   A = Z*T*Q.
 
      pure subroutine stdlib_dgglse( m, n, p, a, lda, b, ldb, c, d, x, work, lwork,info )
+     !! DGGLSE solves the linear equality-constrained least squares (LSE)
+     !! problem:
+     !! minimize || c - A*x ||_2   subject to   B*x = d
+     !! where A is an M-by-N matrix, B is a P-by-N matrix, c is a given
+     !! M-vector, and d is a given P-vector. It is assumed that
+     !! P <= N <= M+P, and
+     !! rank(B) = P and  rank( (A) ) = N.
+     !! ( (B) )
+     !! These conditions ensure that the LSE problem has a unique solution,
+     !! which is obtained using a generalized RQ factorization of the
+     !! matrices (B, A) given by
+     !! B = (0 R)*Q,   A = Z*T*Q.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -65377,14 +65373,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgglse
 
-     !> DHSEIN: uses inverse iteration to find specified right and/or left
-     !> eigenvectors of a real upper Hessenberg matrix H.
-     !> The right eigenvector x and the left eigenvector y of the matrix H
-     !> corresponding to an eigenvalue w are defined by:
-     !> H * x = w * x,     y**h * H = w * y**h
-     !> where y**h denotes the conjugate transpose of the vector y.
 
      subroutine stdlib_dhsein( side, eigsrc, initv, select, n, h, ldh, wr, wi,vl, ldvl, vr, ldvr, &
+     !! DHSEIN uses inverse iteration to find specified right and/or left
+     !! eigenvectors of a real upper Hessenberg matrix H.
+     !! The right eigenvector x and the left eigenvector y of the matrix H
+     !! corresponding to an eigenvalue w are defined by:
+     !! H * x = w * x,     y**h * H = w * y**h
+     !! where y**h denotes the conjugate transpose of the vector y.
                mm, m, work, ifaill,ifailr, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -65592,14 +65588,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dhsein
 
-     !> DLA_PORPVGRW: computes the reciprocal pivot growth factor
-     !> norm(A)/norm(U). The "max absolute element" norm is used. If this is
-     !> much less than 1, the stability of the LU factorization of the
-     !> (equilibrated) matrix A could be poor. This also means that the
-     !> solution X, estimated condition numbers, and error bounds could be
-     !> unreliable.
 
      real(dp) function stdlib_dla_porpvgrw( uplo, ncols, a, lda, af,ldaf, work )
+     !! DLA_PORPVGRW computes the reciprocal pivot growth factor
+     !! norm(A)/norm(U). The "max absolute element" norm is used. If this is
+     !! much less than 1, the stability of the LU factorization of the
+     !! (equilibrated) matrix A could be poor. This also means that the
+     !! solution X, estimated condition numbers, and error bounds could be
+     !! unreliable.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -65680,20 +65676,20 @@ module stdlib_linalg_lapack_d
            stdlib_dla_porpvgrw = rpvgrw
      end function stdlib_dla_porpvgrw
 
-     !> DLAED3: finds the roots of the secular equation, as defined by the
-     !> values in D, W, and RHO, between 1 and K.  It makes the
-     !> appropriate calls to DLAED4 and then updates the eigenvectors by
-     !> multiplying the matrix of eigenvectors of the pair of eigensystems
-     !> being combined by the matrix of eigenvectors of the K-by-K system
-     !> which is solved here.
-     !> This code makes very mild assumptions about floating point
-     !> arithmetic. It will work on machines with a guard digit in
-     !> add/subtract, or on those binary machines without guard digits
-     !> which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
-     !> It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      pure subroutine stdlib_dlaed3( k, n, n1, d, q, ldq, rho, dlamda, q2, indx,ctot, w, s, info )
+     !! DLAED3 finds the roots of the secular equation, as defined by the
+     !! values in D, W, and RHO, between 1 and K.  It makes the
+     !! appropriate calls to DLAED4 and then updates the eigenvectors by
+     !! multiplying the matrix of eigenvectors of the pair of eigensystems
+     !! being combined by the matrix of eigenvectors of the K-by-K system
+     !! which is solved here.
+     !! This code makes very mild assumptions about floating point
+     !! arithmetic. It will work on machines with a guard digit in
+     !! add/subtract, or on those binary machines without guard digits
+     !! which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
+     !! It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -65815,34 +65811,34 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaed3
 
-     !> DLAED7: computes the updated eigensystem of a diagonal
-     !> matrix after modification by a rank-one symmetric matrix. This
-     !> routine is used only for the eigenproblem which requires all
-     !> eigenvalues and optionally eigenvectors of a dense symmetric matrix
-     !> that has been reduced to tridiagonal form.  DLAED1 handles
-     !> the case in which all eigenvalues and eigenvectors of a symmetric
-     !> tridiagonal matrix are desired.
-     !> T = Q(in) ( D(in) + RHO * Z*Z**T ) Q**T(in) = Q(out) * D(out) * Q**T(out)
-     !> where Z = Q**Tu, u is a vector of length N with ones in the
-     !> CUTPNT and CUTPNT + 1 th elements and zeros elsewhere.
-     !> The eigenvectors of the original matrix are stored in Q, and the
-     !> eigenvalues are in D.  The algorithm consists of three stages:
-     !> The first stage consists of deflating the size of the problem
-     !> when there are multiple eigenvalues or if there is a zero in
-     !> the Z vector.  For each such occurrence the dimension of the
-     !> secular equation problem is reduced by one.  This stage is
-     !> performed by the routine DLAED8.
-     !> The second stage consists of calculating the updated
-     !> eigenvalues. This is done by finding the roots of the secular
-     !> equation via the routine DLAED4 (as called by DLAED9).
-     !> This routine also calculates the eigenvectors of the current
-     !> problem.
-     !> The final stage consists of computing the updated eigenvectors
-     !> directly using the updated eigenvalues.  The eigenvectors for
-     !> the current problem are multiplied with the eigenvectors from
-     !> the overall problem.
 
      pure subroutine stdlib_dlaed7( icompq, n, qsiz, tlvls, curlvl, curpbm, d, q,ldq, indxq, rho, &
+     !! DLAED7 computes the updated eigensystem of a diagonal
+     !! matrix after modification by a rank-one symmetric matrix. This
+     !! routine is used only for the eigenproblem which requires all
+     !! eigenvalues and optionally eigenvectors of a dense symmetric matrix
+     !! that has been reduced to tridiagonal form.  DLAED1 handles
+     !! the case in which all eigenvalues and eigenvectors of a symmetric
+     !! tridiagonal matrix are desired.
+     !! T = Q(in) ( D(in) + RHO * Z*Z**T ) Q**T(in) = Q(out) * D(out) * Q**T(out)
+     !! where Z = Q**Tu, u is a vector of length N with ones in the
+     !! CUTPNT and CUTPNT + 1 th elements and zeros elsewhere.
+     !! The eigenvectors of the original matrix are stored in Q, and the
+     !! eigenvalues are in D.  The algorithm consists of three stages:
+     !! The first stage consists of deflating the size of the problem
+     !! when there are multiple eigenvalues or if there is a zero in
+     !! the Z vector.  For each such occurrence the dimension of the
+     !! secular equation problem is reduced by one.  This stage is
+     !! performed by the routine DLAED8.
+     !! The second stage consists of calculating the updated
+     !! eigenvalues. This is done by finding the roots of the secular
+     !! equation via the routine DLAED4 (as called by DLAED9).
+     !! This routine also calculates the eigenvectors of the current
+     !! problem.
+     !! The final stage consists of computing the updated eigenvectors
+     !! directly using the updated eigenvalues.  The eigenvectors for
+     !! the current problem are multiplied with the eigenvectors from
+     !! the overall problem.
                cutpnt, qstore, qptr, prmptr,perm, givptr, givcol, givnum, work, iwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -65949,15 +65945,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaed7
 
-     !> DLAEXC: swaps adjacent diagonal blocks T11 and T22 of order 1 or 2 in
-     !> an upper quasi-triangular matrix T by an orthogonal similarity
-     !> transformation.
-     !> T must be in Schur canonical form, that is, block upper triangular
-     !> with 1-by-1 and 2-by-2 diagonal blocks; each 2-by-2 diagonal block
-     !> has its diagonal elements equal and its off-diagonal elements of
-     !> opposite sign.
 
      subroutine stdlib_dlaexc( wantq, n, t, ldt, q, ldq, j1, n1, n2, work,info )
+     !! DLAEXC swaps adjacent diagonal blocks T11 and T22 of order 1 or 2 in
+     !! an upper quasi-triangular matrix T by an orthogonal similarity
+     !! transformation.
+     !! T must be in Schur canonical form, that is, block upper triangular
+     !! with 1-by-1 and 2-by-2 diagonal blocks; each 2-by-2 diagonal block
+     !! has its diagonal elements equal and its off-diagonal elements of
+     !! opposite sign.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -66147,12 +66143,12 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaexc
 
-     !> DLAHQR: is an auxiliary routine called by DHSEQR to update the
-     !> eigenvalues and Schur decomposition already computed by DHSEQR, by
-     !> dealing with the Hessenberg submatrix in rows and columns ILO to
-     !> IHI.
 
      pure subroutine stdlib_dlahqr( wantt, wantz, n, ilo, ihi, h, ldh, wr, wi,iloz, ihiz, z, ldz, &
+     !! DLAHQR is an auxiliary routine called by DHSEQR to update the
+     !! eigenvalues and Schur decomposition already computed by DHSEQR, by
+     !! dealing with the Hessenberg submatrix in rows and columns ILO to
+     !! IHI.
                info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -66456,15 +66452,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlahqr
 
-     !> DLASD2: merges the two sets of singular values together into a single
-     !> sorted set.  Then it tries to deflate the size of the problem.
-     !> There are two ways in which deflation can occur:  when two or more
-     !> singular values are close together or if there is a tiny entry in the
-     !> Z vector.  For each such occurrence the order of the related secular
-     !> equation problem is reduced by one.
-     !> DLASD2 is called from DLASD1.
 
      pure subroutine stdlib_dlasd2( nl, nr, sqre, k, d, z, alpha, beta, u, ldu, vt,ldvt, dsigma, &
+     !! DLASD2 merges the two sets of singular values together into a single
+     !! sorted set.  Then it tries to deflate the size of the problem.
+     !! There are two ways in which deflation can occur:  when two or more
+     !! singular values are close together or if there is a tiny entry in the
+     !! Z vector.  For each such occurrence the order of the related secular
+     !! equation problem is reduced by one.
+     !! DLASD2 is called from DLASD1.
                u2, ldu2, vt2, ldvt2, idxp, idx,idxc, idxq, coltyp, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -66741,18 +66737,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasd2
 
-     !> DLASWLQ: computes a blocked Tall-Skinny LQ factorization of
-     !> a real M-by-N matrix A for M <= N:
-     !> A = ( L 0 ) *  Q,
-     !> where:
-     !> Q is a n-by-N orthogonal matrix, stored on exit in an implicit
-     !> form in the elements above the diagonal of the array A and in
-     !> the elements of the array T;
-     !> L is a lower-triangular M-by-M matrix stored on exit in
-     !> the elements on and below the diagonal of the array A.
-     !> 0 is a M-by-(N-M) zero matrix, if M < N, and is not stored.
 
      pure subroutine stdlib_dlaswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
+     !! DLASWLQ computes a blocked Tall-Skinny LQ factorization of
+     !! a real M-by-N matrix A for M <= N:
+     !! A = ( L 0 ) *  Q,
+     !! where:
+     !! Q is a n-by-N orthogonal matrix, stored on exit in an implicit
+     !! form in the elements above the diagonal of the array A and in
+     !! the elements of the array T;
+     !! L is a lower-triangular M-by-M matrix stored on exit in
+     !! the elements on and below the diagonal of the array A.
+     !! 0 is a M-by-(N-M) zero matrix, if M < N, and is not stored.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd. --
@@ -66825,19 +66821,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaswlq
 
-     !> DLATSQR: computes a blocked Tall-Skinny QR factorization of
-     !> a real M-by-N matrix A for M >= N:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a M-by-M orthogonal matrix, stored on exit in an implicit
-     !> form in the elements below the diagonal of the array A and in
-     !> the elements of the array T;
-     !> R is an upper-triangular N-by-N matrix, stored on exit in
-     !> the elements on and above the diagonal of the array A.
-     !> 0 is a (M-N)-by-N zero matrix, and is not stored.
 
      pure subroutine stdlib_dlatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
+     !! DLATSQR computes a blocked Tall-Skinny QR factorization of
+     !! a real M-by-N matrix A for M >= N:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a M-by-M orthogonal matrix, stored on exit in an implicit
+     !! form in the elements below the diagonal of the array A and in
+     !! the elements of the array T;
+     !! R is an upper-triangular N-by-N matrix, stored on exit in
+     !! the elements on and above the diagonal of the array A.
+     !! 0 is a (M-N)-by-N zero matrix, and is not stored.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd. --
@@ -66910,24 +66906,24 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlatsqr
 
-     !> DORGBR: generates one of the real orthogonal matrices Q or P**T
-     !> determined by DGEBRD when reducing a real matrix A to bidiagonal
-     !> form: A = Q * B * P**T.  Q and P**T are defined as products of
-     !> elementary reflectors H(i) or G(i) respectively.
-     !> If VECT = 'Q', A is assumed to have been an M-by-K matrix, and Q
-     !> is of order M:
-     !> if m >= k, Q = H(1) H(2) . . . H(k) and DORGBR returns the first n
-     !> columns of Q, where m >= n >= k;
-     !> if m < k, Q = H(1) H(2) . . . H(m-1) and DORGBR returns Q as an
-     !> M-by-M matrix.
-     !> If VECT = 'P', A is assumed to have been a K-by-N matrix, and P**T
-     !> is of order N:
-     !> if k < n, P**T = G(k) . . . G(2) G(1) and DORGBR returns the first m
-     !> rows of P**T, where n >= m >= k;
-     !> if k >= n, P**T = G(n-1) . . . G(2) G(1) and DORGBR returns P**T as
-     !> an N-by-N matrix.
 
      pure subroutine stdlib_dorgbr( vect, m, n, k, a, lda, tau, work, lwork, info )
+     !! DORGBR generates one of the real orthogonal matrices Q or P**T
+     !! determined by DGEBRD when reducing a real matrix A to bidiagonal
+     !! form: A = Q * B * P**T.  Q and P**T are defined as products of
+     !! elementary reflectors H(i) or G(i) respectively.
+     !! If VECT = 'Q', A is assumed to have been an M-by-K matrix, and Q
+     !! is of order M:
+     !! if m >= k, Q = H(1) H(2) . . . H(k) and DORGBR returns the first n
+     !! columns of Q, where m >= n >= k;
+     !! if m < k, Q = H(1) H(2) . . . H(m-1) and DORGBR returns Q as an
+     !! M-by-M matrix.
+     !! If VECT = 'P', A is assumed to have been a K-by-N matrix, and P**T
+     !! is of order N:
+     !! if k < n, P**T = G(k) . . . G(2) G(1) and DORGBR returns the first m
+     !! rows of P**T, where n >= m >= k;
+     !! if k >= n, P**T = G(n-1) . . . G(2) G(1) and DORGBR returns P**T as
+     !! an N-by-N matrix.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -67059,30 +67055,30 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dorgbr
 
-     !> If VECT = 'Q', DORMBR: overwrites the general real M-by-N matrix C
-     !> with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      Q * C          C * Q
-     !> TRANS = 'T':      Q**T * C       C * Q**T
-     !> If VECT = 'P', DORMBR overwrites the general real M-by-N matrix C
-     !> with
-     !> SIDE = 'L'     SIDE = 'R'
-     !> TRANS = 'N':      P * C          C * P
-     !> TRANS = 'T':      P**T * C       C * P**T
-     !> Here Q and P**T are the orthogonal matrices determined by DGEBRD when
-     !> reducing a real matrix A to bidiagonal form: A = Q * B * P**T. Q and
-     !> P**T are defined as products of elementary reflectors H(i) and G(i)
-     !> respectively.
-     !> Let nq = m if SIDE = 'L' and nq = n if SIDE = 'R'. Thus nq is the
-     !> order of the orthogonal matrix Q or P**T that is applied.
-     !> If VECT = 'Q', A is assumed to have been an NQ-by-K matrix:
-     !> if nq >= k, Q = H(1) H(2) . . . H(k);
-     !> if nq < k, Q = H(1) H(2) . . . H(nq-1).
-     !> If VECT = 'P', A is assumed to have been a K-by-NQ matrix:
-     !> if k < nq, P = G(1) G(2) . . . G(k);
-     !> if k >= nq, P = G(1) G(2) . . . G(nq-1).
 
      pure subroutine stdlib_dormbr( vect, side, trans, m, n, k, a, lda, tau, c,ldc, work, lwork, &
+     !! If VECT = 'Q', DORMBR: overwrites the general real M-by-N matrix C
+     !! with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! If VECT = 'P', DORMBR overwrites the general real M-by-N matrix C
+     !! with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      P * C          C * P
+     !! TRANS = 'T':      P**T * C       C * P**T
+     !! Here Q and P**T are the orthogonal matrices determined by DGEBRD when
+     !! reducing a real matrix A to bidiagonal form: A = Q * B * P**T. Q and
+     !! P**T are defined as products of elementary reflectors H(i) and G(i)
+     !! respectively.
+     !! Let nq = m if SIDE = 'L' and nq = n if SIDE = 'R'. Thus nq is the
+     !! order of the orthogonal matrix Q or P**T that is applied.
+     !! If VECT = 'Q', A is assumed to have been an NQ-by-K matrix:
+     !! if nq >= k, Q = H(1) H(2) . . . H(k);
+     !! if nq < k, Q = H(1) H(2) . . . H(nq-1).
+     !! If VECT = 'P', A is assumed to have been a K-by-NQ matrix:
+     !! if k < nq, P = G(1) G(2) . . . G(k);
+     !! if k >= nq, P = G(1) G(2) . . . G(nq-1).
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -67217,19 +67213,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dormbr
 
-     !> DPBSV: computes the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric positive definite band matrix and X
-     !> and B are N-by-NRHS matrices.
-     !> The Cholesky decomposition is used to factor A as
-     !> A = U**T * U,  if UPLO = 'U', or
-     !> A = L * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular band matrix, and L is a lower
-     !> triangular band matrix, with the same number of superdiagonals or
-     !> subdiagonals as A.  The factored form of A is then used to solve the
-     !> system of equations A * X = B.
 
      pure subroutine stdlib_dpbsv( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
+     !! DPBSV computes the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric positive definite band matrix and X
+     !! and B are N-by-NRHS matrices.
+     !! The Cholesky decomposition is used to factor A as
+     !! A = U**T * U,  if UPLO = 'U', or
+     !! A = L * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular band matrix, and L is a lower
+     !! triangular band matrix, with the same number of superdiagonals or
+     !! subdiagonals as A.  The factored form of A is then used to solve the
+     !! system of equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -67271,15 +67267,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpbsv
 
-     !> DPBSVX: uses the Cholesky factorization A = U**T*U or A = L*L**T to
-     !> compute the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric positive definite band matrix and X
-     !> and B are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_dpbsvx( fact, uplo, n, kd, nrhs, ab, ldab, afb, ldafb,equed, s, b, ldb, x, &
+     !! DPBSVX uses the Cholesky factorization A = U**T*U or A = L*L**T to
+     !! compute the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric positive definite band matrix and X
+     !! and B are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                ldx, rcond, ferr, berr,work, iwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -67427,15 +67423,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpbsvx
 
-     !> DPFTRF: computes the Cholesky factorization of a real symmetric
-     !> positive definite matrix A.
-     !> The factorization has the form
-     !> A = U**T * U,  if UPLO = 'U', or
-     !> A = L  * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is lower triangular.
-     !> This is the block version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_dpftrf( transr, uplo, n, a, info )
+     !! DPFTRF computes the Cholesky factorization of a real symmetric
+     !! positive definite matrix A.
+     !! The factorization has the form
+     !! A = U**T * U,  if UPLO = 'U', or
+     !! A = L  * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is lower triangular.
+     !! This is the block version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -67602,18 +67598,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpftrf
 
-     !> DPOSV: computes the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric positive definite matrix and X and B
-     !> are N-by-NRHS matrices.
-     !> The Cholesky decomposition is used to factor A as
-     !> A = U**T* U,  if UPLO = 'U', or
-     !> A = L * L**T,  if UPLO = 'L',
-     !> where U is an upper triangular matrix and L is a lower triangular
-     !> matrix.  The factored form of A is then used to solve the system of
-     !> equations A * X = B.
 
      pure subroutine stdlib_dposv( uplo, n, nrhs, a, lda, b, ldb, info )
+     !! DPOSV computes the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric positive definite matrix and X and B
+     !! are N-by-NRHS matrices.
+     !! The Cholesky decomposition is used to factor A as
+     !! A = U**T* U,  if UPLO = 'U', or
+     !! A = L * L**T,  if UPLO = 'L',
+     !! where U is an upper triangular matrix and L is a lower triangular
+     !! matrix.  The factored form of A is then used to solve the system of
+     !! equations A * X = B.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -67653,15 +67649,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dposv
 
-     !> DPOSVX: uses the Cholesky factorization A = U**T*U or A = L*L**T to
-     !> compute the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric positive definite matrix and X and B
-     !> are N-by-NRHS matrices.
-     !> Error bounds on the solution and a condition estimate are also
-     !> provided.
 
      subroutine stdlib_dposvx( fact, uplo, n, nrhs, a, lda, af, ldaf, equed,s, b, ldb, x, ldx, &
+     !! DPOSVX uses the Cholesky factorization A = U**T*U or A = L*L**T to
+     !! compute the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric positive definite matrix and X and B
+     !! are N-by-NRHS matrices.
+     !! Error bounds on the solution and a condition estimate are also
+     !! provided.
                rcond, ferr, berr, work,iwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -67796,18 +67792,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dposvx
 
-     !> DTREXC: reorders the real Schur factorization of a real matrix
-     !> A = Q*T*Q**T, so that the diagonal block of T with row index IFST is
-     !> moved to row ILST.
-     !> The real Schur form T is reordered by an orthogonal similarity
-     !> transformation Z**T*T*Z, and optionally the matrix Q of Schur vectors
-     !> is updated by postmultiplying it with Z.
-     !> T must be in Schur canonical form (as returned by DHSEQR), that is,
-     !> block upper triangular with 1-by-1 and 2-by-2 diagonal blocks; each
-     !> 2-by-2 diagonal block has its diagonal elements equal and its
-     !> off-diagonal elements of opposite sign.
 
      subroutine stdlib_dtrexc( compq, n, t, ldt, q, ldq, ifst, ilst, work,info )
+     !! DTREXC reorders the real Schur factorization of a real matrix
+     !! A = Q*T*Q**T, so that the diagonal block of T with row index IFST is
+     !! moved to row ILST.
+     !! The real Schur form T is reordered by an orthogonal similarity
+     !! transformation Z**T*T*Z, and optionally the matrix Q of Schur vectors
+     !! is updated by postmultiplying it with Z.
+     !! T must be in Schur canonical form (as returned by DHSEQR), that is,
+     !! block upper triangular with 1-by-1 and 2-by-2 diagonal blocks; each
+     !! 2-by-2 diagonal block has its diagonal elements equal and its
+     !! off-diagonal elements of opposite sign.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -68000,19 +67996,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrexc
 
-     !> DTRSEN: reorders the real Schur factorization of a real matrix
-     !> A = Q*T*Q**T, so that a selected cluster of eigenvalues appears in
-     !> the leading diagonal blocks of the upper quasi-triangular matrix T,
-     !> and the leading columns of Q form an orthonormal basis of the
-     !> corresponding right invariant subspace.
-     !> Optionally the routine computes the reciprocal condition numbers of
-     !> the cluster of eigenvalues and/or the invariant subspace.
-     !> T must be in Schur canonical form (as returned by DHSEQR), that is,
-     !> block upper triangular with 1-by-1 and 2-by-2 diagonal blocks; each
-     !> 2-by-2 diagonal block has its diagonal elements equal and its
-     !> off-diagonal elements of opposite sign.
 
      subroutine stdlib_dtrsen( job, compq, select, n, t, ldt, q, ldq, wr, wi,m, s, sep, work, &
+     !! DTRSEN reorders the real Schur factorization of a real matrix
+     !! A = Q*T*Q**T, so that a selected cluster of eigenvalues appears in
+     !! the leading diagonal blocks of the upper quasi-triangular matrix T,
+     !! and the leading columns of Q form an orthonormal basis of the
+     !! corresponding right invariant subspace.
+     !! Optionally the routine computes the reciprocal condition numbers of
+     !! the cluster of eigenvalues and/or the invariant subspace.
+     !! T must be in Schur canonical form (as returned by DHSEQR), that is,
+     !! block upper triangular with 1-by-1 and 2-by-2 diagonal blocks; each
+     !! 2-by-2 diagonal block has its diagonal elements equal and its
+     !! off-diagonal elements of opposite sign.
                lwork, iwork, liwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -68195,16 +68191,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrsen
 
-     !> DTRSNA: estimates reciprocal condition numbers for specified
-     !> eigenvalues and/or right eigenvectors of a real upper
-     !> quasi-triangular matrix T (or of any matrix Q*T*Q**T with Q
-     !> orthogonal).
-     !> T must be in Schur canonical form (as returned by DHSEQR), that is,
-     !> block upper triangular with 1-by-1 and 2-by-2 diagonal blocks; each
-     !> 2-by-2 diagonal block has its diagonal elements equal and its
-     !> off-diagonal elements of opposite sign.
 
      subroutine stdlib_dtrsna( job, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, s, sep, mm, m, &
+     !! DTRSNA estimates reciprocal condition numbers for specified
+     !! eigenvalues and/or right eigenvectors of a real upper
+     !! quasi-triangular matrix T (or of any matrix Q*T*Q**T with Q
+     !! orthogonal).
+     !! T must be in Schur canonical form (as returned by DHSEQR), that is,
+     !! block upper triangular with 1-by-1 and 2-by-2 diagonal blocks; each
+     !! 2-by-2 diagonal block has its diagonal elements equal and its
+     !! off-diagonal elements of opposite sign.
                work, ldwork, iwork,info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -68440,20 +68436,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dtrsna
 
-     !> DGEJSV: computes the singular value decomposition (SVD) of a real M-by-N
-     !> matrix [A], where M >= N. The SVD of [A] is written as
-     !> [A] = [U] * [SIGMA] * [V]^t,
-     !> where [SIGMA] is an N-by-N (M-by-N) matrix which is zero except for its N
-     !> diagonal elements, [U] is an M-by-N (or M-by-M) orthonormal matrix, and
-     !> [V] is an N-by-N orthogonal matrix. The diagonal elements of [SIGMA] are
-     !> the singular values of [A]. The columns of [U] and [V] are the left and
-     !> the right singular vectors of [A], respectively. The matrices [U] and [V]
-     !> are computed and stored in the arrays U and V, respectively. The diagonal
-     !> of [SIGMA] is computed and stored in the array SVA.
-     !> DGEJSV can sometimes compute tiny singular values and their singular vectors much
-     !> more accurately than other SVD routines, see below under Further Details.
 
      pure subroutine stdlib_dgejsv( joba, jobu, jobv, jobr, jobt, jobp,m, n, a, lda, sva, u, ldu, &
+     !! DGEJSV computes the singular value decomposition (SVD) of a real M-by-N
+     !! matrix [A], where M >= N. The SVD of [A] is written as
+     !! [A] = [U] * [SIGMA] * [V]^t,
+     !! where [SIGMA] is an N-by-N (M-by-N) matrix which is zero except for its N
+     !! diagonal elements, [U] is an M-by-N (or M-by-M) orthonormal matrix, and
+     !! [V] is an N-by-N orthogonal matrix. The diagonal elements of [SIGMA] are
+     !! the singular values of [A]. The columns of [U] and [V] are the left and
+     !! the right singular vectors of [A], respectively. The matrices [U] and [V]
+     !! are computed and stored in the arrays U and V, respectively. The diagonal
+     !! of [SIGMA] is computed and stored in the array SVA.
+     !! DGEJSV can sometimes compute tiny singular values and their singular vectors much
+     !! more accurately than other SVD routines, see below under Further Details.
                v, ldv,work, lwork, iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -69530,14 +69526,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgejsv
 
-     !> DGELQ: computes an LQ factorization of a real M-by-N matrix A:
-     !> A = ( L 0 ) *  Q
-     !> where:
-     !> Q is a N-by-N orthogonal matrix;
-     !> L is a lower-triangular M-by-M matrix;
-     !> 0 is a M-by-(N-M) zero matrix, if M < N.
 
      pure subroutine stdlib_dgelq( m, n, a, lda, t, tsize, work, lwork,info )
+     !! DGELQ computes an LQ factorization of a real M-by-N matrix A:
+     !! A = ( L 0 ) *  Q
+     !! where:
+     !! Q is a N-by-N orthogonal matrix;
+     !! L is a lower-triangular M-by-M matrix;
+     !! 0 is a M-by-(N-M) zero matrix, if M < N.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd. --
@@ -69655,40 +69651,40 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgelq
 
-     !> DGELSY: computes the minimum-norm solution to a real linear least
-     !> squares problem:
-     !> minimize || A * X - B ||
-     !> using a complete orthogonal factorization of A.  A is an M-by-N
-     !> matrix which may be rank-deficient.
-     !> Several right hand side vectors b and solution vectors x can be
-     !> handled in a single call; they are stored as the columns of the
-     !> M-by-NRHS right hand side matrix B and the N-by-NRHS solution
-     !> matrix X.
-     !> The routine first computes a QR factorization with column pivoting:
-     !> A * P = Q * [ R11 R12 ]
-     !> [  0  R22 ]
-     !> with R11 defined as the largest leading submatrix whose estimated
-     !> condition number is less than 1/RCOND.  The order of R11, RANK,
-     !> is the effective rank of A.
-     !> Then, R22 is considered to be negligible, and R12 is annihilated
-     !> by orthogonal transformations from the right, arriving at the
-     !> complete orthogonal factorization:
-     !> A * P = Q * [ T11 0 ] * Z
-     !> [  0  0 ]
-     !> The minimum-norm solution is then
-     !> X = P * Z**T [ inv(T11)*Q1**T*B ]
-     !> [        0         ]
-     !> where Q1 consists of the first RANK columns of Q.
-     !> This routine is basically identical to the original xGELSX except
-     !> three differences:
-     !> o The call to the subroutine xGEQPF has been substituted by the
-     !> the call to the subroutine xGEQP3. This subroutine is a Blas-3
-     !> version of the QR factorization with column pivoting.
-     !> o Matrix B (the right hand side) is updated with Blas-3.
-     !> o The permutation of matrix B (the right hand side) is faster and
-     !> more simple.
 
      subroutine stdlib_dgelsy( m, n, nrhs, a, lda, b, ldb, jpvt, rcond, rank,work, lwork, info )
+     !! DGELSY computes the minimum-norm solution to a real linear least
+     !! squares problem:
+     !! minimize || A * X - B ||
+     !! using a complete orthogonal factorization of A.  A is an M-by-N
+     !! matrix which may be rank-deficient.
+     !! Several right hand side vectors b and solution vectors x can be
+     !! handled in a single call; they are stored as the columns of the
+     !! M-by-NRHS right hand side matrix B and the N-by-NRHS solution
+     !! matrix X.
+     !! The routine first computes a QR factorization with column pivoting:
+     !! A * P = Q * [ R11 R12 ]
+     !! [  0  R22 ]
+     !! with R11 defined as the largest leading submatrix whose estimated
+     !! condition number is less than 1/RCOND.  The order of R11, RANK,
+     !! is the effective rank of A.
+     !! Then, R22 is considered to be negligible, and R12 is annihilated
+     !! by orthogonal transformations from the right, arriving at the
+     !! complete orthogonal factorization:
+     !! A * P = Q * [ T11 0 ] * Z
+     !! [  0  0 ]
+     !! The minimum-norm solution is then
+     !! X = P * Z**T [ inv(T11)*Q1**T*B ]
+     !! [        0         ]
+     !! where Q1 consists of the first RANK columns of Q.
+     !! This routine is basically identical to the original xGELSX except
+     !! three differences:
+     !! o The call to the subroutine xGEQPF has been substituted by the
+     !! the call to the subroutine xGEQP3. This subroutine is a Blas-3
+     !! version of the QR factorization with column pivoting.
+     !! o Matrix B (the right hand side) is updated with Blas-3.
+     !! o The permutation of matrix B (the right hand side) is faster and
+     !! more simple.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -69888,15 +69884,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgelsy
 
-     !> DGEQR: computes a QR factorization of a real M-by-N matrix A:
-     !> A = Q * ( R ),
-     !> ( 0 )
-     !> where:
-     !> Q is a M-by-M orthogonal matrix;
-     !> R is an upper-triangular N-by-N matrix;
-     !> 0 is a (M-N)-by-N zero matrix, if M > N.
 
      pure subroutine stdlib_dgeqr( m, n, a, lda, t, tsize, work, lwork,info )
+     !! DGEQR computes a QR factorization of a real M-by-N matrix A:
+     !! A = Q * ( R ),
+     !! ( 0 )
+     !! where:
+     !! Q is a M-by-M orthogonal matrix;
+     !! R is an upper-triangular N-by-N matrix;
+     !! 0 is a (M-N)-by-N zero matrix, if M > N.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd. --
@@ -70003,26 +69999,26 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeqr
 
-     !> DGETSLS: solves overdetermined or underdetermined real linear systems
-     !> involving an M-by-N matrix A, using a tall skinny QR or short wide LQ
-     !> factorization of A.  It is assumed that A has full rank.
-     !> The following options are provided:
-     !> 1. If TRANS = 'N' and m >= n:  find the least squares solution of
-     !> an overdetermined system, i.e., solve the least squares problem
-     !> minimize || B - A*X ||.
-     !> 2. If TRANS = 'N' and m < n:  find the minimum norm solution of
-     !> an underdetermined system A * X = B.
-     !> 3. If TRANS = 'T' and m >= n:  find the minimum norm solution of
-     !> an undetermined system A**T * X = B.
-     !> 4. If TRANS = 'T' and m < n:  find the least squares solution of
-     !> an overdetermined system, i.e., solve the least squares problem
-     !> minimize || B - A**T * X ||.
-     !> Several right hand side vectors b and solution vectors x can be
-     !> handled in a single call; they are stored as the columns of the
-     !> M-by-NRHS right hand side matrix B and the N-by-NRHS solution
-     !> matrix X.
 
      subroutine stdlib_dgetsls( trans, m, n, nrhs, a, lda, b, ldb,work, lwork, info )
+     !! DGETSLS solves overdetermined or underdetermined real linear systems
+     !! involving an M-by-N matrix A, using a tall skinny QR or short wide LQ
+     !! factorization of A.  It is assumed that A has full rank.
+     !! The following options are provided:
+     !! 1. If TRANS = 'N' and m >= n:  find the least squares solution of
+     !! an overdetermined system, i.e., solve the least squares problem
+     !! minimize || B - A*X ||.
+     !! 2. If TRANS = 'N' and m < n:  find the minimum norm solution of
+     !! an underdetermined system A * X = B.
+     !! 3. If TRANS = 'T' and m >= n:  find the minimum norm solution of
+     !! an undetermined system A**T * X = B.
+     !! 4. If TRANS = 'T' and m < n:  find the least squares solution of
+     !! an overdetermined system, i.e., solve the least squares problem
+     !! minimize || B - A**T * X ||.
+     !! Several right hand side vectors b and solution vectors x can be
+     !! handled in a single call; they are stored as the columns of the
+     !! M-by-NRHS right hand side matrix B and the N-by-NRHS solution
+     !! matrix X.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -70239,20 +70235,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgetsls
 
-     !> DGETSQRHRT: computes a NB2-sized column blocked QR-factorization
-     !> of a real M-by-N matrix A with M >= N,
-     !> A = Q * R.
-     !> The routine uses internally a NB1-sized column blocked and MB1-sized
-     !> row blocked TSQR-factorization and perfors the reconstruction
-     !> of the Householder vectors from the TSQR output. The routine also
-     !> converts the R_tsqr factor from the TSQR-factorization output into
-     !> the R factor that corresponds to the Householder QR-factorization,
-     !> A = Q_tsqr * R_tsqr = Q * R.
-     !> The output Q and R factors are stored in the same format as in DGEQRT
-     !> (Q is in blocked compact WY-representation). See the documentation
-     !> of DGEQRT for more details on the format.
 
      pure subroutine stdlib_dgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
+     !! DGETSQRHRT computes a NB2-sized column blocked QR-factorization
+     !! of a real M-by-N matrix A with M >= N,
+     !! A = Q * R.
+     !! The routine uses internally a NB1-sized column blocked and MB1-sized
+     !! row blocked TSQR-factorization and perfors the reconstruction
+     !! of the Householder vectors from the TSQR output. The routine also
+     !! converts the R_tsqr factor from the TSQR-factorization output into
+     !! the R factor that corresponds to the Householder QR-factorization,
+     !! A = Q_tsqr * R_tsqr = Q * R.
+     !! The output Q and R factors are stored in the same format as in DGEQRT
+     !! (Q is in blocked compact WY-representation). See the documentation
+     !! of DGEQRT for more details on the format.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -70372,14 +70368,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgetsqrhrt
 
-     !> DLAED2: merges the two sets of eigenvalues together into a single
-     !> sorted set.  Then it tries to deflate the size of the problem.
-     !> There are two ways in which deflation can occur:  when two or more
-     !> eigenvalues are close together or if there is a tiny entry in the
-     !> Z vector.  For each such occurrence the order of the related secular
-     !> equation problem is reduced by one.
 
      pure subroutine stdlib_dlaed2( k, n, n1, d, q, ldq, indxq, rho, z, dlamda, w,q2, indx, indxc,&
+     !! DLAED2 merges the two sets of eigenvalues together into a single
+     !! sorted set.  Then it tries to deflate the size of the problem.
+     !! There are two ways in which deflation can occur:  when two or more
+     !! eigenvalues are close together or if there is a tiny entry in the
+     !! Z vector.  For each such occurrence the order of the related secular
+     !! equation problem is reduced by one.
                 indxp, coltyp, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -70629,19 +70625,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaed2
 
-     !> DLAQR2: is identical to DLAQR3 except that it avoids
-     !> recursion by calling DLAHQR instead of DLAQR4.
-     !> Aggressive early deflation:
-     !> This subroutine accepts as input an upper Hessenberg matrix
-     !> H and performs an orthogonal similarity transformation
-     !> designed to detect and deflate fully converged eigenvalues from
-     !> a trailing principal submatrix.  On output H has been over-
-     !> written by a new Hessenberg matrix that is a perturbation of
-     !> an orthogonal similarity transformation of H.  It is to be
-     !> hoped that the final version of H has many zero subdiagonal
-     !> entries.
 
      subroutine stdlib_dlaqr2( wantt, wantz, n, ktop, kbot, nw, h, ldh, iloz,ihiz, z, ldz, ns, nd,&
+     !! DLAQR2 is identical to DLAQR3 except that it avoids
+     !! recursion by calling DLAHQR instead of DLAQR4.
+     !! Aggressive early deflation:
+     !! This subroutine accepts as input an upper Hessenberg matrix
+     !! H and performs an orthogonal similarity transformation
+     !! designed to detect and deflate fully converged eigenvalues from
+     !! a trailing principal submatrix.  On output H has been over-
+     !! written by a new Hessenberg matrix that is a perturbation of
+     !! an orthogonal similarity transformation of H.  It is to be
+     !! hoped that the final version of H has many zero subdiagonal
+     !! entries.
                 sr, si, v, ldv, nh, t,ldt, nv, wv, ldwv, work, lwork )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -70932,37 +70928,37 @@ module stdlib_linalg_lapack_d
            work( 1 ) = real( lwkopt,KIND=dp)
      end subroutine stdlib_dlaqr2
 
-     !> DLASD1: computes the SVD of an upper bidiagonal N-by-M matrix B,
-     !> where N = NL + NR + 1 and M = N + SQRE. DLASD1 is called from DLASD0.
-     !> A related subroutine DLASD7 handles the case in which the singular
-     !> values (and the singular vectors in factored form) are desired.
-     !> DLASD1 computes the SVD as follows:
-     !> ( D1(in)    0    0       0 )
-     !> B = U(in) * (   Z1**T   a   Z2**T    b ) * VT(in)
-     !> (   0       0   D2(in)   0 )
-     !> = U(out) * ( D(out) 0) * VT(out)
-     !> where Z**T = (Z1**T a Z2**T b) = u**T VT**T, and u is a vector of dimension M
-     !> with ALPHA and BETA in the NL+1 and NL+2 th entries and zeros
-     !> elsewhere; and the entry b is empty if SQRE = 0.
-     !> The left singular vectors of the original matrix are stored in U, and
-     !> the transpose of the right singular vectors are stored in VT, and the
-     !> singular values are in D.  The algorithm consists of three stages:
-     !> The first stage consists of deflating the size of the problem
-     !> when there are multiple singular values or when there are zeros in
-     !> the Z vector.  For each such occurrence the dimension of the
-     !> secular equation problem is reduced by one.  This stage is
-     !> performed by the routine DLASD2.
-     !> The second stage consists of calculating the updated
-     !> singular values. This is done by finding the square roots of the
-     !> roots of the secular equation via the routine DLASD4 (as called
-     !> by DLASD3). This routine also calculates the singular vectors of
-     !> the current problem.
-     !> The final stage consists of computing the updated singular vectors
-     !> directly using the updated singular values.  The singular vectors
-     !> for the current problem are multiplied with the singular vectors
-     !> from the overall problem.
 
      pure subroutine stdlib_dlasd1( nl, nr, sqre, d, alpha, beta, u, ldu, vt, ldvt,idxq, iwork, &
+     !! DLASD1 computes the SVD of an upper bidiagonal N-by-M matrix B,
+     !! where N = NL + NR + 1 and M = N + SQRE. DLASD1 is called from DLASD0.
+     !! A related subroutine DLASD7 handles the case in which the singular
+     !! values (and the singular vectors in factored form) are desired.
+     !! DLASD1 computes the SVD as follows:
+     !! ( D1(in)    0    0       0 )
+     !! B = U(in) * (   Z1**T   a   Z2**T    b ) * VT(in)
+     !! (   0       0   D2(in)   0 )
+     !! = U(out) * ( D(out) 0) * VT(out)
+     !! where Z**T = (Z1**T a Z2**T b) = u**T VT**T, and u is a vector of dimension M
+     !! with ALPHA and BETA in the NL+1 and NL+2 th entries and zeros
+     !! elsewhere; and the entry b is empty if SQRE = 0.
+     !! The left singular vectors of the original matrix are stored in U, and
+     !! the transpose of the right singular vectors are stored in VT, and the
+     !! singular values are in D.  The algorithm consists of three stages:
+     !! The first stage consists of deflating the size of the problem
+     !! when there are multiple singular values or when there are zeros in
+     !! the Z vector.  For each such occurrence the dimension of the
+     !! secular equation problem is reduced by one.  This stage is
+     !! performed by the routine DLASD2.
+     !! The second stage consists of calculating the updated
+     !! singular values. This is done by finding the square roots of the
+     !! roots of the secular equation via the routine DLASD4 (as called
+     !! by DLASD3). This routine also calculates the singular vectors of
+     !! the current problem.
+     !! The final stage consists of computing the updated singular vectors
+     !! directly using the updated singular values.  The singular vectors
+     !! for the current problem are multiplied with the singular vectors
+     !! from the overall problem.
                work, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -71047,34 +71043,34 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasd1
 
-     !> DLAED1: computes the updated eigensystem of a diagonal
-     !> matrix after modification by a rank-one symmetric matrix.  This
-     !> routine is used only for the eigenproblem which requires all
-     !> eigenvalues and eigenvectors of a tridiagonal matrix.  DLAED7 handles
-     !> the case in which eigenvalues only or eigenvalues and eigenvectors
-     !> of a full symmetric matrix (which was reduced to tridiagonal form)
-     !> are desired.
-     !> T = Q(in) ( D(in) + RHO * Z*Z**T ) Q**T(in) = Q(out) * D(out) * Q**T(out)
-     !> where Z = Q**T*u, u is a vector of length N with ones in the
-     !> CUTPNT and CUTPNT + 1 th elements and zeros elsewhere.
-     !> The eigenvectors of the original matrix are stored in Q, and the
-     !> eigenvalues are in D.  The algorithm consists of three stages:
-     !> The first stage consists of deflating the size of the problem
-     !> when there are multiple eigenvalues or if there is a zero in
-     !> the Z vector.  For each such occurrence the dimension of the
-     !> secular equation problem is reduced by one.  This stage is
-     !> performed by the routine DLAED2.
-     !> The second stage consists of calculating the updated
-     !> eigenvalues. This is done by finding the roots of the secular
-     !> equation via the routine DLAED4 (as called by DLAED3).
-     !> This routine also calculates the eigenvectors of the current
-     !> problem.
-     !> The final stage consists of computing the updated eigenvectors
-     !> directly using the updated eigenvalues.  The eigenvectors for
-     !> the current problem are multiplied with the eigenvectors from
-     !> the overall problem.
 
      pure subroutine stdlib_dlaed1( n, d, q, ldq, indxq, rho, cutpnt, work, iwork,info )
+     !! DLAED1 computes the updated eigensystem of a diagonal
+     !! matrix after modification by a rank-one symmetric matrix.  This
+     !! routine is used only for the eigenproblem which requires all
+     !! eigenvalues and eigenvectors of a tridiagonal matrix.  DLAED7 handles
+     !! the case in which eigenvalues only or eigenvalues and eigenvectors
+     !! of a full symmetric matrix (which was reduced to tridiagonal form)
+     !! are desired.
+     !! T = Q(in) ( D(in) + RHO * Z*Z**T ) Q**T(in) = Q(out) * D(out) * Q**T(out)
+     !! where Z = Q**T*u, u is a vector of length N with ones in the
+     !! CUTPNT and CUTPNT + 1 th elements and zeros elsewhere.
+     !! The eigenvectors of the original matrix are stored in Q, and the
+     !! eigenvalues are in D.  The algorithm consists of three stages:
+     !! The first stage consists of deflating the size of the problem
+     !! when there are multiple eigenvalues or if there is a zero in
+     !! the Z vector.  For each such occurrence the dimension of the
+     !! secular equation problem is reduced by one.  This stage is
+     !! performed by the routine DLAED2.
+     !! The second stage consists of calculating the updated
+     !! eigenvalues. This is done by finding the roots of the secular
+     !! equation via the routine DLAED4 (as called by DLAED3).
+     !! This routine also calculates the eigenvectors of the current
+     !! problem.
+     !! The final stage consists of computing the updated eigenvectors
+     !! directly using the updated eigenvalues.  The eigenvectors for
+     !! the current problem are multiplied with the eigenvectors from
+     !! the overall problem.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -71150,10 +71146,10 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaed1
 
-     !> DLAED0: computes all eigenvalues and corresponding eigenvectors of a
-     !> symmetric tridiagonal matrix using the divide and conquer method.
 
      pure subroutine stdlib_dlaed0( icompq, qsiz, n, d, e, q, ldq, qstore, ldqs,work, iwork, info &
+     !! DLAED0 computes all eigenvalues and corresponding eigenvectors of a
+     !! symmetric tridiagonal matrix using the divide and conquer method.
                )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -71354,19 +71350,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlaed0
 
-     !> DSTEDC: computes all eigenvalues and, optionally, eigenvectors of a
-     !> symmetric tridiagonal matrix using the divide and conquer method.
-     !> The eigenvectors of a full or band real symmetric matrix can also be
-     !> found if DSYTRD or DSPTRD or DSBTRD has been used to reduce this
-     !> matrix to tridiagonal form.
-     !> This code makes very mild assumptions about floating point
-     !> arithmetic. It will work on machines with a guard digit in
-     !> add/subtract, or on those binary machines without guard digits
-     !> which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
-     !> It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.  See DLAED3 for details.
 
      pure subroutine stdlib_dstedc( compz, n, d, e, z, ldz, work, lwork, iwork,liwork, info )
+     !! DSTEDC computes all eigenvalues and, optionally, eigenvectors of a
+     !! symmetric tridiagonal matrix using the divide and conquer method.
+     !! The eigenvectors of a full or band real symmetric matrix can also be
+     !! found if DSYTRD or DSPTRD or DSBTRD has been used to reduce this
+     !! matrix to tridiagonal form.
+     !! This code makes very mild assumptions about floating point
+     !! arithmetic. It will work on machines with a guard digit in
+     !! add/subtract, or on those binary machines without guard digits
+     !! which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
+     !! It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.  See DLAED3 for details.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -71580,17 +71576,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dstedc
 
-     !> DSTEVD: computes all eigenvalues and, optionally, eigenvectors of a
-     !> real symmetric tridiagonal matrix. If eigenvectors are desired, it
-     !> uses a divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      pure subroutine stdlib_dstevd( jobz, n, d, e, z, ldz, work, lwork, iwork,liwork, info )
+     !! DSTEVD computes all eigenvalues and, optionally, eigenvectors of a
+     !! real symmetric tridiagonal matrix. If eigenvectors are desired, it
+     !! uses a divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -71685,19 +71681,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dstevd
 
-     !> DSYEVD: computes all eigenvalues and, optionally, eigenvectors of a
-     !> real symmetric matrix A. If eigenvectors are desired, it uses a
-     !> divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
-     !> Because of large use of BLAS of level 3, DSYEVD needs N**2 more
-     !> workspace than DSYEVX.
 
      subroutine stdlib_dsyevd( jobz, uplo, n, a, lda, w, work, lwork, iwork,liwork, info )
+     !! DSYEVD computes all eigenvalues and, optionally, eigenvectors of a
+     !! real symmetric matrix A. If eigenvectors are desired, it uses a
+     !! divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
+     !! Because of large use of BLAS of level 3, DSYEVD needs N**2 more
+     !! workspace than DSYEVX.
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -71819,19 +71815,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsyevd
 
-     !> DSYGVD: computes all the eigenvalues, and optionally, the eigenvectors
-     !> of a real generalized symmetric-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
-     !> B are assumed to be symmetric and B is also positive definite.
-     !> If eigenvectors are desired, it uses a divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_dsygvd( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, iwork, liwork,&
+     !! DSYGVD computes all the eigenvalues, and optionally, the eigenvectors
+     !! of a real generalized symmetric-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
+     !! B are assumed to be symmetric and B is also positive definite.
+     !! If eigenvectors are desired, it uses a divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                 info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -71940,17 +71936,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsygvd
 
-     !> DSBEVD: computes all the eigenvalues and, optionally, eigenvectors of
-     !> a real symmetric band matrix A. If eigenvectors are desired, it uses
-     !> a divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_dsbevd( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,lwork, iwork, liwork, &
+     !! DSBEVD computes all the eigenvalues and, optionally, eigenvectors of
+     !! a real symmetric band matrix A. If eigenvectors are desired, it uses
+     !! a divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -72072,19 +72068,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsbevd
 
-     !> DSBGVD: computes all the eigenvalues, and optionally, the eigenvectors
-     !> of a real generalized symmetric-definite banded eigenproblem, of the
-     !> form A*x=(lambda)*B*x.  Here A and B are assumed to be symmetric and
-     !> banded, and B is also positive definite.  If eigenvectors are
-     !> desired, it uses a divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      pure subroutine stdlib_dsbgvd( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w,z, ldz, work, &
+     !! DSBGVD computes all the eigenvalues, and optionally, the eigenvectors
+     !! of a real generalized symmetric-definite banded eigenproblem, of the
+     !! form A*x=(lambda)*B*x.  Here A and B are assumed to be symmetric and
+     !! banded, and B is also positive definite.  If eigenvectors are
+     !! desired, it uses a divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                lwork, iwork, liwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -72189,17 +72185,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsbgvd
 
-     !> DSPEVD: computes all the eigenvalues and, optionally, eigenvectors
-     !> of a real symmetric matrix A in packed storage. If eigenvectors are
-     !> desired, it uses a divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_dspevd( jobz, uplo, n, ap, w, z, ldz, work, lwork,iwork, liwork, info )
+     !! DSPEVD computes all the eigenvalues and, optionally, eigenvectors
+     !! of a real symmetric matrix A in packed storage. If eigenvectors are
+     !! desired, it uses a divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -72314,20 +72310,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dspevd
 
-     !> DSPGVD: computes all the eigenvalues, and optionally, the eigenvectors
-     !> of a real generalized symmetric-definite eigenproblem, of the form
-     !> A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
-     !> B are assumed to be symmetric, stored in packed format, and B is also
-     !> positive definite.
-     !> If eigenvectors are desired, it uses a divide and conquer algorithm.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_dspgvd( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,lwork, iwork, liwork,&
+     !! DSPGVD computes all the eigenvalues, and optionally, the eigenvectors
+     !! of a real generalized symmetric-definite eigenproblem, of the form
+     !! A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A and
+     !! B are assumed to be symmetric, stored in packed format, and B is also
+     !! positive definite.
+     !! If eigenvectors are desired, it uses a divide and conquer algorithm.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                 info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -72438,24 +72434,24 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dspgvd
 
-     !> DBDSDC: computes the singular value decomposition (SVD) of a real
-     !> N-by-N (upper or lower) bidiagonal matrix B:  B = U * S * VT,
-     !> using a divide and conquer method, where S is a diagonal matrix
-     !> with non-negative diagonal elements (the singular values of B), and
-     !> U and VT are orthogonal matrices of left and right singular vectors,
-     !> respectively. DBDSDC can be used to compute all singular values,
-     !> and optionally, singular vectors or singular vectors in compact form.
-     !> This code makes very mild assumptions about floating point
-     !> arithmetic. It will work on machines with a guard digit in
-     !> add/subtract, or on those binary machines without guard digits
-     !> which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
-     !> It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.  See DLASD3 for details.
-     !> The code currently calls DLASDQ if singular values only are desired.
-     !> However, it can be slightly modified to compute singular values
-     !> using the divide and conquer method.
 
      pure subroutine stdlib_dbdsdc( uplo, compq, n, d, e, u, ldu, vt, ldvt, q, iq,work, iwork, &
+     !! DBDSDC computes the singular value decomposition (SVD) of a real
+     !! N-by-N (upper or lower) bidiagonal matrix B:  B = U * S * VT,
+     !! using a divide and conquer method, where S is a diagonal matrix
+     !! with non-negative diagonal elements (the singular values of B), and
+     !! U and VT are orthogonal matrices of left and right singular vectors,
+     !! respectively. DBDSDC can be used to compute all singular values,
+     !! and optionally, singular vectors or singular vectors in compact form.
+     !! This code makes very mild assumptions about floating point
+     !! arithmetic. It will work on machines with a guard digit in
+     !! add/subtract, or on those binary machines without guard digits
+     !! which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
+     !! It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.  See DLASD3 for details.
+     !! The code currently calls DLASDQ if singular values only are desired.
+     !! However, it can be slightly modified to compute singular values
+     !! using the divide and conquer method.
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -72696,32 +72692,32 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dbdsdc
 
-     !> DBDSQR: computes the singular values and, optionally, the right and/or
-     !> left singular vectors from the singular value decomposition (SVD) of
-     !> a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
-     !> zero-shift QR algorithm.  The SVD of B has the form
-     !> B = Q * S * P**T
-     !> where S is the diagonal matrix of singular values, Q is an orthogonal
-     !> matrix of left singular vectors, and P is an orthogonal matrix of
-     !> right singular vectors.  If left singular vectors are requested, this
-     !> subroutine actually returns U*Q instead of Q, and, if right singular
-     !> vectors are requested, this subroutine returns P**T*VT instead of
-     !> P**T, for given real input matrices U and VT.  When U and VT are the
-     !> orthogonal matrices that reduce a general matrix A to bidiagonal
-     !> form:  A = U*B*VT, as computed by DGEBRD, then
-     !> A = (U*Q) * S * (P**T*VT)
-     !> is the SVD of A.  Optionally, the subroutine may also compute Q**T*C
-     !> for a given real input matrix C.
-     !> See "Computing  Small Singular Values of Bidiagonal Matrices With
-     !> Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
-     !> LAPACK Working Note #3 (or SIAM J. Sci. Statist. Comput. vol. 11,
-     !> no. 5, pp. 873-912, Sept 1990) and
-     !> "Accurate singular values and differential qd algorithms," by
-     !> B. Parlett and V. Fernando, Technical Report CPAM-554, Mathematics
-     !> Department, University of California at Berkeley, July 1992
-     !> for a detailed description of the algorithm.
 
      pure subroutine stdlib_dbdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, work, &
+     !! DBDSQR computes the singular values and, optionally, the right and/or
+     !! left singular vectors from the singular value decomposition (SVD) of
+     !! a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
+     !! zero-shift QR algorithm.  The SVD of B has the form
+     !! B = Q * S * P**T
+     !! where S is the diagonal matrix of singular values, Q is an orthogonal
+     !! matrix of left singular vectors, and P is an orthogonal matrix of
+     !! right singular vectors.  If left singular vectors are requested, this
+     !! subroutine actually returns U*Q instead of Q, and, if right singular
+     !! vectors are requested, this subroutine returns P**T*VT instead of
+     !! P**T, for given real input matrices U and VT.  When U and VT are the
+     !! orthogonal matrices that reduce a general matrix A to bidiagonal
+     !! form:  A = U*B*VT, as computed by DGEBRD, then
+     !! A = (U*Q) * S * (P**T*VT)
+     !! is the SVD of A.  Optionally, the subroutine may also compute Q**T*C
+     !! for a given real input matrix C.
+     !! See "Computing  Small Singular Values of Bidiagonal Matrices With
+     !! Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
+     !! LAPACK Working Note #3 (or SIAM J. Sci. Statist. Comput. vol. 11,
+     !! no. 5, pp. 873-912, Sept 1990) and
+     !! "Accurate singular values and differential qd algorithms," by
+     !! B. Parlett and V. Fernando, Technical Report CPAM-554, Mathematics
+     !! Department, University of California at Berkeley, July 1992
+     !! for a detailed description of the algorithm.
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -73162,21 +73158,21 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dbdsqr
 
-     !> DGEES: computes for an N-by-N real nonsymmetric matrix A, the
-     !> eigenvalues, the real Schur form T, and, optionally, the matrix of
-     !> Schur vectors Z.  This gives the Schur factorization A = Z*T*(Z**T).
-     !> Optionally, it also orders the eigenvalues on the diagonal of the
-     !> real Schur form so that selected eigenvalues are at the top left.
-     !> The leading columns of Z then form an orthonormal basis for the
-     !> invariant subspace corresponding to the selected eigenvalues.
-     !> A matrix is in real Schur form if it is upper quasi-triangular with
-     !> 1-by-1 and 2-by-2 blocks. 2-by-2 blocks will be standardized in the
-     !> form
-     !> [  a  b  ]
-     !> [  c  a  ]
-     !> where b*c < 0. The eigenvalues of such a block are a +- sqrt(bc).
 
      subroutine stdlib_dgees( jobvs, sort, select, n, a, lda, sdim, wr, wi,vs, ldvs, work, lwork, &
+     !! DGEES computes for an N-by-N real nonsymmetric matrix A, the
+     !! eigenvalues, the real Schur form T, and, optionally, the matrix of
+     !! Schur vectors Z.  This gives the Schur factorization A = Z*T*(Z**T).
+     !! Optionally, it also orders the eigenvalues on the diagonal of the
+     !! real Schur form so that selected eigenvalues are at the top left.
+     !! The leading columns of Z then form an orthonormal basis for the
+     !! invariant subspace corresponding to the selected eigenvalues.
+     !! A matrix is in real Schur form if it is upper quasi-triangular with
+     !! 1-by-1 and 2-by-2 blocks. 2-by-2 blocks will be standardized in the
+     !! form
+     !! [  a  b  ]
+     !! [  c  a  ]
+     !! where b*c < 0. The eigenvalues of such a block are a +- sqrt(bc).
                bwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -73408,27 +73404,27 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgees
 
-     !> DGEESX: computes for an N-by-N real nonsymmetric matrix A, the
-     !> eigenvalues, the real Schur form T, and, optionally, the matrix of
-     !> Schur vectors Z.  This gives the Schur factorization A = Z*T*(Z**T).
-     !> Optionally, it also orders the eigenvalues on the diagonal of the
-     !> real Schur form so that selected eigenvalues are at the top left;
-     !> computes a reciprocal condition number for the average of the
-     !> selected eigenvalues (RCONDE); and computes a reciprocal condition
-     !> number for the right invariant subspace corresponding to the
-     !> selected eigenvalues (RCONDV).  The leading columns of Z form an
-     !> orthonormal basis for this invariant subspace.
-     !> For further explanation of the reciprocal condition numbers RCONDE
-     !> and RCONDV, see Section 4.10_dp of the LAPACK Users' Guide (where
-     !> these quantities are called s and sep respectively).
-     !> A real matrix is in real Schur form if it is upper quasi-triangular
-     !> with 1-by-1 and 2-by-2 blocks. 2-by-2 blocks will be standardized in
-     !> the form
-     !> [  a  b  ]
-     !> [  c  a  ]
-     !> where b*c < 0. The eigenvalues of such a block are a +- sqrt(bc).
 
      subroutine stdlib_dgeesx( jobvs, sort, select, sense, n, a, lda, sdim,wr, wi, vs, ldvs, &
+     !! DGEESX computes for an N-by-N real nonsymmetric matrix A, the
+     !! eigenvalues, the real Schur form T, and, optionally, the matrix of
+     !! Schur vectors Z.  This gives the Schur factorization A = Z*T*(Z**T).
+     !! Optionally, it also orders the eigenvalues on the diagonal of the
+     !! real Schur form so that selected eigenvalues are at the top left;
+     !! computes a reciprocal condition number for the average of the
+     !! selected eigenvalues (RCONDE); and computes a reciprocal condition
+     !! number for the right invariant subspace corresponding to the
+     !! selected eigenvalues (RCONDV).  The leading columns of Z form an
+     !! orthonormal basis for this invariant subspace.
+     !! For further explanation of the reciprocal condition numbers RCONDE
+     !! and RCONDV, see Section 4.10_dp of the LAPACK Users' Guide (where
+     !! these quantities are called s and sep respectively).
+     !! A real matrix is in real Schur form if it is upper quasi-triangular
+     !! with 1-by-1 and 2-by-2 blocks. 2-by-2 blocks will be standardized in
+     !! the form
+     !! [  a  b  ]
+     !! [  c  a  ]
+     !! where b*c < 0. The eigenvalues of such a block are a +- sqrt(bc).
                rconde, rcondv, work, lwork,iwork, liwork, bwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -73702,18 +73698,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeesx
 
-     !> DGEEV: computes for an N-by-N real nonsymmetric matrix A, the
-     !> eigenvalues and, optionally, the left and/or right eigenvectors.
-     !> The right eigenvector v(j) of A satisfies
-     !> A * v(j) = lambda(j) * v(j)
-     !> where lambda(j) is its eigenvalue.
-     !> The left eigenvector u(j) of A satisfies
-     !> u(j)**H * A = lambda(j) * u(j)**H
-     !> where u(j)**H denotes the conjugate-transpose of u(j).
-     !> The computed eigenvectors are normalized to have Euclidean norm
-     !> equal to 1 and largest component real.
 
      subroutine stdlib_dgeev( jobvl, jobvr, n, a, lda, wr, wi, vl, ldvl, vr,ldvr, work, lwork, &
+     !! DGEEV computes for an N-by-N real nonsymmetric matrix A, the
+     !! eigenvalues and, optionally, the left and/or right eigenvectors.
+     !! The right eigenvector v(j) of A satisfies
+     !! A * v(j) = lambda(j) * v(j)
+     !! where lambda(j) is its eigenvalue.
+     !! The left eigenvector u(j) of A satisfies
+     !! u(j)**H * A = lambda(j) * u(j)**H
+     !! where u(j)**H denotes the conjugate-transpose of u(j).
+     !! The computed eigenvectors are normalized to have Euclidean norm
+     !! equal to 1 and largest component real.
                info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -73961,33 +73957,33 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeev
 
-     !> DGEEVX: computes for an N-by-N real nonsymmetric matrix A, the
-     !> eigenvalues and, optionally, the left and/or right eigenvectors.
-     !> Optionally also, it computes a balancing transformation to improve
-     !> the conditioning of the eigenvalues and eigenvectors (ILO, IHI,
-     !> SCALE, and ABNRM), reciprocal condition numbers for the eigenvalues
-     !> (RCONDE), and reciprocal condition numbers for the right
-     !> eigenvectors (RCONDV).
-     !> The right eigenvector v(j) of A satisfies
-     !> A * v(j) = lambda(j) * v(j)
-     !> where lambda(j) is its eigenvalue.
-     !> The left eigenvector u(j) of A satisfies
-     !> u(j)**H * A = lambda(j) * u(j)**H
-     !> where u(j)**H denotes the conjugate-transpose of u(j).
-     !> The computed eigenvectors are normalized to have Euclidean norm
-     !> equal to 1 and largest component real.
-     !> Balancing a matrix means permuting the rows and columns to make it
-     !> more nearly upper triangular, and applying a diagonal similarity
-     !> transformation D * A * D**(-1), where D is a diagonal matrix, to
-     !> make its rows and columns closer in norm and the condition numbers
-     !> of its eigenvalues and eigenvectors smaller.  The computed
-     !> reciprocal condition numbers correspond to the balanced matrix.
-     !> Permuting rows and columns will not change the condition numbers
-     !> (in exact arithmetic) but diagonal scaling will.  For further
-     !> explanation of balancing, see section 4.10.2_dp of the LAPACK
-     !> Users' Guide.
 
      subroutine stdlib_dgeevx( balanc, jobvl, jobvr, sense, n, a, lda, wr, wi,vl, ldvl, vr, ldvr, &
+     !! DGEEVX computes for an N-by-N real nonsymmetric matrix A, the
+     !! eigenvalues and, optionally, the left and/or right eigenvectors.
+     !! Optionally also, it computes a balancing transformation to improve
+     !! the conditioning of the eigenvalues and eigenvectors (ILO, IHI,
+     !! SCALE, and ABNRM), reciprocal condition numbers for the eigenvalues
+     !! (RCONDE), and reciprocal condition numbers for the right
+     !! eigenvectors (RCONDV).
+     !! The right eigenvector v(j) of A satisfies
+     !! A * v(j) = lambda(j) * v(j)
+     !! where lambda(j) is its eigenvalue.
+     !! The left eigenvector u(j) of A satisfies
+     !! u(j)**H * A = lambda(j) * u(j)**H
+     !! where u(j)**H denotes the conjugate-transpose of u(j).
+     !! The computed eigenvectors are normalized to have Euclidean norm
+     !! equal to 1 and largest component real.
+     !! Balancing a matrix means permuting the rows and columns to make it
+     !! more nearly upper triangular, and applying a diagonal similarity
+     !! transformation D * A * D**(-1), where D is a diagonal matrix, to
+     !! make its rows and columns closer in norm and the condition numbers
+     !! of its eigenvalues and eigenvectors smaller.  The computed
+     !! reciprocal condition numbers correspond to the balanced matrix.
+     !! Permuting rows and columns will not change the condition numbers
+     !! (in exact arithmetic) but diagonal scaling will.  For further
+     !! explanation of balancing, see section 4.10.2_dp of the LAPACK
+     !! Users' Guide.
                ilo, ihi, scale, abnrm,rconde, rcondv, work, lwork, iwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -74273,33 +74269,33 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgeevx
 
-     !> DGELSD: computes the minimum-norm solution to a real linear least
-     !> squares problem:
-     !> minimize 2-norm(| b - A*x |)
-     !> using the singular value decomposition (SVD) of A. A is an M-by-N
-     !> matrix which may be rank-deficient.
-     !> Several right hand side vectors b and solution vectors x can be
-     !> handled in a single call; they are stored as the columns of the
-     !> M-by-NRHS right hand side matrix B and the N-by-NRHS solution
-     !> matrix X.
-     !> The problem is solved in three steps:
-     !> (1) Reduce the coefficient matrix A to bidiagonal form with
-     !> Householder transformations, reducing the original problem
-     !> into a "bidiagonal least squares problem" (BLS)
-     !> (2) Solve the BLS using a divide and conquer approach.
-     !> (3) Apply back all the Householder transformations to solve
-     !> the original least squares problem.
-     !> The effective rank of A is determined by treating as zero those
-     !> singular values which are less than RCOND times the largest singular
-     !> value.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_dgelsd( m, n, nrhs, a, lda, b, ldb, s, rcond, rank,work, lwork, iwork, &
+     !! DGELSD computes the minimum-norm solution to a real linear least
+     !! squares problem:
+     !! minimize 2-norm(| b - A*x |)
+     !! using the singular value decomposition (SVD) of A. A is an M-by-N
+     !! matrix which may be rank-deficient.
+     !! Several right hand side vectors b and solution vectors x can be
+     !! handled in a single call; they are stored as the columns of the
+     !! M-by-NRHS right hand side matrix B and the N-by-NRHS solution
+     !! matrix X.
+     !! The problem is solved in three steps:
+     !! (1) Reduce the coefficient matrix A to bidiagonal form with
+     !! Householder transformations, reducing the original problem
+     !! into a "bidiagonal least squares problem" (BLS)
+     !! (2) Solve the BLS using a divide and conquer approach.
+     !! (3) Apply back all the Householder transformations to solve
+     !! the original least squares problem.
+     !! The effective rank of A is determined by treating as zero those
+     !! singular values which are less than RCOND times the largest singular
+     !! value.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -74596,20 +74592,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgelsd
 
-     !> DGELSS: computes the minimum norm solution to a real linear least
-     !> squares problem:
-     !> Minimize 2-norm(| b - A*x |).
-     !> using the singular value decomposition (SVD) of A. A is an M-by-N
-     !> matrix which may be rank-deficient.
-     !> Several right hand side vectors b and solution vectors x can be
-     !> handled in a single call; they are stored as the columns of the
-     !> M-by-NRHS right hand side matrix B and the N-by-NRHS solution matrix
-     !> X.
-     !> The effective rank of A is determined by treating as zero those
-     !> singular values which are less than RCOND times the largest singular
-     !> value.
 
      subroutine stdlib_dgelss( m, n, nrhs, a, lda, b, ldb, s, rcond, rank,work, lwork, info )
+     !! DGELSS computes the minimum norm solution to a real linear least
+     !! squares problem:
+     !! Minimize 2-norm(| b - A*x |).
+     !! using the singular value decomposition (SVD) of A. A is an M-by-N
+     !! matrix which may be rank-deficient.
+     !! Several right hand side vectors b and solution vectors x can be
+     !! handled in a single call; they are stored as the columns of the
+     !! M-by-NRHS right hand side matrix B and the N-by-NRHS solution matrix
+     !! X.
+     !! The effective rank of A is determined by treating as zero those
+     !! singular values which are less than RCOND times the largest singular
+     !! value.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -75038,27 +75034,27 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgelss
 
-     !> DGESDD: computes the singular value decomposition (SVD) of a real
-     !> M-by-N matrix A, optionally computing the left and right singular
-     !> vectors.  If singular vectors are desired, it uses a
-     !> divide-and-conquer algorithm.
-     !> The SVD is written
-     !> A = U * SIGMA * transpose(V)
-     !> where SIGMA is an M-by-N matrix which is zero except for its
-     !> min(m,n) diagonal elements, U is an M-by-M orthogonal matrix, and
-     !> V is an N-by-N orthogonal matrix.  The diagonal elements of SIGMA
-     !> are the singular values of A; they are real and non-negative, and
-     !> are returned in descending order.  The first min(m,n) columns of
-     !> U and V are the left and right singular vectors of A.
-     !> Note that the routine returns VT = V**T, not V.
-     !> The divide and conquer algorithm makes very mild assumptions about
-     !> floating point arithmetic. It will work on machines with a guard
-     !> digit in add/subtract, or on those binary machines without guard
-     !> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-     !> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      subroutine stdlib_dgesdd( jobz, m, n, a, lda, s, u, ldu, vt, ldvt,work, lwork, iwork, info )
+     !! DGESDD computes the singular value decomposition (SVD) of a real
+     !! M-by-N matrix A, optionally computing the left and right singular
+     !! vectors.  If singular vectors are desired, it uses a
+     !! divide-and-conquer algorithm.
+     !! The SVD is written
+     !! A = U * SIGMA * transpose(V)
+     !! where SIGMA is an M-by-N matrix which is zero except for its
+     !! min(m,n) diagonal elements, U is an M-by-M orthogonal matrix, and
+     !! V is an N-by-N orthogonal matrix.  The diagonal elements of SIGMA
+     !! are the singular values of A; they are real and non-negative, and
+     !! are returned in descending order.  The first min(m,n) columns of
+     !! U and V are the left and right singular vectors of A.
+     !! Note that the routine returns VT = V**T, not V.
+     !! The divide and conquer algorithm makes very mild assumptions about
+     !! floating point arithmetic. It will work on machines with a guard
+     !! digit in add/subtract, or on those binary machines without guard
+     !! digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
+     !! Cray-2. It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -76009,19 +76005,19 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgesdd
 
-     !> DGESVD: computes the singular value decomposition (SVD) of a real
-     !> M-by-N matrix A, optionally computing the left and/or right singular
-     !> vectors. The SVD is written
-     !> A = U * SIGMA * transpose(V)
-     !> where SIGMA is an M-by-N matrix which is zero except for its
-     !> min(m,n) diagonal elements, U is an M-by-M orthogonal matrix, and
-     !> V is an N-by-N orthogonal matrix.  The diagonal elements of SIGMA
-     !> are the singular values of A; they are real and non-negative, and
-     !> are returned in descending order.  The first min(m,n) columns of
-     !> U and V are the left and right singular vectors of A.
-     !> Note that the routine returns V**T, not V.
 
      subroutine stdlib_dgesvd( jobu, jobvt, m, n, a, lda, s, u, ldu,vt, ldvt, work, lwork, info )
+     !! DGESVD computes the singular value decomposition (SVD) of a real
+     !! M-by-N matrix A, optionally computing the left and/or right singular
+     !! vectors. The SVD is written
+     !! A = U * SIGMA * transpose(V)
+     !! where SIGMA is an M-by-N matrix which is zero except for its
+     !! min(m,n) diagonal elements, U is an M-by-M orthogonal matrix, and
+     !! V is an N-by-N orthogonal matrix.  The diagonal elements of SIGMA
+     !! are the singular values of A; they are real and non-negative, and
+     !! are returned in descending order.  The first min(m,n) columns of
+     !! U and V are the left and right singular vectors of A.
+     !! Note that the routine returns V**T, not V.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -78268,17 +78264,17 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgesvd
 
-     !> DGESVDQ: computes the singular value decomposition (SVD) of a real
-     !> M-by-N matrix A, where M >= N. The SVD of A is written as
-     !> [++]   [xx]   [x0]   [xx]
-     !> A = U * SIGMA * V^*,  [++] = [xx] * [ox] * [xx]
-     !> [++]   [xx]
-     !> where SIGMA is an N-by-N diagonal matrix, U is an M-by-N orthonormal
-     !> matrix, and V is an N-by-N orthogonal matrix. The diagonal elements
-     !> of SIGMA are the singular values of A. The columns of U and V are the
-     !> left and the right singular vectors of A, respectively.
 
      subroutine stdlib_dgesvdq( joba, jobp, jobr, jobu, jobv, m, n, a, lda,s, u, ldu, v, ldv, &
+     !! DGESVDQ computes the singular value decomposition (SVD) of a real
+     !! M-by-N matrix A, where M >= N. The SVD of A is written as
+     !! [++]   [xx]   [x0]   [xx]
+     !! A = U * SIGMA * V^*,  [++] = [xx] * [ox] * [xx]
+     !! [++]   [xx]
+     !! where SIGMA is an N-by-N diagonal matrix, U is an M-by-N orthonormal
+     !! matrix, and V is an N-by-N orthogonal matrix. The diagonal elements
+     !! of SIGMA are the singular values of A. The columns of U and V are the
+     !! left and the right singular vectors of A, respectively.
                numrank, iwork, liwork,work, lwork, rwork, lrwork, info )
            ! Scalar Arguments 
            character, intent(in) :: joba, jobp, jobr, jobu, jobv
@@ -79133,34 +79129,34 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgesvdq
 
-     !> DGGES3: computes for a pair of N-by-N real nonsymmetric matrices (A,B),
-     !> the generalized eigenvalues, the generalized real Schur form (S,T),
-     !> optionally, the left and/or right matrices of Schur vectors (VSL and
-     !> VSR). This gives the generalized Schur factorization
-     !> (A,B) = ( (VSL)*S*(VSR)**T, (VSL)*T*(VSR)**T )
-     !> Optionally, it also orders the eigenvalues so that a selected cluster
-     !> of eigenvalues appears in the leading diagonal blocks of the upper
-     !> quasi-triangular matrix S and the upper triangular matrix T.The
-     !> leading columns of VSL and VSR then form an orthonormal basis for the
-     !> corresponding left and right eigenspaces (deflating subspaces).
-     !> (If only the generalized eigenvalues are needed, use the driver
-     !> DGGEV instead, which is faster.)
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
-     !> or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
-     !> usually represented as the pair (alpha,beta), as there is a
-     !> reasonable interpretation for beta=0 or both being zero.
-     !> A pair of matrices (S,T) is in generalized real Schur form if T is
-     !> upper triangular with non-negative diagonal and S is block upper
-     !> triangular with 1-by-1 and 2-by-2 blocks.  1-by-1 blocks correspond
-     !> to real generalized eigenvalues, while 2-by-2 blocks of S will be
-     !> "standardized" by making the corresponding elements of T have the
-     !> form:
-     !> [  a  0  ]
-     !> [  0  b  ]
-     !> and the pair of corresponding 2-by-2 blocks in S and T will have a
-     !> complex conjugate pair of generalized eigenvalues.
 
      subroutine stdlib_dgges3( jobvsl, jobvsr, sort, selctg, n, a, lda, b,ldb, sdim, alphar, &
+     !! DGGES3 computes for a pair of N-by-N real nonsymmetric matrices (A,B),
+     !! the generalized eigenvalues, the generalized real Schur form (S,T),
+     !! optionally, the left and/or right matrices of Schur vectors (VSL and
+     !! VSR). This gives the generalized Schur factorization
+     !! (A,B) = ( (VSL)*S*(VSR)**T, (VSL)*T*(VSR)**T )
+     !! Optionally, it also orders the eigenvalues so that a selected cluster
+     !! of eigenvalues appears in the leading diagonal blocks of the upper
+     !! quasi-triangular matrix S and the upper triangular matrix T.The
+     !! leading columns of VSL and VSR then form an orthonormal basis for the
+     !! corresponding left and right eigenspaces (deflating subspaces).
+     !! (If only the generalized eigenvalues are needed, use the driver
+     !! DGGEV instead, which is faster.)
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
+     !! or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
+     !! usually represented as the pair (alpha,beta), as there is a
+     !! reasonable interpretation for beta=0 or both being zero.
+     !! A pair of matrices (S,T) is in generalized real Schur form if T is
+     !! upper triangular with non-negative diagonal and S is block upper
+     !! triangular with 1-by-1 and 2-by-2 blocks.  1-by-1 blocks correspond
+     !! to real generalized eigenvalues, while 2-by-2 blocks of S will be
+     !! "standardized" by making the corresponding elements of T have the
+     !! form:
+     !! [  a  0  ]
+     !! [  0  b  ]
+     !! and the pair of corresponding 2-by-2 blocks in S and T will have a
+     !! complex conjugate pair of generalized eigenvalues.
                alphai, beta, vsl, ldvsl,vsr, ldvsr, work, lwork, bwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -79447,23 +79443,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dgges3
 
-     !> DGGEV3: computes for a pair of N-by-N real nonsymmetric matrices (A,B)
-     !> the generalized eigenvalues, and optionally, the left and/or right
-     !> generalized eigenvectors.
-     !> A generalized eigenvalue for a pair of matrices (A,B) is a scalar
-     !> lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
-     !> singular. It is usually represented as the pair (alpha,beta), as
-     !> there is a reasonable interpretation for beta=0, and even for both
-     !> being zero.
-     !> The right eigenvector v(j) corresponding to the eigenvalue lambda(j)
-     !> of (A,B) satisfies
-     !> A * v(j) = lambda(j) * B * v(j).
-     !> The left eigenvector u(j) corresponding to the eigenvalue lambda(j)
-     !> of (A,B) satisfies
-     !> u(j)**H * A  = lambda(j) * u(j)**H * B .
-     !> where u(j)**H is the conjugate-transpose of u(j).
 
      subroutine stdlib_dggev3( jobvl, jobvr, n, a, lda, b, ldb, alphar,alphai, beta, vl, ldvl, vr,&
+     !! DGGEV3 computes for a pair of N-by-N real nonsymmetric matrices (A,B)
+     !! the generalized eigenvalues, and optionally, the left and/or right
+     !! generalized eigenvectors.
+     !! A generalized eigenvalue for a pair of matrices (A,B) is a scalar
+     !! lambda or a ratio alpha/beta = lambda, such that A - lambda*B is
+     !! singular. It is usually represented as the pair (alpha,beta), as
+     !! there is a reasonable interpretation for beta=0, and even for both
+     !! being zero.
+     !! The right eigenvector v(j) corresponding to the eigenvalue lambda(j)
+     !! of (A,B) satisfies
+     !! A * v(j) = lambda(j) * B * v(j).
+     !! The left eigenvector u(j) corresponding to the eigenvalue lambda(j)
+     !! of (A,B) satisfies
+     !! u(j)**H * A  = lambda(j) * u(j)**H * B .
+     !! where u(j)**H is the conjugate-transpose of u(j).
                 ldvr, work, lwork,info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -79747,16 +79743,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dggev3
 
-     !> DHSEQR: computes the eigenvalues of a Hessenberg matrix H
-     !> and, optionally, the matrices T and Z from the Schur decomposition
-     !> H = Z T Z**T, where T is an upper quasi-triangular matrix (the
-     !> Schur form), and Z is the orthogonal matrix of Schur vectors.
-     !> Optionally Z may be postmultiplied into an input orthogonal
-     !> matrix Q so that this routine can give the Schur factorization
-     !> of a matrix A which has been reduced to the Hessenberg form H
-     !> by the orthogonal matrix Q:  A = Q*H*Q**T = (QZ)*T*(QZ)**T.
 
      subroutine stdlib_dhseqr( job, compz, n, ilo, ihi, h, ldh, wr, wi, z,ldz, work, lwork, info )
+     !! DHSEQR computes the eigenvalues of a Hessenberg matrix H
+     !! and, optionally, the matrices T and Z from the Schur decomposition
+     !! H = Z T Z**T, where T is an upper quasi-triangular matrix (the
+     !! Schur form), and Z is the orthogonal matrix of Schur vectors.
+     !! Optionally Z may be postmultiplied into an input orthogonal
+     !! matrix Q so that this routine can give the Schur factorization
+     !! of a matrix A which has been reduced to the Hessenberg form H
+     !! by the orthogonal matrix Q:  A = Q*H*Q**T = (QZ)*T*(QZ)**T.
                
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -79894,17 +79890,17 @@ module stdlib_linalg_lapack_d
            end if
      end subroutine stdlib_dhseqr
 
-     !> DLALSA: is an itermediate step in solving the least squares problem
-     !> by computing the SVD of the coefficient matrix in compact form (The
-     !> singular vectors are computed as products of simple orthorgonal
-     !> matrices.).
-     !> If ICOMPQ = 0, DLALSA applies the inverse of the left singular vector
-     !> matrix of an upper bidiagonal matrix to the right hand side; and if
-     !> ICOMPQ = 1, DLALSA applies the right singular vector matrix to the
-     !> right hand side. The singular vector matrices were generated in
-     !> compact form by DLALSA.
 
      pure subroutine stdlib_dlalsa( icompq, smlsiz, n, nrhs, b, ldb, bx, ldbx, u,ldu, vt, k, difl,&
+     !! DLALSA is an itermediate step in solving the least squares problem
+     !! by computing the SVD of the coefficient matrix in compact form (The
+     !! singular vectors are computed as products of simple orthorgonal
+     !! matrices.).
+     !! If ICOMPQ = 0, DLALSA applies the inverse of the left singular vector
+     !! matrix of an upper bidiagonal matrix to the right hand side; and if
+     !! ICOMPQ = 1, DLALSA applies the right singular vector matrix to the
+     !! right hand side. The singular vector matrices were generated in
+     !! compact form by DLALSA.
                 difr, z, poles, givptr,givcol, ldgcol, perm, givnum, c, s, work,iwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -80078,22 +80074,22 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlalsa
 
-     !> DLALSD: uses the singular value decomposition of A to solve the least
-     !> squares problem of finding X to minimize the Euclidean norm of each
-     !> column of A*X-B, where A is N-by-N upper bidiagonal, and X and B
-     !> are N-by-NRHS. The solution X overwrites B.
-     !> The singular values of A smaller than RCOND times the largest
-     !> singular value are treated as zero in solving the least squares
-     !> problem; in this case a minimum norm solution is returned.
-     !> The actual singular values are returned in D in ascending order.
-     !> This code makes very mild assumptions about floating point
-     !> arithmetic. It will work on machines with a guard digit in
-     !> add/subtract, or on those binary machines without guard digits
-     !> which subtract like the Cray XMP, Cray YMP, Cray C 90, or Cray 2.
-     !> It could conceivably fail on hexadecimal or decimal machines
-     !> without guard digits, but we know of none.
 
      pure subroutine stdlib_dlalsd( uplo, smlsiz, n, nrhs, d, e, b, ldb, rcond,rank, work, iwork, &
+     !! DLALSD uses the singular value decomposition of A to solve the least
+     !! squares problem of finding X to minimize the Euclidean norm of each
+     !! column of A*X-B, where A is N-by-N upper bidiagonal, and X and B
+     !! are N-by-NRHS. The solution X overwrites B.
+     !! The singular values of A smaller than RCOND times the largest
+     !! singular value are treated as zero in solving the least squares
+     !! problem; in this case a minimum norm solution is returned.
+     !! The actual singular values are returned in D in ascending order.
+     !! This code makes very mild assumptions about floating point
+     !! arithmetic. It will work on machines with a guard digit in
+     !! add/subtract, or on those binary machines without guard digits
+     !! which subtract like the Cray XMP, Cray YMP, Cray C 90, or Cray 2.
+     !! It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.
                info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -80351,16 +80347,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlalsd
 
-     !> DLAQR0: computes the eigenvalues of a Hessenberg matrix H
-     !> and, optionally, the matrices T and Z from the Schur decomposition
-     !> H = Z T Z**T, where T is an upper quasi-triangular matrix (the
-     !> Schur form), and Z is the orthogonal matrix of Schur vectors.
-     !> Optionally Z may be postmultiplied into an input orthogonal
-     !> matrix Q so that this routine can give the Schur factorization
-     !> of a matrix A which has been reduced to the Hessenberg form H
-     !> by the orthogonal matrix Q:  A = Q*H*Q**T = (QZ)*T*(QZ)**T.
 
      subroutine stdlib_dlaqr0( wantt, wantz, n, ilo, ihi, h, ldh, wr, wi,iloz, ihiz, z, ldz, work,&
+     !! DLAQR0 computes the eigenvalues of a Hessenberg matrix H
+     !! and, optionally, the matrices T and Z from the Schur decomposition
+     !! H = Z T Z**T, where T is an upper quasi-triangular matrix (the
+     !! Schur form), and Z is the orthogonal matrix of Schur vectors.
+     !! Optionally Z may be postmultiplied into an input orthogonal
+     !! matrix Q so that this routine can give the Schur factorization
+     !! of a matrix A which has been reduced to the Hessenberg form H
+     !! by the orthogonal matrix Q:  A = Q*H*Q**T = (QZ)*T*(QZ)**T.
                 lwork, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -80721,17 +80717,17 @@ module stdlib_linalg_lapack_d
            work( 1 ) = real( lwkopt,KIND=dp)
      end subroutine stdlib_dlaqr0
 
-     !> Aggressive early deflation:
-     !> DLAQR3: accepts as input an upper Hessenberg matrix
-     !> H and performs an orthogonal similarity transformation
-     !> designed to detect and deflate fully converged eigenvalues from
-     !> a trailing principal submatrix.  On output H has been over-
-     !> written by a new Hessenberg matrix that is a perturbation of
-     !> an orthogonal similarity transformation of H.  It is to be
-     !> hoped that the final version of H has many zero subdiagonal
-     !> entries.
 
      subroutine stdlib_dlaqr3( wantt, wantz, n, ktop, kbot, nw, h, ldh, iloz,ihiz, z, ldz, ns, nd,&
+     !! Aggressive early deflation:
+     !! DLAQR3 accepts as input an upper Hessenberg matrix
+     !! H and performs an orthogonal similarity transformation
+     !! designed to detect and deflate fully converged eigenvalues from
+     !! a trailing principal submatrix.  On output H has been over-
+     !! written by a new Hessenberg matrix that is a perturbation of
+     !! an orthogonal similarity transformation of H.  It is to be
+     !! hoped that the final version of H has many zero subdiagonal
+     !! entries.
                 sr, si, v, ldv, nh, t,ldt, nv, wv, ldwv, work, lwork )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -81032,22 +81028,22 @@ module stdlib_linalg_lapack_d
            work( 1 ) = real( lwkopt,KIND=dp)
      end subroutine stdlib_dlaqr3
 
-     !> DLAQR4: implements one level of recursion for DLAQR0.
-     !> It is a complete implementation of the small bulge multi-shift
-     !> QR algorithm.  It may be called by DLAQR0 and, for large enough
-     !> deflation window size, it may be called by DLAQR3.  This
-     !> subroutine is identical to DLAQR0 except that it calls DLAQR2
-     !> instead of DLAQR3.
-     !> DLAQR4 computes the eigenvalues of a Hessenberg matrix H
-     !> and, optionally, the matrices T and Z from the Schur decomposition
-     !> H = Z T Z**T, where T is an upper quasi-triangular matrix (the
-     !> Schur form), and Z is the orthogonal matrix of Schur vectors.
-     !> Optionally Z may be postmultiplied into an input orthogonal
-     !> matrix Q so that this routine can give the Schur factorization
-     !> of a matrix A which has been reduced to the Hessenberg form H
-     !> by the orthogonal matrix Q:  A = Q*H*Q**T = (QZ)*T*(QZ)**T.
 
      subroutine stdlib_dlaqr4( wantt, wantz, n, ilo, ihi, h, ldh, wr, wi,iloz, ihiz, z, ldz, work,&
+     !! DLAQR4 implements one level of recursion for DLAQR0.
+     !! It is a complete implementation of the small bulge multi-shift
+     !! QR algorithm.  It may be called by DLAQR0 and, for large enough
+     !! deflation window size, it may be called by DLAQR3.  This
+     !! subroutine is identical to DLAQR0 except that it calls DLAQR2
+     !! instead of DLAQR3.
+     !! DLAQR4 computes the eigenvalues of a Hessenberg matrix H
+     !! and, optionally, the matrices T and Z from the Schur decomposition
+     !! H = Z T Z**T, where T is an upper quasi-triangular matrix (the
+     !! Schur form), and Z is the orthogonal matrix of Schur vectors.
+     !! Optionally Z may be postmultiplied into an input orthogonal
+     !! matrix Q so that this routine can give the Schur factorization
+     !! of a matrix A which has been reduced to the Hessenberg form H
+     !! by the orthogonal matrix Q:  A = Q*H*Q**T = (QZ)*T*(QZ)**T.
                 lwork, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -81403,56 +81399,56 @@ module stdlib_linalg_lapack_d
            work( 1 ) = real( lwkopt,KIND=dp)
      end subroutine stdlib_dlaqr4
 
-     !> DLAQZ0: computes the eigenvalues of a real matrix pair (H,T),
-     !> where H is an upper Hessenberg matrix and T is upper triangular,
-     !> using the double-shift QZ method.
-     !> Matrix pairs of this type are produced by the reduction to
-     !> generalized upper Hessenberg form of a real matrix pair (A,B):
-     !> A = Q1*H*Z1**T,  B = Q1*T*Z1**T,
-     !> as computed by DGGHRD.
-     !> If JOB='S', then the Hessenberg-triangular pair (H,T) is
-     !> also reduced to generalized Schur form,
-     !> H = Q*S*Z**T,  T = Q*P*Z**T,
-     !> where Q and Z are orthogonal matrices, P is an upper triangular
-     !> matrix, and S is a quasi-triangular matrix with 1-by-1 and 2-by-2
-     !> diagonal blocks.
-     !> The 1-by-1 blocks correspond to real eigenvalues of the matrix pair
-     !> (H,T) and the 2-by-2 blocks correspond to complex conjugate pairs of
-     !> eigenvalues.
-     !> Additionally, the 2-by-2 upper triangular diagonal blocks of P
-     !> corresponding to 2-by-2 blocks of S are reduced to positive diagonal
-     !> form, i.e., if S(j+1,j) is non-zero, then P(j+1,j) = P(j,j+1) = 0,
-     !> P(j,j) > 0, and P(j+1,j+1) > 0.
-     !> Optionally, the orthogonal matrix Q from the generalized Schur
-     !> factorization may be postmultiplied into an input matrix Q1, and the
-     !> orthogonal matrix Z may be postmultiplied into an input matrix Z1.
-     !> If Q1 and Z1 are the orthogonal matrices from DGGHRD that reduced
-     !> the matrix pair (A,B) to generalized upper Hessenberg form, then the
-     !> output matrices Q1*Q and Z1*Z are the orthogonal factors from the
-     !> generalized Schur factorization of (A,B):
-     !> A = (Q1*Q)*S*(Z1*Z)**T,  B = (Q1*Q)*P*(Z1*Z)**T.
-     !> To avoid overflow, eigenvalues of the matrix pair (H,T) (equivalently,
-     !> of (A,B)) are computed as a pair of values (alpha,beta), where alpha is
-     !> complex and beta real.
-     !> If beta is nonzero, lambda = alpha / beta is an eigenvalue of the
-     !> generalized nonsymmetric eigenvalue problem (GNEP)
-     !> A*x = lambda*B*x
-     !> and if alpha is nonzero, mu = beta / alpha is an eigenvalue of the
-     !> alternate form of the GNEP
-     !> mu*A*y = B*y.
-     !> Real eigenvalues can be read directly from the generalized Schur
-     !> form:
-     !> alpha = S(i,i), beta = P(i,i).
-     !> Ref: C.B. Moler
-     !> Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
-     !> pp. 241--256.
-     !> Ref: B. Kagstrom, D. Kressner, "Multishift Variants of the QZ
-     !> Algorithm with Aggressive Early Deflation", SIAM J. Numer.
-     !> Anal., 29(2006), pp. 199--227.
-     !> Ref: T. Steel, D. Camps, K. Meerbergen, R. Vandebril "A multishift,
-     !> multipole rational QZ method with agressive early deflation"
 
      recursive subroutine stdlib_dlaqz0( wants, wantq, wantz, n, ilo, ihi, a,lda, b, ldb, alphar, &
+     !! DLAQZ0 computes the eigenvalues of a real matrix pair (H,T),
+     !! where H is an upper Hessenberg matrix and T is upper triangular,
+     !! using the double-shift QZ method.
+     !! Matrix pairs of this type are produced by the reduction to
+     !! generalized upper Hessenberg form of a real matrix pair (A,B):
+     !! A = Q1*H*Z1**T,  B = Q1*T*Z1**T,
+     !! as computed by DGGHRD.
+     !! If JOB='S', then the Hessenberg-triangular pair (H,T) is
+     !! also reduced to generalized Schur form,
+     !! H = Q*S*Z**T,  T = Q*P*Z**T,
+     !! where Q and Z are orthogonal matrices, P is an upper triangular
+     !! matrix, and S is a quasi-triangular matrix with 1-by-1 and 2-by-2
+     !! diagonal blocks.
+     !! The 1-by-1 blocks correspond to real eigenvalues of the matrix pair
+     !! (H,T) and the 2-by-2 blocks correspond to complex conjugate pairs of
+     !! eigenvalues.
+     !! Additionally, the 2-by-2 upper triangular diagonal blocks of P
+     !! corresponding to 2-by-2 blocks of S are reduced to positive diagonal
+     !! form, i.e., if S(j+1,j) is non-zero, then P(j+1,j) = P(j,j+1) = 0,
+     !! P(j,j) > 0, and P(j+1,j+1) > 0.
+     !! Optionally, the orthogonal matrix Q from the generalized Schur
+     !! factorization may be postmultiplied into an input matrix Q1, and the
+     !! orthogonal matrix Z may be postmultiplied into an input matrix Z1.
+     !! If Q1 and Z1 are the orthogonal matrices from DGGHRD that reduced
+     !! the matrix pair (A,B) to generalized upper Hessenberg form, then the
+     !! output matrices Q1*Q and Z1*Z are the orthogonal factors from the
+     !! generalized Schur factorization of (A,B):
+     !! A = (Q1*Q)*S*(Z1*Z)**T,  B = (Q1*Q)*P*(Z1*Z)**T.
+     !! To avoid overflow, eigenvalues of the matrix pair (H,T) (equivalently,
+     !! of (A,B)) are computed as a pair of values (alpha,beta), where alpha is
+     !! complex and beta real.
+     !! If beta is nonzero, lambda = alpha / beta is an eigenvalue of the
+     !! generalized nonsymmetric eigenvalue problem (GNEP)
+     !! A*x = lambda*B*x
+     !! and if alpha is nonzero, mu = beta / alpha is an eigenvalue of the
+     !! alternate form of the GNEP
+     !! mu*A*y = B*y.
+     !! Real eigenvalues can be read directly from the generalized Schur
+     !! form:
+     !! alpha = S(i,i), beta = P(i,i).
+     !! Ref: C.B. Moler
+     !! Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
+     !! pp. 241--256.
+     !! Ref: B. Kagstrom, D. Kressner, "Multishift Variants of the QZ
+     !! Algorithm with Aggressive Early Deflation", SIAM J. Numer.
+     !! Anal., 29(2006), pp. 199--227.
+     !! Ref: T. Steel, D. Camps, K. Meerbergen, R. Vandebril "A multishift,
+     !! multipole rational QZ method with agressive early deflation"
                alphai, beta,q, ldq, z, ldz, work, lwork, rec,info )
            ! arguments
            character, intent( in ) :: wants, wantq, wantz
@@ -81795,9 +81791,9 @@ module stdlib_linalg_lapack_d
            info = norm_info
      end subroutine stdlib_dlaqz0
 
-     !> DLAQZ3: performs AED
 
      recursive subroutine stdlib_dlaqz3( ilschur, ilq, ilz, n, ilo, ihi, nw,a, lda, b, ldb, q, &
+     !! DLAQZ3 performs AED
                ldq, z, ldz, ns,nd, alphar, alphai, beta, qc, ldqc,zc, ldzc, work, lwork, rec, info )
            ! arguments
            logical(lk), intent( in ) :: ilschur, ilq, ilz
@@ -82067,21 +82063,21 @@ module stdlib_linalg_lapack_d
            end if
      end subroutine stdlib_dlaqz3
 
-     !> To find the desired eigenvalues of a given real symmetric
-     !> tridiagonal matrix T, DLARRE: sets any "small" off-diagonal
-     !> elements to zero, and for each unreduced block T_i, it finds
-     !> (a) a suitable shift at one end of the block's spectrum,
-     !> (b) the base representation, T_i - sigma_i I = L_i D_i L_i^T, and
-     !> (c) eigenvalues of each L_i D_i L_i^T.
-     !> The representations and eigenvalues found are then used by
-     !> DSTEMR to compute the eigenvectors of T.
-     !> The accuracy varies depending on whether bisection is used to
-     !> find a few eigenvalues or the dqds algorithm (subroutine DLASQ2) to
-     !> conpute all and then discard any unwanted one.
-     !> As an added benefit, DLARRE also outputs the n
-     !> Gerschgorin intervals for the matrices L_i D_i L_i^T.
 
      pure subroutine stdlib_dlarre( range, n, vl, vu, il, iu, d, e, e2,rtol1, rtol2, spltol, &
+     !! To find the desired eigenvalues of a given real symmetric
+     !! tridiagonal matrix T, DLARRE: sets any "small" off-diagonal
+     !! elements to zero, and for each unreduced block T_i, it finds
+     !! (a) a suitable shift at one end of the block's spectrum,
+     !! (b) the base representation, T_i - sigma_i I = L_i D_i L_i^T, and
+     !! (c) eigenvalues of each L_i D_i L_i^T.
+     !! The representations and eigenvalues found are then used by
+     !! DSTEMR to compute the eigenvectors of T.
+     !! The accuracy varies depending on whether bisection is used to
+     !! find a few eigenvalues or the dqds algorithm (subroutine DLASQ2) to
+     !! conpute all and then discard any unwanted one.
+     !! As an added benefit, DLARRE also outputs the n
+     !! Gerschgorin intervals for the matrices L_i D_i L_i^T.
                nsplit, isplit, m,w, werr, wgap, iblock, indexw, gers, pivmin,work, iwork, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -82592,15 +82588,15 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlarre
 
-     !> Using a divide and conquer approach, DLASD0: computes the singular
-     !> value decomposition (SVD) of a real upper bidiagonal N-by-M
-     !> matrix B with diagonal D and offdiagonal E, where M = N + SQRE.
-     !> The algorithm computes orthogonal matrices U and VT such that
-     !> B = U * S * VT. The singular values S are overwritten on D.
-     !> A related subroutine, DLASDA, computes only the singular values,
-     !> and optionally, the singular vectors in compact form.
 
      pure subroutine stdlib_dlasd0( n, sqre, d, e, u, ldu, vt, ldvt, smlsiz, iwork,work, info )
+     !! Using a divide and conquer approach, DLASD0: computes the singular
+     !! value decomposition (SVD) of a real upper bidiagonal N-by-M
+     !! matrix B with diagonal D and offdiagonal E, where M = N + SQRE.
+     !! The algorithm computes orthogonal matrices U and VT such that
+     !! B = U * S * VT. The singular values S are overwritten on D.
+     !! A related subroutine, DLASDA, computes only the singular values,
+     !! and optionally, the singular vectors in compact form.
                
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -82731,16 +82727,16 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasd0
 
-     !> Using a divide and conquer approach, DLASDA: computes the singular
-     !> value decomposition (SVD) of a real upper bidiagonal N-by-M matrix
-     !> B with diagonal D and offdiagonal E, where M = N + SQRE. The
-     !> algorithm computes the singular values in the SVD B = U * S * VT.
-     !> The orthogonal matrices U and VT are optionally computed in
-     !> compact form.
-     !> A related subroutine, DLASD0, computes the singular values and
-     !> the singular vectors in explicit form.
 
      pure subroutine stdlib_dlasda( icompq, smlsiz, n, sqre, d, e, u, ldu, vt, k,difl, difr, z, &
+     !! Using a divide and conquer approach, DLASDA: computes the singular
+     !! value decomposition (SVD) of a real upper bidiagonal N-by-M matrix
+     !! B with diagonal D and offdiagonal E, where M = N + SQRE. The
+     !! algorithm computes the singular values in the SVD B = U * S * VT.
+     !! The orthogonal matrices U and VT are optionally computed in
+     !! compact form.
+     !! A related subroutine, DLASD0, computes the singular values and
+     !! the singular vectors in explicit form.
                poles, givptr, givcol, ldgcol,perm, givnum, c, s, work, iwork, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -82933,20 +82929,20 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasda
 
-     !> DLASDQ: computes the singular value decomposition (SVD) of a real
-     !> (upper or lower) bidiagonal matrix with diagonal D and offdiagonal
-     !> E, accumulating the transformations if desired. Letting B denote
-     !> the input bidiagonal matrix, the algorithm computes orthogonal
-     !> matrices Q and P such that B = Q * S * P**T (P**T denotes the transpose
-     !> of P). The singular values S are overwritten on D.
-     !> The input matrix U  is changed to U  * Q  if desired.
-     !> The input matrix VT is changed to P**T * VT if desired.
-     !> The input matrix C  is changed to Q**T * C  if desired.
-     !> See "Computing  Small Singular Values of Bidiagonal Matrices With
-     !> Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
-     !> LAPACK Working Note #3, for a detailed description of the algorithm.
 
      pure subroutine stdlib_dlasdq( uplo, sqre, n, ncvt, nru, ncc, d, e, vt, ldvt,u, ldu, c, ldc, &
+     !! DLASDQ computes the singular value decomposition (SVD) of a real
+     !! (upper or lower) bidiagonal matrix with diagonal D and offdiagonal
+     !! E, accumulating the transformations if desired. Letting B denote
+     !! the input bidiagonal matrix, the algorithm computes orthogonal
+     !! matrices Q and P such that B = Q * S * P**T (P**T denotes the transpose
+     !! of P). The singular values S are overwritten on D.
+     !! The input matrix U  is changed to U  * Q  if desired.
+     !! The input matrix VT is changed to P**T * VT if desired.
+     !! The input matrix C  is changed to Q**T * C  if desired.
+     !! See "Computing  Small Singular Values of Bidiagonal Matrices With
+     !! Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
+     !! LAPACK Working Note #3, for a detailed description of the algorithm.
                work, info )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -83098,18 +83094,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasdq
 
-     !> DLASQ1: computes the singular values of a real N-by-N bidiagonal
-     !> matrix with diagonal D and off-diagonal E. The singular values
-     !> are computed to high relative accuracy, in the absence of
-     !> denormalization, underflow and overflow. The algorithm was first
-     !> presented in
-     !> "Accurate singular values and differential qd algorithms" by K. V.
-     !> Fernando and B. N. Parlett, Numer. Math., Vol-67, No. 2, pp. 191-230,
-     !> 1994,
-     !> and the present implementation is described in "An implementation of
-     !> the dqds Algorithm (Positive Case)", LAPACK Working Note.
 
      pure subroutine stdlib_dlasq1( n, d, e, work, info )
+     !! DLASQ1 computes the singular values of a real N-by-N bidiagonal
+     !! matrix with diagonal D and off-diagonal E. The singular values
+     !! are computed to high relative accuracy, in the absence of
+     !! denormalization, underflow and overflow. The algorithm was first
+     !! presented in
+     !! "Accurate singular values and differential qd algorithms" by K. V.
+     !! Fernando and B. N. Parlett, Numer. Math., Vol-67, No. 2, pp. 191-230,
+     !! 1994,
+     !! and the present implementation is described in "An implementation of
+     !! the dqds Algorithm (Positive Case)", LAPACK Working Note.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -83190,21 +83186,21 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasq1
 
-     !> DLASQ2: computes all the eigenvalues of the symmetric positive
-     !> definite tridiagonal matrix associated with the qd array Z to high
-     !> relative accuracy are computed to high relative accuracy, in the
-     !> absence of denormalization, underflow and overflow.
-     !> To see the relation of Z to the tridiagonal matrix, let L be a
-     !> unit lower bidiagonal matrix with subdiagonals Z(2,4,6,,..) and
-     !> let U be an upper bidiagonal matrix with 1's above and diagonal
-     !> Z(1,3,5,,..). The tridiagonal is L*U or, if you prefer, the
-     !> symmetric tridiagonal to which it is similar.
-     !> Note : DLASQ2 defines a logical variable, IEEE, which is true
-     !> on machines which follow ieee-754 floating-point standard in their
-     !> handling of infinities and NaNs, and false otherwise. This variable
-     !> is passed to DLASQ3.
 
      pure subroutine stdlib_dlasq2( n, z, info )
+     !! DLASQ2 computes all the eigenvalues of the symmetric positive
+     !! definite tridiagonal matrix associated with the qd array Z to high
+     !! relative accuracy are computed to high relative accuracy, in the
+     !! absence of denormalization, underflow and overflow.
+     !! To see the relation of Z to the tridiagonal matrix, let L be a
+     !! unit lower bidiagonal matrix with subdiagonals Z(2,4,6,,..) and
+     !! let U be an upper bidiagonal matrix with 1's above and diagonal
+     !! Z(1,3,5,,..). The tridiagonal is L*U or, if you prefer, the
+     !! symmetric tridiagonal to which it is similar.
+     !! Note : DLASQ2 defines a logical variable, IEEE, which is true
+     !! on machines which follow ieee-754 floating-point standard in their
+     !! handling of infinities and NaNs, and false otherwise. This variable
+     !! is passed to DLASQ3.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -83578,18 +83574,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasq2
 
-     !> DLATRF_AA factorizes a panel of a real symmetric matrix A using
-     !> the Aasen's algorithm. The panel consists of a set of NB rows of A
-     !> when UPLO is U, or a set of NB columns when UPLO is L.
-     !> In order to factorize the panel, the Aasen's algorithm requires the
-     !> last row, or column, of the previous panel. The first row, or column,
-     !> of A is set to be the first row, or column, of an identity matrix,
-     !> which is used to factorize the first panel.
-     !> The resulting J-th row of U, or J-th column of L, is stored in the
-     !> (J-1)-th row, or column, of A (without the unit diagonals), while
-     !> the diagonal and subdiagonal of A are overwritten by those of T.
 
      pure subroutine stdlib_dlasyf_aa( uplo, j1, m, nb, a, lda, ipiv,h, ldh, work )
+     !! DLATRF_AA factorizes a panel of a real symmetric matrix A using
+     !! the Aasen's algorithm. The panel consists of a set of NB rows of A
+     !! when UPLO is U, or a set of NB columns when UPLO is L.
+     !! In order to factorize the panel, the Aasen's algorithm requires the
+     !! last row, or column, of the previous panel. The first row, or column,
+     !! of A is set to be the first row, or column, of an identity matrix,
+     !! which is used to factorize the first panel.
+     !! The resulting J-th row of U, or J-th column of L, is stored in the
+     !! (J-1)-th row, or column, of A (without the unit diagonals), while
+     !! the diagonal and subdiagonal of A are overwritten by those of T.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -83812,23 +83808,23 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dlasyf_aa
 
-     !> DPTEQR: computes all eigenvalues and, optionally, eigenvectors of a
-     !> symmetric positive definite tridiagonal matrix by first factoring the
-     !> matrix using DPTTRF, and then calling DBDSQR to compute the singular
-     !> values of the bidiagonal factor.
-     !> This routine computes the eigenvalues of the positive definite
-     !> tridiagonal matrix to high relative accuracy.  This means that if the
-     !> eigenvalues range over many orders of magnitude in size, then the
-     !> small eigenvalues and corresponding eigenvectors will be computed
-     !> more accurately than, for example, with the standard QR method.
-     !> The eigenvectors of a full or band symmetric positive definite matrix
-     !> can also be found if DSYTRD, DSPTRD, or DSBTRD has been used to
-     !> reduce this matrix to tridiagonal form. (The reduction to tridiagonal
-     !> form, however, may preclude the possibility of obtaining high
-     !> relative accuracy in the small eigenvalues of the original matrix, if
-     !> these eigenvalues range over many orders of magnitude.)
 
      pure subroutine stdlib_dpteqr( compz, n, d, e, z, ldz, work, info )
+     !! DPTEQR computes all eigenvalues and, optionally, eigenvectors of a
+     !! symmetric positive definite tridiagonal matrix by first factoring the
+     !! matrix using DPTTRF, and then calling DBDSQR to compute the singular
+     !! values of the bidiagonal factor.
+     !! This routine computes the eigenvalues of the positive definite
+     !! tridiagonal matrix to high relative accuracy.  This means that if the
+     !! eigenvalues range over many orders of magnitude in size, then the
+     !! small eigenvalues and corresponding eigenvectors will be computed
+     !! more accurately than, for example, with the standard QR method.
+     !! The eigenvectors of a full or band symmetric positive definite matrix
+     !! can also be found if DSYTRD, DSPTRD, or DSBTRD has been used to
+     !! reduce this matrix to tridiagonal form. (The reduction to tridiagonal
+     !! form, however, may preclude the possibility of obtaining high
+     !! relative accuracy in the small eigenvalues of the original matrix, if
+     !! these eigenvalues range over many orders of magnitude.)
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -83906,24 +83902,24 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dpteqr
 
-     !> DSTEGR: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a real symmetric tridiagonal matrix T. Any such unreduced matrix has
-     !> a well defined set of pairwise different real eigenvalues, the corresponding
-     !> real eigenvectors are pairwise orthogonal.
-     !> The spectrum may be computed either completely or partially by specifying
-     !> either an interval (VL,VU] or a range of indices IL:IU for the desired
-     !> eigenvalues.
-     !> DSTEGR is a compatibility wrapper around the improved DSTEMR routine.
-     !> See DSTEMR for further details.
-     !> One important change is that the ABSTOL parameter no longer provides any
-     !> benefit and hence is no longer used.
-     !> Note : DSTEGR and DSTEMR work only on machines which follow
-     !> IEEE-754 floating-point standard in their handling of infinities and
-     !> NaNs.  Normal execution may create these exceptiona values and hence
-     !> may abort due to a floating point exception in environments which
-     !> do not conform to the IEEE-754 standard.
 
      pure subroutine stdlib_dstegr( jobz, range, n, d, e, vl, vu, il, iu,abstol, m, w, z, ldz, &
+     !! DSTEGR computes selected eigenvalues and, optionally, eigenvectors
+     !! of a real symmetric tridiagonal matrix T. Any such unreduced matrix has
+     !! a well defined set of pairwise different real eigenvalues, the corresponding
+     !! real eigenvectors are pairwise orthogonal.
+     !! The spectrum may be computed either completely or partially by specifying
+     !! either an interval (VL,VU] or a range of indices IL:IU for the desired
+     !! eigenvalues.
+     !! DSTEGR is a compatibility wrapper around the improved DSTEMR routine.
+     !! See DSTEMR for further details.
+     !! One important change is that the ABSTOL parameter no longer provides any
+     !! benefit and hence is no longer used.
+     !! Note : DSTEGR and DSTEMR work only on machines which follow
+     !! IEEE-754 floating-point standard in their handling of infinities and
+     !! NaNs.  Normal execution may create these exceptiona values and hence
+     !! may abort due to a floating point exception in environments which
+     !! do not conform to the IEEE-754 standard.
                isuppz, work, lwork, iwork,liwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -83948,53 +83944,53 @@ module stdlib_linalg_lapack_d
                      tryrac, work, lwork,iwork, liwork, info )
      end subroutine stdlib_dstegr
 
-     !> DSTEMR: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a real symmetric tridiagonal matrix T. Any such unreduced matrix has
-     !> a well defined set of pairwise different real eigenvalues, the corresponding
-     !> real eigenvectors are pairwise orthogonal.
-     !> The spectrum may be computed either completely or partially by specifying
-     !> either an interval (VL,VU] or a range of indices IL:IU for the desired
-     !> eigenvalues.
-     !> Depending on the number of desired eigenvalues, these are computed either
-     !> by bisection or the dqds algorithm. Numerically orthogonal eigenvectors are
-     !> computed by the use of various suitable L D L^T factorizations near clusters
-     !> of close eigenvalues (referred to as RRRs, Relatively Robust
-     !> Representations). An informal sketch of the algorithm follows.
-     !> For each unreduced block (submatrix) of T,
-     !> (a) Compute T - sigma I  = L D L^T, so that L and D
-     !> define all the wanted eigenvalues to high relative accuracy.
-     !> This means that small relative changes in the entries of D and L
-     !> cause only small relative changes in the eigenvalues and
-     !> eigenvectors. The standard (unfactored) representation of the
-     !> tridiagonal matrix T does not have this property in general.
-     !> (b) Compute the eigenvalues to suitable accuracy.
-     !> If the eigenvectors are desired, the algorithm attains full
-     !> accuracy of the computed eigenvalues only right before
-     !> the corresponding vectors have to be computed, see steps c) and d).
-     !> (c) For each cluster of close eigenvalues, select a new
-     !> shift close to the cluster, find a new factorization, and refine
-     !> the shifted eigenvalues to suitable accuracy.
-     !> (d) For each eigenvalue with a large enough relative separation compute
-     !> the corresponding eigenvector by forming a rank revealing twisted
-     !> factorization. Go back to (c) for any clusters that remain.
-     !> For more details, see:
-     !> - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
-     !> to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
-     !> Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
-     !> - Inderjit Dhillon and Beresford Parlett: "Orthogonal Eigenvectors and
-     !> Relative Gaps," SIAM Journal on Matrix Analysis and Applications, Vol. 25,
-     !> 2004.  Also LAPACK Working Note 154.
-     !> - Inderjit Dhillon: "A new O(n^2) algorithm for the symmetric
-     !> tridiagonal eigenvalue/eigenvector problem",
-     !> Computer Science Division Technical Report No. UCB/CSD-97-971,
-     !> UC Berkeley, May 1997.
-     !> Further Details
-     !> 1.DSTEMR works only on machines which follow IEEE-754
-     !> floating-point standard in their handling of infinities and NaNs.
-     !> This permits the use of efficient inner loops avoiding a check for
-     !> zero divisors.
 
      pure subroutine stdlib_dstemr( jobz, range, n, d, e, vl, vu, il, iu,m, w, z, ldz, nzc, &
+     !! DSTEMR computes selected eigenvalues and, optionally, eigenvectors
+     !! of a real symmetric tridiagonal matrix T. Any such unreduced matrix has
+     !! a well defined set of pairwise different real eigenvalues, the corresponding
+     !! real eigenvectors are pairwise orthogonal.
+     !! The spectrum may be computed either completely or partially by specifying
+     !! either an interval (VL,VU] or a range of indices IL:IU for the desired
+     !! eigenvalues.
+     !! Depending on the number of desired eigenvalues, these are computed either
+     !! by bisection or the dqds algorithm. Numerically orthogonal eigenvectors are
+     !! computed by the use of various suitable L D L^T factorizations near clusters
+     !! of close eigenvalues (referred to as RRRs, Relatively Robust
+     !! Representations). An informal sketch of the algorithm follows.
+     !! For each unreduced block (submatrix) of T,
+     !! (a) Compute T - sigma I  = L D L^T, so that L and D
+     !! define all the wanted eigenvalues to high relative accuracy.
+     !! This means that small relative changes in the entries of D and L
+     !! cause only small relative changes in the eigenvalues and
+     !! eigenvectors. The standard (unfactored) representation of the
+     !! tridiagonal matrix T does not have this property in general.
+     !! (b) Compute the eigenvalues to suitable accuracy.
+     !! If the eigenvectors are desired, the algorithm attains full
+     !! accuracy of the computed eigenvalues only right before
+     !! the corresponding vectors have to be computed, see steps c) and d).
+     !! (c) For each cluster of close eigenvalues, select a new
+     !! shift close to the cluster, find a new factorization, and refine
+     !! the shifted eigenvalues to suitable accuracy.
+     !! (d) For each eigenvalue with a large enough relative separation compute
+     !! the corresponding eigenvector by forming a rank revealing twisted
+     !! factorization. Go back to (c) for any clusters that remain.
+     !! For more details, see:
+     !! - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
+     !! to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
+     !! Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
+     !! - Inderjit Dhillon and Beresford Parlett: "Orthogonal Eigenvectors and
+     !! Relative Gaps," SIAM Journal on Matrix Analysis and Applications, Vol. 25,
+     !! 2004.  Also LAPACK Working Note 154.
+     !! - Inderjit Dhillon: "A new O(n^2) algorithm for the symmetric
+     !! tridiagonal eigenvalue/eigenvector problem",
+     !! Computer Science Division Technical Report No. UCB/CSD-97-971,
+     !! UC Berkeley, May 1997.
+     !! Further Details
+     !! 1.DSTEMR works only on machines which follow IEEE-754
+     !! floating-point standard in their handling of infinities and NaNs.
+     !! This permits the use of efficient inner loops avoiding a check for
+     !! zero divisors.
                isuppz, tryrac, work, lwork,iwork, liwork, info )
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -84368,43 +84364,43 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dstemr
 
-     !> DSTEVR: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a real symmetric tridiagonal matrix T.  Eigenvalues and
-     !> eigenvectors can be selected by specifying either a range of values
-     !> or a range of indices for the desired eigenvalues.
-     !> Whenever possible, DSTEVR calls DSTEMR to compute the
-     !> eigenspectrum using Relatively Robust Representations.  DSTEMR
-     !> computes eigenvalues by the dqds algorithm, while orthogonal
-     !> eigenvectors are computed from various "good" L D L^T representations
-     !> (also known as Relatively Robust Representations). Gram-Schmidt
-     !> orthogonalization is avoided as far as possible. More specifically,
-     !> the various steps of the algorithm are as follows. For the i-th
-     !> unreduced block of T,
-     !> (a) Compute T - sigma_i = L_i D_i L_i^T, such that L_i D_i L_i^T
-     !> is a relatively robust representation,
-     !> (b) Compute the eigenvalues, lambda_j, of L_i D_i L_i^T to high
-     !> relative accuracy by the dqds algorithm,
-     !> (c) If there is a cluster of close eigenvalues, "choose" sigma_i
-     !> close to the cluster, and go to step (a),
-     !> (d) Given the approximate eigenvalue lambda_j of L_i D_i L_i^T,
-     !> compute the corresponding eigenvector by forming a
-     !> rank-revealing twisted factorization.
-     !> The desired accuracy of the output can be specified by the input
-     !> parameter ABSTOL.
-     !> For more details, see "A new O(n^2) algorithm for the symmetric
-     !> tridiagonal eigenvalue/eigenvector problem", by Inderjit Dhillon,
-     !> Computer Science Division Technical Report No. UCB//CSD-97-971,
-     !> UC Berkeley, May 1997.
-     !> Note 1 : DSTEVR calls DSTEMR when the full spectrum is requested
-     !> on machines which conform to the ieee-754 floating point standard.
-     !> DSTEVR calls DSTEBZ and DSTEIN on non-ieee machines and
-     !> when partial spectrum requests are made.
-     !> Normal execution of DSTEMR may create NaNs and infinities and
-     !> hence may abort due to a floating point exception in environments
-     !> which do not handle NaNs and infinities in the ieee standard default
-     !> manner.
 
      pure subroutine stdlib_dstevr( jobz, range, n, d, e, vl, vu, il, iu, abstol,m, w, z, ldz, &
+     !! DSTEVR computes selected eigenvalues and, optionally, eigenvectors
+     !! of a real symmetric tridiagonal matrix T.  Eigenvalues and
+     !! eigenvectors can be selected by specifying either a range of values
+     !! or a range of indices for the desired eigenvalues.
+     !! Whenever possible, DSTEVR calls DSTEMR to compute the
+     !! eigenspectrum using Relatively Robust Representations.  DSTEMR
+     !! computes eigenvalues by the dqds algorithm, while orthogonal
+     !! eigenvectors are computed from various "good" L D L^T representations
+     !! (also known as Relatively Robust Representations). Gram-Schmidt
+     !! orthogonalization is avoided as far as possible. More specifically,
+     !! the various steps of the algorithm are as follows. For the i-th
+     !! unreduced block of T,
+     !! (a) Compute T - sigma_i = L_i D_i L_i^T, such that L_i D_i L_i^T
+     !! is a relatively robust representation,
+     !! (b) Compute the eigenvalues, lambda_j, of L_i D_i L_i^T to high
+     !! relative accuracy by the dqds algorithm,
+     !! (c) If there is a cluster of close eigenvalues, "choose" sigma_i
+     !! close to the cluster, and go to step (a),
+     !! (d) Given the approximate eigenvalue lambda_j of L_i D_i L_i^T,
+     !! compute the corresponding eigenvector by forming a
+     !! rank-revealing twisted factorization.
+     !! The desired accuracy of the output can be specified by the input
+     !! parameter ABSTOL.
+     !! For more details, see "A new O(n^2) algorithm for the symmetric
+     !! tridiagonal eigenvalue/eigenvector problem", by Inderjit Dhillon,
+     !! Computer Science Division Technical Report No. UCB//CSD-97-971,
+     !! UC Berkeley, May 1997.
+     !! Note 1 : DSTEVR calls DSTEMR when the full spectrum is requested
+     !! on machines which conform to the ieee-754 floating point standard.
+     !! DSTEVR calls DSTEBZ and DSTEIN on non-ieee machines and
+     !! when partial spectrum requests are made.
+     !! Normal execution of DSTEMR may create NaNs and infinities and
+     !! hence may abort due to a floating point exception in environments
+     !! which do not handle NaNs and infinities in the ieee standard default
+     !! manner.
                isuppz, work, lwork, iwork,liwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -84618,58 +84614,58 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dstevr
 
-     !> DSYEVR: computes selected eigenvalues and, optionally, eigenvectors
-     !> of a real symmetric matrix A.  Eigenvalues and eigenvectors can be
-     !> selected by specifying either a range of values or a range of
-     !> indices for the desired eigenvalues.
-     !> DSYEVR first reduces the matrix A to tridiagonal form T with a call
-     !> to DSYTRD.  Then, whenever possible, DSYEVR calls DSTEMR to compute
-     !> the eigenspectrum using Relatively Robust Representations.  DSTEMR
-     !> computes eigenvalues by the dqds algorithm, while orthogonal
-     !> eigenvectors are computed from various "good" L D L^T representations
-     !> (also known as Relatively Robust Representations). Gram-Schmidt
-     !> orthogonalization is avoided as far as possible. More specifically,
-     !> the various steps of the algorithm are as follows.
-     !> For each unreduced block (submatrix) of T,
-     !> (a) Compute T - sigma I  = L D L^T, so that L and D
-     !> define all the wanted eigenvalues to high relative accuracy.
-     !> This means that small relative changes in the entries of D and L
-     !> cause only small relative changes in the eigenvalues and
-     !> eigenvectors. The standard (unfactored) representation of the
-     !> tridiagonal matrix T does not have this property in general.
-     !> (b) Compute the eigenvalues to suitable accuracy.
-     !> If the eigenvectors are desired, the algorithm attains full
-     !> accuracy of the computed eigenvalues only right before
-     !> the corresponding vectors have to be computed, see steps c) and d).
-     !> (c) For each cluster of close eigenvalues, select a new
-     !> shift close to the cluster, find a new factorization, and refine
-     !> the shifted eigenvalues to suitable accuracy.
-     !> (d) For each eigenvalue with a large enough relative separation compute
-     !> the corresponding eigenvector by forming a rank revealing twisted
-     !> factorization. Go back to (c) for any clusters that remain.
-     !> The desired accuracy of the output can be specified by the input
-     !> parameter ABSTOL.
-     !> For more details, see DSTEMR's documentation and:
-     !> - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
-     !> to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
-     !> Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
-     !> - Inderjit Dhillon and Beresford Parlett: "Orthogonal Eigenvectors and
-     !> Relative Gaps," SIAM Journal on Matrix Analysis and Applications, Vol. 25,
-     !> 2004.  Also LAPACK Working Note 154.
-     !> - Inderjit Dhillon: "A new O(n^2) algorithm for the symmetric
-     !> tridiagonal eigenvalue/eigenvector problem",
-     !> Computer Science Division Technical Report No. UCB/CSD-97-971,
-     !> UC Berkeley, May 1997.
-     !> Note 1 : DSYEVR calls DSTEMR when the full spectrum is requested
-     !> on machines which conform to the ieee-754 floating point standard.
-     !> DSYEVR calls DSTEBZ and DSTEIN on non-ieee machines and
-     !> when partial spectrum requests are made.
-     !> Normal execution of DSTEMR may create NaNs and infinities and
-     !> hence may abort due to a floating point exception in environments
-     !> which do not handle NaNs and infinities in the ieee standard default
-     !> manner.
 
      subroutine stdlib_dsyevr( jobz, range, uplo, n, a, lda, vl, vu, il, iu,abstol, m, w, z, ldz, &
+     !! DSYEVR computes selected eigenvalues and, optionally, eigenvectors
+     !! of a real symmetric matrix A.  Eigenvalues and eigenvectors can be
+     !! selected by specifying either a range of values or a range of
+     !! indices for the desired eigenvalues.
+     !! DSYEVR first reduces the matrix A to tridiagonal form T with a call
+     !! to DSYTRD.  Then, whenever possible, DSYEVR calls DSTEMR to compute
+     !! the eigenspectrum using Relatively Robust Representations.  DSTEMR
+     !! computes eigenvalues by the dqds algorithm, while orthogonal
+     !! eigenvectors are computed from various "good" L D L^T representations
+     !! (also known as Relatively Robust Representations). Gram-Schmidt
+     !! orthogonalization is avoided as far as possible. More specifically,
+     !! the various steps of the algorithm are as follows.
+     !! For each unreduced block (submatrix) of T,
+     !! (a) Compute T - sigma I  = L D L^T, so that L and D
+     !! define all the wanted eigenvalues to high relative accuracy.
+     !! This means that small relative changes in the entries of D and L
+     !! cause only small relative changes in the eigenvalues and
+     !! eigenvectors. The standard (unfactored) representation of the
+     !! tridiagonal matrix T does not have this property in general.
+     !! (b) Compute the eigenvalues to suitable accuracy.
+     !! If the eigenvectors are desired, the algorithm attains full
+     !! accuracy of the computed eigenvalues only right before
+     !! the corresponding vectors have to be computed, see steps c) and d).
+     !! (c) For each cluster of close eigenvalues, select a new
+     !! shift close to the cluster, find a new factorization, and refine
+     !! the shifted eigenvalues to suitable accuracy.
+     !! (d) For each eigenvalue with a large enough relative separation compute
+     !! the corresponding eigenvector by forming a rank revealing twisted
+     !! factorization. Go back to (c) for any clusters that remain.
+     !! The desired accuracy of the output can be specified by the input
+     !! parameter ABSTOL.
+     !! For more details, see DSTEMR's documentation and:
+     !! - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
+     !! to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
+     !! Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
+     !! - Inderjit Dhillon and Beresford Parlett: "Orthogonal Eigenvectors and
+     !! Relative Gaps," SIAM Journal on Matrix Analysis and Applications, Vol. 25,
+     !! 2004.  Also LAPACK Working Note 154.
+     !! - Inderjit Dhillon: "A new O(n^2) algorithm for the symmetric
+     !! tridiagonal eigenvalue/eigenvector problem",
+     !! Computer Science Division Technical Report No. UCB/CSD-97-971,
+     !! UC Berkeley, May 1997.
+     !! Note 1 : DSYEVR calls DSTEMR when the full spectrum is requested
+     !! on machines which conform to the ieee-754 floating point standard.
+     !! DSYEVR calls DSTEBZ and DSTEIN on non-ieee machines and
+     !! when partial spectrum requests are made.
+     !! Normal execution of DSTEMR may create NaNs and infinities and
+     !! hence may abort due to a floating point exception in environments
+     !! which do not handle NaNs and infinities in the ieee standard default
+     !! manner.
                isuppz, work, lwork,iwork, liwork, info )
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -84940,18 +84936,18 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsyevr
 
-     !> DSYSV computes the solution to a real system of linear equations
-     !> A * X = B,
-     !> where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
-     !> matrices.
-     !> Aasen's algorithm is used to factor A as
-     !> A = U**T * T * U,  if UPLO = 'U', or
-     !> A = L * T * L**T,  if UPLO = 'L',
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and T is symmetric tridiagonal. The factored
-     !> form of A is then used to solve the system of equations A * X = B.
 
      pure subroutine stdlib_dsysv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
+     !! DSYSV computes the solution to a real system of linear equations
+     !! A * X = B,
+     !! where A is an N-by-N symmetric matrix and X and B are N-by-NRHS
+     !! matrices.
+     !! Aasen's algorithm is used to factor A as
+     !! A = U**T * T * U,  if UPLO = 'U', or
+     !! A = L * T * L**T,  if UPLO = 'L',
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and T is symmetric tridiagonal. The factored
+     !! form of A is then used to solve the system of equations A * X = B.
                
         ! -- lapack driver routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -85012,14 +85008,14 @@ module stdlib_linalg_lapack_d
            return
      end subroutine stdlib_dsysv_aa
 
-     !> DSYTRF_AA: computes the factorization of a real symmetric matrix A
-     !> using the Aasen's algorithm.  The form of the factorization is
-     !> A = U**T*T*U  or  A = L*T*L**T
-     !> where U (or L) is a product of permutation and unit upper (lower)
-     !> triangular matrices, and T is a symmetric tridiagonal matrix.
-     !> This is the blocked version of the algorithm, calling Level 3 BLAS.
 
      pure subroutine stdlib_dsytrf_aa( uplo, n, a, lda, ipiv, work, lwork, info)
+     !! DSYTRF_AA computes the factorization of a real symmetric matrix A
+     !! using the Aasen's algorithm.  The form of the factorization is
+     !! A = U**T*T*U  or  A = L*T*L**T
+     !! where U (or L) is a product of permutation and unit upper (lower)
+     !! triangular matrices, and T is a symmetric tridiagonal matrix.
+     !! This is the blocked version of the algorithm, calling Level 3 BLAS.
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--

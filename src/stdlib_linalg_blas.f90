@@ -8,8 +8,8 @@ module stdlib_linalg_blas
      implicit none(type,external)
      public
 
-          !> AXPY: constant times a vector plus a vector.
           interface axpy
+          !! AXPY constant times a vector plus a vector.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine caxpy(n,ca,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk 
@@ -58,8 +58,8 @@ module stdlib_linalg_blas
 
 
 
-          !> COPY: copies a vector x to a vector y.
           interface copy
+          !! COPY copies a vector x to a vector y.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ccopy(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk 
@@ -108,9 +108,9 @@ module stdlib_linalg_blas
 
 
 
-          !> DOT: forms the dot product of two vectors.
-          !> uses unrolled loops for increments equal to one.
           interface dot
+          !! DOT forms the dot product of two vectors.
+          !! uses unrolled loops for increments equal to one.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(dp) function ddot(n,dx,incx,dy,incy)
                     import sp,dp,qp,ilp,lk 
@@ -135,9 +135,9 @@ module stdlib_linalg_blas
 
 
 
-          !> DOTC: forms the dot product of two complex vectors
-          !> DOTC = X^H * Y
           interface dotc
+          !! DOTC forms the dot product of two complex vectors
+          !! DOTC = X^H * Y
 #ifdef STDLIB_EXTERNAL_BLAS
                pure complex(sp) function cdotc(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk 
@@ -162,9 +162,9 @@ module stdlib_linalg_blas
 
 
 
-          !> DOTU: forms the dot product of two complex vectors
-          !> DOTU = X^T * Y
           interface dotu
+          !! DOTU forms the dot product of two complex vectors
+          !! DOTU = X^T * Y
 #ifdef STDLIB_EXTERNAL_BLAS
                pure complex(sp) function cdotu(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk 
@@ -189,12 +189,12 @@ module stdlib_linalg_blas
 
 
 
-          !> GBMV:  performs one of the matrix-vector operations
-          !> y := alpha*A*x + beta*y,   or   y := alpha*A**T*x + beta*y,   or
-          !> y := alpha*A**H*x + beta*y,
-          !> where alpha and beta are scalars, x and y are vectors and A is an
-          !> m by n band matrix, with kl sub-diagonals and ku super-diagonals.
           interface gbmv
+          !! GBMV performs one of the matrix-vector operations
+          !! y := alpha*A*x + beta*y,   or   y := alpha*A**T*x + beta*y,   or
+          !! y := alpha*A**H*x + beta*y,
+          !! where alpha and beta are scalars, x and y are vectors and A is an
+          !! m by n band matrix, with kl sub-diagonals and ku super-diagonals.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
@@ -247,13 +247,13 @@ module stdlib_linalg_blas
 
 
 
-          !> GEMM:  performs one of the matrix-matrix operations
-          !> C := alpha*op( A )*op( B ) + beta*C,
-          !> where  op( X ) is one of
-          !> op( X ) = X   or   op( X ) = X**T   or   op( X ) = X**H,
-          !> alpha and beta are scalars, and A, B and C are matrices, with op( A )
-          !> an m by k matrix,  op( B )  a  k by n matrix and  C an m by n matrix.
           interface gemm
+          !! GEMM performs one of the matrix-matrix operations
+          !! C := alpha*op( A )*op( B ) + beta*C,
+          !! where  op( X ) is one of
+          !! op( X ) = X   or   op( X ) = X**T   or   op( X ) = X**H,
+          !! alpha and beta are scalars, and A, B and C are matrices, with op( A )
+          !! an m by k matrix,  op( B )  a  k by n matrix and  C an m by n matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
@@ -306,12 +306,12 @@ module stdlib_linalg_blas
 
 
 
-          !> GEMV: performs one of the matrix-vector operations
-          !> y := alpha*A*x + beta*y,   or   y := alpha*A**T*x + beta*y,   or
-          !> y := alpha*A**H*x + beta*y,
-          !> where alpha and beta are scalars, x and y are vectors and A is an
-          !> m by n matrix.
           interface gemv
+          !! GEMV performs one of the matrix-vector operations
+          !! y := alpha*A*x + beta*y,   or   y := alpha*A**T*x + beta*y,   or
+          !! y := alpha*A**H*x + beta*y,
+          !! where alpha and beta are scalars, x and y are vectors and A is an
+          !! m by n matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
@@ -364,11 +364,11 @@ module stdlib_linalg_blas
 
 
 
-          !> GER:   performs the rank 1 operation
-          !> A := alpha*x*y**T + A,
-          !> where alpha is a scalar, x is an m element vector, y is an n element
-          !> vector and A is an m by n matrix.
           interface ger
+          !! GER performs the rank 1 operation
+          !! A := alpha*x*y**T + A,
+          !! where alpha is a scalar, x is an m element vector, y is an n element
+          !! vector and A is an m by n matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dger(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
@@ -395,11 +395,11 @@ module stdlib_linalg_blas
 
 
 
-          !> GERC:  performs the rank 1 operation
-          !> A := alpha*x*y**H + A,
-          !> where alpha is a scalar, x is an m element vector, y is an n element
-          !> vector and A is an m by n matrix.
           interface gerc
+          !! GERC performs the rank 1 operation
+          !! A := alpha*x*y**H + A,
+          !! where alpha is a scalar, x is an m element vector, y is an n element
+          !! vector and A is an m by n matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cgerc(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
@@ -426,11 +426,11 @@ module stdlib_linalg_blas
 
 
 
-          !> GERU:  performs the rank 1 operation
-          !> A := alpha*x*y**T + A,
-          !> where alpha is a scalar, x is an m element vector, y is an n element
-          !> vector and A is an m by n matrix.
           interface geru
+          !! GERU performs the rank 1 operation
+          !! A := alpha*x*y**T + A,
+          !! where alpha is a scalar, x is an m element vector, y is an n element
+          !! vector and A is an m by n matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cgeru(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
@@ -457,11 +457,11 @@ module stdlib_linalg_blas
 
 
 
-          !> HBMV:  performs the matrix-vector  operation
-          !> y := alpha*A*x + beta*y,
-          !> where alpha and beta are scalars, x and y are n element vectors and
-          !> A is an n by n hermitian band matrix, with k super-diagonals.
           interface hbmv
+          !! HBMV performs the matrix-vector  operation
+          !! y := alpha*A*x + beta*y,
+          !! where alpha and beta are scalars, x and y are n element vectors and
+          !! A is an n by n hermitian band matrix, with k super-diagonals.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
@@ -490,13 +490,13 @@ module stdlib_linalg_blas
 
 
 
-          !> HEMM:  performs one of the matrix-matrix operations
-          !> C := alpha*A*B + beta*C,
-          !> or
-          !> C := alpha*B*A + beta*C,
-          !> where alpha and beta are scalars, A is an hermitian matrix and  B and
-          !> C are m by n matrices.
           interface hemm
+          !! HEMM performs one of the matrix-matrix operations
+          !! C := alpha*A*B + beta*C,
+          !! or
+          !! C := alpha*B*A + beta*C,
+          !! where alpha and beta are scalars, A is an hermitian matrix and  B and
+          !! C are m by n matrices.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
@@ -525,11 +525,11 @@ module stdlib_linalg_blas
 
 
 
-          !> HEMV:  performs the matrix-vector  operation
-          !> y := alpha*A*x + beta*y,
-          !> where alpha and beta are scalars, x and y are n element vectors and
-          !> A is an n by n hermitian matrix.
           interface hemv
+          !! HEMV performs the matrix-vector  operation
+          !! y := alpha*A*x + beta*y,
+          !! where alpha and beta are scalars, x and y are n element vectors and
+          !! A is an n by n hermitian matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
@@ -558,11 +558,11 @@ module stdlib_linalg_blas
 
 
 
-          !> HER:   performs the hermitian rank 1 operation
-          !> A := alpha*x*x**H + A,
-          !> where alpha is a real scalar, x is an n element vector and A is an
-          !> n by n hermitian matrix.
           interface her
+          !! HER performs the hermitian rank 1 operation
+          !! A := alpha*x*x**H + A,
+          !! where alpha is a real scalar, x is an n element vector and A is an
+          !! n by n hermitian matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cher(uplo,n,alpha,x,incx,a,lda)
                     import sp,dp,qp,ilp,lk 
@@ -593,11 +593,11 @@ module stdlib_linalg_blas
 
 
 
-          !> HER2:  performs the hermitian rank 2 operation
-          !> A := alpha*x*y**H + conjg( alpha )*y*x**H + A,
-          !> where alpha is a scalar, x and y are n element vectors and A is an n
-          !> by n hermitian matrix.
           interface her2
+          !! HER2 performs the hermitian rank 2 operation
+          !! A := alpha*x*y**H + conjg( alpha )*y*x**H + A,
+          !! where alpha is a scalar, x and y are n element vectors and A is an n
+          !! by n hermitian matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cher2(uplo,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
@@ -626,14 +626,14 @@ module stdlib_linalg_blas
 
 
 
-          !> HER2K:  performs one of the hermitian rank 2k operations
-          !> C := alpha*A*B**H + conjg( alpha )*B*A**H + beta*C,
-          !> or
-          !> C := alpha*A**H*B + conjg( alpha )*B**H*A + beta*C,
-          !> where  alpha and beta  are scalars with  beta  real,  C is an  n by n
-          !> hermitian matrix and  A and B  are  n by k matrices in the first case
-          !> and  k by n  matrices in the second case.
           interface her2k
+          !! HER2K performs one of the hermitian rank 2k operations
+          !! C := alpha*A*B**H + conjg( alpha )*B*A**H + beta*C,
+          !! or
+          !! C := alpha*A**H*B + conjg( alpha )*B**H*A + beta*C,
+          !! where  alpha and beta  are scalars with  beta  real,  C is an  n by n
+          !! hermitian matrix and  A and B  are  n by k matrices in the first case
+          !! and  k by n  matrices in the second case.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
@@ -664,14 +664,14 @@ module stdlib_linalg_blas
 
 
 
-          !> HERK:  performs one of the hermitian rank k operations
-          !> C := alpha*A*A**H + beta*C,
-          !> or
-          !> C := alpha*A**H*A + beta*C,
-          !> where  alpha and beta  are  real scalars,  C is an  n by n  hermitian
-          !> matrix and  A  is an  n by k  matrix in the  first case and a  k by n
-          !> matrix in the second case.
           interface herk
+          !! HERK performs one of the hermitian rank k operations
+          !! C := alpha*A*A**H + beta*C,
+          !! or
+          !! C := alpha*A**H*A + beta*C,
+          !! where  alpha and beta  are  real scalars,  C is an  n by n  hermitian
+          !! matrix and  A  is an  n by k  matrix in the  first case and a  k by n
+          !! matrix in the second case.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cherk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
@@ -702,11 +702,11 @@ module stdlib_linalg_blas
 
 
 
-          !> HPMV:  performs the matrix-vector operation
-          !> y := alpha*A*x + beta*y,
-          !> where alpha and beta are scalars, x and y are n element vectors and
-          !> A is an n by n hermitian matrix, supplied in packed form.
           interface hpmv
+          !! HPMV performs the matrix-vector operation
+          !! y := alpha*A*x + beta*y,
+          !! where alpha and beta are scalars, x and y are n element vectors and
+          !! A is an n by n hermitian matrix, supplied in packed form.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
@@ -735,11 +735,11 @@ module stdlib_linalg_blas
 
 
 
-          !> HPR:    performs the hermitian rank 1 operation
-          !> A := alpha*x*x**H + A,
-          !> where alpha is a real scalar, x is an n element vector and A is an
-          !> n by n hermitian matrix, supplied in packed form.
           interface hpr
+          !! HPR performs the hermitian rank 1 operation
+          !! A := alpha*x*x**H + A,
+          !! where alpha is a real scalar, x is an n element vector and A is an
+          !! n by n hermitian matrix, supplied in packed form.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chpr(uplo,n,alpha,x,incx,ap)
                     import sp,dp,qp,ilp,lk 
@@ -770,11 +770,11 @@ module stdlib_linalg_blas
 
 
 
-          !> HPR2:  performs the hermitian rank 2 operation
-          !> A := alpha*x*y**H + conjg( alpha )*y*x**H + A,
-          !> where alpha is a scalar, x and y are n element vectors and A is an
-          !> n by n hermitian matrix, supplied in packed form.
           interface hpr2
+          !! HPR2 performs the hermitian rank 2 operation
+          !! A := alpha*x*y**H + conjg( alpha )*y*x**H + A,
+          !! where alpha is a scalar, x and y are n element vectors and A is an
+          !! n by n hermitian matrix, supplied in packed form.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chpr2(uplo,n,alpha,x,incx,y,incy,ap)
                     import sp,dp,qp,ilp,lk 
@@ -803,12 +803,10 @@ module stdlib_linalg_blas
 
 
 
-          !> !
-          !>
-          !> NRM2: returns the euclidean norm of a vector via the function
-          !> name, so that
-          !> NRM2 := sqrt( x'*x )
           interface nrm2
+          !! NRM2 returns the euclidean norm of a vector via the function
+          !! name, so that
+          !! NRM2 := sqrt( x'*x )
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(dp) function dnrm2( n, x, incx )
                     import sp,dp,qp,ilp,lk 
@@ -833,8 +831,8 @@ module stdlib_linalg_blas
 
 
 
-          !> ROT: applies a plane rotation.
           interface rot
+          !! ROT applies a plane rotation.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine drot(n,dx,incx,dy,incy,c,s)
                     import sp,dp,qp,ilp,lk 
@@ -861,22 +859,20 @@ module stdlib_linalg_blas
 
 
 
-          !> !
-          !>
-          !> The computation uses the formulas
-          !> |x| = sqrt( Re(x)**2 + Im(x)**2 )
-          !> sgn(x) = x / |x|  if x /= 0
-          !> = 1        if x  = 0
-          !> c = |a| / sqrt(|a|**2 + |b|**2)
-          !> s = sgn(a) * conjg(b) / sqrt(|a|**2 + |b|**2)
-          !> When a and b are real and r /= 0, the formulas simplify to
-          !> r = sgn(a)*sqrt(|a|**2 + |b|**2)
-          !> c = a / r
-          !> s = b / r
-          !> the same as in SROTG when |a| > |b|.  When |b| >= |a|, the
-          !> sign of c and s will be different from those computed by SROTG
-          !> if the signs of a and b are not the same.
           interface rotg
+          !! The computation uses the formulas
+          !! |x| = sqrt( Re(x)**2 + Im(x)**2 )
+          !! sgn(x) = x / |x|  if x /= 0
+          !! = 1        if x  = 0
+          !! c = |a| / sqrt(|a|**2 + |b|**2)
+          !! s = sgn(a) * conjg(b) / sqrt(|a|**2 + |b|**2)
+          !! When a and b are real and r /= 0, the formulas simplify to
+          !! r = sgn(a)*sqrt(|a|**2 + |b|**2)
+          !! c = a / r
+          !! s = b / r
+          !! the same as in SROTG when |a| > |b|.  When |b| >= |a|, the
+          !! sign of c and s will be different from those computed by SROTG
+          !! if the signs of a and b are not the same.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine crotg( a, b, c, s )
                     import sp,dp,qp,ilp,lk 
@@ -925,18 +921,18 @@ module stdlib_linalg_blas
 
 
 
-          !> APPLY THE MODIFIED GIVENS TRANSFORMATION, H, TO THE 2 BY N MATRIX
-          !> (DX**T) , WHERE **T INDICATES TRANSPOSE. THE ELEMENTS OF DX ARE IN
-          !> (DY**T)
-          !> DX(LX+I*INCX), I = 0 TO N-1, WHERE LX = 1 IF INCX >= 0, ELSE
-          !> LX = (-INCX)*N, AND SIMILARLY FOR SY USING LY AND INCY.
-          !> WITH DPARAM(1)=DFLAG, H HAS ONE OF THE FOLLOWING FORMS..
-          !> DFLAG=-1._dp     DFLAG=0._dp        DFLAG=1._dp     DFLAG=-2.D0
-          !> (DH11  DH12)    (1._dp  DH12)    (DH11  1._dp)    (1._dp  0._dp)
-          !> H=(          )    (          )    (          )    (          )
-          !> (DH21  DH22),   (DH21  1._dp),   (-1._dp DH22),   (0._dp  1._dp).
-          !> SEE ROTMG FOR A DESCRIPTION OF DATA STORAGE IN DPARAM.
           interface rotm
+          !! APPLY THE MODIFIED GIVENS TRANSFORMATION, H, TO THE 2 BY N MATRIX
+          !! (DX**T) , WHERE **T INDICATES TRANSPOSE. THE ELEMENTS OF DX ARE IN
+          !! (DY**T)
+          !! DX(LX+I*INCX), I = 0 TO N-1, WHERE LX = 1 IF INCX >= 0, ELSE
+          !! LX = (-INCX)*N, AND SIMILARLY FOR SY USING LY AND INCY.
+          !! WITH DPARAM(1)=DFLAG, H HAS ONE OF THE FOLLOWING FORMS..
+          !! DFLAG=-1._dp     DFLAG=0._dp        DFLAG=1._dp     DFLAG=-2.D0
+          !! (DH11  DH12)    (1._dp  DH12)    (DH11  1._dp)    (1._dp  0._dp)
+          !! H=(          )    (          )    (          )    (          )
+          !! (DH21  DH22),   (DH21  1._dp),   (-1._dp DH22),   (0._dp  1._dp).
+          !! SEE ROTMG FOR A DESCRIPTION OF DATA STORAGE IN DPARAM.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine drotm(n,dx,incx,dy,incy,dparam)
                     import sp,dp,qp,ilp,lk 
@@ -963,20 +959,20 @@ module stdlib_linalg_blas
 
 
 
-          !> CONSTRUCT THE MODIFIED GIVENS TRANSFORMATION MATRIX H WHICH ZEROS
-          !> THE SECOND COMPONENT OF THE 2-VECTOR  (SQRT(DD1)*DX1,SQRT(DD2)    DY2)**T.
-          !> WITH DPARAM(1)=DFLAG, H HAS ONE OF THE FOLLOWING FORMS..
-          !> DFLAG=-1._dp     DFLAG=0._dp        DFLAG=1._dp     DFLAG=-2.D0
-          !> (DH11  DH12)    (1._dp  DH12)    (DH11  1._dp)    (1._dp  0._dp)
-          !> H=(          )    (          )    (          )    (          )
-          !> (DH21  DH22),   (DH21  1._dp),   (-1._dp DH22),   (0._dp  1._dp).
-          !> LOCATIONS 2-4 OF DPARAM CONTAIN DH11, DH21, DH12, AND DH22
-          !> RESPECTIVELY. (VALUES OF 1._dp, -1._dp, OR 0._dp IMPLIED BY THE
-          !> VALUE OF DPARAM(1) ARE NOT STORED IN DPARAM.)
-          !> THE VALUES OF GAMSQ AND RGAMSQ SET IN THE DATA STATEMENT MAY BE
-          !> INEXACT.  THIS IS OK AS THEY ARE ONLY USED FOR TESTING THE SIZE
-          !> OF DD1 AND DD2.  ALL ACTUAL SCALING OF DATA IS DONE USING GAM.
           interface rotmg
+          !! CONSTRUCT THE MODIFIED GIVENS TRANSFORMATION MATRIX H WHICH ZEROS
+          !! THE SECOND COMPONENT OF THE 2-VECTOR  (SQRT(DD1)*DX1,SQRT(DD2)    DY2)**T.
+          !! WITH DPARAM(1)=DFLAG, H HAS ONE OF THE FOLLOWING FORMS..
+          !! DFLAG=-1._dp     DFLAG=0._dp        DFLAG=1._dp     DFLAG=-2.D0
+          !! (DH11  DH12)    (1._dp  DH12)    (DH11  1._dp)    (1._dp  0._dp)
+          !! H=(          )    (          )    (          )    (          )
+          !! (DH21  DH22),   (DH21  1._dp),   (-1._dp DH22),   (0._dp  1._dp).
+          !! LOCATIONS 2-4 OF DPARAM CONTAIN DH11, DH21, DH12, AND DH22
+          !! RESPECTIVELY. (VALUES OF 1._dp, -1._dp, OR 0._dp IMPLIED BY THE
+          !! VALUE OF DPARAM(1) ARE NOT STORED IN DPARAM.)
+          !! THE VALUES OF GAMSQ AND RGAMSQ SET IN THE DATA STATEMENT MAY BE
+          !! INEXACT.  THIS IS OK AS THEY ARE ONLY USED FOR TESTING THE SIZE
+          !! OF DD1 AND DD2.  ALL ACTUAL SCALING OF DATA IS DONE USING GAM.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine drotmg(dd1,dd2,dx1,dy1,dparam)
                     import sp,dp,qp,ilp,lk 
@@ -1003,11 +999,11 @@ module stdlib_linalg_blas
 
 
 
-          !> SBMV:  performs the matrix-vector  operation
-          !> y := alpha*A*x + beta*y,
-          !> where alpha and beta are scalars, x and y are n element vectors and
-          !> A is an n by n symmetric band matrix, with k super-diagonals.
           interface sbmv
+          !! SBMV performs the matrix-vector  operation
+          !! y := alpha*A*x + beta*y,
+          !! where alpha and beta are scalars, x and y are n element vectors and
+          !! A is an n by n symmetric band matrix, with k super-diagonals.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dsbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
@@ -1036,8 +1032,8 @@ module stdlib_linalg_blas
 
 
 
-          !> SCAL: scales a vector by a constant.
           interface scal
+          !! SCAL scales a vector by a constant.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cscal(n,ca,cx,incx)
                     import sp,dp,qp,ilp,lk 
@@ -1086,13 +1082,13 @@ module stdlib_linalg_blas
 
 
 
-          !> Compute the inner product of two vectors with extended
-          !> precision accumulation and result.
-          !> Returns D.P. dot product accumulated in D.P., for S.P. SX and SY
-          !> SDOT: = sum for I = 0 to N-1 of  SX(LX+I*INCX) * SY(LY+I*INCY),
-          !> where LX = 1 if INCX >= 0, else LX = 1+(1-N)*INCX, and LY is
-          !> defined in a similar way using INCY.
           interface sdot
+          !! Compute the inner product of two vectors with extended
+          !! precision accumulation and result.
+          !! Returns D.P. dot product accumulated in D.P., for S.P. SX and SY
+          !! SDOT = sum for I = 0 to N-1 of  SX(LX+I*INCX) * SY(LY+I*INCY),
+          !! where LX = 1 if INCX >= 0, else LX = 1+(1-N)*INCX, and LY is
+          !! defined in a similar way using INCY.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(dp) function dsdot(n,sx,incx,sy,incy)
                     import sp,dp,qp,ilp,lk 
@@ -1107,11 +1103,11 @@ module stdlib_linalg_blas
 
 
 
-          !> SPMV:  performs the matrix-vector operation
-          !> y := alpha*A*x + beta*y,
-          !> where alpha and beta are scalars, x and y are n element vectors and
-          !> A is an n by n symmetric matrix, supplied in packed form.
           interface spmv
+          !! SPMV performs the matrix-vector operation
+          !! y := alpha*A*x + beta*y,
+          !! where alpha and beta are scalars, x and y are n element vectors and
+          !! A is an n by n symmetric matrix, supplied in packed form.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dspmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
@@ -1140,11 +1136,11 @@ module stdlib_linalg_blas
 
 
 
-          !> SPR:    performs the symmetric rank 1 operation
-          !> A := alpha*x*x**T + A,
-          !> where alpha is a real scalar, x is an n element vector and A is an
-          !> n by n symmetric matrix, supplied in packed form.
           interface spr
+          !! SPR performs the symmetric rank 1 operation
+          !! A := alpha*x*x**T + A,
+          !! where alpha is a real scalar, x is an n element vector and A is an
+          !! n by n symmetric matrix, supplied in packed form.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dspr(uplo,n,alpha,x,incx,ap)
                     import sp,dp,qp,ilp,lk 
@@ -1173,11 +1169,11 @@ module stdlib_linalg_blas
 
 
 
-          !> SPR2:  performs the symmetric rank 2 operation
-          !> A := alpha*x*y**T + alpha*y*x**T + A,
-          !> where alpha is a scalar, x and y are n element vectors and A is an
-          !> n by n symmetric matrix, supplied in packed form.
           interface spr2
+          !! SPR2 performs the symmetric rank 2 operation
+          !! A := alpha*x*y**T + alpha*y*x**T + A,
+          !! where alpha is a scalar, x and y are n element vectors and A is an
+          !! n by n symmetric matrix, supplied in packed form.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dspr2(uplo,n,alpha,x,incx,y,incy,ap)
                     import sp,dp,qp,ilp,lk 
@@ -1206,10 +1202,10 @@ module stdlib_linalg_blas
 
 
 
-          !> SROT: applies a plane rotation, where the cos and sin (c and s) are real
-          !> and the vectors cx and cy are complex.
-          !> jack dongarra, linpack, 3/11/78.
           interface srot
+          !! SROT applies a plane rotation, where the cos and sin (c and s) are real
+          !! and the vectors cx and cy are complex.
+          !! jack dongarra, linpack, 3/11/78.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine csrot( n, cx, incx, cy, incy, c, s )
                     import sp,dp,qp,ilp,lk 
@@ -1225,8 +1221,8 @@ module stdlib_linalg_blas
 
 
 
-          !> SSCAL: scales a complex vector by a real constant.
           interface sscal
+          !! SSCAL scales a complex vector by a real constant.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine csscal(n,sa,cx,incx)
                     import sp,dp,qp,ilp,lk 
@@ -1242,8 +1238,8 @@ module stdlib_linalg_blas
 
 
 
-          !> SWAP: interchanges two vectors.
           interface swap
+          !! SWAP interchanges two vectors.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cswap(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk 
@@ -1288,13 +1284,13 @@ module stdlib_linalg_blas
 
 
 
-          !> SYMM:  performs one of the matrix-matrix operations
-          !> C := alpha*A*B + beta*C,
-          !> or
-          !> C := alpha*B*A + beta*C,
-          !> where  alpha and beta are scalars, A is a symmetric matrix and  B and
-          !> C are m by n matrices.
           interface symm
+          !! SYMM performs one of the matrix-matrix operations
+          !! C := alpha*A*B + beta*C,
+          !! or
+          !! C := alpha*B*A + beta*C,
+          !! where  alpha and beta are scalars, A is a symmetric matrix and  B and
+          !! C are m by n matrices.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine csymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
@@ -1347,11 +1343,11 @@ module stdlib_linalg_blas
 
 
 
-          !> SYMV:  performs the matrix-vector  operation
-          !> y := alpha*A*x + beta*y,
-          !> where alpha and beta are scalars, x and y are n element vectors and
-          !> A is an n by n symmetric matrix.
           interface symv
+          !! SYMV performs the matrix-vector  operation
+          !! y := alpha*A*x + beta*y,
+          !! where alpha and beta are scalars, x and y are n element vectors and
+          !! A is an n by n symmetric matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dsymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk 
@@ -1380,11 +1376,11 @@ module stdlib_linalg_blas
 
 
 
-          !> SYR:   performs the symmetric rank 1 operation
-          !> A := alpha*x*x**T + A,
-          !> where alpha is a real scalar, x is an n element vector and A is an
-          !> n by n symmetric matrix.
           interface syr
+          !! SYR performs the symmetric rank 1 operation
+          !! A := alpha*x*x**T + A,
+          !! where alpha is a real scalar, x is an n element vector and A is an
+          !! n by n symmetric matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dsyr(uplo,n,alpha,x,incx,a,lda)
                     import sp,dp,qp,ilp,lk 
@@ -1413,11 +1409,11 @@ module stdlib_linalg_blas
 
 
 
-          !> SYR2:  performs the symmetric rank 2 operation
-          !> A := alpha*x*y**T + alpha*y*x**T + A,
-          !> where alpha is a scalar, x and y are n element vectors and A is an n
-          !> by n symmetric matrix.
           interface syr2
+          !! SYR2 performs the symmetric rank 2 operation
+          !! A := alpha*x*y**T + alpha*y*x**T + A,
+          !! where alpha is a scalar, x and y are n element vectors and A is an n
+          !! by n symmetric matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dsyr2(uplo,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk 
@@ -1446,14 +1442,14 @@ module stdlib_linalg_blas
 
 
 
-          !> SYR2K:  performs one of the symmetric rank 2k operations
-          !> C := alpha*A*B**T + alpha*B*A**T + beta*C,
-          !> or
-          !> C := alpha*A**T*B + alpha*B**T*A + beta*C,
-          !> where  alpha and beta  are scalars,  C is an  n by n symmetric matrix
-          !> and  A and B  are  n by k  matrices  in the  first  case  and  k by n
-          !> matrices in the second case.
           interface syr2k
+          !! SYR2K performs one of the symmetric rank 2k operations
+          !! C := alpha*A*B**T + alpha*B*A**T + beta*C,
+          !! or
+          !! C := alpha*A**T*B + alpha*B**T*A + beta*C,
+          !! where  alpha and beta  are scalars,  C is an  n by n symmetric matrix
+          !! and  A and B  are  n by k  matrices  in the  first  case  and  k by n
+          !! matrices in the second case.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine csyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
@@ -1506,14 +1502,14 @@ module stdlib_linalg_blas
 
 
 
-          !> SYRK:  performs one of the symmetric rank k operations
-          !> C := alpha*A*A**T + beta*C,
-          !> or
-          !> C := alpha*A**T*A + beta*C,
-          !> where  alpha and beta  are scalars,  C is an  n by n symmetric matrix
-          !> and  A  is an  n by k  matrix in the first case and a  k by n  matrix
-          !> in the second case.
           interface syrk
+          !! SYRK performs one of the symmetric rank k operations
+          !! C := alpha*A*A**T + beta*C,
+          !! or
+          !! C := alpha*A**T*A + beta*C,
+          !! where  alpha and beta  are scalars,  C is an  n by n symmetric matrix
+          !! and  A  is an  n by k  matrix in the first case and a  k by n  matrix
+          !! in the second case.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine csyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk 
@@ -1566,11 +1562,11 @@ module stdlib_linalg_blas
 
 
 
-          !> TBMV:  performs one of the matrix-vector operations
-          !> x := A*x,   or   x := A**T*x,   or   x := A**H*x,
-          !> where x is an n element vector and  A is an n by n unit, or non-unit,
-          !> upper or lower triangular band matrix, with ( k + 1 ) diagonals.
           interface tbmv
+          !! TBMV performs one of the matrix-vector operations
+          !! x := A*x,   or   x := A**T*x,   or   x := A**H*x,
+          !! where x is an n element vector and  A is an n by n unit, or non-unit,
+          !! upper or lower triangular band matrix, with ( k + 1 ) diagonals.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctbmv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
@@ -1623,14 +1619,14 @@ module stdlib_linalg_blas
 
 
 
-          !> TBSV:  solves one of the systems of equations
-          !> A*x = b,   or   A**T*x = b,   or   A**H*x = b,
-          !> where b and x are n element vectors and A is an n by n unit, or
-          !> non-unit, upper or lower triangular band matrix, with ( k + 1 )
-          !> diagonals.
-          !> No test for singularity or near-singularity is included in this
-          !> routine. Such tests must be performed before calling this routine.
           interface tbsv
+          !! TBSV solves one of the systems of equations
+          !! A*x = b,   or   A**T*x = b,   or   A**H*x = b,
+          !! where b and x are n element vectors and A is an n by n unit, or
+          !! non-unit, upper or lower triangular band matrix, with ( k + 1 )
+          !! diagonals.
+          !! No test for singularity or near-singularity is included in this
+          !! routine. Such tests must be performed before calling this routine.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctbsv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
@@ -1683,11 +1679,11 @@ module stdlib_linalg_blas
 
 
 
-          !> TPMV:  performs one of the matrix-vector operations
-          !> x := A*x,   or   x := A**T*x,   or   x := A**H*x,
-          !> where x is an n element vector and  A is an n by n unit, or non-unit,
-          !> upper or lower triangular matrix, supplied in packed form.
           interface tpmv
+          !! TPMV performs one of the matrix-vector operations
+          !! x := A*x,   or   x := A**T*x,   or   x := A**H*x,
+          !! where x is an n element vector and  A is an n by n unit, or non-unit,
+          !! upper or lower triangular matrix, supplied in packed form.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctpmv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk 
@@ -1740,13 +1736,13 @@ module stdlib_linalg_blas
 
 
 
-          !> TPSV:  solves one of the systems of equations
-          !> A*x = b,   or   A**T*x = b,   or   A**H*x = b,
-          !> where b and x are n element vectors and A is an n by n unit, or
-          !> non-unit, upper or lower triangular matrix, supplied in packed form.
-          !> No test for singularity or near-singularity is included in this
-          !> routine. Such tests must be performed before calling this routine.
           interface tpsv
+          !! TPSV solves one of the systems of equations
+          !! A*x = b,   or   A**T*x = b,   or   A**H*x = b,
+          !! where b and x are n element vectors and A is an n by n unit, or
+          !! non-unit, upper or lower triangular matrix, supplied in packed form.
+          !! No test for singularity or near-singularity is included in this
+          !! routine. Such tests must be performed before calling this routine.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctpsv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk 
@@ -1799,12 +1795,12 @@ module stdlib_linalg_blas
 
 
 
-          !> TRMM:  performs one of the matrix-matrix operations
-          !> B := alpha*op( A )*B,   or   B := alpha*B*op( A )
-          !> where  alpha  is a scalar,  B  is an m by n matrix,  A  is a unit, or
-          !> non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
-          !> op( A ) = A   or   op( A ) = A**T   or   op( A ) = A**H.
           interface trmm
+          !! TRMM performs one of the matrix-matrix operations
+          !! B := alpha*op( A )*B,   or   B := alpha*B*op( A )
+          !! where  alpha  is a scalar,  B  is an m by n matrix,  A  is a unit, or
+          !! non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
+          !! op( A ) = A   or   op( A ) = A**T   or   op( A ) = A**H.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk 
@@ -1857,11 +1853,11 @@ module stdlib_linalg_blas
 
 
 
-          !> TRMV:  performs one of the matrix-vector operations
-          !> x := A*x,   or   x := A**T*x,   or   x := A**H*x,
-          !> where x is an n element vector and  A is an n by n unit, or non-unit,
-          !> upper or lower triangular matrix.
           interface trmv
+          !! TRMV performs one of the matrix-vector operations
+          !! x := A*x,   or   x := A**T*x,   or   x := A**H*x,
+          !! where x is an n element vector and  A is an n by n unit, or non-unit,
+          !! upper or lower triangular matrix.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctrmv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
@@ -1914,13 +1910,13 @@ module stdlib_linalg_blas
 
 
 
-          !> TRSM:  solves one of the matrix equations
-          !> op( A )*X = alpha*B,   or   X*op( A ) = alpha*B,
-          !> where alpha is a scalar, X and B are m by n matrices, A is a unit, or
-          !> non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
-          !> op( A ) = A   or   op( A ) = A**T   or   op( A ) = A**H.
-          !> The matrix X is overwritten on B.
           interface trsm
+          !! TRSM solves one of the matrix equations
+          !! op( A )*X = alpha*B,   or   X*op( A ) = alpha*B,
+          !! where alpha is a scalar, X and B are m by n matrices, A is a unit, or
+          !! non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
+          !! op( A ) = A   or   op( A ) = A**T   or   op( A ) = A**H.
+          !! The matrix X is overwritten on B.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk 
@@ -1973,13 +1969,13 @@ module stdlib_linalg_blas
 
 
 
-          !> TRSV:  solves one of the systems of equations
-          !> A*x = b,   or   A**T*x = b,   or   A**H*x = b,
-          !> where b and x are n element vectors and A is an n by n unit, or
-          !> non-unit, upper or lower triangular matrix.
-          !> No test for singularity or near-singularity is included in this
-          !> routine. Such tests must be performed before calling this routine.
           interface trsv
+          !! TRSV solves one of the systems of equations
+          !! A*x = b,   or   A**T*x = b,   or   A**H*x = b,
+          !! where b and x are n element vectors and A is an n by n unit, or
+          !! non-unit, upper or lower triangular matrix.
+          !! No test for singularity or near-singularity is included in this
+          !! routine. Such tests must be performed before calling this routine.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctrsv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk 
