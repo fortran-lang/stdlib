@@ -1,5 +1,6 @@
 program example_log_text_error
   use stdlib_logger
+  implicit none
 
   character(*), parameter :: filename = 'dummy.txt'
   integer                 :: col_no, line_no, lun, status

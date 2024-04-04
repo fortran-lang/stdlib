@@ -1,5 +1,6 @@
 program example_extract
   use stdlib_bitsets
+  implicit none
   type(bitset_large) :: set0, set1
   call set0%init(166)
   call set0%set(100, 150)

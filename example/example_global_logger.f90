@@ -1,5 +1,6 @@
 program example_global_logger
   use stdlib_logger, global => global_logger
+  implicit none
 
   integer :: unit, stat
 
