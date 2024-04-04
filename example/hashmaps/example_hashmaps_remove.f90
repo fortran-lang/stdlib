@@ -3,6 +3,7 @@ program example_remove
   use stdlib_hashmaps, only: open_hashmap_type, int_index
   use stdlib_hashmap_wrappers, only: fnv_1_hasher, &
                                      fnv_1a_hasher, key_type, other_type, set
+  implicit none
   type(open_hashmap_type) :: map
   type(key_type)      :: key
   type(other_type)    :: other

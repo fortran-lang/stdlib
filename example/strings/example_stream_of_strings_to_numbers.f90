@@ -1,6 +1,7 @@
 program example_stream_of_strings_to_numbers
     use stdlib_kinds, only: dp
     use stdlib_str2num, only: to_num_from_stream
+    implicit none
     character(:), allocatable, target :: chain
     character(len=:), pointer :: cptr
     real(dp), allocatable :: r(:), p(:)
