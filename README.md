@@ -242,18 +242,47 @@ stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
 ### Using stdlib with a regular Makefile
 
 After the library has been built, it can be included in a regular Makefile.
+The recommended way to do this is using the [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/) tool, for which an example is shown below.
+```make
+# Necessary if the installation directory is not in PKG_CONFIG_PATH
+install_dir := path/to/install_dir
+export PKG_CONFIG_PATH := $(install_dir)/lib/pkgconfig:$(PKG_CONFIG_PATH)
+
+STDLIB_CFLAGS := `pkg-config --cflags fortran_stdlib`
+STDLIB_LIBS := `pkg-config --libs fortran_stdlib`
+
+# Example definition of Fortran compiler and flags
+FC := gfortran
+FFLAGS := -O2 -Wall -g
+
+# Definition of targets etc.
+...
+
+# Example rule to compile object files from .f90 files
+%.o: %.f90
+    $(FC) -c -o $@ $< $(FFLAGS) $(STDLIB_CFLAGS)
+
+# Example rule to link an executable from object files
+%: %.o
+    $(FC) -o $@ $^ $(FFLAGS) $(STDLIB_LIBS)
+
+```
+
+The same can also be achieved without pkg-config.
 If the library has been installed in a directory inside the compiler's search path,
-only a flag `-lfortran_stdlib` is required to link against `libfortran_stdlib.a` or `libfortran_stdlib.so`.
+only a flag `-lfortran_stdlib` is required.
 If the installation directory is not in the compiler's search path, one can add for example
 ```make
-libdir=${install_dir}/lib
-moduledir=${install_dir}/include/fortran_stdlib/<compiler name and version>
+install_dir := path/to/install_dir
+libdir := $(install_dir)/lib
+moduledir := $(install_dir)/include/fortran_stdlib/<compiler name and version>
 ```
-Here it is assumed that the compiler will look for libraries in `libdir` and for module files in `moduledir`.
-The library can also be included from a build directory without installation:
+The linker should then look for libraries in `libdir` (using e.g.`-L$(libdir)`) and the compiler should look for module files in `moduledir` (using e.g. `-I$(moduledir)`).
+Alternatively, the library can also be included from a build directory without installation with
 ```make
-libdir=$(build_dir)/src
-moduledir=$(build_dir)/src/mod_files
+...
+libdir := $(build_dir)/src
+moduledir := $(build_dir)/src/mod_files
 ```
 
 ## Documentation
