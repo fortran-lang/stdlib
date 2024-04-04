@@ -1,5 +1,6 @@
 program example_log_io_error
   use stdlib_logger, global => global_logger
+  implicit none
 
   character(*), parameter :: filename = 'nodummy.txt'
   integer                 :: iostat, lun
