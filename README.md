@@ -280,7 +280,7 @@ moduledir := $(install_dir)/include/fortran_stdlib/<compiler name and version>
 The linker should then look for libraries in `libdir` (using e.g.`-L$(libdir)`) and the compiler should look for module files in `moduledir` (using e.g. `-I$(moduledir)`).
 Alternatively, the library can also be included from a build directory without installation with
 ```make
-...
+build_dir := path/to/build_dir
 libdir := $(build_dir)/src
 moduledir := $(build_dir)/src/mod_files
 ```
