@@ -90,7 +90,7 @@ significant events encountered during the execution of a program.
 
 ### Syntax
 
-`type([[stdlib_logger(module):logger_type(type)]]) :: variable`
+`type(` [[stdlib_logger(module):logger_type(type)]] `) :: variable`
 
 ### Private attributes
 
@@ -150,7 +150,7 @@ Opens a formatted, sequential access, output file, `filename` using
 
 #### Syntax
 
-`call self % [[logger_type(type):add_log_file(bound)]]( filename [, unit, action, position, status, stat ] )`
+`call self % ` [[logger_type(type):add_log_file(bound)]] `( filename [, unit, action, position, status, stat ] )`
 
 #### Class
 
@@ -216,7 +216,7 @@ the stop code.
 
 #### Syntax
 
-`call self % [[logger_type(type):add_log_unit(bound)]]( unit [, stat ] )`
+`call self % ` [[logger_type(type):add_log_unit(bound)]] `( unit [, stat ] )`
 
 #### Class. 
 
@@ -266,7 +266,7 @@ Reports the configuration of a logger.
 
 #### Syntax
 
-`call self % [[logger_type(type):configuration(bound)]]( [ add_blankline, indent, level, max_width, time_stamp, log_units ] )`
+`call self % ` [[logger_type(type):configuration(bound)]] `( [ add_blankline, indent, level, max_width, time_stamp, log_units ] )`
 
 #### Class
 
@@ -341,7 +341,7 @@ Configures the logging process for self.
 
 #### Syntax
 
-`call self % [[logger_type(type):configure(bound)]]( [ add_blank_line, indent, level, max_width, time_stamp ] )`
+`call self % ` [[logger_type(type):configure(bound)]] `( [ add_blank_line, indent, level, max_width, time_stamp ] )`
 
 #### Class
 
@@ -393,7 +393,7 @@ Writes the string `message` to `self % log_units` with optional additional text.
 
 #### Syntax
 
-`call self % [[logger_type(type):log_debug(bound)]]( message [, module, procedure ] )`
+`call self % ` [[logger_type(type):log_debug(bound)]] `( message [, module, procedure ] )`
 
 #### Behavior
 
@@ -464,7 +464,7 @@ Writes the string `message` to `self % log_units` with optional additional text.
 
 #### Syntax
 
-`call self % [[logger_type(type):log_error(bound)]]( message [, module, procedure, stat, errmsg ] )`
+`call self % ` [[logger_type(type):log_error(bound)]] `( message [, module, procedure, stat, errmsg ] )`
 
 #### Behavior
 
@@ -550,7 +550,7 @@ Writes the string `message` to `self % log_units` with optional additional text.
 
 #### Syntax
 
-`call self % [[logger_type(type):log_information(bound)]]( message [, module, procedure ] )`
+`call self % ` [[logger_type(type):log_information(bound)]] `( message [, module, procedure ] )`
 
 #### Behavior
 
@@ -632,7 +632,7 @@ It is ignored if the `level` of `self` is higher than `io_error_level`.
 
 #### Syntax
 
-`call self % [[logger_type(type):log_io_error(bound)]]( message [, module, procedure, iostat, iomsg ] )`
+`call self % ` [[logger_type(type):log_io_error(bound)]] `( message [, module, procedure, iostat, iomsg ] )`
 
 #### Class
 
@@ -692,7 +692,7 @@ No severity level is applied to `log_message`.
 
 #### Syntax
 
-`call self % [[logger_type(type):log_message(bound)]]( message [, module, procedure, prefix ] )`
+`call self % ` [[logger_type(type):log_message(bound)]] `( message [, module, procedure, prefix ] )`
 
 #### Class
 
@@ -770,7 +770,7 @@ It is ignored if the `level` of `self` is higher than `text_error_level`.
 
 #### Syntax
 
-`call self % [[logger_type(type):log_text_error(bound)]]( line, column, summary [, filename, line_number, caret, stat ] )`
+`call self % ` [[logger_type(type):log_text_error(bound)]] `( line, column, summary [, filename, line_number, caret, stat ] )`
 
 #### Class
 
@@ -832,7 +832,7 @@ Returns the number of active I/O units in `self % log_units`
 
 #### Syntax
 
-`result = self % [[logger_type(type):log_units_assigned(bound)]]()`
+`result = self % ` [[logger_type(type):log_units_assigned(bound)]] `()`
 
 #### Class
 
@@ -893,7 +893,7 @@ then `module` and `procedure` if present, then
 
 #### Syntax
 
-`call self % [[logger_type(type):log_warning(bound)]]( message [, module, procedure ] )`
+`call self % ` [[logger_type(type):log_warning(bound)]] `( message [, module, procedure ] )`
 
 #### Class
 
@@ -958,7 +958,7 @@ closed. If `unit` is not in `self % log_units` then nothing is done.
 
 #### Syntax
 
-`call self % [[logger_type(type):remove_log_unit(bound)]]( unit [, close_unit, stat ] )`
+`call self % ` [[logger_type(type):remove_log_unit(bound)]] `( unit [, close_unit, stat ] )`
 
 #### Class
 

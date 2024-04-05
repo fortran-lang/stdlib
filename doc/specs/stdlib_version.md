@@ -38,7 +38,7 @@ Getter function to retrieve version information
 
 #### Syntax
 
-`res = [[stdlib_version(module):get_stdlib_version(function)]] ([major], [minor], [patch], [string])`
+`res = ` [[stdlib_version(module):get_stdlib_version(subroutine)]] ` ([major], [minor], [patch], [string])`
 
 #### Class
 

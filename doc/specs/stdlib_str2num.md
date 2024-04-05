@@ -20,7 +20,7 @@ Convert a string or an array of strings to numerical types.
 
 ### Syntax
 
-`number = [[stdlib_str2num(module):to_num(interface)]](string, mold)`
+`number = ` [[stdlib_str2num(module):to_num(interface)]] `(string, mold)`
 
 ### Arguments
 
@@ -50,7 +50,7 @@ Convert a stream of values in a string to an array of values.
 
 ### Syntax
 
-`number = [[stdlib_str2num(module):to_num_from_stream(interface)]](string, mold)`
+`number = ` [[stdlib_str2num(module):to_num_from_stream(interface)]] `(string, mold)`
 
 ### Arguments
 

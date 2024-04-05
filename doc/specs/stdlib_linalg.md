@@ -188,7 +188,7 @@ Create a diagonal array or extract the diagonal elements of an array
 
 ### Syntax
 
-`d = [[stdlib_linalg(module):diag(interface)]](a [, k])`
+`d = ` [[stdlib_linalg(module):diag(interface)]] `(a [, k])`
 
 ### Arguments
 
@@ -238,7 +238,7 @@ Construct the identity matrix.
 
 ### Syntax
 
-`I = [[stdlib_linalg(module):eye(function)]](dim1 [, dim2])`
+`I = ` [[stdlib_linalg(module):eye(function)]] `(dim1 [, dim2])`
 
 ### Arguments
 
@@ -285,7 +285,7 @@ Trace of a matrix (rank-2 array)
 
 ### Syntax
 
-`result = [[stdlib_linalg(module):trace(interface)]](A)`
+`result = ` [[stdlib_linalg(module):trace(interface)]] `(A)`
 
 ### Arguments
 
@@ -312,7 +312,7 @@ Computes the outer product of two vectors
 
 ### Syntax
 
-`d = [[stdlib_linalg(module):outer_product(interface)]](u, v)`
+`d = ` [[stdlib_linalg(module):outer_product(interface)]] `(u, v)`
 
 ### Arguments
 
@@ -342,7 +342,7 @@ Computes the Kronecker product of two rank-2 arrays
 
 ### Syntax
 
-`C = [[stdlib_linalg(module):kronecker_product(interface)]](A, B)`
+`C = ` [[stdlib_linalg(module):kronecker_product(interface)]] `(A, B)`
 
 ### Arguments
 
@@ -373,7 +373,7 @@ Computes the cross product of two vectors
 
 ### Syntax
 
-`c = [[stdlib_linalg(module):cross_product(interface)]](a, b)`
+`c = ` [[stdlib_linalg(module):cross_product(interface)]] `(a, b)`
 
 ### Arguments
 
@@ -403,7 +403,7 @@ Checks if a matrix is square
 
 ### Syntax
 
-`d = [[stdlib_linalg(module):is_square(interface)]](A)`
+`d = ` [[stdlib_linalg(module):is_square(interface)]] `(A)`
 
 ### Arguments
 
@@ -431,7 +431,7 @@ Checks if a matrix is diagonal
 
 ### Syntax
 
-`d = [[stdlib_linalg(module):is_diagonal(interface)]](A)`
+`d = ` [[stdlib_linalg(module):is_diagonal(interface)]] `(A)`
 
 ### Arguments
 
@@ -460,7 +460,7 @@ Checks if a matrix is symmetric
 
 ### Syntax
 
-`d = [[stdlib_linalg(module):is_symmetric(interface)]](A)`
+`d = ` [[stdlib_linalg(module):is_symmetric(interface)]] `(A)`
 
 ### Arguments
 
@@ -488,7 +488,7 @@ Checks if a matrix is skew-symmetric
 
 ### Syntax
 
-`d = [[stdlib_linalg(module):is_skew_symmetric(interface)]](A)`
+`d = ` [[stdlib_linalg(module):is_skew_symmetric(interface)]] `(A)`
 
 ### Arguments
 
@@ -516,7 +516,7 @@ Checks if a matrix is Hermitian
 
 ### Syntax
 
-`d = [[stdlib_linalg(module):is_hermitian(interface)]](A)`
+`d = ` [[stdlib_linalg(module):is_hermitian(interface)]] `(A)`
 
 ### Arguments
 
@@ -544,7 +544,7 @@ Checks if a matrix is triangular
 
 ### Syntax
 
-`d = [[stdlib_linalg(module):is_triangular(interface)]](A,uplo)`
+`d = ` [[stdlib_linalg(module):is_triangular(interface)]] `(A,uplo)`
 
 ### Arguments
 
@@ -576,7 +576,7 @@ Checks if a matrix is Hessenberg
 
 ### Syntax
 
-`d = [[stdlib_linalg(module):is_hessenberg(interface)]](A,uplo)`
+`d = ` [[stdlib_linalg(module):is_hessenberg(interface)]] `(A,uplo)`
 
 ### Arguments
 
