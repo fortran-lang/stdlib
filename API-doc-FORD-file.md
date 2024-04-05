@@ -8,8 +8,14 @@ exclude_dir: src/tests
 output_dir: API-doc
 page_dir: doc
 media_dir: doc/media
-exclude: src/stdlib_linalg_blas*.fypp
-         src/stdlib_linalg_lapack*.fypp
+exclude: src/stdlib_linalg_lapack.fypp
+         src/stdlib_linalg_lapack_aux.fypp
+         src/stdlib_linalg_lapack_c.fypp
+         src/stdlib_linalg_lapack_d.fypp
+         src/stdlib_linalg_lapack_q.fypp
+         src/stdlib_linalg_lapack_s.fypp
+         src/stdlib_linalg_lapack_w.fypp
+         src/stdlib_linalg_lapack_z.fypp
 fpp_extensions: fypp
 preprocess: true
 macro: MAXRANK=3
