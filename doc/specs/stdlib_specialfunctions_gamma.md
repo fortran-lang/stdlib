@@ -16,13 +16,13 @@ Experimental
 
 The gamma function is defined as the analytic continuation of a convergent improper integral function on the whole complex plane except zero and negative integers:
 
-\Gamma(z)=\int_{0}^{\infty}x^{z-1}e^{-x}dx, \;\;  z\in \mathbb{C} \setminus 0, -1, -2, \cdots
+$$\Gamma(z)=\int_{0}^{\infty}x^{z-1}e^{-x}dx, \;\;  z\in \mathbb{C} \setminus 0, -1, -2, \cdots$$
 
 Fortran 2018 standard implements the intrinsic gamma function of real type argument in single and double precisions. Here the gamma function is extended to both integer and complex arguments. The values of the gamma function with integer arguments are exact. The values of the gamma function with complex arguments are approximated in single and double precisions by using Lanczos approximation.
 
 ### Syntax
 
-`result = [[stdlib_specialfunctions_gamma(module):gamma(interface)]] (x)`
+`result = ` [[stdlib_specialfunctions_gamma(module):gamma(interface)]] ` (x)`
 
 ### Class
 
@@ -55,7 +55,7 @@ Fortran 2018 standard implements intrinsic log_gamma function of absolute value 
 
 ### Syntax
 
-`result = [[stdlib_specialfunctions_gamma(module):log_gamma(interface)]] (x)`
+`result = ` [[stdlib_specialfunctions_gamma(module):log_gamma(interface)]] ` (x)`
 
 ### Class
 
@@ -87,7 +87,7 @@ Compute the natural logarithm of factorial, log(n!)
 
 ### Syntax
 
-`result = [[stdlib_specialfunctions_gamma(module):log_factorial(interface)]] (x)`
+`result = ` [[stdlib_specialfunctions_gamma(module):log_factorial(interface)]] ` (x)`
 
 ### Class
 
@@ -116,13 +116,13 @@ Experimental
 
 The lower incomplete gamma function is defined as:
 
-\gamma(p,x)=\int_{0}^{x}t^{p-1}e^{-t}dt, \;\;  p > 0, x\in \mathbb{R}
+$$\gamma(p,x)=\int_{0}^{x}t^{p-1}e^{-t}dt, \;\;  p > 0, x\in \mathbb{R}$$
 
 When x < 0, p must be positive integer.
 
 ### Syntax
 
-`result = [[stdlib_specialfunctions_gamma(module):lower_incomplete_gamma(interface)]] (p, x)`
+`result = ` [[stdlib_specialfunctions_gamma(module):lower_incomplete_gamma(interface)]] ` (p, x)`
 
 ### Class
 
@@ -153,13 +153,13 @@ Experimental
 
 The upper incomplete gamma function is defined as:
 
-\Gamma (p, x) = \int_{x}^{\infty }t^{p-1}e^{-t}dt, \; \; p >0,\; x \in \mathbb{R}
+$$\Gamma (p, x) = \int_{x}^{\infty }t^{p-1}e^{-t}dt, \; \; p >0,\; x \in \mathbb{R}$$
 
 When x < 0, p must be a positive integer.
 
 ### Syntax
 
-`result = [[stdlib_specialfunctions_gamma(module):upper_incomplete_gamma(interface)]] (p, x)`
+`result = ` [[stdlib_specialfunctions_gamma(module):upper_incomplete_gamma(interface)]] ` (p, x)`
 
 ### Class
 
@@ -192,7 +192,7 @@ Compute the natural logarithm of the absolute value of the lower incomplete gamm
 
 ### Syntax
 
-`result = [[stdlib_specialfunctions_gamma(module):log_lower_incomplete_gamma(interface)]] (p, x)`
+`result = ` [[stdlib_specialfunctions_gamma(module):log_lower_incomplete_gamma(interface)]] ` (p, x)`
 
 ### Class
 
@@ -221,7 +221,7 @@ Compute the natural logarithm of the absolute value of the upper incomplete gamm
 
 ### Syntax
 
-`result = [[stdlib_specialfunctions_gamma(module):log_upper_incomplete_gamma(interface)]] (p, x)`
+`result = ` [[stdlib_specialfunctions_gamma(module):log_upper_incomplete_gamma(interface)]] ` (p, x)`
 
 ### Class
 
@@ -248,13 +248,13 @@ Experimental
 
 The regularized gamma quotient P, also known as normalized incomplete gamma function, is defined as:
 
-P(p,x)=\gamma(p,x)/\Gamma(p)
+$$P(p,x)=\gamma(p,x)/\Gamma(p)$$
 
 The values of regularized gamma P is in the range of [0, 1]
 
 ### Syntax
 
-`result = [[stdlib_specialfunctions_gamma(module):regularized_gamma_p(interface)]] (p, x)`
+`result = ` [[stdlib_specialfunctions_gamma(module):regularized_gamma_p(interface)]] ` (p, x)`
 
 ### Class
 
@@ -285,13 +285,13 @@ Experimental
 
 The regularized gamma quotient Q is defined as:
 
-Q(p,x)=\Gamma(p,x)/\Gamma(p)=1-P(p,x)
+$$Q(p,x)=\Gamma(p,x)/\Gamma(p)=1-P(p,x)$$
 
 The values of regularized gamma Q is in the range of [0, 1]
 
 ### Syntax
 
-`result = [[stdlib_specialfunctions_gamma(module):regularized_gamma_q(interface)]] (p, x)`
+`result = ` [[stdlib_specialfunctions_gamma(module):regularized_gamma_q(interface)]] ` (p, x)`
 
 ### Class
 

@@ -10,9 +10,9 @@ title: selection
 
 Suppose you wish to find the value of the k-th smallest entry in an array of size N, or
 the index of that value. While it could be done by sorting the whole array
-using `[[stdlib_sorting(module):sort(interface)]]` or 
-`[[stdlib_sorting(module):sort_index(interface)]]` from 
-`[[stdlib_sorting(module)]]` and then finding the k-th entry, that would
+using [[stdlib_sorting(module):sort(interface)]] or 
+[[stdlib_sorting(module):sort_index(interface)]] from 
+[[stdlib_sorting(module)]] and then finding the k-th entry, that would
 require O(N x LOG(N)) time. However selection of a single entry can be done in
 O(N) time, which is much faster for large arrays.  This is useful, for example,
 to quickly find the median of an array, or some other percentile.
@@ -56,7 +56,7 @@ such that `all(array(1:k) <= array(k))`  and `all(array(k) <= array((k+1):size(a
 
 ### Syntax
 
-`call [[stdlib_selection(module):select(interface)]]( array, k, kth_smallest [, left, right ] )`
+`call ` [[stdlib_selection(module):select(interface)]] `( array, k, kth_smallest [, left, right ] )`
 
 ### Class
 
@@ -124,7 +124,7 @@ the index-array `indx(:)` such that `all(array(indx(1:k)) <= array(indx(k)))`  a
 
 ### Syntax
 
-`call [[stdlib_selection(module):arg_select(interface)]]( array, indx, k, kth_smallest [, left, right ] )`
+`call ` [[stdlib_selection(module):arg_select(interface)]] `( array, indx, k, kth_smallest [, left, right ] )`
 
 ### Class
 

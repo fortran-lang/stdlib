@@ -20,7 +20,7 @@ This function is intended to be called in a procedure with one or more `optional
 
 ### Syntax
 
-`result = [[stdlib_optval(module):optval(interface)]](x, default)`
+`result = ` [[stdlib_optval(module):optval(interface)]] `(x, default)`
 
 ### Arguments
 

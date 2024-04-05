@@ -50,7 +50,7 @@ Creates a string instance representing an empty string.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):string_type(interface)]] ()`
+`res = ` [[stdlib_string_type(module):string_type(interface)]] ` ()`
 
 #### Class
 
@@ -88,7 +88,7 @@ character variable is passed.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):string_type(interface)]] (string)`
+`res = ` [[stdlib_string_type(module):string_type(interface)]] ` (string)`
 
 #### Class
 
@@ -122,7 +122,7 @@ The module defines a constructor to create a string type from an integer scalar.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):string_type(interface)]] (string)`
+`res = ` [[stdlib_string_type(module):string_type(interface)]] ` (string)`
 
 #### Class
 
@@ -156,7 +156,7 @@ The module defines a constructor to create a string type from a logical scalar.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):string_type(interface)]] (string)`
+`res = ` [[stdlib_string_type(module):string_type(interface)]] ` (string)`
 
 #### Class
 
@@ -219,7 +219,7 @@ Returns the length of the string.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):len(interface)]] (string)`
+`res = ` [[stdlib_string_type(module):len(interface)]] ` (string)`
 
 #### Class
 
@@ -254,7 +254,7 @@ represented by the string.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):len_trim(interface)]] (string)`
+`res = ` [[stdlib_string_type(module):len_trim(interface)]] ` (string)`
 
 #### Class
 
@@ -289,7 +289,7 @@ represented by a `string_type`.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):trim(interface)]] (string)`
+`res = ` [[stdlib_string_type(module):trim(interface)]] ` (string)`
 
 #### Class
 
@@ -324,7 +324,7 @@ The length of the character sequence remains unchanged.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):adjustl(interface)]] (string)`
+`res = ` [[stdlib_string_type(module):adjustl(interface)]] ` (string)`
 
 #### Class
 
@@ -359,7 +359,7 @@ The length of the character sequence remains unchanged.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):adjustr(interface)]] (string)`
+`res = ` [[stdlib_string_type(module):adjustr(interface)]] ` (string)`
 
 #### Class
 
@@ -394,7 +394,7 @@ specified copies.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):repeat(interface)]] (string, ncopies)`
+`res = ` [[stdlib_string_type(module):repeat(interface)]] ` (string, ncopies)`
 
 #### Class
 
@@ -429,7 +429,7 @@ Return the character sequence represented by the string.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):char(interface)]] (string)`
+`res = ` [[stdlib_string_type(module):char(interface)]] ` (string)`
 
 #### Class
 
@@ -463,7 +463,7 @@ Return the character at a certain position in the string.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):char(interface)]] (string, pos)`
+`res = ` [[stdlib_string_type(module):char(interface)]] ` (string, pos)`
 
 #### Class
 
@@ -498,7 +498,7 @@ Return a substring from the character sequence of the string.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):char(interface)]] (string, start, last)`
+`res = ` [[stdlib_string_type(module):char(interface)]] ` (string, start, last)`
 
 #### Class
 
@@ -537,7 +537,7 @@ character sequence in the system's native character set.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):ichar(interface)]] (string)`
+`res = ` [[stdlib_string_type(module):ichar(interface)]] ` (string)`
 
 #### Class
 
@@ -574,7 +574,7 @@ the character sequences represent by the string.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):iachar(interface)]] (string)`
+`res = ` [[stdlib_string_type(module):iachar(interface)]] ` (string)`
 
 #### Class
 
@@ -612,7 +612,7 @@ present in *string*, zero is returned.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):index(interface)]] (string, substring[, back])`
+`res = ` [[stdlib_string_type(module):index(interface)]] ` (string, substring[, back])`
 
 #### Class
 
@@ -652,7 +652,7 @@ the rightmost position is returned. If no character of *set* is found in
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):scan(interface)]] (string, set[, back])`
+`res = ` [[stdlib_string_type(module):scan(interface)]] ` (string, set[, back])`
 
 #### Class
 
@@ -692,7 +692,7 @@ in *set*, the result is zero.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):verify(interface)]] (string, set[, back])`
+`res = ` [[stdlib_string_type(module):verify(interface)]] ` (string, set[, back])`
 
 #### Class
 
@@ -732,7 +732,7 @@ This defines three procedures overloading the intrinsic `lgt` procedure.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):lgt(interface)]] (lhs, rhs)`
+`res = ` [[stdlib_string_type(module):lgt(interface)]] ` (lhs, rhs)`
 
 #### Class
 
@@ -771,7 +771,7 @@ This defines three procedures overloading the intrinsic `llt` procedure.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):llt(interface)]] (lhs, rhs)`
+`res = ` [[stdlib_string_type(module):llt(interface)]] ` (lhs, rhs)`
 
 #### Class
 
@@ -811,7 +811,7 @@ This defines three procedures overloading the intrinsic `lge` procedure.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):lge(interface)]] (lhs, rhs)`
+`res = ` [[stdlib_string_type(module):lge(interface)]] ` (lhs, rhs)`
 
 #### Class
 
@@ -851,7 +851,7 @@ This defines three procedures overloading the intrinsic `lle` procedure.
 
 #### Syntax
 
-`res = [[stdlib_string_type(module):lle(interface)]] (lhs, rhs)`
+`res = ` [[stdlib_string_type(module):lle(interface)]] ` (lhs, rhs)`
 
 #### Class
 
@@ -887,7 +887,7 @@ character sequence hold by the input string.
 
 #### Syntax
 
-`lowercase_string = [[stdlib_string_type(module): to_lower(interface)]] (string)`
+`lowercase_string = ` [[stdlib_string_type(module):to_lower(interface)]] ` (string)`
 
 #### Class
 
@@ -922,7 +922,7 @@ character sequence hold by the input string.
 
 #### Syntax
 
-`uppercase_string = [[stdlib_string_type(module): to_upper(interface)]] (string)`
+`uppercase_string = ` [[stdlib_string_type(module):to_upper(interface)]] ` (string)`
 
 #### Class
 
@@ -962,7 +962,7 @@ or numeral present next to either of its 2 ends.
 
 #### Syntax
 
-`titlecase_string = [[stdlib_string_type(module): to_title(interface)]] (string)`
+`titlecase_string = ` [[stdlib_string_type(module):to_title(interface)]] ` (string)`
 
 #### Class
 
@@ -999,7 +999,7 @@ characters in the sequence are transformed to lowercase.
 
 #### Syntax
 
-`sentencecase_string = [[stdlib_string_type(module): to_sentence(interface)]] (string)`
+`sentencecase_string = ` [[stdlib_string_type(module):to_sentence(interface)]] ` (string)`
 
 #### Class
 
@@ -1033,7 +1033,7 @@ character sequence hold by the input string.
 
 #### Syntax
 
-`reverse_string = [[stdlib_string_type(module): reverse(interface)]] (string)`
+`reverse_string = ` [[stdlib_string_type(module):reverse(interface)]] ` (string)`
 
 #### Class
 
@@ -1527,7 +1527,7 @@ If `from` and `to` are the same variable, then `from` remains unchanged.
 
 #### Syntax
 
-`call [[stdlib_string_type(module):move(interface)]] (from, to)`
+`call ` [[stdlib_string_type(module):move(interface)]] ` (from, to)`
 
 #### Class
 

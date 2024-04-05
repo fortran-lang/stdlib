@@ -34,7 +34,7 @@ Converts input character variable to all lowercase.
 
 #### Syntax
 
-`res = [[stdlib_ascii(module):to_lower(function)]] (string)`
+`res =` [[stdlib_ascii(module):to_lower(function)]] `(string)`
 
 #### Class
 
@@ -66,7 +66,7 @@ Converts input character variable to all uppercase.
 
 #### Syntax
 
-`res = [[stdlib_ascii(module):to_upper(function)]] (string)`
+`res =` [[stdlib_ascii(module):to_upper(function)]] `(string)`
 
 #### Class
 
@@ -103,7 +103,7 @@ or numeral present next to either of its 2 ends.
 
 #### Syntax
 
-`res = [[stdlib_ascii(module):to_title(function)]] (string)`
+`res =` [[stdlib_ascii(module):to_title(function)]] `(string)`
 
 #### Class
 
@@ -138,7 +138,7 @@ transformed to lowercase.
 
 #### Syntax
 
-`res = [[stdlib_ascii(module):to_sentence(function)]] (string)`
+`res =` [[stdlib_ascii(module):to_sentence(function)]] `(string)`
 
 #### Class
 
@@ -170,7 +170,7 @@ Reverses the order of all characters in the input character type.
 
 #### Syntax
 
-`res = [[stdlib_ascii(module):reverse(function)]] (string)`
+`res =` [[stdlib_ascii(module):reverse(function)]] `(string)`
 
 #### Class
 

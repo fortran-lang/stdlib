@@ -29,7 +29,7 @@ The algorithm used for generating exponential random variates is fundamentally l
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]]([lambda] [[, array_size]])`
+`result = ` [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]] `([lambda] ` [[, array_size]] `)`
 
 ### Class
 
@@ -71,7 +71,7 @@ $$f(x+\mathit{i}y)=f(x)f(y)=\begin{cases} \lambda_{x} \lambda_{y} e^{-(\lambda_{
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_exponential(module):pdf_exp(interface)]](x, lambda)`
+`result = ` [[stdlib_stats_distribution_exponential(module):pdf_exp(interface)]] `(x, lambda)`
 
 ### Class
 
@@ -114,7 +114,7 @@ $$F(x+\mathit{i}y)=F(x)F(y)=\begin{cases} (1 - e^{-\lambda_{x} x})(1 - e^{-\lamb
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_exponential(module):cdf_exp(interface)]](x, lambda)`
+`result = ` [[stdlib_stats_distribution_exponential(module):cdf_exp(interface)]] `(x, lambda)`
 
 ### Class
 
