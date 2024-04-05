@@ -156,7 +156,7 @@ Returns a logarithmically spaced rank 1 array from [`base`^`start`, `base`^`end`
 
 #### Syntax
 
-`res = ` [[stdlib_math(module):logspace(interface)]] ` (start, end [, n [, base]] `)`
+`res = ` [[stdlib_math(module):logspace(interface)]] ` (start, end [, n [, base]])`
 
 #### Status
 
