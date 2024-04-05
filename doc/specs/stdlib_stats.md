@@ -78,7 +78,7 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 ### Syntax
 
-`result = ` [[stdlib_stats(module):cov(interface)]] `(array, dim [, mask [, corrected]] `)`
+`result = ` [[stdlib_stats(module):cov(interface)]] `(array, dim [, mask [, corrected]])`
 
 ### Class
 
@@ -248,9 +248,9 @@ The _k_-th order moment about `center` is defined as :
 
 ### Syntax
 
-`result = ` [[stdlib_stats(module):moment(interface)]] `(array, order [, center [, mask]] `)`
+`result = ` [[stdlib_stats(module):moment(interface)]] `(array, order [, center [, mask]])`
 
-`result = ` [[stdlib_stats(module):moment(interface)]] `(array, order, dim [, center [, mask]] `)`
+`result = ` [[stdlib_stats(module):moment(interface)]] `(array, order, dim [, center [, mask]])`
 
 ### Class
 
@@ -306,9 +306,9 @@ The use of the term `n-1` for scaling is called Bessel 's correction. The scalin
 
 ### Syntax
 
-`result = ` [[stdlib_stats(module):var(interface)]] `(array [, mask [, corrected]] `)`
+`result = ` [[stdlib_stats(module):var(interface)]] `(array [, mask [, corrected]])`
 
-`result = ` [[stdlib_stats(module):var(interface)]] `(array, dim [, mask [, corrected]] `)`
+`result = ` [[stdlib_stats(module):var(interface)]] `(array, dim [, mask [, corrected]])`
 
 ### Class
 
