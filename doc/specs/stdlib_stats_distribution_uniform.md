@@ -62,7 +62,7 @@ Note: the algorithm used for generating uniform random variates is fundamentally
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_uniform(module):rvs_uniform(interface)]] `(` [[loc,] scale] ` [[[,array_size]] `])`
+`result = ` [[stdlib_stats_distribution_uniform(module):rvs_uniform(interface)]] `([[loc,] scale] [[[,array_size]]])`
 
 ### Class
 

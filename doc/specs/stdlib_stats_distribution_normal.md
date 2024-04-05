@@ -28,7 +28,7 @@ The algorithm used for generating exponential random variates is fundamentally l
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_normal(module):rvs_normal(interface)]] `([loc, scale] ` [[, array_size]] `)`
+`result = ` [[stdlib_stats_distribution_normal(module):rvs_normal(interface)]] `([loc, scale] [[, array_size]])`
 
 ### Class
 

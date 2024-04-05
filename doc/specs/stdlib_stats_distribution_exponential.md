@@ -29,7 +29,7 @@ The algorithm used for generating exponential random variates is fundamentally l
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]] `([lambda] ` [[, array_size]] `)`
+`result = ` [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]] `([lambda] [[, array_size]])`
 
 ### Class
 
