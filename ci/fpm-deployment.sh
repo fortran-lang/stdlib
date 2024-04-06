@@ -35,6 +35,27 @@ prune=(
   "$destdir/src/f18estop.f90"
 )
 
+# Files that need preprocessed Fortran extension -> .F90 
+preprocessed=(
+   "$destdir/src/stdlib_linalg_constants" 
+   "$destdir/src/stdlib_linalg_blas" 
+   "$destdir/src/stdlib_linalg_blas_aux"
+   "$destdir/src/stdlib_linalg_blas_s"
+   "$destdir/src/stdlib_linalg_blas_d"
+   "$destdir/src/stdlib_linalg_blas_q"
+   "$destdir/src/stdlib_linalg_blas_c"
+   "$destdir/src/stdlib_linalg_blas_z"
+   "$destdir/src/stdlib_linalg_blas_w"
+   "$destdir/src/stdlib_linalg_lapack"
+   "$destdir/src/stdlib_linalg_lapack_aux"
+   "$destdir/src/stdlib_linalg_lapack_s"
+   "$destdir/src/stdlib_linalg_lapack_d"
+   "$destdir/src/stdlib_linalg_lapack_q"
+   "$destdir/src/stdlib_linalg_lapack_c"
+   "$destdir/src/stdlib_linalg_lapack_z"
+   "$destdir/src/stdlib_linalg_lapack_w"
+)
+
 major=$(cut -d. -f1 VERSION)
 minor=$(cut -d. -f2 VERSION)
 patch=$(cut -d. -f3 VERSION)
@@ -65,6 +86,12 @@ cp "${include[@]}" "$destdir/"
 
 # Source file workarounds for fpm; ignore missing files
 rm "${prune[@]}"
+
+# Capitalize .f90 -> .F90 for preprocessed files
+for pp_source in "${preprocessed[@]}"
+do 
+   mv "$pp_source.f90" "$pp_source.F90" 
+done
 
 # List stdlib-fpm package contents
 ls -R "$destdir"
