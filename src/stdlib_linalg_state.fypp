@@ -404,7 +404,7 @@ module stdlib_linalg_state
 
     end subroutine append
 
-    ! Append a generic vector to the error flag
+    !> Append a generic vector to the error flag
     pure subroutine appendv(msg,a)
        class(*),intent(in) :: a(:)
        character(len=*),intent(inout) :: msg
