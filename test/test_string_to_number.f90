@@ -106,10 +106,10 @@ contains
             rel_err = abs_err / formatted_read_out
 
             if(abs(rel_err) > 0.0_wp) then
-                write(*,"('formatted read : ' g0)") formatted_read_out
-                write(*,"('to_num         : ' g0)") to_num_out
-                write(*,"('difference abs : ' g0)") abs_err
-                write(*,"('difference rel : ' g0 '%')") rel_err * 100
+                write(*,"('formatted read : ', g0)") formatted_read_out
+                write(*,"('to_num         : ', g0)") to_num_out
+                write(*,"('difference abs : ', g0)") abs_err
+                write(*,"('difference rel : ', g0, '%')") rel_err * 100
                 ucheck = .false.
             end if
         end function
@@ -204,10 +204,10 @@ contains
             rel_err = abs_err / formatted_read_out
 
             if(abs(rel_err) > epsilon(0.0_wp)) then
-                write(*,"('formatted read : ' g0)") formatted_read_out
-                write(*,"('to_num         : ' g0)") to_num_out
-                write(*,"('difference abs : ' g0)") abs_err
-                write(*,"('difference rel : ' g0 '%')") rel_err * 100
+                write(*,"('formatted read : ', g0)") formatted_read_out
+                write(*,"('to_num         : ', g0)") to_num_out
+                write(*,"('difference abs : ', g0)") abs_err
+                write(*,"('difference rel : ', g0, '%')") rel_err * 100
                 ucheck = .false.
             end if
         end function
