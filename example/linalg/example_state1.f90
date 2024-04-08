@@ -1,5 +1,5 @@
 program example_state1
-  use stdlib_linalg_state
+  use stdlib_linalg_state, only: linalg_state_type, LINALG_SUCCESS, LINALG_VALUE_ERROR
   implicit none
   type(linalg_state_type) :: err
 
