@@ -28,7 +28,7 @@ The algorithm used for generating exponential random variates is fundamentally l
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_normal(module):rvs_normal(interface)]]([loc, scale] [[, array_size]])`
+`result = ` [[stdlib_stats_distribution_normal(module):rvs_normal(interface)]] `([loc, scale] [[, array_size]])`
 
 ### Class
 
@@ -72,7 +72,7 @@ $$f(x + y \mathit{i}) = f(x) f(y) = \frac{1}{2\sigma_{x}\sigma_{y}} \exp{\left[-
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_normal(module):pdf_normal(interface)]](x, loc, scale)`
+`result = ` [[stdlib_stats_distribution_normal(module):pdf_normal(interface)]] `(x, loc, scale)`
 
 ### Class
 
@@ -118,7 +118,7 @@ $$ F(x+y\mathit{i})=F(x)F(y)=\frac{1}{4} \
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_normal(module):cdf_normal(interface)]](x, loc, scale)`
+`result = ` [[stdlib_stats_distribution_normal(module):cdf_normal(interface)]] `(x, loc, scale)`
 
 ### Class
 

@@ -226,7 +226,7 @@ increasing, or decreasing, value.
 
 ##### Syntax
 
-`call [[stdlib_sorting(module):ord_sort(interface)]]( array[, work, reverse ] )`
+`call ` [[stdlib_sorting(module):ord_sort(interface)]] `( array[, work, reverse ] )`
 
 ##### Class
 
@@ -293,7 +293,7 @@ decreasing, value.
 
 ##### Syntax
 
-`call [[stdlib_sorting(module):sort(interface)]]( array[, reverse] )`
+`call ` [[stdlib_sorting(module):sort(interface)]] `( array[, reverse] )`
 
 ##### Class
 
@@ -348,7 +348,7 @@ decreasing, value.
 
 ##### Syntax
 
-`call [[stdlib_sorting(module):radix_sort(interface)]]( array[, work, reverse] )`
+`call ` [[stdlib_sorting(module):radix_sort(interface)]] `( array[, work, reverse] )`
 
 ##### Class
 
@@ -398,7 +398,7 @@ sort the input `array` to produce the output `array`.
 
 ##### Syntax
 
-`call [[stdlib_sorting(module):sort_index(interface)]]( array, index[, work, iwork, reverse ] )`
+`call ` [[stdlib_sorting(module):sort_index(interface)]] `( array, index[, work, iwork, reverse ] )`
 
 ##### Class
 

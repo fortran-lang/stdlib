@@ -18,7 +18,7 @@ Applying Fisher-Yates algorithm to generate an unbiased permutation for any list
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_uniform(module):shuffle(interface)]]( list )`
+`result = ` [[stdlib_stats_distribution_uniform(module):shuffle(interface)]] `( list )`
 
 ### Class
 
@@ -62,7 +62,7 @@ Note: the algorithm used for generating uniform random variates is fundamentally
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_uniform(module):rvs_uniform(interface)]]([[loc,] scale] [[[,array_size]]])`
+`result = ` [[stdlib_stats_distribution_uniform(module):rvs_uniform(interface)]] `([[loc,] scale] [[[,array_size]]])`
 
 ### Class
 
@@ -110,7 +110,7 @@ f(x) = 1 / (scale%re * scale%im);  for complex uniform distribution.
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_uniform(module):pdf_uniform(interface)]](x, loc, scale)`
+`result = ` [[stdlib_stats_distribution_uniform(module):pdf_uniform(interface)]] `(x, loc, scale)`
 
 ### Class
 
@@ -160,7 +160,7 @@ F(x) = (x%re - loc%re)(x%im - loc%im) / (scale%re * scale%im); for complex unifo
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_uniform(module):cdf_uniform(interface)]](x, loc, scale)`
+`result = ` [[stdlib_stats_distribution_uniform(module):cdf_uniform(interface)]] `(x, loc, scale)`
 
 ### Class
 

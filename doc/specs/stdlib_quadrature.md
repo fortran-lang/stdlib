@@ -18,9 +18,9 @@ Returns the trapezoidal rule integral of an array `y` representing discrete samp
 
 ### Syntax
 
-`result = [[stdlib_quadrature(module):trapz(interface)]](y, x)`
+`result = ` [[stdlib_quadrature(module):trapz(interface)]] `(y, x)`
 
-`result = [[stdlib_quadrature(module):trapz(interface)]](y, dx)`
+`result = ` [[stdlib_quadrature(module):trapz(interface)]] `(y, dx)`
 
 ### Arguments
 
@@ -54,7 +54,7 @@ Given an array of abscissas `x`, computes the array of weights `w` such that if 
 
 ### Syntax
 
-`result = [[stdlib_quadrature(module):trapz_weights(interface)]](x)`
+`result = ` [[stdlib_quadrature(module):trapz_weights(interface)]] `(x)`
 
 ### Arguments
 
@@ -86,9 +86,9 @@ Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length a
 
 ### Syntax
 
-`result = [[stdlib_quadrature(module):simps(interface)]](y, x [, even])`
+`result = ` [[stdlib_quadrature(module):simps(interface)]] `(y, x [, even])`
 
-`result = [[stdlib_quadrature(module):simps(interface)]](y, dx [, even])`
+`result = ` [[stdlib_quadrature(module):simps(interface)]] `(y, dx [, even])`
 
 ### Arguments
 
@@ -128,7 +128,7 @@ Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length a
 
 ### Syntax
 
-`result = [[stdlib_quadrature(module):simps_weights(interface)]](x [, even])`
+`result = ` [[stdlib_quadrature(module):simps_weights(interface)]] `(x [, even])`
 
 ### Arguments
 
@@ -169,7 +169,7 @@ Accuracy has been validated up to N=64 by comparing computed results to tablulat
 
 ### Syntax
 
-`subroutine [[stdlib_quadrature(module):gauss_legendre(interface)]] (x, w[, interval])`
+`subroutine ` [[stdlib_quadrature(module):gauss_legendre(interface)]] ` (x, w[, interval])`
 
 ### Arguments
 
@@ -207,7 +207,7 @@ Accuracy has been validated up to N=64 by comparing computed results to tablulat
 
 ### Syntax
 
-`subroutine [[stdlib_quadrature(module):gauss_legendre_lobatto(interface)]] (x, w[, interval])`
+`subroutine ` [[stdlib_quadrature(module):gauss_legendre_lobatto(interface)]] ` (x, w[, interval])`
 
 ### Arguments
 
