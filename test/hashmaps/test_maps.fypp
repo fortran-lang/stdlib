@@ -205,6 +205,7 @@ contains
             if (present) then
                 call map%remove(key, existed)
                 call check(error, existed, "chaining-removal-spec: Key not found in entry removal.")
+                return
             else
                 call map%map_entry(key)
             end if
@@ -429,6 +430,7 @@ contains
             if (present) then
                 call map%remove(key, existed)
                 call check(error, existed, "open-removal-spec: Key not found in entry removal.")
+                return
             else
                 call map%map_entry(key)
             end if
