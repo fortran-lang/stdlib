@@ -335,7 +335,7 @@ module stdlib_linalg_state
 
     end function new_state_nowhere
 
-    ! Append a generic value to the error flag (rank-agnostic)
+    !> Append a generic value to the error flag (rank-agnostic)
     pure subroutine appendr(msg,a,prefix)
        class(*),optional,intent(in) :: a(..)
        character(len=*),intent(inout) :: msg
