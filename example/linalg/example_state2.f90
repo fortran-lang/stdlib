@@ -1,5 +1,5 @@
 program example_state2
-  !! This example shows how to set a `type(linalg_state)` variable to process output conditions 
+  !! This example shows how to set a `type(linalg_state_type)` variable to process output conditions 
   !! out of a simple division routine. The example is meant to highlight: 
   !! 1) the different mechanisms that can be used to initialize the `linalg_state` variable providing 
   !!    strings, scalars, or arrays, on input to it; 
