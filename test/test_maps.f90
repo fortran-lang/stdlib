@@ -44,6 +44,7 @@ contains
                     & &
                 , new_unittest("chaining-maps-seeded_water_hasher-16-byte-words", test_seeded_water_hasher_16_byte_words) &
                 , new_unittest("chaining-maps-seeded_water_hasher-256-byte-words", test_seeded_water_hasher_256_byte_words) &
+            , new_unittest("chaining-maps-removal-spec", test_removal_spec) &
             ]
 
     end subroutine collect_stdlib_chaining_maps
@@ -388,6 +389,56 @@ contains
 
     end subroutine
 
+    subroutine test_removal_spec(error)
+        !! Test following code provided by @jannisteunissen
+        !! https://github.com/fortran-lang/stdlib/issues/785
+        type(error_type), allocatable, intent(out) :: error
+
+        type(chaining_hashmap_type) :: map
+        type(key_type) :: key
+        integer, parameter :: n_max = 500
+        integer :: n
+        integer, allocatable :: key_counts(:)
+        integer, allocatable :: seed(:)
+        integer(int8) :: int32_int8(4)
+        integer(int32) :: keys(n_max)
+        real(dp) :: r_uniform(n_max)
+        logical :: existed, present
+
+        call random_seed(size = n)
+        allocate(seed(n), source = 123456)
+        call random_seed(put = seed)
+
+        call random_number(r_uniform)
+        keys = nint(r_uniform * n_max * 0.25_dp)
+
+        call map%init(fnv_1_hasher, slots_bits=10)
+
+        do n = 1, n_max
+            call set(key, transfer(keys(n), int32_int8))
+            call map%key_test(key, present)
+            if (present) then
+                call map%remove(key, existed)
+                call check(error, existed, "chaining-removal-spec: Key not found in entry removal.")
+                return
+            else
+                call map%map_entry(key)
+            end if
+        end do
+
+        ! Count number of keys that occur an odd number of times
+        allocate(key_counts(minval(keys):maxval(keys)), source = 0)
+        do n = 1, n_max
+            key_counts(keys(n)) = key_counts(keys(n)) + 1
+        end do
+        n = sum(iand(key_counts, 1))
+
+        call check(error, map%entries(), n, & 
+                   "chaining-removal-spec: Number of expected keys and entries are different.")
+        return
+
+    end subroutine
+
 end module
 
 module test_stdlib_open_maps
@@ -435,6 +486,7 @@ contains
                 , new_unittest("open-maps-seeded_nmhash32x_hasher-256-byte-words", test_seeded_nmhash32x_hasher_256_byte_words) &
                 , new_unittest("open-maps-seeded_water_hasher-16-byte-words", test_seeded_water_hasher_16_byte_words) &
                 , new_unittest("open-maps-seeded_water_hasher-256-byte-words", test_seeded_water_hasher_256_byte_words) &
+            , new_unittest("open-maps-removal-spec", test_removal_spec) &
             ]
 
     end subroutine collect_stdlib_open_maps
@@ -776,6 +828,56 @@ contains
             call map % remove(key, existed)
             call check(error, existed,  "Key not found in entry removal.")
         end do
+
+    end subroutine
+
+    subroutine test_removal_spec(error)
+        !! Test following code provided by @jannisteunissen
+        !! https://github.com/fortran-lang/stdlib/issues/785
+        type(error_type), allocatable, intent(out) :: error
+
+        type(open_hashmap_type) :: map
+        type(key_type) :: key
+        integer, parameter :: n_max = 500
+        integer :: n
+        integer, allocatable :: key_counts(:)
+        integer, allocatable :: seed(:)
+        integer(int8) :: int32_int8(4)
+        integer(int32) :: keys(n_max)
+        real(dp) :: r_uniform(n_max)
+        logical :: existed, present
+
+        call random_seed(size = n)
+        allocate(seed(n), source = 123456)
+        call random_seed(put = seed)
+
+        call random_number(r_uniform)
+        keys = nint(r_uniform * n_max * 0.25_dp)
+
+        call map%init(fnv_1_hasher, slots_bits=10)
+
+        do n = 1, n_max
+            call set(key, transfer(keys(n), int32_int8))
+            call map%key_test(key, present)
+            if (present) then
+                call map%remove(key, existed)
+                call check(error, existed, "open-removal-spec: Key not found in entry removal.")
+                return
+            else
+                call map%map_entry(key)
+            end if
+        end do
+
+        ! Count number of keys that occur an odd number of times
+        allocate(key_counts(minval(keys):maxval(keys)), source = 0)
+        do n = 1, n_max
+            key_counts(keys(n)) = key_counts(keys(n)) + 1
+        end do
+        n = sum(iand(key_counts, 1))
+
+        call check(error, map%entries(), n, & 
+                   "open-removal-spec: Number of expected keys and entries are different.")
+        return
 
     end subroutine
 
