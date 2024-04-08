@@ -4,7 +4,7 @@ program example_state2
   !! 1) the different mechanisms that can be used to initialize the `linalg_state` variable providing 
   !!    strings, scalars, or arrays, on input to it; 
   !! 2) `pure` setup of the error control
-  use stdlib_linalg_state
+  use stdlib_linalg_state, only: linalg_state_type, LINALG_VALUE_ERROR, LINALG_SUCCESS
   implicit none
   integer :: info
   type(linalg_state_type) :: err
