@@ -1,5 +1,6 @@
 program example_test
   use stdlib_bitsets
+  implicit none
   type(bitset_large) :: set0
   call set0%init(166)
   call set0%not()

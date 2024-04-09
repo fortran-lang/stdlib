@@ -1,5 +1,6 @@
 program example_math_arange
   use stdlib_math, only: arange
+  implicit none
 
   print *, arange(3)                 ! [1,2,3]
   print *, arange(-1)                ! [1,0,-1]

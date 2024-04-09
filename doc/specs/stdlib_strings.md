@@ -23,7 +23,7 @@ Remove leading and trailing whitespace characters.
 
 #### Syntax
 
-`string = [[stdlib_strings(module):strip(interface)]] (string)`
+`string = ` [[stdlib_strings(module):strip(interface)]] ` (string)`
 
 #### Status
 
@@ -59,7 +59,7 @@ If no character *set* or *substring* is provided trailing whitespace is removed.
 
 #### Syntax
 
-`string = [[stdlib_strings(module):chomp(interface)]] (string[, set|substring])`
+`string = ` [[stdlib_strings(module):chomp(interface)]] ` (string[, set|substring])`
 
 #### Status
 
@@ -97,7 +97,7 @@ Check if a *string* starts with a given *substring*.
 
 #### Syntax
 
-`string = [[stdlib_strings(module):starts_with(interface)]] (string, substring)`
+`string = ` [[stdlib_strings(module):starts_with(interface)]] ` (string, substring)`
 
 #### Status
 
@@ -134,7 +134,7 @@ Check if a *string* ends with a given *substring*.
 
 #### Syntax
 
-`string = [[stdlib_strings(module):ends_with(interface)]] (string, substring)`
+`string = ` [[stdlib_strings(module):ends_with(interface)]] ` (string, substring)`
 
 #### Status
 
@@ -185,7 +185,7 @@ If no valid index exists in the defined region, empty string is returned.
 
 #### Syntax
 
-`string = [[stdlib_strings(module):slice(interface)]] (string [, first, last, stride])`
+`string = ` [[stdlib_strings(module):slice(interface)]] ` (string [, first, last, stride])`
 
 #### Status
 
@@ -230,7 +230,7 @@ If `occurrence`th occurrence is not found, function returns `0`.
 
 #### Syntax
 
-`string = [[stdlib_strings(module):find(interface)]] (string, pattern [, occurrence, consider_overlapping])`
+`string = ` [[stdlib_strings(module):find(interface)]] ` (string, pattern [, occurrence, consider_overlapping])`
 
 #### Status
 
@@ -272,7 +272,7 @@ Occurrences overlapping on a base occurrence will not be replaced.
 
 #### Syntax
 
-`string = [[stdlib_strings(module):replace_all(interface)]] (string, pattern, replacement)`
+`string = ` [[stdlib_strings(module):replace_all(interface)]] ` (string, pattern, replacement)`
 
 #### Status
 
@@ -312,7 +312,7 @@ If `output_length` is less than or equal to the length of `string`, padding is n
 
 #### Syntax
 
-`string = [[stdlib_strings(module):padl(interface)]] (string, output_length [, pad_with])`
+`string = ` [[stdlib_strings(module):padl(interface)]] ` (string, output_length [, pad_with])`
 
 #### Status
 
@@ -352,7 +352,7 @@ If `output_length` is less than or equal to the length of `string`, padding is n
 
 #### Syntax
 
-`string = [[stdlib_strings(module):padr(interface)]] (string, output_length [, pad_with])`
+`string = ` [[stdlib_strings(module):padr(interface)]] ` (string, output_length [, pad_with])`
 
 #### Status
 
@@ -392,7 +392,7 @@ If `consider_overlapping` is not provided or is set to `.true.` the function cou
 
 #### Syntax
 
-`string = [[stdlib_strings(module):count(interface)]] (string, pattern [, consider_overlapping])`
+`string = ` [[stdlib_strings(module):count(interface)]] ` (string, pattern [, consider_overlapping])`
 
 #### Status
 
@@ -432,7 +432,7 @@ If `output_length` is less than or equal to the length of `string`, padding is n
 
 #### Syntax
 
-`string = [[stdlib_strings(module):zfill(interface)]] (string, output_length)`
+`string = ` [[stdlib_strings(module):zfill(interface)]] ` (string, output_length)`
 
 #### Status
 
@@ -470,7 +470,7 @@ Input a wrong `format` that cause the internal-IO to fail, the result value is a
 
 #### Syntax
 
-`string = [[stdlib_strings(module):to_string(interface)]] (value [, format])`
+`string = ` [[stdlib_strings(module):to_string(interface)]] ` (value [, format])`
 
 #### Status
 

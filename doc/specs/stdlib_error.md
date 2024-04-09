@@ -25,7 +25,7 @@ Checks the value of a logical condition.
 
 #### Syntax
 
-`call [[check(subroutine)]](condition, msg, code, warn)`
+`call ` [[check(subroutine)]] `(condition, msg, code, warn)`
 
 
 #### Arguments
@@ -77,7 +77,7 @@ Aborts the program with a message and a nonzero exit code.
 
 #### Syntax
 
-`call [[stdlib_error(module):error_stop(interface)]](msg, code)`
+`call ` [[stdlib_error(module):error_stop(interface)]] `(msg, code)`
 
 #### Arguments
 

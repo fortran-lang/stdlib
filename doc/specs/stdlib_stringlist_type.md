@@ -49,8 +49,8 @@ Experimental
 
 #### Syntax
 
-For fidx: `res = [[stdlib_stringlist_type(module):fidx(interface)]] (idx)`
-For bidx: `res = [[stdlib_stringlist_type(module):bidx(interface)]] (idx)`
+For fidx: `res = ` [[stdlib_stringlist_type(module):fidx(interface)]] ` (idx)`
+For bidx: `res = ` [[stdlib_stringlist_type(module):bidx(interface)]] ` (idx)`
 
 #### Status
 
@@ -86,7 +86,7 @@ With argument: Initializes a stringlist equivalent to the input array `array` i.
 
 #### Syntax
 
-`res = [[stdlib_stringlist_type(module):stringlist_type(interface)]] ([array])`
+`res = ` [[stdlib_stringlist_type(module):stringlist_type(interface)]] ` ([array])`
 
 #### Status
 
@@ -121,7 +121,7 @@ Inserts the string `string` _AT_ the index `idx`, so that the newly added elemen
 
 #### Syntax
 
-`call [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stringlist_type(type):insert_at(bound)]] (idx, string)`
+`call ` [[stdlib_stringlist_type(module):stringlist_type(type)]] `%` [[stringlist_type(type):insert_at(bound)]] ` (idx, string)`
 
 #### Status
 
@@ -155,7 +155,7 @@ Returns the string present currently at the index `idx` in a stringlist. If inde
 
 #### Syntax
 
-`res = [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stringlist_type(type):get(bound)]] (idx)`
+`res = ` [[stdlib_stringlist_type(module):stringlist_type(type)]] `%` [[stringlist_type(type):get(bound)]] ` (idx)`
 
 #### Status
 
@@ -190,7 +190,7 @@ Returns the number of elements present currently in the stringlist.
 
 #### Syntax
 
-`res = [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stringlist_type(type):len(bound)]] ()`
+`res = ` [[stdlib_stringlist_type(module):stringlist_type(type)]] `%` [[stringlist_type(type):len(bound)]] ` ()`
 
 #### Status
 
@@ -224,7 +224,7 @@ Removes all elements from a stringlist.
 
 #### Syntax
 
-`call [[stdlib_stringlist_type(module):stringlist_type(type)]]%[[stringlist_type(type):clear(bound)]] ()`
+`call ` [[stdlib_stringlist_type(module):stringlist_type(type)]] `%` [[stringlist_type(type):clear(bound)]] ` ()`
 
 #### Status
 
@@ -360,7 +360,7 @@ a [[stdlib_stringlist_type(module):stringlist_type(type)]].
 
 #### Result value
 
-The result is an instance of `[[stdlib_stringlist_type(module):stringlist_type(type)]]`.
+The result is an instance of [[stdlib_stringlist_type(module):stringlist_type(type)]].
 
 #### Example
 

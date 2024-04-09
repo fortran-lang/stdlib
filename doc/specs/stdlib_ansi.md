@@ -194,7 +194,7 @@ Generic interface to turn a style, foreground or background enumerator into an a
 
 #### Syntax
 
-`string = [[stdlib_string_colors(module):to_string(interface)]] (code)`
+`string =` [[stdlib_ansi(module):to_string(interface)]] `(code)`
 
 #### Class
 

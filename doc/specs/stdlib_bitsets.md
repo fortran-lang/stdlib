@@ -78,13 +78,13 @@ position, that, in turn, is indexed from 0 to `bits-1`. `bitset_type` is
 used only as a `class` to define entities that can be either a `bitset_64` or
 a `bitset_large`. The syntax for using the types are:
 
-`class([[stdlib_bitsets(module):bitset_type(type)]]) :: variable`
+`class(` [[stdlib_bitsets(module):bitset_type(type)]] `) :: variable`
 
-`type([[stdlib_bitsets(module):bitset_64(type)]]) :: variable`
+`type(` [[stdlib_bitsets(module):bitset_64(type)]] `) :: variable`
 
 and
 
-`type([[stdlib_bitsets(module):bitset_large(type)]]) :: variable`
+`type(` [[stdlib_bitsets(module):bitset_large(type)]] `) :: variable`
 
 ## The *bitset-literal*
 
@@ -239,7 +239,7 @@ Determines whether all bits are set to 1 in `self`.
 
 #### Syntax
 
-`result = self % [[bitset_type(type):all(bound)]]()`
+`result = self % ` [[bitset_type(type):all(bound)]] `()`
 
 #### Class
 
@@ -276,7 +276,7 @@ number of bits, otherwise the result is undefined.
 
 #### Syntax
 
-`call [[stdlib_bitsets(module):and(interface)]](set1, set2)`
+`call ` [[stdlib_bitsets(module):and(interface)]] `(set1, set2)`
 
 #### Class
 
@@ -314,7 +314,7 @@ result is undefined.
 
 #### Syntax
 
-`call [[stdlib_bitsets(module):and_not(interface)]](set1, set2)`
+`call ` [[stdlib_bitsets(module):and_not(interface)]] `(set1, set2)`
 
 #### Class
 
@@ -349,7 +349,7 @@ Determines whether any bits are set in `self`.
 
 #### Syntax
 
-`result = self % [[bitset_type(type):any(bound)]]()`
+`result = self % ` [[bitset_type(type):any(bound)]] `()`
 
 #### Class
 
@@ -383,7 +383,7 @@ Returns the number of bits that are set to one in `self`.
 
 #### Syntax
 
-`result = self % [[bitset_type(type):bit_count(bound)]] ()`
+`result = self % ` [[bitset_type(type):bit_count(bound)]] ` ()`
 
 #### Class
 
@@ -417,7 +417,7 @@ Reports the number of bits in `self`.
 
 #### Syntax
 
-`result = self % [[bitset_type(type):bits(bound)]] ()`
+`result = self % ` [[bitset_type(type):bits(bound)]] ` ()`
 
 #### Class
 
@@ -460,11 +460,11 @@ Note: Positions outside the range 0 to `bits(set) -1` are ignored.
 
 #### Syntax
 
-`call self % [[bitset_type(type):clear(bound)]](pos)`
+`call self % ` [[bitset_type(type):clear(bound)]] `(pos)`
 
 or
 
-`call self % [[bitset_type(type):clear(bound)]](start_pos, end_pos)`
+`call self % ` [[bitset_type(type):clear(bound)]] `(start_pos, end_pos)`
 
 #### Class
 
@@ -507,7 +507,7 @@ informative message.
 
 #### Syntax
 
-`call [[stdlib_bitsets(module):extract(interface)]](new, old, start_pos, stop_pos, status )`
+`call ` [[stdlib_bitsets(module):extract(interface)]] `(new, old, start_pos, stop_pos, status )`
 
 #### Class
 
@@ -563,11 +563,11 @@ flip the bit values with positions from `start_pos` to `end_pos` in
 
 #### Syntax
 
-`call self % [[bitset_type(type):flip(bound)]] (pos)`
+`call self % ` [[bitset_type(type):flip(bound)]] ` (pos)`
 
 or
 
-`call self % [[bitset_type(type):flip(bound)]] (start_pos, end_pos)`
+`call self % ` [[bitset_type(type):flip(bound)]] ` (start_pos, end_pos)`
 
 #### Class
 
@@ -606,7 +606,7 @@ binary literal.
 
 #### Syntax
 
-`call self % [[bitset_type(type):from_string(bound)]](string[, status])`
+`call self % ` [[bitset_type(type):from_string(bound)]] `(string[, status])`
 
 #### Class
 
@@ -655,7 +655,7 @@ Experimental
 
 #### Syntax
 
-`call self % [[bitset_type(type):init(bound)]] (bits [, status])`
+`call self % ` [[bitset_type(type):init(bound)]] ` (bits [, status])`
 
 #### Class
 
@@ -705,7 +705,7 @@ file.
 
 #### Syntax
 
-`call self % [[bitset_type(type):input(bound)]] (unit [, status])`
+`call self % ` [[bitset_type(type):input(bound)]] ` (unit [, status])`
 
 #### Class
 
@@ -757,7 +757,7 @@ Determines whether no bits are set in `self`.
 
 #### Syntax
 
-`result = self % [[bitset_type(type):none(bound)]] ()`
+`result = self % ` [[bitset_type(type):none(bound)]] ` ()`
 
 #### Class
 
@@ -792,7 +792,7 @@ Performs the logical complement on the bits of `self`.
 
 #### Syntax
 
-`call self % [[bitset_type(type):not(bound)]] ()`
+`call self % ` [[bitset_type(type):not(bound)]] ` ()`
 
 #### Class
 
@@ -824,7 +824,7 @@ same number of bits, otherwise the result is undefined.
 
 #### Syntax
 
-`call [[stdlib_bitsets(module):or(interface)]](set1, set2)`
+`call ` [[stdlib_bitsets(module):or(interface)]] `(set1, set2)`
 
 #### Class
 
@@ -859,7 +859,7 @@ Writes a binary representation of a bitset to an unformatted file.
 
 #### Syntax
 
-`call self % [[bitset_type(type):output(bound)]] (unit[, status])`
+`call self % ` [[bitset_type(type):output(bound)]] ` (unit[, status])`
 
 #### Class
 
@@ -904,11 +904,11 @@ value.
 
 #### Syntax
 
-`call self % [[bitset_type(type):read_bitset(bound)]](string[, status])`
+`call self % ` [[bitset_type(type):read_bitset(bound)]] `(string[, status])`
 
 or
 
-`call self % [[bitset_type(type):read_bitset(bound)]](unit[, advance, status])`
+`call self % ` [[bitset_type(type):read_bitset(bound)]] `(unit[, advance, status])`
 
 
 #### Class
@@ -995,11 +995,11 @@ set the bits at positions from `start_pos` to `end_pos` in `self` to 1.
 
 #### Syntax
 
-`call self % [[bitset_type(type):set(bound)]] (POS)`
+`call self % ` [[bitset_type(type):set(bound)]] ` (POS)`
 
 or
 
-`call self % [[bitset_type(type):set(bound)]] (START_POS, END_POS)`
+`call self % ` [[bitset_type(type):set(bound)]] ` (START_POS, END_POS)`
 
 #### Class
 
@@ -1038,7 +1038,7 @@ Determine whether the bit at position `pos` is set to 1 in `self`.
 
 #### Syntax
 
-`result = self % [[bitset_type(type):test(bound)]](pos)`
+`result = self % ` [[bitset_type(type):test(bound)]] `(pos)`
 
 #### Class
 
@@ -1077,7 +1077,7 @@ Represents the value of `self` as a binary literal in `string`.
 
 #### Syntax
 
-`call self % [[bitset_type(type):to_string(bound)]](string[, status])`
+`call self % ` [[bitset_type(type):to_string(bound)]] `(string[, status])`
 
 #### Class
 
@@ -1121,7 +1121,7 @@ Determines the value of the bit at position, `pos`, in `self`.
 
 #### Syntax
 
-`result = self % [[bitset_type(type):value(bound)]](pos)`
+`result = self % ` [[bitset_type(type):value(bound)]] `(pos)`
 
 #### Class
 
@@ -1162,11 +1162,11 @@ character string or formatted file.
 
 #### Syntax
 
-`call self % [[bitset_type(type):write_bitset(bound)]](string[, status])`
+`call self % ` [[bitset_type(type):write_bitset(bound)]] `(string[, status])`
 
 or
 
-`call self % [[bitset_type(type):write_bitset(bound)]] (unit[, advance, status])`
+`call self % ` [[bitset_type(type):write_bitset(bound)]] ` (unit[, advance, status])`
 
 #### Class
 
@@ -1229,7 +1229,7 @@ the samee number of bits, otherwise the result is undefined.
 
 #### Syntax
 
-`result = [[stdlib_bitsets(module):xor(interface)]] (set1, set2)`
+`result = ` [[stdlib_bitsets(module):xor(interface)]] ` (set1, set2)`
 
 #### Class
 
@@ -1267,7 +1267,7 @@ Returns `.true.` if all bits in `set1` and `set2` have the same value,
 
 #### Syntax
 
-`result = set1 [[stdlib_bitsets(module):==(interface)]] set2`
+`result = set1 ` [[stdlib_bitsets(module):==(interface)]] ` set2`
 
 or
 
@@ -1311,7 +1311,7 @@ Returns `.true.` if any bits in `self` and `set2` differ in value,
 
 #### Syntax
 
-`result = set1 [[stdlib_bitsets(module):/=(interface)]] set2`
+`result = set1 ` [[stdlib_bitsets(module):/=(interface)]] ` set2`
 
 or
 
@@ -1357,7 +1357,7 @@ results are undefined.
 
 #### Syntax
 
-`result = set1 [[stdlib_bitsets(module):>=(interface)]] set2`
+`result = set1 ` [[stdlib_bitsets(module):>=(interface)]] ` set2`
 
 or
 
@@ -1404,7 +1404,7 @@ results are undefined.
 
 #### Syntax
 
-`result = set1 [[stdlib_bitsets(module):>(interface)]] set2`
+`result = set1 ` [[stdlib_bitsets(module):>(interface)]] ` set2`
 
 or
 
@@ -1451,7 +1451,7 @@ results are undefined.
 
 #### Syntax
 
-`result = set1 [[stdlib_bitsets(module):<=(interface)]] set2`
+`result = set1 ` [[stdlib_bitsets(module):<=(interface)]] ` set2`
 
 or
 
@@ -1498,7 +1498,7 @@ results are undefined.
 
 #### Syntax
 
-`result = set1 [[stdlib_bitsets(module):<(interface)]] set2`
+`result = set1 ` [[stdlib_bitsets(module):<(interface)]] ` set2`
 
 or
 

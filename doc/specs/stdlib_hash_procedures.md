@@ -514,7 +514,7 @@ in mapping hash codes into small arrays.
 
 ##### Syntax
 
-`code = [[stdlib_hash_32bit:fibonacci_hash]]( key, nbits )`
+`code = ` [[stdlib_hash_32bit:fibonacci_hash]] `( key, nbits )`
 
 ##### Class
 
@@ -559,7 +559,7 @@ character string.
 
 ##### Syntax
 
-`code = [[stdlib_hash_32bit:fnv_1_hash]]( key )`
+`code = ` [[stdlib_hash_32bit:fnv_1_hash]] `( key )`
 
 ##### Class
 
@@ -614,7 +614,7 @@ character string.
 
 ##### Syntax
 
-`code = [[stdlib_hash_32bit:fnv_1a_hash]]( key )`
+`code = ` [[stdlib_hash_32bit:fnv_1a_hash]] `( key )`
 
 ##### Class
 
@@ -668,7 +668,7 @@ seed for `nmhash32` and is also different from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_hash_32bit:new_nmhash32_seed]]( seed )`
+`call ` [[stdlib_hash_32bit:new_nmhash32_seed]] `( seed )`
 
 ##### Class
 
@@ -706,7 +706,7 @@ seed for `nmhash32x` and is also different from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_hash_32bit:new_nmhash32x_seed]]( seed )`
+`call ` [[stdlib_hash_32bit:new_nmhash32x_seed]] `( seed )`
 
 ##### Class
 
@@ -744,7 +744,7 @@ seed for `water_hash` and is also different from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_hash_32bit:new_water_hash_seed]]( seed )`
+`call ` [[stdlib_hash_32bit:new_water_hash_seed]] `( seed )`
 
 ##### Class
 
@@ -783,7 +783,7 @@ character string, and the input `seed`.
 
 ##### Syntax
 
-`code = [[stdlib_hash_32bit:nmhash32]]( key, seed )`
+`code = ` [[stdlib_hash_32bit:nmhash32]] `( key, seed )`
 
 ##### Class
 
@@ -835,7 +835,7 @@ character string, and the input `seed`.
 
 ##### Syntax
 
-`code = [[stdlib_hash_32bit:nmhash32x]]( key, seed )`
+`code = ` [[stdlib_hash_32bit:nmhash32x]] `( key, seed )`
 
 ##### Class
 
@@ -885,7 +885,7 @@ Returns a random 32-bit integer distributed uniformly over the odd values.
 
 ##### Syntax
 
-`call [[stdlib_hash_32bit:odd_random_integer]]( harvest )`
+`call ` [[stdlib_hash_32bit:odd_random_integer]] `( harvest )`
 
 ##### Class
 
@@ -921,7 +921,7 @@ in mapping a hash value to a range 0 to `2**nbits-1`.
 
 ##### Syntax
 
-`code = [[stdlib_hash_32bit:universal_mult_hash]]( key, seed, nbits )`
+`code = ` [[stdlib_hash_32bit:universal_mult_hash]] `( key, seed, nbits )`
 
 ##### Class
 
@@ -969,7 +969,7 @@ character string, and the input `seed`.
 
 ##### Syntax
 
-`code = [[stdlib_hash_32bit:water_hash]]( key, seed )`
+`code = ` [[stdlib_hash_32bit:water_hash]] `( key, seed )`
 
 ##### Class
 
@@ -1073,7 +1073,7 @@ in mapping hash codes into small arrays.
 
 ##### Syntax
 
-`code = [[stdlib_hash_64bit:fibonacci_hash]]( key, nbits )`
+`code = ` [[stdlib_hash_64bit:fibonacci_hash]] `( key, nbits )`
 
 ##### Class
 
@@ -1118,7 +1118,7 @@ character string.
 
 ##### Syntax
 
-`code = [[stdlib_hash_64bit:fnv_1_hash]]( key )`
+`code = ` [[stdlib_hash_64bit:fnv_1_hash]] `( key )`
 
 ##### Class
 
@@ -1173,7 +1173,7 @@ character string.
 
 ##### Syntax
 
-`code = [[stdlib_hash_64bit:fnv_1a_hash]]( key )`
+`code = ` [[stdlib_hash_64bit:fnv_1a_hash]] `( key )`
 
 ##### Class
 
@@ -1227,7 +1227,7 @@ seed for `pengy_hash` and is also different from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_hash_64bit:new_pengy_hash_seed]]( seed )`
+`call ` [[stdlib_hash_64bit:new_pengy_hash_seed]] `( seed )`
 
 ##### Class
 
@@ -1266,7 +1266,7 @@ from the input seed.
 
 ##### Syntax
 
-`code = call [[stdlib_hash_64bit:new_spooky_hash_seed]]( seed )`
+`call ` [[stdlib_hash_64bit:new_spooky_hash_seed]] `( seed )`
 
 ##### Class
 
@@ -1303,7 +1303,7 @@ Returns a random 64-bit integer distributed uniformly over the odd values.
 
 ##### Syntax
 
-`call [[stdlib_hash_64bit:odd_random_integer]]( harvest )`
+`call ` [[stdlib_hash_64bit:odd_random_integer]] `( harvest )`
 
 ##### Class
 
@@ -1339,7 +1339,7 @@ value also depends on a scalar 32-bit integer, `seed`.
 
 ##### Syntax
 
-`code = [[stdlib_hash_64bit:pengy_hash]]( key, seed )`
+`code = ` [[stdlib_hash_64bit:pengy_hash]] `( key, seed )`
 
 #####  Class
 
@@ -1387,7 +1387,7 @@ value also depends on a two element vector,  `seed`.
 
 ##### Syntax
 
-`code = [[stdlib_hash_64bit:spooky_hash]]( key, seed )`
+`code = ` [[stdlib_hash_64bit:spooky_hash]] `( key, seed )`
 
 #####  Class
 
@@ -1436,7 +1436,7 @@ in mapping a hash value to a range 0 to `2**nbits-1`.
 
 ##### Syntax
 
-`code = [[stdlib_hash_64bit:universal_mult_hash]]( key, seed, nbits )`
+`code = ` [[stdlib_hash_64bit:universal_mult_hash]] `( key, seed, nbits )`
 
 ##### Class
 
