@@ -6,7 +6,6 @@ module stdlib_linalg_constants
      public
 
 
-
      ! Integer size support for ILP64 builds should be done here
      integer, parameter :: ilp = int32
      private            :: int32, int64

@@ -3,6 +3,7 @@ module test_linalg
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_linalg, only: diag, eye, trace, outer_product, cross_product, kronecker_product
+    use stdlib_linalg_state, only: linalg_state_type, LINALG_SUCCESS, linalg_error_handling
 
     implicit none
 
@@ -71,7 +72,8 @@ contains
             new_unittest("cross_product_int8", test_cross_product_int8), &
             new_unittest("cross_product_int16", test_cross_product_int16), &
             new_unittest("cross_product_int32", test_cross_product_int32), &
-            new_unittest("cross_product_int64", test_cross_product_int64) &
+            new_unittest("cross_product_int64", test_cross_product_int64), &
+            new_unittest("state_handling", test_state_handling) &
             ]
 
     end subroutine collect_linalg
@@ -513,7 +515,7 @@ contains
 
 
 
-    subroutine test_kronecker_product_rsp(error) 
+    subroutine test_kronecker_product_rsp(error)
       !> Error handling
       type(error_type), allocatable, intent(out) :: error
       integer, parameter :: m1 = 1, n1 = 2, m2 = 2, n2 = 3
@@ -546,7 +548,7 @@ contains
       ! Expected: C = [1*B, 2*B] = [[1,2,3, 2,4,6], [2,4,6, 4, 8, 12]]
 
     end subroutine test_kronecker_product_rsp
-    subroutine test_kronecker_product_rdp(error) 
+    subroutine test_kronecker_product_rdp(error)
       !> Error handling
       type(error_type), allocatable, intent(out) :: error
       integer, parameter :: m1 = 1, n1 = 2, m2 = 2, n2 = 3
@@ -579,7 +581,7 @@ contains
       ! Expected: C = [1*B, 2*B] = [[1,2,3, 2,4,6], [2,4,6, 4, 8, 12]]
 
     end subroutine test_kronecker_product_rdp
-    subroutine test_kronecker_product_csp(error) 
+    subroutine test_kronecker_product_csp(error)
       !> Error handling
       type(error_type), allocatable, intent(out) :: error
       integer, parameter :: m1 = 1, n1 = 2, m2 = 2, n2 = 3
@@ -612,7 +614,7 @@ contains
       ! Expected: C = [1*B, 2*B] = [[1,2,3, 2,4,6], [2,4,6, 4, 8, 12]]
 
     end subroutine test_kronecker_product_csp
-    subroutine test_kronecker_product_cdp(error) 
+    subroutine test_kronecker_product_cdp(error)
       !> Error handling
       type(error_type), allocatable, intent(out) :: error
       integer, parameter :: m1 = 1, n1 = 2, m2 = 2, n2 = 3
@@ -645,7 +647,7 @@ contains
       ! Expected: C = [1*B, 2*B] = [[1,2,3, 2,4,6], [2,4,6, 4, 8, 12]]
 
     end subroutine test_kronecker_product_cdp
-    subroutine test_kronecker_product_iint8(error) 
+    subroutine test_kronecker_product_iint8(error)
       !> Error handling
       type(error_type), allocatable, intent(out) :: error
       integer, parameter :: m1 = 1, n1 = 2, m2 = 2, n2 = 3
@@ -678,7 +680,7 @@ contains
       ! Expected: C = [1*B, 2*B] = [[1,2,3, 2,4,6], [2,4,6, 4, 8, 12]]
 
     end subroutine test_kronecker_product_iint8
-    subroutine test_kronecker_product_iint16(error) 
+    subroutine test_kronecker_product_iint16(error)
       !> Error handling
       type(error_type), allocatable, intent(out) :: error
       integer, parameter :: m1 = 1, n1 = 2, m2 = 2, n2 = 3
@@ -711,7 +713,7 @@ contains
       ! Expected: C = [1*B, 2*B] = [[1,2,3, 2,4,6], [2,4,6, 4, 8, 12]]
 
     end subroutine test_kronecker_product_iint16
-    subroutine test_kronecker_product_iint32(error) 
+    subroutine test_kronecker_product_iint32(error)
       !> Error handling
       type(error_type), allocatable, intent(out) :: error
       integer, parameter :: m1 = 1, n1 = 2, m2 = 2, n2 = 3
@@ -744,7 +746,7 @@ contains
       ! Expected: C = [1*B, 2*B] = [[1,2,3, 2,4,6], [2,4,6, 4, 8, 12]]
 
     end subroutine test_kronecker_product_iint32
-    subroutine test_kronecker_product_iint64(error) 
+    subroutine test_kronecker_product_iint64(error)
       !> Error handling
       type(error_type), allocatable, intent(out) :: error
       integer, parameter :: m1 = 1, n1 = 2, m2 = 2, n2 = 3
@@ -1045,6 +1047,59 @@ contains
 
         call skip_test(error, "Quadruple precision is not enabled")
     end subroutine test_cross_product_cqp
+
+    subroutine test_state_handling(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state,state_out
+
+        state = linalg_state_type(LINALG_SUCCESS,' 32-bit real: ',1.0_sp)
+        call check(error, &
+        state%message==' 32-bit real: 1.00000000E+00', &
+        "malformed state message with 32-bit reals.")
+        if (allocated(error)) return
+
+        state = linalg_state_type(LINALG_SUCCESS,' 64-bit real: ',1.0_dp)
+        call check(error, &
+        state%message==' 64-bit real: 1.0000000000000000E+000', &
+        "malformed state message with 64-bit reals.")
+        if (allocated(error)) return
+
+
+        state = linalg_state_type(LINALG_SUCCESS,' 32-bit complex: ',(1.0_sp,1.0_sp))
+        call check(error, &
+        state%message==' 32-bit complex: (1.00000000E+00,1.00000000E+00)', &
+        "malformed state message with 32-bit complex: "//trim(state%message))
+        if (allocated(error)) return
+
+        state = linalg_state_type(LINALG_SUCCESS,' 64-bit complex: ',(1.0_dp,1.0_dp))
+        call check(error, &
+        state%message==' 64-bit complex: (1.0000000000000000E+000,1.0000000000000000E+000)', &
+        "malformed state message with 64-bit complex.")
+        if (allocated(error)) return
+
+
+        state = linalg_state_type(LINALG_SUCCESS,' 32-bit array: ',[(1.0_sp,0.0_sp),(0.0_sp,1.0_sp)])
+        call check(error, state%message== &
+        ' 32-bit array: [(1.00000000E+00,0.00000000E+00) (0.00000000E+00,1.00000000E+00)]', &
+        "malformed state message with 32-bit real array.")
+        if (allocated(error)) return
+
+        !> State flag with location
+        state = linalg_state_type('test_formats',LINALG_SUCCESS,' 32-bit real: ',1.0_sp)
+        call check(error, &
+        state%print()=='[test_formats] returned Success!', &
+        "malformed state message with 32-bit real and location.")
+        if (allocated(error)) return
+
+        !> Test error handling procedure
+        call linalg_error_handling(state,state_out)
+        call check(error, state%print()==state_out%print(), &
+        "malformed state message on return from error handling procedure.")
+
+    end subroutine test_state_handling
+
 
     pure recursive function catalan_number(n) result(value)
         integer, intent(in) :: n
