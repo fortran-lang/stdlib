@@ -1208,17 +1208,17 @@ module stdlib_linalg_blas_s
 
 
      pure subroutine stdlib_srotm(n,sx,incx,sy,incy,sparam)
-     !! APPLY THE MODIFIED GIVENS TRANSFORMATION, H, TO THE 2 BY N MATRIX
-     !! (SX**T) , WHERE **T INDICATES TRANSPOSE. THE ELEMENTS OF SX ARE IN
-     !! (SX**T)
-     !! SX(LX+I*INCX), I = 0 TO N-1, WHERE LX = 1 IF INCX >= 0, ELSE
-     !! LX = (-INCX)*N, AND SIMILARLY FOR SY USING USING LY AND INCY.
-     !! WITH SPARAM(1)=SFLAG, H HAS ONE OF THE FOLLOWING FORMS..
-     !! SFLAG=-1._sp     SFLAG=0._sp        SFLAG=1._sp     SFLAG=-2.E0
-     !! (SH11  SH12)    (1._sp  SH12)    (SH11  1._sp)    (1._sp  0._sp)
-     !! H=(          )    (          )    (          )    (          )
-     !! (SH21  SH22),   (SH21  1._sp),   (-1._sp SH22),   (0._sp  1._sp).
-     !! SEE  SROTMG FOR A DESCRIPTION OF DATA STORAGE IN SPARAM.
+     !! SROTM applies the modified Givens transformation, \(H\), to the 2-by-N matrix 
+     !! $$ \left[ \begin{array}{c}SX^T\\SY^T\\ \end{array} \right], $$ 
+     !! where \(^T\) indicates transpose. The elements of \(SX\) are in 
+     !! SX(LX+I*INCX), I = 0:N-1, where LX = 1 if INCX >= 0, else LX = (-INCX)*N, 
+     !! and similarly for SY using LY and INCY. 
+     !! With SPARAM(1)=SFLAG, \(H\) has one of the following forms: 
+     !! $$ H=\underbrace{\begin{bmatrix}SH_{11} & SH_{12}\\SH_{21} & SH_{22}\end{bmatrix}}_{SFLAG=-1},
+     !!      \underbrace{\begin{bmatrix}1 & SH_{12}\\SH_{21} & 1\end{bmatrix}}_{SFLAG=0}, 
+     !!      \underbrace{\begin{bmatrix}SH_{11} & 1\\-1 & SH_{22}\end{bmatrix}}_{SFLAG=1},  
+     !!      \underbrace{\begin{bmatrix}1 & 0\\0 & 1\end{bmatrix}}_{SFLAG=-2}. $$     
+     !! See SROTMG for a description of data storage in SPARAM. 
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1315,19 +1315,18 @@ module stdlib_linalg_blas_s
 
 
      pure subroutine stdlib_srotmg(sd1,sd2,sx1,sy1,sparam)
-     !! CONSTRUCT THE MODIFIED GIVENS TRANSFORMATION MATRIX H WHICH ZEROS
-     !! THE SECOND COMPONENT OF THE 2-VECTOR  (SQRT(SD1)*SX1,SQRT(SD2)    SY2)**T.
-     !! WITH SPARAM(1)=SFLAG, H HAS ONE OF THE FOLLOWING FORMS..
-     !! SFLAG=-1._sp     SFLAG=0._sp        SFLAG=1._sp     SFLAG=-2.E0
-     !! (SH11  SH12)    (1._sp  SH12)    (SH11  1._sp)    (1._sp  0._sp)
-     !! H=(          )    (          )    (          )    (          )
-     !! (SH21  SH22),   (SH21  1._sp),   (-1._sp SH22),   (0._sp  1._sp).
-     !! LOCATIONS 2-4 OF SPARAM CONTAIN SH11,SH21,SH12, AND SH22
-     !! RESPECTIVELY. (VALUES OF 1._sp, -1._sp, OR 0._sp IMPLIED BY THE
-     !! VALUE OF SPARAM(1) ARE NOT STORED IN SPARAM.)
-     !! THE VALUES OF GAMSQ AND RGAMSQ SET IN THE DATA STATEMENT MAY BE
-     !! INEXACT.  THIS IS OK AS THEY ARE ONLY USED FOR TESTING THE SIZE
-     !! OF SD1 AND SD2.  ALL ACTUAL SCALING OF DATA IS DONE USING GAM.
+     !! SROTMG Constructs the modified Givens transformation matrix \(H\) which zeros the 
+     !! second component of the 2-vector 
+     !! $$ \left[ {\sqrt{SD_1}\cdot SX_1,\sqrt{SD_2}\cdot SY_2} \right]^T. $$
+     !! With SPARAM(1)=SFLAG, \(H\) has one of the following forms:          
+     !! $$ H=\underbrace{\begin{bmatrix}SH_{11} & SD_{12}\\SH_{21} & SH_{22}\end{bmatrix}}_{SFLAG=-1},
+     !!      \underbrace{\begin{bmatrix}1 & SH_{12}\\SH_{21} & 1\end{bmatrix}}_{SFLAG=0}, 
+     !!      \underbrace{\begin{bmatrix}SH_{11} & 1\\-1 & SH_{22}\end{bmatrix}}_{SFLAG=1},  
+     !!      \underbrace{\begin{bmatrix}1 & 0\\0 & 1\end{bmatrix}}_{SFLAG=2}. $$
+     !! Locations 2-4 of SPARAM contain SH11, SH21, SH12 and SH22 respectively.
+     !! (Values of 1.0, -1.0, or 0.0 implied by the value of SPARAM(1) are not stored in SPARAM.)
+     !! The values of parameters GAMSQ and RGAMSQ may be inexact. This is OK as they are only 
+     !! used for testing the size of DD1 and DD2. All actual scaling of data is done using GAM.     
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--

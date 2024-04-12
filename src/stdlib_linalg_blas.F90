@@ -922,17 +922,17 @@ module stdlib_linalg_blas
 
 
           interface rotm
-          !! APPLY THE MODIFIED GIVENS TRANSFORMATION, H, TO THE 2 BY N MATRIX
-          !! (DX**T) , WHERE **T INDICATES TRANSPOSE. THE ELEMENTS OF DX ARE IN
-          !! (DY**T)
-          !! DX(LX+I*INCX), I = 0 TO N-1, WHERE LX = 1 IF INCX >= 0, ELSE
-          !! LX = (-INCX)*N, AND SIMILARLY FOR SY USING LY AND INCY.
-          !! WITH DPARAM(1)=DFLAG, H HAS ONE OF THE FOLLOWING FORMS..
-          !! DFLAG=-1._dp     DFLAG=0._dp        DFLAG=1._dp     DFLAG=-2.D0
-          !! (DH11  DH12)    (1._dp  DH12)    (DH11  1._dp)    (1._dp  0._dp)
-          !! H=(          )    (          )    (          )    (          )
-          !! (DH21  DH22),   (DH21  1._dp),   (-1._dp DH22),   (0._dp  1._dp).
-          !! SEE ROTMG FOR A DESCRIPTION OF DATA STORAGE IN DPARAM.
+          !! ROTM applies the modified Givens transformation, \(H\), to the 2-by-N matrix 
+          !! $$ \left[ \begin{array}{c}DX^T\\DY^T\\ \end{array} \right], $$ 
+          !! where \(^T\) indicates transpose. The elements of \(DX\) are in 
+          !! DX(LX+I*INCX), I = 0:N-1, where LX = 1 if INCX >= 0, else LX = (-INCX)*N, 
+          !! and similarly for DY using LY and INCY. 
+          !! With DPARAM(1)=DFLAG, \(H\) has one of the following forms: 
+          !! $$ H=\underbrace{\begin{bmatrix}DH_{11} & DH_{12}\\DH_{21} & DH_{22}\end{bmatrix}}_{DFLAG=-1},
+          !!      \underbrace{\begin{bmatrix}1 & DH_{12}\\DH_{21} & 1\end{bmatrix}}_{DFLAG=0}, 
+          !!      \underbrace{\begin{bmatrix}DH_{11} & 1\\-1 & DH_{22}\end{bmatrix}}_{DFLAG=1},  
+          !!      \underbrace{\begin{bmatrix}1 & 0\\0 & 1\end{bmatrix}}_{DFLAG=-2}. $$     
+          !! See ROTMG for a description of data storage in DPARAM.           
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine drotm(n,dx,incx,dy,incy,dparam)
                     import sp,dp,qp,ilp,lk 
@@ -960,19 +960,18 @@ module stdlib_linalg_blas
 
 
           interface rotmg
-          !! CONSTRUCT THE MODIFIED GIVENS TRANSFORMATION MATRIX H WHICH ZEROS
-          !! THE SECOND COMPONENT OF THE 2-VECTOR  (SQRT(DD1)*DX1,SQRT(DD2)    DY2)**T.
-          !! WITH DPARAM(1)=DFLAG, H HAS ONE OF THE FOLLOWING FORMS..
-          !! DFLAG=-1._dp     DFLAG=0._dp        DFLAG=1._dp     DFLAG=-2.D0
-          !! (DH11  DH12)    (1._dp  DH12)    (DH11  1._dp)    (1._dp  0._dp)
-          !! H=(          )    (          )    (          )    (          )
-          !! (DH21  DH22),   (DH21  1._dp),   (-1._dp DH22),   (0._dp  1._dp).
-          !! LOCATIONS 2-4 OF DPARAM CONTAIN DH11, DH21, DH12, AND DH22
-          !! RESPECTIVELY. (VALUES OF 1._dp, -1._dp, OR 0._dp IMPLIED BY THE
-          !! VALUE OF DPARAM(1) ARE NOT STORED IN DPARAM.)
-          !! THE VALUES OF GAMSQ AND RGAMSQ SET IN THE DATA STATEMENT MAY BE
-          !! INEXACT.  THIS IS OK AS THEY ARE ONLY USED FOR TESTING THE SIZE
-          !! OF DD1 AND DD2.  ALL ACTUAL SCALING OF DATA IS DONE USING GAM.
+          !! ROTMG Constructs the modified Givens transformation matrix \(H\) which zeros the 
+          !! second component of the 2-vector 
+          !! $$ \left[ {\sqrt{DD_1}\cdot DX_1,\sqrt{DD_2}\cdot DY_2} \right]^T. $$
+          !! With DPARAM(1)=DFLAG, \(H\) has one of the following forms:          
+          !! $$ H=\underbrace{\begin{bmatrix}DH_{11} & DH_{12}\\DH_{21} & DH_{22}\end{bmatrix}}_{DFLAG=-1},
+          !!      \underbrace{\begin{bmatrix}1 & DH_{12}\\DH_{21} & 1\end{bmatrix}}_{DFLAG=0}, 
+          !!      \underbrace{\begin{bmatrix}DH_{11} & 1\\-1 & DH_{22}\end{bmatrix}}_{DFLAG=1},  
+          !!      \underbrace{\begin{bmatrix}1 & 0\\0 & 1\end{bmatrix}}_{DFLAG=-2}. $$
+          !! Locations 2-4 of DPARAM contain DH11, DH21, DH12 and DH22 respectively.
+          !! (Values of 1.0, -1.0, or 0.0 implied by the value of DPARAM(1) are not stored in DPARAM.)
+          !! The values of parameters GAMSQ and RGAMSQ may be inexact. This is OK as they are only 
+          !! used for testing the size of DD1 and DD2. All actual scaling of data is done using GAM.
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine drotmg(dd1,dd2,dx1,dy1,dparam)
                     import sp,dp,qp,ilp,lk 
