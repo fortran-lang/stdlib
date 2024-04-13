@@ -41,7 +41,7 @@ These can be enabled during the build process. For example, with CMake, one can 
 The same is possible from the `fpm` branch, where the `cpp` preprocessor is enabled by default. For example, the macros can be added to the project's manifest:
 
 ```toml
-# Link to blas and lapack libraries; or `link = "openblas"` for openblas
+# Link against appropriate external BLAS and LAPACK libraries, if necessary
 [build]
 link = ["blas", "lapack"]  
 
