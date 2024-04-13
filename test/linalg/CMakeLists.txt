@@ -8,6 +8,6 @@ set(
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 ADDTEST(linalg)
+ADDTEST(linalg_determinant)
 ADDTEST(linalg_matrix_property_checks)
 ADDTEST(blas_lapack)
-ADDTEST(linalg_determinant)
