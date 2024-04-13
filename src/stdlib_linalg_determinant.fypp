@@ -39,9 +39,9 @@ module stdlib_linalg_determinant
 
      #:for rk,rt in RC_KINDS_TYPES
      ! Compute determinant of a square matrix A: pure interface
-     function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)
+     pure function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)
          !> Input matrix a[m,n]
-         ${rt}$, intent(in), target :: a(:,:)
+         ${rt}$, intent(in) :: a(:,:)
          !> Result: matrix determinant
          ${rt}$ :: det
 
