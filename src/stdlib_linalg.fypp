@@ -7,9 +7,12 @@ module stdlib_linalg
     int8, int16, int32, int64
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
+  use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling
+  use stdlib_linalg_determinant, only: det
   implicit none
   private
 
+  public :: det
   public :: diag
   public :: eye
   public :: trace
@@ -23,6 +26,9 @@ module stdlib_linalg
   public :: is_hermitian
   public :: is_triangular
   public :: is_hessenberg
+  
+  ! Export linalg error handling
+  public :: linalg_state_type, linalg_error_handling
 
   interface diag
     !! version: experimental
