@@ -1,3 +1,38 @@
+# Version 0.5.0
+
+Full release notes available at [v0.5.0] tag.
+
+[v0.5.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.5.0
+
+- new module `stdlib_linalg_state`
+  [#774](https://github.com/fortran-lang/stdlib/pull/774)
+  - new derived type: `linalg_state_type`
+  - new procedure: `linalg_error_handling`
+
+Changes to existing scripts and modules
+- addition of `implicit none` to all example programs
+  [#780](https://github.com/fortran-lang/stdlib/pull/780)
+- change in module `stdlib_hashmaps`
+  - fix the procedure `remove_chaining_entry`
+    [#788](https://github.com/fortran-lang/stdlib/pull/788)
+- change in module `stdlib_linalg`
+  - addition of the BLAS/LAPACK backends and interfaces
+    [#772](https://github.com/fortran-lang/stdlib/pull/772)
+- change in module `stdlib_str2num`
+  - fix the procedure `to_${k1}$_from_stream`
+    [#789](https://github.com/fortran-lang/stdlib/pull/789)
+- upgrade of the Intel-classic compiler in macOS CI 
+  [#777](https://github.com/fortran-lang/stdlib/pull/777)
+
+Changes to existing documentation
+  - Improvement of the documentation
+    [#784](https://github.com/fortran-lang/stdlib/pull/784)
+    [#781](https://github.com/fortran-lang/stdlib/pull/781)
+    [#786](https://github.com/fortran-lang/stdlib/pull/786)
+  - Improvement of the support of `fpm`
+    [#787](https://github.com/fortran-lang/stdlib/pull/787)
+    [#790](https://github.com/fortran-lang/stdlib/pull/790)
+
 # Version 0.4.0
 
 Full release notes available at [v0.4.0] tag.

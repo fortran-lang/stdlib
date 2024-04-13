@@ -1,5 +1,6 @@
 program example_from_string
   use stdlib_bitsets
+  implicit none
   character(*), parameter :: &
     bits_all = '111111111111111111111111111111111'
   type(bitset_64) :: set0

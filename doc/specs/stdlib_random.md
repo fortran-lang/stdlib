@@ -18,7 +18,7 @@ Set or get the seed value before calling the probability distribution pseudorand
 
 ### Syntax
 
-`call [[stdlib_random(module):random_seed(interface)]](put, get)`
+`call ` [[stdlib_random(module):random_seed(interface)]] `(put, get)`
 
 ### Arguments
 
@@ -48,7 +48,7 @@ Generate an integer pseudorandom number in a specific range [-2^k, 2^k - 1] acco
 
 ### Syntax
 
-`result = [[stdlib_random(module):dist_rand(interface)]](n)`
+`result = ` [[stdlib_random(module):dist_rand(interface)]] `(n)`
 
 ### Arguments
 

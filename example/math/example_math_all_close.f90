@@ -1,6 +1,7 @@
 program example_math_all_close
 
   use stdlib_math, only: all_close
+  implicit none
   real    :: y, NAN
   complex :: z(4, 4)
 
