@@ -11,6 +11,7 @@ module stdlib_linalg_determinant
 
      !> Function interface
      public :: det
+     public :: operator(.det.)
 
      character(*), parameter :: this = 'determinant'
 
@@ -20,10 +21,19 @@ module stdlib_linalg_determinant
 
      interface det
         #:for rk,rt in RC_KINDS_TYPES
+        ! Interface with error control
         module procedure stdlib_linalg_${rt[0]}$${rk}$determinant
+        ! Pure interface
         module procedure stdlib_linalg_pure_${rt[0]}$${rk}$determinant
         #:endfor
      end interface det
+     
+     ! Pure Operator interface 
+     interface operator(.det.)
+        #:for rk,rt in RC_KINDS_TYPES
+        module procedure stdlib_linalg_pure_${rt[0]}$${rk}$determinant
+        #:endfor        
+     end interface operator(.det.)
 
      contains
 
