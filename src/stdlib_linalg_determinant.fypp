@@ -1,89 +1,21 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-module stdlib_linalg_determinant
+submodule (stdlib_linalg) stdlib_linalg_determinant
 !! Determinant of a rectangular matrix
      use stdlib_linalg_constants
      use stdlib_linalg_lapack, only: getrf
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
      implicit none(type,external)
-     private
 
      ! Function interface
-     public :: det
-     public :: operator(.det.)
-
      character(*), parameter :: this = 'determinant'
-
-     interface det
-     !!### Summary 
-     !! Interface for computing matrix determinant.
-     !!
-     !!### Description
-     !! 
-     !! This interface provides methods for computing the determinant of a matrix.
-     !! Supported data types include real and complex.
-     !! 
-     !!@note The provided functions are intended for square matrices.          
-     !! 
-     !!### Example
-     !!
-     !!```fortran
-     !!
-     !!    real(sp) :: a(3,3), d
-     !!    type(linalg_state_type) :: state  
-     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
-     !!    
-     !!    d = det(a,err=state)
-     !!    if (state%ok()) then 
-     !!       print *, 'Success! det=',d
-     !!    else
-     !!       print *, state%print()
-     !!    endif
-     !!
-     !!```
-     !!     
-        #:for rk,rt in RC_KINDS_TYPES
-        #:if rk!="xdp"
-        module procedure stdlib_linalg_${rt[0]}$${rk}$determinant    
-        module procedure stdlib_linalg_pure_${rt[0]}$${rk}$determinant
-        #:endif
-        #:endfor
-     end interface det
-     
-     interface operator(.det.)
-     !!### Summary
-     !! Pure operator interface for computing matrix determinant.
-     !!
-     !!### Description
-     !! 
-     !! This pure operator interface provides a convenient way to compute the determinant of a matrix.
-     !! Supported data types include real and complex.
-     !!
-     !!@note The provided functions are intended for square matrices.
-     !!
-     !!### Example
-     !!
-     !!```fortran
-     !!
-     !!    real(sp) :: matrix(3,3), d
-     !!    matrix = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
-     !!    d = .det.matrix
-     !!
-     !!```
-     !     
-        #:for rk,rt in RC_KINDS_TYPES
-        #:if rk!="xdp"
-        module procedure stdlib_linalg_pure_${rt[0]}$${rk}$determinant
-        #:endif
-        #:endfor        
-     end interface operator(.det.)
 
      contains
 
      #:for rk,rt in RC_KINDS_TYPES
      #:if rk!="xdp"
-     pure function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)     
+     module function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)     
      !!### Summary
      !! Compute determinant of a real square matrix (pure interface).
      !!
@@ -180,7 +112,7 @@ module stdlib_linalg_determinant
 
      end function stdlib_linalg_pure_${rt[0]}$${rk}$determinant
      
-     function stdlib_linalg_${rt[0]}$${rk}$determinant(a,overwrite_a,err) result(det)
+     module function stdlib_linalg_${rt[0]}$${rk}$determinant(a,overwrite_a,err) result(det)
      !!### Summary
      !! Compute determinant of a square matrix (with error control).
      !!
@@ -299,4 +231,4 @@ module stdlib_linalg_determinant
      #:endif
      #:endfor
 
-end module stdlib_linalg_determinant
+end submodule stdlib_linalg_determinant
