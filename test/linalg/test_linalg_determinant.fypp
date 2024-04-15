@@ -56,7 +56,7 @@ module test_linalg_determinant
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
         
-        call check(error, abs(deta-1.0_${rk}$)<tiny(0.0_${rk}$), 'det(eye(n))==1')
+        call check(error, abs(deta-1.0_${rk}$)<epsilon(0.0_${rk}$), 'det(eye(n))==1')
         
     end subroutine test_${rt[0]}$${rk}$_eye_determinant
 
@@ -126,7 +126,7 @@ module test_linalg_determinant
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
         
-        call check(error, all(abs(res-deta)<=tiny(0.0_${ck}$)), &
+        call check(error, all(abs(res-deta)<=epsilon(0.0_${ck}$)), &
                          'det((1+i)*eye(n))  does not match result')
 
     end subroutine test_${ct[0]}$${ck}$_complex_determinant
