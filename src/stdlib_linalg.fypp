@@ -231,7 +231,7 @@ module stdlib_linalg
     !! This interface provides methods for computing the determinant of a matrix.
     !! Supported data types include real and complex.
     !! 
-    !!@note The provided functions are intended for square matrices.          
+    !!@note The provided functions are intended for square matrices only.          
     !! 
     !!### Example
     !!
