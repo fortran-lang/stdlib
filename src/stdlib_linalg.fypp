@@ -304,7 +304,7 @@ module stdlib_linalg
         !> Matrix determinant
         ${rt}$ :: det
     end function stdlib_linalg_${rt[0]}$${rk}$determinant
-    module function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)
+    pure module function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)
         !> Input matrix a[m,n]
         ${rt}$, intent(in) :: a(:,:)
         !> Matrix determinant
