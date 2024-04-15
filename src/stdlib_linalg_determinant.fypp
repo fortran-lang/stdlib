@@ -13,8 +13,9 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
 
      contains
 
+     ! BLAS/LAPACK backends do not currently support xdp
      #:for rk,rt in RC_KINDS_TYPES
-     #:if rk!="xdp" ! BLAS/LAPACK backends do not currently support xdp
+     #:if rk!="xdp" 
      module function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)     
      !!### Summary
      !! Compute determinant of a real square matrix (pure interface).
@@ -54,8 +55,8 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
          if (m/=n .or. .not.min(m,n)>=0) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid or non-square matrix: a=[',m,',',n,']')
             det  = 0.0_${rk}$
-         ! Process output and return
-         call linalg_error_handling(err0)
+            ! Process output and return
+            call linalg_error_handling(err0)
          return
          end if
 
@@ -110,7 +111,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
          end select
 
          ! Process output and return
-         1 call linalg_error_handling(err0)
+         call linalg_error_handling(err0)
 
      end function stdlib_linalg_pure_${rt[0]}$${rk}$determinant
      
@@ -161,9 +162,9 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
          if (m/=n .or. .not.min(m,n)>=0) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid or non-square matrix: a=[',m,',',n,']')
             det  = 0.0_${rk}$
-          ! Process output and return
-         call linalg_error_handling(err0)
-         return
+            ! Process output and return
+            call linalg_error_handling(err0,err)
+            return
          end if
 
          ! Can A be overwritten? By default, do not overwrite
@@ -228,7 +229,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
          end select
 
          ! Process output and return
-         1 call linalg_error_handling(err0,err)
+         call linalg_error_handling(err0,err)
 
      end function stdlib_linalg_${rt[0]}$${rk}$determinant
 

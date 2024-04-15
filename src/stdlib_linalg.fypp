@@ -232,6 +232,7 @@ module stdlib_linalg
     !! Supported data types include `real` and `complex`.
     !! 
     !!@note The provided functions are intended for square matrices only.          
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !! 
     !!### Example
     !!
@@ -251,7 +252,7 @@ module stdlib_linalg
     !!```
     !!     
     #:for rk,rt in RC_KINDS_TYPES
-    #:if rk!="xdp" ! BLAS/LAPACK backends do not currently support xdp
+    #:if rk!="xdp" 
     module procedure stdlib_linalg_${rt[0]}$${rk}$determinant
     module procedure stdlib_linalg_pure_${rt[0]}$${rk}$determinant
     #:endif
@@ -268,6 +269,7 @@ module stdlib_linalg
     !! Supported data types include real and complex.
     !!
     !!@note The provided functions are intended for square matrices.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !!
     !!### Example
     !!
@@ -280,7 +282,7 @@ module stdlib_linalg
     !!```
     !     
     #:for rk,rt in RC_KINDS_TYPES
-    #:if rk!="xdp" ! BLAS/LAPACK backends do not currently support xdp
+    #:if rk!="xdp"
     module procedure stdlib_linalg_pure_${rt[0]}$${rk}$determinant
     #:endif
     #:endfor        
@@ -288,7 +290,7 @@ module stdlib_linalg
 
   interface
     #:for rk,rt in RC_KINDS_TYPES
-    #:if rk!="xdp" ! BLAS/LAPACK backends do not currently support xdp
+    #:if rk!="xdp" 
     module function stdlib_linalg_${rt[0]}$${rk}$determinant(a,overwrite_a,err) result(det)
         !> Input matrix a[m,n]
         ${rt}$, intent(inout), target :: a(:,:)
