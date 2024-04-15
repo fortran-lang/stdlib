@@ -161,7 +161,9 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
          if (m/=n .or. .not.min(m,n)>=0) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid or non-square matrix: a=[',m,',',n,']')
             det  = 0.0_${rk}$
-            goto 1
+          ! Process output and return
+         call linalg_error_handling(err0)
+         return
          end if
 
          ! Can A be overwritten? By default, do not overwrite
