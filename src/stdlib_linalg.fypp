@@ -241,14 +241,15 @@ module stdlib_linalg
     !!    real(sp) :: a(3,3), d
     !!    type(linalg_state_type) :: state  
     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
-    !!    
+    !!
+    !!    ! ...
     !!    d = det(a,err=state)
     !!    if (state%ok()) then 
     !!       print *, 'Success! det=',d
     !!    else
     !!       print *, state%print()
     !!    endif
-    !!
+    !!    ! ...
     !!```
     !!     
     #:for rk,rt in RC_KINDS_TYPES
@@ -275,10 +276,12 @@ module stdlib_linalg
     !!
     !!```fortran
     !!
+    !!    ! ...
     !!    real(sp) :: matrix(3,3), d
     !!    matrix = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
     !!    d = .det.matrix
-    !!
+    !!    ! ...
+    !! 
     !!```
     !     
     #:for rk,rt in RC_KINDS_TYPES
