@@ -190,7 +190,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
 
                 ! Initialize a matrix temporary
                 if (copy_a) then
-                   allocate(amat(m,n),source=a)
+                   allocate(amat, source=a)
                 else
                    amat => a
                 endif
