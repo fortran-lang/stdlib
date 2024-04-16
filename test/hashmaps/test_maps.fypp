@@ -56,7 +56,6 @@ contains
             integer(int8)             :: test_8_bits(test_size,key_types)
 
             call generate_vector(test_8_bits)
-            
             call map % init( ${hash_}$, slots_bits=10 )
 
             call test_input_random_data(error, map, test_8_bits, test_${size_}$)
