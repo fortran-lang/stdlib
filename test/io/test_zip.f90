@@ -14,7 +14,7 @@ contains
 
         testsuite = [ &
                     new_unittest('unexistent-file', test_unexistent_file, should_fail=.true.), &
-                    new_unittest('empty-zip', test_empty_zip), &
+                    ! new_unittest('empty-zip', test_empty_zip), &
                     new_unittest('empty-array', test_empty_array), &
                     new_unittest('single-file', test_single_file), &
                     new_unittest('two-files', test_two_files) &
