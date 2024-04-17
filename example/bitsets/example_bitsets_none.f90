@@ -1,5 +1,6 @@
 program example_none
   use stdlib_bitsets
+  implicit none
   character(*), parameter :: &
     bits_0 = '0000000000000000000'
   type(bitset_large) :: set0

@@ -1,5 +1,6 @@
 program example_add_log_unit
   use stdlib_logger, only: global_logger, read_only_error
+  implicit none
 
   character(256) :: iomsg
   integer :: iostat, unit, stat

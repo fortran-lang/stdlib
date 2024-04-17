@@ -210,7 +210,7 @@ Returns a copy of an input of type `key_type`.
 
 ##### Syntax
 
-`call [[stdlib_hashmap_wrappers:copy_key]]( old_key, new_key )`
+`call ` [[stdlib_hashmap_wrappers:copy_key]] `( old_key, new_key )`
 
 ##### Class
 
@@ -242,7 +242,7 @@ Returns a copy of an input of type `other_type`.
 
 ##### Syntax
 
-`call [[stdlib_hashmap_wrappers:copy_other]]( other_in, other_out )`
+`call ` [[stdlib_hashmap_wrappers:copy_other]] `( other_in, other_out )`
 
 ##### Class
 
@@ -289,7 +289,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = [[stdlib_hashmap_wrappers:fnv_1_hasher]]( key )`
+`code = ` [[stdlib_hashmap_wrappers:fnv_1_hasher]] `( key )`
 
 ##### Class
 
@@ -341,7 +341,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = [[stdlib_hashmap_wrappers:fnv_1a_hasher]]( key )`
+`code = ` [[stdlib_hashmap_wrappers:fnv_1a_hasher]] `( key )`
 
 ##### Class
 
@@ -393,7 +393,7 @@ Deallocates the memory associated with a variable of type
 
 ##### Syntax
 
-`call [[stdlib_hashmap_wrappers:free_key]]( key )`
+`call ` [[stdlib_hashmap_wrappers:free_key]] `( key )`
 
 ##### Class
 
@@ -423,7 +423,7 @@ Deallocates the memory associated with a variable of type
 
 ##### Syntax
 
-`call [[stdlib_hashmap_wrappers:free_other]]( other )`
+`call ` [[stdlib_hashmap_wrappers:free_other]] `( other )`
 
 ##### Class
 
@@ -454,11 +454,11 @@ in the variable `value`.
 
 ##### Syntax
 
-`call [[stdlib_hashmap_wrappers:get]]( key, value )`
+`call ` [[stdlib_hashmap_wrappers:get]] `( key, value )`
 
 or
 
-`call [[stdlib_hashmap_wrappers:get]]( other, value )`
+`call ` [[stdlib_hashmap_wrappers:get]] `( other, value )`
 
 ##### Class
 
@@ -498,7 +498,7 @@ argument of type `key_type` returning an `int32` hash value.
 
 ##### Syntax
 
-`type([[stdlib_hashmap_wrappers:hasher_fun]]), pointer :: fun_pointer`
+`type(` [[stdlib_hashmap_wrappers:hasher_fun]] `), pointer :: fun_pointer`
 
 ##### Class
 
@@ -580,7 +580,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = [[stdlib_hashmap_wrappers:seeded_nmhash32_hasher]]( key )`
+`code = ` [[stdlib_hashmap_wrappers:seeded_nmhash32_hasher]] `( key )`
 
 ##### Class
 
@@ -630,7 +630,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = [[stdlib_hashmap_wrappers:seeded_nmhash32x_hasher]]( key )`
+`code = ` [[stdlib_hashmap_wrappers:seeded_nmhash32x_hasher]] `( key )`
 
 ##### Class
 
@@ -679,7 +679,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = [[stdlib_hashmap_wrappers:seeded_water_hasher]]( key )`
+`code = ` [[stdlib_hashmap_wrappers:seeded_water_hasher]] `( key )`
 
 ##### Class
 
@@ -730,11 +730,11 @@ Places the data from `value` in a `key_type` or an `other_type`.
 
 ##### Syntax
 
-`call [[stdlib_hashmap_wrappers:set]]( key, value )`
+`call ` [[stdlib_hashmap_wrappers:set]] `( key, value )`
 
 or
 
-`call [[stdlib_hashmap_wrappers:set]]( other, value )`
+`call ` [[stdlib_hashmap_wrappers:set]] `( other, value )`
 
 
 ##### Class
@@ -1196,7 +1196,7 @@ Returns the number of procedure calls on a hash map.
 
 ##### Syntax
 
-`value = map % [[hashmap_type(type):calls(bound)]]()`
+`value = map % ` [[hashmap_type(type):calls(bound)]] `()`
 
 ##### Class
 
@@ -1234,7 +1234,7 @@ Returns the number of entries in a hash map.
 
 ##### Syntax
 
-`value = map % [[hashmap_type(type):entries(bound)]]()`
+`value = map % ` [[hashmap_type(type):entries(bound)]] `()`
 
 ##### Class
 
@@ -1272,7 +1272,7 @@ Returns all the keys contained in a map.
 
 ##### Syntax
 
-`call map % [[hashmap_type(type):get_all_keys(bound)]]( all_keys )`
+`call map % ` [[hashmap_type(type):get_all_keys(bound)]] `( all_keys )`
 
 ##### Class
 
@@ -1307,7 +1307,7 @@ Returns the other data associated with the `key`,
 
 ##### Syntax
 
-`value = map % [[hashmap_type(type):get_other_data(bound)]]( key, other [, exists] )`
+`value = map % ` [[hashmap_type(type):get_other_data(bound)]] `( key, other [, exists] )`
 
 ##### Class
 
@@ -1355,7 +1355,7 @@ Initializes a `hashmap_type` object.
 
 ##### Syntax
 
-`call map % [[hashmap_type(type):init(bound)]]( hasher [, slots_bits, status ] )`
+`call map % ` [[hashmap_type(type):init(bound)]] `( hasher [, slots_bits, status ] )`
 
 ##### Class
 
@@ -1419,7 +1419,7 @@ entry in the map.
 
 ##### Syntax
 
-`call map % [[hashmap_type(type):key_test(bound)]]( key, present )`
+`call map % ` [[hashmap_type(type):key_test(bound)]] `( key, present )`
 
 ##### Class
 
@@ -1461,7 +1461,7 @@ slots in the hash map.
 
 ##### Syntax
 
-`value = map % [[hashmap_type(type):loading(bound)]]( )`
+`value = map % ` [[hashmap_type(type):loading(bound)]] `( )`
 
 ##### Class
 
@@ -1499,7 +1499,7 @@ Inserts an entry into the hash map if it is not already present.
 
 ##### Syntax
 
-`call map % [[hashmap_type(type):map_entry(bound)]]( key[, other, conflict ] )`
+`call map % ` [[hashmap_type(type):map_entry(bound)]] `( key[, other, conflict ] )`
 
 
 ##### Class
@@ -1549,7 +1549,7 @@ Returns the total number of table probes on the hash map.
 
 ##### Syntax
 
-`result = map % [[hashmap_type(type):map_probes(bound)]]( )`
+`result = map % ` [[hashmap_type(type):map_probes(bound)]] `( )`
 
 ##### Class
 
@@ -1588,7 +1588,7 @@ Returns the total number of slots on a hash map
 
 ##### Syntax
 
-`result = map % [[hashmap_type(type):num_slots(bound)]]( )`
+`result = map % ` [[hashmap_type(type):num_slots(bound)]] `( )`
 
 ##### Class
 
@@ -1627,7 +1627,7 @@ Changes the hashing function for the map entries to that of `hasher`.
 
 ##### Syntax
 
-`call map % [[hashmap_type(type):rehash(bound)]]( hasher )`
+`call map % ` [[hashmap_type(type):rehash(bound)]] `( hasher )`
 
 ##### Class
 
@@ -1661,7 +1661,7 @@ Removes an entry from the hash map, `map`.
 
 ##### Syntax
 
-`call map % [[hashmap_type(type):remove(bound)]]( key[, existed ])`
+`call map % ` [[hashmap_type(type):remove(bound)]] `( key[, existed ])`
 
 ##### Class
 
@@ -1703,7 +1703,7 @@ Replaces the other data in the map for the entry with the key value,
 
 ##### Syntax
 
-`call map % [[hashmap_type(type):set_other_data(bound)]]( key, other[, exists] )`
+`call map % ` [[hashmap_type(type):set_other_data(bound)]] `( key, other[, exists] )`
 
 ##### Class
 
@@ -1749,7 +1749,7 @@ Returns the total number of bits used to address the hash map slots.
 
 ##### Syntax
 
-`result = map % [[hashmap_type(type):slots_bits(bound)]]( )`
+`result = map % ` [[hashmap_type(type):slots_bits(bound)]] `( )`
 
 ##### Class
 
@@ -1789,7 +1789,7 @@ their slot index for a hash map
 
 ##### Syntax
 
-`result = map % [[hashmap_type:total_depth]]( )`
+`result = map % ` [[hashmap_type:total_depth]] `( )`
 
 ##### Class
 

@@ -1,0 +1,121 @@
+! SPDX-Identifier: MIT
+
+#:include "common.fypp"
+#:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
+#:set RANKS = range(1, MAXRANK + 1)
+#:set INDEXINGS = ["default", "xy", "ij"]
+
+#:def OPTIONAL_PART_IN_SIGNATURE(indexing)
+#:if indexing in ("xy", "ij")
+  ${f', stdlib_meshgrid_{indexing}'}$
+#:endif
+#:enddef
+
+module test_meshgrid
+    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use stdlib_math, only: meshgrid, stdlib_meshgrid_ij, stdlib_meshgrid_xy
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    implicit none
+
+    public :: collect_meshgrid
+
+contains
+
+    !> Collect all exported unit tests
+    subroutine collect_meshgrid(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            #:for k1, t1 in IR_KINDS_TYPES
+            #:for rank in RANKS
+            #:for INDEXING in INDEXINGS
+            #: set RName = rname(f"meshgrid_{INDEXING}", rank, t1, k1)
+            new_unittest("${RName}$", test_${RName}$), &
+            #:endfor
+            #:endfor
+            #:endfor
+            new_unittest("dummy", test_dummy) &
+            ]
+
+    end subroutine collect_meshgrid
+
+    #:for k1, t1 in IR_KINDS_TYPES
+    #:for rank in RANKS
+    #:for INDEXING in INDEXINGS
+    #:if rank == 1
+      #:set INDICES = [1]
+    #:else
+      #:if INDEXING in ("default", "xy")
+        #:set INDICES = [2, 1] + [j for j in range(3, rank + 1)]
+      #:elif INDEXING == "ij"
+        #:set INDICES = [1, 2] + [j for j in range(3, rank + 1)]
+      #:endif
+    #:endif
+    #:set RName = rname(f"meshgrid_{INDEXING}", rank, t1, k1)
+    #:set GRIDSHAPE = "".join("length," for j in range(rank)).removesuffix(",")
+    subroutine test_${RName}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: length = 3
+        ${t1}$ :: ${"".join(f"x{j}(length)," for j in range(1, rank + 1)).removesuffix(",")}$
+        ${t1}$ :: ${"".join(f"xm{j}({GRIDSHAPE})," for j in range(1, rank + 1)).removesuffix(",")}$
+        ${t1}$ :: ${"".join(f"xm{j}_exact({GRIDSHAPE})," for j in range(1, rank + 1)).removesuffix(",")}$
+        integer :: i
+        integer :: ${"".join(f"i{j}," for j in range(1, rank + 1)).removesuffix(",")}$
+        ${t1}$, parameter :: ZERO = 0
+        ! valid test case
+        #:for index in range(1, rank + 1)
+        x${index}$ = [(i, i = length * ${index - 1}$ + 1, length * ${index}$)]
+        #:endfor
+        #:for j in range(1, rank + 1)
+        xm${j}$_exact = reshape( &
+                [${"".join("(" for dummy in range(rank)) + f"x{j}(i{j})" + "".join(f", i{index} = 1, size(x{index}))" for index in INDICES)}$], &
+                shape=[${GRIDSHAPE}$] &
+        )
+        #:endfor
+        call meshgrid( &
+                ${"".join(f"x{j}," for j in range(1, rank + 1))}$ &
+                ${"".join(f"xm{j}," for j in range(1, rank + 1)).removesuffix(",")}$ &
+                ${OPTIONAL_PART_IN_SIGNATURE(INDEXING)}$ )
+        #:for j in range(1, rank + 1)
+            call check(error, maxval(abs(xm${j}$ - xm${j}$_exact)), ZERO)
+            if (allocated(error)) return
+        #:endfor
+    end subroutine test_${RName}$
+    #:endfor
+    #:endfor
+    #:endfor
+
+    subroutine test_dummy(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+    end subroutine
+
+end module test_meshgrid
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_meshgrid, only : collect_meshgrid
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("meshgrid", collect_meshgrid) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program tester

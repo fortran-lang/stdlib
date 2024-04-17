@@ -23,7 +23,7 @@ Returns a value which lies in the given interval [`xmin`, `xmax`] (interval is `
 
 #### Syntax
 
-`res = [[stdlib_math(module):clip(interface)]] (x, xmin, xmax)`
+`res = ` [[stdlib_math(module):clip(interface)]] ` (x, xmin, xmax)`
 
 #### Status
 
@@ -69,7 +69,7 @@ Returns the greatest common divisor of two integers.
 
 #### Syntax
 
-`res = [[stdlib_math(module):gcd(interface)]] (a, b)`
+`res = ` [[stdlib_math(module):gcd(interface)]] ` (a, b)`
 
 #### Status
 
@@ -106,7 +106,7 @@ Returns a linearly spaced rank 1 array from [`start`, `end`]. Optionally, you ca
 
 #### Syntax
 
-`res = [[stdlib_math(module):linspace(interface)]] (start, end [, n])`
+`res = ` [[stdlib_math(module):linspace(interface)]] ` (start, end [, n])`
 
 #### Status
 
@@ -156,7 +156,7 @@ Returns a logarithmically spaced rank 1 array from [`base`^`start`, `base`^`end`
 
 #### Syntax
 
-`res = [[stdlib_math(module):logspace(interface)]] (start, end [, n [, base]])`
+`res = ` [[stdlib_math(module):logspace(interface)]] ` (start, end [, n [, base]])`
 
 #### Status
 
@@ -239,7 +239,7 @@ Creates a rank-1 `array` of the `integer/real` type with fixed-spaced values of 
 
 #### Syntax
 
-`result = [[stdlib_math(module):arange(interface)]](start [, end, step])`
+`result = ` [[stdlib_math(module):arange(interface)]] `(start [, end, step])`
 
 #### Arguments
 
@@ -291,7 +291,7 @@ The angles in `θ` are such that `z = abs(z)*exp((0.0, θ))`.
 
 #### Syntax
 
-`result = [[stdlib_math(module):arg(interface)]](z)`
+`result = ` [[stdlib_math(module):arg(interface)]] `(z)`
 
 #### Arguments
 
@@ -327,7 +327,7 @@ The angles in `θ` are such that `z = abs(z)*exp((0.0, θ*π/180.0))`.
 
 #### Syntax
 
-`result = [[stdlib_math(module):argd(interface)]](z)`
+`result = ` [[stdlib_math(module):argd(interface)]] `(z)`
 
 #### Arguments
 
@@ -363,7 +363,7 @@ The angles in `θ` are such that `z = abs(z)*exp((0.0, θ*π))`.
 
 #### Syntax
 
-`result = [[stdlib_math(module):argpi(interface)]](z)`
+`result = ` [[stdlib_math(module):argpi(interface)]] `(z)`
 
 #### Arguments
 
@@ -399,7 +399,7 @@ is_close(a, b, rel_tol, abs_tol) = is_close(a%re, b%re, rel_tol, abs_tol) .and. 
 
 #### Syntax
 
-`bool = [[stdlib_math(module):is_close(interface)]] (a, b [, rel_tol, abs_tol, equal_nan])`
+`bool = ` [[stdlib_math(module):is_close(interface)]] ` (a, b [, rel_tol, abs_tol, equal_nan])`
 
 #### Status
 
@@ -450,7 +450,7 @@ Returns a boolean scalar where two arrays are element-wise equal within a tolera
 
 #### Syntax
 
-`bool = [[stdlib_math(module):all_close(interface)]] (a, b [, rel_tol, abs_tol, equal_nan])`
+`bool = ` [[stdlib_math(module):all_close(interface)]] ` (a, b [, rel_tol, abs_tol, equal_nan])`
 
 #### Status
 
@@ -502,10 +502,10 @@ Computes differences between adjacent elements of an array.
 #### Syntax
 
 For a rank-1 array:  
-`y = [[stdlib_math(module):diff(interface)]](x [, n, prepend, append])`
+`y = ` [[stdlib_math(module):diff(interface)]] `(x [, n, prepend, append])`
 
 and for a rank-2 array:  
-`y = [[stdlib_math(module):diff(interface)]](x [, n, dim, prepend, append])`
+`y = ` [[stdlib_math(module):diff(interface)]] `(x [, n, dim, prepend, append])`
 
 #### Status
 
@@ -553,4 +553,60 @@ When both `prepend` and `append` are not present, the result `y` has one fewer e
 
 ```fortran
 {!example/math/example_diff.f90!}
+```
+
+### `meshgrid` subroutine
+
+#### Description
+
+Computes a list of coordinate matrices from coordinate vectors.
+
+For $n \geq 1$ coordinate vectors $(x_1, x_2, ..., x_n)$ of sizes $(s_1, s_2, ..., s_n)$, `meshgrid` computes $n$ coordinate matrices $(X_1, X_2, ..., X_n)$ with identical shape corresponding to the selected indexing:
+- Cartesian indexing (default behavior): the shape of the coordinate matrices is $(s_2, s_1, s_3, s_4, ... s_n)$.
+- matrix indexing: the shape of the coordinate matrices is $(s_1, s_2, s_3, s_4, ... s_n)$.
+
+#### Syntax
+
+For a 2D problem in Cartesian indexing:
+`call ` [[stdlib_math(module):meshgrid(interface)]] `(x, y, xm, ym)`
+
+For a 3D problem in Cartesian indexing:
+`call ` [[stdlib_math(module):meshgrid(interface)]] `(x, y, z, xm, ym, zm)`
+
+For a 3D problem in matrix indexing:
+`call ` [[stdlib_math(module):meshgrid(interface)]] `(x, y, z, xm, ym, zm, indexing="ij")`
+
+The subroutine can be called in `n`-dimensional situations, as long as `n` is inferior to the maximum allowed array rank.
+
+#### Status
+
+Experimental.
+
+#### Class
+
+Subroutine.
+
+#### Arguments
+
+For a `n`-dimensional problem, with `n >= 1`:
+
+`x1, x2, ..., xn`: The coordinate vectors.
+Shall be `real/integer` and `rank-1` arrays.
+These arguments are `intent(in)`.
+
+`xm1, xm2, ..., xmn`: The coordinate matrices.
+Shall be arrays of type `real` or `integer` of adequate shape:
+- for Cartesian indexing, the shape of the coordinate matrices must be `[size(x2), size(x1), size(x3), ..., size(xn)]`.
+- for matrix indexing, the shape of the coordinate matrices must be `[size(x1), size(x2), size(x3), ..., size(xn)]`.
+
+These argument are `intent(out)`.
+
+`indexing`: the selected indexing.
+Shall be an `integer` equal to `stdlib_meshgrid_xy` for Cartesian indexing (default), or `stdlib_meshgrid_ij` for matrix indexing. `stdlib_meshgrid_xy` and `stdlib_meshgrid_ij` are public constants defined in the module.
+This argument is `intent(in)` and `optional`, and is equal to `stdlib_meshgrid_xy` by default.
+
+#### Example
+
+```fortran
+{!example/math/example_meshgrid.f90!}
 ```

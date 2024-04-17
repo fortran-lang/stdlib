@@ -24,7 +24,7 @@ The Pearson correlation between two rows (or columns), say `x` and `y`, of `arra
 
 ### Syntax
 
-`result = [[stdlib_stats(module):corr(interface)]](array, dim [, mask])`
+`result = ` [[stdlib_stats(module):corr(interface)]] `(array, dim [, mask])`
 
 ### Class
 
@@ -78,7 +78,7 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 ### Syntax
 
-`result = [[stdlib_stats(module):cov(interface)]](array, dim [, mask [, corrected]])`
+`result = ` [[stdlib_stats(module):cov(interface)]] `(array, dim [, mask [, corrected]])`
 
 ### Class
 
@@ -123,9 +123,9 @@ Returns the mean of all the elements of `array`, or of the elements of `array` a
 
 ### Syntax
 
-`result = [[stdlib_stats(module):mean(interface)]](array [, mask])`
+`result = ` [[stdlib_stats(module):mean(interface)]] `(array [, mask])`
 
-`result = [[stdlib_stats(module):mean(interface)]](array, dim [, mask])`
+`result = ` [[stdlib_stats(module):mean(interface)]] `(array, dim [, mask])`
 
 ### Class
 
@@ -181,14 +181,14 @@ median(array) = mean( array_sorted( floor( (n + 1) / 2.):floor( (n + 1) / 2.) + 
 ```
 
 The current implementation relies on a selection algorithm applied on a copy of
-the whole array, using the subroutine `[[stdlib_selection(module):select(interface)]]`
-provided by the `[[stdlib_selection(module)]]` module.
+the whole array, using the subroutine [[stdlib_selection(module):select(interface)]]
+provided by the [[stdlib_selection(module)]] module.
 
 ### Syntax
 
-`result = [[stdlib_stats(module):median(interface)]](array [, mask])`
+`result = ` [[stdlib_stats(module):median(interface)]] `(array [, mask])`
 
-`result = [[stdlib_stats(module):median(interface)]](array, dim [, mask])`
+`result = ` [[stdlib_stats(module):median(interface)]] `(array, dim [, mask])`
 
 ### Class
 
@@ -248,9 +248,9 @@ The _k_-th order moment about `center` is defined as :
 
 ### Syntax
 
-`result = [[stdlib_stats(module):moment(interface)]](array, order [, center [, mask]])`
+`result = ` [[stdlib_stats(module):moment(interface)]] `(array, order [, center [, mask]])`
 
-`result = [[stdlib_stats(module):moment(interface)]](array, order, dim [, center [, mask]])`
+`result = ` [[stdlib_stats(module):moment(interface)]] `(array, order, dim [, center [, mask]])`
 
 ### Class
 
@@ -306,9 +306,9 @@ The use of the term `n-1` for scaling is called Bessel 's correction. The scalin
 
 ### Syntax
 
-`result = [[stdlib_stats(module):var(interface)]](array [, mask [, corrected]])`
+`result = ` [[stdlib_stats(module):var(interface)]] `(array [, mask [, corrected]])`
 
-`result = [[stdlib_stats(module):var(interface)]](array, dim [, mask [, corrected]])`
+`result = ` [[stdlib_stats(module):var(interface)]] `(array, dim [, mask [, corrected]])`
 
 ### Class
 

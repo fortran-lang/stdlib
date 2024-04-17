@@ -1,5 +1,6 @@
 program example_lt
   use stdlib_bitsets
+  implicit none
   type(bitset_64) :: set0, set1, set2
   call set0%init(33)
   call set1%init(33)

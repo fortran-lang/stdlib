@@ -25,6 +25,7 @@ set(fppFiles
     stdlib_linalg_outer_product.fypp
     stdlib_linalg_kronecker.fypp
     stdlib_linalg_cross_product.fypp
+    stdlib_linalg_state.fypp 
     stdlib_optval.fypp
     stdlib_selection.fypp
     stdlib_sorting.fypp
@@ -56,6 +57,7 @@ set(fppFiles
     stdlib_math_is_close.fypp
     stdlib_math_all_close.fypp
     stdlib_math_diff.fypp
+    stdlib_math_meshgrid.fypp
     stdlib_str2num.fypp
     stdlib_string_type.fypp
     stdlib_string_type_constructor.fypp
@@ -64,8 +66,29 @@ set(fppFiles
     stdlib_version.fypp
 )
 
+# Preprocessed files to contain preprocessor directives -> .F90 
+set(cppFiles
+    stdlib_linalg_constants.fypp
+    stdlib_linalg_blas.fypp
+    stdlib_linalg_blas_aux.fypp
+    stdlib_linalg_blas_s.fypp
+    stdlib_linalg_blas_d.fypp
+    stdlib_linalg_blas_q.fypp
+    stdlib_linalg_blas_c.fypp
+    stdlib_linalg_blas_z.fypp
+    stdlib_linalg_blas_w.fypp
+    stdlib_linalg_lapack.fypp
+    stdlib_linalg_lapack_aux.fypp
+    stdlib_linalg_lapack_s.fypp
+    stdlib_linalg_lapack_d.fypp
+    stdlib_linalg_lapack_q.fypp
+    stdlib_linalg_lapack_c.fypp
+    stdlib_linalg_lapack_z.fypp
+    stdlib_linalg_lapack_w.fypp
+)
 
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
+fypp_f90pp("${fyppFlags}" "${cppFiles}" outPreprocFiles)
 
 set(SRC
     stdlib_ansi.f90
@@ -87,6 +110,7 @@ set(SRC
     stdlib_io_zip.f90
     stdlib_io_minizip.f90
     ${outFiles}
+    ${outPreprocFiles}
 )
 
 add_library(${PROJECT_NAME} ${SRC})
