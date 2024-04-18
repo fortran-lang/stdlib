@@ -279,7 +279,7 @@ contains
     end subroutine get_int8_key
 
 
-    subroutine get_int32_key( key, value )
+    pure subroutine get_int32_key( key, value )
 !! Version: Experimental
 !!
 !! Gets the contents of the key as an INTEGER(INT32) vector
@@ -340,17 +340,17 @@ contains
     end subroutine set_int8_key
 
 
-    subroutine set_int32_key( key, value )
+    pure subroutine set_int32_key( key, value )
 !! Version: Experimental
 !!
 !! Sets the contents of the key from an INTEGER(INT32) vector
 !! Arguments:
 !!     key   - the output key
 !!     value - the input INTEGER(INT32) vector
-                        type(key_type), intent(out) :: key
-                        integer(int32), intent(in)   :: value(:)
+        type(key_type), intent(out) :: key
+        integer(int32), intent(in)   :: value(:)
                 
-                        key % value = transfer(value, key % value)
+        key % value = transfer(value, key % value)
                 
     end subroutine set_int32_key
 

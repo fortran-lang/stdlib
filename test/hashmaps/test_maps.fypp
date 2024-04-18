@@ -24,6 +24,8 @@ module test_stdlib_chaining_maps
     integer, parameter        :: test_size = rand_size*4
     integer, parameter        :: test_16 = 2**4
     integer, parameter        :: test_256 = 2**8
+    ! key_type = 2 to support int8 and int32 key types tested.  Can be 
+    ! icreased to generate additional unique int8 vectors additional key types.   
     integer, parameter        :: key_types = 2
     public :: collect_stdlib_chaining_maps
 
@@ -275,6 +277,8 @@ module test_stdlib_open_maps
     integer, parameter        :: test_size = rand_size*4
     integer, parameter        :: test_16 = 2**4
     integer, parameter        :: test_256 = 2**8
+    ! key_type = 2 to support int8 and int32 key types tested.  Can be 
+    ! icreased to generate additional unique int8 vectors additional key types.  
     integer, parameter        :: key_types = 2
 
     public :: collect_stdlib_open_maps
