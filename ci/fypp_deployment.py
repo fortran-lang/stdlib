@@ -117,6 +117,7 @@ def pre_process_fypp(args):
         copy_folder_with_filter('example',example,
                                 filter_list=['CMakeLists.txt'])
         shutil.copy2('ci'+os.sep+'fpm.toml', 'stdlib-fpm'+os.sep+'fpm.toml')
+        shutil.copy2('VERSION', 'stdlib-fpm'+os.sep+'VERSION')
         shutil.copy2('LICENSE', 'stdlib-fpm'+os.sep+'LICENSE')
 
     # Define the folders to search for *.fypp files
@@ -141,7 +142,7 @@ def pre_process_fypp(args):
     
     return
 
-def fpm_build(unknown):
+def fpm_build(args,unknown):
     import subprocess
     #==========================================
     # check compilers
@@ -154,12 +155,13 @@ def fpm_build(unknown):
     # Filter out the include paths with -I prefix.
     include_paths = [arg for arg in unknown if arg.startswith("-I")]
     # Filter out flags
-    flags = " "
+    flags = "-cpp "
     for idx, arg in enumerate(unknown):
         if arg.startswith("--flag"):
-            flags= unknown[idx+1]
+            flags= flags + unknown[idx+1]
     #==========================================
     # build with fpm
+    os.chdir(args.destdir)
     subprocess.run(["fpm build"]+
                    [" --compiler "]+[FPM_FC]+
                    [" --c-compiler "]+[FPM_CC]+
@@ -202,4 +204,4 @@ if __name__ == "__main__":
     #==========================================
     # build using fpm
     if args.build:
-        fpm_build(unknown)
+        fpm_build(args,unknown)
