@@ -3,47 +3,6 @@ import fypp
 import argparse
 from joblib import Parallel, delayed
 
-def pre_process_toml(args):
-    """
-    Pre-process the fpm.toml
-    """
-    from tomlkit import table, dumps
-    data = table()
-    data.add("name", "stdlib")
-    data.add("version", str(args.vmajor)+
-                    "."+str(args.vminor)+
-                    "."+str(args.vpatch) )
-    data.add("license", "MIT")
-    data.add("author", "stdlib contributors")
-    data.add("maintainer", "@fortran-lang/stdlib")
-    data.add("copyright", "2019-2021 stdlib contributors")
-
-    if(args.with_blp):
-        build = table()
-        build.add("link", ["lapack", "blas"] )
-        data.add("build", build)
-
-    dev_dependencies = table()
-    dev_dependencies.add("test-drive", {"git" : "https://github.com/fortran-lang/test-drive", 
-                                        "tag" : "v0.4.0"})
-    data.add("dev-dependencies", dev_dependencies)
-
-    preprocess = table()
-    preprocess.add("cpp", {} )
-    preprocess['cpp'].add("suffixes", [".F90", ".f90"] )
-    preprocess['cpp'].add("macros", ["MAXRANK="+str(args.maxrank)] )
-    data.add("preprocess", preprocess)
-
-    if args.destdir == 'stdlib-fpm':
-        if not os.path.exists('stdlib-fpm'):
-            os.makedirs('stdlib-fpm')
-        name = 'stdlib-fpm'+os.sep+'fpm.toml'
-    else:
-        name = "fpm.toml"
-    with open(name, "w") as f:
-        f.write(dumps(data))
-    return
-
 C_PREPROCESSED = (
     "stdlib_linalg_constants" ,
     "stdlib_linalg_blas" ,
@@ -127,7 +86,6 @@ def fpm_build(args,unknown):
             flags= flags + unknown[idx+1]
     #==========================================
     # build with fpm
-    os.chdir(args.destdir)
     subprocess.run(["fpm build"]+
                    [" --compiler "]+[FPM_FC]+
                    [" --c-compiler "]+[FPM_CC]+
@@ -147,9 +105,7 @@ if __name__ == "__main__":
     parser.add_argument("--with_qp",type=bool, default=False, help="Include WITH_QP in the command")
     parser.add_argument("--with_xdp",type=bool, default=False, help="Include WITH_XDP in the command")
 
-    parser.add_argument('--destdir', action='store', type=str, default='stdlib-fpm', help='destination directory for the fypp preprocessing.')
     # external libraries arguments
-    parser.add_argument("--with_blp",type=bool, default=False, help="Link against OpenBLAS")
     parser.add_argument("--build",type=bool, default=False, help="Build the project")
 
     args, unknown = parser.parse_known_args()
@@ -158,12 +114,9 @@ if __name__ == "__main__":
     with open('VERSION', 'r') as file:
         version = file.read().split(".")
         vmajor, vminor, vpatch = [int(value) for value in version]
-    import tomlkit
-    with open('fpm.toml', 'r') as file:
-        manifest = tomlkit.parse(file.read())
-    #==========================================
-    # pre process the fpm manifest
-    # pre_process_toml(args)
+        args.vmajor = max(vmajor,args.vmajor)
+        args.vminor = max(vminor,args.vminor)
+        args.vpatch = max(vpatch,args.vpatch)
     #==========================================
     # pre process the meta programming fypp files
     pre_process_fypp(args)
