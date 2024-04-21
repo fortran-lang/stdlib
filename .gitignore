@@ -1,5 +1,5 @@
 build/
-
+temp/
 # FORD generated documentation
 # !WARNING! This folder gets deleted and overwritten
 API-doc/
