@@ -17,6 +17,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      contains
 
      #:for rk,rt,ri in RC_KINDS_TYPES
+     #:if rk!="xdp"
      ! Workspace needed by gesv
      elemental subroutine ${ri}$gesv_space(m,n,nrhs,lrwork,liwork,lcwork)
          integer(ilp), intent(in) :: m,n,nrhs
@@ -53,10 +54,12 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      end subroutine ${ri}$gesv_space
 
+     #:endif
      #:endfor
 
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
+     #:if rk!="xdp"
 
      ! Compute the least-squares solution to a real system of linear equations Ax = B
      module function stdlib_linalg_${ri}$_lstsq_${ndsuf}$(a,b,cond,overwrite_a,rank,err) result(x)
@@ -171,6 +174,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      end function stdlib_linalg_${ri}$_lstsq_${ndsuf}$
 
+     #:endif
      #:endfor
      #:endfor
 

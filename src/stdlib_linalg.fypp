@@ -225,6 +225,7 @@ module stdlib_linalg
   interface lstsq
     #:for nd,ndsuf,nde in ALL_RHS
     #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
       module function stdlib_linalg_${ri}$_lstsq_${ndsuf}$(a,b,cond,overwrite_a,rank,err) result(x)
          !> Input matrix a[n,n]
          ${rt}$, intent(inout), target :: a(:,:)
@@ -241,6 +242,7 @@ module stdlib_linalg
          !> Result array/matrix x[n] or x[n,nrhs]
          ${rt}$, allocatable, target :: x${nd}$
       end function stdlib_linalg_${ri}$_lstsq_${ndsuf}$
+    #:endif
     #:endfor
     #:endfor
   end interface lstsq
