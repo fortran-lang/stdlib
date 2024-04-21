@@ -223,6 +223,11 @@ module stdlib_linalg
 
 
   interface det
+    !! version: experimental 
+    !!
+    !! Computes the determinant of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#det-computes-the-determinant-of-a-square-matrix))
+    !! 
     !!### Summary 
     !! Interface for computing matrix determinant.
     !!
@@ -261,6 +266,11 @@ module stdlib_linalg
   end interface det
 
   interface operator(.det.)
+    !! version: experimental 
+    !!
+    !! Determinant operator of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#det-determinant-operator-of-a-square-matrix))
+    !!
     !!### Summary
     !! Pure operator interface for computing matrix determinant.
     !!
