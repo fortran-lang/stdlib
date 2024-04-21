@@ -624,7 +624,7 @@ allows for more expert control.
 
 ### Return value
 
-Returns a real scalar value that represents the determinnt of the matrix.
+Returns a `real` scalar value of the same kind of `a` that represents the determinant of the matrix.
 
 Raises `LINALG_ERROR` if the matrix is singular.
 Raises `LINALG_VALUE_ERROR` if the matrix is non-square.
