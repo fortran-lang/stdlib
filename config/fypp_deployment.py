@@ -1,28 +1,7 @@
 import os
-import shutil
 import fypp
 import argparse
 from joblib import Parallel, delayed
-
-def copy_folder_with_filter(source_folder, destination_folder, filter_list=None, filter_suffix=None):
-    # Create destination folder if it doesn't exist
-    if not os.path.exists(destination_folder):
-        os.makedirs(destination_folder)
-
-    # Iterate over the files and folders in the source folder
-    for item in os.listdir(source_folder):
-        source_item = os.path.join(source_folder, item)
-        destination_item = os.path.join(destination_folder, item)
-
-        # If it's a folder, recursively copy it
-        if os.path.isdir(source_item):
-            copy_folder_with_filter(source_item, destination_item, filter_list, filter_suffix)
-        else:
-            # If filter_list is provided, check if the filename is in the list to avoid it
-            should_copy = False if filter_list and item in filter_list else True
-            should_copy = False if filter_suffix and item.endswith(filter_suffix) else should_copy
-            if should_copy:
-                shutil.copy2(source_item, destination_item)
 
 def pre_process_toml(args):
     """
@@ -93,7 +72,7 @@ def pre_process_fypp(args):
     kwd.append("-DPROJECT_VERSION_PATCH="+str(args.vpatch))
     if args.with_qp:
         kwd.append("-DWITH_QP=True")
-    if args.with_xqp:
+    if args.with_xdp:
         kwd.append("-DWITH_XDP=True")
 
     optparser = fypp.get_option_parser()
@@ -103,25 +82,13 @@ def pre_process_fypp(args):
     tool = fypp.Fypp(options)
 
     # Check destination folder for preprocessing. if not 'stdlib-fpm', it is assumed to be the root folder.
-    in_place = False if args.destdir == 'stdlib-fpm' else True
-    src     = 'src'     if in_place else 'stdlib-fpm'+os.sep+'src'
-    test    = 'test'    if in_place else 'stdlib-fpm'+os.sep+'test'
-    example = 'example' if in_place else 'stdlib-fpm'+os.sep+'example'
-    if not in_place:
-        copy_folder_with_filter('src', src,
-                                filter_list=['CMakeLists.txt',"f18estop.f90"])
-        copy_folder_with_filter('test', test,
-                                filter_list=['CMakeLists.txt',"test_always_fail.f90",
-                                            "test_always_skip.f90","test_hash_functions.f90"],
-                                filter_suffix='manual')
-        copy_folder_with_filter('example',example,
-                                filter_list=['CMakeLists.txt'])
-        shutil.copy2('ci'+os.sep+'fpm.toml', 'stdlib-fpm'+os.sep+'fpm.toml')
-        shutil.copy2('VERSION', 'stdlib-fpm'+os.sep+'VERSION')
-        shutil.copy2('LICENSE', 'stdlib-fpm'+os.sep+'LICENSE')
+    if not os.path.exists('src'+os.sep+'temp'):
+        os.makedirs('src'+os.sep+'temp')
+    if not os.path.exists('test'+os.sep+'temp'):
+        os.makedirs('test'+os.sep+'temp')
 
     # Define the folders to search for *.fypp files
-    folders = [src,test]
+    folders = ['src','test']
     # Process all folders
     fypp_files = [os.path.join(root, file) for folder in folders
                   for root, _, files in os.walk(folder)
@@ -130,13 +97,12 @@ def pre_process_fypp(args):
     def process_f(file):
         source_file = file
         root = os.path.dirname(file)
+        if not os.path.exists(root+os.sep+'temp'):
+            os.makedirs(root+os.sep+'temp')
         basename = os.path.splitext(os.path.basename(source_file))[0]
         sfx = 'f90' if basename not in C_PREPROCESSED else 'F90'
-        target_file = root + os.sep + basename + '.' + sfx
+        target_file = root+os.sep+'temp' + os.sep + basename + '.' + sfx
         tool.process_file(source_file, target_file)
-        # if folder different from root
-        if not in_place:
-            os.remove(source_file)
     
     Parallel(n_jobs=args.njob)(delayed(process_f)(f) for f in fypp_files)
     
@@ -179,7 +145,7 @@ if __name__ == "__main__":
     parser.add_argument("--njob", type=int, default=4, help="Number of parallel jobs for preprocessing")
     parser.add_argument("--maxrank",type=int, default=7, help="Set the maximum allowed rank for arrays")
     parser.add_argument("--with_qp",type=bool, default=False, help="Include WITH_QP in the command")
-    parser.add_argument("--with_xqp",type=bool, default=False, help="Include WITH_XDP in the command")
+    parser.add_argument("--with_xdp",type=bool, default=False, help="Include WITH_XDP in the command")
 
     parser.add_argument('--destdir', action='store', type=str, default='stdlib-fpm', help='destination directory for the fypp preprocessing.')
     # external libraries arguments
@@ -189,15 +155,15 @@ if __name__ == "__main__":
     args, unknown = parser.parse_known_args()
     #==========================================
     # read current manifest
-    import tomlkit
-    with open('ci'+os.sep+'fpm.toml', 'r') as file:
-        manifest = tomlkit.parse(file.read())
-    version = manifest['version'].split(".")
-    if version != ['VERSION']:
+    with open('VERSION', 'r') as file:
+        version = file.read().split(".")
         vmajor, vminor, vpatch = [int(value) for value in version]
+    import tomlkit
+    with open('fpm.toml', 'r') as file:
+        manifest = tomlkit.parse(file.read())
     #==========================================
     # pre process the fpm manifest
-    #pre_process_toml(args)
+    # pre_process_toml(args)
     #==========================================
     # pre process the meta programming fypp files
     pre_process_fypp(args)
