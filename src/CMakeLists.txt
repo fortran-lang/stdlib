@@ -94,6 +94,7 @@ set(SRC
     stdlib_ansi_operator.f90
     stdlib_ansi_to_string.f90
     stdlib_array.f90
+    stdlib_codata.f90
     stdlib_error.f90
     stdlib_hashmap_wrappers.f90
     stdlib_hashmaps.f90
