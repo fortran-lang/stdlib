@@ -80,7 +80,8 @@ def fpm_build(args,unknown):
     # Filter out the include paths with -I prefix.
     include_paths = [arg for arg in unknown if arg.startswith("-I")]
     # Filter out flags
-    flags = "-cpp "
+    preprocessor = { 'gfortran':'-cpp ' , 'ifort':'-fpp ' , 'ifx':'-fpp ' }
+    flags = preprocessor[FPM_FC]
     for idx, arg in enumerate(unknown):
         if arg.startswith("--flag"):
             flags= flags + unknown[idx+1]
