@@ -617,7 +617,8 @@ allows for more expert control.
 
 `a`: Shall be a rank-2 square array
 
-`overwrite_a` (optional): Shall be an input `logical` flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation.  
+`overwrite_a` (optional): Shall be an input `logical` flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation.
+ This is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` return value. 
 
