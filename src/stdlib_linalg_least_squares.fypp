@@ -4,35 +4,21 @@
 #:set RHS_SYMBOL = [ranksuffix(r) for r in [1,2]]
 #:set RHS_EMPTY  = [emptyranksuffix(r) for r in [1,2]]
 #:set ALL_RHS    = list(zip(RHS_SYMBOL,RHS_SUFFIX,RHS_EMPTY))
-module stdlib_linalg_least_squares
+submodule (stdlib_linalg) stdlib_linalg_least_squares
+!! Least-squares solution to Ax=b
      use stdlib_linalg_constants
      use stdlib_linalg_lapack, only: gelsd, stdlib_ilaenv
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
      implicit none(type,external)
-     private
-
-     !> Compute a least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
-     public :: lstsq
-
-     ! NumPy: lstsq(a, b, rcond='warn')
-     ! Scipy: lstsq(a, b, cond=None, overwrite_a=False, overwrite_b=False, check_finite=True, lapack_driver=None)
-     ! IMSL: Result = IMSL_QRSOL(B, [A] [, AUXQR] [, BASIS] [, /DOUBLE] [, QR] [, PIVOT] [, RESIDUAL] [, TOLERANCE])
-
-     interface lstsq
-        #:for nd,ndsuf,nde in ALL_RHS
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        module procedure stdlib_linalg_${ri}$_lstsq_${ndsuf}$
-        #:endfor
-        #:endfor
-     end interface lstsq
-
+     
+     character(*), parameter :: this = 'lstsq'
 
      contains
 
      #:for rk,rt,ri in RC_KINDS_TYPES
      ! Workspace needed by gesv
-     subroutine ${ri}$gesv_space(m,n,nrhs,lrwork,liwork,lcwork)
+     elemental subroutine ${ri}$gesv_space(m,n,nrhs,lrwork,liwork,lcwork)
          integer(ilp), intent(in) :: m,n,nrhs
          integer(ilp), intent(out) :: lrwork,liwork,lcwork
 
@@ -73,11 +59,11 @@ module stdlib_linalg_least_squares
      #:for rk,rt,ri in RC_KINDS_TYPES
 
      ! Compute the least-squares solution to a real system of linear equations Ax = B
-     function stdlib_linalg_${ri}$_lstsq_${ndsuf}$(a,b,cond,overwrite_a,rank,err) result(x)
+     module function stdlib_linalg_${ri}$_lstsq_${ndsuf}$(a,b,cond,overwrite_a,rank,err) result(x)
          !> Input matrix a[n,n]
-         ${rt}$,                     intent(inout), target :: a(:,:)
+         ${rt}$, intent(inout), target :: a(:,:)
          !> Right hand side vector or array, b[n] or b[n,nrhs]
-         ${rt}$,                     intent(in)            :: b${nd}$
+         ${rt}$, intent(in) :: b${nd}$
          !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
          real(${rk}$), optional, intent(in) :: cond
          !> [optional] Can A,b data be overwritten and destroyed?
@@ -88,8 +74,8 @@ module stdlib_linalg_least_squares
          type(linalg_state_type), optional, intent(out) :: err
          !> Result array/matrix x[n] or x[n,nrhs]
          ${rt}$, allocatable, target :: x${nd}$
-
-         !> Local variables
+         
+         !! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldb,nrhs,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
          integer(ilp), allocatable :: iwork(:)
@@ -98,9 +84,8 @@ module stdlib_linalg_least_squares
          real(${rk}$), allocatable :: singular(:),rwork(:)
          ${rt}$, pointer :: xmat(:,:),amat(:,:)
          ${rt}$, allocatable :: cwork(:)
-         character(*), parameter :: this = 'lstsq'
 
-         !> Problem sizes
+         ! Problem sizes
          m     = size(a,1,kind=ilp)
          lda   = size(a,1,kind=ilp)
          n     = size(a,2,kind=ilp)
@@ -207,4 +192,4 @@ module stdlib_linalg_least_squares
         endif
      end function ilog2
 
-end module stdlib_linalg_least_squares
+end submodule stdlib_linalg_least_squares

@@ -1,17 +1,24 @@
 #:include "common.fypp"
-#:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set RCI_KINDS_TYPES = RC_KINDS_TYPES + INT_KINDS_TYPES
+#:set RHS_SUFFIX = ["one","many"]
+#:set RHS_SYMBOL = [ranksuffix(r) for r in [1,2]]
+#:set RHS_EMPTY  = [emptyranksuffix(r) for r in [1,2]]
+#:set ALL_RHS    = list(zip(RHS_SYMBOL,RHS_SUFFIX,RHS_EMPTY))
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
   !! ([Specification](../page/specs/stdlib_linalg.html))
-  use stdlib_kinds, only: sp, dp, xdp, qp, &
-    int8, int16, int32, int64
+  use stdlib_kinds, only: xdp, int8, int16, int32, int64
+  use stdlib_linalg_constants, only: sp, dp, qp, lk, ilp
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
+  use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling  
   implicit none
   private
 
   public :: diag
   public :: eye
+  public :: lstsq
   public :: trace
   public :: outer_product
   public :: kronecker_product
@@ -213,6 +220,30 @@ module stdlib_linalg
       module procedure is_Hessenberg_${t1[0]}$${k1}$
     #:endfor
   end interface is_hessenberg
+
+  ! Least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
+  interface lstsq
+    #:for nd,ndsuf,nde in ALL_RHS
+    #:for rk,rt,ri in RC_KINDS_TYPES
+      module function stdlib_linalg_${ri}$_lstsq_${ndsuf}$(a,b,cond,overwrite_a,rank,err) result(x)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(${rk}$), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, allocatable, target :: x${nd}$
+      end function stdlib_linalg_${ri}$_lstsq_${ndsuf}$
+    #:endfor
+    #:endfor
+  end interface lstsq
 
 contains
 
