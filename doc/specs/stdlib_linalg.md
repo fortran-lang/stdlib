@@ -604,7 +604,7 @@ Experimental
 
 ### Description
 
-This function computes the determinant of a real square matrix.
+This function computes the determinant of a `real` or `complex` square matrix.
 
 This interface comes with a `pure` version `det(a)`, and a non-pure version `det(a,overwrite_a,err)` that
 allows for more expert control.
