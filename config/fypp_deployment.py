@@ -24,6 +24,15 @@ C_PREPROCESSED = (
 )
 
 def pre_process_fypp(args):
+    """use fypp to preprocess all source files. 
+
+    Processed files will be dumped at <current_folder>/temp/<file.f90> or <file.F90>
+
+    Parameters
+    ----------
+    args : 
+        CLI arguments.
+    """
     kwd = []
     kwd.append("-DMAXRANK="+str(args.maxrank))
     kwd.append("-DPROJECT_VERSION_MAJOR="+str(args.vmajor))
@@ -67,6 +76,37 @@ def pre_process_fypp(args):
     
     return
 
+
+def deploy_stdlib_fpm():
+    """create the stdlib-fpm folder for backwards compatibility (to be deprecated)
+    """
+    import shutil
+    prune=(
+        "test_always_fail.f90",
+        "test_always_skip.f90",
+        "test_hash_functions.f90",
+        "f18estop.f90",
+    )
+    if not os.path.exists('stdlib-fpm'+os.sep+'src'):
+        os.makedirs('stdlib-fpm'+os.sep+'src')
+    if not os.path.exists('stdlib-fpm'+os.sep+'test'):
+        os.makedirs('stdlib-fpm'+os.sep+'test')
+    if not os.path.exists('stdlib-fpm'+os.sep+'example'):
+        os.makedirs('stdlib-fpm'+os.sep+'example')
+
+    def recursive_copy(folder):
+        for root, _, files in os.walk(folder):
+            for file in files:
+                if file not in prune:
+                    if file.endswith(".f90") or file.endswith(".F90") or file.endswith(".dat") or file.endswith(".npy"):
+                        shutil.copy2(os.path.join(root, file), 'stdlib-fpm'+os.sep+folder+os.sep+file)
+    recursive_copy('src')
+    recursive_copy('test')
+    recursive_copy('example')
+    for file in ['.gitignore','fpm.toml','LICENSE','VERSION']:
+        shutil.copy2(file, 'stdlib-fpm'+os.sep+file)
+    return
+
 def fpm_build(args,unknown):
     import subprocess
     #==========================================
@@ -75,10 +115,6 @@ def fpm_build(args,unknown):
     FPM_CC  = os.environ['FPM_CC']  if "FPM_CC"  in os.environ else "gcc"
     FPM_CXX = os.environ['FPM_CXX'] if "FPM_CXX" in os.environ else "gcc"
     #==========================================
-    # Filter out the macro definitions.
-    macros = [arg for arg in unknown if arg.startswith("-D")]
-    # Filter out the include paths with -I prefix.
-    include_paths = [arg for arg in unknown if arg.startswith("-I")]
     # Filter out flags
     preprocessor = { 'gfortran':'-cpp ' , 'ifort':'-fpp ' , 'ifx':'-fpp ' }
     flags = preprocessor[FPM_FC]
@@ -106,6 +142,7 @@ if __name__ == "__main__":
     parser.add_argument("--with_qp",type=bool, default=False, help="Include WITH_QP in the command")
     parser.add_argument("--with_xdp",type=bool, default=False, help="Include WITH_XDP in the command")
 
+    parser.add_argument("--deploy_stdlib_fpm",type=bool, default=False, help="create the stdlib-fpm folder")
     # external libraries arguments
     parser.add_argument("--build",type=bool, default=False, help="Build the project")
 
@@ -121,6 +158,8 @@ if __name__ == "__main__":
     #==========================================
     # pre process the meta programming fypp files
     pre_process_fypp(args)
+    if args.deploy_stdlib_fpm:
+        deploy_stdlib_fpm()
     #==========================================
     # build using fpm
     if args.build:
