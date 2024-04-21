@@ -620,7 +620,7 @@ allows for more expert control.
 `overwrite_a` (optional): Shall be an input `logical` flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation.
  This is an `intent(in)` argument.
 
-`err` (optional): Shall be a `type(linalg_state_type)` return value. 
+`err` (optional): Shall be a `type(linalg_state_type)` value.  This is an `intent(out)` argument.
 
 ### Return value
 
