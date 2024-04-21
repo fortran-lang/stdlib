@@ -654,7 +654,7 @@ This interface is equivalent to the `pure` version of determinant [[stdlib_linal
 
 ### Arguments
 
-`a`: Shall be a rank-2 square array
+`a`: Shall be a rank-2 square array of any `real` or `complex` kinds. It is an `intent(in)` argument.
 
 ### Return value
 
