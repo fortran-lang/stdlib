@@ -611,7 +611,7 @@ allows for more expert control.
 
 ### Syntax
 
-`c = ` [[stdlib_linalg(module):det(interface)]] `(a,overwrite_a,err)`
+`c = ` [[stdlib_linalg(module):det(interface)]] `(a [, overwrite_a, err])`
 
 ### Arguments
 
