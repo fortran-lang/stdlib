@@ -599,3 +599,47 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 ```fortran
 {!example/linalg/example_is_hessenberg.f90!}
 ```
+
+## `lstsq` - Computes the least squares solution to a linear matrix equation. 
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the least-squares solution to a linear matrix equation \( A \cdot x = b \).
+
+Result vector `x` returns the approximate solution that minimizes the 2-norm \( || A \cdot x - b ||_2 \), i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
+
+### Syntax
+
+`x = ` [[stdlib_linalg(module):lstsq(interface)]] `(a, b, [, cond, overwrite_a, rank, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 square array containing the coefficient matrix. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 array containing the right-hand-side vector. It is an `intent(in)` argument.
+
+`cond` (optional): Singular value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix a will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`rank` (optional): Shall be an `integer` scalar value, that contains the rank of input matrix `A`. This is an `intent(out)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value that represents the solution to the least squares system.
+
+Raises `LINALG_ERROR` if the underlying SVD process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_lstsq.f90!}
+```
