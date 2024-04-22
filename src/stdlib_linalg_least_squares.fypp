@@ -61,8 +61,24 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      #:for rk,rt,ri in RC_KINDS_TYPES
      #:if rk!="xdp"
 
-     ! Compute the least-squares solution to a real system of linear equations Ax = B
+     ! Compute the least-squares solution to a real system of linear equations Ax = b
      module function stdlib_linalg_${ri}$_lstsq_${ndsuf}$(a,b,cond,overwrite_a,rank,err) result(x)
+     !!### Summary
+     !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
+     !!
+     !!### Description
+     !!
+     !! This function computes the least-squares solution of a linear matrix problem.
+     !!
+     !! param: a Input matrix of size [m,n].
+     !! param: b Right-hand-side vector of size [n] or matrix of size [n,nrhs].
+     !! param: cond [optional] Real input threshold indicating that singular values `s_i <= cond*maxval(s)` 
+     !!        do not contribute to the matrix rank.
+     !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
+     !! param: rank [optional] integer flag returning matrix rank. 
+     !! param: err [optional] State return flag. 
+     !! return: x Solution vector of size [n] or solution matrix of size [n,nrhs].
+     !!
          !> Input matrix a[n,n]
          ${rt}$, intent(inout), target :: a(:,:)
          !> Right hand side vector or array, b[n] or b[n,nrhs]
