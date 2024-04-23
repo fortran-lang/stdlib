@@ -1,6 +1,6 @@
 module stdlib_io_zip
     use stdlib_io_minizip
-    use iso_c_binding, only: c_ptr, c_associated, c_int, c_long, c_char
+    use iso_c_binding, only: c_ptr, c_associated, c_int, c_long, c_char, c_null_char, c_null_ptr
     implicit none
     private
 
@@ -47,7 +47,9 @@ contains
 
         if (present(iostat)) iostat = 0
 
-        file_handle = unz_open(filename)
+        file_handle = c_null_ptr
+
+        file_handle = unz_open(filename//c_null_char)
         if (.not. c_associated(file_handle)) then
             if (present(iostat)) iostat = 1
             if (present(iomsg)) iomsg = 'Failed to open file '//trim(filename)//'.'
