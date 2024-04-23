@@ -89,8 +89,10 @@ rm "${prune[@]}"
 
 # Capitalize .f90 -> .F90 for preprocessed files
 for pp_source in "${preprocessed[@]}"
-do 
-   mv "$pp_source.f90" "$pp_source.F90" 
+do
+   # workaround for case-insensitive fs    	
+   mv "$pp_source.f90" "$pp_source.rename" 
+   mv "$pp_source.rename" "$pp_source.F90" 
 done
 
 # List stdlib-fpm package contents
