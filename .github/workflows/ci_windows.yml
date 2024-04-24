@@ -38,6 +38,7 @@ jobs:
           mingw-w64-${{ matrix.arch }}-python-setuptools
           mingw-w64-${{ matrix.arch }}-cmake
           mingw-w64-${{ matrix.arch }}-ninja
+          mingw-w64-${{ matrix.arch }}-minizip-ng
 
     - name: Setup msys POSIX environment
       uses: msys2/setup-msys2@v2
@@ -53,6 +54,7 @@ jobs:
           python-pip
           cmake
           ninja
+          minizip-ng
 
     - name: Install fypp
       run: pip install fypp
