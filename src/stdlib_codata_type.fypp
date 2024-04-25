@@ -1,4 +1,4 @@
-#!:include "common.fypp"
+#:include "common.fypp"
 #:set KINDS = ["sp", "dp"]
 #:if WITH_QP
 #:set KINDS = KINDS + ["qp"]
