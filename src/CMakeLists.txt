@@ -6,14 +6,16 @@ set(fppFiles
     stdlib_bitsets.fypp
     stdlib_bitsets_64.fypp
     stdlib_bitsets_large.fypp
-    stdlib_hash_32bit.fypp 
+    stdlib_codata_type.fypp
+    stdlib_constants.fypp
+    stdlib_hash_32bit.fypp
     stdlib_hash_32bit_fnv.fypp
-    stdlib_hash_32bit_nm.fypp 
-    stdlib_hash_32bit_water.fypp 
-    stdlib_hash_64bit.fypp 
-    stdlib_hash_64bit_fnv.fypp 
-    stdlib_hash_64bit_pengy.fypp 
-    stdlib_hash_64bit_spookyv2.fypp 
+    stdlib_hash_32bit_nm.fypp
+    stdlib_hash_32bit_water.fypp
+    stdlib_hash_64bit.fypp
+    stdlib_hash_64bit_fnv.fypp
+    stdlib_hash_64bit_pengy.fypp
+    stdlib_hash_64bit_spookyv2.fypp
     stdlib_io.fypp
     stdlib_io_npy.fypp
     stdlib_io_npy_load.fypp
@@ -24,7 +26,7 @@ set(fppFiles
     stdlib_linalg_outer_product.fypp
     stdlib_linalg_kronecker.fypp
     stdlib_linalg_cross_product.fypp
-    stdlib_linalg_state.fypp 
+    stdlib_linalg_state.fypp
     stdlib_optval.fypp
     stdlib_selection.fypp
     stdlib_sorting.fypp
@@ -65,7 +67,7 @@ set(fppFiles
     stdlib_version.fypp
 )
 
-# Preprocessed files to contain preprocessor directives -> .F90 
+# Preprocessed files to contain preprocessor directives -> .F90
 set(cppFiles
     stdlib_linalg_constants.fypp
     stdlib_linalg_blas.fypp
