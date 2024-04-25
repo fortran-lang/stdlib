@@ -1,13 +1,16 @@
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
   !! ([Specification](../page/specs/stdlib_linalg.html))
-  use stdlib_kinds, only: sp, dp, xdp, qp, &
+  use stdlib_kinds, only: sp, dp, xdp, qp, lk, &
     int8, int16, int32, int64
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
+  use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling
   implicit none
   private
 
+  public :: det
+  public :: operator(.det.)
   public :: diag
   public :: eye
   public :: trace
@@ -21,6 +24,9 @@ module stdlib_linalg
   public :: is_hermitian
   public :: is_triangular
   public :: is_hessenberg
+  
+  ! Export linalg error handling
+  public :: linalg_state_type, linalg_error_handling
 
   interface diag
     !! version: experimental
@@ -447,6 +453,154 @@ module stdlib_linalg
       module procedure is_Hessenberg_iint32
       module procedure is_Hessenberg_iint64
   end interface is_hessenberg
+
+
+  interface det
+    !! version: experimental 
+    !!
+    !! Computes the determinant of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#det-computes-the-determinant-of-a-square-matrix))
+    !! 
+    !!### Summary 
+    !! Interface for computing matrix determinant.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the determinant of a matrix.
+    !! Supported data types include `real` and `complex`.
+    !! 
+    !!@note The provided functions are intended for square matrices only.          
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !! 
+    !!### Example
+    !!
+    !!```fortran
+    !!
+    !!    real(sp) :: a(3,3), d
+    !!    type(linalg_state_type) :: state  
+    !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+    !!
+    !!    ! ...
+    !!    d = det(a,err=state)
+    !!    if (state%ok()) then 
+    !!       print *, 'Success! det=',d
+    !!    else
+    !!       print *, state%print()
+    !!    endif
+    !!    ! ...
+    !!```
+    !!     
+    module procedure stdlib_linalg_rspdeterminant
+    module procedure stdlib_linalg_pure_rspdeterminant
+    module procedure stdlib_linalg_rdpdeterminant
+    module procedure stdlib_linalg_pure_rdpdeterminant
+    module procedure stdlib_linalg_cspdeterminant
+    module procedure stdlib_linalg_pure_cspdeterminant
+    module procedure stdlib_linalg_cdpdeterminant
+    module procedure stdlib_linalg_pure_cdpdeterminant
+  end interface det
+
+  interface operator(.det.)
+    !! version: experimental 
+    !!
+    !! Determinant operator of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#det-determinant-operator-of-a-square-matrix))
+    !!
+    !!### Summary
+    !! Pure operator interface for computing matrix determinant.
+    !!
+    !!### Description
+    !! 
+    !! This pure operator interface provides a convenient way to compute the determinant of a matrix.
+    !! Supported data types include real and complex.
+    !!
+    !!@note The provided functions are intended for square matrices.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !!
+    !!### Example
+    !!
+    !!```fortran
+    !!
+    !!    ! ...
+    !!    real(sp) :: matrix(3,3), d
+    !!    matrix = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+    !!    d = .det.matrix
+    !!    ! ...
+    !! 
+    !!```
+    !     
+    module procedure stdlib_linalg_pure_rspdeterminant
+    module procedure stdlib_linalg_pure_rdpdeterminant
+    module procedure stdlib_linalg_pure_cspdeterminant
+    module procedure stdlib_linalg_pure_cdpdeterminant
+  end interface operator(.det.)
+
+  interface
+    module function stdlib_linalg_rspdeterminant(a,overwrite_a,err) result(det)
+        !> Input matrix a[m,n]
+        real(sp), intent(inout), target :: a(:,:)
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> State return flag. 
+        type(linalg_state_type), intent(out) :: err
+        !> Matrix determinant
+        real(sp) :: det
+    end function stdlib_linalg_rspdeterminant
+    pure module function stdlib_linalg_pure_rspdeterminant(a) result(det)
+        !> Input matrix a[m,n]
+        real(sp), intent(in) :: a(:,:)
+        !> Matrix determinant
+        real(sp) :: det                
+    end function stdlib_linalg_pure_rspdeterminant
+    module function stdlib_linalg_rdpdeterminant(a,overwrite_a,err) result(det)
+        !> Input matrix a[m,n]
+        real(dp), intent(inout), target :: a(:,:)
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> State return flag. 
+        type(linalg_state_type), intent(out) :: err
+        !> Matrix determinant
+        real(dp) :: det
+    end function stdlib_linalg_rdpdeterminant
+    pure module function stdlib_linalg_pure_rdpdeterminant(a) result(det)
+        !> Input matrix a[m,n]
+        real(dp), intent(in) :: a(:,:)
+        !> Matrix determinant
+        real(dp) :: det                
+    end function stdlib_linalg_pure_rdpdeterminant
+    module function stdlib_linalg_cspdeterminant(a,overwrite_a,err) result(det)
+        !> Input matrix a[m,n]
+        complex(sp), intent(inout), target :: a(:,:)
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> State return flag. 
+        type(linalg_state_type), intent(out) :: err
+        !> Matrix determinant
+        complex(sp) :: det
+    end function stdlib_linalg_cspdeterminant
+    pure module function stdlib_linalg_pure_cspdeterminant(a) result(det)
+        !> Input matrix a[m,n]
+        complex(sp), intent(in) :: a(:,:)
+        !> Matrix determinant
+        complex(sp) :: det                
+    end function stdlib_linalg_pure_cspdeterminant
+    module function stdlib_linalg_cdpdeterminant(a,overwrite_a,err) result(det)
+        !> Input matrix a[m,n]
+        complex(dp), intent(inout), target :: a(:,:)
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> State return flag. 
+        type(linalg_state_type), intent(out) :: err
+        !> Matrix determinant
+        complex(dp) :: det
+    end function stdlib_linalg_cdpdeterminant
+    pure module function stdlib_linalg_pure_cdpdeterminant(a) result(det)
+        !> Input matrix a[m,n]
+        complex(dp), intent(in) :: a(:,:)
+        !> Matrix determinant
+        complex(dp) :: det                
+    end function stdlib_linalg_pure_cdpdeterminant
+  end interface  
 
 contains
 
