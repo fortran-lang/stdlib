@@ -30,7 +30,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          ! Maximum size of the subproblems at the bottom of the computation (~25)
          smlsiz = stdlib_ilaenv(9,'${ri}$gelsd',' ',0,0,0,0)
 
-         ! The exact minimum amount of workspace needed depends on M, N and NRHS. As long as LWORK is at least
+         ! The exact minimum amount of workspace needed depends on M, N and NRHS. 
          nlvl = max(0, ilog2(mnmin/(smlsiz+1))+1)
 
          ! Real space
@@ -47,7 +47,8 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          ! Integer space
          liwork = max(1, 3*mnmin*nlvl+11*mnmin)
 
-         ! For good performance, the workspace should generally be larger.
+         ! For good performance, the workspace should generally be larger. 
+         ! Allocate 25% more space than strictly needed.
          lrwork = ceiling(1.25*lrwork,kind=ilp)
          lcwork = ceiling(1.25*lcwork,kind=ilp)
          liwork = ceiling(1.25*liwork,kind=ilp)
@@ -117,8 +118,8 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid sizes: a=',[lda,n], &
                                                                        'b=',[ldb,nrhs])
             allocate(x${nde}$)
-            arank = 0
-            goto 1
+            call linalg_error_handling(err0,err)
+            if (present(rank)) rank = 0
          end if
 
          ! Can A be overwritten? By default, do not overwrite
@@ -182,10 +183,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
                 err0 = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
          end select
 
-         if (.not.copy_a) deallocate(amat)
+         if (copy_a) deallocate(amat)
 
          ! Process output and return
-         1 call linalg_error_handling(err0,err)
+         call linalg_error_handling(err0,err)
          if (present(rank)) rank = arank
 
      end function stdlib_linalg_${ri}$_lstsq_${ndsuf}$
