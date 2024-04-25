@@ -140,7 +140,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          allocate(x,source=b)
          xmat(1:n,1:nrhs) => x
 
-         ! Singular values array (in degreasing order)
+         ! Singular values array (in decreasing order)
          allocate(singular(mnmin))
 
          ! rcond is used to determine the effective rank of A.
