@@ -4,31 +4,13 @@
 #:set RHS_SYMBOL = [ranksuffix(r) for r in [1,2]]
 #:set RHS_EMPTY  = [emptyranksuffix(r) for r in [1,2]]
 #:set ALL_RHS    = list(zip(RHS_SYMBOL,RHS_SUFFIX,RHS_EMPTY))
-module stdlib_linalg_solve
+submodule (stdlib_linalg) stdlib_linalg_solve
+!! Solve linear system Ax=b
      use stdlib_linalg_constants
      use stdlib_linalg_lapack, only: gesv
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
           LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
      implicit none(type,external)
-
-     !> Solve a linear system
-     public :: solve
-
-     ! NumPy: solve(a, b)
-     ! Scipy: solve(a, b, lower=False, overwrite_a=False, overwrite_b=False, check_finite=True, assume_a='gen', transposed=False)[source]#
-     ! IMSL: lu_solve(a, b, transpose=False)
-
-     interface solve
-        #:for nd,ndsuf,nde in ALL_RHS
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        #:if rk!="xdp"
-        module procedure stdlib_linalg_${ri}$_solve_${ndsuf}$
-        module procedure stdlib_linalg_${ri}$_pure_solve_${ndsuf}$
-        #:endif
-        #:endfor
-        #:endfor
-     end interface solve
-     
      
      character(*), parameter :: this = 'solve'
 
@@ -62,7 +44,7 @@ module stdlib_linalg_solve
      #:for rk,rt,ri in RC_KINDS_TYPES
      #:if rk!="xdp"
      ! Compute the solution to a real system of linear equations A * X = B
-     function stdlib_linalg_${ri}$_solve_${ndsuf}$(a,b,overwrite_a,err) result(x)
+     module function stdlib_linalg_${ri}$_solve_${ndsuf}$(a,b,overwrite_a,err) result(x)
          !> Input matrix a[n,n]
          ${rt}$, intent(inout), target :: a(:,:)
          !> Right hand side vector or array, b[n] or b[n,nrhs]
@@ -74,14 +56,14 @@ module stdlib_linalg_solve
          !> Result array/matrix x[n] or x[n,nrhs]
          ${rt}$, allocatable, target :: x${nd}$
          
-         !> Local variables
+         ! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: lda,n,ldb,nrhs,info
          integer(ilp), allocatable :: ipiv(:)
          logical(lk) :: copy_a
          ${rt}$, pointer :: xmat(:,:),amat(:,:)         
 
-         !> Problem sizes
+         ! Problem sizes
          lda  = size(a,1,kind=ilp)
          n    = size(a,2,kind=ilp)
          ldb  = size(b,1,kind=ilp)
@@ -130,7 +112,7 @@ module stdlib_linalg_solve
      end function stdlib_linalg_${ri}$_solve_${ndsuf}$
 
      ! Compute the solution to a real system of linear equations A * X = B (pure interface)
-     pure function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$(a,b) result(x)
+     pure module function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$(a,b) result(x)
          !> Input matrix a[n,n]
          ${rt}$, intent(in), target :: a(:,:)
          !> Right hand side vector or array, b[n] or b[n,nrhs]
@@ -138,14 +120,14 @@ module stdlib_linalg_solve
          !> Result array/matrix x[n] or x[n,nrhs]
          ${rt}$, allocatable, target :: x${nd}$
          
-         !> Local variables
+         ! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: lda,n,ldb,nrhs,info
          integer(ilp), allocatable :: ipiv(:)
          ${rt}$, pointer :: xmat(:,:)
          ${rt}$, allocatable :: amat(:,:)
 
-         !> Problem sizes
+         ! Problem sizes
          lda  = size(a,1,kind=ilp)
          n    = size(a,2,kind=ilp)
          ldb  = size(b,1,kind=ilp)
@@ -185,4 +167,4 @@ module stdlib_linalg_solve
      #:endfor
      #:endfor
 
-end module stdlib_linalg_solve
+end submodule stdlib_linalg_solve
