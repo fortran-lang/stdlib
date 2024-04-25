@@ -226,7 +226,7 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the squares solution to system \( A \cdot x = b \). 
-    !! ([Specification](../page/specs/stdlib_linalg.html#det-computes-the-determinant-of-a-square-matrix))
+    !! ([Specification](../page/specs/stdlib_linalg.html#lstsq-computes-the-least-squares-solution-to-a-linear-matrix-equation))
     !! 
     !!### Summary 
     !! Interface for computing least squares, i.e. the 2-norm \( || (b-A \cdot x ||_2 \) minimizing solution.
