@@ -1,4 +1,4 @@
-#!:include "common.fypp"
+#:include "common.fypp"
 module stdlib_constants
     !! Constants
     use stdlib_kinds, only: sp, dp, qp
