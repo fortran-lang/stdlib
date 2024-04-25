@@ -22,8 +22,8 @@ module stdlib_linalg_solve
         #:for nd,ndsuf,nde in ALL_RHS
         #:for rk,rt,ri in RC_KINDS_TYPES
         #:if rk!="xdp"
-        module procedure stdlib_linalg_${ri}$solve${ndsuf}$
-        module procedure stdlib_linalg_${ri}$_pure_solve${ndsuf}$
+        module procedure stdlib_linalg_${ri}$_solve_${ndsuf}$
+        module procedure stdlib_linalg_${ri}$_pure_solve_${ndsuf}$
         #:endif
         #:endfor
         #:endfor
@@ -62,7 +62,7 @@ module stdlib_linalg_solve
      #:for rk,rt,ri in RC_KINDS_TYPES
      #:if rk!="xdp"
      ! Compute the solution to a real system of linear equations A * X = B
-     function stdlib_linalg_${ri}$solve${ndsuf}$(a,b,overwrite_a,err) result(x)
+     function stdlib_linalg_${ri}$_solve_${ndsuf}$(a,b,overwrite_a,err) result(x)
          !> Input matrix a[n,n]
          ${rt}$, intent(inout), target :: a(:,:)
          !> Right hand side vector or array, b[n] or b[n,nrhs]
@@ -127,10 +127,10 @@ module stdlib_linalg_solve
          ! Process output and return
          call linalg_error_handling(err0,err)
 
-     end function stdlib_linalg_${ri}$solve${ndsuf}$
+     end function stdlib_linalg_${ri}$_solve_${ndsuf}$
 
      ! Compute the solution to a real system of linear equations A * X = B (pure interface)
-     pure function stdlib_linalg_${ri}$_pure_solve${ndsuf}$(a,b) result(x)
+     pure function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$(a,b) result(x)
          !> Input matrix a[n,n]
          ${rt}$, intent(in), target :: a(:,:)
          !> Right hand side vector or array, b[n] or b[n,nrhs]
@@ -144,7 +144,6 @@ module stdlib_linalg_solve
          integer(ilp), allocatable :: ipiv(:)
          ${rt}$, pointer :: xmat(:,:)
          ${rt}$, allocatable :: amat(:,:)
-         character(*), parameter :: this = 'solve'
 
          !> Problem sizes
          lda  = size(a,1,kind=ilp)
@@ -181,7 +180,7 @@ module stdlib_linalg_solve
          ! Process output and return
          call linalg_error_handling(err0)
 
-     end function stdlib_linalg_${ri}$_pure_solve${ndsuf}$
+     end function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$
      #:endif
      #:endfor
      #:endfor
