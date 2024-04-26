@@ -176,7 +176,8 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
             case (0)
                 ! Success
             case (:-1)
-                err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid problem size a=[',lda,',',n,'], b[',ldb,',',nrhs,']')
+                err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid problem size a=',[lda,n], &
+                                                                                    ', b=',[ldb,nrhs])
             case (1:)
                 err0 = linalg_state_type(this,LINALG_ERROR,'SVD did not converge.')
             case default
