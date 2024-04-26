@@ -31,6 +31,9 @@ module stdlib_linalg
   public :: is_triangular
   public :: is_hessenberg
 
+  ! Export linalg error handling
+  public :: linalg_state_type, linalg_error_handling
+
   interface diag
     !! version: experimental
     !!
