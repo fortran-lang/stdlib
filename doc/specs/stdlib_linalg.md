@@ -599,3 +599,53 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 ```fortran
 {!example/linalg/example_is_hessenberg.f90!}
 ```
+
+## `solve` - Solves a linear matrix equation or a linear system of scalar equations. 
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
+
+Result vector `x` returns the exact solution to within numerical precision, provided that the matrix is not ill-conditioned. The solver is based on LAPACK's `*GESV` backends.
+
+### Syntax
+
+`Pure` interface:
+
+`x = ` [[stdlib_linalg(module):solve(interface)]] `(a, b)`
+
+Expert interface:
+
+`x = ` [[stdlib_linalg(module):solve(interface)]] `(a, b, [, overwrite_a], err])`
+
+### Arguments
+
+Two 
+
+`a`: Shall be a rank-2 `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument. If `overwrite_a=.true.`, it is an `intent(inout)` argument and is destroyed by the call. 
+
+`b`: Shall be a rank-1 array of the same kind as `a`, containing the right-hand-side vector. It is an `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix a will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument: the function is not `pure` if this argument is requested.
+
+### Return value
+
+Returns an array value that represents the solution to the linear system of equations.
+
+Raises `LINALG_ERROR` if the matrix is singular to working precision.
+Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_solve1.f90!}
+
+{!example/linalg/example_solve2.f90!}
+```
