@@ -36,9 +36,6 @@ module stdlib_linalg
   ! Export linalg error handling
   public :: linalg_state_type, linalg_error_handling
 
-  ! Export linalg error handling
-  public :: linalg_state_type, linalg_error_handling
-
   interface diag
     !! version: experimental
     !!
