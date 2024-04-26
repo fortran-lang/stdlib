@@ -1,9 +1,7 @@
 program example_lstsq
   use stdlib_linalg_constants, only: dp
   use stdlib_linalg, only: lstsq
-  use stdlib_linalg_state, only: linalg_state_type
   implicit none
-  type(linalg_state_type) :: err
 
   integer, allocatable :: x(:),y(:)
   real(dp), allocatable :: A(:,:),b(:),coef(:)
