@@ -649,3 +649,77 @@ Exceptions trigger an `error stop`.
 
 {!example/linalg/example_solve2.f90!}
 ```
+
+## `det` - Computes the determinant of a square matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the determinant of a `real` or `complex` square matrix.
+
+This interface comes with a `pure` version `det(a)`, and a non-pure version `det(a,overwrite_a,err)` that
+allows for more expert control.
+
+### Syntax
+
+`c = ` [[stdlib_linalg(module):det(interface)]] `(a [, overwrite_a, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 square array
+
+`overwrite_a` (optional): Shall be an input `logical` flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation.
+ This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value.  This is an `intent(out)` argument.
+
+### Return value
+
+Returns a `real` scalar value of the same kind of `a` that represents the determinant of the matrix.
+
+Raises `LINALG_ERROR` if the matrix is singular.
+Raises `LINALG_VALUE_ERROR` if the matrix is non-square.
+Exceptions are returned to the `err` argument if provided; an `error stop` is triggered otherwise.
+
+### Example
+
+```fortran
+{!example/linalg/example_determinant.f90!}
+```
+
+## `.det.` - Determinant operator of a square matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This operator returns the determinant of a real square matrix.
+
+This interface is equivalent to the `pure` version of determinant [[stdlib_linalg(module):det(interface)]]. 
+
+### Syntax
+
+`c = ` [[stdlib_linalg(module):operator(.det.)(interface)]] `(a)`
+
+### Arguments
+
+`a`: Shall be a rank-2 square array of any `real` or `complex` kinds. It is an `intent(in)` argument.
+
+### Return value
+
+Returns a real scalar value that represents the determinnt of the matrix.
+
+Raises `LINALG_ERROR` if the matrix is singular.
+Raises `LINALG_VALUE_ERROR` if the matrix is non-square.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_determinant2.f90!}
+```
