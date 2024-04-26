@@ -618,9 +618,9 @@ Result vector `x` returns the approximate solution that minimizes the 2-norm \( 
 
 ### Arguments
 
-`a`: Shall be a rank-2 square array containing the coefficient matrix. It is an `intent(inout)` argument.
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
 
-`b`: Shall be a rank-1 array containing the right-hand-side vector. It is an `intent(in)` argument.
+`b`: Shall be a rank-1 array of the same kind as `a`, containing the right-hand-side vector. It is an `intent(in)` argument.
 
 `cond` (optional): Shall be a scalar `real` value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
 
