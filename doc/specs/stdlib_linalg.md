@@ -634,7 +634,7 @@ Result vector `x` returns the approximate solution that minimizes the 2-norm \( 
 
 Returns an array value that represents the solution to the least squares system.
 
-Raises `LINALG_ERROR` if the underlying SVD process did not converge.
+Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
 Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
 Exceptions trigger an `error stop`.
 
