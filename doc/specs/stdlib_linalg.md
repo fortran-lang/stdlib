@@ -622,9 +622,9 @@ Result vector `x` returns the approximate solution that minimizes the 2-norm \( 
 
 `b`: Shall be a rank-1 array containing the right-hand-side vector. It is an `intent(in)` argument.
 
-`cond` (optional): Singular value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
+`cond` (optional): Shall be a scalar `real` value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
 
-`overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix a will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
 
 `rank` (optional): Shall be an `integer` scalar value, that contains the rank of input matrix `A`. This is an `intent(out)` argument.
 
@@ -634,8 +634,8 @@ Result vector `x` returns the approximate solution that minimizes the 2-norm \( 
 
 Returns an array value that represents the solution to the least squares system.
 
-Raises `LINALG_ERROR` if the underlying SVD process did not converge.
-Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
+Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix and right-hand-side vector have invalid/incompatible sizes.
 Exceptions trigger an `error stop`.
 
 ### Example
