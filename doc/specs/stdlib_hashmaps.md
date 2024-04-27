@@ -157,11 +157,13 @@ Procedures to manipulate `key_type` data:
   `key_in`, to contents of the key, `key_out`.
 
 * `get( key, value )` - extracts the contents of `key` into `value`,
-  an `int8` array or character string.
+  an `int8` array, 'int32' array, or character string.
 
 * `free_key( key )` - frees the memory in `key`.
 
-* `set( key, value )` - sets the content of `key` to `value`.
+* `set( key, value )` - sets the content of `key` to `value`.  
+  Supported key types are `int8` array, `int32` array, and character
+  string.
 
 Procedures to manipulate `other_type` data:
 
@@ -474,9 +476,9 @@ is an `intent(in)` argument.
 
 `value`: if the the first argument is of `key_type` `value` shall be
 an allocatable default character string variable, or 
-an allocatable vector variable of type integer and kind `int8`,
-otherwise the first argument is of `other_type` and `value` shall be
-an allocatable of `class(*)`. It is an `intent(out)` argument.
+an allocatable vector variable of type integer and kind `int8` or 
+`int32`, otherwise the first argument is of `other_type` and `value` 
+shall be an allocatable of `class(*)`. It is an `intent(out)` argument.
 
 ##### Example
 
@@ -751,13 +753,14 @@ is an `intent(out)` argument.
 
 `value`: if the first argument is `key` `value` shall be a default
 character string scalar expression, or a vector expression of type integer
-and kind `int8`, while for a first argument of type `other` `value`
-shall be of type `class(*)`. It is an `intent(in)` argument.
+and kind `int8` or `int32`, while for a first argument of type 
+`other` `value` shall be of type `class(*)`. It is an `intent(in)` 
+argument.
 
 ##### Note
 
-Values of types other than a scalar default character or an
-`int8` vector can be used as the basis of a `key` by transferring the
+Values of types other than a scalar default character or and
+`int8` or `int32` vector can be used as the basis of a `key` by transferring the
 value to an `int8` vector.
 
 ##### Example
