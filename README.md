@@ -179,19 +179,38 @@ earlier builds do not affect the new build.
 Fortran Package Manager (fpm) is a package manager and build system for Fortran.   
 You can build `stdlib` using provided `fpm.toml`:
 
+**Option 1**: From root folder
+
+As `fpm` does not currently support `fypp` natively, `stdlib` now proposes a python script to preprocess and build. This script enables modification of the different `fypp` macros available in `stdlib`. The preprocessed files will be dumped at `<current_folder>/temp/*.f90` or `*.F90`. You can use the following command line:
+
+```sh
+python config/fypp_deployment.py
+fpm build --profile release
+```
+
+or the short-cut
+
+```sh
+python config/fypp_deployment.py --build 1
+```
+
+To modify the `maxrank` macro for instance:
+```sh
+python config/fypp_deployment.py --maxrank 7 --build 1
+```
+
+To see all the options:
+```sh
+python config/fypp_deployment.py --help
+```
+**Note**: If you use a compiler different than GNU compilers, the script will try to catch it from the environment variables `FPM_FC`, `FPM_CC`, `FPM_CXX`.
+
+**Option 2**: From the `stdlib-fpm` branch which has already been preprocessed with default macros:
 ```sh
 git checkout stdlib-fpm
 fpm build --profile release
 ```
-
-**Alternative**: as `fpm` does not currently support `fypp` natively, building `stdlib` with `fpm` can be done in two steps: a) launch the preprocessor through the `fpm-deployment.sh` script, which creates a subfolder `stdlib-fpm` and b) build the project using the processed files within the latter subfolder. This process can be done with the following commands:
-
-```sh
-source ./ci/fpm-deployment.sh
-cd stdlib-fpm/
-fpm build --profile release
-```
-
+#### Runing the examples
 You can run the examples with `fpm` as:
 
 ```sh

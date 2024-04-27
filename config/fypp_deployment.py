@@ -46,7 +46,8 @@ def pre_process_fypp(args):
     optparser = fypp.get_option_parser()
     options, leftover = optparser.parse_args(args=kwd)
     options.includes = ['include']
-    # options.line_numbering = True
+    if args.lnumbering:
+        options.line_numbering = True
     tool = fypp.Fypp(options)
 
     # Check destination folder for preprocessing. if not 'stdlib-fpm', it is assumed to be the root folder.
@@ -139,7 +140,7 @@ if __name__ == "__main__":
     parser.add_argument("--maxrank",type=int, default=7, help="Set the maximum allowed rank for arrays")
     parser.add_argument("--with_qp",type=bool, default=False, help="Include WITH_QP in the command")
     parser.add_argument("--with_xdp",type=bool, default=False, help="Include WITH_XDP in the command")
-
+    parser.add_argument("--lnumbering",type=bool, default=False, help="Add line numbering in preprocessed files")
     parser.add_argument("--deploy_stdlib_fpm",type=bool, default=False, help="create the stdlib-fpm folder")
     # external libraries arguments
     parser.add_argument("--build",type=bool, default=False, help="Build the project")
