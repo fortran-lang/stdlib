@@ -628,7 +628,7 @@ Two
 
 `a`: Shall be a rank-2 `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument. If `overwrite_a=.true.`, it is an `intent(inout)` argument and is destroyed by the call. 
 
-`b`: Shall be a rank-1 array of the same kind as `a`, containing the right-hand-side vector. It is an `intent(in)` argument.
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
 
 `overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix a will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
 
