@@ -40,7 +40,7 @@ module stdlib_constants
     real(dp), parameter, public :: Planck = PLANCK_CONSTANT%value !! Planck constant
     real(dp), parameter, public :: hbar = PLANCK_CONSTANT%value / PI_dp !! Reduced Planck constant
     real(dp), parameter, public :: G = NEWTONIAN_CONSTANT_OF_GRAVITATION%value !! Newtonian constant of gravitation
-    real(dp), parameter, public :: gravition_constant = NEWTONIAN_CONSTANT_OF_GRAVITATION%value !! Newtonian constant of gravitation
+    real(dp), parameter, public :: gravitation_constant = NEWTONIAN_CONSTANT_OF_GRAVITATION%value !! Newtonian constant of gravitation
     real(dp), parameter, public :: g2 = STANDARD_ACCELERATION_OF_GRAVITY%value !! Standard acceleration of gravity
     real(dp), parameter, public :: e = ELEMENTARY_CHARGE%value !! Elementary charge
     real(dp), parameter, public :: R = MOLAR_GAS_CONSTANT%value !! Molar gas constant
