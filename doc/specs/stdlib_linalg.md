@@ -620,7 +620,7 @@ Result vector `x` returns the exact solution to within numerical precision, prov
 
 Expert interface:
 
-`x = ` [[stdlib_linalg(module):solve(interface)]] `(a, b, [, overwrite_a], err])`
+`x = ` [[stdlib_linalg(module):solve(interface)]] `(a, b [, overwrite_a], err)`
 
 ### Arguments
 
