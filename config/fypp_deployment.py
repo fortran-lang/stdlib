@@ -82,8 +82,6 @@ def deploy_stdlib_fpm():
     """
     import shutil
     prune=(
-        "test_always_fail.f90",
-        "test_always_skip.f90",
         "test_hash_functions.f90",
         "f18estop.f90",
     )
