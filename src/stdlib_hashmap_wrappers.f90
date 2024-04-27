@@ -88,6 +88,7 @@ module stdlib_hashmap_wrappers
 
         module procedure get_char_key,   &
                          get_int8_key,   &
+                         get_int32_key,   &
                          get_other
 
     end interface get
@@ -101,6 +102,7 @@ module stdlib_hashmap_wrappers
 
         module procedure set_char_key,   &
                          set_int8_key,   &
+                         set_int32_key, &
                          set_other
 
     end interface set
@@ -277,6 +279,21 @@ contains
     end subroutine get_int8_key
 
 
+    pure subroutine get_int32_key( key, value )
+!! Version: Experimental
+!!
+!! Gets the contents of the key as an INTEGER(INT32) vector
+!! Arguments:
+!!     key   - the input key
+!!     value - the contents of key mapped to an INTEGER(INT32) vector
+        type(key_type), intent(in)              :: key
+        integer(int32), allocatable, intent(out) :: value(:)
+        
+        value = transfer( key % value, value )
+        
+    end subroutine get_int32_key
+
+
     subroutine set_char_key( key, value )
 !! Version: Experimental
 !!
@@ -321,6 +338,21 @@ contains
         key % value = value
 
     end subroutine set_int8_key
+
+
+    pure subroutine set_int32_key( key, value )
+!! Version: Experimental
+!!
+!! Sets the contents of the key from an INTEGER(INT32) vector
+!! Arguments:
+!!     key   - the output key
+!!     value - the input INTEGER(INT32) vector
+        type(key_type), intent(out) :: key
+        integer(int32), intent(in)   :: value(:)
+                
+        key % value = transfer(value, key % value)
+                
+    end subroutine set_int32_key
 
 
     pure function fnv_1_hasher( key )
