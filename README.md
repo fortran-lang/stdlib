@@ -193,18 +193,24 @@ fpm build --profile release
 or the short-cut
 
 ```sh
-python config/fypp_deployment.py --build 1
+python config/fypp_deployment.py --build
 ```
 
 To modify the `maxrank` macro for instance:
 ```sh
-python config/fypp_deployment.py --maxrank 7 --build 1
+python config/fypp_deployment.py --maxrank 7 --build
 ```
 
 To see all the options:
 ```sh
 python config/fypp_deployment.py --help
 ```
+
+Dependencies can be intalled from the `requirement.txt`
+```sh
+pip install --upgrade -r config/requirements.txt
+```
+
 **Note**: If you use a compiler different than GNU compilers, the script will try to catch it from the environment variables `FPM_FC`, `FPM_CC`, `FPM_CXX`.
 
 **Option 2**: From the `stdlib-fpm` branch which has already been preprocessed with default macros:

@@ -138,12 +138,12 @@ if __name__ == "__main__":
 
     parser.add_argument("--njob", type=int, default=4, help="Number of parallel jobs for preprocessing")
     parser.add_argument("--maxrank",type=int, default=7, help="Set the maximum allowed rank for arrays")
-    parser.add_argument("--with_qp",type=bool, default=False, help="Include WITH_QP in the command")
-    parser.add_argument("--with_xdp",type=bool, default=False, help="Include WITH_XDP in the command")
-    parser.add_argument("--lnumbering",type=bool, default=False, help="Add line numbering in preprocessed files")
-    parser.add_argument("--deploy_stdlib_fpm",type=bool, default=False, help="create the stdlib-fpm folder")
+    parser.add_argument("--with_qp",action='store_true', help="Include WITH_QP in the command")
+    parser.add_argument("--with_xdp",action='store_true', help="Include WITH_XDP in the command")
+    parser.add_argument("--lnumbering",action='store_true', help="Add line numbering in preprocessed files")
+    parser.add_argument("--deploy_stdlib_fpm",action='store_true', help="create the stdlib-fpm folder")
     # external libraries arguments
-    parser.add_argument("--build",type=bool, default=False, help="Build the project")
+    parser.add_argument("--build", action='store_true', help="Build the project")
 
     args, unknown = parser.parse_known_args()
     #==========================================
