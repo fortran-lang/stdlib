@@ -81,7 +81,7 @@ module stdlib_io
 contains
 
   #:for k1, t1 in KINDS_TYPES
-    subroutine  loadtxt_${t1[0]}$${k1}$(filename, d, skiprows, max_rows)
+    subroutine  loadtxt_${t1[0]}$${k1}$(filename, d, skiprows, max_rows, fmt)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -100,6 +100,7 @@ contains
       !! A value of zero results in no lines to be read.
       !! The default value is -1.
       integer, intent(in), optional :: max_rows
+      character(len=*), optional :: fmt
       !!
       !! Example
       !! -------
@@ -144,10 +145,36 @@ contains
       end do
 
       do i = 1, max_rows_
-        #:if 'complex' in t1
+        #:if 'real' in t1
+        if ( present( fmt ) ) then
+          if ( fmt == '*' ) then
+            read (s,*) d(i, :)
+          else
+            read (s,fmt) d(i, :)
+          endif
+        else 
+          read (s,"(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",1x))") d(i, :)
+        end if
+        #:elif 'complex' in t1
+        if ( present( fmt ) ) then
+          if ( fmt == '*' ) then
+            read (s,*) d(i, :)
+          else
+            read (s,fmt) d(i, :)
+          endif
+        else 
           read(s, "(*"//FMT_COMPLEX_${k1}$(1:len(FMT_COMPLEX_${k1}$)-1)//",1x))") d(i, :)
+        end if
         #:else
+        if ( present( fmt ) ) then
+          if ( fmt == '*' ) then
+            read (s,*) d(i, :)
+          else
+            read (s,fmt) d(i, :)
+          endif
+        else 
           read(s, *) d(i, :)
+        end if
         #:endif
       end do
       close(s)

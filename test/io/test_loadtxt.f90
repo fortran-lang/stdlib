@@ -34,16 +34,17 @@ contains
         integer(int32), allocatable :: input(:,:), expected(:,:)
         real(sp), allocatable :: harvest(:,:)
         integer :: n
-
+        
         allocate(harvest(10,10))
         allocate(input(10,10))
         allocate(expected(10,10))
-
         do n = 1, 10
             call random_number(harvest)
             input = int(harvest * 100)
             call savetxt('test_int32.txt', input)
             call loadtxt('test_int32.txt', expected)
+            call check(error, all(input == expected))
+            call loadtxt('test_int32.txt', expected, fmt='*')
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
@@ -55,16 +56,21 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         real(sp), allocatable :: input(:,:), expected(:,:)
+        character(len=*), parameter :: FMT_REAL_SP = '(es15.8e2)'
         integer :: n
 
         allocate(input(10,10))
         allocate(expected(10,10))
-
+        
         do n = 1, 10
             call random_number(input)
             input = input - 0.5
             call savetxt('test_sp.txt', input)
             call loadtxt('test_sp.txt', expected)
+            call check(error, all(input == expected))
+            call loadtxt('test_sp.txt', expected, fmt='*')
+            call check(error, all(input == expected))
+            call loadtxt('test_sp.txt', expected, fmt="(*"//FMT_REAL_sp(1:len(FMT_REAL_sp)-1)//",1x))")
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
@@ -77,7 +83,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         real(sp), allocatable :: input(:,:), expected(:,:)
         integer :: n
-
+        character(len=*), parameter :: FMT_REAL_SP = '(es15.8e2)'
+        
         allocate(input(10,10))
         allocate(expected(10,10))
 
@@ -86,6 +93,10 @@ contains
             input = (input - 0.5) * huge(input)
             call savetxt('test_sp_huge.txt', input)
             call loadtxt('test_sp_huge.txt', expected)
+            call check(error, all(input == expected))
+            call loadtxt('test_sp_huge.txt', expected, fmt='*')
+            call check(error, all(input == expected))
+            call loadtxt('test_sp_huge.txt', expected, fmt="(*"//FMT_REAL_sp(1:len(FMT_REAL_sp)-1)//",1x))")
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
@@ -98,6 +109,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
         real(sp), allocatable :: input(:,:), expected(:,:)
         integer :: n
+        character(len=*), parameter :: FMT_REAL_SP = '(es15.8e2)'
 
         allocate(input(10,10))
         allocate(expected(10,10))
@@ -107,6 +119,10 @@ contains
             input = (input - 0.5) * tiny(input)
             call savetxt('test_sp_tiny.txt', input)
             call loadtxt('test_sp_tiny.txt', expected)
+            call check(error, all(input == expected))
+            call loadtxt('test_sp_tiny.txt', expected, fmt='*')
+            call check(error, all(input == expected))
+            call loadtxt('test_sp_tiny.txt', expected, fmt="(*"//FMT_REAL_sp(1:len(FMT_REAL_sp)-1)//",1x))")
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
@@ -119,6 +135,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
         real(dp), allocatable :: input(:,:), expected(:,:)
         integer :: n
+        character(len=*), parameter :: FMT_REAL_DP = '(es24.16e3)'
 
         allocate(input(10,10))
         allocate(expected(10,10))
@@ -128,6 +145,10 @@ contains
             input = input - 0.5
             call savetxt('test_dp.txt', input)
             call loadtxt('test_dp.txt', expected)
+            call check(error, all(input == expected))
+            call loadtxt('test_dp.txt', expected, fmt='*')
+            call check(error, all(input == expected))
+            call loadtxt('test_dp.txt', expected, fmt="(*"//FMT_REAL_dp(1:len(FMT_REAL_dp)-1)//",1x))")
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
@@ -140,6 +161,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
         real(dp), allocatable :: input(:,:), expected(:,:)
         integer :: n, m
+        character(len=*), parameter :: FMT_REAL_DP = '(es24.16e3)'
 
         allocate(input(10,10))
 
@@ -150,6 +172,10 @@ contains
                 call savetxt('test_dp_max_skip.txt', input)
                 call loadtxt('test_dp_max_skip.txt', expected, skiprows=m, max_rows=n)
                 call check(error, all(input(m+1:min(n+m,10),:) == expected))
+                call loadtxt('test_dp_max_skip.txt', expected, skiprows=m, max_rows=n, fmt='*')
+                call check(error, all(input(m+1:min(n+m,10),:) == expected))
+                call loadtxt('test_dp_max_skip.txt', expected, fmt="(*"//FMT_REAL_dp(1:len(FMT_REAL_dp)-1)//",1x))")
+                call check(error, all(input == expected))
                 deallocate(expected)
                 if (allocated(error)) return
             end do
@@ -163,6 +189,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
         real(dp), allocatable :: input(:,:), expected(:,:)
         integer :: n
+        character(len=*), parameter :: FMT_REAL_DP = '(es24.16e3)'
 
         allocate(input(10,10))
         allocate(expected(10,10))
@@ -172,6 +199,10 @@ contains
             input = (input - 0.5) * huge(input)
             call savetxt('test_dp_huge.txt', input)
             call loadtxt('test_dp_huge.txt', expected)
+            call check(error, all(input == expected))
+            call loadtxt('test_dp_huge.txt', expected, fmt='*')
+            call check(error, all(input == expected))
+            call loadtxt('test_dp_huge.txt', expected, fmt="(*"//FMT_REAL_dp(1:len(FMT_REAL_dp)-1)//",1x))")
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
@@ -184,7 +215,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         real(dp), allocatable :: input(:,:), expected(:,:)
         integer :: n
-
+        character(len=*), parameter :: FMT_REAL_DP = '(es24.16e3)'
+        
         allocate(input(10,10))
         allocate(expected(10,10))
 
@@ -193,6 +225,10 @@ contains
             input = (input - 0.5) * tiny(input)
             call savetxt('test_dp_tiny.txt', input)
             call loadtxt('test_dp_tiny.txt', expected)
+            call check(error, all(input == expected))
+            call loadtxt('test_dp_tiny.txt', expected, fmt='*')
+            call check(error, all(input == expected))
+            call loadtxt('test_dp_tiny.txt', expected, fmt="(*"//FMT_REAL_dp(1:len(FMT_REAL_dp)-1)//",1x))")
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
@@ -206,6 +242,7 @@ contains
         complex(dp), allocatable :: input(:,:), expected(:,:)
         real(dp), allocatable :: re(:,:), im(:,:)
         integer :: n
+        character(len=*), parameter :: FMT_COMPLEX_DP = '(es24.16e3,1x,es24.16e3)'
 
         allocate(re(10,10))
         allocate(im(10,10))
@@ -218,6 +255,8 @@ contains
             input = cmplx(re, im)
             call savetxt('test_complex.txt', input)
             call loadtxt('test_complex.txt', expected)
+            call check(error, all(input == expected))
+            call loadtxt('test_complex.txt', expected, fmt="(*"//FMT_COMPLEX_dp(1:len(FMT_COMPLEX_dp)-1)//",1x))")
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
@@ -237,7 +276,6 @@ program tester
     character(len=*), parameter :: fmt = '("#", *(1x, a))'
 
     stat = 0
-
     testsuites = [ &
         new_testsuite("loadtxt", collect_loadtxt) &
         ]
