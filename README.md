@@ -181,7 +181,9 @@ You can build `stdlib` using provided `fpm.toml`:
 
 **Option 1**: From root folder
 
-As `fpm` does not currently support `fypp` natively, `stdlib` now proposes a python script to preprocess and build. This script enables modification of the different `fypp` macros available in `stdlib`. The preprocessed files will be dumped at `<current_folder>/temp/*.f90` or `*.F90`. You can use the following command line:
+As `fpm` does not currently support `fypp` natively, `stdlib` now proposes a python script to preprocess and build it.
+This script enables modification of the different `fypp` macros available in `stdlib`. The preprocessed files will be dumped at `<current_folder>/temp/*.f90` or `*.F90`.
+You can use the following command line:
 
 ```sh
 python config/fypp_deployment.py
