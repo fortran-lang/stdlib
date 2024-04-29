@@ -1,8 +1,5 @@
 #:include "common.fypp"
-#:set KINDS = ["sp", "dp"]
-#:if WITH_QP
-#:set KINDS = KINDS + ["qp"]
-#:endif
+#:set KINDS = REAL_KINDS
 #:set PROPS = ("value", "uncertainty")
 module stdlib_codata_type
     !! Codata constant type
