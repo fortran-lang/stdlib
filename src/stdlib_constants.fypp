@@ -24,13 +24,9 @@ module stdlib_constants
     private
 
     ! mathematical constants
-    #:if WITH_QP
-    real(qp), parameter, public :: PI_qp    = 3.1415926535897932384626433832795028841971_qp !! PI quadruple precision
-    #:else
-    real(dp), parameter, public :: PI_dp    = 3.1415926535897932384626433832795028841971_dp !! PI double precision
-    #:endif
-    real(sp), parameter, public :: PI_sp    = real(pi_dp, sp) !! PI single precision
-
+    #:for k in KINDS
+    real(${k}$), parameter, public :: PI_${k}$ = acos(-1.0_${k}$)
+    #:endfor
     
     ! Physical constants
     real(dp), parameter, public :: c = SPEED_OF_LIGHT_IN_VACUUM%value !! Speed of light in vacuum
