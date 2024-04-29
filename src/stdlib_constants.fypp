@@ -1,7 +1,8 @@
 #:include "common.fypp"
+#:set KINDS = REAL_KINDS
 module stdlib_constants
     !! Constants
-    use stdlib_kinds, only: sp, dp, qp
+    use stdlib_kinds, only: #{for k in KINDS[:-1]}#${k}$, #{endfor}#${KINDS[-1]}$
     use stdlib_codata, only: SPEED_OF_LIGHT_IN_VACUUM, &
                              VACUUM_ELECTRIC_PERMITTIVITY, &
                              VACUUM_MAG_PERMEABILITY, &
