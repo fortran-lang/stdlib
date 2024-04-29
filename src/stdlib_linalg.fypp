@@ -268,6 +268,58 @@ module stdlib_linalg
     #:endfor
   end interface lstsq
 
+  ! Least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
+  interface solve_lstsq
+    !! version: experimental 
+    !!
+    !! Computes the squares solution to system \( A \cdot x = b \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#XXXXXxXxxxxxxx))xxxxx
+    !! 
+    !!### Summary 
+    !! Subroutine interface for computing least squares, i.e. the 2-norm \( || (b-A \cdot x ||_2 \) minimizing solution.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the least squares of a linear matrix system using 
+    !! a subroutine. Supported data types include `real` and `complex`. If pre-allocated work spaces 
+    !! are provided, no internal memory allocations take place when using this interface.
+    !! 
+    !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !! 
+    #:for nd,ndsuf,nde in ALL_RHS
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
+      module subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$(a,b,x,real_storage,int_storage,&
+                        #{if rt.startswith('c')}#cmpl_storage,#{endif}#cond,overwrite_a,rank,err) 
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$     
+         !> [optional] real working storage space
+         real(${rk}$), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         #:if rt.startswith('complex')   
+         !> [optional] complex working storage space
+         ${rt}$, optional, intent(inout), target :: cmpl_storage(:)                  
+         #:endif
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(${rk}$), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$
+    #:endif
+    #:endfor
+    #:endfor
+  end interface solve_lstsq
+
   interface det
     !! version: experimental 
     !!
