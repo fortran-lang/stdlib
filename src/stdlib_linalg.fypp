@@ -21,6 +21,7 @@ module stdlib_linalg
   public :: diag
   public :: eye
   public :: solve
+  public :: solve_lu
   public :: trace
   public :: outer_product
   public :: kronecker_product
@@ -264,7 +265,7 @@ module stdlib_linalg
      end function stdlib_linalg_${ri}$_solve_${ndsuf}$
      pure module function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$(a,b) result(x)
          !> Input matrix a[n,n]
-         ${rt}$, intent(in), target :: a(:,:)
+         ${rt}$, intent(in) :: a(:,:)
          !> Right hand side vector or array, b[n] or b[n,nrhs]
          ${rt}$, intent(in) :: b${nd}$
          !> Result array/matrix x[n] or x[n,nrhs]
@@ -274,6 +275,29 @@ module stdlib_linalg
      #:endfor
      #:endfor    
   end interface solve
+
+  interface solve_lu
+     #:for nd,ndsuf,nde in ALL_RHS
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:if rk!="xdp"
+     pure module subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$(a,b,x,pivot,overwrite_a,err)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$
+     #:endif
+     #:endfor
+     #:endfor    
+  end interface solve_lu
 
   interface det
     !! version: experimental 

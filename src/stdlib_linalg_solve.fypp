@@ -55,27 +55,73 @@ submodule (stdlib_linalg) stdlib_linalg_solve
          type(linalg_state_type), intent(out) :: err
          !> Result array/matrix x[n] or x[n,nrhs]
          ${rt}$, allocatable, target :: x${nd}$
+                  
+         ! Initialize solution shape from the rhs array
+         allocate(x,mold=b)         
+         
+         call stdlib_linalg_${ri}$_solve_lu_${ndsuf}$(a,b,x,overwrite_a=overwrite_a,err=err)
+            
+     end function stdlib_linalg_${ri}$_solve_${ndsuf}$
+
+     !> Compute the solution to a real system of linear equations A * X = B (pure interface)
+     pure module function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$(a,b) result(x)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, allocatable, target :: x${nd}$
+         
+         ! Local variables
+         ${rt}$, allocatable :: amat(:,:)
+         
+         ! Copy `a` so it can be intent(in)
+         allocate(amat,source=a)
+         
+         ! Initialize solution shape from the rhs array
+         allocate(x,mold=b)         
+         
+         call stdlib_linalg_${ri}$_solve_lu_${ndsuf}$(amat,b,x,overwrite_a=.true.)
+
+     end function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$
+     
+     !> Compute the solution to a real system of linear equations A * X = B (pure interface)
+     pure module subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$(a,b,x,pivot,overwrite_a,err)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
          
          ! Local variables
          type(linalg_state_type) :: err0
-         integer(ilp) :: lda,n,ldb,nrhs,info
-         integer(ilp), allocatable :: ipiv(:)
+         integer(ilp) :: lda,n,ldb,ldx,nrhsx,nrhs,info,npiv
+         integer(ilp), pointer :: ipiv(:)
          logical(lk) :: copy_a
          ${rt}$, pointer :: xmat(:,:),amat(:,:)         
 
          ! Problem sizes
-         lda  = size(a,1,kind=ilp)
-         n    = size(a,2,kind=ilp)
-         ldb  = size(b,1,kind=ilp)
-         nrhs = size(b  ,kind=ilp)/ldb
+         lda   = size(a,1,kind=ilp)
+         n     = size(a,2,kind=ilp)
+         ldb   = size(b,1,kind=ilp)
+         nrhs  = size(b  ,kind=ilp)/ldb
+         ldx   = size(x,1,kind=ilp)
+         nrhsx = size(x  ,kind=ilp)/ldx
 
-         if (any([lda,n,ldb]<1) .or. any([lda,ldb]/=n)) then
-            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid sizes: a=',[lda,n], &
-                                                                          ', b=',[ldb,nrhs])
-            allocate(x${nde}$)
-            call linalg_error_handling(err0,err)
-            return
-         end if
+         ! Has a pre-allocated pivots storage array been provided? 
+         if (present(pivot)) then 
+            ipiv => pivot
+         else
+            allocate(ipiv(n))
+         endif
+         npiv  = size(ipiv,kind=ilp)
 
          ! Can A be overwritten? By default, do not overwrite
          if (present(overwrite_a)) then
@@ -84,8 +130,13 @@ submodule (stdlib_linalg) stdlib_linalg_solve
             copy_a = .true._lk
          endif
 
-         ! Pivot indices
-         allocate(ipiv(n))
+         if (any([lda,n,ldb]<1) .or. any([lda,ldb,ldx]/=n) .or. nrhsx/=nrhs .or. npiv/=n) then
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid sizes: a=',[lda,n], &
+                                                             'b=',[ldb,nrhs],' x=',[ldx,nrhsx], &
+                                                             'pivot=',n)
+            call linalg_error_handling(err0,err)
+            return
+         end if
 
          ! Initialize a matrix temporary
          if (copy_a) then
@@ -95,7 +146,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
          endif
 
          ! Initialize solution with the rhs
-         allocate(x,source=b)
+         x = b
          xmat(1:n,1:nrhs) => x
 
          ! Solve system
@@ -105,64 +156,13 @@ submodule (stdlib_linalg) stdlib_linalg_solve
          call handle_gesv_info(info,lda,n,nrhs,err0)
 
          if (copy_a) deallocate(amat)
+         if (.not.present(pivot)) deallocate(ipiv)
 
          ! Process output and return
          call linalg_error_handling(err0,err)
 
-     end function stdlib_linalg_${ri}$_solve_${ndsuf}$
-
-     !> Compute the solution to a real system of linear equations A * X = B (pure interface)
-     pure module function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$(a,b) result(x)
-         !> Input matrix a[n,n]
-         ${rt}$, intent(in), target :: a(:,:)
-         !> Right hand side vector or array, b[n] or b[n,nrhs]
-         ${rt}$, intent(in) :: b${nd}$
-         !> Result array/matrix x[n] or x[n,nrhs]
-         ${rt}$, allocatable, target :: x${nd}$
-         
-         ! Local variables
-         type(linalg_state_type) :: err0
-         integer(ilp) :: lda,n,ldb,nrhs,info
-         integer(ilp), allocatable :: ipiv(:)
-         ${rt}$, pointer :: xmat(:,:)
-         ${rt}$, allocatable :: amat(:,:)
-
-         ! Problem sizes
-         lda  = size(a,1,kind=ilp)
-         n    = size(a,2,kind=ilp)
-         ldb  = size(b,1,kind=ilp)
-         nrhs = size(b  ,kind=ilp)/ldb
-
-         if (any([lda,n,ldb]<1) .or. any([lda,ldb]/=n)) then
-            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid sizes: a=',[lda,n], &
-                                                                          ', b=',[ldb,nrhs])
-            allocate(x${nde}$)
-            call linalg_error_handling(err0)
-            return
-         end if
-
-         ! Pivot indices
-         allocate(ipiv(n))
-
-         ! Initialize a matrix temporary
-         allocate(amat,source=a)
-
-         ! Initialize solution with the rhs
-         allocate(x,source=b)
-         xmat(1:n,1:nrhs) => x
-
-         ! Solve system
-         call gesv(n,nrhs,amat,lda,ipiv,xmat,ldb,info)
-
-         ! Process output
-         call handle_gesv_info(info,lda,n,nrhs,err0)
-
-         deallocate(amat)
-
-         ! Process output and return
-         call linalg_error_handling(err0)
-
-     end function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$
+     end subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$     
+     
      #:endif
      #:endfor
      #:endfor
