@@ -62,7 +62,6 @@ contains
 
         allocate(input(10,10))
         allocate(expected(10,10))
-        
         do n = 1, 10
             call random_number(input)
             input = input - 0.5
