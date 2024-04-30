@@ -600,7 +600,7 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 {!example/linalg/example_is_hessenberg.f90!}
 ```
 
-## `solve` - Solves a linear matrix equation or a linear system of scalar equations. 
+## `solve` - Solves a linear matrix equation or a linear system of equations. 
 
 ### Status
 
@@ -610,7 +610,7 @@ Experimental
 
 This function computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
 
-Result vector `x` returns the exact solution to within numerical precision, provided that the matrix is not ill-conditioned. The solver is based on LAPACK's `*GESV` backends.
+Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is not ill-conditioned. The solver is based on LAPACK's `*GESV` backends.
 
 ### Syntax
 
@@ -630,9 +630,9 @@ Two
 
 `b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
 
-`overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix a will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+`overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
 
-`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument: the function is not `pure` if this argument is requested.
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument. The function is not `pure` if this argument is provided.
 
 ### Return value
 

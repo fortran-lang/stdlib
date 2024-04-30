@@ -111,7 +111,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
 
      end function stdlib_linalg_${ri}$_solve_${ndsuf}$
 
-     ! Compute the solution to a real system of linear equations A * X = B (pure interface)
+     !> Compute the solution to a real system of linear equations A * X = B (pure interface)
      pure module function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$(a,b) result(x)
          !> Input matrix a[n,n]
          ${rt}$, intent(in), target :: a(:,:)
