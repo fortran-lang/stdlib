@@ -610,7 +610,7 @@ Experimental
 
 This function computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
 
-Result vector `x` returns the exact solution to within numerical precision, provided that the matrix is not ill-conditioned. The solver is based on LAPACK's `*GESV` backends.
+Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is not ill-conditioned. The solver is based on LAPACK's `*GESV` backends.
 
 ### Syntax
 
