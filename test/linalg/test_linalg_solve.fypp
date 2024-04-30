@@ -129,30 +129,30 @@ module test_linalg_solve
     end subroutine test_${ri}$_solve
 
     !> 2x2 Complex linear system
-    !> https://math.stackexchange.com/questions/1996540/solving-linear-equation-systems-with-complex-coefficients-and-variables
     subroutine test_2x2_${ri}$_solve(error)
         type(error_type), allocatable, intent(out) :: error
 
         type(linalg_state_type) :: state
+        
+        ${rt}$, parameter :: i = (0.0_${rk}$,1.0_${rk}$)
 
         ${rt}$ :: A(2,2), b(2), res(2), x(2)
-        integer(ilp) :: i
 
         ! Fill in linear system
-        A(1,:) = [(+1.0_${rk}$,+1.0_${rk}$),(-1.0_${rk}$,0.0_${rk}$)]
-        A(2,:) = [(+1.0_${rk}$,-1.0_${rk}$),(+1.0_${rk}$,1.0_${rk}$)]
+        A(1,:) = [ 1+2*i, 2-i]
+        A(2,:) = [ 2+i  , i]
 
-        b = [(0.0_${rk}$,1.0_${rk}$),(1.0_${rk}$,0.0_${rk}$)]
+        b      = [1,-1]
 
         ! Exact result
-        res = [(0.5_${rk}$,0.5_${rk}$),(0.0_${rk}$,0.0_${rk}$)]
+        res = [(-0.28_${rk}$,-0.04_${rk}$),(0.36_${rk}$,0.48_${rk}$)]
 
         x = solve(a,b,err=state)
-
+        
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
         
-        call check(error, all(abs(x-res)<max(tiny(0.0_${rk}$),abs(res)*epsilon(0.0_${rk}$))), 'results match expected')
+        call check(error, all(abs(x-res)<abs(res)*sqrt(epsilon(0.0_${rk}$))), 'results match expected')
         if (allocated(error)) return        
 
 
