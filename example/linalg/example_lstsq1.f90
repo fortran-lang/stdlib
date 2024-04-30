@@ -1,4 +1,5 @@
-program example_lstsq
+! Least-squares solver: functional interface
+program example_lstsq1
   use stdlib_linalg_constants, only: dp
   use stdlib_linalg, only: lstsq
   implicit none
@@ -22,4 +23,4 @@ program example_lstsq
   ! parabola:  -0.42857142857141695        1.1428571428571503        4.2857142857142811 
 
 
-end program example_lstsq
+end program example_lstsq1
