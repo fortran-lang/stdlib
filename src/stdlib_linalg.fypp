@@ -275,7 +275,7 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the squares solution to system \( A \cdot x = b \). 
-    !! ([Specification](../page/specs/stdlib_linalg.html))
+    !! ([Specification](../page/specs/stdlib_linalg.html#solve-lstsq-compute-the-least-squares-solution-to-a-linear-matrix-equation-subroutine-interface))
     !! 
     !!### Summary 
     !! Subroutine interface for computing least squares, i.e. the 2-norm \( || (b-A \cdot x ||_2 \) minimizing solution.
@@ -329,7 +329,7 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the integer, real [, complex] working space required by the least-squares solver
-    !! ([Specification](../page/specs/stdlib_linalg.html))
+    !! ([Specification](../page/specs/stdlib_linalg.html#lstsq-space-compute-internal-working-space-requirements-for-the-least-squares-solver))
     !! 
     !!### Description
     !! 
@@ -343,7 +343,7 @@ module stdlib_linalg
     #:if rk!="xdp" 
       pure module subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$(a,b,lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#)
          !> Input matrix a[m,n]
-         ${rt}$, intent(inout), target :: a(:,:)
+         ${rt}$, intent(in), target :: a(:,:)
          !> Right hand side vector or array, b[n] or b[n,nrhs]
          ${rt}$, intent(in) :: b${nd}$
          !> Size of the working space arrays                
