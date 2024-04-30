@@ -43,9 +43,10 @@ contains
             input = int(harvest * 100)
             call savetxt('test_int32.txt', input)
             call loadtxt('test_int32.txt', expected)
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'Default list directed read failed')
+            if (allocated(error)) return
             call loadtxt('test_int32.txt', expected, fmt='*')
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'User specified list directed read faile')
             if (allocated(error)) return
         end do
 
@@ -67,11 +68,13 @@ contains
             input = input - 0.5
             call savetxt('test_sp.txt', input)
             call loadtxt('test_sp.txt', expected)
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'Default format read failed')
+            if (allocated(error)) return
             call loadtxt('test_sp.txt', expected, fmt='*')
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'List directed read failed')
+            if (allocated(error)) return
             call loadtxt('test_sp.txt', expected, fmt="(*"//FMT_REAL_sp(1:len(FMT_REAL_sp)-1)//",1x))")
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'User specified format failed')
             if (allocated(error)) return
         end do
 
@@ -93,11 +96,13 @@ contains
             input = (input - 0.5) * huge(input)
             call savetxt('test_sp_huge.txt', input)
             call loadtxt('test_sp_huge.txt', expected)
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'Default format read failed')
+            if (allocated(error)) return
             call loadtxt('test_sp_huge.txt', expected, fmt='*')
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'List directed read failed')
+            if (allocated(error)) return
             call loadtxt('test_sp_huge.txt', expected, fmt="(*"//FMT_REAL_sp(1:len(FMT_REAL_sp)-1)//",1x))")
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'User specified format failed')
             if (allocated(error)) return
         end do
 
@@ -119,11 +124,13 @@ contains
             input = (input - 0.5) * tiny(input)
             call savetxt('test_sp_tiny.txt', input)
             call loadtxt('test_sp_tiny.txt', expected)
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'Default format read failed')
+            if (allocated(error)) return
             call loadtxt('test_sp_tiny.txt', expected, fmt='*')
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'List directed read failed')
+            if (allocated(error)) return
             call loadtxt('test_sp_tiny.txt', expected, fmt="(*"//FMT_REAL_sp(1:len(FMT_REAL_sp)-1)//",1x))")
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'User specified format failed')
             if (allocated(error)) return
         end do
 
@@ -145,11 +152,13 @@ contains
             input = input - 0.5
             call savetxt('test_dp.txt', input)
             call loadtxt('test_dp.txt', expected)
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'Default format read failed')
+            if (allocated(error)) return
             call loadtxt('test_dp.txt', expected, fmt='*')
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'List directed read failed')
+            if (allocated(error)) return
             call loadtxt('test_dp.txt', expected, fmt="(*"//FMT_REAL_dp(1:len(FMT_REAL_dp)-1)//",1x))")
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'User specified format failed')
             if (allocated(error)) return
         end do
 
@@ -171,11 +180,13 @@ contains
                 input = input - 0.5
                 call savetxt('test_dp_max_skip.txt', input)
                 call loadtxt('test_dp_max_skip.txt', expected, skiprows=m, max_rows=n)
-                call check(error, all(input(m+1:min(n+m,10),:) == expected))
+                call check(error, all(input(m+1:min(n+m,10),:) == expected),'Default format read failed')
+                if (allocated(error)) return
                 call loadtxt('test_dp_max_skip.txt', expected, skiprows=m, max_rows=n, fmt='*')
-                call check(error, all(input(m+1:min(n+m,10),:) == expected))
+                call check(error, all(input(m+1:min(n+m,10),:) == expected),'List directed read failed')
+                if (allocated(error)) return
                 call loadtxt('test_dp_max_skip.txt', expected, fmt="(*"//FMT_REAL_dp(1:len(FMT_REAL_dp)-1)//",1x))")
-                call check(error, all(input == expected))
+                call check(error, all(input == expected),'User specified format failed')
                 deallocate(expected)
                 if (allocated(error)) return
             end do
@@ -199,11 +210,13 @@ contains
             input = (input - 0.5) * huge(input)
             call savetxt('test_dp_huge.txt', input)
             call loadtxt('test_dp_huge.txt', expected)
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'Default format read failed')
+            if (allocated(error)) return
             call loadtxt('test_dp_huge.txt', expected, fmt='*')
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'List directed read failed')
+            if (allocated(error)) return
             call loadtxt('test_dp_huge.txt', expected, fmt="(*"//FMT_REAL_dp(1:len(FMT_REAL_dp)-1)//",1x))")
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'User specified format failed')
             if (allocated(error)) return
         end do
 
@@ -225,11 +238,13 @@ contains
             input = (input - 0.5) * tiny(input)
             call savetxt('test_dp_tiny.txt', input)
             call loadtxt('test_dp_tiny.txt', expected)
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'Default format read failed')
+            if (allocated(error)) return
             call loadtxt('test_dp_tiny.txt', expected, fmt='*')
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'List directed read failed')
+            if (allocated(error)) return
             call loadtxt('test_dp_tiny.txt', expected, fmt="(*"//FMT_REAL_dp(1:len(FMT_REAL_dp)-1)//",1x))")
-            call check(error, all(input == expected))
+            call check(error, all(input == expected),'User specified format failed')
             if (allocated(error)) return
         end do
 

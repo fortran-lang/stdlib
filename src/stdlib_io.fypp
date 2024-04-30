@@ -100,7 +100,8 @@ contains
       !! A value of zero results in no lines to be read.
       !! The default value is -1.
       integer, intent(in), optional :: max_rows
-      character(len=*), optional :: fmt
+      character(len=*), intent(in), optional :: fmt
+      character(len=:), allocatable :: fmt_
       !!
       !! Example
       !! -------
@@ -144,39 +145,52 @@ contains
         read(s, *)
       end do
 
-      do i = 1, max_rows_
-        #:if 'real' in t1
-        if ( present( fmt ) ) then
-          if ( fmt == '*' ) then
-            read (s,*) d(i, :)
-          else
-            read (s,fmt) d(i, :)
-          endif
-        else 
-          read (s,"(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",1x))") d(i, :)
-        end if
-        #:elif 'complex' in t1
-        if ( present( fmt ) ) then
-          if ( fmt == '*' ) then
-            read (s,*) d(i, :)
-          else
-            read (s,fmt) d(i, :)
-          endif
-        else 
-          read(s, "(*"//FMT_COMPLEX_${k1}$(1:len(FMT_COMPLEX_${k1}$)-1)//",1x))") d(i, :)
-        end if
-        #:else
-        if ( present( fmt ) ) then
-          if ( fmt == '*' ) then
-            read (s,*) d(i, :)
-          else
-            read (s,fmt) d(i, :)
-          endif
-        else 
-          read(s, *) d(i, :)
-        end if
-        #:endif
-      end do
+      #:if 'real' in t1
+      ! Default to format used for savetxt if fmt not specified.
+      fmt_ = optval(fmt, "(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",1x))")
+
+      if ( fmt_ == '*' ) then
+        ! Use list directed read if user has specified fmt='*'
+        do i = 1, max_rows_
+          read (s,*) d(i, :)
+        enddo
+      else
+        ! Otherwise pass default or user specified fmt string.  
+        do i = 1, max_rows_
+          read (s,fmt_) d(i, :)
+        enddo
+      endif
+      #:elif 'complex' in t1
+      ! Default to format used for savetxt if fmt not specified.
+      fmt_ = optval(fmt, "(*"//FMT_COMPLEX_${k1}$(1:len(FMT_COMPLEX_${k1}$)-1)//",1x))")
+      if ( fmt_ == '*' ) then
+        ! Use list directed read if user has specified fmt='*'
+        do i = 1, max_rows_
+          read (s,*) d(i, :)
+        enddo
+      else
+        ! Otherwise pass default or user specified fmt string.
+        do i = 1, max_rows_
+          read (s,fmt_) d(i, :)
+        enddo
+      endif
+      #:else
+      ! Default to list directed for integer
+      fmt_ = optval(fmt, "*")
+      ! Use list directed read if user has specified fmt='*'
+      if ( fmt_ == '*' ) then
+        do i = 1, max_rows_
+          read (s,*) d(i, :)
+        enddo
+      else
+        ! Otherwise pass default user specified fmt string.
+        do i = 1, max_rows_
+          read (s,fmt_) d(i, :)
+        enddo
+      endif
+
+      #:endif
+
       close(s)
 
     end subroutine loadtxt_${t1[0]}$${k1}$
