@@ -600,7 +600,7 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 {!example/linalg/example_is_hessenberg.f90!}
 ```
 
-## `solve` - Solves a linear matrix equation or a linear system of scalar equations. 
+## `solve` - Solves a linear matrix equation or a linear system of equations. 
 
 ### Status
 
