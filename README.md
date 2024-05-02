@@ -183,7 +183,13 @@ You can build `stdlib` using provided `fpm.toml`:
 
 As `fpm` does not currently support `fypp` natively, `stdlib` now proposes a python script to preprocess and build it.
 This script enables modification of the different `fypp` macros available in `stdlib`. The preprocessed files will be dumped at `<current_folder>/temp/*.f90` or `*.F90`.
-You can use the following command line:
+
+Make sure to install the dependencies from the `requirement.txt`
+```sh
+pip install --upgrade -r config/requirements.txt
+```
+
+To build, you can use the following command line:
 
 ```sh
 python config/fypp_deployment.py
@@ -204,11 +210,6 @@ python config/fypp_deployment.py --maxrank 7 --build
 To see all the options:
 ```sh
 python config/fypp_deployment.py --help
-```
-
-Dependencies can be intalled from the `requirement.txt`
-```sh
-pip install --upgrade -r config/requirements.txt
 ```
 
 **Note**: If you use a compiler different than GNU compilers, the script will try to catch it from the environment variables `FPM_FC`, `FPM_CC`, `FPM_CXX`.
