@@ -60,7 +60,7 @@ contains
             allocate( vec_y2(4) , source = 0._${k1}$ )
 
             vec_y1 = matmul( dense, vec_x )
-            call matvec( vec_y2 , COO , vec_x )
+            call matvec( COO , vec_x, vec_y2 )
             
             call check(error, all(vec_y1 == [6._${k1}$,11._${k1}$,15._${k1}$,15._${k1}$]) )
             if (allocated(error)) return

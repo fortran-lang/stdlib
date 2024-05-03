@@ -15,7 +15,7 @@ module stdlib_sparse_matvec
     private
 
     public :: matvec
-    interface matvec ! call matvec(vec_y,matrix,vec_x) => Y = M * X
+    interface matvec ! call matvec(matrix,vec_x,vec_y) => Y = M * X
         #:for k1, t1 in (KINDS_TYPES)
         #:for rank in RANKS
         module procedure matvec_coo_${rank}$d_${k1}$
@@ -32,7 +32,7 @@ contains
     !> matvec_coo
     #:for k1, t1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_coo_${rank}$d_${k1}$(vec_y,matrix,vec_x)
+    subroutine matvec_coo_${rank}$d_${k1}$(matrix,vec_x,vec_y)
         type(COO_${k1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
@@ -65,7 +65,7 @@ contains
     !> matvec_csr
     #:for k1, t1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_csr_${rank}$d_${k1}$(vec_y,matrix,vec_x)
+    subroutine matvec_csr_${rank}$d_${k1}$(matrix,vec_x,vec_y)
         type(CSR_${k1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
@@ -116,7 +116,7 @@ contains
     !> matvec_csc
     #:for k1, t1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_csc_${rank}$d_${k1}$(vec_y,matrix,vec_x)
+    subroutine matvec_csc_${rank}$d_${k1}$(matrix,vec_x,vec_y)
         type(CSC_${k1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
@@ -169,7 +169,7 @@ contains
     !> matvec_ell
     #:for k1, t1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_ell_${rank}$d_${k1}$(vec_y,matrix,vec_x)
+    subroutine matvec_ell_${rank}$d_${k1}$(matrix,vec_x,vec_y)
         type(ELL_${k1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
