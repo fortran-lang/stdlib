@@ -84,6 +84,9 @@
 #! Bitset types to be considered during templating
 #:set BITSET_TYPES = ["type({})".format(k) for k in BITSET_KINDS]
 
+#! Sparse types to be considered during templating
+#:set SPARSE_KINDS = ["COO", "CSR", "CSC", "ELL"]
+
 #! Whether Fortran 90 compatible code should be generated
 #:set VERSION90 = defined('VERSION90')
 

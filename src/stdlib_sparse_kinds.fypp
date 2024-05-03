@@ -11,30 +11,32 @@ module stdlib_sparse_kinds
   
     ! -- Global parameters
     enum, bind(C)
-        enumerator :: k_NOSYMMETRY !! Full Sparse matrix (no symmetry considerations)
-        enumerator :: k_SYMTRIINF  !! Symmetric Sparse matrix with triangular inferior storage
-        enumerator :: k_SYMTRISUP  !! Symmetric Sparse matrix with triangular supperior storage
+        enumerator :: k_NOSYMMETRY !> Full Sparse matrix (no symmetry considerations)
+        enumerator :: k_SYMTRIINF  !> Symmetric Sparse matrix with triangular inferior storage
+        enumerator :: k_SYMTRISUP  !> Symmetric Sparse matrix with triangular supperior storage
     end enum
     public :: k_NOSYMMETRY, k_SYMTRIINF, k_SYMTRISUP
     ! -- Classes
-    type, public, abstract :: sparse_t
-      integer :: nrows = 0 !! number of rows
-      integer :: ncols = 0 !! number of columns
-      integer :: nnz   = 0 !! number of non-zero values
-      integer :: sym   = k_NOSYMMETRY !! assumed storage symmetry
-      integer :: base  = 1 !! index base = 0 for (C) or 1 (Fortran)
+
+    !> Base sparse type holding the meta data related to the storage capacity of a matrix.
+    type, public, abstract :: sparse_type
+      integer :: nrows = 0 !> number of rows
+      integer :: ncols = 0 !> number of columns
+      integer :: nnz   = 0 !> number of non-zero values
+      integer :: sym   = k_NOSYMMETRY !> assumed storage symmetry
+      integer :: base  = 1 !> index base = 0 for (C) or 1 (Fortran)
     end type
 
-    !! COO: COOrdinates compresed format
-    type, public, extends(sparse_t) :: COO_t
-      logical               :: isOrdered = .false. !! wether the matrix is ordered or not
-      integer, allocatable  :: index(:,:) !! Matrix coordinates index(2,nnz)
+    !> COO: COOrdinates compresed format 
+    type, public, extends(sparse_type) :: COO_type
+      logical               :: isOrdered = .false. !> wether the matrix is ordered or not
+      integer, allocatable  :: index(:,:) !> Matrix coordinates index(2,nnz)
     contains
       procedure :: malloc => malloc_coo
     end type
 
     #:for k1, t1 in (KINDS_TYPES)
-    type, public, extends(COO_t) :: COO_${k1}$
+    type, public, extends(COO_type) :: COO_${k1}$
         ${t1}$, allocatable :: data(:) 
     contains
         procedure :: get => get_value_coo_${k1}$
@@ -42,16 +44,16 @@ module stdlib_sparse_kinds
     end type
     #:endfor
 
-    !! CSR: Compressed sparse row or Yale format
-    type, extends(sparse_t) :: CSR_t  
-      integer, allocatable  :: col(:)    !! matrix column pointer
-      integer, allocatable  :: rowptr(:) !! matrix row pointer
+    !> CSR: Compressed sparse row or Yale format
+    type, extends(sparse_type) :: CSR_type  
+      integer, allocatable  :: col(:)    !> matrix column pointer
+      integer, allocatable  :: rowptr(:) !> matrix row pointer
     contains
       procedure :: malloc => malloc_csr
     end type
   
     #:for k1, t1 in (KINDS_TYPES)
-    type, public, extends(CSR_t) :: CSR_${k1}$
+    type, public, extends(CSR_type) :: CSR_${k1}$
         ${t1}$, allocatable :: data(:) 
     contains
         procedure :: get => get_value_csr_${k1}$
@@ -59,16 +61,16 @@ module stdlib_sparse_kinds
     end type
     #:endfor
 
-    !! CSC: Compressed sparse column
-    type, extends(sparse_t) :: CSC_t  
-      integer, allocatable  :: colptr(:) !! matrix column pointer
-      integer, allocatable  :: row(:)    !! matrix row pointer
+    !> CSC: Compressed sparse column
+    type, extends(sparse_type) :: CSC_type  
+      integer, allocatable  :: colptr(:) !> matrix column pointer
+      integer, allocatable  :: row(:)    !> matrix row pointer
     contains
       procedure :: malloc => malloc_csc
     end type
   
     #:for k1, t1 in (KINDS_TYPES)
-    type, public, extends(CSC_t) :: CSC_${k1}$
+    type, public, extends(CSC_type) :: CSC_${k1}$
         ${t1}$, allocatable :: data(:) 
     contains
         procedure :: get => get_value_csc_${k1}$
@@ -76,16 +78,16 @@ module stdlib_sparse_kinds
     end type
     #:endfor
   
-    !! Compressed ELLPACK
-    type, extends(sparse_t) :: ELL_t 
-      integer               :: K = 0 !! maximum number of nonzeros per row
-      integer, allocatable  :: index(:,:) !! column indices
+    !> Compressed ELLPACK
+    type, extends(sparse_type) :: ELL_type 
+      integer               :: K = 0 !> maximum number of nonzeros per row
+      integer, allocatable  :: index(:,:) !> column indices
     contains
       procedure :: malloc => malloc_ell
     end type
   
     #:for k1, t1 in (KINDS_TYPES)
-    type, public, extends(ELL_t) :: ELL_${k1}$
+    type, public, extends(ELL_type) :: ELL_${k1}$
         ${t1}$, allocatable :: data(:,:) 
     contains
         procedure :: get => get_value_ell_${k1}$
@@ -95,11 +97,12 @@ module stdlib_sparse_kinds
 
 contains
 
+    !> (re)Allocate matrix memory for the COO type
     subroutine malloc_coo(self,num_rows,num_cols,nnz)
-        class(COO_t) :: self
-        integer, intent(in) :: num_rows
-        integer, intent(in) :: num_cols
-        integer, intent(in) :: nnz
+        class(COO_type) :: self
+        integer, intent(in) :: num_rows !> number of rows
+        integer, intent(in) :: num_cols !> number of columns
+        integer, intent(in) :: nnz      !> number of non zeros
 
         integer,  allocatable :: temp_idx(:,:)
         !-----------------------------------------------------
@@ -131,11 +134,12 @@ contains
         end select
     end subroutine
 
+    !> (re)Allocate matrix memory for the CSR type
     subroutine malloc_csr(self,num_rows,num_cols,nnz)
-        class(CSR_t) :: self
-        integer, intent(in) :: num_rows
-        integer, intent(in) :: num_cols
-        integer, intent(in) :: nnz
+        class(CSR_type) :: self
+        integer, intent(in) :: num_rows !> number of rows
+        integer, intent(in) :: num_cols !> number of columns
+        integer, intent(in) :: nnz      !> number of non zeros
 
         integer,  allocatable :: temp_idx(:)
         !-----------------------------------------------------
@@ -174,11 +178,12 @@ contains
         end select
     end subroutine
 
+    !> (re)Allocate matrix memory for the CSC type
     subroutine malloc_csc(self,num_rows,num_cols,nnz)
-        class(CSC_t) :: self
-        integer, intent(in) :: num_rows
-        integer, intent(in) :: num_cols
-        integer, intent(in) :: nnz
+        class(CSC_type) :: self
+        integer, intent(in) :: num_rows !> number of rows
+        integer, intent(in) :: num_cols !> number of columns
+        integer, intent(in) :: nnz      !> number of non zeros
 
         integer,  allocatable :: temp_idx(:)
         !-----------------------------------------------------
@@ -217,11 +222,12 @@ contains
         end select
     end subroutine
 
+    !> (re)Allocate matrix memory for the ELLPACK type
     subroutine malloc_ell(self,num_rows,num_cols,num_nz_rows)
-        class(ELL_t) :: self
-        integer, intent(in) :: num_rows    !! number of rows
-        integer, intent(in) :: num_cols    !! number of columns
-        integer, intent(in) :: num_nz_rows !! number of non zeros per row
+        class(ELL_type) :: self
+        integer, intent(in) :: num_rows    !> number of rows
+        integer, intent(in) :: num_cols    !> number of columns
+        integer, intent(in) :: num_nz_rows !> number of non zeros per row
 
         integer,  allocatable :: temp_idx(:,:)
         !-----------------------------------------------------

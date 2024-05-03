@@ -29,7 +29,7 @@ module stdlib_sparse_matvec
 
 contains
 
-    !! matvec_coo
+    !> matvec_coo
     #:for k1, t1 in (KINDS_TYPES)
     #:for rank in RANKS
     subroutine matvec_coo_${rank}$d_${k1}$(vec_y,matrix,vec_x)
@@ -62,7 +62,7 @@ contains
     #:endfor
     #:endfor
 
-    !! matvec_csr
+    !> matvec_csr
     #:for k1, t1 in (KINDS_TYPES)
     #:for rank in RANKS
     subroutine matvec_csr_${rank}$d_${k1}$(vec_y,matrix,vec_x)
@@ -113,7 +113,7 @@ contains
     #:endfor
     #:endfor
 
-    !! matvec_csc
+    !> matvec_csc
     #:for k1, t1 in (KINDS_TYPES)
     #:for rank in RANKS
     subroutine matvec_csc_${rank}$d_${k1}$(vec_y,matrix,vec_x)
@@ -166,7 +166,7 @@ contains
     #:endfor
     #:endfor
 
-    !! matvec_ell
+    !> matvec_ell
     #:for k1, t1 in (KINDS_TYPES)
     #:for rank in RANKS
     subroutine matvec_ell_${rank}$d_${k1}$(vec_y,matrix,vec_x)
