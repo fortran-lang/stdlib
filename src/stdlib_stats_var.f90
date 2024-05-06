@@ -87,6 +87,66 @@ contains
           res = sum((x - mean)**2) / (n - merge(1, 0 , optval(corrected, .true.)))
 
       end function var_all_4_rsp_rsp
+      module function var_all_5_rsp_rsp(x, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        real(sp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), sp)
+        mean = sum(x) / n
+
+          res = sum((x - mean)**2) / (n - merge(1, 0 , optval(corrected, .true.)))
+
+      end function var_all_5_rsp_rsp
+      module function var_all_6_rsp_rsp(x, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        real(sp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), sp)
+        mean = sum(x) / n
+
+          res = sum((x - mean)**2) / (n - merge(1, 0 , optval(corrected, .true.)))
+
+      end function var_all_6_rsp_rsp
+      module function var_all_7_rsp_rsp(x, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        real(sp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), sp)
+        mean = sum(x) / n
+
+          res = sum((x - mean)**2) / (n - merge(1, 0 , optval(corrected, .true.)))
+
+      end function var_all_7_rsp_rsp
       module function var_all_1_rdp_rdp(x, mask, corrected) result(res)
         real(dp), intent(in) :: x(:)
         logical, intent(in), optional :: mask
@@ -167,6 +227,66 @@ contains
           res = sum((x - mean)**2) / (n - merge(1, 0 , optval(corrected, .true.)))
 
       end function var_all_4_rdp_rdp
+      module function var_all_5_rdp_rdp(x, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        real(dp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(x) / n
+
+          res = sum((x - mean)**2) / (n - merge(1, 0 , optval(corrected, .true.)))
+
+      end function var_all_5_rdp_rdp
+      module function var_all_6_rdp_rdp(x, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        real(dp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(x) / n
+
+          res = sum((x - mean)**2) / (n - merge(1, 0 , optval(corrected, .true.)))
+
+      end function var_all_6_rdp_rdp
+      module function var_all_7_rdp_rdp(x, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        real(dp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(x) / n
+
+          res = sum((x - mean)**2) / (n - merge(1, 0 , optval(corrected, .true.)))
+
+      end function var_all_7_rdp_rdp
       module function var_all_1_csp_csp(x, mask, corrected) result(res)
         complex(sp), intent(in) :: x(:)
         logical, intent(in), optional :: mask
@@ -247,6 +367,66 @@ contains
           res = sum(abs(x - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_all_4_csp_csp
+      module function var_all_5_csp_csp(x, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        complex(sp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), sp)
+        mean = sum(x) / n
+
+          res = sum(abs(x - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_5_csp_csp
+      module function var_all_6_csp_csp(x, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        complex(sp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), sp)
+        mean = sum(x) / n
+
+          res = sum(abs(x - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_6_csp_csp
+      module function var_all_7_csp_csp(x, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        complex(sp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), sp)
+        mean = sum(x) / n
+
+          res = sum(abs(x - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_7_csp_csp
       module function var_all_1_cdp_cdp(x, mask, corrected) result(res)
         complex(dp), intent(in) :: x(:)
         logical, intent(in), optional :: mask
@@ -327,6 +507,66 @@ contains
           res = sum(abs(x - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_all_4_cdp_cdp
+      module function var_all_5_cdp_cdp(x, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        complex(dp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(x) / n
+
+          res = sum(abs(x - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_5_cdp_cdp
+      module function var_all_6_cdp_cdp(x, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        complex(dp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(x) / n
+
+          res = sum(abs(x - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_6_cdp_cdp
+      module function var_all_7_cdp_cdp(x, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        complex(dp) :: mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(x) / n
+
+          res = sum(abs(x - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_7_cdp_cdp
 
 
       module function var_all_1_iint8_dp(x, mask, corrected) result(res)
@@ -405,6 +645,63 @@ contains
         res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_all_4_iint8_dp
+      module function var_all_5_iint8_dp(x, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_5_iint8_dp
+      module function var_all_6_iint8_dp(x, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_6_iint8_dp
+      module function var_all_7_iint8_dp(x, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_7_iint8_dp
       module function var_all_1_iint16_dp(x, mask, corrected) result(res)
         integer(int16), intent(in) :: x(:)
         logical, intent(in), optional :: mask
@@ -481,6 +778,63 @@ contains
         res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_all_4_iint16_dp
+      module function var_all_5_iint16_dp(x, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_5_iint16_dp
+      module function var_all_6_iint16_dp(x, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_6_iint16_dp
+      module function var_all_7_iint16_dp(x, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_7_iint16_dp
       module function var_all_1_iint32_dp(x, mask, corrected) result(res)
         integer(int32), intent(in) :: x(:)
         logical, intent(in), optional :: mask
@@ -557,6 +911,63 @@ contains
         res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_all_4_iint32_dp
+      module function var_all_5_iint32_dp(x, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_5_iint32_dp
+      module function var_all_6_iint32_dp(x, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_6_iint32_dp
+      module function var_all_7_iint32_dp(x, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_7_iint32_dp
       module function var_all_1_iint64_dp(x, mask, corrected) result(res)
         integer(int64), intent(in) :: x(:)
         logical, intent(in), optional :: mask
@@ -633,6 +1044,63 @@ contains
         res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_all_4_iint64_dp
+      module function var_all_5_iint64_dp(x, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_5_iint64_dp
+      module function var_all_6_iint64_dp(x, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_6_iint64_dp
+      module function var_all_7_iint64_dp(x, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        n = real(size(x, kind = int64), dp)
+        mean = sum(real(x, dp)) / n
+
+        res = sum((real(x, dp) - mean)**2) / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_all_7_iint64_dp
 
 
       module function var_1_rsp_rsp(x, dim, mask, corrected) result(res)
@@ -793,6 +1261,194 @@ contains
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_4_rsp_rsp
+      module function var_5_rsp_rsp(x, dim, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(sp) :: n
+        real(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(i, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, i, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, i, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, i, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_5_rsp_rsp
+      module function var_6_rsp_rsp(x, dim, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(sp) :: n
+        real(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(i, :, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, i, :, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, i, :, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, i, :, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, i, :) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_6_rsp_rsp
+      module function var_7_rsp_rsp(x, dim, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(sp) :: n
+        real(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(i, :, :, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, i, :, :, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, i, :, :, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, i, :, :, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, i, :, :) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, :, i, :) - mean)**2
+            end do
+          case(7)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_7_rsp_rsp
       module function var_1_rdp_rdp(x, dim, mask, corrected) result(res)
         real(dp), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -951,6 +1607,194 @@ contains
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_4_rdp_rdp
+      module function var_5_rdp_rdp(x, dim, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(i, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, i, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, i, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, i, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_5_rdp_rdp
+      module function var_6_rdp_rdp(x, dim, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(i, :, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, i, :, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, i, :, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, i, :, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, i, :) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_6_rdp_rdp
+      module function var_7_rdp_rdp(x, dim, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(i, :, :, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, i, :, :, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, i, :, :, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, i, :, :, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, i, :, :) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, :, i, :) - mean)**2
+            end do
+          case(7)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + (x(:, :, :, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_7_rdp_rdp
       module function var_1_csp_csp(x, dim, mask, corrected) result(res)
         complex(sp), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -1109,6 +1953,194 @@ contains
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_4_csp_csp
+      module function var_5_csp_csp(x, dim, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(sp) :: n
+        complex(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(i, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, i, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, i, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, i, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_5_csp_csp
+      module function var_6_csp_csp(x, dim, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(sp) :: n
+        complex(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(i, :, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, i, :, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, i, :, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, i, :, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, i, :) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_6_csp_csp
+      module function var_7_csp_csp(x, dim, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(sp) :: n
+        complex(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._sp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(i, :, :, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, i, :, :, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, i, :, :, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, i, :, :, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, i, :, :) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, :, i, :) - mean)**2
+            end do
+          case(7)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_7_csp_csp
       module function var_1_cdp_cdp(x, dim, mask, corrected) result(res)
         complex(dp), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -1267,6 +2299,194 @@ contains
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_4_cdp_cdp
+      module function var_5_cdp_cdp(x, dim, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n
+        complex(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(i, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, i, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, i, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, i, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_5_cdp_cdp
+      module function var_6_cdp_cdp(x, dim, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n
+        complex(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(i, :, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, i, :, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, i, :, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, i, :, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, i, :) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_6_cdp_cdp
+      module function var_7_cdp_cdp(x, dim, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n
+        complex(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(i, :, :, :, :, :, :) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, i, :, :, :, :, :) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, i, :, :, :, :) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, i, :, :, :) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, i, :, :) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, :, i, :) - mean)**2
+            end do
+          case(7)
+            n = size(x, dim)
+            mean = sum(x, dim) / n
+            do i = 1, size(x, dim)
+                res = res + abs(x(:, :, :, :, :, :, i) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_7_cdp_cdp
 
 
       module function var_1_iint8_dp(x, dim, mask, corrected) result(res)
@@ -1427,6 +2647,194 @@ contains
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_4_iint8_dp
+      module function var_5_iint8_dp(x, dim, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_5_iint8_dp
+      module function var_6_iint8_dp(x, dim, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i, :), dp) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_6_iint8_dp
+      module function var_7_iint8_dp(x, dim, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :, :, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i, :, :), dp) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, i, :), dp) - mean)**2
+            end do
+          case(7)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_7_iint8_dp
       module function var_1_iint16_dp(x, dim, mask, corrected) result(res)
         integer(int16), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -1585,6 +2993,194 @@ contains
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_4_iint16_dp
+      module function var_5_iint16_dp(x, dim, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_5_iint16_dp
+      module function var_6_iint16_dp(x, dim, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i, :), dp) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_6_iint16_dp
+      module function var_7_iint16_dp(x, dim, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :, :, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i, :, :), dp) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, i, :), dp) - mean)**2
+            end do
+          case(7)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_7_iint16_dp
       module function var_1_iint32_dp(x, dim, mask, corrected) result(res)
         integer(int32), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -1743,6 +3339,194 @@ contains
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_4_iint32_dp
+      module function var_5_iint32_dp(x, dim, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_5_iint32_dp
+      module function var_6_iint32_dp(x, dim, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i, :), dp) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_6_iint32_dp
+      module function var_7_iint32_dp(x, dim, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :, :, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i, :, :), dp) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, i, :), dp) - mean)**2
+            end do
+          case(7)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_7_iint32_dp
       module function var_1_iint64_dp(x, dim, mask, corrected) result(res)
         integer(int64), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -1901,6 +3685,194 @@ contains
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
 
       end function var_4_iint64_dp
+      module function var_5_iint64_dp(x, dim, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_5_iint64_dp
+      module function var_6_iint64_dp(x, dim, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i, :), dp) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_6_iint64_dp
+      module function var_7_iint64_dp(x, dim, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in), optional :: mask
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        if (.not.optval(mask, .true.)) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(i, :, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(2)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, i, :, :, :, :, :), dp) - mean)**2
+            end do
+          case(3)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, i, :, :, :, :), dp) - mean)**2
+            end do
+          case(4)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, i, :, :, :), dp) - mean)**2
+            end do
+          case(5)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, i, :, :), dp) - mean)**2
+            end do
+          case(6)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, i, :), dp) - mean)**2
+            end do
+          case(7)
+            n = size(x, dim)
+            mean = sum(real(x, dp), dim) / n
+            do i = 1, size(x, dim)
+              res = res + (real(x(:, :, :, :, :, :, i), dp) - mean)**2
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+
+      end function var_7_iint64_dp
 
 
       module function var_mask_all_1_rsp_rsp(x, mask, corrected) result(res)
@@ -1967,6 +3939,54 @@ contains
                 merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_all_4_rsp_rsp
+      module function var_mask_all_5_rsp_rsp(x, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        real(sp) :: mean
+
+        n = real(count(mask, kind = int64), sp)
+        mean = sum(x, mask) / n
+
+          res = sum((x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_5_rsp_rsp
+      module function var_mask_all_6_rsp_rsp(x, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        real(sp) :: mean
+
+        n = real(count(mask, kind = int64), sp)
+        mean = sum(x, mask) / n
+
+          res = sum((x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_6_rsp_rsp
+      module function var_mask_all_7_rsp_rsp(x, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        real(sp) :: mean
+
+        n = real(count(mask, kind = int64), sp)
+        mean = sum(x, mask) / n
+
+          res = sum((x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_7_rsp_rsp
       module function var_mask_all_1_rdp_rdp(x, mask, corrected) result(res)
         real(dp), intent(in) :: x(:)
         logical, intent(in) :: mask(:)
@@ -2031,6 +4051,54 @@ contains
                 merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_all_4_rdp_rdp
+      module function var_mask_all_5_rdp_rdp(x, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        real(dp) :: mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(x, mask) / n
+
+          res = sum((x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_5_rdp_rdp
+      module function var_mask_all_6_rdp_rdp(x, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        real(dp) :: mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(x, mask) / n
+
+          res = sum((x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_6_rdp_rdp
+      module function var_mask_all_7_rdp_rdp(x, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        real(dp) :: mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(x, mask) / n
+
+          res = sum((x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_7_rdp_rdp
       module function var_mask_all_1_csp_csp(x, mask, corrected) result(res)
         complex(sp), intent(in) :: x(:)
         logical, intent(in) :: mask(:)
@@ -2095,6 +4163,54 @@ contains
                 merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_all_4_csp_csp
+      module function var_mask_all_5_csp_csp(x, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        complex(sp) :: mean
+
+        n = real(count(mask, kind = int64), sp)
+        mean = sum(x, mask) / n
+
+          res = sum(abs(x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_5_csp_csp
+      module function var_mask_all_6_csp_csp(x, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        complex(sp) :: mean
+
+        n = real(count(mask, kind = int64), sp)
+        mean = sum(x, mask) / n
+
+          res = sum(abs(x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_6_csp_csp
+      module function var_mask_all_7_csp_csp(x, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res
+
+        real(sp) :: n
+        complex(sp) :: mean
+
+        n = real(count(mask, kind = int64), sp)
+        mean = sum(x, mask) / n
+
+          res = sum(abs(x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_7_csp_csp
       module function var_mask_all_1_cdp_cdp(x, mask, corrected) result(res)
         complex(dp), intent(in) :: x(:)
         logical, intent(in) :: mask(:)
@@ -2159,6 +4275,54 @@ contains
                 merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_all_4_cdp_cdp
+      module function var_mask_all_5_cdp_cdp(x, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        complex(dp) :: mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(x, mask) / n
+
+          res = sum(abs(x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_5_cdp_cdp
+      module function var_mask_all_6_cdp_cdp(x, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        complex(dp) :: mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(x, mask) / n
+
+          res = sum(abs(x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_6_cdp_cdp
+      module function var_mask_all_7_cdp_cdp(x, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n
+        complex(dp) :: mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(x, mask) / n
+
+          res = sum(abs(x - mean)**2, mask) / (n -&
+                merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_7_cdp_cdp
 
 
       module function var_mask_all_1_iint8_dp(x, mask, corrected) result(res)
@@ -2221,6 +4385,51 @@ contains
               merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_all_4_iint8_dp
+      module function var_mask_all_5_iint8_dp(x, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_5_iint8_dp
+      module function var_mask_all_6_iint8_dp(x, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_6_iint8_dp
+      module function var_mask_all_7_iint8_dp(x, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_7_iint8_dp
       module function var_mask_all_1_iint16_dp(x, mask, corrected) result(res)
         integer(int16), intent(in) :: x(:)
         logical, intent(in) :: mask(:)
@@ -2281,6 +4490,51 @@ contains
               merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_all_4_iint16_dp
+      module function var_mask_all_5_iint16_dp(x, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_5_iint16_dp
+      module function var_mask_all_6_iint16_dp(x, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_6_iint16_dp
+      module function var_mask_all_7_iint16_dp(x, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_7_iint16_dp
       module function var_mask_all_1_iint32_dp(x, mask, corrected) result(res)
         integer(int32), intent(in) :: x(:)
         logical, intent(in) :: mask(:)
@@ -2341,6 +4595,51 @@ contains
               merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_all_4_iint32_dp
+      module function var_mask_all_5_iint32_dp(x, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_5_iint32_dp
+      module function var_mask_all_6_iint32_dp(x, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_6_iint32_dp
+      module function var_mask_all_7_iint32_dp(x, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_7_iint32_dp
       module function var_mask_all_1_iint64_dp(x, mask, corrected) result(res)
         integer(int64), intent(in) :: x(:)
         logical, intent(in) :: mask(:)
@@ -2401,6 +4700,51 @@ contains
               merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_all_4_iint64_dp
+      module function var_mask_all_5_iint64_dp(x, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_5_iint64_dp
+      module function var_mask_all_6_iint64_dp(x, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_6_iint64_dp
+      module function var_mask_all_7_iint64_dp(x, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:,:,:)
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res
+
+        real(dp) :: n, mean
+
+        n = real(count(mask, kind = int64), dp)
+        mean = sum(real(x, dp), mask) / n
+
+        res = sum((real(x, dp) - mean)**2, mask) / (n -&
+              merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_all_7_iint64_dp
 
 
       module function var_mask_1_rsp_rsp(x, dim, mask, corrected) result(res)
@@ -2562,6 +4906,219 @@ contains
         res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_4_rsp_rsp
+      module function var_mask_5_rsp_rsp(x, dim, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(sp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+        real(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(i, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(i, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, i, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, i, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, i, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, i, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, i, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, i, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, i) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_5_rsp_rsp
+      module function var_mask_6_rsp_rsp(x, dim, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(sp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+        real(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(i, :, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(i, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, i, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, i, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, i, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, i, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, i, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, i, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, i, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, i, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, :, i) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_6_rsp_rsp
+      module function var_mask_7_rsp_rsp(x, dim, mask, corrected) result(res)
+        real(sp), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(sp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+        real(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(i, :, :, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(i, :, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, i, :, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, i, :, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, i, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, i, :, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, i, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, i, :, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, i, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, i, :, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, :, i, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, :, i, :))
+            end do
+          case(7)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, :, :, i) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_7_rsp_rsp
       module function var_mask_1_rdp_rdp(x, dim, mask, corrected) result(res)
         real(dp), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -2721,6 +5278,219 @@ contains
         res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_4_rdp_rdp
+      module function var_mask_5_rdp_rdp(x, dim, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(i, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(i, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, i, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, i, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, i, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, i, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, i, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, i, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, i) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_5_rdp_rdp
+      module function var_mask_6_rdp_rdp(x, dim, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(i, :, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(i, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, i, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, i, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, i, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, i, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, i, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, i, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, i, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, i, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, :, i) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_6_rdp_rdp
+      module function var_mask_7_rdp_rdp(x, dim, mask, corrected) result(res)
+        real(dp), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(i, :, :, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(i, :, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, i, :, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, i, :, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, i, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, i, :, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, i, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, i, :, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, i, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, i, :, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, :, i, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, :, i, :))
+            end do
+          case(7)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( (x(:, :, :, :, :, :, i) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_7_rdp_rdp
       module function var_mask_1_csp_csp(x, dim, mask, corrected) result(res)
         complex(sp), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -2880,6 +5650,219 @@ contains
         res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_4_csp_csp
+      module function var_mask_5_csp_csp(x, dim, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(sp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+        complex(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(i, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(i, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, i, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, i, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, i, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, i, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, i, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, i, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, i) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_5_csp_csp
+      module function var_mask_6_csp_csp(x, dim, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(sp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+        complex(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(i, :, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(i, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, i, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, i, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, i, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, i, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, i, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, i, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, i, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, i, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, :, i) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_6_csp_csp
+      module function var_mask_7_csp_csp(x, dim, mask, corrected) result(res)
+        complex(sp), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(sp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(sp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+        complex(sp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        res = 0._sp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(i, :, :, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(i, :, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, i, :, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, i, :, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, i, :, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, i, :, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, i, :, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, i, :, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, i, :, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, i, :, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, :, i, :) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, :, i, :))
+            end do
+          case(7)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, :, :, i) - mean)**2,&
+                                  0._sp,&
+                                  mask(:, :, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_7_csp_csp
       module function var_mask_1_cdp_cdp(x, dim, mask, corrected) result(res)
         complex(dp), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -3039,6 +6022,219 @@ contains
         res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_4_cdp_cdp
+      module function var_mask_5_cdp_cdp(x, dim, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+        complex(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(i, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(i, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, i, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, i, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, i, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, i, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, i, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, i, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, i) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_5_cdp_cdp
+      module function var_mask_6_cdp_cdp(x, dim, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+        complex(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(i, :, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(i, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, i, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, i, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, i, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, i, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, i, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, i, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, i, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, i, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, :, i) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_6_cdp_cdp
+      module function var_mask_7_cdp_cdp(x, dim, mask, corrected) result(res)
+        complex(dp), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+        complex(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x,&
+            & 3), size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(i, :, :, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(i, :, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, i, :, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, i, :, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, i, :, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, i, :, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, i, :, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, i, :, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, i, :, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, i, :, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, :, i, :) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, :, i, :))
+            end do
+          case(7)
+            n = count(mask, dim)
+            mean = sum(x, dim, mask) / n
+            do i = 1, size(x, dim)
+                res = res + merge( abs(x(:, :, :, :, :, :, i) - mean)**2,&
+                                  0._dp,&
+                                  mask(:, :, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_7_cdp_cdp
 
 
       module function var_mask_1_iint8_dp(x, dim, mask, corrected) result(res)
@@ -3190,6 +6386,201 @@ contains
         res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_4_iint8_dp
+      module function var_mask_5_iint8_dp(x, dim, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_5_iint8_dp
+      module function var_mask_6_iint8_dp(x, dim, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_6_iint8_dp
+      module function var_mask_7_iint8_dp(x, dim, mask, corrected) result(res)
+        integer(int8), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i, :, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, i, :))
+            end do
+          case(7)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_7_iint8_dp
       module function var_mask_1_iint16_dp(x, dim, mask, corrected) result(res)
         integer(int16), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -3339,6 +6730,201 @@ contains
         res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_4_iint16_dp
+      module function var_mask_5_iint16_dp(x, dim, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_5_iint16_dp
+      module function var_mask_6_iint16_dp(x, dim, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_6_iint16_dp
+      module function var_mask_7_iint16_dp(x, dim, mask, corrected) result(res)
+        integer(int16), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i, :, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, i, :))
+            end do
+          case(7)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_7_iint16_dp
       module function var_mask_1_iint32_dp(x, dim, mask, corrected) result(res)
         integer(int32), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -3488,6 +7074,201 @@ contains
         res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_4_iint32_dp
+      module function var_mask_5_iint32_dp(x, dim, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_5_iint32_dp
+      module function var_mask_6_iint32_dp(x, dim, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_6_iint32_dp
+      module function var_mask_7_iint32_dp(x, dim, mask, corrected) result(res)
+        integer(int32), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i, :, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, i, :))
+            end do
+          case(7)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_7_iint32_dp
       module function var_mask_1_iint64_dp(x, dim, mask, corrected) result(res)
         integer(int64), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -3637,5 +7418,200 @@ contains
         res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
 
       end function var_mask_4_iint64_dp
+      module function var_mask_5_iint64_dp(x, dim, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_5_iint64_dp
+      module function var_mask_6_iint64_dp(x, dim, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_6_iint64_dp
+      module function var_mask_7_iint64_dp(x, dim, mask, corrected) result(res)
+        integer(int64), intent(in) :: x(:,:,:,:,:,:,:)
+        integer, intent(in) :: dim
+        logical, intent(in) :: mask(:,:,:,:,:,:,:)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        integer :: i
+        real(dp) :: n(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+        real(dp) :: mean(merge(size(x, 1), size(x, 2), mask=1<dim), merge(size(x, 2), size(x, 3), mask=2<dim), merge(size(x, 3),&
+            & size(x, 4), mask=3<dim), merge(size(x, 4), size(x, 5), mask=4<dim), merge(size(x, 5), size(x, 6), mask=5<dim),&
+            & merge(size(x, 6), size(x, 7), mask=6<dim))
+
+        res = 0._dp
+        select case(dim)
+          case(1)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(i, :, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(i, :, :, :, :, :, :))
+            end do
+          case(2)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, i, :, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, i, :, :, :, :, :))
+            end do
+          case(3)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, i, :, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, i, :, :, :, :))
+            end do
+          case(4)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, i, :, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, i, :, :, :))
+            end do
+          case(5)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, i, :, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, i, :, :))
+            end do
+          case(6)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, i, :), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, i, :))
+            end do
+          case(7)
+            n = count(mask, dim)
+            mean = sum(real(x, dp), dim, mask) / n
+            do i = 1, size(x, dim)
+              res = res + merge((real(x(:, :, :, :, :, :, i), dp) - mean)**2,&
+                                  0._dp, mask(:, :, :, :, :, :, i))
+            end do
+          case default
+            call error_stop("ERROR (var): wrong dimension")
+        end select
+        res = res / (n - merge(1, 0, (optval(corrected, .true.) .and. n > 0)))
+
+      end function var_mask_7_iint64_dp
 
 end submodule

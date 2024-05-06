@@ -233,6 +233,111 @@ contains
             end if
         end if
     end subroutine save_npy_rsp_4
+    !> Save 5-dimensional array in npy format
+    module subroutine save_npy_rsp_5(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        real(sp), intent(in) :: array(:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_rsp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_rsp_5
+    !> Save 6-dimensional array in npy format
+    module subroutine save_npy_rsp_6(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        real(sp), intent(in) :: array(:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_rsp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_rsp_6
+    !> Save 7-dimensional array in npy format
+    module subroutine save_npy_rsp_7(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        real(sp), intent(in) :: array(:,:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_rsp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_rsp_7
     !> Save 1-dimensional array in npy format
     module subroutine save_npy_rdp_1(filename, array, iostat, iomsg)
         !> Name of the npy file to load from
@@ -373,6 +478,111 @@ contains
             end if
         end if
     end subroutine save_npy_rdp_4
+    !> Save 5-dimensional array in npy format
+    module subroutine save_npy_rdp_5(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        real(dp), intent(in) :: array(:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_rdp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_rdp_5
+    !> Save 6-dimensional array in npy format
+    module subroutine save_npy_rdp_6(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        real(dp), intent(in) :: array(:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_rdp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_rdp_6
+    !> Save 7-dimensional array in npy format
+    module subroutine save_npy_rdp_7(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        real(dp), intent(in) :: array(:,:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_rdp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_rdp_7
     !> Save 1-dimensional array in npy format
     module subroutine save_npy_iint8_1(filename, array, iostat, iomsg)
         !> Name of the npy file to load from
@@ -513,6 +723,111 @@ contains
             end if
         end if
     end subroutine save_npy_iint8_4
+    !> Save 5-dimensional array in npy format
+    module subroutine save_npy_iint8_5(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int8), intent(in) :: array(:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint8
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint8_5
+    !> Save 6-dimensional array in npy format
+    module subroutine save_npy_iint8_6(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int8), intent(in) :: array(:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint8
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint8_6
+    !> Save 7-dimensional array in npy format
+    module subroutine save_npy_iint8_7(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int8), intent(in) :: array(:,:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint8
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint8_7
     !> Save 1-dimensional array in npy format
     module subroutine save_npy_iint16_1(filename, array, iostat, iomsg)
         !> Name of the npy file to load from
@@ -653,6 +968,111 @@ contains
             end if
         end if
     end subroutine save_npy_iint16_4
+    !> Save 5-dimensional array in npy format
+    module subroutine save_npy_iint16_5(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int16), intent(in) :: array(:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint16
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint16_5
+    !> Save 6-dimensional array in npy format
+    module subroutine save_npy_iint16_6(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int16), intent(in) :: array(:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint16
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint16_6
+    !> Save 7-dimensional array in npy format
+    module subroutine save_npy_iint16_7(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int16), intent(in) :: array(:,:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint16
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint16_7
     !> Save 1-dimensional array in npy format
     module subroutine save_npy_iint32_1(filename, array, iostat, iomsg)
         !> Name of the npy file to load from
@@ -793,6 +1213,111 @@ contains
             end if
         end if
     end subroutine save_npy_iint32_4
+    !> Save 5-dimensional array in npy format
+    module subroutine save_npy_iint32_5(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int32), intent(in) :: array(:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint32
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint32_5
+    !> Save 6-dimensional array in npy format
+    module subroutine save_npy_iint32_6(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int32), intent(in) :: array(:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint32
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint32_6
+    !> Save 7-dimensional array in npy format
+    module subroutine save_npy_iint32_7(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int32), intent(in) :: array(:,:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint32
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint32_7
     !> Save 1-dimensional array in npy format
     module subroutine save_npy_iint64_1(filename, array, iostat, iomsg)
         !> Name of the npy file to load from
@@ -933,6 +1458,111 @@ contains
             end if
         end if
     end subroutine save_npy_iint64_4
+    !> Save 5-dimensional array in npy format
+    module subroutine save_npy_iint64_5(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int64), intent(in) :: array(:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint64
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint64_5
+    !> Save 6-dimensional array in npy format
+    module subroutine save_npy_iint64_6(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int64), intent(in) :: array(:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint64
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint64_6
+    !> Save 7-dimensional array in npy format
+    module subroutine save_npy_iint64_7(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        integer(int64), intent(in) :: array(:,:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_iint64
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_iint64_7
     !> Save 1-dimensional array in npy format
     module subroutine save_npy_csp_1(filename, array, iostat, iomsg)
         !> Name of the npy file to load from
@@ -1073,6 +1703,111 @@ contains
             end if
         end if
     end subroutine save_npy_csp_4
+    !> Save 5-dimensional array in npy format
+    module subroutine save_npy_csp_5(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        complex(sp), intent(in) :: array(:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_csp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_csp_5
+    !> Save 6-dimensional array in npy format
+    module subroutine save_npy_csp_6(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        complex(sp), intent(in) :: array(:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_csp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_csp_6
+    !> Save 7-dimensional array in npy format
+    module subroutine save_npy_csp_7(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        complex(sp), intent(in) :: array(:,:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_csp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_csp_7
     !> Save 1-dimensional array in npy format
     module subroutine save_npy_cdp_1(filename, array, iostat, iomsg)
         !> Name of the npy file to load from
@@ -1213,5 +1948,110 @@ contains
             end if
         end if
     end subroutine save_npy_cdp_4
+    !> Save 5-dimensional array in npy format
+    module subroutine save_npy_cdp_5(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        complex(dp), intent(in) :: array(:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_cdp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_cdp_5
+    !> Save 6-dimensional array in npy format
+    module subroutine save_npy_cdp_6(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        complex(dp), intent(in) :: array(:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_cdp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_cdp_6
+    !> Save 7-dimensional array in npy format
+    module subroutine save_npy_cdp_7(filename, array, iostat, iomsg)
+        !> Name of the npy file to load from
+        character(len=*), intent(in) :: filename
+        !> Array to be loaded from the npy file
+        complex(dp), intent(in) :: array(:,:,:,:,:,:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        character(len=*), parameter :: vtype = type_cdp
+        integer :: io, stat
+
+        open(newunit=io, file=filename, form="unformatted", access="stream", iostat=stat)
+        if (stat == 0) then
+            write(io, iostat=stat) npy_header(vtype, shape(array))
+        end if
+        if (stat == 0) then
+            write(io, iostat=stat) array
+        end if
+        close(io, iostat=stat)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            call error_stop("Failed to write array to file '"//filename//"'")
+        end if
+
+        if (present(iomsg)) then
+            if (stat /= 0) then
+                iomsg = "Failed to write array to file '"//filename//"'"
+            end if
+        end if
+    end subroutine save_npy_cdp_7
 
 end submodule stdlib_io_npy_save
