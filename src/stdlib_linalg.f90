@@ -1,8 +1,8 @@
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
   !! ([Specification](../page/specs/stdlib_linalg.html))
-  use stdlib_kinds, only: sp, dp, xdp, qp, lk, &
-    int8, int16, int32, int64
+  use stdlib_kinds, only: xdp, int8, int16, int32, int64
+  use stdlib_linalg_constants, only: sp, dp, qp, lk, ilp
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
   use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling
@@ -13,6 +13,9 @@ module stdlib_linalg
   public :: operator(.det.)
   public :: diag
   public :: eye
+  public :: lstsq
+  public :: lstsq_space
+  public :: solve_lstsq
   public :: trace
   public :: outer_product
   public :: kronecker_product
@@ -454,6 +457,446 @@ module stdlib_linalg
       module procedure is_Hessenberg_iint64
   end interface is_hessenberg
 
+  ! Least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
+  interface lstsq
+    !! version: experimental 
+    !!
+    !! Computes the squares solution to system \( A \cdot x = b \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#lstsq-computes-the-least-squares-solution-to-a-linear-matrix-equation))
+    !! 
+    !!### Summary 
+    !! Interface for computing least squares, i.e. the 2-norm \( || (b-A \cdot x ||_2 \) minimizing solution.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the least squares of a linear matrix system.
+    !! Supported data types include `real` and `complex`.
+    !! 
+    !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !! 
+      module function stdlib_linalg_s_lstsq_one(a,b,cond,overwrite_a,rank,err) result(x)
+         !> Input matrix a[n,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(sp), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(sp), allocatable, target :: x(:)
+      end function stdlib_linalg_s_lstsq_one
+      module function stdlib_linalg_d_lstsq_one(a,b,cond,overwrite_a,rank,err) result(x)
+         !> Input matrix a[n,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(dp), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(dp), allocatable, target :: x(:)
+      end function stdlib_linalg_d_lstsq_one
+      module function stdlib_linalg_c_lstsq_one(a,b,cond,overwrite_a,rank,err) result(x)
+         !> Input matrix a[n,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(sp), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(sp), allocatable, target :: x(:)
+      end function stdlib_linalg_c_lstsq_one
+      module function stdlib_linalg_z_lstsq_one(a,b,cond,overwrite_a,rank,err) result(x)
+         !> Input matrix a[n,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(dp), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(dp), allocatable, target :: x(:)
+      end function stdlib_linalg_z_lstsq_one
+      module function stdlib_linalg_s_lstsq_many(a,b,cond,overwrite_a,rank,err) result(x)
+         !> Input matrix a[n,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:,:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(sp), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(sp), allocatable, target :: x(:,:)
+      end function stdlib_linalg_s_lstsq_many
+      module function stdlib_linalg_d_lstsq_many(a,b,cond,overwrite_a,rank,err) result(x)
+         !> Input matrix a[n,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:,:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(dp), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(dp), allocatable, target :: x(:,:)
+      end function stdlib_linalg_d_lstsq_many
+      module function stdlib_linalg_c_lstsq_many(a,b,cond,overwrite_a,rank,err) result(x)
+         !> Input matrix a[n,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:,:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(sp), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(sp), allocatable, target :: x(:,:)
+      end function stdlib_linalg_c_lstsq_many
+      module function stdlib_linalg_z_lstsq_many(a,b,cond,overwrite_a,rank,err) result(x)
+         !> Input matrix a[n,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:,:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(dp), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(dp), allocatable, target :: x(:,:)
+      end function stdlib_linalg_z_lstsq_many
+  end interface lstsq
+
+  ! Least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
+  interface solve_lstsq
+    !! version: experimental 
+    !!
+    !! Computes the squares solution to system \( A \cdot x = b \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#solve-lstsq-compute-the-least-squares-solution-to-a-linear-matrix-equation-subroutine-interface))
+    !! 
+    !!### Summary 
+    !! Subroutine interface for computing least squares, i.e. the 2-norm \( || (b-A \cdot x ||_2 \) minimizing solution.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the least squares of a linear matrix system using 
+    !! a subroutine. Supported data types include `real` and `complex`. If pre-allocated work spaces 
+    !! are provided, no internal memory allocations take place when using this interface.
+    !! 
+    !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !! 
+      module subroutine stdlib_linalg_s_solve_lstsq_one(a,b,x,real_storage,int_storage,&
+                        cond,singvals,overwrite_a,rank,err) 
+         !> Input matrix a[n,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(sp), intent(inout), contiguous, target :: x(:)     
+         !> [optional] real working storage space
+         real(sp), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(sp), optional, intent(in) :: cond
+         !> [optional] list of singular values [min(m,n)], in descending magnitude order, returned by the SVD
+         real(sp), optional, intent(out), target :: singvals(:)                  
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_s_solve_lstsq_one
+      module subroutine stdlib_linalg_d_solve_lstsq_one(a,b,x,real_storage,int_storage,&
+                        cond,singvals,overwrite_a,rank,err) 
+         !> Input matrix a[n,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(dp), intent(inout), contiguous, target :: x(:)     
+         !> [optional] real working storage space
+         real(dp), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(dp), optional, intent(in) :: cond
+         !> [optional] list of singular values [min(m,n)], in descending magnitude order, returned by the SVD
+         real(dp), optional, intent(out), target :: singvals(:)                  
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_d_solve_lstsq_one
+      module subroutine stdlib_linalg_c_solve_lstsq_one(a,b,x,real_storage,int_storage,&
+                        cmpl_storage,cond,singvals,overwrite_a,rank,err) 
+         !> Input matrix a[n,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(sp), intent(inout), contiguous, target :: x(:)     
+         !> [optional] real working storage space
+         real(sp), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         !> [optional] complex working storage space
+         complex(sp), optional, intent(inout), target :: cmpl_storage(:)                  
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(sp), optional, intent(in) :: cond
+         !> [optional] list of singular values [min(m,n)], in descending magnitude order, returned by the SVD
+         real(sp), optional, intent(out), target :: singvals(:)                  
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_c_solve_lstsq_one
+      module subroutine stdlib_linalg_z_solve_lstsq_one(a,b,x,real_storage,int_storage,&
+                        cmpl_storage,cond,singvals,overwrite_a,rank,err) 
+         !> Input matrix a[n,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(dp), intent(inout), contiguous, target :: x(:)     
+         !> [optional] real working storage space
+         real(dp), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         !> [optional] complex working storage space
+         complex(dp), optional, intent(inout), target :: cmpl_storage(:)                  
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(dp), optional, intent(in) :: cond
+         !> [optional] list of singular values [min(m,n)], in descending magnitude order, returned by the SVD
+         real(dp), optional, intent(out), target :: singvals(:)                  
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_z_solve_lstsq_one
+      module subroutine stdlib_linalg_s_solve_lstsq_many(a,b,x,real_storage,int_storage,&
+                        cond,singvals,overwrite_a,rank,err) 
+         !> Input matrix a[n,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(sp), intent(inout), contiguous, target :: x(:,:)     
+         !> [optional] real working storage space
+         real(sp), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(sp), optional, intent(in) :: cond
+         !> [optional] list of singular values [min(m,n)], in descending magnitude order, returned by the SVD
+         real(sp), optional, intent(out), target :: singvals(:)                  
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_s_solve_lstsq_many
+      module subroutine stdlib_linalg_d_solve_lstsq_many(a,b,x,real_storage,int_storage,&
+                        cond,singvals,overwrite_a,rank,err) 
+         !> Input matrix a[n,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(dp), intent(inout), contiguous, target :: x(:,:)     
+         !> [optional] real working storage space
+         real(dp), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(dp), optional, intent(in) :: cond
+         !> [optional] list of singular values [min(m,n)], in descending magnitude order, returned by the SVD
+         real(dp), optional, intent(out), target :: singvals(:)                  
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_d_solve_lstsq_many
+      module subroutine stdlib_linalg_c_solve_lstsq_many(a,b,x,real_storage,int_storage,&
+                        cmpl_storage,cond,singvals,overwrite_a,rank,err) 
+         !> Input matrix a[n,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(sp), intent(inout), contiguous, target :: x(:,:)     
+         !> [optional] real working storage space
+         real(sp), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         !> [optional] complex working storage space
+         complex(sp), optional, intent(inout), target :: cmpl_storage(:)                  
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(sp), optional, intent(in) :: cond
+         !> [optional] list of singular values [min(m,n)], in descending magnitude order, returned by the SVD
+         real(sp), optional, intent(out), target :: singvals(:)                  
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_c_solve_lstsq_many
+      module subroutine stdlib_linalg_z_solve_lstsq_many(a,b,x,real_storage,int_storage,&
+                        cmpl_storage,cond,singvals,overwrite_a,rank,err) 
+         !> Input matrix a[n,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(dp), intent(inout), contiguous, target :: x(:,:)     
+         !> [optional] real working storage space
+         real(dp), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         !> [optional] complex working storage space
+         complex(dp), optional, intent(inout), target :: cmpl_storage(:)                  
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(dp), optional, intent(in) :: cond
+         !> [optional] list of singular values [min(m,n)], in descending magnitude order, returned by the SVD
+         real(dp), optional, intent(out), target :: singvals(:)                  
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_z_solve_lstsq_many
+  end interface solve_lstsq
+
+  ! Return the working array space required by the least squares solver
+  interface lstsq_space
+    !! version: experimental 
+    !!
+    !! Computes the integer, real [, complex] working space required by the least-squares solver
+    !! ([Specification](../page/specs/stdlib_linalg.html#lstsq-space-compute-internal-working-space-requirements-for-the-least-squares-solver))
+    !! 
+    !!### Description
+    !! 
+    !! This interface provides sizes of integer, real [, complex] working spaces required by the 
+    !! least-squares solver. These sizes can be used to pre-allocated working arrays in case several 
+    !! repeated least-squares solutions to a same system are sought. If pre-allocated working arrays 
+    !! are provided, no internal allocations will take place.
+    !! 
+      pure module subroutine stdlib_linalg_s_lstsq_space_one(a,b,lrwork,liwork)
+         !> Input matrix a[m,n]
+         real(sp), intent(in), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:)
+         !> Size of the working space arrays                
+         integer(ilp), intent(out) :: lrwork,liwork         
+      end subroutine stdlib_linalg_s_lstsq_space_one
+      pure module subroutine stdlib_linalg_d_lstsq_space_one(a,b,lrwork,liwork)
+         !> Input matrix a[m,n]
+         real(dp), intent(in), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:)
+         !> Size of the working space arrays                
+         integer(ilp), intent(out) :: lrwork,liwork         
+      end subroutine stdlib_linalg_d_lstsq_space_one
+      pure module subroutine stdlib_linalg_c_lstsq_space_one(a,b,lrwork,liwork,lcwork)
+         !> Input matrix a[m,n]
+         complex(sp), intent(in), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:)
+         !> Size of the working space arrays                
+         integer(ilp), intent(out) :: lrwork,liwork,lcwork         
+      end subroutine stdlib_linalg_c_lstsq_space_one
+      pure module subroutine stdlib_linalg_z_lstsq_space_one(a,b,lrwork,liwork,lcwork)
+         !> Input matrix a[m,n]
+         complex(dp), intent(in), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:)
+         !> Size of the working space arrays                
+         integer(ilp), intent(out) :: lrwork,liwork,lcwork         
+      end subroutine stdlib_linalg_z_lstsq_space_one
+      pure module subroutine stdlib_linalg_s_lstsq_space_many(a,b,lrwork,liwork)
+         !> Input matrix a[m,n]
+         real(sp), intent(in), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:,:)
+         !> Size of the working space arrays                
+         integer(ilp), intent(out) :: lrwork,liwork         
+      end subroutine stdlib_linalg_s_lstsq_space_many
+      pure module subroutine stdlib_linalg_d_lstsq_space_many(a,b,lrwork,liwork)
+         !> Input matrix a[m,n]
+         real(dp), intent(in), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:,:)
+         !> Size of the working space arrays                
+         integer(ilp), intent(out) :: lrwork,liwork         
+      end subroutine stdlib_linalg_d_lstsq_space_many
+      pure module subroutine stdlib_linalg_c_lstsq_space_many(a,b,lrwork,liwork,lcwork)
+         !> Input matrix a[m,n]
+         complex(sp), intent(in), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:,:)
+         !> Size of the working space arrays                
+         integer(ilp), intent(out) :: lrwork,liwork,lcwork         
+      end subroutine stdlib_linalg_c_lstsq_space_many
+      pure module subroutine stdlib_linalg_z_lstsq_space_many(a,b,lrwork,liwork,lcwork)
+         !> Input matrix a[m,n]
+         complex(dp), intent(in), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:,:)
+         !> Size of the working space arrays                
+         integer(ilp), intent(out) :: lrwork,liwork,lcwork         
+      end subroutine stdlib_linalg_z_lstsq_space_many
+  end interface lstsq_space
 
   interface det
     !! version: experimental 
