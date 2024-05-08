@@ -25,7 +25,7 @@ module stdlib_constants
 
     ! mathematical constants
     #:for k in KINDS
-    real(${k}$), parameter, public :: PI_${k}$ = acos(-1.0_${k}$)
+    real(${k}$), parameter, public :: PI_${k}$ = acos(-1.0_${k}$) !! PI
     #:endfor
     
     ! Physical constants

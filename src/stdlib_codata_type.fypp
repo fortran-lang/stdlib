@@ -1,10 +1,10 @@
 #:include "common.fypp"
 #:set KINDS = REAL_KINDS
-#:set PROPS = ("value", "uncertainty")
 module stdlib_codata_type
     !! Codata constant type
     use stdlib_kinds, only: #{for k in KINDS[:-1]}#${k}$, #{endfor}#${KINDS[-1]}$
     use stdlib_io, only: FMT_REAL_DP
+    use stdlib_optval, only: optval 
     private
 
     type, public :: codata_constant
@@ -15,15 +15,20 @@ module stdlib_codata_type
         character(len=32) :: unit
     contains 
         procedure :: print
-        #:for p in PROPS
         #:for k in KINDS
-        procedure :: eval_${p}$_${k}$
+        procedure :: to_real_${k}$
         #:endfor
-        #:endfor
-        #:for p in PROPS
-        generic :: eval_${p}$ => #{for k in KINDS[:-1]}#eval_${p}$_${k}$, #{endfor}#eval_${p}$_${KINDS[-1]}$
-        #:endfor
+        generic :: to_real => #{for k in KINDS[:-1]}#to_real_${k}$, #{endfor}#to_real_${KINDS[-1]}$
     end type
+
+    interface to_real
+        !! Get the constant value or uncertainty.
+        #:for k in KINDS
+        module procedure to_real_${k}$
+        #:endfor
+    end interface
+
+    public :: to_real
     
 contains
 
@@ -33,15 +38,24 @@ subroutine print(self)
     print "(A64, SP, "//FMT_REAL_DP//" A5, "//FMT_REAL_DP//", X, A32)", self%name, self%value, "+/-", self%uncertainty, self%unit 
 end subroutine
 
-#:for p in PROPS
 #:for k in KINDS
-elemental real(${k}$) function eval_${p}$_${k}$(self, mold) result(r)
-    !! Evaluate the constant ${p}$ for the kind ${k}$
-    class(codata_constant), intent(in) :: self
-    real(${k}$), intent(in) :: mold
-    r = real(self%${p}$, kind(mold))
+elemental pure real(${k}$) function to_real_${k}$(self, mold, uncertainty) result(r)
+    !! Get the constant value or uncertainty for the kind ${k}$
+    
+    class(codata_constant), intent(in) :: self !! Codata constant
+    real(${k}$), intent(in) :: mold !! dummy argument to disambiguate at compile time the generic interface
+    logical, intent(in), optional :: uncertainty !! Set to true if the uncertainty is required
+        !! 
+    logical :: u
+    
+    u = optval(uncertainty, .false.)
+
+    if(u .eqv. .false.)then
+        r = real(self%value, kind(mold))
+    else
+        r = real(self%uncertainty, kind(mold))
+    end if
 end function
-#:endfor
 #:endfor
 
 end module stdlib_codata_type
