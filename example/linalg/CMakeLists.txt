@@ -18,6 +18,7 @@ ADD_EXAMPLE(state1)
 ADD_EXAMPLE(state2)
 ADD_EXAMPLE(blas_gemv)
 ADD_EXAMPLE(lapack_getrf)
+ADD_EXAMPLE(lstsq1)
+ADD_EXAMPLE(lstsq2)
 ADD_EXAMPLE(determinant)
 ADD_EXAMPLE(determinant2)
-

@@ -600,6 +600,130 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 {!example/linalg/example_is_hessenberg.f90!}
 ```
 
+## `lstsq` - Computes the least squares solution to a linear matrix equation. 
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the least-squares solution to a linear matrix equation \( A \cdot x = b \).
+
+Result vector `x` returns the approximate solution that minimizes the 2-norm \( || A \cdot x - b ||_2 \), i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
+
+### Syntax
+
+`x = ` [[stdlib_linalg(module):lstsq(interface)]] `(a, b, [, cond, overwrite_a, rank, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing one or more right-hand-side vector(s), each in its leading dimension. It is an `intent(in)` argument. 
+
+`cond` (optional): Shall be a scalar `real` value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`rank` (optional): Shall be an `integer` scalar value, that contains the rank of input matrix `A`. This is an `intent(out)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value of the same kind and rank as `b`, containing the solution(s) to the least squares system. 
+
+Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix and right-hand-side vector have invalid/incompatible sizes.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_lstsq1.f90!}
+```
+
+## `solve_lstsq` - Compute the least squares solution to a linear matrix equation (subroutine interface). 
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the least-squares solution to a linear matrix equation \( A \cdot x = b \).
+
+Result vector `x` returns the approximate solution that minimizes the 2-norm \( || A \cdot x - b ||_2 \), i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):solve_lstsq(interface)]] `(a, b, x, [, real_storage, int_storage, [cmpl_storage, ] cond, singvals, overwrite_a, rank, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing one or more right-hand-side vector(s), each in its leading dimension. It is an `intent(in)` argument. 
+
+`x`: Shall be an array of same kind and rank as `b`, containing the solution(s) to the least squares system. It is an `intent(inout)` argument.
+
+`real_storage` (optional): Shall be a `real` rank-1 array of the same kind `a`, providing working storage for the solver. It minimum size can be determined with a call to [[stdlib_linalg(module):lstsq_space(interface)]]. It is an `intent(inout)` argument.
+
+`int_storage` (optional): Shall be an `integer` rank-1 array, providing working storage for the solver. It minimum size can be determined with a call to [[stdlib_linalg(module):lstsq_space(interface)]]. It is an `intent(inout)` argument.
+
+`cmpl_storage` (optional): For `complex` systems, it shall be a `complex` rank-1 array, providing working storage for the solver. It minimum size can be determined with a call to [[stdlib_linalg(module):lstsq_space(interface)]]. It is an `intent(inout)` argument.
+
+`cond` (optional): Shall be a scalar `real` value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
+
+`singvals` (optional): Shall be a `real` rank-1 array of the same kind `a` and size at least `minval(shape(a))`, returning the list of singular values `s(i)>=cond*maxval(s)`, in descending order of magnitude. It is an `intent(out)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`rank` (optional): Shall be an `integer` scalar value, that contains the rank of input matrix `A`. This is an `intent(out)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value that represents the solution to the least squares system.
+
+Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix and right-hand-side vector have invalid/incompatible sizes.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_lstsq2.f90!}
+```
+
+## `lstsq_space` - Compute internal working space requirements for the least squares solver.
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the internal working space requirements for the least-squares solver, [[stdlib_linalg(module):solve_lstsq(interface)]] .
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):lstsq_space(interface)]] `(a, b, lrwork, liwork [, lcwork])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the linear system coefficient matrix. It is an `intent(in)` argument.
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the system's right-hand-side vector(s). It is an `intent(in)` argument. 
+
+`lrwork`: Shall be an `integer` scalar, that returns the minimum array size required for the `real` working storage to this system.
+
+`liwork`: Shall be an `integer` scalar, that returns the minimum array size required for the `integer` working storage to this system.
+
+`lcwork` (`complex` `a`, `b`): For a `complex` system, shall be an `integer` scalar, that returns the minimum array size required for the `complex` working storage to this system.
+
 ## `det` - Computes the determinant of a square matrix
 
 ### Status
