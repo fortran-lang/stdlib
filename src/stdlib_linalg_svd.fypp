@@ -1,12 +1,14 @@
 #:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_linalg_svd
+!! Singular-Value Decomposition    
      use stdlib_linalg_constants
-     use stdlib_linalg_blas
-     use stdlib_linalg_lapack
-     use stdlib_linalg_state
-     use iso_fortran_env,only:real32,real64,real128,int8,int16,int32,int64,stderr => error_unit
+     use stdlib_linalg_lapack, only: gesdd
+     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR, LINALG_SUCCESS
      implicit none(type,external)
-     private
+     
+     character(*), parameter :: this = 'svd'
 
      !> Singular value decomposition
      public :: svd
@@ -17,14 +19,18 @@ module stdlib_linalg_svd
      ! Scipy: svd(a, full_matrices=True, compute_uv=True, overwrite_a=False, check_finite=True, lapack_driver='gesdd')
 
      interface svd
-        #:for rk,rt,ri in ALL_KINDS_TYPES
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        #:if rk!="xdp"
         module procedure stdlib_linalg_svd_${ri}$
+        #:endif
         #:endfor
      end interface svd
 
      interface svdvals
-        #:for rk,rt,ri in ALL_KINDS_TYPES
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        #:if rk!="xdp"
         module procedure stdlib_linalg_svdvals_${ri}$
+        #:endif
         #:endfor
      end interface svdvals
 
@@ -40,15 +46,15 @@ module stdlib_linalg_svd
      !> Do not return either U or VT (singular values array only)
      character, parameter :: GESDD_SINGVAL_ONLY    = 'N'
 
-     character(*), parameter :: this = 'svd'
+     
 
 
      contains
 
      !> Process GESDD output flag
-     elemental subroutine gesdd_info(err,info,m,n)
+     elemental subroutine handle_gesdd_info(err,info,m,n)
         !> Error handler
-        type(linalg_state), intent(inout) :: err
+        type(linalg_state_type), intent(inout) :: err
         !> GESDD return flag
         integer(ilp), intent(in) :: info
         !> Input matrix size
@@ -59,32 +65,33 @@ module stdlib_linalg_svd
                ! Success!
                err%state = LINALG_SUCCESS
            case (-1)
-               err = linalg_state(this,LINALG_INTERNAL_ERROR,'Invalid task ID on input to GESDD.')
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID on input to GESDD.')
            case (-5,-3:-2)
-               err = linalg_state(this,LINALG_VALUE_ERROR,'invalid matrix size: a=[',m,',',n,']')
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=[',m,',',n,']')
            case (-8)
-               err = linalg_state(this,LINALG_VALUE_ERROR,'invalid matrix U size, with a=[',m,',',n,']')
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix U size, with a=[',m,',',n,']')
            case (-10)
-               err = linalg_state(this,LINALG_VALUE_ERROR,'invalid matrix V size, with a=[',m,',',n,']')
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix V size, with a=[',m,',',n,']')
            case (-4)
-               err = linalg_state(this,LINALG_VALUE_ERROR,'A contains invalid/NaN values.')
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'A contains invalid/NaN values.')
            case (1:)
-               err = linalg_state(this,LINALG_ERROR,'SVD computation did not converge.')
+               err = linalg_state_type(this,LINALG_ERROR,'SVD computation did not converge.')
            case default
-               err = linalg_state(this,LINALG_INTERNAL_ERROR,'Unknown error returned by GESDD.')
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Unknown error returned by GESDD.')
         end select
 
-     end subroutine gesdd_info
+     end subroutine handle_gesdd_info
 
 
-     #:for rk,rt,ri in ALL_KINDS_TYPES
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:if rk!="xdp"
 
      !> Singular values of matrix A
      function stdlib_linalg_svdvals_${ri}$(a,err) result(s)
          !> Input matrix A[m,n]
          ${rt}$, intent(in), target :: a(:,:)
          !> [optional] state return flag. On error if not requested, the code will stop
-         type(linalg_state), optional, intent(out) :: err
+         type(linalg_state_type), optional, intent(out) :: err
          !> Array of singular values
          real(${rk}$), allocatable :: s(:)
 
@@ -123,10 +130,10 @@ module stdlib_linalg_svd
          !> they are shape(u)==[m,k] and shape(vh)==[k,n] with k=min(m,n)
          logical(lk), optional, intent(in) :: full_matrices
          !> [optional] state return flag. On error if not requested, the code will stop
-         type(linalg_state), optional, intent(out) :: err
+         type(linalg_state_type), optional, intent(out) :: err
 
          !> Local variables
-         type(linalg_state) :: err0
+         type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldu,ldvt,info,k,lwork,liwork,lrwork
          integer(ilp), allocatable :: iwork(:)
          logical(lk) :: copy_a,full_storage,compute_uv,alloc_u,alloc_vt,can_overwrite_a
@@ -143,12 +150,12 @@ module stdlib_linalg_svd
          lda = m
 
          if (.not.k>0) then
-            err0 = linalg_state(this,LINALG_VALUE_ERROR,'invalid or matrix size: a=[',m,',',n,']')
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid or matrix size: a=[',m,',',n,']')
             goto 1
          end if
 
          if (.not.size(s,kind=ilp)>=k) then
-            err0 = linalg_state(this,LINALG_VALUE_ERROR,'singular value array has insufficient size:',&
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'singular value array has insufficient size:',&
                                                         ' s=[',size(s,kind=ilp),'], k=',k)
             goto 1
          endif
@@ -167,17 +174,13 @@ module stdlib_linalg_svd
          ! Initialize a matrix temporary
          if (copy_a) then
             allocate(amat(m,n),source=a)
-
-            ! Check if we can overwrite A with data that will be lost
-            can_overwrite_a = merge(.not.present(u),.not.present(vt),m>=n)
-
          else
             amat => a
-
-            can_overwrite_a = .false.
-
          endif
-
+         
+         ! Check if we can overwrite A with data that will be lost 
+         can_overwrite_a = copy_a .and. merge(.not.present(u),.not.present(vt),m>=n)         
+            
          ! Full-size matrices
          if (present(full_matrices)) then
             full_storage = full_matrices
@@ -248,7 +251,7 @@ module stdlib_linalg_svd
 
          call gesdd(task,m,n,amat,lda,s,umat,ldu,vtmat,ldvt,&
                     work_dummy,lwork,#{if rt.startswith('complex')}#rwork,#{endif}#iwork,info)
-         call gesdd_info(err0,info,m,n)
+         call handle_gesdd_info(err0,info,m,n)
 
          ! Compute SVD
          if (info==0) then
@@ -260,7 +263,7 @@ module stdlib_linalg_svd
             !> Compute SVD
             call gesdd(task,m,n,amat,lda,s,umat,ldu,vtmat,ldvt,&
                        work,lwork,#{if rt.startswith('comp')}#rwork,#{endif}#iwork,info)
-            call gesdd_info(err0,info,m,n)
+            call handle_gesdd_info(err0,info,m,n)
 
          endif
 
@@ -271,6 +274,7 @@ module stdlib_linalg_svd
          1 call linalg_error_handling(err0,err)
 
      end subroutine stdlib_linalg_svd_${ri}$
+     #:endif
      #:endfor
 
 end module stdlib_linalg_svd
