@@ -1,0 +1,201 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+! Test singular value decomposition
+module test_linalg_svd
+    use testdrive, only: error_type, check, new_unittest, unittest_type
+    use stdlib_linalg_constants    
+    use stdlib_linalg, only: diag
+    use stdlib_linalg_svd, only: svd,svdvals
+    use stdlib_linalg_state, only: linalg_state_type
+
+    implicit none (type,external)
+
+    contains
+
+    !> SVD tests
+    subroutine test_svd(error)
+        logical, intent(out) :: error
+
+        real :: t0,t1
+
+        call cpu_time(t0)
+
+        #:for rk,rt,ri in REAL_KINDS_TYPES
+        #:if rk!="xdp"
+        call test_svd_${ri}$(error)
+        if (error) return
+        #:endif
+        #:endfor
+
+        #:for ck,ct,ci in CMPLX_KINDS_TYPES
+        #:if ck!="xdp"
+        call test_complex_svd_${ci}$(error)
+        if (error) return
+        #:endif
+        #:endfor
+
+        call cpu_time(t1)
+
+        print 1, 1000*(t1-t0), merge('SUCCESS','ERROR  ',.not.error)
+
+        1 format('SVD tests completed in ',f9.4,' milliseconds, result=',a)
+
+    end subroutine test_svd
+
+    !> Real matrix svd
+    #:for rk,rt,ri in REAL_KINDS_TYPES
+    #:if rk!="xdp"
+    subroutine test_svd_${ri}$(error)
+        logical,intent(out) :: error
+
+        !> Reference solution
+        ${rt}$, parameter :: tol     = sqrt(epsilon(0.0_${rk}$))
+        ${rt}$, parameter :: third   = 1.0_${rk}$/3.0_${rk}$
+        ${rt}$, parameter :: twothd  = 2*third
+        ${rt}$, parameter :: rsqrt2  = 1.0_${rk}$/sqrt(2.0_${rk}$)
+        ${rt}$, parameter :: rsqrt18 = 1.0_${rk}$/sqrt(18.0_${rk}$)
+
+        ${rt}$, parameter ::  A_mat(2,3) = reshape([${rt}$ :: 3,2, 2,3, 2,-2],[2,3])
+        ${rt}$, parameter ::  s_sol(2)   = [${rt}$ :: 5, 3]
+        ${rt}$, parameter ::  u_sol(2,2) = reshape(rsqrt2*[1,1,1,-1],[2,2])
+        ${rt}$, parameter :: vt_sol(3,3) = reshape([rsqrt2,rsqrt18,twothd, &
+                                                      rsqrt2,-rsqrt18,-twothd,&
+                                                      0.0_${rk}$,4*rsqrt18,-third],[3,3])
+
+        !> Local variables
+        type(linalg_state_type) :: state
+        ${rt}$ :: A(2,3),s(2),u(2,2),vt(3,3)
+
+        !> Initialize matrix
+        A = A_mat
+
+        !> Simple subroutine version
+        call svd(A,s,err=state)
+        error = state%error() .or. .not. all(abs(s-s_sol)<=tol)
+        if (error) return
+
+        !> Function interface
+        s = svdvals(A,err=state)
+        error = state%error() .or. .not. all(abs(s-s_sol)<=tol)
+        if (error) return
+
+        !> [S, U]. Singular vectors could be all flipped
+        call svd(A,s,u,err=state)
+        error = state%error() .or. &
+                .not. all(abs(s-s_sol)<=tol) .or. &
+                .not.(all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol))
+        if (error) return
+
+        !> [S, U]. Overwrite A matrix
+        call svd(A,s,u,overwrite_a=.true.,err=state)
+        error = state%error() .or. &
+                .not. all(abs(s-s_sol)<=tol) .or. &
+                .not.(all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol))
+        if (error) return
+
+        !> [S, U, V^T]
+        A = A_mat
+        call svd(A,s,u,vt,overwrite_a=.true.,err=state)
+        error = state%error() .or. &
+                .not. all(abs(s-s_sol)<=tol) .or. &
+                .not.(all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol)) .or. &
+                .not.(all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol))
+        if (error) return
+
+        !> [S, V^T]. Do not overwrite A matrix
+        A = A_mat
+        call svd(A,s,vt=vt,err=state)
+        error = state%error() .or. &
+                .not. all(abs(s-s_sol)<=tol) .or. &
+                .not.(all(abs(vt+vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol))
+        if (error) return
+
+        !> [S, V^T]. Overwrite A matrix
+        call svd(A,s,vt=vt,overwrite_a=.true.,err=state)
+        error = state%error() .or. &
+                .not. all(abs(s-s_sol)<=tol) .or. &
+                .not.(all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol))
+        if (error) return
+
+        !> [U, S, V^T].
+        A = A_mat
+        call svd(A,s,u,vt,err=state)
+        error = state%error() .or. &
+                .not. all(abs(s-s_sol)<=tol) .or. &
+                .not.(all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol)) .or. &
+                .not.(all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol))
+        if (error) return
+
+        !> [U, S, V^T]. Partial storage -> compare until k=2 columns of U rows of V^T
+        A  = A_mat
+        u  = 0
+        vt = 0
+        call svd(A,s,u,vt,full_matrices=.false.,err=state)
+        error = state%error() &
+           .or. .not. all(abs(s-s_sol)<=tol) &
+           .or. .not.(all(abs( u(:,:2)- u_sol(:,:2))<=tol) .or. all(abs( u(:,:2)+ u_sol(:,:2))<=tol)) &
+           .or. .not.(all(abs(vt(:2,:)-vt_sol(:2,:))<=tol) .or. all(abs(vt(:2,:)+vt_sol(:2,:))<=tol))
+
+        if (error) return
+
+    end subroutine test_svd_${ri}$
+
+    #:endif
+    #:endfor
+
+    !> Test complex svd
+    #:for ck,ct,ci in CMPLX_KINDS_TYPES
+    #:if ck!="xdp"
+    subroutine test_complex_svd_${ci}$(error)
+        logical,intent(out) :: error
+
+        !> Reference solution
+        real(${ck}$), parameter :: tol     = sqrt(epsilon(0.0_${ck}$))
+        real(${ck}$), parameter :: one     = 1.0_${ck}$
+        real(${ck}$), parameter :: zero    = 0.0_${ck}$
+        real(${ck}$), parameter ::  sqrt2  = sqrt(2.0_${ck}$)
+        real(${ck}$), parameter :: rsqrt2  = one/sqrt2
+        ${ct}$, parameter :: cone  = (1.0_${ck}$,0.0_${ck}$)
+        ${ct}$, parameter :: cimg  = (0.0_${ck}$,1.0_${ck}$)
+        ${ct}$, parameter :: czero = (0.0_${ck}$,0.0_${ck}$)
+
+        real(${ck}$), parameter ::  s_sol(2)   = [sqrt2,sqrt2]
+        ${ct}$, parameter ::  A_mat(2,2) = reshape([cone,cimg,cimg,cone],[2,2])
+        ${ct}$, parameter ::  u_sol(2,2) = reshape(rsqrt2*[cone,cimg,cimg,cone],[2,2])
+        ${ct}$, parameter :: vt_sol(2,2) = reshape([cone,czero,czero,cone],[2,2])
+
+        !> Local variables
+        type(linalg_state_type) :: state
+        ${ct}$ :: A(2,2),u(2,2),vt(2,2)
+        real(${ck}$) :: s(2)
+
+        !> Initialize matrix
+        A = A_mat
+
+        !> Simple subroutine version
+        call svd(A,s,err=state)
+        error = state%error() .or. .not. all(abs(s-s_sol)<=tol)
+        if (error) return
+
+        !> Function interface
+        s = svdvals(A,err=state)
+        error = state%error() .or. .not. all(abs(s-s_sol)<=tol)
+        if (error) return
+
+        !> [S, U, V^T]
+        A = A_mat
+        call svd(A,s,u,vt,overwrite_a=.true.,err=state)
+        error = state%error() .or. &
+                .not. all(abs(s-s_sol)<=tol) .or. &
+                .not. all(abs(matmul(u,matmul(diag(s),vt)) - A_mat)<=tol)
+        if (error) return
+
+    end subroutine test_complex_svd_${ci}$
+
+    #:endif
+    #:endfor
+
+
+end module test_linalg_svd
+
+
