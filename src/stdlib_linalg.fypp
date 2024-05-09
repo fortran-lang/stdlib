@@ -232,7 +232,7 @@ module stdlib_linalg
      !! version: experimental 
      !!
      !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
-     !! ([Specification](../page/specs/stdlib_linalg.html#solve-solves-a-linear-matrix-equation-or-a-linear-system-of-scalar-equations))
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve-solves-a-linear-matrix-equation-or-a-linear-system-of-equations))
      !!
      !!### Summary 
      !! Interface for solving a linear system arising from a general matrix.
@@ -276,7 +276,29 @@ module stdlib_linalg
      #:endfor    
   end interface solve
 
+  ! Solve linear system Ax = b using LU decomposition (subroutine interface).
   interface solve_lu
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve-lu-solves-a-linear-matrix-equation-or-a-linear-system-of-equations-subroutine-interface))
+     !!
+     !!### Summary 
+     !! Subroutine interface for solving a linear system using LU decomposition.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the solution of a linear matrix system using
+     !! a subroutine. Supported data types include `real` and `complex`. No assumption is made on the matrix 
+     !! structure. Preallocated space for the solution vector `x` is user-provided, and it may be provided
+     !! for the array of pivot indices, `pivot`. If all pre-allocated work spaces are provided, no internal 
+     !! memory allocations take place when using this interface.     
+     !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
+     !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
+     !! 
+     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!        
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
      #:if rk!="xdp"
