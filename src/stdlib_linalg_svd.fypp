@@ -63,6 +63,21 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
      !> Singular values of matrix A
      module function stdlib_linalg_svdvals_${ri}$(a,err) result(s)
+     !!### Summary
+     !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
+     !!
+     !!### Description
+     !!
+     !! This function returns the array of singular values from the singular value decomposition of a `real` 
+     !! or `complex` matrix \( A = U \cdot S \cdot V^T \).
+     !!
+     !! param: a Input matrix of size [m,n].
+     !! param: err [optional] State return flag.      
+     !!
+     !!### Return value
+     !! 
+     !! param: s `real` array of size [min(m,n)] returning a list of singular values.
+     !!                
          !> Input matrix A[m,n]
          ${rt}$, intent(in), target :: a(:,:)
          !> [optional] state return flag. On error if not requested, the code will stop
