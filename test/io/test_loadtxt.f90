@@ -34,7 +34,6 @@ contains
         integer(int32), allocatable :: input(:,:), expected(:,:)
         real(sp), allocatable :: harvest(:,:)
         integer :: n
-        
         allocate(harvest(10,10))
         allocate(input(10,10))
         allocate(expected(10,10))
@@ -62,7 +61,6 @@ contains
 
         allocate(input(10,10))
         allocate(expected(10,10))
-        
         do n = 1, 10
             call random_number(input)
             input = input - 0.5
