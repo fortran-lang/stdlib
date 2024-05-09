@@ -8,7 +8,10 @@ module stdlib_codata_type
     private
 
     type, public :: codata_constant_type
-    !! Derived type for representing a Codata constant.
+        !! version: experimental
+        !!
+        !! Derived type for representing a Codata constant.
+        !! [Specification](TOBECOMPLETED)
         character(len=64) :: name
         real(dp) :: value
         real(dp) :: uncertainty
