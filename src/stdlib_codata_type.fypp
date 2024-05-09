@@ -37,7 +37,7 @@ contains
 
 subroutine print(self)
     !! Print out the constant's name, value, uncertainty and unit.
-    class(codata_constant), intent(in) :: self
+    class(codata_constant_type), intent(in) :: self
     print "(A64, SP, "//FMT_REAL_DP//" A5, "//FMT_REAL_DP//", X, A32)", self%name, self%value, "+/-", self%uncertainty, self%unit 
 end subroutine
 
@@ -48,7 +48,7 @@ elemental pure real(${k}$) function to_real_${k}$(self, mold, uncertainty) resul
     !! Get the constant value or uncertainty for the kind ${k}$
     !! [Specification](TO_BE_COMPLETED)
     
-    class(codata_constant), intent(in) :: self !! Codata constant
+    class(codata_constant_type), intent(in) :: self !! Codata constant
     real(${k}$), intent(in) :: mold !! dummy argument to disambiguate at compile time the generic interface
     logical, intent(in), optional :: uncertainty !! Set to true if the uncertainty is required
         !! 
