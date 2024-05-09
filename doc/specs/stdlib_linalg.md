@@ -668,9 +668,13 @@ The solver is based on LAPACK's `*GESV` backends.
 
 ### Syntax
 
-`Pure` interface:
+Simple (`Pure`) interface:
 
-`x = ` [[stdlib_linalg(module):solve_lu(interface)]] `(a, b, x, pivot [, overwrite_a, err])`
+`x = ` [[stdlib_linalg(module):solve_lu(interface)]] `(a, b, x)`
+
+Expert (`Pure`) interface:
+
+`x = ` [[stdlib_linalg(module):solve_lu(interface)]] `(a, b, x [, pivot, overwrite_a, err])`
 
 ### Arguments
 
@@ -681,6 +685,8 @@ Two
 `b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
 
 `x`: Shall be a rank-1 or rank-2 array of the same kind and size as `b`, that returns the solution(s) to the system. It is an `intent(inout)` argument, and must have the `contiguous` property. 
+
+`pivot` (optional): Shall be a rank-1 array of the same kind and matrix dimension as `a`, providing storage for the diagonal pivot indices. It is an `intent(inout)` arguments, and returns the diagonal pivot indices. 
 
 `overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
 
