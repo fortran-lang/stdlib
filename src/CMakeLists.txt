@@ -21,6 +21,7 @@ set(fppFiles
     stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
+    stdlib_linalg_least_squares.fypp
     stdlib_linalg_outer_product.fypp
     stdlib_linalg_kronecker.fypp
     stdlib_linalg_cross_product.fypp
