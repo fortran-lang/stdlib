@@ -669,11 +669,11 @@ The solver is based on LAPACK's `*GESV` backends.
 
 Simple (`Pure`) interface:
 
-`x = ` [[stdlib_linalg(module):solve_lu(interface)]] `(a, b, x)`
+`call ` [[stdlib_linalg(module):solve_lu(interface)]] `(a, b, x)`
 
 Expert (`Pure`) interface:
 
-`x = ` [[stdlib_linalg(module):solve_lu(interface)]] `(a, b, x [, pivot, overwrite_a, err])`
+`call ` [[stdlib_linalg(module):solve_lu(interface)]] `(a, b, x [, pivot, overwrite_a, err])`
 
 ### Arguments
 
