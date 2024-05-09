@@ -159,13 +159,13 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
          if (.not.k>0) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid or matrix size: a=',[m,n])
-            goto 1
-         end if
-
-         if (.not.size(s,kind=ilp)>=k) then
+            call linalg_error_handling(err0,err)
+            return
+         elseif (.not.size(s,kind=ilp)>=k) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'singular value array has insufficient size:',&
                                                         ' s=',shape(s,kind=ilp),', k=',k)
-            goto 1
+            call linalg_error_handling(err0,err)
+            return
          endif
 
          ! Integer storage
@@ -287,7 +287,7 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          if (copy_a)    deallocate(amat)
          if (alloc_u)   deallocate(umat)
          if (alloc_vt)  deallocate(vtmat)
-         1 call linalg_error_handling(err0,err)
+         call linalg_error_handling(err0,err)
 
      end subroutine stdlib_linalg_svd_${ri}$
      #:endif
