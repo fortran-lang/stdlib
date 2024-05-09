@@ -40,7 +40,10 @@ end subroutine
 
 #:for k in KINDS
 elemental pure real(${k}$) function to_real_${k}$(self, mold, uncertainty) result(r)
+    !! version: experimental
+    !!
     !! Get the constant value or uncertainty for the kind ${k}$
+    !! [Specification](TO_BE_COMPLETED)
     
     class(codata_constant), intent(in) :: self !! Codata constant
     real(${k}$), intent(in) :: mold !! dummy argument to disambiguate at compile time the generic interface
