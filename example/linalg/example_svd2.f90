@@ -1,7 +1,7 @@
 ! Singular Values
 program example_svd2
   use stdlib_linalg_constants, only: dp
-  use stdlib_linalg, only: svd
+  use stdlib_linalg, only: svdvals
   implicit none
 
   real(dp), allocatable :: A(:,:),s(:)
