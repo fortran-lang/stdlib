@@ -1,6 +1,6 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-module stdlib_linalg_svd
+submodule(stdlib_linalg) stdlib_linalg_svd
 !! Singular-Value Decomposition    
      use stdlib_linalg_constants
      use stdlib_linalg_lapack, only: gesdd
@@ -9,30 +9,8 @@ module stdlib_linalg_svd
      implicit none(type,external)
      
      character(*), parameter :: this = 'svd'
-
-     !> Singular value decomposition
-     public :: svd
-     !> Singular values
-     public :: svdvals
-
-     ! Numpy: svd(a, full_matrices=True, compute_uv=True, hermitian=False)
-     ! Scipy: svd(a, full_matrices=True, compute_uv=True, overwrite_a=False, check_finite=True, lapack_driver='gesdd')
-
-     interface svd
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        #:if rk!="xdp"
-        module procedure stdlib_linalg_svd_${ri}$
-        #:endif
-        #:endfor
-     end interface svd
-
-     interface svdvals
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        #:if rk!="xdp"
-        module procedure stdlib_linalg_svdvals_${ri}$
-        #:endif
-        #:endfor
-     end interface svdvals
+     
+     !> List of internal GESDD tasks: 
 
      !> Return full matrices U, V^T to separate storage
      character, parameter :: GESDD_FULL_MATRICES   = 'A'
@@ -45,9 +23,6 @@ module stdlib_linalg_svd
 
      !> Do not return either U or VT (singular values array only)
      character, parameter :: GESDD_SINGVAL_ONLY    = 'N'
-
-     
-
 
      contains
 
@@ -87,7 +62,7 @@ module stdlib_linalg_svd
      #:if rk!="xdp"
 
      !> Singular values of matrix A
-     function stdlib_linalg_svdvals_${ri}$(a,err) result(s)
+     module function stdlib_linalg_svdvals_${ri}$(a,err) result(s)
          !> Input matrix A[m,n]
          ${rt}$, intent(in), target :: a(:,:)
          !> [optional] state return flag. On error if not requested, the code will stop
@@ -115,7 +90,7 @@ module stdlib_linalg_svd
      end function stdlib_linalg_svdvals_${ri}$
 
      !> SVD of matrix A = U S V^T, returning S and optionally U and V^T
-     subroutine stdlib_linalg_svd_${ri}$(a,s,u,vt,overwrite_a,full_matrices,err)
+     module subroutine stdlib_linalg_svd_${ri}$(a,s,u,vt,overwrite_a,full_matrices,err)
          !> Input matrix A[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
          !> Array of singular values
@@ -285,4 +260,4 @@ module stdlib_linalg_svd
      #:endif
      #:endfor
 
-end module stdlib_linalg_svd
+end submodule stdlib_linalg_svd

@@ -24,6 +24,8 @@ module stdlib_linalg
   public :: lstsq_space
   public :: solve_lstsq
   public :: trace
+  public :: svd
+  public :: svdvals
   public :: outer_product
   public :: kronecker_product
   public :: cross_product
@@ -455,6 +457,58 @@ module stdlib_linalg
     #:endif
     #:endfor
   end interface  
+
+  ! Singular value decomposition
+  interface svd
+    !! version: experimental 
+    !!
+    !!### Description
+    !! 
+    !! 
+
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
+    module subroutine stdlib_linalg_svd_${ri}$(a,s,u,vt,overwrite_a,full_matrices,err)
+         !> Input matrix A[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Array of singular values
+         real(${rk}$), intent(out) :: s(:)
+         !> The columns of U contain the eigenvectors of A A^T
+         ${rt}$, optional, intent(out), target :: u(:,:)
+         !> The rows of V^T contain the eigenvectors of A^T A
+         ${rt}$, optional, intent(out), target :: vt(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] full matrices have shape(u)==[m,m], shape(vh)==[n,n] (default); otherwise
+         !> they are shape(u)==[m,k] and shape(vh)==[k,n] with k=min(m,n)
+         logical(lk), optional, intent(in) :: full_matrices
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_svd_${ri}$
+    #:endif
+    #:endfor     
+  end interface svd
+
+  ! Singular values
+  interface svdvals
+    !! version: experimental 
+    !!
+    !!### Description
+    !! 
+    !! 
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
+    module function stdlib_linalg_svdvals_${ri}$(a,err) result(s)
+         !> Input matrix A[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Array of singular values
+         real(${rk}$), allocatable :: s(:)
+      end function stdlib_linalg_svdvals_${ri}$
+    #:endif
+    #:endfor             
+  end interface svdvals  
 
 contains
 
