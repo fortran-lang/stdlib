@@ -1,5 +1,5 @@
 program example_constants
-    use stdlib_constants, only: c, PI=>PI_dp
+    use stdlib_constants, only: c, pi=>PI_dp
     use stdlib_codata, only: alpha=>ALPHA_PARTICLE_ELECTRON_MASS_RATIO
     use stdlib_codata_type, only : to_real
     use stdlib_kinds, only: dp, sp
