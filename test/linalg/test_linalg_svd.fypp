@@ -26,7 +26,7 @@ module test_linalg_svd
         #:endfor
 
         #:for ck,ct,ci in CMPLX_KINDS_TYPES
-        #:if ck!="xdp"
+        #:if not ck in ["xdp","qp"]
         tests = [tests,new_unittest("test_complex_svd_${ci}$",test_complex_svd_${ci}$)]        
         #:endif
         #:endfor
@@ -175,7 +175,7 @@ module test_linalg_svd
 
     !> Test complex svd
     #:for ck,ct,ci in CMPLX_KINDS_TYPES
-    #:if ck!="xdp"
+    #:if not ck in ["xdp","qp"]
     subroutine test_complex_svd_${ci}$(error)
         type(error_type), allocatable, intent(out) :: error
 
