@@ -156,7 +156,7 @@ module stdlib_linalg_svd
 
          if (.not.size(s,kind=ilp)>=k) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'singular value array has insufficient size:',&
-                                                        ' s=[',size(s,kind=ilp),'], k=',k)
+                                                        ' s=',shape(s,kind=ilp),', k=',k)
             goto 1
          endif
 
@@ -193,6 +193,7 @@ module stdlib_linalg_svd
 
          ! U, VT storage
          if (present(u)) then
+            ! User input
             umat    => u
             alloc_u = .false.
          elseif ((copy_a .and. m>=n) .or. .not.compute_uv) then
@@ -200,14 +201,17 @@ module stdlib_linalg_svd
             umat    => u_dummy
             alloc_u = .false.
          elseif (.not.full_storage) then
+            ! Allocate with minimum size
             allocate(umat(m,k))
             alloc_u = .true.
          else
+            ! Allocate with regular size
             allocate(umat(m,m))
             alloc_u = .true.
          end if
 
          if (present(vt)) then
+            ! User input
             vtmat    => vt
             alloc_vt = .false.
          elseif ((copy_a .and. m<n) .or. .not.compute_uv) then
@@ -215,9 +219,11 @@ module stdlib_linalg_svd
             vtmat    => vt_dummy
             alloc_vt = .false.
          elseif (.not.full_storage) then
+            ! Allocate with minimum size
             allocate(vtmat(k,n))
             alloc_vt = .true.
          else
+            ! Allocate with regular size
             allocate(vtmat(n,n))
             alloc_vt = .true.
          end if
@@ -245,10 +251,12 @@ module stdlib_linalg_svd
             lrwork = max(1,5*k*(k+1),2*k*(k+max(m,n))+k)
          endif
          allocate(rwork(lrwork))
+         #:else
+         lrwork = -1_ilp ! not needed
          #:endif
 
+         ! First call: request working storage space
          lwork = -1_ilp
-
          call gesdd(task,m,n,amat,lda,s,umat,ldu,vtmat,ldvt,&
                     work_dummy,lwork,#{if rt.startswith('complex')}#rwork,#{endif}#iwork,info)
          call handle_gesdd_info(err0,info,m,n)
@@ -262,7 +270,7 @@ module stdlib_linalg_svd
 
             !> Compute SVD
             call gesdd(task,m,n,amat,lda,s,umat,ldu,vtmat,ldvt,&
-                       work,lwork,#{if rt.startswith('comp')}#rwork,#{endif}#iwork,info)
+                       work,lwork,#{if rt.startswith('complex')}#rwork,#{endif}#iwork,info)
             call handle_gesdd_info(err0,info,m,n)
 
          endif
