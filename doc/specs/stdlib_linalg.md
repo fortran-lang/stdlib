@@ -636,7 +636,7 @@ Two
 
 ### Return value
 
-Returns an array value that represents the solution to the linear system of equations.
+For a full-rank matrix, returns an array value that represents the solution to the linear system of equations.
 
 Raises `LINALG_ERROR` if the matrix is singular to working precision.
 Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
