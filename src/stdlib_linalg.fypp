@@ -458,24 +458,64 @@ module stdlib_linalg
     #:endfor
   end interface  
 
-  ! Singular value decomposition
-  interface svd
+  ! Singular value decomposition  
+  interface svd 
     !! version: experimental 
+    !!
+    !! Computes the singular value decomposition of a `real` or `complex` 2d matrix.
+    !! 
+    !!### Summary 
+    !! Interface for computing the singular value decomposition of a `real` or `complex` 2d matrix.
     !!
     !!### Description
     !! 
+    !! This interface provides methods for computing the singular value decomposition of a matrix.
+    !! Supported data types include `real` and `complex`. The subroutine returns a `real` array of 
+    !! singular values, and optionally, left- and right- singular vector matrices, `U` and `V`. 
+    !! For a matrix `A` with size [m,n], full matrix storage for `U` and `V` should be [m,m] and [n,n]. 
+    !! It is possible to use partial storage [m,k] and [k,n], `k=min(m,n)`, choosing `full_matrices=.false.`.
     !! 
-
+    !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).    
+    !! 
+    !!### Example
+    !!
+    !!```fortran
+    !!    real(sp) :: a(2,3), s(2), u(2,2), vt(3,3) 
+    !!    a = reshape([3,2, 2,3, 2,-2],[2,3])
+    !!
+    !!    call svd(A,s,u,v)
+    !!    print *, 'singular values = ',s
+    !!```
+    !!         
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:if rk!="xdp"
     module subroutine stdlib_linalg_svd_${ri}$(a,s,u,vt,overwrite_a,full_matrices,err)
+     !!### Summary
+     !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
+     !!
+     !!### Description
+     !!
+     !! This function computes the singular value decomposition of a `real` or `complex` matrix \( A \), 
+     !! and returns the array of singular values, and optionally the left matrix \( U \) containing the 
+     !! left unitary singular vectors, and the right matrix \( V^T \), containing the right unitary 
+     !! singular vectors.
+     !!
+     !! param: a Input matrix of size [m,n].
+     !! param: s Output `real` array of size [min(m,n)] returning a list of singular values.
+     !! param: u [optional] Output left singular matrix of size [m,m] or [m,min(m,n)] (.not.full_matrices). Contains singular vectors as columns.
+     !! param: vt [optional] Output right singular matrix of size [n,n] or [min(m,n),n] (.not.full_matrices). Contains singular vectors as rows.     
+     !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
+     !! param: full_matrices [optional] If `.true.` (default), matrices \( U \) and \( V^T \) have size [m,m], [n,n]. Otherwise, they are [m,k], [k,n] with `k=min(m,n)`.
+     !! param: err [optional] State return flag.      
+     !!            
          !> Input matrix A[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
          !> Array of singular values
          real(${rk}$), intent(out) :: s(:)
-         !> The columns of U contain the eigenvectors of A A^T
+         !> The columns of U contain the left singular vectors 
          ${rt}$, optional, intent(out), target :: u(:,:)
-         !> The rows of V^T contain the eigenvectors of A^T A
+         !> The rows of V^T contain the right singular vectors
          ${rt}$, optional, intent(out), target :: vt(:,:)
          !> [optional] Can A data be overwritten and destroyed?
          logical(lk), optional, intent(in) :: overwrite_a
