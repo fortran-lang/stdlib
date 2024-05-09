@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-12]
         gcc_v: [10, 11, 12, 13] # Version of GFortran we want to use.
         build: [cmake]
         include:
@@ -163,7 +163,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest]
+        os: [macos-12]
         fc: [ifort]
         cc: [icc]
         cxx: [icpc]
