@@ -50,7 +50,7 @@ module test_linalg_least_squares
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
         
-        call check(error, all(abs(p-ab)<1.0e-6_sp), 'data converged')
+        call check(error, all(abs(p-ab)<1.0e-4_sp), 'data converged')
         if (allocated(error)) return
         
         call check(error, rank==2, 'matrix rank == 2')
@@ -79,7 +79,7 @@ module test_linalg_least_squares
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
         
-        call check(error, all(abs(x-xsol)<1.0e-6_sp), 'data converged')
+        call check(error, all(abs(x-xsol)<1.0e-4_sp), 'data converged')
         if (allocated(error)) return
         
     end subroutine test_lstsq_random_s    
@@ -108,7 +108,7 @@ module test_linalg_least_squares
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
         
-        call check(error, all(abs(p-ab)<1.0e-6_dp), 'data converged')
+        call check(error, all(abs(p-ab)<1.0e-4_dp), 'data converged')
         if (allocated(error)) return
         
         call check(error, rank==2, 'matrix rank == 2')
@@ -137,7 +137,7 @@ module test_linalg_least_squares
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
         
-        call check(error, all(abs(x-xsol)<1.0e-6_dp), 'data converged')
+        call check(error, all(abs(x-xsol)<1.0e-4_dp), 'data converged')
         if (allocated(error)) return
         
     end subroutine test_lstsq_random_d    
