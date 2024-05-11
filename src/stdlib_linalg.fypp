@@ -22,6 +22,8 @@ module stdlib_linalg
   public :: eye
   public :: lstsq
   public :: lstsq_space
+  public :: solve
+  public :: solve_lu  
   public :: solve_lstsq
   public :: trace
   public :: outer_product
@@ -228,6 +230,100 @@ module stdlib_linalg
     #:endfor
   end interface is_hessenberg
 
+  ! Solve linear system system Ax=b.
+  interface solve
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve-solves-a-linear-matrix-equation-or-a-linear-system-of-equations))
+     !!
+     !!### Summary 
+     !! Interface for solving a linear system arising from a general matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the solution of a linear matrix system.
+     !! Supported data types include `real` and `complex`. No assumption is made on the matrix 
+     !! structure. 
+     !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
+     !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
+     !! 
+     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!    
+     #:for nd,ndsuf,nde in ALL_RHS
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:if rk!="xdp"
+     module function stdlib_linalg_${ri}$_solve_${ndsuf}$(a,b,overwrite_a,err) result(x)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$     
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, allocatable, target :: x${nd}$
+     end function stdlib_linalg_${ri}$_solve_${ndsuf}$
+     pure module function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$(a,b) result(x)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, allocatable, target :: x${nd}$
+     end function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$
+     #:endif
+     #:endfor
+     #:endfor    
+  end interface solve
+
+  ! Solve linear system Ax = b using LU decomposition (subroutine interface).
+  interface solve_lu
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve-lu-solves-a-linear-matrix-equation-or-a-linear-system-of-equations-subroutine-interface))
+     !!
+     !!### Summary 
+     !! Subroutine interface for solving a linear system using LU decomposition.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the solution of a linear matrix system using
+     !! a subroutine. Supported data types include `real` and `complex`. No assumption is made on the matrix 
+     !! structure. Preallocated space for the solution vector `x` is user-provided, and it may be provided
+     !! for the array of pivot indices, `pivot`. If all pre-allocated work spaces are provided, no internal 
+     !! memory allocations take place when using this interface.     
+     !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
+     !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
+     !! 
+     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!        
+     #:for nd,ndsuf,nde in ALL_RHS
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:if rk!="xdp"
+     pure module subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$(a,b,x,pivot,overwrite_a,err)     
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$
+     #:endif
+     #:endfor
+     #:endfor    
+  end interface solve_lu     
+     
   ! Least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
   interface lstsq
     !! version: experimental 
