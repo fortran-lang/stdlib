@@ -64,14 +64,17 @@ module test_linalg_least_squares
 
         type(linalg_state_type) :: state
         integer(ilp), parameter :: n = 12, m = 3
+        real :: Arnd(n,m),xrnd(m)
         real(sp) :: xsol(m),x(m),y(n),A(n,m)
 
         ! Random coefficient matrix and solution
-        call random_number(A)
-        call random_number(xsol)
+        call random_number(Arnd)
+        call random_number(xrnd)
         
         ! Compute rhs
-        y = matmul(A,xsol)
+        A    = real(Arnd,sp)
+        xsol = real(xrnd,sp)
+        y    = matmul(A,xsol)
 
         ! Find polynomial
         x = lstsq(A,y,err=state)
@@ -122,14 +125,17 @@ module test_linalg_least_squares
 
         type(linalg_state_type) :: state
         integer(ilp), parameter :: n = 12, m = 3
+        real :: Arnd(n,m),xrnd(m)
         real(dp) :: xsol(m),x(m),y(n),A(n,m)
 
         ! Random coefficient matrix and solution
-        call random_number(A)
-        call random_number(xsol)
+        call random_number(Arnd)
+        call random_number(xrnd)
         
         ! Compute rhs
-        y = matmul(A,xsol)
+        A    = real(Arnd,dp)
+        xsol = real(xrnd,dp)
+        y    = matmul(A,xsol)
 
         ! Find polynomial
         x = lstsq(A,y,err=state)

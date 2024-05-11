@@ -15,6 +15,8 @@ module stdlib_linalg
   public :: eye
   public :: lstsq
   public :: lstsq_space
+  public :: solve
+  public :: solve_lu  
   public :: solve_lstsq
   public :: trace
   public :: outer_product
@@ -457,6 +459,326 @@ module stdlib_linalg
       module procedure is_Hessenberg_iint64
   end interface is_hessenberg
 
+  ! Solve linear system system Ax=b.
+  interface solve
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve-solves-a-linear-matrix-equation-or-a-linear-system-of-equations))
+     !!
+     !!### Summary 
+     !! Interface for solving a linear system arising from a general matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the solution of a linear matrix system.
+     !! Supported data types include `real` and `complex`. No assumption is made on the matrix 
+     !! structure. 
+     !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
+     !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
+     !! 
+     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!    
+     module function stdlib_linalg_s_solve_one(a,b,overwrite_a,err) result(x)
+         !> Input matrix a[n,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:)     
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(sp), allocatable, target :: x(:)
+     end function stdlib_linalg_s_solve_one
+     pure module function stdlib_linalg_s_pure_solve_one(a,b) result(x)
+         !> Input matrix a[n,n]
+         real(sp), intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(sp), allocatable, target :: x(:)
+     end function stdlib_linalg_s_pure_solve_one
+     module function stdlib_linalg_d_solve_one(a,b,overwrite_a,err) result(x)
+         !> Input matrix a[n,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:)     
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(dp), allocatable, target :: x(:)
+     end function stdlib_linalg_d_solve_one
+     pure module function stdlib_linalg_d_pure_solve_one(a,b) result(x)
+         !> Input matrix a[n,n]
+         real(dp), intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(dp), allocatable, target :: x(:)
+     end function stdlib_linalg_d_pure_solve_one
+     module function stdlib_linalg_c_solve_one(a,b,overwrite_a,err) result(x)
+         !> Input matrix a[n,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:)     
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(sp), allocatable, target :: x(:)
+     end function stdlib_linalg_c_solve_one
+     pure module function stdlib_linalg_c_pure_solve_one(a,b) result(x)
+         !> Input matrix a[n,n]
+         complex(sp), intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(sp), allocatable, target :: x(:)
+     end function stdlib_linalg_c_pure_solve_one
+     module function stdlib_linalg_z_solve_one(a,b,overwrite_a,err) result(x)
+         !> Input matrix a[n,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:)     
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(dp), allocatable, target :: x(:)
+     end function stdlib_linalg_z_solve_one
+     pure module function stdlib_linalg_z_pure_solve_one(a,b) result(x)
+         !> Input matrix a[n,n]
+         complex(dp), intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(dp), allocatable, target :: x(:)
+     end function stdlib_linalg_z_pure_solve_one
+     module function stdlib_linalg_s_solve_many(a,b,overwrite_a,err) result(x)
+         !> Input matrix a[n,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:,:)     
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(sp), allocatable, target :: x(:,:)
+     end function stdlib_linalg_s_solve_many
+     pure module function stdlib_linalg_s_pure_solve_many(a,b) result(x)
+         !> Input matrix a[n,n]
+         real(sp), intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(sp), allocatable, target :: x(:,:)
+     end function stdlib_linalg_s_pure_solve_many
+     module function stdlib_linalg_d_solve_many(a,b,overwrite_a,err) result(x)
+         !> Input matrix a[n,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:,:)     
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(dp), allocatable, target :: x(:,:)
+     end function stdlib_linalg_d_solve_many
+     pure module function stdlib_linalg_d_pure_solve_many(a,b) result(x)
+         !> Input matrix a[n,n]
+         real(dp), intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         real(dp), allocatable, target :: x(:,:)
+     end function stdlib_linalg_d_pure_solve_many
+     module function stdlib_linalg_c_solve_many(a,b,overwrite_a,err) result(x)
+         !> Input matrix a[n,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:,:)     
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(sp), allocatable, target :: x(:,:)
+     end function stdlib_linalg_c_solve_many
+     pure module function stdlib_linalg_c_pure_solve_many(a,b) result(x)
+         !> Input matrix a[n,n]
+         complex(sp), intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(sp), allocatable, target :: x(:,:)
+     end function stdlib_linalg_c_pure_solve_many
+     module function stdlib_linalg_z_solve_many(a,b,overwrite_a,err) result(x)
+         !> Input matrix a[n,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:,:)     
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(dp), allocatable, target :: x(:,:)
+     end function stdlib_linalg_z_solve_many
+     pure module function stdlib_linalg_z_pure_solve_many(a,b) result(x)
+         !> Input matrix a[n,n]
+         complex(dp), intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]
+         complex(dp), allocatable, target :: x(:,:)
+     end function stdlib_linalg_z_pure_solve_many
+  end interface solve
+
+  ! Solve linear system Ax = b using LU decomposition (subroutine interface).
+  interface solve_lu
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve-lu-solves-a-linear-matrix-equation-or-a-linear-system-of-equations-subroutine-interface))
+     !!
+     !!### Summary 
+     !! Subroutine interface for solving a linear system using LU decomposition.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the solution of a linear matrix system using
+     !! a subroutine. Supported data types include `real` and `complex`. No assumption is made on the matrix 
+     !! structure. Preallocated space for the solution vector `x` is user-provided, and it may be provided
+     !! for the array of pivot indices, `pivot`. If all pre-allocated work spaces are provided, no internal 
+     !! memory allocations take place when using this interface.     
+     !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
+     !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
+     !! 
+     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!        
+     pure module subroutine stdlib_linalg_s_solve_lu_one(a,b,x,pivot,overwrite_a,err)     
+         !> Input matrix a[n,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         real(sp), intent(inout), contiguous, target :: x(:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_s_solve_lu_one
+     pure module subroutine stdlib_linalg_d_solve_lu_one(a,b,x,pivot,overwrite_a,err)     
+         !> Input matrix a[n,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         real(dp), intent(inout), contiguous, target :: x(:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_d_solve_lu_one
+     pure module subroutine stdlib_linalg_c_solve_lu_one(a,b,x,pivot,overwrite_a,err)     
+         !> Input matrix a[n,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         complex(sp), intent(inout), contiguous, target :: x(:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_c_solve_lu_one
+     pure module subroutine stdlib_linalg_z_solve_lu_one(a,b,x,pivot,overwrite_a,err)     
+         !> Input matrix a[n,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:)
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         complex(dp), intent(inout), contiguous, target :: x(:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_z_solve_lu_one
+     pure module subroutine stdlib_linalg_s_solve_lu_many(a,b,x,pivot,overwrite_a,err)     
+         !> Input matrix a[n,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(sp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         real(sp), intent(inout), contiguous, target :: x(:,:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_s_solve_lu_many
+     pure module subroutine stdlib_linalg_d_solve_lu_many(a,b,x,pivot,overwrite_a,err)     
+         !> Input matrix a[n,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         real(dp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         real(dp), intent(inout), contiguous, target :: x(:,:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_d_solve_lu_many
+     pure module subroutine stdlib_linalg_c_solve_lu_many(a,b,x,pivot,overwrite_a,err)     
+         !> Input matrix a[n,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(sp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         complex(sp), intent(inout), contiguous, target :: x(:,:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_c_solve_lu_many
+     pure module subroutine stdlib_linalg_z_solve_lu_many(a,b,x,pivot,overwrite_a,err)     
+         !> Input matrix a[n,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         complex(dp), intent(in) :: b(:,:)
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         complex(dp), intent(inout), contiguous, target :: x(:,:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_z_solve_lu_many
+  end interface solve_lu     
+     
   ! Least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
   interface lstsq
     !! version: experimental 
