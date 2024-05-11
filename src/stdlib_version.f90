@@ -11,13 +11,13 @@ module stdlib_version
 
 
     !> String representation of the standard library version
-    character(len=*), parameter :: stdlib_version_string = "0.5.0"
+    character(len=*), parameter :: stdlib_version_string = "0.6.0"
 
     !> Major version number of the above standard library version
     integer, parameter :: stdlib_major = 0
 
     !> Minor version number of the above standard library version
-    integer, parameter :: stdlib_minor = 5
+    integer, parameter :: stdlib_minor = 6
 
     !> Patch version number of the above standard library version
     integer, parameter :: stdlib_patch = 0
