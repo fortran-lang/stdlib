@@ -88,7 +88,7 @@ module stdlib_io
 
 contains
 
-    subroutine  loadtxt_rsp(filename, d, skiprows, max_rows)
+    subroutine  loadtxt_rsp(filename, d, skiprows, max_rows, fmt)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -107,6 +107,8 @@ contains
       !! A value of zero results in no lines to be read.
       !! The default value is -1.
       integer, intent(in), optional :: max_rows
+      character(len=*), intent(in), optional :: fmt
+      character(len=:), allocatable :: fmt_
       !!
       !! Example
       !! -------
@@ -147,13 +149,25 @@ contains
         read(s, *)
       end do
 
-      do i = 1, max_rows_
-          read(s, "(*"//FMT_REAL_sp(1:len(FMT_REAL_sp)-1)//",1x))") d(i, :)
-      end do
+      ! Default to format used for savetxt if fmt not specified.
+      fmt_ = optval(fmt, "(*"//FMT_REAL_sp(1:len(FMT_REAL_sp)-1)//",1x))")
+
+      if ( fmt_ == '*' ) then
+        ! Use list directed read if user has specified fmt='*'
+        do i = 1, max_rows_
+          read (s,*) d(i, :)
+        enddo
+      else
+        ! Otherwise pass default or user specified fmt string.  
+        do i = 1, max_rows_
+          read (s,fmt_) d(i, :)
+        enddo
+      endif
+
       close(s)
 
     end subroutine loadtxt_rsp
-    subroutine  loadtxt_rdp(filename, d, skiprows, max_rows)
+    subroutine  loadtxt_rdp(filename, d, skiprows, max_rows, fmt)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -172,6 +186,8 @@ contains
       !! A value of zero results in no lines to be read.
       !! The default value is -1.
       integer, intent(in), optional :: max_rows
+      character(len=*), intent(in), optional :: fmt
+      character(len=:), allocatable :: fmt_
       !!
       !! Example
       !! -------
@@ -212,13 +228,25 @@ contains
         read(s, *)
       end do
 
-      do i = 1, max_rows_
-          read(s, "(*"//FMT_REAL_dp(1:len(FMT_REAL_dp)-1)//",1x))") d(i, :)
-      end do
+      ! Default to format used for savetxt if fmt not specified.
+      fmt_ = optval(fmt, "(*"//FMT_REAL_dp(1:len(FMT_REAL_dp)-1)//",1x))")
+
+      if ( fmt_ == '*' ) then
+        ! Use list directed read if user has specified fmt='*'
+        do i = 1, max_rows_
+          read (s,*) d(i, :)
+        enddo
+      else
+        ! Otherwise pass default or user specified fmt string.  
+        do i = 1, max_rows_
+          read (s,fmt_) d(i, :)
+        enddo
+      endif
+
       close(s)
 
     end subroutine loadtxt_rdp
-    subroutine  loadtxt_iint8(filename, d, skiprows, max_rows)
+    subroutine  loadtxt_iint8(filename, d, skiprows, max_rows, fmt)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -237,6 +265,8 @@ contains
       !! A value of zero results in no lines to be read.
       !! The default value is -1.
       integer, intent(in), optional :: max_rows
+      character(len=*), intent(in), optional :: fmt
+      character(len=:), allocatable :: fmt_
       !!
       !! Example
       !! -------
@@ -277,13 +307,25 @@ contains
         read(s, *)
       end do
 
-      do i = 1, max_rows_
-          read(s, *) d(i, :)
-      end do
+      ! Default to list directed for integer
+      fmt_ = optval(fmt, "*")
+      ! Use list directed read if user has specified fmt='*'
+      if ( fmt_ == '*' ) then
+        do i = 1, max_rows_
+          read (s,*) d(i, :)
+        enddo
+      else
+        ! Otherwise pass default user specified fmt string.
+        do i = 1, max_rows_
+          read (s,fmt_) d(i, :)
+        enddo
+      endif
+
+
       close(s)
 
     end subroutine loadtxt_iint8
-    subroutine  loadtxt_iint16(filename, d, skiprows, max_rows)
+    subroutine  loadtxt_iint16(filename, d, skiprows, max_rows, fmt)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -302,6 +344,8 @@ contains
       !! A value of zero results in no lines to be read.
       !! The default value is -1.
       integer, intent(in), optional :: max_rows
+      character(len=*), intent(in), optional :: fmt
+      character(len=:), allocatable :: fmt_
       !!
       !! Example
       !! -------
@@ -342,13 +386,25 @@ contains
         read(s, *)
       end do
 
-      do i = 1, max_rows_
-          read(s, *) d(i, :)
-      end do
+      ! Default to list directed for integer
+      fmt_ = optval(fmt, "*")
+      ! Use list directed read if user has specified fmt='*'
+      if ( fmt_ == '*' ) then
+        do i = 1, max_rows_
+          read (s,*) d(i, :)
+        enddo
+      else
+        ! Otherwise pass default user specified fmt string.
+        do i = 1, max_rows_
+          read (s,fmt_) d(i, :)
+        enddo
+      endif
+
+
       close(s)
 
     end subroutine loadtxt_iint16
-    subroutine  loadtxt_iint32(filename, d, skiprows, max_rows)
+    subroutine  loadtxt_iint32(filename, d, skiprows, max_rows, fmt)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -367,6 +423,8 @@ contains
       !! A value of zero results in no lines to be read.
       !! The default value is -1.
       integer, intent(in), optional :: max_rows
+      character(len=*), intent(in), optional :: fmt
+      character(len=:), allocatable :: fmt_
       !!
       !! Example
       !! -------
@@ -407,13 +465,25 @@ contains
         read(s, *)
       end do
 
-      do i = 1, max_rows_
-          read(s, *) d(i, :)
-      end do
+      ! Default to list directed for integer
+      fmt_ = optval(fmt, "*")
+      ! Use list directed read if user has specified fmt='*'
+      if ( fmt_ == '*' ) then
+        do i = 1, max_rows_
+          read (s,*) d(i, :)
+        enddo
+      else
+        ! Otherwise pass default user specified fmt string.
+        do i = 1, max_rows_
+          read (s,fmt_) d(i, :)
+        enddo
+      endif
+
+
       close(s)
 
     end subroutine loadtxt_iint32
-    subroutine  loadtxt_iint64(filename, d, skiprows, max_rows)
+    subroutine  loadtxt_iint64(filename, d, skiprows, max_rows, fmt)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -432,6 +502,8 @@ contains
       !! A value of zero results in no lines to be read.
       !! The default value is -1.
       integer, intent(in), optional :: max_rows
+      character(len=*), intent(in), optional :: fmt
+      character(len=:), allocatable :: fmt_
       !!
       !! Example
       !! -------
@@ -472,13 +544,25 @@ contains
         read(s, *)
       end do
 
-      do i = 1, max_rows_
-          read(s, *) d(i, :)
-      end do
+      ! Default to list directed for integer
+      fmt_ = optval(fmt, "*")
+      ! Use list directed read if user has specified fmt='*'
+      if ( fmt_ == '*' ) then
+        do i = 1, max_rows_
+          read (s,*) d(i, :)
+        enddo
+      else
+        ! Otherwise pass default user specified fmt string.
+        do i = 1, max_rows_
+          read (s,fmt_) d(i, :)
+        enddo
+      endif
+
+
       close(s)
 
     end subroutine loadtxt_iint64
-    subroutine  loadtxt_csp(filename, d, skiprows, max_rows)
+    subroutine  loadtxt_csp(filename, d, skiprows, max_rows, fmt)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -497,6 +581,8 @@ contains
       !! A value of zero results in no lines to be read.
       !! The default value is -1.
       integer, intent(in), optional :: max_rows
+      character(len=*), intent(in), optional :: fmt
+      character(len=:), allocatable :: fmt_
       !!
       !! Example
       !! -------
@@ -538,13 +624,24 @@ contains
         read(s, *)
       end do
 
-      do i = 1, max_rows_
-          read(s, "(*"//FMT_COMPLEX_sp(1:len(FMT_COMPLEX_sp)-1)//",1x))") d(i, :)
-      end do
+      ! Default to format used for savetxt if fmt not specified.
+      fmt_ = optval(fmt, "(*"//FMT_COMPLEX_sp(1:len(FMT_COMPLEX_sp)-1)//",1x))")
+      if ( fmt_ == '*' ) then
+        ! Use list directed read if user has specified fmt='*'
+        do i = 1, max_rows_
+          read (s,*) d(i, :)
+        enddo
+      else
+        ! Otherwise pass default or user specified fmt string.
+        do i = 1, max_rows_
+          read (s,fmt_) d(i, :)
+        enddo
+      endif
+
       close(s)
 
     end subroutine loadtxt_csp
-    subroutine  loadtxt_cdp(filename, d, skiprows, max_rows)
+    subroutine  loadtxt_cdp(filename, d, skiprows, max_rows, fmt)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -563,6 +660,8 @@ contains
       !! A value of zero results in no lines to be read.
       !! The default value is -1.
       integer, intent(in), optional :: max_rows
+      character(len=*), intent(in), optional :: fmt
+      character(len=:), allocatable :: fmt_
       !!
       !! Example
       !! -------
@@ -604,9 +703,20 @@ contains
         read(s, *)
       end do
 
-      do i = 1, max_rows_
-          read(s, "(*"//FMT_COMPLEX_dp(1:len(FMT_COMPLEX_dp)-1)//",1x))") d(i, :)
-      end do
+      ! Default to format used for savetxt if fmt not specified.
+      fmt_ = optval(fmt, "(*"//FMT_COMPLEX_dp(1:len(FMT_COMPLEX_dp)-1)//",1x))")
+      if ( fmt_ == '*' ) then
+        ! Use list directed read if user has specified fmt='*'
+        do i = 1, max_rows_
+          read (s,*) d(i, :)
+        enddo
+      else
+        ! Otherwise pass default or user specified fmt string.
+        do i = 1, max_rows_
+          read (s,fmt_) d(i, :)
+        enddo
+      endif
+
       close(s)
 
     end subroutine loadtxt_cdp
