@@ -956,12 +956,12 @@ codata_constant_type("lattice spacing of ideal Si (220)", &
 1.920155716e-10_dp, 0.000000032e-10_dp, &
 "m") !! lattice spacing of ideal Si (220)
 
-type(codata_constant_type), parameter, public :: LOSCHMIDT_CONSTANT_27315_K_100_KPA = &
+type(codata_constant_type), parameter, public :: LOSCHMIDT_CONSTANT_273_15_K_100_KPA = &
 codata_constant_type("Loschmidt constant (273.15 K, 100 kPa)", &
 2.651645804e25_dp, 0.0_dp, &
 "m^-3") !! Loschmidt constant (273.15 K, 100 kPa)
 
-type(codata_constant_type), parameter, public :: LOSCHMIDT_CONSTANT_27315_K_101325_KPA = &
+type(codata_constant_type), parameter, public :: LOSCHMIDT_CONSTANT_273_15_K_101_325_KPA = &
 codata_constant_type("Loschmidt constant (273.15 K, 101.325 kPa)", &
 2.686780111e25_dp, 0.0_dp, &
 "m^-3") !! Loschmidt constant (273.15 K, 101.325 kPa)
@@ -996,12 +996,12 @@ codata_constant_type("molar Planck constant", &
 3.990312712e-10_dp, 0.0_dp, &
 "J Hz^-1 mol^-1") !! molar Planck constant
 
-type(codata_constant_type), parameter, public :: MOLAR_VOLUME_OF_IDEAL_GAS_27315_K_100_KPA = &
+type(codata_constant_type), parameter, public :: MOLAR_VOLUME_OF_IDEAL_GAS_273_15_K_100_KPA = &
 codata_constant_type("molar volume of ideal gas (273.15 K, 100 kPa)", &
 22.71095464e-3_dp, 0.0_dp, &
 "m^3 mol^-1") !! molar volume of ideal gas (273.15 K, 100 kPa)
 
-type(codata_constant_type), parameter, public :: MOLAR_VOLUME_OF_IDEAL_GAS_27315_K_101325_KPA = &
+type(codata_constant_type), parameter, public :: MOLAR_VOLUME_OF_IDEAL_GAS_273_15_K_101_325_KPA = &
 codata_constant_type("molar volume of ideal gas (273.15 K, 101.325 kPa)", &
 22.41396954e-3_dp, 0.0_dp, &
 "m^3 mol^-1") !! molar volume of ideal gas (273.15 K, 101.325 kPa)
@@ -1516,7 +1516,7 @@ codata_constant_type("Sackur-Tetrode constant (1 K, 100 kPa)", &
 -1.15170753496_dp, 0.00000000047_dp, &
 "") !! Sackur-Tetrode constant (1 K, 100 kPa)
 
-type(codata_constant_type), parameter, public :: SACKUR_TETRODE_CONSTANT_1_K_101325_KPA = &
+type(codata_constant_type), parameter, public :: SACKUR_TETRODE_CONSTANT_1_K_101_325_KPA = &
 codata_constant_type("Sackur-Tetrode constant (1 K, 101.325 kPa)", &
 -1.16487052149_dp, 0.00000000047_dp, &
 "") !! Sackur-Tetrode constant (1 K, 101.325 kPa)
