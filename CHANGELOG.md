@@ -1,3 +1,17 @@
+# Version 0.6.1
+
+Full release notes available at [v0.6.1] tag.
+
+[v0.6.1]: https://github.com/fortran-lang/stdlib/releases/tag/v0.6.1
+
+Changes to existing scripts and modules
+  - changes in module `stdlib_linalg_lapack`
+    - Renamed variable for compiler compliance
+      [#812](https://github.com/fortran-lang/stdlib/pull/812)
+  - change of the format in some example programs
+    [#813](https://github.com/fortran-lang/stdlib/pull/813)
+
+
 # Version 0.6.0
 
 Full release notes available at [v0.6.0] tag.
