@@ -51,7 +51,7 @@ elemental pure real(${k}$) function to_real_${k}$(self, mold, uncertainty) resul
     
     class(codata_constant_type), intent(in) :: self !! Codata constant
     real(${k}$), intent(in) :: mold !! dummy argument to disambiguate at compile time the generic interface
-    logical, intent(in), optional :: uncertainty !! Set to true if the uncertainty is required
+    logical, intent(in), optional :: uncertainty !! Set to true if the uncertainty is required. Default to .false..
         !! 
     logical :: u
     
