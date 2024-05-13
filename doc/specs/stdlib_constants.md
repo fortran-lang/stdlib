@@ -13,8 +13,9 @@ The [[stdlib_constants]] module provides mathematical constants and the most com
 ## Codata
 
 The [[stdlib_codata(module)]] module defines all codata (physical) constants as derived 
-type. The latest codata constants 
-were released in 2018 by the [NIST](http://physics.nist.gov/constants)
+type. The module is automatically generated with a simple 
+[parser written in Python](https://github.com/MilanSkocic/codata/tree/dev/stdlib)
+The latest codata constants were released in 2022 by the [NIST](http://physics.nist.gov/constants)
 All values for the codata constants are provided as double precision reals. 
 The names are quite long and can be aliased with shorter names.
 
