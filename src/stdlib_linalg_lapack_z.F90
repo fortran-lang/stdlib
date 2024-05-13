@@ -36888,7 +36888,7 @@ module stdlib_linalg_lapack_z
            
            ! Local Scalars 
            logical(lk) :: lquery, upper
-           integer(ilp) :: i, j, iinfo, lwmin, pn, pk, lk, ldt, ldw, lds2, lds1, ls2, ls1, lw, lt,&
+           integer(ilp) :: i, j, iinfo, lwmin, pn, pk, llk, ldt, ldw, lds2, lds1, ls2, ls1, lw, lt,&
                       tpos, wpos, s2pos, s1pos
            ! Intrinsic Functions 
            intrinsic :: min,max
@@ -36924,13 +36924,13 @@ module stdlib_linalg_lapack_z
            if( n<=kd+1 ) then
                if( upper ) then
                    do i = 1, n
-                       lk = min( kd+1, i )
-                       call stdlib_zcopy( lk, a( i-lk+1, i ), 1,ab( kd+1-lk+1, i ), 1 )
+                       llk = min( kd+1, i )
+                       call stdlib_zcopy( llk, a( i-llk+1, i ), 1,ab( kd+1-llk+1, i ), 1 )
                    end do
                else
                    do i = 1, n
-                       lk = min( kd+1, n-i+1 )
-                       call stdlib_zcopy( lk, a( i, i ), 1, ab( 1, i ), 1 )
+                       llk = min( kd+1, n-i+1 )
+                       call stdlib_zcopy( llk, a( i, i ), 1, ab( 1, i ), 1 )
                    end do
                endif
                work( 1 ) = 1
@@ -36967,8 +36967,8 @@ module stdlib_linalg_lapack_z
                             iinfo )
                   ! copy the upper portion of a into ab
                   do j = i, i+pk-1
-                     lk = min( kd, n-j ) + 1
-                     call stdlib_zcopy( lk, a( j, j ), lda, ab( kd+1, j ), ldab-1 )
+                     llk = min( kd, n-j ) + 1
+                     call stdlib_zcopy( llk, a( j, j ), lda, ab( kd+1, j ), ldab-1 )
                   end do
                   call stdlib_zlaset( 'LOWER', pk, pk, czero, cone,a( i, i+kd ), lda )
                   ! form the matrix t
@@ -36990,8 +36990,8 @@ module stdlib_linalg_lapack_z
                end do
               ! copy the upper band to ab which is the band storage matrix
               do j = n-kd+1, n
-                 lk = min(kd, n-j) + 1
-                 call stdlib_zcopy( lk, a( j, j ), lda, ab( kd+1, j ), ldab-1 )
+                 llk = min(kd, n-j) + 1
+                 call stdlib_zcopy( llk, a( j, j ), lda, ab( kd+1, j ), ldab-1 )
               end do
            else
                ! reduce the lower triangle of a to lower band matrix
@@ -37003,8 +37003,8 @@ module stdlib_linalg_lapack_z
                             iinfo )
                   ! copy the upper portion of a into ab
                   do j = i, i+pk-1
-                     lk = min( kd, n-j ) + 1
-                     call stdlib_zcopy( lk, a( j, j ), 1, ab( 1, j ), 1 )
+                     llk = min( kd, n-j ) + 1
+                     call stdlib_zcopy( llk, a( j, j ), 1, ab( 1, j ), 1 )
                   end do
                   call stdlib_zlaset( 'UPPER', pk, pk, czero, cone,a( i+kd, i ), lda )
                   ! form the matrix t
@@ -37026,15 +37026,15 @@ module stdlib_linalg_lapack_z
                   ! ==================================================================
                   ! restore a for comparison and checking to be removed
                    ! do 45 j = i, i+pk-1
-                      ! lk = min( kd, n-j ) + 1
-                      ! call stdlib_zcopy( lk, ab( 1, j ), 1, a( j, j ), 1 )
+                      ! llk = min( kd, n-j ) + 1
+                      ! call stdlib_zcopy( nlk, ab( 1, j ), 1, a( j, j ), 1 )
                       45 continue
                   ! ==================================================================
                end do loop_40
               ! copy the lower band to ab which is the band storage matrix
               do j = n-kd+1, n
-                 lk = min(kd, n-j) + 1
-                 call stdlib_zcopy( lk, a( j, j ), 1, ab( 1, j ), 1 )
+                 llk = min(kd, n-j) + 1
+                 call stdlib_zcopy( llk, a( j, j ), 1, ab( 1, j ), 1 )
               end do
            end if
            work( 1 ) = lwmin
