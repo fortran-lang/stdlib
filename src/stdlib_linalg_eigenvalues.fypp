@@ -99,7 +99,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          ${rt}$, intent(in), target :: a(:,:)
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
-         !> Array of singular values
+         !> Array of eigenvalues
          complex(${rk}$), allocatable :: lambda(:)
 
          !> Create
@@ -125,7 +125,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
          ${rt}$, intent(in), target :: a(:,:)
-         !> Array of singular values
+         !> Array of eigenvalues
          complex(${rk}$), allocatable :: lambda(:)
 
          !> Create
@@ -154,9 +154,9 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          ${rt}$, intent(inout), target :: a(:,:)
          !> Array of eigenvalues
          complex(${rk}$), intent(out) :: lambda(:)
-         !> The columns of RIGHT contain the right eigenvectors of A
+         !> [optional] RIGHT eigenvectors of A (as columns)
          complex(${rk}$), optional, intent(out), target :: right(:,:)
-         !> The columns of LEFT contain the left eigenvectors of A
+         !> [optional] LEFT eigenvectors of A (as columns)
          complex(${rk}$), optional, intent(out), target :: left(:,:)
          !> [optional] Can A data be overwritten and destroyed?
          logical(lk), optional, intent(in) :: overwrite_a
@@ -323,7 +323,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          logical(lk), optional, intent(in) :: upper_a         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
-         !> Array of singular values
+         !> Array of eigenvalues
          real(${rk}$), allocatable :: lambda(:)
          
          ${rt}$, pointer :: amat(:,:)
@@ -348,9 +348,9 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      !! Return an array of eigenvalues of real symmetric / complex hermitian A        
          !> Input matrix A[m,n]
          ${rt}$, intent(in), target :: a(:,:)
-         !> [optional] Should the upper/lower half of A be used? Default: lower
+         !> [optional] Should the upper/lower half of A be used? Default: use lower
          logical(lk), optional, intent(in) :: upper_a         
-         !> Array of singular values
+         !> Array of eigenvalues
          real(${rk}$), allocatable :: lambda(:)
 
          ${rt}$, pointer :: amat(:,:)
@@ -382,7 +382,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          ${rt}$, optional, intent(out), target :: vectors(:,:)
          !> [optional] Can A data be overwritten and destroyed?
          logical(lk), optional, intent(in) :: overwrite_a
-         !> [optional] Should the upper/lower half of A be used? Default: lower
+         !> [optional] Should the upper/lower half of A be used? Default: use lower
          logical(lk), optional, intent(in) :: upper_a
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err

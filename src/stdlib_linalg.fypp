@@ -556,8 +556,27 @@ module stdlib_linalg
     #:endfor
   end interface  
 
-  interface eig
-    !! Eigendecomposition of a square matrix: return eigenvalues, and optionally eigenvectors
+  ! Eigendecomposition of a square matrix: eigenvalues, and optionally eigenvectors
+  interface eig    
+     !! version: experimental 
+     !!
+     !! Solves the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \) for square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eig-eigenvalues-and-eigenvectors-of-a-square-matrix))
+     !!
+     !!### Summary 
+     !! Subroutine interface for computing eigenvalues and eigenvectors of a square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the eigenvalues, and optionally eigenvectors, 
+     !! of a general square matrix. Supported data types include `real` and `complex`, and no assumption is 
+     !! made on the matrix structure. The user may request either left, right, or both 
+     !! eigenvectors to be returned. They are returned as columns of a square matrix with the same size as `A`. 
+     !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrices must be user-provided.      
+     !! 
+     !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:if rk!="xdp"
     module subroutine stdlib_linalg_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
@@ -580,8 +599,26 @@ module stdlib_linalg
     #:endfor
   end interface eig
 
+  ! Eigenvalues of a square matrix
   interface eigvals
-    !! Eigenvalues of a square matrix
+     !! version: experimental 
+     !!
+     !! Returns the eigenvalues \( lambda \), \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), for square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eigvals-eigenvalues-of-a-square-matrix))
+     !!
+     !!### Summary 
+     !! Function interface for computing the eigenvalues of a square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides functions for returning the eigenvalues of a general square matrix. 
+     !! Supported data types include `real` and `complex`, and no assumption is made on the matrix structure. 
+     !! An `error stop` is thrown in case of failure; otherwise, error information can be returned 
+     !! as an optional `type(linalg_state_type)` output flag. 
+     !! 
+     !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:if rk!="xdp"
     module function stdlib_linalg_eigvals_${ri}$(a,err) result(lambda)
@@ -605,8 +642,30 @@ module stdlib_linalg
     #:endfor
   end interface eigvals
      
+  ! Eigendecomposition of a real symmetric or complex hermitian matrix
   interface eigh
-    !! Eigendecomposition of a real symmetric or complex hermitian matrix
+     !! version: experimental 
+     !!
+     !! Solves the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \) for a real symmetric 
+     !! \( A = A^T \) or complex Hermitian \( A = A^H \) square matrix. 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eigh-eigenvalues-and-eigenvectors-of-a-real-symmetric-or-complex-hermitian-square-matrix))
+     !!
+     !!### Summary 
+     !! Subroutine interface for computing eigenvalues and eigenvectors of a real symmetric or complex Hermitian square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the eigenvalues, and optionally eigenvectors, 
+     !! of a real symmetric or complex Hermitian square matrix. Supported data types include `real` and `complex`. 
+     !! The matrix must be symmetric (if `real`) or Hermitian (if `complex`). Only the lower or upper 
+     !! half of the matrix is accessed, and the user can select which using the optional `upper_a` 
+     !! flag (default: use lower half). The vectors are orthogonal, and may be returned as columns of an optional 
+     !! matrix `vectors` with the same kind and size as `A`. 
+     !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrix must be user-provided.      
+     !! 
+     !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!      
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:if rk!="xdp"
     module subroutine stdlib_linalg_eigh_${ri}$(a,lambda,vectors,upper_a,overwrite_a,err)
@@ -629,8 +688,29 @@ module stdlib_linalg
     #:endfor        
   end interface eigh
      
+  ! Eigenvalues of a real symmetric or complex hermitian matrix
   interface eigvalsh
-    !! Eigenvalues of a real symmetric or complex hermitian matrix
+     !! version: experimental 
+     !!
+     !! Returns the eigenvalues \( lambda \), \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), for a real
+     !! symmetric \( A = A^T \) or complex Hermitian \( A = A^H \) square matrix. 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eigvalsh-eigenvalues-of-a-real-symmetric-or-complex-hermitian-square-matrix))
+     !!
+     !!### Summary 
+     !! Function interface for computing the eigenvalues of a real symmetric or complex hermitian square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides functions for returning the eigenvalues of a real symmetric or complex Hermitian
+     !! square matrix. Supported data types include `real` and `complex`. The matrix must be symmetric 
+     !! (if `real`) or Hermitian (if `complex`). Only the lower or upper half of the matrix is accessed, 
+     !! and the user can select which using the optional `upper_a` flag (default: use lower half). 
+     !! An `error stop` is thrown in case of failure; otherwise, error information can be returned 
+     !! as an optional `type(linalg_state_type)` output flag. 
+     !! 
+     !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!         
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:if rk!="xdp"
     module function stdlib_linalg_eigvalsh_${ri}$(a,upper_a,err) result(lambda)
