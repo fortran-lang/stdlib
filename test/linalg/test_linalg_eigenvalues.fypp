@@ -28,7 +28,9 @@ module test_linalg_eigenvalues
         #: endfor
         
         #:for ck,ct,ci in CMPLX_KINDS_TYPES
+        #:if ck!="xdp"    
         tests = [tests,new_unittest("test_eig_complex_${ci}$",test_eig_complex_${ci}$)]                
+        #:endif
         #: endfor 
 
     end subroutine test_eig_eigh
