@@ -687,6 +687,8 @@ Expert (`Pure`) interface:
 
 `overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
 
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
 ### Return value
 
 For a full-rank matrix, returns an array value that represents the solution to the linear system of equations.
@@ -897,4 +899,98 @@ Exceptions trigger an `error stop`.
 
 ```fortran
 {!example/linalg/example_determinant2.f90!}
+```
+
+## `eig` - Eigenvalues and Eigenvectors of a Square Matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
+
+Result array `lambda` returns the eigenvalues of \( A \). The user can request eigenvectors to be returned: 
+on output `left` may contain the left eigenvectors, `right` the right eigenvectors of \( A \). 
+Each eigenvector is returned as a column of `left` of `right`.
+The solver is based on LAPACK's `*GEEV` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):eig(interface)]] `(a, lambda [, right] [,left] [,overwrite_a] [,err])`
+
+### Arguments
+
+`a` : `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument. If `overwrite_a=.true.`, it is an `intent(inout)` argument and is destroyed by the call. 
+
+`lambda`: Shall be a `complex` rank-1 array of the same kind as `a`, containing the eigenvalues. It is an `intent(out)` argument. 
+
+`right` (optional): Shall be a `complex` rank-2 array of the same size and kind as `a`, containing the right eigenvectors of `a`. It is an `intent(out)` argument.
+
+`left` (optional): Shall be a `complex` rank-2 array of the same size and kind as `a`, containing the left eigenvectors of `a`. It is an `intent(out)` argument.
+
+`overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Raises `LINALG_ERROR` if the matrix is singular to working precision.
+Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_eig.f90!}
+```
+
+## `eigh` - Eigenvalues and Eigenvectors of a Real symmetric or Complex Hermitian Square Matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution to the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \),
+where \( A \) is a square, full-rank, `real` symmetric \( A = A^T \) or `complex` Hermitian \( A = A^H \) matrix.
+
+Result array `lambda` returns the `real` eigenvalues of \( A \). The user can request the orthogonal eigenvectors 
+to be returned: on output `vectors` may contain the matrix of eigenvectors, returned as a columns.
+
+Normally, only the lower triangular part of \( A \) is accessed. On input, `logical` flag `upper_a` 
+allows the user to request what triangular part of the matrix should be used.
+
+The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):eigh(interface)]] `(a, lambda [, vectors] [, upper_a] [, overwrite_a] [,err])`
+
+### Arguments
+
+`a` : `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument. If `overwrite_a=.true.`, it is an `intent(inout)` argument and is destroyed by the call. 
+
+`lambda`: Shall be a `complex` rank-1 array of the same kind as `a`, containing the eigenvalues. It is an `intent(out)` argument. 
+
+`vectors` (optional): Shall be a rank-2 array of the same type, size and kind as `a`, containing the eigenvectors of `a`. It is an `intent(out)` argument.
+
+`upper_a` (optional): Shall be an input logical flag. if `.true.`, the upper triangular part of `a` will be used accessed. Otherwise, the lower triangular part will be accessed. It is an `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Raises `LINALG_ERROR` if the matrix is singular to working precision.
+Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_eigh.f90!}
 ```
