@@ -45,7 +45,7 @@ Experimental
 
 ### Description
 
-Convert a [[stdlib_codata_type(module):stdlib_codata_type(type)]] to a real. 
+Convert a [[stdlib_codata_type(module):codata_constant_type(type)]] to a real. 
 **Warning**: Some constants cannot be converted to simple precision reals due to the values of the exponents.
 
 ### Syntax
@@ -54,7 +54,7 @@ Convert a [[stdlib_codata_type(module):stdlib_codata_type(type)]] to a real.
 
 ### Arguments
 
-`c`: argument has `intent(in) ` and shall be of type [[stdlib_codata_type(module):stdlib_codata_type(type)]].
+`c`: argument has `intent(in) ` and shall be of type [[stdlib_codata_type(module):codata_constant_type(type)]].
 
 `mold`: argument has `intent(in)` and shall be of `real` type. 
 **Note**: The type of the `mold` argument defines the type of the result.
