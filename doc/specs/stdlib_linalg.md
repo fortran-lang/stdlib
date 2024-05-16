@@ -936,7 +936,7 @@ The solver is based on LAPACK's `*GEEV` backends.
 
 ### Return value
 
-Raises `LINALG_ERROR` if the matrix is singular to working precision.
+Raises `LINALG_ERROR` if the calculation did not converge.
 Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
 If `err` is not present, exceptions trigger an `error stop`.
 
@@ -985,7 +985,7 @@ The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
 
 ### Return value
 
-Raises `LINALG_ERROR` if the matrix is singular to working precision.
+Raises `LINALG_ERROR` if the calculation did not converge.
 Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
 If `err` is not present, exceptions trigger an `error stop`.
 
@@ -993,4 +993,83 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ```fortran
 {!example/linalg/example_eigh.f90!}
+```
+
+## `eigvals` - Eigenvalues of a Square Matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the eigenvalues to matrix \( A \): a square, full-rank, `real` or `complex` matrix.
+The eigenvalues are solutions to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \).
+
+Result array `lambda` is `complex`, and returns the eigenvalues of \( A \). 
+The solver is based on LAPACK's `*GEEV` backends.
+
+### Syntax
+
+`lambda = ` [[stdlib_linalg(module):eigvals(interface)]] `(a, [,err])`
+
+### Arguments
+
+`a` : `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns a `complex` array containing the eigenvalues of `a`. 
+
+Raises `LINALG_ERROR` if the calculation did not converge.
+Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_eigvals.f90!}
+```
+
+## `eigvalsh` - Eigenvalues of a Real Symmetric or Complex Hermitian Square Matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the eigenvalues to matrix \( A \): a where \( A \) is a square, full-rank, 
+`real` symmetric \( A = A^T \) or `complex` Hermitian \( A = A^H \) matrix.
+The eigenvalues are solutions to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \).
+
+Result array `lambda` is `real`, and returns the eigenvalues of \( A \). 
+The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
+
+### Syntax
+
+`lambda = ` [[stdlib_linalg(module):eigvalsh(interface)]] `(a, [, upper_a] [,err])`
+
+### Arguments
+
+`a` : `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument.
+
+`upper_a` (optional): Shall be an input logical flag. if `.true.`, the upper triangular part of `a` will be used accessed. Otherwise, the lower triangular part will be accessed (default). It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns a `real` array containing the eigenvalues of `a`. 
+
+Raises `LINALG_ERROR` if the calculation did not converge.
+Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_eigvalsh.f90!}
 ```
