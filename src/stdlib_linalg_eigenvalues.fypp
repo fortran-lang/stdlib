@@ -1,69 +1,14 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-module stdlib_linalg_eigenvalues
+submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 !! Compute eigenvalues and eigenvectors    
      use stdlib_linalg_constants
-     use stdlib_linalg_blas
-     use stdlib_linalg_lapack
-     use stdlib_linalg_state
-     use iso_fortran_env,only:real32,real64,real128,int8,int16,int32,int64,stderr => error_unit
+     use stdlib_linalg_lapack, only: geev, heev, syev
+     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR, LINALG_SUCCESS     
      implicit none(type,external)
-     private
-
-     !> Eigendecomposition of a square matrix: return eigenvalues, and optionally eigenvectors
-     public :: eig
-     !> Eigenvalues of a square matrix
-     public :: eigvals
-     !> Eigendecomposition of a real symmetric or complex hermitian matrix
-     public :: eigh
-     !> Eigenvalues of a real symmetric or complex hermitian matrix
-     public :: eigvalsh     
-
-     ! Numpy: eigenvalues, eigenvectors = eig(a)
-     !        eigenvalues = eigvals(a)
-     ! Scipy: eig(a, b=None, left=False, right=True, overwrite_a=False, overwrite_b=False, check_finite=True, homogeneous_eigvals=False)
-
-     ! Numpy: eigenvalues, eigenvectors = eigh(a, uplo='L')
-     !        eigenvalues = eigvalsh(a)
-     ! Scipy: eigh(a, b=None, *, lower=True, eigvals_only=False, overwrite_a=False, overwrite_b=False, turbo=<object object>, eigvals=<object object>, type=1, check_finite=True, subset_by_index=None, subset_by_value=None, driver=None)
-
-     interface eig
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        #:if rk!="xdp"
-        module procedure stdlib_linalg_eig_${ri}$
-        #:endif
-        #:endfor
-     end interface eig
-
-     interface eigvals
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        #:if rk!="xdp"
-        module procedure stdlib_linalg_eigvals_${ri}$
-        module procedure stdlib_linalg_eigvals_noerr_${ri}$
-        #:endif
-        #:endfor
-     end interface eigvals
      
-     interface eigh
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        #:if rk!="xdp"
-        module procedure stdlib_linalg_eigh_${ri}$
-        #:endif
-        #:endfor        
-     end interface eigh
-     
-     interface eigvalsh
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        #:if rk!="xdp"
-        module procedure stdlib_linalg_eigvalsh_${ri}$
-        module procedure stdlib_linalg_eigvalsh_noerr_${ri}$
-        #:endif
-        #:endfor                
-     end interface eigvalsh
-
-
      character(*), parameter :: this = 'eigenvalues'
-
 
      contains
      
@@ -236,13 +181,14 @@ module stdlib_linalg_eigenvalues
          lda  = m
 
          if (.not.(k>0 .and. m==n)) then
-            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid or matrix size a=',[m,n], &
-                                                        ', must be square.')
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,&
+                                          'invalid or matrix size a=',[m,n],', must be square.')
             call linalg_error_handling(err0,err)
             return
          elseif (.not.neig>=k) then
-            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'eigenvalue array has insufficient size:',&
-                                                        ' lambda=',neig,', n=',n)
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,&
+                                          'eigenvalue array has insufficient size:',&
+                                          ' lambda=',neig,', n=',n)
             call linalg_error_handling(err0,err)
             return
          endif
@@ -590,4 +536,4 @@ module stdlib_linalg_eigenvalues
      #:endfor
 
 
-end module stdlib_linalg_eigenvalues
+end submodule stdlib_linalg_eigenvalues
