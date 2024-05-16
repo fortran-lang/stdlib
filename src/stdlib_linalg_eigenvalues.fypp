@@ -29,27 +29,35 @@ module stdlib_linalg_eigenvalues
 
      interface eig
         #:for rk,rt,ri in RC_KINDS_TYPES
+        #:if rk!="xdp"
         module procedure stdlib_linalg_eig_${ri}$
+        #:endif
         #:endfor
      end interface eig
 
      interface eigvals
         #:for rk,rt,ri in RC_KINDS_TYPES
+        #:if rk!="xdp"
         module procedure stdlib_linalg_eigvals_${ri}$
         module procedure stdlib_linalg_eigvals_noerr_${ri}$
+        #:endif
         #:endfor
      end interface eigvals
      
      interface eigh
         #:for rk,rt,ri in RC_KINDS_TYPES
+        #:if rk!="xdp"
         module procedure stdlib_linalg_eigh_${ri}$
+        #:endif
         #:endfor        
      end interface eigh
      
      interface eigvalsh
         #:for rk,rt,ri in RC_KINDS_TYPES
+        #:if rk!="xdp"
         module procedure stdlib_linalg_eigvalsh_${ri}$
         module procedure stdlib_linalg_eigvalsh_noerr_${ri}$
+        #:endif
         #:endfor                
      end interface eigvalsh
 
@@ -138,6 +146,7 @@ module stdlib_linalg_eigenvalues
      end subroutine handle_heev_info
 
      #:for rk,rt,ri in RC_KINDS_TYPES
+     #:if rk!="xdp"
 
      function stdlib_linalg_eigvals_${ri}$(a,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
@@ -538,9 +547,11 @@ module stdlib_linalg_eigenvalues
 
      end subroutine stdlib_linalg_eigh_${ri}$
      
+     #:endif
      #:endfor
      
      #:for rk,rt,ri in REAL_KINDS_TYPES
+     #:if rk!="xdp"
      pure subroutine assign_real_eigenvectors_${rk}$(n,lambda,lmat,out_mat)
      !! GEEV for real matrices returns complex eigenvalues in real arrays, where two consecutive
      !! reals at [j,j+1] locations represent the real and imaginary parts of two complex conjugate 
@@ -574,6 +585,8 @@ module stdlib_linalg_eigenvalues
         end do           
         
      end subroutine assign_real_eigenvectors_${rk}$
+     
+     #:endif
      #:endfor
 
 
