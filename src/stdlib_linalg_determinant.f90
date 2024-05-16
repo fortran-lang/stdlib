@@ -220,7 +220,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
                        err0 = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
                 end select
 
-                if (.not.copy_a) deallocate(amat)
+                if (copy_a) deallocate(amat)
 
          end select
 
@@ -437,7 +437,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
                        err0 = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
                 end select
 
-                if (.not.copy_a) deallocate(amat)
+                if (copy_a) deallocate(amat)
 
          end select
 
@@ -654,7 +654,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
                        err0 = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
                 end select
 
-                if (.not.copy_a) deallocate(amat)
+                if (copy_a) deallocate(amat)
 
          end select
 
@@ -871,7 +871,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
                        err0 = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
                 end select
 
-                if (.not.copy_a) deallocate(amat)
+                if (copy_a) deallocate(amat)
 
          end select
 

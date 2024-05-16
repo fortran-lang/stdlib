@@ -42,6 +42,7 @@ module test_linalg_determinant
         integer(ilp), parameter :: n = 128_ilp
 
         real(sp) :: a(n,n),deta
+        real(sp), allocatable :: aalloc(:,:)
 
         a = eye(n)
 
@@ -50,8 +51,18 @@ module test_linalg_determinant
         
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
-        
         call check(error, abs(deta-1.0_sp)<epsilon(0.0_sp), 'det(eye(n))==1')
+        if (allocated(error)) return
+
+        !> Test with allocatable matrix
+        aalloc = eye(n)
+        deta = det(aalloc,overwrite_a=.false.,err=state)
+        call check(error,state%ok(),state%print()//' (allocatable a)')
+        if (allocated(error)) return
+        call check(error,allocated(aalloc),'a is still allocated')
+        if (allocated(error)) return
+        call check(error, abs(deta-1.0_sp)<epsilon(0.0_sp), 'det(eye(n))==1 (allocatable a))')
+        if (allocated(error)) return
         
     end subroutine test_rsp_eye_determinant
 
@@ -91,6 +102,7 @@ module test_linalg_determinant
         integer(ilp), parameter :: n = 128_ilp
 
         real(dp) :: a(n,n),deta
+        real(dp), allocatable :: aalloc(:,:)
 
         a = eye(n)
 
@@ -99,8 +111,18 @@ module test_linalg_determinant
         
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
-        
         call check(error, abs(deta-1.0_dp)<epsilon(0.0_dp), 'det(eye(n))==1')
+        if (allocated(error)) return
+
+        !> Test with allocatable matrix
+        aalloc = eye(n)
+        deta = det(aalloc,overwrite_a=.false.,err=state)
+        call check(error,state%ok(),state%print()//' (allocatable a)')
+        if (allocated(error)) return
+        call check(error,allocated(aalloc),'a is still allocated')
+        if (allocated(error)) return
+        call check(error, abs(deta-1.0_dp)<epsilon(0.0_dp), 'det(eye(n))==1 (allocatable a))')
+        if (allocated(error)) return
         
     end subroutine test_rdp_eye_determinant
 
@@ -140,6 +162,7 @@ module test_linalg_determinant
         integer(ilp), parameter :: n = 128_ilp
 
         complex(sp) :: a(n,n),deta
+        complex(sp), allocatable :: aalloc(:,:)
 
         a = eye(n)
 
@@ -148,8 +171,18 @@ module test_linalg_determinant
         
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
-        
         call check(error, abs(deta-1.0_sp)<epsilon(0.0_sp), 'det(eye(n))==1')
+        if (allocated(error)) return
+
+        !> Test with allocatable matrix
+        aalloc = eye(n)
+        deta = det(aalloc,overwrite_a=.false.,err=state)
+        call check(error,state%ok(),state%print()//' (allocatable a)')
+        if (allocated(error)) return
+        call check(error,allocated(aalloc),'a is still allocated')
+        if (allocated(error)) return
+        call check(error, abs(deta-1.0_sp)<epsilon(0.0_sp), 'det(eye(n))==1 (allocatable a))')
+        if (allocated(error)) return
         
     end subroutine test_csp_eye_determinant
 
@@ -189,6 +222,7 @@ module test_linalg_determinant
         integer(ilp), parameter :: n = 128_ilp
 
         complex(dp) :: a(n,n),deta
+        complex(dp), allocatable :: aalloc(:,:)
 
         a = eye(n)
 
@@ -197,8 +231,18 @@ module test_linalg_determinant
         
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
-        
         call check(error, abs(deta-1.0_dp)<epsilon(0.0_dp), 'det(eye(n))==1')
+        if (allocated(error)) return
+
+        !> Test with allocatable matrix
+        aalloc = eye(n)
+        deta = det(aalloc,overwrite_a=.false.,err=state)
+        call check(error,state%ok(),state%print()//' (allocatable a)')
+        if (allocated(error)) return
+        call check(error,allocated(aalloc),'a is still allocated')
+        if (allocated(error)) return
+        call check(error, abs(deta-1.0_dp)<epsilon(0.0_dp), 'det(eye(n))==1 (allocatable a))')
+        if (allocated(error)) return
         
     end subroutine test_cdp_eye_determinant
 
