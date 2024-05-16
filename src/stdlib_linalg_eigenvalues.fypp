@@ -93,7 +93,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      #:for rk,rt,ri in RC_KINDS_TYPES
      #:if rk!="xdp"
 
-     function stdlib_linalg_eigvals_${ri}$(a,err) result(lambda)
+     module function stdlib_linalg_eigvals_${ri}$(a,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
          ${rt}$, intent(in), target :: a(:,:)
@@ -121,7 +121,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
      end function stdlib_linalg_eigvals_${ri}$
 
-     function stdlib_linalg_eigvals_noerr_${ri}$(a) result(lambda)
+     module function stdlib_linalg_eigvals_noerr_${ri}$(a) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
          ${rt}$, intent(in), target :: a(:,:)
@@ -147,7 +147,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
      end function stdlib_linalg_eigvals_noerr_${ri}$
 
-     subroutine stdlib_linalg_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+     module subroutine stdlib_linalg_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
@@ -315,7 +315,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
      end subroutine stdlib_linalg_eig_${ri}$
      
-     function stdlib_linalg_eigvalsh_${ri}$(a,upper_a,err) result(lambda)
+     module function stdlib_linalg_eigvalsh_${ri}$(a,upper_a,err) result(lambda)
      !! Return an array of eigenvalues of real symmetric / complex hermitian A
          !> Input matrix A[m,n]
          ${rt}$, intent(in), target :: a(:,:)
@@ -344,7 +344,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          
      end function stdlib_linalg_eigvalsh_${ri}$
           
-     function stdlib_linalg_eigvalsh_noerr_${ri}$(a,upper_a) result(lambda)
+     module function stdlib_linalg_eigvalsh_noerr_${ri}$(a,upper_a) result(lambda)
      !! Return an array of eigenvalues of real symmetric / complex hermitian A        
          !> Input matrix A[m,n]
          ${rt}$, intent(in), target :: a(:,:)
@@ -371,7 +371,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
      end function stdlib_linalg_eigvalsh_noerr_${ri}$     
 
-     subroutine stdlib_linalg_eigh_${ri}$(a,lambda,vectors,upper_a,overwrite_a,err)
+     module subroutine stdlib_linalg_eigh_${ri}$(a,lambda,vectors,upper_a,overwrite_a,err)
      !! Eigendecomposition of a real symmetric or complex Hermitian matrix A returning an array `lambda` 
      !! of eigenvalues, and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
