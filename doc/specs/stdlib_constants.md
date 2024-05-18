@@ -20,7 +20,6 @@ All values for the codata constants are provided as double precision reals.
 The names are quite long and can be aliased with shorter names.
 
 The derived type [[stdlib_codata_type(module):codata_constant_type(type)]] defines:
-procedures.
 
 * 4 members:
 
