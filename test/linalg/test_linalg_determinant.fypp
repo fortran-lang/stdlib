@@ -47,6 +47,7 @@ module test_linalg_determinant
         integer(ilp), parameter :: n = 128_ilp
 
         ${rt}$ :: a(n,n),deta
+        ${rt}$, allocatable :: aalloc(:,:)
 
         a = eye(n)
 
@@ -55,8 +56,18 @@ module test_linalg_determinant
         
         call check(error,state%ok(),state%print())
         if (allocated(error)) return
-        
         call check(error, abs(deta-1.0_${rk}$)<epsilon(0.0_${rk}$), 'det(eye(n))==1')
+        if (allocated(error)) return
+
+        !> Test with allocatable matrix
+        aalloc = eye(n)
+        deta = det(aalloc,overwrite_a=.false.,err=state)
+        call check(error,state%ok(),state%print()//' (allocatable a)')
+        if (allocated(error)) return
+        call check(error,allocated(aalloc),'a is still allocated')
+        if (allocated(error)) return
+        call check(error, abs(deta-1.0_${rk}$)<epsilon(0.0_${rk}$), 'det(eye(n))==1 (allocatable a))')
+        if (allocated(error)) return
         
     end subroutine test_${rt[0]}$${rk}$_eye_determinant
 

@@ -17,7 +17,7 @@ Loads a rank-2 `array` from a text file.
 
 ### Syntax
 
-`call ` [[stdlib_io(module):loadtxt(interface)]] `(filename, array [, skiprows] [, max_rows])`
+`call ` [[stdlib_io(module):loadtxt(interface)]] `(filename, array [, skiprows] [, max_rows] [, fmt])`
 
 ### Arguments
 
@@ -28,6 +28,10 @@ Loads a rank-2 `array` from a text file.
 `skiprows` (optional): Skip the first `skiprows` lines. If skipping more rows than present, a 0-sized array will be returned. The default is 0.
 
 `max_rows` (optional): Read `max_rows` lines of content after `skiprows` lines. A negative value results in reading all lines. A value of zero results in no lines to be read. The default value is -1.
+
+`fmt` (optional): Fortran format specifier for the text read.  Defaults to the write format for the data type.  Setting fmt='*' will specify list directed read.   
+
+
 
 ### Return value
 
