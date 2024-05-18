@@ -1,6 +1,7 @@
 #:include "common.fypp"
-#:set R_KINDS_TYPES = REAL_KINDS_TYPES[0:2]
-#:set CI_KINDS_TYPES = INT_KINDS_TYPES + CMPLX_KINDS_TYPES[0:2]
+#:set R_KINDS_TYPES = [KT for KT in REAL_KINDS_TYPES if KT[0] in ["sp","dp"]]
+#:set C_KINDS_TYPES = [KT for KT in CMPLX_KINDS_TYPES if KT[0] in ["sp","dp"]]
+#:set CI_KINDS_TYPES = INT_KINDS_TYPES + C_KINDS_TYPES
 module stdlib_specialfunctions_gamma
     use iso_fortran_env, only : qp => real128
     use stdlib_kinds, only :  sp, dp, int8, int16, int32, int64
