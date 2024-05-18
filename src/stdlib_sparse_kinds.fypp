@@ -1,5 +1,7 @@
 #:include "common.fypp"
-#:set KINDS_TYPES = REAL_KINDS_TYPES
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
 !> The `stdlib_sparse_kinds` module provides derived type definitions for different sparse matrices
 !>
 !> This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
@@ -16,6 +18,14 @@ module stdlib_sparse_kinds
         enumerator :: k_SYMTRISUP  !> Symmetric Sparse matrix with triangular supperior storage
     end enum
     public :: k_NOSYMMETRY, k_SYMTRIINF, k_SYMTRISUP
+
+    #:for k1, t1, s1 in (R_KINDS_TYPES)
+    ${t1}$, parameter, public :: zero_${s1}$ = 0._${k1}$
+    #:endfor
+    #:for k1, t1, s1 in (C_KINDS_TYPES)
+    ${t1}$, parameter, public :: zero_${s1}$ = (0._${k1}$,0._${k1}$)
+    #:endfor
+
     ! -- Classes
 
     !> Base sparse type holding the meta data related to the storage capacity of a matrix.
@@ -35,12 +45,12 @@ module stdlib_sparse_kinds
       procedure :: malloc => malloc_coo
     end type
 
-    #:for k1, t1 in (KINDS_TYPES)
-    type, public, extends(COO_type) :: COO_${k1}$
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    type, public, extends(COO_type) :: COO_${s1}$
         ${t1}$, allocatable :: data(:) 
     contains
-        procedure :: get => get_value_coo_${k1}$
-        procedure :: set => set_value_coo_${k1}$
+        procedure :: get => get_value_coo_${s1}$
+        procedure :: set => set_value_coo_${s1}$
     end type
     #:endfor
 
@@ -52,12 +62,12 @@ module stdlib_sparse_kinds
       procedure :: malloc => malloc_csr
     end type
   
-    #:for k1, t1 in (KINDS_TYPES)
-    type, public, extends(CSR_type) :: CSR_${k1}$
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    type, public, extends(CSR_type) :: CSR_${s1}$
         ${t1}$, allocatable :: data(:) 
     contains
-        procedure :: get => get_value_csr_${k1}$
-        procedure :: set => set_value_csr_${k1}$
+        procedure :: get => get_value_csr_${s1}$
+        procedure :: set => set_value_csr_${s1}$
     end type
     #:endfor
 
@@ -69,12 +79,12 @@ module stdlib_sparse_kinds
       procedure :: malloc => malloc_csc
     end type
   
-    #:for k1, t1 in (KINDS_TYPES)
-    type, public, extends(CSC_type) :: CSC_${k1}$
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    type, public, extends(CSC_type) :: CSC_${s1}$
         ${t1}$, allocatable :: data(:) 
     contains
-        procedure :: get => get_value_csc_${k1}$
-        procedure :: set => set_value_csc_${k1}$
+        procedure :: get => get_value_csc_${s1}$
+        procedure :: set => set_value_csc_${s1}$
     end type
     #:endfor
   
@@ -86,12 +96,26 @@ module stdlib_sparse_kinds
       procedure :: malloc => malloc_ell
     end type
   
-    #:for k1, t1 in (KINDS_TYPES)
-    type, public, extends(ELL_type) :: ELL_${k1}$
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    type, public, extends(ELL_type) :: ELL_${s1}$
         ${t1}$, allocatable :: data(:,:) 
     contains
-        procedure :: get => get_value_ell_${k1}$
-        procedure :: set => set_value_ell_${k1}$
+        procedure :: get => get_value_ell_${s1}$
+        procedure :: set => set_value_ell_${s1}$
+    end type
+    #:endfor
+
+    !> Compressed SELL-C 
+    !> Reference : https://library.eecs.utk.edu/storage/files/ut-eecs-14-727.pdf
+    type, public, extends(sparse_type) :: SELLC_type 
+      integer               :: chunk_size = 8 !>  default chunk size
+      integer, allocatable  :: rowptr(:) !> row pointer
+      integer, allocatable  :: col(:,:)  !> column indices
+    end type
+  
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    type, public, extends(SELLC_type) :: SELLC_${s1}$
+        ${t1}$, allocatable :: data(:,:) 
     end type
     #:endfor
 
@@ -119,16 +143,16 @@ contains
         call move_alloc(from=temp_idx,to=self%index)
 
         select type(self)
-            #:for k1, t1 in (KINDS_TYPES)
-            type is(COO_${k1}$)
+            #:for k1, t1, s1 in (KINDS_TYPES)
+            type is(COO_${s1}$)
                 block
-                ${t1}$, allocatable :: temp_data_${k1}$(:)
+                ${t1}$, allocatable :: temp_data_${s1}$(:)
                 if(.not.allocated(self%data)) then
-                    allocate(temp_data_${k1}$(nnz) , source = 0._${k1}$ )
+                    allocate(temp_data_${s1}$(nnz) , source = zero_${s1}$ )
                 else
-                    allocate(temp_data_${k1}$(nnz) , source = self%data )
+                    allocate(temp_data_${s1}$(nnz) , source = self%data )
                 end if
-                call move_alloc(from=temp_data_${k1}$,to=self%data)
+                call move_alloc(from=temp_data_${s1}$,to=self%data)
                 end block
             #:endfor
         end select
@@ -163,16 +187,16 @@ contains
         call move_alloc(from=temp_idx,to=self%rowptr)
 
         select type(self)
-            #:for k1, t1 in (KINDS_TYPES)
-            type is(CSR_${k1}$)
+            #:for k1, t1, s1 in (KINDS_TYPES)
+            type is(CSR_${s1}$)
                 block
-                ${t1}$, allocatable :: temp_data_${k1}$(:)
+                ${t1}$, allocatable :: temp_data_${s1}$(:)
                 if(.not.allocated(self%data)) then
-                    allocate(temp_data_${k1}$(nnz) , source = 0._${k1}$ )
+                    allocate(temp_data_${s1}$(nnz) , source = zero_${s1}$ )
                 else
-                    allocate(temp_data_${k1}$(nnz) , source = self%data )
+                    allocate(temp_data_${s1}$(nnz) , source = self%data )
                 end if
-                call move_alloc(from=temp_data_${k1}$,to=self%data)
+                call move_alloc(from=temp_data_${s1}$,to=self%data)
                 end block
             #:endfor
         end select
@@ -207,16 +231,16 @@ contains
         call move_alloc(from=temp_idx,to=self%colptr)
 
         select type(self)
-            #:for k1, t1 in (KINDS_TYPES)
-            type is(CSC_${k1}$)
+            #:for k1, t1, s1 in (KINDS_TYPES)
+            type is(CSC_${s1}$)
                 block
-                ${t1}$, allocatable :: temp_data_${k1}$(:)
+                ${t1}$, allocatable :: temp_data_${s1}$(:)
                 if(.not.allocated(self%data)) then
-                    allocate(temp_data_${k1}$(nnz) , source = 0._${k1}$ )
+                    allocate(temp_data_${s1}$(nnz) , source = zero_${s1}$ )
                 else
-                    allocate(temp_data_${k1}$(nnz) , source = self%data )
+                    allocate(temp_data_${s1}$(nnz) , source = self%data )
                 end if
-                call move_alloc(from=temp_data_${k1}$,to=self%data)
+                call move_alloc(from=temp_data_${s1}$,to=self%data)
                 end block
             #:endfor
         end select
@@ -244,16 +268,16 @@ contains
         call move_alloc(from=temp_idx,to=self%index)
 
         select type(self)
-            #:for k1, t1 in (KINDS_TYPES)
-            type is(ELL_${k1}$)
+            #:for k1, t1, s1 in (KINDS_TYPES)
+            type is(ELL_${s1}$)
                 block
-                ${t1}$, allocatable :: temp_data_${k1}$(:,:)
+                ${t1}$, allocatable :: temp_data_${s1}$(:,:)
                 if(.not.allocated(self%data)) then
-                    allocate(temp_data_${k1}$(num_rows,num_nz_rows) , source = 0._${k1}$ )
+                    allocate(temp_data_${s1}$(num_rows,num_nz_rows) , source = zero_${s1}$ )
                 else
-                    allocate(temp_data_${k1}$(num_rows,num_nz_rows) , source = self%data )
+                    allocate(temp_data_${s1}$(num_rows,num_nz_rows) , source = self%data )
                 end if
-                call move_alloc(from=temp_data_${k1}$,to=self%data)
+                call move_alloc(from=temp_data_${s1}$,to=self%data)
                 end block
             #:endfor
         end select
@@ -263,9 +287,9 @@ contains
     ! data accessors
     !==================================================================
 
-    #:for k1, t1 in (KINDS_TYPES)
-    pure subroutine get_value_coo_${k1}$(self,val,ik,jk)
-        class(COO_${k1}$), intent(in) :: self
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure subroutine get_value_coo_${s1}$(self,val,ik,jk)
+        class(COO_${s1}$), intent(in) :: self
         ${t1}$, intent(out) :: val
         integer, intent(in) :: ik, jk
         integer :: k
@@ -276,11 +300,11 @@ contains
                 return
             end if
         end do
-        val = 0._${k1}$
+        val = zero_${s1}$
     end subroutine
 
-    subroutine set_value_coo_${k1}$(self,val,ik,jk)
-        class(COO_${k1}$), intent(inout) :: self
+    subroutine set_value_coo_${s1}$(self,val,ik,jk)
+        class(COO_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in) :: ik, jk
         integer :: k
@@ -295,9 +319,9 @@ contains
 
     #:endfor
 
-    #:for k1, t1 in (KINDS_TYPES)
-    pure subroutine get_value_csr_${k1}$(self,val,ik,jk)
-        class(CSR_${k1}$), intent(in) :: self
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure subroutine get_value_csr_${s1}$(self,val,ik,jk)
+        class(CSR_${s1}$), intent(in) :: self
         ${t1}$, intent(out) :: val
         integer, intent(in) :: ik, jk
         integer :: k
@@ -308,11 +332,11 @@ contains
                 return
             end if
         end do
-        val = 0._${k1}$
+        val = zero_${s1}$
     end subroutine
 
-    subroutine set_value_csr_${k1}$(self,val,ik,jk)
-        class(CSR_${k1}$), intent(inout) :: self
+    subroutine set_value_csr_${s1}$(self,val,ik,jk)
+        class(CSR_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in) :: ik, jk
         integer :: k
@@ -327,9 +351,9 @@ contains
 
     #:endfor
 
-    #:for k1, t1 in (KINDS_TYPES)
-    pure subroutine get_value_csc_${k1}$(self,val,ik,jk)
-        class(CSC_${k1}$), intent(in) :: self
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure subroutine get_value_csc_${s1}$(self,val,ik,jk)
+        class(CSC_${s1}$), intent(in) :: self
         ${t1}$, intent(out) :: val
         integer, intent(in) :: ik, jk
         integer :: k
@@ -340,11 +364,11 @@ contains
                 return
             end if
         end do
-        val = 0._${k1}$
+        val = zero_${s1}$
     end subroutine
 
-    subroutine set_value_csc_${k1}$(self,val,ik,jk)
-        class(CSC_${k1}$), intent(inout) :: self
+    subroutine set_value_csc_${s1}$(self,val,ik,jk)
+        class(CSC_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in)  :: ik, jk
         integer :: k
@@ -359,9 +383,9 @@ contains
 
     #:endfor
 
-    #:for k1, t1 in (KINDS_TYPES)
-    pure subroutine get_value_ell_${k1}$(self,val,ik,jk)
-        class(ELL_${k1}$), intent(in) :: self
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure subroutine get_value_ell_${s1}$(self,val,ik,jk)
+        class(ELL_${s1}$), intent(in) :: self
         ${t1}$, intent(out) :: val
         integer, intent(in) :: ik, jk
         integer :: k
@@ -372,11 +396,11 @@ contains
                 return
             end if
         end do
-        val = 0._${k1}$
+        val = zero_${s1}$
     end subroutine
 
-    subroutine set_value_ell_${k1}$(self,val,ik,jk)
-        class(ELL_${k1}$), intent(inout) :: self
+    subroutine set_value_ell_${s1}$(self,val,ik,jk)
+        class(ELL_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in)  :: ik, jk
         integer :: k

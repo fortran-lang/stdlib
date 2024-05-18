@@ -1,6 +1,8 @@
 #:include "common.fypp"
 #:set RANKS = range(1, 2+1)
-#:set KINDS_TYPES = REAL_KINDS_TYPES
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
 #! define ranks without parentheses
 #:def rksfx2(rank)
 #{if rank > 0}#${":," + ":," * (rank - 1)}$#{endif}#
@@ -15,25 +17,25 @@ module stdlib_sparse_matvec
     private
 
     public :: matvec
-    interface matvec ! call matvec(matrix,vec_x,vec_y) => Y = M * X
-        #:for k1, t1 in (KINDS_TYPES)
+    interface matvec ! call matvec(matrix,vec_x,vec_y) => Y = Y + M * X
+        #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module procedure matvec_coo_${rank}$d_${k1}$
-        module procedure matvec_csr_${rank}$d_${k1}$
-        module procedure matvec_csc_${rank}$d_${k1}$
-        module procedure matvec_ell_${rank}$d_${k1}$
-
+        module procedure matvec_coo_${rank}$d_${s1}$
+        module procedure matvec_csr_${rank}$d_${s1}$
+        module procedure matvec_csc_${rank}$d_${s1}$
+        module procedure matvec_ell_${rank}$d_${s1}$
         #:endfor
+        module procedure matvec_sellc_${s1}$
         #:endfor
     end interface
 
 contains
 
     !> matvec_coo
-    #:for k1, t1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_coo_${rank}$d_${k1}$(matrix,vec_x,vec_y)
-        type(COO_${k1}$), intent(in) :: matrix
+    subroutine matvec_coo_${rank}$d_${s1}$(matrix,vec_x,vec_y)
+        type(COO_${s1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         integer :: k, ik, jk
@@ -63,10 +65,10 @@ contains
     #:endfor
 
     !> matvec_csr
-    #:for k1, t1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_csr_${rank}$d_${k1}$(matrix,vec_x,vec_y)
-        type(CSR_${k1}$), intent(in) :: matrix
+    subroutine matvec_csr_${rank}$d_${s1}$(matrix,vec_x,vec_y)
+        type(CSR_${s1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         integer :: i, j
@@ -87,7 +89,7 @@ contains
 
             else if( sym == k_SYMTRIINF )then
                 do i = 1 , nrows
-                    aux  = 0._${k1}$
+                    aux  = zero_${s1}$
                     do j = rowptr(i), rowptr(i+1)-2
                         aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
                         vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * vec_x(${rksfx2(rank-1)}$i)
@@ -114,10 +116,10 @@ contains
     #:endfor
 
     !> matvec_csc
-    #:for k1, t1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_csc_${rank}$d_${k1}$(matrix,vec_x,vec_y)
-        type(CSC_${k1}$), intent(in) :: matrix
+    subroutine matvec_csc_${rank}$d_${s1}$(matrix,vec_x,vec_y)
+        type(CSC_${s1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         integer :: i, j
@@ -150,7 +152,7 @@ contains
             else if( sym == k_SYMTRISUP )then
                 ! NOT TESTED
                 do j = 1 , ncols
-                    aux  = 0._${k1}$
+                    aux  = zero_${s1}$
                     do i = colptr(j), colptr(i+1)-2
                         aux = aux + data(i) * vec_x(${rksfx2(rank-1)}$j)
                         vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + data(i) * vec_x(${rksfx2(rank-1)}$row(i))
@@ -167,10 +169,10 @@ contains
     #:endfor
 
     !> matvec_ell
-    #:for k1, t1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_ell_${rank}$d_${k1}$(matrix,vec_x,vec_y)
-        type(ELL_${k1}$), intent(in) :: matrix
+    subroutine matvec_ell_${rank}$d_${s1}$(matrix,vec_x,vec_y)
+        type(ELL_${s1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         integer :: i, j, k
@@ -188,6 +190,77 @@ contains
     end subroutine
     
     #:endfor
+    #:endfor
+
+    !> matvec_sellc
+    #:set CHUNKS = [4,8,16]
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine matvec_sellc_${s1}$(matrix,vec_x,vec_y)
+        !> This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+        type(SELLC_${s1}$), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x(:)
+        ${t1}$, intent(inout) :: vec_y(:)
+        ${t1}$, parameter     :: zero = zero_${s1}$
+        integer :: i, nz, rowidx, num_chunks, rm
+
+        associate( data => matrix%data, ia => matrix%rowptr , ja => matrix%col, cs => matrix%chunk_size, &
+        &   nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, sym => matrix%sym  )
+        num_chunks = nrows / cs
+        rm = nrows - num_chunks * cs
+        if( sym == k_NOSYMMETRY) then
+
+            select case(cs)
+            #:for chunk in CHUNKS
+            case(${chunk}$)
+                do i = 1, num_chunks
+                    nz = ia(i+1) - ia(i)
+                    rowidx = (i - 1)*${chunk}$ + 1 
+                    call chunk_kernel_${chunk}$(nz,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
+                end do
+            #:endfor
+            case default
+                print *, "error: chunk size not supported."
+                return
+            end select
+            
+            ! remainder
+            if(rm>0)then 
+                i = num_chunks + 1 
+                nz = ia(i+1) - ia(i)
+                rowidx = (i - 1)*cs + 1
+                call chunk_kernel_remainder(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
+            end if
+
+        end if
+        end associate
+
+    contains
+    #:for chunk in CHUNKS
+    pure subroutine chunk_kernel_${chunk}$(nz,a,ja,x,y)
+        integer, value      :: nz
+        ${t1}$, intent(in)  :: a(${chunk}$,nz), x(*)
+        integer, intent(in) :: ja(${chunk}$,nz)
+        ${t1}$, intent(out) :: y(${chunk}$)
+        integer :: j
+        do j = 1, nz
+            where(ja(:,j) > 0) y = y + a(:,j) * x(ja(:,j))               
+        end do
+    end subroutine
+    #:endfor
+
+    pure subroutine chunk_kernel_remainder(nz,cs,rm,a,ja,x,y)
+        integer, value      :: nz, cs, rm
+        ${t1}$, intent(in)  :: a(cs,nz), x(*)
+        integer, intent(in) :: ja(cs,nz)
+        ${t1}$, intent(out) :: y(rm)
+        integer :: j
+        do j = 1, nz
+            where(ja(1:rm,j) > 0) y = y + a(1:rm,j) * x(ja(1:rm,j))               
+        end do
+    end subroutine  
+
+    end subroutine
+    
     #:endfor
     
 end module stdlib_sparse_matvec

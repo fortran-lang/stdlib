@@ -38,6 +38,7 @@
 
 #! Real types to be considered during templating
 #:set REAL_TYPES = ["real({})".format(k) for k in REAL_KINDS]
+#:set REAL_SUFFIX = REAL_KINDS
 
 #! Collected (kind, type) tuples for real types
 #:set REAL_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_INIT))
@@ -62,6 +63,7 @@
 
 #! Complex types to be considered during templating
 #:set CMPLX_TYPES = ["complex({})".format(k) for k in CMPLX_KINDS]
+#:set CMPLX_SUFFIX = ["c{}".format(k) for k in CMPLX_KINDS]
 
 #! Collected (kind, type, initial) tuples for complex types
 #:set CMPLX_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_INIT))
