@@ -232,7 +232,7 @@ contains
         ! invalid test case
         call check(error, clip(3.025_qp, 3.025_qp, -5.77_qp) == 3.025_qp)
         if (allocated(error)) return
-        call check(error, clip(-55891546.2_qp, -689712245.23_qp, -8958133457.23_qp) == 689712245.23_qp)
+        call check(error, clip(-55891546.2_qp, -689712245.23_qp, -8958133457.23_qp) == -689712245.23_qp)
         if (allocated(error)) return
 #:else
         call skip_test(error, "Quadruple precision is not enabled")
