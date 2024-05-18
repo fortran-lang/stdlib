@@ -1,11 +1,15 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 #:set RCI_KINDS_TYPES = RC_KINDS_TYPES + INT_KINDS_TYPES
+#:set RHS_SUFFIX = ["one","many"]
+#:set RHS_SYMBOL = [ranksuffix(r) for r in [1,2]]
+#:set RHS_EMPTY  = [emptyranksuffix(r) for r in [1,2]]
+#:set ALL_RHS    = list(zip(RHS_SYMBOL,RHS_SUFFIX,RHS_EMPTY))
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
   !! ([Specification](../page/specs/stdlib_linalg.html))
-  use stdlib_kinds, only: sp, dp, xdp, qp, lk, &
-    int8, int16, int32, int64
+  use stdlib_kinds, only: xdp, int8, int16, int32, int64
+  use stdlib_linalg_constants, only: sp, dp, qp, lk, ilp
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
   use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling
@@ -16,6 +20,11 @@ module stdlib_linalg
   public :: operator(.det.)
   public :: diag
   public :: eye
+  public :: lstsq
+  public :: lstsq_space
+  public :: solve
+  public :: solve_lu  
+  public :: solve_lstsq
   public :: trace
   public :: outer_product
   public :: kronecker_product
@@ -221,6 +230,225 @@ module stdlib_linalg
     #:endfor
   end interface is_hessenberg
 
+  ! Solve linear system system Ax=b.
+  interface solve
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve-solves-a-linear-matrix-equation-or-a-linear-system-of-equations))
+     !!
+     !!### Summary 
+     !! Interface for solving a linear system arising from a general matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the solution of a linear matrix system.
+     !! Supported data types include `real` and `complex`. No assumption is made on the matrix 
+     !! structure. 
+     !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
+     !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
+     !! 
+     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!    
+     #:for nd,ndsuf,nde in ALL_RHS
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:if rk!="xdp"
+     module function stdlib_linalg_${ri}$_solve_${ndsuf}$(a,b,overwrite_a,err) result(x)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$     
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, allocatable, target :: x${nd}$
+     end function stdlib_linalg_${ri}$_solve_${ndsuf}$
+     pure module function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$(a,b) result(x)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, allocatable, target :: x${nd}$
+     end function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$
+     #:endif
+     #:endfor
+     #:endfor    
+  end interface solve
+
+  ! Solve linear system Ax = b using LU decomposition (subroutine interface).
+  interface solve_lu
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve-lu-solves-a-linear-matrix-equation-or-a-linear-system-of-equations-subroutine-interface))
+     !!
+     !!### Summary 
+     !! Subroutine interface for solving a linear system using LU decomposition.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the solution of a linear matrix system using
+     !! a subroutine. Supported data types include `real` and `complex`. No assumption is made on the matrix 
+     !! structure. Preallocated space for the solution vector `x` is user-provided, and it may be provided
+     !! for the array of pivot indices, `pivot`. If all pre-allocated work spaces are provided, no internal 
+     !! memory allocations take place when using this interface.     
+     !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
+     !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
+     !! 
+     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!        
+     #:for nd,ndsuf,nde in ALL_RHS
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:if rk!="xdp"
+     pure module subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$(a,b,x,pivot,overwrite_a,err)     
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$
+     #:endif
+     #:endfor
+     #:endfor    
+  end interface solve_lu     
+     
+  ! Least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
+  interface lstsq
+    !! version: experimental 
+    !!
+    !! Computes the squares solution to system \( A \cdot x = b \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#lstsq-computes-the-least-squares-solution-to-a-linear-matrix-equation))
+    !! 
+    !!### Summary 
+    !! Interface for computing least squares, i.e. the 2-norm \( || (b-A \cdot x ||_2 \) minimizing solution.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the least squares of a linear matrix system.
+    !! Supported data types include `real` and `complex`.
+    !! 
+    !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !! 
+    #:for nd,ndsuf,nde in ALL_RHS
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
+      module function stdlib_linalg_${ri}$_lstsq_${ndsuf}$(a,b,cond,overwrite_a,rank,err) result(x)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(${rk}$), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, allocatable, target :: x${nd}$
+      end function stdlib_linalg_${ri}$_lstsq_${ndsuf}$
+    #:endif
+    #:endfor
+    #:endfor
+  end interface lstsq
+
+  ! Least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
+  interface solve_lstsq
+    !! version: experimental 
+    !!
+    !! Computes the squares solution to system \( A \cdot x = b \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#solve-lstsq-compute-the-least-squares-solution-to-a-linear-matrix-equation-subroutine-interface))
+    !! 
+    !!### Summary 
+    !! Subroutine interface for computing least squares, i.e. the 2-norm \( || (b-A \cdot x ||_2 \) minimizing solution.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the least squares of a linear matrix system using 
+    !! a subroutine. Supported data types include `real` and `complex`. If pre-allocated work spaces 
+    !! are provided, no internal memory allocations take place when using this interface.
+    !! 
+    !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !! 
+    #:for nd,ndsuf,nde in ALL_RHS
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
+      module subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$(a,b,x,real_storage,int_storage,&
+                        #{if rt.startswith('c')}#cmpl_storage,#{endif}#cond,singvals,overwrite_a,rank,err) 
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$     
+         !> [optional] real working storage space
+         real(${rk}$), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         #:if rt.startswith('complex')   
+         !> [optional] complex working storage space
+         ${rt}$, optional, intent(inout), target :: cmpl_storage(:)                  
+         #:endif
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(${rk}$), optional, intent(in) :: cond
+         !> [optional] list of singular values [min(m,n)], in descending magnitude order, returned by the SVD
+         real(${rk}$), optional, intent(out), target :: singvals(:)                  
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$
+    #:endif
+    #:endfor
+    #:endfor
+  end interface solve_lstsq
+
+  ! Return the working array space required by the least squares solver
+  interface lstsq_space
+    !! version: experimental 
+    !!
+    !! Computes the integer, real [, complex] working space required by the least-squares solver
+    !! ([Specification](../page/specs/stdlib_linalg.html#lstsq-space-compute-internal-working-space-requirements-for-the-least-squares-solver))
+    !! 
+    !!### Description
+    !! 
+    !! This interface provides sizes of integer, real [, complex] working spaces required by the 
+    !! least-squares solver. These sizes can be used to pre-allocated working arrays in case several 
+    !! repeated least-squares solutions to a same system are sought. If pre-allocated working arrays 
+    !! are provided, no internal allocations will take place.
+    !! 
+    #:for nd,ndsuf,nde in ALL_RHS
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp" 
+      pure module subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$(a,b,lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#)
+         !> Input matrix a[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Size of the working space arrays                
+         integer(ilp), intent(out) :: lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#         
+      end subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$
+    #:endif
+    #:endfor
+    #:endfor
+  end interface lstsq_space
 
   interface det
     !! version: experimental 
