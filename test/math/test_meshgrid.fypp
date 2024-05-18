@@ -79,7 +79,7 @@ contains
                 ${"".join(f"xm{j}," for j in range(1, rank + 1)).removesuffix(",")}$ &
                 ${OPTIONAL_PART_IN_SIGNATURE(INDEXING)}$ )
         #:for j in range(1, rank + 1)
-            call check(error, maxval(abs(xm${j}$ - xm${j}$_exact)), ZERO)
+            call check(error, maxval(abs(xm${j}$ - xm${j}$_exact)) == ZERO)
             if (allocated(error)) return
         #:endfor
     end subroutine test_${RName}$
