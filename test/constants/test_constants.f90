@@ -112,7 +112,6 @@ subroutine test_AVOGADRO_CONSTANT(error)
 end subroutine
 
 subroutine test_BOLTZMANN_CONSTANT(error)
-    implicit none
     type(error_type), allocatable, intent(out) :: error 
     real(dp) :: value, expected, diff, fac
     fac = 1.0d23
