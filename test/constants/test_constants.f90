@@ -24,7 +24,6 @@ contains
 
 !> Collect all exported unit tests
 subroutine collect_constants(testsuite)
-    implicit none
     !> Collection of tests
     type(unittest_type), allocatable, intent(out) :: testsuite(:)
     testsuite = [new_unittest("YEAR", test_year), &
