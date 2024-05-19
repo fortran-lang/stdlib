@@ -343,7 +343,6 @@ subroutine test_U_SPEED_OF_LIGHT(error)
 end subroutine
 
 subroutine test_U_STANDARD_ACCELERATION_OF_GRAVITY(error)
-    implicit none
     type(error_type), allocatable, intent(out) :: error 
     real(dp) :: value, expected, diff, fac
     fac = 1.0d0
