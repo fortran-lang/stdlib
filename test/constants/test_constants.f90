@@ -233,7 +233,6 @@ subroutine test_U_ALPHA_PARTICLE_MASS(error)
 end subroutine
 
 subroutine test_U_ATOMIC_MASS_CONSTANT(error)
-    implicit none
     type(error_type), allocatable, intent(out) :: error 
     real(dp) :: value, expected, diff, fac
     fac = 1.0d37
