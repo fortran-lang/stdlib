@@ -266,7 +266,6 @@ subroutine test_U_BOLTZMANN_CONSTANT(error)
 end subroutine
 
 subroutine test_U_ELECTRON_VOLT(error)
-    implicit none
     type(error_type), allocatable, intent(out) :: error 
     real(dp) :: value, expected, diff, fac
     fac = 1.0d0
