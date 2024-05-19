@@ -18,6 +18,7 @@ module test_constants
                              STANDARD_ACCELERATION_OF_GRAVITY
     implicit none
     private
+    real(dp) :: fac
     public :: collect_constants
 
 contains
@@ -56,10 +57,10 @@ subroutine collect_constants(testsuite)
 end subroutine
 
 subroutine test_year(error)
-    type(error_type), allocatable, intent(out) :: error 
-    
+    type(error_type), allocatable, intent(out) :: error
+
     integer(int32) :: value, expected, diff
-    
+
     expected = 2022
     value = YEAR
     diff = expected - value
@@ -68,8 +69,8 @@ subroutine test_year(error)
 end subroutine
 
 subroutine test_ALPHA_PARTICLE_ELECTRON_MASS_RATIO(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 7294.29954171d0 * fac
     value = ALPHA_PARTICLE_ELECTRON_MASS_RATIO%to_real(fac) * fac
@@ -79,8 +80,8 @@ subroutine test_ALPHA_PARTICLE_ELECTRON_MASS_RATIO(error)
 end subroutine
 
 subroutine test_ALPHA_PARTICLE_MASS(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d27
     expected = 6.6446573450d-27 * fac
     value = ALPHA_PARTICLE_MASS%to_real(fac) * fac
@@ -90,8 +91,8 @@ subroutine test_ALPHA_PARTICLE_MASS(error)
 end subroutine
 
 subroutine test_ATOMIC_MASS_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d27
     expected = 1.66053906892d-27 * fac
     value = ATOMIC_MASS_CONSTANT%to_real(fac) * fac
@@ -101,8 +102,8 @@ subroutine test_ATOMIC_MASS_CONSTANT(error)
 end subroutine
 
 subroutine test_AVOGADRO_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d-23
     expected =  6.02214076d23 * fac
     value = AVOGADRO_CONSTANT%to_real(fac) * fac
@@ -112,8 +113,8 @@ subroutine test_AVOGADRO_CONSTANT(error)
 end subroutine
 
 subroutine test_BOLTZMANN_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d23
     expected =  1.380649d-23 * fac
     value = BOLTZMANN_CONSTANT%to_real(fac) * fac
@@ -123,8 +124,8 @@ subroutine test_BOLTZMANN_CONSTANT(error)
 end subroutine
 
 subroutine test_ELECTRON_VOLT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d19
     expected = 1.602176634d-19 * fac
     value = ELECTRON_VOLT%to_real(fac) * fac
@@ -134,8 +135,8 @@ subroutine test_ELECTRON_VOLT(error)
 end subroutine
 
 subroutine test_ELEMENTARY_CHARGE(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d19
     expected = 1.602176634d-19 * fac
     value = ELEMENTARY_CHARGE%to_real(fac) * fac
@@ -145,8 +146,8 @@ subroutine test_ELEMENTARY_CHARGE(error)
 end subroutine
 
 subroutine test_FARADAY_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 96485.33212d0 * fac
     value = FARADAY_CONSTANT%to_real(fac) * fac
@@ -156,8 +157,8 @@ subroutine test_FARADAY_CONSTANT(error)
 end subroutine
 
 subroutine test_MOLAR_MASS_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d3
     expected = 1.00000000105d-3 * fac
     value = MOLAR_MASS_CONSTANT%to_real(fac) * fac
@@ -167,8 +168,8 @@ subroutine test_MOLAR_MASS_CONSTANT(error)
 end subroutine
 
 subroutine test_MOLAR_VOLUME_NTP(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d3
     expected = 22.41396954d-3 * fac
     value = MOLAR_VOLUME_OF_IDEAL_GAS_273_15_K_101_325_KPA%to_real(fac) * fac
@@ -178,8 +179,8 @@ subroutine test_MOLAR_VOLUME_NTP(error)
 end subroutine
 
 subroutine test_PLANCK_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d34
     expected = 6.62607015d-34 * fac
     value = PLANCK_CONSTANT%to_real(fac) * fac
@@ -189,8 +190,8 @@ subroutine test_PLANCK_CONSTANT(error)
 end subroutine
 
 subroutine test_SPEED_OF_LIGHT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 299792458.0d0 * fac
     value = SPEED_OF_LIGHT_IN_VACUUM%to_real(fac) * fac
@@ -200,19 +201,19 @@ subroutine test_SPEED_OF_LIGHT(error)
 end subroutine
 
 subroutine test_STANDARD_ACCELERATION_OF_GRAVITY(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 9.80665d0 * fac
-    value = STANDARD_ACCELERATION_OF_GRAVITY%to_real(fac) * fac 
+    value = STANDARD_ACCELERATION_OF_GRAVITY%to_real(fac) * fac
     diff = expected - value
     call check(error, diff, 0.0d0)
     if (allocated(error)) return
 end subroutine
 
 subroutine test_U_ALPHA_PARTICLE_ELECTRON_MASS_RATIO(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d7
     expected = 0.00000017d0 * fac
     value = ALPHA_PARTICLE_ELECTRON_MASS_RATIO%to_real(fac, uncertainty=.true.) * fac
@@ -222,8 +223,8 @@ subroutine test_U_ALPHA_PARTICLE_ELECTRON_MASS_RATIO(error)
 end subroutine
 
 subroutine test_U_ALPHA_PARTICLE_MASS(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d36
     expected = 0.0000000021d-27 * fac
     value = ALPHA_PARTICLE_MASS%to_real(fac, uncertainty=.true.) * fac
@@ -233,8 +234,8 @@ subroutine test_U_ALPHA_PARTICLE_MASS(error)
 end subroutine
 
 subroutine test_U_ATOMIC_MASS_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d37
     expected = 0.00000000052d-27 * fac
     value = ATOMIC_MASS_CONSTANT%to_real(fac, uncertainty=.true.) * fac
@@ -244,8 +245,8 @@ subroutine test_U_ATOMIC_MASS_CONSTANT(error)
 end subroutine
 
 subroutine test_U_AVOGADRO_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 0.0d0 * fac
     value = AVOGADRO_CONSTANT%to_real(fac, uncertainty=.true.) * fac
@@ -255,8 +256,8 @@ subroutine test_U_AVOGADRO_CONSTANT(error)
 end subroutine
 
 subroutine test_U_BOLTZMANN_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 0.0d0 * fac
     value = BOLTZMANN_CONSTANT%to_real(fac, uncertainty=.true.) * fac
@@ -266,8 +267,8 @@ subroutine test_U_BOLTZMANN_CONSTANT(error)
 end subroutine
 
 subroutine test_U_ELECTRON_VOLT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 0.0d0 * fac
     value = ELECTRON_VOLT%to_real(fac, uncertainty=.true.) * fac
@@ -277,8 +278,8 @@ subroutine test_U_ELECTRON_VOLT(error)
 end subroutine
 
 subroutine test_U_ELEMENTARY_CHARGE(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 0.0d0 * fac
     value = ELEMENTARY_CHARGE%to_real(fac, uncertainty=.true.) * fac
@@ -288,8 +289,8 @@ subroutine test_U_ELEMENTARY_CHARGE(error)
 end subroutine
 
 subroutine test_U_FARADAY_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 0.0d0 * fac
     value = FARADAY_CONSTANT%to_real(fac, uncertainty=.true.) * fac
@@ -299,8 +300,8 @@ subroutine test_U_FARADAY_CONSTANT(error)
 end subroutine
 
 subroutine test_U_MOLAR_MASS_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d13
     expected = 0.00000000031d-3 * fac
     value = MOLAR_MASS_CONSTANT%to_real(fac, uncertainty=.true.) * fac
@@ -310,8 +311,8 @@ subroutine test_U_MOLAR_MASS_CONSTANT(error)
 end subroutine
 
 subroutine test_U_MOLAR_VOLUME_NTP(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 0.0d0 * fac
     value = MOLAR_VOLUME_OF_IDEAL_GAS_273_15_K_101_325_KPA%to_real(fac, uncertainty=.true.) * fac
@@ -321,8 +322,8 @@ subroutine test_U_MOLAR_VOLUME_NTP(error)
 end subroutine
 
 subroutine test_U_PLANCK_CONSTANT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 0.0d0 * fac
     value = PLANCK_CONSTANT%to_real(fac, uncertainty=.true.) * fac
@@ -332,8 +333,8 @@ subroutine test_U_PLANCK_CONSTANT(error)
 end subroutine
 
 subroutine test_U_SPEED_OF_LIGHT(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 0.0d0 * fac
     value = SPEED_OF_LIGHT_IN_VACUUM%to_real(fac, uncertainty=.true.) * fac
@@ -343,8 +344,8 @@ subroutine test_U_SPEED_OF_LIGHT(error)
 end subroutine
 
 subroutine test_U_STANDARD_ACCELERATION_OF_GRAVITY(error)
-    type(error_type), allocatable, intent(out) :: error 
-    real(dp) :: value, expected, diff, fac
+    type(error_type), allocatable, intent(out) :: error
+    real(dp) :: value, expected, diff
     fac = 1.0d0
     expected = 0.0d0 * fac
     value = STANDARD_ACCELERATION_OF_GRAVITY%to_real(fac, uncertainty=.true.) * fac
