@@ -79,7 +79,6 @@ subroutine test_ALPHA_PARTICLE_ELECTRON_MASS_RATIO(error)
 end subroutine
 
 subroutine test_ALPHA_PARTICLE_MASS(error)
-    implicit none
     type(error_type), allocatable, intent(out) :: error 
     real(dp) :: value, expected, diff, fac
     fac = 1.0d27
