@@ -288,7 +288,6 @@ subroutine test_U_ELEMENTARY_CHARGE(error)
 end subroutine
 
 subroutine test_U_FARADAY_CONSTANT(error)
-    implicit none
     type(error_type), allocatable, intent(out) :: error 
     real(dp) :: value, expected, diff, fac
     fac = 1.0d0
