@@ -17,6 +17,7 @@ module test_constants
                              SPEED_OF_LIGHT_IN_VACUUM,&
                              STANDARD_ACCELERATION_OF_GRAVITY
     implicit none
+    private
     public :: collect_constants
 
 contains
