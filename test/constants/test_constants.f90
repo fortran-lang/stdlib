@@ -16,7 +16,7 @@ module test_constants
                              PLANCK_CONSTANT,&
                              SPEED_OF_LIGHT_IN_VACUUM,&
                              STANDARD_ACCELERATION_OF_GRAVITY
-
+    implicit none
     public :: collect_constants
 
 contains
