@@ -36,7 +36,7 @@ The derived type [[stdlib_codata_type(module):codata_constant_type(type)]] defin
 A module level interface [[stdlib_codata_type(module):to_real(interface)]] is 
 available for getting the constant value or uncertainty of a constant. 
 
-## `to_real` - Get the constant value or uncertainty.
+## `to_real` - Get the constant value or its uncertainty.
 
 ### Status
 
