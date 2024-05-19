@@ -167,7 +167,6 @@ subroutine test_MOLAR_MASS_CONSTANT(error)
 end subroutine
 
 subroutine test_MOLAR_VOLUME_NTP(error)
-    implicit none
     type(error_type), allocatable, intent(out) :: error 
     real(dp) :: value, expected, diff, fac
     fac = 1.0d3
