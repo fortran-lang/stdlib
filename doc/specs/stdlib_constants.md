@@ -45,7 +45,7 @@ Experimental
 ### Description
 
 Convert a [[stdlib_codata_type(module):codata_constant_type(type)]] to a `real` (at least `sp`, or `dp`) scalar. 
-**Warning**: Some constants cannot be converted to simple precision reals due to the values of the exponents.
+**Warning**: Some constants cannot be converted to single precision `sp` reals due to the value of the exponents.
 
 ### Syntax
 
