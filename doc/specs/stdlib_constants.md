@@ -31,7 +31,7 @@ The derived type [[stdlib_codata_type(module):codata_constant_type(type)]] defin
 * 2 type-bound procedures:
 
     * `print`: to print the values of the constant members;
-    * `to_real` for getting the value or the uncertainty to the desired precision.
+    * `to_real`: to get the value or the uncertainty to the desired precision.
 
 A module level interface [[stdlib_codata_type(module):to_real(interface)]] is 
 available for getting the constant value or uncertainty of a constant. 
