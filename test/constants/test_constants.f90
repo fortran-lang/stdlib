@@ -211,7 +211,6 @@ subroutine test_STANDARD_ACCELERATION_OF_GRAVITY(error)
 end subroutine
 
 subroutine test_U_ALPHA_PARTICLE_ELECTRON_MASS_RATIO(error)
-    implicit none
     type(error_type), allocatable, intent(out) :: error 
     real(dp) :: value, expected, diff, fac
     fac = 1.0d7
