@@ -56,7 +56,6 @@ subroutine collect_constants(testsuite)
 end subroutine
 
 subroutine test_year(error)
-    implicit none
     type(error_type), allocatable, intent(out) :: error 
     
     integer(int32) :: value, expected, diff
