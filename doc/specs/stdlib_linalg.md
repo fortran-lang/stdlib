@@ -767,7 +767,7 @@ Result vector `x` returns the approximate solution that minimizes the 2-norm \( 
 
 `b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing one or more right-hand-side vector(s), each in its leading dimension. It is an `intent(in)` argument. 
 
-`x`: Shall be an array of same kind and rank as `b`, containing the solution(s) to the least squares system. It is an `intent(inout)` argument.
+`x`: Shall be an array of same kind and rank as `b`, and leading dimension of at least `n`, containing the solution(s) to the least squares system. It is an `intent(inout)` argument.
 
 `real_storage` (optional): Shall be a `real` rank-1 array of the same kind `a`, providing working storage for the solver. It minimum size can be determined with a call to [[stdlib_linalg(module):lstsq_space(interface)]]. It is an `intent(inout)` argument.
 
