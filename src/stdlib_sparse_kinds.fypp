@@ -21,9 +21,11 @@ module stdlib_sparse_kinds
 
     #:for k1, t1, s1 in (R_KINDS_TYPES)
     ${t1}$, parameter, public :: zero_${s1}$ = 0._${k1}$
+    ${t1}$, parameter, public :: one_${s1}$ = 1._${k1}$
     #:endfor
     #:for k1, t1, s1 in (C_KINDS_TYPES)
     ${t1}$, parameter, public :: zero_${s1}$ = (0._${k1}$,0._${k1}$)
+    ${t1}$, parameter, public :: one_${s1}$ = (1._${k1}$,1._${k1}$)
     #:endfor
 
     ! -- Classes
