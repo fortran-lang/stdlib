@@ -65,7 +65,8 @@ module test_linalg_least_squares
         type(linalg_state_type) :: state
         integer(ilp), parameter :: n = 12, m = 3
         real :: Arnd(n,m),xrnd(m)
-        real(sp) :: xsol(m),x(m),y(n),A(n,m)
+        real(sp), allocatable :: x(:)
+        real(sp) :: xsol(m),y(n),A(n,m)
 
         ! Random coefficient matrix and solution
         call random_number(Arnd)
@@ -80,6 +81,10 @@ module test_linalg_least_squares
         x = lstsq(A,y,err=state)
 
         call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+        
+        ! Check size
+        call check(error,size(x)==m)
         if (allocated(error)) return
         
         call check(error, all(abs(x-xsol)<1.0e-4_sp), 'data converged')
@@ -126,7 +131,8 @@ module test_linalg_least_squares
         type(linalg_state_type) :: state
         integer(ilp), parameter :: n = 12, m = 3
         real :: Arnd(n,m),xrnd(m)
-        real(dp) :: xsol(m),x(m),y(n),A(n,m)
+        real(dp), allocatable :: x(:)
+        real(dp) :: xsol(m),y(n),A(n,m)
 
         ! Random coefficient matrix and solution
         call random_number(Arnd)
@@ -141,6 +147,10 @@ module test_linalg_least_squares
         x = lstsq(A,y,err=state)
 
         call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+        
+        ! Check size
+        call check(error,size(x)==m)
         if (allocated(error)) return
         
         call check(error, all(abs(x-xsol)<1.0e-4_dp), 'data converged')
