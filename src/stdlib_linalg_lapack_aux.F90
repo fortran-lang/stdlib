@@ -1403,7 +1403,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_ilaenv
 
 
-     pure integer(ilp) function stdlib_iparam2stage( ispec, name, opts,ni, nbi, ibi, nxi )
+     integer(ilp) function stdlib_iparam2stage( ispec, name, opts,ni, nbi, ibi, nxi )
      !! This program sets problem and machine dependent parameters
      !! useful for xHETRD_2STAGE, xHETRD_HE2HB, xHETRD_HB2ST,
      !! xGEBRD_2STAGE, xGEBRD_GE2GB, xGEBRD_GB2BD
@@ -1587,7 +1587,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_iparam2stage
 
 
-     pure integer(ilp) function stdlib_ilaenv2stage( ispec, name, opts, n1, n2, n3, n4 )
+     integer(ilp) function stdlib_ilaenv2stage( ispec, name, opts, n1, n2, n3, n4 )
      !! ILAENV2STAGE is called from the LAPACK routines to choose problem-dependent
      !! parameters for the local environment.  See ISPEC for a description of
      !! the parameters.

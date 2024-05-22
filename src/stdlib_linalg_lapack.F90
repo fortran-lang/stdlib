@@ -4834,7 +4834,7 @@ module stdlib_linalg_lapack
           !! HB2ST_KERNELS is an internal routine used by the CHETRD_HB2ST
           !! subroutine.
 #ifdef STDLIB_EXTERNAL_LAPACK
-               pure subroutine  chb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, &
+               pure subroutine chb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, &
                          lda, v, tau, ldvt, work)
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -5892,7 +5892,7 @@ module stdlib_linalg_lapack
           !! tridiagonal form T by a unitary similarity transformation:
           !! Q**H * A * Q = T.
 #ifdef STDLIB_EXTERNAL_LAPACK
-               pure subroutine chetrd_hb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
+               subroutine chetrd_hb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
                          lhous, work, lwork, info )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -5907,7 +5907,7 @@ module stdlib_linalg_lapack
                module procedure stdlib_chetrd_hb2st
 #endif
 #ifdef STDLIB_EXTERNAL_LAPACK
-               pure subroutine zhetrd_hb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
+               subroutine zhetrd_hb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
                          lhous, work, lwork, info )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -5930,7 +5930,7 @@ module stdlib_linalg_lapack
           !! band-diagonal form AB by a unitary similarity transformation:
           !! Q**H * A * Q = AB.
 #ifdef STDLIB_EXTERNAL_LAPACK
-               pure subroutine chetrd_he2hb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
+               subroutine chetrd_he2hb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -5944,7 +5944,7 @@ module stdlib_linalg_lapack
                module procedure stdlib_chetrd_he2hb
 #endif
 #ifdef STDLIB_EXTERNAL_LAPACK
-               pure subroutine zhetrd_he2hb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
+               subroutine zhetrd_he2hb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -22294,7 +22294,7 @@ module stdlib_linalg_lapack
           !! tridiagonal form T by a orthogonal similarity transformation:
           !! Q**T * A * Q = T.
 #ifdef STDLIB_EXTERNAL_LAPACK
-               pure subroutine dsytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
+               subroutine dsytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
                          lhous, work, lwork, info )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -22308,7 +22308,7 @@ module stdlib_linalg_lapack
                module procedure stdlib_dsytrd_sb2st
 #endif
 #ifdef STDLIB_EXTERNAL_LAPACK
-               pure subroutine ssytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
+               subroutine ssytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
                          lhous, work, lwork, info )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -22330,7 +22330,7 @@ module stdlib_linalg_lapack
           !! band-diagonal form AB by a orthogonal similarity transformation:
           !! Q**T * A * Q = AB.
 #ifdef STDLIB_EXTERNAL_LAPACK
-               pure subroutine dsytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
+               subroutine dsytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -22344,7 +22344,7 @@ module stdlib_linalg_lapack
                module procedure stdlib_dsytrd_sy2sb
 #endif
 #ifdef STDLIB_EXTERNAL_LAPACK
-               pure subroutine ssytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
+               subroutine ssytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 

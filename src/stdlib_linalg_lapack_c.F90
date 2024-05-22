@@ -36211,7 +36211,7 @@ module stdlib_linalg_lapack_c
      end subroutine stdlib_chetrd
 
 
-     pure subroutine stdlib_chetrd_hb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
+     subroutine stdlib_chetrd_hb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
      !! CHETRD_HB2ST reduces a complex Hermitian band matrix A to real symmetric
      !! tridiagonal form T by a unitary similarity transformation:
      !! Q**H * A * Q = T.
@@ -36484,7 +36484,7 @@ module stdlib_linalg_lapack_c
      end subroutine stdlib_chetrd_hb2st
 
 
-     pure subroutine stdlib_chetrd_he2hb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info )
+     subroutine stdlib_chetrd_he2hb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info )
      !! CHETRD_HE2HB reduces a complex Hermitian matrix A to complex Hermitian
      !! band-diagonal form AB by a unitary similarity transformation:
      !! Q**H * A * Q = AB.
