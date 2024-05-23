@@ -575,9 +575,11 @@ module stdlib_linalg
   interface invert
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:if rk!="xdp" 
-    module subroutine stdlib_linalg_invert_${ri}$(a,err)
+    module subroutine stdlib_linalg_invert_${ri}$(a,pivot,err)
          !> Input matrix a[n,n]
          ${rt}$, intent(inout) :: a(:,:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
     end subroutine stdlib_linalg_invert_${ri}$
