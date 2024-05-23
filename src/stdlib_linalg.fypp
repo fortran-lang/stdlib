@@ -589,6 +589,22 @@ module stdlib_linalg
 
   ! Operator interface
   interface operator(.inv.)
+    !! version: experimental 
+    !!
+    !! Inverse operator of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#inv-inverse-operator-of-a-square-matrix))
+    !!
+    !!### Summary
+    !! Operator interface for computing the inverse of a square `real` or `complex` matrix.
+    !!
+    !!### Description
+    !! 
+    !! This operator interface provides a convenient way to compute the inverse of a matrix.
+    !! Supported data types include `real` and `complex`.
+    !!
+    !!@note The provided functions are intended for square matrices.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !!
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:if rk!="xdp" 
     module function stdlib_linalg_inverse_${ri}$_operator(a) result(inva)

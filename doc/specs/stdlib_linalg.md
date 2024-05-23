@@ -887,7 +887,7 @@ This interface is equivalent to the `pure` version of determinant [[stdlib_linal
 
 ### Return value
 
-Returns a real scalar value that represents the determinnt of the matrix.
+Returns a real scalar value that represents the determinant of the matrix.
 
 Raises `LINALG_ERROR` if the matrix is singular.
 Raises `LINALG_VALUE_ERROR` if the matrix is non-square.
@@ -898,3 +898,37 @@ Exceptions trigger an `error stop`.
 ```fortran
 {!example/linalg/example_determinant2.f90!}
 ```
+
+## `.inv.` - Inverse operator of a square matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This operator returns the inverse of a `real` or `complex` square matrix \( A \).
+The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+
+This interface is equivalent to the function version of  [[stdlib_linalg(module):inv(interface)]]. 
+
+### Syntax
+
+`b = ` [[stdlib_linalg(module):operator(.inv.)(interface)]] `(a)`
+
+### Arguments
+
+`a`: Shall be a rank-2 square array of any `real` or `complex` kinds. It is an `intent(in)` argument.
+
+### Return value
+
+Returns a rank-2 square array with the same type, kind and rank as `a`, that contains the inverse of `a`.
+
+If the matrix is singular or non-square, the operator returns zeros.
+
+### Example
+
+```fortran
+{!example/linalg/example_inverse1.f90!}
+```
+
