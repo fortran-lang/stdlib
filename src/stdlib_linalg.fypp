@@ -20,6 +20,9 @@ module stdlib_linalg
   public :: operator(.det.)
   public :: diag
   public :: eye
+  public :: inv
+  public :: invert
+  public :: operator(.inv.)
   public :: lstsq
   public :: lstsq_space
   public :: solve
@@ -551,6 +554,50 @@ module stdlib_linalg
     #:endif
     #:endfor
   end interface  
+
+  ! Function interface
+  interface inv
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp" 
+    module function stdlib_linalg_inverse_${ri}$(a,err) result(inva)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Output matrix inverse
+         ${rt}$, allocatable :: inva(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end function stdlib_linalg_inverse_${ri}$
+    #:endif
+    #:endfor
+  end interface inv
+
+  ! Subroutine interface: in-place factorization
+  interface invert
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp" 
+    module subroutine stdlib_linalg_invert_${ri}$(a,err)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout) :: a(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_invert_${ri}$
+    #:endif
+    #:endfor
+  end interface invert
+
+  ! Operator interface
+  interface operator(.inv.)
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp" 
+    module function stdlib_linalg_inverse_${ri}$_operator(a) result(inva)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Result matrix
+         ${rt}$, allocatable :: inva(:,:)        
+    end function stdlib_linalg_inverse_${ri}$_operator
+    #:endif
+    #:endfor
+  end interface operator(.inv.)
 
 contains
 
