@@ -1,0 +1,164 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+! Test inverse matrix operator
+module test_linalg_inverse
+    use testdrive, only: error_type, check, new_unittest, unittest_type
+    use stdlib_linalg_constants
+    use stdlib_linalg, only: inv,invert,operator(.inv.)
+    use stdlib_linalg_state, only: linalg_state_type
+
+    implicit none (type,external)
+    private
+    
+    public :: test_inverse_matrix
+
+    contains
+
+    !> Matrix inversion tests
+    subroutine test_inverse_matrix(tests)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: tests(:)
+        
+        allocate(tests(0))
+
+        #:for rk,rt,ri in REAL_KINDS_TYPES
+        #:if rk!="xdp"
+        tests = [tests,new_unittest("inverse_${ri}$_eye_inverse",test_${ri}$_eye_inverse)]
+        #:endif
+        #:endfor
+
+    end subroutine test_inverse_matrix
+
+    !> Invert real identity matrix
+    #:for rk,rt,ri in REAL_KINDS_TYPES
+    #:if rk!="xdp"
+    subroutine test_${ri}$_eye_inverse(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+
+        integer(ilp), parameter :: n = 25_ilp
+        integer(ilp) :: i,j
+        ${rt}$ :: a(n,n),inva(n,n)
+
+        do concurrent (i=1:n,j=1:n)
+          a(i,j) = merge(1.0_${rk}$,0.0_${rk}$,i==j)
+        end do
+
+        !> Inverse function
+        inva  = inv(a,err=state)
+        call check(error,state%ok(),'inverse_${ri}$_eye (function): '//state%print())
+        if (allocated(error)) return
+        
+        call check(error,all(abs(a-inva)<epsilon(0.0_${rk}$)),'inverse_${ri}$_eye (function): data converged')
+        if (allocated(error)) return        
+
+        !> Inverse subroutine
+        call invert(a,err=state)
+
+        call check(error,state%ok(),'inverse_${ri}$_eye (subroutine): '//state%print())
+        if (allocated(error)) return
+        
+        call check(error,all(abs(a-inva)<epsilon(0.0_${rk}$)),'inverse_${ri}$_eye (subroutine): data converged')
+        if (allocated(error)) return     
+
+    end subroutine test_${ri}$_eye_inverse
+
+    #:endif
+    #:endfor
+
+    !> Invert complex identity matrix
+    #:for ck,ct,ci in CMPLX_KINDS_TYPES
+    #:if ck!="xdp"
+    subroutine test_${ci}$_eye_inverse(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+
+        integer(ilp) :: i,j,failed
+        integer(ilp), parameter :: n = 25_ilp
+
+        ${ct}$ :: a(n,n),copya(n,n),inva(n,n)
+
+        do concurrent (i=1:n,j=1:n)
+          a(i,j) = merge((1.0_${ck}$,1.0_${ck}$),(0.0_${ck}$,0.0_${ck}$),i==j)
+        end do
+        copya = a
+
+        !> The inverse of a complex diagonal matrix has conjg(z_ii)/abs(z_ii)^2 on the diagonal
+        inva = inv(a,err=state)
+
+        call check(error,state%ok(),'inverse_${ci}$_eye (function): '//state%print())
+        if (allocated(error)) return
+        
+        failed = 0
+        do i=1,n
+            do j=1,n
+                if (.not.is_diagonal_inverse(a(i,j),inva(i,j),i,j)) failed = failed+1
+            end do
+        end do
+
+        call check(error,failed==0,'inverse_${ci}$_eye (function): data converged')
+        if (allocated(error)) return     
+
+        !> Inverse subroutine
+        call invert(copya,err=state)
+
+        call check(error,state%ok(),'inverse_${ci}$_eye (subroutine): '//state%print())
+        if (allocated(error)) return
+
+        failed = 0
+        do i=1,n
+            do j=1,n
+                if (.not.is_diagonal_inverse(a(i,j),copya(i,j),i,j)) failed = failed+1
+            end do
+        end do
+
+        call check(error,failed==0,'inverse_${ci}$_eye (subroutine): data converged')
+        if (allocated(error)) return   
+
+        contains
+
+           elemental logical function is_diagonal_inverse(aij,invaij,i,j)
+               ${ct}$, intent(in) :: aij,invaij
+               integer(ilp), intent(in) :: i,j
+               if (i/=j) then
+                  is_diagonal_inverse = max(abs(aij),abs(invaij))<epsilon(0.0_${ck}$)
+               else
+                  ! Product should return the real identity
+                  is_diagonal_inverse = abs(aij*invaij - (1.0_${ck}$,0.0_${ck}$))<epsilon(0.0_${ck}$)
+               endif
+           end function is_diagonal_inverse
+
+    end subroutine test_${ci}$_eye_inverse
+
+    #:endif
+    #:endfor
+
+end module test_linalg_inverse
+
+program test_inv
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_linalg_inverse, only : test_inverse_matrix
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("linalg_inverse", test_inverse_matrix) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program test_inv
