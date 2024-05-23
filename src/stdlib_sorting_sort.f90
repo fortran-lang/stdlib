@@ -177,7 +177,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -192,10 +192,10 @@ contains
             integer(int8), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -216,32 +216,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             integer(int8), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             integer(int8) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u > v) .neqv. (u > w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v < u) .neqv. (v < w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) <= x ) then
                     i = i + 1
                     y = array(i)
@@ -250,8 +250,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -260,10 +260,10 @@ contains
 ! Bog standard insertion sort.
             integer(int8), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int8) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -280,21 +280,21 @@ contains
 ! A bog standard heap sort
             integer(int8), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             integer(int8)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -302,14 +302,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             integer(int8), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             integer(int8)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) > array(largest) ) largest = l
             end if
@@ -343,7 +343,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -358,10 +358,10 @@ contains
             integer(int16), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -382,32 +382,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             integer(int16), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             integer(int16) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u > v) .neqv. (u > w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v < u) .neqv. (v < w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) <= x ) then
                     i = i + 1
                     y = array(i)
@@ -416,8 +416,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -426,10 +426,10 @@ contains
 ! Bog standard insertion sort.
             integer(int16), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int16) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -446,21 +446,21 @@ contains
 ! A bog standard heap sort
             integer(int16), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             integer(int16)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -468,14 +468,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             integer(int16), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             integer(int16)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) > array(largest) ) largest = l
             end if
@@ -509,7 +509,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -524,10 +524,10 @@ contains
             integer(int32), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -548,32 +548,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             integer(int32), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             integer(int32) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u > v) .neqv. (u > w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v < u) .neqv. (v < w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) <= x ) then
                     i = i + 1
                     y = array(i)
@@ -582,8 +582,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -592,10 +592,10 @@ contains
 ! Bog standard insertion sort.
             integer(int32), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int32) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -612,21 +612,21 @@ contains
 ! A bog standard heap sort
             integer(int32), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             integer(int32)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -634,14 +634,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             integer(int32), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             integer(int32)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) > array(largest) ) largest = l
             end if
@@ -675,7 +675,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -690,10 +690,10 @@ contains
             integer(int64), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -714,32 +714,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             integer(int64), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             integer(int64) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u > v) .neqv. (u > w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v < u) .neqv. (v < w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) <= x ) then
                     i = i + 1
                     y = array(i)
@@ -748,8 +748,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -758,10 +758,10 @@ contains
 ! Bog standard insertion sort.
             integer(int64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int64) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -778,21 +778,21 @@ contains
 ! A bog standard heap sort
             integer(int64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             integer(int64)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -800,14 +800,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             integer(int64), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             integer(int64)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) > array(largest) ) largest = l
             end if
@@ -841,7 +841,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -856,10 +856,10 @@ contains
             real(sp), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -880,32 +880,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             real(sp), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             real(sp) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u > v) .neqv. (u > w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v < u) .neqv. (v < w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) <= x ) then
                     i = i + 1
                     y = array(i)
@@ -914,8 +914,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -924,10 +924,10 @@ contains
 ! Bog standard insertion sort.
             real(sp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             real(sp) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -944,21 +944,21 @@ contains
 ! A bog standard heap sort
             real(sp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             real(sp)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -966,14 +966,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             real(sp), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             real(sp)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) > array(largest) ) largest = l
             end if
@@ -1007,7 +1007,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -1022,10 +1022,10 @@ contains
             real(dp), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -1046,32 +1046,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             real(dp), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             real(dp) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u > v) .neqv. (u > w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v < u) .neqv. (v < w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) <= x ) then
                     i = i + 1
                     y = array(i)
@@ -1080,8 +1080,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -1090,10 +1090,10 @@ contains
 ! Bog standard insertion sort.
             real(dp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             real(dp) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -1110,21 +1110,21 @@ contains
 ! A bog standard heap sort
             real(dp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             real(dp)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -1132,14 +1132,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             real(dp), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             real(dp)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) > array(largest) ) largest = l
             end if
@@ -1173,7 +1173,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -1188,10 +1188,10 @@ contains
             type(string_type), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -1212,32 +1212,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             type(string_type), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             type(string_type) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u > v) .neqv. (u > w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v < u) .neqv. (v < w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) <= x ) then
                     i = i + 1
                     y = array(i)
@@ -1246,8 +1246,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -1256,10 +1256,10 @@ contains
 ! Bog standard insertion sort.
             type(string_type), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(string_type) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -1276,21 +1276,21 @@ contains
 ! A bog standard heap sort
             type(string_type), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             type(string_type)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -1298,14 +1298,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             type(string_type), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             type(string_type)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) > array(largest) ) largest = l
             end if
@@ -1339,7 +1339,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -1354,10 +1354,10 @@ contains
             character(len=*), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -1378,32 +1378,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             character(len=*), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             character(len=len(array)) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u > v) .neqv. (u > w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v < u) .neqv. (v < w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) <= x ) then
                     i = i + 1
                     y = array(i)
@@ -1412,8 +1412,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -1422,10 +1422,10 @@ contains
 ! Bog standard insertion sort.
             character(len=*), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             character(len=len(array)) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -1442,21 +1442,21 @@ contains
 ! A bog standard heap sort
             character(len=*), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             character(len=len(array))   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -1464,14 +1464,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             character(len=*), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             character(len=len(array))   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) > array(largest) ) largest = l
             end if
@@ -1505,7 +1505,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -1520,10 +1520,10 @@ contains
             type(bitset_64), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -1544,32 +1544,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             type(bitset_64), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             type(bitset_64) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u > v) .neqv. (u > w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v < u) .neqv. (v < w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) <= x ) then
                     i = i + 1
                     y = array(i)
@@ -1578,8 +1578,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -1588,10 +1588,10 @@ contains
 ! Bog standard insertion sort.
             type(bitset_64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(bitset_64) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -1608,21 +1608,21 @@ contains
 ! A bog standard heap sort
             type(bitset_64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             type(bitset_64)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -1630,14 +1630,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             type(bitset_64), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             type(bitset_64)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) > array(largest) ) largest = l
             end if
@@ -1671,7 +1671,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -1686,10 +1686,10 @@ contains
             type(bitset_large), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -1710,32 +1710,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             type(bitset_large), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             type(bitset_large) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u > v) .neqv. (u > w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v < u) .neqv. (v < w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) <= x ) then
                     i = i + 1
                     y = array(i)
@@ -1744,8 +1744,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -1754,10 +1754,10 @@ contains
 ! Bog standard insertion sort.
             type(bitset_large), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(bitset_large) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -1774,21 +1774,21 @@ contains
 ! A bog standard heap sort
             type(bitset_large), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             type(bitset_large)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -1796,14 +1796,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             type(bitset_large), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             type(bitset_large)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) > array(largest) ) largest = l
             end if
@@ -1837,7 +1837,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -1852,10 +1852,10 @@ contains
             integer(int8), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -1876,32 +1876,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             integer(int8), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             integer(int8) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u < v) .neqv. (u < w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v > u) .neqv. (v > w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) >= x ) then
                     i = i + 1
                     y = array(i)
@@ -1910,8 +1910,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -1920,10 +1920,10 @@ contains
 ! Bog standard insertion sort.
             integer(int8), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int8) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -1940,21 +1940,21 @@ contains
 ! A bog standard heap sort
             integer(int8), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             integer(int8)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -1962,14 +1962,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             integer(int8), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             integer(int8)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) < array(largest) ) largest = l
             end if
@@ -2003,7 +2003,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -2018,10 +2018,10 @@ contains
             integer(int16), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -2042,32 +2042,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             integer(int16), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             integer(int16) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u < v) .neqv. (u < w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v > u) .neqv. (v > w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) >= x ) then
                     i = i + 1
                     y = array(i)
@@ -2076,8 +2076,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -2086,10 +2086,10 @@ contains
 ! Bog standard insertion sort.
             integer(int16), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int16) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -2106,21 +2106,21 @@ contains
 ! A bog standard heap sort
             integer(int16), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             integer(int16)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -2128,14 +2128,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             integer(int16), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             integer(int16)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) < array(largest) ) largest = l
             end if
@@ -2169,7 +2169,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -2184,10 +2184,10 @@ contains
             integer(int32), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -2208,32 +2208,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             integer(int32), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             integer(int32) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u < v) .neqv. (u < w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v > u) .neqv. (v > w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) >= x ) then
                     i = i + 1
                     y = array(i)
@@ -2242,8 +2242,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -2252,10 +2252,10 @@ contains
 ! Bog standard insertion sort.
             integer(int32), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int32) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -2272,21 +2272,21 @@ contains
 ! A bog standard heap sort
             integer(int32), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             integer(int32)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -2294,14 +2294,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             integer(int32), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             integer(int32)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) < array(largest) ) largest = l
             end if
@@ -2335,7 +2335,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -2350,10 +2350,10 @@ contains
             integer(int64), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -2374,32 +2374,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             integer(int64), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             integer(int64) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u < v) .neqv. (u < w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v > u) .neqv. (v > w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) >= x ) then
                     i = i + 1
                     y = array(i)
@@ -2408,8 +2408,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -2418,10 +2418,10 @@ contains
 ! Bog standard insertion sort.
             integer(int64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int64) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -2438,21 +2438,21 @@ contains
 ! A bog standard heap sort
             integer(int64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             integer(int64)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -2460,14 +2460,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             integer(int64), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             integer(int64)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) < array(largest) ) largest = l
             end if
@@ -2501,7 +2501,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -2516,10 +2516,10 @@ contains
             real(sp), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -2540,32 +2540,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             real(sp), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             real(sp) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u < v) .neqv. (u < w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v > u) .neqv. (v > w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) >= x ) then
                     i = i + 1
                     y = array(i)
@@ -2574,8 +2574,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -2584,10 +2584,10 @@ contains
 ! Bog standard insertion sort.
             real(sp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             real(sp) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -2604,21 +2604,21 @@ contains
 ! A bog standard heap sort
             real(sp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             real(sp)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -2626,14 +2626,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             real(sp), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             real(sp)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) < array(largest) ) largest = l
             end if
@@ -2667,7 +2667,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -2682,10 +2682,10 @@ contains
             real(dp), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -2706,32 +2706,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             real(dp), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             real(dp) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u < v) .neqv. (u < w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v > u) .neqv. (v > w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) >= x ) then
                     i = i + 1
                     y = array(i)
@@ -2740,8 +2740,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -2750,10 +2750,10 @@ contains
 ! Bog standard insertion sort.
             real(dp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             real(dp) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -2770,21 +2770,21 @@ contains
 ! A bog standard heap sort
             real(dp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             real(dp)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -2792,14 +2792,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             real(dp), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             real(dp)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) < array(largest) ) largest = l
             end if
@@ -2833,7 +2833,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -2848,10 +2848,10 @@ contains
             type(string_type), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -2872,32 +2872,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             type(string_type), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             type(string_type) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u < v) .neqv. (u < w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v > u) .neqv. (v > w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) >= x ) then
                     i = i + 1
                     y = array(i)
@@ -2906,8 +2906,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -2916,10 +2916,10 @@ contains
 ! Bog standard insertion sort.
             type(string_type), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(string_type) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -2936,21 +2936,21 @@ contains
 ! A bog standard heap sort
             type(string_type), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             type(string_type)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -2958,14 +2958,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             type(string_type), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             type(string_type)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) < array(largest) ) largest = l
             end if
@@ -2999,7 +2999,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -3014,10 +3014,10 @@ contains
             character(len=*), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -3038,32 +3038,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             character(len=*), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             character(len=len(array)) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u < v) .neqv. (u < w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v > u) .neqv. (v > w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) >= x ) then
                     i = i + 1
                     y = array(i)
@@ -3072,8 +3072,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -3082,10 +3082,10 @@ contains
 ! Bog standard insertion sort.
             character(len=*), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             character(len=len(array)) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -3102,21 +3102,21 @@ contains
 ! A bog standard heap sort
             character(len=*), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             character(len=len(array))   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -3124,14 +3124,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             character(len=*), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             character(len=len(array))   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) < array(largest) ) largest = l
             end if
@@ -3165,7 +3165,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -3180,10 +3180,10 @@ contains
             type(bitset_64), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -3204,32 +3204,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             type(bitset_64), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             type(bitset_64) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u < v) .neqv. (u < w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v > u) .neqv. (v > w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) >= x ) then
                     i = i + 1
                     y = array(i)
@@ -3238,8 +3238,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -3248,10 +3248,10 @@ contains
 ! Bog standard insertion sort.
             type(bitset_64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(bitset_64) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -3268,21 +3268,21 @@ contains
 ! A bog standard heap sort
             type(bitset_64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             type(bitset_64)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -3290,14 +3290,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             type(bitset_64), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             type(bitset_64)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) < array(largest) ) largest = l
             end if
@@ -3331,7 +3331,7 @@ contains
 
         integer(int32) :: depth_limit
 
-        depth_limit = 2 * int( floor( log( real( size( array, kind=int_size),  &
+        depth_limit = 2 * int( floor( log( real( size( array, kind=int_index),  &
                                                  kind=dp) ) / log(2.0_dp) ), &
                                kind=int32 )
         call introsort(array, depth_limit)
@@ -3346,10 +3346,10 @@ contains
             type(bitset_large), intent(inout) :: array(0:)
             integer(int32), intent(in)     :: depth_limit
 
-            integer(int_size), parameter :: insert_size = 16_int_size
-            integer(int_size)            :: index
+            integer(int_index), parameter :: insert_size = 16_int_index
+            integer(int_index)            :: index
 
-            if ( size(array, kind=int_size) <= insert_size ) then
+            if ( size(array, kind=int_index) <= insert_size ) then
                 ! May be best at the end of SORT processing the whole array
                 ! See Musser, D.R., “Introspective Sorting and Selection
                 ! Algorithms,” Software—Practice and Experience, Vol. 27(8),
@@ -3370,32 +3370,32 @@ contains
         pure subroutine partition( array, index )
 ! quicksort partition using median of three.
             type(bitset_large), intent(inout) :: array(0:)
-            integer(int_size), intent(out) :: index
+            integer(int_index), intent(out) :: index
 
             type(bitset_large) :: u, v, w, x, y
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
 
 ! Determine median of three and exchange it with the end.
             u = array( 0 )
-            v = array( size(array, kind=int_size)/2-1 )
-            w = array( size(array, kind=int_size)-1 )
+            v = array( size(array, kind=int_index)/2-1 )
+            w = array( size(array, kind=int_index)-1 )
             if ( (u < v) .neqv. (u < w) ) then
                 x = u
                 y = array(0)
-                array(0) = array( size( array, kind=int_size ) - 1 )
-                array( size( array, kind=int_size ) - 1 ) = y
+                array(0) = array( size( array, kind=int_index ) - 1 )
+                array( size( array, kind=int_index ) - 1 ) = y
             else if ( (v > u) .neqv. (v > w) ) then
                 x = v
-                y = array(size( array, kind=int_size )/2-1)
-                array( size( array, kind=int_size )/2-1 ) = &
-                    array( size( array, kind=int_size )-1 )
-                array( size( array, kind=int_size )-1 ) = y
+                y = array(size( array, kind=int_index )/2-1)
+                array( size( array, kind=int_index )/2-1 ) = &
+                    array( size( array, kind=int_index )-1 )
+                array( size( array, kind=int_index )-1 ) = y
             else
                 x = w
             end if
 ! Partition the array.
-            i = -1_int_size
-            do j = 0_int_size, size(array, kind=int_size)-2
+            i = -1_int_index
+            do j = 0_int_index, size(array, kind=int_index)-2
                 if ( array(j) >= x ) then
                     i = i + 1
                     y = array(i)
@@ -3404,8 +3404,8 @@ contains
                 end if
             end do
             y = array(i+1)
-            array(i+1) = array(size(array, kind=int_size)-1)
-            array(size(array, kind=int_size)-1) = y
+            array(i+1) = array(size(array, kind=int_index)-1)
+            array(size(array, kind=int_index)-1) = y
             index = i + 1
 
         end subroutine partition
@@ -3414,10 +3414,10 @@ contains
 ! Bog standard insertion sort.
             type(bitset_large), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(bitset_large) :: key
 
-            do j=1_int_size, size(array, kind=int_size)-1
+            do j=1_int_index, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -3434,21 +3434,21 @@ contains
 ! A bog standard heap sort
             type(bitset_large), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, heap_size
+            integer(int_index) :: i, heap_size
             type(bitset_large)   :: y
 
-            heap_size = size( array, kind=int_size )
+            heap_size = size( array, kind=int_index )
 ! Build the max heap
-            do i = (heap_size-2)/2_int_size, 0_int_size, -1_int_size
+            do i = (heap_size-2)/2_int_index, 0_int_index, -1_int_index
                 call max_heapify( array, i, heap_size )
             end do
-            do i = heap_size-1, 1_int_size, -1_int_size
+            do i = heap_size-1, 1_int_index, -1_int_index
 ! Swap the first element with the current final element
                 y = array(0)
                 array(0) = array(i)
                 array(i) = y
 ! Sift down using max_heapify
-                call max_heapify( array, 0_int_size, i )
+                call max_heapify( array, 0_int_index, i )
             end do
 
         end subroutine heap_sort
@@ -3456,14 +3456,14 @@ contains
         pure recursive subroutine max_heapify( array, i, heap_size )
 ! Transform the array into a max heap
             type(bitset_large), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: i, heap_size
+            integer(int_index), intent(in)  :: i, heap_size
 
-            integer(int_size) :: l, r, largest
+            integer(int_index) :: l, r, largest
             type(bitset_large)   :: y
 
             largest = i
-            l = 2_int_size * i + 1_int_size
-            r = l + 1_int_size
+            l = 2_int_index * i + 1_int_index
+            r = l + 1_int_index
             if ( l < heap_size ) then
                 if ( array(l) < array(largest) ) largest = l
             end if

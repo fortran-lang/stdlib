@@ -126,7 +126,7 @@ module stdlib_sorting
     implicit none
     private
 
-    integer, parameter, public :: int_size = int64 !! Integer kind for indexing
+    integer, parameter, public :: int_index = int64 !! Integer kind for indexing
 
 ! Constants for use by tim_sort
     integer, parameter :: &
@@ -141,8 +141,8 @@ module stdlib_sorting
 !!
 !! Used to pass state around in a stack among helper functions for the
 !! `ORD_SORT` and `SORT_INDEX` algorithms
-        integer(int_size) :: base = 0
-        integer(int_size) :: len = 0
+        integer(int_index) :: base = 0
+        integer(int_index) :: len = 0
     end type run_type
 
     public ord_sort
@@ -302,7 +302,7 @@ module stdlib_sorting
 !!   Otherwise it is defined to be as specified by reverse.
 !!
 !! * index: a rank 1 array of sorting indices. It is an `intent(out)`
-!!   argument of the type `integer(int_size)`. Its size shall be the
+!!   argument of the type `integer(int_index)`. Its size shall be the
 !!   same as `array`. On return, if defined, its elements would
 !!   sort the input `array` in the direction specified by `reverse`.
 !!
@@ -313,7 +313,7 @@ module stdlib_sorting
 !!   storage, its use can significantly reduce the stack memory requirements
 !!   for the code. Its value on return is undefined.
 !!
-!! * iwork (optional): shall be a rank 1 integer array of kind `int_size`,
+!! * iwork (optional): shall be a rank 1 integer array of kind `int_index`,
 !!   and shall have at least `size(array)/2` elements. It is an
 !!   `intent(out)` argument to be used as "scratch" memory
 !!   for internal record keeping. If associated with an array in static
@@ -336,8 +336,8 @@ module stdlib_sorting
 !!        integer, intent(inout)         :: a(:)
 !!        integer(int32), intent(inout)  :: b(:) ! The same size as a
 !!        integer(int32), intent(out)    :: work(:)
-!!        integer(int_size), intent(out) :: index(:)
-!!        integer(int_size), intent(out) :: iwork(:)
+!!        integer(int_index), intent(out) :: index(:)
+!!        integer(int_index), intent(out) :: iwork(:)
 !!    ! Find the indices to sort a
 !!        call sort_index(a, index(1:size(a)),&
 !!            work(1:size(a)/2), iwork(1:size(a)/2))
@@ -354,8 +354,8 @@ module stdlib_sorting
 !!        integer, intent(inout)         :: a(:,:)
 !!        integer(int32), intent(in)     :: column
 !!        integer(int32), intent(out)    :: work(:)
-!!        integer(int_size), intent(out) :: index(:)
-!!        integer(int_size), intent(out) :: iwork(:)
+!!        integer(int_index), intent(out) :: index(:)
+!!        integer(int_index), intent(out) :: iwork(:)
 !!        integer, allocatable           :: dummy(:)
 !!        integer :: i
 !!        allocate(dummy(size(a, dim=1)))
@@ -378,8 +378,8 @@ module stdlib_sorting
 !!        type(a_type), intent(inout)    :: a_data(:)
 !!        integer(int32), intent(inout)  :: a(:)
 !!        integer(int32), intent(out)    :: work(:)
-!!        integer(int_size), intent(out) :: index(:)
-!!        integer(int_size), intent(out) :: iwork(:)
+!!        integer(int_index), intent(out) :: index(:)
+!!        integer(int_index), intent(out) :: iwork(:)
 !!    ! Extract a component of `a_data`
 !!        a(1:size(a_data)) = a_data(:) % a
 !!    ! Find the indices to sort the component
@@ -707,11 +707,11 @@ module stdlib_sorting
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            integer(int8), intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            integer(int8), intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
+            integer(int8), intent(inout)                     :: array(0:)
+            integer(int_index), intent(out)           :: index(0:)
+            integer(int8), intent(out), optional             :: work(0:)
+            integer(int_index), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional             :: reverse
         end subroutine int8_sort_index
 
         module subroutine int16_sort_index( array, index, work, iwork, &
@@ -723,11 +723,11 @@ module stdlib_sorting
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            integer(int16), intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            integer(int16), intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
+            integer(int16), intent(inout)                     :: array(0:)
+            integer(int_index), intent(out)           :: index(0:)
+            integer(int16), intent(out), optional             :: work(0:)
+            integer(int_index), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional             :: reverse
         end subroutine int16_sort_index
 
         module subroutine int32_sort_index( array, index, work, iwork, &
@@ -739,11 +739,11 @@ module stdlib_sorting
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            integer(int32), intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            integer(int32), intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
+            integer(int32), intent(inout)                     :: array(0:)
+            integer(int_index), intent(out)           :: index(0:)
+            integer(int32), intent(out), optional             :: work(0:)
+            integer(int_index), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional             :: reverse
         end subroutine int32_sort_index
 
         module subroutine int64_sort_index( array, index, work, iwork, &
@@ -755,11 +755,11 @@ module stdlib_sorting
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            integer(int64), intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            integer(int64), intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
+            integer(int64), intent(inout)                     :: array(0:)
+            integer(int_index), intent(out)           :: index(0:)
+            integer(int64), intent(out), optional             :: work(0:)
+            integer(int_index), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional             :: reverse
         end subroutine int64_sort_index
 
         module subroutine sp_sort_index( array, index, work, iwork, &
@@ -771,11 +771,11 @@ module stdlib_sorting
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            real(sp), intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            real(sp), intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
+            real(sp), intent(inout)                     :: array(0:)
+            integer(int_index), intent(out)           :: index(0:)
+            real(sp), intent(out), optional             :: work(0:)
+            integer(int_index), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional             :: reverse
         end subroutine sp_sort_index
 
         module subroutine dp_sort_index( array, index, work, iwork, &
@@ -787,11 +787,11 @@ module stdlib_sorting
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            real(dp), intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            real(dp), intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
+            real(dp), intent(inout)                     :: array(0:)
+            integer(int_index), intent(out)           :: index(0:)
+            real(dp), intent(out), optional             :: work(0:)
+            integer(int_index), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional             :: reverse
         end subroutine dp_sort_index
 
         module subroutine string_type_sort_index( array, index, work, iwork, &
@@ -803,11 +803,11 @@ module stdlib_sorting
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            type(string_type), intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            type(string_type), intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
+            type(string_type), intent(inout)                     :: array(0:)
+            integer(int_index), intent(out)           :: index(0:)
+            type(string_type), intent(out), optional             :: work(0:)
+            integer(int_index), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional             :: reverse
         end subroutine string_type_sort_index
 
         module subroutine char_sort_index( array, index, work, iwork, &
@@ -819,11 +819,11 @@ module stdlib_sorting
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            character(len=*), intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            character(len=len(array)), intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
+            character(len=*), intent(inout)                     :: array(0:)
+            integer(int_index), intent(out)           :: index(0:)
+            character(len=len(array)), intent(out), optional             :: work(0:)
+            integer(int_index), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional             :: reverse
         end subroutine char_sort_index
 
         module subroutine bitset_64_sort_index( array, index, work, iwork, &
@@ -835,11 +835,11 @@ module stdlib_sorting
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            type(bitset_64), intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            type(bitset_64), intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
+            type(bitset_64), intent(inout)                     :: array(0:)
+            integer(int_index), intent(out)           :: index(0:)
+            type(bitset_64), intent(out), optional             :: work(0:)
+            integer(int_index), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional             :: reverse
         end subroutine bitset_64_sort_index
 
         module subroutine bitset_large_sort_index( array, index, work, iwork, &
@@ -851,11 +851,11 @@ module stdlib_sorting
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            type(bitset_large), intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            type(bitset_large), intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
+            type(bitset_large), intent(inout)                     :: array(0:)
+            integer(int_index), intent(out)           :: index(0:)
+            type(bitset_large), intent(out), optional             :: work(0:)
+            integer(int_index), intent(out), optional :: iwork(0:)
+            logical, intent(in), optional             :: reverse
         end subroutine bitset_large_sort_index
 
 

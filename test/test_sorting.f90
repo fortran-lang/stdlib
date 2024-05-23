@@ -54,13 +54,13 @@ module test_sorting
     type(string_type)       :: string_dummy(0:string_size-1)
     type(bitset_large)      :: bitsetl_dummy(0:bitset_size-1)
     type(bitset_64)         :: bitset64_dummy(0:bitset_size-1)
-    integer(int_size)       :: index(0:max(test_size, char_size, string_size)-1)
+    integer(int_index)      :: index(0:max(test_size, char_size, string_size)-1)
     integer(int32)          :: work(0:test_size/2-1)
     character(len=4)        :: char_work(0:char_size/2-1)
     type(string_type)       :: string_work(0:string_size/2-1)
     type(bitset_large)      :: bitsetl_work(0:bitset_size/2-1)
     type(bitset_64)         :: bitset64_work(0:bitset_size/2-1)
-    integer(int_size)       :: iwork(0:max(test_size, char_size, &
+    integer(int_index)      :: iwork(0:max(test_size, char_size, &
                                      string_size)/2-1)
     integer                 :: count, i, index1, index2, j, k, l, temp
     real(sp)                :: arand, brand

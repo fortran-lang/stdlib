@@ -202,12 +202,12 @@ contains
         integer(int8), intent(out), optional :: work(0:)
 
         integer(int8), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "int8_increase_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -225,17 +225,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -246,10 +246,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             integer(int8), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int8) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -269,13 +269,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -324,10 +324,10 @@ contains
             integer(int8), intent(inout) :: array(0:)
 
             integer(int8) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) >= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -359,11 +359,11 @@ contains
             integer(int8), intent(inout) :: array(0:)
             integer(int8), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -445,12 +445,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             integer(int8), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             integer(int8), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -501,11 +501,11 @@ contains
 ! Reverse a segment of an array in place
             integer(int8), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             integer(int8) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -543,12 +543,12 @@ contains
         integer(int16), intent(out), optional :: work(0:)
 
         integer(int16), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "int16_increase_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -566,17 +566,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -587,10 +587,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             integer(int16), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int16) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -610,13 +610,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -665,10 +665,10 @@ contains
             integer(int16), intent(inout) :: array(0:)
 
             integer(int16) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) >= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -700,11 +700,11 @@ contains
             integer(int16), intent(inout) :: array(0:)
             integer(int16), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -786,12 +786,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             integer(int16), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             integer(int16), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -842,11 +842,11 @@ contains
 ! Reverse a segment of an array in place
             integer(int16), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             integer(int16) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -884,12 +884,12 @@ contains
         integer(int32), intent(out), optional :: work(0:)
 
         integer(int32), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "int32_increase_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -907,17 +907,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -928,10 +928,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             integer(int32), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int32) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -951,13 +951,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -1006,10 +1006,10 @@ contains
             integer(int32), intent(inout) :: array(0:)
 
             integer(int32) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) >= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -1041,11 +1041,11 @@ contains
             integer(int32), intent(inout) :: array(0:)
             integer(int32), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -1127,12 +1127,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             integer(int32), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             integer(int32), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -1183,11 +1183,11 @@ contains
 ! Reverse a segment of an array in place
             integer(int32), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             integer(int32) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -1225,12 +1225,12 @@ contains
         integer(int64), intent(out), optional :: work(0:)
 
         integer(int64), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "int64_increase_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -1248,17 +1248,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -1269,10 +1269,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             integer(int64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int64) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -1292,13 +1292,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -1347,10 +1347,10 @@ contains
             integer(int64), intent(inout) :: array(0:)
 
             integer(int64) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) >= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -1382,11 +1382,11 @@ contains
             integer(int64), intent(inout) :: array(0:)
             integer(int64), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -1468,12 +1468,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             integer(int64), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             integer(int64), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -1524,11 +1524,11 @@ contains
 ! Reverse a segment of an array in place
             integer(int64), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             integer(int64) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -1566,12 +1566,12 @@ contains
         real(sp), intent(out), optional :: work(0:)
 
         real(sp), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "sp_increase_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -1589,17 +1589,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -1610,10 +1610,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             real(sp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             real(sp) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -1633,13 +1633,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -1688,10 +1688,10 @@ contains
             real(sp), intent(inout) :: array(0:)
 
             real(sp) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) >= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -1723,11 +1723,11 @@ contains
             real(sp), intent(inout) :: array(0:)
             real(sp), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -1809,12 +1809,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             real(sp), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             real(sp), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -1865,11 +1865,11 @@ contains
 ! Reverse a segment of an array in place
             real(sp), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             real(sp) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -1907,12 +1907,12 @@ contains
         real(dp), intent(out), optional :: work(0:)
 
         real(dp), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "dp_increase_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -1930,17 +1930,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -1951,10 +1951,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             real(dp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             real(dp) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -1974,13 +1974,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -2029,10 +2029,10 @@ contains
             real(dp), intent(inout) :: array(0:)
 
             real(dp) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) >= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -2064,11 +2064,11 @@ contains
             real(dp), intent(inout) :: array(0:)
             real(dp), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -2150,12 +2150,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             real(dp), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             real(dp), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -2206,11 +2206,11 @@ contains
 ! Reverse a segment of an array in place
             real(dp), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             real(dp) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -2248,12 +2248,12 @@ contains
         type(string_type), intent(out), optional :: work(0:)
 
         type(string_type), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "string_type_increase_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -2271,17 +2271,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -2292,10 +2292,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             type(string_type), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(string_type) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -2315,13 +2315,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -2370,10 +2370,10 @@ contains
             type(string_type), intent(inout) :: array(0:)
 
             type(string_type) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) >= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -2405,11 +2405,11 @@ contains
             type(string_type), intent(inout) :: array(0:)
             type(string_type), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -2491,12 +2491,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             type(string_type), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             type(string_type), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -2547,11 +2547,11 @@ contains
 ! Reverse a segment of an array in place
             type(string_type), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             type(string_type) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -2589,12 +2589,12 @@ contains
         character(len=len(array)), intent(out), optional :: work(0:)
 
         character(len=:), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "char_increase_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -2613,17 +2613,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -2634,10 +2634,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             character(len=*), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             character(len=len(array)) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -2657,13 +2657,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -2712,10 +2712,10 @@ contains
             character(len=*), intent(inout) :: array(0:)
 
             character(len=len(array)) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) >= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -2747,11 +2747,11 @@ contains
             character(len=*), intent(inout) :: array(0:)
             character(len=len(array)), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -2833,12 +2833,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             character(len=*), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             character(len=len(array)), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -2889,11 +2889,11 @@ contains
 ! Reverse a segment of an array in place
             character(len=*), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             character(len=len(array)) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -2931,12 +2931,12 @@ contains
         type(bitset_64), intent(out), optional :: work(0:)
 
         type(bitset_64), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "bitset_64_increase_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -2954,17 +2954,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -2975,10 +2975,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             type(bitset_64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(bitset_64) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -2998,13 +2998,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -3053,10 +3053,10 @@ contains
             type(bitset_64), intent(inout) :: array(0:)
 
             type(bitset_64) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) >= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -3088,11 +3088,11 @@ contains
             type(bitset_64), intent(inout) :: array(0:)
             type(bitset_64), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -3174,12 +3174,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             type(bitset_64), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             type(bitset_64), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -3230,11 +3230,11 @@ contains
 ! Reverse a segment of an array in place
             type(bitset_64), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             type(bitset_64) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -3272,12 +3272,12 @@ contains
         type(bitset_large), intent(out), optional :: work(0:)
 
         type(bitset_large), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "bitset_large_increase_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -3295,17 +3295,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -3316,10 +3316,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             type(bitset_large), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(bitset_large) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -3339,13 +3339,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -3394,10 +3394,10 @@ contains
             type(bitset_large), intent(inout) :: array(0:)
 
             type(bitset_large) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) >= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -3429,11 +3429,11 @@ contains
             type(bitset_large), intent(inout) :: array(0:)
             type(bitset_large), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -3515,12 +3515,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             type(bitset_large), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             type(bitset_large), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -3571,11 +3571,11 @@ contains
 ! Reverse a segment of an array in place
             type(bitset_large), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             type(bitset_large) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -3613,12 +3613,12 @@ contains
         integer(int8), intent(out), optional :: work(0:)
 
         integer(int8), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "int8_decrease_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -3636,17 +3636,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -3657,10 +3657,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             integer(int8), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int8) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -3680,13 +3680,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -3735,10 +3735,10 @@ contains
             integer(int8), intent(inout) :: array(0:)
 
             integer(int8) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) <= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -3770,11 +3770,11 @@ contains
             integer(int8), intent(inout) :: array(0:)
             integer(int8), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -3856,12 +3856,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             integer(int8), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             integer(int8), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -3912,11 +3912,11 @@ contains
 ! Reverse a segment of an array in place
             integer(int8), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             integer(int8) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -3954,12 +3954,12 @@ contains
         integer(int16), intent(out), optional :: work(0:)
 
         integer(int16), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "int16_decrease_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -3977,17 +3977,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -3998,10 +3998,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             integer(int16), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int16) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -4021,13 +4021,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -4076,10 +4076,10 @@ contains
             integer(int16), intent(inout) :: array(0:)
 
             integer(int16) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) <= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -4111,11 +4111,11 @@ contains
             integer(int16), intent(inout) :: array(0:)
             integer(int16), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -4197,12 +4197,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             integer(int16), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             integer(int16), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -4253,11 +4253,11 @@ contains
 ! Reverse a segment of an array in place
             integer(int16), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             integer(int16) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -4295,12 +4295,12 @@ contains
         integer(int32), intent(out), optional :: work(0:)
 
         integer(int32), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "int32_decrease_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -4318,17 +4318,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -4339,10 +4339,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             integer(int32), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int32) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -4362,13 +4362,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -4417,10 +4417,10 @@ contains
             integer(int32), intent(inout) :: array(0:)
 
             integer(int32) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) <= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -4452,11 +4452,11 @@ contains
             integer(int32), intent(inout) :: array(0:)
             integer(int32), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -4538,12 +4538,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             integer(int32), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             integer(int32), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -4594,11 +4594,11 @@ contains
 ! Reverse a segment of an array in place
             integer(int32), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             integer(int32) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -4636,12 +4636,12 @@ contains
         integer(int64), intent(out), optional :: work(0:)
 
         integer(int64), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "int64_decrease_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -4659,17 +4659,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -4680,10 +4680,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             integer(int64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             integer(int64) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -4703,13 +4703,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -4758,10 +4758,10 @@ contains
             integer(int64), intent(inout) :: array(0:)
 
             integer(int64) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) <= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -4793,11 +4793,11 @@ contains
             integer(int64), intent(inout) :: array(0:)
             integer(int64), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -4879,12 +4879,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             integer(int64), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             integer(int64), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -4935,11 +4935,11 @@ contains
 ! Reverse a segment of an array in place
             integer(int64), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             integer(int64) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -4977,12 +4977,12 @@ contains
         real(sp), intent(out), optional :: work(0:)
 
         real(sp), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "sp_decrease_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -5000,17 +5000,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -5021,10 +5021,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             real(sp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             real(sp) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -5044,13 +5044,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -5099,10 +5099,10 @@ contains
             real(sp), intent(inout) :: array(0:)
 
             real(sp) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) <= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -5134,11 +5134,11 @@ contains
             real(sp), intent(inout) :: array(0:)
             real(sp), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -5220,12 +5220,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             real(sp), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             real(sp), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -5276,11 +5276,11 @@ contains
 ! Reverse a segment of an array in place
             real(sp), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             real(sp) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -5318,12 +5318,12 @@ contains
         real(dp), intent(out), optional :: work(0:)
 
         real(dp), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "dp_decrease_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -5341,17 +5341,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -5362,10 +5362,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             real(dp), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             real(dp) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -5385,13 +5385,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -5440,10 +5440,10 @@ contains
             real(dp), intent(inout) :: array(0:)
 
             real(dp) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) <= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -5475,11 +5475,11 @@ contains
             real(dp), intent(inout) :: array(0:)
             real(dp), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -5561,12 +5561,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             real(dp), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             real(dp), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -5617,11 +5617,11 @@ contains
 ! Reverse a segment of an array in place
             real(dp), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             real(dp) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -5659,12 +5659,12 @@ contains
         type(string_type), intent(out), optional :: work(0:)
 
         type(string_type), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "string_type_decrease_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -5682,17 +5682,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -5703,10 +5703,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             type(string_type), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(string_type) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -5726,13 +5726,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -5781,10 +5781,10 @@ contains
             type(string_type), intent(inout) :: array(0:)
 
             type(string_type) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) <= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -5816,11 +5816,11 @@ contains
             type(string_type), intent(inout) :: array(0:)
             type(string_type), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -5902,12 +5902,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             type(string_type), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             type(string_type), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -5958,11 +5958,11 @@ contains
 ! Reverse a segment of an array in place
             type(string_type), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             type(string_type) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -6000,12 +6000,12 @@ contains
         character(len=len(array)), intent(out), optional :: work(0:)
 
         character(len=:), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "char_decrease_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -6024,17 +6024,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -6045,10 +6045,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             character(len=*), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             character(len=len(array)) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -6068,13 +6068,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -6123,10 +6123,10 @@ contains
             character(len=*), intent(inout) :: array(0:)
 
             character(len=len(array)) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) <= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -6158,11 +6158,11 @@ contains
             character(len=*), intent(inout) :: array(0:)
             character(len=len(array)), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -6244,12 +6244,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             character(len=*), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             character(len=len(array)), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -6300,11 +6300,11 @@ contains
 ! Reverse a segment of an array in place
             character(len=*), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             character(len=len(array)) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -6342,12 +6342,12 @@ contains
         type(bitset_64), intent(out), optional :: work(0:)
 
         type(bitset_64), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "bitset_64_decrease_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -6365,17 +6365,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -6386,10 +6386,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             type(bitset_64), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(bitset_64) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -6409,13 +6409,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -6464,10 +6464,10 @@ contains
             type(bitset_64), intent(inout) :: array(0:)
 
             type(bitset_64) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) <= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -6499,11 +6499,11 @@ contains
             type(bitset_64), intent(inout) :: array(0:)
             type(bitset_64), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -6585,12 +6585,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             type(bitset_64), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             type(bitset_64), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -6641,11 +6641,11 @@ contains
 ! Reverse a segment of an array in place
             type(bitset_64), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             type(bitset_64) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
@@ -6683,12 +6683,12 @@ contains
         type(bitset_large), intent(out), optional :: work(0:)
 
         type(bitset_large), allocatable :: buf(:)
-        integer(int_size) :: array_size
+        integer(int_index) :: array_size
         integer :: stat
 
-        array_size = size( array, kind=int_size )
+        array_size = size( array, kind=int_index )
         if ( present(work) ) then
-            if ( size( work, kind=int_size) < array_size/2 ) then
+            if ( size( work, kind=int_index) < array_size/2 ) then
                 error stop "bitset_large_decrease_ord_sort: work array is too small."
             endif
 ! Use the work array as scratch memory
@@ -6706,17 +6706,17 @@ contains
 !! Returns the minimum length of a run from 32-63 so that N/MIN_RUN is
 !! less than or equal to a power of two. See
 !! https://svn.python.org/projects/python/trunk/Objects/listsort.txt
-            integer(int_size)             :: min_run
-            integer(int_size), intent(in) :: n
+            integer(int_index)             :: min_run
+            integer(int_index), intent(in) :: n
 
-            integer(int_size) :: num, r
+            integer(int_index) :: num, r
 
             num = n
-            r = 0_int_size
+            r = 0_int_index
 
             do while( num >= 64 )
-                r = ior( r, iand(num, 1_int_size) )
-                num = ishft(num, -1_int_size)
+                r = ior( r, iand(num, 1_int_index) )
+                num = ishft(num, -1_int_index)
             end do
             min_run = num + r
 
@@ -6727,10 +6727,10 @@ contains
 ! Sorts `ARRAY` using an insertion sort.
             type(bitset_large), intent(inout) :: array(0:)
 
-            integer(int_size) :: i, j
+            integer(int_index) :: i, j
             type(bitset_large) :: key
 
-            do j=1, size(array, kind=int_size)-1
+            do j=1, size(array, kind=int_index)-1
                 key = array(j)
                 i = j - 1
                 do while( i >= 0 )
@@ -6750,13 +6750,13 @@ contains
 !
 ! 1. len(-3) > len(-2) + len(-1)
 ! 2. len(-2) > len(-1)
-            integer(int_size) :: r
+            integer(int_index) :: r
             type(run_type), intent(in), target :: runs(0:)
 
-            integer(int_size) :: n
+            integer(int_index) :: n
             logical :: test
 
-            n = size(runs, kind=int_size)
+            n = size(runs, kind=int_index)
             test = .false.
             if (n >= 2) then
                 if ( runs( n-1 ) % base == 0 .or. &
@@ -6805,10 +6805,10 @@ contains
             type(bitset_large), intent(inout) :: array(0:)
 
             type(bitset_large) :: tmp
-            integer(int_size) :: i
+            integer(int_index) :: i
 
             tmp = array(0)
-            find_hole: do i=1, size(array, kind=int_size)-1
+            find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) <= tmp ) exit find_hole
                 array(i-1) = array(i)
             end do find_hole
@@ -6840,11 +6840,11 @@ contains
             type(bitset_large), intent(inout) :: array(0:)
             type(bitset_large), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_size, finish, min_run, r, r_count, &
+            integer(int_index) :: array_size, finish, min_run, r, r_count, &
                 start
             type(run_type) :: runs(0:max_merge_stack-1), left, right
 
-            array_size = size(array, kind=int_size)
+            array_size = size(array, kind=int_index)
 
 ! Very short runs are extended using insertion sort to span at least
 ! min_run elements. Slices of up to this length are sorted using insertion
@@ -6926,12 +6926,12 @@ contains
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
 ! must be long enough to hold the shorter of the two runs.
             type(bitset_large), intent(inout) :: array(0:)
-            integer(int_size), intent(in)  :: mid
+            integer(int_index), intent(in)  :: mid
             type(bitset_large), intent(inout) :: buf(0:)
 
-            integer(int_size) :: array_len, i, j, k
+            integer(int_index) :: array_len, i, j, k
 
-            array_len = size(array, kind=int_size)
+            array_len = size(array, kind=int_index)
 
 ! Merge first copies the shorter run into `buf`. Then, depending on which
 ! run was shorter, it traces the copied run and the longer run forwards
@@ -6982,11 +6982,11 @@ contains
 ! Reverse a segment of an array in place
             type(bitset_large), intent(inout) :: array(0:)
 
-            integer(int_size) :: lo, hi
+            integer(int_index) :: lo, hi
             type(bitset_large) :: temp
 
             lo = 0
-            hi = size( array, kind=int_size ) - 1
+            hi = size( array, kind=int_index ) - 1
             do while( lo < hi )
                 temp = array(lo)
                 array(lo) = array(hi)
