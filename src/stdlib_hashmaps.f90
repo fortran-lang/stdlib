@@ -824,7 +824,6 @@ module stdlib_hashmaps
 !!
 !!! Int8 key generic interface for get_other_data function
 
-            import hashmap_type, key_type, other_type
             class(hashmap_type), intent(inout) :: map
             integer(int8), intent(in)          :: value(:)
             type(other_type), intent(out)      :: other
@@ -844,7 +843,6 @@ module stdlib_hashmaps
 !!
 !! Int32 key generic interface for get_other_data function
 
-            import hashmap_type, key_type, other_type
             class(hashmap_type), intent(inout) :: map
             integer(int32), intent(in)         :: value(:)
             type(other_type), intent(out)      :: other
@@ -864,7 +862,6 @@ module stdlib_hashmaps
 !!
 !! Character key generic interface for get_other_data function
 
-            import hashmap_type, key_type, other_type
             class(hashmap_type), intent(inout) :: map
             character(*), intent(in)           :: value
             type(other_type), intent(out)      :: other
@@ -889,7 +886,6 @@ module stdlib_hashmaps
 !!    existed - a logical flag indicating whether an entry with the key
 !!              was present in the original map
 !
-            import hashmap_type, key_type
             class(hashmap_type), intent(inout) :: map
             integer(int8), intent(in)          :: value(:)
             logical, intent(out), optional     :: existed
@@ -913,7 +909,6 @@ module stdlib_hashmaps
 !!    existed - a logical flag indicating whether an entry with the key
 !!              was present in the original map
 !
-            import hashmap_type, key_type
             class(hashmap_type), intent(inout) :: map
             integer(int32), intent(in)         :: value(:)
             logical, intent(out), optional     :: existed
@@ -937,7 +932,6 @@ module stdlib_hashmaps
 !!    existed - a logical flag indicating whether an entry with the key
 !!              was present in the original map
 !
-            import hashmap_type, key_type
             class(hashmap_type), intent(inout) :: map
             character(*), intent(in)           :: value
             logical, intent(out), optional     :: existed
@@ -956,7 +950,6 @@ module stdlib_hashmaps
     !! Int8 generic interface for map entry
     !! ([Specifications](../page/specs/stdlib_hashmaps.html#map_entry-inserts-an-entry-into-the-hash-map))
     !!
-                import hashmap_type, key_type, other_type
                 class(hashmap_type), intent(inout)     :: map
                 integer(int8), intent(in)              :: value(:)
                 type(other_type), intent(in), optional :: other
@@ -977,7 +970,6 @@ module stdlib_hashmaps
 !! Inserts an entry into the hash table
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#map_entry-inserts-an-entry-into-the-hash-map))
 !!
-            import hashmap_type, key_type, other_type
             class(hashmap_type), intent(inout)     :: map
             integer(int32), intent(in)             :: value(:)
             type(other_type), intent(in), optional :: other
@@ -998,7 +990,6 @@ module stdlib_hashmaps
 !! Inserts an entry into the hash table
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#map_entry-inserts-an-entry-into-the-hash-map))
 !!
-            import hashmap_type, key_type, other_type
             class(hashmap_type), intent(inout)     :: map
             character(len=*), intent(in)           :: value
             type(other_type), intent(in), optional :: other
@@ -1024,7 +1015,6 @@ module stdlib_hashmaps
 !!     value     - int8 array that is the key to lookup.  
 !!     present - a flag indicating whether key is present in the map
 !
-            import hashmap_type, key_type
             class(hashmap_type), intent(inout) :: map
             integer(int8), intent(in)          :: value(:)
             logical, intent(out)               :: present
@@ -1051,7 +1041,6 @@ module stdlib_hashmaps
 !!     value     - int32 array that is the key to lookup.  
 !!     present - a flag indicating whether key is present in the map
 !
-            import hashmap_type, key_type
             class(hashmap_type), intent(inout) :: map
             integer(int32), intent(in)         :: value(:)
             logical, intent(out)               :: present
@@ -1076,7 +1065,6 @@ module stdlib_hashmaps
 !!     value     - char array that is the key to lookup.  
 !!     present - a flag indicating whether key is present in the map
 !
-            import hashmap_type, key_type
             class(hashmap_type), intent(inout) :: map
             character(*), intent(in)           :: value
             logical, intent(out)               :: present
@@ -1102,7 +1090,6 @@ module stdlib_hashmaps
 !!              in the map
 !!
 !
-            import hashmap_type, key_type, other_type
             class(hashmap_type), intent(inout) :: map
             integer(int8), intent(in)          :: value(:)
             type(other_type), intent(in)       :: other
@@ -1129,7 +1116,6 @@ module stdlib_hashmaps
 !!              in the map
 !!
 !
-            import hashmap_type, key_type, other_type
             class(hashmap_type), intent(inout) :: map
             integer(int32), intent(in)         :: value(:)
             type(other_type), intent(in)       :: other
@@ -1156,7 +1142,6 @@ module stdlib_hashmaps
 !!              in the map
 !!
 !
-            import hashmap_type, key_type, other_type
             class(hashmap_type), intent(inout) :: map
             character(*), intent(in)           :: value
             type(other_type), intent(in)       :: other
