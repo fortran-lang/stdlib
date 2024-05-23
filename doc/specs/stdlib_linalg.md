@@ -932,3 +932,42 @@ If the matrix is singular or non-square, the operator returns zeros.
 {!example/linalg/example_inverse1.f90!}
 ```
 
+## `invert` - Inversion of a square matrix. 
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine inverts a square `real` or `complex` matrix in-place.
+The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+
+On return, the input matrix `a` is replaced by its inverse.
+The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):invert(interface)]] `(a, [, pivot] [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2, square, `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
+On output, it is replaced by the inverse of `a`.
+
+`pivot` (optional): Shall be a rank-1 array of the same kind and matrix dimension as `a`, providing storage for the diagonal pivot indices. It is an `intent(inout)` arguments, and returns the diagonal pivot indices. 
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Replaces matrix \( A \) with its inverse, \(A^{-1}\).
+
+Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_inverse3.f90!}
+```
