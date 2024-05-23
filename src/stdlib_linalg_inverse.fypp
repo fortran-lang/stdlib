@@ -1,13 +1,15 @@
 #:include "common.fypp"
-! Compute matrix inverse
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_linalg_inverse
+!! Compute inverse of a square matrix    
      use stdlib_linalg_constants
-     use stdlib_linalg_blas
-     use stdlib_linalg_lapack
-     use stdlib_linalg_state
-     use iso_fortran_env,only:real32,real64,real128,int8,int16,int32,int64,stderr => error_unit
+     use stdlib_linalg_lapack, only: getri,getrf,stdlib_ilaenv
+     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
      implicit none(type,external)
      private
+
+     character(*), parameter :: this = 'inverse'  
 
      !> Function interface return the matrix inverse
      public :: inv
@@ -22,49 +24,54 @@ module stdlib_linalg_inverse
 
      ! Function interface
      interface inv
-        #:for rk,rt,ri in ALL_KINDS_TYPES
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        #:if rk!="xdp" 
         module procedure stdlib_linalg_inverse_${ri}$
+        #:endif
         #:endfor
      end interface inv
 
      ! Subroutine interface: in-place factorization
      interface invert
-        #:for rk,rt,ri in ALL_KINDS_TYPES
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        #:if rk!="xdp" 
         module procedure stdlib_linalg_invert_${ri}$
+        #:endif
         #:endfor
      end interface invert
 
      ! Operator interface
      interface operator(.inv.)
-        #:for rk,rt,ri in ALL_KINDS_TYPES
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        #:if rk!="xdp" 
         module procedure stdlib_linalg_inverse_${ri}$_operator
+        #:endif
         #:endfor
      end interface operator(.inv.)
 
      contains
 
-     #:for rk,rt,ri in ALL_KINDS_TYPES
-
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:if rk!="xdp" 
      ! Compute the in-place square matrix inverse of a
      subroutine stdlib_linalg_invert_${ri}$(a,err)
          !> Input matrix a[n,n]
-         ${rt}$,                     intent(inout) :: a(:,:)
+         ${rt}$, intent(inout) :: a(:,:)
          !> [optional] state return flag. On error if not requested, the code will stop
-         type(linalg_state), optional, intent(out) :: err
+         type(linalg_state_type), optional, intent(out) :: err
 
          !> Local variables
-         type(linalg_state) :: err0
+         type(linalg_state_type) :: err0
          integer(ilp) :: lda,n,info,nb,lwork
          integer(ilp), allocatable :: ipiv(:)
          ${rt}$, allocatable :: work(:)
-         character(*), parameter :: this = 'invert'
 
          !> Problem sizes
          lda  = size(a,1,kind=ilp)
          n    = size(a,2,kind=ilp)
 
          if (lda<1 .or. n<1 .or. lda/=n) then
-            err0 = linalg_state(this,LINALG_VALUE_ERROR,'invalid matrix size: a=[',lda,',',n,']')
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=[',lda,',',n,']')
             goto 1
          end if
 
@@ -77,9 +84,9 @@ module stdlib_linalg_inverse
          ! Return codes from getrf and getri are identical
          if (info==0) then
 
-            ! Get optimal worksize (returned in work(1)) (apply 2% safety parameter)
+            ! Get optimal worksize (returned in work(1)) (inflate by a 2% safety margin)
             nb = stdlib_ilaenv(1,'${ri}$getri',' ',n,-1,-1,-1)
-            lwork = nint(1.02*n*nb,kind=ilp)
+            lwork = ceiling(1.02*n*nb,kind=ilp)
 
             allocate(work(lwork))
 
@@ -92,12 +99,12 @@ module stdlib_linalg_inverse
             case (0)
                 ! Success
             case (:-1)
-                err0 = linalg_state(this,LINALG_ERROR,'invalid matrix size a=[',lda,',',n,']')
+                err0 = linalg_state_type(this,LINALG_ERROR,'invalid matrix size a=[',lda,',',n,']')
             case (1:)
                 ! Matrix is singular
-                err0 = linalg_state(this,LINALG_ERROR,'singular matrix')
+                err0 = linalg_state_type(this,LINALG_ERROR,'singular matrix')
             case default
-                err0 = linalg_state(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+                err0 = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
          end select
 
          ! Process output and return
@@ -112,7 +119,7 @@ module stdlib_linalg_inverse
          !> Output matrix inverse
          ${rt}$, allocatable :: inva(:,:)
          !> [optional] state return flag. On error if not requested, the code will stop
-         type(linalg_state), optional, intent(out) :: err
+         type(linalg_state_type), optional, intent(out) :: err
 
          !> Allocate with copy
          allocate(inva,source=a)
@@ -129,18 +136,16 @@ module stdlib_linalg_inverse
          !> Result matrix
          ${rt}$, allocatable :: inva(:,:)
 
-         type(linalg_state) :: err
+         type(linalg_state_type) :: err0
 
-         inva = stdlib_linalg_inverse_${ri}$(a,err)
+         inva = stdlib_linalg_inverse_${ri}$(a,err0)
 
          ! On error, return an empty matrix
-         if (err%error()) then
-            if (allocated(inva)) deallocate(inva)
-            allocate(inva(0,0))
-         endif
+         if (err0%error()) inva = 0.0_${rk}$
 
      end function stdlib_linalg_inverse_${ri}$_operator
 
+     #:endif
      #:endfor
 
 end module stdlib_linalg_inverse
