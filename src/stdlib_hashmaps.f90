@@ -834,7 +834,6 @@ module stdlib_hashmaps
             
             call set( key, value )
             
-            !call key_get_other_data( map, key, other, exists )
             call map % key_get_other_data( key, other, exists )
             
         end subroutine int8_get_other_data
@@ -855,7 +854,6 @@ module stdlib_hashmaps
             
             call set( key, value )
             
-            !call key_get_other_data( map, key, other, exists )
             call map % key_get_other_data( key, other, exists )
             
         end subroutine int32_get_other_data
@@ -876,7 +874,6 @@ module stdlib_hashmaps
             
             call set( key, value )
             
-            !call key_get_other_data( map, key, other, exists )
             call map % key_get_other_data( key, other, exists )
             
         end subroutine char_get_other_data
@@ -901,8 +898,8 @@ module stdlib_hashmaps
             
             call set( key, value )
             
-            !call key_remove_entry( map, key, existed )
             call map % key_remove_entry( key, existed )
+            
         end subroutine int8_remove_entry
     
         
@@ -925,8 +922,8 @@ module stdlib_hashmaps
             
             call set( key, value )
             
-            !call key_remove_entry( map, key, existed )
             call map % key_remove_entry( key, existed )
+            
         end subroutine int32_remove_entry
     
         
@@ -949,8 +946,8 @@ module stdlib_hashmaps
             
             call set( key, value )
             
-            !call key_remove_entry( map, key, existed )
             call map % key_remove_entry( key, existed )
+            
         end subroutine char_remove_entry
         
         
@@ -969,7 +966,6 @@ module stdlib_hashmaps
             
                 call set( key, value )
             
-                !call key_map_entry(map, key, other, conflict)
                 call map % key_map_entry( key, other, conflict )
             
         end subroutine int8_map_entry
@@ -991,7 +987,6 @@ module stdlib_hashmaps
             
             call set( key, value )
             
-            !call key_map_entry(map, key, other, conflict)
             call map % key_map_entry( key, other, conflict )
             
         end subroutine int32_map_entry
@@ -1013,7 +1008,6 @@ module stdlib_hashmaps
             
             call set( key, value )
             
-            !call key_map_entry(map, key, other, conflict)
             call map % key_map_entry( key, other, conflict )
             
         end subroutine char_map_entry
@@ -1039,8 +1033,8 @@ module stdlib_hashmaps
             
             ! Generate key from int8 array.
             call set( key, value )
+            
             ! Call key test procedure.
-            !call key_key_test(map, key, present)
             call map % key_key_test( key, present )
 
         end subroutine int8_key_test
@@ -1066,7 +1060,6 @@ module stdlib_hashmaps
             
             call set( key, value )
 
-            !call key_key_test(map, key, present)
             call map % key_key_test( key, present )
 
         end subroutine int32_key_test
@@ -1091,8 +1084,7 @@ module stdlib_hashmaps
             type(key_type)                     :: key
             
             call set( key, value )
-
-            !call key_key_test(map, key, present)
+            
             call map % key_key_test( key, present )
 
         end subroutine char_key_test
@@ -1120,7 +1112,6 @@ module stdlib_hashmaps
             
             call set( key, value )
             
-            !call key_set_other_data( map, key, other, exists )
             call map % key_set_other_data( key, other, exists )
             
         end subroutine int8_set_other_data
@@ -1148,7 +1139,6 @@ module stdlib_hashmaps
             
             call set( key, value )
             
-            !call key_set_other_data( map, key, other, exists ) 
             call map % key_set_other_data( key, other, exists )
             
         end subroutine int32_set_other_data
@@ -1176,7 +1166,6 @@ module stdlib_hashmaps
             
             call set( key, value )
             
-            !call key_set_other_data( map, key, other, exists ) 
             call map % key_set_other_data( key, other, exists )
             
         end subroutine char_set_other_data
