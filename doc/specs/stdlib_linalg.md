@@ -971,3 +971,39 @@ If `err` is not present, exceptions trigger an `error stop`.
 ```fortran
 {!example/linalg/example_inverse3.f90!}
 ```
+
+## `inv` - Inverse of a square matrix. 
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the inverse of a square `real` or `complex` matrix in-place.
+The inverse, \( A^{-1} \), is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+
+The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
+
+### Syntax
+
+`b ` [[stdlib_linalg(module):inv(interface)]] `(a, [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2, square, `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value of the same type, kind and rank as `a`, that contains the inverse matrix \(A^{-1}\).
+
+Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_inverse2.f90!}
+```
