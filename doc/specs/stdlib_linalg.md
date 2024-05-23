@@ -879,7 +879,7 @@ This interface is equivalent to the `pure` version of determinant [[stdlib_linal
 
 ### Syntax
 
-`c = ` [[stdlib_linalg(module):operator(.det.)(interface)]] `(a)`
+`c = ` [[stdlib_linalg(module):operator(.det.)(interface)]] `a`
 
 ### Arguments
 
@@ -914,7 +914,7 @@ This interface is equivalent to the function version of  [[stdlib_linalg(module)
 
 ### Syntax
 
-`b = ` [[stdlib_linalg(module):operator(.inv.)(interface)]] `(a)`
+`b = ` [[stdlib_linalg(module):operator(.inv.)(interface)]] `a`
 
 ### Arguments
 
