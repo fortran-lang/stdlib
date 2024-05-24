@@ -9,6 +9,12 @@ title: constants
 
 The [[stdlib_constants]] module provides mathematical constants and the most common physical constants.
 
+**Warning**: The names of the most common physical constants are kept short as they are inside a dedicated module. 
+Nonetheless, in case of overlapping names, they can always be renamed as following:
+
+```fortran
+use stdlib_constants, only: clight => c
+```
 
 ## Codata
 
