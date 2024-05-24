@@ -4,12 +4,12 @@ program example_constants
     use stdlib_codata_type, only : to_real
     use stdlib_kinds, only: dp, sp
 
-    ! Use most common physical constants defined as deouble precision reals
+    ! Use most common physical constants defined as double precision reals
     print *, "speed of light in vacuum= ", c
 
     ! Use of mathematical constants such as PI
     print *, "PI as double precision real= ", pi
-    
+
     ! Use codata_constant type for evaluating the value to the desired precision
     print *, "Value of alpha... evaluated to double precision=", alpha%to_real(1.0_dp)
     print *, "Uncertainty of alpha... evaluated to double precision=", alpha%to_real(1.0_sp, .true.)
