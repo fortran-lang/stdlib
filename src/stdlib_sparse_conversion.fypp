@@ -4,8 +4,8 @@
 #:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
 !> The `stdlib_sparse_conversion` module provides sparse to sparse matrix conversion utilities.
 !>
-!> This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
-module sparse_stdlib_conversion
+! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
+module stdlib_sparse_conversion
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     use stdlib_sparse_kinds
     implicit none
@@ -230,4 +230,4 @@ contains
 
     #:endfor
     
-end module sparse_stdlib_conversion
+end module stdlib_sparse_conversion

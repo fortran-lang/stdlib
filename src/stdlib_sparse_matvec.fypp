@@ -9,7 +9,7 @@
 #:enddef
 !> The `stdlib_sparse_matvec` module provides matrix-vector product kernels.
 !>
-!> This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
+! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
 module stdlib_sparse_matvec
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     use stdlib_sparse_kinds
