@@ -4,7 +4,7 @@
 #:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
 !> The `stdlib_sparse_kinds` module provides derived type definitions for different sparse matrices
 !>
-!> This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
+! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
 module stdlib_sparse_kinds
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none

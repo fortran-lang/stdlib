@@ -17,7 +17,11 @@ module stdlib_sparse_matvec
     private
 
     public :: matvec
-    interface matvec ! call matvec(matrix,vec_x,vec_y [,alpha,beta]) => Y = beta * Y + alpha * M * X
+    interface matvec
+    !! Version experimental
+    !!
+    !! Applay the sparse matrix-vector product $$y = \beta * y + \alpha * M * x $$
+    !!
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
         module procedure matvec_coo_${rank}$d_${s1}$
