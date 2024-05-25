@@ -134,4 +134,4 @@ ELL%index(4,1:3) = [1,3,4]
 Experimental
 
 #### Description
-The Sliced ELLPACK format `SELLC` is a variation of the `ELLPACK` format introducing the notion of blocks within which the number of columns is kept contant but can change from one block to the next. This modification reduces the storage size compared to the `ELLPACK` format but maintaining its efficient data access scheme. It can be seen as an intermediate format between `CSR` and `ELLPACK`. 
+The Sliced ELLPACK format `SELLC` is a variation of the `ELLPACK` format. This modification reduces the storage size compared to the `ELLPACK` format but maintaining its efficient data access scheme. It can be seen as an intermediate format between `CSR` and `ELLPACK`. For more details read [here](https://arxiv.org/pdf/1307.6209v1)
