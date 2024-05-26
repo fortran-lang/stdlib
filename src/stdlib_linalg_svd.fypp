@@ -144,7 +144,7 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldu,ldvt,info,k,lwork,liwork,lrwork
          integer(ilp), allocatable :: iwork(:)
-         logical(lk) :: copy_a,full_storage,compute_uv,alloc_u,alloc_vt,can_overwrite_a
+         logical(lk) :: overwrite_a_,full_storage,compute_uv,temp_u,temp_vt,can_overwrite_amat
          character :: task
          ${rt}$, target :: work_dummy(1),u_dummy(1,1),vt_dummy(1,1)
          ${rt}$, allocatable :: work(:)
@@ -173,21 +173,18 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          allocate(iwork(liwork))
 
          ! Can A be overwritten? By default, do not overwrite
-         if (present(overwrite_a)) then
-            copy_a = .not.overwrite_a
-         else
-            copy_a = .true._lk
-         endif
+         overwrite_a_ = .false.
+         if (present(overwrite_a)) overwrite_a_ = overwrite_a
 
-         ! Initialize a matrix temporary
-         if (copy_a) then
-            allocate(amat(m,n),source=a)
-         else
+         ! Initialize a matrix temporary?
+         if (overwrite_a_) then
             amat => a
+         else
+            allocate(amat(m,n),source=a)
          endif
          
-         ! Check if we can overwrite A with data that will be lost 
-         can_overwrite_a = copy_a .and. merge(.not.present(u),.not.present(vt),m>=n)         
+         ! Check if we can overwrite amat with data that will be lost 
+         can_overwrite_amat = (.not.overwrite_a_) .and. merge(.not.present(u),.not.present(vt),m>=n)         
             
          ! Full-size matrices
          if (present(full_matrices)) then
@@ -202,38 +199,38 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          ! U, VT storage
          if (present(u)) then
             ! User input
-            umat    => u
-            alloc_u = .false.
-         elseif ((copy_a .and. m>=n) .or. .not.compute_uv) then
+            umat   => u
+            temp_u = .false.
+         elseif ((m>=n .and. .not.overwrite_a_) .or. .not.compute_uv) then
             ! U not wanted, and A can be overwritten: do not allocate
-            umat    => u_dummy
-            alloc_u = .false.
+            umat   => u_dummy
+            temp_u = .false.
          elseif (.not.full_storage) then
             ! Allocate with minimum size
             allocate(umat(m,k))
-            alloc_u = .true.
+            temp_u = .true.
          else
             ! Allocate with regular size
             allocate(umat(m,m))
-            alloc_u = .true.
+            temp_u = .true.
          end if
 
          if (present(vt)) then
             ! User input
-            vtmat    => vt
-            alloc_vt = .false.
-         elseif ((copy_a .and. m<n) .or. .not.compute_uv) then
+            vtmat   => vt
+            temp_vt = .false.
+         elseif ((m<n .and. .not.overwrite_a_) .or. .not.compute_uv) then
             ! amat can be overwritten, VT not wanted: VT is returned upon A
-            vtmat    => vt_dummy
-            alloc_vt = .false.
+            vtmat   => vt_dummy
+            temp_vt = .false.
          elseif (.not.full_storage) then
             ! Allocate with minimum size
             allocate(vtmat(k,n))
-            alloc_vt = .true.
+            temp_vt = .true.
          else
             ! Allocate with regular size
             allocate(vtmat(n,n))
-            alloc_vt = .true.
+            temp_vt = .true.
          end if
 
          ldu  = size(umat ,1,kind=ilp)
@@ -242,7 +239,7 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          ! Decide SVD task
          if (.not.compute_uv) then
             task = GESDD_SINGVAL_ONLY
-         elseif (can_overwrite_a) then
+         elseif (can_overwrite_amat) then
             ! A is a copy: we can overwrite its storage
             task = GESDD_OVERWRITE_A
          elseif (.not.full_storage) then
@@ -284,9 +281,9 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          endif
 
          ! Finalize storage and process output flag
-         if (copy_a)    deallocate(amat)
-         if (alloc_u)   deallocate(umat)
-         if (alloc_vt)  deallocate(vtmat)
+         if (.not.overwrite_a_) deallocate(amat)
+         if (temp_u)            deallocate(umat)
+         if (temp_vt)           deallocate(vtmat)
          call linalg_error_handling(err0,err)
 
      end subroutine stdlib_linalg_svd_${ri}$
