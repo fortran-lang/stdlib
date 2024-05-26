@@ -1,15 +1,14 @@
 ---
-title: sparse_kinds
+title: sparse
 ---
 
-# The `stdlib_sparse_kinds` module
+# The `stdlib_sparse` module
 
 [TOC]
 
 ## Introduction
 
-The `stdlib_sparse_kinds` provides several derived types defining known sparse matrix data structures.
-
+The `stdlib_sparse` module provides several derived types defining known sparse matrix data structures. It also provides basic sparse kernels such as sparse matrix vector and conversion between matrix types.
 
 ## Derived types provided
 
@@ -135,3 +134,31 @@ Experimental
 
 #### Description
 The Sliced ELLPACK format `SELLC` is a variation of the `ELLPACK` format. This modification reduces the storage size compared to the `ELLPACK` format but maintaining its efficient data access scheme. It can be seen as an intermediate format between `CSR` and `ELLPACK`. For more details read [here](https://arxiv.org/pdf/1307.6209v1)
+
+## `matvec` - Sparse Matrix-Vector product
+
+### Status
+
+Experimental
+
+### Description
+
+Provide sparse matrix-vector product kernels for the current supported sparse matrix types.
+
+$$y=\alpha*M*x+\beta*y$$
+
+### Syntax
+
+`call ` [[stdlib_sparse_matvec(module):matvec(interface)]] `(matrix,vec_x,vec_y [,alpha,beta])`
+
+### Arguments
+
+`matrix`, `intent(in)`: Shall be a `real` or `complex` sparse type matrix.
+
+`vec_x`, `intent(in)`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array.
+
+`vec_y`, `intent(inout)`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array.
+
+`alpha`, `intent(in)`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `alpha=1`.
+
+`beta`, `intent(in)`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `beta=0`.
