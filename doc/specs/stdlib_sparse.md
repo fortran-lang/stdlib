@@ -162,3 +162,65 @@ $$y=\alpha*M*x+\beta*y$$
 `alpha`, `intent(in)`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `alpha=1`.
 
 `beta`, `intent(in)`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `beta=0`.
+
+## `sparse_conversion` - Sparse matrix to matrix conversions
+
+### Status
+
+Experimental
+
+### Description
+
+This module provides facility functions for converting between storage formats.
+
+### Syntax
+
+`call ` [[stdlib_sparse_conversion(module):dense2coo(interface)]] `(dense,coo)`
+
+### Arguments
+
+`dense`, `intent(in)`: Shall be a rank-2 array of `real` or `complex` type.
+
+`coo`, `intent(inout)`: Shall be a `COO` type of `real` or `complex` type.
+
+### Syntax
+
+`call ` [[stdlib_sparse_conversion(module):coo2dense(interface)]] `(coo,dense)`
+
+### Arguments
+
+`coo`, `intent(in)`: Shall be a `COO` type of `real` or `complex` type.
+
+`dense`, `intent(inout)`: Shall be a rank-2 array of `real` or `complex` type.
+
+### Syntax
+
+`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr)`
+
+### Arguments
+
+`coo`, `intent(in)`: Shall be a `COO` type of `real` or `complex` type.
+
+`csr`, `intent(inout)`: Shall be a `CSR` type of `real` or `complex` type.
+
+### Syntax
+
+`call ` [[stdlib_sparse_conversion(module):csr2coo(interface)]] `(csr,coo)`
+
+### Arguments
+
+`csr`, `intent(in)`: Shall be a `CSR` type of `real` or `complex` type.
+
+`coo`, `intent(inout)`: Shall be a `COO` type of `real` or `complex` type.
+
+### Syntax
+
+`call ` [[stdlib_sparse_conversion(module):csr2sellc(interface)]] `(csr,sellc[,chunk])`
+
+### Arguments
+
+`csr`, `intent(in)`: Shall be a `CSR` type of `real` or `complex` type.
+
+`sellc`, `intent(inout)`: Shall be a `SELLC` type of `real` or `complex` type.
+
+`chunk`, `intent(in)`, `optional`: chunk size for the Sliced ELLPACK format.
