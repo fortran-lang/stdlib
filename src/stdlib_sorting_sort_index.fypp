@@ -93,7 +93,7 @@ contains
 ! deal with Fortran arrays of intrinsic types and not the full generality
 ! of Rust's arrays and lists for arbitrary types. It also adds the
 ! estimation of the optimal `run size` as suggested in Tim Peters'
-! original listsort.txt, and the optional `work` and `iwork` arraya to be
+! original listsort.txt, and the optional `work` and `iwork` arrays to be
 ! used as scratch memory.
 
         ${t1}$, intent(inout)                    :: array(0:)
@@ -106,7 +106,15 @@ contains
         ${t2}$, allocatable :: buf(:)
         ${ti}$, allocatable :: ibuf(:)
 
+        if ( size(array, kind=int_index) > huge(1_${ki}$) ) then
+            error stop "Too many entries for the chosen kind."
+        end if
+
         array_size = size(array, kind=${ki}$)
+
+        if ( size(index, kind=${ki}$) < array_size ) then
+            error stop "index array is too small."
+        end if
 
         do i = 0, array_size-1
             index(i) = i+1
