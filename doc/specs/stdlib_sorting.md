@@ -458,6 +458,12 @@ different on return
 
 ##### Examples
 
+Sorting a rank one array with `sort_index`:
+
+```Fortran
+{!example/sorting/example_sort_index.f90!}
+```
+
 Sorting a related rank one array:
 
 ```Fortran
@@ -505,7 +511,7 @@ Sorting an array of a derived type based on the data in one component
 
 ```fortran
     subroutine sort_a_data( a_data, a, work, index, iwork )
-        ! Sort `a_data` in terms or its component `a`
+        ! Sort `a_data` in terms of its component `a`
         type(a_type), intent(inout)      :: a_data(:)
         integer(int32), intent(inout)    :: a(:)
         integer(int32), intent(out)    :: work(:)

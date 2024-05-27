@@ -107,7 +107,7 @@ contains
         ${ti}$, allocatable :: ibuf(:)
 
         if ( size(array, kind=int_index) > huge(1_${ki}$) ) then
-            error stop "Too many entries for the chosen kind."
+            error stop "Too many entries for the kind of index."
         end if
 
         array_size = size(array, kind=${ki}$)
