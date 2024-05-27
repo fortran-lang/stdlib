@@ -72649,7 +72649,7 @@ module stdlib_linalg_lapack_q
      end subroutine stdlib_qsytrd
 
 
-     pure subroutine stdlib_qsytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
+     subroutine stdlib_qsytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
      !! DSYTRD_SB2ST: reduces a real symmetric band matrix A to real symmetric
      !! tridiagonal form T by a orthogonal similarity transformation:
      !! Q**T * A * Q = T.
@@ -72895,7 +72895,7 @@ module stdlib_linalg_lapack_q
      end subroutine stdlib_qsytrd_sb2st
 
 
-     pure subroutine stdlib_qsytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info )
+     subroutine stdlib_qsytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info )
      !! DSYTRD_SY2SB: reduces a real symmetric matrix A to real symmetric
      !! band-diagonal form AB by a orthogonal similarity transformation:
      !! Q**T * A * Q = AB.
