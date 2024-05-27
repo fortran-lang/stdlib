@@ -6,14 +6,14 @@ set(fppFiles
     stdlib_bitsets.fypp
     stdlib_bitsets_64.fypp
     stdlib_bitsets_large.fypp
-    stdlib_hash_32bit.fypp 
+    stdlib_hash_32bit.fypp
     stdlib_hash_32bit_fnv.fypp
-    stdlib_hash_32bit_nm.fypp 
-    stdlib_hash_32bit_water.fypp 
-    stdlib_hash_64bit.fypp 
-    stdlib_hash_64bit_fnv.fypp 
-    stdlib_hash_64bit_pengy.fypp 
-    stdlib_hash_64bit_spookyv2.fypp 
+    stdlib_hash_32bit_nm.fypp
+    stdlib_hash_32bit_water.fypp
+    stdlib_hash_64bit.fypp
+    stdlib_hash_64bit_fnv.fypp
+    stdlib_hash_64bit_pengy.fypp
+    stdlib_hash_64bit_spookyv2.fypp
     stdlib_io.fypp
     stdlib_io_npy.fypp
     stdlib_io_npy_load.fypp
@@ -97,11 +97,13 @@ set(SRC
     stdlib_ansi_operator.f90
     stdlib_ansi_to_string.f90
     stdlib_array.f90
+    stdlib_child_list.f90
     stdlib_error.f90
     stdlib_hashmap_wrappers.f90
     stdlib_hashmaps.f90
     stdlib_hashmap_chaining.f90
     stdlib_hashmap_open.f90
+    stdlib_linked_list.f90
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
     stdlib_system.F90
