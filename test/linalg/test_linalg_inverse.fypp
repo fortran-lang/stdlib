@@ -4,8 +4,8 @@
 module test_linalg_inverse
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
-    use stdlib_linalg, only: inv,invert,operator(.inv.)
-    use stdlib_linalg_state, only: linalg_state_type
+    use stdlib_linalg, only: inv,invert,operator(.inv.),eye
+    use stdlib_linalg_state, only: linalg_state_type,LINALG_ERROR
 
     implicit none (type,external)
     private
@@ -21,29 +21,27 @@ module test_linalg_inverse
         
         allocate(tests(0))
 
-        #:for rk,rt,ri in REAL_KINDS_TYPES
+        #:for rk,rt,ri in RC_KINDS_TYPES
         #:if rk!="xdp"
-        tests = [tests,new_unittest("inverse_${ri}$_eye_inverse",test_${ri}$_eye_inverse)]
+        tests = [tests,new_unittest("${ri}$_eye_inverse",test_${ri}$_eye_inverse), &
+                       new_unittest("${ri}$_singular_inverse",test_${ri}$_singular_inverse)]
         #:endif
         #:endfor
 
     end subroutine test_inverse_matrix
 
-    !> Invert real identity matrix
     #:for rk,rt,ri in REAL_KINDS_TYPES
     #:if rk!="xdp"
+    !> Invert real identity matrix
     subroutine test_${ri}$_eye_inverse(error)
         type(error_type), allocatable, intent(out) :: error
 
         type(linalg_state_type) :: state
 
         integer(ilp), parameter :: n = 25_ilp
-        integer(ilp) :: i,j
         ${rt}$ :: a(n,n),inva(n,n)
 
-        do concurrent (i=1:n,j=1:n)
-          a(i,j) = merge(1.0_${rk}$,0.0_${rk}$,i==j)
-        end do
+        a = eye(n)
 
         !> Inverse function
         inva  = inv(a,err=state)
@@ -63,6 +61,27 @@ module test_linalg_inverse
         if (allocated(error)) return     
 
     end subroutine test_${ri}$_eye_inverse
+
+    !> Invert singular matrix
+    subroutine test_${ri}$_singular_inverse(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: err
+
+        integer(ilp), parameter :: n = 25_ilp
+        ${rt}$ :: a(n,n)
+
+        a = eye(n)
+        
+        !> Make rank-deficient
+        a(12,12) = 0
+        
+        !> Inverse function
+        call invert(a,err=err)
+        call check(error,err%state==LINALG_ERROR,'singular ${rt}$ inverse returned '//err%print())
+        if (allocated(error)) return
+        
+    end subroutine test_${ri}$_singular_inverse
 
     #:endif
     #:endfor
@@ -131,6 +150,24 @@ module test_linalg_inverse
            end function is_diagonal_inverse
 
     end subroutine test_${ci}$_eye_inverse
+
+    !> Invert singular matrix
+    subroutine test_${ci}$_singular_inverse(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: err
+
+        integer(ilp), parameter :: n = 25_ilp
+        ${ct}$ :: a(n,n)
+
+        a = (0.0_${ck}$,0.0_${ck}$)
+        
+        !> Inverse function
+        call invert(a,err=err)
+        call check(error,err%state==LINALG_ERROR,'singular ${ct}$ inverse returned '//err%print())
+        if (allocated(error)) return
+        
+    end subroutine test_${ci}$_singular_inverse
 
     #:endif
     #:endfor
