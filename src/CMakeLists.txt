@@ -36,7 +36,7 @@ set(fppFiles
     stdlib_sorting_sort_index.fypp
     stdlib_sparse_conversion.fypp
     stdlib_sparse_kinds.fypp
-    stdlib_sparse_matvec.fypp
+    stdlib_sparse_spmv.fypp
     stdlib_specialfunctions_gamma.fypp
     stdlib_stats.fypp
     stdlib_stats_corr.fypp

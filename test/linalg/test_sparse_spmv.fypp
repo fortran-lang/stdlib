@@ -1,7 +1,7 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES
-module test_sparse_matvec
+module test_sparse_spmv
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_sparse
@@ -55,7 +55,7 @@ contains
             call check(error, all(vec_y1 == real([6,11,15,15],kind=wp)) )
             if (allocated(error)) return
 
-            call matvec( COO, vec_x, vec_y2 )
+            call spmv( COO, vec_x, vec_y2 )
             call check(error, all(vec_y1 == vec_y2) )
             if (allocated(error)) return
         end block
@@ -79,7 +79,7 @@ contains
             
             allocate( vec_x(5) , source = 1._wp )
             allocate( vec_y(4) , source = 0._wp )
-            call matvec( CSR, vec_x, vec_y )
+            call spmv( CSR, vec_x, vec_y )
             
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
             if (allocated(error)) return
@@ -104,7 +104,7 @@ contains
             
             allocate( vec_x(5) , source = 1._wp )
             allocate( vec_y(4) , source = 0._wp )
-            call matvec( CSC, vec_x, vec_y )
+            call spmv( CSC, vec_x, vec_y )
             
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
             if (allocated(error)) return
@@ -135,7 +135,7 @@ contains
             
             allocate( vec_x(5) , source = 1._wp )
             allocate( vec_y(4) , source = 0._wp )
-            call matvec( ELL, vec_x, vec_y )
+            call spmv( ELL, vec_x, vec_y )
             
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
             if (allocated(error)) return
@@ -172,7 +172,7 @@ contains
             allocate( vec_x(6) , source = 1._wp )
             allocate( vec_y(6) , source = 0._wp )
 
-            call matvec( SELLC, vec_x, vec_y )
+            call spmv( SELLC, vec_x, vec_y )
             
             call check(error, all(vec_y == real([6,22,27,23,27,48],kind=wp)) )
             if (allocated(error)) return
@@ -212,11 +212,11 @@ contains
             call check(error, all(vec_y1 == [3,5,5,3]) )
             if (allocated(error)) return
 
-            call matvec( COO , vec_x, vec_y2 )
+            call spmv( COO , vec_x, vec_y2 )
             call check(error, all(vec_y1 == vec_y2) )
             if (allocated(error)) return
 
-            call matvec( CSR , vec_x, vec_y3 )
+            call spmv( CSR , vec_x, vec_y3 )
             call check(error, all(vec_y1 == vec_y3) )
             if (allocated(error)) return
         end block
@@ -229,7 +229,7 @@ end module
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
     use testdrive, only : run_testsuite, new_testsuite, testsuite_type
-    use test_sparse_matvec, only : collect_suite
+    use test_sparse_spmv, only : collect_suite
     implicit none
     integer :: stat, is
     type(testsuite_type), allocatable :: testsuites(:)

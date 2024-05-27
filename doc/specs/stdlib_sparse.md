@@ -135,7 +135,8 @@ Experimental
 #### Description
 The Sliced ELLPACK format `SELLC` is a variation of the `ELLPACK` format. This modification reduces the storage size compared to the `ELLPACK` format but maintaining its efficient data access scheme. It can be seen as an intermediate format between `CSR` and `ELLPACK`. For more details read [here](https://arxiv.org/pdf/1307.6209v1)
 
-## `matvec` - Sparse Matrix-Vector product
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+## `spmv` - Sparse Matrix-Vector product
 
 ### Status
 
@@ -149,7 +150,7 @@ $$y=\alpha*M*x+\beta*y$$
 
 ### Syntax
 
-`call ` [[stdlib_sparse_matvec(module):matvec(interface)]] `(matrix,vec_x,vec_y [,alpha,beta])`
+`call ` [[stdlib_sparse_spmv(module):spmv(interface)]] `(matrix,vec_x,vec_y [,alpha,beta])`
 
 ### Arguments
 
@@ -163,6 +164,7 @@ $$y=\alpha*M*x+\beta*y$$
 
 `beta`, `intent(in)`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `beta=0`.
 
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ## `sparse_conversion` - Sparse matrix to matrix conversions
 
 ### Status

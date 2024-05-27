@@ -6,7 +6,7 @@ set(
   "test_linalg_lstsq.fypp"
   "test_linalg_determinant.fypp"
   "test_linalg_matrix_property_checks.fypp"
-  "test_sparse_matvec.fypp"
+  "test_sparse_spmv.fypp"
 )
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 

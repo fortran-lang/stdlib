@@ -7,38 +7,38 @@
 #:def rksfx2(rank)
 #{if rank > 0}#${":," + ":," * (rank - 1)}$#{endif}#
 #:enddef
-!> The `stdlib_sparse_matvec` module provides matrix-vector product kernels.
+!> The `stdlib_sparse_spmv` module provides matrix-vector product kernels.
 !>
 ! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
-module stdlib_sparse_matvec
+module stdlib_sparse_spmv
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     use stdlib_sparse_kinds
     implicit none
     private
 
-    public :: matvec
-    interface matvec
+    public :: spmv
+    interface spmv
     !! Version experimental
     !!
     !! Applay the sparse matrix-vector product $$y = \beta * y + \alpha * M * x $$
     !!
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module procedure matvec_coo_${rank}$d_${s1}$
-        module procedure matvec_csr_${rank}$d_${s1}$
-        module procedure matvec_csc_${rank}$d_${s1}$
-        module procedure matvec_ell_${rank}$d_${s1}$
+        module procedure spmv_coo_${rank}$d_${s1}$
+        module procedure spmv_csr_${rank}$d_${s1}$
+        module procedure spmv_csc_${rank}$d_${s1}$
+        module procedure spmv_ell_${rank}$d_${s1}$
         #:endfor
-        module procedure matvec_sellc_${s1}$
+        module procedure spmv_sellc_${s1}$
         #:endfor
     end interface
 
 contains
 
-    !> matvec_coo
+    !> spmv_coo
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_coo_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
+    subroutine spmv_coo_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
         type(COO_${s1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
@@ -78,10 +78,10 @@ contains
     #:endfor
     #:endfor
 
-    !! matvec_csr
+    !! spmv_csr
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_csr_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
+    subroutine spmv_csr_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
         type(CSR_${s1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
@@ -158,10 +158,10 @@ contains
     #:endfor
     #:endfor
 
-    !> matvec_csc
+    !> spmv_csc
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_csc_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
+    subroutine spmv_csc_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
         type(CSC_${s1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
@@ -222,10 +222,10 @@ contains
     #:endfor
     #:endfor
 
-    !> matvec_ell
+    !> spmv_ell
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine matvec_ell_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
+    subroutine spmv_ell_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
         type(ELL_${s1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
@@ -256,10 +256,10 @@ contains
     #:endfor
     #:endfor
 
-    !> matvec_sellc
+    !> spmv_sellc
     #:set CHUNKS = [4,8,16]
     #:for k1, t1, s1 in (KINDS_TYPES)
-    subroutine matvec_sellc_${s1}$(matrix,vec_x,vec_y,alpha,beta)
+    subroutine spmv_sellc_${s1}$(matrix,vec_x,vec_y,alpha,beta)
         !> This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         type(SELLC_${s1}$), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x(:)
@@ -336,4 +336,4 @@ contains
     
     #:endfor
     
-end module stdlib_sparse_matvec
+end module stdlib_sparse_spmv
