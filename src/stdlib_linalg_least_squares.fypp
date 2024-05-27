@@ -305,7 +305,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          else
             allocate(cwork(lcwork))
          endif
-         ncs = size(iwork,kind=ilp)
+         ncs = size(cwork,kind=ilp)
          #:endif         
                     
          if (nrs<lrwork .or. nis<liwork#{if rt.startswith('c')}# .or. ncs<lcwork#{endif}# &
