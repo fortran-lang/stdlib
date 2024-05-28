@@ -1,3 +1,53 @@
+# Version 0.6.1
+
+Full release notes available at [v0.6.1] tag.
+
+[v0.6.1]: https://github.com/fortran-lang/stdlib/releases/tag/v0.6.1
+
+Changes to existing scripts and modules
+  - changes in module `stdlib_linalg_lapack`
+    - Renamed variable for compiler compliance
+      [#812](https://github.com/fortran-lang/stdlib/pull/812)
+  - change of the format in some example programs
+    [#813](https://github.com/fortran-lang/stdlib/pull/813)
+
+
+# Version 0.6.0
+
+Full release notes available at [v0.6.0] tag.
+
+[v0.6.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.6.0
+
+
+- new script `fypp_deployment.py` to support `fpm` in combination with `fypp`
+  files
+  [#802](https://github.com/fortran-lang/stdlib/pull/802)
+
+
+Changes to existing scripts and modules
+  - change in module `stdlib_hashmap_wrappers`
+    - addition of `int32` hashmap key type
+      [#778](https://github.com/fortran-lang/stdlib/pull/778)
+  - changes in module `stdlib_linalg`
+    - addition of the procedure `det` to compute determinants
+      [#798](https://github.com/fortran-lang/stdlib/pull/798)
+    - addition of the procedures `lstsq` and `lstsq_space`
+      [#801](https://github.com/fortran-lang/stdlib/pull/801)
+      [#809](https://github.com/fortran-lang/stdlib/pull/809)
+    - addition of the procedures `solve` and `solve_lu`
+      [#806](https://github.com/fortran-lang/stdlib/pull/806)
+  - change in module `stdlib_linalg_blas`
+    - addition of the documentation for `rotm` and `rotmg`
+      [#795](https://github.com/fortran-lang/stdlib/pull/795)
+  - use of macOS 12 in macOS CI
+    [#807](https://github.com/fortran-lang/stdlib/pull/807)
+
+
+Changes to existing documentation
+  - Improvement of the documentation `linalg`
+    [#797](https://github.com/fortran-lang/stdlib/pull/797)
+
+
 # Version 0.5.0
 
 Full release notes available at [v0.5.0] tag.

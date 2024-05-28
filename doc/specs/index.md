@@ -14,6 +14,7 @@ This is an index/directory of the specifications (specs) for each new module/fea
  - [ansi](./stdlib_ansi.html) - Terminal color and style escape sequences
  - [array](./stdlib_array.html) - Procedures for index manipulation and array handling
  - [ascii](./stdlib_ascii.html) - Procedures for handling ASCII characters
+ - [constants](./stdlib_constants.html) - Constants
  - [bitsets](./stdlib_bitsets.html) - Bitset data types and procedures
  - [error](./stdlib_error.html) - Catching and handling errors
  - [hash](./stdlib_hash_procedures.html) - Hashing integer

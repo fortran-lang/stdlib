@@ -13,11 +13,11 @@ submodule(stdlib_sorting) stdlib_sorting_radix_sort
 contains
 ! For int8, radix sort becomes counting sort, so buffer is not needed
     pure subroutine radix_sort_u8_helper(N, arr)
-        integer(kind=int_size), intent(in) :: N
+        integer(kind=int_index), intent(in) :: N
         integer(kind=int8), dimension(N), intent(inout) :: arr
-        integer(kind=int_size) :: i
+        integer(kind=int_index) :: i
         integer :: bin_idx
-        integer(kind=int_size), dimension(-128:127) :: counts
+        integer(kind=int_index), dimension(-128:127) :: counts
         counts(:) = 0
         do i = 1, N
             bin_idx = arr(i)
@@ -34,12 +34,12 @@ contains
     end subroutine
 
     pure subroutine radix_sort_u16_helper(N, arr, buf)
-        integer(kind=int_size), intent(in) :: N
+        integer(kind=int_index), intent(in) :: N
         integer(kind=int16), dimension(N), intent(inout) :: arr
         integer(kind=int16), dimension(N), intent(inout) :: buf
-        integer(kind=int_size) :: i
+        integer(kind=int_index) :: i
         integer :: b, b0, b1
-        integer(kind=int_size), dimension(0:radix_mask) :: c0, c1
+        integer(kind=int_index), dimension(0:radix_mask) :: c0, c1
         c0(:) = 0
         c1(:) = 0
         do i = 1, N
@@ -65,12 +65,12 @@ contains
     end subroutine
 
     pure subroutine radix_sort_u32_helper(N, arr, buf)
-        integer(kind=int_size), intent(in) :: N
+        integer(kind=int_index), intent(in) :: N
         integer(kind=int32), dimension(N), intent(inout) :: arr
         integer(kind=int32), dimension(N), intent(inout) :: buf
-        integer(kind=int_size) :: i
+        integer(kind=int_index) :: i
         integer :: b, b0, b1, b2, b3
-        integer(kind=int_size), dimension(0:radix_mask) :: c0, c1, c2, c3
+        integer(kind=int_index), dimension(0:radix_mask) :: c0, c1, c2, c3
         c0(:) = 0
         c1(:) = 0
         c2(:) = 0
@@ -114,12 +114,12 @@ contains
     end subroutine radix_sort_u32_helper
 
     pure subroutine radix_sort_u64_helper(N, arr, buffer)
-        integer(kind=int_size), intent(in) :: N
+        integer(kind=int_index), intent(in) :: N
         integer(kind=int64), dimension(N), intent(inout) :: arr
         integer(kind=int64), dimension(N), intent(inout) :: buffer
-        integer(kind=int_size) :: i
+        integer(kind=int_index) :: i
         integer(kind=int64) :: b, b0, b1, b2, b3, b4, b5, b6, b7
-        integer(kind=int_size), dimension(0:radix_mask) :: c0, c1, c2, c3, c4, c5, c6, c7
+        integer(kind=int_index), dimension(0:radix_mask) :: c0, c1, c2, c3, c4, c5, c6, c7
         c0(:) = 0
         c1(:) = 0
         c2(:) = 0
@@ -202,8 +202,8 @@ contains
         integer(kind=int8), dimension(:), intent(inout) :: array
         logical, intent(in), optional :: reverse
         integer(kind=int8) :: item
-        integer(kind=int_size) :: i, N
-        N = size(array, kind=int_size)
+        integer(kind=int_index) :: i, N
+        N = size(array, kind=int_index)
         call radix_sort_u8_helper(N, array)
         if (optval(reverse, .false.)) then
             do i = 1, N/2
@@ -218,13 +218,13 @@ contains
         integer(kind=int16), dimension(:), intent(inout) :: array
         integer(kind=int16), dimension(:), intent(inout), target, optional :: work
         logical, intent(in), optional :: reverse
-        integer(kind=int_size) :: i, N, start, middle, end
+        integer(kind=int_index) :: i, N, start, middle, end
         integer(kind=int16), dimension(:), pointer :: buffer
         integer(kind=int16) :: item
         logical :: use_internal_buffer
-        N = size(array, kind=int_size)
+        N = size(array, kind=int_index)
         if (present(work)) then
-            if (size(work, kind=int_size) < N) then
+            if (size(work, kind=int_index) < N) then
                 error stop "int16_radix_sort: work array is too small."
             end if
             use_internal_buffer = .false.
@@ -270,13 +270,13 @@ contains
         integer(kind=int32), dimension(:), intent(inout) :: array
         integer(kind=int32), dimension(:), intent(inout), target, optional :: work
         logical, intent(in), optional :: reverse
-        integer(kind=int_size) :: i, N, start, middle, end
+        integer(kind=int_index) :: i, N, start, middle, end
         integer(kind=int32), dimension(:), pointer :: buffer
         integer(kind=int32) :: item
         logical :: use_internal_buffer
-        N = size(array, kind=int_size)
+        N = size(array, kind=int_index)
         if (present(work)) then
-            if (size(work, kind=int_size) < N) then
+            if (size(work, kind=int_index) < N) then
                 error stop "int32_radix_sort: work array is too small."
             end if
             use_internal_buffer = .false.
@@ -320,14 +320,14 @@ contains
         real(kind=sp), dimension(:), intent(inout), target :: array
         real(kind=sp), dimension(:), intent(inout), target, optional :: work
         logical, intent(in), optional :: reverse
-        integer(kind=int_size) :: i, N, pos, rev_pos
+        integer(kind=int_index) :: i, N, pos, rev_pos
         integer(kind=int32), dimension(:), pointer :: arri32
         integer(kind=int32), dimension(:), pointer :: buffer
         real(kind=sp) :: item
         logical :: use_internal_buffer
-        N = size(array, kind=int_size)
+        N = size(array, kind=int_index)
         if (present(work)) then
-            if (size(work, kind=int_size) < N) then
+            if (size(work, kind=int_index) < N) then
                 error stop "sp_radix_sort: work array is too small."
             end if
             use_internal_buffer = .false.
@@ -373,13 +373,13 @@ contains
         integer(kind=int64), dimension(:), intent(inout) :: array
         integer(kind=int64), dimension(:), intent(inout), target, optional :: work
         logical, intent(in), optional :: reverse
-        integer(kind=int_size) :: i, N, start, middle, end
+        integer(kind=int_index) :: i, N, start, middle, end
         integer(kind=int64), dimension(:), pointer :: buffer
         integer(kind=int64) :: item
         logical :: use_internal_buffer
-        N = size(array, kind=int_size)
+        N = size(array, kind=int_index)
         if (present(work)) then
-            if (size(work, kind=int_size) < N) then
+            if (size(work, kind=int_index) < N) then
                 error stop "int64_radix_sort: work array is too small."
             end if
             use_internal_buffer = .false.
@@ -423,14 +423,14 @@ contains
         real(kind=dp), dimension(:), intent(inout), target :: array
         real(kind=dp), dimension(:), intent(inout), target, optional :: work
         logical, intent(in), optional :: reverse
-        integer(kind=int_size) :: i, N, pos, rev_pos
+        integer(kind=int_index) :: i, N, pos, rev_pos
         integer(kind=int64), dimension(:), pointer :: arri64
         integer(kind=int64), dimension(:), pointer :: buffer
         real(kind=dp) :: item
         logical :: use_internal_buffer
-        N = size(array, kind=int_size)
+        N = size(array, kind=int_index)
         if (present(work)) then
-            if (size(work, kind=int_size) < N) then
+            if (size(work, kind=int_index) < N) then
                 error stop "sp_radix_sort: work array is too small."
             end if
             use_internal_buffer = .false.
