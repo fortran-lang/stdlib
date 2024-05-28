@@ -5,6 +5,7 @@ program example_svdvals
   implicit none
 
   real(dp), allocatable :: A(:,:),s(:)
+  character(*), parameter :: fmt="(a,*(1x,f12.8))"
 
   ! We want to find the singular values of matrix: 
   ! 
@@ -18,10 +19,8 @@ program example_svdvals
   s = svdvals(A)
 
   ! Singular values: [5, 3]
-  print 1, '    '
-  print 1, 'S = ',s
-  print 1, '    '
+  print fmt, '    '
+  print fmt, 'S = ',s
+  print fmt, '    '
   
-  1 format(a,*(1x,f12.8))
-
 end program example_svdvals
