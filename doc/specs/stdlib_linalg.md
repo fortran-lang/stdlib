@@ -899,7 +899,7 @@ Exceptions trigger an `error stop`.
 {!example/linalg/example_determinant2.f90!}
 ```
 
-## `svd` - Compute the singular value decomposition of a 2d matrix.
+## `svd` - Compute the singular value decomposition of a rank-2 array (matrix).
 
 ### Status
 
@@ -907,7 +907,7 @@ Experimental
 
 ### Description
 
-This subroutine computes the singular value decomposition of a `real` or `complex` 2d matrix \( A = U \cdot S \cdot \V^T \).
+This subroutine computes the singular value decomposition of a `real` or `complex` rank-2 array (matrix) \( A = U \cdot S \cdot \V^T \).
 The solver is based on LAPACK's `*GESDD` backends.
 
 Result vector `s` returns the array of singular values on the diagonal of \( S \). 
@@ -953,7 +953,7 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 {!example/linalg/example_svd.f90!}
 ```
 
-## `svdvals` - Compute the singular values of a 2d matrix.
+## `svdvals` - Compute the singular values of a rank-2 array (matrix).
 
 ### Status
 
@@ -961,7 +961,7 @@ Experimental
 
 ### Description
 
-This subroutine computes the singular values of a `real` or `complex` 2d matrix from its singular 
+This subroutine computes the singular values of a `real` or `complex` rank-2 array (matrix) from its singular 
 value decomposition \( A = U \cdot S \cdot \V^T \). The solver is based on LAPACK's `*GESDD` backends.
 
 Result vector `s` returns the array of singular values on the diagonal of \( S \). 

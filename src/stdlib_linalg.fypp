@@ -559,7 +559,7 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the singular value decomposition of a `real` or `complex` 2d matrix.
-    !! ([Specification](../page/specs/stdlib_linalg.html#svd-compute-the-singular-value-decomposition-of-a-2d-matrix))
+    !! ([Specification](../page/specs/stdlib_linalg.html#svd-compute-the-singular-value-decomposition-of-a-rank-2-array-matrix))
     !! 
     !!### Summary 
     !! Interface for computing the singular value decomposition of a `real` or `complex` 2d matrix.
@@ -631,7 +631,7 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the singular values of a `real` or `complex` 2d matrix.
-    !! ([Specification](../page/specs/stdlib_linalg.html#svdvals-compute-the-singular-values-of-a-2d-matrix))
+    !! ([Specification](../page/specs/stdlib_linalg.html#svdvals-compute-the-singular-values-of-a-rank-2-array-matrix))
     !! 
     !!### Summary 
     !! 
