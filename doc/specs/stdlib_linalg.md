@@ -922,11 +922,11 @@ If requested, `vt` contains the right singular vectors, as rows of \( V^T \).
 
 `a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix of size `[m,n]`. It is an `intent(inout)` argument, but returns unchanged unless `overwrite_a=.true.`.
 
-`s`: Shall be a rank-1 `real` array, returning the list of `k = min(m,n)` singular values. It is an `intent(inout)` argument. 
+`s`: Shall be a rank-1 `real` array, returning the list of `k = min(m,n)` singular values. It is an `intent(out)` argument. 
 
-`u` (optional): Shall be a rank-2 array of same kind as `a`, returning the left singular vectors of `a` as columns. Its size should be `[m,m]` unless `full_matrices=.false.`, in which case, it can be `[m,min(m,n)]`. It is an `intent(inout)` argument.
+`u` (optional): Shall be a rank-2 array of same kind as `a`, returning the left singular vectors of `a` as columns. Its size should be `[m,m]` unless `full_matrices=.false.`, in which case, it can be `[m,min(m,n)]`. It is an `intent(out)` argument.
 
-`vt` (optional): Shall be a rank-2 array of same kind as `a`, returning the right singular vectors of `a` as rows. Its size should be `[n,n]` unless `full_matrices=.false.`, in which case, it can be `[min(m,n),n]`. It is an `intent(inout)` argument.
+`vt` (optional): Shall be a rank-2 array of same kind as `a`, returning the right singular vectors of `a` as rows. Its size should be `[n,n]` unless `full_matrices=.false.`, in which case, it can be `[min(m,n),n]`. It is an `intent(out)` argument.
 
 `overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. By default, `overwrite_a=.false.`. It is an `intent(in)` argument.
 
