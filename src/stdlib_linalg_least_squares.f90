@@ -858,7 +858,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          else
             allocate(cwork(lcwork))
          endif
-         ncs = size(iwork,kind=ilp)
+         ncs = size(cwork,kind=ilp)
                     
          if (nrs<lrwork .or. nis<liwork .or. ncs<lcwork &
              .or. nsvd<mnmin) then 
@@ -873,7 +873,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
             ! Solve system using singular value decomposition
             call gelsd(m,n,nrhs,amat,lda,xmat,ldb,singular,rcond,arank, &
-                       cwork,nrs,rwork,iwork,info)
+                       cwork,ncs,rwork,iwork,info)
 
             ! The condition number of A in the 2-norm = S(1)/S(min(m,n)).
             acond = singular(1)/singular(mnmin)
@@ -1111,7 +1111,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          else
             allocate(cwork(lcwork))
          endif
-         ncs = size(iwork,kind=ilp)
+         ncs = size(cwork,kind=ilp)
                     
          if (nrs<lrwork .or. nis<liwork .or. ncs<lcwork &
              .or. nsvd<mnmin) then 
@@ -1126,7 +1126,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
             ! Solve system using singular value decomposition
             call gelsd(m,n,nrhs,amat,lda,xmat,ldb,singular,rcond,arank, &
-                       cwork,nrs,rwork,iwork,info)
+                       cwork,ncs,rwork,iwork,info)
 
             ! The condition number of A in the 2-norm = S(1)/S(min(m,n)).
             acond = singular(1)/singular(mnmin)
@@ -1848,7 +1848,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          else
             allocate(cwork(lcwork))
          endif
-         ncs = size(iwork,kind=ilp)
+         ncs = size(cwork,kind=ilp)
                     
          if (nrs<lrwork .or. nis<liwork .or. ncs<lcwork &
              .or. nsvd<mnmin) then 
@@ -1863,7 +1863,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
             ! Solve system using singular value decomposition
             call gelsd(m,n,nrhs,amat,lda,xmat,ldb,singular,rcond,arank, &
-                       cwork,nrs,rwork,iwork,info)
+                       cwork,ncs,rwork,iwork,info)
 
             ! The condition number of A in the 2-norm = S(1)/S(min(m,n)).
             acond = singular(1)/singular(mnmin)
@@ -2101,7 +2101,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          else
             allocate(cwork(lcwork))
          endif
-         ncs = size(iwork,kind=ilp)
+         ncs = size(cwork,kind=ilp)
                     
          if (nrs<lrwork .or. nis<liwork .or. ncs<lcwork &
              .or. nsvd<mnmin) then 
@@ -2116,7 +2116,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
             ! Solve system using singular value decomposition
             call gelsd(m,n,nrhs,amat,lda,xmat,ldb,singular,rcond,arank, &
-                       cwork,nrs,rwork,iwork,info)
+                       cwork,ncs,rwork,iwork,info)
 
             ! The condition number of A in the 2-norm = S(1)/S(min(m,n)).
             acond = singular(1)/singular(mnmin)
