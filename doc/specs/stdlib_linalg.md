@@ -938,7 +938,7 @@ If requested, `vt` contains the right singular vectors, as rows of \( V^T \).
 
 Returns an array `s` that contains the list of singular values of matrix `a`.
 If requested, returns a rank-2 array `u` that contains the left singular vectors of `a` along its columns.
-If requested, returns a rank-2 array `vt` that contains the right singular values of `a` along its rows.
+If requested, returns a rank-2 array `vt` that contains the right singular vectors of `a` along its rows.
 
 Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
 Raises `LINALG_VALUE_ERROR` if the matrix or any of the output arrays invalid/incompatible sizes.
