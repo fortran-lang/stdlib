@@ -322,7 +322,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
             ! Solve system using singular value decomposition
             call gelsd(m,n,nrhs,amat,lda,xmat,ldb,singular,rcond,arank, &
             #:if rt.startswith('complex')
-                       cwork,nrs,rwork,iwork,info)
+                       cwork,ncs,rwork,iwork,info)
             #:else
                        rwork,nrs,iwork,info)
             #:endif
