@@ -928,7 +928,7 @@ If requested, `vt` contains the right singular vectors, as rows of \( V^T \).
 
 `vt` (optional): Shall be a rank-2 array of same kind as `a`, returning the right singular vectors of `a` as rows. Its size should be `[n,n]` unless `full_matrices=.false.`, in which case, it can be `[min(m,n),n]`. It is an `intent(inout)` argument.
 
-`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. By default, `overwrite_a=.false.`. This is an `intent(in)` argument.
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. By default, `overwrite_a=.false.`. It is an `intent(in)` argument.
 
 `full_matrices` (optional): Shall be an input `logical` flag. If `.true.` (default), matrices `u` and `vt` shall be full-sized. Otherwise, their secondary dimension can be resized to `min(m,n)`. See `u`, `v` for details.
 
