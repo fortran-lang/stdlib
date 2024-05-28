@@ -918,6 +918,9 @@ If requested, `vt` contains the right singular vectors, as rows of \( V^T \).
 
 `call ` [[stdlib_linalg(module):svd(interface)]] `(a, s, [, u, vt, overwrite_a, full_matrices, err])`
 
+### Class
+Subroutine
+
 ### Arguments
 
 `a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix of size `[m,n]`. It is an `intent(inout)` argument, but returns unchanged unless `overwrite_a=.true.`.
