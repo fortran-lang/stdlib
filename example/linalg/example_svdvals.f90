@@ -1,5 +1,5 @@
 ! Singular Values
-program example_svd2
+program example_svdvals
   use stdlib_linalg_constants, only: dp
   use stdlib_linalg, only: svdvals
   implicit none
@@ -24,4 +24,4 @@ program example_svd2
   
   1 format(a,*(1x,f12.8))
 
-end program example_svd2
+end program example_svdvals

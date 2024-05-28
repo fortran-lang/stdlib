@@ -947,7 +947,7 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 ### Example
 
 ```fortran
-{!example/linalg/example_svd1.f90!}
+{!example/linalg/example_svd.f90!}
 ```
 
 ## `svdvals` - Compute the singular values of a 2d matrix.
@@ -984,6 +984,6 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 ### Example
 
 ```fortran
-{!example/linalg/example_svd2.f90!}
+{!example/linalg/example_svdvals.f90!}
 ```
 

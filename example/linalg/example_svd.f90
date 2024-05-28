@@ -1,5 +1,5 @@
 ! Singular Value Decomposition 
-program example_svd1
+program example_svd
   use stdlib_linalg_constants, only: dp
   use stdlib_linalg, only: svd
   implicit none
@@ -47,4 +47,4 @@ program example_svd1
   
   1 format(a,*(1x,f12.8))
 
-end program example_svd1
+end program example_svd
