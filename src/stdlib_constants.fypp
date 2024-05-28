@@ -1,0 +1,64 @@
+#:include "common.fypp"
+#:set KINDS = REAL_KINDS
+module stdlib_constants
+    !! Constants
+    !! ([Specification](../page/specs/stdlib_constants.html))
+    use stdlib_kinds, only: #{for k in KINDS[:-1]}#${k}$, #{endfor}#${KINDS[-1]}$
+    use stdlib_codata, only: SPEED_OF_LIGHT_IN_VACUUM, &
+                             VACUUM_ELECTRIC_PERMITTIVITY, &
+                             VACUUM_MAG_PERMEABILITY, &
+                             PLANCK_CONSTANT, &
+                             NEWTONIAN_CONSTANT_OF_GRAVITATION, &
+                             STANDARD_ACCELERATION_OF_GRAVITY, &
+                             ELEMENTARY_CHARGE, &
+                             MOLAR_GAS_CONSTANT, &
+                             FINE_STRUCTURE_CONSTANT, &
+                             AVOGADRO_CONSTANT, &
+                             BOLTZMANN_CONSTANT, &
+                             STEFAN_BOLTZMANN_CONSTANT, &
+                             WIEN_WAVELENGTH_DISPLACEMENT_LAW_CONSTANT, &
+                             RYDBERG_CONSTANT, &
+                             ELECTRON_MASS, &
+                             PROTON_MASS, &
+                             NEUTRON_MASS, &
+                             ATOMIC_MASS_CONSTANT
+    private
+
+    ! mathematical constants
+    #:for k in KINDS
+    real(${k}$), parameter, public :: PI_${k}$ = acos(-1.0_${k}$) !! PI
+    #:endfor
+    
+    ! Physical constants
+    real(dp), parameter, public :: c = SPEED_OF_LIGHT_IN_VACUUM%value !! Speed of light in vacuum
+    real(dp), parameter, public :: speed_of_light = SPEED_OF_LIGHT_IN_VACUUM%value !! Speed of light in vacuum
+    real(dp), parameter, public :: mu_0 = VACUUM_MAG_PERMEABILITY%value !! vacuum mag. permeability
+    real(dp), parameter, public :: epsilon_0 = VACUUM_ELECTRIC_PERMITTIVITY%value !! vacuum mag. permeability
+    real(dp), parameter, public :: h = PLANCK_CONSTANT%value !! Planck constant
+    real(dp), parameter, public :: Planck = PLANCK_CONSTANT%value !! Planck constant
+    real(dp), parameter, public :: hbar = PLANCK_CONSTANT%value / PI_dp !! Reduced Planck constant
+    real(dp), parameter, public :: G = NEWTONIAN_CONSTANT_OF_GRAVITATION%value !! Newtonian constant of gravitation
+    real(dp), parameter, public :: gravitation_constant = NEWTONIAN_CONSTANT_OF_GRAVITATION%value !! Newtonian constant of gravitation
+    real(dp), parameter, public :: g2 = STANDARD_ACCELERATION_OF_GRAVITY%value !! Standard acceleration of gravity
+    real(dp), parameter, public :: e = ELEMENTARY_CHARGE%value !! Elementary charge
+    real(dp), parameter, public :: R = MOLAR_GAS_CONSTANT%value !! Molar gas constant
+    real(dp), parameter, public :: gas_constant = MOLAR_GAS_CONSTANT%value !! Molar gas constant 
+    real(dp), parameter, public :: alpha = FINE_STRUCTURE_CONSTANT%value !! Fine structure constant
+    real(dp), parameter, public :: fine_structure = FINE_STRUCTURE_CONSTANT%value !! Fine structure constant
+    real(dp), parameter, public :: N_A  = AVOGADRO_CONSTANT%value !! Avogadro constant
+    real(dp), parameter, public :: Avogadro = AVOGADRO_CONSTANT%value !! Avogadro constant
+    real(dp), parameter, public :: k = BOLTZMANN_CONSTANT%value !! Boltzmann constant
+    real(dp), parameter, public :: Boltzmann = BOLTZMANN_CONSTANT%value !! Boltzmann constant
+    real(dp), parameter, public :: sigma = STEFAN_BOLTZMANN_CONSTANT%value !! Stefan-Boltzmann constant
+    real(dp), parameter, public :: Stefan_Boltzmann = STEFAN_BOLTZMANN_CONSTANT%value !! Stefan-Boltzmann constant
+    real(dp), parameter, public :: Wien = WIEN_WAVELENGTH_DISPLACEMENT_LAW_CONSTANT%value !! Wien wavelength displacement law constant
+    real(dp), parameter, public :: Rydberg = RYDBERG_CONSTANT%value !! Rydberg constant
+    real(dp), parameter, public :: m_e = ELECTRON_MASS%value !! Electron mass
+    real(dp), parameter, public :: m_p = PROTON_MASS%value !! Proton mass
+    real(dp), parameter, public :: m_n = NEUTRON_MASS%value !! Neutron mass
+    real(dp), parameter, public :: m_u = ATOMIC_MASS_CONSTANT%value !! Atomic mass constant
+    real(dp), parameter, public :: u = ATOMIC_MASS_CONSTANT%value !! Atomic mass constant
+
+    ! Additional constants if needed
+
+end module stdlib_constants

@@ -85,7 +85,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      pure module subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$(a,b,lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#)
          !> Input matrix a[m,n]
          ${rt}$, intent(in), target :: a(:,:)
-         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         !> Right hand side vector or array, b[m] or b[m,nrhs]
          ${rt}$, intent(in) :: b${nd}$
          !> Size of the working space arrays       
          integer(ilp), intent(out) :: lrwork,liwork
@@ -111,7 +111,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
      !! param: a Input matrix of size [m,n].
-     !! param: b Right-hand-side vector of size [n] or matrix of size [n,nrhs].
+     !! param: b Right-hand-side vector of size [m] or matrix of size [m,nrhs].
      !! param: cond [optional] Real input threshold indicating that singular values `s_i <= cond*maxval(s)` 
      !!        do not contribute to the matrix rank.
      !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
@@ -121,7 +121,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      !!
          !> Input matrix a[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
-         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         !> Right hand side vector or array, b[m] or b[m,nrhs]
          ${rt}$, intent(in) :: b${nd}$
          !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
          real(${rk}$), optional, intent(in) :: cond
@@ -134,9 +134,19 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          !> Result array/matrix x[n] or x[n,nrhs]
          ${rt}$, allocatable, target :: x${nd}$         
          
-         ! Initialize solution with the shape of the rhs
-         allocate(x,mold=b)
+         integer(ilp) :: n,nrhs,ldb
+
+         n    = size(a,2,kind=ilp)
+         ldb  = size(b,1,kind=ilp)         
+         nrhs = size(b,kind=ilp)/ldb
          
+         ! Initialize solution with the shape of the rhs
+         #:if ndsuf=="one"
+         allocate(x(n))
+         #:else
+         allocate(x(n,nrhs))
+         #:endif
+
          call stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$(a,b,x,&
               cond=cond,overwrite_a=overwrite_a,rank=rank,err=err)
 
@@ -155,7 +165,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      !!
      !! param: a Input matrix of size [m,n].
      !! param: b Right-hand-side vector of size [n] or matrix of size [n,nrhs].
-     !! param: x Solution vector of size [n] or solution matrix of size [n,nrhs].
+     !! param: x Solution vector of size at [>=n] or solution matrix of size [>=n,nrhs].
      !! param: real_storage [optional] Real working space
      !! param: int_storage [optional] Integer working space
      #:if rt.startswith('c')   
@@ -198,7 +208,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
          integer(ilp) :: nrs,nis,ncs,nsvd
          integer(ilp), pointer :: iwork(:)
-         logical(lk) :: copy_a
+         logical(lk) :: copy_a,large_enough_x
          real(${rk}$) :: acond,rcond
          real(${rk}$), pointer :: rwork(:),singular(:)
          ${rt}$, pointer :: xmat(:,:),amat(:,:),cwork(:)
@@ -214,8 +224,8 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          mnmin = min(m,n)
          mnmax = max(m,n)
 
-         if (lda<1 .or. n<1 .or. ldb<1 .or. ldb/=m .or. ldx/=m) then
-            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid sizes: a=',[lda,n], &
+         if (lda<1 .or. n<1 .or. ldb<1 .or. ldb/=m .or. ldx<n) then
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient sizes: a=',[lda,n], &
                                                              'b=',[ldb,nrhs],' x=',[ldx,nrhsx])
             call linalg_error_handling(err0,err)
             if (present(rank)) rank = 0
@@ -236,9 +246,19 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
             amat => a
          endif
 
-         ! Initialize solution with the rhs
-         x = b 
-         xmat(1:n,1:nrhs) => x
+         ! If x is large enough to store b, use it as temporary rhs storage. 
+         large_enough_x = ldx>=m
+         if (large_enough_x) then          
+            xmat(1:ldx,1:nrhs) => x
+         else
+            allocate(xmat(m,nrhs))
+         endif
+
+         #:if ndsuf=="one"
+         xmat(1:m,1) = b
+         #:else
+         xmat(1:m,1:nrhs) = b
+         #:endif
 
          ! Singular values array (in decreasing order)
          if (present(singvals)) then 
@@ -285,7 +305,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          else
             allocate(cwork(lcwork))
          endif
-         ncs = size(iwork,kind=ilp)
+         ncs = size(cwork,kind=ilp)
          #:endif         
                     
          if (nrs<lrwork .or. nis<liwork#{if rt.startswith('c')}# .or. ncs<lcwork#{endif}# &
@@ -302,7 +322,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
             ! Solve system using singular value decomposition
             call gelsd(m,n,nrhs,amat,lda,xmat,ldb,singular,rcond,arank, &
             #:if rt.startswith('complex')
-                       cwork,nrs,rwork,iwork,info)
+                       cwork,ncs,rwork,iwork,info)
             #:else
                        rwork,nrs,iwork,info)
             #:endif
@@ -316,7 +336,16 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          endif           
                   
          ! Process output and return
+         if (.not.large_enough_x) then 
+            #:if ndsuf=="one"
+            x(1:n) = xmat(1:n,1)
+            #:else
+            x(1:n,1:nrhs) = xmat(1:n,1:nrhs)
+            #:endif
+            deallocate(xmat)
+         endif
          if (copy_a) deallocate(amat)         
+
          if (present(rank)) rank = arank
          if (.not.present(real_storage)) deallocate(rwork)
          if (.not.present(int_storage))  deallocate(iwork)
