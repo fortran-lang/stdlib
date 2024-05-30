@@ -157,7 +157,7 @@ Procedures to manipulate `key_type` data:
   `key_in`, to contents of the key, `key_out`.
 
 * `get( key, value )` - extracts the contents of `key` into `value`,
-  an `int8` array, 'int32' array, or character string.
+  an `int8` array, `int32` array, or character string.
 
 * `free_key( key )` - frees the memory in `key`.
 
@@ -474,8 +474,8 @@ is an `intent(in)` argument.
 `other`: shall be a scalar expression of type `other_type`. It
 is an `intent(in)` argument.
 
-`value`: if the the first argument is of `key_type` `value` shall be
-an allocatable default character string variable, or 
+`value`: if the the first argument is of `key_type`, `value` shall be
+an allocatable default `character` string variable, or 
 an allocatable vector variable of type integer and kind `int8` or 
 `int32`, otherwise the first argument is of `other_type` and `value` 
 shall be an allocatable of `class(*)`. It is an `intent(out)` argument.
@@ -751,8 +751,8 @@ is an `intent(out)` argument.
 `other`: shall be a scalar variable of type `other_type`. It
 is an `intent(out)` argument.
 
-`value`: if the first argument is `key` `value` shall be a default
-character string scalar expression, or a vector expression of type integer
+`value`: if the first argument is `key`, `value` shall be a default
+`character` string scalar expression, or a vector expression of type integer
 and kind `int8` or `int32`, while for a first argument of type 
 `other` `value` shall be of type `class(*)`. It is an `intent(in)` 
 argument.
@@ -789,6 +789,14 @@ overall structure and performance of the hash map object:`calls`,
 `probe_factor`, `load_factor`, `map_probe_factor`, `default_bits`,
 `max_bits`, `int_calls`, `int_depth`, `int_index`,
 `int_probes`, `success`, `alloc_fault`, and `array_size_error`.
+
+Generic key interfaces for `key_test`, `map_entry`, `get_other_data`,
+`remove`, and `set_other_data` are povided so that the supported types
+of `int8` arrays, `int32` arrays and `character` scalars can be used in the
+key field as well as the base `key` type.  So for `key_test`,
+`key_key_test` specifies key type for the key field, `int8_key_test` is int8
+for the key field and so on.  Procedures other than `key_key_test` will call
+the `set` function to generate a key type and pass to `key_key_test`.         
 
 ### The `stdlib_hashmaps` module's public constants
 
@@ -924,6 +932,7 @@ The type's definition is below:
 
 ```fortran
     type, abstract :: hashmap_type
+
         private
         integer(int_calls) :: call_count = 0
         integer(int_calls) :: probe_count = 0
@@ -932,22 +941,52 @@ The type's definition is below:
         integer(int_index) :: num_free = 0
         integer(int32)     :: nbits = default_bits
         procedure(hasher_fun), pointer, nopass :: hasher => fnv_1_hasher
+
     contains
+    
         procedure, non_overridable, pass(map) :: calls
         procedure, non_overridable, pass(map) :: entries
         procedure, non_overridable, pass(map) :: map_probes
-        procedure, non_overridable, pass(map) :: slots_bits
         procedure, non_overridable, pass(map) :: num_slots
-        procedure(get_all_keys), deferred, pass(map) :: get_all_keys
-        procedure(get_other), deferred, pass(map)    :: get_other_data
-        procedure(init_map), deferred, pass(map)     :: init
-        procedure(key_test), deferred, pass(map)     :: key_test 
-        procedure(loading), deferred, pass(map)      :: loading
-        procedure(map_entry), deferred, pass(map)    :: map_entry
-        procedure(rehash_map), deferred, pass(map)   :: rehash
-        procedure(remove_entry), deferred, pass(map) :: remove
-        procedure(set_other), deferred, pass(map)    :: set_other_data
-        procedure(total_depth), deferred, pass(map)  :: total_depth
+        procedure, non_overridable, pass(map) :: slots_bits
+        procedure(get_all_keys), deferred, pass(map)        :: get_all_keys
+        procedure(init_map), deferred, pass(map)            :: init
+        procedure(loading), deferred, pass(map)             :: loading
+        procedure(rehash_map), deferred, pass(map)          :: rehash
+        procedure(total_depth), deferred, pass(map)         :: total_depth
+    
+        !! Generic interfaces for key types.
+        procedure(key_key_test), deferred, pass(map) :: key_key_test
+        procedure, non_overridable, pass(map) :: int8_key_test
+        procedure, non_overridable, pass(map) :: int32_key_test
+        procedure, non_overridable, pass(map) :: char_key_test
+        
+        procedure(key_map_entry), deferred, pass(map) :: key_map_entry
+        procedure, non_overridable, pass(map) :: int8_map_entry
+        procedure, non_overridable, pass(map) :: int32_map_entry
+        procedure, non_overridable, pass(map) :: char_map_entry
+        
+        procedure(key_get_other_data), deferred, pass(map)  :: key_get_other_data
+        procedure, non_overridable, pass(map) :: int8_get_other_data
+        procedure, non_overridable, pass(map) :: int32_get_other_data
+        procedure, non_overridable, pass(map) :: char_get_other_data
+        
+        procedure(key_remove_entry), deferred, pass(map) :: key_remove_entry
+        procedure, non_overridable, pass(map) :: int8_remove_entry
+        procedure, non_overridable, pass(map) :: int32_remove_entry
+        procedure, non_overridable, pass(map) :: char_remove_entry
+        
+        procedure(key_set_other_data), deferred, pass(map)  :: key_set_other_data
+        procedure, non_overridable, pass(map) :: int8_set_other_data
+        procedure, non_overridable, pass(map) :: int32_set_other_data
+        procedure, non_overridable, pass(map) :: char_set_other_data
+        
+        generic, public :: key_test => key_key_test, int8_key_test, int32_key_test, char_key_test
+        generic, public :: map_entry => key_map_entry, int8_map_entry, int32_map_entry, char_map_entry
+        generic, public :: get_other_data => key_get_other_data, int8_get_other_data, int32_get_other_data, char_get_other_data
+        generic, public :: remove => key_remove_entry, int8_remove_entry, int32_remove_entry, char_remove_entry
+        generic, public :: set_other_data => key_set_other_data, int8_set_other_data, int32_set_other_data, char_set_other_data
+        
     end type hashmap_type
 ```
 
@@ -1028,21 +1067,21 @@ as follows:
 ```fortran
     type, extends(hashmap_type) :: chaining_hashmap_type
         private
-        type(chaining_map_entry_pool), pointer    :: cache => null() 
-        type(chaining_map_entry_type), pointer    :: free_list => null() 
-        type(chaining_map_entry_ptr), allocatable :: inverse(:) 
+        type(chaining_map_entry_pool), pointer    :: cache => null()
+        type(chaining_map_entry_type), pointer    :: free_list => null()
+        type(chaining_map_entry_ptr), allocatable :: inverse(:)
         type(chaining_map_entry_ptr), allocatable :: slots(:)
     contains
         procedure :: get_all_keys => get_all_chaining_keys
-        procedure :: get_other_data => get_other_chaining_data
+        procedure :: key_get_other_data => get_other_chaining_data
         procedure :: init => init_chaining_map
-        procedure :: key => chaining_key_test 
         procedure :: loading => chaining_loading
-        procedure :: map_entry => map_chain_entry
+        procedure :: key_map_entry => map_chain_entry
         procedure :: rehash => rehash_chaining_map
-        procedure :: remove => remove_chaining_entry
-        procedure :: set_other_data => set_other_chaining_data
+        procedure :: key_remove_entry => remove_chaining_entry
+        procedure :: key_set_other_data => set_other_chaining_data
         procedure :: total_depth => total_chaining_depth
+        procedure :: key_key_test => chaining_key_test
         final     :: free_chaining_map
     end type chaining_hashmap_type
 ```
@@ -1103,24 +1142,24 @@ It also implements all of the deferred procedures of the
 as follows:
 
 ```fortran
-    type, extends(hashmap_type) :: open_hashmap_type 
-        private 
+    type, extends(hashmap_type) :: open_hashmap_type
+        private
         integer(int_index) :: index_mask = 2_int_index**default_bits-1
         type(open_map_entry_pool), pointer    :: cache => null()
-        type(open_map_entry_list), pointer    :: free_list => null() 
-        type(open_map_entry_ptr), allocatable :: inverse(:)
-        integer(int_index), allocatable       :: slots(:) 
+        type(open_map_entry_list), pointer    :: free_list => null()
+        type(open_map_entry_ptr), allocatable  :: inverse(:)
+        integer(int_index), allocatable        :: slots(:)
     contains
         procedure :: get_all_keys => get_all_open_keys
-        procedure :: get_other_data => get_other_open_data
+        procedure :: key_get_other_data => get_other_open_data
         procedure :: init => init_open_map
-        procedure :: key_test => open_key_test 
         procedure :: loading => open_loading
-        procedure :: map_entry => map_open_entry
+        procedure :: key_map_entry => map_open_entry
         procedure :: rehash => rehash_open_map
-        procedure :: remove => remove_open_entry
-        procedure :: set_other_data => set_other_open_data
+        procedure :: key_remove_entry => remove_open_entry
+        procedure :: key_set_other_data => set_other_open_data
         procedure :: total_depth => total_open_depth
+        procedure :: key_key_test => open_key_test
         final     :: free_open_map
     end type open_hashmap_type
 ```
@@ -1323,8 +1362,8 @@ Subroutine
   `intent(inout)` argument. It will be 
   the hash map used to store and access the other data.
 
-`key`: shall be a scalar expression of type `key_type`. It
-  is an `intent(in)` argument.
+`key`: shall be a of type `key_type` scalar, `character` scalar, `int8` array
+or `int32` array. It is an `intent(in)` argument.
 
 `other`: shall be a variable of type `other_data`.
   It is an `intent(out)` argument. It is the other data associated
@@ -1435,9 +1474,9 @@ Subroutine.
 It is an `intent(inout)` argument. It is the hash map whose entries
 are examined.
 
-`key`: shall be a scalar expression of type `key_type`. It
-is an `intent(in)` argument. It is a `key` whose presence in the `map`
-is being examined.
+`key`: shall be a of type `key_type` scalar, `character` scalar, `int8` array
+or `int32` array. It is an `intent(in)` argument. It is a `key` whose 
+presence in the `map` is being examined.
 
 `present` (optional): shall be a scalar variable of type default
 `logical`. It is an intent(out) argument. It is a logical flag where
@@ -1516,9 +1555,9 @@ Subroutine
 is an `intent(inout)` argument. It is the hash map to receive the
 entry.
 
-`key`: shall be a scalar expression of type `key_type`.
-  It is an `intent(in)` argument. It is the key for the entry to be
-  placed in the table.
+`key`: shall be a of type `key_type` scalar, `character` scalar, `int8` array
+or `int32` array. It is an `intent(in)` argument. It is the key for the entry
+to be placed in the table.
 
 `other` (optional): shall be a scalar expression of type `other_type`.
   It is an `intent(in)` argument. If present it is the other data to be
@@ -1677,9 +1716,9 @@ Subroutine
 It is an `intent(inout)` argument. It is the hash map with the element 
 to be removed.
 
-`key`: shall be a scalar expression of type `key_type`. It
-is an `intent(in)` argument. It is the `key` identifying the entry
-to be removed.
+`key`: shall be a of type `key_type` scalar, `character` scalar, `int8` array
+or `int32` array. It is an `intent(in)` argument. It is the `key` identifying 
+the entry to be removed.
 
 `existed` (optional): shall be a scalar variable of type default
 logical. It is an `intent(out)` argument. If present with the value
@@ -1719,9 +1758,9 @@ Subroutine
 is an `intent(inout)` argument. It will be a hash map used to store
 and access the entry's data.
 
-`key`: shall be a scalar expression of  type `key_type`. It
-is an `intent(in)` argument. It is the `key` to the entry whose
-`other` data is to be replaced.
+`key`: shall be a of type `key_type` scalar, `character` scalar, `int8` array
+or `int32` array. It is an `intent(in)` argument. It is the `key` to the 
+entry whose `other` data is to be replaced.
 
 `other`: shall be a scalar expression of type `other_type`.
 It is an `intent(in)` argument. It is the data to be stored as
