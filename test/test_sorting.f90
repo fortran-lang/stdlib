@@ -1,3 +1,4 @@
+
 module test_sorting
 
     use, intrinsic :: iso_fortran_env, only: compiler_version, error_unit
@@ -54,14 +55,17 @@ module test_sorting
     type(string_type)       :: string_dummy(0:string_size-1)
     type(bitset_large)      :: bitsetl_dummy(0:bitset_size-1)
     type(bitset_64)         :: bitset64_dummy(0:bitset_size-1)
-    integer(int_index)      :: index(0:max(test_size, char_size, string_size)-1)
+    integer(int_index)      :: index_default(0:max(test_size, char_size, string_size)-1)
+    integer(int_index_low)  :: index_low(0:max(test_size, char_size, string_size)-1)
     integer(int32)          :: work(0:test_size/2-1)
     character(len=4)        :: char_work(0:char_size/2-1)
     type(string_type)       :: string_work(0:string_size/2-1)
     type(bitset_large)      :: bitsetl_work(0:bitset_size/2-1)
     type(bitset_64)         :: bitset64_work(0:bitset_size/2-1)
-    integer(int_index)      :: iwork(0:max(test_size, char_size, &
+    integer(int_index)      :: iwork_default(0:max(test_size, char_size, &
                                      string_size)/2-1)
+    integer(int_index_low)  :: iwork_low(0:max(test_size, char_size, &
+                                         string_size)/2-1)
     integer                 :: count, i, index1, index2, j, k, l, temp
     real(sp)                :: arand, brand
     character(*), parameter :: filename = 'test_sorting.txt'
@@ -82,7 +86,6 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest('int_ord_sorts', test_int_ord_sorts), &
             new_unittest('char_ord_sorts', test_char_ord_sorts), &
             new_unittest('string_ord_sorts', test_string_ord_sorts), &
             new_unittest('bitset_large_ord_sorts', test_bitsetl_ord_sorts), &
@@ -94,11 +97,17 @@ contains
             new_unittest('string_sorts', test_string_sorts), &
             new_unittest('bitset_large_sorts', test_bitsetl_sorts), &
             new_unittest('bitset_64_sorts', test_bitset64_sorts), &
-            new_unittest('int_sort_indexes', test_int_sort_indexes), &
-            new_unittest('char_sort_indexes', test_char_sort_indexes), &
-            new_unittest('string_sort_indexes', test_string_sort_indexes), &
-            new_unittest('bitset_large_sort_indexes', test_bitsetl_sort_indexes), &
-            new_unittest('bitset_64_sort_indexes', test_bitset64_sort_indexes) &
+            new_unittest('int_sort_indexes_default', test_int_sort_indexes_default), &
+            new_unittest('char_sort_indexes_default', test_char_sort_indexes_default), &
+            new_unittest('string_sort_indexes_default', test_string_sort_indexes_default), &
+            new_unittest('bitset_large_sort_indexes_default', test_bitsetl_sort_indexes_default), &
+            new_unittest('bitset_64_sort_indexes_default', test_bitset64_sort_indexes_default), &
+            new_unittest('int_sort_indexes_low', test_int_sort_indexes_low), &
+            new_unittest('char_sort_indexes_low', test_char_sort_indexes_low), &
+            new_unittest('string_sort_indexes_low', test_string_sort_indexes_low), &
+            new_unittest('bitset_large_sort_indexes_low', test_bitsetl_sort_indexes_low), &
+            new_unittest('bitset_64_sort_indexes_low', test_bitset64_sort_indexes_low), &
+            new_unittest('int_ord_sorts', test_int_ord_sorts) &
         ]
 
     end subroutine collect_sorting
@@ -1207,47 +1216,47 @@ contains
         end if
     end subroutine test_bitset64_sort
 
-    subroutine test_int_sort_indexes(error)
+    subroutine test_int_sort_indexes_default(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         integer(int64)              :: i
         integer(int32), allocatable :: d1(:)
-        integer(int64), allocatable :: index(:)
+        integer(int_index), allocatable         :: index(:)
         logical                     :: ltest
 
-        call test_int_sort_index( blocks, "Blocks", ltest )
+        call test_int_sort_index_default( blocks, "Blocks", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_int_sort_index( decrease, "Decreasing", ltest )
+        call test_int_sort_index_default( decrease, "Decreasing", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_int_sort_index( identical, "Identical", ltest )
+        call test_int_sort_index_default( identical, "Identical", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_int_sort_index( increase, "Increasing", ltest )
+        call test_int_sort_index_default( increase, "Increasing", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_int_sort_index( rand1, "Random dense", ltest )
+        call test_int_sort_index_default( rand1, "Random dense", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_int_sort_index( rand2, "Random order", ltest )
+        call test_int_sort_index_default( rand2, "Random order", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_int_sort_index( rand0, "Random sparse", ltest )
+        call test_int_sort_index_default( rand0, "Random sparse", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_int_sort_index( rand3, "Random 3", ltest )
+        call test_int_sort_index_default( rand3, "Random 3", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_int_sort_index( rand10, "Random 10", ltest )
+        call test_int_sort_index_default( rand10, "Random 10", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
@@ -1257,9 +1266,9 @@ contains
         call verify_sort( d1, ltest, i )
         call check(error, ltest)
 
-    end subroutine test_int_sort_indexes
+    end subroutine test_int_sort_indexes_default
 
-    subroutine test_int_sort_index( a, a_name, ltest )
+    subroutine test_int_sort_index_default( a, a_name, ltest )
         integer(int32), intent(inout) :: a(:)
         character(*), intent(in)      :: a_name
         logical, intent(out)          :: ltest
@@ -1275,57 +1284,57 @@ contains
         do i = 1, repeat
             dummy = a
             call system_clock( t0, rate )
-            call sort_index( dummy, index, work, iwork )
+            call sort_index( dummy, index_default, work, iwork_default )
             call system_clock( t1, rate )
             tdiff = tdiff + t1 - t0
         end do
         tdiff = tdiff/repeat
 
-        dummy = a(index(0:size(a)-1))
+        dummy = a(index_default(0:size(a)-1))
         call verify_sort( dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
             write( *, * ) "SORT_INDEX did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a18, 2i7)') 'a(index(i-1:i)) = ', a(index(i-1:i))
+            write(*,'(a18, 2i7)') 'a(index_default(i-1:i)) = ', a(index_default(i-1:i))
         end if
         write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
             test_size, a_name, "Sort_Index", tdiff/rate
 
         dummy = a
-        call sort_index( dummy, index, work, iwork, reverse=.true. )
-        dummy = a(index(size(a)-1))
+        call sort_index( dummy, index_default, work, iwork_default, reverse=.true. )
+        dummy = a(index_default(size(a)-1))
         call verify_reverse_sort( dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
             write( *, * ) "SORT_INDEX did not reverse sort " // &
                 a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a18, 2i7)') 'a(index(i-1:i)) = ', a(index(i-1:i))
+            write(*,'(a18, 2i7)') 'a(index_default(i-1:i)) = ', a(index_default(i-1:i))
         end if
 
-    end subroutine test_int_sort_index
+    end subroutine test_int_sort_index_default
 
-    subroutine test_char_sort_indexes(error)
+    subroutine test_char_sort_indexes_default(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         logical :: ltest
 
-        call test_char_sort_index( char_decrease, "Char. Decrease", ltest )
+        call test_char_sort_index_default( char_decrease, "Char. Decrease", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_char_sort_index( char_increase, "Char. Increase", ltest )
+        call test_char_sort_index_default( char_increase, "Char. Increase", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_char_sort_index( char_rand, "Char. Random", ltest )
+        call test_char_sort_index_default( char_rand, "Char. Random", ltest )
         call check(error, ltest)
 
-    end subroutine test_char_sort_indexes
+    end subroutine test_char_sort_indexes_default
 
-    subroutine test_char_sort_index( a, a_name, ltest )
+    subroutine test_char_sort_index_default( a, a_name, ltest )
         character(len=4), intent(in) :: a(0:)
         character(*), intent(in) :: a_name
         logical, intent(out)     :: ltest
@@ -1342,7 +1351,7 @@ contains
             char_dummy = a
             call system_clock( t0, rate )
 
-            call sort_index( char_dummy, index, char_work, iwork )
+            call sort_index( char_dummy, index_default, char_work, iwork_default )
 
             call system_clock( t1, rate )
 
@@ -1362,27 +1371,27 @@ contains
             'a12, " |",  F10.6, " |" )' ) &
             char_size, a_name, "Sort_Index", tdiff/rate
 
-    end subroutine test_char_sort_index
+    end subroutine test_char_sort_index_default
 
-    subroutine test_string_sort_indexes(error)
+    subroutine test_string_sort_indexes_default(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         logical :: ltest
 
-        call test_string_sort_index( string_decrease, "String Decrease", ltest )
+        call test_string_sort_index_default( string_decrease, "String Decrease", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_string_sort_index( string_increase, "String Increase", ltest )
+        call test_string_sort_index_default( string_increase, "String Increase", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_string_sort_index( string_rand, "String Random", ltest )
+        call test_string_sort_index_default( string_rand, "String Random", ltest )
         call check(error, ltest)
 
-    end subroutine test_string_sort_indexes
+    end subroutine test_string_sort_indexes_default
 
-    subroutine test_string_sort_index( a, a_name, ltest )
+    subroutine test_string_sort_index_default( a, a_name, ltest )
         type(string_type), intent(in) :: a(0:)
         character(*), intent(in) :: a_name
         logical, intent(out) :: ltest
@@ -1398,7 +1407,7 @@ contains
         do i = 1, repeat
             string_dummy = a
             call system_clock( t0, rate )
-            call sort_index( string_dummy, index, string_work, iwork )
+            call sort_index( string_dummy, index_default, string_work, iwork_default )
             call system_clock( t1, rate )
             tdiff = tdiff + t1 - t0
         end do
@@ -1416,27 +1425,27 @@ contains
             'a12, " |",  F10.6, " |" )' ) &
             string_size, a_name, "Sort_Index", tdiff/rate
 
-    end subroutine test_string_sort_index
+    end subroutine test_string_sort_index_default
 
-    subroutine test_bitsetl_sort_indexes(error)
+    subroutine test_bitsetl_sort_indexes_default(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         logical :: ltest
 
-        call test_bitsetl_sort_index( bitsetl_decrease, "Bitset Decrease", ltest )
+        call test_bitsetl_sort_index_default( bitsetl_decrease, "Bitset Decrease", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_bitsetl_sort_index( bitsetl_increase, "Bitset Increase", ltest )
+        call test_bitsetl_sort_index_default( bitsetl_increase, "Bitset Increase", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_bitsetl_sort_index( bitsetl_rand, "Bitset Random", ltest )
+        call test_bitsetl_sort_index_default( bitsetl_rand, "Bitset Random", ltest )
         call check(error, ltest)
 
-    end subroutine test_bitsetl_sort_indexes
+    end subroutine test_bitsetl_sort_indexes_default
 
-    subroutine test_bitsetl_sort_index( a, a_name, ltest )
+    subroutine test_bitsetl_sort_index_default( a, a_name, ltest )
         type(bitset_large), intent(in) :: a(0:)
         character(*), intent(in)       :: a_name
         logical, intent(out)           :: ltest
@@ -1453,7 +1462,7 @@ contains
         do i = 1, repeat
             bitsetl_dummy = a
             call system_clock( t0, rate )
-            call sort_index( bitsetl_dummy, index, bitsetl_work, iwork )
+            call sort_index( bitsetl_dummy, index_default, bitsetl_work, iwork_default )
             call system_clock( t1, rate )
             tdiff = tdiff + t1 - t0
         end do
@@ -1473,27 +1482,27 @@ contains
             'a12, " |",  F10.6, " |" )' ) &
             bitset_size, a_name, "Sort_Index", tdiff/rate
 
-    end subroutine test_bitsetl_sort_index
+    end subroutine test_bitsetl_sort_index_default
 
-    subroutine test_bitset64_sort_indexes(error)
+    subroutine test_bitset64_sort_indexes_default(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         logical :: ltest
 
-        call test_bitset64_sort_index( bitset64_decrease, "Bitset Decrease", ltest )
+        call test_bitset64_sort_index_default( bitset64_decrease, "Bitset Decrease", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_bitset64_sort_index( bitset64_increase, "Bitset Increase", ltest )
+        call test_bitset64_sort_index_default( bitset64_increase, "Bitset Increase", ltest )
         call check(error, ltest)
         if (allocated(error)) return
 
-        call test_bitset64_sort_index( bitset64_rand, "Bitset Random", ltest )
+        call test_bitset64_sort_index_default( bitset64_rand, "Bitset Random", ltest )
         call check(error, ltest)
 
-    end subroutine test_bitset64_sort_indexes
+    end subroutine test_bitset64_sort_indexes_default
 
-    subroutine test_bitset64_sort_index( a, a_name, ltest )
+    subroutine test_bitset64_sort_index_default( a, a_name, ltest )
         type(bitset_64), intent(in) :: a(0:)
         character(*), intent(in)    :: a_name
         logical, intent(out)        :: ltest
@@ -1510,7 +1519,7 @@ contains
         do i = 1, repeat
             bitset64_dummy = a
             call system_clock( t0, rate )
-            call sort_index( bitset64_dummy, index, bitset64_work, iwork )
+            call sort_index( bitset64_dummy, index_default, bitset64_work, iwork_default )
             call system_clock( t1, rate )
             tdiff = tdiff + t1 - t0
         end do
@@ -1530,7 +1539,331 @@ contains
             'a12, " |",  F10.6, " |" )' ) &
             bitset_size, a_name, "Sort_Index", tdiff/rate
 
-    end subroutine test_bitset64_sort_index
+    end subroutine test_bitset64_sort_index_default
+    subroutine test_int_sort_indexes_low(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        integer(int64)              :: i
+        integer(int32), allocatable :: d1(:)
+        integer(int_index_low), allocatable         :: index(:)
+        logical                     :: ltest
+
+        call test_int_sort_index_low( blocks, "Blocks", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_index_low( decrease, "Decreasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_index_low( identical, "Identical", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_index_low( increase, "Increasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_index_low( rand1, "Random dense", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_index_low( rand2, "Random order", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_index_low( rand0, "Random sparse", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_index_low( rand3, "Random 3", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_index_low( rand10, "Random 10", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        d1 = [10, 2, -3, -4, 6, -6, 7, -8, 9, 0, 1, 20]
+        allocate( index(size(d1)) )
+        call sort_index( d1, index )
+        call verify_sort( d1, ltest, i )
+        call check(error, ltest)
+
+    end subroutine test_int_sort_indexes_low
+
+    subroutine test_int_sort_index_low( a, a_name, ltest )
+        integer(int32), intent(inout) :: a(:)
+        character(*), intent(in)      :: a_name
+        logical, intent(out)          :: ltest
+
+        integer(int64)                 :: t0, t1, tdiff
+        real(dp)                       :: rate
+        integer(int64)                 :: i
+        logical                        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            dummy = a
+            call system_clock( t0, rate )
+            call sort_index( dummy, index_low, work, iwork_low )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        dummy = a(index_low(0:size(a)-1))
+        call verify_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_INDEX did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(index_low(i-1:i)) = ', a(index_low(i-1:i))
+        end if
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            test_size, a_name, "Sort_Index", tdiff/rate
+
+        dummy = a
+        call sort_index( dummy, index_low, work, iwork_low, reverse=.true. )
+        dummy = a(index_low(size(a)-1))
+        call verify_reverse_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_INDEX did not reverse sort " // &
+                a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(index_low(i-1:i)) = ', a(index_low(i-1:i))
+        end if
+
+    end subroutine test_int_sort_index_low
+
+    subroutine test_char_sort_indexes_low(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_char_sort_index_low( char_decrease, "Char. Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_char_sort_index_low( char_increase, "Char. Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_char_sort_index_low( char_rand, "Char. Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_char_sort_indexes_low
+
+    subroutine test_char_sort_index_low( a, a_name, ltest )
+        character(len=4), intent(in) :: a(0:)
+        character(*), intent(in) :: a_name
+        logical, intent(out)     :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            char_dummy = a
+            call system_clock( t0, rate )
+
+            call sort_index( char_dummy, index_low, char_work, iwork_low )
+
+            call system_clock( t1, rate )
+
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_char_sort( char_dummy, valid, i )
+
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_INDEX did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
+        end if
+        write( lun, '("|    Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            char_size, a_name, "Sort_Index", tdiff/rate
+
+    end subroutine test_char_sort_index_low
+
+    subroutine test_string_sort_indexes_low(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_string_sort_index_low( string_decrease, "String Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_string_sort_index_low( string_increase, "String Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_string_sort_index_low( string_rand, "String Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_string_sort_indexes_low
+
+    subroutine test_string_sort_index_low( a, a_name, ltest )
+        type(string_type), intent(in) :: a(0:)
+        character(*), intent(in) :: a_name
+        logical, intent(out) :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            string_dummy = a
+            call system_clock( t0, rate )
+            call sort_index( string_dummy, index_low, string_work, iwork_low )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_string_sort( string_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_INDEX did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a17, 2(1x,a4))') 'string_dummy(i-1:i) = ', &
+                string_dummy(i-1:i)
+        end if
+        write( lun, '("|  String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            string_size, a_name, "Sort_Index", tdiff/rate
+
+    end subroutine test_string_sort_index_low
+
+    subroutine test_bitsetl_sort_indexes_low(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitsetl_sort_index_low( bitsetl_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_index_low( bitsetl_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_index_low( bitsetl_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitsetl_sort_indexes_low
+
+    subroutine test_bitsetl_sort_index_low( a, a_name, ltest )
+        type(bitset_large), intent(in) :: a(0:)
+        character(*), intent(in)       :: a_name
+        logical, intent(out)           :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitsetl_dummy = a
+            call system_clock( t0, rate )
+            call sort_index( bitsetl_dummy, index_low, bitsetl_work, iwork_low )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitsetl_sort( bitsetl_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_INDEX did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitsetl_dummy(i-1)%to_string(bin_im1)
+            call bitsetl_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_Index", tdiff/rate
+
+    end subroutine test_bitsetl_sort_index_low
+
+    subroutine test_bitset64_sort_indexes_low(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitset64_sort_index_low( bitset64_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_index_low( bitset64_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_index_low( bitset64_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitset64_sort_indexes_low
+
+    subroutine test_bitset64_sort_index_low( a, a_name, ltest )
+        type(bitset_64), intent(in) :: a(0:)
+        character(*), intent(in)    :: a_name
+        logical, intent(out)        :: ltest
+
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitset64_dummy = a
+            call system_clock( t0, rate )
+            call sort_index( bitset64_dummy, index_low, bitset64_work, iwork_low )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitset64_sort( bitset64_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_INDEX did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitset64_dummy(i-1)%to_string(bin_im1)
+            call bitset64_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitset64_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("|    Bitset_64 |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_Index", tdiff/rate
+
+    end subroutine test_bitset64_sort_index_low
 
     subroutine verify_sort( a, valid, i )
         integer(int32), intent(in) :: a(0:)
