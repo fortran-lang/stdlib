@@ -218,7 +218,7 @@ contains
 
 
 
-    #:for k1, t1 in CMPLX_KINDS_TYPES[0:2]
+    #:for k1, t1 in C_KINDS_TYPES
       #:if k1 == "sp"
           #:set k2 = "dp"
       #:elif k1 == "dp"
