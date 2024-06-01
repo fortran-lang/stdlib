@@ -6,6 +6,8 @@
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"]))
 #:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_KINDS))
 
+#:set INT_INDEX_TYPES_ALT_NAME = list(zip(["int_index", "int_index_low"], ["integer(int_index)", "integer(int_index_low)"], ["default", "low"]))
+
 #! For better code reuse in fypp, make lists that contain the input types,
 #! with each having output types and a separate name prefix for subroutines
 #! This approach allows us to have the same code for all input types.
@@ -138,6 +140,8 @@ module stdlib_sorting
     private
 
     integer, parameter, public :: int_index = int64 !! Integer kind for indexing
+    integer, parameter, public :: int_index_low = int32 !! Integer kind for indexing using less than `huge(1_int32)` values
+
 
 ! Constants for use by tim_sort
     integer, parameter :: &
@@ -147,14 +151,16 @@ module stdlib_sorting
         max_merge_stack = int( ceiling( log( 2._dp**64 ) / &
                                log(1.6180339887_dp) ) )
 
-    type run_type
+#:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
+    type run_type_${namei}$
 !! Version: experimental
 !!
 !! Used to pass state around in a stack among helper functions for the
 !! `ORD_SORT` and `SORT_INDEX` algorithms
-        integer(int_index) :: base = 0
-        integer(int_index) :: len = 0
-    end type run_type
+        ${ti}$ :: base = 0
+        ${ti}$ :: len = 0
+    end type run_type_${namei}$
+#:endfor
 
     public ord_sort
 !! Version: experimental
@@ -515,23 +521,25 @@ module stdlib_sorting
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
 !! with a value of `.TRUE.` the indices correspond to a non-increasing sort.
 
-#:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
-        module subroutine ${name1}$_sort_index( array, index, work, iwork, &
+#:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
+    #:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
+        module subroutine ${name1}$_sort_index_${namei}$( array, index, work, iwork, &
             reverse )
 !! Version: experimental
 !!
-!! `${name1}$_sort_index( array, index[, work, iwork, reverse] )` sorts
+!! `${name1}$_sort_index_${namei}$( array, index[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `${t1}$`
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
             ${t1}$, intent(inout)                     :: array(0:)
-            integer(int_index), intent(out)           :: index(0:)
+            ${ti}$, intent(out)                      :: index(0:)
             ${t2}$, intent(out), optional             :: work(0:)
-            integer(int_index), intent(out), optional :: iwork(0:)
+            ${ti}$, intent(out), optional            :: iwork(0:)
             logical, intent(in), optional             :: reverse
-        end subroutine ${name1}$_sort_index
+        end subroutine ${name1}$_sort_index_${namei}$
 
+    #:endfor
 #:endfor
 
     end interface sort_index
