@@ -117,36 +117,39 @@ module stdlib_hashmaps
         procedure(rehash_map), deferred, pass(map)          :: rehash
         procedure(total_depth), deferred, pass(map)         :: total_depth
     
-        !! Generic interfaces for key types.
+        !! Key_test procedures.
         procedure(key_key_test), deferred, pass(map) :: key_key_test
         procedure, non_overridable, pass(map) :: int8_key_test
         procedure, non_overridable, pass(map) :: int32_key_test
         procedure, non_overridable, pass(map) :: char_key_test
+        generic, public :: key_test => key_key_test, int8_key_test, int32_key_test, char_key_test
         
+        ! Map_entry procedures
         procedure(key_map_entry), deferred, pass(map) :: key_map_entry
         procedure, non_overridable, pass(map) :: int8_map_entry
         procedure, non_overridable, pass(map) :: int32_map_entry
         procedure, non_overridable, pass(map) :: char_map_entry
+        generic, public :: map_entry => key_map_entry, int8_map_entry, int32_map_entry, char_map_entry
         
+        ! Get_other_data procedures
         procedure(key_get_other_data), deferred, pass(map)  :: key_get_other_data
         procedure, non_overridable, pass(map) :: int8_get_other_data
         procedure, non_overridable, pass(map) :: int32_get_other_data
         procedure, non_overridable, pass(map) :: char_get_other_data
+        generic, public :: get_other_data => key_get_other_data, int8_get_other_data, int32_get_other_data, char_get_other_data
         
+        ! Key_remove_entry procedures
         procedure(key_remove_entry), deferred, pass(map) :: key_remove_entry
         procedure, non_overridable, pass(map) :: int8_remove_entry
         procedure, non_overridable, pass(map) :: int32_remove_entry
         procedure, non_overridable, pass(map) :: char_remove_entry
+        generic, public :: remove => key_remove_entry, int8_remove_entry, int32_remove_entry, char_remove_entry
         
+        ! Set_other_data procedures
         procedure(key_set_other_data), deferred, pass(map)  :: key_set_other_data
         procedure, non_overridable, pass(map) :: int8_set_other_data
         procedure, non_overridable, pass(map) :: int32_set_other_data
         procedure, non_overridable, pass(map) :: char_set_other_data
-        
-        generic, public :: key_test => key_key_test, int8_key_test, int32_key_test, char_key_test
-        generic, public :: map_entry => key_map_entry, int8_map_entry, int32_map_entry, char_map_entry
-        generic, public :: get_other_data => key_get_other_data, int8_get_other_data, int32_get_other_data, char_get_other_data
-        generic, public :: remove => key_remove_entry, int8_remove_entry, int32_remove_entry, char_remove_entry
         generic, public :: set_other_data => key_set_other_data, int8_set_other_data, int32_set_other_data, char_set_other_data
         
     end type hashmap_type
