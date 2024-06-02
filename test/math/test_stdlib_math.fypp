@@ -170,9 +170,9 @@ contains
         type(error_type), allocatable, intent(out) :: error
         ! type: real(sp), kind: sp
         ! valid test case
-        call check(error, clip(3.025_sp, -5.77_sp, 3.025_sp) == 3.025_sp)
+        call check(error, clip(3.025_sp, -5.77_sp, 3.025_sp), 3.025_sp)
         if (allocated(error)) return
-        call check(error, clip(0.0_sp, -1578.025_sp, -59.68_sp) == -59.68_sp)
+        call check(error, clip(0.0_sp, -1578.025_sp, -59.68_sp), -59.68_sp)
         if (allocated(error)) return
     end subroutine test_clip_rsp
 
@@ -215,9 +215,9 @@ contains
 #:if WITH_QP
         ! type: real(qp), kind: qp
         ! valid test case
-        call check(error, clip(3.025_qp, -5.77_qp, 3.025_qp) == 3.025_qp)
+        call check(error, clip(3.025_qp, -5.77_qp, 3.025_qp), 3.025_qp)
         if (allocated(error)) return
-        call check(error, clip(-55891546.2_qp, -8958133457.23_qp, -689712245.23_qp) == -689712245.23_qp)
+        call check(error, clip(-55891546.2_qp, -8958133457.23_qp, -689712245.23_qp), -689712245.23_qp)
         if (allocated(error)) return
 #:else
         call skip_test(error, "Quadruple precision is not enabled")
@@ -230,9 +230,9 @@ contains
         type(error_type), allocatable, intent(out) :: error
 #:if WITH_QP
         ! invalid test case
-        call check(error, clip(3.025_qp, 3.025_qp, -5.77_qp) == 3.025_qp)
+        call check(error, clip(3.025_qp, 3.025_qp, -5.77_qp), 3.025_qp)
         if (allocated(error)) return
-        call check(error, clip(-55891546.2_qp, -689712245.23_qp, -8958133457.23_qp) == -689712245.23_qp)
+        call check(error, clip(-55891546.2_qp, -689712245.23_qp, -8958133457.23_qp), -689712245.23_qp)
         if (allocated(error)) return
 #:else
         call skip_test(error, "Quadruple precision is not enabled")
