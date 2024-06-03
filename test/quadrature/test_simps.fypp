@@ -58,18 +58,18 @@ contains
 
         val = simps(y, 1.0_${k1}$)
         ans = 576.0_${k1}$
-        call check(error, abs(val - ans) < tol_${k1}$)
+        call check(error, val, ans, thr=tol_${k1}$)
         if (allocated(error)) return
 
         val = simps(y, 0.5_${k1}$)
         ans = 288.0_${k1}$
-        call check(error, abs(val - ans) < tol_${k1}$)
+        call check(error, val, ans, thr=tol_${k1}$)
         if (allocated(error)) return
 
         x = [(0.25_${k1}$*(i-1), i = 1, n)]
         val = simps(y, x)
         ans = 144.0_${k1}$
-        call check(error, abs(val - ans) < tol_${k1}$)
+        call check(error, val, ans, thr=tol_${k1}$)
     end subroutine test_simps_${k1}$
 
     subroutine test_simps_weights_${k1}$(error)
@@ -91,7 +91,7 @@ contains
         w = simps_weights(x)
         val = sum(w*y)
         ans = simps(y, x)
-        call check(error, abs(val - ans) < tol_${k1}$)
+        call check(error, val, ans, thr=tol_${k1}$)
     end subroutine test_simps_weights_${k1}$
     
     subroutine test_simps_zero_${k1}$(error)
@@ -129,18 +129,18 @@ contains
 
             val = simps(y, 1.0_${k1}$)
             ans = 1000.0_${k1}$
-            call check(error, abs(val - ans) < tol_${k1}$)
+            call check(error, val, ans, thr=tol_${k1}$)
             if (allocated(error)) return
 
             val = simps(y, 0.5_${k1}$)
             ans = 500.0_${k1}$
-            call check(error, abs(val - ans) < tol_${k1}$)
+            call check(error, val, ans, thr=tol_${k1}$)
             if (allocated(error)) return
 
             x = [(0.25_${k1}$*(i-1), i = 1, n)]
             val = simps(y, x)
             ans = 250.0_${k1}$
-            call check(error, abs(val - ans) < tol_${k1}$)
+            call check(error, val, ans, thr=tol_${k1}$)
             if (allocated(error)) return
         end do
     end subroutine test_simps_even_${k1}$
@@ -166,7 +166,7 @@ contains
             w = simps_weights(x)
             val = sum(w*y)
             ans = simps(y, x)
-            call check(error, abs(val - ans) < tol_${k1}$)
+            call check(error, val, ans, thr=tol_${k1}$)
             if (allocated(error)) return
         end do
     end subroutine test_simps_weights_even_${k1}$
@@ -190,18 +190,18 @@ contains
 
             val = simps(y, 1.0_${k1}$)
             ans = 125.0_${k1}$
-            call check(error, abs(val - ans) < tol_${k1}$)
+            call check(error, val, ans, thr=tol_${k1}$)
             if (allocated(error)) return
 
             val = simps(y, 0.5_${k1}$)
             ans = 62.5_${k1}$
-            call check(error, abs(val - ans) < tol_${k1}$)
+            call check(error, val, ans, thr=tol_${k1}$)
             if (allocated(error)) return
 
             x = [(0.25_${k1}$*(i-1), i = 1, n)]
             val = simps(y, x)
             ans = 31.25_${k1}$
-            call check(error, abs(val - ans) < tol_${k1}$)
+            call check(error, val, ans, thr=tol_${k1}$)
             if (allocated(error)) return
         end do
     end subroutine test_simps_six_${k1}$
