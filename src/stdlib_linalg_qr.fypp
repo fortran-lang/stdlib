@@ -1,34 +1,13 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-module stdlib_linalg_qr
+submodule (stdlib_linalg) stdlib_linalg_qr
      use stdlib_linalg_constants
      use stdlib_linalg_lapack, only: geqrf, orgqr, ungqr
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
      implicit none(type,external)
-     private
 
-     !> QR factorization of a matrix
-     public :: qr
-     public :: qr_space
-
-     ! Scipy: solve(a, b, lower=False, overwrite_a=False, overwrite_b=False, check_finite=True, assume_a='gen', transposed=False)[source]#
-     ! IMSL: lu_solve(a, b, transpose=False)
-
-     interface qr
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        module procedure stdlib_linalg_${ri}$_qr
-        #:endfor
-     end interface qr
-     
-     interface qr_space
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        module procedure get_qr_${ri}$_workspace
-        #:endfor        
-     end interface qr_space
-     
      character(*), parameter :: this = 'qr'
-
 
      contains
      
@@ -266,4 +245,4 @@ module stdlib_linalg_qr
 
      #:endfor
 
-end module stdlib_linalg_qr
+end submodule stdlib_linalg_qr
