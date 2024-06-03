@@ -61,7 +61,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
      #:if rk!="xdp"
      
      ! Get workspace size for QR operations
-     pure subroutine get_qr_${ri}$_workspace(a,lwork,err)
+     pure module subroutine get_qr_${ri}$_workspace(a,lwork,err)
          !> Input matrix a[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
          !> Minimum workspace size for both operations
@@ -107,7 +107,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
      end subroutine get_qr_${ri}$_workspace 
      
      ! Compute the solution to a real system of linear equations A * X = B
-     pure subroutine stdlib_linalg_${ri}$_qr(a,q,r,overwrite_a,storage,err) 
+     pure module subroutine stdlib_linalg_${ri}$_qr(a,q,r,overwrite_a,storage,err) 
          !> Input matrix a[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
          !> Orthogonal matrix Q ([m,m], or [m,k] if reduced)
