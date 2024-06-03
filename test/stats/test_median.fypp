@@ -330,9 +330,9 @@ contains
         if (allocated(error)) return
 
         #:for rank in range(1, NRANK + 1)
-        call check(error, abs( median(d${rank}$_${k1}$) - 1.5_${k1}$)<${k1}$tol&
+        call check(error, median(d${rank}$_${k1}$),  1.5_${k1}$&
                     , 'median(d${rank}$_${k1}$): uncorrect answer'&
-                    )
+                    , thr = ${k1}$tol)
         if (allocated(error)) return
         #:endfor
     end subroutine
@@ -341,19 +341,19 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        call check(error, abs(median(d1odd_${k1}$) - 2._${k1}$)<${k1}$tol&
+        call check(error, median(d1odd_${k1}$),  2._${k1}$&
                     , 'median(d1odd_${k1}$): uncorrect answer'&
-                    )
+                    , thr = ${k1}$tol)
         if (allocated(error)) return
 
-        call check(error, abs(median(d2odd_${k1}$)-1._${k1}$)<${k1}$tol&
+        call check(error, median(d2odd_${k1}$),  1._${k1}$&
                     , 'median(d2odd_${k1}$): uncorrect answer'&
-                    )
+                    , thr = ${k1}$tol)
         if (allocated(error)) return
 
-        call check(error, abs(median(d2odd_${k1}$)-1._${k1}$)<${k1}$tol&
+        call check(error, median(d2odd_${k1}$),  1._${k1}$&
                     , 'median(d2odd_${k1}$): uncorrect answer'&
-                    )
+                    , thr = ${k1}$tol)
         if (allocated(error)) return
 
     end subroutine

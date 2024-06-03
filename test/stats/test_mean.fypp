@@ -173,10 +173,9 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         #:for rank in range(1, NRANK+1)
-        call check(error, abs(mean(d${rank}$_${k1}$) - &
-                    sum(d${rank}$_${k1}$)/real(size(d${rank}$_${k1}$), ${k1}$)) &
-                    < ${k1}$tol &
-                    , 'mean(d${rank}$_${k1}$): uncorrect answer')
+        call check(error, mean(d${rank}$_${k1}$), sum(d${rank}$_${k1}$)/real(size(d${rank}$_${k1}$), ${k1}$)&
+                    , 'mean(d${rank}$_${k1}$): uncorrect answer'&
+                    , thr = ${k1}$tol)
         if (allocated(error)) return
         #:endfor
     end subroutine
@@ -237,11 +236,10 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         #:for rank in range(1, NRANK+1)
-        call check(error, abs( mean(d${rank}$_${k1}$, d${rank}$_${k1}$ > 0) &
-                    - sum(d${rank}$_${k1}$, d${rank}$_${k1}$ > 0)/real(count(d${rank}$_${k1}$ > 0), ${k1}$))&
-                    < ${k1}$tol &
+        call check(error, mean(d${rank}$_${k1}$, d${rank}$_${k1}$ > 0)&
+                    , sum(d${rank}$_${k1}$, d${rank}$_${k1}$ > 0)/real(count(d${rank}$_${k1}$ > 0), ${k1}$)&
                     , 'mean(d${rank}$_${k1}$, d${rank}$_${k1}$ > 0): uncorrect answer'&
-                    )
+                    , thr = ${k1}$tol)
         if (allocated(error)) return
         #:endfor
     end subroutine
@@ -276,11 +274,9 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         #:for rank in range(1, NRANK+1)
-        call check(error, abs( mean(d${rank}$_c${k1}$) - &
-                    sum(d${rank}$_c${k1}$)/real(size(d${rank}$_c${k1}$), ${k1}$) )&
-                    < ${k1}$tol &
+        call check(error, mean(d${rank}$_c${k1}$), sum(d${rank}$_c${k1}$)/real(size(d${rank}$_c${k1}$), ${k1}$)&
                     , 'mean(d${rank}$_c${k1}$): uncorrect answer'&
-                    )
+                    , thr = ${k1}$tol)
         if (allocated(error)) return
         #:endfor
     end subroutine
@@ -341,11 +337,10 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         #:for rank in range(1, NRANK+1)
-        call check(error, abs(mean(d${rank}$_c${k1}$, d${rank}$_c${k1}$%re > 0) - &
-                    sum(d${rank}$_c${k1}$, d${rank}$_c${k1}$%re > 0)/real(count(d${rank}$_c${k1}$%re > 0), ${k1}$))&
-                    < ${k1}$tol &
+        call check(error, mean(d${rank}$_c${k1}$, d${rank}$_c${k1}$%re > 0)&
+                    , sum(d${rank}$_c${k1}$, d${rank}$_c${k1}$%re > 0)/real(count(d${rank}$_c${k1}$%re > 0), ${k1}$)&
                     , 'mean(d${rank}$_c${k1}$, d${rank}$_c${k1}$%re > 0): uncorrect answer'&
-                    )
+                    , thr = ${k1}$tol)
         if (allocated(error)) return
         #:endfor
     end subroutine
