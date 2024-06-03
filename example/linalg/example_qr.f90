@@ -1,4 +1,4 @@
-program example_qr
+program example_qr  
   use stdlib_linalg, only: qr
   implicit none(type,external)
   real :: A(104, 32), Q(104,32), R(32,32)
