@@ -1,12 +1,11 @@
 ! Eigendecomposition of a real symmetric matrix 
 program example_eigh
-  use stdlib_linalg_constants, only: sp
   use stdlib_linalg, only: eigh
   implicit none
 
   integer :: i
-  real(sp), allocatable :: A(:,:),lambda(:),v(:,:)
-  complex(sp), allocatable :: cA(:,:),cv(:,:)
+  real, allocatable :: A(:,:),lambda(:),v(:,:)
+  complex, allocatable :: cA(:,:),cv(:,:)
 
   ! Decomposition of this symmetric matrix
   ! NB Fortran is column-major -> transpose input

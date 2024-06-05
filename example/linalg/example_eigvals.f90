@@ -1,12 +1,11 @@
 ! Eigenvalues of a general real / complex matrix 
 program example_eigvals
-  use stdlib_linalg_constants, only: sp
   use stdlib_linalg, only: eigvals
   implicit none
 
   integer :: i
-  real(sp), allocatable :: A(:,:),lambda(:)
-  complex(sp), allocatable :: cA(:,:),clambda(:)
+  real, allocatable :: A(:,:),lambda(:)
+  complex, allocatable :: cA(:,:),clambda(:)
 
   ! NB Fortran is column-major -> transpose input
   A = transpose(reshape( [ [2, 8, 4], &

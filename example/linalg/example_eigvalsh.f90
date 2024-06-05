@@ -1,12 +1,11 @@
 ! Eigenvalues of a real symmetric / complex hermitian matrix 
 program example_eigvalsh
-  use stdlib_linalg_constants, only: sp
   use stdlib_linalg, only: eigvalsh
   implicit none
 
   integer :: i
-  real(sp), allocatable :: A(:,:),lambda(:)
-  complex(sp), allocatable :: cA(:,:)
+  real, allocatable :: A(:,:),lambda(:)
+  complex, allocatable :: cA(:,:)
 
   ! Decomposition of this symmetric matrix
   ! NB Fortran is column-major -> transpose input

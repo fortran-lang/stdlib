@@ -1,12 +1,11 @@
 ! Eigendecomposition of a real square matrix 
 program example_eig
-  use stdlib_linalg_constants, only: sp
   use stdlib_linalg, only: eig
   implicit none
 
   integer :: i
-  real(sp), allocatable :: A(:,:)
-  complex(sp), allocatable :: lambda(:),vectors(:,:)
+  real, allocatable :: A(:,:)
+  complex, allocatable :: lambda(:),vectors(:,:)
 
   ! Decomposition of this square matrix
   ! NB Fortran is column-major -> transpose input
