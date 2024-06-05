@@ -121,10 +121,10 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          endif
          lwork_qr = ceiling(real(work_dummy(1),kind=${rk}$),kind=ilp)
          
-         ! Ordering space
+         ! Ordering space (for full factorization)
          lwork_ord = -1_ilp
          call #{if rt.startswith('complex')}# ungqr #{else}# orgqr #{endif}#  &
-              (m,n,k,a,m,tau_dummy,work_dummy,lwork_ord,info)
+              (m,m,k,a,m,tau_dummy,work_dummy,lwork_ord,info)
          call handle_orgqr_info(info,m,n,k,lwork_ord,err0)   
          if (err0%error()) then 
             call linalg_error_handling(err0,err)
@@ -241,7 +241,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
              
                  ! Convert K elementary reflectors tau(1:k) -> orthogonal matrix Q
                  call #{if rt.startswith('complex')}# ungqr #{else}# orgqr #{endif}#  &
-                      (m,n,k,amat,lda,tau,work,lwork,info)
+                      (q1,q2,k,amat,lda,tau,work,lwork,info)
                  call handle_orgqr_info(info,m,n,k,lwork,err0)      
                       
                  ! Copy result back to Q
