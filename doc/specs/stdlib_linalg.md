@@ -977,7 +977,7 @@ The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
 
 `vectors` (optional): Shall be a rank-2 array of the same type, size and kind as `a`, containing the eigenvectors of `a`. It is an `intent(out)` argument.
 
-`upper_a` (optional): Shall be an input logical flag. if `.true.`, the upper triangular part of `a` will be used accessed. Otherwise, the lower triangular part will be accessed. It is an `intent(in)` argument.
+`upper_a` (optional): Shall be an input `logical` flag. if `.true.`, the upper triangular part of `a` will be accessed. Otherwise, the lower triangular part will be accessed. It is an `intent(in)` argument.
 
 `overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
 
