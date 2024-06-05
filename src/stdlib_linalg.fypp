@@ -597,6 +597,27 @@ module stdlib_linalg
     end subroutine stdlib_linalg_eig_${ri}$
     #:endif
     #:endfor
+    #:for rk,rt,ri in REAL_KINDS_TYPES
+    #:if rk!="xdp"
+    module subroutine stdlib_linalg_real_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+     !! Eigendecomposition of matrix A returning an array `lambda` of real eigenvalues, 
+     !! and optionally right or left eigenvectors. Returns an error if the eigenvalues had
+     !! non-trivial imaginary parts.
+         !> Input matrix A[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Array of real eigenvalues
+         real(${rk}$), intent(out) :: lambda(:)
+         !> The columns of RIGHT contain the right eigenvectors of A
+         complex(${rk}$), optional, intent(out), target :: right(:,:)
+         !> The columns of LEFT contain the left eigenvectors of A
+         complex(${rk}$), optional, intent(out), target :: left(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_real_eig_${ri}$
+    #:endif
+    #:endfor    
   end interface eig
 
   ! Eigenvalues of a square matrix

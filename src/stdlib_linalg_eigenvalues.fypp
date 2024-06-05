@@ -315,6 +315,47 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
      end subroutine stdlib_linalg_eig_${ri}$
      
+     module subroutine stdlib_linalg_real_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+      !! Eigendecomposition of matrix A returning an array `lambda` of real eigenvalues, 
+      !! and optionally right or left eigenvectors. Returns an error if the eigenvalues had
+      !! non-trivial imaginary parts.
+          !> Input matrix A[m,n]
+          ${rt}$, intent(inout), target :: a(:,:)
+          !> Array of real eigenvalues
+          real(${rk}$), intent(out) :: lambda(:)
+          !> The columns of RIGHT contain the right eigenvectors of A
+          complex(${rk}$), optional, intent(out), target :: right(:,:)
+          !> The columns of LEFT contain the left eigenvectors of A
+          complex(${rk}$), optional, intent(out), target :: left(:,:)
+          !> [optional] Can A data be overwritten and destroyed?
+          logical(lk), optional, intent(in) :: overwrite_a
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), optional, intent(out) :: err
+          
+          type(linalg_state_type) :: err0
+          integer(ilp) :: n
+          complex(${rk}$), allocatable :: clambda(:)
+          real(${rk}$), parameter :: rtol = epsilon(0.0_${rk}$)
+          real(${rk}$), parameter :: atol = tiny(0.0_${rk}$)
+          
+          n = size(lambda,dim=1,kind=ilp)
+          allocate(clambda(n))
+          
+          call stdlib_linalg_eig_${ri}$(a,clambda,right,left,overwrite_a,err0)
+          
+          ! Check that no eigenvalues have meaningful imaginary part
+          if (err0%ok() .and. any(aimag(clambda)>atol+rtol*abs(abs(clambda)))) then 
+             err0 = linalg_state_type(this,LINALG_VALUE_ERROR, &
+                                'complex eigenvalues detected: max(imag(lambda))=',maxval(aimag(clambda)))
+          endif
+          
+          ! Return real components only
+          lambda(:n) = real(clambda,kind=${rk}$)
+          
+          call linalg_error_handling(err0,err)
+          
+     end subroutine stdlib_linalg_real_eig_${ri}$     
+     
      module function stdlib_linalg_eigvalsh_${ri}$(a,upper_a,err) result(lambda)
      !! Return an array of eigenvalues of real symmetric / complex hermitian A
          !> Input matrix A[m,n]
@@ -534,6 +575,5 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      
      #:endif
      #:endfor
-
 
 end submodule stdlib_linalg_eigenvalues

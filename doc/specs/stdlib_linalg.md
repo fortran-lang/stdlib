@@ -923,7 +923,7 @@ The solver is based on LAPACK's `*GEEV` backends.
 
 `a` : `real` or `complex` square array containing the coefficient matrix. If `overwrite_a=.false.`, it is an `intent(in)` argument. Otherwise, it is an `intent(inout)` argument and is destroyed by the call. 
 
-`lambda`: Shall be a `complex` rank-1 array of the same kind as `a`, containing the eigenvalues. It is an `intent(out)` argument. 
+`lambda`: Shall be a `complex` or `real` rank-1 array of the same kind as `a`, containing the eigenvalues, or their `real` component only. It is an `intent(out)` argument.
 
 `right` (optional): Shall be a `complex` rank-2 array of the same size and kind as `a`, containing the right eigenvectors of `a`. It is an `intent(out)` argument.
 
@@ -937,6 +937,7 @@ The solver is based on LAPACK's `*GEEV` backends.
 
 Raises `LINALG_ERROR` if the calculation did not converge.
 Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
+Raises `LINALG_VALUE_ERROR` if the `real` component is only requested, but the eigenvalues have non-trivial imaginary parts.
 If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
