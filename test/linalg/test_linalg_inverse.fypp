@@ -49,15 +49,24 @@ module test_linalg_inverse
         if (allocated(error)) return
         
         call check(error,all(abs(a-inva)<epsilon(0.0_${rk}$)),'inverse_${ri}$_eye (function): data converged')
-        if (allocated(error)) return        
-
-        !> Inverse subroutine
-        call invert(a,err=state)
+        if (allocated(error)) return  
+        
+        !> Inverse subroutine: split
+        call invert(a,inva,err=state)
 
         call check(error,state%ok(),'inverse_${ri}$_eye (subroutine): '//state%print())
         if (allocated(error)) return
         
         call check(error,all(abs(a-inva)<epsilon(0.0_${rk}$)),'inverse_${ri}$_eye (subroutine): data converged')
+        if (allocated(error)) return   
+
+        !> Inverse subroutine in-place
+        call invert(a,err=state)
+
+        call check(error,state%ok(),'inverse_${ri}$_eye (in-place): '//state%print())
+        if (allocated(error)) return
+        
+        call check(error,all(abs(a-inva)<epsilon(0.0_${rk}$)),'inverse_${ri}$_eye (in-place): data converged')
         if (allocated(error)) return     
 
     end subroutine test_${ri}$_eye_inverse
