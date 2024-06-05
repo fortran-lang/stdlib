@@ -4,7 +4,8 @@
 module test_linalg_qr
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
-    use stdlib_linalg, only: qr,qr_space,linalg_state_type
+    use stdlib_linalg_state, only: LINALG_VALUE_ERROR,linalg_state_type
+    use stdlib_linalg, only: qr,qr_space
 
     implicit none (type,external)
     
@@ -53,6 +54,7 @@ module test_linalg_qr
         aorig = a
         
         ! 1) QR factorization with full matrices
+        q = 1.0_${rk}$
         call qr(a,q,r,err=state)
         
         ! Check return code
@@ -60,8 +62,13 @@ module test_linalg_qr
         if (allocated(error)) return        
         
         ! Check solution
-!        call check(error, all(abs(a-matmul(q,r))<tol), 'converged solution (full)')
-!        if (allocated(error)) return          
+        if (.not.all(abs(a-matmul(q,r))<tol)) then 
+            state = linalg_state_type('qr',LINALG_VALUE_ERROR,'converged solution (full) max error: ',&
+                                      maxval(abs(a-matmul(q,r))))
+            call check(error, state%ok(), state%print())
+            if (allocated(error)) return     
+        endif
+             
                 
         ! 2) QR factorization with reduced matrices
         call qr(a,qred,rred,err=state)
@@ -96,7 +103,7 @@ module test_linalg_qr
         if (allocated(error)) return        
         
         ! Check solution
-        call check(error, all(abs(a-matmul(qred,rred))<tol), 'converged solution (external storage)')
+        call check(error, all(abs(a-matmul(q,r))<tol), 'converged solution (external storage)')
         if (allocated(error)) return          
         
         ! Check that an invalid problem size returns an error
