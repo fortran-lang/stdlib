@@ -948,12 +948,16 @@ The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):invert(interface)]] `(a, [, pivot] [, err])`
+`call ` [[stdlib_linalg(module):invert(interface)]] `(a, [,inva] [, pivot] [, err])`
 
 ### Arguments
 
-`a`: Shall be a rank-2, square, `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
-On output, it is replaced by the inverse of `a`.
+`a`: Shall be a rank-2, square, `real` or `complex` array containing the coefficient matrix. 
+If `inva` is provided, it is an `intent(in)` argument.
+If `inva` is not provided, it is an `intent(inout)` argument: on output, it is replaced by the inverse of `a`. 
+
+`inva` (optional): Shall be a rank-2, square, `real` or `complex` array with the same size, and kind as `a`. 
+On output, it contains the inverse of `a`.
 
 `pivot` (optional): Shall be a rank-1 array of the same kind and matrix dimension as `a`, providing storage for the diagonal pivot indices. It is an `intent(inout)` arguments, and returns the diagonal pivot indices. 
 
@@ -964,6 +968,7 @@ On output, it is replaced by the inverse of `a`.
 Replaces matrix \( A \) with its inverse, \(A^{-1}\).
 
 Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
+Raises `LINALG_VALUE_ERROR` if `inva` and `a` do not have the same size.
 If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example

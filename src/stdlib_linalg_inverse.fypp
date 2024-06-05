@@ -34,7 +34,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
      #:for rk,rt,ri in RC_KINDS_TYPES
      #:if rk!="xdp" 
      ! Compute the in-place square matrix inverse of a
-     module subroutine stdlib_linalg_invert_${ri}$(a,pivot,err)
+     module subroutine stdlib_linalg_invert_inplace_${ri}$(a,pivot,err)
          !> Input matrix a[n,n]. On return, A is destroyed and replaced by the inverse
          ${rt}$, intent(inout) :: a(:,:)
          !> [optional] Storage array for the diagonal pivot indices
@@ -92,7 +92,43 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
          if (.not.present(pivot)) deallocate(ipiv)
          call linalg_error_handling(err0,err)
 
-     end subroutine stdlib_linalg_invert_${ri}$
+     end subroutine stdlib_linalg_invert_inplace_${ri}$
+
+     ! Compute the square matrix inverse of a
+     module subroutine stdlib_linalg_invert_split_${ri}$(a,inva,pivot,err)
+         !> Input matrix a[n,n].
+         ${rt}$, intent(in) :: a(:,:)
+         !> Inverse matrix a[n,n]. 
+         ${rt}$, intent(out) :: inva(:,:)         
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         
+         type(linalg_state_type) :: err0
+         integer(ilp) :: sa(2),sinva(2)
+         
+         sa    = shape(a,kind=ilp)
+         sinva = shape(inva,kind=ilp)
+         
+         if (any(sa/=sinva)) then
+ 
+             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',sa,' inva=',sinva)
+            
+         else
+            
+             !> Copy data in 
+             inva = a
+
+             !> Compute matrix inverse
+             call stdlib_linalg_invert_inplace_${ri}$(inva,err=err0)      
+            
+         end if         
+         
+         ! Process output and return
+         call linalg_error_handling(err0,err)   
+         
+     end subroutine stdlib_linalg_invert_split_${ri}$
 
      ! Invert matrix in place
      module function stdlib_linalg_inverse_${ri}$(a,err) result(inva)
@@ -107,7 +143,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
          allocate(inva,source=a)
 
          !> Compute matrix inverse
-         call stdlib_linalg_invert_${ri}$(inva,err=err)
+         call stdlib_linalg_invert_inplace_${ri}$(inva,err=err)
 
      end function stdlib_linalg_inverse_${ri}$
 

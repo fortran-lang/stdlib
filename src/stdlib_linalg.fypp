@@ -604,25 +604,38 @@ module stdlib_linalg
     !!
     !!### Description
     !!     
-    !! This subroutine interface provides a way to compute the inverse of a matrix in-place.    
+    !! This subroutine interface provides a way to compute the inverse of a matrix.    
     !! Supported data types include `real` and `complex`. 
-    !! On completion, matrix `a` is replaced by the inverse matrix. Pre-allocated storage may be provided
-    !! for the array of pivot indices, `pivot`. If all pre-allocated work spaces are provided, no internal 
-    !! memory allocations take place when using this interface.             
+    !! The user may provide a unique matrix argument `a`. In this case, `a` is replaced by the inverse matrix.
+    !! on output. Otherwise, one may provide two separate arguments: an input matrix `a` and an output matrix 
+    !! `inva`. In this case, `a` will not be modified, and the inverse is returned in `inva`.
+    !! Pre-allocated storage may be provided for the array of pivot indices, `pivot`. If all pre-allocated 
+    !! work spaces are provided, no internal memory allocations take place when using this interface.             
     !!
     !!@note The provided subroutines are intended for square matrices.
     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !!      
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:if rk!="xdp" 
-    module subroutine stdlib_linalg_invert_${ri}$(a,pivot,err)
+    module subroutine stdlib_linalg_invert_inplace_${ri}$(a,pivot,err)
          !> Input matrix a[n,n]
          ${rt}$, intent(inout) :: a(:,:)
          !> [optional] Storage array for the diagonal pivot indices
          integer(ilp), optional, intent(inout), target :: pivot(:)         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
-    end subroutine stdlib_linalg_invert_${ri}$
+    end subroutine stdlib_linalg_invert_inplace_${ri}$
+    ! Compute the square matrix inverse of a
+    module subroutine stdlib_linalg_invert_split_${ri}$(a,inva,pivot,err)
+         !> Input matrix a[n,n].
+         ${rt}$, intent(in) :: a(:,:)
+         !> Inverse matrix a[n,n]. 
+         ${rt}$, intent(out) :: inva(:,:)         
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err    
+    end subroutine stdlib_linalg_invert_split_${ri}$
     #:endif
     #:endfor
   end interface invert
