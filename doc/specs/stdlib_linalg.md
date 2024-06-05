@@ -898,3 +898,31 @@ Exceptions trigger an `error stop`.
 ```fortran
 {!example/linalg/example_determinant2.f90!}
 ```
+
+## `qr_space` - Compute internal working space requirements for the QR factorization.
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the internal working space requirements for the QR factorization, [[stdlib_linalg(module):qr(interface)]] .
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):qr_space(interface)]] `(a, lwork, [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. It is an `intent(in)` argument.
+
+`lwork`: Shall be an `integer` scalar, that returns the minimum array size required for the working storage in [[stdlib_linalg(module):qr(interface)]] to factorize `a`.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Example
+
+```fortran
+{!example/linalg/example_qr_space.f90!}
+```

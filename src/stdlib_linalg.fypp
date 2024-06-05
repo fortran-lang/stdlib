@@ -476,6 +476,19 @@ module stdlib_linalg
 
   ! Return the working array space required by the QR factorization solver
   interface qr_space
+    !! version: experimental 
+    !!
+    !! Computes the working array space required by the QR factorization solver
+    !! ([Specification](../page/specs/stdlib_linalg.html#qr-space-compute-internal-working-space-requirements-for-the-qr-factorization))
+    !! 
+    !!### Description
+    !! 
+    !! This interface returns the size of the `real` or `complex` working storage required by the 
+    !! QR factorization solver. The working size only depends on the kind (`real` or `complex`) and size of
+    !! the matrix being factorized. Storage size can be used to pre-allocate a working array in case several 
+    !! repeated QR factorizations to a same-size matrix are sought. If pre-allocated working arrays 
+    !! are provided, no internal allocations will take place during the factorization.
+    !!     
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:if rk!="xdp" 
       pure module subroutine get_qr_${ri}$_workspace(a,lwork,err)
