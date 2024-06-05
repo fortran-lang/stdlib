@@ -154,12 +154,8 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
          !> Result matrix
          ${rt}$, allocatable :: inva(:,:)
 
-         type(linalg_state_type) :: err0
-
-         inva = stdlib_linalg_inverse_${ri}$(a,err0)
-
-         ! On error, return zeros
-         if (err0%error()) inva = 0.0_${rk}$
+         ! Do not provide an error handler (error stop on issues)
+         inva = stdlib_linalg_inverse_${ri}$(a)
 
      end function stdlib_linalg_inverse_${ri}$_operator
 
