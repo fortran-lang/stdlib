@@ -454,6 +454,28 @@ module stdlib_linalg
 
   ! QR factorization of rank-2 array A
   interface qr
+    !! version: experimental 
+    !!
+    !! Computes the QR factorization of matrix \( A = Q R \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#qr-compute-the-qr-factorization-of-a-matrix))
+    !! 
+    !!### Summary 
+    !! Compute the QR factorization of a `real` or `complex` matrix: \( A = Q R \), where \( Q \)  is orthonormal 
+    !! and \( R \) is upper-triangular. Matrix \( A \) has size `[m,n]`, with \( m\ge n \). 
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the QR factorization of a matrix. 
+    !! Supported data types include `real` and `complex`. If a pre-allocated work space 
+    !! is provided, no internal memory allocations take place when using this interface.
+    !!
+    !! Given `k = min(m,n)`, one can write \( A = \( Q_1  Q_2 \) \cdot \( \frac{R_1}{0}\) \). 
+    !! The user may want the full problem (provide `shape(Q)==[m,m]`, `shape(R)==[m,n]`) or the reduced  
+    !! problem only: \( A = Q_1 R_1 \) (provide `shape(Q)==[m,k]`, `shape(R)==[k,n]`).
+    !! 
+    !!@note The solution is based on LAPACK's QR factorization (`*GEQRF`) and ordered matrix output (`*ORGQR`, `*UNGQR`). 
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !!     
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:if rk!="xdp" 
       pure module subroutine stdlib_linalg_${ri}$_qr(a,q,r,overwrite_a,storage,err) 
