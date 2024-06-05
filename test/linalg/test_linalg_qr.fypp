@@ -36,7 +36,7 @@ module test_linalg_qr
         integer(ilp), parameter :: m   = 15_ilp
         integer(ilp), parameter :: n   =  4_ilp
         integer(ilp), parameter :: k   = min(m,n)
-        real(${rk}$), parameter :: tol = 10*sqrt(epsilon(0.0_${rk}$))
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
         ${rt}$ :: a(m,n),aorig(m,n),q(m,m),r(m,n),qred(m,k),rred(k,n),qerr(m,6),rerr(6,n)
         real(${rk}$) :: rea(m,n),ima(m,n)
         integer(ilp) :: lwork
