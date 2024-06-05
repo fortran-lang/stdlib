@@ -11,6 +11,37 @@ submodule (stdlib_linalg) stdlib_linalg_qr
 
      contains
      
+     ! Check problem size and evaluate whether full/reduced problem is requested
+     pure subroutine check_problem_size(m,n,q1,q2,r1,r2,err,reduced)
+         integer(ilp), intent(in) :: m,n,q1,q2,r1,r2         
+         type(linalg_state_type), intent(out) :: err
+         logical, intent(out) :: reduced
+         
+         integer(ilp) :: k
+         
+         k = min(m,n)
+         reduced = .false.
+         
+         ! Check sizes
+         if (m<1 .or. n<1) then
+            err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a(m,n)=',[m,n])
+         else
+            
+            ! Check if we should operate on reduced full QR
+            ! - Reduced: shape(Q)==[m,k], shape(R)==[k,n]
+            ! - Full   : shape(Q)==[m,m], shape(R)==[m,n]
+            if (all([q1,q2]==[m,k] .and. [r1,r2]==[k,n])) then 
+                reduced = .true.
+            elseif (all([q1,q2]==[m,m] .and. [r1,r2]==[m,n])) then 
+                reduced = .false.
+            else
+                err = linalg_state_type(this,LINALG_VALUE_ERROR,'with a=',[m,n],'q=',[q1,q2],'r=',[r1,r2], &
+                      'problem is neither full (q=',[m,m],'r=',[m,n],') nor reduced (q=',[m,m],'r=',[m,n],')')              
+            endif 
+         end if
+         
+     end subroutine check_problem_size
+     
      elemental subroutine handle_orgqr_info(info,m,n,k,lwork,err)
          integer(ilp), intent(in) :: info,m,n,k,lwork
          type(linalg_state_type), intent(out) :: err
@@ -139,20 +170,13 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          r1   = size(r,1,kind=ilp)
          r2   = size(r,2,kind=ilp)
 
-         ! Check sizes
-         if (m<1 .or. n<1 .or. q1<m .or. q2<k .or. r1<k .or. r2<n) then
-            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid sizes: a(m,n)=',[m,n], &
-                                                                      ' q(m,m)=',[q1,q2], &
-                                                                      ' r(m,n)=',[r1,r2])
+         ! Check if we should operate on reduced full QR
+         call check_problem_size(m,n,q1,q2,r1,r2,err0,reduced)
+         if (err0%error()) then 
             call linalg_error_handling(err0,err)
             return
          end if
-         
-         ! Check if we should operate on reduced full QR
-         ! - Reduced: shape(Q)==[m,k], shape(R)==[k,n]
-         ! - Full   : shape(Q)==[m,m], shape(R)==[m,n]
-         reduced = q2<m .or. r1<m
-         
+                  
          ! Check if Q can be used as temporary storage for A, 
          ! to be destroyed by *GEQRF
          use_q_matrix = q1>=m .and. q2>=n
