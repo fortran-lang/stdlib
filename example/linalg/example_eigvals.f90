@@ -17,7 +17,7 @@ program example_eigvals
   print *, 'Real    matrix eigenvalues: ',lambda
   
   ! Complex general matrix
-  cA = cmplx(A, -2*A, kind=sp)
+  cA = cmplx(A, -2*A)
   clambda = eigvals(cA)
   print *, 'Complex matrix eigenvalues: ',clambda
   
