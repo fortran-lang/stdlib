@@ -911,9 +911,8 @@ Experimental
 
 This subroutine computes the solution to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
 
-Result array `lambda` returns the eigenvalues of \( A \). The user can request eigenvectors to be returned: 
-on output `left` may contain the left eigenvectors, `right` the right eigenvectors of \( A \). 
-Each eigenvector is returned as a column of `left` of `right`.
+Result array `lambda` returns the eigenvalues of \( A \). The user can request eigenvectors to be returned: if provided, on output `left` will contain the left eigenvectors, `right` the right eigenvectors of \( A \).
+Both `left` and `right` are rank-2 arrays, where eigenvectors are stored as columns.
 The solver is based on LAPACK's `*GEEV` backends.
 
 ### Syntax
