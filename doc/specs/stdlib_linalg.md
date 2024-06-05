@@ -971,7 +971,7 @@ The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
 
 ### Arguments
 
-`a` : `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument. If `overwrite_a=.true.`, it is an `intent(inout)` argument and is destroyed by the call. 
+`a` : `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument. If `overwrite_a=.true.`, it is an `intent(inout)` argument and is destroyed by the call. 
 
 `lambda`: Shall be a `complex` rank-1 array of the same kind as `a`, containing the eigenvalues. It is an `intent(out)` argument. 
 
