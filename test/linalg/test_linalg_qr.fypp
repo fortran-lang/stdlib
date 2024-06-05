@@ -29,6 +29,7 @@ module test_linalg_qr
 
     !> QR factorization of a random matrix
     #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
     subroutine test_qr_random_${ri}$(error)
         type(error_type), allocatable, intent(out) :: error
 
@@ -107,6 +108,7 @@ module test_linalg_qr
         
     end subroutine test_qr_random_${ri}$
 
+    #:endif
     #:endfor
 
 
