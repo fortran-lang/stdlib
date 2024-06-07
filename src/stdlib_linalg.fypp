@@ -26,6 +26,8 @@ module stdlib_linalg
   public :: solve_lu  
   public :: solve_lstsq
   public :: trace
+  public :: svd
+  public :: svdvals
   public :: outer_product
   public :: kronecker_product
   public :: cross_product
@@ -551,6 +553,138 @@ module stdlib_linalg
     #:endif
     #:endfor
   end interface  
+
+  ! Singular value decomposition  
+  interface svd 
+    !! version: experimental 
+    !!
+    !! Computes the singular value decomposition of a `real` or `complex` 2d matrix.
+    !! ([Specification](../page/specs/stdlib_linalg.html#svd-compute-the-singular-value-decomposition-of-a-rank-2-array-matrix))
+    !! 
+    !!### Summary 
+    !! Interface for computing the singular value decomposition of a `real` or `complex` 2d matrix.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the singular value decomposition of a matrix.
+    !! Supported data types include `real` and `complex`. The subroutine returns a `real` array of 
+    !! singular values, and optionally, left- and right- singular vector matrices, `U` and `V`. 
+    !! For a matrix `A` with size [m,n], full matrix storage for `U` and `V` should be [m,m] and [n,n]. 
+    !! It is possible to use partial storage [m,k] and [k,n], `k=min(m,n)`, choosing `full_matrices=.false.`.
+    !! 
+    !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).    
+    !! 
+    !!### Example
+    !!
+    !!```fortran
+    !!    real(sp) :: a(2,3), s(2), u(2,2), vt(3,3) 
+    !!    a = reshape([3,2, 2,3, 2,-2],[2,3])
+    !!
+    !!    call svd(A,s,u,v)
+    !!    print *, 'singular values = ',s
+    !!```
+    !!         
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
+    module subroutine stdlib_linalg_svd_${ri}$(a,s,u,vt,overwrite_a,full_matrices,err)
+     !!### Summary
+     !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
+     !!
+     !!### Description
+     !!
+     !! This function computes the singular value decomposition of a `real` or `complex` matrix \( A \), 
+     !! and returns the array of singular values, and optionally the left matrix \( U \) containing the 
+     !! left unitary singular vectors, and the right matrix \( V^T \), containing the right unitary 
+     !! singular vectors.
+     !!
+     !! param: a Input matrix of size [m,n].
+     !! param: s Output `real` array of size [min(m,n)] returning a list of singular values.
+     !! param: u [optional] Output left singular matrix of size [m,m] or [m,min(m,n)] (.not.full_matrices). Contains singular vectors as columns.
+     !! param: vt [optional] Output right singular matrix of size [n,n] or [min(m,n),n] (.not.full_matrices). Contains singular vectors as rows.     
+     !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
+     !! param: full_matrices [optional] If `.true.` (default), matrices \( U \) and \( V^T \) have size [m,m], [n,n]. Otherwise, they are [m,k], [k,n] with `k=min(m,n)`.
+     !! param: err [optional] State return flag.      
+     !!            
+         !> Input matrix A[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Array of singular values
+         real(${rk}$), intent(out) :: s(:)
+         !> The columns of U contain the left singular vectors 
+         ${rt}$, optional, intent(out), target :: u(:,:)
+         !> The rows of V^T contain the right singular vectors
+         ${rt}$, optional, intent(out), target :: vt(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] full matrices have shape(u)==[m,m], shape(vh)==[n,n] (default); otherwise
+         !> they are shape(u)==[m,k] and shape(vh)==[k,n] with k=min(m,n)
+         logical(lk), optional, intent(in) :: full_matrices
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_svd_${ri}$
+    #:endif
+    #:endfor     
+  end interface svd
+
+  ! Singular values
+  interface svdvals
+    !! version: experimental 
+    !!
+    !! Computes the singular values of a `real` or `complex` 2d matrix.
+    !! ([Specification](../page/specs/stdlib_linalg.html#svdvals-compute-the-singular-values-of-a-rank-2-array-matrix))
+    !! 
+    !!### Summary 
+    !! 
+    !! Function interface for computing the array of singular values from the singular value decomposition 
+    !! of a `real` or `complex` 2d matrix.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the singular values a 2d matrix.
+    !! Supported data types include `real` and `complex`. The function returns a `real` array of 
+    !! singular values, with size [min(m,n)]. 
+    !! 
+    !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).    
+    !! 
+    !!### Example
+    !!
+    !!```fortran
+    !!    real(sp) :: a(2,3), s(2)
+    !!    a = reshape([3,2, 2,3, 2,-2],[2,3])
+    !!
+    !!    s = svdvals(A)
+    !!    print *, 'singular values = ',s
+    !!```
+    !!   
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
+    module function stdlib_linalg_svdvals_${ri}$(a,err) result(s)
+     !!### Summary
+     !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
+     !!
+     !!### Description
+     !!
+     !! This function returns the array of singular values from the singular value decomposition of a `real` 
+     !! or `complex` matrix \( A = U \cdot S \cdot V^T \).
+     !!
+     !! param: a Input matrix of size [m,n].
+     !! param: err [optional] State return flag.      
+     !!
+     !!### Return value
+     !! 
+     !! param: s `real` array of size [min(m,n)] returning a list of singular values.
+     !!           
+         !> Input matrix A[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Array of singular values
+         real(${rk}$), allocatable :: s(:)
+      end function stdlib_linalg_svdvals_${ri}$
+    #:endif
+    #:endfor             
+  end interface svdvals  
 
 contains
 
