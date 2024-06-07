@@ -898,3 +898,95 @@ Exceptions trigger an `error stop`.
 ```fortran
 {!example/linalg/example_determinant2.f90!}
 ```
+
+## `svd` - Compute the singular value decomposition of a rank-2 array (matrix).
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the singular value decomposition of a `real` or `complex` rank-2 array (matrix) \( A = U \cdot S \cdot \V^T \).
+The solver is based on LAPACK's `*GESDD` backends.
+
+Result vector `s` returns the array of singular values on the diagonal of \( S \). 
+If requested, `u` contains the left singular vectors, as columns of \( U \).
+If requested, `vt` contains the right singular vectors, as rows of \( V^T \).
+ 
+### Syntax
+
+`call ` [[stdlib_linalg(module):svd(interface)]] `(a, s, [, u, vt, overwrite_a, full_matrices, err])`
+
+### Class
+Subroutine
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix of size `[m,n]`. It is an `intent(inout)` argument, but returns unchanged unless `overwrite_a=.true.`.
+
+`s`: Shall be a rank-1 `real` array, returning the list of `k = min(m,n)` singular values. It is an `intent(out)` argument. 
+
+`u` (optional): Shall be a rank-2 array of same kind as `a`, returning the left singular vectors of `a` as columns. Its size should be `[m,m]` unless `full_matrices=.false.`, in which case, it can be `[m,min(m,n)]`. It is an `intent(out)` argument.
+
+`vt` (optional): Shall be a rank-2 array of same kind as `a`, returning the right singular vectors of `a` as rows. Its size should be `[n,n]` unless `full_matrices=.false.`, in which case, it can be `[min(m,n),n]`. It is an `intent(out)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. By default, `overwrite_a=.false.`. It is an `intent(in)` argument.
+
+`full_matrices` (optional): Shall be an input `logical` flag. If `.true.` (default), matrices `u` and `vt` shall be full-sized. Otherwise, their secondary dimension can be resized to `min(m,n)`. See `u`, `v` for details.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return values
+
+Returns an array `s` that contains the list of singular values of matrix `a`.
+If requested, returns a rank-2 array `u` that contains the left singular vectors of `a` along its columns.
+If requested, returns a rank-2 array `vt` that contains the right singular vectors of `a` along its rows.
+
+Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix or any of the output arrays invalid/incompatible sizes.
+Exceptions trigger an `error stop`, unless argument `err` is present.
+
+### Example
+
+```fortran
+{!example/linalg/example_svd.f90!}
+```
+
+## `svdvals` - Compute the singular values of a rank-2 array (matrix).
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the singular values of a `real` or `complex` rank-2 array (matrix) from its singular 
+value decomposition \( A = U \cdot S \cdot \V^T \). The solver is based on LAPACK's `*GESDD` backends.
+
+Result vector `s` returns the array of singular values on the diagonal of \( S \). 
+ 
+### Syntax
+
+`s = ` [[stdlib_linalg(module):svdvals(interface)]] `(a [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix of size `[m,n]`. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return values
+
+Returns an array `s` that contains the list of singular values of matrix `a`.
+
+Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix or any of the output arrays invalid/incompatible sizes.
+Exceptions trigger an `error stop`, unless argument `err` is present.
+
+### Example
+
+```fortran
+{!example/linalg/example_svdvals.f90!}
+```
+
