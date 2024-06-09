@@ -105,7 +105,6 @@ module stdlib_hashmaps
 !! Hash function
 
     contains
-    
         procedure, non_overridable, pass(map) :: calls
         procedure, non_overridable, pass(map) :: entries
         procedure, non_overridable, pass(map) :: map_probes
