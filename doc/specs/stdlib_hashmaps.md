@@ -476,7 +476,7 @@ is an `intent(in)` argument.
 
 `value`: if the the first argument is of `key_type`, `value` shall be
 an allocatable default `character` string variable, or 
-an allocatable vector variable of type integer and kind `int8` or 
+an allocatable vector variable of type `integer` and kind `int8` or 
 `int32`, otherwise the first argument is of `other_type` and `value` 
 shall be an allocatable of `class(*)`. It is an `intent(out)` argument.
 
