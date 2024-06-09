@@ -27,7 +27,7 @@ module test_stdlib_chaining_maps
     ! key_type = 5 to support int8 and int32 key types tested.  Can be 
     ! increased to generate additional unique int8 vectors additional key types.   
     integer, parameter        :: key_types = 5
-    character(len=16)         :: char_type 
+    character(len=16)         :: char_size 
     public :: collect_stdlib_chaining_maps
 
 
@@ -142,7 +142,7 @@ contains
             call check(error, .not.conflict, "Unable to map chaining int32 generic interface")
 
             ! Test char key generic interface
-            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_type ), other, conflict )
+            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), other, conflict )
             call check(error, .not.conflict, "Unable to map chaining character generic interface")
 
             if (allocated(error)) return
@@ -174,7 +174,7 @@ contains
             call map % key_test( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ), present )
             call check(error, present, "Int32 KEY generic interface not found in map KEY_TEST.")
 
-            call map % key_test( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_type ), present )
+            call map % key_test( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), present )
             call check(error, present, "Char KEY generic interface not found in map KEY_TEST.")
 
             if (allocated(error)) return
@@ -207,7 +207,7 @@ contains
             call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ) , other, exists )
             call check(error, exists, "Unable to get data because int32 generic interface key not found in map.")
 
-            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_type ) , other, exists )
+            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ) , other, exists )
             call check(error, exists, "Unable to get data because character generic interface key not found in map.")
         end do
 
@@ -237,7 +237,7 @@ contains
             call map % remove(transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ), existed)
             call check(error, existed,  "Int32 Key generic interface not found in entry removal.")
 
-            call map % remove(transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_type ), existed)
+            call map % remove(transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), existed)
             call check(error, existed,  "Character Key generic interface not found in entry removal.")
         end do
 
@@ -321,7 +321,7 @@ module test_stdlib_open_maps
     ! key_type = 5 to support int8 and int32 key types tested.  Can be 
     ! increased to generate additional unique int8 vectors additional key types.  
     integer, parameter        :: key_types = 5
-    character(len=16)         :: char_type
+    character(len=16)         :: char_size
 
     public :: collect_stdlib_open_maps
 
@@ -437,7 +437,7 @@ contains
             call check(error, .not.conflict, "Unable to map open int32 generic key interface entry because of a key conflict.")
 
             ! Test character key generic interface
-            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_type ), other, conflict )
+            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), other, conflict )
             call check(error, .not.conflict, "Unable to map open character generic key interface entry because of a key conflict.")
 
             if (allocated(error)) return
@@ -470,7 +470,7 @@ contains
             call map % key_test( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ), present )
             call check(error, present, "Int32 KEY generic interface not found in map KEY_TEST.")
 
-            call map % key_test( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_type ), present )
+            call map % key_test( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), present )
             call check(error, present, "Character KEY generic interface not found in map KEY_TEST.")
 
             if (allocated(error)) return            
@@ -503,7 +503,7 @@ contains
             call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ), other, exists )
             call check(error, exists, "Unable to get data because int32 generic interface key not found in map.")
 
-            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_type ), other, exists )
+            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), other, exists )
             call check(error, exists, "Unable to get data because character generic interface key not found in map.")
         end do
 
@@ -533,7 +533,7 @@ contains
             call map % remove(transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ), existed)
             call check(error, existed,  "Int32 Key generic interface not found in entry removal.")
 
-            call map % remove(transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_type ), existed)
+            call map % remove(transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), existed)
             call check(error, existed,  "Character Key generic interface not found in entry removal.")
         end do
 
