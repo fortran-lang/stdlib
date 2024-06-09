@@ -794,7 +794,7 @@ Generic key interfaces for `key_test`, `map_entry`, `get_other_data`,
 `remove`, and `set_other_data` are povided so that the supported types
 of `int8` arrays, `int32` arrays and `character` scalars can be used in the
 key field as well as the base `key` type.  So for `key_test`,
-`key_key_test` specifies key type for the key field, `int8_key_test` is int8
+`key_key_test` specifies key type for the key field, `int8_key_test` is `int8`
 for the key field and so on.  Procedures other than `key_key_test` will call
 the `set` function to generate a key type and pass to `key_key_test`.         
 
