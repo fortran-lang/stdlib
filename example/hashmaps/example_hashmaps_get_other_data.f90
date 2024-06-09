@@ -18,7 +18,7 @@ program example_get_other_data
   ! Initialize hashmap
   call map%init(fnv_1_hasher)
   
-  ! Hashmap fuctions are setup to store scalar value types (other).  Use a dervied
+  ! Hashmap functions are setup to store scalar value types (other).  Use a dervied
   ! type wrapper to store arrays.
   dummy%value = [4, 3, 2, 1]
   call set(other, dummy)
