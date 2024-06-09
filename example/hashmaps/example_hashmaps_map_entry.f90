@@ -34,7 +34,7 @@ program example_map_entry
   print *, 'CONFLICT = ', conflict
   
   ! Transfer unsupported key types to int8 arrays.
-  call map%map_entry( TRANSFER( [1_int64, 2_int64, 3_int64], [0_int8] ), other, conflict)
+  call map%map_entry( transfer( [1_int64, 2_int64, 3_int64], [0_int8] ), other, conflict)
   print *, 'CONFLICT = ', conflict
   
 ! Keys can be mapped alone without a corresponding value (other).
