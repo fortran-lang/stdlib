@@ -12,7 +12,6 @@ program example_set_other_data
   ! Initialize hashmap with 2^10 slots.
   ! Hashmap will dynamically increase size if needed.
   call map%init(fnv_1_hasher, slots_bits=10)
-     
   call set(key, [5, 7, 4, 13])
   call set(other, 'A value')
   call map%map_entry(key, other)
