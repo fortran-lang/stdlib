@@ -824,7 +824,7 @@ module stdlib_hashmaps
         subroutine int8_get_other_data( map, value, other, exists )
 !! Version: Experimental
 !!
-!!! Int8 key generic interface for get_other_data function
+!! Int8 key generic interface for get_other_data function
 
             class(hashmap_type), intent(inout) :: map
             integer(int8), intent(in)          :: value(:)
