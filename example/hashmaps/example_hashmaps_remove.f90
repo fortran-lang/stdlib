@@ -18,7 +18,7 @@ program example_remove
   call set(other, 4.0)
   
   ! Explicitly set key type using set function
-  call set(key, [1, 2, 3] )
+  call set(key, [1, 2, 3])
   call map%map_entry(key, other)
   call map%remove(key, existed)
   print *, "Removed key existed = ", existed
