@@ -19,7 +19,9 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest("simps_sp", test_simps_sp) &
+            #:for k1, t1 in REAL_KINDS_TYPES[0:1] # set the first test independently to initialize the table
+            new_unittest("simps_${k1}$", test_simps_sp) &
+            #:endfor
             #:for k1, t1 in REAL_KINDS_TYPES[1:]
             , new_unittest("simps_${k1}$", test_simps_${k1}$) &
             #:endfor
