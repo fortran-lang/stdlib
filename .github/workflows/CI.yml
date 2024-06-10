@@ -20,17 +20,25 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-12]
-        gcc_v: [10, 11, 12, 13] # Version of GFortran we want to use.
+        toolchain:
+          - {compiler: gcc, version: 10}
+          - {compiler: gcc, version: 11}
+          - {compiler: gcc, version: 12}
+          - {compiler: gcc, version: 13}
+          - {compiler: intel, version: '2024.1'}
+          - {compiler: intel-classic, version: '2021.9'}
         build: [cmake]
         include:
           - os: ubuntu-latest
-            gcc_v: 10
             build: cmake-inline
+            toolchain:
+              - {compiler: gcc, version: 10}
+        exclude:
+          - os: macos-12
+            toolchain: {compiler: intel, version: '2024.1'}
+          - os: macos-12
+            toolchain: {compiler: gcc, version: 13}
     env:
-      FC: gfortran-${{ matrix.gcc_v }}
-      CC: gcc-${{ matrix.gcc_v }}
-      CXX: g++-${{ matrix.gcc_v }}
-      GCC_V: ${{ matrix.gcc_v }}
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
 
     steps:
@@ -43,29 +51,19 @@ jobs:
         python-version: 3.x
 
     - name: Install fypp
-      run: pip install --upgrade fypp
+      run: pip install --upgrade fypp ninja
 
-    - name: Install GCC compilers Linux
-      if: contains( matrix.os, 'ubuntu')
-      run: |
-        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-        sudo apt-get update
-        sudo apt-get install -y gcc-${GCC_V} g++-${GCC_V} gfortran-${GCC_V}
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_V} 100 \
-        --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} \
-        --slave /usr/bin/g++ g++ /usr/bin/g++-${GCC_V} \
-        --slave /usr/bin/gcov gcov /usr/bin/gcov-${GCC_V}
-
-    - name: Install GCC compilers macOS
-      if: contains( matrix.os, 'macos')
-      run: |
-          brew install gcc@${GCC_V} || brew upgrade gcc@${GCC_V} || true
-          brew link gcc@${GCC_V}
+    - name: Setup Fortran compiler
+      uses: fortran-lang/setup-fortran@v1.6.1
+      id: setup-fortran
+      with:
+        compiler: ${{ matrix.toolchain.compiler }}
+        version: ${{ matrix.toolchain.version }}
 
     - name: Configure with CMake
       if: ${{ contains(matrix.build, 'cmake') }}
       run: >-
-        cmake -Wdev
+        cmake -Wdev -G Ninja
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
@@ -91,157 +89,3 @@ jobs:
     - name: Install project
       if: ${{ contains(matrix.build, 'cmake') }}
       run: cmake --install ${{ env.BUILD_DIR }}
-
-  intel-build-llvm:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        fc: [ifx]
-        cc: [icx]
-        cxx: [icpx]
-    env:
-      FC: ${{ matrix.fc }}
-      CC: ${{ matrix.cc }}
-      CXX: ${{ matrix.cxx }}
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up Python 3.x
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.x
-
-    - name: Add Intel repository (Linux)
-      if: contains(matrix.os, 'ubuntu')
-      run: |
-        wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB \ | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
-        echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
-        sudo apt-get update
-
-    - name: Install Intel oneAPI compiler (Linux)
-      if: contains(matrix.os, 'ubuntu')
-      run: |
-        sudo apt-get install intel-oneapi-compiler-fortran
-        sudo apt-get install intel-oneapi-compiler-dpcpp-cpp
-
-    - name: Setup Intel oneAPI environment
-      run: |
-        source /opt/intel/oneapi/setvars.sh
-        printenv >> $GITHUB_ENV
-
-    - name: Install fypp
-      run: pip install --upgrade fypp
-
-    - name: Configure with CMake
-      run: >-
-         cmake -Wdev
-         -DCMAKE_BUILD_TYPE=Release
-         -DCMAKE_MAXIMUM_RANK:String=4
-         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
-         -S . -B build
-
-    - name: Build and compile
-      run: cmake --build build
-
-    - name: catch build fail
-      run: cmake --build build --verbose --parallel 1
-      if: failure()
-
-    - name: test
-      run: ctest --parallel --output-on-failure --no-tests=error
-      working-directory: build
-
-    - name: Install project
-      run: cmake --install build
-
-  intel-build-classic:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-12]
-        fc: [ifort]
-        cc: [icc]
-        cxx: [icpc]
-    env:
-      MACOS_HPCKIT_URL: >-
-        https://registrationcenter-download.intel.com/akdlm/IRC_NAS/a99cb1c5-5af6-4824-9811-ae172d24e594/m_HPCKit_p_2023.1.0.44543.dmg
-      MACOS_FORTRAN_COMPONENTS: all
-      FC: ${{ matrix.fc }}
-      CC: ${{ matrix.cc }}
-      CXX: ${{ matrix.cxx }}
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up Python 3.x
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.x
-
-    - name: Prepare for cache restore (OSX)
-      if: contains(matrix.os, 'macos')
-      run: |
-        sudo mkdir -p /opt/intel
-        sudo chown $USER /opt/intel
-
-    - name: Cache Intel install (OSX)
-      if: contains(matrix.os, 'macos')
-      id: cache-install
-      uses: actions/cache@v2
-      with:
-        path: /opt/intel/oneapi
-        key: install-${{ env.MACOS_HPCKIT_URL }}-${{ env.MACOS_FORTRAN_COMPONENTS }}
-
-    - name: Install Intel oneAPI compiler (OSX)
-      if: contains(matrix.os, 'macos') && steps.cache-install.outputs.cache-hit != 'true'
-      run: |
-        curl --output webimage.dmg --url "$URL" --retry 5 --retry-delay 5
-        hdiutil attach webimage.dmg
-        if [ -z "$COMPONENTS" ]; then
-          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --eula=accept --continue-with-optional-error=yes --log-dir=.
-          installer_exit_code=$?
-        else
-          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$COMPONENTS" --eula=accept --continue-with-optional-error=yes --log-dir=.
-          installer_exit_code=$?
-        fi
-        hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
-        exit $installer_exit_code
-      env:
-        URL: ${{ env.MACOS_HPCKIT_URL }}
-        COMPONENTS: ${{ env.MACOS_FORTRAN_COMPONENTS }}
-
-    - name: Setup Intel oneAPI environment
-      run: |
-        source /opt/intel/oneapi/setvars.sh
-        printenv >> $GITHUB_ENV
-
-    - name: Install fypp
-      run: pip install --upgrade fypp
-
-    - name: Configure with CMake
-      run: >-
-         cmake -Wdev
-         -DCMAKE_BUILD_TYPE=Release
-         -DCMAKE_MAXIMUM_RANK:String=4
-         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
-         -S . -B build
-
-    - name: Build and compile
-      run: cmake --build build
-
-    - name: catch build fail
-      run: cmake --build build --verbose --parallel 1
-      if: failure()
-
-    - name: test
-      run: ctest --parallel --output-on-failure --no-tests=error
-      working-directory: build
-
-    - name: Install project
-      run: cmake --install build
