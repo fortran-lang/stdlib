@@ -9,7 +9,6 @@ module test_simps
     real(sp), parameter :: tol_sp = 1000 * epsilon(1.0_sp)
     real(dp), parameter :: tol_dp = 1000 * epsilon(1.0_dp)
 
-
 contains
 
     !> Collect all exported unit tests
@@ -18,24 +17,18 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest("simps_sp", test_simps_sp), &
-            new_unittest("simps_dp", test_simps_dp), &
-            new_unittest("simps_qp", test_simps_qp), &
-            new_unittest("simps_weights_sp", test_simps_weights_sp), &
-            new_unittest("simps_weights_dp", test_simps_weights_dp), &
-            new_unittest("simps_weights_qp", test_simps_weights_qp), &
-            new_unittest("simps_zero_sp", test_simps_zero_sp), &
-            new_unittest("simps_zero_dp", test_simps_zero_dp), &
-            new_unittest("simps_zero_qp", test_simps_zero_qp), &
-            new_unittest("simps_even_sp", test_simps_even_sp), &
-            new_unittest("simps_even_dp", test_simps_even_dp), &
-            new_unittest("simps_even_qp", test_simps_even_qp), &
-            new_unittest("simps_weights_even_sp", test_simps_weights_even_sp), &
-            new_unittest("simps_weights_even_dp", test_simps_weights_even_dp), &
-            new_unittest("simps_weights_even_qp", test_simps_weights_even_qp), &
-            new_unittest("simps_six_sp", test_simps_six_sp), &
-            new_unittest("simps_six_dp", test_simps_six_dp), &
-            new_unittest("simps_six_qp", test_simps_six_qp) &
+            new_unittest("simps_sp", test_simps_sp) &
+            , new_unittest("simps_dp", test_simps_dp) &
+            , new_unittest("simps_weights_sp", test_simps_weights_sp) &
+            , new_unittest("simps_weights_dp", test_simps_weights_dp) &
+            , new_unittest("simps_zero_sp", test_simps_zero_sp) &
+            , new_unittest("simps_zero_dp", test_simps_zero_dp) &
+            , new_unittest("simps_even_sp", test_simps_even_sp) &
+            , new_unittest("simps_even_dp", test_simps_even_dp) &
+            , new_unittest("simps_weights_even_sp", test_simps_weights_even_sp) &
+            , new_unittest("simps_weights_even_dp", test_simps_weights_even_dp) &
+            , new_unittest("simps_six_sp", test_simps_six_sp) &
+            , new_unittest("simps_six_dp", test_simps_six_dp) &
             ]
     end subroutine collect_simps
 
@@ -44,8 +37,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         integer, parameter :: n = 13
-        real(sp), dimension(n) :: y
-        real(sp), dimension(n) :: x
+        real(sp) :: y(n)
+        real(sp) :: x(n)
         real(sp) :: val
         real(sp) :: ans
         integer :: i
@@ -69,54 +62,14 @@ contains
         call check(error, val, ans, thr=tol_sp)
     end subroutine test_simps_sp
 
-
-    subroutine test_simps_dp(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        integer, parameter :: n = 13
-        real(dp), dimension(n) :: y
-        real(dp), dimension(n) :: x
-        real(dp) :: val
-        real(dp) :: ans
-        integer :: i
-
-
-        y = [(real(i-1, dp)**2, i = 1, n)]
-
-        val = simps(y, 1.0_dp)
-        ans = 576.0_dp
-        call check(error, val, ans, thr=tol_dp)
-        if (allocated(error)) return
-
-        val = simps(y, 0.5_dp)
-        ans = 288.0_dp
-        call check(error, val, ans, thr=tol_dp)
-        if (allocated(error)) return
-
-        x = [(0.25_dp*(i-1), i = 1, n)]
-        val = simps(y, x)
-        ans = 144.0_dp
-        call check(error, val, ans, thr=tol_dp)
-    end subroutine test_simps_dp
-
-
-    subroutine test_simps_qp(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        call skip_test(error, "Quadruple precision is not enabled")
-    end subroutine test_simps_qp
-
-
     subroutine test_simps_weights_sp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
         integer, parameter :: n = 17
-        real(sp), dimension(n) :: y
-        real(sp), dimension(n) :: x
-        real(sp), dimension(n) :: w
+        real(sp) :: y(n)
+        real(sp) :: x(n)
+        real(sp) :: w(n)
         integer :: i
         real(sp) :: val
         real(sp) :: ans
@@ -130,39 +83,7 @@ contains
         ans = simps(y, x)
         call check(error, val, ans, thr=tol_sp)
     end subroutine test_simps_weights_sp
-
-
-    subroutine test_simps_weights_dp(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        integer, parameter :: n = 17
-        real(dp), dimension(n) :: y
-        real(dp), dimension(n) :: x
-        real(dp), dimension(n) :: w
-        integer :: i
-        real(dp) :: val
-        real(dp) :: ans
-
-
-        y = [(real(i-1, dp), i = 1, n)]
-
-        x = y
-        w = simps_weights(x)
-        val = sum(w*y)
-        ans = simps(y, x)
-        call check(error, val, ans, thr=tol_dp)
-    end subroutine test_simps_weights_dp
-
-
-    subroutine test_simps_weights_qp(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        call skip_test(error, "Quadruple precision is not enabled")
-    end subroutine test_simps_weights_qp
-
-
+    
     subroutine test_simps_zero_sp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -179,39 +100,13 @@ contains
         call check(error, abs(simps([1.0_sp], [1.0_sp])) < epsilon(0.0_sp))
     end subroutine test_simps_zero_sp
 
-
-    subroutine test_simps_zero_dp(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        real(dp), dimension(0) :: a
-
-
-        call check(error, abs(simps(a, 1.0_dp)) < epsilon(0.0_dp))
-        if (allocated(error)) return
-        call check(error, abs(simps([1.0_dp], 1.0_dp)) < epsilon(0.0_dp))
-        if (allocated(error)) return
-        call check(error, abs(simps(a, a)) < epsilon(0.0_dp))
-        if (allocated(error)) return
-        call check(error, abs(simps([1.0_dp], [1.0_dp])) < epsilon(0.0_dp))
-    end subroutine test_simps_zero_dp
-
-
-    subroutine test_simps_zero_qp(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        call skip_test(error, "Quadruple precision is not enabled")
-    end subroutine test_simps_zero_qp
-
-
     subroutine test_simps_even_sp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
         integer, parameter :: n = 11
-        real(sp), dimension(n) :: y
-        real(sp), dimension(n) :: x
+        real(sp) :: y(n)
+        real(sp) :: x(n)
         real(sp) :: val
         real(sp) :: ans
         integer :: i
@@ -240,54 +135,14 @@ contains
         end do
     end subroutine test_simps_even_sp
 
-
-    subroutine test_simps_even_dp(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        integer, parameter :: n = 11
-        real(dp), dimension(n) :: y
-        real(dp), dimension(n) :: x
-        real(dp) :: val
-        real(dp) :: ans
-        integer :: i
-
-
-        y = [(3.0_dp*real(i-1, dp)**2, i = 1, n)]
-
-        val = simps(y, 1.0_dp)
-        ans = 1000.0_dp
-        call check(error, val, ans, thr=tol_dp)
-        if (allocated(error)) return
-
-        val = simps(y, 0.5_dp)
-        ans = 500.0_dp
-        call check(error, val, ans, thr=tol_dp)
-        if (allocated(error)) return
-
-        x = [(0.25_dp*(i-1), i = 1, n)]
-        val = simps(y, x)
-        ans = 250.0_dp
-        call check(error, val, ans, thr=tol_dp)
-    end subroutine test_simps_even_dp
-
-
-    subroutine test_simps_even_qp(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        call skip_test(error, "Quadruple precision is not enabled")
-    end subroutine test_simps_even_qp
-
-
     subroutine test_simps_weights_even_sp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
         integer, parameter :: n = 16
-        real(sp), dimension(n) :: y
-        real(sp), dimension(n) :: x
-        real(sp), dimension(n) :: w
+        real(sp) :: y(n)
+        real(sp) :: x(n)
+        real(sp) :: w(n)
         integer :: i
         real(sp) :: val
         real(sp) :: ans
@@ -306,49 +161,13 @@ contains
         end do
     end subroutine test_simps_weights_even_sp
 
-
-    subroutine test_simps_weights_even_dp(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        integer, parameter :: n = 16
-        real(dp), dimension(n) :: y
-        real(dp), dimension(n) :: x
-        real(dp), dimension(n) :: w
-        integer :: i
-        real(dp) :: val
-        real(dp) :: ans
-        integer :: even
-
-
-        y = [(real(i-1, dp), i = 1, n)]
-        x = y
-
-        do even = -1, 1
-            w = simps_weights(x)
-            val = sum(w*y)
-            ans = simps(y, x)
-            call check(error, val, ans, thr=tol_dp)
-            if (allocated(error)) return
-        end do
-    end subroutine test_simps_weights_even_dp
-
-
-    subroutine test_simps_weights_even_qp(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        call skip_test(error, "Quadruple precision is not enabled")
-    end subroutine test_simps_weights_even_qp
-
-
     subroutine test_simps_six_sp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
         integer, parameter :: n = 6
-        real(sp), dimension(n) :: y
-        real(sp), dimension(n) :: x
+        real(sp) :: y(n)
+        real(sp) :: x(n)
         real(sp) :: val
         real(sp) :: ans
         integer :: i
@@ -376,45 +195,171 @@ contains
             if (allocated(error)) return
         end do
     end subroutine test_simps_six_sp
+    
+    subroutine test_simps_dp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
 
+        integer, parameter :: n = 13
+        real(dp) :: y(n)
+        real(dp) :: x(n)
+        real(dp) :: val
+        real(dp) :: ans
+        integer :: i
+
+
+        y = [(real(i-1, sp)**2, i = 1, n)]
+
+        val = simps(y, 1.0_dp)
+        ans = 576.0_dp
+        call check(error, val, ans, thr=tol_dp)
+        if (allocated(error)) return
+
+        val = simps(y, 0.5_dp)
+        ans = 288.0_dp
+        call check(error, val, ans, thr=tol_dp)
+        if (allocated(error)) return
+
+        x = [(0.25_dp*(i-1), i = 1, n)]
+        val = simps(y, x)
+        ans = 144.0_dp
+        call check(error, val, ans, thr=tol_dp)
+    end subroutine test_simps_dp
+
+    subroutine test_simps_weights_dp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer, parameter :: n = 17
+        real(dp) :: y(n)
+        real(dp) :: x(n)
+        real(dp) :: w(n)
+        integer :: i
+        real(dp) :: val
+        real(dp) :: ans
+
+
+        y = [(real(i-1, sp), i = 1, n)]
+
+        x = y
+        w = simps_weights(x)
+        val = sum(w*y)
+        ans = simps(y, x)
+        call check(error, val, ans, thr=tol_dp)
+    end subroutine test_simps_weights_dp
+    
+    subroutine test_simps_zero_dp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        real(dp), dimension(0) :: a
+
+
+        call check(error, abs(simps(a, 1.0_dp)) < epsilon(0.0_dp))
+        if (allocated(error)) return
+        call check(error, abs(simps([1.0_dp], 1.0_dp)) < epsilon(0.0_dp))
+        if (allocated(error)) return
+        call check(error, abs(simps(a, a)) < epsilon(0.0_dp))
+        if (allocated(error)) return
+        call check(error, abs(simps([1.0_dp], [1.0_dp])) < epsilon(0.0_dp))
+    end subroutine test_simps_zero_dp
+
+    subroutine test_simps_even_dp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer, parameter :: n = 11
+        real(dp) :: y(n)
+        real(dp) :: x(n)
+        real(dp) :: val
+        real(dp) :: ans
+        integer :: i
+        integer :: even
+
+
+        y = [(3.0_dp*real(i-1, sp)**2, i = 1, n)]
+
+        do even = -1, 1
+
+            val = simps(y, 1.0_dp)
+            ans = 1000.0_dp
+            call check(error, val, ans, thr=tol_dp)
+            if (allocated(error)) return
+
+            val = simps(y, 0.5_dp)
+            ans = 500.0_dp
+            call check(error, val, ans, thr=tol_dp)
+            if (allocated(error)) return
+
+            x = [(0.25_dp*(i-1), i = 1, n)]
+            val = simps(y, x)
+            ans = 250.0_dp
+            call check(error, val, ans, thr=tol_dp)
+            if (allocated(error)) return
+        end do
+    end subroutine test_simps_even_dp
+
+    subroutine test_simps_weights_even_dp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer, parameter :: n = 16
+        real(dp) :: y(n)
+        real(dp) :: x(n)
+        real(dp) :: w(n)
+        integer :: i
+        real(dp) :: val
+        real(dp) :: ans
+        integer :: even
+
+
+        y = [(real(i-1, sp), i = 1, n)]
+        x = y
+
+        do even = -1, 1
+            w = simps_weights(x)
+            val = sum(w*y)
+            ans = simps(y, x)
+            call check(error, val, ans, thr=tol_dp)
+            if (allocated(error)) return
+        end do
+    end subroutine test_simps_weights_even_dp
 
     subroutine test_simps_six_dp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
         integer, parameter :: n = 6
-        real(dp), dimension(n) :: y
-        real(dp), dimension(n) :: x
+        real(dp) :: y(n)
+        real(dp) :: x(n)
         real(dp) :: val
         real(dp) :: ans
         integer :: i
+        integer :: even
 
 
-        y = [(3.0_dp*real(i-1, dp)**2, i = 1, n)]
+        y = [(3.0_dp*real(i-1, sp)**2, i = 1, n)]
 
-        val = simps(y, 1.0_dp)
-        ans = 125.0_dp
-        call check(error, val, ans, thr=tol_dp)
-        if (allocated(error)) return
+        do even = -1, 1
 
-        val = simps(y, 0.5_dp)
-        ans = 62.5_dp
-        call check(error, val, ans, thr=tol_dp)
-        if (allocated(error)) return
+            val = simps(y, 1.0_dp)
+            ans = 125.0_dp
+            call check(error, val, ans, thr=tol_dp)
+            if (allocated(error)) return
 
-        x = [(0.25_dp*(i-1), i = 1, n)]
-        val = simps(y, x)
-        ans = 31.25_dp
-        call check(error, val, ans, thr=tol_dp)
+            val = simps(y, 0.5_dp)
+            ans = 62.5_dp
+            call check(error, val, ans, thr=tol_dp)
+            if (allocated(error)) return
+
+            x = [(0.25_dp*(i-1), i = 1, n)]
+            val = simps(y, x)
+            ans = 31.25_dp
+            call check(error, val, ans, thr=tol_dp)
+            if (allocated(error)) return
+        end do
     end subroutine test_simps_six_dp
-
-
-    subroutine test_simps_six_qp(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-
-        call skip_test(error, "Quadruple precision is not enabled")
-    end subroutine test_simps_six_qp
+    
 
 end module
 

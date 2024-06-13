@@ -17,9 +17,6 @@ module test_specialfunctions_gamma
     real(sp), parameter :: tol_sp = 1000 * epsilon(1.0_sp)
     real(dp), parameter :: tol_dp = 1000 * epsilon(1.0_dp)
 
-
-
-
 contains
 
     subroutine collect_specialfunctions_gamma(testsuite)
