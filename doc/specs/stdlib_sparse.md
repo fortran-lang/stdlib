@@ -226,3 +226,8 @@ This module provides facility functions for converting between storage formats.
 `sellc`, `intent(inout)`: Shall be a `SELLC` type of `real` or `complex` type.
 
 `chunk`, `intent(in)`, `optional`: chunk size for the Sliced ELLPACK format.
+
+## Example
+```fortran
+{!example/strings/example_sparse_spmv.f90!}
+```
