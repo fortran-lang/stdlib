@@ -229,5 +229,5 @@ This module provides facility functions for converting between storage formats.
 
 ## Example
 ```fortran
-{!example/strings/example_sparse_spmv.f90!}
+{!example/linalg/example_sparse_spmv.f90!}
 ```
