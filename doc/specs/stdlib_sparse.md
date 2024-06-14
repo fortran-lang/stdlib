@@ -35,9 +35,9 @@ The symmetry integer laber should be assigned from the module's internal enumera
 
 ```Fortran
 enum, bind(C)
-    enumerator :: k_NOSYMMETRY !> Full Sparse matrix (no symmetry considerations)
-    enumerator :: k_SYMTRIINF  !> Symmetric Sparse matrix with triangular inferior storage
-    enumerator :: k_SYMTRISUP  !> Symmetric Sparse matrix with triangular supperior storage
+    enumerator :: sparse_full !> Full Sparse matrix (no symmetry considerations)
+    enumerator :: sparse_lower  !> Symmetric Sparse matrix with triangular inferior storage
+    enumerator :: sparse_upper  !> Symmetric Sparse matrix with triangular supperior storage
 end enum
 ```
 In the following, all sparse kinds will be presented in two main flavors: a data-less type `<matrix>_type` useful for topological graph operations. And real/complex valued types `<matrix>_<kind>` containing the `data` buffer for the matrix values.

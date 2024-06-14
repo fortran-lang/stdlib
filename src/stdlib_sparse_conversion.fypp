@@ -115,7 +115,7 @@ contains
         integer :: i
 
         CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
-        CSR%base = COO%base; CSR%sym = COO%sym
+        CSR%base = COO%base; CSR%storage = COO%storage
 
         if( allocated(CSR%col) ) then
             CSR%col(1:COO%nnz)  = COO%index(2,1:COO%nnz)
@@ -145,7 +145,7 @@ contains
         integer :: i, j
 
         COO%nnz = CSR%nnz; COO%nrows = CSR%nrows; COO%ncols = CSR%ncols
-        COO%base = CSR%base; COO%sym = CSR%sym
+        COO%base = CSR%base; COO%storage = CSR%storage
 
         if( .not.allocated(COO%data) ) then
             allocate( COO%data(CSR%nnz) , source = CSR%data(1:CSR%nnz) )
@@ -177,7 +177,7 @@ contains
         if(present(chunk)) SELLC%chunk_size = chunk
 
         SELLC%nrows = CSR%nrows; SELLC%ncols = CSR%ncols
-        SELLC%base  = CSR%base;  SELLC%sym = CSR%sym
+        SELLC%base  = CSR%base;  SELLC%storage = CSR%storage
         associate( nrows=>SELLC%nrows, ncols=>SELLC%ncols, nnz=>SELLC%nnz, &
         &         chunk_size=>SELLC%chunk_size     )
         !-------------------------------------------

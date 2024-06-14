@@ -54,8 +54,8 @@ contains
         else 
             vec_y = zero_${s1}$
         endif
-        associate( data => matrix%data, index => matrix%index, sym => matrix%sym, nnz => matrix%nnz )
-            if( sym == k_NOSYMMETRY) then
+        associate( data => matrix%data, index => matrix%index, storage => matrix%storage, nnz => matrix%nnz )
+            if( storage == sparse_full) then
                 do concurrent (k = 1:nnz)
                     ik = index(1,k)
                     jk = index(2,k)
@@ -101,8 +101,8 @@ contains
         if(present(beta)) beta_ = beta
 
         associate( data => matrix%data, col => matrix%col, rowptr => matrix%rowptr, &
-            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, sym => matrix%sym )
-            if( sym == k_NOSYMMETRY) then
+            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
+            if( storage == sparse_full) then
                 do i = 1, nrows
                     aux = zero_${k1}$
                     do j = rowptr(i), rowptr(i+1)-1
@@ -115,7 +115,7 @@ contains
                     end if
                 end do
                 
-            else if( sym == k_SYMTRIINF )then
+            else if( storage == sparse_lower )then
                 do i = 1 , nrows
                     aux  = zero_${s1}$
                     aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
@@ -132,7 +132,7 @@ contains
                     end if
                 end do
 
-            else if( sym == k_SYMTRISUP )then
+            else if( storage == sparse_upper )then
                 do i = 1 , nrows
                     aux  = vec_x(${rksfx2(rank-1)}$i) * data(rowptr(i))
                     aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
@@ -184,15 +184,15 @@ contains
         endif
 
         associate( data => matrix%data, colptr => matrix%colptr, row => matrix%row, &
-            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, sym => matrix%sym )
-            if( sym == k_NOSYMMETRY) then
+            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
+            if( storage == sparse_full) then
                 do concurrent(j=1:ncols)
                     do i = colptr(j), colptr(j+1)-1
                         vec_y(${rksfx2(rank-1)}$row(i)) = vec_y(${rksfx2(rank-1)}$row(i)) + alpha_ * data(i) * vec_x(${rksfx2(rank-1)}$j)
                     end do
                 end do
 
-            else if( sym == k_SYMTRIINF )then
+            else if( storage == sparse_lower )then
                 ! NOT TESTED
                 do j = 1 , ncols
                     aux  = vec_x(${rksfx2(rank-1)}$j) * data(colptr(j))
@@ -203,7 +203,7 @@ contains
                     vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
                 end do
 
-            else if( sym == k_SYMTRISUP )then
+            else if( storage == sparse_upper )then
                 ! NOT TESTED
                 do j = 1 , ncols
                     aux  = zero_${s1}$
@@ -242,8 +242,8 @@ contains
             vec_y = zero_${s1}$
         endif
         associate( data => matrix%data, index => matrix%index, MNZ_P_ROW => matrix%K, &
-            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, sym => matrix%sym )
-            if( sym == k_NOSYMMETRY) then
+            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
+            if( storage == sparse_full) then
                 do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
                     j = index(i,k)
                     if(j>0) vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$j)
@@ -277,10 +277,10 @@ contains
             vec_y = zero_${s1}$
         endif
         associate( data => matrix%data, ia => matrix%rowptr , ja => matrix%col, cs => matrix%chunk_size, &
-        &   nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, sym => matrix%sym  )
+        &   nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage  )
         num_chunks = nrows / cs
         rm = nrows - num_chunks * cs
-        if( sym == k_NOSYMMETRY) then
+        if( storage == sparse_full) then
 
             select case(cs)
             #:for chunk in CHUNKS

@@ -13,11 +13,11 @@ module stdlib_sparse_kinds
   
     ! -- Global parameters
     enum, bind(C)
-        enumerator :: k_NOSYMMETRY !> Full Sparse matrix (no symmetry considerations)
-        enumerator :: k_SYMTRIINF  !> Symmetric Sparse matrix with triangular inferior storage
-        enumerator :: k_SYMTRISUP  !> Symmetric Sparse matrix with triangular supperior storage
+        enumerator :: sparse_full !> Full Sparse matrix (no symmetry considerations)
+        enumerator :: sparse_lower  !> Symmetric Sparse matrix with triangular inferior storage
+        enumerator :: sparse_upper  !> Symmetric Sparse matrix with triangular supperior storage
     end enum
-    public :: k_NOSYMMETRY, k_SYMTRIINF, k_SYMTRISUP
+    public :: sparse_full, sparse_lower, sparse_upper
 
     #:for k1, t1, s1 in (R_KINDS_TYPES)
     ${t1}$, parameter, public :: zero_${s1}$ = 0._${k1}$
@@ -35,7 +35,7 @@ module stdlib_sparse_kinds
       integer :: nrows = 0 !> number of rows
       integer :: ncols = 0 !> number of columns
       integer :: nnz   = 0 !> number of non-zero values
-      integer :: sym   = k_NOSYMMETRY !> assumed storage symmetry
+      integer :: storage = sparse_full !> assumed storage symmetry
       integer :: base  = 1 !> index base = 0 for (C) or 1 (Fortran)
     end type
 

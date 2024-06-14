@@ -204,7 +204,7 @@ contains
                                   0,0,2,1],kind=wp),[4,4]) )
 
             call dense2coo( dense , COO )
-            COO%sym = k_SYMTRISUP
+            COO%storage = sparse_upper
             call coo2csr(COO, CSR)
 
             dense(2,1) = 2._wp; dense(3,2) = 2._wp; dense(4,3) = 2._wp
