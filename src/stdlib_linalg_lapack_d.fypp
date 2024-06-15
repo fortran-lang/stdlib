@@ -75410,7 +75410,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dgeqrf( m, n, a, lda, work( itau ), work( nwork ),lwork - nwork + &
                               1, ierr )
                     ! zero out below r
-                    call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
+                    if (n>1) call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
                     ie = 1
                     itauq = ie + n
                     itaup = itauq + n
@@ -75560,7 +75560,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dorgqr( m, m, n, u, ldu, work( itau ),work( nwork ), lwork - &
                               nwork + 1, ierr )
                     ! produce r in a, zeroing out other entries
-                    call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
+                    if (n>1) call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
                     ie = itau
                     itauq = ie + n
                     itaup = itauq + n
@@ -75726,7 +75726,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dgelqf( m, n, a, lda, work( itau ), work( nwork ),lwork - nwork + &
                               1, ierr )
                     ! zero out above l
-                    call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = 1
                     itauq = ie + m
                     itaup = itauq + m
@@ -75880,7 +75880,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dorglq( n, n, m, vt, ldvt, work( itau ),work( nwork ), lwork - &
                               nwork + 1, ierr )
                     ! produce l in a, zeroing out other entries
-                    call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = itau
                     itauq = ie + m
                     itaup = itauq + m
