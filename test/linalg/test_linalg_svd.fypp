@@ -31,6 +31,12 @@ module test_linalg_svd
         #:endif
         #:endfor
 
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        #:if rk!="xdp"    
+        tests = [tests,new_unittest("test_svd_row_${ri}$",test_svd_row_${ri}$)]         
+        #:endif
+        #:endfor
+
     end subroutine test_svd
 
     !> Real matrix svd
@@ -239,6 +245,37 @@ module test_linalg_svd
 
     #:endif
     #:endfor
+
+
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"     
+    ! Issue #835: bounds checking triggers an error with 1-sized A matrix
+    subroutine test_svd_row_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        !> Reference solution
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 1, n = 1
+        real(${rk}$), parameter :: tol = sqrt(epsilon(0.0_${rk}$))
+        real(${rk}$) :: Arand(m, n), S(n)
+        ${rt}$ :: A(m, n), U(m, m), Vt(n, n)
+        
+        ! Random matrix. 
+        call random_number(Arand)
+        A = Arand
+        
+        call svd(A, S, U, Vt, err=state)
+        
+        call check(error,state%ok(),'1-row SVD: '//state%print())
+        if (allocated(error)) return        
+        call check(error, abs(S(1)-A(1,1))<tol, '1-row SVD: result')
+        if (allocated(error)) return          
+    
+    end subroutine test_svd_row_${ri}$
+
+    #:endif
+    #:endfor
+
 
 end module test_linalg_svd
 
