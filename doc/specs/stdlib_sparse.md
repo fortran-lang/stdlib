@@ -23,24 +23,24 @@ The `sparse_type` is defined as an abstract derived type holding the basic commo
 
 ```Fortran
 type, public, abstract :: sparse_type
-    integer :: nrows !> number of rows
-    integer :: ncols !> number of columns
-    integer :: nnz   !> number of non-zero values
-    integer :: sym   !> assumed storage symmetry
-    integer :: base  !> index base = 0 for (C) or 1 (Fortran)
+    integer :: nrows   !> number of rows
+    integer :: ncols   !> number of columns
+    integer :: nnz     !> number of non-zero values
+    integer :: storage !> assumed storage symmetry
+    integer :: base    !> index base = 0 for (C) or 1 (Fortran)
 end type
 ```
 
-The symmetry integer laber should be assigned from the module's internal enumerator containing the following three enums:
+The storage integer label should be assigned from the module's internal enumerator containing the following three enums:
 
 ```Fortran
 enum, bind(C)
-    enumerator :: sparse_full !> Full Sparse matrix (no symmetry considerations)
-    enumerator :: sparse_lower  !> Symmetric Sparse matrix with triangular inferior storage
-    enumerator :: sparse_upper  !> Symmetric Sparse matrix with triangular supperior storage
+    enumerator :: sparse_full  !> Full Sparse matrix (no symmetry considerations)
+    enumerator :: sparse_lower !> Symmetric Sparse matrix with triangular inferior storage
+    enumerator :: sparse_upper !> Symmetric Sparse matrix with triangular supperior storage
 end enum
 ```
-In the following, all sparse kinds will be presented in two main flavors: a data-less type `<matrix>_type` useful for topological graph operations. And real/complex valued types `<matrix>_<kind>` containing the `data` buffer for the matrix values.
+In the following, all sparse kinds will be presented in two main flavors: a data-less type `<matrix>_type` useful for topological graph operations. And real/complex valued types `<matrix>_<kind>` containing the `data` buffer for the matrix values. The following rectangular matrix will be used to showcase how each sparse matrix holds the data internally:
 
 $$ M = \begin{bmatrix} 
     9 & 0 & 0  & 0 & -3 \\
@@ -55,7 +55,7 @@ $$ M = \begin{bmatrix}
 Experimental
 
 #### Description
-The `COO`, triplet or `ijv` format defines all non-zero elements of the matrix by explicitly allocating the `i,j` index and the value of the matrix. 
+The `COO`, triplet or `ijv` format defines all non-zero elements of the matrix by explicitly allocating the `i,j` index and the value of the matrix. While some implementations use separate `row` and `col` arrays for the index, here we use a 2D array in order to promote fast memory acces to `ij`.
 
 ```Fortran
 type(COO_sp) :: COO
