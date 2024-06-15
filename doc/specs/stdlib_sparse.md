@@ -177,6 +177,16 @@ This module provides facility functions for converting between storage formats.
 
 ### Syntax
 
+`call ` [[stdlib_sparse_conversion(module):coo2ordered(interface)]] `(coo)`
+
+### Arguments
+
+`COO`, `intent(inout)`: Shall be any `COO` type. The same object will be returned with the arrays reallocated to the correct size after removing duplicates.
+
+`sort_data`, `logical(in)`, `optional`:: Boolean optional to determine whether to sort the data in the COO graph while sorting the index array, defult `.false.`.
+
+### Syntax
+
 `call ` [[stdlib_sparse_conversion(module):dense2coo(interface)]] `(dense,coo)`
 
 ### Arguments
