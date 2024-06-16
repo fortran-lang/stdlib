@@ -6,6 +6,8 @@
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"]))
 #:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_KINDS))
 
+#:set INT_INDEX_TYPES_ALT_NAME = list(zip(["int_index", "int_index_low"], ["integer(int_index)", "integer(int_index_low)"], ["default", "low"]))
+
 #! For better code reuse in fypp, make lists that contain the input types,
 #! with each having output types and a separate name prefix for subroutines
 #! This approach allows us to have the same code for all input types.
@@ -137,7 +139,9 @@ module stdlib_sorting
     implicit none
     private
 
-    integer, parameter, public :: int_size = int64 !! Integer kind for indexing
+    integer, parameter, public :: int_index = int64 !! Integer kind for indexing
+    integer, parameter, public :: int_index_low = int32 !! Integer kind for indexing using less than `huge(1_int32)` values
+
 
 ! Constants for use by tim_sort
     integer, parameter :: &
@@ -147,14 +151,16 @@ module stdlib_sorting
         max_merge_stack = int( ceiling( log( 2._dp**64 ) / &
                                log(1.6180339887_dp) ) )
 
-    type run_type
+#:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
+    type run_type_${namei}$
 !! Version: experimental
 !!
 !! Used to pass state around in a stack among helper functions for the
 !! `ORD_SORT` and `SORT_INDEX` algorithms
-        integer(int_size) :: base = 0
-        integer(int_size) :: len = 0
-    end type run_type
+        ${ti}$ :: base = 0
+        ${ti}$ :: len = 0
+    end type run_type_${namei}$
+#:endfor
 
     public ord_sort
 !! Version: experimental
@@ -313,7 +319,7 @@ module stdlib_sorting
 !!   Otherwise it is defined to be as specified by reverse.
 !!
 !! * index: a rank 1 array of sorting indices. It is an `intent(out)`
-!!   argument of the type `integer(int_size)`. Its size shall be the
+!!   argument of the type `integer(int_index)`. Its size shall be the
 !!   same as `array`. On return, if defined, its elements would
 !!   sort the input `array` in the direction specified by `reverse`.
 !!
@@ -324,7 +330,7 @@ module stdlib_sorting
 !!   storage, its use can significantly reduce the stack memory requirements
 !!   for the code. Its value on return is undefined.
 !!
-!! * iwork (optional): shall be a rank 1 integer array of kind `int_size`,
+!! * iwork (optional): shall be a rank 1 integer array of kind `int_index`,
 !!   and shall have at least `size(array)/2` elements. It is an
 !!   `intent(out)` argument to be used as "scratch" memory
 !!   for internal record keeping. If associated with an array in static
@@ -347,8 +353,8 @@ module stdlib_sorting
 !!        integer, intent(inout)         :: a(:)
 !!        integer(int32), intent(inout)  :: b(:) ! The same size as a
 !!        integer(int32), intent(out)    :: work(:)
-!!        integer(int_size), intent(out) :: index(:)
-!!        integer(int_size), intent(out) :: iwork(:)
+!!        integer(int_index), intent(out) :: index(:)
+!!        integer(int_index), intent(out) :: iwork(:)
 !!    ! Find the indices to sort a
 !!        call sort_index(a, index(1:size(a)),&
 !!            work(1:size(a)/2), iwork(1:size(a)/2))
@@ -365,8 +371,8 @@ module stdlib_sorting
 !!        integer, intent(inout)         :: a(:,:)
 !!        integer(int32), intent(in)     :: column
 !!        integer(int32), intent(out)    :: work(:)
-!!        integer(int_size), intent(out) :: index(:)
-!!        integer(int_size), intent(out) :: iwork(:)
+!!        integer(int_index), intent(out) :: index(:)
+!!        integer(int_index), intent(out) :: iwork(:)
 !!        integer, allocatable           :: dummy(:)
 !!        integer :: i
 !!        allocate(dummy(size(a, dim=1)))
@@ -389,8 +395,8 @@ module stdlib_sorting
 !!        type(a_type), intent(inout)    :: a_data(:)
 !!        integer(int32), intent(inout)  :: a(:)
 !!        integer(int32), intent(out)    :: work(:)
-!!        integer(int_size), intent(out) :: index(:)
-!!        integer(int_size), intent(out) :: iwork(:)
+!!        integer(int_index), intent(out) :: index(:)
+!!        integer(int_index), intent(out) :: iwork(:)
 !!    ! Extract a component of `a_data`
 !!        a(1:size(a_data)) = a_data(:) % a
 !!    ! Find the indices to sort the component
@@ -515,23 +521,25 @@ module stdlib_sorting
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
 !! with a value of `.TRUE.` the indices correspond to a non-increasing sort.
 
-#:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
-        module subroutine ${name1}$_sort_index( array, index, work, iwork, &
+#:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
+    #:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
+        module subroutine ${name1}$_sort_index_${namei}$( array, index, work, iwork, &
             reverse )
 !! Version: experimental
 !!
-!! `${name1}$_sort_index( array, index[, work, iwork, reverse] )` sorts
+!! `${name1}$_sort_index_${namei}$( array, index[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `${t1}$`
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
-            ${t1}$, intent(inout)                    :: array(0:)
-            integer(int_size), intent(out)           :: index(0:)
-            ${t2}$, intent(out), optional            :: work(0:)
-            integer(int_size), intent(out), optional :: iwork(0:)
-            logical, intent(in), optional            :: reverse
-        end subroutine ${name1}$_sort_index
+            ${t1}$, intent(inout)                     :: array(0:)
+            ${ti}$, intent(out)                      :: index(0:)
+            ${t2}$, intent(out), optional             :: work(0:)
+            ${ti}$, intent(out), optional            :: iwork(0:)
+            logical, intent(in), optional             :: reverse
+        end subroutine ${name1}$_sort_index_${namei}$
 
+    #:endfor
 #:endfor
 
     end interface sort_index
