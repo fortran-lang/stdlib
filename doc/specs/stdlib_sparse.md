@@ -19,7 +19,7 @@ The `stdlib_sparse` module provides derived types for standard sparse matrix dat
 Experimental
 
 #### Description
-The `sparse_type` is defined as an abstract derived type holding the basic common meta data needed to define a sparse matrix. All other sparse types falvors are derived from the `sparse_type`.
+The parent `sparse_type` is as an abstract derived type holding the basic common meta data needed to define a sparse matrix, as well as shared APIs. All sparse matrix flavors are extended from the `sparse_type`.
 
 ```Fortran
 type, public, abstract :: sparse_type
