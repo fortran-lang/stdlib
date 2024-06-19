@@ -99,7 +99,7 @@ contains
                 idx = idx + 1
             end do
         end do
-        COO%isOrdered = .true.
+        COO%is_sorted = .true.
     end subroutine
 
     #:endfor
@@ -419,7 +419,7 @@ contains
         integer, allocatable :: itemp(:,:)
         logical :: sort_data_
         
-        if(COO%isOrdered) return
+        if(COO%is_sorted) return
 
         sort_data_ = .false.
         if(present(sort_data)) sort_data_ = sort_data
@@ -446,7 +446,7 @@ contains
         allocate( itemp(2,COO%nnz) , source=COO%index(1:2,1:COO%nnz) )
         call move_alloc( itemp , COO%index )
 
-        COO%isOrdered = .true.
+        COO%is_sorted = .true.
     end subroutine
     
 end module stdlib_sparse_conversion

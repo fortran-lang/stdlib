@@ -42,7 +42,7 @@ module stdlib_sparse_kinds
 
     !> COO: COOrdinates compresed format 
     type, public, extends(sparse_type) :: COO_type
-      logical               :: isOrdered = .false. !> wether the matrix is ordered or not
+      logical               :: is_sorted = .false. !> wether the matrix is ordered or not
       integer, allocatable  :: index(:,:) !> Matrix coordinates index(2,nnz)
     contains
       procedure :: malloc => malloc_coo
