@@ -10,7 +10,7 @@ title: sparse
 
 The `stdlib_sparse` module provides derived types for standard sparse matrix data structures. It also provides math kernels such as sparse matrix-vector product and conversion between matrix types.
 
-## Derived types provided
+## Sparse matrix derived types
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### The `sparse_type` abstract derived type
