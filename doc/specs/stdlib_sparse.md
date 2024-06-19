@@ -79,7 +79,7 @@ COO%index(1:2,10) = [4,4]
 Experimental
 
 #### Description
-The Compressed Sparse Row or Yale format `CSR` stores the matrix index by compressing the row indeces with a counter pointer `rowptr` enabling to know the first and last non-zero colum index `col` of the given row. 
+The Compressed Sparse Row or Yale format `CSR` stores the matrix structure by compressing the row indices with a counter pointer `rowptr` enabling to know the first and last non-zero column index `col` of the given row. 
 
 ```Fortran
 type(CSR_sp) :: CSR
