@@ -23,6 +23,11 @@ module test_linalg_svd
         tests = [tests,new_unittest("test_complex_svd_c",test_complex_svd_c)]        
         tests = [tests,new_unittest("test_complex_svd_z",test_complex_svd_z)]        
 
+        tests = [tests,new_unittest("test_svd_row_s",test_svd_row_s)]         
+        tests = [tests,new_unittest("test_svd_row_d",test_svd_row_d)]         
+        tests = [tests,new_unittest("test_svd_row_c",test_svd_row_c)]         
+        tests = [tests,new_unittest("test_svd_row_z",test_svd_row_z)]         
+
     end subroutine test_svd
 
     !> Real matrix svd
@@ -417,6 +422,105 @@ module test_linalg_svd
         if (allocated(error)) return          
 
     end subroutine test_complex_svd_z
+
+
+
+    ! Issue #835: bounds checking triggers an error with 1-sized A matrix
+    subroutine test_svd_row_s(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        !> Reference solution
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 1, n = 1
+        real(sp), parameter :: tol = sqrt(epsilon(0.0_sp))
+        real(sp) :: Arand(m, n), S(n)
+        real(sp) :: A(m, n), U(m, m), Vt(n, n)
+        
+        ! Random matrix. 
+        call random_number(Arand)
+        A = Arand
+        
+        call svd(A, S, U, Vt, err=state)
+        
+        call check(error,state%ok(),'1-row SVD: '//state%print())
+        if (allocated(error)) return        
+        call check(error, abs(S(1)-A(1,1))<tol, '1-row SVD: result')
+        if (allocated(error)) return          
+    
+    end subroutine test_svd_row_s
+
+    ! Issue #835: bounds checking triggers an error with 1-sized A matrix
+    subroutine test_svd_row_d(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        !> Reference solution
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 1, n = 1
+        real(dp), parameter :: tol = sqrt(epsilon(0.0_dp))
+        real(dp) :: Arand(m, n), S(n)
+        real(dp) :: A(m, n), U(m, m), Vt(n, n)
+        
+        ! Random matrix. 
+        call random_number(Arand)
+        A = Arand
+        
+        call svd(A, S, U, Vt, err=state)
+        
+        call check(error,state%ok(),'1-row SVD: '//state%print())
+        if (allocated(error)) return        
+        call check(error, abs(S(1)-A(1,1))<tol, '1-row SVD: result')
+        if (allocated(error)) return          
+    
+    end subroutine test_svd_row_d
+
+    ! Issue #835: bounds checking triggers an error with 1-sized A matrix
+    subroutine test_svd_row_c(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        !> Reference solution
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 1, n = 1
+        real(sp), parameter :: tol = sqrt(epsilon(0.0_sp))
+        real(sp) :: Arand(m, n), S(n)
+        complex(sp) :: A(m, n), U(m, m), Vt(n, n)
+        
+        ! Random matrix. 
+        call random_number(Arand)
+        A = Arand
+        
+        call svd(A, S, U, Vt, err=state)
+        
+        call check(error,state%ok(),'1-row SVD: '//state%print())
+        if (allocated(error)) return        
+        call check(error, abs(S(1)-A(1,1))<tol, '1-row SVD: result')
+        if (allocated(error)) return          
+    
+    end subroutine test_svd_row_c
+
+    ! Issue #835: bounds checking triggers an error with 1-sized A matrix
+    subroutine test_svd_row_z(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        !> Reference solution
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 1, n = 1
+        real(dp), parameter :: tol = sqrt(epsilon(0.0_dp))
+        real(dp) :: Arand(m, n), S(n)
+        complex(dp) :: A(m, n), U(m, m), Vt(n, n)
+        
+        ! Random matrix. 
+        call random_number(Arand)
+        A = Arand
+        
+        call svd(A, S, U, Vt, err=state)
+        
+        call check(error,state%ok(),'1-row SVD: '//state%print())
+        if (allocated(error)) return        
+        call check(error, abs(S(1)-A(1,1))<tol, '1-row SVD: result')
+        if (allocated(error)) return          
+    
+    end subroutine test_svd_row_z
+
 
 
 end module test_linalg_svd

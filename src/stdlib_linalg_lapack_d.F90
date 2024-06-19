@@ -75375,7 +75375,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dgeqrf( m, n, a, lda, work( itau ), work( nwork ),lwork - nwork + &
                               1, ierr )
                     ! zero out below r
-                    call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
+                    if (n>1) call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
                     ie = 1
                     itauq = ie + n
                     itaup = itauq + n
@@ -75525,7 +75525,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dorgqr( m, m, n, u, ldu, work( itau ),work( nwork ), lwork - &
                               nwork + 1, ierr )
                     ! produce r in a, zeroing out other entries
-                    call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
+                    if (n>1) call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
                     ie = itau
                     itauq = ie + n
                     itaup = itauq + n
@@ -75691,7 +75691,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dgelqf( m, n, a, lda, work( itau ), work( nwork ),lwork - nwork + &
                               1, ierr )
                     ! zero out above l
-                    call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = 1
                     itauq = ie + m
                     itaup = itauq + m
@@ -75845,7 +75845,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dorglq( n, n, m, vt, ldvt, work( itau ),work( nwork ), lwork - &
                               nwork + 1, ierr )
                     ! produce l in a, zeroing out other entries
-                    call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = itau
                     itauq = ie + m
                     itaup = itauq + m
@@ -77328,7 +77328,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dgelqf( m, n, a, lda, work( itau ), work( iwork ),lwork-iwork+1, &
                               ierr )
                     ! zero out above l
-                    call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = 1
                     itauq = ie + m
                     itaup = itauq + m
@@ -77471,7 +77471,7 @@ module stdlib_linalg_lapack_d
                                  1, ierr )
                        ! copy l to u, zeroing about above it
                        call stdlib_dlacpy( 'L', m, m, a, lda, u, ldu )
-                       call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                       if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                        ! generate q in a
                        ! (workspace: need m*m + 2*m, prefer m*m + m + m*nb)
                        call stdlib_dorglq( m, n, m, a, lda, work( itau ),work( iwork ), lwork-&
@@ -77521,7 +77521,7 @@ module stdlib_linalg_lapack_d
                                  1, ierr )
                        ! copy l to u, zeroing out above it
                        call stdlib_dlacpy( 'L', m, m, a, lda, u, ldu )
-                       call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                       if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                        ! generate q in a
                        ! (workspace: need 2*m, prefer m + m*nb)
                        call stdlib_dorglq( m, n, m, a, lda, work( itau ),work( iwork ), lwork-&
@@ -77622,7 +77622,7 @@ module stdlib_linalg_lapack_d
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_dgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -77729,7 +77729,7 @@ module stdlib_linalg_lapack_d
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_dgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -77824,7 +77824,7 @@ module stdlib_linalg_lapack_d
                                     lwork-iwork+1, ierr )
                           ! copy l to u, zeroing out above it
                           call stdlib_dlacpy( 'L', m, m, a, lda, u, ldu )
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                           ie = itau
                           itauq = ie + m
                           itaup = itauq + m
@@ -77925,7 +77925,7 @@ module stdlib_linalg_lapack_d
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_dgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -78035,7 +78035,7 @@ module stdlib_linalg_lapack_d
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_dgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -78133,7 +78133,7 @@ module stdlib_linalg_lapack_d
                                     lwork-iwork+1, ierr )
                           ! copy l to u, zeroing out above it
                           call stdlib_dlacpy( 'L', m, m, a, lda, u, ldu )
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                           ie = itau
                           itauq = ie + m
                           itaup = itauq + m
@@ -78994,7 +78994,7 @@ module stdlib_linalg_lapack_d
                                 v(q,p) = u(p,nr+q)
                             end do
                         end do
-                       call stdlib_dlaset('U',nr-1,nr-1,zero,zero,v(1,2),ldv)
+                       if (nr>1) call stdlib_dlaset('U',nr-1,nr-1,zero,zero,v(1,2),ldv)
                        call stdlib_dgesvd( 'S', 'O', nr, nr, v, ldv, s, u, ldu,v,ldv, work(n+nr+1)&
                                  ,lwork-n-nr, info )
                        call stdlib_dlaset('A',n-nr,nr,zero,zero,v(nr+1,1),ldv)

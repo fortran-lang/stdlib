@@ -65731,7 +65731,7 @@ module stdlib_linalg_lapack_c
                     call stdlib_cgeqrf( m, n, a, lda, work( itau ), work( nwork ),lwork-nwork+1, &
                               ierr )
                     ! zero out below r
-                    call stdlib_claset( 'L', n-1, n-1, czero, czero, a( 2, 1 ),lda )
+                    if (n>1) call stdlib_claset( 'L', n-1, n-1, czero, czero, a( 2, 1 ),lda )
                     ie = 1
                     itauq = 1
                     itaup = itauq + n
@@ -65917,7 +65917,7 @@ module stdlib_linalg_lapack_c
                     call stdlib_cungqr( m, m, n, u, ldu, work( itau ),work( nwork ), lwork-nwork+&
                               1, ierr )
                     ! produce r in a, zeroing out below it
-                    call stdlib_claset( 'L', n-1, n-1, czero, czero, a( 2, 1 ),lda )
+                    if (n>1) call stdlib_claset( 'L', n-1, n-1, czero, czero, a( 2, 1 ),lda )
                     ie = 1
                     itauq = itau
                     itaup = itauq + n
@@ -66293,7 +66293,7 @@ module stdlib_linalg_lapack_c
                     call stdlib_cgelqf( m, n, a, lda, work( itau ), work( nwork ),lwork-nwork+1, &
                               ierr )
                     ! zero out above l
-                    call stdlib_claset( 'U', m-1, m-1, czero, czero, a( 1, 2 ),lda )
+                    if (m>1) call stdlib_claset( 'U', m-1, m-1, czero, czero, a( 1, 2 ),lda )
                     ie = 1
                     itauq = 1
                     itaup = itauq + m
@@ -66484,7 +66484,7 @@ module stdlib_linalg_lapack_c
                     call stdlib_cunglq( n, n, m, vt, ldvt, work( itau ),work( nwork ), lwork-&
                               nwork+1, ierr )
                     ! produce l in a, zeroing out above it
-                    call stdlib_claset( 'U', m-1, m-1, czero, czero, a( 1, 2 ),lda )
+                    if (m>1) call stdlib_claset( 'U', m-1, m-1, czero, czero, a( 1, 2 ),lda )
                     ie = 1
                     itauq = itau
                     itaup = itauq + m
@@ -68326,7 +68326,7 @@ module stdlib_linalg_lapack_c
                     call stdlib_cgelqf( m, n, a, lda, work( itau ), work( iwork ),lwork-iwork+1, &
                               ierr )
                     ! zero out above l
-                    call stdlib_claset( 'U', m-1, m-1, czero, czero, a( 1, 2 ),lda )
+                    if (m>1) call stdlib_claset( 'U', m-1, m-1, czero, czero, a( 1, 2 ),lda )
                     ie = 1
                     itauq = 1
                     itaup = itauq + m
@@ -68482,7 +68482,7 @@ module stdlib_linalg_lapack_c
                                  1, ierr )
                        ! copy l to u, zeroing about above it
                        call stdlib_clacpy( 'L', m, m, a, lda, u, ldu )
-                       call stdlib_claset( 'U', m-1, m-1, czero, czero, u( 1, 2 ),ldu )
+                       if (m>1) call stdlib_claset( 'U', m-1, m-1, czero, czero, u( 1, 2 ),ldu )
                        ! generate q in a
                        ! (cworkspace: need m*m+2*m, prefer m*m+m+m*nb)
                        ! (rworkspace: 0)
@@ -68539,7 +68539,7 @@ module stdlib_linalg_lapack_c
                                  1, ierr )
                        ! copy l to u, zeroing out above it
                        call stdlib_clacpy( 'L', m, m, a, lda, u, ldu )
-                       call stdlib_claset( 'U', m-1, m-1, czero, czero, u( 1, 2 ),ldu )
+                       if (m>1) call stdlib_claset( 'U', m-1, m-1, czero, czero, u( 1, 2 ),ldu )
                        ! generate q in a
                        ! (cworkspace: need 2*m, prefer m+m*nb)
                        ! (rworkspace: 0)
@@ -68653,7 +68653,7 @@ module stdlib_linalg_lapack_c
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_claset( 'U', m-1, m-1, czero, czero,a( 1, 2 ), lda )
+                          if (m>1) call stdlib_claset( 'U', m-1, m-1, czero, czero,a( 1, 2 ), lda )
                           ! bidiagonalize l in a
                           ! (cworkspace: need 3*m, prefer 2*m+2*m*nb)
                           ! (rworkspace: need m)
@@ -68773,7 +68773,7 @@ module stdlib_linalg_lapack_c
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_claset( 'U', m-1, m-1, czero, czero,a( 1, 2 ), lda )
+                          if (m>1) call stdlib_claset( 'U', m-1, m-1, czero, czero,a( 1, 2 ), lda )
                           ! bidiagonalize l in a
                           ! (cworkspace: need 3*m, prefer 2*m+2*m*nb)
                           ! (rworkspace: need m)
@@ -68881,7 +68881,7 @@ module stdlib_linalg_lapack_c
                                     lwork-iwork+1, ierr )
                           ! copy l to u, zeroing out above it
                           call stdlib_clacpy( 'L', m, m, a, lda, u, ldu )
-                          call stdlib_claset( 'U', m-1, m-1, czero, czero,u( 1, 2 ), ldu )
+                          if (m>1) call stdlib_claset( 'U', m-1, m-1, czero, czero,u( 1, 2 ), ldu )
                           ie = 1
                           itauq = itau
                           itaup = itauq + m
@@ -68994,7 +68994,7 @@ module stdlib_linalg_lapack_c
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_claset( 'U', m-1, m-1, czero, czero,a( 1, 2 ), lda )
+                          if (m>1) call stdlib_claset( 'U', m-1, m-1, czero, czero,a( 1, 2 ), lda )
                           ! bidiagonalize l in a
                           ! (cworkspace: need 3*m, prefer 2*m+2*m*nb)
                           ! (rworkspace: need m)
@@ -69116,7 +69116,7 @@ module stdlib_linalg_lapack_c
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_claset( 'U', m-1, m-1, czero, czero,a( 1, 2 ), lda )
+                          if (m>1) call stdlib_claset( 'U', m-1, m-1, czero, czero,a( 1, 2 ), lda )
                           ! bidiagonalize l in a
                           ! (cworkspace: need 3*m, prefer 2*m+2*m*nb)
                           ! (rworkspace: need m)
@@ -69227,7 +69227,7 @@ module stdlib_linalg_lapack_c
                                     lwork-iwork+1, ierr )
                           ! copy l to u, zeroing out above it
                           call stdlib_clacpy( 'L', m, m, a, lda, u, ldu )
-                          call stdlib_claset( 'U', m-1, m-1, czero, czero,u( 1, 2 ), ldu )
+                          if (m>1) call stdlib_claset( 'U', m-1, m-1, czero, czero,u( 1, 2 ), ldu )
                           ie = 1
                           itauq = itau
                           itaup = itauq + m
@@ -70097,7 +70097,7 @@ module stdlib_linalg_lapack_c
                                 v(q,p) = conjg(u(p,nr+q))
                             end do
                         end do
-                       call stdlib_claset('U',nr-1,nr-1,czero,czero,v(1,2),ldv)
+                       if (nr>1) call stdlib_claset('U',nr-1,nr-1,czero,czero,v(1,2),ldv)
                        call stdlib_cgesvd( 'S', 'O', nr, nr, v, ldv, s, u, ldu,v,ldv, cwork(n+nr+&
                                  1),lcwork-n-nr,rwork, info )
                        call stdlib_claset('A',n-nr,nr,czero,czero,v(nr+1,1),ldv)
@@ -75162,7 +75162,7 @@ module stdlib_linalg_lapack_c
                        end do
                     end do
                  else
-                    call stdlib_claset( 'U', nr-1,nr-1, czero,czero, a(1,2),lda )
+                    if (nr>1) call stdlib_claset( 'U', nr-1,nr-1, czero,czero, a(1,2),lda )
                  end if
                   ! Second Preconditioning Using The Qr Factorization
                  call stdlib_cgeqrf( n,nr, a,lda, cwork, cwork(n+1),lwork-n, ierr )
@@ -75187,7 +75187,7 @@ module stdlib_linalg_lapack_c
                        end do
                     end do
                  else
-                    call stdlib_claset( 'U', nr-1, nr-1, czero, czero, a(1,2), lda )
+                    if (nr>1) call stdlib_claset( 'U', nr-1, nr-1, czero, czero, a(1,2), lda )
                  end if
                  ! .. and one-sided jacobi rotations are started on a lower
                  ! triangular matrix (plus perturbation which is ignored in
@@ -75205,7 +75205,7 @@ module stdlib_linalg_lapack_c
                     call stdlib_ccopy( n-p+1, a(p,p), lda, v(p,p), 1 )
                     call stdlib_clacgv( n-p+1, v(p,p), 1 )
                  end do
-                 call stdlib_claset( 'U', nr-1,nr-1, czero, czero, v(1,2), ldv )
+                 if (nr>1) call stdlib_claset( 'U', nr-1,nr-1, czero, czero, v(1,2), ldv )
                  call stdlib_cgesvj( 'L','U','N', n, nr, v, ldv, sva, nr, a, lda,cwork, lwork, &
                            rwork, lrwork, info )
                  scalem  = rwork(1)
@@ -75213,17 +75213,17 @@ module stdlib_linalg_lapack_c
               else
               ! .. two more qr factorizations ( one qrf is not enough, two require
               ! accumulated product of jacobi rotations, three are perfect )
-                 call stdlib_claset( 'L', nr-1,nr-1, czero, czero, a(2,1), lda )
+                 if (nr>1) call stdlib_claset( 'L', nr-1,nr-1, czero, czero, a(2,1), lda )
                  call stdlib_cgelqf( nr,n, a, lda, cwork, cwork(n+1), lwork-n, ierr)
                  call stdlib_clacpy( 'L', nr, nr, a, lda, v, ldv )
-                 call stdlib_claset( 'U', nr-1,nr-1, czero, czero, v(1,2), ldv )
+                 if (nr>1) call stdlib_claset( 'U', nr-1,nr-1, czero, czero, v(1,2), ldv )
                  call stdlib_cgeqrf( nr, nr, v, ldv, cwork(n+1), cwork(2*n+1),lwork-2*n, ierr )
                            
                  do p = 1, nr
                     call stdlib_ccopy( nr-p+1, v(p,p), ldv, v(p,p), 1 )
                     call stdlib_clacgv( nr-p+1, v(p,p), 1 )
                  end do
-                 call stdlib_claset('U', nr-1, nr-1, czero, czero, v(1,2), ldv)
+                 if (nr>1) call stdlib_claset('U', nr-1, nr-1, czero, czero, v(1,2), ldv)
                  call stdlib_cgesvj( 'L', 'U','N', nr, nr, v,ldv, sva, nr, u,ldu, cwork(n+1), &
                            lwork-n, rwork, lrwork, info )
                  scalem  = rwork(1)
@@ -75246,7 +75246,7 @@ module stdlib_linalg_lapack_c
                  call stdlib_clacpy( 'A', n, n, v, ldv, u, ldu )
                end if
            else if ( jracc .and. (.not. lsvec) .and. ( nr== n ) ) then
-              call stdlib_claset( 'L', n-1,n-1, czero, czero, a(2,1), lda )
+              if (n>1) call stdlib_claset( 'L', n-1,n-1, czero, czero, a(2,1), lda )
               call stdlib_cgesvj( 'U','N','V', n, n, a, lda, sva, n, v, ldv,cwork, lwork, rwork, &
                         lrwork, info )
                scalem  = rwork(1)
@@ -75260,14 +75260,14 @@ module stdlib_linalg_lapack_c
                  call stdlib_ccopy( n-p+1, a(p,p), lda, u(p,p), 1 )
                  call stdlib_clacgv( n-p+1, u(p,p), 1 )
               end do
-              call stdlib_claset( 'U', nr-1, nr-1, czero, czero, u(1,2), ldu )
+              if (nr>1) call stdlib_claset( 'U', nr-1, nr-1, czero, czero, u(1,2), ldu )
               call stdlib_cgeqrf( n, nr, u, ldu, cwork(n+1), cwork(2*n+1),lwork-2*n, ierr )
                         
               do p = 1, nr - 1
                  call stdlib_ccopy( nr-p, u(p,p+1), ldu, u(p+1,p), 1 )
                  call stdlib_clacgv( n-p+1, u(p,p), 1 )
               end do
-              call stdlib_claset( 'U', nr-1, nr-1, czero, czero, u(1,2), ldu )
+              if (nr>1) call stdlib_claset( 'U', nr-1, nr-1, czero, czero, u(1,2), ldu )
               call stdlib_cgesvj( 'L', 'U', 'N', nr,nr, u, ldu, sva, nr, a,lda, cwork(n+1), lwork-&
                         n, rwork, lrwork, info )
               scalem  = rwork(1)
@@ -75326,7 +75326,7 @@ module stdlib_linalg_lapack_c
                        end do
                     end do
                  else
-                    call stdlib_claset( 'U', nr-1, nr-1, czero, czero, v(1,2), ldv )
+                    if (nr>1) call stdlib_claset( 'U', nr-1, nr-1, czero, czero, v(1,2), ldv )
                  end if
                  ! estimate the row scaled condition number of r1
                  ! (if r1 is rectangular, n > nr, then the condition number
@@ -75408,7 +75408,7 @@ module stdlib_linalg_lapack_c
                           end do
                        end do
                     else
-                       call stdlib_claset( 'L',nr-1,nr-1,czero,czero,v(2,1),ldv )
+                       if (nr>1) call stdlib_claset( 'L',nr-1,nr-1,czero,czero,v(2,1),ldv )
                     end if
                     ! now, compute r2 = l3 * q3, the lq factorization.
                     call stdlib_cgelqf( nr, nr, v, ldv, cwork(2*n+n*nr+1),cwork(2*n+n*nr+nr+1), &
@@ -75442,7 +75442,7 @@ module stdlib_linalg_lapack_c
                        end do
                     end do
                  else
-                    call stdlib_claset( 'U', nr-1,nr-1, czero,czero, v(1,2), ldv )
+                    if (nr>1) call stdlib_claset( 'U', nr-1,nr-1, czero,czero, v(1,2), ldv )
                  end if
               ! second preconditioning finished; continue with jacobi svd
               ! the input matrix is lower trinagular.
@@ -75661,7 +75661,7 @@ module stdlib_linalg_lapack_c
                     end do
                  end do
               else
-                 call stdlib_claset( 'U', nr-1, nr-1, czero, czero, v(1,2), ldv )
+                 if (nr>1) call stdlib_claset( 'U', nr-1, nr-1, czero, czero, v(1,2), ldv )
               end if
               call stdlib_cgeqrf( n, nr, v, ldv, cwork(n+1), cwork(2*n+1),lwork-2*n, ierr )
                         
@@ -75680,7 +75680,7 @@ module stdlib_linalg_lapack_c
                     end do
                  end do
               else
-                 call stdlib_claset('U', nr-1, nr-1, czero, czero, u(1,2), ldu )
+                 if (nr>1) call stdlib_claset('U', nr-1, nr-1, czero, czero, u(1,2), ldu )
               end if
               call stdlib_cgesvj( 'L', 'U', 'V', nr, nr, u, ldu, sva,n, v, ldv, cwork(2*n+n*nr+1),&
                          lwork-2*n-n*nr,rwork, lrwork, info )

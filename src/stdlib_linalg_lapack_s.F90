@@ -56699,7 +56699,7 @@ module stdlib_linalg_lapack_s
                  go to 70
               end if
               ! set lower triangle of b-part to zero
-              call stdlib_slaset( 'LOWER', m-1, m-1, zero, zero, t(2,1), ldst )
+              if (m>1) call stdlib_slaset( 'LOWER', m-1, m-1, zero, zero, t(2,1), ldst )
               if( wands ) then
                  ! strong stability test:
                      ! f-norm((a-ql**h*s*qr)) <= o(eps*f-norm((a)))
@@ -71231,7 +71231,7 @@ module stdlib_linalg_lapack_s
                        end do
                     end do
                  else
-                    call stdlib_slaset( 'U', nr-1,nr-1, zero,zero, a(1,2),lda )
+                    if (nr>1) call stdlib_slaset( 'U', nr-1,nr-1, zero,zero, a(1,2),lda )
                  end if
                   ! Second Preconditioning Using The Qr Factorization
                  call stdlib_sgeqrf( n,nr, a,lda, work, work(n+1),lwork-n, ierr )
@@ -71254,7 +71254,7 @@ module stdlib_linalg_lapack_s
                        end do
                     end do
                  else
-                    call stdlib_slaset( 'U', nr-1, nr-1, zero, zero, a(1,2), lda )
+                    if (nr>1) call stdlib_slaset( 'U', nr-1, nr-1, zero, zero, a(1,2), lda )
                  end if
                  ! .. and one-sided jacobi rotations are started on a lower
                  ! triangular matrix (plus perturbation which is ignored in
@@ -71270,7 +71270,7 @@ module stdlib_linalg_lapack_s
                  do p = 1, nr
                     call stdlib_scopy( n-p+1, a(p,p), lda, v(p,p), 1 )
                  end do
-                 call stdlib_slaset( 'UPPER', nr-1, nr-1, zero, zero, v(1,2), ldv )
+                 if (nr>1) call stdlib_slaset( 'UPPER', nr-1, nr-1, zero, zero, v(1,2), ldv )
                  call stdlib_sgesvj( 'L','U','N', n, nr, v,ldv, sva, nr, a,lda,work, lwork, info )
                            
                  scalem  = work(1)
@@ -71278,16 +71278,16 @@ module stdlib_linalg_lapack_s
               else
               ! .. two more qr factorizations ( one qrf is not enough, two require
               ! accumulated product of jacobi rotations, three are perfect )
-                 call stdlib_slaset( 'LOWER', nr-1, nr-1, zero, zero, a(2,1), lda )
+                 if (nr>1) call stdlib_slaset( 'LOWER', nr-1, nr-1, zero, zero, a(2,1), lda )
                  call stdlib_sgelqf( nr, n, a, lda, work, work(n+1), lwork-n, ierr)
                  call stdlib_slacpy( 'LOWER', nr, nr, a, lda, v, ldv )
-                 call stdlib_slaset( 'UPPER', nr-1, nr-1, zero, zero, v(1,2), ldv )
+                 if (nr>1) call stdlib_slaset( 'UPPER', nr-1, nr-1, zero, zero, v(1,2), ldv )
                  call stdlib_sgeqrf( nr, nr, v, ldv, work(n+1), work(2*n+1),lwork-2*n, ierr )
                            
                  do p = 1, nr
                     call stdlib_scopy( nr-p+1, v(p,p), ldv, v(p,p), 1 )
                  end do
-                 call stdlib_slaset( 'UPPER', nr-1, nr-1, zero, zero, v(1,2), ldv )
+                 if (nr>1) call stdlib_slaset( 'UPPER', nr-1, nr-1, zero, zero, v(1,2), ldv )
                  call stdlib_sgesvj( 'LOWER', 'U','N', nr, nr, v,ldv, sva, nr, u,ldu, work(n+1), &
                            lwork-n, info )
                  scalem  = work(n+1)
@@ -71314,12 +71314,12 @@ module stdlib_linalg_lapack_s
               do p = 1, nr
                  call stdlib_scopy( n-p+1, a(p,p), lda, u(p,p), 1 )
               end do
-              call stdlib_slaset( 'UPPER', nr-1, nr-1, zero, zero, u(1,2), ldu )
+              if (nr>1) call stdlib_slaset( 'UPPER', nr-1, nr-1, zero, zero, u(1,2), ldu )
               call stdlib_sgeqrf( n, nr, u, ldu, work(n+1), work(2*n+1),lwork-2*n, ierr )
               do p = 1, nr - 1
                  call stdlib_scopy( nr-p, u(p,p+1), ldu, u(p+1,p), 1 )
               end do
-              call stdlib_slaset( 'UPPER', nr-1, nr-1, zero, zero, u(1,2), ldu )
+              if (nr>1) call stdlib_slaset( 'UPPER', nr-1, nr-1, zero, zero, u(1,2), ldu )
               call stdlib_sgesvj( 'LOWER', 'U', 'N', nr,nr, u, ldu, sva, nr, a,lda, work(n+1), &
                         lwork-n, info )
               scalem  = work(n+1)
@@ -71376,7 +71376,7 @@ module stdlib_linalg_lapack_s
                        end do
                     end do
                  else
-                    call stdlib_slaset( 'U', nr-1, nr-1, zero, zero, v(1,2), ldv )
+                    if (nr>1) call stdlib_slaset( 'U', nr-1, nr-1, zero, zero, v(1,2), ldv )
                  end if
                  ! estimate the row scaled condition number of r1
                  ! (if r1 is rectangular, n > nr, then the condition number
@@ -71452,7 +71452,7 @@ module stdlib_linalg_lapack_s
                           end do
                        end do
                     else
-                       call stdlib_slaset( 'L',nr-1,nr-1,zero,zero,v(2,1),ldv )
+                       if (nr>1) call stdlib_slaset( 'L',nr-1,nr-1,zero,zero,v(2,1),ldv )
                     end if
                     ! now, compute r2 = l3 * q3, the lq factorization.
                     call stdlib_sgelqf( nr, nr, v, ldv, work(2*n+n*nr+1),work(2*n+n*nr+nr+1), &
@@ -71486,7 +71486,7 @@ module stdlib_linalg_lapack_s
                        end do
                     end do
                  else
-                    call stdlib_slaset( 'U', nr-1,nr-1, zero,zero, v(1,2), ldv )
+                    if (nr>1) call stdlib_slaset( 'U', nr-1,nr-1, zero,zero, v(1,2), ldv )
                  end if
               ! second preconditioning finished; continue with jacobi svd
               ! the input matrix is lower trinagular.
@@ -71703,7 +71703,7 @@ module stdlib_linalg_lapack_s
                     end do
                  end do
               else
-                 call stdlib_slaset( 'U', nr-1, nr-1, zero, zero, v(1,2), ldv )
+                 if (nr>1) call stdlib_slaset( 'U', nr-1, nr-1, zero, zero, v(1,2), ldv )
               end if
               call stdlib_sgeqrf( n, nr, v, ldv, work(n+1), work(2*n+1),lwork-2*n, ierr )
               call stdlib_slacpy( 'L', n, nr, v, ldv, work(2*n+1), n )
@@ -71719,7 +71719,7 @@ module stdlib_linalg_lapack_s
                     end do
                  end do
               else
-                 call stdlib_slaset('U', nr-1, nr-1, zero, zero, u(1,2), ldu )
+                 if (nr>1) call stdlib_slaset('U', nr-1, nr-1, zero, zero, u(1,2), ldu )
               end if
               call stdlib_sgesvj( 'L', 'U', 'V', nr, nr, u, ldu, sva,n, v, ldv, work(2*n+n*nr+1), &
                         lwork-2*n-n*nr, info )
@@ -72902,7 +72902,7 @@ module stdlib_linalg_lapack_s
                     call stdlib_sgeqrf( m, n, a, lda, work( itau ), work( nwork ),lwork - nwork + &
                               1, ierr )
                     ! zero out below r
-                    call stdlib_slaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
+                    if (n>1) call stdlib_slaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
                     ie = 1
                     itauq = ie + n
                     itaup = itauq + n
@@ -73052,7 +73052,7 @@ module stdlib_linalg_lapack_s
                     call stdlib_sorgqr( m, m, n, u, ldu, work( itau ),work( nwork ), lwork - &
                               nwork + 1, ierr )
                     ! produce r in a, zeroing out other entries
-                    call stdlib_slaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
+                    if (n>1) call stdlib_slaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
                     ie = itau
                     itauq = ie + n
                     itaup = itauq + n
@@ -73218,7 +73218,7 @@ module stdlib_linalg_lapack_s
                     call stdlib_sgelqf( m, n, a, lda, work( itau ), work( nwork ),lwork - nwork + &
                               1, ierr )
                     ! zero out above l
-                    call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = 1
                     itauq = ie + m
                     itaup = itauq + m
@@ -73372,7 +73372,7 @@ module stdlib_linalg_lapack_s
                     call stdlib_sorglq( n, n, m, vt, ldvt, work( itau ),work( nwork ), lwork - &
                               nwork + 1, ierr )
                     ! produce l in a, zeroing out other entries
-                    call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = itau
                     itauq = ie + m
                     itaup = itauq + m
@@ -74856,7 +74856,7 @@ module stdlib_linalg_lapack_s
                     call stdlib_sgelqf( m, n, a, lda, work( itau ), work( iwork ),lwork-iwork+1, &
                               ierr )
                     ! zero out above l
-                    call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = 1
                     itauq = ie + m
                     itaup = itauq + m
@@ -74999,7 +74999,7 @@ module stdlib_linalg_lapack_s
                                  1, ierr )
                        ! copy l to u, zeroing about above it
                        call stdlib_slacpy( 'L', m, m, a, lda, u, ldu )
-                       call stdlib_slaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                       if (m>1) call stdlib_slaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                        ! generate q in a
                        ! (workspace: need m*m+2*m, prefer m*m+m+m*nb)
                        call stdlib_sorglq( m, n, m, a, lda, work( itau ),work( iwork ), lwork-&
@@ -75049,7 +75049,7 @@ module stdlib_linalg_lapack_s
                                  1, ierr )
                        ! copy l to u, zeroing out above it
                        call stdlib_slacpy( 'L', m, m, a, lda, u, ldu )
-                       call stdlib_slaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                       if (m>1) call stdlib_slaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                        ! generate q in a
                        ! (workspace: need 2*m, prefer m+m*nb)
                        call stdlib_sorglq( m, n, m, a, lda, work( itau ),work( iwork ), lwork-&
@@ -75150,7 +75150,7 @@ module stdlib_linalg_lapack_s
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m+2*m*nb)
                           call stdlib_sgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -75257,7 +75257,7 @@ module stdlib_linalg_lapack_s
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m+2*m*nb)
                           call stdlib_sgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -75352,7 +75352,7 @@ module stdlib_linalg_lapack_s
                                     lwork-iwork+1, ierr )
                           ! copy l to u, zeroing out above it
                           call stdlib_slacpy( 'L', m, m, a, lda, u, ldu )
-                          call stdlib_slaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                          if (m>1) call stdlib_slaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                           ie = itau
                           itauq = ie + m
                           itaup = itauq + m
@@ -75453,7 +75453,7 @@ module stdlib_linalg_lapack_s
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m+2*m*nb)
                           call stdlib_sgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -75563,7 +75563,7 @@ module stdlib_linalg_lapack_s
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_slaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m+2*m*nb)
                           call stdlib_sgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -75661,7 +75661,7 @@ module stdlib_linalg_lapack_s
                                     lwork-iwork+1, ierr )
                           ! copy l to u, zeroing out above it
                           call stdlib_slacpy( 'L', m, m, a, lda, u, ldu )
-                          call stdlib_slaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                          if (m>1) call stdlib_slaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                           ie = itau
                           itauq = ie + m
                           itaup = itauq + m
