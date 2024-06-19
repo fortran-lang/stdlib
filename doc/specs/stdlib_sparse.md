@@ -183,7 +183,7 @@ This module provides facility functions for converting between storage formats.
 
 `COO`, `intent(inout)`: Shall be any `COO` type. The same object will be returned with the arrays reallocated to the correct size after removing duplicates.
 
-`sort_data`, `logical(in)`, `optional`:: Boolean optional to determine whether to sort the data in the COO graph while sorting the index array, defult `.false.`.
+`sort_data`, `logical(in)`, `optional`:: Shall be an optional `logical` argument to determine whether data in the COO graph should be sorted while sorting the index array, defult `.false.`.
 
 ### Syntax
 
