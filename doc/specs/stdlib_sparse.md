@@ -95,7 +95,7 @@ CSR%rowptr(:) = [1,3,5,8,11]
 Experimental
 
 #### Description
-The Compressed Sparse Colum `CSC` is similar to the `CSR` format but values are accesed first by colum, thus an index counter is given by `colptr` which enables accessing the start and ending rows of a given colum in the `row` index table. 
+The Compressed Sparse Colum `CSC` is similar to the `CSR` format but values are accesed first by column, thus an index counter is given by `colptr` which enables accessing the start and ending rows of a given colum in the `row` index table. 
 
 ```Fortran
 type(CSC_sp) :: CSC
