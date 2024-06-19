@@ -111,7 +111,7 @@ CSC%colptr(:) = [1,4,6,8,10,11]
 Experimental
 
 #### Description
-The `ELL` format stores the data in a dense matrix of $nrows \times K$ in column major order. By imposing a constant number of zeros per row $K$, this format will incure in additional zeros being stored, but it enables efficient vectorization as memory acces are carried out by constant sized strides. 
+The `ELL` format stores data in a dense matrix of $nrows \times K$ in column major order. By imposing a constant number of zeros per row $K$, this format will incur in additional zeros being stored, but it enables efficient vectorization as memory acces is carried out by constant sized strides. 
 
 ```Fortran
 type(ELL_sp) :: ELL
