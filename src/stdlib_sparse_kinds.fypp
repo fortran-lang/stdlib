@@ -6,6 +6,7 @@
 !>
 ! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
 module stdlib_sparse_kinds
+    use ieee_arithmetic
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none
     
@@ -13,9 +14,9 @@ module stdlib_sparse_kinds
   
     ! -- Global parameters
     enum, bind(C)
-        enumerator :: sparse_full !> Full Sparse matrix (no symmetry considerations)
-        enumerator :: sparse_lower  !> Symmetric Sparse matrix with triangular inferior storage
-        enumerator :: sparse_upper  !> Symmetric Sparse matrix with triangular supperior storage
+        enumerator :: sparse_full  !> Full Sparse matrix (no symmetry considerations)
+        enumerator :: sparse_lower !> Symmetric Sparse matrix with triangular inferior storage
+        enumerator :: sparse_upper !> Symmetric Sparse matrix with triangular supperior storage
     end enum
     public :: sparse_full, sparse_lower, sparse_upper
 
@@ -290,12 +291,16 @@ contains
     !==================================================================
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure subroutine get_value_coo_${s1}$(self,val,ik,jk)
+    pure function get_value_coo_${s1}$(self,ik,jk) result(val)
         class(COO_${s1}$), intent(in) :: self
-        ${t1}$, intent(out) :: val
+        ${t1}$ :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
+            return
+        end if
         do k = 1,self%nnz
             if( ik == self%index(1,k) .and. jk == self%index(2,k) ) then
                 val = self%data(k)
@@ -303,7 +308,7 @@ contains
             end if
         end do
         val = zero_${s1}$
-    end subroutine
+    end function
 
     subroutine set_value_coo_${s1}$(self,val,ik,jk)
         class(COO_${s1}$), intent(inout) :: self
@@ -322,12 +327,16 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure subroutine get_value_csr_${s1}$(self,val,ik,jk)
+    pure function get_value_csr_${s1}$(self,ik,jk) result(val)
         class(CSR_${s1}$), intent(in) :: self
-        ${t1}$, intent(out) :: val
+        ${t1}$ :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
+            return
+        end if
         do k = self%rowptr(ik), self%rowptr(ik+1)-1
             if( jk == self%col(k) ) then
                 val = self%data(k)
@@ -335,7 +344,7 @@ contains
             end if
         end do
         val = zero_${s1}$
-    end subroutine
+    end function
 
     subroutine set_value_csr_${s1}$(self,val,ik,jk)
         class(CSR_${s1}$), intent(inout) :: self
@@ -354,12 +363,16 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure subroutine get_value_csc_${s1}$(self,val,ik,jk)
+    pure function get_value_csc_${s1}$(self,ik,jk) result(val)
         class(CSC_${s1}$), intent(in) :: self
-        ${t1}$, intent(out) :: val
+        ${t1}$ :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
+            return
+        end if
         do k = self%colptr(jk), self%colptr(jk+1)-1
             if( ik == self%row(k) ) then
                 val = self%data(k)
@@ -367,7 +380,7 @@ contains
             end if
         end do
         val = zero_${s1}$
-    end subroutine
+    end function
 
     subroutine set_value_csc_${s1}$(self,val,ik,jk)
         class(CSC_${s1}$), intent(inout) :: self
@@ -386,12 +399,16 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure subroutine get_value_ell_${s1}$(self,val,ik,jk)
+    pure function get_value_ell_${s1}$(self,ik,jk) result(val)
         class(ELL_${s1}$), intent(in) :: self
-        ${t1}$, intent(out) :: val
+        ${t1}$ :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
+            return
+        end if
         do k = 1 , self%K
             if( jk == self%index(ik,k) ) then
                 val = self%data(ik,k)
@@ -399,7 +416,7 @@ contains
             end if
         end do
         val = zero_${s1}$
-    end subroutine
+    end function
 
     subroutine set_value_ell_${s1}$(self,val,ik,jk)
         class(ELL_${s1}$), intent(inout) :: self
