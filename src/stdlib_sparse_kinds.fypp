@@ -37,7 +37,6 @@ module stdlib_sparse_kinds
       integer :: ncols = 0 !> number of columns
       integer :: nnz   = 0 !> number of non-zero values
       integer :: storage = sparse_full !> assumed storage symmetry
-      integer :: base  = 1 !> index base = 0 for (C) or 1 (Fortran)
     end type
 
     !> COO: COOrdinates compresed format 

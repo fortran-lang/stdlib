@@ -27,7 +27,6 @@ type, public, abstract :: sparse_type
     integer :: ncols   !> number of columns
     integer :: nnz     !> number of non-zero values
     integer :: storage !> assumed storage symmetry
-    integer :: base    !> index base = 0 for (C) or 1 (Fortran)
 end type
 ```
 
