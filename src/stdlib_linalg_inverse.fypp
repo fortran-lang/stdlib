@@ -76,7 +76,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
 
             ! Get optimal worksize (returned in work(1)) (inflate by a 5% safety margin)
             nb = stdlib_ilaenv(1,'${ri}$getri',' ',n,-1,-1,-1)
-            lwork = ceiling(1.05*n*nb,kind=ilp)
+            lwork = max(1,min(huge(0_ilp),ceiling(1.05_${rk}$*real(n,${rk}$)*nb,kind=ilp)))
 
             allocate(work(lwork))
 
