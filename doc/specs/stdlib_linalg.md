@@ -1001,7 +1001,7 @@ Experimental
 This operator returns the inverse of a `real` or `complex` square matrix \( A \).
 The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
 
-This interface is equivalent to the function version of  [[stdlib_linalg(module):inv(interface)]]. 
+This interface is equivalent to the function  [[stdlib_linalg(module):inv(interface)]]. 
 
 ### Syntax
 
@@ -1024,7 +1024,7 @@ If an exception occurred on input errors, or singular matrix, NaNs will be retur
 {!example/linalg/example_inverse_operator.f90!}
 ```
 
-## `invert` - Inversion of a square matrix. 
+## `invert` - Inversion of a square matrix
 
 ### Status
 
@@ -1051,13 +1051,13 @@ If `inva` is not provided, it is an `intent(inout)` argument: on output, it is r
 `inva` (optional): Shall be a rank-2, square, `real` or `complex` array with the same size, and kind as `a`. 
 On output, it contains the inverse of `a`.
 
-`pivot` (optional): Shall be a rank-1 array of the same kind and matrix dimension as `a`, providing storage for the diagonal pivot indices. It is an `intent(inout)` arguments, and returns the diagonal pivot indices. 
+`pivot` (optional): Shall be a rank-1 array of the same kind and matrix dimension as `a`, that contains the diagonal pivot indices on return. It is an `intent(inout)` argument. 
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
 ### Return value
 
-Replaces matrix \( A \) with its inverse, \(A^{-1}\).
+Computes the inverse of the matrix \( A \), \(A^{-1}\, and returns it either in \( A \) or in another matrix.
 
 Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
 Raises `LINALG_VALUE_ERROR` if `inva` and `a` do not have the same size.
@@ -1094,7 +1094,7 @@ The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
 
 `a`: Shall be a rank-2, square, `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
 
-`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+`err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
 ### Return value
 
