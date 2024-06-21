@@ -1015,7 +1015,8 @@ This interface is equivalent to the function version of  [[stdlib_linalg(module)
 
 Returns a rank-2 square array with the same type, kind and rank as `a`, that contains the inverse of `a`.
 
-Exceptions always trigger an `error stop`.
+If an exception occurred on input errors, or singular matrix, NaNs will be returned.
+
 
 ### Example
 

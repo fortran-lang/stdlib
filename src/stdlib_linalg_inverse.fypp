@@ -6,6 +6,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
      use stdlib_linalg_lapack, only: getri,getrf,stdlib_ilaenv
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
+     use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
      implicit none(type,external)
 
      character(*), parameter :: this = 'inverse'  
@@ -153,9 +154,17 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
          ${rt}$, intent(in) :: a(:,:)
          !> Result matrix
          ${rt}$, allocatable :: inva(:,:)
+         
+         type(linalg_state_type) :: err
 
-         ! Do not provide an error handler (error stop on issues)
-         inva = stdlib_linalg_inverse_${ri}$(a)
+         ! Provide an error handler to return NaNs on issues
+         inva = stdlib_linalg_inverse_${ri}$(a,err=err)
+         
+         ! Return NaN on issues
+         if (err%error()) then 
+            if (allocated(inva)) deallocate(inva)
+            allocate(inva(size(a,1,kind=ilp),size(a,2,kind=ilp)),source=ieee_value(1.0_${rk}$,ieee_quiet_nan))
+         endif
 
      end function stdlib_linalg_inverse_${ri}$_operator
 
