@@ -1001,7 +1001,7 @@ Experimental
 This operator returns the inverse of a `real` or `complex` square matrix \( A \).
 The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
 
-This interface is equivalent to the function version of  [[stdlib_linalg(module):inv(interface)]]. 
+This interface is equivalent to the function  [[stdlib_linalg(module):inv(interface)]]. 
 
 ### Syntax
 
