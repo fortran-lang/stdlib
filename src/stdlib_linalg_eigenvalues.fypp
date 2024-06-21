@@ -21,11 +21,8 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      !> Request for symmetry side (default: lower)
      elemental character function symmetric_triangle_task(upper)
         logical(lk), optional, intent(in) :: upper
-        if (present(upper)) then 
-           symmetric_triangle_task = merge('U','L',upper)
-        else 
-           symmetric_triangle_task = 'L'
-        endif
+        symmetric_triangle_task = 'L'
+        if (present(upper)) symmetric_triangle_task = merge('U','L',upper)
      end function symmetric_triangle_task
 
      !> Process GEEV output flags
@@ -194,11 +191,8 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          endif
 
          ! Can A be overwritten? By default, do not overwrite
-         if (present(overwrite_a)) then
-            copy_a = .not.overwrite_a
-         else
-            copy_a = .true._lk
-         endif
+         copy_a = .true._lk
+         if (present(overwrite_a)) copy_a = .not.overwrite_a
 
          ! Initialize a matrix temporary
          if (copy_a) then
