@@ -1056,7 +1056,7 @@ On output, it contains the inverse of `a`.
 
 ### Return value
 
-Replaces matrix \( A \) with its inverse, \(A^{-1}\).
+Computes the inverse of the matrix \( A \), \(A^{-1}\, and returns it either in \( A \) or in another matrix.
 
 Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
 Raises `LINALG_VALUE_ERROR` if `inva` and `a` do not have the same size.
