@@ -51,8 +51,8 @@ module stdlib_sparse_kinds
     type, public, extends(COO_type) :: COO_${s1}$
         ${t1}$, allocatable :: data(:) 
     contains
-        procedure :: get => get_value_coo_${s1}$
-        procedure :: set => set_value_coo_${s1}$
+        procedure, non_overridable :: get => get_value_coo_${s1}$
+        procedure, non_overridable :: set => set_value_coo_${s1}$
     end type
     #:endfor
 
@@ -68,8 +68,8 @@ module stdlib_sparse_kinds
     type, public, extends(CSR_type) :: CSR_${s1}$
         ${t1}$, allocatable :: data(:) 
     contains
-        procedure :: get => get_value_csr_${s1}$
-        procedure :: set => set_value_csr_${s1}$
+        procedure, non_overridable :: get => get_value_csr_${s1}$
+        procedure, non_overridable :: set => set_value_csr_${s1}$
     end type
     #:endfor
 
@@ -85,8 +85,8 @@ module stdlib_sparse_kinds
     type, public, extends(CSC_type) :: CSC_${s1}$
         ${t1}$, allocatable :: data(:) 
     contains
-        procedure :: get => get_value_csc_${s1}$
-        procedure :: set => set_value_csc_${s1}$
+        procedure, non_overridable :: get => get_value_csc_${s1}$
+        procedure, non_overridable :: set => set_value_csc_${s1}$
     end type
     #:endfor
   
@@ -102,8 +102,8 @@ module stdlib_sparse_kinds
     type, public, extends(ELL_type) :: ELL_${s1}$
         ${t1}$, allocatable :: data(:,:) 
     contains
-        procedure :: get => get_value_ell_${s1}$
-        procedure :: set => set_value_ell_${s1}$
+        procedure, non_overridable :: get => get_value_ell_${s1}$
+        procedure, non_overridable :: set => set_value_ell_${s1}$
     end type
     #:endfor
 
@@ -290,9 +290,8 @@ contains
     !==================================================================
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure function get_value_coo_${s1}$(self,ik,jk) result(val)
+    pure ${t1}$ function get_value_coo_${s1}$(self,ik,jk) result(val)
         class(COO_${s1}$), intent(in) :: self
-        ${t1}$ :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
@@ -309,7 +308,7 @@ contains
         val = zero_${s1}$
     end function
 
-    subroutine set_value_coo_${s1}$(self,val,ik,jk)
+    subroutine set_value_coo_${s1}$(self,ik,jk,val)
         class(COO_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in) :: ik, jk
@@ -326,9 +325,8 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure function get_value_csr_${s1}$(self,ik,jk) result(val)
+    pure ${t1}$ function get_value_csr_${s1}$(self,ik,jk) result(val)
         class(CSR_${s1}$), intent(in) :: self
-        ${t1}$ :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
@@ -345,7 +343,7 @@ contains
         val = zero_${s1}$
     end function
 
-    subroutine set_value_csr_${s1}$(self,val,ik,jk)
+    subroutine set_value_csr_${s1}$(self,ik,jk,val)
         class(CSR_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in) :: ik, jk
@@ -362,9 +360,8 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure function get_value_csc_${s1}$(self,ik,jk) result(val)
+    pure ${t1}$ function get_value_csc_${s1}$(self,ik,jk) result(val)
         class(CSC_${s1}$), intent(in) :: self
-        ${t1}$ :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
@@ -381,7 +378,7 @@ contains
         val = zero_${s1}$
     end function
 
-    subroutine set_value_csc_${s1}$(self,val,ik,jk)
+    subroutine set_value_csc_${s1}$(self,ik,jk,val)
         class(CSC_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in)  :: ik, jk
@@ -398,9 +395,8 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure function get_value_ell_${s1}$(self,ik,jk) result(val)
+    pure ${t1}$ function get_value_ell_${s1}$(self,ik,jk) result(val)
         class(ELL_${s1}$), intent(in) :: self
-        ${t1}$ :: val
         integer, intent(in) :: ik, jk
         integer :: k
         ! naive implementation
@@ -417,7 +413,7 @@ contains
         val = zero_${s1}$
     end function
 
-    subroutine set_value_ell_${s1}$(self,val,ik,jk)
+    subroutine set_value_ell_${s1}$(self,ik,jk,val)
         class(ELL_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in)  :: ik, jk
