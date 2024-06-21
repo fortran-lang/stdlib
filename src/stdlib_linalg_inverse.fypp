@@ -163,7 +163,14 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
          ! Return NaN on issues
          if (err%error()) then 
             if (allocated(inva)) deallocate(inva)
-            allocate(inva(size(a,1,kind=ilp),size(a,2,kind=ilp)),source=ieee_value(1.0_${rk}$,ieee_quiet_nan))
+            allocate(inva(size(a,1,kind=ilp),size(a,2,kind=ilp))) 
+            
+            #:if rt.startswith('complex')
+            inva = ieee_value(1.0_${rk}$,ieee_quiet_nan)
+            #:else
+            inva = cmplx(ieee_value(1.0_${rk}$,ieee_quiet_nan), &
+                         ieee_value(1.0_${rk}$,ieee_quiet_nan), kind=${rk}$)
+            #:endif
          endif
 
      end function stdlib_linalg_inverse_${ri}$_operator
