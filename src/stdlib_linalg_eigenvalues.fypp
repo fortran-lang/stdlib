@@ -177,7 +177,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          neig = size(lambda,kind=ilp) 
          lda  = m
 
-         if (k<=0 .or. m/=n)) then
+         if (k<=0 .or. m/=n) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,&
                                           'invalid or matrix size a=',[m,n],', must be nonempty square.')
             call linalg_error_handling(err0,err)
