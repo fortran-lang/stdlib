@@ -451,13 +451,12 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          endif
         
          ! Check if input A can be overwritten
+         copy_a = .true._lk
          if (present(vectors)) then 
             ! No need to copy A anyways
             copy_a = .false.
          elseif (present(overwrite_a)) then
             copy_a = .not.overwrite_a
-         else
-            copy_a = .true._lk
          endif        
          
          ! Should we use the upper or lower half of the matrix?
