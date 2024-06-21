@@ -24,17 +24,18 @@ module's `string_type` type.
 
 ## Overview of the module
 
-The module `stdlib_sorting` defines several public entities, one
-default integer parameter, `int_size`, and four overloaded
+The module `stdlib_sorting` defines several public entities, two
+default integer parameters, `int_index` and `int_index_low`, and four overloaded
 subroutines: `ORD_SORT`, `SORT`, `RADIX_SORT` and `SORT_INDEX`. The
 overloaded subroutines also each have several specific names for
 versions corresponding to different types of array arguments.
 
-### The `int_size` parameter
+### The parameters `int_index` and `int_index_low`
 
-The `int_size` parameter is used to specify the kind of integer used
-in indexing the various arrays. Currently the module sets `int_size`
-to the value of `int64` from the `stdlib_kinds` module.
+The parameters `int_index` and `int_index_low` are used to specify the kind of integer used
+in indexing the various arrays. Currently the module sets `int_index` and
+`int_index_low`
+to the value of `int64` and `int32` from the `stdlib_kinds` module, respectively.
 
 ### The module subroutines
 
@@ -414,7 +415,7 @@ It is an `intent(inout)` argument. On input it
 will be an array whose sorting indices are to be determined. On return
 it will be the sorted array.
 
-`index`: shall be a rank one integer array of kind `int_size` and of
+`index`: shall be a rank one integer array of kind `int_index` or `int_index_low` and of
 the size of `array`. It is an `intent(out)` argument. On return it
 shall have values that are the indices needed to sort the original
 array in the desired direction.
@@ -426,8 +427,8 @@ memory for internal record keeping. If associated with an array in
 static storage, its use can significantly reduce the stack memory
 requirements for the code. Its contents on return are undefined.
 
-`iwork` (optional): shall be a rank one integer array of kind
-`int_size`, and shall have at least `size(array)/2` elements. It
+`iwork` (optional): shall be a rank one integer array of the same kind
+of the array `index`, and shall have at least `size(array)/2` elements. It
 is an `intent(out)` argument.  It is intended to be used as "scratch"
 memory for internal record keeping. If associated with an array in
 static storage, its use can significantly reduce the stack memory
@@ -457,6 +458,12 @@ different on return
 
 ##### Examples
 
+Sorting a rank one array with `sort_index`:
+
+```Fortran
+{!example/sorting/example_sort_index.f90!}
+```
+
 Sorting a related rank one array:
 
 ```Fortran
@@ -465,8 +472,8 @@ Sorting a related rank one array:
         integer, intent(inout)         :: a(:)
         integer(int32), intent(inout)  :: b(:) ! The same size as a
         integer(int32), intent(out)    :: work(:)
-        integer(int_size), intent(out) :: index(:)
-        integer(int_size), intent(out) :: iwork(:)
+        integer(int_index), intent(out) :: index(:)
+        integer(int_index), intent(out) :: iwork(:)
         ! Find the indices to sort a
         call sort_index(a, index(1:size(a)),&
             work(1:size(a)/2), iwork(1:size(a)/2))
@@ -483,8 +490,8 @@ Sorting a rank 2 array based on the data in a column
         integer, intent(inout)         :: array(:,:)
         integer(int32), intent(in)     :: column
         integer(int32), intent(out)    :: work(:)
-        integer(int_size), intent(out) :: index(:)
-        integer(int_size), intent(out) :: iwork(:)
+        integer(int_index), intent(out) :: index(:)
+        integer(int_index), intent(out) :: iwork(:)
         integer, allocatable           :: dummy(:)
         integer :: i
         allocate(dummy(size(array, dim=1)))
@@ -504,12 +511,12 @@ Sorting an array of a derived type based on the data in one component
 
 ```fortran
     subroutine sort_a_data( a_data, a, work, index, iwork )
-        ! Sort `a_data` in terms or its component `a`
+        ! Sort `a_data` in terms of its component `a`
         type(a_type), intent(inout)      :: a_data(:)
         integer(int32), intent(inout)    :: a(:)
         integer(int32), intent(out)    :: work(:)
-        integer(int_size), intent(out) :: index(:)
-        integer(int_size), intent(out) :: iwork(:)
+        integer(int_index), intent(out) :: index(:)
+        integer(int_index), intent(out) :: iwork(:)
         ! Extract a component of `a_data`
         a(1:size(a_data)) = a_data(:) % a
         ! Find the indices to sort the component

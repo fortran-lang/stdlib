@@ -10442,7 +10442,7 @@ module stdlib_linalg_lapack_q
                     call stdlib_qgeqrf( m, n, a, lda, work( itau ), work( nwork ),lwork - nwork + &
                               1, ierr )
                     ! zero out below r
-                    call stdlib_qlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
+                    if (n>1) call stdlib_qlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
                     ie = 1
                     itauq = ie + n
                     itaup = itauq + n
@@ -10592,7 +10592,7 @@ module stdlib_linalg_lapack_q
                     call stdlib_qorgqr( m, m, n, u, ldu, work( itau ),work( nwork ), lwork - &
                               nwork + 1, ierr )
                     ! produce r in a, zeroing out other entries
-                    call stdlib_qlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
+                    if (n>1) call stdlib_qlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
                     ie = itau
                     itauq = ie + n
                     itaup = itauq + n
@@ -10758,7 +10758,7 @@ module stdlib_linalg_lapack_q
                     call stdlib_qgelqf( m, n, a, lda, work( itau ), work( nwork ),lwork - nwork + &
                               1, ierr )
                     ! zero out above l
-                    call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = 1
                     itauq = ie + m
                     itaup = itauq + m
@@ -10912,7 +10912,7 @@ module stdlib_linalg_lapack_q
                     call stdlib_qorglq( n, n, m, vt, ldvt, work( itau ),work( nwork ), lwork - &
                               nwork + 1, ierr )
                     ! produce l in a, zeroing out other entries
-                    call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = itau
                     itauq = ie + m
                     itaup = itauq + m
@@ -12443,7 +12443,7 @@ module stdlib_linalg_lapack_q
                     call stdlib_qgelqf( m, n, a, lda, work( itau ), work( iwork ),lwork-iwork+1, &
                               ierr )
                     ! zero out above l
-                    call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = 1
                     itauq = ie + m
                     itaup = itauq + m
@@ -12586,7 +12586,7 @@ module stdlib_linalg_lapack_q
                                  1, ierr )
                        ! copy l to u, zeroing about above it
                        call stdlib_qlacpy( 'L', m, m, a, lda, u, ldu )
-                       call stdlib_qlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                       if (m>1) call stdlib_qlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                        ! generate q in a
                        ! (workspace: need m*m + 2*m, prefer m*m + m + m*nb)
                        call stdlib_qorglq( m, n, m, a, lda, work( itau ),work( iwork ), lwork-&
@@ -12636,7 +12636,7 @@ module stdlib_linalg_lapack_q
                                  1, ierr )
                        ! copy l to u, zeroing out above it
                        call stdlib_qlacpy( 'L', m, m, a, lda, u, ldu )
-                       call stdlib_qlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                       if (m>1) call stdlib_qlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                        ! generate q in a
                        ! (workspace: need 2*m, prefer m + m*nb)
                        call stdlib_qorglq( m, n, m, a, lda, work( itau ),work( iwork ), lwork-&
@@ -12737,7 +12737,7 @@ module stdlib_linalg_lapack_q
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_qgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -12844,7 +12844,7 @@ module stdlib_linalg_lapack_q
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_qgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -12939,7 +12939,7 @@ module stdlib_linalg_lapack_q
                                     lwork-iwork+1, ierr )
                           ! copy l to u, zeroing out above it
                           call stdlib_qlacpy( 'L', m, m, a, lda, u, ldu )
-                          call stdlib_qlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                          if (m>1) call stdlib_qlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                           ie = itau
                           itauq = ie + m
                           itaup = itauq + m
@@ -13040,7 +13040,7 @@ module stdlib_linalg_lapack_q
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_qgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -13150,7 +13150,7 @@ module stdlib_linalg_lapack_q
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_qlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_qgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -13248,7 +13248,7 @@ module stdlib_linalg_lapack_q
                                     lwork-iwork+1, ierr )
                           ! copy l to u, zeroing out above it
                           call stdlib_qlacpy( 'L', m, m, a, lda, u, ldu )
-                          call stdlib_qlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                          if (m>1) call stdlib_qlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                           ie = itau
                           itauq = ie + m
                           itaup = itauq + m
@@ -14109,7 +14109,7 @@ module stdlib_linalg_lapack_q
                                 v(q,p) = u(p,nr+q)
                             end do
                         end do
-                       call stdlib_qlaset('U',nr-1,nr-1,zero,zero,v(1,2),ldv)
+                       if (nr>1) call stdlib_qlaset('U',nr-1,nr-1,zero,zero,v(1,2),ldv)
                        call stdlib_qgesvd( 'S', 'O', nr, nr, v, ldv, s, u, ldu,v,ldv, work(n+nr+1)&
                                  ,lwork-n-nr, info )
                        call stdlib_qlaset('A',n-nr,nr,zero,zero,v(nr+1,1),ldv)
@@ -72649,7 +72649,7 @@ module stdlib_linalg_lapack_q
      end subroutine stdlib_qsytrd
 
 
-     pure subroutine stdlib_qsytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
+     subroutine stdlib_qsytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
      !! DSYTRD_SB2ST: reduces a real symmetric band matrix A to real symmetric
      !! tridiagonal form T by a orthogonal similarity transformation:
      !! Q**T * A * Q = T.
@@ -72895,7 +72895,7 @@ module stdlib_linalg_lapack_q
      end subroutine stdlib_qsytrd_sb2st
 
 
-     pure subroutine stdlib_qsytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info )
+     subroutine stdlib_qsytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info )
      !! DSYTRD_SY2SB: reduces a real symmetric matrix A to real symmetric
      !! band-diagonal form AB by a orthogonal similarity transformation:
      !! Q**T * A * Q = AB.
@@ -77581,7 +77581,7 @@ module stdlib_linalg_lapack_q
                  go to 70
               end if
               ! set lower triangle of b-part to zero
-              call stdlib_qlaset( 'LOWER', m-1, m-1, zero, zero, t(2,1), ldst )
+              if (m>1) call stdlib_qlaset( 'LOWER', m-1, m-1, zero, zero, t(2,1), ldst )
               if( wands ) then
                  ! strong stability test:
                      ! f-norm((a-ql**h*s*qr)) <= o(eps*f-norm((a)))
