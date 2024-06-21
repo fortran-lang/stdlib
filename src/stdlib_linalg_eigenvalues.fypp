@@ -177,12 +177,12 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          neig = size(lambda,kind=ilp) 
          lda  = m
 
-         if (.not.(k>0 .and. m==n)) then
+         if (k<=0 .or. m/=n)) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,&
-                                          'invalid or matrix size a=',[m,n],', must be square.')
+                                          'invalid or matrix size a=',[m,n],', must be nonempty square.')
             call linalg_error_handling(err0,err)
             return
-         elseif (.not.neig>=k) then
+         elseif (neig<k) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,&
                                           'eigenvalue array has insufficient size:',&
                                           ' lambda=',neig,', n=',n)
@@ -438,12 +438,12 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          k    = min(m,n)
          neig = size(lambda,kind=ilp) 
 
-         if (.not.(k>0 .and. m==n)) then
+         if (k<=0 .or. m/=n) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid or matrix size a=',[m,n], &
-                                                        ', must be square.')
+                                                        ', must be non-empty square.')
             call linalg_error_handling(err0,err)
             return
-         elseif (.not.neig>=k) then
+         elseif (neig<k) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'eigenvalue array has insufficient size:',&
                                                         ' lambda=',neig,' must be >= n=',n)
             call linalg_error_handling(err0,err)
