@@ -1023,7 +1023,7 @@ Exceptions always trigger an `error stop`.
 {!example/linalg/example_inverse1.f90!}
 ```
 
-## `invert` - Inversion of a square matrix. 
+## `invert` - Inversion of a square matrix
 
 ### Status
 
