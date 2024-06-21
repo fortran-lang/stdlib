@@ -1,5 +1,5 @@
 ! Matrix inversion example: function interface
-program example_inverse2
+program example_inverse_function
   use stdlib_linalg_constants, only: dp
   use stdlib_linalg, only: inv,eye
   implicit none
@@ -19,4 +19,4 @@ program example_inverse2
   ! Final check 
   print *, 'CHECK passed? ',matmul(A,Am1)==eye(2)
 
-end program example_inverse2
+end program example_inverse_function

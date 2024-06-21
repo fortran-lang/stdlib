@@ -1,5 +1,5 @@
 ! Matrix inversion example: subroutine interface
-program example_inverse4
+program example_inverse_subroutine
   use stdlib_linalg_constants, only: dp
   use stdlib_linalg, only: invert,eye
   implicit none
@@ -19,4 +19,4 @@ program example_inverse4
   ! Final check 
   print *, 'CHECK passed? ',matmul(A,Am1)==eye(2)
 
-end program example_inverse4
+end program example_inverse_subroutine

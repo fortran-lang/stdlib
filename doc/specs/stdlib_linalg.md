@@ -1020,7 +1020,7 @@ Exceptions always trigger an `error stop`.
 ### Example
 
 ```fortran
-{!example/linalg/example_inverse1.f90!}
+{!example/linalg/example_inverse_operator.f90!}
 ```
 
 ## `invert` - Inversion of a square matrix. 
@@ -1065,7 +1065,11 @@ If `err` is not present, exceptions trigger an `error stop`.
 ### Example
 
 ```fortran
-{!example/linalg/example_inverse3.f90!}
+{!example/linalg/example_inverse_inplace.f90!}
+```
+
+```fortran
+{!example/linalg/example_inverse_subroutine.f90!}
 ```
 
 ## `inv` - Inverse of a square matrix. 
@@ -1101,5 +1105,5 @@ If `err` is not present, exceptions trigger an `error stop`.
 ### Example
 
 ```fortran
-{!example/linalg/example_inverse2.f90!}
+{!example/linalg/example_inverse_function.f90!}
 ```

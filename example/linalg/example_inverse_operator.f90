@@ -1,7 +1,7 @@
-! Matrix inversion example: in-place inversion
-program example_inverse3
+! Matrix inversion example: operator interface
+program example_inverse_operator
   use stdlib_linalg_constants, only: dp
-  use stdlib_linalg, only: invert,eye
+  use stdlib_linalg, only: operator(.inv.),eye
   implicit none
 
   real(dp) :: A(2,2), Am1(2,2)
@@ -9,10 +9,9 @@ program example_inverse3
   ! Input matrix (NB Fortran is column major! input columns then transpose)
   A = transpose(reshape( [4, 3, &
                           3, 2], [2,2] ))
-  Am1 = A
 
   ! Invert matrix
-  call invert(Am1)
+  Am1 = .inv.A
 
   print *, '         |',Am1(1,:),'|' ! | -2  3 |
   print *, ' inv(A)= |',Am1(2,:),'|' ! |  3 -4 |
@@ -20,4 +19,4 @@ program example_inverse3
   ! Final check 
   print *, 'CHECK passed? ',matmul(A,Am1)==eye(2)
 
-end program example_inverse3
+end program example_inverse_operator
