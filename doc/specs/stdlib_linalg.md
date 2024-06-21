@@ -1089,7 +1089,7 @@ The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
 
 `a`: Shall be a rank-2, square, `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
 
-`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+`err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
 ### Return value
 
