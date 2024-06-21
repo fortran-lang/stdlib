@@ -1050,7 +1050,7 @@ If `inva` is not provided, it is an `intent(inout)` argument: on output, it is r
 `inva` (optional): Shall be a rank-2, square, `real` or `complex` array with the same size, and kind as `a`. 
 On output, it contains the inverse of `a`.
 
-`pivot` (optional): Shall be a rank-1 array of the same kind and matrix dimension as `a`, providing storage for the diagonal pivot indices. It is an `intent(inout)` arguments, and returns the diagonal pivot indices. 
+`pivot` (optional): Shall be a rank-1 array of the same kind and matrix dimension as `a`, that contains the diagonal pivot indices on return. It is an `intent(inout)` argument. 
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
