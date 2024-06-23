@@ -1,4 +1,5 @@
 #:include "common.fypp" 
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_linalg_lapack_aux
      use stdlib_linalg_constants
      use stdlib_linalg_blas
@@ -53,93 +54,41 @@ module stdlib_linalg_lapack_aux
 #:if WITH_QP 
      public :: stdlib_iwmax1
 #:endif 
-     public :: stdlib_selctg_s
-     public :: stdlib_select_s
-     public :: stdlib_selctg_d
-     public :: stdlib_select_d
-#:if WITH_QP
-     public :: stdlib_selctg_q
-     public :: stdlib_select_q
-#:endif
-     public :: stdlib_selctg_c
-     public :: stdlib_select_c
-     public :: stdlib_selctg_z
-     public :: stdlib_select_z
-#:if WITH_QP
-     public :: stdlib_selctg_w
-     public :: stdlib_select_w
-#:endif
+
+#:for rk,rt,ri in RC_KINDS_TYPES
+     public :: stdlib_select_${ri}$
+     public :: stdlib_selctg_${ri}$
+#:endfor
+
      ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
      ! used to select eigenvalues to sort to the top left of the Schur form. 
      ! An eigenvalue (ALPHAR(j)+ALPHAI(j))/BETA(j) is selected if SELCTG is true, i.e., 
      abstract interface 
-        pure logical(lk) function stdlib_selctg_s(alphar,alphai,beta) 
-            import sp,dp,qp,lk 
+        #:for rk,rt,ri in REAL_KINDS_TYPES
+        pure logical(lk) function stdlib_selctg_${ri}$(alphar,alphai,beta) 
+            import ${rk}$,lk 
             implicit none 
-            real(sp), intent(in) :: alphar,alphai,beta 
-        end function stdlib_selctg_s 
-        pure logical(lk) function stdlib_select_s(alphar,alphai) 
-            import sp,dp,qp,lk 
+            real(${rk}$), intent(in) :: alphar,alphai,beta 
+        end function stdlib_selctg_${ri}$         
+        pure logical(lk) function stdlib_select_${ri}$(alphar,alphai) 
+            import ${rk}$,lk
             implicit none 
-            real(sp), intent(in) :: alphar,alphai 
-        end function stdlib_select_s 
-        pure logical(lk) function stdlib_selctg_d(alphar,alphai,beta) 
-            import sp,dp,qp,lk 
+            real(${rk}$), intent(in) :: alphar,alphai 
+        end function stdlib_select_${ri}$ 
+        #:endfor
+        #:for ck,ct,ci in CMPLX_KINDS_TYPES
+        pure logical(lk) function stdlib_selctg_${ci}$(alpha,beta) 
+            import ${ck}$,lk 
             implicit none 
-            real(dp), intent(in) :: alphar,alphai,beta 
-        end function stdlib_selctg_d 
-        pure logical(lk) function stdlib_select_d(alphar,alphai) 
-            import sp,dp,qp,lk 
+            complex(${ck}$), intent(in) :: alpha,beta 
+        end function stdlib_selctg_${ci}$
+        pure logical(lk) function stdlib_select_${ci}$(alpha) 
+            import ${ck}$,lk 
             implicit none 
-            real(dp), intent(in) :: alphar,alphai 
-        end function stdlib_select_d
-#:if WITH_QP 
-        pure logical(lk) function stdlib_selctg_q(alphar,alphai,beta) 
-            import sp,dp,qp,lk 
-            implicit none 
-            real(qp), intent(in) :: alphar,alphai,beta 
-        end function stdlib_selctg_q 
-        pure logical(lk) function stdlib_select_q(alphar,alphai) 
-            import sp,dp,qp,lk 
-            implicit none 
-            real(qp), intent(in) :: alphar,alphai 
-        end function stdlib_select_q 
-#:endif
-        pure logical(lk) function stdlib_selctg_c(alpha,beta) 
-            import sp,dp,qp,lk 
-            implicit none 
-            complex(sp), intent(in) :: alpha,beta 
-        end function stdlib_selctg_c 
-        pure logical(lk) function stdlib_select_c(alpha) 
-            import sp,dp,qp,lk 
-            implicit none 
-            complex(sp), intent(in) :: alpha 
-        end function stdlib_select_c 
-        pure logical(lk) function stdlib_selctg_z(alpha,beta) 
-            import sp,dp,qp,lk 
-            implicit none 
-            complex(dp), intent(in) :: alpha,beta 
-        end function stdlib_selctg_z 
-        pure logical(lk) function stdlib_select_z(alpha) 
-            import sp,dp,qp,lk 
-            implicit none 
-            complex(dp), intent(in) :: alpha 
-        end function stdlib_select_z 
-#:if WITH_QP
-        pure logical(lk) function stdlib_selctg_w(alpha,beta) 
-            import sp,dp,qp,lk 
-            implicit none 
-            complex(qp), intent(in) :: alpha,beta 
-        end function stdlib_selctg_w 
-        pure logical(lk) function stdlib_select_w(alpha) 
-            import sp,dp,qp,lk 
-            implicit none 
-            complex(qp), intent(in) :: alpha 
-        end function stdlib_select_w
-#:endif 
+            complex(${ck}$), intent(in) :: alpha 
+        end function stdlib_select_${ci}$        
+        #:endfor
      end interface 
-
-
 
      contains
 
