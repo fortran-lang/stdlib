@@ -8,6 +8,7 @@
 module stdlib_sparse_conversion
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     use stdlib_sparse_kinds
+    use stdlib_sorting, only: sort
     implicit none
     private
 
@@ -240,31 +241,6 @@ contains
 
     #:endfor
 
-    recursive subroutine quicksort_i(a, first, last)
-        ! ref: https://gist.github.com/t-nissie/479f0f16966925fa29ea
-        integer, intent(inout) :: a(*)
-        integer, intent(in)    :: first, last
-        integer :: i, j, x, t
-
-        x = a( (first+last) / 2 )
-        i = first
-        j = last
-        do
-            do while (a(i) < x)
-                i=i+1
-            end do
-            do while (x < a(j))
-                j=j-1
-            end do
-            if (i >= j) exit
-            t = a(i);  a(i) = a(j);  a(j) = t
-            i=i+1
-            j=j-1
-        end do
-        if (first < i-1) call quicksort_i(a, first, i-1)
-        if (j+1 < last)  call quicksort_i(a, j+1, last)
-    end subroutine
-
     #:for k1, t1, s1 in (KINDS_TYPES)
     recursive subroutine quicksort_i_${s1}$(a, b, first, last)
         integer, parameter :: wp = sp
@@ -331,7 +307,7 @@ contains
             adr0 = count_i_aux(n_i-1)+1
             adr1 = count_i_aux(n_i)
             dd = adr1-adr0+1
-            if(dd>0) call quicksort_i(cols_(adr0),1,dd)
+            if(dd>0) call sort(cols_(adr0:adr1))
         end do
         !---------------------------------------------------------
         ! Remove duplicates
