@@ -1313,11 +1313,11 @@ module stdlib_linalg_blas
 #:if WITH_QP
                !! Provide a unique interface to accumulate double precision reals 
                !! into the highest available precision. 
-               module procedure stdlib_xsdot
+               module procedure stdlib_qsdot
 #:elif WITH_XDP
                !! Provide a unique interface to accumulate double precision reals 
                !! into the highest available precision.
-               module procedure stdlib_qsdot
+               module procedure stdlib_xsdot
 #:endif
           end interface sdot
 
