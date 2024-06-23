@@ -1309,12 +1309,16 @@ module stdlib_linalg_blas
 #else 
                module procedure stdlib_dsdot
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$sdot
 
+#:if WITH_QP
+               !! Provide a unique interface to accumulate double precision reals 
+               !! into the highest available precision. 
+               module procedure stdlib_xsdot
+#:elif WITH_XDP
+               !! Provide a unique interface to accumulate double precision reals 
+               !! into the highest available precision.
+               module procedure stdlib_qsdot
 #:endif
-#:endfor
           end interface sdot
 
 
