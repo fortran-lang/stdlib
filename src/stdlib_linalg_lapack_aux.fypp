@@ -8,8 +8,7 @@ module stdlib_linalg_lapack_aux
 
 
      public :: sp,dp,qp,lk,ilp
-     public :: stdlib_chla_transtype
-     public :: stdlib_droundup_lwork
+     public :: stdlib_chla_transtype     
      public :: stdlib_icmax1
      public :: stdlib_ieeeck
      public :: stdlib_iladiag     
@@ -22,29 +21,24 @@ module stdlib_linalg_lapack_aux
      public :: stdlib_iparmq
      public :: stdlib_izmax1
      public :: stdlib_lsamen
-     public :: stdlib_sroundup_lwork
      public :: stdlib_xerbla
      public :: stdlib_xerbla_array
      
-     #:for rk,rt,ri in REAL_KINDS_TYPES
+     #:for rk,rt,ri in RC_KINDS_TYPES
      public :: stdlib_ila${ri}$lc
      public :: stdlib_ila${ri}$lr
+     public :: stdlib_select_${ri}$
+     public :: stdlib_selctg_${ri}$     
      #:endfor
      
-#:if WITH_QP 
-     public :: stdlib_qroundup_lwork
-#:endif 
-#:if WITH_QP 
-     public :: stdlib_ilaqiag
-#:endif 
+     #:for rk,rt,ri in REAL_KINDS_TYPES
+     public :: stdlib_${ri}$roundup_lwork
+     #:endfor
+     
 #:if WITH_QP 
      public :: stdlib_iwmax1
 #:endif 
 
-#:for rk,rt,ri in RC_KINDS_TYPES
-     public :: stdlib_select_${ri}$
-     public :: stdlib_selctg_${ri}$
-#:endfor
 
      ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
      ! used to select eigenvalues to sort to the top left of the Schur form. 
@@ -109,29 +103,6 @@ module stdlib_linalg_lapack_aux
            end if
            return
      end function stdlib_chla_transtype
-
-
-     pure real(dp) function stdlib_droundup_lwork( lwork )
-     !! DROUNDUP_LWORK >= LWORK.
-     !! DROUNDUP_LWORK is guaranteed to have zero decimal part.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: lwork
-       ! =====================================================================
-           ! Intrinsic Functions 
-           intrinsic :: epsilon,real,int
-           ! Executable Statements 
-           stdlib_droundup_lwork = real( lwork,KIND=dp)
-           if( int( stdlib_droundup_lwork,KIND=ilp) < lwork ) then
-               ! force round up of lwork
-               stdlib_droundup_lwork = stdlib_droundup_lwork * ( 1.0e+0_dp + epsilon(0.0e+0_dp) )
-                         
-           endif
-           return
-     end function stdlib_droundup_lwork
-
 
      pure integer(ilp) function stdlib_icmax1( n, cx, incx )
      !! ICMAX1 finds the index of the first vector element of maximum absolute value.
@@ -611,10 +582,10 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_lsamen
 
-
-     pure real(sp)             function stdlib_sroundup_lwork( lwork )
-     !! SROUNDUP_LWORK >= LWORK.
-     !! SROUNDUP_LWORK is guaranteed to have zero decimal part.
+#:for rk,rt,ri in REAL_KINDS_TYPES
+     pure real(${rk}$) function stdlib_${ri}$roundup_lwork( lwork )
+     !! ROUNDUP_LWORK >= LWORK.
+     !! ROUNDUP_LWORK is guaranteed to have zero decimal part.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -624,70 +595,15 @@ module stdlib_linalg_lapack_aux
            ! Intrinsic Functions 
            intrinsic :: epsilon,real,int
            ! Executable Statements 
-           stdlib_sroundup_lwork = real( lwork,KIND=sp)
-           if( int( stdlib_sroundup_lwork,KIND=ilp) < lwork ) then
+           stdlib_${ri}$roundup_lwork = real(lwork,KIND=${rk}$)
+           if (int( stdlib_${ri}$roundup_lwork,KIND=ilp)<lwork) then
                ! force round up of lwork
-               stdlib_sroundup_lwork = stdlib_sroundup_lwork * ( 1.0e+0_sp + epsilon(0.0e+0_sp) )
-                         
+               stdlib_${ri}$roundup_lwork = stdlib_${ri}$roundup_lwork * (1.0e+0_${rk}$ + epsilon(0.0e+0_${rk}$))
            endif
            return
-     end function stdlib_sroundup_lwork
-
-#:if WITH_QP 
-
-
-     pure real(qp) function stdlib_qroundup_lwork( lwork )
-     !! DROUNDUP_LWORK >= LWORK.
-     !! DROUNDUP_LWORK is guaranteed to have zero decimal part.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: lwork
-       ! =====================================================================
-           ! Intrinsic Functions 
-           intrinsic :: epsilon,real,int
-           ! Executable Statements 
-           stdlib_qroundup_lwork = real( lwork,KIND=qp)
-           if( int( stdlib_qroundup_lwork,KIND=ilp) < lwork ) then
-               ! force round up of lwork
-               stdlib_qroundup_lwork = stdlib_qroundup_lwork * ( 1.0e+0_qp + epsilon(0.0e+0_qp) )
-                         
-           endif
-           return
-     end function stdlib_qroundup_lwork
-#:endif 
-
-#:if WITH_QP 
-
-     integer(ilp) function stdlib_ilaqiag( diag )
-     !! This subroutine translated from a character string specifying if a
-     !! matrix has unit diagonal or not to the relevant BLAST-specified
-     !! integer constant.
-     !! ILADIAG: returns an INTEGER.  If ILADIAG: < 0, then the input is not a
-     !! character indicating a unit or non-unit diagonal.  Otherwise ILADIAG
-     !! returns the constant value corresponding to DIAG.
-        ! -- lapack computational routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           character :: diag
-        ! =====================================================================
-           ! Parameters 
-           integer(ilp), parameter :: blas_non_unit_qiag = 131
-           integer(ilp), parameter :: blas_unit_qiag = 132
-           
-           ! Executable Statements 
-           if( stdlib_lsame( diag, 'N' ) ) then
-              stdlib_ilaqiag = blas_non_unit_qiag
-           else if( stdlib_lsame( diag, 'U' ) ) then
-              stdlib_ilaqiag = blas_unit_qiag
-           else
-              stdlib_ilaqiag = -1
-           end if
-           return
-     end function stdlib_ilaqiag
-#:endif 
+     end function stdlib_${ri}$roundup_lwork
+     
+#:endfor
 
 #:for rk,rt,ri in RC_KINDS_TYPES
      pure integer(ilp) function stdlib_ila${ri}$lc( m, n, a, lda )
