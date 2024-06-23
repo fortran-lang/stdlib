@@ -70,7 +70,7 @@ module stdlib_linalg_blas_${ri}$
      ! 128-bit scaling constants 
      integer,     parameter, private :: maxexp = maxexponent(zero) 
      integer,     parameter, private :: minexp = minexponent(zero) 
-     real(${rk}$),    parameter, private :: rradix = real(radix(zero),qp) 
+     real(${rk}$),    parameter, private :: rradix = real(radix(zero),${rk}$) 
      real(${rk}$),    parameter, private :: ulp    = epsilon(zero) 
      real(${rk}$),    parameter, private :: eps    = ulp*half 
      real(${rk}$),    parameter, private :: safmin = rradix**max(minexp-1,1-maxexp) 
@@ -1541,7 +1541,7 @@ module stdlib_linalg_blas_${ri}$
            ! code for equal, positive, non-unit increments.
               ns = n*incx
               do i = 1,ns,incx
-                 stdlib_${ri}$sdot = stdlib_${ri}$sdot + real(sx(i),KIND=qp)*real(sy(i),KIND=qp)
+                 stdlib_${ri}$sdot = stdlib_${ri}$sdot + real(sx(i),KIND=${rk}$)*real(sy(i),KIND=${rk}$)
               end do
            else
            ! code for unequal or nonpositive increments.
@@ -1550,7 +1550,7 @@ module stdlib_linalg_blas_${ri}$
               if (incx<0) kx = 1 + (1-n)*incx
               if (incy<0) ky = 1 + (1-n)*incy
               do i = 1,n
-                 stdlib_${ri}$sdot = stdlib_${ri}$sdot + real(sx(kx),KIND=qp)*real(sy(ky),KIND=qp)
+                 stdlib_${ri}$sdot = stdlib_${ri}$sdot + real(sx(kx),KIND=${rk}$)*real(sy(ky),KIND=${rk}$)
                  kx = kx + incx
                  ky = ky + incy
               end do
@@ -4402,13 +4402,13 @@ module stdlib_linalg_blas_${ri}$
            if (incx==1) then
               ! code for increment equal to 1
               do i = 1,n
-                 stemp = stemp + stdlib_${ri}$cabs1(zx(i))
+                 stemp = stemp + stdlib_cabs1(zx(i))
               end do
            else
               ! code for increment not equal to 1
               nincx = n*incx
               do i = 1,nincx,incx
-                 stemp = stemp + stdlib_${ri}$cabs1(zx(i))
+                 stemp = stemp + stdlib_cabs1(zx(i))
               end do
            end if
            stdlib_${ri}$zasum = stemp
@@ -4456,7 +4456,7 @@ module stdlib_linalg_blas_${ri}$
         ix = 1
         if( incx < 0 ) ix = 1 - (n-1)*incx
         do i = 1, n
-           ax = abs(real(x(ix),KIND=qp))
+           ax = abs(real(x(ix),KIND=${rk}$))
            if (ax > tbig) then
               abig = abig + (ax*sbig)**2
               notbig = .false.
