@@ -12,20 +12,12 @@ module stdlib_linalg_lapack_aux
      public :: stdlib_droundup_lwork
      public :: stdlib_icmax1
      public :: stdlib_ieeeck
-     public :: stdlib_ilaclc
-     public :: stdlib_ilaclr
-     public :: stdlib_iladiag
-     public :: stdlib_iladlc
-     public :: stdlib_iladlr
+     public :: stdlib_iladiag     
      public :: stdlib_ilaenv
      public :: stdlib_ilaenv2stage
-     public :: stdlib_ilaprec
-     public :: stdlib_ilaslc
-     public :: stdlib_ilaslr
+     public :: stdlib_ilaprec     
      public :: stdlib_ilatrans
      public :: stdlib_ilauplo
-     public :: stdlib_ilazlc
-     public :: stdlib_ilazlr
      public :: stdlib_iparam2stage
      public :: stdlib_iparmq
      public :: stdlib_izmax1
@@ -33,23 +25,17 @@ module stdlib_linalg_lapack_aux
      public :: stdlib_sroundup_lwork
      public :: stdlib_xerbla
      public :: stdlib_xerbla_array
+     
+     #:for rk,rt,ri in REAL_KINDS_TYPES
+     public :: stdlib_ila${ri}$lc
+     public :: stdlib_ila${ri}$lr
+     #:endfor
+     
 #:if WITH_QP 
      public :: stdlib_qroundup_lwork
 #:endif 
 #:if WITH_QP 
      public :: stdlib_ilaqiag
-#:endif 
-#:if WITH_QP 
-     public :: stdlib_ilaqlc
-#:endif 
-#:if WITH_QP 
-     public :: stdlib_ilaqlr
-#:endif 
-#:if WITH_QP 
-     public :: stdlib_ilawlc
-#:endif 
-#:if WITH_QP 
-     public :: stdlib_ilawlr
 #:endif 
 #:if WITH_QP 
      public :: stdlib_iwmax1
@@ -285,73 +271,6 @@ module stdlib_linalg_lapack_aux
      end function stdlib_ieeeck
 
 
-     pure integer(ilp) function stdlib_ilaclc( m, n, a, lda )
-     !! ILACLC scans A for its last non-zero column.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
-           ! Array Arguments 
-           complex(sp), intent(in) :: a(lda,*)
-        ! =====================================================================
-           ! Parameters 
-           complex(sp), parameter :: zero = (0.0e+0,0.0e+0)
-           
-           ! Local Scalars 
-           integer(ilp) :: i
-           ! Executable Statements 
-           ! quick test for the common case where one corner is non-zero.
-           if( n==0 ) then
-              stdlib_ilaclc = n
-           else if( a(1, n)/=zero .or. a(m, n)/=zero ) then
-              stdlib_ilaclc = n
-           else
-           ! now scan each column from the end, returning with the first non-zero.
-              do stdlib_ilaclc = n, 1, -1
-                 do i = 1, m
-                    if( a(i, stdlib_ilaclc)/=zero ) return
-                 end do
-              end do
-           end if
-           return
-     end function stdlib_ilaclc
-
-
-     pure integer(ilp) function stdlib_ilaclr( m, n, a, lda )
-     !! ILACLR scans A for its last non-zero row.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
-           ! Array Arguments 
-           complex(sp), intent(in) :: a(lda,*)
-        ! =====================================================================
-           ! Parameters 
-           complex(sp), parameter :: zero = (0.0e+0,0.0e+0)
-           
-           ! Local Scalars 
-           integer(ilp) :: i, j
-           ! Executable Statements 
-           ! quick test for the common case where one corner is non-zero.
-           if( m==0 ) then
-              stdlib_ilaclr = m
-           else if( a(m, 1)/=zero .or. a(m, n)/=zero ) then
-              stdlib_ilaclr = m
-           else
-           ! scan up each column tracking the last zero row seen.
-              stdlib_ilaclr = 0
-              do j = 1, n
-                 i=m
-                 do while((a(max(i,1),j)==zero).and.(i>=1))
-                    i=i-1
-                 enddo
-                 stdlib_ilaclr = max( stdlib_ilaclr, i )
-              end do
-           end if
-           return
-     end function stdlib_ilaclr
 
 
      integer(ilp) function stdlib_iladiag( diag )
@@ -383,73 +302,6 @@ module stdlib_linalg_lapack_aux
      end function stdlib_iladiag
 
 
-     pure integer(ilp) function stdlib_iladlc( m, n, a, lda )
-     !! ILADLC scans A for its last non-zero column.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
-           ! Array Arguments 
-           real(dp), intent(in) :: a(lda,*)
-        ! =====================================================================
-           ! Parameters 
-           real(dp), parameter :: zero = 0.0d+0
-           
-           ! Local Scalars 
-           integer(ilp) :: i
-           ! Executable Statements 
-           ! quick test for the common case where one corner is non-zero.
-           if( n==0 ) then
-              stdlib_iladlc = n
-           else if( a(1, n)/=zero .or. a(m, n)/=zero ) then
-              stdlib_iladlc = n
-           else
-           ! now scan each column from the end, returning with the first non-zero.
-              do stdlib_iladlc = n, 1, -1
-                 do i = 1, m
-                    if( a(i, stdlib_iladlc)/=zero ) return
-                 end do
-              end do
-           end if
-           return
-     end function stdlib_iladlc
-
-
-     pure integer(ilp) function stdlib_iladlr( m, n, a, lda )
-     !! ILADLR scans A for its last non-zero row.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
-           ! Array Arguments 
-           real(dp), intent(in) :: a(lda,*)
-        ! =====================================================================
-           ! Parameters 
-           real(dp), parameter :: zero = 0.0d+0
-           
-           ! Local Scalars 
-           integer(ilp) :: i, j
-           ! Executable Statements 
-           ! quick test for the common case where one corner is non-zero.
-           if( m==0 ) then
-              stdlib_iladlr = m
-           else if( a(m, 1)/=zero .or. a(m, n)/=zero ) then
-              stdlib_iladlr = m
-           else
-           ! scan up each column tracking the last zero row seen.
-              stdlib_iladlr = 0
-              do j = 1, n
-                 i=m
-                 do while((a(max(i,1),j)==zero).and.(i>=1))
-                    i=i-1
-                 enddo
-                 stdlib_iladlr = max( stdlib_iladlr, i )
-              end do
-           end if
-           return
-     end function stdlib_iladlr
 
 
      integer(ilp) function stdlib_ilaprec( prec )
@@ -486,74 +338,6 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilaprec
 
-
-     pure integer(ilp) function stdlib_ilaslc( m, n, a, lda )
-     !! ILASLC scans A for its last non-zero column.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
-           ! Array Arguments 
-           real(sp), intent(in) :: a(lda,*)
-        ! =====================================================================
-           ! Parameters 
-           real(sp), parameter :: zero = 0.0e+0
-           
-           ! Local Scalars 
-           integer(ilp) :: i
-           ! Executable Statements 
-           ! quick test for the common case where one corner is non-zero.
-           if( n==0 ) then
-              stdlib_ilaslc = n
-           else if( a(1, n)/=zero .or. a(m, n)/=zero ) then
-              stdlib_ilaslc = n
-           else
-           ! now scan each column from the end, returning with the first non-zero.
-              do stdlib_ilaslc = n, 1, -1
-                 do i = 1, m
-                    if( a(i, stdlib_ilaslc)/=zero ) return
-                 end do
-              end do
-           end if
-           return
-     end function stdlib_ilaslc
-
-
-     pure integer(ilp) function stdlib_ilaslr( m, n, a, lda )
-     !! ILASLR scans A for its last non-zero row.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
-           ! Array Arguments 
-           real(sp), intent(in) :: a(lda,*)
-        ! =====================================================================
-           ! Parameters 
-           real(sp), parameter :: zero = 0.0e+0
-           
-           ! Local Scalars 
-           integer(ilp) :: i, j
-           ! Executable Statements 
-           ! quick test for the common case where one corner is non-zero.
-           if( m==0 ) then
-              stdlib_ilaslr = m
-           elseif( a(m, 1)/=zero .or. a(m, n)/=zero ) then
-              stdlib_ilaslr = m
-           else
-           ! scan up each column tracking the last zero row seen.
-              stdlib_ilaslr = 0
-              do j = 1, n
-                 i=m
-                 do while((a(max(i,1),j)==zero).and.(i>=1))
-                    i=i-1
-                 enddo
-                 stdlib_ilaslr = max( stdlib_ilaslr, i )
-              end do
-           end if
-           return
-     end function stdlib_ilaslr
 
 
      integer(ilp) function stdlib_ilatrans( trans )
@@ -615,75 +399,6 @@ module stdlib_linalg_lapack_aux
            end if
            return
      end function stdlib_ilauplo
-
-
-     pure integer(ilp) function stdlib_ilazlc( m, n, a, lda )
-     !! ILAZLC scans A for its last non-zero column.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
-           ! Array Arguments 
-           complex(dp), intent(in) :: a(lda,*)
-        ! =====================================================================
-           ! Parameters 
-           complex(dp), parameter :: zero = (0.0d+0,0.0d+0)
-           
-           ! Local Scalars 
-           integer(ilp) :: i
-           ! Executable Statements 
-           ! quick test for the common case where one corner is non-zero.
-           if( n==0 ) then
-              stdlib_ilazlc = n
-           else if( a(1, n)/=zero .or. a(m, n)/=zero ) then
-              stdlib_ilazlc = n
-           else
-           ! now scan each column from the end, returning with the first non-zero.
-              do stdlib_ilazlc = n, 1, -1
-                 do i = 1, m
-                    if( a(i, stdlib_ilazlc)/=zero ) return
-                 end do
-              end do
-           end if
-           return
-     end function stdlib_ilazlc
-
-
-     pure integer(ilp) function stdlib_ilazlr( m, n, a, lda )
-     !! ILAZLR scans A for its last non-zero row.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
-           ! Array Arguments 
-           complex(dp), intent(in) :: a(lda,*)
-        ! =====================================================================
-           ! Parameters 
-           complex(dp), parameter :: zero = (0.0d+0,0.0d+0)
-           
-           ! Local Scalars 
-           integer(ilp) :: i, j
-           ! Executable Statements 
-           ! quick test for the common case where one corner is non-zero.
-           if( m==0 ) then
-              stdlib_ilazlr = m
-           else if( a(m, 1)/=zero .or. a(m, n)/=zero ) then
-              stdlib_ilazlr = m
-           else
-           ! scan up each column tracking the last zero row seen.
-              stdlib_ilazlr = 0
-              do j = 1, n
-                 i=m
-                 do while((a(max(i,1),j)==zero).and.(i>=1))
-                    i=i-1
-                 enddo
-                 stdlib_ilazlr = max( stdlib_ilazlr, i )
-              end do
-           end if
-           return
-     end function stdlib_ilazlr
 
 
      pure integer(ilp) function stdlib_iparmq( ispec, name, opts, n, ilo, ihi, lwork )
@@ -945,7 +660,6 @@ module stdlib_linalg_lapack_aux
 
 #:if WITH_QP 
 
-
      integer(ilp) function stdlib_ilaqiag( diag )
      !! This subroutine translated from a character string specifying if a
      !! matrix has unit diagonal or not to the relevant BLAST-specified
@@ -975,10 +689,8 @@ module stdlib_linalg_lapack_aux
      end function stdlib_ilaqiag
 #:endif 
 
-#:if WITH_QP 
-
-
-     pure integer(ilp) function stdlib_ilaqlc( m, n, a, lda )
+#:for rk,rt,ri in RC_KINDS_TYPES
+     pure integer(ilp) function stdlib_ila${ri}$lc( m, n, a, lda )
      !! ILADLC: scans A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -986,35 +698,31 @@ module stdlib_linalg_lapack_aux
            ! Scalar Arguments 
            integer(ilp), intent(in) :: m, n, lda
            ! Array Arguments 
-           real(qp), intent(in) :: a(lda,*)
+           ${rt}$, intent(in) :: a(lda,*)
         ! =====================================================================
            ! Parameters 
-           real(qp), parameter :: zero = 0.0d+0
+           ${rt}$, parameter :: zero = 0.0_${rk}$
            
            ! Local Scalars 
            integer(ilp) :: i
            ! Executable Statements 
            ! quick test for the common case where one corner is non-zero.
            if( n==0 ) then
-              stdlib_ilaqlc = n
-           else if( a(1, n)/=zero .or. a(m, n)/=zero ) then
-              stdlib_ilaqlc = n
+              stdlib_ila${ri}$lc = n
+           else if (a(1, n)/=zero .or. a(m, n)/=zero) then
+              stdlib_ila${ri}$lc = n
            else
            ! now scan each column from the end, returning with the first non-zero.
-              do stdlib_ilaqlc = n, 1, -1
+              do stdlib_ila${ri}$lc = n, 1, -1
                  do i = 1, m
-                    if( a(i, stdlib_ilaqlc)/=zero ) return
+                    if (a(i, stdlib_ila${ri}$lc)/=zero) return
                  end do
               end do
            end if
            return
-     end function stdlib_ilaqlc
-#:endif 
-
-#:if WITH_QP 
-
-
-     pure integer(ilp) function stdlib_ilaqlr( m, n, a, lda )
+     end function stdlib_ila${ri}$lc
+     
+     pure integer(ilp) function stdlib_ila${ri}$lr( m, n, a, lda )
      !! ILADLR: scans A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -1022,108 +730,38 @@ module stdlib_linalg_lapack_aux
            ! Scalar Arguments 
            integer(ilp), intent(in) :: m, n, lda
            ! Array Arguments 
-           real(qp), intent(in) :: a(lda,*)
+           ${rt}$, intent(in) :: a(lda,*)
         ! =====================================================================
            ! Parameters 
-           real(qp), parameter :: zero = 0.0d+0
+           ${rt}$, parameter :: zero = 0.0_${rk}$
            
            ! Local Scalars 
            integer(ilp) :: i, j
            ! Executable Statements 
            ! quick test for the common case where one corner is non-zero.
            if( m==0 ) then
-              stdlib_ilaqlr = m
+              stdlib_ila${ri}$lr = m
            else if( a(m, 1)/=zero .or. a(m, n)/=zero ) then
-              stdlib_ilaqlr = m
+              stdlib_ila${ri}$lr = m
            else
            ! scan up each column tracking the last zero row seen.
-              stdlib_ilaqlr = 0
+              stdlib_ila${ri}$lr = 0
               do j = 1, n
                  i=m
                  do while((a(max(i,1),j)==zero).and.(i>=1))
                     i=i-1
                  enddo
-                 stdlib_ilaqlr = max( stdlib_ilaqlr, i )
+                 stdlib_ila${ri}$lr = max( stdlib_ila${ri}$lr, i )
               end do
            end if
            return
-     end function stdlib_ilaqlr
-#:endif 
-
-#:if WITH_QP 
-
-
-     pure integer(ilp) function stdlib_ilawlc( m, n, a, lda )
-     !! ILAZLC: scans A for its last non-zero column.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
-           ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*)
-        ! =====================================================================
-           ! Parameters 
-           complex(qp), parameter :: zero = (0.0d+0,0.0d+0)
-           
-           ! Local Scalars 
-           integer(ilp) :: i
-           ! Executable Statements 
-           ! quick test for the common case where one corner is non-zero.
-           if( n==0 ) then
-              stdlib_ilawlc = n
-           else if( a(1, n)/=zero .or. a(m, n)/=zero ) then
-              stdlib_ilawlc = n
-           else
-           ! now scan each column from the end, returning with the first non-zero.
-              do stdlib_ilawlc = n, 1, -1
-                 do i = 1, m
-                    if( a(i, stdlib_ilawlc)/=zero ) return
-                 end do
-              end do
-           end if
-           return
-     end function stdlib_ilawlc
-#:endif 
-
-#:if WITH_QP 
+     end function stdlib_ila${ri}$lr     
+     
+#:endfor 
 
 
-     pure integer(ilp) function stdlib_ilawlr( m, n, a, lda )
-     !! ILAZLR: scans A for its last non-zero row.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
-           ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*)
-        ! =====================================================================
-           ! Parameters 
-           complex(qp), parameter :: zero = (0.0d+0,0.0d+0)
-           
-           ! Local Scalars 
-           integer(ilp) :: i, j
-           ! Executable Statements 
-           ! quick test for the common case where one corner is non-zero.
-           if( m==0 ) then
-              stdlib_ilawlr = m
-           else if( a(m, 1)/=zero .or. a(m, n)/=zero ) then
-              stdlib_ilawlr = m
-           else
-           ! scan up each column tracking the last zero row seen.
-              stdlib_ilawlr = 0
-              do j = 1, n
-                 i=m
-                 do while((a(max(i,1),j)==zero).and.(i>=1))
-                    i=i-1
-                 enddo
-                 stdlib_ilawlr = max( stdlib_ilawlr, i )
-              end do
-           end if
-           return
-     end function stdlib_ilawlr
-#:endif 
+
+
 
 #:if WITH_QP 
 
