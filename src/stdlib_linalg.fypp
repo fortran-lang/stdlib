@@ -16,6 +16,7 @@ module stdlib_linalg
   implicit none
   private
 
+  public :: cholesky
   public :: det
   public :: operator(.det.)
   public :: diag
@@ -42,6 +43,36 @@ module stdlib_linalg
   ! Export linalg error handling
   public :: linalg_state_type, linalg_error_handling
 
+  interface cholesky
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:if rk!="xdp"
+     pure module subroutine stdlib_linalg_${ri}$_cholesky_inplace(a,lower,other_zeroed,err) 
+         !> Input matrix a[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_${ri}$_cholesky_inplace
+     
+     pure module subroutine stdlib_linalg_${ri}$_cholesky(a,c,lower,other_zeroed,err) 
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Output matrix with Cholesky factors c[n,n]
+         ${rt}$, intent(out) :: c(:,:)         
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err     
+     end subroutine stdlib_linalg_${ri}$_cholesky
+     #:endif
+     #:endfor
+  end interface cholesky
+     
   interface diag
     !! version: experimental
     !!

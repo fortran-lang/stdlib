@@ -1,16 +1,12 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 ! Cholesky factorization of a matrix, based on LAPACK *POTRF functions
-module stdlib_linalg_cholesky
+submodule (stdlib_linalg) stdlib_linalg_cholesky
      use stdlib_linalg_constants
      use stdlib_linalg_lapack, only: potrf
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
      implicit none(type,external)
-     private
-
-     !> Cholesky factorization of a matrix
-     public :: cholesky
 
      ! Returns Lower Cholesky factor
      ! NumPy: L = cholesky(a) 
@@ -21,15 +17,6 @@ module stdlib_linalg_cholesky
      ! Returns the Upper of Lower Cholesky factor of A, *without setting zeros in the unused part*
      ! SciPy: [C, lower] = cho_factor(a, lower=False, overwrite_a=False, check_finite=True)
      ! SciPy: cho_solve(c_and_lower, b, overwrite_b=False, check_finite=True)
-     
-     interface cholesky
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        #:if rk!="xdp"
-        module procedure stdlib_linalg_${ri}$_cholesky_inplace
-        module procedure stdlib_linalg_${ri}$_cholesky
-        #:endif
-        #:endfor
-     end interface cholesky
      
      character(*), parameter :: this = 'cholesky'
 
@@ -65,7 +52,7 @@ module stdlib_linalg_cholesky
      
      ! Compute the Cholesky factorization of a symmetric / Hermitian matrix, A = L*L^T = U^T*U. 
      ! The factorization is returned in-place, overwriting matrix A
-     pure subroutine stdlib_linalg_${ri}$_cholesky_inplace(a,lower,other_zeroed,err) 
+     pure module subroutine stdlib_linalg_${ri}$_cholesky_inplace(a,lower,other_zeroed,err) 
          !> Input matrix a[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
          !> [optional] is the lower or upper triangular factor required? Default = lower
@@ -127,7 +114,7 @@ module stdlib_linalg_cholesky
 
      ! Compute the Cholesky factorization of a symmetric / Hermitian matrix, A = L*L^T = U^T*U. 
      ! The factorization is returned as a separate matrix
-     pure subroutine stdlib_linalg_${ri}$_cholesky(a,c,lower,other_zeroed,err) 
+     pure module subroutine stdlib_linalg_${ri}$_cholesky(a,c,lower,other_zeroed,err) 
          !> Input matrix a[n,n]
          ${rt}$, intent(in) :: a(:,:)
          !> Output matrix with Cholesky factors c[n,n]
@@ -172,4 +159,4 @@ module stdlib_linalg_cholesky
      #:endif
      #:endfor
 
-end module stdlib_linalg_cholesky
+end submodule stdlib_linalg_cholesky
