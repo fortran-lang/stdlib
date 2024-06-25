@@ -45,6 +45,23 @@ module stdlib_linalg
   public :: linalg_state_type, linalg_error_handling
 
   interface chol
+    !! version: experimental 
+    !!
+    !! Computes the Cholesky factorization \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#chol-compute-the-cholesky-factorization-of-a-rank-2-square-array-matrix))
+    !! 
+    !!### Summary 
+    !! Pure function interface for computing the Cholesky triangular factors. 
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the lower- or upper- triangular matrix from the 
+    !! Cholesky factorization of a `real` symmetric or `complex` Hermitian matrix.
+    !! Supported data types include `real` and `complex`.    
+    !! 
+    !!@note The solution is based on LAPACK's `*POTRF` methods.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !!     
      #:for rk,rt,ri in RC_KINDS_TYPES
      #:if rk!="xdp"
      pure module function stdlib_linalg_${ri}$_cholesky_fun(a,lower,other_zeroed) result(c)
@@ -62,6 +79,27 @@ module stdlib_linalg
   end interface chol  
 
   interface cholesky
+    !! version: experimental 
+    !!
+    !! Computes the Cholesky factorization \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#cholesky-compute-the-cholesky-factorization-of-a-rank-2-square-array-matrix))
+    !! 
+    !!### Summary 
+    !! Pure subroutine interface for computing the Cholesky triangular factors. 
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the lower- or upper- triangular matrix from the 
+    !! Cholesky factorization of a `real` symmetric or `complex` Hermitian matrix.
+    !! Supported data types include `real` and `complex`.    
+    !! The factorization is computed in-place if only one matrix argument is present; or returned into 
+    !! a second matrix argument, if present. The `lower` `logical` flag allows to select between upper or 
+    !! lower factorization; the `other_zeroed` optional `logical` flag allows to choose whether the unused
+    !! part of the triangular matrix should be filled with zeroes.
+    !! 
+    !!@note The solution is based on LAPACK's `*POTRF` methods.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !!         
      #:for rk,rt,ri in RC_KINDS_TYPES
      #:if rk!="xdp"
      pure module subroutine stdlib_linalg_${ri}$_cholesky_inplace(a,lower,other_zeroed,err) 
