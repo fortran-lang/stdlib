@@ -4,13 +4,13 @@
 module test_linalg_cholesky
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
-    use stdlib_linalg, only: cholesky
+    use stdlib_linalg, only: cholesky,chol
     use stdlib_linalg_state, only: linalg_state_type
 
     implicit none (type,external)
     private
     
-    public :: test_cholesky_factorization
+    public :: test_cholesky_factorization 
 
     contains
 
@@ -53,12 +53,17 @@ module test_linalg_cholesky
         ! 1) Cholesky factorization with full matrices
         call cholesky(a, l, other_zeroed=.true., err=state)
         
-        call check(error,state%ok(),state%print())
+        call check(error,state%ok(),'cholesky (subr) :: '//state%print())
         if (allocated(error)) return
         
-        call check(error, all(abs(a-matmul(l,transpose(l)))<tol), 'data converged')
+        call check(error, all(abs(a-matmul(l,transpose(l)))<tol), 'cholesky (subr) :: data converged')
         if (allocated(error)) return        
         
+        ! 2) Function interface 
+        l = chol(a, other_zeroed=.true.)
+        
+        call check(error, all(abs(a-matmul(l,transpose(l)))<tol), 'cholesky (function) :: data converged')
+        if (allocated(error)) return           
         
     end subroutine test_cholesky_${ri}$
 
