@@ -958,7 +958,7 @@ This subroutine computes the solution to the eigendecomposition \( A \cdot \bar{
 where \( A \) is a square, full-rank, `real` symmetric \( A = A^T \) or `complex` Hermitian \( A = A^H \) matrix.
 
 Result array `lambda` returns the `real` eigenvalues of \( A \). The user can request the orthogonal eigenvectors 
-to be returned: on output `vectors` may contain the matrix of eigenvectors, returned as a columns.
+to be returned: on output `vectors` may contain the matrix of eigenvectors, returned as a column.
 
 Normally, only the lower triangular part of \( A \) is accessed. On input, `logical` flag `upper_a` 
 allows the user to request what triangular part of the matrix should be used.
@@ -977,7 +977,7 @@ The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
 
 `vectors` (optional): Shall be a rank-2 array of the same type, size and kind as `a`, containing the eigenvectors of `a`. It is an `intent(out)` argument.
 
-`upper_a` (optional): Shall be an input `logical` flag. if `.true.`, the upper triangular part of `a` will be accessed. Otherwise, the lower triangular part will be accessed. It is an `intent(in)` argument.
+`upper_a` (optional): Shall be an input `logical` flag. If `.true.`, the upper triangular part of `a` will be accessed. Otherwise, the lower triangular part will be accessed. It is an `intent(in)` argument.
 
 `overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
 
@@ -1015,7 +1015,7 @@ The solver is based on LAPACK's `*GEEV` backends.
 
 ### Arguments
 
-`a` : `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument.
+`a` : `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
@@ -1055,9 +1055,9 @@ The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
 
 ### Arguments
 
-`a` : `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument.
+`a` : `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument.
 
-`upper_a` (optional): Shall be an input logical flag. if `.true.`, the upper triangular part of `a` will be used accessed. Otherwise, the lower triangular part will be accessed (default). It is an `intent(in)` argument.
+`upper_a` (optional): Shall be an input logical flag. If `.true.`, the upper triangular part of `a` will be used accessed. Otherwise, the lower triangular part will be accessed (default). It is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
