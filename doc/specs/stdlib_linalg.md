@@ -1015,7 +1015,7 @@ The solver is based on LAPACK's `*GEEV` backends.
 
 ### Arguments
 
-`a` : `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument.
+`a` : `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
