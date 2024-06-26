@@ -14,7 +14,7 @@ program example_eigh
                            [4, 5, 4] ], [3,3] )) 
 
   ! Note: real symmetric matrices have real (orthogonal) eigenvalues and eigenvectors
-  allocate(lambda(3),v(3,3))  
+  allocate(lambda(3),vectors(3,3))  
   call eigh(A, lambda, vectors=vectors)
   
   print *, 'Real matrix'
@@ -26,7 +26,7 @@ program example_eigh
   ! Complex hermitian matrices have real (orthogonal) eigenvalues and complex eigenvectors
   cA = A
   
-  allocate(cv(3,3))  
+  allocate(cvectors(3,3))  
   call eigh(cA, lambda, vectors=cvectors)
   
   print *, 'Complex matrix'
