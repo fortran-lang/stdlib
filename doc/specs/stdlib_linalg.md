@@ -958,7 +958,7 @@ This subroutine computes the solution to the eigendecomposition \( A \cdot \bar{
 where \( A \) is a square, full-rank, `real` symmetric \( A = A^T \) or `complex` Hermitian \( A = A^H \) matrix.
 
 Result array `lambda` returns the `real` eigenvalues of \( A \). The user can request the orthogonal eigenvectors 
-to be returned: on output `vectors` may contain the matrix of eigenvectors, returned as a columns.
+to be returned: on output `vectors` may contain the matrix of eigenvectors, returned as a column.
 
 Normally, only the lower triangular part of \( A \) is accessed. On input, `logical` flag `upper_a` 
 allows the user to request what triangular part of the matrix should be used.
