@@ -4,8 +4,8 @@ program example_eigh
   implicit none
 
   integer :: i
-  real, allocatable :: A(:,:),lambda(:),v(:,:)
-  complex, allocatable :: cA(:,:),cv(:,:)
+  real, allocatable :: A(:,:),lambda(:),vectors(:,:)
+  complex, allocatable :: cA(:,:),cvectors(:,:)
 
   ! Decomposition of this symmetric matrix
   ! NB Fortran is column-major -> transpose input
@@ -15,24 +15,24 @@ program example_eigh
 
   ! Note: real symmetric matrices have real (orthogonal) eigenvalues and eigenvectors
   allocate(lambda(3),v(3,3))  
-  call eigh(A, lambda, vectors=v)
+  call eigh(A, lambda, vectors=vectors)
   
   print *, 'Real matrix'
   do i=1,3
      print *, 'eigenvalue  ',i,': ',lambda(i)
-     print *, 'eigenvector ',i,': ',v(:,i)
+     print *, 'eigenvector ',i,': ',vectors(:,i)
   end do
   
   ! Complex hermitian matrices have real (orthogonal) eigenvalues and complex eigenvectors
   cA = A
   
   allocate(cv(3,3))  
-  call eigh(cA, lambda, vectors=cv)
+  call eigh(cA, lambda, vectors=cvectors)
   
   print *, 'Complex matrix'
   do i=1,3
      print *, 'eigenvalue  ',i,': ',lambda(i)
-     print *, 'eigenvector ',i,': ',cv(:,i)
+     print *, 'eigenvector ',i,': ',cvectors(:,i)
   end do  
   
 end program example_eigh
