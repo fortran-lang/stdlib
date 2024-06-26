@@ -1057,7 +1057,7 @@ The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
 
 `a` : `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument.
 
-`upper_a` (optional): Shall be an input logical flag. if `.true.`, the upper triangular part of `a` will be used accessed. Otherwise, the lower triangular part will be accessed (default). It is an `intent(in)` argument.
+`upper_a` (optional): Shall be an input logical flag. If `.true.`, the upper triangular part of `a` will be used accessed. Otherwise, the lower triangular part will be accessed (default). It is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
