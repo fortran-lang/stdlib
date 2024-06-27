@@ -292,9 +292,10 @@ contains
             call check(error, all(CSR%data == COO%data) )
             if (allocated(error)) return
 
+            err = 0._wp
             do i = 1, 5
                 do j = 1, 5
-                    err = err + abs(dense(i,j) - CSR%get(i,j))
+                    err = err + abs(dense(i,j) - CSR%at(i,j))
                 end do
             end do
             err = err / 5*5

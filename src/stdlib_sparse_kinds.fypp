@@ -51,7 +51,7 @@ module stdlib_sparse_kinds
     type, public, extends(COO_type) :: COO_${s1}$
         ${t1}$, allocatable :: data(:) 
     contains
-        procedure, non_overridable :: get => get_value_coo_${s1}$
+        procedure, non_overridable :: at => at_value_coo_${s1}$
         procedure, non_overridable :: add_value => add_value_coo_${s1}$
         procedure, non_overridable :: add_block => add_block_coo_${s1}$
         generic :: add => add_value, add_block
@@ -70,7 +70,7 @@ module stdlib_sparse_kinds
     type, public, extends(CSR_type) :: CSR_${s1}$
         ${t1}$, allocatable :: data(:) 
     contains
-        procedure, non_overridable :: get => get_value_csr_${s1}$
+        procedure, non_overridable :: at => at_value_csr_${s1}$
         procedure, non_overridable :: add_value => add_value_csr_${s1}$
         procedure, non_overridable :: add_block => add_block_csr_${s1}$
         generic :: add => add_value, add_block
@@ -89,7 +89,7 @@ module stdlib_sparse_kinds
     type, public, extends(CSC_type) :: CSC_${s1}$
         ${t1}$, allocatable :: data(:) 
     contains
-        procedure, non_overridable :: get => get_value_csc_${s1}$
+        procedure, non_overridable :: at => at_value_csc_${s1}$
         procedure, non_overridable :: add_value => add_value_csc_${s1}$
         procedure, non_overridable :: add_block => add_block_csc_${s1}$
         generic :: add => add_value, add_block
@@ -108,7 +108,7 @@ module stdlib_sparse_kinds
     type, public, extends(ELL_type) :: ELL_${s1}$
         ${t1}$, allocatable :: data(:,:) 
     contains
-        procedure, non_overridable :: get => get_value_ell_${s1}$
+        procedure, non_overridable :: at => at_value_ell_${s1}$
         procedure, non_overridable :: add_value => add_value_ell_${s1}$
         procedure, non_overridable :: add_block => add_block_ell_${s1}$
         generic :: add => add_value, add_block
@@ -298,7 +298,7 @@ contains
     !==================================================================
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure ${t1}$ function get_value_coo_${s1}$(self,ik,jk) result(val)
+    pure ${t1}$ function at_value_coo_${s1}$(self,ik,jk) result(val)
         class(COO_${s1}$), intent(in) :: self
         integer, intent(in) :: ik, jk
         integer :: k, ik_, jk_
@@ -356,7 +356,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure ${t1}$ function get_value_csr_${s1}$(self,ik,jk) result(val)
+    pure ${t1}$ function at_value_csr_${s1}$(self,ik,jk) result(val)
         class(CSR_${s1}$), intent(in) :: self
         integer, intent(in) :: ik, jk
         integer :: k, ik_, jk_
@@ -414,7 +414,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure ${t1}$ function get_value_csc_${s1}$(self,ik,jk) result(val)
+    pure ${t1}$ function at_value_csc_${s1}$(self,ik,jk) result(val)
         class(CSC_${s1}$), intent(in) :: self
         integer, intent(in) :: ik, jk
         integer :: k, ik_, jk_
@@ -472,7 +472,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure ${t1}$ function get_value_ell_${s1}$(self,ik,jk) result(val)
+    pure ${t1}$ function at_value_ell_${s1}$(self,ik,jk) result(val)
         class(ELL_${s1}$), intent(in) :: self
         integer, intent(in) :: ik, jk
         integer :: k, ik_, jk_
