@@ -1014,7 +1014,9 @@ This interface is equivalent to the function  [[stdlib_linalg(module):inv(interf
 
 Returns a rank-2 square array with the same type, kind and rank as `a`, that contains the inverse of `a`.
 
-If an exception occurred on input errors, or singular matrix, NaNs will be returned.
+If an exception occurred on input errors, or singular matrix, `NaN`s will be returned.
+For fine-grained error control in case of singular matrices prefer the `subroutine` and the `function`
+interfaces.
 
 
 ### Example
