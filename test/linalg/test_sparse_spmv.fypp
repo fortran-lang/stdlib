@@ -23,7 +23,8 @@ contains
             new_unittest('csc', test_csc), &
             new_unittest('ell', test_ell),  &
             new_unittest('sellc', test_sellc),  &
-            new_unittest('symmetries', test_symmetries) &
+            new_unittest('symmetries', test_symmetries), &
+            new_unittest('add_get_values', test_add_get_values) &
         ]
     end subroutine
 
@@ -255,6 +256,50 @@ contains
 
             call spmv( CSR , vec_x, vec_y3 )
             call check(error, all(vec_y1 == vec_y3) )
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_add_get_values(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            real(wp) :: dense(5,5), mat(2,2)
+            type(COO_${s1}$) :: COO
+            type(CSR_${s1}$) :: CSR
+            ${t1}$:: err
+            integer :: i, j, locdof(2)
+
+            mat(:,1) = [1,2]; mat(:,2) = [2,1]
+            dense = 0._wp
+            do i = 0, 3
+                dense(1+i:2+i,1+i:2+i) = dense(1+i:2+i,1+i:2+i) + mat
+            end do
+
+            call dense2coo(dense,COO)
+            call coo2csr(COO,CSR)
+
+            CSR%data = 0._wp
+
+            do i = 0, 3
+                locdof(1:2) = [1+i,2+i] 
+                call CSR%add(locdof,locdof,mat)
+            end do
+
+            call check(error, all(CSR%data == COO%data) )
+            if (allocated(error)) return
+
+            do i = 1, 5
+                do j = 1, 5
+                    err = err + abs(dense(i,j) - CSR%get(i,j))
+                end do
+            end do
+            err = err / 5*5
+
+            call check(error, err <= epsilon(0._wp) )
             if (allocated(error)) return
         end block
         #:endfor
