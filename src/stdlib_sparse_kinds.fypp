@@ -41,7 +41,7 @@ module stdlib_sparse_kinds
 
     !> COO: COOrdinates compresed format 
     type, public, extends(sparse_type) :: COO_type
-      logical               :: is_sorted = .false. !> wether the matrix is ordered or not
+      logical               :: is_sorted = .false. !> whether the matrix is sorted or not
       integer, allocatable  :: index(:,:) !> Matrix coordinates index(2,nnz)
     contains
       procedure :: malloc => malloc_coo
@@ -52,7 +52,9 @@ module stdlib_sparse_kinds
         ${t1}$, allocatable :: data(:) 
     contains
         procedure, non_overridable :: get => get_value_coo_${s1}$
-        procedure, non_overridable :: set => set_value_coo_${s1}$
+        procedure, non_overridable :: add_value => add_value_coo_${s1}$
+        procedure, non_overridable :: add_block => add_block_coo_${s1}$
+        generic :: add => add_value, add_block
     end type
     #:endfor
 
@@ -69,7 +71,9 @@ module stdlib_sparse_kinds
         ${t1}$, allocatable :: data(:) 
     contains
         procedure, non_overridable :: get => get_value_csr_${s1}$
-        procedure, non_overridable :: set => set_value_csr_${s1}$
+        procedure, non_overridable :: add_value => add_value_csr_${s1}$
+        procedure, non_overridable :: add_block => add_block_csr_${s1}$
+        generic :: add => add_value, add_block
     end type
     #:endfor
 
@@ -86,7 +90,9 @@ module stdlib_sparse_kinds
         ${t1}$, allocatable :: data(:) 
     contains
         procedure, non_overridable :: get => get_value_csc_${s1}$
-        procedure, non_overridable :: set => set_value_csc_${s1}$
+        procedure, non_overridable :: add_value => add_value_csc_${s1}$
+        procedure, non_overridable :: add_block => add_block_csc_${s1}$
+        generic :: add => add_value, add_block
     end type
     #:endfor
   
@@ -103,7 +109,9 @@ module stdlib_sparse_kinds
         ${t1}$, allocatable :: data(:,:) 
     contains
         procedure, non_overridable :: get => get_value_ell_${s1}$
-        procedure, non_overridable :: set => set_value_ell_${s1}$
+        procedure, non_overridable :: add_value => add_value_ell_${s1}$
+        procedure, non_overridable :: add_block => add_block_ell_${s1}$
+        generic :: add => add_value, add_block
     end type
     #:endfor
 
@@ -293,14 +301,20 @@ contains
     pure ${t1}$ function get_value_coo_${s1}$(self,ik,jk) result(val)
         class(COO_${s1}$), intent(in) :: self
         integer, intent(in) :: ik, jk
-        integer :: k
+        integer :: k, ik_, jk_
+        logical :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
             return
         end if
-        do k = 1,self%nnz
-            if( ik == self%index(1,k) .and. jk == self%index(2,k) ) then
+        ik_ = ik; jk_ = jk
+        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        if(transpose) then ! allow extraction of symmetric elements
+            ik_ = jk; jk_ = ik
+        end if
+        do k = 1, self%nnz
+            if( ik_ == self%index(1,k) .and. jk_ == self%index(2,k) ) then
                 val = self%data(k)
                 return
             end if
@@ -308,7 +322,7 @@ contains
         val = zero_${s1}$
     end function
 
-    subroutine set_value_coo_${s1}$(self,ik,jk,val)
+    subroutine add_value_coo_${s1}$(self,ik,jk,val)
         class(COO_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in) :: ik, jk
@@ -316,9 +330,26 @@ contains
         ! naive implementation
         do k = 1,self%nnz
             if( ik == self%index(1,k) .and. jk == self%index(2,k) ) then
-                self%data(k) = val
+                self%data(k) = self%data(k) + val
                 return
             end if
+        end do
+    end subroutine
+
+    subroutine add_block_coo_${s1}$(self,ik,jk,val)
+        class(COO_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val(:,:)
+        integer, intent(in) :: ik(:), jk(:)
+        integer :: k, i, j
+        ! naive implementation
+        do k = 1, self%nnz
+            do i = 1, size(ik)
+                if( ik(i) /= self%index(1,k) ) cycle
+                do j = 1, size(jk)
+                    if( jk(j) /= self%index(2,k) ) cycle
+                    self%data(k) = self%data(k) + val(i,j)
+                end do
+            end do
         end do
     end subroutine
 
@@ -328,14 +359,20 @@ contains
     pure ${t1}$ function get_value_csr_${s1}$(self,ik,jk) result(val)
         class(CSR_${s1}$), intent(in) :: self
         integer, intent(in) :: ik, jk
-        integer :: k
+        integer :: k, ik_, jk_
+        logical :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
             return
         end if
-        do k = self%rowptr(ik), self%rowptr(ik+1)-1
-            if( jk == self%col(k) ) then
+        ik_ = ik; jk_ = jk
+        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        if(transpose) then ! allow extraction of symmetric elements
+            ik_ = jk; jk_ = ik
+        end if
+        do k = self%rowptr(ik_), self%rowptr(ik_+1)-1
+            if( jk_ == self%col(k) ) then
                 val = self%data(k)
                 return
             end if
@@ -343,7 +380,7 @@ contains
         val = zero_${s1}$
     end function
 
-    subroutine set_value_csr_${s1}$(self,ik,jk,val)
+    subroutine add_value_csr_${s1}$(self,ik,jk,val)
         class(CSR_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in) :: ik, jk
@@ -351,9 +388,26 @@ contains
         ! naive implementation
         do k = self%rowptr(ik), self%rowptr(ik+1)-1
             if( jk == self%col(k) ) then
-                self%data(k) = val
+                self%data(k) = self%data(k) + val
                 return
             end if
+        end do
+    end subroutine
+
+    subroutine add_block_csr_${s1}$(self,ik,jk,val)
+        class(CSR_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val(:,:)
+        integer, intent(in) :: ik(:), jk(:)
+        integer :: k, i, j
+        ! naive implementation
+        do i = 1, size(ik)
+            do k = self%rowptr(ik(i)), self%rowptr(ik(i)+1)-1
+                do j = 1, size(jk)
+                    if( jk(j) == self%col(k) ) then
+                        self%data(k) = self%data(k) + val(i,j)
+                    end if
+                end do
+            end do
         end do
     end subroutine
 
@@ -363,14 +417,20 @@ contains
     pure ${t1}$ function get_value_csc_${s1}$(self,ik,jk) result(val)
         class(CSC_${s1}$), intent(in) :: self
         integer, intent(in) :: ik, jk
-        integer :: k
+        integer :: k, ik_, jk_
+        logical :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
             return
         end if
-        do k = self%colptr(jk), self%colptr(jk+1)-1
-            if( ik == self%row(k) ) then
+        ik_ = ik; jk_ = jk
+        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        if(transpose) then ! allow extraction of symmetric elements
+            ik_ = jk; jk_ = ik
+        end if
+        do k = self%colptr(jk_), self%colptr(jk_+1)-1
+            if( ik_ == self%row(k) ) then
                 val = self%data(k)
                 return
             end if
@@ -378,7 +438,7 @@ contains
         val = zero_${s1}$
     end function
 
-    subroutine set_value_csc_${s1}$(self,ik,jk,val)
+    subroutine add_value_csc_${s1}$(self,ik,jk,val)
         class(CSC_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in)  :: ik, jk
@@ -386,9 +446,26 @@ contains
         ! naive implementation
         do k = self%colptr(jk), self%colptr(jk+1)-1
             if( ik == self%row(k) ) then
-                self%data(k) = val
+                self%data(k) = self%data(k) + val
                 return
             end if
+        end do
+    end subroutine
+
+    subroutine add_block_csc_${s1}$(self,ik,jk,val)
+        class(CSC_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val(:,:)
+        integer, intent(in)  :: ik(:), jk(:)
+        integer :: k, i, j
+        ! naive implementation
+        do j = 1, size(jk)
+            do k = self%colptr(jk(j)), self%colptr(jk(j)+1)-1
+                do i = 1, size(ik)
+                    if( ik(i) == self%row(k) ) then
+                        self%data(k) = self%data(k) + val(i,j)
+                    end if
+                end do
+            end do
         end do
     end subroutine
 
@@ -398,22 +475,28 @@ contains
     pure ${t1}$ function get_value_ell_${s1}$(self,ik,jk) result(val)
         class(ELL_${s1}$), intent(in) :: self
         integer, intent(in) :: ik, jk
-        integer :: k
+        integer :: k, ik_, jk_
+        logical :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
             return
         end if
+        ik_ = ik; jk_ = jk
+        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        if(transpose) then ! allow extraction of symmetric elements
+            ik_ = jk; jk_ = ik
+        end if
         do k = 1 , self%K
-            if( jk == self%index(ik,k) ) then
-                val = self%data(ik,k)
+            if( jk_ == self%index(ik_,k) ) then
+                val = self%data(ik_,k)
                 return
             end if
         end do
         val = zero_${s1}$
     end function
 
-    subroutine set_value_ell_${s1}$(self,ik,jk,val)
+    subroutine add_value_ell_${s1}$(self,ik,jk,val)
         class(ELL_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer, intent(in)  :: ik, jk
@@ -421,9 +504,26 @@ contains
         ! naive implementation
         do k = 1 , self%K
             if( jk == self%index(ik,k) ) then
-                self%data(ik,k) = val
+                self%data(ik,k) = self%data(ik,k) + val
                 return
             end if
+        end do
+    end subroutine
+
+    subroutine add_block_ell_${s1}$(self,ik,jk,val)
+        class(ELL_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val(:,:)
+        integer, intent(in)  :: ik(:), jk(:)
+        integer :: k, i, j
+        ! naive implementation
+        do k = 1 , self%K
+            do j = 1, size(jk)
+                do i = 1, size(ik)
+                    if( jk(j) == self%index(ik(i),k) ) then
+                        self%data(ik(i),k) = self%data(ik(i),k) + val(i,j)
+                    end if
+                end do
+            end do
         end do
     end subroutine
 
