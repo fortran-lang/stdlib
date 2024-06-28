@@ -125,7 +125,12 @@ module stdlib_sparse_kinds
   
     #:for k1, t1, s1 in (KINDS_TYPES)
     type, public, extends(SELLC_type) :: SELLC_${s1}$
-        ${t1}$, allocatable :: data(:,:) 
+        ${t1}$, allocatable :: data(:,:)
+    contains
+        procedure, non_overridable :: at => at_value_sellc_${s1}$
+        procedure, non_overridable :: add_value => add_value_sellc_${s1}$
+        procedure, non_overridable :: add_block => add_block_sellc_${s1}$
+        generic :: add => add_value, add_block
     end type
     #:endfor
 
@@ -521,6 +526,68 @@ contains
                 do i = 1, size(ik)
                     if( jk(j) == self%index(ik(i),k) ) then
                         self%data(ik(i),k) = self%data(ik(i),k) + val(i,j)
+                    end if
+                end do
+            end do
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure ${t1}$ function at_value_sellc_${s1}$(self,ik,jk) result(val)
+        class(SELLC_${s1}$), intent(in) :: self
+        integer, intent(in) :: ik, jk
+        integer :: k, ik_, jk_, idx
+        logical :: transpose
+        ! naive implementation
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
+            return
+        end if
+        ik_ = ik; jk_ = jk
+        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        if(transpose) then ! allow extraction of symmetric elements
+            ik_ = jk; jk_ = ik
+        end if
+
+        idx = self%rowptr((ik_ - 1)/self%chunk_size + 1)
+        do k = 1, self%chunk_size
+            if ( jk_ == self%col(k,idx) )then
+                val = self%data(k,idx)
+                return
+            endif
+        end do
+        val = zero_${s1}$
+    end function
+
+    subroutine add_value_sellc_${s1}$(self,ik,jk,val)
+        class(SELLC_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val
+        integer, intent(in)  :: ik, jk
+        integer :: k, idx
+        ! naive implementation
+        idx = self%rowptr((ik - 1)/self%chunk_size + 1)
+        do k = 1, self%chunk_size
+            if ( jk == self%col(k,idx) )then
+                self%data(k,idx) = self%data(k,idx) + val
+                return
+            endif
+        end do
+    end subroutine
+
+    subroutine add_block_sellc_${s1}$(self,ik,jk,val)
+        class(SELLC_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val(:,:)
+        integer, intent(in)  :: ik(:), jk(:)
+        integer :: k, i, j, idx
+        ! naive implementation
+        do k = 1 , self%chunk_size
+            do j = 1, size(jk)
+                do i = 1, size(ik)
+                    idx = self%rowptr((ik(i) - 1)/self%chunk_size + 1)
+                    if( jk(j) == self%col(k,idx) ) then
+                        self%data(k,idx) = self%data(k,idx) + val(i,j)
                     end if
                 end do
             end do
