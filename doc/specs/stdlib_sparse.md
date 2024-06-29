@@ -186,11 +186,11 @@ This module provides facility functions for converting between storage formats.
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):from_ijv(interface)]] `(coo,row,col,data,nrows,ncols)`
+`call ` [[stdlib_sparse_conversion(module):from_ijv(interface)]] `(sparse,row,col[,data,nrows,ncols,num_nz_rows,chunk])`
 
 ### Arguments
 
-`COO`, `intent(inout)`: Shall be any `COO` type. The graph object will be returned with a canonical shape after sorting and removing duplicates from the `(row,col,data)` triplet. If the graph is `COO_type` no data buffer is allowed.
+`sparse`, `intent(inout)`: Shall be a `COO`, `CSR`, `ELL` or `SELLC` type. The graph object will be returned with a canonical shape after sorting and removing duplicates from the `(row,col,data)` triplet. If the graph is `COO_type` no data buffer is allowed.
 
 `row`, `integer(in)`:: rows index array.
 
@@ -201,6 +201,10 @@ This module provides facility functions for converting between storage formats.
 `nrows`, `integer(in)`, `optional`:: number of rows, if not given it will be computed from the `row` array.
 
 `ncols`, `integer(in)`, `optional`:: number of columns, if not given it will be computed from the `col` array.
+
+`num_nz_rows`, `integer(in)`, `optional`:: number of non zeros per row, only valid in the case of an `ELL` matrix, by default it will computed from the largest row.
+
+`chunk`, `integer(in)`, `optional`:: chunk size, only valid in the case of a `SELLC` matrix, by default it will be taken from the `SELLC` default attribute chunk size.
 
 
 ### Syntax

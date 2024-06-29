@@ -188,6 +188,20 @@ module stdlib_sparse_kinds
         #:endfor
     end interface
 
+    !> Conversion from csr to ell
+    !> 
+    !> Enables transferring data from a CSR matrix to a ELL matrix
+    !> under the hypothesis that the CSR is already ordered.
+    interface csr2ell
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module subroutine csr2ell_${s1}$(CSR,ELL,num_nz_rows)
+            type(CSR_${s1}$), intent(in)    :: CSR
+            type(ELL_${s1}$), intent(inout) :: ELL
+            integer, intent(in), optional   :: num_nz_rows
+        end subroutine
+        #:endfor
+    end interface
+
     !> Conversion from csr to SELL-C
     !> 
     !> Enables transferring data from a CSR matrix to a SELL-C matrix
@@ -215,6 +229,9 @@ module stdlib_sparse_kinds
         module procedure :: coo_from_ijv_type
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: coo_from_ijv_${s1}$
+        module procedure :: csr_from_ijv_${s1}$
+        module procedure :: ell_from_ijv_${s1}$
+        module procedure :: sellc_from_ijv_${s1}$
         #:endfor
     end interface
 
@@ -441,6 +458,115 @@ contains
         if(present(data)) COO%data = data
 
         call coo2ordered(COO,.true.)
+    end subroutine
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine csr_from_ijv_${s1}$(CSR,row,col,data,nrows,ncols)
+        type(CSR_${s1}$), intent(inout) :: CSR
+        integer, intent(in) :: row(:)
+        integer, intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer, intent(in), optional :: nrows
+        integer, intent(in), optional :: ncols
+
+        integer :: nrows_, ncols_
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        !---------------------------------------------------------
+        block
+            type(COO_${s1}$) :: COO
+            if(present(data)) then
+                call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
+            else 
+                call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
+            end if
+            call coo2csr(COO,CSR)
+        end block
+    end subroutine
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine ell_from_ijv_${s1}$(ELL,row,col,data,nrows,ncols,num_nz_rows)
+        type(ELL_${s1}$), intent(inout) :: ELL
+        integer, intent(in) :: row(:)
+        integer, intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer, intent(in), optional :: nrows
+        integer, intent(in), optional :: ncols
+        integer, intent(in), optional :: num_nz_rows
+
+        integer :: nrows_, ncols_, num_nz_rows_
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        !---------------------------------------------------------
+        block
+            type(COO_${s1}$) :: COO
+            type(CSR_${s1}$) :: CSR
+            if(present(data)) then
+                call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
+            else 
+                call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
+            end if
+            call coo2csr(COO,CSR)
+            call csr2ell(CSR,ELL,num_nz_rows_)
+        end block
+    end subroutine
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine sellc_from_ijv_${s1}$(SELLC,row,col,data,nrows,ncols,chunk)
+        type(SELLC_${s1}$), intent(inout) :: SELLC
+        integer, intent(in) :: row(:)
+        integer, intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer, intent(in), optional :: nrows
+        integer, intent(in), optional :: ncols
+        integer, intent(in), optional :: chunk
+
+        integer :: nrows_, ncols_
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        if(present(chunk)) SELLC%chunk_size = chunk
+        !---------------------------------------------------------
+        block
+            type(COO_${s1}$) :: COO
+            type(CSR_${s1}$) :: CSR
+            if(present(data)) then
+                call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
+            else 
+                call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
+            end if
+            call coo2csr(COO,CSR)
+            call csr2sellc(CSR,SELLC)
+        end block
     end subroutine
     #:endfor
 

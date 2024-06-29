@@ -119,6 +119,36 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
+    module subroutine csr2ell_${s1}$(CSR,ELL,num_nz_rows)
+        type(CSR_${s1}$), intent(in)    :: CSR
+        type(ELL_${s1}$), intent(inout) :: ELL
+        integer, intent(in), optional :: num_nz_rows !> number of non zeros per row
+
+        integer :: i, j, num_nz_rows_, adr1, adr2
+        !-------------------------------------------
+        num_nz_rows_ = 0
+        if(present(num_nz_rows)) then
+            num_nz_rows_ = num_nz_rows
+        else 
+            do i = 1, CSR%nrows
+                num_nz_rows_ = max(num_nz_rows_, CSR%rowptr( i+1 ) - CSR%rowptr( i ) )
+            end do
+        end if
+        call ELL%malloc(CSR%nrows,CSR%ncols,num_nz_rows_)
+        !-------------------------------------------
+        do i = 1, CSR%nrows
+            adr1 = CSR%rowptr(i)
+            adr2 = min( adr1+num_nz_rows_ , CSR%rowptr(i+1)-1)
+            do j = adr1, adr2
+                ELL%index(i,j-adr1+1) = CSR%col(j)
+                ELL%data(i,j-adr1+1)  = CSR%data(j)
+            end do
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine csr2sellc_${s1}$(CSR,SELLC,chunk)
         !> csr2sellc: This function enables transfering data from a CSR matrix to a SELL-C matrix
         !> This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
