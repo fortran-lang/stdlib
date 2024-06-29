@@ -35,7 +35,7 @@ program example_sparse_data_accessors
         ! lets print a dense view of every step
         call csr2coo(CSR,COO)
         call coo2dense(COO,dense)
-        print '(A,I2)', 'Add block :', i
+        print '(A,I2)', 'Add block :', i+1
         do j = 1 , 5
             print '(5f8.1)',dense(j,:)
         end do
