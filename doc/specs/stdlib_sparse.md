@@ -135,6 +135,42 @@ Experimental
 The Sliced ELLPACK format `SELLC` is a variation of the `ELLPACK` format. This modification reduces the storage size compared to the `ELLPACK` format but maintaining its efficient data access scheme. It can be seen as an intermediate format between `CSR` and `ELLPACK`. For more details read [the reference](https://arxiv.org/pdf/1307.6209v1)
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+## `add`/`at` - Sparse Matrix data accessors
+
+### Status
+
+Experimental
+
+### Description
+Type-bound procedures to enable adding or requesting data in/from a sparse matrix.
+
+### Syntax
+
+`call matrix%add(i,j,v)` or
+`call matrix%add(i(:),j(:),v(:,:))`
+
+### Arguments
+
+`i`, `intent(in)`: Shall be an integer value or rank-1 array.
+`j`, `intent(in)`: Shall be an integer value or rank-1 array.
+`v`, `intent(in)`: Shall be a `real` or `complex` value or rank-2 array. The type shall be in accordance to the declared sparse matrix object.
+
+### Syntax
+
+`v = matrix%at(i,j)`
+
+### Arguments
+
+`i`, `intent(in)` : Shall be an integer value.
+`j`, `intent(in)` : Shall be an integer value.
+`v`, `result`     : Shall be a `real` or `complex` value in accordance to the declared sparse matrix object. If the `ij` tuple is within the sparse pattern, `v` returns the value in the data buffer. If the `ij` tuple is outside the sparse pattern, `v` returns `0`. If the `ij` tuple is outside the matrix pattern `(nrows,ncols)`, `v` returns `NaN`.
+
+## Example
+```fortran
+{!example/linalg/example_sparse_data_accessors.f90!}
+```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ## `spmv` - Sparse Matrix-Vector product
 
 ### Status
