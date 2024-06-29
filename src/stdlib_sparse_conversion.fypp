@@ -269,7 +269,7 @@ contains
     end subroutine
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    module subroutine sort_coo_unique_${s1}$( a, data, n, num_rows, num_cols )
+    subroutine sort_coo_unique_${s1}$( a, data, n, num_rows, num_cols )
         !! Sort a 2d array in increasing order first by index 1 and then by index 2
         ${t1}$, intent(inout) :: data(*)
         integer, intent(inout) :: a(2,*)
