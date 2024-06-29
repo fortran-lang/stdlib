@@ -9,11 +9,8 @@ module stdlib_sparse_kinds
     use ieee_arithmetic
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none
-    
     private
-    public :: dense2coo, coo2dense, csr2coo, coo2csr
-    public :: csr2sellc
-    public :: coo2ordered, from_ijv
+
     ! -- Global parameters
     enum, bind(C)
         enumerator :: sparse_full  !> Full Sparse matrix (no symmetry considerations)
@@ -61,7 +58,7 @@ module stdlib_sparse_kinds
     #:endfor
 
     !> CSR: Compressed sparse row or Yale format
-    type, extends(sparse_type) :: CSR_type  
+    type, public, extends(sparse_type) :: CSR_type  
       integer, allocatable  :: col(:)    !> matrix column pointer
       integer, allocatable  :: rowptr(:) !> matrix row pointer
     contains
@@ -80,7 +77,7 @@ module stdlib_sparse_kinds
     #:endfor
 
     !> CSC: Compressed sparse column
-    type, extends(sparse_type) :: CSC_type  
+    type, public, extends(sparse_type) :: CSC_type  
       integer, allocatable  :: colptr(:) !> matrix column pointer
       integer, allocatable  :: row(:)    !> matrix row pointer
     contains
@@ -99,7 +96,7 @@ module stdlib_sparse_kinds
     #:endfor
   
     !> Compressed ELLPACK
-    type, extends(sparse_type) :: ELL_type 
+    type, public, extends(sparse_type) :: ELL_type 
       integer               :: K = 0 !> maximum number of nonzeros per row
       integer, allocatable  :: index(:,:) !> column indices
     contains
@@ -148,10 +145,11 @@ module stdlib_sparse_kinds
         end subroutine
         #:endfor
     end interface
+    public :: dense2coo
 
     !> Conversion from coo to dense
     !> 
-    !> Enables creating a dense 2D matrix from the non-zero values tored in a COO format
+    !> Enables creating a dense 2D matrix from the non-zero values stored in a COO format
     !> The dense matrix can be allocated on the fly if not pre-allocated by the user.
     interface coo2dense
         #:for k1, t1, s1 in (KINDS_TYPES)
@@ -161,6 +159,7 @@ module stdlib_sparse_kinds
         end subroutine
         #:endfor
     end interface
+    public :: coo2dense
 
     !> Conversion from coo to csr
     !> 
@@ -174,6 +173,21 @@ module stdlib_sparse_kinds
         end subroutine
         #:endfor
     end interface
+    public :: coo2csr
+    
+    !> Conversion from csr to dense
+    !> 
+    !> Enables creating a dense 2D matrix from the non-zero values stored in a CSR format
+    !> The dense matrix can be allocated on the fly if not pre-allocated by the user.
+    interface csr2dense
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module subroutine csr2dense_${s1}$(CSR,dense)
+            type(CSR_${s1}$), intent(in)    :: CSR
+            ${t1}$, allocatable, intent(inout) :: dense(:,:)
+        end subroutine
+        #:endfor
+    end interface
+    public :: csr2dense
 
     !> Conversion from csr to coo
     !> 
@@ -187,6 +201,7 @@ module stdlib_sparse_kinds
         end subroutine
         #:endfor
     end interface
+    public :: csr2coo
 
     !> Conversion from csr to ell
     !> 
@@ -201,6 +216,7 @@ module stdlib_sparse_kinds
         end subroutine
         #:endfor
     end interface
+    public :: csr2ell
 
     !> Conversion from csr to SELL-C
     !> 
@@ -215,6 +231,7 @@ module stdlib_sparse_kinds
         end subroutine
     #:endfor
     end interface
+    public :: csr2sellc
 
     !> Transform COO matrix to canonical form with ordered and unique entries
     interface coo2ordered
@@ -223,6 +240,7 @@ module stdlib_sparse_kinds
             logical, intent(in), optional :: sort_data
         end subroutine
     end interface
+    public :: coo2ordered
 
     !> Enable creating a sparse matrix from ijv (row,col,data) triplet
     interface from_ijv
@@ -234,6 +252,7 @@ module stdlib_sparse_kinds
         module procedure :: sellc_from_ijv_${s1}$
         #:endfor
     end interface
+    public :: from_ijv
 
 contains
 

@@ -33,8 +33,7 @@ program example_sparse_data_accessors
         locdof(1:2) = [1+i,2+i] 
         call CSR%add(locdof,locdof,mat)
         ! lets print a dense view of every step
-        call csr2coo(CSR,COO)
-        call coo2dense(COO,dense)
+        call csr2dense(CSR,dense)
         print '(A,I2)', 'Add block :', i+1
         do j = 1 , 5
             print '(5f8.1)',dense(j,:)
