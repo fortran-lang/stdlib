@@ -8,7 +8,6 @@ program example_sparse_from_ijv
     type(COO_dp) :: COO
     type(CSR_dp) :: CSR
     type(ELL_dp) :: ELL
-    type(SELLC_dp) :: SELLC
     integer :: i, j
 
     ! Initial data
