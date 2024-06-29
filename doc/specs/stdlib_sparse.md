@@ -186,6 +186,25 @@ This module provides facility functions for converting between storage formats.
 
 ### Syntax
 
+`call ` [[stdlib_sparse_conversion(module):from_ijv(interface)]] `(coo,row,col,data,nrows,ncols)`
+
+### Arguments
+
+`COO`, `intent(inout)`: Shall be any `COO` type. The graph object will be returned with a canonical shape after sorting and removing duplicates from the `(row,col,data)` triplet. If the graph is `COO_type` no data buffer is allowed.
+
+`row`, `integer(in)`:: rows index array.
+
+`col`, `integer(in)`:: columns index array.
+
+`data`, `real/complex(in)`, `optional`:: data array.
+
+`nrows`, `integer(in)`, `optional`:: number of rows, if not given it will be computed from the `row` array.
+
+`ncols`, `integer(in)`, `optional`:: number of columns, if not given it will be computed from the `col` array.
+
+
+### Syntax
+
 `call ` [[stdlib_sparse_conversion(module):dense2coo(interface)]] `(dense,coo)`
 
 ### Arguments

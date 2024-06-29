@@ -68,22 +68,14 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         type(COO_sp) :: COO
+        integer :: row(12), col(12)
+        real    :: data(12)
 
-        call COO%malloc(4,4,12)
-        COO%data(:) = 1
-        COO%index(:,1) = [1,2]
-        COO%index(:,2) = [1,3]
-        COO%index(:,3) = [1,4]
-        COO%index(:,4) = [2,3]
-        COO%index(:,5) = [2,4]
-        COO%index(:,6) = [3,4]
+        row = [1,1,1,2,2,3,2,2,2,3,3,4]
+        col = [2,3,4,3,4,4,3,4,5,4,5,5]
+        data = 1.0
 
-        COO%index(:,7) = [2,3]
-        COO%index(:,8) = [2,4]
-        COO%index(:,9) = [2,5]
-        COO%index(:,10) = [3,4]
-        COO%index(:,11) = [3,5]
-        COO%index(:,12) = [4,5]
+        call from_ijv(COO,row,col,data)
 
         call coo2ordered(COO,sort_data=.true.)
         call check(error, COO%nnz < 12 .and. COO%nnz == 9 )

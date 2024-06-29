@@ -5,67 +5,10 @@
 !> The `stdlib_sparse_conversion` module provides sparse to sparse matrix conversion utilities.
 !>
 ! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
-module stdlib_sparse_conversion
-    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
-    use stdlib_sparse_kinds
+submodule(stdlib_sparse_kinds) stdlib_sparse_conversion
     use stdlib_sorting, only: sort
     implicit none
-    private
 
-    public :: dense2coo, coo2dense, coo2csr, csr2coo
-    public :: csr2sellc
-    public :: coo2ordered
-
-    !> Conversion from dense to coo
-    !> 
-    !> Enables extracting the non-zero elements of a dense 2D matrix and
-    !> storing those values in a COO format. The coo matrix is (re)allocated on the fly.
-    interface dense2coo
-        #:for k1, t1, s1 in (KINDS_TYPES)
-        module procedure dense2coo_${s1}$
-        #:endfor
-    end interface
-
-    !> Conversion from coo to dense
-    !> 
-    !> Enables creating a dense 2D matrix from the non-zero values tored in a COO format
-    !> The dense matrix can be allocated on the fly if not pre-allocated by the user.
-    interface coo2dense
-        #:for k1, t1, s1 in (KINDS_TYPES)
-        module procedure coo2dense_${s1}$
-        #:endfor
-    end interface
-
-    !> Conversion from coo to csr
-    !> 
-    !> Enables transferring data from a COO matrix to a CSR matrix
-    !> under the hypothesis that the COO is already ordered.
-    interface coo2csr
-        #:for k1, t1, s1 in (KINDS_TYPES)
-        module procedure coo2csr_${s1}$
-        #:endfor
-    end interface
-
-    !> Conversion from csr to coo
-    !> 
-    !> Enables transferring data from a CSR matrix to a COO matrix
-    !> under the hypothesis that the CSR is already ordered.
-    interface csr2coo
-        #:for k1, t1, s1 in (KINDS_TYPES)
-        module procedure csr2coo_${s1}$
-        #:endfor
-    end interface
-
-    !> Conversion from csr to SELL-C
-    !> 
-    !> Enables transferring data from a CSR matrix to a SELL-C matrix
-    !> It takes an optional parameter to decide the chunck size 4, 8 or 16
-    interface csr2sellc
-    #:for k1, t1, s1 in (KINDS_TYPES)
-        module procedure csr2sellc_${s1}$
-    #:endfor
-    end interface
-    
     !> Sort arrays of a COO matrix
     !> 
     interface sort_coo
@@ -78,7 +21,7 @@ module stdlib_sparse_conversion
 contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    subroutine dense2coo_${s1}$(dense,COO)
+    module subroutine dense2coo_${s1}$(dense,COO)
         ${t1}$, intent(in) :: dense(:,:)
         type(COO_${s1}$), intent(inout) :: COO
         integer :: num_rows, num_cols, nnz
@@ -106,7 +49,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    subroutine coo2dense_${s1}$(COO,dense)
+    module subroutine coo2dense_${s1}$(COO,dense)
         type(COO_${s1}$), intent(in) :: COO
         ${t1}$, allocatable, intent(inout) :: dense(:,:)
         integer :: idx
@@ -120,7 +63,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    subroutine coo2csr_${s1}$(COO,CSR)
+    module subroutine coo2csr_${s1}$(COO,CSR)
         type(COO_${s1}$), intent(in)    :: COO
         type(CSR_${s1}$), intent(inout) :: CSR
         integer :: i
@@ -150,7 +93,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    subroutine csr2coo_${s1}$(CSR,COO)
+    module subroutine csr2coo_${s1}$(CSR,COO)
         type(CSR_${s1}$), intent(in)    :: CSR
         type(COO_${s1}$), intent(inout) :: COO
         integer :: i, j
@@ -176,7 +119,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    subroutine csr2sellc_${s1}$(CSR,SELLC,chunk)
+    module subroutine csr2sellc_${s1}$(CSR,SELLC,chunk)
         !> csr2sellc: This function enables transfering data from a CSR matrix to a SELL-C matrix
         !> This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         type(CSR_${s1}$), intent(in)      :: CSR
@@ -326,7 +269,7 @@ contains
     end subroutine
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    subroutine sort_coo_unique_${s1}$( a, data, n, num_rows, num_cols )
+    module subroutine sort_coo_unique_${s1}$( a, data, n, num_rows, num_cols )
         !! Sort a 2d array in increasing order first by index 1 and then by index 2
         ${t1}$, intent(inout) :: data(*)
         integer, intent(inout) :: a(2,*)
@@ -388,7 +331,7 @@ contains
 
     #:endfor
 
-    subroutine coo2ordered(COO,sort_data)
+    module subroutine coo2ordered(COO,sort_data)
         class(COO_type), intent(inout) :: COO
         logical, intent(in), optional :: sort_data
         integer, allocatable :: itemp(:,:)
@@ -423,5 +366,5 @@ contains
 
         COO%is_sorted = .true.
     end subroutine
-    
-end module stdlib_sparse_conversion
+
+end submodule
