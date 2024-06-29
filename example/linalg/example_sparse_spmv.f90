@@ -31,6 +31,4 @@ program example_sparse_spmv
     print *, 'coo   :', y_coo
     print *, 'csr   :', y_csr
   
-  end program example_sparse_spmv
-  
-  
+end program example_sparse_spmv

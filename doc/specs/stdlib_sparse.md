@@ -206,6 +206,10 @@ This module provides facility functions for converting between storage formats.
 
 `chunk`, `integer(in)`, `optional`:: chunk size, only valid in the case of a `SELLC` matrix, by default it will be taken from the `SELLC` default attribute chunk size.
 
+## Example
+```fortran
+{!example/linalg/example_sparse_from_ijv.f90!}
+```
 
 ### Syntax
 

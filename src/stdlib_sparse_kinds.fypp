@@ -505,7 +505,7 @@ contains
         integer, intent(in), optional :: ncols
         integer, intent(in), optional :: num_nz_rows
 
-        integer :: nrows_, ncols_, num_nz_rows_
+        integer :: nrows_, ncols_
         !---------------------------------------------------------
         if(present(nrows)) then
             nrows_ = nrows
@@ -527,7 +527,11 @@ contains
                 call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
             end if
             call coo2csr(COO,CSR)
-            call csr2ell(CSR,ELL,num_nz_rows_)
+            if(present(num_nz_rows)) then
+                call csr2ell(CSR,ELL,num_nz_rows)
+            else 
+                call csr2ell(CSR,ELL)
+            end if
         end block
     end subroutine
     #:endfor
