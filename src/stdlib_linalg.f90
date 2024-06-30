@@ -12,6 +12,10 @@ module stdlib_linalg
   public :: det
   public :: operator(.det.)
   public :: diag
+  public :: eig
+  public :: eigh
+  public :: eigvals
+  public :: eigvalsh
   public :: eye
   public :: lstsq
   public :: lstsq_space
@@ -1368,6 +1372,417 @@ module stdlib_linalg
         complex(dp) :: det                
     end function stdlib_linalg_pure_cdpdeterminant
   end interface  
+
+  ! Eigendecomposition of a square matrix: eigenvalues, and optionally eigenvectors
+  interface eig    
+     !! version: experimental 
+     !!
+     !! Solves the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \) for square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eig-eigenvalues-and-eigenvectors-of-a-square-matrix))
+     !!
+     !!### Summary 
+     !! Subroutine interface for computing eigenvalues and eigenvectors of a square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the eigenvalues, and optionally eigenvectors, 
+     !! of a general square matrix. Supported data types include `real` and `complex`, and no assumption is 
+     !! made on the matrix structure. The user may request either left, right, or both 
+     !! eigenvectors to be returned. They are returned as columns of a square matrix with the same size as `A`. 
+     !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrices must be user-provided.      
+     !! 
+     !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!       
+    module subroutine stdlib_linalg_eig_s(a,lambda,right,left,overwrite_a,err)
+     !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
+     !! and optionally right or left eigenvectors.        
+         !> Input matrix A[m,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Array of eigenvalues
+         complex(sp), intent(out) :: lambda(:)
+         !> The columns of RIGHT contain the right eigenvectors of A
+         complex(sp), optional, intent(out), target :: right(:,:)
+         !> The columns of LEFT contain the left eigenvectors of A
+         complex(sp), optional, intent(out), target :: left(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_eig_s
+    module subroutine stdlib_linalg_eig_d(a,lambda,right,left,overwrite_a,err)
+     !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
+     !! and optionally right or left eigenvectors.        
+         !> Input matrix A[m,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Array of eigenvalues
+         complex(dp), intent(out) :: lambda(:)
+         !> The columns of RIGHT contain the right eigenvectors of A
+         complex(dp), optional, intent(out), target :: right(:,:)
+         !> The columns of LEFT contain the left eigenvectors of A
+         complex(dp), optional, intent(out), target :: left(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_eig_d
+    module subroutine stdlib_linalg_eig_c(a,lambda,right,left,overwrite_a,err)
+     !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
+     !! and optionally right or left eigenvectors.        
+         !> Input matrix A[m,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Array of eigenvalues
+         complex(sp), intent(out) :: lambda(:)
+         !> The columns of RIGHT contain the right eigenvectors of A
+         complex(sp), optional, intent(out), target :: right(:,:)
+         !> The columns of LEFT contain the left eigenvectors of A
+         complex(sp), optional, intent(out), target :: left(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_eig_c
+    module subroutine stdlib_linalg_eig_z(a,lambda,right,left,overwrite_a,err)
+     !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
+     !! and optionally right or left eigenvectors.        
+         !> Input matrix A[m,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Array of eigenvalues
+         complex(dp), intent(out) :: lambda(:)
+         !> The columns of RIGHT contain the right eigenvectors of A
+         complex(dp), optional, intent(out), target :: right(:,:)
+         !> The columns of LEFT contain the left eigenvectors of A
+         complex(dp), optional, intent(out), target :: left(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_eig_z
+    module subroutine stdlib_linalg_real_eig_s(a,lambda,right,left,overwrite_a,err)
+     !! Eigendecomposition of matrix A returning an array `lambda` of real eigenvalues, 
+     !! and optionally right or left eigenvectors. Returns an error if the eigenvalues had
+     !! non-trivial imaginary parts.
+         !> Input matrix A[m,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Array of real eigenvalues
+         real(sp), intent(out) :: lambda(:)
+         !> The columns of RIGHT contain the right eigenvectors of A
+         complex(sp), optional, intent(out), target :: right(:,:)
+         !> The columns of LEFT contain the left eigenvectors of A
+         complex(sp), optional, intent(out), target :: left(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_real_eig_s
+    module subroutine stdlib_linalg_real_eig_d(a,lambda,right,left,overwrite_a,err)
+     !! Eigendecomposition of matrix A returning an array `lambda` of real eigenvalues, 
+     !! and optionally right or left eigenvectors. Returns an error if the eigenvalues had
+     !! non-trivial imaginary parts.
+         !> Input matrix A[m,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Array of real eigenvalues
+         real(dp), intent(out) :: lambda(:)
+         !> The columns of RIGHT contain the right eigenvectors of A
+         complex(dp), optional, intent(out), target :: right(:,:)
+         !> The columns of LEFT contain the left eigenvectors of A
+         complex(dp), optional, intent(out), target :: left(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_real_eig_d
+  end interface eig
+
+  ! Eigenvalues of a square matrix
+  interface eigvals
+     !! version: experimental 
+     !!
+     !! Returns the eigenvalues \( lambda \), \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), for square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eigvals-eigenvalues-of-a-square-matrix))
+     !!
+     !!### Summary 
+     !! Function interface for computing the eigenvalues of a square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides functions for returning the eigenvalues of a general square matrix. 
+     !! Supported data types include `real` and `complex`, and no assumption is made on the matrix structure. 
+     !! An `error stop` is thrown in case of failure; otherwise, error information can be returned 
+     !! as an optional `type(linalg_state_type)` output flag. 
+     !! 
+     !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!       
+    module function stdlib_linalg_eigvals_s(a,err) result(lambda)
+     !! Return an array of eigenvalues of matrix A.
+         !> Input matrix A[m,n]
+         real(sp), intent(in), target :: a(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Array of singular values
+         complex(sp), allocatable :: lambda(:)        
+    end function stdlib_linalg_eigvals_s
+    
+    module function stdlib_linalg_eigvals_noerr_s(a) result(lambda)
+     !! Return an array of eigenvalues of matrix A.
+         !> Input matrix A[m,n]
+         real(sp), intent(in), target :: a(:,:)
+         !> Array of singular values
+         complex(sp), allocatable :: lambda(:)
+    end function stdlib_linalg_eigvals_noerr_s
+    module function stdlib_linalg_eigvals_d(a,err) result(lambda)
+     !! Return an array of eigenvalues of matrix A.
+         !> Input matrix A[m,n]
+         real(dp), intent(in), target :: a(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Array of singular values
+         complex(dp), allocatable :: lambda(:)        
+    end function stdlib_linalg_eigvals_d
+    
+    module function stdlib_linalg_eigvals_noerr_d(a) result(lambda)
+     !! Return an array of eigenvalues of matrix A.
+         !> Input matrix A[m,n]
+         real(dp), intent(in), target :: a(:,:)
+         !> Array of singular values
+         complex(dp), allocatable :: lambda(:)
+    end function stdlib_linalg_eigvals_noerr_d
+    module function stdlib_linalg_eigvals_c(a,err) result(lambda)
+     !! Return an array of eigenvalues of matrix A.
+         !> Input matrix A[m,n]
+         complex(sp), intent(in), target :: a(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Array of singular values
+         complex(sp), allocatable :: lambda(:)        
+    end function stdlib_linalg_eigvals_c
+    
+    module function stdlib_linalg_eigvals_noerr_c(a) result(lambda)
+     !! Return an array of eigenvalues of matrix A.
+         !> Input matrix A[m,n]
+         complex(sp), intent(in), target :: a(:,:)
+         !> Array of singular values
+         complex(sp), allocatable :: lambda(:)
+    end function stdlib_linalg_eigvals_noerr_c
+    module function stdlib_linalg_eigvals_z(a,err) result(lambda)
+     !! Return an array of eigenvalues of matrix A.
+         !> Input matrix A[m,n]
+         complex(dp), intent(in), target :: a(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Array of singular values
+         complex(dp), allocatable :: lambda(:)        
+    end function stdlib_linalg_eigvals_z
+    
+    module function stdlib_linalg_eigvals_noerr_z(a) result(lambda)
+     !! Return an array of eigenvalues of matrix A.
+         !> Input matrix A[m,n]
+         complex(dp), intent(in), target :: a(:,:)
+         !> Array of singular values
+         complex(dp), allocatable :: lambda(:)
+    end function stdlib_linalg_eigvals_noerr_z
+  end interface eigvals
+     
+  ! Eigendecomposition of a real symmetric or complex hermitian matrix
+  interface eigh
+     !! version: experimental 
+     !!
+     !! Solves the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \) for a real symmetric 
+     !! \( A = A^T \) or complex Hermitian \( A = A^H \) square matrix. 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eigh-eigenvalues-and-eigenvectors-of-a-real-symmetric-or-complex-hermitian-square-matrix))
+     !!
+     !!### Summary 
+     !! Subroutine interface for computing eigenvalues and eigenvectors of a real symmetric or complex Hermitian square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the eigenvalues, and optionally eigenvectors, 
+     !! of a real symmetric or complex Hermitian square matrix. Supported data types include `real` and `complex`. 
+     !! The matrix must be symmetric (if `real`) or Hermitian (if `complex`). Only the lower or upper 
+     !! half of the matrix is accessed, and the user can select which using the optional `upper_a` 
+     !! flag (default: use lower half). The vectors are orthogonal, and may be returned as columns of an optional 
+     !! matrix `vectors` with the same kind and size as `A`. 
+     !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrix must be user-provided.      
+     !! 
+     !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!      
+    module subroutine stdlib_linalg_eigh_s(a,lambda,vectors,upper_a,overwrite_a,err)
+     !! Eigendecomposition of a real symmetric or complex Hermitian matrix A returning an array `lambda` 
+     !! of eigenvalues, and optionally right or left eigenvectors.        
+         !> Input matrix A[m,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Array of eigenvalues
+         real(sp), intent(out) :: lambda(:)
+         !> The columns of vectors contain the orthonormal eigenvectors of A
+         real(sp), optional, intent(out), target :: vectors(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_eigh_s
+    module subroutine stdlib_linalg_eigh_d(a,lambda,vectors,upper_a,overwrite_a,err)
+     !! Eigendecomposition of a real symmetric or complex Hermitian matrix A returning an array `lambda` 
+     !! of eigenvalues, and optionally right or left eigenvectors.        
+         !> Input matrix A[m,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Array of eigenvalues
+         real(dp), intent(out) :: lambda(:)
+         !> The columns of vectors contain the orthonormal eigenvectors of A
+         real(dp), optional, intent(out), target :: vectors(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_eigh_d
+    module subroutine stdlib_linalg_eigh_c(a,lambda,vectors,upper_a,overwrite_a,err)
+     !! Eigendecomposition of a real symmetric or complex Hermitian matrix A returning an array `lambda` 
+     !! of eigenvalues, and optionally right or left eigenvectors.        
+         !> Input matrix A[m,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Array of eigenvalues
+         real(sp), intent(out) :: lambda(:)
+         !> The columns of vectors contain the orthonormal eigenvectors of A
+         complex(sp), optional, intent(out), target :: vectors(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_eigh_c
+    module subroutine stdlib_linalg_eigh_z(a,lambda,vectors,upper_a,overwrite_a,err)
+     !! Eigendecomposition of a real symmetric or complex Hermitian matrix A returning an array `lambda` 
+     !! of eigenvalues, and optionally right or left eigenvectors.        
+         !> Input matrix A[m,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Array of eigenvalues
+         real(dp), intent(out) :: lambda(:)
+         !> The columns of vectors contain the orthonormal eigenvectors of A
+         complex(dp), optional, intent(out), target :: vectors(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_eigh_z
+  end interface eigh
+     
+  ! Eigenvalues of a real symmetric or complex hermitian matrix
+  interface eigvalsh
+     !! version: experimental 
+     !!
+     !! Returns the eigenvalues \( lambda \), \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), for a real
+     !! symmetric \( A = A^T \) or complex Hermitian \( A = A^H \) square matrix. 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eigvalsh-eigenvalues-of-a-real-symmetric-or-complex-hermitian-square-matrix))
+     !!
+     !!### Summary 
+     !! Function interface for computing the eigenvalues of a real symmetric or complex hermitian square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides functions for returning the eigenvalues of a real symmetric or complex Hermitian
+     !! square matrix. Supported data types include `real` and `complex`. The matrix must be symmetric 
+     !! (if `real`) or Hermitian (if `complex`). Only the lower or upper half of the matrix is accessed, 
+     !! and the user can select which using the optional `upper_a` flag (default: use lower half). 
+     !! An `error stop` is thrown in case of failure; otherwise, error information can be returned 
+     !! as an optional `type(linalg_state_type)` output flag. 
+     !! 
+     !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!         
+    module function stdlib_linalg_eigvalsh_s(a,upper_a,err) result(lambda)
+     !! Return an array of eigenvalues of real symmetric / complex hermitian A
+         !> Input matrix A[m,n]
+         real(sp), intent(in), target :: a(:,:)
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a         
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Array of singular values
+         real(sp), allocatable :: lambda(:)    
+    end function stdlib_linalg_eigvalsh_s
+    
+    module function stdlib_linalg_eigvalsh_noerr_s(a,upper_a) result(lambda)
+     !! Return an array of eigenvalues of real symmetric / complex hermitian A        
+         !> Input matrix A[m,n]
+         real(sp), intent(in), target :: a(:,:)
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a         
+         !> Array of singular values
+         real(sp), allocatable :: lambda(:)
+    end function stdlib_linalg_eigvalsh_noerr_s
+    module function stdlib_linalg_eigvalsh_d(a,upper_a,err) result(lambda)
+     !! Return an array of eigenvalues of real symmetric / complex hermitian A
+         !> Input matrix A[m,n]
+         real(dp), intent(in), target :: a(:,:)
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a         
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Array of singular values
+         real(dp), allocatable :: lambda(:)    
+    end function stdlib_linalg_eigvalsh_d
+    
+    module function stdlib_linalg_eigvalsh_noerr_d(a,upper_a) result(lambda)
+     !! Return an array of eigenvalues of real symmetric / complex hermitian A        
+         !> Input matrix A[m,n]
+         real(dp), intent(in), target :: a(:,:)
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a         
+         !> Array of singular values
+         real(dp), allocatable :: lambda(:)
+    end function stdlib_linalg_eigvalsh_noerr_d
+    module function stdlib_linalg_eigvalsh_c(a,upper_a,err) result(lambda)
+     !! Return an array of eigenvalues of real symmetric / complex hermitian A
+         !> Input matrix A[m,n]
+         complex(sp), intent(in), target :: a(:,:)
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a         
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Array of singular values
+         real(sp), allocatable :: lambda(:)    
+    end function stdlib_linalg_eigvalsh_c
+    
+    module function stdlib_linalg_eigvalsh_noerr_c(a,upper_a) result(lambda)
+     !! Return an array of eigenvalues of real symmetric / complex hermitian A        
+         !> Input matrix A[m,n]
+         complex(sp), intent(in), target :: a(:,:)
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a         
+         !> Array of singular values
+         real(sp), allocatable :: lambda(:)
+    end function stdlib_linalg_eigvalsh_noerr_c
+    module function stdlib_linalg_eigvalsh_z(a,upper_a,err) result(lambda)
+     !! Return an array of eigenvalues of real symmetric / complex hermitian A
+         !> Input matrix A[m,n]
+         complex(dp), intent(in), target :: a(:,:)
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a         
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Array of singular values
+         real(dp), allocatable :: lambda(:)    
+    end function stdlib_linalg_eigvalsh_z
+    
+    module function stdlib_linalg_eigvalsh_noerr_z(a,upper_a) result(lambda)
+     !! Return an array of eigenvalues of real symmetric / complex hermitian A        
+         !> Input matrix A[m,n]
+         complex(dp), intent(in), target :: a(:,:)
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a         
+         !> Array of singular values
+         real(dp), allocatable :: lambda(:)
+    end function stdlib_linalg_eigvalsh_noerr_z
+  end interface eigvalsh
+
 
   ! Singular value decomposition  
   interface svd 
