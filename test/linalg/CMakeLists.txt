@@ -2,6 +2,7 @@ set(
   fppFiles
   "test_linalg.fypp"
   "test_blas_lapack.fypp"
+  "test_linalg_eigenvalues.fypp"
   "test_linalg_solve.fypp"
   "test_linalg_inverse.fypp"
   "test_linalg_lstsq.fypp"
@@ -13,6 +14,7 @@ fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 ADDTEST(linalg)
 ADDTEST(linalg_determinant)
+ADDTEST(linalg_eigenvalues)
 ADDTEST(linalg_matrix_property_checks)
 ADDTEST(linalg_inverse)
 ADDTEST(linalg_solve)
