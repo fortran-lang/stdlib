@@ -32,8 +32,8 @@ Return a scalar of type `integer`.
 
 ### Example
 
-```fortran
-{!example/random/example_random_seed.f90!}
+```{literalinclude} ../../example/random/example_random_seed.f90
+:language: Fortran
 ```
 
 ## `dist_rand` - Get a random integer with specified kind
@@ -60,6 +60,6 @@ Return a scalar of type `integer`.
 
 ### Example
 
-```fortran
-{!example/random/example_dist_rand.f90!}
+```{literalinclude} ../../example/random/example_dist_rand.f90
+:language: Fortran
 ```

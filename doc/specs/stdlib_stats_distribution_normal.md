@@ -50,8 +50,8 @@ The result is a scalar or rank-1 array, with a size of `array_size`, and the sam
 
 ### Example
 
-```fortran
-{!example/stats_distribution_normal/example_normal_rvs.f90!}
+```{literalinclude} ../../example/stats_distribution_normal/example_normal_rvs.f90
+:language: Fortran
 ```
 
 ## `pdf_normal` - normal distribution probability density function
@@ -94,8 +94,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_normal/example_normal_pdf.f90!}
+```{literalinclude} ../../example/stats_distribution_normal/example_normal_pdf.f90
+:language: Fortran
 ```
 
 ## `cdf_normal` - normal distribution cumulative distribution function
@@ -140,8 +140,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_normal/example_normal_cdf.f90!}
+```{literalinclude} ../../example/stats_distribution_normal/example_normal_cdf.f90
+:language: Fortran
 ```
 
 [^1]: Marsaglia, George, and Wai Wan Tsang. "The ziggurat method for generating random variables." _Journal of statistical software_ 5 (2000): 1-7.

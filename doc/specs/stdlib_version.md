@@ -53,6 +53,6 @@ Pure subroutine.
 
 #### Example
 
-```fortran
-{!example/version/example_version.f90!}
+```{literalinclude} ../../example/version/example_version.f90
+:language: Fortran
 ``` 

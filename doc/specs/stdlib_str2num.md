@@ -34,8 +34,8 @@ Return a scalar of numerical type (i.e., `integer`, or `real`).
 
 ### Example
 
-```fortran
-{!example/strings/example_string_to_number.f90!}
+```{literalinclude} ../../example/strings/example_string_to_number.f90
+:language: Fortran
 ```
 
 ## `to_num_from_stream` - conversion of a stream of values in a string to numbers
@@ -64,8 +64,8 @@ Return a scalar of numerical type (i.e., `integer` or `real`).
 
 ### Example
 
-```fortran
-{!example/strings/example_stream_of_strings_to_numbers.f90!}
+```{literalinclude} ../../example/strings/example_stream_of_strings_to_numbers.f90
+:language: Fortran
 ```
 
 ## Note

@@ -542,8 +542,8 @@ E. Knuth. It multiplies the `key` by the odd valued approximation to
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_fibonacci_hash.f90!}
+```{literalinclude} ../../example/hash_procedures/example_fibonacci_hash.f90
+:language: Fortran
 ```
 
 #### `fnv_1_hash`- calculates a hash code from a key
@@ -596,8 +596,8 @@ function for character strings.
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_fnv_1_hash.f90!}
+```{literalinclude} ../../example/hash_procedures/example_fnv_1_hash.f90
+:language: Fortran
 ```
 
 
@@ -650,8 +650,8 @@ function for character strings.
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_fnv_1a_hash.f90!}
+```{literalinclude} ../../example/hash_procedures/example_fnv_1a_hash.f90
+:language: Fortran
 ```
 
 
@@ -817,8 +817,8 @@ function for character strings.
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_nmhash32.f90!}
+```{literalinclude} ../../example/hash_procedures/example_nmhash32.f90
+:language: Fortran
 ```
 
 
@@ -869,8 +869,8 @@ function for character strings.
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_nmhash32x.f90!}
+```{literalinclude} ../../example/hash_procedures/example_nmhash32x.f90
+:language: Fortran
 ```
 
 #### `odd_random_integer` - returns an odd integer
@@ -952,8 +952,8 @@ It multiplies the `key` by `seed`, and returns the
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_universal_mult_hash.f90!}
+```{literalinclude} ../../example/hash_procedures/example_universal_mult_hash.f90
+:language: Fortran
 ```
 
 #### `water_hash`- calculates a hash code from a key and a seed
@@ -1010,8 +1010,8 @@ function for character strings.
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_water_hash.f90!}
+```{literalinclude} ../../example/hash_procedures/example_water_hash.f90
+:language: Fortran
 ```
 
 ## The `stdlib_hash_64bit` module
@@ -1101,8 +1101,8 @@ E. Knuth. It multiplies the `key` by the odd valued approximation to
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_fibonacci_hash_64.f90!}
+```{literalinclude} ../../example/hash_procedures/example_fibonacci_hash_64.f90
+:language: Fortran
 ```
 
 #### `FNV_1`- calculates a hash code from a key
@@ -1155,8 +1155,8 @@ function for character strings.
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_fnv_1_hash_64.f90!}
+```{literalinclude} ../../example/hash_procedures/example_fnv_1_hash_64.f90
+:language: Fortran
 ```
 
 
@@ -1209,8 +1209,8 @@ function for character strings.
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_fnv_1a_hash_64.f90!}
+```{literalinclude} ../../example/hash_procedures/example_fnv_1a_hash_64.f90
+:language: Fortran
 ```
 
 
@@ -1369,8 +1369,8 @@ function for character strings.
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_pengy_hash.f90!}
+```{literalinclude} ../../example/hash_procedures/example_pengy_hash.f90
+:language: Fortran
 ```
 
 
@@ -1419,8 +1419,8 @@ and has no known bad seeds.
 
 ##### Example
 
-```fortran
-{!example/hash_procedures/example_spooky_hash.f90!}
+```{literalinclude} ../../example/hash_procedures/example_spooky_hash.f90
+:language: Fortran
 ```
 
 #### `universal_mult_hash` - maps an integer to a smaller number of bits
@@ -1468,8 +1468,8 @@ It multiplies the `key` by `seed`, and returns the
 ##### Example
 
 
-```fortran
-{!example/hash_procedures/example_universal_mult_hash_64.f90!}
+```{literalinclude} ../../example/hash_procedures/example_universal_mult_hash_64.f90
+:language: Fortran
 ```
 
 

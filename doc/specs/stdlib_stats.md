@@ -51,8 +51,8 @@ If `mask` is specified, the result is the Pearson correlation of all elements of
 
 ### Example
 
-```fortran
-{!example/stats/example_corr.f90!}
+```{literalinclude} ../../example/stats/example_corr.f90
+:language: Fortran
 ```
 
 ## `cov` - covariance of array elements
@@ -107,8 +107,8 @@ If `mask` is specified, the result is the covariance of all elements of `array` 
 
 ### Example
 
-```fortran
-{!example/stats/example_cov.f90!}
+```{literalinclude} ../../example/stats/example_cov.f90
+:language: Fortran
 ```
 
 ## `mean` - mean of array elements
@@ -150,8 +150,8 @@ If `mask` is specified, the result is the mean of all elements of `array` corres
 
 ### Example
 
-```fortran
-{!example/stats/example_mean.f90!}
+```{literalinclude} ../../example/stats/example_mean.f90
+:language: Fortran
 ```
 
 ## `median` - median of array elements
@@ -215,8 +215,8 @@ If `mask` is specified, the result is the median of all elements of `array` corr
 
 ### Example
 
-```fortran
-{!example/stats/example_median.f90!}
+```{literalinclude} ../../example/stats/example_median.f90
+:language: Fortran
 ```
 
 ## `moment` - central moments of array elements
@@ -279,8 +279,8 @@ If `mask` is specified, the result is the _k_-th  (central) moment of all elemen
 
 ### Example
 
-```fortran
-{!example/stats/example_moment.f90!}
+```{literalinclude} ../../example/stats/example_moment.f90
+:language: Fortran
 ```
 
 ## `var` - variance of array elements
@@ -337,6 +337,6 @@ If the variance is computed with only one single element, then the result is IEE
 
 ### Example
 
-```fortran
-{!example/stats/example_var.f90!}
+```{literalinclude} ../../example/stats/example_var.f90
+:language: Fortran
 ```

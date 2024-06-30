@@ -66,8 +66,8 @@ The result is an instance of `string_type` with zero length.
 
 #### Example
 
-```fortran
-{!example/string_type/example_constructor_empty.f90!}
+```{literalinclude} ../../example/string_type/example_constructor_empty.f90
+:language: Fortran
 ```
 
 
@@ -104,8 +104,8 @@ The result is an instance of `string_type`.
 
 #### Example
 
-```fortran
-{!example/string_type/example_constructor_scalar.f90!}
+```{literalinclude} ../../example/string_type/example_constructor_scalar.f90
+:language: Fortran
 ```
 
 
@@ -138,8 +138,8 @@ The result is an instance of `string_type`.
 
 #### Example
 
-```fortran
-{!example/string_type/example_constructor_integer.f90!}
+```{literalinclude} ../../example/string_type/example_constructor_integer.f90
+:language: Fortran
 ```
 
 
@@ -172,8 +172,8 @@ The result is an instance of `string_type`.
 
 #### Example
 
-```fortran
-{!example/string_type/example_constructor_logical.f90!}
+```{literalinclude} ../../example/string_type/example_constructor_logical.f90
+:language: Fortran
 ```
 
 
@@ -201,8 +201,8 @@ Elemental subroutine, `assignment(=)`.
 
 #### Example
 
-```fortran
-{!example/string_type/example_constructor_character.f90!}
+```{literalinclude} ../../example/string_type/example_constructor_character.f90
+:language: Fortran
 ```
 
 
@@ -235,8 +235,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_len.f90!}
+```{literalinclude} ../../example/string_type/example_len.f90
+:language: Fortran
 ```
 
 
@@ -270,8 +270,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_len_trim.f90!}
+```{literalinclude} ../../example/string_type/example_len_trim.f90
+:language: Fortran
 ```
 
 
@@ -305,8 +305,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_trim.f90!}
+```{literalinclude} ../../example/string_type/example_trim.f90
+:language: Fortran
 ```
 
 
@@ -340,8 +340,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_adjustl.f90!}
+```{literalinclude} ../../example/string_type/example_adjustl.f90
+:language: Fortran
 ```
 
 
@@ -375,8 +375,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_adjustr.f90!}
+```{literalinclude} ../../example/string_type/example_adjustr.f90
+:language: Fortran
 ```
 
 
@@ -411,8 +411,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_repeat.f90!}
+```{literalinclude} ../../example/string_type/example_repeat.f90
+:language: Fortran
 ```
 
 
@@ -445,8 +445,8 @@ The result is a scalar character value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_char.f90!}
+```{literalinclude} ../../example/string_type/example_char.f90
+:language: Fortran
 ```
 
 
@@ -480,8 +480,8 @@ The result is a scalar character value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_char_position.f90!}
+```{literalinclude} ../../example/string_type/example_char_position.f90
+:language: Fortran
 ```
 
 
@@ -516,8 +516,8 @@ The result is a scalar character value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_char_range.f90!}
+```{literalinclude} ../../example/string_type/example_char_range.f90
+:language: Fortran
 ```
 
 
@@ -553,8 +553,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_ichar.f90!}
+```{literalinclude} ../../example/string_type/example_ichar.f90
+:language: Fortran
 ```
 
 
@@ -590,8 +590,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_iachar.f90!}
+```{literalinclude} ../../example/string_type/example_iachar.f90
+:language: Fortran
 ```
 
 
@@ -630,8 +630,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_index.f90!}
+```{literalinclude} ../../example/string_type/example_index.f90
+:language: Fortran
 ```
 
 
@@ -670,8 +670,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_scan.f90!}
+```{literalinclude} ../../example/string_type/example_scan.f90
+:language: Fortran
 ```
 
 
@@ -710,8 +710,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_verify.f90!}
+```{literalinclude} ../../example/string_type/example_verify.f90
+:language: Fortran
 ```
 
 
@@ -749,8 +749,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_lgt.f90!}
+```{literalinclude} ../../example/string_type/example_lgt.f90
+:language: Fortran
 ```
 
 
@@ -788,8 +788,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_llt.f90!}
+```{literalinclude} ../../example/string_type/example_llt.f90
+:language: Fortran
 ```
 
 
@@ -828,8 +828,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_lge.f90!}
+```{literalinclude} ../../example/string_type/example_lge.f90
+:language: Fortran
 ```
 
 
@@ -868,8 +868,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_lle.f90!}
+```{literalinclude} ../../example/string_type/example_lle.f90
+:language: Fortran
 ```
 
 
@@ -903,8 +903,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_to_lower.f90!}
+```{literalinclude} ../../example/string_type/example_to_lower.f90
+:language: Fortran
 ```
 
 
@@ -938,8 +938,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_to_upper.f90!}
+```{literalinclude} ../../example/string_type/example_to_upper.f90
+:language: Fortran
 ```
 
 
@@ -978,8 +978,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_to_title.f90!}
+```{literalinclude} ../../example/string_type/example_to_title.f90
+:language: Fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -1015,8 +1015,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_to_sentence.f90!}
+```{literalinclude} ../../example/string_type/example_to_sentence.f90
+:language: Fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -1049,8 +1049,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_reverse.f90!}
+```{literalinclude} ../../example/string_type/example_reverse.f90
+:language: Fortran
 ```
 
 
@@ -1091,8 +1091,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_gt.f90!}
+```{literalinclude} ../../example/string_type/example_gt.f90
+:language: Fortran
 ```
 
 
@@ -1133,8 +1133,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_lt.f90!}
+```{literalinclude} ../../example/string_type/example_lt.f90
+:language: Fortran
 ```
 
 
@@ -1175,8 +1175,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_ge.f90!}
+```{literalinclude} ../../example/string_type/example_ge.f90
+:language: Fortran
 ```
 
 
@@ -1217,8 +1217,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_le.f90!}
+```{literalinclude} ../../example/string_type/example_le.f90
+:language: Fortran
 ```
 
 
@@ -1259,8 +1259,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_eq.f90!}
+```{literalinclude} ../../example/string_type/example_eq.f90
+:language: Fortran
 ```
 
 
@@ -1301,8 +1301,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_ne.f90!}
+```{literalinclude} ../../example/string_type/example_ne.f90
+:language: Fortran
 ```
 
 
@@ -1340,8 +1340,8 @@ The result is an instance of `string_type`.
 
 #### Example
 
-```fortran
-{!example/string_type/example_cont.f90!}
+```{literalinclude} ../../example/string_type/example_cont.f90
+:language: Fortran
 ```
 
 
@@ -1377,8 +1377,8 @@ Unformatted user defined derived type output.
 
 #### Example
 
-```fortran
-{!example/string_type/example_uwrite.f90!}
+```{literalinclude} ../../example/string_type/example_uwrite.f90
+:language: Fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -1420,8 +1420,8 @@ Formatted user defined derived type output.
 
 #### Example
 
-```fortran
-{!example/string_type/example_fwrite.f90!}
+```{literalinclude} ../../example/string_type/example_fwrite.f90
+:language: Fortran
 ```
 
 
@@ -1459,8 +1459,8 @@ Unformatted derived type input.
 
 #### Example
 
-```fortran
-{!example/string_type/example_uread.f90!}
+```{literalinclude} ../../example/string_type/example_uread.f90
+:language: Fortran
 ```
 
 
@@ -1506,8 +1506,8 @@ Formatted derived type input.
 
 #### Example
 
-```fortran
-{!example/string_type/example_fread.f90!}
+```{literalinclude} ../../example/string_type/example_fread.f90
+:language: Fortran
 ```
 
 
@@ -1543,6 +1543,6 @@ Pure subroutine (Elemental subroutine, only when both `from` and `to` are `type(
 
 #### Example
 
-```fortran
-{!example/string_type/example_move.f90!}
+```{literalinclude} ../../example/string_type/example_move.f90
+:language: Fortran
 ```

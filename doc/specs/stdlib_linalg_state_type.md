@@ -46,8 +46,8 @@ Experimental
 
 #### Example
 
-```fortran
-{!example/linalg/example_state1.f90!}
+```{literalinclude} ../../example/linalg/example_state1.f90
+:language: Fortran
 ```
 
 ## Error flags provided

@@ -34,6 +34,6 @@ If `x` is present, the result is `x`, otherwise the result is `default`.
 
 ### Example
 
-```fortran
-{!example/optval/example_optval.f90!}
+```{literalinclude} ../../example/optval/example_optval.f90
+:language: Fortran
 ```

@@ -277,8 +277,8 @@ function `LGT`.
 
 ##### Example
 
-```fortran
-{!example/sorting/example_ord_sort.f90!}
+```{literalinclude} ../../example/sorting/example_ord_sort.f90
+:language: Fortran
 ```
 
 #### `sort` - sorts an input array
@@ -332,8 +332,8 @@ element of `array` is a `NaN`.  Sorting of `CHARACTER(*)` and
 ##### Example
 
 
-```fortran
-{!example/sorting/example_sort.f90!}
+```{literalinclude} ../../example/sorting/example_sort.f90
+:language: Fortran
 ```
 
 #### `radix_sort` - sorts an input array
@@ -381,8 +381,8 @@ element of `array` is a `NaN`.
 
 ##### Example
 
-```fortran
-{!example/sorting/example_radix_sort.f90!}
+```{literalinclude} ../../example/sorting/example_radix_sort.f90
+:language: Fortran
 ```
 
 #### `sort_index` - creates an array of sorting indices for an input array, while also sorting the array.
@@ -460,8 +460,8 @@ different on return
 
 Sorting a rank one array with `sort_index`:
 
-```Fortran
-{!example/sorting/example_sort_index.f90!}
+```{literalinclude} ../../example/sorting/example_sort_index.f90
+:language: Fortran
 ```
 
 Sorting a related rank one array:

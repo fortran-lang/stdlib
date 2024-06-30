@@ -38,8 +38,8 @@ If the size of `y` is zero or one, the result is zero.
 
 ### Example
 
-```fortran
-{!example/quadrature/example_trapz.f90!}
+```{literalinclude} ../../example/quadrature/example_trapz.f90
+:language: Fortran
 ```
 
 ## `trapz_weights` - trapezoidal rule weights for given abscissas
@@ -68,8 +68,8 @@ If the size of `x` is one, then the sole element of the result is zero.
 
 ### Example
 
-```fortran
-{!example/quadrature/example_trapz_weights.f90!}
+```{literalinclude} ../../example/quadrature/example_trapz_weights.f90
+:language: Fortran
 ```
 
 ## `simps` - integrate sampled values using Simpson's rule
@@ -110,8 +110,8 @@ If the size of `y` is two, the result is the same as if `trapz` had been called 
 
 ### Example
 
-```fortran
-{!example/quadrature/example_simps.f90!}
+```{literalinclude} ../../example/quadrature/example_simps.f90
+:language: Fortran
 ```
 
 ## `simps_weights` - Simpson's rule weights for given abscissas
@@ -146,8 +146,8 @@ If the size of `x` is two, then the result is the same as if `trapz_weights` had
 
 ### Example
 
-```fortran
-{!example/quadrature/example_simps_weights.f90!}
+```{literalinclude} ../../example/quadrature/example_simps_weights.f90
+:language: Fortran
 ```
 
 ## `gauss_legendre` - Gauss-Legendre quadrature (a.k.a. Gaussian quadrature) nodes and weights
@@ -184,8 +184,8 @@ If not specified, the default integral is -1 to 1.
 
 ### Example
 
-```fortran
-{!example/quadrature/example_gauss_legendre.f90!}
+```{literalinclude} ../../example/quadrature/example_gauss_legendre.f90
+:language: Fortran
 ```
 
 ## `gauss_legendre_lobatto` - Gauss-Legendre-Lobatto quadrature nodes and weights
@@ -222,6 +222,6 @@ If not specified, the default integral is -1 to 1.
 
 ### Example
 
-```fortran
-{!example/quadrature/example_gauss_legendre_lobatto.f90!}
+```{literalinclude} ../../example/quadrature/example_gauss_legendre_lobatto.f90
+:language: Fortran
 ```
