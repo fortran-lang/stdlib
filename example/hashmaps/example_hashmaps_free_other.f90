@@ -1,3 +1,6 @@
+!! This example left for reference, however 'other_type' has largely 
+!! been depreciated in stdlib hashmaps.  
+    
 program example_free_other
   use stdlib_hashmap_wrappers, only: &
     copy_other, free_other, other_type

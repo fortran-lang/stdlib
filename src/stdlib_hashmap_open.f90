@@ -297,7 +297,7 @@ contains
 !
         class(open_hashmap_type), intent(inout) :: map
         type(key_type), intent(in)              :: key
-        type(other_type), intent(out)           :: other
+        class(*), allocatable, intent(out)		:: other
         logical, intent(out), optional          :: exists
 
         integer(int_index) :: inmap
@@ -315,7 +315,7 @@ contains
             end if
         else if ( associated( map % inverse(inmap) % target ) ) then
             if ( present(exists) ) exists = .true.
-            call copy_other( map % inverse(inmap) % target % other, other )
+            other = map % inverse(inmap) % target % other
         else
             if ( present(exists) ) then
                 exists = .false.
@@ -525,7 +525,7 @@ contains
 !
         class(open_hashmap_type), intent(inout) :: map
         type(key_type), intent(in)              :: key
-        type(other_type), intent(in), optional  :: other
+        class(*), intent(in), optional          :: other
         logical, intent(out), optional          :: conflict
 
         type(open_map_entry_type), pointer :: new_ent
@@ -554,7 +554,7 @@ contains
                 new_ent % hash_val = hash_val
                 call copy_key( key, new_ent % key )
                 if ( present( other ) ) &
-                    call copy_other( other, new_ent % other )
+                    new_ent % other = other
                 inmap = new_ent % inmap
                 map % inverse( inmap ) % target => new_ent
                 map % slots( test_slot ) = inmap
@@ -822,7 +822,7 @@ contains
 !
         class(open_hashmap_type), intent(inout) :: map
         type(key_type), intent(in)              :: key
-        type(other_type), intent(in)            :: other
+        class(*), intent(in)                    :: other
         logical, intent(out),optional           :: exists
 
         integer(int_index) :: inmap
@@ -841,7 +841,7 @@ contains
             end if
         else if ( associated( map % inverse(inmap) % target ) ) then
             associate( target => map % inverse(inmap) % target )
-              call copy_other( other, target % other )
+                target % other = other
               if ( present(exists) ) exists = .true.
               return
             end associate
