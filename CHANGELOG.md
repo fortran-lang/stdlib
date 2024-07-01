@@ -6,7 +6,7 @@ Full release notes available at [v0.7.0] tag.
 
 - new module `stdlib_constants`
   [#800](https://github.com/fortran-lang/stdlib/pull/800)
-  - Many mathematical constants and most common physical (codata) constants
+  - Many mathematical constants and most common physical ([codata](https://codata.org)) constants
 
 Changes to existing scripts and modules
   - changes in CI
@@ -27,10 +27,10 @@ Changes to existing scripts and modules
       [#826](https://github.com/fortran-lang/stdlib/pull/826)
       [#830](https://github.com/fortran-lang/stdlib/pull/830)
       [#836](https://github.com/fortran-lang/stdlib/pull/836)
-    - New procedures for Singular Value Decomposition: `eig`, `eigh`, `eigvals`, `eigvalsh`
-      [#808](https://github.com/fortran-lang/stdlib/pull/808)
-    - New procedures for Eigenvalues and Eigenvectors computation: `svd`, `svdvals`
+    - New procedures for Eigenvalues and Eigenvectors computation: `eig`, `eigh`, `eigvals`, `eigvalsh`
       [#816](https://github.com/fortran-lang/stdlib/pull/816)
+    - New procedures for Singular Value Decomposition: `svd`, `svdvals`
+      [#808](https://github.com/fortran-lang/stdlib/pull/808)
   - changes in module `stdlib_sorting`
     - Renamed variable from `int_size` to `int_index`
       [#824](https://github.com/fortran-lang/stdlib/pull/824)
