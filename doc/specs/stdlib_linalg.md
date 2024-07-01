@@ -638,9 +638,11 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```{literalinclude} ../../example/linalg/example_solve1.f90!}
+```{literalinclude} ../../example/linalg/example_solve1.f90
+:language: Fortran
+```
 
-{!example/linalg/example_solve2.f90
+```{literalinclude} ../../example/linalg/example_solve2.f90
 :language: Fortran
 ```
 

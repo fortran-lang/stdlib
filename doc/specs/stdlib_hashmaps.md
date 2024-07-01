@@ -560,8 +560,7 @@ The result is `.true.` if the keys are equal, otherwise `.falss.`.
 
 ##### Example 
 
-```fortran 
-{!example/hashmaps/example_hashmaps_equal_keys.f90
+```{literalinclude} ../../example/hashmaps/example_hashmaps_equal_keys.f90
 :language: Fortran
 ```
 
