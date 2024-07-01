@@ -1,0 +1,894 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+!> The `stdlib_sparse_kinds` module provides derived type definitions for different sparse matrices
+!>
+! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
+module stdlib_sparse_kinds
+    use ieee_arithmetic
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    implicit none
+    private
+
+    ! -- Global parameters
+    enum, bind(C)
+        enumerator :: sparse_full  !> Full Sparse matrix (no symmetry considerations)
+        enumerator :: sparse_lower !> Symmetric Sparse matrix with triangular inferior storage
+        enumerator :: sparse_upper !> Symmetric Sparse matrix with triangular supperior storage
+    end enum
+    public :: sparse_full, sparse_lower, sparse_upper
+
+    #:for k1, t1, s1 in (R_KINDS_TYPES)
+    ${t1}$, parameter, public :: zero_${s1}$ = 0._${k1}$
+    ${t1}$, parameter, public :: one_${s1}$ = 1._${k1}$
+    #:endfor
+    #:for k1, t1, s1 in (C_KINDS_TYPES)
+    ${t1}$, parameter, public :: zero_${s1}$ = (0._${k1}$,0._${k1}$)
+    ${t1}$, parameter, public :: one_${s1}$ = (1._${k1}$,1._${k1}$)
+    #:endfor
+
+    ! -- Classes
+
+    !> Base sparse type holding the meta data related to the storage capacity of a matrix.
+    type, public, abstract :: sparse_type
+      integer :: nrows = 0 !> number of rows
+      integer :: ncols = 0 !> number of columns
+      integer :: nnz   = 0 !> number of non-zero values
+      integer :: storage = sparse_full !> assumed storage symmetry
+    end type
+
+    !> COO: COOrdinates compresed format 
+    type, public, extends(sparse_type) :: COO_type
+      logical               :: is_sorted = .false. !> whether the matrix is sorted or not
+      integer, allocatable  :: index(:,:) !> Matrix coordinates index(2,nnz)
+    contains
+      procedure :: malloc => malloc_coo
+    end type
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    type, public, extends(COO_type) :: COO_${s1}$
+        ${t1}$, allocatable :: data(:) 
+    contains
+        procedure, non_overridable :: at => at_value_coo_${s1}$
+        procedure, non_overridable :: add_value => add_value_coo_${s1}$
+        procedure, non_overridable :: add_block => add_block_coo_${s1}$
+        generic :: add => add_value, add_block
+    end type
+    #:endfor
+
+    !> CSR: Compressed sparse row or Yale format
+    type, public, extends(sparse_type) :: CSR_type  
+      integer, allocatable  :: col(:)    !> matrix column pointer
+      integer, allocatable  :: rowptr(:) !> matrix row pointer
+    contains
+      procedure :: malloc => malloc_csr
+    end type
+  
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    type, public, extends(CSR_type) :: CSR_${s1}$
+        ${t1}$, allocatable :: data(:) 
+    contains
+        procedure, non_overridable :: at => at_value_csr_${s1}$
+        procedure, non_overridable :: add_value => add_value_csr_${s1}$
+        procedure, non_overridable :: add_block => add_block_csr_${s1}$
+        generic :: add => add_value, add_block
+    end type
+    #:endfor
+
+    !> CSC: Compressed sparse column
+    type, public, extends(sparse_type) :: CSC_type  
+      integer, allocatable  :: colptr(:) !> matrix column pointer
+      integer, allocatable  :: row(:)    !> matrix row pointer
+    contains
+      procedure :: malloc => malloc_csc
+    end type
+  
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    type, public, extends(CSC_type) :: CSC_${s1}$
+        ${t1}$, allocatable :: data(:) 
+    contains
+        procedure, non_overridable :: at => at_value_csc_${s1}$
+        procedure, non_overridable :: add_value => add_value_csc_${s1}$
+        procedure, non_overridable :: add_block => add_block_csc_${s1}$
+        generic :: add => add_value, add_block
+    end type
+    #:endfor
+  
+    !> Compressed ELLPACK
+    type, public, extends(sparse_type) :: ELL_type 
+      integer               :: K = 0 !> maximum number of nonzeros per row
+      integer, allocatable  :: index(:,:) !> column indices
+    contains
+      procedure :: malloc => malloc_ell
+    end type
+  
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    type, public, extends(ELL_type) :: ELL_${s1}$
+        ${t1}$, allocatable :: data(:,:) 
+    contains
+        procedure, non_overridable :: at => at_value_ell_${s1}$
+        procedure, non_overridable :: add_value => add_value_ell_${s1}$
+        procedure, non_overridable :: add_block => add_block_ell_${s1}$
+        generic :: add => add_value, add_block
+    end type
+    #:endfor
+
+    !> Compressed SELL-C 
+    !> Reference : https://library.eecs.utk.edu/storage/files/ut-eecs-14-727.pdf
+    type, public, extends(sparse_type) :: SELLC_type 
+      integer               :: chunk_size = 8 !>  default chunk size
+      integer, allocatable  :: rowptr(:) !> row pointer
+      integer, allocatable  :: col(:,:)  !> column indices
+    end type
+  
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    type, public, extends(SELLC_type) :: SELLC_${s1}$
+        ${t1}$, allocatable :: data(:,:)
+    contains
+        procedure, non_overridable :: at => at_value_sellc_${s1}$
+        procedure, non_overridable :: add_value => add_value_sellc_${s1}$
+        procedure, non_overridable :: add_block => add_block_sellc_${s1}$
+        generic :: add => add_value, add_block
+    end type
+    #:endfor
+
+    !> Conversion from dense to coo
+    !> 
+    !> Enables extracting the non-zero elements of a dense 2D matrix and
+    !> storing those values in a COO format. The coo matrix is (re)allocated on the fly.
+    interface dense2coo
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module subroutine dense2coo_${s1}$(dense,COO)
+            ${t1}$, intent(in) :: dense(:,:)
+            type(COO_${s1}$), intent(inout) :: COO
+        end subroutine
+        #:endfor
+    end interface
+    public :: dense2coo
+
+    !> Conversion from coo to dense
+    !> 
+    !> Enables creating a dense 2D matrix from the non-zero values stored in a COO format
+    !> The dense matrix can be allocated on the fly if not pre-allocated by the user.
+    interface coo2dense
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module subroutine coo2dense_${s1}$(COO,dense)
+            type(COO_${s1}$), intent(in) :: COO
+            ${t1}$, allocatable, intent(inout) :: dense(:,:)
+        end subroutine
+        #:endfor
+    end interface
+    public :: coo2dense
+
+    !> Conversion from coo to csr
+    !> 
+    !> Enables transferring data from a COO matrix to a CSR matrix
+    !> under the hypothesis that the COO is already ordered.
+    interface coo2csr
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module subroutine coo2csr_${s1}$(COO,CSR)
+            type(COO_${s1}$), intent(in)    :: COO
+            type(CSR_${s1}$), intent(inout) :: CSR
+        end subroutine
+        #:endfor
+    end interface
+    public :: coo2csr
+    
+    !> Conversion from csr to dense
+    !> 
+    !> Enables creating a dense 2D matrix from the non-zero values stored in a CSR format
+    !> The dense matrix can be allocated on the fly if not pre-allocated by the user.
+    interface csr2dense
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module subroutine csr2dense_${s1}$(CSR,dense)
+            type(CSR_${s1}$), intent(in)    :: CSR
+            ${t1}$, allocatable, intent(inout) :: dense(:,:)
+        end subroutine
+        #:endfor
+    end interface
+    public :: csr2dense
+
+    !> Conversion from csr to coo
+    !> 
+    !> Enables transferring data from a CSR matrix to a COO matrix
+    !> under the hypothesis that the CSR is already ordered.
+    interface csr2coo
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module subroutine csr2coo_${s1}$(CSR,COO)
+            type(CSR_${s1}$), intent(in)    :: CSR
+            type(COO_${s1}$), intent(inout) :: COO
+        end subroutine
+        #:endfor
+    end interface
+    public :: csr2coo
+
+    !> Conversion from csr to ell
+    !> 
+    !> Enables transferring data from a CSR matrix to a ELL matrix
+    !> under the hypothesis that the CSR is already ordered.
+    interface csr2ell
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module subroutine csr2ell_${s1}$(CSR,ELL,num_nz_rows)
+            type(CSR_${s1}$), intent(in)    :: CSR
+            type(ELL_${s1}$), intent(inout) :: ELL
+            integer, intent(in), optional   :: num_nz_rows
+        end subroutine
+        #:endfor
+    end interface
+    public :: csr2ell
+
+    !> Conversion from csr to SELL-C
+    !> 
+    !> Enables transferring data from a CSR matrix to a SELL-C matrix
+    !> It takes an optional parameter to decide the chunck size 4, 8 or 16
+    interface csr2sellc
+    #:for k1, t1, s1 in (KINDS_TYPES)
+        module subroutine csr2sellc_${s1}$(CSR,SELLC,chunk)
+            type(CSR_${s1}$), intent(in)      :: CSR
+            type(SELLC_${s1}$), intent(inout) :: SELLC
+            integer, intent(in), optional :: chunk
+        end subroutine
+    #:endfor
+    end interface
+    public :: csr2sellc
+
+    !> Transform COO matrix to canonical form with ordered and unique entries
+    interface coo2ordered
+        module subroutine coo2ordered(COO,sort_data)
+            class(COO_type), intent(inout) :: COO
+            logical, intent(in), optional :: sort_data
+        end subroutine
+    end interface
+    public :: coo2ordered
+
+    !> Enable creating a sparse matrix from ijv (row,col,data) triplet
+    interface from_ijv
+        module procedure :: coo_from_ijv_type
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: coo_from_ijv_${s1}$
+        module procedure :: csr_from_ijv_${s1}$
+        module procedure :: ell_from_ijv_${s1}$
+        module procedure :: sellc_from_ijv_${s1}$
+        #:endfor
+    end interface
+    public :: from_ijv
+
+contains
+
+    !> (re)Allocate matrix memory for the COO type
+    subroutine malloc_coo(self,num_rows,num_cols,nnz)
+        class(COO_type) :: self
+        integer, intent(in) :: num_rows !> number of rows
+        integer, intent(in) :: num_cols !> number of columns
+        integer, intent(in) :: nnz      !> number of non zeros
+
+        integer,  allocatable :: temp_idx(:,:)
+        !-----------------------------------------------------
+
+        self%nrows = num_rows
+        self%ncols = num_cols
+        self%nnz   = nnz
+
+        if(.not.allocated(self%index)) then
+            allocate(temp_idx(2,nnz) , source = 0 )
+        else
+            allocate(temp_idx(2,nnz) , source = self%index )
+        end if
+        call move_alloc(from=temp_idx,to=self%index)
+
+        select type(self)
+            #:for k1, t1, s1 in (KINDS_TYPES)
+            type is(COO_${s1}$)
+                block
+                ${t1}$, allocatable :: temp_data_${s1}$(:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_${s1}$(nnz) , source = zero_${s1}$ )
+                else
+                    allocate(temp_data_${s1}$(nnz) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_${s1}$,to=self%data)
+                end block
+            #:endfor
+        end select
+    end subroutine
+
+    !> (re)Allocate matrix memory for the CSR type
+    subroutine malloc_csr(self,num_rows,num_cols,nnz)
+        class(CSR_type) :: self
+        integer, intent(in) :: num_rows !> number of rows
+        integer, intent(in) :: num_cols !> number of columns
+        integer, intent(in) :: nnz      !> number of non zeros
+
+        integer,  allocatable :: temp_idx(:)
+        !-----------------------------------------------------
+
+        self%nrows = num_rows
+        self%ncols = num_cols
+        self%nnz   = nnz
+
+        if(.not.allocated(self%col)) then
+            allocate(temp_idx(nnz) , source = 0 )
+        else
+            allocate(temp_idx(nnz) , source = self%col )
+        end if
+        call move_alloc(from=temp_idx,to=self%col)
+
+        if(.not.allocated(self%rowptr)) then
+            allocate(temp_idx(num_rows+1) , source = 0 )
+        else
+            allocate(temp_idx(num_rows+1) , source = self%rowptr )
+        end if
+        call move_alloc(from=temp_idx,to=self%rowptr)
+
+        select type(self)
+            #:for k1, t1, s1 in (KINDS_TYPES)
+            type is(CSR_${s1}$)
+                block
+                ${t1}$, allocatable :: temp_data_${s1}$(:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_${s1}$(nnz) , source = zero_${s1}$ )
+                else
+                    allocate(temp_data_${s1}$(nnz) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_${s1}$,to=self%data)
+                end block
+            #:endfor
+        end select
+    end subroutine
+
+    !> (re)Allocate matrix memory for the CSC type
+    subroutine malloc_csc(self,num_rows,num_cols,nnz)
+        class(CSC_type) :: self
+        integer, intent(in) :: num_rows !> number of rows
+        integer, intent(in) :: num_cols !> number of columns
+        integer, intent(in) :: nnz      !> number of non zeros
+
+        integer,  allocatable :: temp_idx(:)
+        !-----------------------------------------------------
+
+        self%nrows = num_rows
+        self%ncols = num_cols
+        self%nnz   = nnz
+
+        if(.not.allocated(self%row)) then
+            allocate(temp_idx(nnz) , source = 0 )
+        else
+            allocate(temp_idx(nnz) , source = self%row )
+        end if
+        call move_alloc(from=temp_idx,to=self%row)
+
+        if(.not.allocated(self%colptr)) then
+            allocate(temp_idx(num_cols+1) , source = 0 )
+        else
+            allocate(temp_idx(num_cols+1) , source = self%colptr )
+        end if
+        call move_alloc(from=temp_idx,to=self%colptr)
+
+        select type(self)
+            #:for k1, t1, s1 in (KINDS_TYPES)
+            type is(CSC_${s1}$)
+                block
+                ${t1}$, allocatable :: temp_data_${s1}$(:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_${s1}$(nnz) , source = zero_${s1}$ )
+                else
+                    allocate(temp_data_${s1}$(nnz) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_${s1}$,to=self%data)
+                end block
+            #:endfor
+        end select
+    end subroutine
+
+    !> (re)Allocate matrix memory for the ELLPACK type
+    subroutine malloc_ell(self,num_rows,num_cols,num_nz_rows)
+        class(ELL_type) :: self
+        integer, intent(in) :: num_rows    !> number of rows
+        integer, intent(in) :: num_cols    !> number of columns
+        integer, intent(in) :: num_nz_rows !> number of non zeros per row
+
+        integer,  allocatable :: temp_idx(:,:)
+        !-----------------------------------------------------
+
+        self%nrows = num_rows
+        self%ncols = num_cols
+        self%K     = num_nz_rows
+
+        if(.not.allocated(self%index)) then
+            allocate(temp_idx(num_rows,num_nz_rows) , source = 0 )
+        else
+            allocate(temp_idx(num_rows,num_nz_rows) , source = self%index )
+        end if
+        call move_alloc(from=temp_idx,to=self%index)
+
+        select type(self)
+            #:for k1, t1, s1 in (KINDS_TYPES)
+            type is(ELL_${s1}$)
+                block
+                ${t1}$, allocatable :: temp_data_${s1}$(:,:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_${s1}$(num_rows,num_nz_rows) , source = zero_${s1}$ )
+                else
+                    allocate(temp_data_${s1}$(num_rows,num_nz_rows) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_${s1}$,to=self%data)
+                end block
+            #:endfor
+        end select
+    end subroutine
+
+    subroutine coo_from_ijv_type(COO,row,col,nrows,ncols)
+        type(COO_type), intent(inout) :: COO
+        integer, intent(in) :: row(:)
+        integer, intent(in) :: col(:)
+        integer, intent(in), optional :: nrows
+        integer, intent(in), optional :: ncols
+
+        integer :: nrows_, ncols_, nnz, ed
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = size(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = size(col)
+        end if
+        nnz = size(row)
+        !---------------------------------------------------------
+        call COO%malloc(nrows_,ncols_,nnz)
+        do ed = 1, nnz 
+            COO%index(1:2,ed) = [row(ed),col(ed)]
+        end do
+
+        call coo2ordered(COO,.true.)
+    end subroutine
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine coo_from_ijv_${s1}$(COO,row,col,data,nrows,ncols)
+        type(COO_${s1}$), intent(inout) :: COO
+        integer, intent(in) :: row(:)
+        integer, intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer, intent(in), optional :: nrows
+        integer, intent(in), optional :: ncols
+
+        integer :: nrows_, ncols_, nnz, ed
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        nnz = size(row)
+        !---------------------------------------------------------
+        call COO%malloc(nrows_,ncols_,nnz)
+        do ed = 1, nnz 
+            COO%index(1:2,ed) = [row(ed),col(ed)]
+        end do
+        if(present(data)) COO%data = data
+
+        call coo2ordered(COO,.true.)
+    end subroutine
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine csr_from_ijv_${s1}$(CSR,row,col,data,nrows,ncols)
+        type(CSR_${s1}$), intent(inout) :: CSR
+        integer, intent(in) :: row(:)
+        integer, intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer, intent(in), optional :: nrows
+        integer, intent(in), optional :: ncols
+
+        integer :: nrows_, ncols_
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        !---------------------------------------------------------
+        block
+            type(COO_${s1}$) :: COO
+            if(present(data)) then
+                call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
+            else 
+                call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
+            end if
+            call coo2csr(COO,CSR)
+        end block
+    end subroutine
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine ell_from_ijv_${s1}$(ELL,row,col,data,nrows,ncols,num_nz_rows)
+        type(ELL_${s1}$), intent(inout) :: ELL
+        integer, intent(in) :: row(:)
+        integer, intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer, intent(in), optional :: nrows
+        integer, intent(in), optional :: ncols
+        integer, intent(in), optional :: num_nz_rows
+
+        integer :: nrows_, ncols_
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        !---------------------------------------------------------
+        block
+            type(COO_${s1}$) :: COO
+            type(CSR_${s1}$) :: CSR
+            if(present(data)) then
+                call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
+            else 
+                call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
+            end if
+            call coo2csr(COO,CSR)
+            if(present(num_nz_rows)) then
+                call csr2ell(CSR,ELL,num_nz_rows)
+            else 
+                call csr2ell(CSR,ELL)
+            end if
+        end block
+    end subroutine
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine sellc_from_ijv_${s1}$(SELLC,row,col,data,nrows,ncols,chunk)
+        type(SELLC_${s1}$), intent(inout) :: SELLC
+        integer, intent(in) :: row(:)
+        integer, intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer, intent(in), optional :: nrows
+        integer, intent(in), optional :: ncols
+        integer, intent(in), optional :: chunk
+
+        integer :: nrows_, ncols_
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        if(present(chunk)) SELLC%chunk_size = chunk
+        !---------------------------------------------------------
+        block
+            type(COO_${s1}$) :: COO
+            type(CSR_${s1}$) :: CSR
+            if(present(data)) then
+                call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
+            else 
+                call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
+            end if
+            call coo2csr(COO,CSR)
+            call csr2sellc(CSR,SELLC)
+        end block
+    end subroutine
+    #:endfor
+
+    !==================================================================
+    ! data accessors
+    !==================================================================
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure ${t1}$ function at_value_coo_${s1}$(self,ik,jk) result(val)
+        class(COO_${s1}$), intent(in) :: self
+        integer, intent(in) :: ik, jk
+        integer :: k, ik_, jk_
+        logical :: transpose
+        ! naive implementation
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
+            return
+        end if
+        ik_ = ik; jk_ = jk
+        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        if(transpose) then ! allow extraction of symmetric elements
+            ik_ = jk; jk_ = ik
+        end if
+        do k = 1, self%nnz
+            if( ik_ == self%index(1,k) .and. jk_ == self%index(2,k) ) then
+                val = self%data(k)
+                return
+            end if
+        end do
+        val = zero_${s1}$
+    end function
+
+    subroutine add_value_coo_${s1}$(self,ik,jk,val)
+        class(COO_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val
+        integer, intent(in) :: ik, jk
+        integer :: k
+        ! naive implementation
+        do k = 1,self%nnz
+            if( ik == self%index(1,k) .and. jk == self%index(2,k) ) then
+                self%data(k) = self%data(k) + val
+                return
+            end if
+        end do
+    end subroutine
+
+    subroutine add_block_coo_${s1}$(self,ik,jk,val)
+        class(COO_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val(:,:)
+        integer, intent(in) :: ik(:), jk(:)
+        integer :: k, i, j
+        ! naive implementation
+        do k = 1, self%nnz
+            do i = 1, size(ik)
+                if( ik(i) /= self%index(1,k) ) cycle
+                do j = 1, size(jk)
+                    if( jk(j) /= self%index(2,k) ) cycle
+                    self%data(k) = self%data(k) + val(i,j)
+                end do
+            end do
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure ${t1}$ function at_value_csr_${s1}$(self,ik,jk) result(val)
+        class(CSR_${s1}$), intent(in) :: self
+        integer, intent(in) :: ik, jk
+        integer :: k, ik_, jk_
+        logical :: transpose
+        ! naive implementation
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
+            return
+        end if
+        ik_ = ik; jk_ = jk
+        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        if(transpose) then ! allow extraction of symmetric elements
+            ik_ = jk; jk_ = ik
+        end if
+        do k = self%rowptr(ik_), self%rowptr(ik_+1)-1
+            if( jk_ == self%col(k) ) then
+                val = self%data(k)
+                return
+            end if
+        end do
+        val = zero_${s1}$
+    end function
+
+    subroutine add_value_csr_${s1}$(self,ik,jk,val)
+        class(CSR_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val
+        integer, intent(in) :: ik, jk
+        integer :: k
+        ! naive implementation
+        do k = self%rowptr(ik), self%rowptr(ik+1)-1
+            if( jk == self%col(k) ) then
+                self%data(k) = self%data(k) + val
+                return
+            end if
+        end do
+    end subroutine
+
+    subroutine add_block_csr_${s1}$(self,ik,jk,val)
+        class(CSR_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val(:,:)
+        integer, intent(in) :: ik(:), jk(:)
+        integer :: k, i, j
+        ! naive implementation
+        do i = 1, size(ik)
+            do k = self%rowptr(ik(i)), self%rowptr(ik(i)+1)-1
+                do j = 1, size(jk)
+                    if( jk(j) == self%col(k) ) then
+                        self%data(k) = self%data(k) + val(i,j)
+                    end if
+                end do
+            end do
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure ${t1}$ function at_value_csc_${s1}$(self,ik,jk) result(val)
+        class(CSC_${s1}$), intent(in) :: self
+        integer, intent(in) :: ik, jk
+        integer :: k, ik_, jk_
+        logical :: transpose
+        ! naive implementation
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
+            return
+        end if
+        ik_ = ik; jk_ = jk
+        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        if(transpose) then ! allow extraction of symmetric elements
+            ik_ = jk; jk_ = ik
+        end if
+        do k = self%colptr(jk_), self%colptr(jk_+1)-1
+            if( ik_ == self%row(k) ) then
+                val = self%data(k)
+                return
+            end if
+        end do
+        val = zero_${s1}$
+    end function
+
+    subroutine add_value_csc_${s1}$(self,ik,jk,val)
+        class(CSC_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val
+        integer, intent(in)  :: ik, jk
+        integer :: k
+        ! naive implementation
+        do k = self%colptr(jk), self%colptr(jk+1)-1
+            if( ik == self%row(k) ) then
+                self%data(k) = self%data(k) + val
+                return
+            end if
+        end do
+    end subroutine
+
+    subroutine add_block_csc_${s1}$(self,ik,jk,val)
+        class(CSC_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val(:,:)
+        integer, intent(in)  :: ik(:), jk(:)
+        integer :: k, i, j
+        ! naive implementation
+        do j = 1, size(jk)
+            do k = self%colptr(jk(j)), self%colptr(jk(j)+1)-1
+                do i = 1, size(ik)
+                    if( ik(i) == self%row(k) ) then
+                        self%data(k) = self%data(k) + val(i,j)
+                    end if
+                end do
+            end do
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure ${t1}$ function at_value_ell_${s1}$(self,ik,jk) result(val)
+        class(ELL_${s1}$), intent(in) :: self
+        integer, intent(in) :: ik, jk
+        integer :: k, ik_, jk_
+        logical :: transpose
+        ! naive implementation
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
+            return
+        end if
+        ik_ = ik; jk_ = jk
+        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        if(transpose) then ! allow extraction of symmetric elements
+            ik_ = jk; jk_ = ik
+        end if
+        do k = 1 , self%K
+            if( jk_ == self%index(ik_,k) ) then
+                val = self%data(ik_,k)
+                return
+            end if
+        end do
+        val = zero_${s1}$
+    end function
+
+    subroutine add_value_ell_${s1}$(self,ik,jk,val)
+        class(ELL_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val
+        integer, intent(in)  :: ik, jk
+        integer :: k
+        ! naive implementation
+        do k = 1 , self%K
+            if( jk == self%index(ik,k) ) then
+                self%data(ik,k) = self%data(ik,k) + val
+                return
+            end if
+        end do
+    end subroutine
+
+    subroutine add_block_ell_${s1}$(self,ik,jk,val)
+        class(ELL_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val(:,:)
+        integer, intent(in)  :: ik(:), jk(:)
+        integer :: k, i, j
+        ! naive implementation
+        do k = 1 , self%K
+            do j = 1, size(jk)
+                do i = 1, size(ik)
+                    if( jk(j) == self%index(ik(i),k) ) then
+                        self%data(ik(i),k) = self%data(ik(i),k) + val(i,j)
+                    end if
+                end do
+            end do
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure ${t1}$ function at_value_sellc_${s1}$(self,ik,jk) result(val)
+        class(SELLC_${s1}$), intent(in) :: self
+        integer, intent(in) :: ik, jk
+        integer :: k, ik_, jk_, idx
+        logical :: transpose
+        ! naive implementation
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
+            return
+        end if
+        ik_ = ik; jk_ = jk
+        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        if(transpose) then ! allow extraction of symmetric elements
+            ik_ = jk; jk_ = ik
+        end if
+
+        idx = self%rowptr((ik_ - 1)/self%chunk_size + 1)
+        do k = 1, self%chunk_size
+            if ( jk_ == self%col(k,idx) )then
+                val = self%data(k,idx)
+                return
+            endif
+        end do
+        val = zero_${s1}$
+    end function
+
+    subroutine add_value_sellc_${s1}$(self,ik,jk,val)
+        class(SELLC_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val
+        integer, intent(in)  :: ik, jk
+        integer :: k, idx
+        ! naive implementation
+        idx = self%rowptr((ik - 1)/self%chunk_size + 1)
+        do k = 1, self%chunk_size
+            if ( jk == self%col(k,idx) )then
+                self%data(k,idx) = self%data(k,idx) + val
+                return
+            endif
+        end do
+    end subroutine
+
+    subroutine add_block_sellc_${s1}$(self,ik,jk,val)
+        class(SELLC_${s1}$), intent(inout) :: self
+        ${t1}$, intent(in) :: val(:,:)
+        integer, intent(in)  :: ik(:), jk(:)
+        integer :: k, i, j, idx
+        ! naive implementation
+        do k = 1 , self%chunk_size
+            do j = 1, size(jk)
+                do i = 1, size(ik)
+                    idx = self%rowptr((ik(i) - 1)/self%chunk_size + 1)
+                    if( jk(j) == self%col(k,idx) ) then
+                        self%data(k,idx) = self%data(k,idx) + val(i,j)
+                    end if
+                end do
+            end do
+        end do
+    end subroutine
+
+    #:endfor
+    
+end module stdlib_sparse_kinds
