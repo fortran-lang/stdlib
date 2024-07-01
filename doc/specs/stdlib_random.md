@@ -1,11 +1,7 @@
----
-title: random
----
+# `stdlib_random` 
 
-# Statistical Distributions -- Pseudorandom Number Generator Module
-
-[TOC]
-
+Statistical Distributions: Pseudorandom Number Generator Module
+ 
 ## `random_seed` - set or get a value of seed to the probability distribution pseudorandom number generator
 
 ### Status

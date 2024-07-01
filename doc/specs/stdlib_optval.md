@@ -1,11 +1,7 @@
----
-title: optval
----
+# `stdlib_optval`
 
-# Default values for optional arguments
-
-[TOC]
-
+Default values for optional arguments
+ 
 ## `optval` - fallback value for optional arguments
 
 ### Status

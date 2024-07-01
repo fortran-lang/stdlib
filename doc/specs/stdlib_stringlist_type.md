@@ -1,11 +1,7 @@
----
-title: stringlist_type
----
+# `stdlib_stringlist_type` 
 
-# `stdlib_stringlist_type` module (1-D list of strings)
-
-[TOC]
-
+1-D list of strings
+ 
 ## Introduction
 
 The `stdlib_stringlist_type` module provides with 2 derived types to deal with lists of strings.

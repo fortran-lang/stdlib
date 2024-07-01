@@ -1,11 +1,5 @@
----
-title: ascii
----
-
-# The `stdlib_ascii` module
-
-[TOC]
-
+# `stdlib_ascii`
+ 
 ## Introduction
 
 The `stdlib_ascii` module provides procedures for handling and manipulating

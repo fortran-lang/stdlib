@@ -1,11 +1,5 @@
----
-title: strings
----
-
-# The `stdlib_strings` module
-
-[TOC]
-
+# `stdlib_strings`
+ 
 ## Introduction
 
 The `stdlib_strings` module provides basic string handling and manipulation routines.

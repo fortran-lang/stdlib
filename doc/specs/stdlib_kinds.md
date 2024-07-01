@@ -1,11 +1,5 @@
----
-title: kinds
----
-
-# The `stdlib_kinds` module
-
-[TOC]
-
+# `stdlib_kinds`
+ 
 ## Introduction
 
 The `stdlib_kinds` module provides kind parameters for the Fortran intrinsic data types,

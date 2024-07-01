@@ -1,11 +1,7 @@
----
-title: stats_distribution_exponential
----
+# `stdlib_stats_distribution_exponential`
 
-# Statistical Distributions -- Exponential Distribution Module
-
-[TOC]
-
+Statistical Distributions : Exponential Distribution Module
+ 
 ## `rvs_exp` - exponential distribution random variates
 
 ### Status

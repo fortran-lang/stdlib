@@ -1,11 +1,5 @@
----
-title: bitsets
----
-
-# The `stdlib_bitsets` module
-
-[TOC]
-
+# `stdlib_bitsets`
+ 
 ## Introduction
 
 The `stdlib_bitsets` module implements bitset types. A bitset is a
@@ -60,7 +54,7 @@ bits. The other constants that are error codes are summarized below:
 |`write_failure`|Failure on a `write` statement|
 
 
-## The `stdlib_bitsets` derived types
+## `stdlib_bitsets` derived types
 
 The `stdlib_bitsets` module defines three derived types,
 `bitset_type`, `bitset_64`, and `bitset_large`. `bitset_type` is an abstract

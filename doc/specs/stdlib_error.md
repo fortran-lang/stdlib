@@ -1,11 +1,5 @@
----
-title: error
----
-
-# The `stdlib_error` module
-
-[TOC]
-
+# `stdlib_error`
+ 
 ## Introduction
 
 Catching and handling errors.

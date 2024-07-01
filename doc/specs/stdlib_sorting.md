@@ -1,11 +1,5 @@
----
-title: sorting
----
-
-# The `stdlib_sorting` module
-
-[TOC]
-
+# `stdlib_sorting` 
+ 
 ## Overview of sorting
 
 The sorting of collections of data is useful in the analysis of those

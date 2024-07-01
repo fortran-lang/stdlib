@@ -1,10 +1,5 @@
----
-title: logger
----
-# Loggers
-
-[TOC]
-
+# `stdlib_logger`
+ 
 ## Introduction
 
 This module defines a derived type, its methods, a variable, and
@@ -47,7 +42,7 @@ is empty then the messages go to the `output_unit` of the intrinsic
 module `iso_fortran_env`.
 
 
-## The `stdlib_logger` constants
+## `stdlib_logger` constants
 
 The module defines nine distinct public integer constants for
 reporting errors in the `stat` arguments of some of the module's
@@ -104,7 +99,7 @@ significant events encountered during the execution of a program.
 | `time_stamp`     | Logical       | Flag to precede output by a time stamp          | `.true.`            |
 | `units`          | Integer       | Count of the number of active output units      | 0                   |
 
-## The `stdlib_logger` variable
+## `stdlib_logger` variable
 
 The module defines one public variable, `global_logger`, of type
 `logger_type`. As might be guessed from its name, `global_logger` is

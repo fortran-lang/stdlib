@@ -1,11 +1,5 @@
----
-title: io
----
-
-# IO
-
-[TOC]
-
+# `stdlib_io`
+ 
 ## `loadtxt` - load a 2D array from a text file
 
 ### Status

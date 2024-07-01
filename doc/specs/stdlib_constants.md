@@ -1,8 +1,4 @@
----
-title: constants
----
-
-[TOC]
+# `stdlib_constants`
 
 ## Introduction
 

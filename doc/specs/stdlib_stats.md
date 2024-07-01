@@ -1,11 +1,7 @@
----
-title: stats
----
+# `stdlib_stats`
 
-# Descriptive statistics
-
-[TOC]
-
+Descriptive statistics
+ 
 ## `corr` - Pearson correlation of array elements
 
 ### Status

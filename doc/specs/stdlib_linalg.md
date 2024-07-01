@@ -1,12 +1,6 @@
----
-title: linalg
----
+# `stdlib_linalg` 
 
-# Linear Algebra
-
-[TOC]
-
-The `stdlib` linear algebra library provides high-level APIs for dealing with common linear algebra operations.
+Linear Algebra : The `stdlib` linear algebra library provides high-level APIs for dealing with common linear algebra operations.
 
 ## BLAS and LAPACK
 

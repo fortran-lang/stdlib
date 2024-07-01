@@ -1,11 +1,5 @@
----
-title: Hash maps
----
-
-# The `stdlib_hashmap_wrappers`, and `stdlib_hashmaps` modules
-
-[TOC]
-
+# `stdlib_hashmap_wrappers`, and `stdlib_hashmaps`
+ 
 ## Overview of hash maps
 
 A hash map (hash table) is a data structure that maps *keys* to
@@ -93,7 +87,7 @@ type `other_type`.
 The maps allow the addition, removal, and lookup of entries, and the
 inclusion of data in addition to the entry key.
 
-## The `stdlib_hashmap_wrappers` module
+## `stdlib_hashmap_wrappers` module
 
 The `stdlib_hashmap_wrappers` module provides data types to
 represent keys and associated data stored in a module, but is also, a
@@ -109,14 +103,14 @@ as a kind value,`int_hash`. It also defines two types, `key_type` and
 `other_type`, and associated procedures, for storing and manipulating
 keys and their associated data.
 
-### The `stdlib_hashmap_wrappers`'s constant, `int_hash`
+### `stdlib_hashmap_wrappers`'s constant, `int_hash`
 
 The constant `int_hash` is used to define the integer kind value for
 the returned hash codes and variables used to access them. It
 currently is imported from `stdlib_hash_32bit` where it has the
 value, `int32`. 
 
-### The `stdlib_hashmap_wrappers`' module's derived types
+### `stdlib_hashmap_wrappers`' module's derived types
 
 The `stdlib_hashmap_wrappers` module defines two derived types:
 `key_type`, and `other_type`. The `key_type` is intended to be used
@@ -771,7 +765,7 @@ value to an `int8` vector.
 ```
 
 
-## The `stdlib_hashmaps` module
+## `stdlib_hashmaps` module
 
 The `stdlib_hashmaps` module defines three public data types,
 associated procedures and constants that implement two simple hash map
@@ -799,7 +793,7 @@ key field as well as the base `key` type.  So for `key_test`,
 for the key field and so on.  Procedures other than `key_key_test` will call
 the `set` function to generate a key type and pass to `key_key_test`.         
 
-### The `stdlib_hashmaps` module's public constants
+### `stdlib_hashmaps` module's public constants
 
 The module defines several categories of public constants. Some are
 used to parameterize the empirical slot expansion code. Others
@@ -853,7 +847,7 @@ failed. Finally the `array_size_error` indicates that on table
 creation `slots_bits` is less than `default_bits` or
 greater than `max_bits`.
 
-### The `stdlib_hashmaps` module's derived types
+### `stdlib_hashmaps` module's derived types
 
 The `stdlib_hashmaps` module defines three public derived types and
 seven private types used in the implementation of the public

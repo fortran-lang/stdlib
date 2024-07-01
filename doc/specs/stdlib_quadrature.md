@@ -1,11 +1,7 @@
----
-title: quadrature
----
+# `stdlib_quadrature`
 
-# Numerical integration
-
-[TOC]
-
+Numerical integration
+ 
 ## `trapz` - integrate sampled values using trapezoidal rule
 
 ### Status

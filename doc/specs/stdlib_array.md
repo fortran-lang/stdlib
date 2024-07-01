@@ -1,11 +1,5 @@
----
-title: array
----
-
-# The `stdlib_array` module
-
-[TOC]
-
+# `stdlib_array`
+ 
 ## Introduction
 
 Module for index manipulation and array handling tasks.

@@ -1,11 +1,5 @@
----
-title: version
----
-
-# The `stdlib_version` module
-
-[TOC]
-
+# `stdlib_version`
+ 
 ## Introduction
 
 The `stdlib_version` module contains the version of the standard library.

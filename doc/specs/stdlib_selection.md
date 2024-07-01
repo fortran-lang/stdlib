@@ -1,11 +1,5 @@
----
-title: selection
----
-
-# The `stdlib_selection` module
-
-[TOC]
-
+# `stdlib_selection`
+ 
 ## Overview of selection
 
 Suppose you wish to find the value of the k-th smallest entry in an array of size N, or

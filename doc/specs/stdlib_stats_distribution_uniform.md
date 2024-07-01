@@ -1,11 +1,7 @@
----
-title: stats_distribution_uniform
----
+# `stdlib_stats_distribution_uniform`
 
-# Statistical Distributions -- Uniform Distribution Module
-
-[TOC]
-
+Statistical Distributions : Uniform Distribution Module
+ 
 ## `shuffle` - Using Fisher-Yates algorithm to generate a random permutation of a list
 
 ### Status

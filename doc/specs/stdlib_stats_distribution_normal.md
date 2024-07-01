@@ -1,11 +1,7 @@
----
-title: stats_distribution_normal
----
+# `stdlib_stats_distribution_normal`
 
-# Statistical Distributions -- Normal Distribution Module
-
-[TOC]
-
+Statistical Distributions : Normal Distribution Module
+ 
 ## `rvs_normal` - normal distribution random variates
 
 ### Status

@@ -1,11 +1,7 @@
----
-title: specialfunctions_gamma
----
+# `stdlib_specialfunctions_gamma`
 
-# Special functions gamma
-
-[TOC]
-
+Special functions gamma
+ 
 ## `gamma` - Calculate the gamma function
 
 ### Status

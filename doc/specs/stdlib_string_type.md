@@ -1,11 +1,5 @@
----
-title: string_type
----
-
-# The `stdlib_string_type` module
-
-[TOC]
-
+# `stdlib_string_type`
+ 
 ## Introduction
 
 The `stdlib_string_type` provides a derived type holding an arbitrary sequence

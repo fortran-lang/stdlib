@@ -1,11 +1,5 @@
----
-title: hash
----
-
-# The `stdlib_hash_32bit` and `stdlib_hash_64bit` modules
-
-[TOC]
-
+# `stdlib_hash_32bit` and `stdlib_hash_64bit`
+ 
 ## Overview of hash procedures
 
 The comparison of lexical entities or other objects for equality
@@ -465,7 +459,7 @@ has one bad seed only when reduced to a 32-bit output.
 Its only potential problem is undefined behavior if the key is
 misaligned.
 
-## The `stdlib_hash_32bit` module
+## `stdlib_hash_32bit` module
 
 ### Overview of the module
 
@@ -1014,7 +1008,7 @@ function for character strings.
 :language: Fortran
 ```
 
-## The `stdlib_hash_64bit` module
+## `stdlib_hash_64bit` module
 
 ### Overview of the module
 

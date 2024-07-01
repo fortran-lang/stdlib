@@ -1,11 +1,5 @@
----
-title: math
----
-
-# The `stdlib_math` module
-
-[TOC]
-
+# `stdlib_math`
+ 
 ## Introduction
 
 `stdlib_math` module provides general purpose mathematical functions.
