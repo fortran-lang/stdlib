@@ -43,7 +43,6 @@ project_website: https://stdlib.fortran-lang.org
 favicon: doc/media/favicon.ico
 license: by-sa
 author: fortran-lang/stdlib contributors
-author_pic: https://fortran-lang.org/assets/img/fortran_logo_512x512.png
 email: fortran-lang@groups.io
 github: https://github.com/fortran-lang
 twitter: https://twitter.com/fortranlang
