@@ -597,7 +597,7 @@ module stdlib_linalg
     #:endfor
   end interface inv
 
-  ! Matrix Inverse: Subroutine interface - in-place factorization
+  ! Matrix Inverse: Subroutine interface - in-place inversion
   interface invert
     !! version: experimental 
     !!
