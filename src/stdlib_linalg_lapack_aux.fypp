@@ -46,7 +46,7 @@ module stdlib_linalg_lapack_aux
             import ${rk}$,lk 
             implicit none 
             real(${rk}$), intent(in) :: alphar,alphai,beta 
-        end function stdlib_selctg_${ri}$         
+        end function stdlib_selctg_${ri}$
         pure logical(lk) function stdlib_select_${ri}$(alphar,alphai) 
             import ${rk}$,lk
             implicit none 
