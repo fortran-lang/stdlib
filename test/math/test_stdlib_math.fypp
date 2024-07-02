@@ -47,8 +47,8 @@ contains
             
             !> Tests for deg2rad/rad2deg
             #:for k1 in REAL_KINDS
-            , new_unittest("deg2rad-${k1}$", test_deg2rad_${k1}$) &
-            , new_unittest("rad2deg-${k1}$", test_rad2deg_${k1}$) &
+            , new_unittest("deg2rad-real-${k1}$", test_deg2rad_${k1}$) &
+            , new_unittest("rad2deg-real-${k1}$", test_rad2deg_${k1}$) &
             #:endfor
             
             !> Tests for `is_close` and `all_close`
@@ -312,15 +312,19 @@ contains
     subroutine test_deg2rad_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
         real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+
         call check(error, PI_${k1}$, deg2rad(180.0_${k1}$), thr=tol)
         if (allocated(error)) return
+
     end subroutine test_deg2rad_${k1}$
     
     subroutine test_rad2deg_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
         real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
-        call check(error, 180.0_${k1}$, rad2deg(PI_${k1}$))
+
+        call check(error, 180.0_${k1}$, rad2deg(PI_${k1}$), thr=tol)
         if (allocated(error)) return
+
     end subroutine test_rad2deg_${k1}$
     #:endfor
 
