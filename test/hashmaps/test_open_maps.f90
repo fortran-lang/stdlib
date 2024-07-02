@@ -219,14 +219,14 @@ contains
         character(*), intent(in)                :: hash_name, size_name
         integer :: index2
         type(key_type) :: key
-        type(other_type) :: other
+        class(*), allocatable :: data
         logical :: exists
         real :: t1, t2, tdiff
 
         call cpu_time(t1)
         do index2=1, size(test_8_bits), test_block
             call set( key, test_8_bits( index2:index2+test_block-1 ) )
-            call map % get_other_data( key, other, exists )
+            call map % get_other_data( key, data, exists )
             if (.not. exists) &
                 error stop "Unable to get data because key not found in map."
         end do
