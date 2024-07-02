@@ -382,6 +382,66 @@ Notes: Although the angle of the complex number `0` is undefined, `argpi((0,0))`
 {!example/math/example_math_argpi.f90!}
 ```
 
+### `deg2rad`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemenal function.
+
+`deg2rad` converts the phase angle from degree to radian.
+
+#### Syntax
+
+`result = ` [[stdlib_math(module):deg2rad(interface)]] `(theta)`
+
+#### Arguments
+
+`theta`: Shall be a `real` scalar/array.
+
+#### Return value
+
+Returns the `real` phase in radian
+
+#### Example
+
+```fortran
+{!example/math/example_math_deg2rad.f90!}
+```
+
+### `rad2deg`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemenal function.
+
+`rad2deg` converts the phase angle from radian to degree.
+
+#### Syntax
+
+`result = ` [[stdlib_math(module):rad2deg(interface)]] `(theta)`
+
+#### Arguments
+
+`theta`: Shall be a `real` scalar/array.
+
+#### Return value
+
+Returns the `real` phase in degree.
+
+#### Example
+
+```fortran
+{!example/math/example_math_rad2deg.f90!}
+```
+
 ### `is_close` function
 
 #### Description
