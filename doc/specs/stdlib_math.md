@@ -434,7 +434,7 @@ Elemenal function.
 
 #### Return value
 
-Returns the `real` phase in degree.
+Returns the `real` phase angle in degrees.
 
 #### Example
 
