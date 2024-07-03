@@ -422,7 +422,7 @@ Experimental
 
 Elemenal function.
 
-`rad2deg` converts the phase angle from radian to degree.
+`rad2deg` converts phase angles from radians to degrees.
 
 #### Syntax
 
