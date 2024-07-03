@@ -810,7 +810,6 @@ contains
             end if
         else if ( associated( map % inverse(inmap) % target ) ) then
             associate( target => map % inverse(inmap) % target )
-                
                 target % other = other
                 if ( present(exists) ) exists = .true.
                 return
