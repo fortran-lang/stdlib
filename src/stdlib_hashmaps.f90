@@ -32,7 +32,6 @@ module stdlib_hashmaps
         seeded_water_hasher,     &
         set,                     &
         key_type,                &
-        other_type,              &
         int_hash
 
     implicit none
@@ -181,7 +180,7 @@ module stdlib_hashmaps
 !!     other  - the other data associated with the key
 !!     exists - a logical flag indicating whether an entry with that key exists
 !
-            import hashmap_type, key_type, other_type
+            import hashmap_type, key_type
             class(hashmap_type), intent(inout) :: map
             type(key_type), intent(in)         :: key
             class(*), allocatable, intent(out)      :: other
@@ -254,7 +253,7 @@ module stdlib_hashmaps
 !! Inserts an entry into the hash table
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#map_entry-inserts-an-entry-into-the-hash-map))
 !!
-            import hashmap_type, key_type, other_type
+            import hashmap_type, key_type
             class(hashmap_type), intent(inout)     :: map
             type(key_type), intent(in)             :: key
             class(*), intent(in), optional         :: other
@@ -302,7 +301,7 @@ module stdlib_hashmaps
 !!              in the map
 !!
 !
-            import hashmap_type, key_type, other_type
+            import hashmap_type, key_type
             class(hashmap_type), intent(inout) :: map
             type(key_type), intent(in)         :: key
             class(*), intent(in)               :: other

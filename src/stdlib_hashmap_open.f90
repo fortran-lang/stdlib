@@ -297,7 +297,7 @@ contains
 !
         class(open_hashmap_type), intent(inout) :: map
         type(key_type), intent(in)              :: key
-        class(*), allocatable, intent(out)		:: other
+        class(*), allocatable, intent(out)      :: other
         logical, intent(out), optional          :: exists
 
         integer(int_index) :: inmap
