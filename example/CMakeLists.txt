@@ -4,6 +4,10 @@ macro(ADD_EXAMPLE name)
     add_test(NAME ${name}
              COMMAND $<TARGET_FILE:example_${name}> ${CMAKE_CURRENT_BINARY_DIR}
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+    if ( ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+      target_link_options(example_${name} PRIVATE "LINKER:-stack:10000000")
+    endif()
 endmacro(ADD_EXAMPLE)
 
 add_subdirectory(array)
