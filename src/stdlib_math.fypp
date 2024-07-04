@@ -335,7 +335,7 @@ module stdlib_math
 
     !> Version: experimental
     !> 
-    !> `deg2rad` converts the phase angle from degree to radian.
+    !> `deg2rad` converts phase angles from degrees to radians.
     !> ([Specification](../page/specs/stdlib_math.html#deg2rad-function))
     interface deg2rad
         #:for k1 in REAL_KINDS
@@ -345,7 +345,7 @@ module stdlib_math
     
     !> Version: experimental
     !> 
-    !> `rad2deg` converts the phase angle from radian to degree.
+    !> `rad2deg` converts phase angles from radians to degrees.
     !> ([Specification](../page/specs/stdlib_math.html#rad2deg-function))
     interface rad2deg
         #:for k1 in REAL_KINDS
