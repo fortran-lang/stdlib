@@ -4,7 +4,6 @@ macro(ADD_EXAMPLE name)
     add_test(NAME ${name}
              COMMAND $<TARGET_FILE:example_${name}> ${CMAKE_CURRENT_BINARY_DIR}
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-    endif()
 endmacro(ADD_EXAMPLE)
 
 add_subdirectory(array)
