@@ -24142,7 +24142,6 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dzsum1
 
-
      pure subroutine stdlib_dbbcsd( jobu1, jobu2, jobv1t, jobv2t, trans, m, p, q,theta, phi, u1, &
      !! DBBCSD computes the CS decomposition of an orthogonal matrix in
      !! bidiagonal-block form,

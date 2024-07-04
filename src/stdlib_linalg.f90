@@ -484,7 +484,6 @@ module stdlib_linalg
      !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
      !! 
      !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
-     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!    
      module function stdlib_linalg_s_solve_one(a,b,overwrite_a,err) result(x)
          !> Input matrix a[n,n]
@@ -669,7 +668,6 @@ module stdlib_linalg
      !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
      !! 
      !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
-     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!        
      pure module subroutine stdlib_linalg_s_solve_lu_one(a,b,x,pivot,overwrite_a,err)     
          !> Input matrix a[n,n]
@@ -801,7 +799,6 @@ module stdlib_linalg
     !! Supported data types include `real` and `complex`.
     !! 
     !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !! 
       module function stdlib_linalg_s_lstsq_one(a,b,cond,overwrite_a,rank,err) result(x)
          !> Input matrix a[n,n]
@@ -950,7 +947,6 @@ module stdlib_linalg
     !! are provided, no internal memory allocations take place when using this interface.
     !! 
     !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !! 
       module subroutine stdlib_linalg_s_solve_lstsq_one(a,b,x,real_storage,int_storage,&
                         cond,singvals,overwrite_a,rank,err) 
@@ -1803,7 +1799,6 @@ module stdlib_linalg
     !! It is possible to use partial storage [m,k] and [k,n], `k=min(m,n)`, choosing `full_matrices=.false.`.
     !! 
     !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).    
     !! 
     !!### Example
     !!
@@ -1976,7 +1971,6 @@ module stdlib_linalg
     !! singular values, with size [min(m,n)]. 
     !! 
     !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).    
     !! 
     !!### Example
     !!

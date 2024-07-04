@@ -4397,13 +4397,13 @@ module stdlib_linalg_blas_d
            if (incx==1) then
               ! code for increment equal to 1
               do i = 1,n
-                 stemp = stemp + stdlib_dcabs1(zx(i))
+                 stemp = stemp + stdlib_cabs1(zx(i))
               end do
            else
               ! code for increment not equal to 1
               nincx = n*incx
               do i = 1,nincx,incx
-                 stemp = stemp + stdlib_dcabs1(zx(i))
+                 stemp = stemp + stdlib_cabs1(zx(i))
               end do
            end if
            stdlib_dzasum = stemp

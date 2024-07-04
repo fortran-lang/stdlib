@@ -8,10 +8,6 @@ module test_blas_lapack
 
     implicit none
 
-    real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
-    real(dp), parameter :: dptol = 1000 * epsilon(1._dp)
-
-
 
 contains
 
@@ -36,6 +32,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         real(sp) :: A(3,3),x(3),y(3),ylap(3),yintr(3),alpha,beta
+        real(sp), parameter :: tol = 1000 * epsilon(1.0_sp)
         call random_number(alpha)
         call random_number(beta)
         call random_number(A)
@@ -45,9 +42,10 @@ contains
         call gemv('No transpose',size(A,1),size(A,2),alpha,A,size(A,1),x,1,beta,ylap,1)
         yintr = alpha*matmul(A,x)+beta*y
 
-        call check(error, sum(abs(ylap - yintr)) < sptol, &
-            "blas vs. intrinsics axpy: sum() < sptol failed")
+        call check(error, sum(abs(ylap - yintr)) < tol, &
+            "blas vs. intrinsics axpy: sum() < tol failed")
         if (allocated(error)) return
+
     end subroutine test_gemvrsp
 
     ! Find matrix inverse from LU decomposition
@@ -55,12 +53,11 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-
         integer(ilp), parameter :: n = 3
         real(sp) :: A(n,n)
         real(sp),allocatable :: work(:)
         integer(ilp) :: ipiv(n),info,lwork,nb
-
+        real(sp), parameter :: tol = 1000 * epsilon(1.0_sp)
 
         A = eye(n)
 
@@ -80,15 +77,17 @@ contains
         call check(error, info==0, "lapack getri returned info/=0")
         if (allocated(error)) return
 
-        call check(error, sum(abs(A - eye(3))) < sptol, &
+        call check(error, sum(abs(A - eye(3))) < tol, &
             "lapack eye inversion: tolerance check failed")
         if (allocated(error)) return
+
     end subroutine test_getrirsp
     subroutine test_gemvrdp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
         real(dp) :: A(3,3),x(3),y(3),ylap(3),yintr(3),alpha,beta
+        real(dp), parameter :: tol = 1000 * epsilon(1.0_dp)
         call random_number(alpha)
         call random_number(beta)
         call random_number(A)
@@ -98,9 +97,10 @@ contains
         call gemv('No transpose',size(A,1),size(A,2),alpha,A,size(A,1),x,1,beta,ylap,1)
         yintr = alpha*matmul(A,x)+beta*y
 
-        call check(error, sum(abs(ylap - yintr)) < sptol, &
-            "blas vs. intrinsics axpy: sum() < sptol failed")
+        call check(error, sum(abs(ylap - yintr)) < tol, &
+            "blas vs. intrinsics axpy: sum() < tol failed")
         if (allocated(error)) return
+
     end subroutine test_gemvrdp
 
     ! Find matrix inverse from LU decomposition
@@ -108,12 +108,11 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-
         integer(ilp), parameter :: n = 3
         real(dp) :: A(n,n)
         real(dp),allocatable :: work(:)
         integer(ilp) :: ipiv(n),info,lwork,nb
-
+        real(dp), parameter :: tol = 1000 * epsilon(1.0_dp)
 
         A = eye(n)
 
@@ -133,9 +132,10 @@ contains
         call check(error, info==0, "lapack getri returned info/=0")
         if (allocated(error)) return
 
-        call check(error, sum(abs(A - eye(3))) < sptol, &
+        call check(error, sum(abs(A - eye(3))) < tol, &
             "lapack eye inversion: tolerance check failed")
         if (allocated(error)) return
+
     end subroutine test_getrirdp
 
     ! Return

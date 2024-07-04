@@ -101,7 +101,7 @@ module stdlib_linalg_blas_z
            ! Local Scalars 
            integer(ilp) :: i, ix, iy
            if (n<=0) return
-           if (stdlib_dcabs1(za)==0.0_dp) return
+           if (stdlib_cabs1(za)==0.0_dp) return
            if (incx==1 .and. incy==1) then
               ! code for both increments equal to 1
               do i = 1,n

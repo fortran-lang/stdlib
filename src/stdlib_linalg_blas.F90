@@ -1098,6 +1098,7 @@ module stdlib_linalg_blas
 #else 
                module procedure stdlib_dsdot
 #endif
+
           end interface sdot
 
 
