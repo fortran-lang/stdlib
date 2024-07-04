@@ -6,7 +6,7 @@ macro(ADD_EXAMPLE name)
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
     if ( ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-      target_link_options(example_${name} PRIVATE "LINKER:-stack:10000000")
+      target_link_options(example_${name} PRIVATE "LINKER:--stack:10000000")
     endif()
 endmacro(ADD_EXAMPLE)
 
