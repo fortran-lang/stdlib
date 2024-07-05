@@ -406,7 +406,7 @@ Elemenal function.
 
 #### Return value
 
-Returns the `real` phase angle in radians
+Returns the `real` phase angle in radians.
 
 #### Example
 
