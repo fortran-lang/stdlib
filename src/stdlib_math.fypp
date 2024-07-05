@@ -481,7 +481,7 @@ contains
         
     end function deg2rad_${k1}$
     
-    elemental function rad2deg_${k1}$(theta)result(result)
+    elemental function rad2deg_${k1}$(theta) result(result)
         ${t1}$, intent(in) :: theta
         ${t1}$ :: result
         result = theta * 180.0_${k1}$ / PI_${k1}$
