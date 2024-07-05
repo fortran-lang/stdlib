@@ -33,7 +33,6 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
      end subroutine handle_getri_info
 
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp" 
      ! Compute the in-place square matrix inverse of a
      module subroutine stdlib_linalg_invert_inplace_${ri}$(a,pivot,err)
          !> Input matrix a[n,n]. On return, A is destroyed and replaced by the inverse
@@ -175,7 +174,6 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
 
      end function stdlib_linalg_inverse_${ri}$_operator
 
-     #:endif
      #:endfor
 
 end submodule stdlib_linalg_inverse

@@ -22,17 +22,14 @@ module test_linalg_inverse
         allocate(tests(0))
 
         #:for rk,rt,ri in RC_KINDS_TYPES
-        #:if rk!="xdp"
         tests = [tests,new_unittest("${ri}$_eye_inverse",test_${ri}$_eye_inverse), &
                        new_unittest("${ri}$_singular_inverse",test_${ri}$_singular_inverse), &
                        new_unittest("${ri}$_random_spd_inverse",test_${ri}$_random_spd_inverse)]
-        #:endif
         #:endfor
 
     end subroutine test_inverse_matrix
 
     #:for rk,rt,ri in REAL_KINDS_TYPES
-    #:if rk!="xdp"
     !> Invert real identity matrix
     subroutine test_${ri}$_eye_inverse(error)
         type(error_type), allocatable, intent(out) :: error
@@ -139,12 +136,10 @@ module test_linalg_inverse
     
     end subroutine test_${ri}$_random_spd_inverse
     
-    #:endif
     #:endfor
 
     !> Invert complex identity matrix
     #:for ck,ct,ci in CMPLX_KINDS_TYPES
-    #:if ck!="xdp"
     subroutine test_${ci}$_eye_inverse(error)
         type(error_type), allocatable, intent(out) :: error
 
@@ -295,7 +290,6 @@ module test_linalg_inverse
         
     end subroutine test_${ci}$_singular_inverse
 
-    #:endif
     #:endfor
 
 end module test_linalg_inverse

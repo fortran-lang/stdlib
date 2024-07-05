@@ -567,10 +567,8 @@ module stdlib_linalg
     !! the state flag `err` is not provided. 
     !!
     !!@note The provided functions are intended for square matrices.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp" 
     module function stdlib_linalg_inverse_${ri}$(a,err) result(inva)
          !> Input matrix a[n,n]
          ${rt}$, intent(in) :: a(:,:)
@@ -579,7 +577,6 @@ module stdlib_linalg
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
     end function stdlib_linalg_inverse_${ri}$
-    #:endif
     #:endfor
   end interface inv
 
@@ -605,10 +602,8 @@ module stdlib_linalg
     !! work spaces are provided, no internal memory allocations take place when using this interface.             
     !!
     !!@note The provided subroutines are intended for square matrices.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !!      
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp" 
     module subroutine stdlib_linalg_invert_inplace_${ri}$(a,pivot,err)
          !> Input matrix a[n,n]
          ${rt}$, intent(inout) :: a(:,:)
@@ -628,7 +623,6 @@ module stdlib_linalg
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err    
     end subroutine stdlib_linalg_invert_split_${ri}$
-    #:endif
     #:endfor
   end interface invert
 
@@ -649,17 +643,14 @@ module stdlib_linalg
     !! NaNs will be returned.
     !!
     !!@note The provided functions are intended for square matrices.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !!
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp" 
     module function stdlib_linalg_inverse_${ri}$_operator(a) result(inva)
          !> Input matrix a[n,n]
          ${rt}$, intent(in) :: a(:,:)
          !> Result matrix
          ${rt}$, allocatable :: inva(:,:)        
     end function stdlib_linalg_inverse_${ri}$_operator
-    #:endif
     #:endfor
   end interface operator(.inv.)
 

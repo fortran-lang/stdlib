@@ -104,7 +104,8 @@ end interface axpy
 Note that the 128-bit functions are only provided by `stdlib` and always point to the internal implementation. 
 Because 128-bit precision is identified as [stdlib_kinds(module):qp], initials for 128-bit procedures were 
 labelled as `q` (quadruple-precision reals) and `w` ("wide" or quadruple-precision complex numbers). 
-Extended precision ([stdlib_kinds(module):xdp]) calculations are currently not supported.
+Extended precision ([stdlib_kinds(module):xdp]) calculations are labelled as `x` (extended-precision reals).
+and `y` (extended-precision complex numbers).
 
 ### Example
 
