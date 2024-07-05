@@ -258,11 +258,9 @@ module stdlib_linalg
      !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
      !! 
      !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
-     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!    
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
      module function stdlib_linalg_${ri}$_solve_${ndsuf}$(a,b,overwrite_a,err) result(x)
          !> Input matrix a[n,n]
          ${rt}$, intent(inout), target :: a(:,:)
@@ -283,7 +281,6 @@ module stdlib_linalg
          !> Result array/matrix x[n] or x[n,nrhs]
          ${rt}$, allocatable, target :: x${nd}$
      end function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$
-     #:endif
      #:endfor
      #:endfor    
   end interface solve
@@ -309,11 +306,9 @@ module stdlib_linalg
      !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
      !! 
      !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
-     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!        
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
      pure module subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$(a,b,x,pivot,overwrite_a,err)     
          !> Input matrix a[n,n]
          ${rt}$, intent(inout), target :: a(:,:)
@@ -328,7 +323,6 @@ module stdlib_linalg
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
      end subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$
-     #:endif
      #:endfor
      #:endfor    
   end interface solve_lu     
@@ -349,11 +343,9 @@ module stdlib_linalg
     !! Supported data types include `real` and `complex`.
     !! 
     !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !! 
     #:for nd,ndsuf,nde in ALL_RHS
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
       module function stdlib_linalg_${ri}$_lstsq_${ndsuf}$(a,b,cond,overwrite_a,rank,err) result(x)
          !> Input matrix a[n,n]
          ${rt}$, intent(inout), target :: a(:,:)
@@ -370,7 +362,6 @@ module stdlib_linalg
          !> Result array/matrix x[n] or x[n,nrhs]
          ${rt}$, allocatable, target :: x${nd}$
       end function stdlib_linalg_${ri}$_lstsq_${ndsuf}$
-    #:endif
     #:endfor
     #:endfor
   end interface lstsq
@@ -392,11 +383,9 @@ module stdlib_linalg
     !! are provided, no internal memory allocations take place when using this interface.
     !! 
     !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !! 
     #:for nd,ndsuf,nde in ALL_RHS
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
       module subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$(a,b,x,real_storage,int_storage,&
                         #{if rt.startswith('c')}#cmpl_storage,#{endif}#cond,singvals,overwrite_a,rank,err) 
          !> Input matrix a[n,n]
@@ -424,7 +413,6 @@ module stdlib_linalg
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
       end subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$
-    #:endif
     #:endfor
     #:endfor
   end interface solve_lstsq
@@ -445,7 +433,6 @@ module stdlib_linalg
     !! 
     #:for nd,ndsuf,nde in ALL_RHS
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp" 
       pure module subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$(a,b,lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#)
          !> Input matrix a[m,n]
          ${rt}$, intent(in), target :: a(:,:)
@@ -454,7 +441,6 @@ module stdlib_linalg
          !> Size of the working space arrays                
          integer(ilp), intent(out) :: lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#         
       end subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$
-    #:endif
     #:endfor
     #:endfor
   end interface lstsq_space
@@ -900,7 +886,6 @@ module stdlib_linalg
     !! It is possible to use partial storage [m,k] and [k,n], `k=min(m,n)`, choosing `full_matrices=.false.`.
     !! 
     !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).    
     !! 
     !!### Example
     !!
@@ -913,7 +898,6 @@ module stdlib_linalg
     !!```
     !!         
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
     module subroutine stdlib_linalg_svd_${ri}$(a,s,u,vt,overwrite_a,full_matrices,err)
      !!### Summary
      !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
@@ -949,7 +933,6 @@ module stdlib_linalg
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
       end subroutine stdlib_linalg_svd_${ri}$
-    #:endif
     #:endfor     
   end interface svd
 
@@ -972,7 +955,6 @@ module stdlib_linalg
     !! singular values, with size [min(m,n)]. 
     !! 
     !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).    
     !! 
     !!### Example
     !!
@@ -985,7 +967,6 @@ module stdlib_linalg
     !!```
     !!   
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
     module function stdlib_linalg_svdvals_${ri}$(a,err) result(s)
      !!### Summary
      !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
@@ -1009,7 +990,6 @@ module stdlib_linalg
          !> Array of singular values
          real(${rk}$), allocatable :: s(:)
       end function stdlib_linalg_svdvals_${ri}$
-    #:endif
     #:endfor             
   end interface svdvals  
 
