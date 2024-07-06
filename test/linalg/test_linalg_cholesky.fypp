@@ -22,16 +22,13 @@ module test_linalg_cholesky
         allocate(tests(0))
         
         #:for rk,rt,ri in RC_KINDS_TYPES
-        #:if rk!="xdp"
         tests = [tests,new_unittest("least_cholesky_${ri}$",test_cholesky_${ri}$)]
-        #:endif
         #:endfor
 
     end subroutine test_cholesky_factorization
 
     !> Cholesky factorization of a random matrix
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
     subroutine test_cholesky_${ri}$(error)
         type(error_type), allocatable, intent(out) :: error
 
@@ -67,7 +64,6 @@ module test_linalg_cholesky
         
     end subroutine test_cholesky_${ri}$
 
-    #:endif
     #:endfor
 
 

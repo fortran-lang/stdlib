@@ -48,7 +48,6 @@ submodule (stdlib_linalg) stdlib_linalg_cholesky
      end subroutine handle_potrf_info
      
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
      
      ! Compute the Cholesky factorization of a symmetric / Hermitian matrix, A = L*L^T = U^T*U. 
      ! The factorization is returned in-place, overwriting matrix A
@@ -174,7 +173,6 @@ submodule (stdlib_linalg) stdlib_linalg_cholesky
 
      end function stdlib_linalg_${ri}$_cholesky_fun
 
-     #:endif
      #:endfor
 
 end submodule stdlib_linalg_cholesky
