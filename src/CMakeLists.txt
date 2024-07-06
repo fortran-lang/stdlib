@@ -27,7 +27,8 @@ set(fppFiles
     stdlib_linalg_outer_product.fypp
     stdlib_linalg_kronecker.fypp
     stdlib_linalg_cross_product.fypp
-    stdlib_linalg_solve.fypp
+    stdlib_linalg_eigenvalues.fypp
+    stdlib_linalg_solve.fypp    
     stdlib_linalg_determinant.fypp
     stdlib_linalg_qr.fypp
     stdlib_linalg_state.fypp
