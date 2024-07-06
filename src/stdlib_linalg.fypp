@@ -466,10 +466,8 @@ module stdlib_linalg
     !! problem only: \( A = Q_1 R_1 \) (provide `shape(Q)==[m,k]`, `shape(R)==[k,n]`).
     !! 
     !!@note The solution is based on LAPACK's QR factorization (`*GEQRF`) and ordered matrix output (`*ORGQR`, `*UNGQR`). 
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !!     
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp" 
       pure module subroutine stdlib_linalg_${ri}$_qr(a,q,r,overwrite_a,storage,err) 
          !> Input matrix a[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
@@ -484,7 +482,6 @@ module stdlib_linalg
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
       end subroutine stdlib_linalg_${ri}$_qr
-    #:endif
     #:endfor    
   end interface qr
 
@@ -504,7 +501,6 @@ module stdlib_linalg
     !! are provided, no internal allocations will take place during the factorization.
     !!     
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp" 
       pure module subroutine get_qr_${ri}$_workspace(a,lwork,err)
          !> Input matrix a[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
@@ -513,7 +509,6 @@ module stdlib_linalg
          !> State return flag. Returns an error if the query failed
          type(linalg_state_type), optional, intent(out) :: err
       end subroutine get_qr_${ri}$_workspace
-    #:endif
     #:endfor
   end interface qr_space
  

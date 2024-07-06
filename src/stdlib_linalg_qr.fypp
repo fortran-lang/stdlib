@@ -89,7 +89,6 @@ submodule (stdlib_linalg) stdlib_linalg_qr
      end subroutine handle_geqrf_info
 
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
      
      ! Get workspace size for QR operations
      pure module subroutine get_qr_${ri}$_workspace(a,lwork,err)
@@ -268,7 +267,6 @@ submodule (stdlib_linalg) stdlib_linalg_qr
 
      end subroutine stdlib_linalg_${ri}$_qr
 
-     #:endif
      #:endfor
 
 end submodule stdlib_linalg_qr
