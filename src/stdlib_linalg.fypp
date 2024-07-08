@@ -503,7 +503,7 @@ module stdlib_linalg
     #:for rk,rt,ri in RC_KINDS_TYPES
       pure module subroutine get_qr_${ri}$_workspace(a,lwork,err)
          !> Input matrix a[m,n]
-         ${rt}$, intent(inout), target :: a(:,:)
+         ${rt}$, intent(in), target :: a(:,:)
          !> Minimum workspace size for both operations
          integer(ilp), intent(out) :: lwork
          !> State return flag. Returns an error if the query failed

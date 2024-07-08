@@ -93,14 +93,14 @@ submodule (stdlib_linalg) stdlib_linalg_qr
      ! Get workspace size for QR operations
      pure module subroutine get_qr_${ri}$_workspace(a,lwork,err)
          !> Input matrix a[m,n]
-         ${rt}$, intent(inout), target :: a(:,:)
+         ${rt}$, intent(in), target :: a(:,:)
          !> Minimum workspace size for both operations
          integer(ilp), intent(out) :: lwork
          !> State return flag. Returns an error if the query failed
          type(linalg_state_type), optional, intent(out) :: err
          
          integer(ilp) :: m,n,k,info,lwork_qr,lwork_ord
-         ${rt}$ :: work_dummy(1),tau_dummy(1)
+         ${rt}$ :: work_dummy(1),tau_dummy(1),a_dummy(1,1)
          type(linalg_state_type) :: err0
          
          lwork = -1_ilp
@@ -108,11 +108,11 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          !> Problem sizes
          m = size(a,1,kind=ilp)
          n = size(a,2,kind=ilp)  
-         k = min(m,n)       
+         k = min(m,n)      
          
          ! QR space
          lwork_qr = -1_ilp
-         call geqrf(m,n,a,m,tau_dummy,work_dummy,lwork_qr,info)    
+         call geqrf(m,n,a_dummy,m,tau_dummy,work_dummy,lwork_qr,info)    
          call handle_geqrf_info(info,m,n,lwork_qr,err0)
          if (err0%error()) then 
             call linalg_error_handling(err0,err)
@@ -123,7 +123,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          ! Ordering space (for full factorization)
          lwork_ord = -1_ilp
          call #{if rt.startswith('complex')}# ungqr #{else}# orgqr #{endif}#  &
-              (m,m,k,a,m,tau_dummy,work_dummy,lwork_ord,info)
+              (m,m,k,a_dummy,m,tau_dummy,work_dummy,lwork_ord,info)
          call handle_orgqr_info(info,m,n,k,lwork_ord,err0)   
          if (err0%error()) then 
             call linalg_error_handling(err0,err)
