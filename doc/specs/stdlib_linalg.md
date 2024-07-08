@@ -914,8 +914,9 @@ is orthonormal and \( R \) is upper-triangular. Matrix \( A \) has size `[m,n]`,
 
 The results are returned in output matrices \( Q \) and \(R \), that have the same type and kind as \( A \). 
 Given `k = min(m,n)`, one can write \( A = \( Q_1  Q_2 \) \cdot \( \frac{R_1}{0}\) \). 
-Because the lower rows of \( R \) are zeros, the user may require to return full matrices (provide `shape(Q)==[m,m]`, `shape(R)==[m,n]`) 
-or reduced matrices: \( A = Q_1 R_1 \) (provide `shape(Q)==[m,k]`, `shape(R)==[k,n]`).
+Because the lower rows of \( R \) are zeros, a reduced problem \( A = Q_1 R_1 \) may be solved. The size of 
+the input arguments determines what problem is solved: on full matrices (`shape(Q)==[m,m]`, `shape(R)==[m,n]`), 
+the full problem is solved. On reduced matrices (`shape(Q)==[m,k]`, `shape(R)==[k,n]`), the reduced problem is solved.
 
 ### Syntax
 
