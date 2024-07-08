@@ -104,7 +104,8 @@ end interface axpy
 Note that the 128-bit functions are only provided by `stdlib` and always point to the internal implementation. 
 Because 128-bit precision is identified as [stdlib_kinds(module):qp], initials for 128-bit procedures were 
 labelled as `q` (quadruple-precision reals) and `w` ("wide" or quadruple-precision complex numbers). 
-Extended precision ([stdlib_kinds(module):xdp]) calculations are currently not supported.
+Extended precision ([stdlib_kinds(module):xdp]) calculations are labelled as `x` (extended-precision reals).
+and `y` (extended-precision complex numbers).
 
 ### Example
 
@@ -779,7 +780,7 @@ Result vector `x` returns the approximate solution that minimizes the 2-norm \( 
 
 `cond` (optional): Shall be a scalar `real` value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
 
-`singvals` (optional): Shall be a `real` rank-1 array of the same kind `a` and size at least `minval(shape(a))`, returning the list of singular values `s(i)>=cond*maxval(s)`, in descending order of magnitude. It is an `intent(out)` argument.
+`singvals` (optional): Shall be a `real` rank-1 array of the same kind `a` and size at least `min(m,n)`, returning the list of singular values `s(i)>=cond*maxval(s)` from the internal SVD, in descending order of magnitude. It is an `intent(out)` argument.
 
 `overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
 
@@ -881,7 +882,7 @@ This interface is equivalent to the `pure` version of determinant [[stdlib_linal
 
 ### Syntax
 
-`c = ` [[stdlib_linalg(module):operator(.det.)(interface)]] `(a)`
+`c = ` [[stdlib_linalg(module):operator(.det.)(interface)]] `a`
 
 ### Arguments
 
@@ -889,7 +890,7 @@ This interface is equivalent to the `pure` version of determinant [[stdlib_linal
 
 ### Return value
 
-Returns a real scalar value that represents the determinnt of the matrix.
+Returns a real scalar value that represents the determinant of the matrix.
 
 Raises `LINALG_ERROR` if the matrix is singular.
 Raises `LINALG_VALUE_ERROR` if the matrix is non-square.
@@ -1242,3 +1243,125 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 ```fortran
 {!example/linalg/example_svdvals.f90!}
 ```
+
+## `.inv.` - Inverse operator of a square matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This operator returns the inverse of a `real` or `complex` square matrix \( A \).
+The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+
+This interface is equivalent to the function  [[stdlib_linalg(module):inv(interface)]]. 
+
+### Syntax
+
+`b = ` [[stdlib_linalg(module):operator(.inv.)(interface)]] `a`
+
+### Arguments
+
+`a`: Shall be a rank-2 square array of any `real` or `complex` kinds. It is an `intent(in)` argument.
+
+### Return value
+
+Returns a rank-2 square array with the same type, kind and rank as `a`, that contains the inverse of `a`.
+
+If an exception occurred on input errors, or singular matrix, `NaN`s will be returned.
+For fine-grained error control in case of singular matrices prefer the `subroutine` and the `function`
+interfaces.
+
+
+### Example
+
+```fortran
+{!example/linalg/example_inverse_operator.f90!}
+```
+
+## `invert` - Inversion of a square matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine inverts a square `real` or `complex` matrix in-place.
+The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+
+On return, the input matrix `a` is replaced by its inverse.
+The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):invert(interface)]] `(a, [,inva] [, pivot] [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2, square, `real` or `complex` array containing the coefficient matrix. 
+If `inva` is provided, it is an `intent(in)` argument.
+If `inva` is not provided, it is an `intent(inout)` argument: on output, it is replaced by the inverse of `a`. 
+
+`inva` (optional): Shall be a rank-2, square, `real` or `complex` array with the same size, and kind as `a`. 
+On output, it contains the inverse of `a`.
+
+`pivot` (optional): Shall be a rank-1 array of the same kind and matrix dimension as `a`, that contains the diagonal pivot indices on return. It is an `intent(inout)` argument. 
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Computes the inverse of the matrix \( A \), \(A^{-1}\, and returns it either in \( A \) or in another matrix.
+
+Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
+Raises `LINALG_VALUE_ERROR` if `inva` and `a` do not have the same size.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_inverse_inplace.f90!}
+```
+
+```fortran
+{!example/linalg/example_inverse_subroutine.f90!}
+```
+
+## `inv` - Inverse of a square matrix. 
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the inverse of a square `real` or `complex` matrix in-place.
+The inverse, \( A^{-1} \), is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+
+The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
+
+### Syntax
+
+`b ` [[stdlib_linalg(module):inv(interface)]] `(a, [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2, square, `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value of the same type, kind and rank as `a`, that contains the inverse matrix \(A^{-1}\).
+
+Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_inverse_function.f90!}
+```
+
