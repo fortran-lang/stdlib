@@ -17,6 +17,9 @@ module stdlib_linalg
   public :: eigvals
   public :: eigvalsh
   public :: eye
+  public :: inv
+  public :: invert
+  public :: operator(.inv.)
   public :: lstsq
   public :: lstsq_space
   public :: solve
@@ -1369,6 +1372,207 @@ module stdlib_linalg
     end function stdlib_linalg_pure_cdpdeterminant
   end interface  
 
+  ! Matrix Inverse: Function interface
+  interface inv
+    !! version: experimental 
+    !!
+    !! Inverse of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#inv-inverse-of-a-square-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for computing the inverse of a square `real` or `complex` matrix.
+    !! The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+    !!
+    !!### Description
+    !!     
+    !! This function interface provides methods that return the inverse of a square matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! The inverse matrix \( A^{-1} \) is returned as a function result. 
+    !! Exceptions are raised in case of singular matrix or invalid size, and trigger an `error stop` if 
+    !! the state flag `err` is not provided. 
+    !!
+    !!@note The provided functions are intended for square matrices.
+    !!       
+    module function stdlib_linalg_inverse_s(a,err) result(inva)
+         !> Input matrix a[n,n]
+         real(sp), intent(in) :: a(:,:)
+         !> Output matrix inverse
+         real(sp), allocatable :: inva(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end function stdlib_linalg_inverse_s
+    module function stdlib_linalg_inverse_d(a,err) result(inva)
+         !> Input matrix a[n,n]
+         real(dp), intent(in) :: a(:,:)
+         !> Output matrix inverse
+         real(dp), allocatable :: inva(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end function stdlib_linalg_inverse_d
+    module function stdlib_linalg_inverse_c(a,err) result(inva)
+         !> Input matrix a[n,n]
+         complex(sp), intent(in) :: a(:,:)
+         !> Output matrix inverse
+         complex(sp), allocatable :: inva(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end function stdlib_linalg_inverse_c
+    module function stdlib_linalg_inverse_z(a,err) result(inva)
+         !> Input matrix a[n,n]
+         complex(dp), intent(in) :: a(:,:)
+         !> Output matrix inverse
+         complex(dp), allocatable :: inva(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end function stdlib_linalg_inverse_z
+  end interface inv
+
+  ! Matrix Inverse: Subroutine interface - in-place inversion
+  interface invert
+    !! version: experimental 
+    !!
+    !! Inversion of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#invert-inversion-of-a-square-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for inverting a square `real` or `complex` matrix in-place.
+    !! The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+    !!
+    !!### Description
+    !!     
+    !! This subroutine interface provides a way to compute the inverse of a matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! The user may provide a unique matrix argument `a`. In this case, `a` is replaced by the inverse matrix.
+    !! on output. Otherwise, one may provide two separate arguments: an input matrix `a` and an output matrix 
+    !! `inva`. In this case, `a` will not be modified, and the inverse is returned in `inva`.
+    !! Pre-allocated storage may be provided for the array of pivot indices, `pivot`. If all pre-allocated 
+    !! work spaces are provided, no internal memory allocations take place when using this interface.             
+    !!
+    !!@note The provided subroutines are intended for square matrices.
+    !!      
+    module subroutine stdlib_linalg_invert_inplace_s(a,pivot,err)
+         !> Input matrix a[n,n]
+         real(sp), intent(inout) :: a(:,:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)         
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_invert_inplace_s
+    ! Compute the square matrix inverse of a
+    module subroutine stdlib_linalg_invert_split_s(a,inva,pivot,err)
+         !> Input matrix a[n,n].
+         real(sp), intent(in) :: a(:,:)
+         !> Inverse matrix a[n,n]. 
+         real(sp), intent(out) :: inva(:,:)         
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err    
+    end subroutine stdlib_linalg_invert_split_s
+    module subroutine stdlib_linalg_invert_inplace_d(a,pivot,err)
+         !> Input matrix a[n,n]
+         real(dp), intent(inout) :: a(:,:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)         
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_invert_inplace_d
+    ! Compute the square matrix inverse of a
+    module subroutine stdlib_linalg_invert_split_d(a,inva,pivot,err)
+         !> Input matrix a[n,n].
+         real(dp), intent(in) :: a(:,:)
+         !> Inverse matrix a[n,n]. 
+         real(dp), intent(out) :: inva(:,:)         
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err    
+    end subroutine stdlib_linalg_invert_split_d
+    module subroutine stdlib_linalg_invert_inplace_c(a,pivot,err)
+         !> Input matrix a[n,n]
+         complex(sp), intent(inout) :: a(:,:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)         
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_invert_inplace_c
+    ! Compute the square matrix inverse of a
+    module subroutine stdlib_linalg_invert_split_c(a,inva,pivot,err)
+         !> Input matrix a[n,n].
+         complex(sp), intent(in) :: a(:,:)
+         !> Inverse matrix a[n,n]. 
+         complex(sp), intent(out) :: inva(:,:)         
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err    
+    end subroutine stdlib_linalg_invert_split_c
+    module subroutine stdlib_linalg_invert_inplace_z(a,pivot,err)
+         !> Input matrix a[n,n]
+         complex(dp), intent(inout) :: a(:,:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)         
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_invert_inplace_z
+    ! Compute the square matrix inverse of a
+    module subroutine stdlib_linalg_invert_split_z(a,inva,pivot,err)
+         !> Input matrix a[n,n].
+         complex(dp), intent(in) :: a(:,:)
+         !> Inverse matrix a[n,n]. 
+         complex(dp), intent(out) :: inva(:,:)         
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err    
+    end subroutine stdlib_linalg_invert_split_z
+  end interface invert
+
+  ! Matrix Inverse: Operator interface
+  interface operator(.inv.)
+    !! version: experimental 
+    !!
+    !! Inverse operator of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#inv-inverse-operator-of-a-square-matrix))
+    !!
+    !!### Summary
+    !! Operator interface for computing the inverse of a square `real` or `complex` matrix.
+    !!
+    !!### Description
+    !! 
+    !! This operator interface provides a convenient way to compute the inverse of a matrix.
+    !! Supported data types include `real` and `complex`. On input errors or singular matrix, 
+    !! NaNs will be returned.
+    !!
+    !!@note The provided functions are intended for square matrices.
+    !!
+    module function stdlib_linalg_inverse_s_operator(a) result(inva)
+         !> Input matrix a[n,n]
+         real(sp), intent(in) :: a(:,:)
+         !> Result matrix
+         real(sp), allocatable :: inva(:,:)        
+    end function stdlib_linalg_inverse_s_operator
+    module function stdlib_linalg_inverse_d_operator(a) result(inva)
+         !> Input matrix a[n,n]
+         real(dp), intent(in) :: a(:,:)
+         !> Result matrix
+         real(dp), allocatable :: inva(:,:)        
+    end function stdlib_linalg_inverse_d_operator
+    module function stdlib_linalg_inverse_c_operator(a) result(inva)
+         !> Input matrix a[n,n]
+         complex(sp), intent(in) :: a(:,:)
+         !> Result matrix
+         complex(sp), allocatable :: inva(:,:)        
+    end function stdlib_linalg_inverse_c_operator
+    module function stdlib_linalg_inverse_z_operator(a) result(inva)
+         !> Input matrix a[n,n]
+         complex(dp), intent(in) :: a(:,:)
+         !> Result matrix
+         complex(dp), allocatable :: inva(:,:)        
+    end function stdlib_linalg_inverse_z_operator
+  end interface operator(.inv.)
+
+
   ! Eigendecomposition of a square matrix: eigenvalues, and optionally eigenvectors
   interface eig    
      !! version: experimental 
@@ -1778,7 +1982,6 @@ module stdlib_linalg
          real(dp), allocatable :: lambda(:)
     end function stdlib_linalg_eigvalsh_noerr_z
   end interface eigvalsh
-
 
   ! Singular value decomposition  
   interface svd 
