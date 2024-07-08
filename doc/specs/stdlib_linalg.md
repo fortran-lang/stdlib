@@ -909,7 +909,7 @@ Experimental
 
 ### Description
 
-This subroutine computes the QR factorization of a `real` or `complex` matrix: \( A = Q R \). where \( Q \) 
+This subroutine computes the QR factorization of a `real` or `complex` matrix: \( A = Q R \) where \( Q \) 
 is orthonormal and \( R \) is upper-triangular. Matrix \( A \) has size `[m,n]`, with \( m \ge n \). 
 
 The results are returned in output matrices \( Q \) and \(R \), that have the same type and kind as \( A \). 
