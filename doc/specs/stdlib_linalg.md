@@ -931,7 +931,7 @@ or reduced matrices: \( A = Q_1 R_1 \) (provide `shape(Q)==[m,k]`, `shape(R)==[k
 
 `storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to [[stdlib_linalg(module):qr_space(interface)]]. It is an `intent(inout)` argument.
 
-`overwrite_a` (optional): Shall be an input `logical` flag (default: `.false.`). If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+`overwrite_a` (optional): Shall be an input `logical` flag (default: `.false.`). If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. It is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
