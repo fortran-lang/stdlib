@@ -901,7 +901,7 @@ Exceptions trigger an `error stop`.
 {!example/linalg/example_determinant2.f90!}
 ```
 
-## `qr` - Compute the QR factorization of a matrix. 
+## `qr` - Compute the QR factorization of a matrix
 
 ### Status
 
