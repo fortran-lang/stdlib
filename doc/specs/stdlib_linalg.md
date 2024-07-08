@@ -923,7 +923,7 @@ or reduced matrices: \( A = Q_1 R_1 \) (provide `shape(Q)==[m,k]`, `shape(R)==[k
 
 ### Arguments
 
-`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix of size `[m,n]`. It is normally an `intent(in)` argument. If `overwrite_a=.true.`, it is an `intent(inout)` argument, and is destroyed upon return.
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix of size `[m,n]`. It is an `intent(in)` argument, if `overwrite_a=.false.`. Otherwise, it is an `intent(inout)` argument, and is destroyed upon return.
 
 `q`: Shall be a rank-2 array of the same kind as `a`, containing the orthonormal matrix `q`. It is an `intent(out)` argument. It should have shape either `[m,m]` or `[m,k]` whether the full or the reduced problem is sought for.
 
