@@ -32,10 +32,10 @@ module stdlib_sparse_kinds
 
     !> Base sparse type holding the meta data related to the storage capacity of a matrix.
     type, public, abstract :: sparse_type
-      integer :: nrows = 0 !> number of rows
-      integer :: ncols = 0 !> number of columns
-      integer :: nnz   = 0 !> number of non-zero values
-      integer :: storage = sparse_full !> assumed storage symmetry
+      integer :: nrows = 0 !! number of rows
+      integer :: ncols = 0 !! number of columns
+      integer :: nnz   = 0 !! number of non-zero values
+      integer :: storage = sparse_full !! assumed storage symmetry
     end type
 
     !> COO: COOrdinates compresed format 
