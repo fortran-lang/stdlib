@@ -36,7 +36,6 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
       end subroutine handle_gelsd_info
 
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
      ! Workspace needed by gelsd
      elemental subroutine ${ri}$gelsd_space(m,n,nrhs,lrwork,liwork,lcwork)
          integer(ilp), intent(in) :: m,n,nrhs
@@ -74,12 +73,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      end subroutine ${ri}$gelsd_space
 
-     #:endif
      #:endfor
 
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
 
      ! Compute the integer, real, [complex] working space requested byu the least squares procedure
      pure module subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$(a,b,lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#)
@@ -357,7 +354,6 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      end subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$
 
-     #:endif
      #:endfor
      #:endfor
 

@@ -59,7 +59,6 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
 
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
 
      !> Singular values of matrix A
      module function stdlib_linalg_svdvals_${ri}$(a,err) result(s)
@@ -287,7 +286,6 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          call linalg_error_handling(err0,err)
 
      end subroutine stdlib_linalg_svd_${ri}$
-     #:endif
      #:endfor
 
 end submodule stdlib_linalg_svd

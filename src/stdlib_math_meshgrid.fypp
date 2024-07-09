@@ -7,7 +7,7 @@
   do i${j}$ = 1, size(x${j}$)
   #:endfor
   #:for j in indices
-  xm${j}$(${"".join(f"i{j}," for j in indices).removesuffix(",")}$) = &
+  xm${j}$(${",".join(f"i{j}" for j in indices)}$) = &
           x${j}$(i${j}$)
   #:endfor
   #:for j in indices
@@ -33,7 +33,7 @@ contains
     #: set RName = rname("meshgrid", rank, t1, k1)
     module procedure ${RName}$
 
-        integer :: ${"".join(f"i{j}," for j in range(1, rank + 1)).removesuffix(",")}$
+        integer :: ${",".join(f"i{j}" for j in range(1, rank + 1))}$
 
         select case (optval(indexing, stdlib_meshgrid_xy))
         case (stdlib_meshgrid_xy)
