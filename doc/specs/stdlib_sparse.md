@@ -23,7 +23,7 @@ The parent `sparse_type` is as an abstract derived type holding the basic common
 
 ```Fortran
 type, public, abstract :: sparse_type
-    integer :: nrows   !> number of rows
+    integer :: nrows   !! number of rows
     integer :: ncols   !> number of columns
     integer :: nnz     !> number of non-zero values
     integer :: storage !> assumed storage symmetry
