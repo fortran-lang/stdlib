@@ -13,7 +13,7 @@
 #! This approach allows us to have the same code for all input types.
 #:set IRSCB_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME &
     & + BITSET_TYPES_ALT_NAME
-#:set IRC_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME
+#:set IR_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME
 
 
 
@@ -523,7 +523,7 @@ module stdlib_sorting
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
 !! with a value of `.TRUE.` the indices correspond to a non-increasing sort.
 
-#:for ki, ti, namei in IRC_INDEX_TYPES_ALT_NAME
+#:for ti, tii, namei in IR_INDEX_TYPES_ALT_NAME
     #:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
         module subroutine ${name1}$_${namei}$_sort_adj( array, index, work, iwork, &
             reverse )
