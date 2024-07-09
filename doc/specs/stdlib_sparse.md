@@ -232,7 +232,7 @@ This module provides facility functions for converting between storage formats.
 
 `col`, `integer(in)`:: columns index array.
 
-`data`, `real/complex(in)`, `optional`:: data array.
+`data`, `real/complex(in)`, `optional`:: `real` or `complex` data array.
 
 `nrows`, `integer(in)`, `optional`:: number of rows, if not given it will be computed from the `row` array.
 
