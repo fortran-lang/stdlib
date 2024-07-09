@@ -163,7 +163,7 @@ Type-bound procedures to enable adding or requesting data in/from a sparse matri
 
 `i`, `intent(in)` : Shall be an integer value.
 `j`, `intent(in)` : Shall be an integer value.
-`v`, `result`     : Shall be a `real` or `complex` value in accordance to the declared sparse matrix object. If the `ij` tuple is within the sparse pattern, `v` returns the value in the data buffer. If the `ij` tuple is outside the sparse pattern, `v` returns `0`. If the `ij` tuple is outside the matrix pattern `(nrows,ncols)`, `v` returns `NaN`.
+`v`, `result`     : Shall be a `real` or `complex` value in accordance to the declared sparse matrix object. If the `ij` tuple is within the sparse pattern, `v` contains the value in the data buffer. If the `ij` tuple is outside the sparse pattern, `v` is equal `0`. If the `ij` tuple is outside the matrix pattern `(nrows,ncols)`, `v` is `NaN`.
 
 ## Example
 ```fortran
