@@ -4,7 +4,7 @@
 module test_stdlib_math
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_math, only: clip, arg, argd, argpi, arange, is_close, all_close, diff, &
-                           arange
+                           arange, deg2rad, rad2deg
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none
 
@@ -43,6 +43,12 @@ contains
             , new_unittest("arg-cmplx-dp", test_arg_dp) &
             , new_unittest("argd-cmplx-dp", test_argd_dp) &
             , new_unittest("argpi-cmplx-dp", test_argpi_dp) &
+            
+            !> Tests for deg2rad/rad2deg
+            , new_unittest("deg2rad-real-sp", test_deg2rad_sp) &
+            , new_unittest("rad2deg-real-sp", test_rad2deg_sp) &
+            , new_unittest("deg2rad-real-dp", test_deg2rad_dp) &
+            , new_unittest("rad2deg-real-dp", test_rad2deg_dp) &
             
             !> Tests for `is_close` and `all_close`
             , new_unittest("is_close-real-sp", test_is_close_real_sp) &
@@ -330,6 +336,41 @@ contains
             "test_array")
         
     end subroutine test_argpi_dp
+    
+    subroutine test_deg2rad_sp(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(sp), parameter :: tol = sqrt(epsilon(1.0_sp))
+
+        call check(error, PI_sp, deg2rad(180.0_sp), thr=tol)
+        if (allocated(error)) return
+
+    end subroutine test_deg2rad_sp
+    
+    subroutine test_rad2deg_sp(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(sp), parameter :: tol = sqrt(epsilon(1.0_sp))
+
+        call check(error, 180.0_sp, rad2deg(PI_sp), thr=tol)
+        if (allocated(error)) return
+
+    end subroutine test_rad2deg_sp
+    subroutine test_deg2rad_dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(dp), parameter :: tol = sqrt(epsilon(1.0_dp))
+
+        call check(error, PI_dp, deg2rad(180.0_dp), thr=tol)
+        if (allocated(error)) return
+
+    end subroutine test_deg2rad_dp
+    
+    subroutine test_rad2deg_dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(dp), parameter :: tol = sqrt(epsilon(1.0_dp))
+
+        call check(error, 180.0_dp, rad2deg(PI_dp), thr=tol)
+        if (allocated(error)) return
+
+    end subroutine test_rad2deg_dp
 
     subroutine test_is_close_real_sp(error)
         type(error_type), allocatable, intent(out) :: error

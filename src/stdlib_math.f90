@@ -9,7 +9,7 @@ module stdlib_math
     public :: EULERS_NUMBER_SP, EULERS_NUMBER_DP
     public :: DEFAULT_LINSPACE_LENGTH, DEFAULT_LOGSPACE_BASE, DEFAULT_LOGSPACE_LENGTH
     public :: stdlib_meshgrid_ij, stdlib_meshgrid_xy
-    public :: arange, arg, argd, argpi, is_close, all_close, diff, meshgrid
+    public :: arange, arg, argd, argpi, deg2rad, rad2deg, is_close, all_close, diff, meshgrid
 
     integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
     integer, parameter :: DEFAULT_LOGSPACE_LENGTH = 50
@@ -488,6 +488,24 @@ module stdlib_math
         procedure :: argpi_sp
         procedure :: argpi_dp
     end interface argpi
+
+    !> Version: experimental
+    !> 
+    !> `deg2rad` converts phase angles from degrees to radians.
+    !> ([Specification](../page/specs/stdlib_math.html#deg2rad-function))
+    interface deg2rad
+        procedure :: deg2rad_sp
+        procedure :: deg2rad_dp
+    end interface deg2rad
+    
+    !> Version: experimental
+    !> 
+    !> `rad2deg` converts phase angles from radians to degrees.
+    !> ([Specification](../page/specs/stdlib_math.html#rad2deg-function))
+    interface rad2deg
+        procedure :: rad2deg_sp
+        procedure :: rad2deg_dp
+    end interface rad2deg
     
     !> Returns a boolean scalar/array where two scalar/arrays are element-wise equal within a tolerance.
     !> ([Specification](../page/specs/stdlib_math.html#is_close-function))
@@ -1486,6 +1504,33 @@ contains
                  
 
     end function argpi_dp
+
+    elemental function deg2rad_sp(theta) result(result)
+        real(sp), intent(in) :: theta
+        real(sp) :: result
+        result = theta * PI_sp / 180.0_sp
+        
+    end function deg2rad_sp
+    
+    elemental function rad2deg_sp(theta) result(result)
+        real(sp), intent(in) :: theta
+        real(sp) :: result
+        result = theta * 180.0_sp / PI_sp
+        
+    end function rad2deg_sp
+    elemental function deg2rad_dp(theta) result(result)
+        real(dp), intent(in) :: theta
+        real(dp) :: result
+        result = theta * PI_dp / 180.0_dp
+        
+    end function deg2rad_dp
+    
+    elemental function rad2deg_dp(theta) result(result)
+        real(dp), intent(in) :: theta
+        real(dp) :: result
+        result = theta * 180.0_dp / PI_dp
+        
+    end function rad2deg_dp
 
     !> Returns the greatest common divisor of two integers of kind int8
     !> using the Euclidean algorithm.
