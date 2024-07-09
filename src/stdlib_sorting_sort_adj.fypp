@@ -62,7 +62,7 @@
 !! of modified versions of the code in the Fortran Standard Library under
 !! the MIT license.
 
-submodule(stdlib_sorting) stdlib_sorting_sort_index
+submodule(stdlib_sorting) stdlib_sorting_sort_adj
 
     implicit none
 
@@ -71,7 +71,7 @@ contains
 #:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
   #:for t1, t2, t3, name1 in IRSCB_TYPES_ALT_NAME
 
-    module subroutine ${name1}$_sort_index_${namei}$( array, index, work, iwork, reverse )
+    module subroutine ${name1}$_sort_adj_${namei}$( array, index, work, iwork, reverse )
 ! A modification of `${name1}$_ord_sort` to return an array of indices that
 ! would perform a stable sort of the `ARRAY` as input, and also sort `ARRAY`
 ! as desired. The indices by default
@@ -494,9 +494,9 @@ contains
 
         end subroutine reverse_segment
 
-    end subroutine ${name1}$_sort_index_${namei}$
+    end subroutine ${name1}$_sort_adj_${namei}$
 
   #:endfor
 #:endfor
 
-end submodule stdlib_sorting_sort_index
+end submodule stdlib_sorting_sort_adj

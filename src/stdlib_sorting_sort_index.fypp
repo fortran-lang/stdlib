@@ -1,0 +1,104 @@
+#:include "common.fypp"
+#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_TYPES, INT_KINDS))
+#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_TYPES, REAL_KINDS))
+#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_TYPES, STRING_KINDS))
+#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"],  ["character(len=:)"], ["character(len=len(array))"], ["char"]))
+#:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_TYPES, BITSET_KINDS))
+
+#:set INT_INDEX_TYPES_ALT_NAME = list(zip(["int_index", "int_index_low"], ["integer(int_index)", "integer(int_index_low)"], ["default", "low"]))
+
+#! For better code reuse in fypp, make lists that contain the input types,
+#! with each having output types and a separate name prefix for subroutines
+#! This approach allows us to have the same code for all input types.
+#:set IRSCB_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME &
+    & + BITSET_TYPES_ALT_NAME
+
+!! Licensing:
+!!
+!! This file is subjec† both to the Fortran Standard Library license, and
+!! to additional licensing requirements as it contains translations of
+!! other software.
+!!
+!! The Fortran Standard Library, including this file, is distributed under
+!! the MIT license that should be included with the library's distribution.
+!!
+!!   Copyright (c) 2021 Fortran stdlib developers
+!!
+!!   Permission is hereby granted, free of charge, to any person obtaining a
+!!   copy of this software and associated documentation files (the
+!!   "Software"),  to deal in the Software without restriction, including
+!!   without limitation the rights to use, copy, modify, merge, publish,
+!!   distribute, sublicense, and/or sellcopies of the Software, and to permit
+!!   persons to whom the Software is furnished to do so, subject to the
+!!   following conditions:
+!!
+!!   The above copyright notice and this permission notice shall be included
+!!   in all copies or substantial portions of the Software.
+!!
+!!   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+!!   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+!!   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+!!   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+!!   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+!!   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+!!   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+!!
+!! The generic subroutine, `SORT_INDEX`, is substantially a translation to
+!! Fortran 2008 of the `"Rust" sort` sorting routines in
+!! [`slice.rs`](https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs)
+!! The `rust sort` implementation is distributed with the header:
+!!
+!!   Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT
+!!   file at the top-level directory of this distribution and at
+!!   http://rust-lang.org/COPYRIGHT.
+!!
+!!   Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+!!   http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+!!   <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
+!!   option. This file may not be copied, modified, or distributed
+!!   except according to those terms.
+!!
+!! so the license for the original`slice.rs` code is compatible with the use
+!! of modified versions of the code in the Fortran Standard Library under
+!! the MIT license.
+
+submodule(stdlib_sorting) stdlib_sorting_sort_index
+
+    implicit none
+
+contains
+
+#:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
+  #:for t1, t2, t3, name1 in IRSCB_TYPES_ALT_NAME
+
+    module subroutine ${name1}$_sort_index_${namei}$( array, index, work, iwork, reverse )
+        ${t1}$, intent(inout)         :: array(0:)
+        ${ti}$, intent(out)           :: index(0:)
+        ${t3}$, intent(out), optional :: work(0:)
+        ${ti}$, intent(out), optional :: iwork(0:)
+        logical, intent(in), optional :: reverse
+
+        integer(int_index) :: array_size, i, stat
+
+        array_size = size(array, kind=int_index)
+
+        if ( array_size > huge(index)) then
+            error stop "Too many entries for the kind of index."
+        end if
+
+        if ( array_size > size(index, kind=int_index) ) then
+            error stop "Too many entries for the size of index."
+        end if
+
+        do i = 0, array_size-1
+            index(i) = int(i+1, kind=${ki}$)
+        end do
+
+        call sort_adj(array, index, work, iwork, reverse)
+
+    end subroutine ${name1}$_sort_index_${namei}$
+
+  #:endfor
+#:endfor
+
+end submodule stdlib_sorting_sort_index
