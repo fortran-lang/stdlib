@@ -106,7 +106,7 @@ contains
         ${t2}$, allocatable :: buf(:)
         ${ti}$, allocatable :: ibuf(:)
 
-        if ( size(array, kind=int_index) > huge(1_int_index) ) then
+        if ( size(array, kind=int_index) > huge(1_${ki}$) then
             error stop "Too many entries for the kind of index."
         end if
 
