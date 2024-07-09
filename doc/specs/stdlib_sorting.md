@@ -160,7 +160,6 @@ housekeeping it has slower runtime performance than `ORD_SORT`.
 provided as optional `work` and `iwork` arguments or allocated
 internally on the stack.
 
-
 #### The `SORT_INDEX` subroutine
 
 The `SORT` and `ORD_SORT` subroutines can sort rank 1 isolated

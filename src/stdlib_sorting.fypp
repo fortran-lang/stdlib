@@ -15,8 +15,6 @@
     & + BITSET_TYPES_ALT_NAME
 #:set IR_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME
 
-
-
 !! Licensing:
 !!
 !! This file is subject both to the Fortran Standard Library license, and
@@ -578,7 +576,6 @@ module stdlib_sorting
 
     end interface sort
 
-
     interface sort_adj
 !! Version: experimental
 !!
@@ -664,7 +661,6 @@ contains
             ${ti}$, intent(out), optional            :: iwork(0:)
             logical, intent(in), optional             :: reverse
 
-
         integer(int_index) :: array_size, i
 
         array_size = size(array, kind=int_index)
@@ -682,8 +678,6 @@ contains
         end do
 
         call sort_adj(array, index, work, iwork, reverse)
-
-
 
         end subroutine ${name1}$_sort_index_${namei}$
 
