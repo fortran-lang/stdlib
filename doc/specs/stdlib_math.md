@@ -404,8 +404,8 @@ Returns the `real` phase angle in radians.
 
 #### Example
 
-```fortran
-{!example/math/example_math_deg2rad.f90!}
+```{literalinclude} ../../example/math/example_math_deg2rad.f90
+:language: Fortran
 ```
 
 ### `rad2deg`
@@ -436,8 +436,8 @@ Returns the `real` phase angle in degrees.
 
 #### Example
 
-```fortran
-{!example/math/example_math_rad2deg.f90!}
+```{literalinclude} ../../example/math/example_math_rad2deg.f90
+:language: Fortran
 ```
 
 ### `is_close` function
