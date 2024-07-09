@@ -59,8 +59,8 @@ module stdlib_sparse_kinds
 
     !> CSR: Compressed sparse row or Yale format
     type, public, extends(sparse_type) :: CSR_type  
-      integer, allocatable  :: col(:)    !> matrix column pointer
-      integer, allocatable  :: rowptr(:) !> matrix row pointer
+      integer, allocatable  :: col(:)    !! matrix column pointer
+      integer, allocatable  :: rowptr(:) !! matrix row pointer
     contains
       procedure :: malloc => malloc_csr
     end type
