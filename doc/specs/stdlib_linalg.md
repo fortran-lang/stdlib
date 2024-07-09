@@ -1195,8 +1195,8 @@ interfaces.
 
 ### Example
 
-```fortran
-{!example/linalg/example_inverse_operator.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_operator.f90
+:language: Fortran
 ```
 
 ## `invert` - Inversion of a square matrix
@@ -1240,12 +1240,12 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_inverse_inplace.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_inplace.f90
+:language: Fortran
 ```
 
-```fortran
-{!example/linalg/example_inverse_subroutine.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_subroutine.f90
+:language: Fortran
 ```
 
 ## `inv` - Inverse of a square matrix. 
@@ -1280,7 +1280,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_inverse_function.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_function.f90
+:language: Fortran
 ```
 
