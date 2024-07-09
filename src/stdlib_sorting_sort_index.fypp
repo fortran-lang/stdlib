@@ -192,7 +192,8 @@ contains
             ${t1}$, intent(inout)            :: array(0:)
             ${ti}$, intent(inout) :: index(0:)
 
-            ${ti}$ :: i, j, key_index
+            ${ti}$ :: i, j
+            ${ti}$ :: key_index
             ${t3}$ :: key
 
             do j=1, size(array, kind=${ki}$)-1
@@ -277,7 +278,8 @@ contains
             ${ti}$, intent(inout) :: index(0:)
 
             ${t3}$ :: tmp
-            ${ti}$ :: i, tmp_index
+            ${ti}$ :: i
+            ${ti}$ :: tmp_index
 
             tmp = array(0)
             tmp_index = index(0)
@@ -474,7 +476,8 @@ contains
             ${t1}$, intent(inout) :: array(0:)
             ${ti}$, intent(inout) :: index(0:)
 
-            ${ti}$ :: itemp, lo, hi
+            ${ti}$ :: itemp
+            ${ti}$ :: lo, hi
             ${t3}$ :: temp
 
             lo = 0
