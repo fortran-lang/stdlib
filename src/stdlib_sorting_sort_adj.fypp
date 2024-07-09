@@ -42,7 +42,7 @@
 !!   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 !!   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 !!
-!! The generic subroutine, `SORT_INDEX`, is substantially a translation to
+!! The generic subroutine, `SORT_ADJ`, is substantially a translation to
 !! Fortran 2008 of the `"Rust" sort` sorting routines in
 !! [`slice.rs`](https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs)
 !! The `rust sort` implementation is distributed with the header:
@@ -95,7 +95,6 @@ contains
 ! estimation of the optimal `run size` as suggested in Tim Peters'
 ! original `listsort.txt`, and the optional `work` and `iwork` arrays to be
 ! used as scratch memory.
-
         ${t1}$, intent(inout)         :: array(0:)
         ${ti}$, intent(inout)         :: index(0:)
         ${t3}$, intent(out), optional :: work(0:)
@@ -104,7 +103,8 @@ contains
 
         ${t2}$, allocatable :: buf(:)
         ${ti}$, allocatable :: ibuf(:)
-        integer(int_index) :: array_size, i, stat
+        integer(int_index) :: array_size, i
+        integer(int_index) :: stat
 
         array_size = size(array, kind=int_index)
 
@@ -136,6 +136,7 @@ contains
                 call merge_sort( array, index, work, ibuf )
             end if
         else
+! Allocate a buffer to use as scratch memory.
             #:if t1[0:4] == "char"
             allocate( ${t3}$ :: buf(0:array_size/2-1), &
                       stat=stat )
@@ -495,3 +496,4 @@ contains
 #:endfor
 
 end submodule stdlib_sorting_sort_adj
+

@@ -297,6 +297,76 @@ module stdlib_sorting
 !!    ...
 !!```
 
+    public sort_adj
+!! Version: experimental
+!!
+!! The generic subroutine implementing the `SORT_ADJ` algorithm to
+!! return an index array whose elements are sorted in the same order
+!! as the input array in the
+!! desired direction. It is primarily intended to be used to sort a
+!! rank 1 `integer` or `real` array based on the values of a component of the array.
+!! Its use has the syntax:
+!!
+!!     call sort_adj( array, index[, work, iwork, reverse ] )
+!!
+!! with the arguments:
+!!
+!! * array: the rank 1 array to be sorted. It is an `intent(inout)`
+!!   argument of any of the types `integer(int8)`, `integer(int16)`,
+!!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
+!!   `real(real128)`, `character(*)`, `type(string_type)`, 
+!!   `type(bitset_64)`, `type(bitset_large)`. If both the 
+!!   type of `array` is real and at least one of the elements is a `NaN`, 
+!!   then the ordering of the `array` and `index` results is undefined. 
+!!   Otherwise it is defined to be as specified by reverse.
+!!
+!! * index: a rank 1 `integer` or `real` array. It is an `intent(inout)`
+!!   argument of the type `integer(int_index)`. Its size shall be the
+!!   same as `array`. On return, its elements are sorted in the same order
+!!   as the input `array` in the direction specified by `reverse`.
+!!
+!! * work (optional): shall be a rank 1 array of the same type as
+!!   `array`, and shall have at least `size(array)/2` elements. It is an
+!!   `intent(out)` argument to be used as "scratch" memory
+!!   for internal record keeping. If associated with an array in static
+!!   storage, its use can significantly reduce the stack memory requirements
+!!   for the code. Its value on return is undefined.
+!!
+!! * iwork (optional): shall be a rank 1 integer array of the same type as `index`,
+!!   and shall have at least `size(array)/2` elements. It is an
+!!   `intent(out)` argument to be used as "scratch" memory
+!!   for internal record keeping. If associated with an array in static
+!!   storage, its use can significantly reduce the stack memory requirements
+!!   for the code. Its value on return is undefined.
+!!
+!! * `reverse` (optional): shall be a scalar of type default logical. It
+!!   is an `intent(in)` argument. If present with a value of `.true.` then
+!!   `array` will be sorted in order of non-increasing values in stable
+!!   order. Otherwise `array` will be sorted in order of non-decreasing
+!!   values in stable order.
+!!
+!!#### Examples
+!!
+!! Sorting a related rank one array:
+!!
+!!```Fortran
+!!program example_sort_adj
+!!  use stdlib_sorting, only: sort_adj
+!!  implicit none
+!!  integer, allocatable :: array(:)
+!!  real, allocatable :: adj(:)
+!!
+!!  array = [5, 4, 3, 1, 10, 4, 9]
+!!  allocate(adj, source=real(array))
+!!
+!!  call sort_adj(array, adj)
+!!
+!!  print *, array   !print [1, 3, 4, 4, 5, 9, 10]
+!!  print *, adj   !print [1., 3., 4., 4., 5., 9., 10.]
+!!
+!!end program example_sort_adj
+!!```
+
     public sort_index
 !! Version: experimental
 !!
