@@ -490,10 +490,10 @@ contains
 
         end subroutine reverse_segment
 
-    end subroutine ${name1}$_${namei}$_sort_adj
+    end subroutine ${name1}$_${namei}$_sort_adjoint
 
   #:endfor
 #:endfor
 
-end submodule stdlib_sorting_sort_adj
+end submodule stdlib_sorting_sort_adjoint
 
