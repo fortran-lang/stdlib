@@ -555,7 +555,7 @@ contains
                 call copy_key( key, new_ent % key )
                 if ( present( other ) ) then
                     !new_ent % other = other
-                    if ALLOCATED(new_ent % other) deallocate(new_ent % other)
+                    if ( allocated(new_ent % other) ) deallocate(new_ent % other)
                     allocate(new_ent % other, source = other)
                 endif
                 inmap = new_ent % inmap
