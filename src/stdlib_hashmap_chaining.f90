@@ -570,7 +570,10 @@ contains
                 map % slots(hash_index) % target => new_ent
                 call copy_key( key, new_ent % key )
                 !if ( present(other) ) new_ent % other = other
-                if ( present(other) ) allocate(new_ent % other, source = other)
+                if ( present(other) ) then
+                    if ALLOCATED(new_ent % other) deallocate(new_ent % other)
+                    allocate(new_ent % other, source = other)
+                endif
                 if ( new_ent % inmap == 0 ) then
                     map % num_entries = map % num_entries + 1
                     inmap = map % num_entries
