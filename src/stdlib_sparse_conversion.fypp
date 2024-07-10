@@ -24,8 +24,8 @@ contains
     module subroutine dense2coo_${s1}$(dense,COO)
         ${t1}$, intent(in) :: dense(:,:)
         type(COO_${s1}$), intent(out) :: COO
-        integer :: num_rows, num_cols, nnz
-        integer :: i, j, idx
+        integer(ilp) :: num_rows, num_cols, nnz
+        integer(ilp) :: i, j, idx
 
         num_rows = size(dense,dim=1)
         num_cols = size(dense,dim=2)
@@ -52,7 +52,7 @@ contains
     module subroutine coo2dense_${s1}$(COO,dense)
         type(COO_${s1}$), intent(in) :: COO
         ${t1}$, allocatable, intent(out) :: dense(:,:)
-        integer :: idx
+        integer(ilp) :: idx
 
         if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%nrows),source=zero_${s1}$)
         do concurrent(idx = 1:COO%nnz)
@@ -66,7 +66,7 @@ contains
     module subroutine coo2csr_${s1}$(COO,CSR)
         type(COO_${s1}$), intent(in)  :: COO
         type(CSR_${s1}$), intent(out) :: CSR
-        integer :: i
+        integer(ilp) :: i
 
         CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
         CSR%storage = COO%storage
@@ -96,7 +96,7 @@ contains
     module subroutine csr2dense_${s1}$(CSR,dense)
         type(CSR_${s1}$), intent(in) :: CSR
         ${t1}$, allocatable, intent(out) :: dense(:,:)
-        integer :: i, j
+        integer(ilp) :: i, j
 
         if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%nrows),source=zero_${s1}$)
         if( CSR%storage == sparse_full) then
@@ -122,7 +122,7 @@ contains
     module subroutine csr2coo_${s1}$(CSR,COO)
         type(CSR_${s1}$), intent(in)  :: CSR
         type(COO_${s1}$), intent(out) :: COO
-        integer :: i, j
+        integer(ilp) :: i, j
 
         COO%nnz = CSR%nnz; COO%nrows = CSR%nrows; COO%ncols = CSR%ncols
         COO%storage = CSR%storage
@@ -150,7 +150,7 @@ contains
         type(ELL_${s1}$), intent(out) :: ELL
         integer, intent(in), optional :: num_nz_rows !! number of non zeros per row
 
-        integer :: i, j, num_nz_rows_, adr1, adr2
+        integer(ilp) :: i, j, num_nz_rows_, adr1, adr2
         !-------------------------------------------
         num_nz_rows_ = 0
         if(present(num_nz_rows)) then
@@ -182,7 +182,7 @@ contains
         type(SELLC_${s1}$), intent(out) :: SELLC
         integer, intent(in), optional :: chunk
         ${t1}$, parameter :: zero = zero_${s1}$
-        integer :: i, j, num_chunks
+        integer(ilp) :: i, j, num_chunks
 
         if(present(chunk)) SELLC%chunk_size = chunk
 
@@ -243,10 +243,10 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     recursive subroutine quicksort_i_${s1}$(a, b, first, last)
         integer, parameter :: wp = sp
-        integer, intent(inout) :: a(*) !! reference table to sort
+        integer(ilp), intent(inout) :: a(*) !! reference table to sort
         ${t1}$, intent(inout)  :: b(*) !! secondary real data to sort w.r.t. a
-        integer, intent(in)     :: first, last
-        integer  :: i, j, x, t
+        integer(ilp), intent(in)     :: first, last
+        integer(ilp)  :: i, j, x, t
         ${t1}$ :: d
 
         x = a( (first+last) / 2 )
@@ -273,14 +273,14 @@ contains
 
     subroutine sort_coo_unique( a, n, num_rows, num_cols )
         !! Sort a 2d array in increasing order first by index 1 and then by index 2
-        integer, intent(inout) :: a(2,*)
-        integer, intent(inout) :: n
-        integer, intent(in) :: num_rows
-        integer, intent(in) :: num_cols
+        integer(ilp), intent(inout) :: a(2,*)
+        integer(ilp), intent(inout) :: n
+        integer(ilp), intent(in) :: num_rows
+        integer(ilp), intent(in) :: num_cols
 
-        integer :: stride, adr0, adr1, dd
-        integer :: n_i, pos, ed
-        integer, allocatable :: count_i(:), count_i_aux(:), rows_(:), cols_(:)
+        integer(ilp) :: stride, adr0, adr1, dd
+        integer(ilp) :: n_i, pos, ed
+        integer(ilp), allocatable :: count_i(:), count_i_aux(:), rows_(:), cols_(:)
         !---------------------------------------------------------
         ! Sort a first time with respect to first index using count sort
         allocate( count_i( 0:num_rows ) , source = 0 )
@@ -328,14 +328,14 @@ contains
     subroutine sort_coo_unique_${s1}$( a, data, n, num_rows, num_cols )
         !! Sort a 2d array in increasing order first by index 1 and then by index 2
         ${t1}$, intent(inout) :: data(*)
-        integer, intent(inout) :: a(2,*)
-        integer, intent(inout) :: n
-        integer, intent(in) :: num_rows
-        integer, intent(in) :: num_cols
+        integer(ilp), intent(inout) :: a(2,*)
+        integer(ilp), intent(inout) :: n
+        integer(ilp), intent(in) :: num_rows
+        integer(ilp), intent(in) :: num_cols
 
-        integer :: stride, adr0, adr1, dd
-        integer :: n_i, pos, ed
-        integer, allocatable :: count_i(:), count_i_aux(:), rows_(:), cols_(:)
+        integer(ilp) :: stride, adr0, adr1, dd
+        integer(ilp) :: n_i, pos, ed
+        integer(ilp), allocatable :: count_i(:), count_i_aux(:), rows_(:), cols_(:)
         ${t1}$, allocatable :: temp(:)
         !---------------------------------------------------------
         ! Sort a first time with respect to first index using Count sort
@@ -390,7 +390,7 @@ contains
     module subroutine coo2ordered(COO,sort_data)
         class(COO_type), intent(inout) :: COO
         logical, intent(in), optional :: sort_data
-        integer, allocatable :: itemp(:,:)
+        integer(ilp), allocatable :: itemp(:,:)
         logical :: sort_data_
         
         if(COO%is_sorted) return

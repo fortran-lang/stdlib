@@ -19,6 +19,9 @@ module stdlib_sparse_kinds
     end enum
     public :: sparse_full, sparse_lower, sparse_upper
 
+    ! Integer size support for ILP64 builds should be done here
+    integer, parameter :: ilp = int32
+
     #:for k1, t1, s1 in (R_KINDS_TYPES)
     ${t1}$, parameter :: zero_${s1}$ = 0._${k1}$
     ${t1}$, parameter :: one_${s1}$ = 1._${k1}$
@@ -32,9 +35,9 @@ module stdlib_sparse_kinds
     !!
     !! Base sparse type holding the meta data related to the storage capacity of a matrix.
     type, public, abstract :: sparse_type
-      integer :: nrows = 0 !! number of rows
-      integer :: ncols = 0 !! number of columns
-      integer :: nnz   = 0 !! number of non-zero values
+      integer(ilp) :: nrows = 0 !! number of rows
+      integer(ilp) :: ncols = 0 !! number of columns
+      integer(ilp) :: nnz   = 0 !! number of non-zero values
       integer :: storage = sparse_full !! assumed storage symmetry
     end type
 
@@ -43,7 +46,7 @@ module stdlib_sparse_kinds
     !! COO: COOrdinates compresed format 
     type, public, extends(sparse_type) :: COO_type
       logical               :: is_sorted = .false. !! whether the matrix is sorted or not
-      integer, allocatable  :: index(:,:) !! Matrix coordinates index(2,nnz)
+      integer(ilp), allocatable  :: index(:,:) !! Matrix coordinates index(2,nnz)
     contains
       procedure :: malloc => malloc_coo
     end type
@@ -63,8 +66,8 @@ module stdlib_sparse_kinds
     !!
     !! CSR: Compressed sparse row or Yale format
     type, public, extends(sparse_type) :: CSR_type  
-      integer, allocatable  :: col(:)    !! matrix column pointer
-      integer, allocatable  :: rowptr(:) !! matrix row pointer
+      integer(ilp), allocatable  :: col(:)    !! matrix column pointer
+      integer(ilp), allocatable  :: rowptr(:) !! matrix row pointer
     contains
       procedure :: malloc => malloc_csr
     end type
@@ -84,8 +87,8 @@ module stdlib_sparse_kinds
     !!
     !! CSC: Compressed sparse column
     type, public, extends(sparse_type) :: CSC_type  
-      integer, allocatable  :: colptr(:) !! matrix column pointer
-      integer, allocatable  :: row(:)    !! matrix row pointer
+      integer(ilp), allocatable  :: colptr(:) !! matrix column pointer
+      integer(ilp), allocatable  :: row(:)    !! matrix row pointer
     contains
       procedure :: malloc => malloc_csc
     end type
@@ -106,7 +109,7 @@ module stdlib_sparse_kinds
     !! Compressed ELLPACK
     type, public, extends(sparse_type) :: ELL_type 
       integer               :: K = 0 !! maximum number of nonzeros per row
-      integer, allocatable  :: index(:,:) !! column indices
+      integer(ilp), allocatable :: index(:,:) !! column indices
     contains
       procedure :: malloc => malloc_ell
     end type
@@ -128,8 +131,8 @@ module stdlib_sparse_kinds
     !! Reference : https://library.eecs.utk.edu/storage/files/ut-eecs-14-727.pdf
     type, public, extends(sparse_type) :: SELLC_type 
       integer               :: chunk_size = 8 !!  default chunk size
-      integer, allocatable  :: rowptr(:) !! row pointer
-      integer, allocatable  :: col(:,:)  !! column indices
+      integer(ilp), allocatable  :: rowptr(:) !! row pointer
+      integer(ilp), allocatable  :: col(:,:)  !! column indices
     end type
   
     #:for k1, t1, s1 in (KINDS_TYPES)
@@ -337,11 +340,11 @@ contains
     !! (re)Allocate matrix memory for the COO type
     subroutine malloc_coo(self,num_rows,num_cols,nnz)
         class(COO_type) :: self
-        integer, intent(in) :: num_rows !! number of rows
-        integer, intent(in) :: num_cols !! number of columns
-        integer, intent(in) :: nnz      !! number of non zeros
+        integer(ilp), intent(in) :: num_rows !! number of rows
+        integer(ilp), intent(in) :: num_cols !! number of columns
+        integer(ilp), intent(in) :: nnz      !! number of non zeros
 
-        integer,  allocatable :: temp_idx(:,:)
+        integer(ilp),  allocatable :: temp_idx(:,:)
         !-----------------------------------------------------
 
         self%nrows = num_rows
@@ -374,11 +377,11 @@ contains
     !! (re)Allocate matrix memory for the CSR type
     subroutine malloc_csr(self,num_rows,num_cols,nnz)
         class(CSR_type) :: self
-        integer, intent(in) :: num_rows !! number of rows
-        integer, intent(in) :: num_cols !! number of columns
-        integer, intent(in) :: nnz      !! number of non zeros
+        integer(ilp), intent(in) :: num_rows !! number of rows
+        integer(ilp), intent(in) :: num_cols !! number of columns
+        integer(ilp), intent(in) :: nnz      !! number of non zeros
 
-        integer,  allocatable :: temp_idx(:)
+        integer(ilp),  allocatable :: temp_idx(:)
         !-----------------------------------------------------
 
         self%nrows = num_rows
@@ -418,11 +421,11 @@ contains
     !! (re)Allocate matrix memory for the CSC type
     subroutine malloc_csc(self,num_rows,num_cols,nnz)
         class(CSC_type) :: self
-        integer, intent(in) :: num_rows !! number of rows
-        integer, intent(in) :: num_cols !! number of columns
-        integer, intent(in) :: nnz      !! number of non zeros
+        integer(ilp), intent(in) :: num_rows !! number of rows
+        integer(ilp), intent(in) :: num_cols !! number of columns
+        integer(ilp), intent(in) :: nnz      !! number of non zeros
 
-        integer,  allocatable :: temp_idx(:)
+        integer(ilp),  allocatable :: temp_idx(:)
         !-----------------------------------------------------
 
         self%nrows = num_rows
@@ -462,11 +465,11 @@ contains
     !! (re)Allocate matrix memory for the ELLPACK type
     subroutine malloc_ell(self,num_rows,num_cols,num_nz_rows)
         class(ELL_type) :: self
-        integer, intent(in) :: num_rows    !! number of rows
-        integer, intent(in) :: num_cols    !! number of columns
-        integer, intent(in) :: num_nz_rows !! number of non zeros per row
+        integer(ilp), intent(in) :: num_rows    !! number of rows
+        integer(ilp), intent(in) :: num_cols    !! number of columns
+        integer(ilp), intent(in) :: num_nz_rows !! number of non zeros per row
 
-        integer,  allocatable :: temp_idx(:,:)
+        integer(ilp),  allocatable :: temp_idx(:,:)
         !-----------------------------------------------------
 
         self%nrows = num_rows
@@ -498,12 +501,12 @@ contains
 
     subroutine coo_from_ijv_type(COO,row,col,nrows,ncols)
         type(COO_type), intent(inout) :: COO
-        integer, intent(in) :: row(:)
-        integer, intent(in) :: col(:)
-        integer, intent(in), optional :: nrows
-        integer, intent(in), optional :: ncols
+        integer(ilp), intent(in) :: row(:)
+        integer(ilp), intent(in) :: col(:)
+        integer(ilp), intent(in), optional :: nrows
+        integer(ilp), intent(in), optional :: ncols
 
-        integer :: nrows_, ncols_, nnz, ed
+        integer(ilp) :: nrows_, ncols_, nnz, ed
         !---------------------------------------------------------
         if(present(nrows)) then
             nrows_ = nrows
@@ -528,13 +531,13 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine coo_from_ijv_${s1}$(COO,row,col,data,nrows,ncols)
         type(COO_${s1}$), intent(inout) :: COO
-        integer, intent(in) :: row(:)
-        integer, intent(in) :: col(:)
+        integer(ilp), intent(in) :: row(:)
+        integer(ilp), intent(in) :: col(:)
         ${t1}$, intent(in), optional :: data(:)
-        integer, intent(in), optional :: nrows
-        integer, intent(in), optional :: ncols
+        integer(ilp), intent(in), optional :: nrows
+        integer(ilp), intent(in), optional :: ncols
 
-        integer :: nrows_, ncols_, nnz, ed
+        integer(ilp) :: nrows_, ncols_, nnz, ed
         !---------------------------------------------------------
         if(present(nrows)) then
             nrows_ = nrows
@@ -561,13 +564,13 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine csr_from_ijv_${s1}$(CSR,row,col,data,nrows,ncols)
         type(CSR_${s1}$), intent(inout) :: CSR
-        integer, intent(in) :: row(:)
-        integer, intent(in) :: col(:)
+        integer(ilp), intent(in) :: row(:)
+        integer(ilp), intent(in) :: col(:)
         ${t1}$, intent(in), optional :: data(:)
-        integer, intent(in), optional :: nrows
-        integer, intent(in), optional :: ncols
+        integer(ilp), intent(in), optional :: nrows
+        integer(ilp), intent(in), optional :: ncols
 
-        integer :: nrows_, ncols_
+        integer(ilp) :: nrows_, ncols_
         !---------------------------------------------------------
         if(present(nrows)) then
             nrows_ = nrows
@@ -595,14 +598,14 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine ell_from_ijv_${s1}$(ELL,row,col,data,nrows,ncols,num_nz_rows)
         type(ELL_${s1}$), intent(inout) :: ELL
-        integer, intent(in) :: row(:)
-        integer, intent(in) :: col(:)
+        integer(ilp), intent(in) :: row(:)
+        integer(ilp), intent(in) :: col(:)
         ${t1}$, intent(in), optional :: data(:)
-        integer, intent(in), optional :: nrows
-        integer, intent(in), optional :: ncols
+        integer(ilp), intent(in), optional :: nrows
+        integer(ilp), intent(in), optional :: ncols
         integer, intent(in), optional :: num_nz_rows
 
-        integer :: nrows_, ncols_
+        integer(ilp) :: nrows_, ncols_
         !---------------------------------------------------------
         if(present(nrows)) then
             nrows_ = nrows
@@ -636,14 +639,14 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine sellc_from_ijv_${s1}$(SELLC,row,col,data,nrows,ncols,chunk)
         type(SELLC_${s1}$), intent(inout) :: SELLC
-        integer, intent(in) :: row(:)
-        integer, intent(in) :: col(:)
+        integer(ilp), intent(in) :: row(:)
+        integer(ilp), intent(in) :: col(:)
         ${t1}$, intent(in), optional :: data(:)
-        integer, intent(in), optional :: nrows
-        integer, intent(in), optional :: ncols
+        integer(ilp), intent(in), optional :: nrows
+        integer(ilp), intent(in), optional :: ncols
         integer, intent(in), optional :: chunk
 
-        integer :: nrows_, ncols_
+        integer(ilp) :: nrows_, ncols_
         !---------------------------------------------------------
         if(present(nrows)) then
             nrows_ = nrows
@@ -678,8 +681,8 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure ${t1}$ function at_value_coo_${s1}$(self,ik,jk) result(val)
         class(COO_${s1}$), intent(in) :: self
-        integer, intent(in) :: ik, jk
-        integer :: k, ik_, jk_
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k, ik_, jk_
         logical :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
@@ -703,8 +706,8 @@ contains
     subroutine add_value_coo_${s1}$(self,ik,jk,val)
         class(COO_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
-        integer, intent(in) :: ik, jk
-        integer :: k
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k
         ! naive implementation
         do k = 1,self%nnz
             if( ik == self%index(1,k) .and. jk == self%index(2,k) ) then
@@ -717,8 +720,8 @@ contains
     subroutine add_block_coo_${s1}$(self,ik,jk,val)
         class(COO_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val(:,:)
-        integer, intent(in) :: ik(:), jk(:)
-        integer :: k, i, j
+        integer(ilp), intent(in) :: ik(:), jk(:)
+        integer(ilp) :: k, i, j
         ! naive implementation
         do k = 1, self%nnz
             do i = 1, size(ik)
@@ -736,8 +739,8 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure ${t1}$ function at_value_csr_${s1}$(self,ik,jk) result(val)
         class(CSR_${s1}$), intent(in) :: self
-        integer, intent(in) :: ik, jk
-        integer :: k, ik_, jk_
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k, ik_, jk_
         logical :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
@@ -761,8 +764,8 @@ contains
     subroutine add_value_csr_${s1}$(self,ik,jk,val)
         class(CSR_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
-        integer, intent(in) :: ik, jk
-        integer :: k
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k
         ! naive implementation
         do k = self%rowptr(ik), self%rowptr(ik+1)-1
             if( jk == self%col(k) ) then
@@ -775,8 +778,8 @@ contains
     subroutine add_block_csr_${s1}$(self,ik,jk,val)
         class(CSR_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val(:,:)
-        integer, intent(in) :: ik(:), jk(:)
-        integer :: k, i, j
+        integer(ilp), intent(in) :: ik(:), jk(:)
+        integer(ilp) :: k, i, j
         ! naive implementation
         do i = 1, size(ik)
             do k = self%rowptr(ik(i)), self%rowptr(ik(i)+1)-1
@@ -794,8 +797,8 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure ${t1}$ function at_value_csc_${s1}$(self,ik,jk) result(val)
         class(CSC_${s1}$), intent(in) :: self
-        integer, intent(in) :: ik, jk
-        integer :: k, ik_, jk_
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k, ik_, jk_
         logical :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
@@ -819,8 +822,8 @@ contains
     subroutine add_value_csc_${s1}$(self,ik,jk,val)
         class(CSC_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
-        integer, intent(in)  :: ik, jk
-        integer :: k
+        integer(ilp), intent(in)  :: ik, jk
+        integer(ilp) :: k
         ! naive implementation
         do k = self%colptr(jk), self%colptr(jk+1)-1
             if( ik == self%row(k) ) then
@@ -833,8 +836,8 @@ contains
     subroutine add_block_csc_${s1}$(self,ik,jk,val)
         class(CSC_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val(:,:)
-        integer, intent(in)  :: ik(:), jk(:)
-        integer :: k, i, j
+        integer(ilp), intent(in)  :: ik(:), jk(:)
+        integer(ilp) :: k, i, j
         ! naive implementation
         do j = 1, size(jk)
             do k = self%colptr(jk(j)), self%colptr(jk(j)+1)-1
@@ -852,8 +855,8 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure ${t1}$ function at_value_ell_${s1}$(self,ik,jk) result(val)
         class(ELL_${s1}$), intent(in) :: self
-        integer, intent(in) :: ik, jk
-        integer :: k, ik_, jk_
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k, ik_, jk_
         logical :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
@@ -877,8 +880,8 @@ contains
     subroutine add_value_ell_${s1}$(self,ik,jk,val)
         class(ELL_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
-        integer, intent(in)  :: ik, jk
-        integer :: k
+        integer(ilp), intent(in)  :: ik, jk
+        integer(ilp) :: k
         ! naive implementation
         do k = 1 , self%K
             if( jk == self%index(ik,k) ) then
@@ -891,8 +894,8 @@ contains
     subroutine add_block_ell_${s1}$(self,ik,jk,val)
         class(ELL_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val(:,:)
-        integer, intent(in)  :: ik(:), jk(:)
-        integer :: k, i, j
+        integer(ilp), intent(in)  :: ik(:), jk(:)
+        integer(ilp) :: k, i, j
         ! naive implementation
         do k = 1 , self%K
             do j = 1, size(jk)
@@ -910,8 +913,8 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure ${t1}$ function at_value_sellc_${s1}$(self,ik,jk) result(val)
         class(SELLC_${s1}$), intent(in) :: self
-        integer, intent(in) :: ik, jk
-        integer :: k, ik_, jk_, idx
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k, ik_, jk_, idx
         logical :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
@@ -937,8 +940,8 @@ contains
     subroutine add_value_sellc_${s1}$(self,ik,jk,val)
         class(SELLC_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val
-        integer, intent(in)  :: ik, jk
-        integer :: k, idx
+        integer(ilp), intent(in)  :: ik, jk
+        integer(ilp) :: k, idx
         ! naive implementation
         idx = self%rowptr((ik - 1)/self%chunk_size + 1)
         do k = 1, self%chunk_size
@@ -952,8 +955,8 @@ contains
     subroutine add_block_sellc_${s1}$(self,ik,jk,val)
         class(SELLC_${s1}$), intent(inout) :: self
         ${t1}$, intent(in) :: val(:,:)
-        integer, intent(in)  :: ik(:), jk(:)
-        integer :: k, i, j, idx
+        integer(ilp), intent(in)  :: ik(:), jk(:)
+        integer(ilp) :: k, i, j, idx
         ! naive implementation
         do k = 1 , self%chunk_size
             do j = 1, size(jk)

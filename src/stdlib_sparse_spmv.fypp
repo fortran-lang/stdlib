@@ -25,7 +25,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         ${t1}$ :: alpha_, beta_
-        integer :: k, ik, jk
+        integer(ilp) :: k, ik, jk
 
         alpha_ = one_${k1}$
         if(present(alpha)) alpha_ = alpha
@@ -68,7 +68,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         ${t1}$ :: alpha_, beta_
-        integer :: i, j
+        integer(ilp) :: i, j
         #:if rank == 1
         ${t1}$ :: aux, aux2
         #:else
@@ -148,7 +148,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         ${t1}$ :: alpha_, beta_
-        integer :: i, j
+        integer(ilp) :: i, j
         #:if rank == 1
         ${t1}$ :: aux
         #:else
@@ -212,7 +212,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         ${t1}$ :: alpha_, beta_
-        integer :: i, j, k
+        integer(ilp) :: i, j, k
 
         alpha_ = one_${k1}$
         if(present(alpha)) alpha_ = alpha
@@ -247,7 +247,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         ${t1}$ :: alpha_, beta_
-        integer :: i, nz, rowidx, num_chunks, rm
+        integer(ilp) :: i, nz, rowidx, num_chunks, rm
 
         alpha_ = one_${s1}$
         if(present(alpha)) alpha_ = alpha
@@ -292,7 +292,7 @@ contains
     pure subroutine chunk_kernel_${chunk}$(nz,a,ja,x,y)
         integer, value      :: nz
         ${t1}$, intent(in)  :: a(${chunk}$,nz), x(*)
-        integer, intent(in) :: ja(${chunk}$,nz)
+        integer(ilp), intent(in) :: ja(${chunk}$,nz)
         ${t1}$, intent(inout) :: y(${chunk}$)
         integer :: j
         do j = 1, nz
@@ -304,7 +304,7 @@ contains
     pure subroutine chunk_kernel_remainder(nz,cs,rm,a,ja,x,y)
         integer, value      :: nz, cs, rm
         ${t1}$, intent(in)  :: a(cs,nz), x(*)
-        integer, intent(in) :: ja(cs,nz)
+        integer(ilp), intent(in) :: ja(cs,nz)
         ${t1}$, intent(inout) :: y(rm)
         integer :: j
         do j = 1, nz
