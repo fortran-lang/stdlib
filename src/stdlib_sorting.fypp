@@ -295,17 +295,17 @@ module stdlib_sorting
 !!    ...
 !!```
 
-    public sort_adj
+    public sort_adjoint
 !! Version: experimental
 !!
 !! The generic subroutine implementing the `SORT_ADJ` algorithm to
-!! return an index array whose elements are sorted in the same order
+!! return an adjoint array whose elements are sorted in the same order
 !! as the input array in the
 !! desired direction. It is primarily intended to be used to sort a
 !! rank 1 `integer` or `real` array based on the values of a component of the array.
 !! Its use has the syntax:
 !!
-!!     call sort_adj( array, index[, work, iwork, reverse ] )
+!!     call sort_adjoint( array, adjoint_array[, work, iwork, reverse ] )
 !!
 !! with the arguments:
 !!
@@ -315,11 +315,11 @@ module stdlib_sorting
 !!   `real(real128)`, `character(*)`, `type(string_type)`, 
 !!   `type(bitset_64)`, `type(bitset_large)`. If both the 
 !!   type of `array` is real and at least one of the elements is a `NaN`, 
-!!   then the ordering of the `array` and `index` results is undefined. 
+!!   then the ordering of the `array` and `adjoint_array` results is undefined. 
 !!   Otherwise it is defined to be as specified by reverse.
 !!
-!! * index: a rank 1 `integer` or `real` array. It is an `intent(inout)`
-!!   argument of the type `integer(int_index)`. Its size shall be the
+!! * adjoint_array: a rank 1 `integer` or `real` array. It is an `intent(inout)`
+!!   argument. Its size shall be the
 !!   same as `array`. On return, its elements are sorted in the same order
 !!   as the input `array` in the direction specified by `reverse`.
 !!
@@ -330,7 +330,7 @@ module stdlib_sorting
 !!   storage, its use can significantly reduce the stack memory requirements
 !!   for the code. Its value on return is undefined.
 !!
-!! * iwork (optional): shall be a rank 1 integer array of the same type as `index`,
+!! * iwork (optional): shall be a rank 1 integer array of the same type as `adjoint_array`,
 !!   and shall have at least `size(array)/2` elements. It is an
 !!   `intent(out)` argument to be used as "scratch" memory
 !!   for internal record keeping. If associated with an array in static
@@ -348,8 +348,8 @@ module stdlib_sorting
 !! Sorting a related rank one array:
 !!
 !!```Fortran
-!!program example_sort_adj
-!!  use stdlib_sorting, only: sort_adj
+!!program example_sort_adjoint
+!!  use stdlib_sorting, only: sort_adjoint
 !!  implicit none
 !!  integer, allocatable :: array(:)
 !!  real, allocatable :: adj(:)
@@ -357,12 +357,12 @@ module stdlib_sorting
 !!  array = [5, 4, 3, 1, 10, 4, 9]
 !!  allocate(adj, source=real(array))
 !!
-!!  call sort_adj(array, adj)
+!!  call sort_adjoint(array, adj)
 !!
 !!  print *, array   !print [1, 3, 4, 4, 5, 9, 10]
 !!  print *, adj   !print [1., 3., 4., 4., 5., 9., 10.]
 !!
-!!end program example_sort_adj
+!!end program example_sort_adjoint
 !!```
 
     public sort_index
@@ -576,7 +576,7 @@ module stdlib_sorting
 
     end interface sort
 
-    interface sort_adj
+    interface sort_adjoint
 !! Version: experimental
 !!
 !! The generic subroutine interface implementing the `SORT_ADJ` algorithm,
@@ -584,7 +584,7 @@ module stdlib_sorting
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! but modified to return an array of indices that would provide a stable
 !! sort of the rank one `ARRAY` input.
-!! ([Specification](../page/specs/stdlib_sorting.html#sort_adj-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array))
+!! ([Specification](../page/specs/stdlib_sorting.html#sort_adjoint-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array))
 !!
 !! The indices by default correspond to a
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
@@ -592,26 +592,26 @@ module stdlib_sorting
 
 #:for ti, tii, namei in IR_INDEX_TYPES_ALT_NAME
     #:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
-        module subroutine ${name1}$_${namei}$_sort_adj( array, index, work, iwork, &
+        module subroutine ${name1}$_${namei}$_sort_adjoint( array, adjoint_array, work, iwork, &
             reverse )
 !! Version: experimental
 !!
-!! `${name1}$_${namei}$_sort_adj( array, index[, work, iwork, reverse] )` sorts
+!! `${name1}$_${namei}$_sort_adjoint( array, adjoint_array[, work, iwork, reverse] )` sorts
 !! an input `ARRAY` of type `${t1}$`
 !! using a hybrid sort based on the `"Rust" sort` algorithm found in `slice.rs`
 !! and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !! order that would sort the input `ARRAY` in the desired direction.
             ${t1}$, intent(inout)                     :: array(0:)
-            ${ti}$, intent(inout)                     :: index(0:)
+            ${ti}$, intent(inout)                     :: adjoint_array(0:)
             ${t2}$, intent(out), optional             :: work(0:)
             ${ti}$, intent(out), optional             :: iwork(0:)
             logical, intent(in), optional             :: reverse
-        end subroutine ${name1}$_${namei}$_sort_adj
+        end subroutine ${name1}$_${namei}$_sort_adjoint
 
     #:endfor
 #:endfor
 
-    end interface sort_adj
+    end interface sort_adjoint
 
     interface sort_index
 !! Version: experimental
@@ -677,7 +677,7 @@ contains
                 index(i) = int(i+1, kind=${ki}$)
             end do
 
-            call sort_adj(array, index, work, iwork, reverse)
+            call sort_adjoint(array, index, work, iwork, reverse)
 
         end subroutine ${name1}$_sort_index_${namei}$
 
