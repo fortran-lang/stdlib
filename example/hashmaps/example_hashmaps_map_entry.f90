@@ -1,7 +1,7 @@
 program example_map_entry
   use, intrinsic:: iso_fortran_env, only: int8, int64
   use stdlib_hashmaps, only: chaining_hashmap_type
-  use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type, other_type, set
+  use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type, set
   implicit none
   type(chaining_hashmap_type) :: map
   type(key_type)      :: key
