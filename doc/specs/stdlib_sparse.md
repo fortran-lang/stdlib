@@ -24,9 +24,9 @@ The parent `sparse_type` is as an abstract derived type holding the basic common
 ```Fortran
 type, public, abstract :: sparse_type
     integer :: nrows   !! number of rows
-    integer :: ncols   !> number of columns
-    integer :: nnz     !> number of non-zero values
-    integer :: storage !> assumed storage symmetry
+    integer :: ncols   !! number of columns
+    integer :: nnz     !! number of non-zero values
+    integer :: storage !! assumed storage symmetry
 end type
 ```
 
@@ -34,9 +34,9 @@ The storage integer label should be assigned from the module's internal enumerat
 
 ```Fortran
 enum, bind(C)
-    enumerator :: sparse_full  !> Full Sparse matrix (no symmetry considerations)
-    enumerator :: sparse_lower !> Symmetric Sparse matrix with triangular inferior storage
-    enumerator :: sparse_upper !> Symmetric Sparse matrix with triangular supperior storage
+    enumerator :: sparse_full  !! Full Sparse matrix (no symmetry considerations)
+    enumerator :: sparse_lower !! Symmetric Sparse matrix with triangular inferior storage
+    enumerator :: sparse_upper !! Symmetric Sparse matrix with triangular supperior storage
 end enum
 ```
 In the following, all sparse kinds will be presented in two main flavors: a data-less type `<matrix>_type` useful for topological graph operations. And real/complex valued types `<matrix>_<kind>` containing the `data` buffer for the matrix values. The following rectangular matrix will be used to showcase how each sparse matrix holds the data internally:
@@ -135,14 +135,14 @@ Experimental
 The Sliced ELLPACK format `SELLC` is a variation of the `ELLPACK` format. This modification reduces the storage size compared to the `ELLPACK` format but maintaining its efficient data access scheme. It can be seen as an intermediate format between `CSR` and `ELLPACK`. For more details read [the reference](https://arxiv.org/pdf/1307.6209v1)
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-## `add`/`at` - Sparse Matrix data accessors
+## `add`- sparse matrix data accessors
 
 ### Status
 
 Experimental
 
 ### Description
-Type-bound procedures to enable adding or requesting data in/from a sparse matrix.
+Type-bound procedures to enable adding data in a sparse matrix.
 
 ### Syntax
 
@@ -151,9 +151,20 @@ Type-bound procedures to enable adding or requesting data in/from a sparse matri
 
 ### Arguments
 
-`i`, `intent(in)`: Shall be an integer value or rank-1 array.
-`j`, `intent(in)`: Shall be an integer value or rank-1 array.
-`v`, `intent(in)`: Shall be a `real` or `complex` value or rank-2 array. The type shall be in accordance to the declared sparse matrix object.
+`i`: Shall be an integer value or rank-1 array. It is an `intent(in)` argument.
+
+`j`: Shall be an integer value or rank-1 array. It is an `intent(in)` argument.
+
+`v`: Shall be a `real` or `complex` value or rank-2 array. The type shall be in accordance to the declared sparse matrix object. It is an `intent(in)` argument.
+
+## `at`- sparse matrix data accessors
+
+### Status
+
+Experimental
+
+### Description
+Type-bound procedures to enable requesting data from a sparse matrix.
 
 ### Syntax
 
@@ -161,9 +172,11 @@ Type-bound procedures to enable adding or requesting data in/from a sparse matri
 
 ### Arguments
 
-`i`, `intent(in)` : Shall be an integer value.
-`j`, `intent(in)` : Shall be an integer value.
-`v`, `result`     : Shall be a `real` or `complex` value in accordance to the declared sparse matrix object. If the `ij` tuple is within the sparse pattern, `v` contains the value in the data buffer. If the `ij` tuple is outside the sparse pattern, `v` is equal `0`. If the `ij` tuple is outside the matrix pattern `(nrows,ncols)`, `v` is `NaN`.
+`i` : Shall be an integer value. It is an `intent(in)` argument.
+
+`j` : Shall be an integer value. It is an `intent(in)` argument.
+
+`v` : Shall be a `real` or `complex` value in accordance to the declared sparse matrix object. If the `ij` tuple is within the sparse pattern, `v` contains the value in the data buffer. If the `ij` tuple is outside the sparse pattern, `v` is equal `0`. If the `ij` tuple is outside the matrix pattern `(nrows,ncols)`, `v` is `NaN`.
 
 ## Example
 ```fortran
@@ -189,18 +202,18 @@ $$y=\alpha*M*x+\beta*y$$
 
 ### Arguments
 
-`matrix`, `intent(in)`: Shall be a `real` or `complex` sparse type matrix.
+`matrix`: Shall be a `real` or `complex` sparse type matrix. It is an `intent(in)` argument.
 
-`vec_x`, `intent(in)`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array.
+`vec_x`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument.
 
-`vec_y`, `intent(inout)`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array.
+`vec_y`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. . It is an `intent(inout)` argument.
 
-`alpha`, `intent(in)`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `alpha=1`.
+`alpha`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `alpha=1`. It is an `intent(in)` argument.
 
-`beta`, `intent(in)`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `beta=0`.
+`beta`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `beta=0`. It is an `intent(in)` argument.
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-## `sparse_conversion` - Sparse matrix to matrix conversions
+## Sparse matrix to matrix conversions
 
 ### Status
 
@@ -212,13 +225,13 @@ This module provides facility functions for converting between storage formats.
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):coo2ordered(interface)]] `(coo)`
+`call ` [[stdlib_sparse_conversion(module):coo2ordered(interface)]] `(coo[,sort_data])`
 
 ### Arguments
 
-`COO`, `intent(inout)`: Shall be any `COO` type. The same object will be returned with the arrays reallocated to the correct size after removing duplicates.
+`COO` : Shall be any `COO` type. The same object will be returned with the arrays reallocated to the correct size after removing duplicates. It is an `intent(inout)` argument.
 
-`sort_data`, `logical(in)`, `optional`:: Shall be an optional `logical` argument to determine whether data in the COO graph should be sorted while sorting the index array, default `.false.`.
+`sort_data`, `optional` : Shall be a `logical` argument to determine whether data in the COO graph should be sorted while sorting the index array, default `.false.`. It is an `intent(in)` argument.
 
 ### Syntax
 
@@ -226,21 +239,21 @@ This module provides facility functions for converting between storage formats.
 
 ### Arguments
 
-`sparse`, `intent(inout)`: Shall be a `COO`, `CSR`, `ELL` or `SELLC` type. The graph object will be returned with a canonical shape after sorting and removing duplicates from the `(row,col,data)` triplet. If the graph is `COO_type` no data buffer is allowed.
+`sparse` : Shall be a `COO`, `CSR`, `ELL` or `SELLC` type. The graph object will be returned with a canonical shape after sorting and removing duplicates from the `(row,col,data)` triplet. If the graph is `COO_type` no data buffer is allowed. It is an `intent(inout)` argument.
 
-`row`, `integer(in)`:: rows index array.
+`row` : rows index array. It is an `intent(in)` argument.
 
-`col`, `integer(in)`:: columns index array.
+`col` : columns index array. It is an `intent(in)` argument.
 
-`data`, `real/complex(in)`, `optional`:: `real` or `complex` data array.
+`data`, `optional`: `real` or `complex` data array. It is an `intent(in)` argument.
 
-`nrows`, `integer(in)`, `optional`:: number of rows, if not given it will be computed from the `row` array.
+`nrows`, `optional`: number of rows, if not given it will be computed from the `row` array. It is an `intent(in)` argument.
 
-`ncols`, `integer(in)`, `optional`:: number of columns, if not given it will be computed from the `col` array.
+`ncols`, `optional`: number of columns, if not given it will be computed from the `col` array. It is an `intent(in)` argument.
 
-`num_nz_rows`, `integer(in)`, `optional`:: number of non zeros per row, only valid in the case of an `ELL` matrix, by default it will computed from the largest row.
+`num_nz_rows`, `optional`: number of non zeros per row, only valid in the case of an `ELL` matrix, by default it will computed from the largest row. It is an `intent(in)` argument.
 
-`chunk`, `integer(in)`, `optional`:: chunk size, only valid in the case of a `SELLC` matrix, by default it will be taken from the `SELLC` default attribute chunk size.
+`chunk`, `optional`: chunk size, only valid in the case of a `SELLC` matrix, by default it will be taken from the `SELLC` default attribute chunk size. It is an `intent(in)` argument.
 
 ## Example
 ```fortran
@@ -253,9 +266,9 @@ This module provides facility functions for converting between storage formats.
 
 ### Arguments
 
-`dense`, `intent(in)`: Shall be a rank-2 array of `real` or `complex` type.
+`dense` : Shall be a rank-2 array of `real` or `complex` type. It is an `intent(in)` argument.
 
-`coo`, `intent(inout)`: Shall be a `COO` type of `real` or `complex` type.
+`coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(out)` argument.
 
 ### Syntax
 
@@ -263,9 +276,9 @@ This module provides facility functions for converting between storage formats.
 
 ### Arguments
 
-`coo`, `intent(in)`: Shall be a `COO` type of `real` or `complex` type.
+`coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(in)` argument.
 
-`dense`, `intent(inout)`: Shall be a rank-2 array of `real` or `complex` type.
+`dense` : Shall be a rank-2 array of `real` or `complex` type. It is an `intent(out)` argument.
 
 ### Syntax
 
@@ -273,9 +286,9 @@ This module provides facility functions for converting between storage formats.
 
 ### Arguments
 
-`coo`, `intent(in)`: Shall be a `COO` type of `real` or `complex` type.
+`coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(in)` argument.
 
-`csr`, `intent(inout)`: Shall be a `CSR` type of `real` or `complex` type.
+`csr` : Shall be a `CSR` type of `real` or `complex` type. It is an `intent(out)` argument.
 
 ### Syntax
 
@@ -283,9 +296,9 @@ This module provides facility functions for converting between storage formats.
 
 ### Arguments
 
-`csr`, `intent(in)`: Shall be a `CSR` type of `real` or `complex` type.
+`csr` : Shall be a `CSR` type of `real` or `complex` type. It is an `intent(in)` argument.
 
-`coo`, `intent(inout)`: Shall be a `COO` type of `real` or `complex` type.
+`coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(out)` argument.
 
 ### Syntax
 
@@ -293,11 +306,11 @@ This module provides facility functions for converting between storage formats.
 
 ### Arguments
 
-`csr`, `intent(in)`: Shall be a `CSR` type of `real` or `complex` type.
+`csr` : Shall be a `CSR` type of `real` or `complex` type. It is an `intent(in)` argument.
 
-`sellc`, `intent(inout)`: Shall be a `SELLC` type of `real` or `complex` type.
+`sellc` : Shall be a `SELLC` type of `real` or `complex` type. It is an `intent(out)` argument.
 
-`chunk`, `intent(in)`, `optional`: chunk size for the Sliced ELLPACK format.
+`chunk`, `optional`: chunk size for the Sliced ELLPACK format. It is an `intent(in)` argument.
 
 ## Example
 ```fortran

@@ -2,15 +2,15 @@
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
-!> The `stdlib_sparse_conversion` module provides sparse to sparse matrix conversion utilities.
-!>
+!! The `stdlib_sparse_conversion` submodule provides sparse to sparse matrix conversion utilities.
+!!
 ! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
 submodule(stdlib_sparse_kinds) stdlib_sparse_conversion
     use stdlib_sorting, only: sort
     implicit none
 
-    !> Sort arrays of a COO matrix
-    !> 
+    !! Sort arrays of a COO matrix
+    !! 
     interface sort_coo
         module procedure sort_coo_unique
     #:for k1, t1, s1 in (KINDS_TYPES)
@@ -23,7 +23,7 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine dense2coo_${s1}$(dense,COO)
         ${t1}$, intent(in) :: dense(:,:)
-        type(COO_${s1}$), intent(inout) :: COO
+        type(COO_${s1}$), intent(out) :: COO
         integer :: num_rows, num_cols, nnz
         integer :: i, j, idx
 
@@ -51,7 +51,7 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine coo2dense_${s1}$(COO,dense)
         type(COO_${s1}$), intent(in) :: COO
-        ${t1}$, allocatable, intent(inout) :: dense(:,:)
+        ${t1}$, allocatable, intent(out) :: dense(:,:)
         integer :: idx
 
         if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%nrows),source=zero_${s1}$)
@@ -64,8 +64,8 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine coo2csr_${s1}$(COO,CSR)
-        type(COO_${s1}$), intent(in)    :: COO
-        type(CSR_${s1}$), intent(inout) :: CSR
+        type(COO_${s1}$), intent(in)  :: COO
+        type(CSR_${s1}$), intent(out) :: CSR
         integer :: i
 
         CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
@@ -95,7 +95,7 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine csr2dense_${s1}$(CSR,dense)
         type(CSR_${s1}$), intent(in) :: CSR
-        ${t1}$, allocatable, intent(inout) :: dense(:,:)
+        ${t1}$, allocatable, intent(out) :: dense(:,:)
         integer :: i, j
 
         if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%nrows),source=zero_${s1}$)
@@ -120,8 +120,8 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine csr2coo_${s1}$(CSR,COO)
-        type(CSR_${s1}$), intent(in)    :: CSR
-        type(COO_${s1}$), intent(inout) :: COO
+        type(CSR_${s1}$), intent(in)  :: CSR
+        type(COO_${s1}$), intent(out) :: COO
         integer :: i, j
 
         COO%nnz = CSR%nnz; COO%nrows = CSR%nrows; COO%ncols = CSR%ncols
@@ -146,9 +146,9 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine csr2ell_${s1}$(CSR,ELL,num_nz_rows)
-        type(CSR_${s1}$), intent(in)    :: CSR
-        type(ELL_${s1}$), intent(inout) :: ELL
-        integer, intent(in), optional :: num_nz_rows !> number of non zeros per row
+        type(CSR_${s1}$), intent(in)  :: CSR
+        type(ELL_${s1}$), intent(out) :: ELL
+        integer, intent(in), optional :: num_nz_rows !! number of non zeros per row
 
         integer :: i, j, num_nz_rows_, adr1, adr2
         !-------------------------------------------
@@ -176,10 +176,10 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine csr2sellc_${s1}$(CSR,SELLC,chunk)
-        !> csr2sellc: This function enables transfering data from a CSR matrix to a SELL-C matrix
-        !> This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
-        type(CSR_${s1}$), intent(in)      :: CSR
-        type(SELLC_${s1}$), intent(inout) :: SELLC
+        !! csr2sellc: This function enables transfering data from a CSR matrix to a SELL-C matrix
+        !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+        type(CSR_${s1}$), intent(in)    :: CSR
+        type(SELLC_${s1}$), intent(out) :: SELLC
         integer, intent(in), optional :: chunk
         ${t1}$, parameter :: zero = zero_${s1}$
         integer :: i, j, num_chunks
