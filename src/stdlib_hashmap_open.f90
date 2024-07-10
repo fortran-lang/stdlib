@@ -554,7 +554,8 @@ contains
                 new_ent % hash_val = hash_val
                 call copy_key( key, new_ent % key )
                 if ( present( other ) ) &
-                    new_ent % other = other
+                    !new_ent % other = other
+                    allocate(new_ent % other, source = other)
                 inmap = new_ent % inmap
                 map % inverse( inmap ) % target => new_ent
                 map % slots( test_slot ) = inmap
