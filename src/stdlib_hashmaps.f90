@@ -18,12 +18,10 @@ module stdlib_hashmaps
 
     use stdlib_hashmap_wrappers, only: &
         copy_key,                &
-        copy_other,              &
         fibonacci_hash,          &
         fnv_1_hasher,            &
         fnv_1a_hasher,           &
         free_key,                &
-        free_other,              &
         get,                     &
         hasher_fun,              &
         operator(==),            &
