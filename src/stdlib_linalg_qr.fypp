@@ -181,13 +181,8 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          use_q_matrix = q1>=m .and. q2>=n
 
          ! Can A be overwritten? By default, do not overwrite
-         if (use_q_matrix) then 
-            overwrite_a_ = .false._lk
-         elseif (present(overwrite_a)) then
-            overwrite_a_ = overwrite_a
-         else
-            overwrite_a_ = .false._lk
-         endif
+         overwrite_a_ = .false._lk
+         if (present(overwrite_a) .and. .not.use_q_matrix) overwrite_a_ = overwrite_a
          
          ! Initialize a matrix temporary, or reuse available
          ! storage if possible
