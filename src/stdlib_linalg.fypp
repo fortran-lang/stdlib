@@ -74,7 +74,7 @@ module stdlib_linalg
          !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
          logical(lk), optional, intent(in) :: other_zeroed
          !> Output matrix with Cholesky factors c[n,n]
-         ${rt}$, allocatable :: c(:,:)                  
+         ${rt}$ :: c(size(a,1),size(a,2))                  
      end function stdlib_linalg_${ri}$_cholesky_fun
      #:endfor    
   end interface chol  

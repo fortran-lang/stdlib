@@ -158,7 +158,7 @@ submodule (stdlib_linalg) stdlib_linalg_cholesky
          !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
          logical(lk), optional, intent(in) :: other_zeroed
          
-         allocate(c,source=a)
+         c = a
          
          call stdlib_linalg_${ri}$_cholesky_inplace(c,lower,other_zeroed)
 
