@@ -1167,7 +1167,7 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 ```
 
 
-## `cholesky` - Compute the Cholesky factorization of a rank-2 square array (matrix).
+## `cholesky` - Compute the Cholesky factorization of a rank-2 square array (matrix)
 
 ### Status
 
