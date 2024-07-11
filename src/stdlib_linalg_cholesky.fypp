@@ -152,7 +152,7 @@ submodule (stdlib_linalg) stdlib_linalg_cholesky
          !> Input matrix a[n,n]
          ${rt}$, intent(in) :: a(:,:)
          !> Output matrix with Cholesky factors c[n,n]
-         ${rt}$, allocatable :: c(:,:)         
+         ${rt}$ :: c(size(a, 1),size(a, 2))         
          !> [optional] is the lower or upper triangular factor required? Default = lower
          logical(lk), optional, intent(in) :: lower
          !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
