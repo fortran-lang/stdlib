@@ -117,7 +117,7 @@ value, `int32`.
 ### The `stdlib_hashmap_wrappers`' module's derived types
 
 The `stdlib_hashmap_wrappers` defines `key_type` which is intended to
-be used for the search keys of hash tables.  The tye is opaque.
+be used for the search keys of hash tables. The tye is opaque.
 The current representation is as follows
 
 ```fortran
