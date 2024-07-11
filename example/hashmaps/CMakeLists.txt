@@ -24,5 +24,3 @@ ADD_EXAMPLE(hashmaps_set)
 ADD_EXAMPLE(hashmaps_set_other_data)
 ADD_EXAMPLE(hashmaps_slots_bits)
 ADD_EXAMPLE(hashmaps_total_depth)
-
-
