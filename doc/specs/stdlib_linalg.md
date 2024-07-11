@@ -1189,7 +1189,7 @@ Subroutine
 
 ### Arguments
 
-`a`: Shall be a rank-2 square `real` or `complex` array containing the coefficient matrix of size `[n,n]`. It is an `intent(inout)` argument, but returns unchanged if argument `c` is present.
+`a`: Shall be a rank-2 square `real` or `complex` array containing the coefficient matrix of size `[n,n]`. It is an `intent(inout)` argument, but returns unchanged if the argument `c` is present.
 
 `c` (optional): Shall be a rank-2 square `real` or `complex` of the same size and kind as `a`. It is an `intent(out)` argument, that returns the triangular Cholesky matrix `L` or `U`.
 
