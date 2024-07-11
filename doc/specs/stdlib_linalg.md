@@ -1227,7 +1227,7 @@ Experimental
 
 ### Description
 
-This is a `pure` functional interface for Cholesky factorization. The Cholesky factorization of a `real` or
+This is a `pure` functional interface for the Cholesky factorization of a `real` or
 `complex` rank-2 square array (matrix) computed as \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
 \( A \) is symmetric or complex Hermitian, and \( L \), \( U \) are lower- or upper-triangular, respectively. 
 The solver is based on LAPACK's `*POTRF` backends.
