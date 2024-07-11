@@ -553,11 +553,7 @@ contains
                 call allocate_open_map_entry(map, new_ent)
                 new_ent % hash_val = hash_val
                 call copy_key( key, new_ent % key )
-                if ( present( other ) ) then
-                    !new_ent % other = other
-                    if ( allocated(new_ent % other) ) deallocate(new_ent % other)
-                    allocate(new_ent % other, source = other)
-                endif
+                if ( present( other ) ) new_ent % other = other
                 inmap = new_ent % inmap
                 map % inverse( inmap ) % target => new_ent
                 map % slots( test_slot ) = inmap
