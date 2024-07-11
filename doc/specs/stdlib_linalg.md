@@ -1244,7 +1244,7 @@ Result matrix `c` has the same size and kind as `a`, and returns the lower or up
 
 `lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular decomposition \( A = L \cdot L^T \) will be performed. If `.false.`, the upper decomposition \( A = U^T \cdot U \) will be performed.
 
-`other_zeroed` (optional): Shall be an input `logical` flag. If `.true.`, the unused part of the output matrix will contains zeroes. Otherwise, it will not be accessed. This saves cpu time. By default, `other_zeroed=.true.`. It is an `intent(in)` argument.
+`other_zeroed` (optional): Shall be an input `logical` flag. If `.true.`, the unused part of the output matrix will contain zeroes. Otherwise, it will not be accessed. This saves cpu time. By default, `other_zeroed=.true.`. It is an `intent(in)` argument.
 
 ### Return values
 
