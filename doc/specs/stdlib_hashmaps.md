@@ -322,7 +322,6 @@ expected to be minor compared to its faster hashing rate.
 {!example/hashmaps/example_hashmaps_fnv_1a_hasher.f90!}
 ```
 
-
 #### `free_key` - frees the memory associated with a key
 
 ##### Status
