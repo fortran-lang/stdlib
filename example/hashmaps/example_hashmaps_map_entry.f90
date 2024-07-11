@@ -14,7 +14,6 @@ program example_map_entry
   
   type(array_data_wrapper) :: array_example
   
-  
   ! Initialize hashmap with 2^10 slots.
   ! Hashmap will dynamically increase size if needed.
   call map%init(fnv_1_hasher, slots_bits=10)
