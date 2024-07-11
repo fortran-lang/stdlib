@@ -1469,7 +1469,7 @@ that `key` was not present in the map and the entry was added to the
 map. 
 
 * If `key` is already present in `map` and the `conflict` argument has been
-provided then the presence of `other` is ignored.  If `conflict` has not 
+provided then the presence of `other` is ignored. If `conflict` has not 
 been provided then it routine will error stop.  
 
 ##### Example
