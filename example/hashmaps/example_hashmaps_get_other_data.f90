@@ -5,7 +5,6 @@ program example_get_other_data
   implicit none
   logical                     :: conflict
   type(key_type)              :: key
-
   type(chaining_hashmap_type) :: map
   type dummy_type
     integer                   :: value(4)
