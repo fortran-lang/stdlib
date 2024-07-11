@@ -151,16 +151,14 @@ module stdlib_sorting
         max_merge_stack = int( ceiling( log( 2._dp**64 ) / &
                                log(1.6180339887_dp) ) )
 
-#:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
-    type run_type_${namei}$
+    type run_type
 !! Version: experimental
 !!
 !! Used to pass state around in a stack among helper functions for the
 !! `ORD_SORT` and `SORT_INDEX` algorithms
-        ${ti}$ :: base = 0
-        ${ti}$ :: len = 0
-    end type run_type_${namei}$
-#:endfor
+        integer(int_index) :: base = 0
+        integer(int_index) :: len = 0
+    end type run_type
 
     public ord_sort
 !! Version: experimental
