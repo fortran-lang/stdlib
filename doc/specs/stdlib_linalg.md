@@ -1183,6 +1183,7 @@ The solver is based on LAPACK's `*POTRF` backends.
 ### Syntax
 
 `call ` [[stdlib_linalg(module):cholesky(interface)]] `(a, c, lower [, other_zeroed] [, err])`
+
 ### Class
 Subroutine
 
