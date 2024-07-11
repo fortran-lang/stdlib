@@ -1676,7 +1676,7 @@ data was replaced.  If `exists` is `.false.` the `key` did
 not exist and nothing was done.
 
 * If `key` is not already present in `map` and `exists` has not 
-been provided then the routine will error stop if.  
+been provided then the routine will error stop.
 
 ##### Example
 
