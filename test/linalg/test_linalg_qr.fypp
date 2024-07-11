@@ -1,0 +1,140 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+! Test QR factorization 
+module test_linalg_qr
+    use testdrive, only: error_type, check, new_unittest, unittest_type
+    use stdlib_linalg_constants
+    use stdlib_linalg_state, only: LINALG_VALUE_ERROR,linalg_state_type
+    use stdlib_linalg, only: qr,qr_space
+    use ieee_arithmetic, only: ieee_value,ieee_quiet_nan
+
+    implicit none (type,external)
+    
+    public :: test_qr_factorization
+
+    contains
+
+    !> QR factorization tests
+    subroutine test_qr_factorization(tests)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: tests(:)
+        
+        allocate(tests(0))
+        
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        tests = [tests,new_unittest("qr_random_${ri}$",test_qr_random_${ri}$)]
+        #:endfor
+
+    end subroutine test_qr_factorization
+
+    !> QR factorization of a random matrix
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    subroutine test_qr_random_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp), parameter :: m   = 15_ilp
+        integer(ilp), parameter :: n   =  4_ilp
+        integer(ilp), parameter :: k   = min(m,n)
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(m,n),aorig(m,n),q(m,m),r(m,n),qred(m,k),rred(k,n),qerr(m,6),rerr(6,n)
+        real(${rk}$) :: rea(m,n),ima(m,n)
+        integer(ilp) :: lwork
+        ${rt}$, allocatable :: work(:)
+        type(linalg_state_type) :: state
+        
+        call random_number(rea)
+        #:if rt.startswith('complex')
+        call random_number(ima)
+        a = cmplx(rea,ima,kind=${rk}$)
+        #:else
+        a = rea
+        #:endif
+        aorig = a
+        
+        ! 1) QR factorization with full matrices. Input NaNs to be sure Q and R are OK on return
+        q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        call qr(a,q,r,err=state)
+        
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
+        
+        ! Check solution
+        call check(error, all(abs(a-matmul(q,r))<tol), 'converged solution (fulle)')
+        if (allocated(error)) return        
+                
+        ! 2) QR factorization with reduced matrices
+        call qr(a,qred,rred,err=state)
+        
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
+        
+        ! Check solution
+        call check(error, all(abs(a-matmul(qred,rred))<tol), 'converged solution (reduced)')
+        if (allocated(error)) return        
+        
+        ! 3) overwrite A
+        call qr(a,qred,rred,overwrite_a=.true.,err=state)
+        
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
+        
+        ! Check solution
+        call check(error, all(abs(aorig-matmul(qred,rred))<tol), 'converged solution (overwrite A)')
+        if (allocated(error)) return                
+        
+        ! 4) External storage option   
+        a = aorig
+        call qr_space(a,lwork)
+        allocate(work(lwork))
+        call qr(a,q,r,storage=work,err=state)
+    
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
+        
+        ! Check solution
+        call check(error, all(abs(a-matmul(q,r))<tol), 'converged solution (external storage)')
+        if (allocated(error)) return          
+        
+        ! Check that an invalid problem size returns an error
+        a = aorig        
+        call qr(a,qerr,rerr,err=state)
+        call check(error,state%error(),'invalid matrix sizes')
+        if (allocated(error)) return             
+        
+    end subroutine test_qr_random_${ri}$
+
+    #:endfor
+
+
+end module test_linalg_qr
+
+program test_qr
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_linalg_qr, only : test_qr_factorization
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("linalg_qr", test_qr_factorization) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program test_qr
