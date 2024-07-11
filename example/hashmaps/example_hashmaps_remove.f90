@@ -12,7 +12,6 @@ program example_remove
   ! Initialize hashmap with 2^10 slots.
   ! Hashmap will dynamically increase size if needed.
   call map%init(fnv_1_hasher, slots_bits=10)
-    
   ! Explicitly set key type using set function
   call set(key, [1, 2, 3])
   call map%map_entry(key, 4.0)
