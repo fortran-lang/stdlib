@@ -1219,7 +1219,7 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 {!example/linalg/example_cholesky.f90!}
 ```
 
-## `chol` - Compute the Cholesky factorization of a rank-2 square array (matrix).
+## `chol` - Compute the Cholesky factorization of a rank-2 square array (matrix)
 
 ### Status
 
