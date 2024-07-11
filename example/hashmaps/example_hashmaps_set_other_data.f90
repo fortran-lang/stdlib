@@ -7,7 +7,6 @@ program example_set_other_data
   logical :: exists
   type(chaining_hashmap_type) :: map
   class(*), allocatable   :: data
-  
   type(key_type) :: key
     
   ! Initialize hashmap with 2^10 slots.
