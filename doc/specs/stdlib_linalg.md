@@ -1197,7 +1197,7 @@ Subroutine
 
 `other_zeroed` (optional): Shall be an input `logical` flag. If `.true.`, the unused part of the output matrix will contain zeroes. Otherwise, it will not be accessed. This saves cpu time. By default, `other_zeroed=.true.`. It is an `intent(in)` argument.
 
-`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+`err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
 ### Return values
 
