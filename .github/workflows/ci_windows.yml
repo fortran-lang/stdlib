@@ -92,8 +92,10 @@ jobs:
     - name: Install project
       run: PATH=$PATH:/mingw64/bin/ cmake --install build
 
-    # Build and test with external BLAS and LAPACK (OpenBLAS)
-    - run: >-
+    # Build and test with external BLAS and LAPACK (OpenBLAS on MINGW64)
+    - name: Configure with CMake and OpenBLAS
+      if: contains(matrix.msystem, 'MINGW64')
+      run: >-
         PATH=$PATH:/mingw64/bin/ cmake
         -Wdev
         -B build_openblas
@@ -108,20 +110,23 @@ jobs:
         CXX: g++
     
     - name: CMake build with OpenBLAS
+      if: contains(matrix.msystem, 'MINGW64')
       run: PATH=$PATH:/mingw64/bin/ cmake --build build_openblas --parallel
 
     - name: catch build fail
+      if: contains(matrix.msystem, 'MINGW64') && failure()
       run: PATH=$PATH:/mingw64/bin/ cmake --build build_openblas --verbose --parallel 1
-      if: failure()
 
     - name: CTest with OpenBLAS
+      if: contains(matrix.msystem, 'MINGW64')
       run: PATH=$PATH:/mingw64/bin/ ctest --test-dir build_openblas --output-on-failure --parallel -V -LE quadruple_precision
     
     - uses: actions/upload-artifact@v1
-      if: failure()
+      if: contains(matrix.msystem, 'MINGW64') && failure()
       with:
         name: WindowsCMakeTestlog_openblas
         path: build_openblas/Testing/Temporary/LastTest.log
 
     - name: Install project with OpenBLAS
+      if: contains(matrix.msystem, 'MINGW64')
       run: PATH=$PATH:/mingw64/bin/ cmake --install build_openblas

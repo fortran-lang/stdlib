@@ -33,6 +33,9 @@ jobs:
             build: cmake-inline
             toolchain:
               - {compiler: gcc, version: 10}
+            APT_PACKAGES: >-
+              intel-oneapi-mkl-2024.1.0
+              intel-oneapi-mkl-devel-2024.1.0
         exclude:
           - os: macos-12
             toolchain: {compiler: intel, version: '2024.1'}
@@ -67,6 +70,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -DFIND_BLAS:STRING=FALSE
         -S . -B ${{ env.BUILD_DIR }}
 
     - name: Build and compile
@@ -74,8 +78,8 @@ jobs:
       run: cmake --build ${{ env.BUILD_DIR }} --parallel
 
     - name: catch build fail
-      run: cmake --build ${{ env.BUILD_DIR }} --verbose --parallel 1
       if: ${{ failure() && contains(matrix.build, 'cmake') }}
+      run: cmake --build ${{ env.BUILD_DIR }} --verbose --parallel 1
 
     - name: test
       if: ${{ contains(matrix.build, 'cmake') }}
@@ -89,3 +93,36 @@ jobs:
     - name: Install project
       if: ${{ contains(matrix.build, 'cmake') }}
       run: cmake --install ${{ env.BUILD_DIR }}
+
+    # Build and test with external BLAS and LAPACK (MKL on Ubuntu with Intel compilers)
+    - name: Configure with CMake and MKL
+      if: ${{ contains(matrix.build, 'cmake') && matrix.os == 'ubuntu-latest' && matrix.toolchain.compiler == 'intel' }}
+      run: >-
+        cmake -Wdev -G Ninja
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_MAXIMUM_RANK:String=4
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -DFIND_BLAS:STRING=TRUE
+        -DBLA_VENDOR=Intel10_64lp
+        -S . -B build_mkl
+    
+    - name: Build and compile with MKL
+      if: ${{ contains(matrix.build, 'cmake') && matrix.os == 'ubuntu-latest' && matrix.toolchain.compiler == 'intel' }}
+      run: cmake --build build_mkl --parallel
+
+    - name: catch build fail with MKL
+      if: ${{ failure() && contains(matrix.build, 'cmake') && matrix.os == 'ubuntu-latest' && matrix.toolchain.compiler == 'intel' }}
+      run: cmake --build build_mkl --verbose --parallel 1
+
+    - name: test with MKL
+      if: ${{ contains(matrix.build, 'cmake') && matrix.os == 'ubuntu-latest' && matrix.toolchain.compiler == 'intel' }}
+      run: >-
+        ctest
+        --test-dir build_mkl
+        --parallel
+        --output-on-failure
+        --no-tests=error
+      
+    - name: Install project with MKL
+      if: ${{ contains(matrix.build, 'cmake') && matrix.os == 'ubuntu-latest' && matrix.toolchain.compiler == 'intel' }}
+      run: cmake --install build_mkl
