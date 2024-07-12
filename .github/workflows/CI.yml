@@ -33,9 +33,6 @@ jobs:
             build: cmake-inline
             toolchain:
               - {compiler: gcc, version: 10}
-            APT_PACKAGES: >-
-              intel-oneapi-mkl-2024.1.0
-              intel-oneapi-mkl-devel-2024.1.0
         exclude:
           - os: macos-12
             toolchain: {compiler: intel, version: '2024.1'}
@@ -62,7 +59,8 @@ jobs:
       with:
         compiler: ${{ matrix.toolchain.compiler }}
         version: ${{ matrix.toolchain.version }}
-
+  
+    # Build and test with built-in BLAS and LAPACK
     - name: Configure with CMake
       if: ${{ contains(matrix.build, 'cmake') }}
       run: >-
@@ -94,9 +92,41 @@ jobs:
       if: ${{ contains(matrix.build, 'cmake') }}
       run: cmake --install ${{ env.BUILD_DIR }}
 
+  Build-with-MKL:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - {compiler: intel, version: '2024.1'}
+        include:
+          - APT_PACKAGES: >-
+              intel-oneapi-mkl-2024.1.0
+              intel-oneapi-mkl-devel-2024.1.0
+        build: [cmake]
+    env:
+      BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v5 # Use pip to install latest CMake, & FORD/Jin2For, etc.
+      with:
+        python-version: 3.x
+
+    - name: Install fypp
+      run: pip install --upgrade fypp ninja
+
+    - name: Setup Fortran compiler
+      uses: fortran-lang/setup-fortran@v1.6.1
+      id: setup-fortran
+      with:
+        compiler: ${{ matrix.toolchain.compiler }}
+        version: ${{ matrix.toolchain.version }}
+    
     # Build and test with external BLAS and LAPACK (MKL on Ubuntu with Intel compilers)
     - name: Configure with CMake and MKL
-      if: ${{ contains(matrix.build, 'cmake') && matrix.os == 'ubuntu-latest' && matrix.toolchain.compiler == 'intel' }}
       run: >-
         cmake -Wdev -G Ninja
         -DCMAKE_BUILD_TYPE=Release
@@ -107,15 +137,13 @@ jobs:
         -S . -B build_mkl
     
     - name: Build and compile with MKL
-      if: ${{ contains(matrix.build, 'cmake') && matrix.os == 'ubuntu-latest' && matrix.toolchain.compiler == 'intel' }}
       run: cmake --build build_mkl --parallel
 
     - name: catch build fail with MKL
-      if: ${{ failure() && contains(matrix.build, 'cmake') && matrix.os == 'ubuntu-latest' && matrix.toolchain.compiler == 'intel' }}
+      if: failure()
       run: cmake --build build_mkl --verbose --parallel 1
 
     - name: test with MKL
-      if: ${{ contains(matrix.build, 'cmake') && matrix.os == 'ubuntu-latest' && matrix.toolchain.compiler == 'intel' }}
       run: >-
         ctest
         --test-dir build_mkl
@@ -124,5 +152,4 @@ jobs:
         --no-tests=error
       
     - name: Install project with MKL
-      if: ${{ contains(matrix.build, 'cmake') && matrix.os == 'ubuntu-latest' && matrix.toolchain.compiler == 'intel' }}
       run: cmake --install build_mkl

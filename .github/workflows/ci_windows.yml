@@ -38,7 +38,6 @@ jobs:
           mingw-w64-${{ matrix.arch }}-python-setuptools
           mingw-w64-${{ matrix.arch }}-cmake
           mingw-w64-${{ matrix.arch }}-ninja
-          mingw-w64-${{ matrix.arch }}-openblas
 
     - name: Setup msys POSIX environment
       uses: msys2/setup-msys2@v2
@@ -57,8 +56,8 @@ jobs:
 
     - name: Install fypp
       run: pip install fypp
-
-    # Build and test with build-in BLAS and LAPACK
+    
+    # Build and test with built-in BLAS and LAPACK
     - run: >-
         PATH=$PATH:/mingw64/bin/ cmake
         -Wdev
@@ -92,9 +91,56 @@ jobs:
     - name: Install project
       run: PATH=$PATH:/mingw64/bin/ cmake --install build
 
+  msys2-build-with-OpenBLAS:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: [
+          { msystem: MINGW64, arch: x86_64 }
+        ]
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup MinGW native environment
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{ matrix.msystem }}
+        update: false
+        install: >-
+          git
+          mingw-w64-${{ matrix.arch }}-gcc
+          mingw-w64-${{ matrix.arch }}-gcc-fortran
+          mingw-w64-${{ matrix.arch }}-python
+          mingw-w64-${{ matrix.arch }}-python-pip
+          mingw-w64-${{ matrix.arch }}-python-setuptools
+          mingw-w64-${{ matrix.arch }}-cmake
+          mingw-w64-${{ matrix.arch }}-ninja
+          mingw-w64-${{ matrix.arch }}-openblas
+
+    - name: Setup msys POSIX environment
+      uses: msys2/setup-msys2@v2
+      if: contains(matrix.msystem, 'MSYS')
+      with:
+        msystem: MSYS
+        update: false
+        install: >-
+          git
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-gcc-fortran
+          python
+          python-pip
+          cmake
+          ninja
+
+    - name: Install fypp
+      run: pip install fypp
+
     # Build and test with external BLAS and LAPACK (OpenBLAS on MINGW64)
     - name: Configure with CMake and OpenBLAS
-      if: contains(matrix.msystem, 'MINGW64')
       run: >-
         PATH=$PATH:/mingw64/bin/ cmake
         -Wdev
@@ -110,23 +156,20 @@ jobs:
         CXX: g++
     
     - name: CMake build with OpenBLAS
-      if: contains(matrix.msystem, 'MINGW64')
       run: PATH=$PATH:/mingw64/bin/ cmake --build build_openblas --parallel
 
     - name: catch build fail
-      if: contains(matrix.msystem, 'MINGW64') && failure()
+      if: failure()
       run: PATH=$PATH:/mingw64/bin/ cmake --build build_openblas --verbose --parallel 1
 
     - name: CTest with OpenBLAS
-      if: contains(matrix.msystem, 'MINGW64')
       run: PATH=$PATH:/mingw64/bin/ ctest --test-dir build_openblas --output-on-failure --parallel -V -LE quadruple_precision
     
     - uses: actions/upload-artifact@v1
-      if: contains(matrix.msystem, 'MINGW64') && failure()
+      if: failure()
       with:
         name: WindowsCMakeTestlog_openblas
         path: build_openblas/Testing/Temporary/LastTest.log
 
     - name: Install project with OpenBLAS
-      if: contains(matrix.msystem, 'MINGW64')
       run: PATH=$PATH:/mingw64/bin/ cmake --install build_openblas
