@@ -52,7 +52,7 @@ module stdlib_sparse_kinds
     end type
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    type, public, extends(COO_type) :: COO_${s1}$
+    type, public, extends(COO_type) :: COO_${s1}$_type
         ${t1}$, allocatable :: data(:) 
     contains
         procedure, non_overridable :: at => at_value_coo_${s1}$
@@ -73,7 +73,7 @@ module stdlib_sparse_kinds
     end type
   
     #:for k1, t1, s1 in (KINDS_TYPES)
-    type, public, extends(CSR_type) :: CSR_${s1}$
+    type, public, extends(CSR_type) :: CSR_${s1}$_type
         ${t1}$, allocatable :: data(:) 
     contains
         procedure, non_overridable :: at => at_value_csr_${s1}$
@@ -94,7 +94,7 @@ module stdlib_sparse_kinds
     end type
   
     #:for k1, t1, s1 in (KINDS_TYPES)
-    type, public, extends(CSC_type) :: CSC_${s1}$
+    type, public, extends(CSC_type) :: CSC_${s1}$_type
         ${t1}$, allocatable :: data(:) 
     contains
         procedure, non_overridable :: at => at_value_csc_${s1}$
@@ -115,7 +115,7 @@ module stdlib_sparse_kinds
     end type
   
     #:for k1, t1, s1 in (KINDS_TYPES)
-    type, public, extends(ELL_type) :: ELL_${s1}$
+    type, public, extends(ELL_type) :: ELL_${s1}$_type
         ${t1}$, allocatable :: data(:,:) 
     contains
         procedure, non_overridable :: at => at_value_ell_${s1}$
@@ -136,7 +136,7 @@ module stdlib_sparse_kinds
     end type
   
     #:for k1, t1, s1 in (KINDS_TYPES)
-    type, public, extends(SELLC_type) :: SELLC_${s1}$
+    type, public, extends(SELLC_type) :: SELLC_${s1}$_type
         ${t1}$, allocatable :: data(:,:)
     contains
         procedure, non_overridable :: at => at_value_sellc_${s1}$
@@ -156,7 +156,7 @@ module stdlib_sparse_kinds
         #:for k1, t1, s1 in (KINDS_TYPES)
         module subroutine dense2coo_${s1}$(dense,COO)
             ${t1}$, intent(in) :: dense(:,:)
-            type(COO_${s1}$), intent(out) :: COO
+            type(COO_${s1}$_type), intent(out) :: COO
         end subroutine
         #:endfor
     end interface
@@ -171,7 +171,7 @@ module stdlib_sparse_kinds
     interface coo2dense
         #:for k1, t1, s1 in (KINDS_TYPES)
         module subroutine coo2dense_${s1}$(COO,dense)
-            type(COO_${s1}$), intent(in) :: COO
+            type(COO_${s1}$_type), intent(in) :: COO
             ${t1}$, allocatable, intent(out) :: dense(:,:)
         end subroutine
         #:endfor
@@ -187,8 +187,8 @@ module stdlib_sparse_kinds
     interface coo2csr
         #:for k1, t1, s1 in (KINDS_TYPES)
         module subroutine coo2csr_${s1}$(COO,CSR)
-            type(COO_${s1}$), intent(in)    :: COO
-            type(CSR_${s1}$), intent(out) :: CSR
+            type(COO_${s1}$_type), intent(in)    :: COO
+            type(CSR_${s1}$_type), intent(out) :: CSR
         end subroutine
         #:endfor
     end interface
@@ -203,7 +203,7 @@ module stdlib_sparse_kinds
     interface csr2dense
         #:for k1, t1, s1 in (KINDS_TYPES)
         module subroutine csr2dense_${s1}$(CSR,dense)
-            type(CSR_${s1}$), intent(in)    :: CSR
+            type(CSR_${s1}$_type), intent(in)    :: CSR
             ${t1}$, allocatable, intent(out) :: dense(:,:)
         end subroutine
         #:endfor
@@ -219,8 +219,8 @@ module stdlib_sparse_kinds
     interface csr2coo
         #:for k1, t1, s1 in (KINDS_TYPES)
         module subroutine csr2coo_${s1}$(CSR,COO)
-            type(CSR_${s1}$), intent(in)    :: CSR
-            type(COO_${s1}$), intent(out) :: COO
+            type(CSR_${s1}$_type), intent(in)    :: CSR
+            type(COO_${s1}$_type), intent(out) :: COO
         end subroutine
         #:endfor
     end interface
@@ -235,8 +235,8 @@ module stdlib_sparse_kinds
     interface csr2ell
         #:for k1, t1, s1 in (KINDS_TYPES)
         module subroutine csr2ell_${s1}$(CSR,ELL,num_nz_rows)
-            type(CSR_${s1}$), intent(in)  :: CSR
-            type(ELL_${s1}$), intent(out) :: ELL
+            type(CSR_${s1}$_type), intent(in)  :: CSR
+            type(ELL_${s1}$_type), intent(out) :: ELL
             integer, intent(in), optional :: num_nz_rows
         end subroutine
         #:endfor
@@ -252,8 +252,8 @@ module stdlib_sparse_kinds
     interface csr2sellc
     #:for k1, t1, s1 in (KINDS_TYPES)
         module subroutine csr2sellc_${s1}$(CSR,SELLC,chunk)
-            type(CSR_${s1}$), intent(in)    :: CSR
-            type(SELLC_${s1}$), intent(out) :: SELLC
+            type(CSR_${s1}$_type), intent(in)    :: CSR
+            type(SELLC_${s1}$_type), intent(out) :: SELLC
             integer, intent(in), optional :: chunk
         end subroutine
     #:endfor
@@ -295,28 +295,28 @@ module stdlib_sparse_kinds
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
         module subroutine spmv_coo_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
-            type(COO_${s1}$), intent(in) :: matrix
+            type(COO_${s1}$_type), intent(in) :: matrix
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
             ${t1}$, intent(in), optional :: alpha
             ${t1}$, intent(in), optional :: beta
         end subroutine
         module subroutine spmv_csr_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
-            type(CSR_${s1}$), intent(in) :: matrix
+            type(CSR_${s1}$_type), intent(in) :: matrix
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
             ${t1}$, intent(in), optional :: alpha
             ${t1}$, intent(in), optional :: beta
         end subroutine
         module subroutine spmv_csc_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
-            type(CSC_${s1}$), intent(in) :: matrix
+            type(CSC_${s1}$_type), intent(in) :: matrix
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
             ${t1}$, intent(in), optional :: alpha
             ${t1}$, intent(in), optional :: beta
         end subroutine
         module subroutine spmv_ell_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
-            type(ELL_${s1}$), intent(in) :: matrix
+            type(ELL_${s1}$_type), intent(in) :: matrix
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
             ${t1}$, intent(in), optional :: alpha
@@ -325,7 +325,7 @@ module stdlib_sparse_kinds
         #:endfor
         module subroutine spmv_sellc_${s1}$(matrix,vec_x,vec_y,alpha,beta)
             !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
-            type(SELLC_${s1}$), intent(in) :: matrix
+            type(SELLC_${s1}$_type), intent(in) :: matrix
             ${t1}$, intent(in)    :: vec_x(:)
             ${t1}$, intent(inout) :: vec_y(:)
             ${t1}$, intent(in), optional :: alpha
@@ -360,7 +360,7 @@ contains
 
         select type(self)
             #:for k1, t1, s1 in (KINDS_TYPES)
-            type is(COO_${s1}$)
+            type is(COO_${s1}$_type)
                 block
                 ${t1}$, allocatable :: temp_data_${s1}$(:)
                 if(.not.allocated(self%data)) then
@@ -404,7 +404,7 @@ contains
 
         select type(self)
             #:for k1, t1, s1 in (KINDS_TYPES)
-            type is(CSR_${s1}$)
+            type is(CSR_${s1}$_type)
                 block
                 ${t1}$, allocatable :: temp_data_${s1}$(:)
                 if(.not.allocated(self%data)) then
@@ -448,7 +448,7 @@ contains
 
         select type(self)
             #:for k1, t1, s1 in (KINDS_TYPES)
-            type is(CSC_${s1}$)
+            type is(CSC_${s1}$_type)
                 block
                 ${t1}$, allocatable :: temp_data_${s1}$(:)
                 if(.not.allocated(self%data)) then
@@ -485,7 +485,7 @@ contains
 
         select type(self)
             #:for k1, t1, s1 in (KINDS_TYPES)
-            type is(ELL_${s1}$)
+            type is(ELL_${s1}$_type)
                 block
                 ${t1}$, allocatable :: temp_data_${s1}$(:,:)
                 if(.not.allocated(self%data)) then
@@ -530,7 +530,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine coo_from_ijv_${s1}$(COO,row,col,data,nrows,ncols)
-        type(COO_${s1}$), intent(inout) :: COO
+        type(COO_${s1}$_type), intent(inout) :: COO
         integer(ilp), intent(in) :: row(:)
         integer(ilp), intent(in) :: col(:)
         ${t1}$, intent(in), optional :: data(:)
@@ -563,7 +563,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine csr_from_ijv_${s1}$(CSR,row,col,data,nrows,ncols)
-        type(CSR_${s1}$), intent(inout) :: CSR
+        type(CSR_${s1}$_type), intent(inout) :: CSR
         integer(ilp), intent(in) :: row(:)
         integer(ilp), intent(in) :: col(:)
         ${t1}$, intent(in), optional :: data(:)
@@ -584,7 +584,7 @@ contains
         end if
         !---------------------------------------------------------
         block
-            type(COO_${s1}$) :: COO
+            type(COO_${s1}$_type) :: COO
             if(present(data)) then
                 call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
             else 
@@ -597,7 +597,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine ell_from_ijv_${s1}$(ELL,row,col,data,nrows,ncols,num_nz_rows)
-        type(ELL_${s1}$), intent(inout) :: ELL
+        type(ELL_${s1}$_type), intent(inout) :: ELL
         integer(ilp), intent(in) :: row(:)
         integer(ilp), intent(in) :: col(:)
         ${t1}$, intent(in), optional :: data(:)
@@ -619,8 +619,8 @@ contains
         end if
         !---------------------------------------------------------
         block
-            type(COO_${s1}$) :: COO
-            type(CSR_${s1}$) :: CSR
+            type(COO_${s1}$_type) :: COO
+            type(CSR_${s1}$_type) :: CSR
             if(present(data)) then
                 call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
             else 
@@ -638,7 +638,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine sellc_from_ijv_${s1}$(SELLC,row,col,data,nrows,ncols,chunk)
-        type(SELLC_${s1}$), intent(inout) :: SELLC
+        type(SELLC_${s1}$_type), intent(inout) :: SELLC
         integer(ilp), intent(in) :: row(:)
         integer(ilp), intent(in) :: col(:)
         ${t1}$, intent(in), optional :: data(:)
@@ -661,8 +661,8 @@ contains
         if(present(chunk)) SELLC%chunk_size = chunk
         !---------------------------------------------------------
         block
-            type(COO_${s1}$) :: COO
-            type(CSR_${s1}$) :: CSR
+            type(COO_${s1}$_type) :: COO
+            type(CSR_${s1}$_type) :: CSR
             if(present(data)) then
                 call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
             else 
@@ -680,7 +680,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure ${t1}$ function at_value_coo_${s1}$(self,ik,jk) result(val)
-        class(COO_${s1}$), intent(in) :: self
+        class(COO_${s1}$_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
         logical :: transpose
@@ -704,7 +704,7 @@ contains
     end function
 
     subroutine add_value_coo_${s1}$(self,ik,jk,val)
-        class(COO_${s1}$), intent(inout) :: self
+        class(COO_${s1}$_type), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k
@@ -718,7 +718,7 @@ contains
     end subroutine
 
     subroutine add_block_coo_${s1}$(self,ik,jk,val)
-        class(COO_${s1}$), intent(inout) :: self
+        class(COO_${s1}$_type), intent(inout) :: self
         ${t1}$, intent(in) :: val(:,:)
         integer(ilp), intent(in) :: ik(:), jk(:)
         integer(ilp) :: k, i, j
@@ -738,7 +738,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure ${t1}$ function at_value_csr_${s1}$(self,ik,jk) result(val)
-        class(CSR_${s1}$), intent(in) :: self
+        class(CSR_${s1}$_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
         logical :: transpose
@@ -762,7 +762,7 @@ contains
     end function
 
     subroutine add_value_csr_${s1}$(self,ik,jk,val)
-        class(CSR_${s1}$), intent(inout) :: self
+        class(CSR_${s1}$_type), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k
@@ -776,7 +776,7 @@ contains
     end subroutine
 
     subroutine add_block_csr_${s1}$(self,ik,jk,val)
-        class(CSR_${s1}$), intent(inout) :: self
+        class(CSR_${s1}$_type), intent(inout) :: self
         ${t1}$, intent(in) :: val(:,:)
         integer(ilp), intent(in) :: ik(:), jk(:)
         integer(ilp) :: k, i, j
@@ -796,7 +796,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure ${t1}$ function at_value_csc_${s1}$(self,ik,jk) result(val)
-        class(CSC_${s1}$), intent(in) :: self
+        class(CSC_${s1}$_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
         logical :: transpose
@@ -820,7 +820,7 @@ contains
     end function
 
     subroutine add_value_csc_${s1}$(self,ik,jk,val)
-        class(CSC_${s1}$), intent(inout) :: self
+        class(CSC_${s1}$_type), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer(ilp), intent(in)  :: ik, jk
         integer(ilp) :: k
@@ -834,7 +834,7 @@ contains
     end subroutine
 
     subroutine add_block_csc_${s1}$(self,ik,jk,val)
-        class(CSC_${s1}$), intent(inout) :: self
+        class(CSC_${s1}$_type), intent(inout) :: self
         ${t1}$, intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
         integer(ilp) :: k, i, j
@@ -854,7 +854,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure ${t1}$ function at_value_ell_${s1}$(self,ik,jk) result(val)
-        class(ELL_${s1}$), intent(in) :: self
+        class(ELL_${s1}$_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
         logical :: transpose
@@ -878,7 +878,7 @@ contains
     end function
 
     subroutine add_value_ell_${s1}$(self,ik,jk,val)
-        class(ELL_${s1}$), intent(inout) :: self
+        class(ELL_${s1}$_type), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer(ilp), intent(in)  :: ik, jk
         integer(ilp) :: k
@@ -892,7 +892,7 @@ contains
     end subroutine
 
     subroutine add_block_ell_${s1}$(self,ik,jk,val)
-        class(ELL_${s1}$), intent(inout) :: self
+        class(ELL_${s1}$_type), intent(inout) :: self
         ${t1}$, intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
         integer(ilp) :: k, i, j
@@ -912,7 +912,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure ${t1}$ function at_value_sellc_${s1}$(self,ik,jk) result(val)
-        class(SELLC_${s1}$), intent(in) :: self
+        class(SELLC_${s1}$_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_, idx
         logical :: transpose
@@ -938,7 +938,7 @@ contains
     end function
 
     subroutine add_value_sellc_${s1}$(self,ik,jk,val)
-        class(SELLC_${s1}$), intent(inout) :: self
+        class(SELLC_${s1}$_type), intent(inout) :: self
         ${t1}$, intent(in) :: val
         integer(ilp), intent(in)  :: ik, jk
         integer(ilp) :: k, idx
@@ -953,7 +953,7 @@ contains
     end subroutine
 
     subroutine add_block_sellc_${s1}$(self,ik,jk,val)
-        class(SELLC_${s1}$), intent(inout) :: self
+        class(SELLC_${s1}$_type), intent(inout) :: self
         ${t1}$, intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
         integer(ilp) :: k, i, j, idx

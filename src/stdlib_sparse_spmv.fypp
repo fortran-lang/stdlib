@@ -19,7 +19,7 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
     module subroutine spmv_coo_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
-        type(COO_${s1}$), intent(in) :: matrix
+        type(COO_${s1}$_type), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in), optional :: alpha
@@ -62,7 +62,7 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
     module subroutine spmv_csr_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
-        type(CSR_${s1}$), intent(in) :: matrix
+        type(CSR_${s1}$_type), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in), optional :: alpha
@@ -142,7 +142,7 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
     module subroutine spmv_csc_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
-        type(CSC_${s1}$), intent(in) :: matrix
+        type(CSC_${s1}$_type), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in), optional :: alpha
@@ -206,7 +206,7 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
     module subroutine spmv_ell_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
-        type(ELL_${s1}$), intent(in) :: matrix
+        type(ELL_${s1}$_type), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in), optional :: alpha
@@ -241,7 +241,7 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine spmv_sellc_${s1}$(matrix,vec_x,vec_y,alpha,beta)
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
-        type(SELLC_${s1}$), intent(in) :: matrix
+        type(SELLC_${s1}$_type), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x(:)
         ${t1}$, intent(inout) :: vec_y(:)
         ${t1}$, intent(in), optional :: alpha

@@ -34,7 +34,7 @@ contains
         #:for k1, t1, s1 in (KINDS_TYPES)
         block
             integer, parameter :: wp = ${k1}$
-            type(COO_${s1}$) :: COO
+            type(COO_${s1}$_type) :: COO
             ${t1}$, allocatable :: dense(:,:)
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y1(:), vec_y2(:)
@@ -67,7 +67,7 @@ contains
     subroutine test_coo2ordered(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
-        type(COO_sp) :: COO
+        type(COO_sp_type) :: COO
         integer :: row(12), col(12)
         real    :: data(12)
 
@@ -98,7 +98,7 @@ contains
         #:for k1, t1, s1 in (KINDS_TYPES)
         block
             integer, parameter :: wp = ${k1}$
-            type(CSR_${s1}$) :: CSR
+            type(CSR_${s1}$_type) :: CSR
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y(:)
 
@@ -123,7 +123,7 @@ contains
         #:for k1, t1, s1 in (KINDS_TYPES)
         block
             integer, parameter :: wp = ${k1}$
-            type(CSC_${s1}$) :: CSC
+            type(CSC_${s1}$_type) :: CSC
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y(:)
 
@@ -148,7 +148,7 @@ contains
         #:for k1, t1, s1 in (KINDS_TYPES)
         block
             integer, parameter :: wp = ${k1}$
-            type(ELL_${s1}$) :: ELL
+            type(ELL_${s1}$_type) :: ELL
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y(:)
 
@@ -180,8 +180,8 @@ contains
         #:for k1, t1, s1 in (KINDS_TYPES)
         block
             integer, parameter :: wp = ${k1}$
-            type(SELLC_${s1}$) :: SELLC
-            type(CSR_${s1}$)   :: CSR
+            type(SELLC_${s1}$_type) :: SELLC
+            type(CSR_${s1}$_type)   :: CSR
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y(:)
             integer :: i
@@ -216,8 +216,8 @@ contains
         #:for k1, t1, s1 in (KINDS_TYPES)
         block
             integer, parameter :: wp = ${k1}$
-            type(COO_${s1}$) :: COO
-            type(CSR_${s1}$) :: CSR
+            type(COO_${s1}$_type) :: COO
+            type(CSR_${s1}$_type) :: CSR
             ${t1}$, allocatable :: dense(:,:)
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y1(:), vec_y2(:), vec_y3(:)
@@ -260,8 +260,8 @@ contains
         block
             integer, parameter :: wp = ${k1}$
             real(wp) :: dense(5,5), mat(2,2)
-            type(COO_${s1}$) :: COO
-            type(CSR_${s1}$) :: CSR
+            type(COO_${s1}$_type) :: COO
+            type(CSR_${s1}$_type) :: CSR
             ${t1}$:: err
             integer :: i, j, locdof(2)
 

@@ -5,8 +5,8 @@ program example_sparse_data_accessors
 
     real(dp) :: mat(2,2)
     real(dp), allocatable :: dense(:,:)
-    type(CSR_dp) :: CSR
-    type(COO_dp) :: COO
+    type(CSR_dp_type) :: CSR
+    type(COO_dp_type) :: COO
     integer :: i, j, locdof(2)
 
     ! Initial data

@@ -23,7 +23,7 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine dense2coo_${s1}$(dense,COO)
         ${t1}$, intent(in) :: dense(:,:)
-        type(COO_${s1}$), intent(out) :: COO
+        type(COO_${s1}$_type), intent(out) :: COO
         integer(ilp) :: num_rows, num_cols, nnz
         integer(ilp) :: i, j, idx
 
@@ -50,7 +50,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine coo2dense_${s1}$(COO,dense)
-        type(COO_${s1}$), intent(in) :: COO
+        type(COO_${s1}$_type), intent(in) :: COO
         ${t1}$, allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: idx
 
@@ -64,8 +64,8 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine coo2csr_${s1}$(COO,CSR)
-        type(COO_${s1}$), intent(in)  :: COO
-        type(CSR_${s1}$), intent(out) :: CSR
+        type(COO_${s1}$_type), intent(in)  :: COO
+        type(CSR_${s1}$_type), intent(out) :: CSR
         integer(ilp) :: i
 
         CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
@@ -94,7 +94,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine csr2dense_${s1}$(CSR,dense)
-        type(CSR_${s1}$), intent(in) :: CSR
+        type(CSR_${s1}$_type), intent(in) :: CSR
         ${t1}$, allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: i, j
 
@@ -120,8 +120,8 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine csr2coo_${s1}$(CSR,COO)
-        type(CSR_${s1}$), intent(in)  :: CSR
-        type(COO_${s1}$), intent(out) :: COO
+        type(CSR_${s1}$_type), intent(in)  :: CSR
+        type(COO_${s1}$_type), intent(out) :: COO
         integer(ilp) :: i, j
 
         COO%nnz = CSR%nnz; COO%nrows = CSR%nrows; COO%ncols = CSR%ncols
@@ -146,8 +146,8 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     module subroutine csr2ell_${s1}$(CSR,ELL,num_nz_rows)
-        type(CSR_${s1}$), intent(in)  :: CSR
-        type(ELL_${s1}$), intent(out) :: ELL
+        type(CSR_${s1}$_type), intent(in)  :: CSR
+        type(ELL_${s1}$_type), intent(out) :: ELL
         integer, intent(in), optional :: num_nz_rows !! number of non zeros per row
 
         integer(ilp) :: i, j, num_nz_rows_, adr1, adr2
@@ -178,8 +178,8 @@ contains
     module subroutine csr2sellc_${s1}$(CSR,SELLC,chunk)
         !! csr2sellc: This function enables transfering data from a CSR matrix to a SELL-C matrix
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
-        type(CSR_${s1}$), intent(in)    :: CSR
-        type(SELLC_${s1}$), intent(out) :: SELLC
+        type(CSR_${s1}$_type), intent(in)    :: CSR
+        type(SELLC_${s1}$_type), intent(out) :: SELLC
         integer, intent(in), optional :: chunk
         ${t1}$, parameter :: zero = zero_${s1}$
         integer(ilp) :: i, j, num_chunks
@@ -402,7 +402,7 @@ contains
             type is( COO_type )
                 call sort_coo(COO%index, COO%nnz, COO%nrows, COO%ncols)
             #:for k1, t1, s1 in (KINDS_TYPES)
-            type is( COO_${s1}$ )
+            type is( COO_${s1}$_type )
                 block
                 ${t1}$, allocatable :: temp(:)
                 if( sort_data_ ) then

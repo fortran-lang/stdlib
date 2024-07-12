@@ -7,8 +7,8 @@ program example_sparse_spmv
     real(dp) :: A(m,n), x(n)
     real(dp) :: y_dense(m), y_coo(m), y_csr(m)
     real(dp) :: alpha, beta
-    type(COO_dp) :: COO
-    type(CSR_dp) :: CSR
+    type(COO_dp_type) :: COO
+    type(CSR_dp_type) :: CSR
 
     call random_number(A)
     ! Convert from dense to COO and CSR matrices

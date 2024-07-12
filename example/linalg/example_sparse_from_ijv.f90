@@ -5,9 +5,9 @@ program example_sparse_from_ijv
 
     integer :: row(10), col(10)
     real(dp) :: data(10)
-    type(COO_dp) :: COO
-    type(CSR_dp) :: CSR
-    type(ELL_dp) :: ELL
+    type(COO_dp_type) :: COO
+    type(CSR_dp_type) :: CSR
+    type(ELL_dp_type) :: ELL
     integer :: i, j
 
     ! Initial data

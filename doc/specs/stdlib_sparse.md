@@ -39,7 +39,7 @@ enum, bind(C)
     enumerator :: sparse_upper !! Symmetric Sparse matrix with triangular supperior storage
 end enum
 ```
-In the following, all sparse kinds will be presented in two main flavors: a data-less type `<matrix>_type` useful for topological graph operations. And real/complex valued types `<matrix>_<kind>` containing the `data` buffer for the matrix values. The following rectangular matrix will be used to showcase how each sparse matrix holds the data internally:
+In the following, all sparse kinds will be presented in two main flavors: a data-less type `<matrix>_type` useful for topological graph operations. And real/complex valued types `<matrix>_<kind>_type` containing the `data` buffer for the matrix values. The following rectangular matrix will be used to showcase how each sparse matrix holds the data internally:
 
 $$ M = \begin{bmatrix} 
     9 & 0 & 0  & 0 & -3 \\
@@ -57,7 +57,7 @@ Experimental
 The `COO`, triplet or `ijv` format defines all non-zero elements of the matrix by explicitly allocating the `i,j` index and the value of the matrix. While some implementations use separate `row` and `col` arrays for the index, here we use a 2D array in order to promote fast memory acces to `ij`.
 
 ```Fortran
-type(COO_sp) :: COO
+type(COO_sp_type) :: COO
 call COO%malloc(4,5,10)
 COO%data(:)   = real([9,-3,4,7,8,-1,8,4,5,6])
 COO%index(1:2,1)  = [1,1]
@@ -81,7 +81,7 @@ Experimental
 The Compressed Sparse Row or Yale format `CSR` stores the matrix structure by compressing the row indices with a counter pointer `rowptr` enabling to know the first and last non-zero column index `col` of the given row. 
 
 ```Fortran
-type(CSR_sp) :: CSR
+type(CSR_sp_type) :: CSR
 call CSR%malloc(4,5,10)
 CSR%data(:)   = real([9,-3,4,7,8,-1,8,4,5,6])
 CSR%col(:)    = [1,5,1,2,2,3,4,1,3,4]
@@ -97,7 +97,7 @@ Experimental
 The Compressed Sparse Colum `CSC` is similar to the `CSR` format but values are accesed first by column, thus an index counter is given by `colptr` which enables to know the first and last non-zero row index of a given colum. 
 
 ```Fortran
-type(CSC_sp) :: CSC
+type(CSC_sp_type) :: CSC
 call CSC%malloc(4,5,10)
 CSC%data(:)   = real([9,4,4,7,8,-1,5,8,6,-3])
 CSC%row(:)    = [1,2,4,2,3,3,4,3,4,1]
@@ -113,7 +113,7 @@ Experimental
 The `ELL` format stores data in a dense matrix of $nrows \times K$ in column major order. By imposing a constant number of elements per row $K$, this format will incur in additional zeros being stored, but it enables efficient vectorization as memory acces is carried out by constant sized strides. 
 
 ```Fortran
-type(ELL_sp) :: ELL
+type(ELL_sp_type) :: ELL
 call ELL%malloc(num_rows=4,num_cols=5,num_nz_row=3)
 ELL%data(1,1:3)   = real([9,-3,0])
 ELL%data(2,1:3)   = real([4,7,0])
