@@ -345,7 +345,6 @@ contains
             end if
         else if ( associated( map % inverse(inmap) % target ) ) then
             if (present(exists) ) exists = .true.
-            !allocate(other, source = map % inverse(inmap) % target % other)
             other = map % inverse(inmap) % target % other
         else
             if ( present(exists) ) then
