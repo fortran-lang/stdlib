@@ -58,6 +58,7 @@ jobs:
     - name: Install fypp
       run: pip install fypp
 
+    # Build and test with build-in BLAS and LAPACK
     - run: >-
         PATH=$PATH:/mingw64/bin/ cmake
         -Wdev
@@ -66,6 +67,7 @@ jobs:
         -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -DFIND_BLAS:STRING=FALSE
       env:
         FC: gfortran
         CC: gcc
@@ -89,3 +91,37 @@ jobs:
 
     - name: Install project
       run: PATH=$PATH:/mingw64/bin/ cmake --install build
+
+    # Build and test with external BLAS and LAPACK (OpenBLAS)
+    - run: >-
+        PATH=$PATH:/mingw64/bin/ cmake
+        -Wdev
+        -B build_openblas
+        -DCMAKE_BUILD_TYPE=Debug
+        -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
+        -DCMAKE_MAXIMUM_RANK:String=4
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -DFIND_BLAS:STRING=TRUE
+      env:
+        FC: gfortran
+        CC: gcc
+        CXX: g++
+    
+    - name: CMake build with OpenBLAS
+      run: PATH=$PATH:/mingw64/bin/ cmake --build build_openblas --parallel
+
+    - name: catch build fail
+      run: PATH=$PATH:/mingw64/bin/ cmake --build build_openblas --verbose --parallel 1
+      if: failure()
+
+    - name: CTest with OpenBLAS
+      run: PATH=$PATH:/mingw64/bin/ ctest --test-dir build_openblas --output-on-failure --parallel -V -LE quadruple_precision
+    
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: WindowsCMakeTestlog_openblas
+        path: build_openblas/Testing/Temporary/LastTest.log
+
+    - name: Install project with OpenBLAS
+      run: PATH=$PATH:/mingw64/bin/ cmake --install build_openblas

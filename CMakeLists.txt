@@ -42,14 +42,18 @@ if(NOT DEFINED CMAKE_MAXIMUM_RANK)
   set(CMAKE_MAXIMUM_RANK 4 CACHE STRING "Maximum array rank for generated procedures")
 endif()
 
+option(FIND_BLAS "Find external BLAS and LAPACK" ON)
+
 # --- find BLAS and LAPACK
-find_package(BLAS)
-if(BLAS_FOUND)
-  add_compile_definitions(STDLIB_EXTERNAL_BLAS)
-endif()
-find_package(LAPACK)
-if(LAPACK_FOUND)
-  add_compile_definitions(STDLIB_EXTERNAL_LAPACK)
+if(FIND_BLAS)
+  find_package(BLAS)
+  if(BLAS_FOUND)
+    add_compile_definitions(STDLIB_EXTERNAL_BLAS)
+  endif()
+  find_package(LAPACK)
+  if(LAPACK_FOUND)
+    add_compile_definitions(STDLIB_EXTERNAL_LAPACK)
+  endif()
 endif()
 
 # --- find preprocessor
