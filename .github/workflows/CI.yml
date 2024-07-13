@@ -99,13 +99,12 @@ jobs:
       matrix:
         toolchain:
           - {compiler: intel, version: '2024.1'}
-        include:
-          - APT_PACKAGES: >-
-              intel-oneapi-mkl-2024.1.0
-              intel-oneapi-mkl-devel-2024.1.0
         build: [cmake]
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
+      APT_PACKAGES: >-
+        intel-oneapi-mkl
+        intel-oneapi-mkl-devel
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -124,7 +123,13 @@ jobs:
       with:
         compiler: ${{ matrix.toolchain.compiler }}
         version: ${{ matrix.toolchain.version }}
-    
+
+    - name: Install Intel oneAPI MKL
+      run: |
+        sudo apt-get install ${APT_PACKAGES}
+        source /opt/intel/oneapi/mkl/latest/env/vars.sh
+        printenv >> $GITHUB_ENV
+
     # Build and test with external BLAS and LAPACK (MKL on Ubuntu with Intel compilers)
     - name: Configure with CMake and MKL
       run: >-
@@ -133,7 +138,8 @@ jobs:
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DFIND_BLAS:STRING=TRUE
-        -DBLA_VENDOR=Intel10_64lp
+        -DBLAS_LIBRARIES="/opt/intel/oneapi/mkl/latest/lib/intel64/libmkl_rt.so"
+        -DLAPACK_LIBRARIES="/opt/intel/oneapi/mkl/latest/lib/intel64/libmkl_rt.so"
         -S . -B build_mkl
     
     - name: Build and compile with MKL
