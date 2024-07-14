@@ -138,9 +138,9 @@ jobs:
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DFIND_BLAS:STRING=TRUE
-        -DBLAS_LIBRARIES="/opt/intel/oneapi/mkl/latest/lib/intel64/libmkl_rt.so"
-        -DLAPACK_LIBRARIES="/opt/intel/oneapi/mkl/latest/lib/intel64/libmkl_rt.so"
         -S . -B build_mkl
+#        -DBLAS_LIBRARIES="/opt/intel/oneapi/mkl/latest/lib/intel64/libmkl_rt.so"
+#        -DLAPACK_LIBRARIES="/opt/intel/oneapi/mkl/latest/lib/intel64/libmkl_rt.so"
     
     - name: Build and compile with MKL
       run: cmake --build build_mkl --parallel
