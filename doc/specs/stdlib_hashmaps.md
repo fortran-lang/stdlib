@@ -1377,7 +1377,7 @@ or `int32` array. It is an `intent(in)` argument. It is a `key` whose
 presence in the `map` is being examined.
 
 `present`: shall be a scalar variable of type `logical`.
-It is an intent(out) argument. It is a logical flag where
+It is an `intent(out)` argument. It is a logical flag where
 `.true.` indicates that an entry with that `key` is present in the
 `map` and `.false.` indicates that no such entry is present.
 
