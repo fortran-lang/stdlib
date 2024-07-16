@@ -809,16 +809,14 @@ contains
                     invalid_inmap
             end if
         else if ( associated( map % inverse(inmap) % target ) ) then
-         !   associate( target => map % inverse(inmap) % target )
-         !       target % other = other
-                !map % inverse(inmap) % target % other = other
+         ! Explicit deallocation and allocation used to avoid issue
+         ! seen with 32 bit version of Gfortran.
                 if ( allocated( map % inverse(inmap) % target % other ) ) then
                     deallocate( map % inverse(inmap) % target % other )
                 endif
                 allocate( map % inverse(inmap) % target % other, source=other)
                 if ( present(exists) ) exists = .true.
                 return
-         !   end associate
         else
             error stop submodule_name // ' % ' // procedure // ': ' // &
                 invalid_inmap
