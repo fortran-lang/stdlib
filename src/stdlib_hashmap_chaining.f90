@@ -812,7 +812,7 @@ contains
          !   associate( target => map % inverse(inmap) % target )
          !       target % other = other
                 !map % inverse(inmap) % target % other = other
-                if allocated( map % inverse(inmap) % target % other ) then
+                if ( allocated( map % inverse(inmap) % target % other ) ) then
                     deallocate( map % inverse(inmap) % target % other )
                 endif
                 allocate( map % inverse(inmap) % target % other, source=other)
