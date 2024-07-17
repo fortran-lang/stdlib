@@ -42,6 +42,32 @@ if(NOT DEFINED CMAKE_MAXIMUM_RANK)
   set(CMAKE_MAXIMUM_RANK 4 CACHE STRING "Maximum array rank for generated procedures")
 endif()
 
+option(FIND_BLAS "Find external BLAS and LAPACK" ON)
+
+# --- find BLAS and LAPACK
+if(FIND_BLAS)
+  if(NOT BLAS_FOUND)
+    #Required for MKL
+    if(DEFINED ENV{MKLROOT} OR "${BLA_VENDOR}" MATCHES "^Intel")
+      enable_language("C")
+    endif()
+    find_package("BLAS")
+  endif()
+  if(BLAS_FOUND)
+    add_compile_definitions(STDLIB_EXTERNAL_BLAS)
+  endif()
+  if(NOT LAPACK_FOUND)
+    #Required for MKL
+    if(DEFINED ENV{MKLROOT} OR "${BLA_VENDOR}" MATCHES "^Intel")
+      enable_language("C")
+    endif()
+    find_package("LAPACK")
+  endif()
+  if(LAPACK_FOUND)
+    add_compile_definitions(STDLIB_EXTERNAL_LAPACK)
+  endif()
+endif()
+
 # --- find preprocessor
 find_program(FYPP fypp)
 if(NOT FYPP)
