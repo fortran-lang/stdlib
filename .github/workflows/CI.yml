@@ -59,7 +59,7 @@ jobs:
       with:
         compiler: ${{ matrix.toolchain.compiler }}
         version: ${{ matrix.toolchain.version }}
-  
+
     # Build and test with built-in BLAS and LAPACK
     - name: Configure with CMake
       if: ${{ contains(matrix.build, 'cmake') }}
@@ -138,22 +138,22 @@ jobs:
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DFIND_BLAS:STRING=TRUE
-        -S . -B build_mkl
+        -S . -B ${{ env.BUILD_DIR }}
     
     - name: Build and compile with MKL
-      run: cmake --build build_mkl --parallel
+      run: cmake --build ${{ env.BUILD_DIR }} --parallel
 
     - name: catch build fail with MKL
       if: failure()
-      run: cmake --build build_mkl --verbose --parallel 1
+      run: cmake --build ${{ env.BUILD_DIR }} --verbose --parallel 1
 
     - name: test with MKL
       run: >-
         ctest
-        --test-dir build_mkl
+        --test-dir ${{ env.BUILD_DIR }}
         --parallel
         --output-on-failure
         --no-tests=error
       
     - name: Install project with MKL
-      run: cmake --install build_mkl
+      run: cmake --install ${{ env.BUILD_DIR }}
