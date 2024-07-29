@@ -1,0 +1,182 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+! Test linear system solver
+module test_linalg_solve
+    use stdlib_linalg_constants
+    use stdlib_linalg_state
+    use stdlib_linalg, only: solve
+    use testdrive, only: error_type, check, new_unittest, unittest_type    
+
+    implicit none (type,external)
+    private
+    
+    public :: test_linear_systems
+
+    contains
+
+    !> Solve real and complex linear systems
+    subroutine test_linear_systems(tests)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: tests(:)
+
+        allocate(tests(0))
+
+        #:for rk,rt,ri in REAL_KINDS_TYPES
+        tests = [tests,new_unittest("solve_${ri}$",test_${ri}$_solve), &
+                       new_unittest("solve_${ri}$_multiple",test_${ri}$_solve_multiple)]
+        #:endfor
+
+        #:for ck,ct,ci in CMPLX_KINDS_TYPES
+        tests = [tests,new_unittest("solve_complex_${ci}$",test_${ci}$_solve), &
+                       new_unittest("solve_2x2_complex_${ci}$",test_2x2_${ci}$_solve)]
+        #:endfor
+
+    end subroutine test_linear_systems    
+    
+    #:for rk,rt,ri in REAL_KINDS_TYPES
+    !> Simple linear system
+    subroutine test_${ri}$_solve(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+
+        ${rt}$ :: A(3,3) = transpose(reshape([${rt}$ :: 1, 3, 3, &
+                                                            1, 3, 4, &
+                                                            1, 4, 3], [3,3]))
+        ${rt}$ :: b  (3) = [${rt}$ :: 1, 4, -1]
+        ${rt}$ :: res(3) = [${rt}$ :: -2, -2, 3]
+        ${rt}$ :: x(3)
+
+        x = solve(a,b,err=state)
+
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x-res)<abs(res*epsilon(0.0_${rk}$))), 'results match expected')
+        if (allocated(error)) return
+
+    end subroutine test_${ri}$_solve
+
+    !> Simple linear system with multiple right hand sides
+    subroutine test_${ri}$_solve_multiple(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+
+        ${rt}$ :: A(3,3) = transpose(reshape([${rt}$ :: 1,-1, 2, &
+                                                            0, 1, 1, &
+                                                            1,-1, 3], [3,3]))
+        ${rt}$ :: b(3,3) = transpose(reshape([${rt}$ :: 0, 1, 2, &
+                                                            1,-2,-1, &
+                                                            2, 3,-1], [3,3]))
+        ${rt}$ :: res(3,3) = transpose(reshape([${rt}$ ::-5,-7,10, &
+                                                           -1,-4, 2, &
+                                                            2, 2,-3], [3,3]))
+        ${rt}$ :: x(3,3)
+
+        x = solve(a,b,err=state)
+        
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+        
+        call check(error, all(abs(x-res)<abs(res*epsilon(0.0_${rk}$))), 'results match expected')
+        if (allocated(error)) return        
+        
+    end subroutine test_${ri}$_solve_multiple
+    #:endfor
+
+    #:for rk,rt,ri in CMPLX_KINDS_TYPES
+    !> Complex linear system
+    !> Militaru, Popa, "On the numerical solving of complex linear systems",
+    !> Int J Pure Appl Math 76(1), 113-122, 2012.
+    subroutine test_${ri}$_solve(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+
+        ${rt}$ :: A(5,5), b(5), res(5), x(5)
+        integer(ilp) :: i
+
+        ! Fill in linear system
+        A = (0.0_${rk}$,0.0_${rk}$)
+
+        A(1:2,1) = [(19.73_${rk}$,0.0_${rk}$),(0.0_${rk}$,-0.51_${rk}$)]
+        A(1:3,2) = [(12.11_${rk}$,-1.0_${rk}$),(32.3_${rk}$,7.0_${rk}$),(0.0_${rk}$,-0.51_${rk}$)]
+        A(1:4,3) = [(0.0_${rk}$,5.0_${rk}$),(23.07_${rk}$,0.0_${rk}$),(70.0_${rk}$,7.3_${rk}$),(1.0_${rk}$,1.1_${rk}$)]
+        A(2:5,4) = [(0.0_${rk}$,1.0_${rk}$),(3.95_${rk}$,0.0_${rk}$),(50.17_${rk}$,0.0_${rk}$),(0.0_${rk}$,-9.351_${rk}$)]
+        A(3:5,5) = [(19.0_${rk}$,31.83_${rk}$),(45.51_${rk}$,0.0_${rk}$),(55.0_${rk}$,0.0_${rk}$)]
+
+        b = [(77.38_${rk}$,8.82_${rk}$),(157.48_${rk}$,19.8_${rk}$),(1175.62_${rk}$,20.69_${rk}$),(912.12_${rk}$,-801.75_${rk}$),(550.0_${rk}$,-1060.4_${rk}$)]
+
+        ! Exact result
+        res = [(3.3_${rk}$,-1.0_${rk}$),(1.0_${rk}$,0.17_${rk}$),(5.5_${rk}$,0.0_${rk}$),(9.0_${rk}$,0.0_${rk}$),(10.0_${rk}$,-17.75_${rk}$)]
+
+        x = solve(a,b,err=state)
+
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+        
+        call check(error, all(abs(x-res)<abs(res)*1.0e-3_${rk}$), 'results match expected')
+        if (allocated(error)) return        
+
+    end subroutine test_${ri}$_solve
+
+    !> 2x2 Complex linear system
+    subroutine test_2x2_${ri}$_solve(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        
+        ${rt}$, parameter :: i = (0.0_${rk}$,1.0_${rk}$)
+
+        ${rt}$ :: A(2,2), b(2), res(2), x(2)
+
+        ! Fill in linear system
+        A(1,:) = [ 1+2*i, 2-i]
+        A(2,:) = [ 2+i  , i]
+
+        b      = [1,-1]
+
+        ! Exact result
+        res = [(-0.28_${rk}$,-0.04_${rk}$),(0.36_${rk}$,0.48_${rk}$)]
+
+        x = solve(a,b,err=state)
+        
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+        
+        call check(error, all(abs(x-res)<abs(res)*sqrt(epsilon(0.0_${rk}$))), 'results match expected')
+        if (allocated(error)) return        
+
+
+    end subroutine test_2x2_${ri}$_solve
+    #:endfor
+
+end module test_linalg_solve
+
+program test_solve
+     use, intrinsic :: iso_fortran_env, only : error_unit
+     use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+     use test_linalg_solve, only : test_linear_systems
+     implicit none
+     integer :: stat, is
+     type(testsuite_type), allocatable :: testsuites(:)
+     character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+     stat = 0
+
+     testsuites = [ &
+         new_testsuite("linalg_solve", test_linear_systems) &
+         ]
+
+     do is = 1, size(testsuites)
+         write(error_unit, fmt) "Testing:", testsuites(is)%name
+         call run_testsuite(testsuites(is)%collect, error_unit, stat)
+     end do
+
+     if (stat > 0) then
+         write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+         error stop
+     end if
+end program test_solve
+

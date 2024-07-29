@@ -5,7 +5,7 @@
 module test_stdlib_math
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_math, only: clip, arg, argd, argpi, arange, is_close, all_close, diff, &
-                           arange
+                           arange, deg2rad, rad2deg
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none
 
@@ -43,6 +43,12 @@ contains
             , new_unittest("arg-cmplx-${k1}$", test_arg_${k1}$) &
             , new_unittest("argd-cmplx-${k1}$", test_argd_${k1}$) &
             , new_unittest("argpi-cmplx-${k1}$", test_argpi_${k1}$) &
+            #:endfor
+            
+            !> Tests for deg2rad/rad2deg
+            #:for k1 in REAL_KINDS
+            , new_unittest("deg2rad-real-${k1}$", test_deg2rad_${k1}$) &
+            , new_unittest("rad2deg-real-${k1}$", test_rad2deg_${k1}$) &
             #:endfor
             
             !> Tests for `is_close` and `all_close`
@@ -300,6 +306,26 @@ contains
             "test_array")
         
     end subroutine test_argpi_${k1}$
+    #:endfor
+    
+    #:for k1 in REAL_KINDS
+    subroutine test_deg2rad_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+
+        call check(error, PI_${k1}$, deg2rad(180.0_${k1}$), thr=tol)
+        if (allocated(error)) return
+
+    end subroutine test_deg2rad_${k1}$
+    
+    subroutine test_rad2deg_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+
+        call check(error, 180.0_${k1}$, rad2deg(PI_${k1}$), thr=tol)
+        if (allocated(error)) return
+
+    end subroutine test_rad2deg_${k1}$
     #:endfor
 
     #:for k1 in REAL_KINDS

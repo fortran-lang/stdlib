@@ -1,3 +1,93 @@
+# Version 0.7.0
+
+Full release notes available at [v0.7.0] tag.
+
+[v0.7.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.7.0
+
+- new module `stdlib_constants`
+  [#800](https://github.com/fortran-lang/stdlib/pull/800)
+  - Many mathematical constants and most common physical ([codata](https://codata.org)) constants
+
+Changes to existing scripts and modules
+  - changes in CI
+    - Use of `fortran-setup` for GCC, Intel LLVM and Intel Classic
+      [#834](https://github.com/fortran-lang/stdlib/pull/834)
+  - change in module `stdlib_hashmaps`
+    - Support of hash map key generic interfaces
+      [#827](https://github.com/fortran-lang/stdlib/pull/827)
+  - changes in module `stdlib_io`
+    - Addition of a Fortran format specifier in `loadtxt`
+      [#805](https://github.com/fortran-lang/stdlib/pull/805)
+  - changes in module `stdlib_linalg`
+    - Support of extended and quad precision checking 
+      [#821](https://github.com/fortran-lang/stdlib/pull/821)
+    - Several fixes
+      [#815](https://github.com/fortran-lang/stdlib/pull/815)
+      [#818](https://github.com/fortran-lang/stdlib/pull/818)
+      [#826](https://github.com/fortran-lang/stdlib/pull/826)
+      [#830](https://github.com/fortran-lang/stdlib/pull/830)
+      [#836](https://github.com/fortran-lang/stdlib/pull/836)
+    - New procedures for Eigenvalues and Eigenvectors computation: `eig`, `eigh`, `eigvals`, `eigvalsh`
+      [#816](https://github.com/fortran-lang/stdlib/pull/816)
+    - New procedures for Singular Value Decomposition: `svd`, `svdvals`
+      [#808](https://github.com/fortran-lang/stdlib/pull/808)
+  - changes in module `stdlib_sorting`
+    - Renamed variable from `int_size` to `int_index`
+      [#824](https://github.com/fortran-lang/stdlib/pull/824)
+    - Support of `int32` `index` array in `sort_index`
+      [#829](https://github.com/fortran-lang/stdlib/pull/829)
+
+
+# Version 0.6.1
+
+Full release notes available at [v0.6.1] tag.
+
+[v0.6.1]: https://github.com/fortran-lang/stdlib/releases/tag/v0.6.1
+
+Changes to existing scripts and modules
+  - changes in module `stdlib_linalg_lapack`
+    - Renamed variable for compiler compliance
+      [#812](https://github.com/fortran-lang/stdlib/pull/812)
+  - change of the format in some example programs
+    [#813](https://github.com/fortran-lang/stdlib/pull/813)
+
+
+# Version 0.6.0
+
+Full release notes available at [v0.6.0] tag.
+
+[v0.6.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.6.0
+
+
+- new script `fypp_deployment.py` to support `fpm` in combination with `fypp`
+  files
+  [#802](https://github.com/fortran-lang/stdlib/pull/802)
+
+
+Changes to existing scripts and modules
+  - change in module `stdlib_hashmap_wrappers`
+    - addition of `int32` hashmap key type
+      [#778](https://github.com/fortran-lang/stdlib/pull/778)
+  - changes in module `stdlib_linalg`
+    - addition of the procedure `det` to compute determinants
+      [#798](https://github.com/fortran-lang/stdlib/pull/798)
+    - addition of the procedures `lstsq` and `lstsq_space`
+      [#801](https://github.com/fortran-lang/stdlib/pull/801)
+      [#809](https://github.com/fortran-lang/stdlib/pull/809)
+    - addition of the procedures `solve` and `solve_lu`
+      [#806](https://github.com/fortran-lang/stdlib/pull/806)
+  - change in module `stdlib_linalg_blas`
+    - addition of the documentation for `rotm` and `rotmg`
+      [#795](https://github.com/fortran-lang/stdlib/pull/795)
+  - use of macOS 12 in macOS CI
+    [#807](https://github.com/fortran-lang/stdlib/pull/807)
+
+
+Changes to existing documentation
+  - Improvement of the documentation `linalg`
+    [#797](https://github.com/fortran-lang/stdlib/pull/797)
+
+
 # Version 0.5.0
 
 Full release notes available at [v0.5.0] tag.

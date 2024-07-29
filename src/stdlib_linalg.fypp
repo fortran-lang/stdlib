@@ -1,18 +1,40 @@
 #:include "common.fypp"
-#:set RCI_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set RCI_KINDS_TYPES = RC_KINDS_TYPES + INT_KINDS_TYPES
+#:set RHS_SUFFIX = ["one","many"]
+#:set RHS_SYMBOL = [ranksuffix(r) for r in [1,2]]
+#:set RHS_EMPTY  = [emptyranksuffix(r) for r in [1,2]]
+#:set ALL_RHS    = list(zip(RHS_SYMBOL,RHS_SUFFIX,RHS_EMPTY))
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
   !! ([Specification](../page/specs/stdlib_linalg.html))
-  use stdlib_kinds, only: sp, dp, xdp, qp, &
-    int8, int16, int32, int64
+  use stdlib_kinds, only: xdp, int8, int16, int32, int64
+  use stdlib_linalg_constants, only: sp, dp, qp, lk, ilp
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
+  use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling
   implicit none
   private
 
+  public :: det
+  public :: operator(.det.)
   public :: diag
+  public :: eig
+  public :: eigh
+  public :: eigvals
+  public :: eigvalsh
   public :: eye
+  public :: inv
+  public :: invert
+  public :: operator(.inv.)
+  public :: lstsq
+  public :: lstsq_space
+  public :: solve
+  public :: solve_lu  
+  public :: solve_lstsq
   public :: trace
+  public :: svd
+  public :: svdvals
   public :: outer_product
   public :: kronecker_product
   public :: cross_product
@@ -23,6 +45,9 @@ module stdlib_linalg
   public :: is_hermitian
   public :: is_triangular
   public :: is_hessenberg
+  
+  ! Export linalg error handling
+  public :: linalg_state_type, linalg_error_handling
 
   interface diag
     !! version: experimental
@@ -213,6 +238,751 @@ module stdlib_linalg
       module procedure is_Hessenberg_${t1[0]}$${k1}$
     #:endfor
   end interface is_hessenberg
+
+  ! Solve linear system system Ax=b.
+  interface solve
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve-solves-a-linear-matrix-equation-or-a-linear-system-of-equations))
+     !!
+     !!### Summary 
+     !! Interface for solving a linear system arising from a general matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the solution of a linear matrix system.
+     !! Supported data types include `real` and `complex`. No assumption is made on the matrix 
+     !! structure. 
+     !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
+     !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
+     !! 
+     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+     !!    
+     #:for nd,ndsuf,nde in ALL_RHS
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     module function stdlib_linalg_${ri}$_solve_${ndsuf}$(a,b,overwrite_a,err) result(x)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$     
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, allocatable, target :: x${nd}$
+     end function stdlib_linalg_${ri}$_solve_${ndsuf}$
+     pure module function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$(a,b) result(x)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, allocatable, target :: x${nd}$
+     end function stdlib_linalg_${ri}$_pure_solve_${ndsuf}$
+     #:endfor
+     #:endfor    
+  end interface solve
+
+  ! Solve linear system Ax = b using LU decomposition (subroutine interface).
+  interface solve_lu
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve-lu-solves-a-linear-matrix-equation-or-a-linear-system-of-equations-subroutine-interface))
+     !!
+     !!### Summary 
+     !! Subroutine interface for solving a linear system using LU decomposition.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the solution of a linear matrix system using
+     !! a subroutine. Supported data types include `real` and `complex`. No assumption is made on the matrix 
+     !! structure. Preallocated space for the solution vector `x` is user-provided, and it may be provided
+     !! for the array of pivot indices, `pivot`. If all pre-allocated work spaces are provided, no internal 
+     !! memory allocations take place when using this interface.     
+     !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
+     !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
+     !! 
+     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+     !!        
+     #:for nd,ndsuf,nde in ALL_RHS
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     pure module subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$(a,b,x,pivot,overwrite_a,err)     
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$
+     #:endfor
+     #:endfor    
+  end interface solve_lu     
+     
+  ! Least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
+  interface lstsq
+    !! version: experimental 
+    !!
+    !! Computes the squares solution to system \( A \cdot x = b \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#lstsq-computes-the-least-squares-solution-to-a-linear-matrix-equation))
+    !! 
+    !!### Summary 
+    !! Interface for computing least squares, i.e. the 2-norm \( || (b-A \cdot x ||_2 \) minimizing solution.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the least squares of a linear matrix system.
+    !! Supported data types include `real` and `complex`.
+    !! 
+    !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
+    !! 
+    #:for nd,ndsuf,nde in ALL_RHS
+    #:for rk,rt,ri in RC_KINDS_TYPES
+      module function stdlib_linalg_${ri}$_lstsq_${ndsuf}$(a,b,cond,overwrite_a,rank,err) result(x)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(${rk}$), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, allocatable, target :: x${nd}$
+      end function stdlib_linalg_${ri}$_lstsq_${ndsuf}$
+    #:endfor
+    #:endfor
+  end interface lstsq
+
+  ! Least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
+  interface solve_lstsq
+    !! version: experimental 
+    !!
+    !! Computes the squares solution to system \( A \cdot x = b \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#solve-lstsq-compute-the-least-squares-solution-to-a-linear-matrix-equation-subroutine-interface))
+    !! 
+    !!### Summary 
+    !! Subroutine interface for computing least squares, i.e. the 2-norm \( || (b-A \cdot x ||_2 \) minimizing solution.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the least squares of a linear matrix system using 
+    !! a subroutine. Supported data types include `real` and `complex`. If pre-allocated work spaces 
+    !! are provided, no internal memory allocations take place when using this interface.
+    !! 
+    !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
+    !! 
+    #:for nd,ndsuf,nde in ALL_RHS
+    #:for rk,rt,ri in RC_KINDS_TYPES
+      module subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$(a,b,x,real_storage,int_storage,&
+                        #{if rt.startswith('c')}#cmpl_storage,#{endif}#cond,singvals,overwrite_a,rank,err) 
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$     
+         !> [optional] real working storage space
+         real(${rk}$), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         #:if rt.startswith('complex')   
+         !> [optional] complex working storage space
+         ${rt}$, optional, intent(inout), target :: cmpl_storage(:)                  
+         #:endif
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(${rk}$), optional, intent(in) :: cond
+         !> [optional] list of singular values [min(m,n)], in descending magnitude order, returned by the SVD
+         real(${rk}$), optional, intent(out), target :: singvals(:)                  
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$
+    #:endfor
+    #:endfor
+  end interface solve_lstsq
+
+  ! Return the working array space required by the least squares solver
+  interface lstsq_space
+    !! version: experimental 
+    !!
+    !! Computes the integer, real [, complex] working space required by the least-squares solver
+    !! ([Specification](../page/specs/stdlib_linalg.html#lstsq-space-compute-internal-working-space-requirements-for-the-least-squares-solver))
+    !! 
+    !!### Description
+    !! 
+    !! This interface provides sizes of integer, real [, complex] working spaces required by the 
+    !! least-squares solver. These sizes can be used to pre-allocated working arrays in case several 
+    !! repeated least-squares solutions to a same system are sought. If pre-allocated working arrays 
+    !! are provided, no internal allocations will take place.
+    !! 
+    #:for nd,ndsuf,nde in ALL_RHS
+    #:for rk,rt,ri in RC_KINDS_TYPES
+      pure module subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$(a,b,lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#)
+         !> Input matrix a[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Size of the working space arrays                
+         integer(ilp), intent(out) :: lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#         
+      end subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$
+    #:endfor
+    #:endfor
+  end interface lstsq_space
+
+  interface det
+    !! version: experimental 
+    !!
+    !! Computes the determinant of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#det-computes-the-determinant-of-a-square-matrix))
+    !! 
+    !!### Summary 
+    !! Interface for computing matrix determinant.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the determinant of a matrix.
+    !! Supported data types include `real` and `complex`.
+    !! 
+    !!@note The provided functions are intended for square matrices only.          
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !! 
+    !!### Example
+    !!
+    !!```fortran
+    !!
+    !!    real(sp) :: a(3,3), d
+    !!    type(linalg_state_type) :: state  
+    !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+    !!
+    !!    ! ...
+    !!    d = det(a,err=state)
+    !!    if (state%ok()) then 
+    !!       print *, 'Success! det=',d
+    !!    else
+    !!       print *, state%print()
+    !!    endif
+    !!    ! ...
+    !!```
+    !!     
+    #:for rk,rt in RC_KINDS_TYPES
+    #:if rk!="xdp" 
+    module procedure stdlib_linalg_${rt[0]}$${rk}$determinant
+    module procedure stdlib_linalg_pure_${rt[0]}$${rk}$determinant
+    #:endif
+    #:endfor
+  end interface det
+
+  interface operator(.det.)
+    !! version: experimental 
+    !!
+    !! Determinant operator of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#det-determinant-operator-of-a-square-matrix))
+    !!
+    !!### Summary
+    !! Pure operator interface for computing matrix determinant.
+    !!
+    !!### Description
+    !! 
+    !! This pure operator interface provides a convenient way to compute the determinant of a matrix.
+    !! Supported data types include real and complex.
+    !!
+    !!@note The provided functions are intended for square matrices.
+    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !!
+    !!### Example
+    !!
+    !!```fortran
+    !!
+    !!    ! ...
+    !!    real(sp) :: matrix(3,3), d
+    !!    matrix = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+    !!    d = .det.matrix
+    !!    ! ...
+    !! 
+    !!```
+    !     
+    #:for rk,rt in RC_KINDS_TYPES
+    #:if rk!="xdp"
+    module procedure stdlib_linalg_pure_${rt[0]}$${rk}$determinant
+    #:endif
+    #:endfor        
+  end interface operator(.det.)
+
+  interface
+    #:for rk,rt in RC_KINDS_TYPES
+    #:if rk!="xdp" 
+    module function stdlib_linalg_${rt[0]}$${rk}$determinant(a,overwrite_a,err) result(det)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(inout), target :: a(:,:)
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> State return flag. 
+        type(linalg_state_type), intent(out) :: err
+        !> Matrix determinant
+        ${rt}$ :: det
+    end function stdlib_linalg_${rt[0]}$${rk}$determinant
+    pure module function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(in) :: a(:,:)
+        !> Matrix determinant
+        ${rt}$ :: det                
+    end function stdlib_linalg_pure_${rt[0]}$${rk}$determinant
+    #:endif
+    #:endfor
+  end interface  
+
+  ! Matrix Inverse: Function interface
+  interface inv
+    !! version: experimental 
+    !!
+    !! Inverse of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#inv-inverse-of-a-square-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for computing the inverse of a square `real` or `complex` matrix.
+    !! The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+    !!
+    !!### Description
+    !!     
+    !! This function interface provides methods that return the inverse of a square matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! The inverse matrix \( A^{-1} \) is returned as a function result. 
+    !! Exceptions are raised in case of singular matrix or invalid size, and trigger an `error stop` if 
+    !! the state flag `err` is not provided. 
+    !!
+    !!@note The provided functions are intended for square matrices.
+    !!       
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function stdlib_linalg_inverse_${ri}$(a,err) result(inva)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Output matrix inverse
+         ${rt}$, allocatable :: inva(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end function stdlib_linalg_inverse_${ri}$
+    #:endfor
+  end interface inv
+
+  ! Matrix Inverse: Subroutine interface - in-place inversion
+  interface invert
+    !! version: experimental 
+    !!
+    !! Inversion of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#invert-inversion-of-a-square-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for inverting a square `real` or `complex` matrix in-place.
+    !! The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+    !!
+    !!### Description
+    !!     
+    !! This subroutine interface provides a way to compute the inverse of a matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! The user may provide a unique matrix argument `a`. In this case, `a` is replaced by the inverse matrix.
+    !! on output. Otherwise, one may provide two separate arguments: an input matrix `a` and an output matrix 
+    !! `inva`. In this case, `a` will not be modified, and the inverse is returned in `inva`.
+    !! Pre-allocated storage may be provided for the array of pivot indices, `pivot`. If all pre-allocated 
+    !! work spaces are provided, no internal memory allocations take place when using this interface.             
+    !!
+    !!@note The provided subroutines are intended for square matrices.
+    !!      
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module subroutine stdlib_linalg_invert_inplace_${ri}$(a,pivot,err)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout) :: a(:,:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)         
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_invert_inplace_${ri}$
+    ! Compute the square matrix inverse of a
+    module subroutine stdlib_linalg_invert_split_${ri}$(a,inva,pivot,err)
+         !> Input matrix a[n,n].
+         ${rt}$, intent(in) :: a(:,:)
+         !> Inverse matrix a[n,n]. 
+         ${rt}$, intent(out) :: inva(:,:)         
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err    
+    end subroutine stdlib_linalg_invert_split_${ri}$
+    #:endfor
+  end interface invert
+
+  ! Matrix Inverse: Operator interface
+  interface operator(.inv.)
+    !! version: experimental 
+    !!
+    !! Inverse operator of a square matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#inv-inverse-operator-of-a-square-matrix))
+    !!
+    !!### Summary
+    !! Operator interface for computing the inverse of a square `real` or `complex` matrix.
+    !!
+    !!### Description
+    !! 
+    !! This operator interface provides a convenient way to compute the inverse of a matrix.
+    !! Supported data types include `real` and `complex`. On input errors or singular matrix, 
+    !! NaNs will be returned.
+    !!
+    !!@note The provided functions are intended for square matrices.
+    !!
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function stdlib_linalg_inverse_${ri}$_operator(a) result(inva)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Result matrix
+         ${rt}$, allocatable :: inva(:,:)        
+    end function stdlib_linalg_inverse_${ri}$_operator
+    #:endfor
+  end interface operator(.inv.)
+
+
+  ! Eigendecomposition of a square matrix: eigenvalues, and optionally eigenvectors
+  interface eig    
+     !! version: experimental 
+     !!
+     !! Solves the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \) for square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eig-eigenvalues-and-eigenvectors-of-a-square-matrix))
+     !!
+     !!### Summary 
+     !! Subroutine interface for computing eigenvalues and eigenvectors of a square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the eigenvalues, and optionally eigenvectors, 
+     !! of a general square matrix. Supported data types include `real` and `complex`, and no assumption is 
+     !! made on the matrix structure. The user may request either left, right, or both 
+     !! eigenvectors to be returned. They are returned as columns of a square matrix with the same size as `A`. 
+     !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrices must be user-provided.      
+     !! 
+     !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!       
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
+    module subroutine stdlib_linalg_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+     !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
+     !! and optionally right or left eigenvectors.        
+         !> Input matrix A[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Array of eigenvalues
+         complex(${rk}$), intent(out) :: lambda(:)
+         !> The columns of RIGHT contain the right eigenvectors of A
+         complex(${rk}$), optional, intent(out), target :: right(:,:)
+         !> The columns of LEFT contain the left eigenvectors of A
+         complex(${rk}$), optional, intent(out), target :: left(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_eig_${ri}$
+    #:endif
+    #:endfor
+    #:for rk,rt,ri in REAL_KINDS_TYPES
+    #:if rk!="xdp"
+    module subroutine stdlib_linalg_real_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+     !! Eigendecomposition of matrix A returning an array `lambda` of real eigenvalues, 
+     !! and optionally right or left eigenvectors. Returns an error if the eigenvalues had
+     !! non-trivial imaginary parts.
+         !> Input matrix A[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Array of real eigenvalues
+         real(${rk}$), intent(out) :: lambda(:)
+         !> The columns of RIGHT contain the right eigenvectors of A
+         complex(${rk}$), optional, intent(out), target :: right(:,:)
+         !> The columns of LEFT contain the left eigenvectors of A
+         complex(${rk}$), optional, intent(out), target :: left(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_real_eig_${ri}$
+    #:endif
+    #:endfor    
+  end interface eig
+
+  ! Eigenvalues of a square matrix
+  interface eigvals
+     !! version: experimental 
+     !!
+     !! Returns the eigenvalues \( lambda \), \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), for square matrix \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eigvals-eigenvalues-of-a-square-matrix))
+     !!
+     !!### Summary 
+     !! Function interface for computing the eigenvalues of a square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides functions for returning the eigenvalues of a general square matrix. 
+     !! Supported data types include `real` and `complex`, and no assumption is made on the matrix structure. 
+     !! An `error stop` is thrown in case of failure; otherwise, error information can be returned 
+     !! as an optional `type(linalg_state_type)` output flag. 
+     !! 
+     !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!       
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
+    module function stdlib_linalg_eigvals_${ri}$(a,err) result(lambda)
+     !! Return an array of eigenvalues of matrix A.
+         !> Input matrix A[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Array of singular values
+         complex(${rk}$), allocatable :: lambda(:)        
+    end function stdlib_linalg_eigvals_${ri}$
+    
+    module function stdlib_linalg_eigvals_noerr_${ri}$(a) result(lambda)
+     !! Return an array of eigenvalues of matrix A.
+         !> Input matrix A[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> Array of singular values
+         complex(${rk}$), allocatable :: lambda(:)
+    end function stdlib_linalg_eigvals_noerr_${ri}$
+    #:endif
+    #:endfor
+  end interface eigvals
+     
+  ! Eigendecomposition of a real symmetric or complex hermitian matrix
+  interface eigh
+     !! version: experimental 
+     !!
+     !! Solves the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \) for a real symmetric 
+     !! \( A = A^T \) or complex Hermitian \( A = A^H \) square matrix. 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eigh-eigenvalues-and-eigenvectors-of-a-real-symmetric-or-complex-hermitian-square-matrix))
+     !!
+     !!### Summary 
+     !! Subroutine interface for computing eigenvalues and eigenvectors of a real symmetric or complex Hermitian square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the eigenvalues, and optionally eigenvectors, 
+     !! of a real symmetric or complex Hermitian square matrix. Supported data types include `real` and `complex`. 
+     !! The matrix must be symmetric (if `real`) or Hermitian (if `complex`). Only the lower or upper 
+     !! half of the matrix is accessed, and the user can select which using the optional `upper_a` 
+     !! flag (default: use lower half). The vectors are orthogonal, and may be returned as columns of an optional 
+     !! matrix `vectors` with the same kind and size as `A`. 
+     !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrix must be user-provided.      
+     !! 
+     !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!      
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
+    module subroutine stdlib_linalg_eigh_${ri}$(a,lambda,vectors,upper_a,overwrite_a,err)
+     !! Eigendecomposition of a real symmetric or complex Hermitian matrix A returning an array `lambda` 
+     !! of eigenvalues, and optionally right or left eigenvectors.        
+         !> Input matrix A[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Array of eigenvalues
+         real(${rk}$), intent(out) :: lambda(:)
+         !> The columns of vectors contain the orthonormal eigenvectors of A
+         ${rt}$, optional, intent(out), target :: vectors(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_eigh_${ri}$
+    #:endif
+    #:endfor        
+  end interface eigh
+     
+  ! Eigenvalues of a real symmetric or complex hermitian matrix
+  interface eigvalsh
+     !! version: experimental 
+     !!
+     !! Returns the eigenvalues \( lambda \), \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), for a real
+     !! symmetric \( A = A^T \) or complex Hermitian \( A = A^H \) square matrix. 
+     !! ([Specification](../page/specs/stdlib_linalg.html#eigvalsh-eigenvalues-of-a-real-symmetric-or-complex-hermitian-square-matrix))
+     !!
+     !!### Summary 
+     !! Function interface for computing the eigenvalues of a real symmetric or complex hermitian square matrix.
+     !!
+     !!### Description
+     !! 
+     !! This interface provides functions for returning the eigenvalues of a real symmetric or complex Hermitian
+     !! square matrix. Supported data types include `real` and `complex`. The matrix must be symmetric 
+     !! (if `real`) or Hermitian (if `complex`). Only the lower or upper half of the matrix is accessed, 
+     !! and the user can select which using the optional `upper_a` flag (default: use lower half). 
+     !! An `error stop` is thrown in case of failure; otherwise, error information can be returned 
+     !! as an optional `type(linalg_state_type)` output flag. 
+     !! 
+     !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
+     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+     !!         
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    #:if rk!="xdp"
+    module function stdlib_linalg_eigvalsh_${ri}$(a,upper_a,err) result(lambda)
+     !! Return an array of eigenvalues of real symmetric / complex hermitian A
+         !> Input matrix A[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a         
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), intent(out) :: err
+         !> Array of singular values
+         real(${rk}$), allocatable :: lambda(:)    
+    end function stdlib_linalg_eigvalsh_${ri}$
+    
+    module function stdlib_linalg_eigvalsh_noerr_${ri}$(a,upper_a) result(lambda)
+     !! Return an array of eigenvalues of real symmetric / complex hermitian A        
+         !> Input matrix A[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> [optional] Should the upper/lower half of A be used? Default: lower
+         logical(lk), optional, intent(in) :: upper_a         
+         !> Array of singular values
+         real(${rk}$), allocatable :: lambda(:)
+    end function stdlib_linalg_eigvalsh_noerr_${ri}$
+    #:endif
+    #:endfor                
+  end interface eigvalsh
+
+  ! Singular value decomposition  
+  interface svd 
+    !! version: experimental 
+    !!
+    !! Computes the singular value decomposition of a `real` or `complex` 2d matrix.
+    !! ([Specification](../page/specs/stdlib_linalg.html#svd-compute-the-singular-value-decomposition-of-a-rank-2-array-matrix))
+    !! 
+    !!### Summary 
+    !! Interface for computing the singular value decomposition of a `real` or `complex` 2d matrix.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the singular value decomposition of a matrix.
+    !! Supported data types include `real` and `complex`. The subroutine returns a `real` array of 
+    !! singular values, and optionally, left- and right- singular vector matrices, `U` and `V`. 
+    !! For a matrix `A` with size [m,n], full matrix storage for `U` and `V` should be [m,m] and [n,n]. 
+    !! It is possible to use partial storage [m,k] and [k,n], `k=min(m,n)`, choosing `full_matrices=.false.`.
+    !! 
+    !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
+    !! 
+    !!### Example
+    !!
+    !!```fortran
+    !!    real(sp) :: a(2,3), s(2), u(2,2), vt(3,3) 
+    !!    a = reshape([3,2, 2,3, 2,-2],[2,3])
+    !!
+    !!    call svd(A,s,u,v)
+    !!    print *, 'singular values = ',s
+    !!```
+    !!         
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module subroutine stdlib_linalg_svd_${ri}$(a,s,u,vt,overwrite_a,full_matrices,err)
+     !!### Summary
+     !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
+     !!
+     !!### Description
+     !!
+     !! This function computes the singular value decomposition of a `real` or `complex` matrix \( A \), 
+     !! and returns the array of singular values, and optionally the left matrix \( U \) containing the 
+     !! left unitary singular vectors, and the right matrix \( V^T \), containing the right unitary 
+     !! singular vectors.
+     !!
+     !! param: a Input matrix of size [m,n].
+     !! param: s Output `real` array of size [min(m,n)] returning a list of singular values.
+     !! param: u [optional] Output left singular matrix of size [m,m] or [m,min(m,n)] (.not.full_matrices). Contains singular vectors as columns.
+     !! param: vt [optional] Output right singular matrix of size [n,n] or [min(m,n),n] (.not.full_matrices). Contains singular vectors as rows.     
+     !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
+     !! param: full_matrices [optional] If `.true.` (default), matrices \( U \) and \( V^T \) have size [m,m], [n,n]. Otherwise, they are [m,k], [k,n] with `k=min(m,n)`.
+     !! param: err [optional] State return flag.      
+     !!            
+         !> Input matrix A[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Array of singular values
+         real(${rk}$), intent(out) :: s(:)
+         !> The columns of U contain the left singular vectors 
+         ${rt}$, optional, intent(out), target :: u(:,:)
+         !> The rows of V^T contain the right singular vectors
+         ${rt}$, optional, intent(out), target :: vt(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] full matrices have shape(u)==[m,m], shape(vh)==[n,n] (default); otherwise
+         !> they are shape(u)==[m,k] and shape(vh)==[k,n] with k=min(m,n)
+         logical(lk), optional, intent(in) :: full_matrices
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_svd_${ri}$
+    #:endfor     
+  end interface svd
+
+  ! Singular values
+  interface svdvals
+    !! version: experimental 
+    !!
+    !! Computes the singular values of a `real` or `complex` 2d matrix.
+    !! ([Specification](../page/specs/stdlib_linalg.html#svdvals-compute-the-singular-values-of-a-rank-2-array-matrix))
+    !! 
+    !!### Summary 
+    !! 
+    !! Function interface for computing the array of singular values from the singular value decomposition 
+    !! of a `real` or `complex` 2d matrix.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the singular values a 2d matrix.
+    !! Supported data types include `real` and `complex`. The function returns a `real` array of 
+    !! singular values, with size [min(m,n)]. 
+    !! 
+    !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
+    !! 
+    !!### Example
+    !!
+    !!```fortran
+    !!    real(sp) :: a(2,3), s(2)
+    !!    a = reshape([3,2, 2,3, 2,-2],[2,3])
+    !!
+    !!    s = svdvals(A)
+    !!    print *, 'singular values = ',s
+    !!```
+    !!   
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function stdlib_linalg_svdvals_${ri}$(a,err) result(s)
+     !!### Summary
+     !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
+     !!
+     !!### Description
+     !!
+     !! This function returns the array of singular values from the singular value decomposition of a `real` 
+     !! or `complex` matrix \( A = U \cdot S \cdot V^T \).
+     !!
+     !! param: a Input matrix of size [m,n].
+     !! param: err [optional] State return flag.      
+     !!
+     !!### Return value
+     !! 
+     !! param: s `real` array of size [min(m,n)] returning a list of singular values.
+     !!           
+         !> Input matrix A[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Array of singular values
+         real(${rk}$), allocatable :: s(:)
+      end function stdlib_linalg_svdvals_${ri}$
+    #:endfor             
+  end interface svdvals  
 
 contains
 

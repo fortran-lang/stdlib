@@ -27,11 +27,20 @@
 #:set REAL_KINDS = REAL_KINDS + ["qp"]
 #:endif
 
+#! BLAS/LAPACK initials for each real kind
+#:set REAL_INIT = ["s", "d"]
+#:if WITH_XDP
+#:set REAL_INIT = REAL_INIT + ["x"]
+#:endif
+#:if WITH_QP
+#:set REAL_INIT = REAL_INIT + ["q"]
+#:endif
+
 #! Real types to be considered during templating
 #:set REAL_TYPES = ["real({})".format(k) for k in REAL_KINDS]
 
 #! Collected (kind, type) tuples for real types
-#:set REAL_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES))
+#:set REAL_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_INIT))
 
 #! Complex kinds to be considered during templating
 #:set CMPLX_KINDS = ["sp", "dp"]
@@ -42,11 +51,33 @@
 #:set CMPLX_KINDS = CMPLX_KINDS + ["qp"]
 #:endif
 
+#! BLAS/LAPACK initials for each complex kind
+#:set CMPLX_INIT = ["c", "z"]
+#:if WITH_XDP
+#:set CMPLX_INIT = CMPLX_INIT + ["y"]
+#:endif
+#:if WITH_QP
+#:set CMPLX_INIT = CMPLX_INIT + ["w"]
+#:endif
+
+#! BLAS/LAPACK complex->real kind initial conversion
+#! Converts a BLAS/LAPACK complex kind initial to a real kind initial
+#!
+#! Args:
+#!     ci (character): Complex kind initial in ["c","z","y","w"]
+#!
+#! Returns:
+#!     Real kind initial in ["s","d","x","q"] or an empty string on invalid input
+#!
+#:def c2ri(cmplx)
+$:"s" if cmplx=="c" else "d" if cmplx=="z" else "x" if cmplx=="y" else "q" if cmplx=="w" else "ERROR"
+#:enddef
+
 #! Complex types to be considered during templating
 #:set CMPLX_TYPES = ["complex({})".format(k) for k in CMPLX_KINDS]
 
-#! Collected (kind, type) tuples for complex types
-#:set CMPLX_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES))
+#! Collected (kind, type, initial) tuples for complex types
+#:set CMPLX_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_INIT))
 
 #! Integer kinds to be considered during templating
 #:set INT_KINDS = ["int8", "int16", "int32", "int64"]
@@ -109,6 +140,17 @@
 #{if rank > 0}#(${":" + ",:" * (rank - 1)}$)#{endif}#
 #:enddef
 
+#! Generates an empty array rank suffix.
+#!
+#! Args:
+#!     rank (int): Rank of the variable
+#!
+#! Returns:
+#!     Empty array rank suffix string (e.g. (0,0) if rank = 2)
+#!
+#:def emptyranksuffix(rank)
+#{if rank > 0}#(${"0" + ",0" * (rank - 1)}$)#{endif}#
+#:enddef
 
 #! Joins stripped lines with given character string
 #!

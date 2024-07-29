@@ -104,7 +104,8 @@ end interface axpy
 Note that the 128-bit functions are only provided by `stdlib` and always point to the internal implementation. 
 Because 128-bit precision is identified as [stdlib_kinds(module):qp], initials for 128-bit procedures were 
 labelled as `q` (quadruple-precision reals) and `w` ("wide" or quadruple-precision complex numbers). 
-Extended precision ([stdlib_kinds(module):xdp]) calculations are currently not supported.
+Extended precision ([stdlib_kinds(module):xdp]) calculations are labelled as `x` (extended-precision reals).
+and `y` (extended-precision complex numbers).
 
 ### Example
 
@@ -599,3 +600,691 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 ```fortran
 {!example/linalg/example_is_hessenberg.f90!}
 ```
+
+## `solve` - Solves a linear matrix equation or a linear system of equations. 
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
+
+Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is not ill-conditioned. 
+An error is returned if the matrix is rank-deficient or singular to working precision. 
+The solver is based on LAPACK's `*GESV` backends.
+
+### Syntax
+
+`Pure` interface:
+
+`x = ` [[stdlib_linalg(module):solve(interface)]] `(a, b)`
+
+Expert interface:
+
+`x = ` [[stdlib_linalg(module):solve(interface)]] `(a, b [, overwrite_a], err)`
+
+### Arguments
+ 
+`a`: Shall be a rank-2 `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument. If `overwrite_a=.true.`, it is an `intent(inout)` argument and is destroyed by the call. 
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument. The function is not `pure` if this argument is provided.
+
+### Return value
+
+For a full-rank matrix, returns an array value that represents the solution to the linear system of equations.
+
+Raises `LINALG_ERROR` if the matrix is singular to working precision.
+Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_solve1.f90!}
+
+{!example/linalg/example_solve2.f90!}
+```
+
+## `solve_lu` - Solves a linear matrix equation or a linear system of equations (subroutine interface). 
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
+
+Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is not ill-conditioned. 
+An error is returned if the matrix is rank-deficient or singular to working precision. 
+If all optional arrays are provided by the user, no internal allocations take place.
+The solver is based on LAPACK's `*GESV` backends.
+
+### Syntax
+
+Simple (`Pure`) interface:
+
+`call ` [[stdlib_linalg(module):solve_lu(interface)]] `(a, b, x)`
+
+Expert (`Pure`) interface:
+
+`call ` [[stdlib_linalg(module):solve_lu(interface)]] `(a, b, x [, pivot, overwrite_a, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument. If `overwrite_a=.true.`, it is an `intent(inout)` argument and is destroyed by the call. 
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
+
+`x`: Shall be a rank-1 or rank-2 array of the same kind and size as `b`, that returns the solution(s) to the system. It is an `intent(inout)` argument, and must have the `contiguous` property. 
+
+`pivot` (optional): Shall be a rank-1 array of the same kind and matrix dimension as `a`, providing storage for the diagonal pivot indices. It is an `intent(inout)` arguments, and returns the diagonal pivot indices. 
+
+`overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+For a full-rank matrix, returns an array value that represents the solution to the linear system of equations.
+
+Raises `LINALG_ERROR` if the matrix is singular to working precision.
+Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_solve3.f90!}
+```
+
+## `lstsq` - Computes the least squares solution to a linear matrix equation. 
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the least-squares solution to a linear matrix equation \( A \cdot x = b \).
+
+Result vector `x` returns the approximate solution that minimizes the 2-norm \( || A \cdot x - b ||_2 \), i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
+
+### Syntax
+
+`x = ` [[stdlib_linalg(module):lstsq(interface)]] `(a, b, [, cond, overwrite_a, rank, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing one or more right-hand-side vector(s), each in its leading dimension. It is an `intent(in)` argument. 
+
+`cond` (optional): Shall be a scalar `real` value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`rank` (optional): Shall be an `integer` scalar value, that contains the rank of input matrix `A`. This is an `intent(out)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value of the same kind and rank as `b`, containing the solution(s) to the least squares system. 
+
+Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix and right-hand-side vector have invalid/incompatible sizes.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_lstsq1.f90!}
+```
+
+## `solve_lstsq` - Compute the least squares solution to a linear matrix equation (subroutine interface). 
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the least-squares solution to a linear matrix equation \( A \cdot x = b \).
+
+Result vector `x` returns the approximate solution that minimizes the 2-norm \( || A \cdot x - b ||_2 \), i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):solve_lstsq(interface)]] `(a, b, x, [, real_storage, int_storage, [cmpl_storage, ] cond, singvals, overwrite_a, rank, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing one or more right-hand-side vector(s), each in its leading dimension. It is an `intent(in)` argument. 
+
+`x`: Shall be an array of same kind and rank as `b`, and leading dimension of at least `n`, containing the solution(s) to the least squares system. It is an `intent(inout)` argument.
+
+`real_storage` (optional): Shall be a `real` rank-1 array of the same kind `a`, providing working storage for the solver. It minimum size can be determined with a call to [[stdlib_linalg(module):lstsq_space(interface)]]. It is an `intent(inout)` argument.
+
+`int_storage` (optional): Shall be an `integer` rank-1 array, providing working storage for the solver. It minimum size can be determined with a call to [[stdlib_linalg(module):lstsq_space(interface)]]. It is an `intent(inout)` argument.
+
+`cmpl_storage` (optional): For `complex` systems, it shall be a `complex` rank-1 array, providing working storage for the solver. It minimum size can be determined with a call to [[stdlib_linalg(module):lstsq_space(interface)]]. It is an `intent(inout)` argument.
+
+`cond` (optional): Shall be a scalar `real` value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
+
+`singvals` (optional): Shall be a `real` rank-1 array of the same kind `a` and size at least `min(m,n)`, returning the list of singular values `s(i)>=cond*maxval(s)` from the internal SVD, in descending order of magnitude. It is an `intent(out)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`rank` (optional): Shall be an `integer` scalar value, that contains the rank of input matrix `A`. This is an `intent(out)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value that represents the solution to the least squares system.
+
+Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix and right-hand-side vector have invalid/incompatible sizes.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_lstsq2.f90!}
+```
+
+## `lstsq_space` - Compute internal working space requirements for the least squares solver.
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the internal working space requirements for the least-squares solver, [[stdlib_linalg(module):solve_lstsq(interface)]] .
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):lstsq_space(interface)]] `(a, b, lrwork, liwork [, lcwork])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the linear system coefficient matrix. It is an `intent(in)` argument.
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the system's right-hand-side vector(s). It is an `intent(in)` argument. 
+
+`lrwork`: Shall be an `integer` scalar, that returns the minimum array size required for the `real` working storage to this system.
+
+`liwork`: Shall be an `integer` scalar, that returns the minimum array size required for the `integer` working storage to this system.
+
+`lcwork` (`complex` `a`, `b`): For a `complex` system, shall be an `integer` scalar, that returns the minimum array size required for the `complex` working storage to this system.
+
+## `det` - Computes the determinant of a square matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the determinant of a `real` or `complex` square matrix.
+
+This interface comes with a `pure` version `det(a)`, and a non-pure version `det(a,overwrite_a,err)` that
+allows for more expert control.
+
+### Syntax
+
+`c = ` [[stdlib_linalg(module):det(interface)]] `(a [, overwrite_a, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 square array
+
+`overwrite_a` (optional): Shall be an input `logical` flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation.
+ This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value.  This is an `intent(out)` argument.
+
+### Return value
+
+Returns a `real` scalar value of the same kind of `a` that represents the determinant of the matrix.
+
+Raises `LINALG_ERROR` if the matrix is singular.
+Raises `LINALG_VALUE_ERROR` if the matrix is non-square.
+Exceptions are returned to the `err` argument if provided; an `error stop` is triggered otherwise.
+
+### Example
+
+```fortran
+{!example/linalg/example_determinant.f90!}
+```
+
+## `.det.` - Determinant operator of a square matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This operator returns the determinant of a real square matrix.
+
+This interface is equivalent to the `pure` version of determinant [[stdlib_linalg(module):det(interface)]]. 
+
+### Syntax
+
+`c = ` [[stdlib_linalg(module):operator(.det.)(interface)]] `a`
+
+### Arguments
+
+`a`: Shall be a rank-2 square array of any `real` or `complex` kinds. It is an `intent(in)` argument.
+
+### Return value
+
+Returns a real scalar value that represents the determinant of the matrix.
+
+Raises `LINALG_ERROR` if the matrix is singular.
+Raises `LINALG_VALUE_ERROR` if the matrix is non-square.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_determinant2.f90!}
+```
+
+## `eig` - Eigenvalues and Eigenvectors of a Square Matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
+
+Result array `lambda` returns the eigenvalues of \( A \). The user can request eigenvectors to be returned: if provided, on output `left` will contain the left eigenvectors, `right` the right eigenvectors of \( A \).
+Both `left` and `right` are rank-2 arrays, where eigenvectors are stored as columns.
+The solver is based on LAPACK's `*GEEV` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):eig(interface)]] `(a, lambda [, right] [,left] [,overwrite_a] [,err])`
+
+### Arguments
+
+`a` : `real` or `complex` square array containing the coefficient matrix. If `overwrite_a=.false.`, it is an `intent(in)` argument. Otherwise, it is an `intent(inout)` argument and is destroyed by the call. 
+
+`lambda`: Shall be a `complex` or `real` rank-1 array of the same kind as `a`, containing the eigenvalues, or their `real` component only. It is an `intent(out)` argument.
+
+`right` (optional): Shall be a `complex` rank-2 array of the same size and kind as `a`, containing the right eigenvectors of `a`. It is an `intent(out)` argument.
+
+`left` (optional): Shall be a `complex` rank-2 array of the same size and kind as `a`, containing the left eigenvectors of `a`. It is an `intent(out)` argument.
+
+`overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Raises `LINALG_ERROR` if the calculation did not converge.
+Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
+Raises `LINALG_VALUE_ERROR` if the `real` component is only requested, but the eigenvalues have non-trivial imaginary parts.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_eig.f90!}
+```
+
+## `eigh` - Eigenvalues and Eigenvectors of a Real symmetric or Complex Hermitian Square Matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution to the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \),
+where \( A \) is a square, full-rank, `real` symmetric \( A = A^T \) or `complex` Hermitian \( A = A^H \) matrix.
+
+Result array `lambda` returns the `real` eigenvalues of \( A \). The user can request the orthogonal eigenvectors 
+to be returned: on output `vectors` may contain the matrix of eigenvectors, returned as a column.
+
+Normally, only the lower triangular part of \( A \) is accessed. On input, `logical` flag `upper_a` 
+allows the user to request what triangular part of the matrix should be used.
+
+The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):eigh(interface)]] `(a, lambda [, vectors] [, upper_a] [, overwrite_a] [,err])`
+
+### Arguments
+
+`a` : `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument. If `overwrite_a=.true.`, it is an `intent(inout)` argument and is destroyed by the call. 
+
+`lambda`: Shall be a `complex` rank-1 array of the same precision as `a`, containing the eigenvalues. It is an `intent(out)` argument. 
+
+`vectors` (optional): Shall be a rank-2 array of the same type, size and kind as `a`, containing the eigenvectors of `a`. It is an `intent(out)` argument.
+
+`upper_a` (optional): Shall be an input `logical` flag. If `.true.`, the upper triangular part of `a` will be accessed. Otherwise, the lower triangular part will be accessed. It is an `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Raises `LINALG_ERROR` if the calculation did not converge.
+Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_eigh.f90!}
+```
+
+## `eigvals` - Eigenvalues of a Square Matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the eigenvalues to matrix \( A \): a square, full-rank, `real` or `complex` matrix.
+The eigenvalues are solutions to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \).
+
+Result array `lambda` is `complex`, and returns the eigenvalues of \( A \). 
+The solver is based on LAPACK's `*GEEV` backends.
+
+### Syntax
+
+`lambda = ` [[stdlib_linalg(module):eigvals(interface)]] `(a, [,err])`
+
+### Arguments
+
+`a` : `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns a `complex` array containing the eigenvalues of `a`. 
+
+Raises `LINALG_ERROR` if the calculation did not converge.
+Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+
+### Example
+
+```fortran
+{!example/linalg/example_eigvals.f90!}
+```
+
+## `eigvalsh` - Eigenvalues of a Real Symmetric or Complex Hermitian Square Matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the eigenvalues to matrix \( A \): a where \( A \) is a square, full-rank, 
+`real` symmetric \( A = A^T \) or `complex` Hermitian \( A = A^H \) matrix.
+The eigenvalues are solutions to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \).
+
+Result array `lambda` is `real`, and returns the eigenvalues of \( A \). 
+The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
+
+### Syntax
+
+`lambda = ` [[stdlib_linalg(module):eigvalsh(interface)]] `(a, [, upper_a] [,err])`
+
+### Arguments
+
+`a` : `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument.
+
+`upper_a` (optional): Shall be an input logical flag. If `.true.`, the upper triangular part of `a` will be used accessed. Otherwise, the lower triangular part will be accessed (default). It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns a `real` array containing the eigenvalues of `a`. 
+
+Raises `LINALG_ERROR` if the calculation did not converge.
+Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_eigvalsh.f90!}
+```
+
+## `svd` - Compute the singular value decomposition of a rank-2 array (matrix).
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the singular value decomposition of a `real` or `complex` rank-2 array (matrix) \( A = U \cdot S \cdot \V^T \).
+The solver is based on LAPACK's `*GESDD` backends.
+
+Result vector `s` returns the array of singular values on the diagonal of \( S \). 
+If requested, `u` contains the left singular vectors, as columns of \( U \).
+If requested, `vt` contains the right singular vectors, as rows of \( V^T \).
+ 
+### Syntax
+
+`call ` [[stdlib_linalg(module):svd(interface)]] `(a, s, [, u, vt, overwrite_a, full_matrices, err])`
+
+### Class
+Subroutine
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix of size `[m,n]`. It is an `intent(inout)` argument, but returns unchanged unless `overwrite_a=.true.`.
+
+`s`: Shall be a rank-1 `real` array, returning the list of `k = min(m,n)` singular values. It is an `intent(out)` argument. 
+
+`u` (optional): Shall be a rank-2 array of same kind as `a`, returning the left singular vectors of `a` as columns. Its size should be `[m,m]` unless `full_matrices=.false.`, in which case, it can be `[m,min(m,n)]`. It is an `intent(out)` argument.
+
+`vt` (optional): Shall be a rank-2 array of same kind as `a`, returning the right singular vectors of `a` as rows. Its size should be `[n,n]` unless `full_matrices=.false.`, in which case, it can be `[min(m,n),n]`. It is an `intent(out)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `A` will be used as temporary storage and overwritten. This avoids internal data allocation. By default, `overwrite_a=.false.`. It is an `intent(in)` argument.
+
+`full_matrices` (optional): Shall be an input `logical` flag. If `.true.` (default), matrices `u` and `vt` shall be full-sized. Otherwise, their secondary dimension can be resized to `min(m,n)`. See `u`, `v` for details.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return values
+
+Returns an array `s` that contains the list of singular values of matrix `a`.
+If requested, returns a rank-2 array `u` that contains the left singular vectors of `a` along its columns.
+If requested, returns a rank-2 array `vt` that contains the right singular vectors of `a` along its rows.
+
+Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix or any of the output arrays invalid/incompatible sizes.
+Exceptions trigger an `error stop`, unless argument `err` is present.
+
+### Example
+
+```fortran
+{!example/linalg/example_svd.f90!}
+```
+
+## `svdvals` - Compute the singular values of a rank-2 array (matrix).
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the singular values of a `real` or `complex` rank-2 array (matrix) from its singular 
+value decomposition \( A = U \cdot S \cdot \V^T \). The solver is based on LAPACK's `*GESDD` backends.
+
+Result vector `s` returns the array of singular values on the diagonal of \( S \). 
+ 
+### Syntax
+
+`s = ` [[stdlib_linalg(module):svdvals(interface)]] `(a [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix of size `[m,n]`. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return values
+
+Returns an array `s` that contains the list of singular values of matrix `a`.
+
+Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix or any of the output arrays invalid/incompatible sizes.
+Exceptions trigger an `error stop`, unless argument `err` is present.
+
+### Example
+
+```fortran
+{!example/linalg/example_svdvals.f90!}
+```
+
+## `.inv.` - Inverse operator of a square matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This operator returns the inverse of a `real` or `complex` square matrix \( A \).
+The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+
+This interface is equivalent to the function  [[stdlib_linalg(module):inv(interface)]]. 
+
+### Syntax
+
+`b = ` [[stdlib_linalg(module):operator(.inv.)(interface)]] `a`
+
+### Arguments
+
+`a`: Shall be a rank-2 square array of any `real` or `complex` kinds. It is an `intent(in)` argument.
+
+### Return value
+
+Returns a rank-2 square array with the same type, kind and rank as `a`, that contains the inverse of `a`.
+
+If an exception occurred on input errors, or singular matrix, `NaN`s will be returned.
+For fine-grained error control in case of singular matrices prefer the `subroutine` and the `function`
+interfaces.
+
+
+### Example
+
+```fortran
+{!example/linalg/example_inverse_operator.f90!}
+```
+
+## `invert` - Inversion of a square matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine inverts a square `real` or `complex` matrix in-place.
+The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+
+On return, the input matrix `a` is replaced by its inverse.
+The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):invert(interface)]] `(a, [,inva] [, pivot] [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2, square, `real` or `complex` array containing the coefficient matrix. 
+If `inva` is provided, it is an `intent(in)` argument.
+If `inva` is not provided, it is an `intent(inout)` argument: on output, it is replaced by the inverse of `a`. 
+
+`inva` (optional): Shall be a rank-2, square, `real` or `complex` array with the same size, and kind as `a`. 
+On output, it contains the inverse of `a`.
+
+`pivot` (optional): Shall be a rank-1 array of the same kind and matrix dimension as `a`, that contains the diagonal pivot indices on return. It is an `intent(inout)` argument. 
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Computes the inverse of the matrix \( A \), \(A^{-1}\, and returns it either in \( A \) or in another matrix.
+
+Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
+Raises `LINALG_VALUE_ERROR` if `inva` and `a` do not have the same size.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_inverse_inplace.f90!}
+```
+
+```fortran
+{!example/linalg/example_inverse_subroutine.f90!}
+```
+
+## `inv` - Inverse of a square matrix. 
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the inverse of a square `real` or `complex` matrix in-place.
+The inverse, \( A^{-1} \), is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+
+The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
+
+### Syntax
+
+`b ` [[stdlib_linalg(module):inv(interface)]] `(a, [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2, square, `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value of the same type, kind and rank as `a`, that contains the inverse matrix \(A^{-1}\).
+
+Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_inverse_function.f90!}
+```
+

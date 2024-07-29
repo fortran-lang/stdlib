@@ -1,0 +1,239 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+submodule (stdlib_linalg) stdlib_linalg_determinant
+!! Determinant of a rectangular matrix
+     use stdlib_linalg_constants
+     use stdlib_linalg_lapack, only: getrf
+     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
+     implicit none(type,external)
+
+     ! Function interface
+     character(*), parameter :: this = 'determinant'
+
+     contains
+
+     ! BLAS/LAPACK backends do not currently support xdp
+     #:for rk,rt in RC_KINDS_TYPES
+     #:if rk!="xdp" 
+     pure module function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)     
+     !!### Summary
+     !! Compute determinant of a real square matrix (pure interface).
+     !!
+     !!### Description
+     !!
+     !! This function computes the determinant of a real square matrix.
+     !!
+     !! param: a Input matrix of size [m,n].
+     !! return: det Matrix determinant.
+     !!
+     !!### Example
+     !!
+     !!```fortran
+     !!
+     !! ${rt}$ :: matrix(3,3)
+     !! ${rt}$ :: determinant
+     !! matrix = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !! determinant = det(matrix)         
+     !!
+     !!```
+         !> Input matrix a[m,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Matrix determinant
+         ${rt}$ :: det
+
+         !! Local variables
+         type(linalg_state_type) :: err0
+         integer(ilp) :: m,n,info,perm,k
+         integer(ilp), allocatable :: ipiv(:)
+         ${rt}$, allocatable :: amat(:,:)
+
+         ! Matrix determinant size
+         m = size(a,1,kind=ilp)
+         n = size(a,2,kind=ilp)
+
+         if (m/=n .or. .not.min(m,n)>=0) then
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid or non-square matrix: a=[',m,',',n,']')
+            det  = 0.0_${rk}$
+            ! Process output and return
+            call linalg_error_handling(err0)
+         return
+         end if
+
+         select case (m)
+            case (0)
+                
+                ! Empty array has determinant 1 because math
+                det = 1.0_${rk}$
+
+            case (1)
+                
+                ! Scalar input
+                det = a(1,1)
+
+            case default
+
+                ! Find determinant from LU decomposition
+
+                ! Initialize a matrix temporary
+                allocate(amat(m,n),source=a)
+
+                ! Pivot indices
+                allocate(ipiv(n))
+
+                ! Compute determinant from LU factorization, then calculate the 
+                ! product of all diagonal entries of the U factor.
+                call getrf(m,n,amat,m,ipiv,info)
+
+                select case (info)
+                   case (0)
+                       ! Success: compute determinant
+
+                       ! Start with real 1.0
+                       det = 1.0_${rk}$
+                       perm = 0
+                       do k=1,n
+                          if (ipiv(k)/=k) perm = perm+1
+                          det = det*amat(k,k)
+                       end do
+                       if (mod(perm,2)/=0) det = -det
+
+                   case (:-1)
+                       err0 = linalg_state_type(this,LINALG_ERROR,'invalid matrix size a=[',m,',',n,']')
+                   case (1:)
+                       err0 = linalg_state_type(this,LINALG_ERROR,'singular matrix')
+                   case default
+                       err0 = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+                end select
+
+                deallocate(amat)
+
+         end select
+
+         ! Process output and return
+         call linalg_error_handling(err0)
+
+     end function stdlib_linalg_pure_${rt[0]}$${rk}$determinant
+     
+     module function stdlib_linalg_${rt[0]}$${rk}$determinant(a,overwrite_a,err) result(det)
+     !!### Summary
+     !! Compute determinant of a square matrix (with error control).
+     !!
+     !!### Description
+     !!
+     !! This function computes the determinant of a square matrix with error control.
+     !!
+     !! param: a Input matrix of size [m,n].
+     !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
+     !! param: err State return flag. 
+     !! return: det Matrix determinant.
+     !!
+     !!### Example
+     !!
+     !!```fortran
+     !!
+     !! ${rt}$ :: matrix(3,3)
+     !! ${rt}$ :: determinant
+     !! matrix = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !! determinant = det(matrix, err=err)         
+     !!
+     !!```        
+     !     
+         !> Input matrix a[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> State return flag. 
+         type(linalg_state_type), intent(out) :: err
+         !> Matrix determinant
+         ${rt}$ :: det
+
+         !! Local variables
+         type(linalg_state_type) :: err0
+         integer(ilp) :: m,n,info,perm,k
+         integer(ilp), allocatable :: ipiv(:)
+         logical(lk) :: copy_a
+         ${rt}$, pointer :: amat(:,:)
+
+         ! Matrix determinant size
+         m = size(a,1,kind=ilp)
+         n = size(a,2,kind=ilp)
+
+         if (m/=n .or. .not.min(m,n)>=0) then
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid or non-square matrix: a=[',m,',',n,']')
+            det  = 0.0_${rk}$
+            ! Process output and return
+            call linalg_error_handling(err0,err)
+            return
+         end if
+
+         ! Can A be overwritten? By default, do not overwrite
+         if (present(overwrite_a)) then
+            copy_a = .not.overwrite_a
+         else
+            copy_a = .true._lk
+         endif
+
+         select case (m)
+            case (0)
+                
+                ! Empty array has determinant 1 because math
+                det = 1.0_${rk}$
+
+            case (1)
+                
+                ! Scalar input
+                det = a(1,1)
+
+            case default
+
+                ! Find determinant from LU decomposition
+
+                ! Initialize a matrix temporary
+                if (copy_a) then
+                   allocate(amat, source=a)
+                else
+                   amat => a
+                endif
+
+                ! Pivot indices
+                allocate(ipiv(n))
+
+                ! Compute determinant from LU factorization, then calculate the 
+                ! product of all diagonal entries of the U factor.
+                call getrf(m,n,amat,m,ipiv,info)
+
+                select case (info)
+                   case (0)
+                       ! Success: compute determinant
+
+                       ! Start with real 1.0
+                       det = 1.0_${rk}$
+                       perm = 0
+                       do k=1,n
+                          if (ipiv(k)/=k) perm = perm+1
+                          det = det*amat(k,k)
+                       end do
+                       if (mod(perm,2)/=0) det = -det
+
+                   case (:-1)
+                       err0 = linalg_state_type(this,LINALG_ERROR,'invalid matrix size a=[',m,',',n,']')
+                   case (1:)
+                       err0 = linalg_state_type(this,LINALG_ERROR,'singular matrix')
+                   case default
+                       err0 = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+                end select
+
+                if (copy_a) deallocate(amat)
+
+         end select
+
+         ! Process output and return
+         call linalg_error_handling(err0,err)
+
+     end function stdlib_linalg_${rt[0]}$${rk}$determinant
+
+     #:endif
+     #:endfor
+
+end submodule stdlib_linalg_determinant

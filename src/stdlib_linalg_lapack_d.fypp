@@ -478,9 +478,6 @@ module stdlib_linalg_lapack_d
      public :: stdlib_dtrttp
      public :: stdlib_dtzrzf
      public :: stdlib_dzsum1
-#:if WITH_QP
-     public :: stdlib_dlag2q
-#:endif
 
      ! 64-bit real constants 
      real(dp),    parameter, private ::     negone = -1.00_dp
@@ -24146,38 +24143,6 @@ module stdlib_linalg_lapack_d
            return
      end function stdlib_dzsum1
 
-#:if WITH_QP
-
-     pure subroutine stdlib_dlag2q( m, n, sa, ldsa, a, lda, info )
-     !! DLAG2Q converts a SINGLE PRECISION matrix, SA, to a DOUBLE
-     !! PRECISION matrix, A.
-     !! Note that while it is possible to overflow while converting
-     !! from double to single, it is not possible to overflow when
-     !! converting from single to double.
-     !! This is an auxiliary routine so there is no argument checking.
-        ! -- lapack auxiliary routine --
-        ! -- lapack is a software package provided by univ. of tennessee,    --
-        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           ! Scalar Arguments 
-           integer(ilp), intent(out) :: info
-           integer(ilp), intent(in) :: lda, ldsa, m, n
-           ! Array Arguments 
-           real(dp), intent(in) :: sa(ldsa,*)
-           real(qp), intent(out) :: a(lda,*)
-        ! =====================================================================
-           ! Local Scalars 
-           integer(ilp) :: i, j
-           ! Executable Statements 
-           info = 0
-           do j = 1, n
-              do i = 1, m
-                 a( i, j ) = sa( i, j )
-              end do
-           end do
-           return
-     end subroutine stdlib_dlag2q
-#:endif
-
      pure subroutine stdlib_dbbcsd( jobu1, jobu2, jobv1t, jobv2t, trans, m, p, q,theta, phi, u1, &
      !! DBBCSD computes the CS decomposition of an orthogonal matrix in
      !! bidiagonal-block form,
@@ -41285,7 +41250,7 @@ module stdlib_linalg_lapack_d
      end subroutine stdlib_dsytrd
 
 
-     pure subroutine stdlib_dsytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
+     subroutine stdlib_dsytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, lhous, &
      !! DSYTRD_SB2ST reduces a real symmetric band matrix A to real symmetric
      !! tridiagonal form T by a orthogonal similarity transformation:
      !! Q**T * A * Q = T.
@@ -57070,7 +57035,7 @@ module stdlib_linalg_lapack_d
      end subroutine stdlib_dsysvx
 
 
-     pure subroutine stdlib_dsytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info )
+     subroutine stdlib_dsytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info )
      !! DSYTRD_SY2SB reduces a real symmetric matrix A to real symmetric
      !! band-diagonal form AB by a orthogonal similarity transformation:
      !! Q**T * A * Q = AB.
@@ -57092,7 +57057,7 @@ module stdlib_linalg_lapack_d
            
            ! Local Scalars 
            logical(lk) :: lquery, upper
-           integer(ilp) :: i, j, iinfo, lwmin, pn, pk, lk, ldt, ldw, lds2, lds1, ls2, ls1, lw, lt,&
+           integer(ilp) :: i, j, iinfo, lwmin, pn, pk, llk, ldt, ldw, lds2, lds1, ls2, ls1, lw, lt,&
                       tpos, wpos, s2pos, s1pos
            ! Intrinsic Functions 
            intrinsic :: min,max
@@ -57128,13 +57093,13 @@ module stdlib_linalg_lapack_d
            if( n<=kd+1 ) then
                if( upper ) then
                    do i = 1, n
-                       lk = min( kd+1, i )
-                       call stdlib_dcopy( lk, a( i-lk+1, i ), 1,ab( kd+1-lk+1, i ), 1 )
+                       llk = min( kd+1, i )
+                       call stdlib_dcopy( llk, a( i-llk+1, i ), 1,ab( kd+1-llk+1, i ), 1 )
                    end do
                else
                    do i = 1, n
-                       lk = min( kd+1, n-i+1 )
-                       call stdlib_dcopy( lk, a( i, i ), 1, ab( 1, i ), 1 )
+                       llk = min( kd+1, n-i+1 )
+                       call stdlib_dcopy( llk, a( i, i ), 1, ab( 1, i ), 1 )
                    end do
                endif
                work( 1 ) = 1
@@ -57171,8 +57136,8 @@ module stdlib_linalg_lapack_d
                             iinfo )
                   ! copy the upper portion of a into ab
                   do j = i, i+pk-1
-                     lk = min( kd, n-j ) + 1
-                     call stdlib_dcopy( lk, a( j, j ), lda, ab( kd+1, j ), ldab-1 )
+                     llk = min( kd, n-j ) + 1
+                     call stdlib_dcopy( llk, a( j, j ), lda, ab( kd+1, j ), ldab-1 )
                   end do
                   call stdlib_dlaset( 'LOWER', pk, pk, zero, one,a( i, i+kd ), lda )
                   ! form the matrix t
@@ -57194,8 +57159,8 @@ module stdlib_linalg_lapack_d
                end do
               ! copy the upper band to ab which is the band storage matrix
               do j = n-kd+1, n
-                 lk = min(kd, n-j) + 1
-                 call stdlib_dcopy( lk, a( j, j ), lda, ab( kd+1, j ), ldab-1 )
+                 llk = min(kd, n-j) + 1
+                 call stdlib_dcopy( llk, a( j, j ), lda, ab( kd+1, j ), ldab-1 )
               end do
            else
                ! reduce the lower triangle of a to lower band matrix
@@ -57207,8 +57172,8 @@ module stdlib_linalg_lapack_d
                             iinfo )
                   ! copy the upper portion of a into ab
                   do j = i, i+pk-1
-                     lk = min( kd, n-j ) + 1
-                     call stdlib_dcopy( lk, a( j, j ), 1, ab( 1, j ), 1 )
+                     llk = min( kd, n-j ) + 1
+                     call stdlib_dcopy( llk, a( j, j ), 1, ab( 1, j ), 1 )
                   end do
                   call stdlib_dlaset( 'UPPER', pk, pk, zero, one,a( i+kd, i ), lda )
                   ! form the matrix t
@@ -57230,15 +57195,15 @@ module stdlib_linalg_lapack_d
                   ! ==================================================================
                   ! restore a for comparison and checking to be removed
                    ! do 45 j = i, i+pk-1
-                      ! lk = min( kd, n-j ) + 1
-                      ! call stdlib_dcopy( lk, ab( 1, j ), 1, a( j, j ), 1 )
+                      ! llk = min( kd, n-j ) + 1
+                      ! call stdlib_dcopy( llk, ab( 1, j ), 1, a( j, j ), 1 )
                       45 continue
                   ! ==================================================================
                end do loop_40
               ! copy the lower band to ab which is the band storage matrix
               do j = n-kd+1, n
-                 lk = min(kd, n-j) + 1
-                 call stdlib_dcopy( lk, a( j, j ), 1, ab( 1, j ), 1 )
+                 llk = min(kd, n-j) + 1
+                 call stdlib_dcopy( llk, a( j, j ), 1, ab( 1, j ), 1 )
               end do
            end if
            work( 1 ) = lwmin
@@ -75410,7 +75375,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dgeqrf( m, n, a, lda, work( itau ), work( nwork ),lwork - nwork + &
                               1, ierr )
                     ! zero out below r
-                    call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
+                    if (n>1) call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
                     ie = 1
                     itauq = ie + n
                     itaup = itauq + n
@@ -75560,7 +75525,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dorgqr( m, m, n, u, ldu, work( itau ),work( nwork ), lwork - &
                               nwork + 1, ierr )
                     ! produce r in a, zeroing out other entries
-                    call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
+                    if (n>1) call stdlib_dlaset( 'L', n-1, n-1, zero, zero, a( 2, 1 ), lda )
                     ie = itau
                     itauq = ie + n
                     itaup = itauq + n
@@ -75726,7 +75691,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dgelqf( m, n, a, lda, work( itau ), work( nwork ),lwork - nwork + &
                               1, ierr )
                     ! zero out above l
-                    call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = 1
                     itauq = ie + m
                     itaup = itauq + m
@@ -75880,7 +75845,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dorglq( n, n, m, vt, ldvt, work( itau ),work( nwork ), lwork - &
                               nwork + 1, ierr )
                     ! produce l in a, zeroing out other entries
-                    call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = itau
                     itauq = ie + m
                     itaup = itauq + m
@@ -77363,7 +77328,7 @@ module stdlib_linalg_lapack_d
                     call stdlib_dgelqf( m, n, a, lda, work( itau ), work( iwork ),lwork-iwork+1, &
                               ierr )
                     ! zero out above l
-                    call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
+                    if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ), lda )
                     ie = 1
                     itauq = ie + m
                     itaup = itauq + m
@@ -77506,7 +77471,7 @@ module stdlib_linalg_lapack_d
                                  1, ierr )
                        ! copy l to u, zeroing about above it
                        call stdlib_dlacpy( 'L', m, m, a, lda, u, ldu )
-                       call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                       if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                        ! generate q in a
                        ! (workspace: need m*m + 2*m, prefer m*m + m + m*nb)
                        call stdlib_dorglq( m, n, m, a, lda, work( itau ),work( iwork ), lwork-&
@@ -77556,7 +77521,7 @@ module stdlib_linalg_lapack_d
                                  1, ierr )
                        ! copy l to u, zeroing out above it
                        call stdlib_dlacpy( 'L', m, m, a, lda, u, ldu )
-                       call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                       if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                        ! generate q in a
                        ! (workspace: need 2*m, prefer m + m*nb)
                        call stdlib_dorglq( m, n, m, a, lda, work( itau ),work( iwork ), lwork-&
@@ -77657,7 +77622,7 @@ module stdlib_linalg_lapack_d
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_dgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -77764,7 +77729,7 @@ module stdlib_linalg_lapack_d
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_dgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -77859,7 +77824,7 @@ module stdlib_linalg_lapack_d
                                     lwork-iwork+1, ierr )
                           ! copy l to u, zeroing out above it
                           call stdlib_dlacpy( 'L', m, m, a, lda, u, ldu )
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                           ie = itau
                           itauq = ie + m
                           itaup = itauq + m
@@ -77960,7 +77925,7 @@ module stdlib_linalg_lapack_d
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_dgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -78070,7 +78035,7 @@ module stdlib_linalg_lapack_d
                           itaup = itauq + m
                           iwork = itaup + m
                           ! zero out above l in a
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, a( 1, 2 ),lda )
                           ! bidiagonalize l in a
                           ! (workspace: need 4*m, prefer 3*m + 2*m*nb)
                           call stdlib_dgebrd( m, m, a, lda, s, work( ie ),work( itauq ), work( &
@@ -78168,7 +78133,7 @@ module stdlib_linalg_lapack_d
                                     lwork-iwork+1, ierr )
                           ! copy l to u, zeroing out above it
                           call stdlib_dlacpy( 'L', m, m, a, lda, u, ldu )
-                          call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
+                          if (m>1) call stdlib_dlaset( 'U', m-1, m-1, zero, zero, u( 1, 2 ),ldu )
                           ie = itau
                           itauq = ie + m
                           itaup = itauq + m
@@ -79029,7 +78994,7 @@ module stdlib_linalg_lapack_d
                                 v(q,p) = u(p,nr+q)
                             end do
                         end do
-                       call stdlib_dlaset('U',nr-1,nr-1,zero,zero,v(1,2),ldv)
+                       if (nr>1) call stdlib_dlaset('U',nr-1,nr-1,zero,zero,v(1,2),ldv)
                        call stdlib_dgesvd( 'S', 'O', nr, nr, v, ldv, s, u, ldu,v,ldv, work(n+nr+1)&
                                  ,lwork-n-nr, info )
                        call stdlib_dlaset('A',n-nr,nr,zero,zero,v(nr+1,1),ldv)

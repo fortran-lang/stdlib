@@ -1,0 +1,378 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set RHS_SUFFIX = ["one","many"]
+#:set RHS_SYMBOL = [ranksuffix(r) for r in [1,2]]
+#:set RHS_EMPTY  = [emptyranksuffix(r) for r in [1,2]]
+#:set ALL_RHS    = list(zip(RHS_SYMBOL,RHS_SUFFIX,RHS_EMPTY))
+submodule (stdlib_linalg) stdlib_linalg_least_squares
+!! Least-squares solution to Ax=b
+     use stdlib_linalg_constants
+     use stdlib_linalg_lapack, only: gelsd, stdlib_ilaenv
+     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
+     implicit none(type,external)
+     
+     character(*), parameter :: this = 'lstsq'
+
+     contains
+
+     elemental subroutine handle_gelsd_info(info,lda,n,ldb,nrhs,err)
+          integer(ilp), intent(in) :: info,lda,n,ldb,nrhs
+          type(linalg_state_type), intent(out) :: err
+
+          ! Process output
+          select case (info)
+             case (0)
+                 ! Success
+             case (:-1)
+                 err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid problem size a=',[lda,n], &
+                                                                                    ', b=',[ldb,nrhs])
+             case (1:)
+                 err = linalg_state_type(this,LINALG_ERROR,'SVD did not converge.')
+             case default
+                 err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+          end select
+
+      end subroutine handle_gelsd_info
+
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     ! Workspace needed by gelsd
+     elemental subroutine ${ri}$gelsd_space(m,n,nrhs,lrwork,liwork,lcwork)
+         integer(ilp), intent(in) :: m,n,nrhs
+         integer(ilp), intent(out) :: lrwork,liwork,lcwork
+
+         integer(ilp) :: smlsiz,mnmin,nlvl
+
+         mnmin = min(m,n)
+
+         ! Maximum size of the subproblems at the bottom of the computation (~25)
+         smlsiz = stdlib_ilaenv(9,'${ri}$gelsd',' ',0,0,0,0)
+
+         ! The exact minimum amount of workspace needed depends on M, N and NRHS. 
+         nlvl = max(0, ilog2(mnmin/(smlsiz+1))+1)
+
+         ! Real space
+         #:if rt.startswith('complex')
+         lrwork = 10*mnmin+2*mnmin*smlsiz+8*mnmin*nlvl+3*smlsiz*nrhs+max((smlsiz+1)**2,n*(1+nrhs)+2*nrhs)
+         #:else
+         lrwork = 12*mnmin+2*mnmin*smlsiz+8*mnmin*nlvl+mnmin*nrhs+(smlsiz+1)**2
+         #:endif
+         lrwork = max(1,lrwork)
+
+         ! Complex space
+         lcwork = 2*mnmin + nrhs*mnmin
+
+         ! Integer space
+         liwork = max(1, 3*mnmin*nlvl+11*mnmin)
+
+         ! For good performance, the workspace should generally be larger. 
+         ! Allocate 25% more space than strictly needed.
+         lrwork = ceiling(1.25*lrwork,kind=ilp)
+         lcwork = ceiling(1.25*lcwork,kind=ilp)
+         liwork = ceiling(1.25*liwork,kind=ilp)
+
+     end subroutine ${ri}$gelsd_space
+
+     #:endfor
+
+     #:for nd,ndsuf,nde in ALL_RHS
+     #:for rk,rt,ri in RC_KINDS_TYPES
+
+     ! Compute the integer, real, [complex] working space requested byu the least squares procedure
+     pure module subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$(a,b,lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#)
+         !> Input matrix a[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> Right hand side vector or array, b[m] or b[m,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Size of the working space arrays       
+         integer(ilp), intent(out) :: lrwork,liwork
+         integer(ilp) #{if rt.startswith('c')}#, intent(out)#{endif}# :: lcwork
+         
+         integer(ilp) :: m,n,nrhs
+         
+         m    = size(a,1,kind=ilp)
+         n    = size(a,2,kind=ilp)
+         nrhs = size(b,kind=ilp)/size(b,1,kind=ilp)
+                  
+         call ${ri}$gelsd_space(m,n,nrhs,lrwork,liwork,lcwork)
+             
+     end subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$
+
+     ! Compute the least-squares solution to a real system of linear equations Ax = b
+     module function stdlib_linalg_${ri}$_lstsq_${ndsuf}$(a,b,cond,overwrite_a,rank,err) result(x)
+     !!### Summary
+     !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
+     !!
+     !!### Description
+     !!
+     !! This function computes the least-squares solution of a linear matrix problem.
+     !!
+     !! param: a Input matrix of size [m,n].
+     !! param: b Right-hand-side vector of size [m] or matrix of size [m,nrhs].
+     !! param: cond [optional] Real input threshold indicating that singular values `s_i <= cond*maxval(s)` 
+     !!        do not contribute to the matrix rank.
+     !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
+     !! param: rank [optional] integer flag returning matrix rank. 
+     !! param: err [optional] State return flag. 
+     !! return: x Solution vector of size [n] or solution matrix of size [n,nrhs].
+     !!
+         !> Input matrix a[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[m] or b[m,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(${rk}$), optional, intent(in) :: cond
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, allocatable, target :: x${nd}$         
+         
+         integer(ilp) :: n,nrhs,ldb
+
+         n    = size(a,2,kind=ilp)
+         ldb  = size(b,1,kind=ilp)         
+         nrhs = size(b,kind=ilp)/ldb
+         
+         ! Initialize solution with the shape of the rhs
+         #:if ndsuf=="one"
+         allocate(x(n))
+         #:else
+         allocate(x(n,nrhs))
+         #:endif
+
+         call stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$(a,b,x,&
+              cond=cond,overwrite_a=overwrite_a,rank=rank,err=err)
+
+     end function stdlib_linalg_${ri}$_lstsq_${ndsuf}$
+
+     ! Compute the least-squares solution to a real system of linear equations Ax = b
+     module subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$(a,b,x,real_storage,int_storage, &
+             #{if rt.startswith('c')}#cmpl_storage,#{endif}# cond,singvals,overwrite_a,rank,err) 
+             
+     !!### Summary
+     !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
+     !!
+     !!### Description
+     !!
+     !! This function computes the least-squares solution of a linear matrix problem.
+     !!
+     !! param: a Input matrix of size [m,n].
+     !! param: b Right-hand-side vector of size [n] or matrix of size [n,nrhs].
+     !! param: x Solution vector of size at [>=n] or solution matrix of size [>=n,nrhs].
+     !! param: real_storage [optional] Real working space
+     !! param: int_storage [optional] Integer working space
+     #:if rt.startswith('c')   
+     !! param: cmpl_storage [optional] Complex working space
+     #:endif
+     !! param: cond [optional] Real input threshold indicating that singular values `s_i <= cond*maxval(s)` 
+     !!        do not contribute to the matrix rank.
+     !! param: singvals [optional] Real array of size [min(m,n)] returning a list of singular values.
+     !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
+     !! param: rank [optional] integer flag returning matrix rank. 
+     !! param: err [optional] State return flag.      
+     !!
+         !> Input matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$     
+         !> [optional] real working storage space
+         real(${rk}$), optional, intent(inout), target :: real_storage(:)
+         !> [optional] integer working storage space
+         integer(ilp), optional, intent(inout), target :: int_storage(:)
+         #:if rt.startswith('c')   
+         !> [optional] complex working storage space
+         ${rt}$, optional, intent(inout), target :: cmpl_storage(:)                  
+         #:endif
+         !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+         real(${rk}$), optional, intent(in) :: cond
+         !> [optional] list of singular values [min(m,n)], in descending magnitude order, returned by the SVD
+         real(${rk}$), optional, intent(out), target :: singvals(:)         
+         !> [optional] Can A,b data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Return rank of A
+         integer(ilp), optional, intent(out) :: rank
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         
+         !! Local variables
+         type(linalg_state_type) :: err0
+         integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
+         integer(ilp) :: nrs,nis,ncs,nsvd
+         integer(ilp), pointer :: iwork(:)
+         logical(lk) :: copy_a,large_enough_x
+         real(${rk}$) :: acond,rcond
+         real(${rk}$), pointer :: rwork(:),singular(:)
+         ${rt}$, pointer :: xmat(:,:),amat(:,:),cwork(:)
+
+         ! Problem sizes
+         m     = size(a,1,kind=ilp)
+         lda   = size(a,1,kind=ilp)
+         n     = size(a,2,kind=ilp)
+         ldb   = size(b,1,kind=ilp)
+         nrhs  = size(b  ,kind=ilp)/ldb
+         ldx   = size(x,1,kind=ilp)
+         nrhsx = size(x  ,kind=ilp)/ldx
+         mnmin = min(m,n)
+         mnmax = max(m,n)
+
+         if (lda<1 .or. n<1 .or. ldb<1 .or. ldb/=m .or. ldx<n) then
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient sizes: a=',[lda,n], &
+                                                             'b=',[ldb,nrhs],' x=',[ldx,nrhsx])
+            call linalg_error_handling(err0,err)
+            if (present(rank)) rank = 0
+            return
+         end if
+
+         ! Can A be overwritten? By default, do not overwrite
+         if (present(overwrite_a)) then
+            copy_a = .not.overwrite_a
+         else
+            copy_a = .true._lk
+         endif
+
+         ! Initialize a matrix temporary
+         if (copy_a) then
+            allocate(amat(lda,n),source=a)
+         else
+            amat => a
+         endif
+
+         ! If x is large enough to store b, use it as temporary rhs storage. 
+         large_enough_x = ldx>=m
+         if (large_enough_x) then          
+            xmat(1:ldx,1:nrhs) => x
+         else
+            allocate(xmat(m,nrhs))
+         endif
+
+         #:if ndsuf=="one"
+         xmat(1:m,1) = b
+         #:else
+         xmat(1:m,1:nrhs) = b
+         #:endif
+
+         ! Singular values array (in decreasing order)
+         if (present(singvals)) then 
+            singular => singvals            
+            nsvd = size(singular,kind=ilp)
+         else
+            allocate(singular(mnmin))
+            nsvd = mnmin
+         endif
+         
+         ! rcond is used to determine the effective rank of A.
+         ! Singular values S(i) <= RCOND*maxval(S) are treated as zero.
+         ! Use same default value as NumPy
+         if (present(cond)) then
+            rcond = cond
+         else
+            rcond = epsilon(0.0_${rk}$)*mnmax
+         endif
+         if (rcond<0) rcond = epsilon(0.0_${rk}$)*mnmax
+
+         ! Get working space size
+         call ${ri}$gelsd_space(m,n,nrhs,lrwork,liwork,lcwork)
+         
+         ! Real working space
+         if (present(real_storage)) then 
+            rwork => real_storage            
+         else
+            allocate(rwork(lrwork))
+         endif
+         nrs = size(rwork,kind=ilp)
+
+         ! Integer working space
+         if (present(int_storage)) then 
+            iwork => int_storage            
+         else
+            allocate(iwork(liwork))
+         endif
+         nis = size(iwork,kind=ilp)
+         
+         #:if rt.startswith('complex')         
+         ! Complex working space
+         if (present(cmpl_storage)) then 
+            cwork => cmpl_storage            
+         else
+            allocate(cwork(lcwork))
+         endif
+         ncs = size(cwork,kind=ilp)
+         #:endif         
+                    
+         if (nrs<lrwork .or. nis<liwork#{if rt.startswith('c')}# .or. ncs<lcwork#{endif}# &
+             .or. nsvd<mnmin) then 
+            ! Halt on insufficient space
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient working space: ',&
+                         'real=',nrs,' should be >=',lrwork, &
+                        ', int=',nis,' should be >=',liwork, &
+                        #{if rt.startswith('complex')}#', cmplx=',ncs,' should be >=',lcwork, &#{endif}# 
+                      ', singv=',nsvd,' should be >=',mnmin)
+         
+         else
+
+            ! Solve system using singular value decomposition
+            call gelsd(m,n,nrhs,amat,lda,xmat,ldb,singular,rcond,arank, &
+            #:if rt.startswith('complex')
+                       cwork,ncs,rwork,iwork,info)
+            #:else
+                       rwork,nrs,iwork,info)
+            #:endif
+
+            ! The condition number of A in the 2-norm = S(1)/S(min(m,n)).
+            acond = singular(1)/singular(mnmin)
+
+            ! Process output
+            call handle_gelsd_info(info,lda,n,ldb,nrhs,err0)
+         
+         endif           
+                  
+         ! Process output and return
+         if (.not.large_enough_x) then 
+            #:if ndsuf=="one"
+            x(1:n) = xmat(1:n,1)
+            #:else
+            x(1:n,1:nrhs) = xmat(1:n,1:nrhs)
+            #:endif
+            deallocate(xmat)
+         endif
+         if (copy_a) deallocate(amat)         
+
+         if (present(rank)) rank = arank
+         if (.not.present(real_storage)) deallocate(rwork)
+         if (.not.present(int_storage))  deallocate(iwork)
+         #:if rt.startswith('complex') 
+         if (.not.present(cmpl_storage)) deallocate(cwork)
+         #:endif
+         if (.not.present(singvals)) deallocate(singular)
+         call linalg_error_handling(err0,err)
+
+     end subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$
+
+     #:endfor
+     #:endfor
+
+     ! Simple integer log2 implementation
+     elemental integer(ilp) function ilog2(x)
+        integer(ilp), intent(in) :: x
+
+        integer(ilp) :: remndr
+
+        if (x>0) then
+           remndr = x
+           ilog2 = -1_ilp
+           do while (remndr>0)
+               ilog2  = ilog2 + 1_ilp
+               remndr = shiftr(remndr,1)
+           end do
+        else
+           ilog2 = -huge(0_ilp)
+        endif
+     end function ilog2
+
+end submodule stdlib_linalg_least_squares

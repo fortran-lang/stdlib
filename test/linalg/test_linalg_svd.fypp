@@ -1,0 +1,294 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+! Test singular value decomposition
+module test_linalg_svd
+    use testdrive, only: error_type, check, new_unittest, unittest_type
+    use stdlib_linalg_constants    
+    use stdlib_linalg, only: diag,svd,svdvals
+    use stdlib_linalg_state, only: linalg_state_type
+    implicit none (type,external)
+    
+    public :: test_svd
+
+    contains
+
+    !> Solve several SVD problems
+    subroutine test_svd(tests)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: tests(:)
+        
+        allocate(tests(0))
+
+        #:for rk,rt,ri in REAL_KINDS_TYPES
+        tests = [tests,new_unittest("test_svd_${ri}$",test_svd_${ri}$)]        
+        #:endfor
+
+        #:for ck,ct,ci in CMPLX_KINDS_TYPES
+        tests = [tests,new_unittest("test_complex_svd_${ci}$",test_complex_svd_${ci}$)]        
+        #:endfor
+
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        tests = [tests,new_unittest("test_svd_row_${ri}$",test_svd_row_${ri}$)]         
+        #:endfor
+
+    end subroutine test_svd
+
+    !> Real matrix svd
+    #:for rk,rt,ri in REAL_KINDS_TYPES
+    subroutine test_svd_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        !> Reference solution
+        ${rt}$, parameter :: tol     = sqrt(epsilon(0.0_${rk}$))
+        ${rt}$, parameter :: third   = 1.0_${rk}$/3.0_${rk}$
+        ${rt}$, parameter :: twothd  = 2*third
+        ${rt}$, parameter :: rsqrt2  = 1.0_${rk}$/sqrt(2.0_${rk}$)
+        ${rt}$, parameter :: rsqrt18 = 1.0_${rk}$/sqrt(18.0_${rk}$)
+
+        ${rt}$, parameter ::  A_mat(2,3) = reshape([${rt}$ :: 3,2, 2,3, 2,-2],[2,3])
+        ${rt}$, parameter ::  s_sol(2)   = [${rt}$ :: 5, 3]
+        ${rt}$, parameter ::  u_sol(2,2) = reshape(rsqrt2*[1,1,1,-1],[2,2])
+        ${rt}$, parameter :: vt_sol(3,3) = reshape([rsqrt2,rsqrt18,twothd, &
+                                                      rsqrt2,-rsqrt18,-twothd,&
+                                                      0.0_${rk}$,4*rsqrt18,-third],[3,3])
+
+        !> Local variables
+        character(:), allocatable :: test
+        type(linalg_state_type) :: state
+        ${rt}$ :: A(2,3),s(2),u(2,2),vt(3,3)
+
+        !> Initialize matrix
+        A = A_mat
+
+        !> Simple subroutine version
+        call svd(A,s,err=state)
+        
+        test = 'subroutine version'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return        
+        
+        !> Function interface
+        s = svdvals(A,err=state)
+        
+        test = 'function interface'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return        
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return     
+
+        !> [S, U]. Singular vectors could be all flipped
+        call svd(A,s,u,err=state)
+        
+        test = 'subroutine with singular vectors'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return        
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return             
+        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        if (allocated(error)) return             
+
+        !> [S, U]. Overwrite A matrix
+        call svd(A,s,u,overwrite_a=.true.,err=state)
+        
+        test = 'subroutine, overwrite_a'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return        
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return             
+        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        if (allocated(error)) return            
+
+        !> [S, U, V^T]
+        A = A_mat
+        call svd(A,s,u,vt,overwrite_a=.true.,err=state)
+        
+        test = '[S, U, V^T]'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return        
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return             
+        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        if (allocated(error)) return           
+        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        if (allocated(error)) return           
+        
+        !> [S, V^T]. Do not overwrite A matrix
+        A = A_mat
+        call svd(A,s,vt=vt,err=state)
+
+        test = '[S, V^T], overwrite_a=.false.'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return        
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return             
+        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        if (allocated(error)) return   
+
+        !> [S, V^T]. Overwrite A matrix
+        call svd(A,s,vt=vt,overwrite_a=.true.,err=state)
+        
+        test = '[S, V^T], overwrite_a=.true.'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return        
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return             
+        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        if (allocated(error)) return           
+        
+        !> [U, S, V^T].
+        A = A_mat
+        call svd(A,s,u,vt,err=state)
+        
+        test = '[U, S, V^T]'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return        
+        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        if (allocated(error)) return                   
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return     
+        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        if (allocated(error)) return             
+
+        !> [U, S, V^T]. Partial storage -> compare until k=2 columns of U rows of V^T
+        A  = A_mat
+        u  = 0
+        vt = 0
+        call svd(A,s,u,vt,full_matrices=.false.,err=state)
+        
+        test = '[U, S, V^T], partial storage'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return        
+        call check(error, all(abs(u(:,:2)-u_sol(:,:2))<=tol) .or. all(abs(u(:,:2)+u_sol(:,:2))<=tol), test//': U(:,:2)')
+        if (allocated(error)) return                   
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return     
+        call check(error, all(abs(vt(:2,:)-vt_sol(:2,:))<=tol) .or. all(abs(vt(:2,:)+vt_sol(:2,:))<=tol), test//': V^T(:2,:)')
+        if (allocated(error)) return           
+
+    end subroutine test_svd_${ri}$
+
+    #:endfor
+
+    !> Test complex svd
+    #:for ck,ct,ci in CMPLX_KINDS_TYPES
+    subroutine test_complex_svd_${ci}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        !> Reference solution
+        real(${ck}$), parameter :: tol    = sqrt(epsilon(0.0_${ck}$))
+        real(${ck}$), parameter :: one    = 1.0_${ck}$
+        real(${ck}$), parameter :: zero   = 0.0_${ck}$
+        real(${ck}$), parameter :: sqrt2  = sqrt(2.0_${ck}$)
+        real(${ck}$), parameter :: rsqrt2 = one/sqrt2
+        ${ct}$, parameter :: csqrt2 = (rsqrt2,zero)
+        ${ct}$, parameter :: isqrt2 = (zero,rsqrt2)
+        ${ct}$, parameter :: cone   = (1.0_${ck}$,0.0_${ck}$)
+        ${ct}$, parameter :: cimg   = (0.0_${ck}$,1.0_${ck}$)
+        ${ct}$, parameter :: czero  = (0.0_${ck}$,0.0_${ck}$)
+
+        real(${ck}$), parameter ::  s_sol(2)   = [sqrt2,sqrt2]
+        ${ct}$, parameter ::  A_mat(2,2) = reshape([cone,cimg,cimg,cone],[2,2])
+        ${ct}$, parameter ::  u_sol(2,2) = reshape([csqrt2,isqrt2,isqrt2,csqrt2],[2,2])
+        ${ct}$, parameter :: vt_sol(2,2) = reshape([cone,czero,czero,cone],[2,2])
+
+        !> Local variables
+        character(:), allocatable :: test
+        type(linalg_state_type) :: state
+        ${ct}$ :: A(2,2),u(2,2),vt(2,2)
+        real(${ck}$) :: s(2)
+
+        !> Initialize matrix
+        A = A_mat
+
+        !> Simple subroutine version
+        call svd(A,s,err=state)
+        
+        test = '[S], complex subroutine'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return        
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return     
+        
+        !> Function interface
+        s = svdvals(A,err=state)
+
+        test = 'svdvals, complex function'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return        
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return  
+
+        !> [S, U, V^T]
+        A = A_mat
+        call svd(A,s,u,vt,overwrite_a=.true.,err=state)
+        
+        test = '[S, U, V^T], complex'
+        call check(error,state%ok(),test//': '//state%print())
+        if (allocated(error)) return        
+        call check(error, all(abs(s-s_sol)<=tol), test//': S')
+        if (allocated(error)) return  
+        call check(error, all(abs(matmul(u,matmul(diag(s),vt))-A_mat)<=tol), test//': U*S*V^T')
+        if (allocated(error)) return          
+
+    end subroutine test_complex_svd_${ci}$
+
+    #:endfor
+
+
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    ! Issue #835: bounds checking triggers an error with 1-sized A matrix
+    subroutine test_svd_row_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        !> Reference solution
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 1, n = 1
+        real(${rk}$), parameter :: tol = sqrt(epsilon(0.0_${rk}$))
+        real(${rk}$) :: Arand(m, n), S(n)
+        ${rt}$ :: A(m, n), U(m, m), Vt(n, n)
+        
+        ! Random matrix. 
+        call random_number(Arand)
+        A = Arand
+        
+        call svd(A, S, U, Vt, err=state)
+        
+        call check(error,state%ok(),'1-row SVD: '//state%print())
+        if (allocated(error)) return        
+        call check(error, abs(S(1)-A(1,1))<tol, '1-row SVD: result')
+        if (allocated(error)) return          
+    
+    end subroutine test_svd_row_${ri}$
+
+    #:endfor
+
+
+end module test_linalg_svd
+
+program test_lstsq
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_linalg_svd, only : test_svd
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("linalg_svd", test_svd) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program test_lstsq

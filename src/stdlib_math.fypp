@@ -15,7 +15,7 @@ module stdlib_math
 #:endif
     public :: DEFAULT_LINSPACE_LENGTH, DEFAULT_LOGSPACE_BASE, DEFAULT_LOGSPACE_LENGTH
     public :: stdlib_meshgrid_ij, stdlib_meshgrid_xy
-    public :: arange, arg, argd, argpi, is_close, all_close, diff, meshgrid
+    public :: arange, arg, argd, argpi, deg2rad, rad2deg, is_close, all_close, diff, meshgrid
 
     integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
     integer, parameter :: DEFAULT_LOGSPACE_LENGTH = 50
@@ -332,6 +332,26 @@ module stdlib_math
         procedure :: argpi_${k1}$
         #:endfor
     end interface argpi
+
+    !> Version: experimental
+    !> 
+    !> `deg2rad` converts phase angles from degrees to radians.
+    !> ([Specification](../page/specs/stdlib_math.html#deg2rad-function))
+    interface deg2rad
+        #:for k1 in REAL_KINDS
+        procedure :: deg2rad_${k1}$
+        #:endfor
+    end interface deg2rad
+    
+    !> Version: experimental
+    !> 
+    !> `rad2deg` converts phase angles from radians to degrees.
+    !> ([Specification](../page/specs/stdlib_math.html#rad2deg-function))
+    interface rad2deg
+        #:for k1 in REAL_KINDS
+        procedure :: rad2deg_${k1}$
+        #:endfor
+    end interface rad2deg
     
     !> Returns a boolean scalar/array where two scalar/arrays are element-wise equal within a tolerance.
     !> ([Specification](../page/specs/stdlib_math.html#is_close-function))
@@ -451,6 +471,22 @@ contains
                  
 
     end function argpi_${k1}$
+    #:endfor
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+    elemental function deg2rad_${k1}$(theta) result(result)
+        ${t1}$, intent(in) :: theta
+        ${t1}$ :: result
+        result = theta * PI_${k1}$ / 180.0_${k1}$
+        
+    end function deg2rad_${k1}$
+    
+    elemental function rad2deg_${k1}$(theta) result(result)
+        ${t1}$, intent(in) :: theta
+        ${t1}$ :: result
+        result = theta * 180.0_${k1}$ / PI_${k1}$
+        
+    end function rad2deg_${k1}$
     #:endfor
 
     #:for k1, t1 in INT_KINDS_TYPES
