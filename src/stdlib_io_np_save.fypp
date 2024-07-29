@@ -1,4 +1,4 @@
-! SPDX-Identifer: MIT
+! SPDX-Identifier: MIT
 
 #:include "common.fypp"
 #:set RANKS = range(1, MAXRANK + 1)
