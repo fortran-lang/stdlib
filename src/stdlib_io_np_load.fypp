@@ -134,7 +134,7 @@ contains
         if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
     end
 
-    module subroutine load_unzipped_bundle_to_arrays(unzipped_bundle, arrays, stat, msg)
+    subroutine load_unzipped_bundle_to_arrays(unzipped_bundle, arrays, stat, msg)
         type(t_unzipped_bundle), intent(in) :: unzipped_bundle
         type(t_array_wrapper), allocatable, intent(out) :: arrays(:)
         integer, intent(out) :: stat
@@ -204,7 +204,7 @@ contains
     end
 
     !> Open file and try to identify the cause of the error that occurred during unzip.
-    module subroutine identify_unzip_problem(filename, stat, msg)
+    subroutine identify_unzip_problem(filename, stat, msg)
         character(len=*), intent(in) :: filename
         integer, intent(inout) :: stat
         character(len=:), allocatable, intent(inout) :: msg
@@ -232,7 +232,7 @@ contains
         stat = prev_stat; msg = 'Failed to unzip file: '//filename//nl//prev_msg
     end
 
-    module subroutine verify_header(io_unit, stat, msg)
+    subroutine verify_header(io_unit, stat, msg)
         integer, intent(in) :: io_unit
         integer, intent(out) :: stat
         character(len=:), allocatable, intent(out) :: msg
