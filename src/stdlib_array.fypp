@@ -45,7 +45,7 @@ contains
     #:for k1, t1 in KINDS_TYPES
         #:for rank in RANKS
             !> Allocate an instance of the array within the wrapper.
-            module subroutine allocate_array_${t1[0]}$${k1}$_${rank}$(wrapper, array, stat, msg)
+            subroutine allocate_array_${t1[0]}$${k1}$_${rank}$(wrapper, array, stat, msg)
                 class(t_array_wrapper), intent(out) :: wrapper
                 ${t1}$, intent(in) :: array${ranksuffix(rank)}$
                 integer, intent(out) :: stat
