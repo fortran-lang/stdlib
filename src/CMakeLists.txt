@@ -39,6 +39,7 @@ set(fppFiles
     stdlib_sorting_ord_sort.fypp
     stdlib_sorting_sort.fypp
     stdlib_sorting_sort_index.fypp
+    stdlib_sparse_constants.fypp
     stdlib_sparse_conversion.fypp
     stdlib_sparse_kinds.fypp
     stdlib_sparse_spmv.fypp
