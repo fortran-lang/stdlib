@@ -5,23 +5,133 @@
 !! The `stdlib_sparse_conversion` submodule provides sparse to sparse matrix conversion utilities.
 !!
 ! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
-submodule(stdlib_sparse_kinds) stdlib_sparse_conversion
+module stdlib_sparse_conversion
     use stdlib_sorting, only: sort
+    use stdlib_sparse_constants
+    use stdlib_sparse_kinds
     implicit none
-
+    private
     !! Sort arrays of a COO matrix
     !! 
     interface sort_coo
-        module procedure sort_coo_unique
+        module procedure :: sort_coo_unique
     #:for k1, t1, s1 in (KINDS_TYPES)
-        module procedure sort_coo_unique_${s1}$
+        module procedure :: sort_coo_unique_${s1}$
     #:endfor
     end interface
+
+    !! version: experimental
+    !!
+    !! Conversion from dense to coo
+    !! Enables extracting the non-zero elements of a dense 2D matrix and
+    !! storing those values in a COO format. The coo matrix is (re)allocated on the fly.
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface dense2coo
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: dense2coo_${s1}$
+        #:endfor
+    end interface
+    public :: dense2coo
+
+    !! version: experimental
+    !!
+    !! Conversion from coo to dense
+    !! Enables creating a dense 2D matrix from the non-zero values stored in a COO format
+    !! The dense matrix can be allocated on the fly if not pre-allocated by the user.
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface coo2dense
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: coo2dense_${s1}$
+        #:endfor
+    end interface
+    public :: coo2dense
+
+    !! version: experimental
+    !!
+    !! Conversion from coo to csr
+    !! Enables transferring data from a COO matrix to a CSR matrix
+    !! under the hypothesis that the COO is already ordered.
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface coo2csr
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: coo2csr_${s1}$
+        #:endfor
+    end interface
+    public :: coo2csr
+    
+    !! version: experimental
+    !!
+    !! Conversion from csr to dense
+    !! Enables creating a dense 2D matrix from the non-zero values stored in a CSR format
+    !! The dense matrix can be allocated on the fly if not pre-allocated by the user.
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface csr2dense
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: csr2dense_${s1}$
+        #:endfor
+    end interface
+    public :: csr2dense
+
+    !! version: experimental
+    !!
+    !! Conversion from csr to coo
+    !! Enables transferring data from a CSR matrix to a COO matrix
+    !! under the hypothesis that the CSR is already ordered.
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface csr2coo
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: csr2coo_${s1}$
+        #:endfor
+    end interface
+    public :: csr2coo
+
+    !! version: experimental
+    !!
+    !! Conversion from csr to ell
+    !! Enables transferring data from a CSR matrix to a ELL matrix
+    !! under the hypothesis that the CSR is already ordered.
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface csr2ell
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: csr2ell_${s1}$
+        #:endfor
+    end interface
+    public :: csr2ell
+
+    !! version: experimental
+    !!
+    !! Conversion from csr to SELL-C
+    !! Enables transferring data from a CSR matrix to a SELL-C matrix
+    !! It takes an optional parameter to decide the chunck size 4, 8 or 16
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface csr2sellc
+    #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: csr2sellc_${s1}$
+    #:endfor
+    end interface
+    public :: csr2sellc
+
+    !! version: experimental
+    !!
+    !! Enable creating a sparse matrix from ijv (row,col,data) triplet
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface from_ijv
+        module procedure :: coo_from_ijv_type
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: coo_from_ijv_${s1}$
+        module procedure :: csr_from_ijv_${s1}$
+        module procedure :: ell_from_ijv_${s1}$
+        module procedure :: sellc_from_ijv_${s1}$
+        #:endfor
+    end interface
+    public :: from_ijv
+
+    public :: coo2ordered
 
 contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    module subroutine dense2coo_${s1}$(dense,COO)
+    subroutine dense2coo_${s1}$(dense,COO)
         ${t1}$, intent(in) :: dense(:,:)
         type(COO_${s1}$_type), intent(out) :: COO
         integer(ilp) :: num_rows, num_cols, nnz
@@ -49,7 +159,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    module subroutine coo2dense_${s1}$(COO,dense)
+    subroutine coo2dense_${s1}$(COO,dense)
         type(COO_${s1}$_type), intent(in) :: COO
         ${t1}$, allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: idx
@@ -63,7 +173,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    module subroutine coo2csr_${s1}$(COO,CSR)
+    subroutine coo2csr_${s1}$(COO,CSR)
         type(COO_${s1}$_type), intent(in)  :: COO
         type(CSR_${s1}$_type), intent(out) :: CSR
         integer(ilp) :: i
@@ -93,7 +203,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    module subroutine csr2dense_${s1}$(CSR,dense)
+    subroutine csr2dense_${s1}$(CSR,dense)
         type(CSR_${s1}$_type), intent(in) :: CSR
         ${t1}$, allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: i, j
@@ -119,7 +229,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    module subroutine csr2coo_${s1}$(CSR,COO)
+    subroutine csr2coo_${s1}$(CSR,COO)
         type(CSR_${s1}$_type), intent(in)  :: CSR
         type(COO_${s1}$_type), intent(out) :: COO
         integer(ilp) :: i, j
@@ -145,7 +255,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    module subroutine csr2ell_${s1}$(CSR,ELL,num_nz_rows)
+    subroutine csr2ell_${s1}$(CSR,ELL,num_nz_rows)
         type(CSR_${s1}$_type), intent(in)  :: CSR
         type(ELL_${s1}$_type), intent(out) :: ELL
         integer, intent(in), optional :: num_nz_rows !! number of non zeros per row
@@ -175,7 +285,7 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    module subroutine csr2sellc_${s1}$(CSR,SELLC,chunk)
+    subroutine csr2sellc_${s1}$(CSR,SELLC,chunk)
         !! csr2sellc: This function enables transfering data from a CSR matrix to a SELL-C matrix
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         type(CSR_${s1}$_type), intent(in)    :: CSR
@@ -387,7 +497,11 @@ contains
 
     #:endfor
 
-    module subroutine coo2ordered(COO,sort_data)
+    !! version: experimental
+    !!
+    !! Transform COO matrix to canonical form with ordered and unique entries
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    subroutine coo2ordered(COO,sort_data)
         class(COO_type), intent(inout) :: COO
         logical, intent(in), optional :: sort_data
         integer(ilp), allocatable :: itemp(:,:)
@@ -423,4 +537,179 @@ contains
         COO%is_sorted = .true.
     end subroutine
 
-end submodule
+    subroutine coo_from_ijv_type(COO,row,col,nrows,ncols)
+        type(COO_type), intent(inout) :: COO
+        integer(ilp), intent(in) :: row(:)
+        integer(ilp), intent(in) :: col(:)
+        integer(ilp), intent(in), optional :: nrows
+        integer(ilp), intent(in), optional :: ncols
+
+        integer(ilp) :: nrows_, ncols_, nnz, ed
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = size(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = size(col)
+        end if
+        nnz = size(row)
+        !---------------------------------------------------------
+        call COO%malloc(nrows_,ncols_,nnz)
+        do ed = 1, nnz 
+            COO%index(1:2,ed) = [row(ed),col(ed)]
+        end do
+
+        call coo2ordered(COO,.true.)
+    end subroutine
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine coo_from_ijv_${s1}$(COO,row,col,data,nrows,ncols)
+        type(COO_${s1}$_type), intent(inout) :: COO
+        integer(ilp), intent(in) :: row(:)
+        integer(ilp), intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer(ilp), intent(in), optional :: nrows
+        integer(ilp), intent(in), optional :: ncols
+
+        integer(ilp) :: nrows_, ncols_, nnz, ed
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        nnz = size(row)
+        !---------------------------------------------------------
+        call COO%malloc(nrows_,ncols_,nnz)
+        do ed = 1, nnz 
+            COO%index(1:2,ed) = [row(ed),col(ed)]
+        end do
+        if(present(data)) COO%data = data
+
+        call coo2ordered(COO,.true.)
+    end subroutine
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine csr_from_ijv_${s1}$(CSR,row,col,data,nrows,ncols)
+        type(CSR_${s1}$_type), intent(inout) :: CSR
+        integer(ilp), intent(in) :: row(:)
+        integer(ilp), intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer(ilp), intent(in), optional :: nrows
+        integer(ilp), intent(in), optional :: ncols
+
+        integer(ilp) :: nrows_, ncols_
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        !---------------------------------------------------------
+        block
+            type(COO_${s1}$_type) :: COO
+            if(present(data)) then
+                call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
+            else 
+                call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
+            end if
+            call coo2csr(COO,CSR)
+        end block
+    end subroutine
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine ell_from_ijv_${s1}$(ELL,row,col,data,nrows,ncols,num_nz_rows)
+        type(ELL_${s1}$_type), intent(inout) :: ELL
+        integer(ilp), intent(in) :: row(:)
+        integer(ilp), intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer(ilp), intent(in), optional :: nrows
+        integer(ilp), intent(in), optional :: ncols
+        integer, intent(in), optional :: num_nz_rows
+
+        integer(ilp) :: nrows_, ncols_
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        !---------------------------------------------------------
+        block
+            type(COO_${s1}$_type) :: COO
+            type(CSR_${s1}$_type) :: CSR
+            if(present(data)) then
+                call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
+            else 
+                call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
+            end if
+            call coo2csr(COO,CSR)
+            if(present(num_nz_rows)) then
+                call csr2ell(CSR,ELL,num_nz_rows)
+            else 
+                call csr2ell(CSR,ELL)
+            end if
+        end block
+    end subroutine
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine sellc_from_ijv_${s1}$(SELLC,row,col,data,nrows,ncols,chunk)
+        type(SELLC_${s1}$_type), intent(inout) :: SELLC
+        integer(ilp), intent(in) :: row(:)
+        integer(ilp), intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer(ilp), intent(in), optional :: nrows
+        integer(ilp), intent(in), optional :: ncols
+        integer, intent(in), optional :: chunk
+
+        integer(ilp) :: nrows_, ncols_
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        if(present(chunk)) SELLC%chunk_size = chunk
+        !---------------------------------------------------------
+        block
+            type(COO_${s1}$_type) :: COO
+            type(CSR_${s1}$_type) :: CSR
+            if(present(data)) then
+                call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
+            else 
+                call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
+            end if
+            call coo2csr(COO,CSR)
+            call csr2sellc(CSR,SELLC)
+        end block
+    end subroutine
+    #:endfor
+
+end module
