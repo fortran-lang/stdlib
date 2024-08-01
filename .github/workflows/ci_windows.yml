@@ -34,7 +34,7 @@ jobs:
           mingw-w64-${{ matrix.arch }}-gcc
           mingw-w64-${{ matrix.arch }}-gcc-fortran
           mingw-w64-${{ matrix.arch }}-python
-          mingw-w64-${{ matrix.arch }}-python-pip
+          mingw-w64-${{ matrix.arch }}-python-fypp
           mingw-w64-${{ matrix.arch }}-python-setuptools
           mingw-w64-${{ matrix.arch }}-cmake
           mingw-w64-${{ matrix.arch }}-ninja
@@ -51,15 +51,10 @@ jobs:
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gcc-fortran
           python
-          python-pip
           mingw-w64-x86_64-python-fypp
           cmake
           ninja
           mingw-w64-x86_64-minizip-ng
-
-    - name: Install fypp (MinGW)
-      if: contains(matrix.msystem, 'MINGW')
-      run: pip install fypp
 
     - run: >-
         PATH=$PATH:/mingw64/bin/ cmake
