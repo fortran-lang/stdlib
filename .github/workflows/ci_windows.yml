@@ -35,7 +35,6 @@ jobs:
           mingw-w64-${{ matrix.arch }}-gcc-fortran
           mingw-w64-${{ matrix.arch }}-python
           mingw-w64-${{ matrix.arch }}-python-fypp
-          mingw-w64-${{ matrix.arch }}-python-setuptools
           mingw-w64-${{ matrix.arch }}-cmake
           mingw-w64-${{ matrix.arch }}-ninja
 
