@@ -52,7 +52,7 @@ jobs:
           mingw-w64-x86_64-gcc-fortran
           python
           python-pip
-          mingw-w64-python-fypp
+          mingw-w64-x86_64-python-fypp
           cmake
           ninja
           mingw-w64-x86_64-minizip-ng
