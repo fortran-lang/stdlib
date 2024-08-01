@@ -56,7 +56,12 @@ jobs:
           ninja
           mingw-w64-x86_64-minizip-ng
 
-    - name: Install fypp
+    - name: Install fypp (MSYS)
+      if: contains(matrix.msystem, 'MSYS')
+      run: pacman -S --noconfirm python-pip && pip install fypp
+
+    - name: Install fypp (MinGW)
+      if: contains(matrix.msystem, 'MINGW')
       run: pip install fypp
 
     - run: >-
