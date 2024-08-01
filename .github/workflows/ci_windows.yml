@@ -52,13 +52,10 @@ jobs:
           mingw-w64-x86_64-gcc-fortran
           python
           python-pip
+          mingw-w64-python-fypp
           cmake
           ninja
           mingw-w64-x86_64-minizip-ng
-
-    - name: Install fypp (MSYS)
-      if: contains(matrix.msystem, 'MSYS')
-      run: pacman -S --noconfirm python-pipx && pipx install fypp
 
     - name: Install fypp (MinGW)
       if: contains(matrix.msystem, 'MINGW')
