@@ -58,7 +58,7 @@ jobs:
 
     - name: Install fypp (MSYS)
       if: contains(matrix.msystem, 'MSYS')
-      run: pacman -S --noconfirm python-pip && pip install fypp
+      run: pacman -S --noconfirm python-pipx && pipx install fypp
 
     - name: Install fypp (MinGW)
       if: contains(matrix.msystem, 'MINGW')
