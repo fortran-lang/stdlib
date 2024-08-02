@@ -57,7 +57,7 @@ contains
                 exit catch
             end if
 
-            call allocate_array(array, vshape, stat)
+            call allocate_array_from_shape(array, vshape, stat)
             if (stat /= 0) then
                 msg = "Failed to allocate array of type '"//vtype//"' "//&
                     & "with total size of "//to_string(product(vshape))
@@ -85,7 +85,7 @@ contains
 
     #:for k1, t1 in KINDS_TYPES
         #:for rank in RANKS
-            module subroutine allocate_array_${t1[0]}$${k1}$_${rank}$(array, vshape, stat)
+            module subroutine allocate_array_from_shape_${t1[0]}$${k1}$_${rank}$(array, vshape, stat)
                 ${t1}$, allocatable, intent(out) :: array${ranksuffix(rank)}$
                 integer, intent(in) :: vshape(:)
                 integer, intent(out) :: stat
@@ -169,7 +169,7 @@ contains
                     block
                         ${t1}$, allocatable :: array${ranksuffix(rank)}$
 
-                        call allocate_array(array, vshape, stat)
+                        call allocate_array_from_shape(array, vshape, stat)
                         if (stat /= 0) then
                             msg = "Failed to allocate array of type '"//this_type//"'."; return
                         end if

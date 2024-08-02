@@ -144,10 +144,10 @@ module stdlib_io_np
         end
     end interface
 
-    interface allocate_array
+    interface allocate_array_from_shape
         #:for k1, t1 in KINDS_TYPES
             #:for rank in RANKS
-                module subroutine allocate_array_${t1[0]}$${k1}$_${rank}$ (array, vshape, stat)
+                module subroutine allocate_array_from_shape_${t1[0]}$${k1}$_${rank}$ (array, vshape, stat)
                     !> Instance of the array to be allocated.
                     ${t1}$, allocatable, intent(out) :: array${ranksuffix(rank)}$
                     !> Dimensions to allocate for.
