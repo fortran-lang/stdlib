@@ -20,6 +20,7 @@ module stdlib_array
     contains
         #:for k1, t1 in KINDS_TYPES
             #:for rank in RANKS
+                generic :: allocate_array => allocate_array_${t1[0]}$${k1}$_${rank}$
                 procedure :: allocate_array_${t1[0]}$${k1}$_${rank}$
             #:endfor
         #:endfor
