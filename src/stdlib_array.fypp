@@ -44,7 +44,7 @@ contains
             !> Allocate an instance of the array within the wrapper.
             subroutine allocate_array_${t1[0]}$${k1}$_${rank}$ (wrapper, array, stat, msg)
                 class(t_array_wrapper), intent(out) :: wrapper
-                ${t1}$, intent(in) :: array${ranksuffix(rank)}$
+                ${t1}$, allocatable, intent(in) :: array${ranksuffix(rank)}$
                 integer, intent(out) :: stat
                 character(len=:), allocatable, intent(out) :: msg
 
