@@ -1,6 +1,6 @@
 name: CI_windows
 
-on: [push, pull_request]
+on: push
 
 env:
   CTEST_TIME_TIMEOUT: "5" # some failures hang forever
