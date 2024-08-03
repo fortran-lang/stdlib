@@ -43,9 +43,9 @@ contains
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
     !> Allocate an instance of the array within the wrapper.
-    subroutine allocate_array_${t1[0]}$${k1}$_${rank}$ (wrapper, array, stat, msg)
+    subroutine allocate_array_${t1[0]}$${k1}$_${rank}$ (wrapper, source_array, stat, msg)
         class(t_array_wrapper), intent(out) :: wrapper
-        ${t1}$, intent(in) :: array${ranksuffix(rank)}$
+        ${t1}$, intent(in) :: source_array${ranksuffix(rank)}$
         integer, intent(out) :: stat
         character(len=:), allocatable, intent(out) :: msg
 
@@ -56,7 +56,7 @@ contains
 
         select type (typed_array => wrapper%array)
           class is (t_array_${t1[0]}$${k1}$_${rank}$)
-            typed_array%values = array
+            typed_array%values = source_array
           class default
             msg = 'Failed to allocate values.'; stat = 1; return
         end select
