@@ -1,6 +1,6 @@
 module test_npy
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
-    use stdlib_io_npy, only : save_npy, load_npy
+    use stdlib_io_np, only : save_npy, load_npy
     use testdrive, only : new_unittest, unittest_type, error_type, check
     implicit none
     private
@@ -72,7 +72,7 @@ contains
         if (allocated(error)) return
 
         call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
-           "Precision loss when rereading array")
+            "Precision loss when rereading array")
     end subroutine test_read_rdp_rank2
 
     subroutine test_read_rsp_rank2(error)
@@ -108,7 +108,7 @@ contains
         if (allocated(error)) return
 
         call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
-           "Precision loss when rereading array")
+            "Precision loss when rereading array")
     end subroutine test_read_rsp_rank2
 
     subroutine test_read_rdp_rank3(error)
@@ -144,7 +144,7 @@ contains
         if (allocated(error)) return
 
         call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
-           "Precision loss when rereading array")
+            "Precision loss when rereading array")
     end subroutine test_read_rdp_rank3
 
     subroutine test_read_rsp_rank1(error)
@@ -180,7 +180,7 @@ contains
         if (allocated(error)) return
 
         call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
-           "Precision loss when rereading array")
+            "Precision loss when rereading array")
     end subroutine test_read_rsp_rank1
 
     subroutine test_write_rdp_rank2(error)
@@ -208,7 +208,7 @@ contains
         if (allocated(error)) return
 
         call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
-           "Precision loss when rereading array")
+            "Precision loss when rereading array")
     end subroutine test_write_rdp_rank2
 
     subroutine test_write_rsp_rank2(error)
@@ -236,7 +236,7 @@ contains
         if (allocated(error)) return
 
         call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
-           "Precision loss when rereading array")
+            "Precision loss when rereading array")
     end subroutine test_write_rsp_rank2
 
     subroutine test_write_int16_rank4(error)
@@ -263,7 +263,7 @@ contains
         if (allocated(error)) return
 
         call check(error, all(abs(output - input) == 0), &
-           "Precision loss when rereading array")
+            "Precision loss when rereading array")
     end subroutine test_write_int16_rank4
 
     subroutine test_invalid_magic_number(error)
@@ -677,4 +677,4 @@ program tester
         write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
         error stop
     end if
-end program
+end
