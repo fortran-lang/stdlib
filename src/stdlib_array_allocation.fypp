@@ -23,12 +23,12 @@ contains
             msg = "Failed to allocate array"; return
         end if
 
-        ! select type (typed_array => wrapper%array)
-        !   class is (t_array_${t1[0]}$${k1}$_${rank}$)
-        !     typed_array%values = source_array
-        !   class default
-        !     msg = 'Failed to allocate values.'; stat = 1; return
-        ! end select
+        select type (typed_array => wrapper%array)
+          class is (t_array_${t1[0]}$${k1}$_${rank}$)
+            typed_array%values = source_array
+          class default
+            msg = 'Failed to allocate values.'; stat = 1; return
+        end select
     end
 
 #:endfor
