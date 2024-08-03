@@ -89,7 +89,7 @@ module stdlib_io_np
     interface load_npy
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
-        module subroutine load_npy_${t1[0]}$${k1}$_${rank}$ (filename, array, iostat, iomsg)
+        module subroutine load_npy_${t1[0]}$${k1}$_${rank}$(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             ${t1}$, allocatable, intent(out) :: array${ranksuffix(rank)}$
             integer, intent(out), optional :: iostat
@@ -106,7 +106,7 @@ module stdlib_io_np
     interface save_npy
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
-        module subroutine save_npy_${t1[0]}$${k1}$_${rank}$ (filename, array, iostat, iomsg)
+        module subroutine save_npy_${t1[0]}$${k1}$_${rank}$(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             ${t1}$, intent(in) :: array${ranksuffix(rank)}$
             integer, intent(out), optional :: iostat

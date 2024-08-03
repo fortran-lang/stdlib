@@ -94,7 +94,7 @@ contains
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
     !> Save ${rank}$-dimensional array in npy format
-    module subroutine save_npy_${t1[0]}$${k1}$_${rank}$ (filename, array, iostat, iomsg)
+    module subroutine save_npy_${t1[0]}$${k1}$_${rank}$(filename, array, iostat, iomsg)
         !> Name of the npy file to load from
         character(len=*), intent(in) :: filename
         !> Array to be loaded from the npy file
