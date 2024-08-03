@@ -18,10 +18,10 @@ contains
         integer, intent(out) :: stat
         character(len=:), allocatable, intent(out) :: msg
 
-        allocate(t_array_${t1[0]}$${k1}$_${rank}$ :: wrapper%array, stat=stat)
-        if (stat /= 0) then
-            msg = "Failed to allocate array"; return
-        end if
+        ! allocate(t_array_${t1[0]}$${k1}$_${rank}$ :: wrapper%array, stat=stat)
+        ! if (stat /= 0) then
+        !     msg = "Failed to allocate array"; return
+        ! end if
 
         ! select type (typed_array => wrapper%array)
         !   class is (t_array_${t1[0]}$${k1}$_${rank}$)
