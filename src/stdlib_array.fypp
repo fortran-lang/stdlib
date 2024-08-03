@@ -12,18 +12,11 @@ module stdlib_array
     implicit none
     private
 
-    public :: trueloc, falseloc
+    public :: allocate_array, trueloc, falseloc
 
-    !> Helper class to allocate t_array as an abstract type.
+    !> Wraps a polymorphic array to help with its allocation.
     type, public :: t_array_wrapper
         class(t_array), allocatable :: array
-    contains
-#:for k1, t1 in KINDS_TYPES
-#:for rank in RANKS
-        generic :: allocate_array => allocate_array_${t1[0]}$${k1}$_${rank}$
-        procedure :: allocate_array_${t1[0]}$${k1}$_${rank}$
-#:endfor
-#:endfor
     end type
 
     type, abstract, public :: t_array
@@ -38,31 +31,20 @@ module stdlib_array
 #:endfor
 #:endfor
 
-contains
-
+    interface allocate_array
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
-    !> Allocate an instance of the array within the wrapper.
-    subroutine allocate_array_${t1[0]}$${k1}$_${rank}$ (wrapper, source_array, stat, msg)
-        class(t_array_wrapper), intent(out) :: wrapper
-        ${t1}$, intent(in) :: source_array${ranksuffix(rank)}$
-        integer, intent(out) :: stat
-        character(len=:), allocatable, intent(out) :: msg
-
-        allocate (t_array_${t1[0]}$${k1}$_${rank}$ :: wrapper%array, stat=stat)
-        if (stat /= 0) then
-            msg = 'Failed to allocate array.'; return
-        end if
-
-        select type (typed_array => wrapper%array)
-          class is (t_array_${t1[0]}$${k1}$_${rank}$)
-            typed_array%values = source_array
-          class default
-            msg = 'Failed to allocate values.'; stat = 1; return
-        end select
-    end
+        module subroutine allocate_array_${t1[0]}$${k1}$_${rank}$(wrapper, source_array, stat, msg)
+            class(t_array_wrapper), intent(out) :: wrapper
+            ${t1}$, intent(in) :: source_array${ranksuffix(rank)}$
+            integer, intent(out) :: stat
+            character(len=:), allocatable, intent(out) :: msg
+        end
 #:endfor
 #:endfor
+    end interface
+
+contains
 
     !> Version: experimental
     !>

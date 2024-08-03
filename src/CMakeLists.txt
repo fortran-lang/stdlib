@@ -3,6 +3,7 @@
 # Create a list of the files to be preprocessed
 set(fppFiles
     stdlib_array.fypp
+    stdlib_array_allocation.fypp
     stdlib_ascii.fypp
     stdlib_bitsets.fypp
     stdlib_bitsets_64.fypp
