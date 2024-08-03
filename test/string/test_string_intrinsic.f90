@@ -1,4 +1,4 @@
-! SPDX-Identifer: MIT
+! SPDX-Identifier: MIT
 module test_string_intrinsic
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_string_type
