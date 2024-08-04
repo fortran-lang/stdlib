@@ -180,11 +180,18 @@ contains
                             & 'with total size of '//to_string(product(vshape)); return
                         end if
 
-                        ! call arrays(i)%allocate_array(stat, msg)
+                        allocate (t_array_${t1[0]}$${k1}$_${rank}$ :: arrays(i)%array, stat=stat)
                         if (stat /= 0) then
                             msg = "Failed to allocate array of type '"//this_type//"' "//&
                             & 'with total size of '//to_string(product(vshape)); return
                         end if
+
+                        select type (typed_array => arrays(i)%array)
+                          class is (t_array_${t1[0]}$${k1}$_${rank}$)
+                            typed_array%values = array
+                          class default
+                            msg = 'Failed to allocate values.'; stat = 1; return
+                        end select
 
                         arrays(i)%array%name = unzipped_bundle%files(i)%name
                     end block
