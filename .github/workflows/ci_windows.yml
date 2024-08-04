@@ -37,7 +37,7 @@ jobs:
           mingw-w64-${{ matrix.arch }}-python-fypp
           mingw-w64-${{ matrix.arch }}-cmake
           mingw-w64-${{ matrix.arch }}-ninja
-    
+
     - name: Setup msys POSIX environment
       uses: msys2/setup-msys2@v2
       if: contains(matrix.msystem, 'MSYS')
@@ -52,7 +52,7 @@ jobs:
           python-pip
           cmake
           ninja
-      
+
     - name: Install fypp
       if: contains(matrix.msystem, 'MSYS')
       run: pip install fypp
