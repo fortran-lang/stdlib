@@ -23,8 +23,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup environment
+    - name: Setup MinGW native environment
       uses: msys2/setup-msys2@v2
+      if: contains(matrix.msystem, 'MINGW')
       with:
         msystem: ${{ matrix.msystem }}
         update: false
@@ -36,6 +37,25 @@ jobs:
           mingw-w64-${{ matrix.arch }}-python-fypp
           mingw-w64-${{ matrix.arch }}-cmake
           mingw-w64-${{ matrix.arch }}-ninja
+    
+    - name: Setup msys POSIX environment
+      uses: msys2/setup-msys2@v2
+      if: contains(matrix.msystem, 'MSYS')
+      with:
+        msystem: MSYS
+        update: false
+        install: >-
+          git
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-gcc-fortran
+          python
+          python-pip
+          cmake
+          ninja
+      
+    - name: Install fypp
+      if: contains(matrix.msystem, 'MSYS')
+      run: pip install fypp
 
     - run: >-
         PATH=$PATH:/mingw64/bin/ cmake
