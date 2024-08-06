@@ -9,7 +9,7 @@ submodule(stdlib_io_np) stdlib_io_np_load
     use stdlib_error, only: error_stop
     use stdlib_strings, only: to_string, starts_with
     use stdlib_string_type, only: string_type
-    use stdlib_io_zip, only: unzip, zip_prefix, zip_suffix, t_unzipped_bundle, t_unzipped_file
+    use stdlib_io_zip, only: unzip, t_unzipped_bundle, t_unzipped_file
     use stdlib_array
     implicit none
 
@@ -115,11 +115,7 @@ contains
         character(len=:), allocatable :: msg
 
         ! call unzip(filename, unzipped_bundle, stat, msg)
-        if (stat == 0) then
-            call load_unzipped_bundle_to_arrays(unzipped_bundle, arrays, stat, msg)
-        else
-            call identify_unzip_problem(filename, stat, msg)
-        end if
+        if (stat == 0) call load_unzipped_bundle_to_arrays(unzipped_bundle, arrays, stat, msg)
 
         if (present(iostat)) then
             iostat = stat
@@ -208,62 +204,6 @@ contains
             close (io, status='delete')
             if (stat /= 0) return
         end do
-    end
-
-    !> Open file and try to identify the cause of the error that occurred during unzip.
-    subroutine identify_unzip_problem(filename, stat, msg)
-        character(len=*), intent(in) :: filename
-        integer, intent(inout) :: stat
-        character(len=:), allocatable, intent(inout) :: msg
-
-        logical :: exists
-        integer :: io_unit, prev_stat
-        character(len=:), allocatable :: prev_msg
-
-        ! Keep track of the previous status and message in case no reason can be found.
-        prev_stat = stat
-        if (allocated(msg)) call move_alloc(msg, prev_msg)
-
-        inquire (file=filename, exist=exists)
-        if (.not. exists) then
-            stat = 1; msg = 'File does not exist: '//filename//'.'; return
-        end if
-        open (newunit=io_unit, file=filename, form='unformatted', access='stream', &
-        & status='old', action='read', iostat=stat, iomsg=msg)
-        if (stat /= 0) return
-
-        call verify_header(io_unit, stat, msg)
-        if (stat /= 0) return
-
-        ! Restore previous status and message if no reason could be found.
-        stat = prev_stat; msg = 'Failed to unzip file: '//filename//nl//prev_msg
-    end
-
-    subroutine verify_header(io_unit, stat, msg)
-        integer, intent(in) :: io_unit
-        integer, intent(out) :: stat
-        character(len=:), allocatable, intent(out) :: msg
-
-        integer :: file_size
-        character(len=len(zip_prefix)) :: header
-
-        inquire (io_unit, size=file_size)
-        if (file_size < len(zip_suffix)) then
-            stat = 1; msg = 'File is too small to be an npz file.'; return
-        end if
-
-        read (io_unit, iostat=stat) header
-        if (stat /= 0) then
-            msg = 'Failed to read header from file'; return
-        end if
-
-        if (header == zip_suffix) then
-            stat = 1; msg = 'Empty npz file.'; return
-        end if
-
-        if (header /= zip_prefix) then
-            stat = 1; msg = 'Not an npz file.'; return
-        end if
     end
 
     !> Read the npy header from a binary file and retrieve the descriptor string.
