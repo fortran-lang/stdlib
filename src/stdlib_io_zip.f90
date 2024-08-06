@@ -2,10 +2,7 @@ module stdlib_io_zip
     implicit none
     private
 
-    public :: unzip, zip_prefix, zip_suffix
-
-    character(*), parameter :: zip_prefix = 'PK'//achar(3)//achar(4)
-    character(*), parameter :: zip_suffix = 'PK'//achar(5)//achar(6)
+    public :: unzip
 
     !> Contains extracted raw data from a zip file.
     type, public :: t_unzipped_bundle
@@ -23,9 +20,8 @@ module stdlib_io_zip
 
 contains
 
-    subroutine unzip(filename, output_dir, iostat, iomsg)
+    subroutine unzip(filename, iostat, iomsg)
         character(len=*), intent(in) :: filename
-        character(len=*), intent(in), optional :: output_dir
         integer, intent(out), optional :: iostat
         character(len=:), allocatable, intent(out), optional :: iomsg
 
@@ -34,7 +30,6 @@ contains
 
         exitstat = 0; cmdstat = 0
 
-        ! call execute_command_line('unzip '//filename//' -d '//output_dir, exitstat=exitstat, cmdstat=cmdstat, cmdmsg=cmdmsg)
         call execute_command_line('unzip '//filename, exitstat=exitstat, cmdstat=cmdstat, cmdmsg=cmdmsg)
         if (exitstat /= 0 .or. cmdstat /= 0) then
             if (present(iostat)) then

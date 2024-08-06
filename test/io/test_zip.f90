@@ -15,7 +15,9 @@ contains
 
         testsuite = [ &
             new_unittest("npz_file_not_exists", npz_file_not_exists, should_fail=.true.), &
-            new_unittest("npz_points_to_directory", npz_points_to_directory, should_fail=.true.) &
+            new_unittest("npz_points_to_directory", npz_points_to_directory, should_fail=.true.), &
+            new_unittest("npz_is_not_zip", npz_is_not_zip, should_fail=.true.), &
+            new_unittest("npz_empty_zip", npz_empty_zip, should_fail=.true.) &
             ]
     end
 
@@ -32,11 +34,38 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
-        character(:), allocatable :: msg
 
-        call unzip(".", iostat=stat, iomsg=msg)
-        print *, msg
+        call unzip(".", iostat=stat)
         call check(error, stat, "An npz file that points towards a directory should fail.")
+    end
+
+    subroutine npz_is_not_zip(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: io, stat
+        character(*), parameter :: filename = "non_zip_file"
+
+        open(newunit=io, file=filename)
+        call unzip(filename, iostat=stat)
+        call check(error, stat, "An npz file that is not a zip file should fail.")
+        close(io, status="delete")
+    end
+
+    subroutine npz_empty_zip(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: io, stat
+        character(*), parameter :: filename = "empty.zip"
+        character(*), parameter:: binary_data = 'PK'//char(5)//char(6)//repeat(char(0), 18)
+
+        open (newunit=io, file=filename, form='unformatted', access='stream')
+        write (io) binary_data
+        close (io)
+
+        call unzip(filename, iostat=stat)
+        call check(error, stat, "An empty zip file should fail.")
+
+        call delete_file(filename)
     end
 
     subroutine delete_file(filename)
