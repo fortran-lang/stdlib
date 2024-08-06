@@ -30,7 +30,7 @@ contains
         character(len=:), allocatable, intent(out), optional :: iomsg
 
         integer :: exitstat, cmdstat
-        character(:), allocatable :: cmdmsg
+        character(len=256) :: cmdmsg
 
         exitstat = 0; cmdstat = 0
 
@@ -45,10 +45,10 @@ contains
                 end if
             end if
             if (present(iomsg)) then
-                if (allocated(cmdmsg)) then
-                    iomsg = "Error unzipping '"//filename//"'"//": '"//cmdmsg//"'"
-                else
+                if (trim(adjustl(cmdmsg)) == '') then
                     iomsg = "Error unzipping '"//filename//"'."
+                else
+                    iomsg = "Error unzipping '"//filename//"'"//": '"//cmdmsg//"'"
                 end if
             end if
         end if
