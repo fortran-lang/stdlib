@@ -47,8 +47,8 @@ data:
   that have significant sections that were partially ordered before
   the sort;
 * `SORT_ADJOINT` is based on `ORD_SORT`, but in addition to sorting the
-  input array, it returns a related array re-ordered in the
-  same way;
+  input array, it re-orders a second array of the same size
+  according to the same permutations;
 * `SORT_INDEX` is based on `ORD_SORT`, but in addition to sorting the
   input array, it returns indices that map the original array to its
   sorted version. This enables related arrays to be re-ordered in the
@@ -149,7 +149,7 @@ The `SORT` and `ORD_SORT` subroutines can sort rank 1 isolated
 arrays of intrinsic types, but do nothing for the coordinated sorting
 of related data, e.g., a related rank 1 array. Therefore the module
 provides a subroutine, `SORT_ADJOINT`, that re-order such a rank 1 array
-in the same way as the input array based on the `ORD_SORT` algorithm,
+according to the same permutations as for the input array based on the `ORD_SORT` algorithm,
 in addition to sorting the input array.
 
 The logic of `SORT_ADJOINT` parallels that of `ORD_SORT`, with
@@ -405,7 +405,8 @@ element of `array` is a `NaN`.
 {!example/sorting/example_radix_sort.f90!}
 ```
 
-#### `sort_adjoint` - sorts an associated array in the same way as the input array, while also sorting the array.
+#### `sort_adjoint` - sorts an associated array 
+according to the same permutations as for the input array.
 
 ##### Status
 
@@ -415,7 +416,7 @@ Experimental
 
 Returns the input `array` sorted in the direction requested while
 retaining order stability, and an associated array whose elements are
-sorted in the same way as the input `array`.
+sorted according to the same permutations as for the input `array`.
 
 ##### Syntax
 
