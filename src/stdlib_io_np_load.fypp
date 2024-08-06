@@ -114,7 +114,7 @@ contains
         integer :: stat
         character(len=:), allocatable :: msg
 
-        call unzip(filename, unzipped_bundle, stat, msg)
+        ! call unzip(filename, unzipped_bundle, stat, msg)
         if (stat == 0) then
             call load_unzipped_bundle_to_arrays(unzipped_bundle, arrays, stat, msg)
         else

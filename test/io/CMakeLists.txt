@@ -15,5 +15,6 @@ set_tests_properties(savetxt_qp PROPERTIES LABELS quadruple_precision)
 
 ADDTEST(getline)
 ADDTEST(np)
+ADDTEST(zip)
 ADDTEST(open)
 ADDTEST(parse_mode)
