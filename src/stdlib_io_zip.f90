@@ -71,7 +71,7 @@ contains
             return
         end if
 
-        call run('if [ ! -d '//temp_folder//' ]; then mkdir '//temp_folder//'; fi', run_stat, err_msg)
+        call run('sh -c "if [ ! -d '//temp_folder//' ]; then mkdir '//temp_folder//'; fi"', run_stat, err_msg)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
             if (present(msg)) then
