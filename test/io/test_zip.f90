@@ -1,10 +1,13 @@
 module test_zip
     use stdlib_io_zip
-    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
     implicit none
     private
 
     public :: collect_zip
+
+    character(*), parameter :: zip_files_ctest = 'zip_files/'
+    character(*), parameter :: zip_files_fpm = 'test/io/'//zip_files_ctest
 
 contains
 
@@ -21,7 +24,8 @@ contains
             new_unittest("npz_list_file_not_exists", npz_list_file_not_exists, should_fail=.true.), &
             new_unittest("npz_list_file_is_directory", npz_list_file_is_directory, should_fail=.true.), &
             new_unittest("npz_list_file_not_zip", npz_list_file_not_zip, should_fail=.true.), &
-            new_unittest("npz_list_empty_zip", npz_list_empty_zip, should_fail=.true.) &
+            new_unittest("npz_list_empty_zip", npz_list_empty_zip, should_fail=.true.), &
+            new_unittest("npz_list_empty_file", npz_list_empty_file, should_fail=.false.) &
             ]
     end
 
@@ -114,11 +118,45 @@ contains
         close (io)
 
         call list_files_in_zip(filename, stat)
-        call check(error, stat, "Listint the contents of an empty zip file should fail.")
+        call check(error, stat, "Listing the contents of an empty zip file should fail.")
 
         call delete_file(filename)
     end
 
+    subroutine npz_list_empty_file(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat
+        character(*), parameter :: filename = "empty.zip"
+        character(:), allocatable :: path
+
+        path = get_path(filename)
+        if (.not. allocated(path)) then
+            call test_failed(error, "The file '"//filename//"' could not be found."); return
+        end if
+
+        call list_files_in_zip(path, stat)
+        call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
+    end
+
+    !> Makes sure that we find the file when running both `ctest` and `fpm test`.
+    function get_path(file) result(path)
+        character(*), intent(in) :: file
+        character(:), allocatable :: path
+
+        character(:), allocatable :: path_to_check
+        logical :: exists
+
+        path_to_check = zip_files_ctest//file
+        inquire(file=path_to_check, exist=exists)
+        if (exists) then
+            path = path_to_check
+        else
+            path_to_check = zip_files_fpm//file
+            inquire(file=path_to_check, exist=exists)
+            if (exists) path = path_to_check
+        end if
+    end
 
     subroutine delete_file(filename)
         character(len=*), intent(in) :: filename

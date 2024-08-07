@@ -4,8 +4,8 @@ module stdlib_io_zip
 
     public :: list_files_in_zip, unzip
 
-    character(*), parameter :: temp_folder = 'temp'
-    character(*), parameter :: zip_contents_file = temp_folder//'/'//'zip_contents.txt'
+    character(*), parameter :: temp_folder = 'temp/'
+    character(*), parameter :: zip_contents_file = temp_folder//'zip_contents.txt'
 
     !> Contains extracted raw data from a zip file.
     type, public :: t_unzipped_bundle
@@ -84,8 +84,7 @@ contains
             return
         end if
 
-        call run('unzip -l '//trim(filename)//' | sed ''1,3d;$d;$d'' | awk ''{print $4}'' > zip_contents.txt' &
-            //zip_contents_file, run_stat, err_msg)
+        call run('unzip -l '//filename//' > '//zip_contents_file, run_stat, err_msg)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
             if (present(msg)) then
