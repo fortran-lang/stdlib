@@ -4,8 +4,8 @@ module stdlib_io_zip
 
     public :: list_files_in_zip, unzip
 
-    character(*), parameter :: temp_folder = 'temp/'
-    character(*), parameter :: zip_contents_file = temp_folder//'zip_contents.txt'
+    character(*), parameter :: temp_folder = 'temp'
+    character(*), parameter :: zip_contents_file = temp_folder//'/zip_contents.txt'
 
     !> Contains extracted raw data from a zip file.
     type, public :: t_unzipped_bundle
