@@ -26,7 +26,7 @@ contains
             new_unittest("npz_list_file_not_zip", npz_list_file_not_zip, should_fail=.true.), &
             new_unittest("npz_list_empty_zip", npz_list_empty_zip, should_fail=.true.), &
             new_unittest("npz_list_empty_file", npz_list_empty_file), &
-            new_unittest("npz_list_empty_txt_file", npz_list_empty_txt_file) &
+            new_unittest("npz_list_txt_file", npz_list_txt_file) &
             ]
     end
 
@@ -140,11 +140,11 @@ contains
         call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
     end
 
-    subroutine npz_list_empty_txt_file(error)
+    subroutine npz_list_txt_file(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
-        character(*), parameter :: filename = "empty_txt.zip"
+        character(*), parameter :: filename = "textfile.zip"
         character(:), allocatable :: path
 
         path = get_path(filename)
