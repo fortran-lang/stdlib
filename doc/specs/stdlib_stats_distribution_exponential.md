@@ -1,11 +1,7 @@
----
-title: stats_distribution_exponential
----
+# `stdlib_stats_distribution_exponential`
 
-# Statistical Distributions -- Exponential Distribution Module
-
-[TOC]
-
+Statistical Distributions : Exponential Distribution Module
+ 
 ## `rvs_exp` - exponential distribution random variates
 
 ### Status
@@ -49,8 +45,8 @@ If `lambda` is non-positive, the result is `NaN`.
 
 ### Example
 
-```fortran
-{!example/stats_distribution_exponential/example_exponential_rvs.f90!}
+```{literalinclude} ../../example/stats_distribution_exponential/example_exponential_rvs.f90
+:language: Fortran
 ```
 
 ## `pdf_exp` - exponential distribution probability density function
@@ -92,8 +88,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_exponential/example_exponential_pdf.f90!}
+```{literalinclude} ../../example/stats_distribution_exponential/example_exponential_pdf.f90
+:language: Fortran
 ```
 
 ## `cdf_exp` - exponential cumulative distribution function
@@ -135,8 +131,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_exponential/example_exponential_cdf.f90!}
+```{literalinclude} ../../example/stats_distribution_exponential/example_exponential_cdf.f90
+:language: Fortran
 ```
 
 [^1]: Marsaglia, George, and Wai Wan Tsang. "The ziggurat method for generating random variables." _Journal of statistical software_ 5 (2000): 1-7.
