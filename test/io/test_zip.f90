@@ -26,7 +26,8 @@ contains
             new_unittest("npz_list_file_not_zip", npz_list_file_not_zip, should_fail=.true.), &
             new_unittest("npz_list_empty_zip", npz_list_empty_zip, should_fail=.true.), &
             new_unittest("npz_list_empty_file", npz_list_empty_file), &
-            new_unittest("npz_list_txt_file", npz_list_txt_file) &
+            new_unittest("npz_list_txt_file", npz_list_txt_file), &
+            new_unittest("npz_list_array_empty_0_file", npz_list_array_empty_0_file) &
             ]
     end
 
@@ -145,6 +146,22 @@ contains
 
         integer :: stat
         character(*), parameter :: filename = "textfile.zip"
+        character(:), allocatable :: path
+
+        path = get_path(filename)
+        if (.not. allocated(path)) then
+            call test_failed(error, "The file '"//filename//"' could not be found."); return
+        end if
+
+        call list_files_in_zip(path, stat)
+        call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
+    end
+
+    subroutine npz_list_array_empty_0_file(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat
+        character(*), parameter :: filename = "empty_0.npz"
         character(:), allocatable :: path
 
         path = get_path(filename)
