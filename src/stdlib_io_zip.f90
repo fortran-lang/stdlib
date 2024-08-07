@@ -58,7 +58,8 @@ contains
         if (present(stat)) stat = 0
         run_stat = 0
 
-        call run('rm -f '//zip_contents_file, run_stat, err_msg)
+        call execute_command_line('echo "Remove old contents file..."')
+        call run('rm -f '//zip_contents_file//' || echo "Failed to remove old contents file"', run_stat, err_msg)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
             if (present(msg)) then
@@ -71,7 +72,8 @@ contains
             return
         end if
 
-        call run('mkdir -p '//temp_folder, run_stat, err_msg)
+        call execute_command_line('echo "Creating temp directory..."')
+        call run('mkdir -p '//temp_folder//' || echo "Failed to create temp directory"', run_stat, err_msg)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
             if (present(msg)) then
@@ -84,7 +86,8 @@ contains
             return
         end if
 
-        call run('unzip -l '//filename//' > '//zip_contents_file, run_stat, err_msg)
+        call execute_command_line('echo "Listing contents of ZIP file..."')
+        call run('unzip -l '//filename//' > '//zip_contents_file//' || echo "Failed to list ZIP contents"', run_stat, err_msg)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
             if (present(msg)) then
