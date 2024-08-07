@@ -23,6 +23,15 @@ module stdlib_io_zip
 
 contains
 
+    logical function exists(filename)
+        character(len=*), intent(in) :: filename
+        inquire (file=filename, exist=exists)
+
+#if defined(__INTEL_COMPILER)
+        if (.not.exists) inquire (directory=filename, exist=exists)
+#endif
+    end
+
     subroutine run(command, stat, msg)
         character(len=*), intent(in) :: command
         integer, intent(out), optional :: stat
@@ -71,7 +80,7 @@ contains
             return
         end if
 
-        call run('sh -c "if [ ! -d '//temp_folder//' ]; then mkdir '//temp_folder//'; fi"', run_stat, err_msg)
+        if (.not. exists(temp_folder)) call run('mkdir '//temp_folder, run_stat, err_msg)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
             if (present(msg)) then
