@@ -120,6 +120,12 @@ set(SRC
     ${outPreprocFiles}
 )
 
+if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+  add_compile_options(-cpp)
+elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
+  add_compile_options(-fpp)
+endif()
+
 add_library(${PROJECT_NAME} ${SRC})
 
 set_target_properties(
