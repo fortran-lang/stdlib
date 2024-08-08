@@ -17,51 +17,48 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest("npz_file_not_exists", npz_file_not_exists, should_fail=.true.), &
-            new_unittest("npz_points_to_directory", npz_points_to_directory, should_fail=.true.), &
-            new_unittest("npz_is_not_zip", npz_is_not_zip, should_fail=.true.), &
-            new_unittest("npz_empty_zip", npz_empty_zip, should_fail=.true.), &
-            new_unittest("npz_list_file_not_exists", npz_list_file_not_exists, should_fail=.true.), &
-            new_unittest("npz_list_file_is_directory", npz_list_file_is_directory, should_fail=.true.), &
-            new_unittest("npz_list_file_not_zip", npz_list_file_not_zip, should_fail=.true.), &
-            new_unittest("npz_list_empty_zip", npz_list_empty_zip, should_fail=.true.), &
-            new_unittest("npz_list_empty_file", npz_list_empty_file), &
-            new_unittest("npz_list_txt_file", npz_list_txt_file), &
-            new_unittest("npz_list_array_empty_0_file", npz_list_array_empty_0_file) &
+            new_unittest("unzip_file_not_exists", unzip_file_not_exists, should_fail=.true.), &
+            new_unittest("unzip_points_to_directory", unzip_points_to_directory, should_fail=.true.), &
+            new_unittest("unzip_is_not_zip", unzip_is_not_zip, should_fail=.true.), &
+            new_unittest("unzip_empty_zip", unzip_empty_zip, should_fail=.true.), &
+            new_unittest("unzip_zip_has_empty_file", unzip_zip_has_empty_file), &
+            new_unittest("unzip_zip_has_txt_file", unzip_zip_has_txt_file), &
+            new_unittest("unzip_list_array_empty_0_file", unzip_list_array_empty_0_file) &
             ]
     end
 
-    subroutine npz_file_not_exists(error)
+    subroutine unzip_file_not_exists(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
 
-        call unzip("nonexistent.npz", iostat=stat)
+        call unzip("nonexistent.npz", stat=stat)
         call check(error, stat, "Reading of a non-existent npz file should fail.")
     end
 
-    subroutine npz_points_to_directory(error)
+    subroutine unzip_points_to_directory(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
 
-        call unzip(".", iostat=stat)
+        call unzip(".", stat=stat)
         call check(error, stat, "An npz file that points towards a directory should fail.")
     end
 
-    subroutine npz_is_not_zip(error)
+    subroutine unzip_is_not_zip(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: io, stat
         character(*), parameter :: filename = "non_zip_file"
 
         open(newunit=io, file=filename)
-        call unzip(filename, iostat=stat)
+        close(io)
+        call unzip(filename, stat=stat)
         call check(error, stat, "An npz file that is not a zip file should fail.")
-        close(io, status="delete")
+        call delete_file(filename)
     end
 
-    subroutine npz_empty_zip(error)
+    subroutine unzip_empty_zip(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: io, stat
@@ -72,60 +69,13 @@ contains
         write (io) binary_data
         close (io)
 
-        call unzip(filename, iostat=stat)
+        call unzip(filename, stat=stat)
         call check(error, stat, "An empty zip file should fail.")
 
         call delete_file(filename)
     end
 
-    subroutine npz_list_file_not_exists(error)
-        type(error_type), allocatable, intent(out) :: error
-
-        integer :: stat
-
-        call list_files_in_zip("nonexistent.npz", stat)
-        call check(error, stat, "Trying to list the contents of a non-existent npz file should fail.")
-    end
-
-    subroutine npz_list_file_is_directory(error)
-        type(error_type), allocatable, intent(out) :: error
-
-        integer :: stat
-
-        call list_files_in_zip(".", stat)
-        call check(error, stat, "Listing of contents of a zip file that actually points towards a directory should fail.")
-    end
-
-    subroutine npz_list_file_not_zip(error)
-        type(error_type), allocatable, intent(out) :: error
-
-        integer :: io, stat
-        character(*), parameter :: filename = "non_zip_file"
-
-        open(newunit=io, file=filename)
-        call list_files_in_zip(filename, stat)
-        call check(error, stat, "Listing the contents of a non-zip file should fail.")
-        close(io, status="delete")
-    end
-
-    subroutine npz_list_empty_zip(error)
-        type(error_type), allocatable, intent(out) :: error
-
-        integer :: io, stat
-        character(*), parameter :: filename = "empty.zip"
-        character(*), parameter:: binary_data = 'PK'//char(5)//char(6)//repeat(char(0), 18)
-
-        open (newunit=io, file=filename, form='unformatted', access='stream')
-        write (io) binary_data
-        close (io)
-
-        call list_files_in_zip(filename, stat)
-        call check(error, stat, "Listing the contents of an empty zip file should fail.")
-
-        call delete_file(filename)
-    end
-
-    subroutine npz_list_empty_file(error)
+    subroutine unzip_zip_has_empty_file(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
@@ -137,11 +87,11 @@ contains
             call test_failed(error, "The file '"//filename//"' could not be found."); return
         end if
 
-        call list_files_in_zip(path, stat)
+        call unzip(path, stat=stat)
         call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
     end
 
-    subroutine npz_list_txt_file(error)
+    subroutine unzip_zip_has_txt_file(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
@@ -153,11 +103,11 @@ contains
             call test_failed(error, "The file '"//filename//"' could not be found."); return
         end if
 
-        call list_files_in_zip(path, stat)
+        call unzip(path, stat=stat)
         call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
     end
 
-    subroutine npz_list_array_empty_0_file(error)
+    subroutine unzip_list_array_empty_0_file(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
@@ -169,7 +119,7 @@ contains
             call test_failed(error, "The file '"//filename//"' could not be found."); return
         end if
 
-        call list_files_in_zip(path, stat)
+        call unzip(path, stat=stat)
         call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
     end
 
@@ -202,7 +152,6 @@ contains
     end
 
 end
-
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit

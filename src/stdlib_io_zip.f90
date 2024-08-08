@@ -2,10 +2,10 @@ module stdlib_io_zip
     implicit none
     private
 
-    public :: list_files_in_zip, unzip
+    public :: unzip
 
     character(*), parameter :: temp_folder = 'temp'
-    character(*), parameter :: zip_contents_file = temp_folder//'/zip_contents.txt'
+    character(*), parameter :: zip_contents = temp_folder//'/zip_contents'
 
     !> Contains extracted raw data from a zip file.
     type, public :: t_unzipped_bundle
@@ -25,10 +25,11 @@ contains
 
     logical function exists(filename)
         character(len=*), intent(in) :: filename
-        inquire (file=filename, exist=exists)
+
+        inquire(file=filename, exist=exists)
 
 #if defined(__INTEL_COMPILER)
-        if (.not.exists) inquire (directory=filename, exist=exists)
+        if (.not. exists) inquire(directory=filename, exist=exists)
 #endif
     end
 
@@ -56,75 +57,61 @@ contains
         end if
     end
 
-    subroutine list_files_in_zip(filename, stat, msg)
+    subroutine unzip(filename, outputdir, stat, msg)
         character(len=*), intent(in) :: filename
+        character(len=*), intent(in), optional :: outputdir
         integer, intent(out), optional :: stat
         character(len=:), allocatable, intent(out), optional :: msg
 
         integer :: run_stat
         character(:), allocatable :: err_msg
+        character(:), allocatable :: output_dir
+
+        if (present(outputdir)) then
+            output_dir = outputdir
+        else
+            output_dir = zip_contents
+        end if
 
         if (present(stat)) stat = 0
         run_stat = 0
 
-        call run('rm -f '//zip_contents_file, run_stat, err_msg)
+        call run('rm -rf '//zip_contents, run_stat, err_msg)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
             if (present(msg)) then
                 if (allocated(err_msg)) then
-                    msg = "Error removing file '"//zip_contents_file//"': '"//err_msg//"'"
+                    msg = "Error removing folder '"//zip_contents//"': '"//err_msg//"'"
                 else
-                    msg = "Error removing file '"//zip_contents_file//"'."
+                    msg = "Error removing folder '"//zip_contents//"'."
                 end if
             end if
             return
         end if
 
-        if (.not. exists(temp_folder)) call run('mkdir '//temp_folder, run_stat, err_msg)
+        if (.not. exists(temp_folder)) then
+            call run('mkdir '//temp_folder, run_stat, err_msg)
+            if (run_stat /= 0) then
+                if (present(stat)) stat = run_stat
+                if (present(msg)) then
+                    if (allocated(err_msg)) then
+                        msg = "Error creating folder '"//temp_folder//"': '"//err_msg//"'"
+                    else
+                        msg = "Error creating folder '"//temp_folder//"'."
+                    end if
+                end if
+                return
+            end if
+        end if
+
+        call run('unzip '//filename//' -d '//zip_contents, run_stat, err_msg)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
             if (present(msg)) then
                 if (allocated(err_msg)) then
-                    msg = "Error creating folder '"//temp_folder//"': '"//err_msg//"'"
+                    msg = "Error unzipping '"//filename//"': '"//err_msg//"'"
                 else
-                    msg = "Error creating folder '"//temp_folder//"'."
-                end if
-            end if
-            return
-        end if
-
-        call run('unzip -l '//filename//' > '//zip_contents_file, run_stat, err_msg)
-        if (run_stat /= 0) then
-            if (present(stat)) stat = run_stat
-            if (present(msg)) then
-                if (allocated(err_msg)) then
-                    msg = "Error listing contents of '"//filename//"': '"//err_msg//"'"
-                else
-                    msg = "Error listing contents of '"//filename//"'."
-                end if
-            end if
-        end if
-    end
-
-    subroutine unzip(filename, iostat, iomsg)
-        character(len=*), intent(in) :: filename
-        integer, intent(out), optional :: iostat
-        character(len=:), allocatable, intent(out), optional :: iomsg
-
-        integer :: stat
-        character(:), allocatable :: msg
-
-        if (present(iostat)) iostat = 0
-        stat = 0
-
-        call run('unzip '//filename, stat, msg)
-        if (stat /= 0) then
-            if (present(iostat)) iostat = stat
-            if (present(iomsg)) then
-                if (allocated(msg)) then
-                    iomsg = "Error unzipping '"//filename//"': '"//msg//"'"
-                else
-                    iomsg = "Error unzipping '"//filename//"'."
+                    msg = "Error unzipping '"//filename//"'."
                 end if
             end if
         end if
