@@ -21,6 +21,7 @@ set(fppFiles
     stdlib_io_np.fypp
     stdlib_io_np_load.fypp
     stdlib_io_np_save.fypp
+    stdlib_io_zip.fypp
     stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
@@ -108,7 +109,6 @@ set(SRC
     stdlib_hashmaps.f90
     stdlib_hashmap_chaining.f90
     stdlib_hashmap_open.f90
-    stdlib_io_zip.f90
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
     stdlib_system.F90
