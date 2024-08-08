@@ -23,7 +23,8 @@ contains
             new_unittest("unzip_empty_zip", unzip_empty_zip, should_fail=.true.), &
             new_unittest("unzip_zip_has_empty_file", unzip_zip_has_empty_file), &
             new_unittest("unzip_zip_has_txt_file", unzip_zip_has_txt_file), &
-            new_unittest("unzip_list_array_empty_0_file", unzip_list_array_empty_0_file) &
+            new_unittest("unzip_npy_array_empty_0_file", unzip_npy_array_empty_0_file), &
+            new_unittest("unzip_two_files", unzip_two_files) &
             ]
     end
 
@@ -107,11 +108,27 @@ contains
         call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
     end
 
-    subroutine unzip_list_array_empty_0_file(error)
+    subroutine unzip_npy_array_empty_0_file(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
         character(*), parameter :: filename = "empty_0.npz"
+        character(:), allocatable :: path
+
+        path = get_path(filename)
+        if (.not. allocated(path)) then
+            call test_failed(error, "The file '"//filename//"' could not be found."); return
+        end if
+
+        call unzip(path, stat=stat)
+        call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
+    end
+
+    subroutine unzip_two_files(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat
+        character(*), parameter :: filename = "two_files.zip"
         character(:), allocatable :: path
 
         path = get_path(filename)
