@@ -28,9 +28,9 @@ contains
 
         inquire(file=filename, exist=exists)
 
-#:if defined('__INTEL_COMPILER')
+#if defined(__INTEL_COMPILER)
         if (.not. exists) inquire(directory=filename, exist=exists)
-#:endif
+#endif
     end
 
     subroutine run(command, stat, msg)
