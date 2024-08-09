@@ -3,10 +3,10 @@ module stdlib_filesystem
     implicit none
     private
 
-    public :: exists, list_files, run, temp_dir
+    public :: exists, list_dir_content, run, temp_dir
 
     character(*), parameter :: temp_dir = 'temp'
-    character(*), parameter :: listed_files = 'temp'//'/listed_files.txt'
+    character(*), parameter :: listed_contents = 'temp'//'/listed_contents.txt'
 
 contains
 
@@ -20,7 +20,8 @@ contains
 #endif
     end
 
-    subroutine list_files(dir, files, stat, msg)
+    !> List files and directories of a directory. Does not list hidden files.
+    subroutine list_dir_content(dir, files, stat, msg)
         character(len=*), intent(in) :: dir
         type(string_type), allocatable, intent(out) :: files(:)
         integer, intent(out) :: stat
@@ -32,7 +33,7 @@ contains
 
         stat = 0
 
-        call run('ls '//dir//' > '//listed_files, stat, err_msg)
+        call run('ls '//dir//' > '//listed_contents, stat, err_msg)
         if (stat /= 0) then
             if (present(msg)) then
                 if (allocated(err_msg)) then
@@ -44,9 +45,9 @@ contains
             end if
         end if
 
-        open(newunit=unit, file=listed_files, status='old', action='read', iostat=stat)
+        open(newunit=unit, file=listed_contents, status='old', action='read', iostat=stat)
         if (stat /= 0) then
-            if (present(msg)) msg = "Failed to open file '"//listed_files//"'."; return
+            if (present(msg)) msg = "Failed to open file '"//listed_contents//"'."; return
         end if
 
         allocate(files(0))
