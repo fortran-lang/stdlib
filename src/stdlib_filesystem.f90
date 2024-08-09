@@ -1,10 +1,12 @@
 module stdlib_filesystem
+    use stdlib_string_type, only: string_type
     implicit none
     private
 
-    public :: exists, run, temp_folder
+    public :: exists, list_files, run, temp_dir
 
-    character(*), parameter :: temp_folder = 'temp'
+    character(*), parameter :: temp_dir = 'temp'
+    character(*), parameter :: listed_files = 'temp'//'/listed_files.txt'
 
 contains
 
@@ -16,6 +18,44 @@ contains
 #if defined(__INTEL_COMPILER)
         if (.not. exists) inquire(directory=filename, exist=exists)
 #endif
+    end
+
+    subroutine list_files(dir, files, stat, msg)
+        character(len=*), intent(in) :: dir
+        type(string_type), allocatable, intent(out) :: files(:)
+        integer, intent(out) :: stat
+        character(len=:), allocatable, optional, intent(out) :: msg
+
+        integer :: unit, iostat
+        character(:), allocatable :: err_msg
+        character(len=256) :: line
+
+        stat = 0
+
+        call run('ls '//dir//' > '//listed_files, stat, err_msg)
+        if (stat /= 0) then
+            if (present(msg)) then
+                if (allocated(err_msg)) then
+                    msg = "Failed to list files in directory '"//dir//"': '"//err_msg//"'"
+                else
+                    msg = "Failed to list files in directory '"//dir//"'."
+                end if
+                return
+            end if
+        end if
+
+        open(newunit=unit, file=listed_files, status='old', action='read', iostat=stat)
+        if (stat /= 0) then
+            if (present(msg)) msg = "Failed to open file '"//listed_files//"'."; return
+        end if
+
+        allocate(files(0))
+        do
+            read(unit, '(A)', iostat=iostat) line
+            if (iostat /= 0) exit
+            files = [files, string_type(line)]
+        end do
+        close(unit, status="delete")
     end
 
     subroutine run(command, stat, msg)

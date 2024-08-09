@@ -8,8 +8,8 @@
 submodule(stdlib_io_np) stdlib_io_np_load
     use stdlib_array
     use stdlib_error, only: error_stop
-    use stdlib_filesystem, only: exists
-    use stdlib_io_zip, only: unzip, unzipped_folder
+    use stdlib_filesystem, only: exists, list_files, temp_dir
+    use stdlib_io_zip, only: unzip, unzipped_folder, zip_contents
     use stdlib_strings, only: to_string, starts_with
     use stdlib_string_type, only: string_type
     implicit none
@@ -133,27 +133,6 @@ contains
         call list_files(unzipped_folder, files, stat, msg)
 
         ! call load_unzipped_files_to_arrays(unzipped_bundle, arrays, stat, msg)
-    end
-
-    subroutine list_files(dir, files, stat, msg)
-        character(len=*), intent(in) :: dir
-        type(string_type), allocatable, intent(out) :: files(:)
-        integer, intent(out) :: stat
-        character(len=:), allocatable, intent(out) :: msg
-
-        stat = 0
-
-        if (.not. exists(dir)) then
-            stat = 1
-            msg = "Directory '"//dir//"' does not exist."
-            return
-        end if
-
-        ! call execute_command_line('ls temp > file_list.txt', status)
-        ! if (status /= 0) then
-        !     print *, "Failed to list files in the directory"
-        !     stop
-        ! end if
     end
 
     subroutine load_unzipped_files_to_arrays(arrays, stat, msg)

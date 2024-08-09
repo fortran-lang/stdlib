@@ -1,11 +1,12 @@
 module stdlib_io_zip
-    use stdlib_filesystem, only: exists, run, temp_folder
+    use stdlib_filesystem, only: exists, run, temp_dir
     implicit none
     private
 
-    public :: unzip, unzipped_folder
+    public :: unzip, unzipped_folder, zip_contents
 
-    character(*), parameter :: unzipped_folder = temp_folder//'/unzipped_files'
+    character(*), parameter :: unzipped_folder = temp_dir//'/unzipped_files'
+    character(*), parameter :: zip_contents = unzipped_folder//'/zip_contents.txt'
 
 contains
 
@@ -41,15 +42,15 @@ contains
             return
         end if
 
-        if (.not. exists(temp_folder)) then
-            call run('mkdir '//temp_folder, run_stat, err_msg)
+        if (.not. exists(temp_dir)) then
+            call run('mkdir '//temp_dir, run_stat, err_msg)
             if (run_stat /= 0) then
                 if (present(stat)) stat = run_stat
                 if (present(msg)) then
                     if (allocated(err_msg)) then
-                        msg = "Error creating folder '"//temp_folder//"': '"//err_msg//"'"
+                        msg = "Error creating folder '"//temp_dir//"': '"//err_msg//"'"
                     else
-                        msg = "Error creating folder '"//temp_folder//"'."
+                        msg = "Error creating folder '"//temp_dir//"'."
                     end if
                 end if
                 return
