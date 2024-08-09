@@ -16,7 +16,10 @@ contains
         testsuite = [ &
             new_unittest("fs_file_not_exists", fs_file_not_exists, should_fail=.true.), &
             new_unittest("fs_file_exists", fs_file_exists), &
-            new_unittest("fs_current_dir_exists", fs_current_dir_exists) &
+            new_unittest("fs_current_dir_exists", fs_current_dir_exists), &
+            new_unittest("fs_run_invalid_command", fs_run_invalid_command, should_fail=.true.), &
+            new_unittest("fs_run_with_invalid_option", fs_run_with_invalid_option, should_fail=.true.), &
+            new_unittest("fs_run_valid_command", fs_run_valid_command) &
             ]
     end
 
@@ -44,7 +47,6 @@ contains
         call delete_file(filename)
     end
 
-
     subroutine fs_current_dir_exists(error)
         type(error_type), allocatable, intent(out) :: error
 
@@ -54,6 +56,32 @@ contains
         call check(error, is_existing, "Current directory should not fail.")
     end
 
+    subroutine fs_run_invalid_command(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat
+
+        call run("invalid_command", stat=stat)
+        call check(error, stat, "Running an invalid command should fail.")
+    end
+
+    subroutine fs_run_with_invalid_option(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat
+
+        call run("whoami -X", stat=stat)
+        call check(error, stat, "Running a valid command with an invalid option should fail.")
+    end
+
+    subroutine fs_run_valid_command(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat
+
+        call run("whoami", stat=stat)
+        call check(error, stat, "Running a valid command should not fail.")
+    end
 
     subroutine delete_file(filename)
         character(len=*), intent(in) :: filename
@@ -65,7 +93,6 @@ contains
     end
 
 end
-
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
