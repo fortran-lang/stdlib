@@ -120,10 +120,15 @@ set(SRC
     ${outPreprocFiles}
 )
 
+# Files that have cpp directives need to be compiled with the preprocessor.
+set(hasCPP
+    stdlib_filesystem.f90
+)
+
 if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
-  add_compile_options(-cpp)
+  set_source_files_properties(${hasCPP} PROPERTIES COMPILE_FLAGS "-cpp")
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
-  add_compile_options(-fpp)
+  set_source_files_properties(${hasCPP} PROPERTIES COMPILE_FLAGS "-fpp")
 endif()
 
 add_library(${PROJECT_NAME} ${SRC})
