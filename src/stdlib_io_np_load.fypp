@@ -6,11 +6,12 @@
 
 !> Implementation of loading npy files into multidimensional arrays
 submodule(stdlib_io_np) stdlib_io_np_load
+    use stdlib_array
     use stdlib_error, only: error_stop
+    use stdlib_filesystem, only: exists
+    use stdlib_io_zip, only: unzip, unzipped_folder
     use stdlib_strings, only: to_string, starts_with
     use stdlib_string_type, only: string_type
-    use stdlib_io_zip, only: unzip, t_unzipped_bundle, t_unzipped_file
-    use stdlib_array
     implicit none
 
 contains
@@ -110,28 +111,52 @@ contains
         integer, intent(out), optional :: iostat
         character(len=:), allocatable, intent(out), optional :: iomsg
 
-        type(t_unzipped_bundle) :: unzipped_bundle
         integer :: stat
         character(len=:), allocatable :: msg
+        type(string_type), allocatable :: files(:)
 
-        ! call unzip(filename, unzipped_bundle, stat, msg)
-        if (stat == 0) call load_unzipped_bundle_to_arrays(unzipped_bundle, arrays, stat, msg)
-
-        if (present(iostat)) then
-            iostat = stat
-        else if (stat /= 0) then
-            if (allocated(msg)) then
-                call error_stop("Failed to read arrays from file '"//filename//"'"//nl//msg)
-            else
-                call error_stop("Failed to read arrays from file '"//filename//"'")
+        call unzip(filename, unzipped_folder, stat, msg)
+        if (stat /= 0) then
+            if (present(iostat)) then
+                iostat = stat
+            else if (stat /= 0) then
+                if (allocated(msg)) then
+                    call error_stop("Failed to read arrays from file '"//filename//"'"//nl//msg)
+                else
+                    call error_stop("Failed to read arrays from file '"//filename//"'")
+                end if
             end if
+            if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
+            return
         end if
 
-        if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
+        call list_files(unzipped_folder, files, stat, msg)
+
+        ! call load_unzipped_files_to_arrays(unzipped_bundle, arrays, stat, msg)
     end
 
-    subroutine load_unzipped_bundle_to_arrays(unzipped_bundle, arrays, stat, msg)
-        type(t_unzipped_bundle), intent(in) :: unzipped_bundle
+    subroutine list_files(dir, files, stat, msg)
+        character(len=*), intent(in) :: dir
+        type(string_type), allocatable, intent(out) :: files(:)
+        integer, intent(out) :: stat
+        character(len=:), allocatable, intent(out) :: msg
+
+        stat = 0
+
+        if (.not. exists(dir)) then
+            stat = 1
+            msg = "Directory '"//dir//"' does not exist."
+            return
+        end if
+
+        ! call execute_command_line('ls temp > file_list.txt', status)
+        ! if (status /= 0) then
+        !     print *, "Failed to list files in the directory"
+        !     stop
+        ! end if
+    end
+
+    subroutine load_unzipped_files_to_arrays(arrays, stat, msg)
         type(t_array_wrapper), allocatable, intent(out) :: arrays(:)
         integer, intent(out) :: stat
         character(len=:), allocatable, intent(out) :: msg
@@ -140,70 +165,70 @@ contains
         integer, allocatable :: vshape(:)
         character(len=:), allocatable :: this_type
 
-        allocate (arrays(size(unzipped_bundle%files)))
+!         allocate (arrays(size(unzipped_bundle%files)))
 
-        do i = 1, size(unzipped_bundle%files)
-            open (newunit=io, status='scratch', form='unformatted', access='stream', iostat=stat, iomsg=msg)
-            if (stat /= 0) return
+!         do i = 1, size(unzipped_bundle%files)
+!             open (newunit=io, status='scratch', form='unformatted', access='stream', iostat=stat, iomsg=msg)
+!             if (stat /= 0) return
 
-            write (io, iostat=stat) unzipped_bundle%files(i)%data
-            if (stat /= 0) then
-                msg = 'Failed to write unzipped data to scratch file.'
-                close (io, status='delete'); return
-            end if
+!             write (io, iostat=stat) unzipped_bundle%files(i)%data
+!             if (stat /= 0) then
+!                 msg = 'Failed to write unzipped data to scratch file.'
+!                 close (io, status='delete'); return
+!             end if
 
-            rewind (io)
-            call get_descriptor(io, unzipped_bundle%files(i)%name, this_type, vshape, stat, msg)
-            if (stat /= 0) return
+!             rewind (io)
+!             call get_descriptor(io, unzipped_bundle%files(i)%name, this_type, vshape, stat, msg)
+!             if (stat /= 0) return
 
-            select case (this_type)
-#:for k1, t1 in KINDS_TYPES
-              case (type_${t1[0]}$${k1}$)
-                select case (size(vshape))
-#:for rank in RANKS
-                  case (${rank}$)
-                    block
-                        ${t1}$, allocatable :: array${ranksuffix(rank)}$
+!             select case (this_type)
+! #:for k1, t1 in KINDS_TYPES
+!               case (type_${t1[0]}$${k1}$)
+!                 select case (size(vshape))
+! #:for rank in RANKS
+!                   case (${rank}$)
+!                     block
+!                         ${t1}$, allocatable :: array${ranksuffix(rank)}$
 
-                        call allocate_array_from_shape(array, vshape, stat)
-                        if (stat /= 0) then
-                            msg = "Failed to allocate array of type '"//this_type//"'."; return
-                        end if
+!                         call allocate_array_from_shape(array, vshape, stat)
+!                         if (stat /= 0) then
+!                             msg = "Failed to allocate array of type '"//this_type//"'."; return
+!                         end if
 
-                        read (io, iostat=stat) array
-                        if (stat /= 0) then
-                            msg = "Failed to read array of type '"//this_type//"' "//&
-                            & 'with total size of '//to_string(product(vshape)); return
-                        end if
+!                         read (io, iostat=stat) array
+!                         if (stat /= 0) then
+!                             msg = "Failed to read array of type '"//this_type//"' "//&
+!                             & 'with total size of '//to_string(product(vshape)); return
+!                         end if
 
-                        allocate (t_array_${t1[0]}$${k1}$_${rank}$ :: arrays(i)%array, stat=stat)
-                        if (stat /= 0) then
-                            msg = "Failed to allocate array of type '"//this_type//"' "//&
-                            & 'with total size of '//to_string(product(vshape)); return
-                        end if
+!                         allocate (t_array_${t1[0]}$${k1}$_${rank}$ :: arrays(i)%array, stat=stat)
+!                         if (stat /= 0) then
+!                             msg = "Failed to allocate array of type '"//this_type//"' "//&
+!                             & 'with total size of '//to_string(product(vshape)); return
+!                         end if
 
-                        select type (typed_array => arrays(i)%array)
-                          class is (t_array_${t1[0]}$${k1}$_${rank}$)
-                            typed_array%values = array
-                          class default
-                            msg = 'Failed to allocate values.'; stat = 1; return
-                        end select
+!                         select type (typed_array => arrays(i)%array)
+!                           class is (t_array_${t1[0]}$${k1}$_${rank}$)
+!                             typed_array%values = array
+!                           class default
+!                             msg = 'Failed to allocate values.'; stat = 1; return
+!                         end select
 
-                        arrays(i)%array%name = unzipped_bundle%files(i)%name
-                    end block
-#:endfor
-                  case default
-                    stat = 1; msg = 'Unsupported rank for array of type '//this_type//': '// &
-                    & to_string(size(vshape))//'.'; return
-                end select
-#:endfor
-              case default
-                stat = 1; msg = 'Unsupported array type: '//this_type//'.'; return
-            end select
+!                         arrays(i)%array%name = unzipped_bundle%files(i)%name
+!                     end block
+! #:endfor
+!                   case default
+!                     stat = 1; msg = 'Unsupported rank for array of type '//this_type//': '// &
+!                     & to_string(size(vshape))//'.'; return
+!                 end select
+! #:endfor
+!               case default
+!                 stat = 1; msg = 'Unsupported array type: '//this_type//'.'; return
+!             end select
 
-            close (io, status='delete')
-            if (stat /= 0) return
-        end do
+!             close (io, status='delete')
+!             if (stat /= 0) return
+!         end do
     end
 
     !> Read the npy header from a binary file and retrieve the descriptor string.
