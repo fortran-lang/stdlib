@@ -119,23 +119,45 @@ contains
         if (stat /= 0) then
             if (present(iostat)) then
                 iostat = stat
-            else if (stat /= 0) then
                 if (allocated(msg)) then
-                    call error_stop("Failed to read arrays from file '"//filename//"'"//nl//msg)
+                    call error_stop("Failed to unzip file '"//filename//"'"//nl//msg)
                 else
-                    call error_stop("Failed to read arrays from file '"//filename//"'")
+                    call error_stop("Failed to unzip file '"//filename//"'")
                 end if
             end if
-            if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
             return
         end if
 
         call list_dir(unzipped_folder, files, stat, msg)
+        if (stat /= 0) then
+            if (present(iostat)) then
+                iostat = stat
+                if (allocated(msg)) then
+                    call error_stop("Failed to list contents of directory '"//unzipped_folder//"'"//nl//msg)
+                else
+                    call error_stop("Failed to list contents of directory '"//unzipped_folder//"'")
+                end if
+            end if
+            return
+        end if
 
-        ! call load_unzipped_files_to_arrays(unzipped_bundle, arrays, stat, msg)
+        call load_unzipped_files_to_arrays(files, unzipped_folder, arrays, stat, msg)
+        if (stat /= 0) then
+            if (present(iostat)) then
+                iostat = stat
+                if (allocated(msg)) then
+                    call error_stop("Failed to load arrays from file '"//filename//"'"//nl//msg)
+                else
+                    call error_stop("Failed to load arrays from file '"//filename//"'")
+                end if
+            end if
+            return
+        end if
     end
 
-    subroutine load_unzipped_files_to_arrays(arrays, stat, msg)
+    subroutine load_unzipped_files_to_arrays(files, dir, arrays, stat, msg)
+        type(string_type), intent(in) :: files(:)
+        character(len=*), intent(in) :: dir
         type(t_array_wrapper), allocatable, intent(out) :: arrays(:)
         integer, intent(out) :: stat
         character(len=:), allocatable, intent(out) :: msg
