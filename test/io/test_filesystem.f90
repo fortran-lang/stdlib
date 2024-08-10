@@ -7,7 +7,7 @@ module test_filesystem
 
     public :: collect_filesystem
 
-    character(*), parameter :: temp_listed_contents = temp_dir//'/listed_contents'
+    character(*), parameter :: temp_list_dir = 'temp_list_dir'
 
 contains
 
@@ -23,9 +23,9 @@ contains
             new_unittest("fs_run_invalid_command", fs_run_invalid_command, should_fail=.true.), &
             new_unittest("fs_run_with_invalid_option", fs_run_with_invalid_option, should_fail=.true.), &
             new_unittest("fs_run_valid_command", fs_run_valid_command), &
-            new_unittest("fs_list_dir_contents_empty_dir", fs_list_dir_contents_empty_dir), &
-            new_unittest("fs_list_dir_contents_one_file", fs_list_dir_contents_one_file), &
-            new_unittest("fs_list_dir_contents_two_files", fs_list_dir_contents_two_files) &
+            new_unittest("fs_list_dir_empty", fs_list_dir_empty), &
+            new_unittest("fs_list_dir_one_file", fs_list_dir_one_file), &
+            new_unittest("fs_list_dir_two_files", fs_list_dir_two_files) &
             ]
     end
 
@@ -89,41 +89,32 @@ contains
         call check(error, stat, "Running a valid command should not fail.")
     end
 
-    subroutine fs_list_dir_contents_empty_dir(error)
+    subroutine fs_list_dir_empty(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
         type(string_type), allocatable :: files(:)
 
-        if (.not. exists(temp_dir)) then
-            call run('mkdir '//temp_dir, stat=stat)
-            if (stat/= 0) then
-                call test_failed(error, "Creating the '"//temp_dir//"' directory failed.")
-                return
-            end if
-        end if
-
-        call run ('rm -rf '//temp_listed_contents, stat=stat)
+        call run('rm -rf '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Removing directory '"//temp_listed_contents//"' failed.")
+            call test_failed(error, "Removing directory '"//temp_list_dir//"' failed.")
             return
         end if
 
-        call run('mkdir '//temp_listed_contents, stat=stat)
+        call run('mkdir '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Creating directory '"//temp_listed_contents//"' failed.")
+            call test_failed(error, "Creating directory '"//temp_list_dir//"' failed.")
             return
         end if
 
-        call list_dir_content(temp_listed_contents, files, stat)
+        call list_dir_content(temp_list_dir, files, stat)
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
         call check(error, size(files) == 0, "The directory should be empty.")
 
-        call run('rm -rf '//temp_listed_contents, stat=stat)
-        call check(error, stat, "Removing the directory '"//temp_listed_contents//"' shouldn't fail.")
+        call run('rm -rf '//temp_list_dir, stat=stat)
     end
 
-    subroutine fs_list_dir_contents_one_file(error)
+    subroutine fs_list_dir_one_file(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
@@ -131,39 +122,33 @@ contains
         type(string_type), allocatable :: files(:)
         character(*), parameter :: filename = 'abc.txt'
 
-        if (.not. exists(temp_dir)) then
-            call run('mkdir '//temp_dir, stat=stat)
-            if (stat/= 0) then
-                call test_failed(error, "Creating the '"//temp_dir//"' directory failed.")
-                return
-            end if
-        end if
-
-        call run ('rm -rf '//temp_listed_contents, stat=stat)
+        call run('rm -rf '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Removing directory '"//temp_listed_contents//"' failed.")
+            call test_failed(error, "Removing directory '"//temp_list_dir//"' failed.")
             return
         end if
 
-        call run('mkdir '//temp_listed_contents, stat=stat)
+        call run('mkdir '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Creating directory '"//temp_listed_contents//"' failed.")
+            call test_failed(error, "Creating directory '"//temp_list_dir//"' failed.")
             return
         end if
 
-        call run('touch '//temp_listed_contents//'/'//filename, stat=stat)
-        call check(error, stat, "Creating a file in the directory '"//temp_listed_contents//"' shouldn't fail.")
+        call run('touch '//temp_list_dir//'/'//filename, stat=stat)
+        if (stat /= 0) then
+            call test_failed(error, "Creating file'"//filename//"' in directory '"//temp_list_dir//"' failed.")
+            return
+        end if
 
-        call list_dir_content(temp_listed_contents, files, stat)
+        call list_dir_content(temp_list_dir, files, stat)
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
         call check(error, size(files) == 1, "The directory should contain one file.")
         call check(error, char(files(1)) == filename, "The file should be '"//filename//"'.")
 
-        call run('rm -rf '//temp_listed_contents, stat=stat)
-        call check(error, stat, "Removing the directory '"//temp_listed_contents//"' shouldn't fail.")
+        call run('rm -rf '//temp_list_dir, stat=stat)
     end
 
-    subroutine fs_list_dir_contents_two_files(error)
+    subroutine fs_list_dir_two_files(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
@@ -172,46 +157,37 @@ contains
         character(*), parameter :: filename1 = 'abc.txt'
         character(*), parameter :: filename2 = 'xyz'
 
-        if (.not. exists(temp_dir)) then
-            call run('mkdir '//temp_dir, stat=stat)
-            if (stat/= 0) then
-                call test_failed(error, "Creating the '"//temp_dir//"' directory failed.")
-                return
-            end if
-        end if
-
-        call run ('rm -rf '//temp_listed_contents, stat=stat)
+        call run('rm -rf '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Removing directory '"//temp_listed_contents//"' failed.")
+            call test_failed(error, "Removing directory '"//temp_list_dir//"' failed.")
             return
         end if
 
-        call run('mkdir '//temp_listed_contents, stat=stat)
+        call run('mkdir '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Creating directory '"//temp_listed_contents//"' failed.")
+            call test_failed(error, "Creating directory '"//temp_list_dir//"' failed.")
             return
         end if
 
-        call run('touch '//temp_listed_contents//'/'//filename1, stat=stat)
+        call run('touch '//temp_list_dir//'/'//filename1, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Creating file 1 in directory '"//temp_listed_contents//"' failed.")
+            call test_failed(error, "Creating file 1 in directory '"//temp_list_dir//"' failed.")
             return
         end if
 
-        call run('touch '//temp_listed_contents//'/'//filename2, stat=stat)
+        call run('touch '//temp_list_dir//'/'//filename2, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Creating file 2 in directory '"//temp_listed_contents//"' failed.")
+            call test_failed(error, "Creating file 2 in directory '"//temp_list_dir//"' failed.")
             return
         end if
 
-        call list_dir_content(temp_listed_contents, files, stat)
+        call list_dir_content(temp_list_dir, files, stat)
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
         call check(error, size(files) == 2, "The directory should contain two files.")
         call check(error, char(files(1)) == filename1, "The file should be '"//filename1//"'.")
         call check(error, char(files(2)) == filename2, "The file should be '"//filename2//"'.")
 
-        call run('rm -rf '//temp_listed_contents, stat=stat)
-        call check(error, stat, "Removing the directory '"//temp_listed_contents//"' shouldn't fail.")
+        call run('rm -rf '//temp_list_dir, stat=stat)
     end
 
     subroutine delete_file(filename)

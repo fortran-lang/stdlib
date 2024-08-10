@@ -8,7 +8,7 @@
 submodule(stdlib_io_np) stdlib_io_np_load
     use stdlib_array
     use stdlib_error, only: error_stop
-    use stdlib_filesystem, only: exists, list_dir_content, temp_dir
+    use stdlib_filesystem, only: exists, list_dir, temp_dir
     use stdlib_io_zip, only: unzip, unzipped_folder, zip_contents
     use stdlib_strings, only: to_string, starts_with
     use stdlib_string_type, only: string_type
@@ -130,7 +130,7 @@ contains
             return
         end if
 
-        call list_dir_content(unzipped_folder, files, stat, msg)
+        call list_dir(unzipped_folder, files, stat, msg)
 
         ! call load_unzipped_files_to_arrays(unzipped_bundle, arrays, stat, msg)
     end
