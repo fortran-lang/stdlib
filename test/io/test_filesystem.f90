@@ -1,6 +1,6 @@
 module test_filesystem
     use stdlib_filesystem
-    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
     use stdlib_string_type, only : char, string_type
     implicit none
     private
@@ -101,9 +101,16 @@ contains
         end if
 
         call run ('rm -rf '//temp_listed_contents, stat=stat)
-        call check(error, stat, "Removing the directory '"//temp_listed_contents//"' shouldn't fail.")
+        if (stat /= 0) then
+            call test_failed(error, "Removing directory '"//temp_listed_contents//"' shouldn't fail.")
+            return
+        end if
+
         call run('mkdir '//temp_listed_contents, stat=stat)
-        call check(error, stat, "Creating the directory '"//temp_listed_contents//"' shouldn't fail.")
+        if (stat /= 0) then
+            call test_failed(error, "Creating directory '"//temp_listed_contents//"' shouldn't fail.")
+            return
+        end if
 
         call list_dir_content(temp_listed_contents, files, stat)
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
@@ -127,9 +134,16 @@ contains
         end if
 
         call run ('rm -rf '//temp_listed_contents, stat=stat)
-        call check(error, stat, "Removing the directory '"//temp_listed_contents//"' shouldn't fail.")
+        if (stat /= 0) then
+            call test_failed(error, "Removing directory '"//temp_listed_contents//"' shouldn't fail.")
+            return
+        end if
+
         call run('mkdir '//temp_listed_contents, stat=stat)
-        call check(error, stat, "Creating the directory '"//temp_listed_contents//"' shouldn't fail.")
+        if (stat /= 0) then
+            call test_failed(error, "Creating directory '"//temp_listed_contents//"' shouldn't fail.")
+            return
+        end if
 
         call run('touch '//temp_listed_contents//'/'//filename, stat=stat)
         call check(error, stat, "Creating a file in the directory '"//temp_listed_contents//"' shouldn't fail.")
@@ -158,15 +172,28 @@ contains
         end if
 
         call run ('rm -rf '//temp_listed_contents, stat=stat)
-        call check(error, stat, "Removing the directory '"//temp_listed_contents//"' shouldn't fail.")
+        if (stat /= 0) then
+            call test_failed(error, "Removing directory '"//temp_listed_contents//"' shouldn't fail.")
+            return
+        end if
+
         call run('mkdir '//temp_listed_contents, stat=stat)
-        call check(error, stat, "Creating the directory '"//temp_listed_contents//"' shouldn't fail.")
+        if (stat /= 0) then
+            call test_failed(error, "Creating directory '"//temp_listed_contents//"' shouldn't fail.")
+            return
+        end if
 
         call run('touch '//temp_listed_contents//'/'//filename1, stat=stat)
-        call check(error, stat, "Creating a file in the directory '"//temp_listed_contents//"' shouldn't fail.")
+        if (stat /= 0) then
+            call test_failed(error, "Creating file 1 in directory '"//temp_listed_contents//"' shouldn't fail.")
+            return
+        end if
 
         call run('touch '//temp_listed_contents//'/'//filename2, stat=stat)
-        call check(error, stat, "Creating a file in the directory '"//temp_listed_contents//"' shouldn't fail.")
+        if (stat /= 0) then
+            call test_failed(error, "Creating file 2 in directory '"//temp_listed_contents//"' shouldn't fail.")
+            return
+        end if
 
         call list_dir_content(temp_listed_contents, files, stat)
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
