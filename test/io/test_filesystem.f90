@@ -107,7 +107,7 @@ contains
             return
         end if
 
-        call list_dir_content(temp_list_dir, files, stat)
+        call list_dir(temp_list_dir, files, stat)
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
         call check(error, size(files) == 0, "The directory should be empty.")
 
@@ -140,7 +140,7 @@ contains
             return
         end if
 
-        call list_dir_content(temp_list_dir, files, stat)
+        call list_dir(temp_list_dir, files, stat)
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
         call check(error, size(files) == 1, "The directory should contain one file.")
         call check(error, char(files(1)) == filename, "The file should be '"//filename//"'.")
@@ -181,7 +181,7 @@ contains
             return
         end if
 
-        call list_dir_content(temp_list_dir, files, stat)
+        call list_dir(temp_list_dir, files, stat)
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
         call check(error, size(files) == 2, "The directory should contain two files.")
         call check(error, char(files(1)) == filename1, "The file should be '"//filename1//"'.")
