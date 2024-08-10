@@ -1,16 +1,16 @@
-module test_npy
+module test_np
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
     use stdlib_io_np, only : save_npy, load_npy
     use testdrive, only : new_unittest, unittest_type, error_type, check
     implicit none
     private
 
-    public :: collect_npy
+    public :: collect_np
 
 contains
 
     !> Collect all exported unit tests
-    subroutine collect_npy(testsuite)
+    subroutine collect_np(testsuite)
         !> Collection of tests
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
@@ -37,7 +37,7 @@ contains
             new_unittest("missing-shape", test_missing_shape, should_fail=.true.), &
             new_unittest("iomsg-deallocated", test_iomsg_deallocated) &
             ]
-    end subroutine collect_npy
+    end subroutine collect_np
 
     subroutine test_read_rdp_rank2(error)
         !> Error handling
@@ -650,13 +650,13 @@ contains
         close(io, status="delete")
     end subroutine delete_file
 
-end module test_npy
+end
 
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
     use testdrive, only : run_testsuite, new_testsuite, testsuite_type
-    use test_npy, only : collect_npy
+    use test_np, only : collect_np
     implicit none
     integer :: stat, is
     type(testsuite_type), allocatable :: testsuites(:)
@@ -665,7 +665,7 @@ program tester
     stat = 0
 
     testsuites = [ &
-        new_testsuite("npy", collect_npy) &
+        new_testsuite("np", collect_np) &
         ]
 
     do is = 1, size(testsuites)
