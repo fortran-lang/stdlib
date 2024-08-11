@@ -6,12 +6,12 @@
 
 !> Implementation of loading npy files into multidimensional arrays
 submodule(stdlib_io_np) stdlib_io_np_load
-    use stdlib_array
+    use stdlib_array, only: t_array_wrapper, t_array
     use stdlib_error, only: error_stop
     use stdlib_filesystem, only: exists, list_dir, temp_dir
     use stdlib_io_zip, only: unzip, unzipped_folder, zip_contents
     use stdlib_strings, only: to_string, starts_with
-    use stdlib_string_type, only: string_type, char
+    use stdlib_string_type, only: string_type, as_string => char
     implicit none
 
 contains
@@ -147,14 +147,15 @@ contains
         integer :: i, io
         integer, allocatable :: vshape(:)
         character(len=:), allocatable :: this_type
+        character(len=:), allocatable :: path
 
         allocate(arrays(size(files)))
 
         do i = 1, size(files)
-            open(newunit=io, file=dir//char(files(i)), form='unformatted', access='stream', iostat=stat, iomsg=msg)
+            open(newunit=io, file=dir//as_string(files(i)), form='unformatted', access='stream', iostat=stat, iomsg=msg)
             if (stat /= 0) return
 
-            call get_descriptor(io, char(files(i)), this_type, vshape, stat, msg)
+            call get_descriptor(io, as_string(files(i)), this_type, vshape, stat, msg)
             if (stat /= 0) then
                 close(io, status='delete'); return
             end if
