@@ -31,3 +31,5 @@ add_subdirectory(quadrature)
 add_subdirectory(math)
 add_subdirectory(stringlist)
 add_subdirectory(terminal)
+
+target_compile_definitions(test_zip PRIVATE TEST_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")

@@ -6,9 +6,6 @@ module test_zip
 
     public :: collect_zip
 
-    character(*), parameter :: zip_files_ctest = 'zip_files/'
-    character(*), parameter :: zip_files_fpm = 'test/io/'//zip_files_ctest
-
 contains
 
     !> Collect all exported unit tests
@@ -162,18 +159,11 @@ contains
         character(*), intent(in) :: file
         character(:), allocatable :: path
 
-        character(:), allocatable :: path_to_check
-        logical :: is_existing
-
-        path_to_check = zip_files_ctest//file
-        inquire(file=path_to_check, exist=is_existing)
-        if (is_existing) then
-            path = path_to_check
-        else
-            path_to_check = zip_files_fpm//file
-            inquire(file=path_to_check, exist=is_existing)
-            if (is_existing) path = path_to_check
-        end if
+#ifdef TEST_ROOT_DIR
+        path = TEST_ROOT_DIR//'/io/zip_files/'//file
+#else
+        path = 'test/io/zip_files/'//file
+#endif
     end
 
     subroutine delete_file(filename)
