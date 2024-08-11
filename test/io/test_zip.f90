@@ -23,8 +23,9 @@ contains
             new_unittest("unzip_empty_zip", unzip_empty_zip, should_fail=.true.), &
             new_unittest("unzip_zip_has_empty_file", unzip_zip_has_empty_file), &
             new_unittest("unzip_zip_has_txt_file", unzip_zip_has_txt_file), &
-            new_unittest("unzip_npy_array_empty_0_file", unzip_npy_array_empty_0_file), &
-            new_unittest("unzip_two_files", unzip_two_files) &
+            new_unittest("unzip_npz_array_empty_0_file", unzip_npz_array_empty_0_file), &
+            new_unittest("unzip_two_files", unzip_two_files), &
+            new_unittest("unzip_compressed_npz", unzip_compressed_npz) &
             ]
     end
 
@@ -108,7 +109,7 @@ contains
         call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
     end
 
-    subroutine unzip_npy_array_empty_0_file(error)
+    subroutine unzip_npz_array_empty_0_file(error)
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
@@ -140,22 +141,38 @@ contains
         call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
     end
 
+    subroutine unzip_compressed_npz(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat
+        character(*), parameter :: filename = "two_files_compressed.npz"
+        character(:), allocatable :: path
+
+        path = get_path(filename)
+        if (.not. allocated(path)) then
+            call test_failed(error, "The file '"//filename//"' could not be found."); return
+        end if
+
+        call unzip(path, stat=stat)
+        call check(error, stat, "Listing the contents of a compressed npz file should not fail.")
+    end
+
     !> Makes sure that we find the file when running both `ctest` and `fpm test`.
     function get_path(file) result(path)
         character(*), intent(in) :: file
         character(:), allocatable :: path
 
         character(:), allocatable :: path_to_check
-        logical :: exists
+        logical :: is_existing
 
         path_to_check = zip_files_ctest//file
-        inquire(file=path_to_check, exist=exists)
-        if (exists) then
+        inquire(file=path_to_check, exist=is_existing)
+        if (is_existing) then
             path = path_to_check
         else
             path_to_check = zip_files_fpm//file
-            inquire(file=path_to_check, exist=exists)
-            if (exists) path = path_to_check
+            inquire(file=path_to_check, exist=is_existing)
+            if (is_existing) path = path_to_check
         end if
     end
 

@@ -37,7 +37,10 @@ contains
             new_unittest("missing-fortran_order", test_missing_fortran_order, should_fail=.true.), &
             new_unittest("missing-shape", test_missing_shape, should_fail=.true.), &
             new_unittest("iomsg-deallocated", test_iomsg_deallocated), &
-            new_unittest("npz_load_nonexistent_file", npz_load_nonexistent_file, should_fail=.true.) &
+            new_unittest("npz_load_nonexistent_file", npz_load_nonexistent_file, should_fail=.true.), &
+            new_unittest("npz_load_invalid_dir", npz_load_invalid_dir, should_fail=.true.), &
+            new_unittest("npz_load_empty_file", npz_load_empty_file, should_fail=.true.), &
+            new_unittest("npz_load_empty_zip", npz_load_empty_zip, should_fail=.true.) &
             ]
     end subroutine collect_np
 
@@ -654,24 +657,58 @@ contains
 
         call load_npz(filename, arrays, stat)
         call check(error, stat, "Loading a non-existent npz file should fail.")
-    end subroutine
+    end
 
-    ! subroutine test_npz_load_empty_zip(error)
-    !     !> Error handling
-    !     type(error_type), allocatable, intent(out) :: error
+    subroutine npz_load_invalid_dir(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
 
-    !     integer :: stat
-    !     character(len=*), parameter :: filename = "empty.zip"
-    !     character(:), allocatable :: path
+        type(t_array_wrapper), allocatable :: arrays(:)
 
-    !     path = get_path(filename)
-    !     if (.not. allocated(path)) then
-    !         call test_failed(error, "The file '"//filename//"' could not be found."); return
-    !     end if
+        integer :: stat
+        character(len=*), parameter :: filename = "."
 
-    !     call load_npz(path, stat=stat)
-    !     call check(error, stat, "An empty zip file should fail.")
-    ! end subroutine
+        call load_npz(filename, arrays, stat)
+        call check(error, stat, "A file name that points towards a directory should fail.")
+    end
+
+    subroutine npz_load_empty_file(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+
+        integer :: io, stat
+        character(*), parameter :: filename = "empty_file"
+
+        open(newunit=io, file=filename)
+        close(io)
+
+        call load_npz(filename, arrays, stat)
+        call check(error, stat, "Try loading an empty file as an npz file should fail.")
+
+        call delete_file(filename)
+    end
+
+    subroutine npz_load_empty_zip(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: io, stat
+
+        character(*), parameter :: filename = "empty.zip"
+        character(*), parameter:: binary_data = 'PK'//char(5)//char(6)//repeat(char(0), 18)
+
+        open (newunit=io, file=filename, form='unformatted', access='stream')
+        write (io) binary_data
+        close (io)
+
+        call load_npz(filename, arrays, stat)
+        call check(error, stat, "Trying to load an npz file that is an empty zip file should fail.")
+
+        call delete_file(filename)
+    end
 
     subroutine delete_file(filename)
         character(len=*), intent(in) :: filename
