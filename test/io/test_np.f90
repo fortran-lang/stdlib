@@ -1,6 +1,7 @@
 module test_np
+    use stdlib_array, only : t_array_wrapper
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
-    use stdlib_io_np, only : save_npy, load_npy
+    use stdlib_io_np, only : save_npy, load_npy, load_npz
     use testdrive, only : new_unittest, unittest_type, error_type, check
     implicit none
     private
@@ -35,7 +36,8 @@ contains
             new_unittest("missing-descr", test_missing_descr, should_fail=.true.), &
             new_unittest("missing-fortran_order", test_missing_fortran_order, should_fail=.true.), &
             new_unittest("missing-shape", test_missing_shape, should_fail=.true.), &
-            new_unittest("iomsg-deallocated", test_iomsg_deallocated) &
+            new_unittest("iomsg-deallocated", test_iomsg_deallocated), &
+            new_unittest("npz_load_nonexistent_file", npz_load_nonexistent_file, should_fail=.true.) &
             ]
     end subroutine collect_np
 
@@ -640,6 +642,36 @@ contains
         call check(error,.not. allocated(msg), "Message wrongly allocated.")
 
     end subroutine
+
+    subroutine npz_load_nonexistent_file(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+
+        integer :: stat
+        character(len=*), parameter :: filename = "nonexistent.npz"
+
+        call load_npz(filename, arrays, stat)
+        call check(error, stat, "Loading a non-existent npz file should fail.")
+    end subroutine
+
+    ! subroutine test_npz_load_empty_zip(error)
+    !     !> Error handling
+    !     type(error_type), allocatable, intent(out) :: error
+
+    !     integer :: stat
+    !     character(len=*), parameter :: filename = "empty.zip"
+    !     character(:), allocatable :: path
+
+    !     path = get_path(filename)
+    !     if (.not. allocated(path)) then
+    !         call test_failed(error, "The file '"//filename//"' could not be found."); return
+    !     end if
+
+    !     call load_npz(path, stat=stat)
+    !     call check(error, stat, "An empty zip file should fail.")
+    ! end subroutine
 
     subroutine delete_file(filename)
         character(len=*), intent(in) :: filename

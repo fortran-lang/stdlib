@@ -28,34 +28,21 @@ contains
         character(len=:), allocatable, optional, intent(out) :: msg
 
         integer :: unit, iostat
-        character(:), allocatable :: err_msg
         character(len=256) :: line
 
         stat = 0
 
         if (.not. exists(temp_dir)) then
-            call run('mkdir '//temp_dir, stat, err_msg)
+            call run('mkdir '//temp_dir, stat)
             if (stat /= 0) then
-                if (present(msg)) then
-                    if (allocated(err_msg)) then
-                        msg = "Failed to create temporary directory '"//temp_dir//"': '"//err_msg//"'"
-                    else
-                        msg = "Failed to create temporary directory '"//temp_dir//"'."
-                    end if
-                    return
-                end if
+                if (present(msg)) msg = "Failed to create temporary directory '"//temp_dir//"'."; return
             end if
         end if
 
-        call run('ls '//dir//' > '//listed_contents, stat, err_msg)
+        call run('ls '//dir//' > '//listed_contents, stat)
         if (stat /= 0) then
             if (present(msg)) then
-                if (allocated(err_msg)) then
-                    msg = "Failed to list files in directory '"//dir//"': '"//err_msg//"'"
-                else
-                    msg = "Failed to list files in directory '"//dir//"'."
-                end if
-                return
+                msg = "Failed to list files in directory '"//dir//"'."; return
             end if
         end if
 

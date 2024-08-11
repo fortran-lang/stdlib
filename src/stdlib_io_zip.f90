@@ -17,7 +17,6 @@ contains
         character(len=:), allocatable, intent(out), optional :: msg
 
         integer :: run_stat
-        character(:), allocatable :: err_msg
         character(:), allocatable :: output_dir
 
         if (present(outputdir)) then
@@ -29,44 +28,27 @@ contains
         if (present(stat)) stat = 0
         run_stat = 0
 
-        call run('rm -rf '//unzipped_folder, run_stat, err_msg)
+        call run('rm -rf '//unzipped_folder, run_stat)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
-            if (present(msg)) then
-                if (allocated(err_msg)) then
-                    msg = "Error removing folder '"//unzipped_folder//"': '"//err_msg//"'"
-                else
-                    msg = "Error removing folder '"//unzipped_folder//"'."
-                end if
-            end if
+            if (present(msg)) msg = "Error removing folder '"//unzipped_folder//"'."
             return
         end if
 
         if (.not. exists(temp_dir)) then
-            call run('mkdir '//temp_dir, run_stat, err_msg)
+            call run('mkdir '//temp_dir, run_stat)
             if (run_stat /= 0) then
                 if (present(stat)) stat = run_stat
-                if (present(msg)) then
-                    if (allocated(err_msg)) then
-                        msg = "Error creating folder '"//temp_dir//"': '"//err_msg//"'"
-                    else
-                        msg = "Error creating folder '"//temp_dir//"'."
-                    end if
-                end if
+                if (present(msg)) msg = "Error creating folder '"//temp_dir//"'."
                 return
             end if
         end if
 
-        call run('unzip '//filename//' -d '//unzipped_folder, run_stat, err_msg)
+        call run('unzip '//filename//' -d '//unzipped_folder, run_stat)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
-            if (present(msg)) then
-                if (allocated(err_msg)) then
-                    msg = "Error unzipping '"//filename//"': '"//err_msg//"'"
-                else
-                    msg = "Error unzipping '"//filename//"'."
-                end if
-            end if
+            if (present(msg)) msg = "Error unzipping '"//filename//"'."
+            return
         end if
     end
 end
