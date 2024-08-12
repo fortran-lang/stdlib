@@ -42,7 +42,8 @@ contains
             new_unittest("npz_load_empty_file", npz_load_empty_file, should_fail=.true.), &
             new_unittest("npz_load_empty_zip", npz_load_empty_zip, should_fail=.true.), &
             new_unittest("npz_load_arr_empty_0", npz_load_arr_empty_0), &
-            new_unittest("npz_load_arr_rand_2_3", npz_load_arr_rand_2_3) &
+            new_unittest("npz_load_arr_rand_2_3", npz_load_arr_rand_2_3), &
+            new_unittest("npz_load_arr_arange_10_20", npz_load_arr_arange_10_20) &
             ]
     end subroutine collect_np
 
@@ -755,6 +756,37 @@ contains
         select type (typed_array => arrays(1)%array)
           class is (t_array_rdp_2)
             call check(error, size(typed_array%values) == 6, "Array in '"//filename//"' is supposed to have 6 entries.")
+          class default
+            call test_failed(error, "Array in '"//filename//"' is of wrong type.")
+        end select
+    end
+
+    subroutine npz_load_arr_arange_10_20(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat, i
+        character(*), parameter :: filename = "arange_10_20.npz"
+        character(:), allocatable :: path
+
+        path = get_path(filename)
+        call load_npz(path, arrays, stat)
+        call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
+        if (stat /= 0) return
+        call check(error, size(arrays) == 1, "'"//filename//"' is supposed to contain a single array.")
+        if (size(arrays) /= 1) return
+        call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
+        if (arrays(1)%array%name /= "arr_0.npy") return
+        select type (typed_array => arrays(1)%array)
+          class is (t_array_iint64_1)
+            call check(error, size(typed_array%values) == 10, "Array in '"//filename//"' is supposed to have 10 entries.")
+            if (size(typed_array%values) /= 10) return
+            call check(error, typed_array%values(1) == 10, "First entry is supposed to be 10.")
+            if (typed_array%values(1) /= 10) return
+            do i = 2, 10
+                call check(error, typed_array%values(i) == typed_array%values(i-1) + 1, "Array is supposed to be an arange.")
+                if (typed_array%values(i) /= typed_array%values(i-1) + 1) return
+            end do
           class default
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
         end select
