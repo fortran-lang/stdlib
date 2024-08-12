@@ -43,7 +43,8 @@ contains
             new_unittest("npz_load_empty_zip", npz_load_empty_zip, should_fail=.true.), &
             new_unittest("npz_load_arr_empty_0", npz_load_arr_empty_0), &
             new_unittest("npz_load_arr_rand_2_3", npz_load_arr_rand_2_3), &
-            new_unittest("npz_load_arr_arange_10_20", npz_load_arr_arange_10_20) &
+            new_unittest("npz_load_arr_arange_10_20", npz_load_arr_arange_10_20), &
+            new_unittest("npz_load_arr_cmplx", npz_load_arr_cmplx) &
             ]
     end subroutine collect_np
 
@@ -787,6 +788,37 @@ contains
                 call check(error, typed_array%values(i) == typed_array%values(i-1) + 1, "Array is supposed to be an arange.")
                 if (typed_array%values(i) /= typed_array%values(i-1) + 1) return
             end do
+          class default
+            call test_failed(error, "Array in '"//filename//"' is of wrong type.")
+        end select
+    end
+
+    subroutine npz_load_arr_cmplx(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat, i
+        character(*), parameter :: filename = "cmplx_arr.npz"
+        character(:), allocatable :: path
+
+        path = get_path(filename)
+        call load_npz(path, arrays, stat)
+        call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
+        if (stat /= 0) return
+        call check(error, size(arrays) == 1, "'"//filename//"' is supposed to contain a single array.")
+        if (size(arrays) /= 1) return
+        call check(error, arrays(1)%array%name == "cmplx.npy", "Wrong array name.")
+        if (arrays(1)%array%name /= "cmplx.npy") return
+        select type (typed_array => arrays(1)%array)
+          class is (t_array_cdp_1)
+            call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
+            if (size(typed_array%values) /= 3) return
+            call check(error, typed_array%values(1) == cmplx(1_dp, 2_dp), "First complex number does not match.")
+            if (typed_array%values(1) /= cmplx(1_dp, 2_dp)) return
+            call check(error, typed_array%values(2) == cmplx(3_dp, 4_dp), "Second complex number does not match.")
+            if (typed_array%values(2) /= cmplx(3_dp, 4_dp)) return
+            call check(error, typed_array%values(3) == cmplx(5_dp, 6_dp), "Third complex number does not match.")
+            if (typed_array%values(3) /= cmplx(5_dp, 6_dp)) return
           class default
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
         end select
