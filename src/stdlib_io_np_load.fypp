@@ -115,6 +115,8 @@ contains
         character(len=:), allocatable :: msg
         type(string_type), allocatable :: files(:)
 
+        if (present(iostat)) iostat = 0
+
         call unzip(filename, unzipped_folder, stat, msg)
         if (stat /= 0) then
             if (present(iostat)) iostat = stat
@@ -152,7 +154,8 @@ contains
         allocate(arrays(size(files)))
 
         do i = 1, size(files)
-            open(newunit=io, file=dir//as_string(files(i)), form='unformatted', access='stream', iostat=stat, iomsg=msg)
+            path = dir//'/'//as_string(files(i))
+            open(newunit=io, file=path, form='unformatted', access='stream', iostat=stat, iomsg=msg)
             if (stat /= 0) return
 
             call get_descriptor(io, as_string(files(i)), this_type, vshape, stat, msg)

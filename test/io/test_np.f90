@@ -40,7 +40,8 @@ contains
             new_unittest("npz_load_nonexistent_file", npz_load_nonexistent_file, should_fail=.true.), &
             new_unittest("npz_load_invalid_dir", npz_load_invalid_dir, should_fail=.true.), &
             new_unittest("npz_load_empty_file", npz_load_empty_file, should_fail=.true.), &
-            new_unittest("npz_load_empty_zip", npz_load_empty_zip, should_fail=.true.) &
+            new_unittest("npz_load_empty_zip", npz_load_empty_zip, should_fail=.true.), &
+            new_unittest("npz_load_arr_empty_0", npz_load_arr_empty_0) &
             ]
     end subroutine collect_np
 
@@ -710,6 +711,31 @@ contains
         call delete_file(filename)
     end
 
+    subroutine npz_load_arr_empty_0(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat
+        character(*), parameter :: filename = "empty_0.npz"
+        character(:), allocatable :: path
+
+        path = get_path(filename)
+        call load_npz(path, arrays, stat)
+        call check(error, stat, "Loading an npz that contains a single empty array shouldn't fail.")
+    end
+
+    !> Makes sure that we find the file when running both `ctest` and `fpm test`.
+    function get_path(file) result(path)
+        character(*), intent(in) :: file
+        character(:), allocatable :: path
+
+#ifdef TEST_ROOT_DIR
+        path = TEST_ROOT_DIR//'/io/zip_files/'//file
+#else
+        path = 'test/io/zip_files/'//file
+#endif
+    end
+
     subroutine delete_file(filename)
         character(len=*), intent(in) :: filename
 
@@ -718,7 +744,6 @@ contains
         open(newunit=io, file=filename)
         close(io, status="delete")
     end subroutine delete_file
-
 end
 
 

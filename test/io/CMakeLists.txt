@@ -5,14 +5,15 @@ set(
 )
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
-set(hasCPP
+set(needsCPP
+    test_np.f90
     test_zip.f90
 )
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
-  set_source_files_properties(${hasCPP} PROPERTIES COMPILE_FLAGS "-cpp")
+  set_source_files_properties(${needsCPP} PROPERTIES COMPILE_FLAGS "-cpp")
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
-  set_source_files_properties(${hasCPP} PROPERTIES COMPILE_FLAGS "-fpp")
+  set_source_files_properties(${needsCPP} PROPERTIES COMPILE_FLAGS "-fpp")
 endif()
 
 ADDTEST(loadtxt)

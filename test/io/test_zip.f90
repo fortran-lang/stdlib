@@ -146,10 +146,6 @@ contains
         character(:), allocatable :: path
 
         path = get_path(filename)
-        if (.not. allocated(path)) then
-            call test_failed(error, "The file '"//filename//"' could not be found."); return
-        end if
-
         call unzip(path, stat=stat)
         call check(error, stat, "Listing the contents of a compressed npz file should not fail.")
     end
