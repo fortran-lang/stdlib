@@ -1,8 +1,8 @@
 module test_np
-    use stdlib_array, only : t_array_wrapper
+    use stdlib_array
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
     use stdlib_io_np, only : save_npy, load_npy, load_npz
-    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
     implicit none
     private
 
@@ -722,6 +722,17 @@ contains
         path = get_path(filename)
         call load_npz(path, arrays, stat)
         call check(error, stat, "Loading an npz that contains a single empty array shouldn't fail.")
+        if (stat /= 0) return
+        call check(error, size(arrays) == 1, "'"//filename//"' is supposed to contain a single array.")
+        if (size(arrays) /= 1) return
+        call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
+        if (arrays(1)%array%name /= "arr_0.npy") return
+        select type (typed_array => arrays(1)%array)
+          class is (t_array_rdp_1)
+            call check(error, size(typed_array%values) == 0, "Array in '"//filename//"' is supposed to be empty.")
+          class default
+            call test_failed(error, "Array in '"//filename//"' is of wrong type.")
+        end select
     end
 
     !> Makes sure that we find the file when running both `ctest` and `fpm test`.

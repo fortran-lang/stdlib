@@ -6,7 +6,7 @@
 
 !> Implementation of loading npy files into multidimensional arrays
 submodule(stdlib_io_np) stdlib_io_np_load
-    use stdlib_array, only: t_array_wrapper, t_array
+    use stdlib_array
     use stdlib_error, only: error_stop
     use stdlib_filesystem, only: exists, list_dir, temp_dir
     use stdlib_io_zip, only: unzip, unzipped_folder, zip_contents
@@ -148,68 +148,69 @@ contains
 
         integer :: i, io
         integer, allocatable :: vshape(:)
-        character(len=:), allocatable :: this_type
-        character(len=:), allocatable :: path
+        character(len=:), allocatable :: this_type, array_name, path
 
         allocate(arrays(size(files)))
 
         do i = 1, size(files)
-            path = dir//'/'//as_string(files(i))
+            array_name = as_string(files(i))
+            path = dir//'/'//array_name
+
             open(newunit=io, file=path, form='unformatted', access='stream', iostat=stat, iomsg=msg)
             if (stat /= 0) return
 
-            call get_descriptor(io, as_string(files(i)), this_type, vshape, stat, msg)
+            call get_descriptor(io, array_name, this_type, vshape, stat, msg)
             if (stat /= 0) then
                 close(io, status='delete'); return
             end if
 
-!             select case (this_type)
-! #:for k1, t1 in KINDS_TYPES
-!               case (type_${t1[0]}$${k1}$)
-!                 select case (size(vshape))
-! #:for rank in RANKS
-!                   case (${rank}$)
-!                     block
-!                         ${t1}$, allocatable :: array${ranksuffix(rank)}$
+            select case (this_type)
+#:for k1, t1 in KINDS_TYPES
+              case (type_${t1[0]}$${k1}$)
+                select case (size(vshape))
+#:for rank in RANKS
+                  case (${rank}$)
+                    block
+                        ${t1}$, allocatable :: array${ranksuffix(rank)}$
 
-!                         call allocate_array_from_shape(array, vshape, stat)
-!                         if (stat /= 0) then
-!                             msg = "Failed to allocate array of type '"//this_type//"'."; return
-!                         end if
+                        call allocate_array_from_shape(array, vshape, stat)
+                        if (stat /= 0) then
+                            msg = "Failed to allocate array of type '"//this_type//"'."; return
+                        end if
 
-!                         read (io, iostat=stat) array
-!                         if (stat /= 0) then
-!                             msg = "Failed to read array of type '"//this_type//"' "//&
-!                             & 'with total size of '//to_string(product(vshape)); return
-!                         end if
+                        read (io, iostat=stat) array
+                        if (stat /= 0) then
+                            msg = "Failed to read array of type '"//this_type//"' "//&
+                            & 'with total size of '//to_string(product(vshape)); return
+                        end if
 
-!                         allocate (t_array_${t1[0]}$${k1}$_${rank}$ :: arrays(i)%array, stat=stat)
-!                         if (stat /= 0) then
-!                             msg = "Failed to allocate array of type '"//this_type//"' "//&
-!                             & 'with total size of '//to_string(product(vshape)); return
-!                         end if
+                        allocate (t_array_${t1[0]}$${k1}$_${rank}$ :: arrays(i)%array, stat=stat)
+                        if (stat /= 0) then
+                            msg = "Failed to allocate array of type '"//this_type//"' "//&
+                            & 'with total size of '//to_string(product(vshape)); return
+                        end if
 
-!                         select type (typed_array => arrays(i)%array)
-!                           class is (t_array_${t1[0]}$${k1}$_${rank}$)
-!                             typed_array%values = array
-!                           class default
-!                             msg = 'Failed to allocate values.'; stat = 1; return
-!                         end select
+                        select type (typed_array => arrays(i)%array)
+                          class is (t_array_${t1[0]}$${k1}$_${rank}$)
+                            typed_array%values = array
+                          class default
+                            msg = 'Failed to allocate values.'; stat = 1; return
+                        end select
 
-!                         arrays(i)%array%name = unzipped_bundle%files(i)%name
-!                     end block
-! #:endfor
-!                   case default
-!                     stat = 1; msg = 'Unsupported rank for array of type '//this_type//': '// &
-!                     & to_string(size(vshape))//'.'; return
-!                 end select
-! #:endfor
-!               case default
-!                 stat = 1; msg = 'Unsupported array type: '//this_type//'.'; return
-!             end select
+                        arrays(i)%array%name = array_name
+                    end block
+#:endfor
+                  case default
+                    stat = 1; msg = 'Unsupported rank for array of type '//this_type//': '// &
+                    & to_string(size(vshape))//'.'; return
+                end select
+#:endfor
+              case default
+                stat = 1; msg = 'Unsupported array type: '//this_type//'.'; return
+            end select
 
-!             close (io, status='delete')
-!             if (stat /= 0) return
+            close (io, status='delete')
+            if (stat /= 0) return
         end do
     end
 
