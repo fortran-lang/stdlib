@@ -150,6 +150,7 @@ contains
         integer, allocatable :: vshape(:)
         character(len=:), allocatable :: this_type, array_name, path
 
+        stat = 0
         allocate(arrays(size(files)))
 
         do i = 1, size(files)
@@ -175,26 +176,30 @@ contains
 
                         call allocate_array_from_shape(array, vshape, stat)
                         if (stat /= 0) then
-                            msg = "Failed to allocate array of type '"//this_type//"'."; return
+                            msg = "Failed to allocate array of type '"//this_type//"'.";
+                            close(io, status='delete'); return
                         end if
 
                         read (io, iostat=stat) array
                         if (stat /= 0) then
                             msg = "Failed to read array of type '"//this_type//"' "//&
-                            & 'with total size of '//to_string(product(vshape)); return
+                            & 'with total size of '//to_string(product(vshape))
+                            close(io, status='delete'); return
                         end if
 
                         allocate (t_array_${t1[0]}$${k1}$_${rank}$ :: arrays(i)%array, stat=stat)
                         if (stat /= 0) then
                             msg = "Failed to allocate array of type '"//this_type//"' "//&
-                            & 'with total size of '//to_string(product(vshape)); return
+                            & 'with total size of '//to_string(product(vshape))
+                            close(io, status='delete'); return
                         end if
 
                         select type (typed_array => arrays(i)%array)
                           class is (t_array_${t1[0]}$${k1}$_${rank}$)
                             typed_array%values = array
                           class default
-                            msg = 'Failed to allocate values.'; stat = 1; return
+                            msg = 'Failed to allocate values.'; stat = 1
+                            close(io, status='delete'); return
                         end select
 
                         arrays(i)%array%name = array_name
@@ -202,11 +207,13 @@ contains
 #:endfor
                   case default
                     stat = 1; msg = 'Unsupported rank for array of type '//this_type//': '// &
-                    & to_string(size(vshape))//'.'; return
+                    & to_string(size(vshape))//'.'
+                    close(io, status='delete'); return
                 end select
 #:endfor
               case default
-                stat = 1; msg = 'Unsupported array type: '//this_type//'.'; return
+                stat = 1; msg = 'Unsupported array type: '//this_type//'.'
+                close(io, status='delete'); return
             end select
 
             close (io, status='delete')
