@@ -810,7 +810,7 @@ contains
         call check(error, arrays(1)%array%name == "cmplx.npy", "Wrong array name.")
         if (arrays(1)%array%name /= "cmplx.npy") return
         select type (typed_array => arrays(1)%array)
-          class is (t_array_cdp_1)
+          class is (t_array_csp_1)
             call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
             if (size(typed_array%values) /= 3) return
             call check(error, typed_array%values(1) == cmplx(1_dp, 2_dp), "First complex number does not match.")
