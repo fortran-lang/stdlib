@@ -142,7 +142,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         integer :: stat
-        character(*), parameter :: filename = "two_files_compressed.npz"
+        character(*), parameter :: filename = "two_arr_iint64_rdp_comp.npz"
         character(:), allocatable :: path
 
         path = get_path(filename)
