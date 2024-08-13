@@ -10,7 +10,7 @@ submodule(stdlib_io_np) stdlib_io_np_save
     use stdlib_error, only: error_stop
     use stdlib_filesystem, only: run
     use stdlib_strings, only: to_string
-    use stdlib_string_type, only: string_type, char
+    use stdlib_string_type, only: string_type, as_string => char
     use stdlib_io_zip, only: zip
     implicit none
 
@@ -167,7 +167,7 @@ contains
 #:for rank in RANKS
               class is (t_array_${t1[0]}$${k1}$_${rank}$)
                 do j = 1, size(files)
-                    if (char(files(j)) == typed_array%name) then
+                    if (as_string(files(j)) == typed_array%name) then
                         if (present(iostat)) iostat = 1
                         if (present(iomsg)) iomsg = "Error saving array to file '"//filename// &
                             "': Array with the same name '"//typed_array%name//"' already exists."
@@ -212,7 +212,7 @@ contains
         integer :: i, unit
 
         do i = 1, size(files)
-            open(newunit=unit, file=char(files(i)))
+            open(newunit=unit, file=as_string(files(i)))
             close(unit, status="delete")
         end do
     end
