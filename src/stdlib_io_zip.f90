@@ -1,14 +1,47 @@
 module stdlib_io_zip
     use stdlib_filesystem, only: exists, run, temp_dir
+    use stdlib_string_type, only: string_type, char
     implicit none
     private
 
-    public :: unzip, default_unzip_dir, zip_contents
+    public :: zip, unzip, default_unzip_dir, zip_contents
 
     character(*), parameter :: default_unzip_dir = temp_dir//'/unzipped_files'
     character(*), parameter :: zip_contents = default_unzip_dir//'/zip_contents.txt'
+    character(*), parameter :: default_zip_dir = temp_dir//'.'
 
 contains
+
+    subroutine zip(output_file, files, stat, msg)
+        character(*), intent(in) :: output_file
+        type(string_type), intent(in) :: files(:)
+        integer, intent(out), optional :: stat
+        character(len=:), allocatable, intent(out), optional :: msg
+
+        integer :: run_stat, i
+        character(:), allocatable :: files_str
+
+        if (present(stat)) stat = 0
+        run_stat = 0
+
+        if (trim(output_file) == '') then
+            if (present(stat)) stat = 1
+            if (present(msg)) msg = "Output file name is empty."
+            return
+        end if
+
+        files_str = ''
+        do i = 1, size(files)
+            files_str = files_str//' '//char(files(i))
+        end do
+
+        call run('zip '//output_file//files_str, run_stat)
+        if (run_stat /= 0) then
+            if (present(stat)) stat = run_stat
+            if (present(msg)) msg = "Error creating zip file '"//output_file//"'."
+            return
+        end if
+    end
 
     subroutine unzip(filename, outputdir, stat, msg)
         character(len=*), intent(in) :: filename

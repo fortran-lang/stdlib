@@ -1,5 +1,6 @@
 module test_zip
     use stdlib_io_zip
+    use stdlib_string_type, only : string_type, char
     use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
     implicit none
     private
@@ -22,7 +23,12 @@ contains
             new_unittest("unzip_zip_has_txt_file", unzip_zip_has_txt_file), &
             new_unittest("unzip_npz_array_empty_0_file", unzip_npz_array_empty_0_file), &
             new_unittest("unzip_two_files", unzip_two_files), &
-            new_unittest("unzip_compressed_npz", unzip_compressed_npz) &
+            new_unittest("unzip_compressed_npz", unzip_compressed_npz), &
+            new_unittest("zip_nonexistent_file", zip_nonexistent_file, should_fail=.true.), &
+            new_unittest("zip_invalid_file", zip_invalid_file, should_fail=.true.), &
+            new_unittest("zip_empty_file", zip_empty_file), &
+            new_unittest("zip_invalid_output_file", zip_invalid_output_file, should_fail=.true.), &
+            new_unittest("zip_two_files", zip_two_files) &
             ]
     end
 
@@ -148,6 +154,97 @@ contains
         path = get_path(filename)
         call unzip(path, stat=stat)
         call check(error, stat, "Listing the contents of a compressed npz file should not fail.")
+    end
+
+    subroutine zip_nonexistent_file(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat
+        character(*), parameter :: output_file = "temp.zip"
+        character(*), parameter :: input_file = "nonexistent"
+        type(string_type), allocatable :: files(:)
+
+        files = [string_type(input_file)]
+
+        call zip(output_file, files, stat)
+        call check(error, stat, "Compressing a non-existent file should fail.")
+    end
+
+    subroutine zip_invalid_file(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat
+        character(*), parameter :: output_file = "temp.zip"
+        character(*), parameter :: input_file = "."
+        type(string_type), allocatable :: files(:)
+
+        files = [string_type(input_file)]
+
+        call zip(output_file, files, stat)
+        call check(error, stat, "Compressing an invalid file should fail.")
+    end
+
+    subroutine zip_empty_file(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat, unit
+        character(*), parameter :: output_file = "temp.zip"
+        character(*), parameter :: input_file = "abc.txt"
+        type(string_type), allocatable :: files(:)
+
+        files = [string_type(input_file)]
+
+        open(newunit= unit, file=input_file)
+        close(unit)
+
+        call zip(output_file, files, stat)
+        call check(error, stat, "Compressing a valid empty file should not fail.")
+
+        call delete_file(input_file)
+        call delete_file(output_file)
+    end
+
+    subroutine zip_invalid_output_file(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat, unit
+        character(*), parameter :: output_file = "   "
+        character(*), parameter :: input_file = "abc.txt"
+        type(string_type), allocatable :: files(:)
+
+        files = [string_type(input_file)]
+
+        open(newunit=unit, file=input_file)
+        close(unit)
+
+        call zip(output_file, files, stat)
+        call check(error, stat, "Providing an empty output file should fail.")
+
+        call delete_file(input_file)
+    end
+
+    subroutine zip_two_files(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat, unit
+        character(*), parameter :: output_file = "temp.zip"
+        character(*), parameter :: input_file_1 = "abc.txt"
+        character(*), parameter :: input_file_2 = "def.txt"
+        type(string_type), allocatable :: files(:)
+
+        files = [string_type(input_file_1), string_type(input_file_2)]
+
+        open(newunit=unit, file=input_file_1)
+        close(unit)
+        open(newunit=unit, file=input_file_2)
+        close(unit)
+
+        call zip(output_file, files, stat)
+        call check(error, stat, "Compressing two valid files should not fail.")
+
+        call delete_file(input_file_1)
+        call delete_file(input_file_2)
+        call delete_file(output_file)
     end
 
     !> Makes sure that we find the file when running both `ctest` and `fpm test`.
