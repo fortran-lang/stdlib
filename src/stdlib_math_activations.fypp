@@ -1,0 +1,386 @@
+#:include "common.fypp"
+module stdlib_math_activations
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    implicit none
+    private
+
+    interface gaussian
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: gaussian_${rk}$
+        #:endfor
+    end interface
+    public :: gaussian
+
+    interface gaussian_grad
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: gaussian_grad_${rk}$
+        #:endfor
+    end interface
+    public :: gaussian_grad
+
+    interface elu
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: elu_${rk}$
+        #:endfor
+    end interface
+    public :: elu
+
+    interface elu_grad
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: elu_grad_${rk}$
+        #:endfor
+    end interface
+    public :: elu_grad
+
+    interface relu
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: relu_${rk}$
+        #:endfor
+    end interface
+    public :: relu
+
+    interface relu_grad
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: relu_grad_${rk}$
+        #:endfor
+    end interface
+    public :: relu_grad
+
+    interface gelu
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: gelu_${rk}$
+        #:endfor
+    end interface
+    public :: gelu
+
+    interface gelu_grad
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: gelu_grad_${rk}$
+        #:endfor
+    end interface
+    public :: gelu_grad
+
+    interface gelu_approx
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: gelu_approx_${rk}$
+        #:endfor
+    end interface
+    public :: gelu_approx
+
+    interface gelu_approx_grad
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: gelu_approx_grad_${rk}$
+        #:endfor
+    end interface
+    public :: gelu_approx_grad
+
+    interface sigmoid
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: sigmoid_${rk}$
+        #:endfor
+    end interface
+    public :: sigmoid
+
+    interface sigmoid_grad
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: sigmoid_grad_${rk}$
+        #:endfor
+    end interface
+    public :: sigmoid_grad
+
+    interface step
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: step_${rk}$
+        #:endfor
+    end interface
+    public :: step
+
+    interface step_grad
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: step_grad_${rk}$
+        #:endfor
+    end interface
+    public :: step_grad
+
+    interface Softmax
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: softmax_${rk}$
+        #:endfor
+    end interface
+    public :: softmax
+
+    interface Softmax_grad
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: Softmax_grad_${rk}$
+        #:endfor
+    end interface
+    public :: Softmax_grad
+
+    interface Softplus
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: Softplus_${rk}$
+        #:endfor
+    end interface
+    public :: Softplus
+
+    interface Softplus_grad
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: Softplus_grad_${rk}$
+        #:endfor
+    end interface
+    public :: Softplus_grad
+
+    interface ftanh !! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: ftanh_${rk}$
+        #:endfor
+    end interface
+    public :: ftanh
+
+    interface ferf !! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: ferf_${rk}$
+        #:endfor
+    end interface
+    public :: ferf
+    
+    #:for rk, rt in REAL_KINDS_TYPES
+    ${rt}$, parameter :: isqrt2_${rk}$ = 1_${rk}$ / sqrt(2._${rk}$)
+    #:endfor
+
+contains
+
+!==================================================
+! Gaussian
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental ${rt}$ function gaussian_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = exp(-x**2)
+end function
+
+elemental ${rt}$ function gaussian_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = -2_${rk}$ * x * exp(-x**2)
+end function
+
+#:endfor
+
+!==================================================
+! Exponential Linear Unit
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental ${rt}$ function elu_${rk}$( x , a ) result ( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$, intent(in) :: a
+    
+    if(x >= 0_${rk}$)then
+        y = x
+    else
+        y = a * (exp(x) - 1_${rk}$)
+    end if
+end function
+
+elemental ${rt}$ function elu_grad_${rk}$( x , a ) result ( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$, intent(in) :: a
+    
+    if(x >= 0_${rk}$)then
+        y = 1_${rk}$ 
+    else
+        y = a * exp(x)
+    end if
+end function
+
+#:endfor
+
+!==================================================
+! Rectified Linear Unit
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental ${rt}$ function relu_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = max(0_${rk}$, x)
+end function
+
+elemental ${rt}$ function relu_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+
+    if(x > 0_${rk}$)then
+        y = 1_${rk}$ 
+    else
+        y = 0_${rk}$
+    end if
+end function
+
+#:endfor
+
+!==================================================
+! GELU: Gaussian Error Linear Units function
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental ${rt}$ function gelu_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = 0.5_${rk}$ * x * (1 + ferf(x * isqrt2_${rk}$))
+end function
+
+elemental ${rt}$ function gelu_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = 0.5_${rk}$ * (1 + ferf(x * isqrt2_${rk}$) )
+    y = y + x * isqrt2_${rk}$ * exp( - 0.5_${rk}$ * x**2 )
+end function
+
+#:endfor
+
+#:for rk, rt in REAL_KINDS_TYPES
+elemental ${rt}$ function gelu_approx_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = 0.5_${rk}$ * x * (1 + ferf(x * isqrt2_${rk}$))
+end function
+
+elemental ${rt}$ function gelu_approx_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = 0.5_${rk}$ * (1 + ferf(x * isqrt2_${rk}$) )
+    y = y + x * isqrt2_${rk}$ * exp( - 0.5_${rk}$ * x**2 )
+end function
+
+#:endfor
+
+!==================================================
+! Sigmoid
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental ${rt}$ function sigmoid_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = 1_${rk}$ / (1_${rk}$ + exp(-x))
+end function
+
+elemental ${rt}$ function sigmoid_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = exp(x) / (1_${rk}$ + exp(x))**2
+end function
+
+#:endfor
+
+!==================================================
+! Step
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental ${rt}$ function Step_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+
+    if(x > 0_${rk}$)then
+        y = 1_${rk}$ 
+    else
+        y = 0_${rk}$
+    end if
+end function
+
+elemental ${rt}$ function Step_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = 0_${rk}$
+end function
+
+#:endfor
+
+!==================================================
+! tanh
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental ${rt}$ function tanh_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = ftanh(x)
+end function
+
+elemental ${rt}$ function tanh_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = 1_${rk}$ - ftanh(x)**2
+end function
+
+#:endfor
+
+!==================================================
+! Softmax
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+pure function Softmax_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x(:)
+    ${rt}$ :: y(size(x))
+
+    y(:) = exp(x(:) - maxval(x(:)) )
+    y(:) = y(:) / sum(y(:))
+end function
+
+pure function Softmax_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x(:)
+    ${rt}$ :: y(size(x))
+    
+    y = softmax_${rk}$(x)
+    y = y * (1_${rk}$ - y)
+end function
+
+#:endfor
+
+!==================================================
+! Softplus
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental ${rt}$ function Softplus_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = log(exp(x) + 1_${rk}$)
+end function
+
+elemental ${rt}$ function Softplus_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    
+    y = exp(x) / (exp(x) + 1_${rk}$)
+end function
+
+#:endfor
+
+!==================================================
+! Fast intrinsics for accelerated activations
+!==================================================
+
+#:for rk, rt in REAL_KINDS_TYPES
+elemental ${rt}$ function ftanh_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: x2, a, b
+    
+    if (x > 5_${rk}$) then
+        y = 1_${rk}$
+    elseif (x < -5_${rk}$) then
+        y = -1_${rk}$
+    else
+        x2 = x*x
+        a = x * (135135.0_${rk}$ + x2 * (17325.0_${rk}$ + x2 * (378.0_${rk}$ + x2)))
+        b = 135135.0_${rk}$ + x2 * (62370.0_${rk}$ + x2 * (3150.0_${rk}$ + x2 * 28.0_${rk}$))
+        y = a / b
+    end if
+end function
+
+elemental ${rt}$ function ferf_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: abs_x
+    
+    abs_x = abs(x)
+    y = 1_${rk}$ - 1_${rk}$ / (1+ 0.278393_${rk}$*abs_x + 0.230389_${rk}$*abs_x**2 + 0.000972_${rk}$*abs_x**3 + 0.078108_${rk}$*abs_x**4)**4
+    y = y * sign(1.0_${rk}$,x)
+end function
+
+#:endfor
+
+end module
