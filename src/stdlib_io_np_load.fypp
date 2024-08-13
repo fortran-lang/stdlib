@@ -9,7 +9,7 @@ submodule(stdlib_io_np) stdlib_io_np_load
     use stdlib_array
     use stdlib_error, only: error_stop
     use stdlib_filesystem, only: exists, list_dir, temp_dir
-    use stdlib_io_zip, only: unzip, default_unzip_dir, zip_contents
+    use stdlib_io_zip, only: unzip, default_unzip_dir, zip_contents, zip
     use stdlib_strings, only: to_string, starts_with
     use stdlib_string_type, only: string_type, as_string => char
     implicit none

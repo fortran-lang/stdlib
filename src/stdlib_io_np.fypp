@@ -137,7 +137,7 @@ module stdlib_io_np
     interface save_npz
         module subroutine save_npz_from_arrays(filename, arrays, compressed, iostat, iomsg)
             character(len=*), intent(in) :: filename
-            type(t_array_wrapper), intent(in) :: arrays(*)
+            type(t_array_wrapper), intent(in) :: arrays(:)
             !> If true, the file is saved in compressed format. The default is false.
             logical, intent(in), optional :: compressed
             integer, intent(out), optional :: iostat
