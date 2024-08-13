@@ -34,6 +34,7 @@ jobs:
             mingw-w64-${{ matrix.arch }}-cmake
             mingw-w64-${{ matrix.arch }}-ninja
             unzip
+            zip
 
       - run: >-
           PATH=$PATH:/mingw64/bin/ cmake
