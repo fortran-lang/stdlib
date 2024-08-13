@@ -1,5 +1,6 @@
 module test_np
     use stdlib_array
+    use stdlib_filesystem, only : temp_dir
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
     use stdlib_io_np, only : save_npy, load_npy, load_npz
     use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
@@ -659,9 +660,10 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
 
         integer :: stat
-        character(len=*), parameter :: filename = "nonexistent.npz"
+        character(*), parameter :: filename = "nonexistent.npz"
+        character(*), parameter :: tmp = temp_dir//"nonexistent"
 
-        call load_npz(filename, arrays, stat)
+        call load_npz(filename, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading a non-existent npz file should fail.")
     end
 
@@ -672,9 +674,11 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
 
         integer :: stat
-        character(len=*), parameter :: filename = "."
+        character(*), parameter :: filename = "."
+        character(*), parameter :: tmp = temp_dir//"invalid_dir"
 
-        call load_npz(filename, arrays, stat)
+
+        call load_npz(filename, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "A file name that points towards a directory should fail.")
     end
 
@@ -686,11 +690,12 @@ contains
 
         integer :: io, stat
         character(*), parameter :: filename = "empty_file"
+        character(*), parameter :: tmp = temp_dir//"empty_file"
 
         open(newunit=io, file=filename)
         close(io)
 
-        call load_npz(filename, arrays, stat)
+        call load_npz(filename, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Try loading an empty file as an npz file should fail.")
 
         call delete_file(filename)
@@ -704,13 +709,14 @@ contains
         integer :: io, stat
 
         character(*), parameter :: filename = "empty.zip"
+        character(*), parameter :: tmp = temp_dir//"empty_zip"
         character(*), parameter:: binary_data = 'PK'//char(5)//char(6)//repeat(char(0), 18)
 
         open (newunit=io, file=filename, form='unformatted', access='stream')
         write (io) binary_data
         close (io)
 
-        call load_npz(filename, arrays, stat)
+        call load_npz(filename, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Trying to load an npz file that is an empty zip file should fail.")
 
         call delete_file(filename)
@@ -722,10 +728,12 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "empty_0.npz"
+        character(*), parameter :: tmp = temp_dir//"empty_0"
         character(:), allocatable :: path
 
+
         path = get_path(filename)
-        call load_npz(path, arrays, stat)
+        call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz that contains a single empty array shouldn't fail.")
         if (stat /= 0) return
         call check(error, size(arrays) == 1, "'"//filename//"' is supposed to contain a single array.")
@@ -746,10 +754,11 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "rand_2_3.npz"
+        character(*), parameter :: tmp = temp_dir//"rand_2_3"
         character(:), allocatable :: path
 
         path = get_path(filename)
-        call load_npz(path, arrays, stat)
+        call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
         if (stat /= 0) return
         call check(error, size(arrays) == 1, "'"//filename//"' is supposed to contain a single array.")
@@ -770,10 +779,12 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat, i
         character(*), parameter :: filename = "arange_10_20.npz"
+        character(*), parameter :: tmp = temp_dir//"arange_10_20"
+
         character(:), allocatable :: path
 
         path = get_path(filename)
-        call load_npz(path, arrays, stat)
+        call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
         if (stat /= 0) return
         call check(error, size(arrays) == 1, "'"//filename//"' is supposed to contain a single array.")
@@ -801,10 +812,11 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "cmplx_arr.npz"
+        character(*), parameter :: tmp = temp_dir//"cmplx_arr"
         character(:), allocatable :: path
 
         path = get_path(filename)
-        call load_npz(path, arrays, stat)
+        call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
         if (stat /= 0) return
         call check(error, size(arrays) == 1, "'"//filename//"' is supposed to contain a single array.")
@@ -832,10 +844,11 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "two_arr_iint64_rdp.npz"
+        character(*), parameter :: tmp = temp_dir//"two_arr_iint64_rdp"
         character(:), allocatable :: path
 
         path = get_path(filename)
-        call load_npz(path, arrays, stat)
+        call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains valid nd_arrays shouldn't fail.")
         if (stat /= 0) return
         call check(error, size(arrays) == 2, "'"//filename//"' is supposed to contain two arrays.")
@@ -878,10 +891,11 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat, i
         character(*), parameter :: filename = "two_arr_iint64_rdp_comp.npz"
+        character(*), parameter :: tmp = temp_dir//"two_arr_iint64_rdp_comp"
         character(:), allocatable :: path
 
         path = get_path(filename)
-        call load_npz(path, arrays, stat)
+        call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading a compressed npz file that contains valid nd_arrays shouldn't fail.")
         if (stat /= 0) return
         call check(error, size(arrays) == 2, "'"//filename//"' is supposed to contain two arrays.")

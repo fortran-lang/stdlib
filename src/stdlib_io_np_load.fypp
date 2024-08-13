@@ -9,7 +9,7 @@ submodule(stdlib_io_np) stdlib_io_np_load
     use stdlib_array
     use stdlib_error, only: error_stop
     use stdlib_filesystem, only: exists, list_dir, temp_dir
-    use stdlib_io_zip, only: unzip, unzipped_folder, zip_contents
+    use stdlib_io_zip, only: unzip, default_unzip_dir, zip_contents
     use stdlib_strings, only: to_string, starts_with
     use stdlib_string_type, only: string_type, as_string => char
     implicit none
@@ -105,33 +105,39 @@ contains
     !>
     !> Load multidimensional arrays from a compressed or uncompressed npz file.
     !> ([Specification](../page/specs/stdlib_io.html#load_npz))
-    module subroutine load_npz_to_arrays(filename, arrays, iostat, iomsg)
+    module subroutine load_npz_to_arrays(filename, arrays, iostat, iomsg, tmp_dir)
         character(len=*), intent(in) :: filename
         type(t_array_wrapper), allocatable, intent(out) :: arrays(:)
         integer, intent(out), optional :: iostat
         character(len=:), allocatable, intent(out), optional :: iomsg
+        character(*), intent(in), optional :: tmp_dir
 
         integer :: stat
-        character(len=:), allocatable :: msg
+        character(len=:), allocatable :: msg, unzip_dir
         type(string_type), allocatable :: files(:)
 
         if (present(iostat)) iostat = 0
+        if (present(tmp_dir)) then
+            unzip_dir = tmp_dir
+        else
+            unzip_dir = default_unzip_dir
+        end if
 
-        call unzip(filename, unzipped_folder, stat, msg)
+        call unzip(filename, unzip_dir, stat, msg)
         if (stat /= 0) then
             if (present(iostat)) iostat = stat
             if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
             return
         end if
 
-        call list_dir(unzipped_folder, files, stat, msg)
+        call list_dir(unzip_dir, files, stat, msg)
         if (stat /= 0) then
             if (present(iostat)) iostat = stat
             if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
             return
         end if
 
-        call load_unzipped_files_to_arrays(files, unzipped_folder, arrays, stat, msg)
+        call load_unzipped_files_to_arrays(files, unzip_dir, arrays, stat, msg)
         if (stat /= 0) then
             if (present(iostat)) iostat = stat
             if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)

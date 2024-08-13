@@ -3,10 +3,10 @@ module stdlib_io_zip
     implicit none
     private
 
-    public :: unzip, unzipped_folder, zip_contents
+    public :: unzip, default_unzip_dir, zip_contents
 
-    character(*), parameter :: unzipped_folder = temp_dir//'/unzipped_files'
-    character(*), parameter :: zip_contents = unzipped_folder//'/zip_contents.txt'
+    character(*), parameter :: default_unzip_dir = temp_dir//'/unzipped_files'
+    character(*), parameter :: zip_contents = default_unzip_dir//'/zip_contents.txt'
 
 contains
 
@@ -22,16 +22,16 @@ contains
         if (present(outputdir)) then
             output_dir = outputdir
         else
-            output_dir = unzipped_folder
+            output_dir = default_unzip_dir
         end if
 
         if (present(stat)) stat = 0
         run_stat = 0
 
-        call run('rm -rf '//unzipped_folder, run_stat)
+        call run('rm -rf '//default_unzip_dir, run_stat)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
-            if (present(msg)) msg = "Error removing folder '"//unzipped_folder//"'."
+            if (present(msg)) msg = "Error removing folder '"//default_unzip_dir//"'."
             return
         end if
 
@@ -44,7 +44,7 @@ contains
             end if
         end if
 
-        call run('unzip '//filename//' -d '//unzipped_folder, run_stat)
+        call run('unzip '//filename//' -d '//output_dir, run_stat)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
             if (present(msg)) msg = "Error unzipping '"//filename//"'."

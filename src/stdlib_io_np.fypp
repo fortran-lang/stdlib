@@ -121,11 +121,12 @@ module stdlib_io_np
     !> Load multiple multidimensional arrays from a (compressed) npz file.
     !> ([Specification](../page/specs/stdlib_io.html#load_npz))
     interface load_npz
-        module subroutine load_npz_to_arrays(filename, arrays, iostat, iomsg)
+        module subroutine load_npz_to_arrays(filename, arrays, iostat, iomsg, tmp_dir)
             character(len=*), intent(in) :: filename
             type(t_array_wrapper), allocatable, intent(out) :: arrays(:)
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
+            character(len=*), intent(in), optional :: tmp_dir
         end
     end interface
 
