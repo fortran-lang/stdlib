@@ -44,7 +44,8 @@ contains
             new_unittest("npz_load_arr_empty_0", npz_load_arr_empty_0), &
             new_unittest("npz_load_arr_rand_2_3", npz_load_arr_rand_2_3), &
             new_unittest("npz_load_arr_arange_10_20", npz_load_arr_arange_10_20), &
-            new_unittest("npz_load_arr_cmplx", npz_load_arr_cmplx) &
+            new_unittest("npz_load_arr_cmplx", npz_load_arr_cmplx), &
+            new_unittest("npz_load_two_arr_iint64_rdp", npz_load_two_arr_iint64_rdp) &
             ]
     end subroutine collect_np
 
@@ -819,6 +820,52 @@ contains
             if (typed_array%values(2) /= cmplx(3_dp, 4_dp)) return
             call check(error, typed_array%values(3) == cmplx(5_dp, 6_dp), "Third complex number does not match.")
             if (typed_array%values(3) /= cmplx(5_dp, 6_dp)) return
+          class default
+            call test_failed(error, "Array in '"//filename//"' is of wrong type.")
+        end select
+    end
+
+    subroutine npz_load_two_arr_iint64_rdp(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat, i
+        character(*), parameter :: filename = "two_arr_iint64_rdp.npz"
+        character(:), allocatable :: path
+
+        path = get_path(filename)
+        call load_npz(path, arrays, stat)
+        call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
+        if (stat /= 0) return
+        call check(error, size(arrays) == 2, "'"//filename//"' is supposed to contain two arrays.")
+        if (size(arrays) /= 2) return
+        call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
+        if (arrays(1)%array%name /= "arr_0.npy") return
+        call check(error, arrays(2)%array%name == "arr_1.npy", "Wrong array name.")
+        if (arrays(2)%array%name /= "arr_1.npy") return
+        select type (typed_array => arrays(1)%array)
+          class is (t_array_iint64_1)
+            call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
+            if (size(typed_array%values) /= 3) return
+            call check(error, typed_array%values(1) == 1, "First integer does not match.")
+            if (typed_array%values(1) /= 1) return
+            call check(error, typed_array%values(2) == 2, "Second integer does not match.")
+            if (typed_array%values(2) /= 2) return
+            call check(error, typed_array%values(3) == 3, "Third integer does not match.")
+            if (typed_array%values(3) /= 3) return
+          class default
+            call test_failed(error, "Array in '"//filename//"' is of wrong type.")
+        end select
+        select type (typed_array => arrays(2)%array)
+          class is (t_array_rdp_1)
+            call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
+            if (size(typed_array%values) /= 3) return
+            call check(error, typed_array%values(1) == 1., "First number does not match.")
+            if (typed_array%values(1) /= 1.) return
+            call check(error, typed_array%values(2) == 1., "Second number does not match.")
+            if (typed_array%values(2) /= 1.) return
+            call check(error, typed_array%values(3) == 1., "Third number does not match.")
+            if (typed_array%values(3) /= 1.) return
           class default
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
         end select
