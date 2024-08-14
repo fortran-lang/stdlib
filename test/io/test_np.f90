@@ -974,7 +974,7 @@ contains
         allocate(array_1(10, 4))
         call random_number(array_1)
         call add_array(arrays, array_1, stat)
-        call check(error, stat, "Error adding an array to the list of arrays.")
+        call check(error, stat, "Error adding the first array to the list of arrays.")
         if (allocated(error)) return
         call check(error, size(arrays) == 1, "Array was not added to the list of arrays.")
         if (allocated(error)) return
@@ -994,7 +994,22 @@ contains
         allocate(array_2(10))
         call random_number(array_2)
         call add_array(arrays, array_2, stat)
-        call check(error, stat, "Error adding an array to the list of arrays.")
+        call check(error, stat, "Error adding the second array to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, size(arrays) == 2, "Array was not added to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, arrays(2)%array%name == "arr_1.npy", "Wrong array name.")
+        if (allocated(error)) return
+        select type (typed_array => arrays(2)%array)
+          class is (t_array_rsp_1)
+            call check(error, size(typed_array%values), size(array_2), "Array sizes to not match.")
+            if (allocated(error)) return
+            call check(error, any(abs(typed_array%values - array_2) <= epsilon(1.0_sp)), &
+                "Precision loss when adding array.")
+            if (allocated(error)) return
+          class default
+            call test_failed(error, "Array 2 is of wrong type.")
+        end select
     end
 
     ! subroutine npz_add_arr(error)
