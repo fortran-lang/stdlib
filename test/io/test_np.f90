@@ -2,7 +2,7 @@ module test_np
     use stdlib_array
     use stdlib_filesystem, only : temp_dir
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
-    use stdlib_io_np, only : save_npy, load_npy, load_npz, save_npz
+    use stdlib_io_np, only : save_npy, load_npy, load_npz, add_array, save_npz
     use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
     implicit none
     private
@@ -953,11 +953,17 @@ contains
         integer :: stat
         character(*), parameter :: filename = "npz_save_rdp_2.npz"
         character(*), parameter :: arr_name = "arr_0.npy"
-        real(dp), allocatable :: input(:,:), output(:,:)
+        real(dp), allocatable :: input_array(:,:), output(:,:)
 
-        allocate(input(10, 4))
-        call random_number(input)
-        ! call add_array(arrays, input)
+        allocate(input_array(10, 4))
+        call random_number(input_array)
+        call add_array(arrays, input_array, arr_name, stat)
+        call check(error, stat, "Error adding an array to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, size(arrays) == 1, "Array was not added to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, arrays(1)%array%name == arr_name, "Wrong array name.")
+        if (allocated(error)) return
 
         ! call save_npz(filename, arrays, stat)
         ! call check(error, stat, "Writing of npz file failed")

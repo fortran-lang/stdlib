@@ -160,8 +160,22 @@ module stdlib_io_np
 #:endfor
     end interface
 
-contains
-
-    subroutine add_array()
-    end
+    interface add_array
+#:for k1, t1 in KINDS_TYPES
+#:for rank in RANKS
+        module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, name, stat, msg)
+            !> Array of arrays to which the array is to be added.
+            type(t_array_wrapper), allocatable, intent(inout) :: arrays(:)
+            !> Array to be added.
+            ${t1}$, intent(in) :: array${ranksuffix(rank)}$
+            !> Name of the array to be added.
+            character(len=*), intent(in) :: name
+            !> Status of addition.
+            integer, intent(out), optional :: stat
+            !> Error message.
+            character(len=:), allocatable, intent(out), optional :: msg
+        end
+#:endfor
+#:endfor
+    end interface
 end
