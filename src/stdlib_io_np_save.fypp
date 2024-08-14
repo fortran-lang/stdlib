@@ -149,7 +149,7 @@ contains
         !> Error message.
         character(len=:), allocatable, intent(out), optional :: msg
 
-        integer :: i
+        integer :: i, arr_size
         type(t_array_${t1[0]}$${k1}$_${rank}$) :: t_arr
 
         if (present(stat)) stat = 0
@@ -169,7 +169,8 @@ contains
             return
         end if
 
-        do i = 1, size(arrays)
+        arr_size = size(arrays)
+        do i = 1, arr_size
             if (arrays(i)%array%name == name) then
                 if (present(stat)) stat = 1
                 if (present(msg)) msg = "Array with the same name '"//name//"' already exists."
@@ -177,8 +178,9 @@ contains
             end if
         end do
 
-        allocate(arrays(size(arrays) + 1))
-        arrays(size(arrays))%array = t_arr
+        arr_size = arr_size + 1
+        allocate(arrays(arr_size))
+        arrays(arr_size)%array = t_arr
     end
 #:endfor
 #:endfor
