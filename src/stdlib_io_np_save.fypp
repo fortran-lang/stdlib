@@ -137,30 +137,38 @@ contains
 
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
-    module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, name, stat, msg)
+    module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, stat, msg, name)
         !> Array of arrays to which the array is to be added.
         type(t_array_wrapper), allocatable, intent(inout) :: arrays(:)
         !> Array to be added.
         ${t1}$, intent(in) :: array${ranksuffix(rank)}$
-        !> Name of the array to be added.
-        character(len=*), intent(in) :: name
         !> Status of addition.
         integer, intent(out), optional :: stat
         !> Error message.
         character(len=:), allocatable, intent(out), optional :: msg
+        !> Name of the array to be added. A default name will be used if not provided.
+        character(len=*), intent(in), optional :: name
 
         integer :: i, arr_size
         type(t_array_${t1[0]}$${k1}$_${rank}$) :: t_arr
 
         if (present(stat)) stat = 0
 
-        if (trim(name) == '') then
-            if (present(stat)) stat = 1
-            if (present(msg)) msg = "Array name cannot be empty."
-            return
+        if (present(name)) then
+            if (trim(name) == '') then
+                if (present(stat)) stat = 1
+                if (present(msg)) msg = "Array name cannot be empty."
+                return
+            end if
+            t_arr%name = name
+        else
+            if (allocated(arrays)) then
+                t_arr%name = "arr_"//trim(to_string(size(arrays)))//".npy"
+            else
+                t_arr%name = "arr_0.npy"
+            end if
         end if
 
-        t_arr%name = name
         t_arr%values = array
 
         if (.not. allocated(arrays)) then
@@ -171,9 +179,9 @@ contains
 
         arr_size = size(arrays)
         do i = 1, arr_size
-            if (arrays(i)%array%name == name) then
+            if (arrays(i)%array%name == t_arr%name) then
                 if (present(stat)) stat = 1
-                if (present(msg)) msg = "Array with the same name '"//name//"' already exists."
+                if (present(msg)) msg = "Array with the same name '"//t_arr%name//"' already exists."
                 return
             end if
         end do
