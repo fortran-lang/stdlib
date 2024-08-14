@@ -26,7 +26,7 @@ contains
 
         if (trim(output_file) == '') then
             if (present(stat)) stat = 1
-            if (present(msg)) msg = "Output file name is empty."
+            if (present(msg)) msg = "Output file is empty."
             return
         end if
 

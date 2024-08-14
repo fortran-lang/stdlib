@@ -2,7 +2,7 @@ module test_np
     use stdlib_array
     use stdlib_filesystem, only : temp_dir
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
-    use stdlib_io_np, only : save_npy, load_npy, load_npz
+    use stdlib_io_np, only : save_npy, load_npy, load_npz, save_npz
     use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
     implicit none
     private
@@ -47,7 +47,9 @@ contains
             new_unittest("npz_load_arr_arange_10_20", npz_load_arr_arange_10_20), &
             new_unittest("npz_load_arr_cmplx", npz_load_arr_cmplx), &
             new_unittest("npz_load_two_arr_iint64_rdp", npz_load_two_arr_iint64_rdp), &
-            new_unittest("npz_load_two_arr_iint64_rdp_comp", npz_load_two_arr_iint64_rdp_comp) &
+            new_unittest("npz_load_two_arr_iint64_rdp_comp", npz_load_two_arr_iint64_rdp_comp), &
+            new_unittest("npz_save_empty_array_input", npz_save_empty_array_input, should_fail=.true.), &
+            new_unittest("npz_save_rdp_2", npz_save_rdp_2) &
             ]
     end subroutine collect_np
 
@@ -735,11 +737,11 @@ contains
         path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz that contains a single empty array shouldn't fail.")
-        if (stat /= 0) return
+        if (allocated(error)) return
         call check(error, size(arrays) == 1, "'"//filename//"' is supposed to contain a single array.")
-        if (size(arrays) /= 1) return
+        if (allocated(error)) return
         call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
-        if (arrays(1)%array%name /= "arr_0.npy") return
+        if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
           class is (t_array_rdp_1)
             call check(error, size(typed_array%values) == 0, "Array in '"//filename//"' is supposed to be empty.")
@@ -760,11 +762,11 @@ contains
         path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
-        if (stat /= 0) return
+        if (allocated(error)) return
         call check(error, size(arrays) == 1, "'"//filename//"' is supposed to contain a single array.")
-        if (size(arrays) /= 1) return
+        if (allocated(error)) return
         call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
-        if (arrays(1)%array%name /= "arr_0.npy") return
+        if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
           class is (t_array_rdp_2)
             call check(error, size(typed_array%values) == 6, "Array in '"//filename//"' is supposed to have 6 entries.")
@@ -786,20 +788,20 @@ contains
         path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
-        if (stat /= 0) return
+        if (allocated(error)) return
         call check(error, size(arrays) == 1, "'"//filename//"' is supposed to contain a single array.")
-        if (size(arrays) /= 1) return
+        if (allocated(error)) return
         call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
-        if (arrays(1)%array%name /= "arr_0.npy") return
+        if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
           class is (t_array_iint64_1)
             call check(error, size(typed_array%values) == 10, "Array in '"//filename//"' is supposed to have 10 entries.")
-            if (size(typed_array%values) /= 10) return
+            if (allocated(error)) return
             call check(error, typed_array%values(1) == 10, "First entry is supposed to be 10.")
-            if (typed_array%values(1) /= 10) return
+            if (allocated(error)) return
             do i = 2, 10
                 call check(error, typed_array%values(i) == typed_array%values(i-1) + 1, "Array is supposed to be an arange.")
-                if (typed_array%values(i) /= typed_array%values(i-1) + 1) return
+                if (allocated(error)) return
             end do
           class default
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
@@ -818,21 +820,21 @@ contains
         path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
-        if (stat /= 0) return
+        if (allocated(error)) return
         call check(error, size(arrays) == 1, "'"//filename//"' is supposed to contain a single array.")
-        if (size(arrays) /= 1) return
+        if (allocated(error)) return
         call check(error, arrays(1)%array%name == "cmplx.npy", "Wrong array name.")
-        if (arrays(1)%array%name /= "cmplx.npy") return
+        if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
           class is (t_array_csp_1)
             call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
-            if (size(typed_array%values) /= 3) return
+            if (allocated(error)) return
             call check(error, typed_array%values(1) == cmplx(1_dp, 2_dp), "First complex number does not match.")
-            if (typed_array%values(1) /= cmplx(1_dp, 2_dp)) return
+            if (allocated(error)) return
             call check(error, typed_array%values(2) == cmplx(3_dp, 4_dp), "Second complex number does not match.")
-            if (typed_array%values(2) /= cmplx(3_dp, 4_dp)) return
+            if (allocated(error)) return
             call check(error, typed_array%values(3) == cmplx(5_dp, 6_dp), "Third complex number does not match.")
-            if (typed_array%values(3) /= cmplx(5_dp, 6_dp)) return
+            if (allocated(error)) return
           class default
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
         end select
@@ -850,36 +852,36 @@ contains
         path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains valid nd_arrays shouldn't fail.")
-        if (stat /= 0) return
+        if (allocated(error)) return
         call check(error, size(arrays) == 2, "'"//filename//"' is supposed to contain two arrays.")
-        if (size(arrays) /= 2) return
+        if (allocated(error)) return
         call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
-        if (arrays(1)%array%name /= "arr_0.npy") return
+        if (allocated(error)) return
         call check(error, arrays(2)%array%name == "arr_1.npy", "Wrong array name.")
-        if (arrays(2)%array%name /= "arr_1.npy") return
+        if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
           class is (t_array_iint64_1)
             call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
-            if (size(typed_array%values) /= 3) return
+            if (allocated(error)) return
             call check(error, typed_array%values(1) == 1, "First integer does not match.")
-            if (typed_array%values(1) /= 1) return
+            if (allocated(error)) return
             call check(error, typed_array%values(2) == 2, "Second integer does not match.")
-            if (typed_array%values(2) /= 2) return
+            if (allocated(error)) return
             call check(error, typed_array%values(3) == 3, "Third integer does not match.")
-            if (typed_array%values(3) /= 3) return
+            if (allocated(error)) return
           class default
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
         end select
         select type (typed_array => arrays(2)%array)
           class is (t_array_rdp_1)
             call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
-            if (size(typed_array%values) /= 3) return
+            if (allocated(error)) return
             call check(error, typed_array%values(1) == 1., "First number does not match.")
-            if (typed_array%values(1) /= 1.) return
+            if (allocated(error)) return
             call check(error, typed_array%values(2) == 1., "Second number does not match.")
-            if (typed_array%values(2) /= 1.) return
+            if (allocated(error)) return
             call check(error, typed_array%values(3) == 1., "Third number does not match.")
-            if (typed_array%values(3) /= 1.) return
+            if (allocated(error)) return
           class default
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
         end select
@@ -889,7 +891,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         type(t_array_wrapper), allocatable :: arrays(:)
-        integer :: stat, i
+        integer :: stat
         character(*), parameter :: filename = "two_arr_iint64_rdp_comp.npz"
         character(*), parameter :: tmp = temp_dir//"two_arr_iint64_rdp_comp"
         character(:), allocatable :: path
@@ -897,39 +899,81 @@ contains
         path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading a compressed npz file that contains valid nd_arrays shouldn't fail.")
-        if (stat /= 0) return
+        if (allocated(error)) return
         call check(error, size(arrays) == 2, "'"//filename//"' is supposed to contain two arrays.")
-        if (size(arrays) /= 2) return
+        if (allocated(error)) return
         call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
-        if (arrays(1)%array%name /= "arr_0.npy") return
+        if (allocated(error)) return
         call check(error, arrays(2)%array%name == "arr_1.npy", "Wrong array name.")
-        if (arrays(2)%array%name /= "arr_1.npy") return
+        if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
           class is (t_array_iint64_1)
             call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
-            if (size(typed_array%values) /= 3) return
+            if (allocated(error)) return
             call check(error, typed_array%values(1) == 1, "First integer does not match.")
-            if (typed_array%values(1) /= 1) return
+            if (allocated(error)) return
             call check(error, typed_array%values(2) == 2, "Second integer does not match.")
-            if (typed_array%values(2) /= 2) return
+            if (allocated(error)) return
             call check(error, typed_array%values(3) == 3, "Third integer does not match.")
-            if (typed_array%values(3) /= 3) return
+            if (allocated(error)) return
           class default
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
         end select
         select type (typed_array => arrays(2)%array)
           class is (t_array_rdp_1)
             call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
-            if (size(typed_array%values) /= 3) return
+            if (allocated(error)) return
             call check(error, typed_array%values(1) == 1., "First number does not match.")
-            if (typed_array%values(1) /= 1.) return
+            if (allocated(error)) return
             call check(error, typed_array%values(2) == 1., "Second number does not match.")
-            if (typed_array%values(2) /= 1.) return
+            if (allocated(error)) return
             call check(error, typed_array%values(3) == 1., "Third number does not match.")
-            if (typed_array%values(3) /= 1.) return
+            if (allocated(error)) return
           class default
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
         end select
+    end
+
+    subroutine npz_save_empty_array_input(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat
+        character(*), parameter :: filename = "output.npz"
+
+        allocate(arrays(0))
+        call save_npz(filename, arrays, stat)
+        call check(error, stat, "Trying to save an empty array fail.")
+    end
+
+    subroutine npz_save_rdp_2(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat
+        character(*), parameter :: filename = "npz_save_rdp_2.npz"
+        character(*), parameter :: arr_name = "arr_0.npy"
+        real(dp), allocatable :: input(:,:), output(:,:)
+
+        allocate(input(10, 4))
+        call random_number(input)
+        ! call add_array(arrays, input)
+
+        ! call save_npz(filename, arrays, stat)
+        ! call check(error, stat, "Writing of npz file failed")
+        ! if (allocated(error)) return
+
+        ! call load_npy(filename, output, stat)
+        ! call delete_file(filename)
+
+        ! call check(error, stat, "Reading of npy file failed")
+        ! if (allocated(error)) return
+
+        ! call check(error, size(output), size(input))
+        ! if (allocated(error)) return
+
+        ! call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
+        !     "Precision loss when rereading array")
     end
 
     !> Makes sure that we find the file when running both `ctest` and `fpm test`.

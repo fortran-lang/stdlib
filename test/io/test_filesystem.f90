@@ -97,14 +97,12 @@ contains
 
         call run('rm -rf '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Removing directory '"//temp_list_dir//"' failed.")
-            return
+            call test_failed(error, "Removing directory '"//temp_list_dir//"' failed."); return
         end if
 
         call run('mkdir '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Creating directory '"//temp_list_dir//"' failed.")
-            return
+            call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
 
         call list_dir(temp_list_dir, files, stat)
@@ -124,20 +122,17 @@ contains
 
         call run('rm -rf '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Removing directory '"//temp_list_dir//"' failed.")
-            return
+            call test_failed(error, "Removing directory '"//temp_list_dir//"' failed."); return
         end if
 
         call run('mkdir '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Creating directory '"//temp_list_dir//"' failed.")
-            return
+            call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
 
         call run('touch '//temp_list_dir//'/'//filename, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Creating file'"//filename//"' in directory '"//temp_list_dir//"' failed.")
-            return
+            call test_failed(error, "Creating file'"//filename//"' in directory '"//temp_list_dir//"' failed."); return
         end if
 
         call list_dir(temp_list_dir, files, stat)
@@ -159,26 +154,22 @@ contains
 
         call run('rm -rf '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Removing directory '"//temp_list_dir//"' failed.")
-            return
+            call test_failed(error, "Removing directory '"//temp_list_dir//"' failed."); return
         end if
 
         call run('mkdir '//temp_list_dir, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Creating directory '"//temp_list_dir//"' failed.")
-            return
+            call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
 
         call run('touch '//temp_list_dir//'/'//filename1, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Creating file 1 in directory '"//temp_list_dir//"' failed.")
-            return
+            call test_failed(error, "Creating file 1 in directory '"//temp_list_dir//"' failed."); return
         end if
 
         call run('touch '//temp_list_dir//'/'//filename2, stat=stat)
         if (stat /= 0) then
-            call test_failed(error, "Creating file 2 in directory '"//temp_list_dir//"' failed.")
-            return
+            call test_failed(error, "Creating file 2 in directory '"//temp_list_dir//"' failed."); return
         end if
 
         call list_dir(temp_list_dir, files, stat)

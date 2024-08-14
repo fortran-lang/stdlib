@@ -139,13 +139,13 @@ contains
     !>
     !> Save multidimensional arrays to a compressed or an uncompressed npz file.
     !> ([Specification](../page/specs/stdlib_io.html#save_npz))
-    module subroutine save_npz_from_arrays(filename, arrays, compressed, iostat, iomsg)
+    module subroutine save_npz_from_arrays(filename, arrays, iostat, iomsg, compressed)
         character(len=*), intent(in) :: filename
         type(t_array_wrapper), intent(in) :: arrays(:)
-        !> If true, the file is saved in compressed format. The default is false.
-        logical, intent(in), optional :: compressed
         integer, intent(out), optional :: iostat
         character(len=:), allocatable, intent(out), optional :: iomsg
+        !> If true, the file is saved in compressed format. The default is false.
+        logical, intent(in), optional :: compressed
 
         integer :: i, j, stat
         logical :: is_compressed
