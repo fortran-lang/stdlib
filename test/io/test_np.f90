@@ -50,6 +50,9 @@ contains
             new_unittest("npz_load_two_arr_iint64_rdp_comp", npz_load_two_arr_iint64_rdp_comp), &
             new_unittest("npz_add_arr_to_empty", npz_add_arr_to_empty), &
             new_unittest("npz_add_two_arrays", npz_add_two_arrays), &
+            new_unittest("npz_add_arr_custom_name", npz_add_arr_custom_name), &
+            new_unittest("npz_add_arr_empty_name", npz_add_arr_empty_name, should_fail=.true.), &
+            new_unittest("npz_add_arr_duplicate_names", npz_add_arr_duplicate_names, should_fail=.true.), &
             new_unittest("npz_save_empty_array_input", npz_save_empty_array_input, should_fail=.true.) &
             ]
     end subroutine collect_np
@@ -1010,6 +1013,69 @@ contains
           class default
             call test_failed(error, "Array 2 is of wrong type.")
         end select
+    end
+
+    subroutine npz_add_arr_custom_name(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat
+        real(dp), allocatable :: input_array(:,:)
+        character(*), parameter :: arr_name = "custom_name.npy"
+
+        allocate(input_array(10, 4))
+        call random_number(input_array)
+        call add_array(arrays, input_array, stat, name=arr_name)
+        call check(error, stat, "Error adding an array to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, size(arrays) == 1, "Array was not added to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, arrays(1)%array%name == arr_name, "Wrong array name.")
+        if (allocated(error)) return
+        select type (typed_array => arrays(1)%array)
+          class is (t_array_rdp_2)
+            call check(error, size(typed_array%values), size(input_array), "Array sizes to not match.")
+            if (allocated(error)) return
+            call check(error, any(abs(typed_array%values - input_array) <= epsilon(1.0_dp)), &
+                "Precision loss when adding array.")
+            if (allocated(error)) return
+          class default
+            call test_failed(error, "Array is of wrong type.")
+        end select
+    end
+
+    subroutine npz_add_arr_empty_name(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat
+        real(dp), allocatable :: input_array(:,:)
+        character(*), parameter :: arr_name = " "
+
+        allocate(input_array(10, 4))
+        call random_number(input_array)
+        call add_array(arrays, input_array, stat, name=arr_name)
+        call check(error, stat, "Empty file names are not allowed.")
+    end
+
+    subroutine npz_add_arr_duplicate_names(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat
+        real(dp), allocatable :: array_1(:,:)
+        real(sp), allocatable :: array_2(:)
+        character(*), parameter :: arr_name = "arr_0.npy"
+
+        allocate(array_1(10, 4))
+        call random_number(array_1)
+        call add_array(arrays, array_1, stat, name=arr_name)
+        call check(error, stat, "Error adding the first array to the list of arrays.")
+
+        allocate(array_2(10))
+        call random_number(array_2)
+        call add_array(arrays, array_2, stat, name=arr_name)
+        call check(error, stat, "Adding a second array with the same name shouldn't work.")
     end
 
     ! subroutine npz_add_arr(error)
