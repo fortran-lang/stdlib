@@ -149,8 +149,9 @@ contains
         !> Name of the array to be added. A default name will be used if not provided.
         character(len=*), intent(in), optional :: name
 
-        integer :: i, arr_size
+        integer :: i
         type(t_array_${t1[0]}$${k1}$_${rank}$) :: t_arr
+        type(t_array_wrapper) :: wrapper
 
         if (present(stat)) stat = 0
 
@@ -177,8 +178,7 @@ contains
             return
         end if
 
-        arr_size = size(arrays)
-        do i = 1, arr_size
+        do i = 1, size(arrays)
             if (arrays(i)%array%name == t_arr%name) then
                 if (present(stat)) stat = 1
                 if (present(msg)) msg = "Array with the same name '"//t_arr%name//"' already exists."
@@ -186,9 +186,8 @@ contains
             end if
         end do
 
-        arr_size = arr_size + 1
-        allocate(arrays(arr_size))
-        arrays(arr_size)%array = t_arr
+        wrapper%array = t_arr
+        arrays = [arrays, wrapper]
     end
 #:endfor
 #:endfor
