@@ -1078,25 +1078,6 @@ contains
         call check(error, stat, "Adding a second array with the same name shouldn't work.")
     end
 
-    ! subroutine npz_add_arr(error)
-    !     type(error_type), allocatable, intent(out) :: error
-
-    !     type(t_array_wrapper), allocatable :: arrays(:)
-    !     integer :: stat
-    !     character(*), parameter :: filename = "npz_add_arr.npz"
-    !     real(dp), allocatable :: input_array(:,:)
-
-    !     allocate(input_array(10, 4))
-    !     call random_number(input_array)
-    !     call add_array(arrays, input_array, stat)
-    !     call check(error, stat, "Error adding an array to the list of arrays.")
-    !     if (allocated(error)) return
-    !     call check(error, size(arrays) == 1, "Array was not added to the list of arrays.")
-    !     if (allocated(error)) return
-    !     call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
-    !     if (allocated(error)) return
-    ! end
-
     subroutine npz_save_empty_array_input(error)
         type(error_type), allocatable, intent(out) :: error
 

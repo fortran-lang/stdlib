@@ -135,7 +135,7 @@ module stdlib_io_np
     !> Save multidimensional arrays to a compressed or an uncompressed npz file.
     !> ([Specification](../page/specs/stdlib_io.html#save_npz))
     interface save_npz
-        module subroutine save_npz_from_arrays(filename, arrays, iostat, iomsg, compressed)
+        module subroutine save_arrays_to_npz(filename, arrays, iostat, iomsg, compressed)
             character(len=*), intent(in) :: filename
             type(t_array_wrapper), intent(in) :: arrays(:)
             integer, intent(out), optional :: iostat

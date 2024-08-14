@@ -12,17 +12,25 @@ module stdlib_io_zip
 
 contains
 
-    subroutine zip(output_file, files, stat, msg)
+    subroutine zip(output_file, files, stat, msg, compressed)
         character(*), intent(in) :: output_file
         type(string_type), intent(in) :: files(:)
         integer, intent(out), optional :: stat
         character(len=:), allocatable, intent(out), optional :: msg
+        logical, intent(in), optional :: compressed
 
         integer :: run_stat, i
-        character(:), allocatable :: files_str
+        character(:), allocatable :: files_str, cmd
+        logical :: is_compressed
 
         if (present(stat)) stat = 0
         run_stat = 0
+
+        if (present(compressed)) then
+            is_compressed = compressed
+        else
+            is_compressed = .true.
+        end if
 
         if (trim(output_file) == '') then
             if (present(stat)) stat = 1
@@ -35,7 +43,10 @@ contains
             files_str = files_str//' '//char(files(i))
         end do
 
-        call run('zip '//output_file//files_str, run_stat)
+        cmd = 'zip '//''//output_file//' '//files_str
+        if (.not. is_compressed) cmd = cmd//' -0'
+
+        call run(cmd, run_stat)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
             if (present(msg)) msg = "Error creating zip file '"//output_file//"'."

@@ -1,7 +1,8 @@
 module test_zip
+    use stdlib_filesystem, only: exists
     use stdlib_io_zip
-    use stdlib_string_type, only : string_type, char
-    use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
+    use stdlib_string_type, only: string_type, char
+    use testdrive, only: new_unittest, unittest_type, error_type, check, test_failed
     implicit none
     private
 
@@ -28,7 +29,8 @@ contains
             new_unittest("zip_invalid_file", zip_invalid_file, should_fail=.true.), &
             new_unittest("zip_empty_file", zip_empty_file), &
             new_unittest("zip_invalid_output_file", zip_invalid_output_file, should_fail=.true.), &
-            new_unittest("zip_two_files", zip_two_files) &
+            new_unittest("zip_two_files", zip_two_files), &
+            new_unittest("zip_without_comp", zip_without_comp) &
             ]
     end
 
@@ -199,6 +201,13 @@ contains
 
         call zip(output_file, files, stat)
         call check(error, stat, "Compressing a valid empty file should not fail.")
+        if (allocated(error)) then
+            call delete_file(input_file)
+            call delete_file(output_file)
+            return
+        end if
+
+        call check(error, exists(output_file), "The output file should exist.")
 
         call delete_file(input_file)
         call delete_file(output_file)
@@ -241,9 +250,45 @@ contains
 
         call zip(output_file, files, stat)
         call check(error, stat, "Compressing two valid files should not fail.")
+        if (allocated(error)) then
+            call delete_file(input_file_1)
+            call delete_file(input_file_2)
+            call delete_file(output_file)
+            return
+        end if
+
+        call check(error, exists(output_file), "The output file should exist.")
 
         call delete_file(input_file_1)
         call delete_file(input_file_2)
+        call delete_file(output_file)
+    end
+
+
+    subroutine zip_without_comp(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: stat, unit
+        character(*), parameter :: output_file = "temp.zip"
+        character(*), parameter :: input_file = "abc.txt"
+        type(string_type), allocatable :: files(:)
+
+        files = [string_type(input_file)]
+
+        open(newunit= unit, file=input_file)
+        close(unit)
+
+        call zip(output_file, files, stat, compressed=.false.)
+        call check(error, stat, "Zipping a valid file without compression shouldn't fail.")
+        if (allocated(error)) then
+            call delete_file(input_file)
+            call delete_file(output_file)
+            return
+        end if
+
+        call check(error, exists(output_file), "The output file should exist.")
+
+        call delete_file(input_file)
         call delete_file(output_file)
     end
 

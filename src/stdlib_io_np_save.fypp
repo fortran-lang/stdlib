@@ -196,7 +196,7 @@ contains
     !>
     !> Save multidimensional arrays to a compressed or an uncompressed npz file.
     !> ([Specification](../page/specs/stdlib_io.html#save_npz))
-    module subroutine save_npz_from_arrays(filename, arrays, iostat, iomsg, compressed)
+    module subroutine save_arrays_to_npz(filename, arrays, iostat, iomsg, compressed)
         character(len=*), intent(in) :: filename
         type(t_array_wrapper), intent(in) :: arrays(:)
         integer, intent(out), optional :: iostat
@@ -252,7 +252,7 @@ contains
             end select
         end do
 
-        call zip(filename, files, stat, msg)
+        call zip(filename, files, stat, msg, is_compressed)
         if (stat /= 0) then
             if (present(iostat)) iostat = stat
             if (present(iomsg)) iomsg = msg
