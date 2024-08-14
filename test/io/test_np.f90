@@ -48,8 +48,8 @@ contains
             new_unittest("npz_load_arr_cmplx", npz_load_arr_cmplx), &
             new_unittest("npz_load_two_arr_iint64_rdp", npz_load_two_arr_iint64_rdp), &
             new_unittest("npz_load_two_arr_iint64_rdp_comp", npz_load_two_arr_iint64_rdp_comp), &
-            new_unittest("npz_save_empty_array_input", npz_save_empty_array_input, should_fail=.true.), &
-            new_unittest("npz_save_rdp_2", npz_save_rdp_2) &
+            new_unittest("npz_add_to_empty_arr", npz_add_to_empty_arr), &
+            new_unittest("npz_save_empty_array_input", npz_save_empty_array_input, should_fail=.true.) &
             ]
     end subroutine collect_np
 
@@ -934,25 +934,13 @@ contains
         end select
     end
 
-    subroutine npz_save_empty_array_input(error)
+    subroutine npz_add_to_empty_arr(error)
         type(error_type), allocatable, intent(out) :: error
 
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat
-        character(*), parameter :: filename = "output.npz"
-
-        allocate(arrays(0))
-        call save_npz(filename, arrays, stat)
-        call check(error, stat, "Trying to save an empty array fail.")
-    end
-
-    subroutine npz_save_rdp_2(error)
-        type(error_type), allocatable, intent(out) :: error
-
-        type(t_array_wrapper), allocatable :: arrays(:)
-        integer :: stat
-        character(*), parameter :: filename = "npz_save_rdp_2.npz"
-        real(dp), allocatable :: input_array(:,:), output(:,:)
+        character(*), parameter :: filename = "npz_add_arr.npz"
+        real(dp), allocatable :: input_array(:,:)
 
         allocate(input_array(10, 4))
         call random_number(input_array)
@@ -963,22 +951,47 @@ contains
         if (allocated(error)) return
         call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
         if (allocated(error)) return
+        select type (typed_array => arrays(1)%array)
+          class is (t_array_rdp_2)
+            call check(error, size(typed_array%values), size(input_array), "Array sizes to not match.")
+            if (allocated(error)) return
+            call check(error, any(abs(typed_array%values - input_array) <= epsilon(1.0_dp)), &
+                "Precision loss when adding array.")
+            if (allocated(error)) return
+          class default
+            call test_failed(error, "Array in '"//filename//"' is of wrong type.")
+        end select
+    end
 
-        ! call save_npz(filename, arrays, stat)
-        ! call check(error, stat, "Writing of npz file failed")
-        ! if (allocated(error)) return
+    ! subroutine npz_add_arr(error)
+    !     type(error_type), allocatable, intent(out) :: error
 
-        ! call load_npy(filename, output, stat)
-        ! call delete_file(filename)
+    !     type(t_array_wrapper), allocatable :: arrays(:)
+    !     integer :: stat
+    !     character(*), parameter :: filename = "npz_add_arr.npz"
+    !     real(dp), allocatable :: input_array(:,:)
 
-        ! call check(error, stat, "Reading of npy file failed")
-        ! if (allocated(error)) return
+    !     allocate(input_array(10, 4))
+    !     call random_number(input_array)
+    !     call add_array(arrays, input_array, stat)
+    !     call check(error, stat, "Error adding an array to the list of arrays.")
+    !     if (allocated(error)) return
+    !     call check(error, size(arrays) == 1, "Array was not added to the list of arrays.")
+    !     if (allocated(error)) return
+    !     call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
+    !     if (allocated(error)) return
+    ! end
 
-        ! call check(error, size(output), size(input))
-        ! if (allocated(error)) return
+    subroutine npz_save_empty_array_input(error)
+        type(error_type), allocatable, intent(out) :: error
 
-        ! call check(error, any(abs(output - input) <= epsilon(1.0_dp)), &
-        !     "Precision loss when rereading array")
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat
+        character(*), parameter :: filename = "output.npz"
+
+        allocate(arrays(0))
+        call save_npz(filename, arrays, stat)
+        call check(error, stat, "Trying to save an empty array fail.")
     end
 
     !> Makes sure that we find the file when running both `ctest` and `fpm test`.
