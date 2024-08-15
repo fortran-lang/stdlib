@@ -43,7 +43,7 @@ contains
             files_str = files_str//' '//char(files(i))
         end do
 
-        cmd = 'zip '//''//output_file//' '//files_str
+        cmd = 'zip -q '//''//output_file//' '//files_str
         if (.not. is_compressed) cmd = cmd//' -0'
 
         call run(cmd, run_stat)
