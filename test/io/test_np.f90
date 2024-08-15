@@ -1,6 +1,6 @@
 module test_np
     use stdlib_array
-    use stdlib_filesystem, only : temp_dir
+    use stdlib_filesystem, only : temp_dir, exists
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
     use stdlib_io_np, only : save_npy, load_npy, load_npz, add_array, save_npz
     use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
@@ -48,12 +48,14 @@ contains
             new_unittest("npz_load_arr_cmplx", npz_load_arr_cmplx), &
             new_unittest("npz_load_two_arr_iint64_rdp", npz_load_two_arr_iint64_rdp), &
             new_unittest("npz_load_two_arr_iint64_rdp_comp", npz_load_two_arr_iint64_rdp_comp), &
-            new_unittest("npz_add_arr_to_empty", npz_add_arr_to_empty), &
-            new_unittest("npz_add_two_arrays", npz_add_two_arrays), &
-            new_unittest("npz_add_arr_custom_name", npz_add_arr_custom_name), &
-            new_unittest("npz_add_arr_empty_name", npz_add_arr_empty_name, should_fail=.true.), &
-            new_unittest("npz_add_arr_duplicate_names", npz_add_arr_duplicate_names, should_fail=.true.), &
-            new_unittest("npz_save_empty_array_input", npz_save_empty_array_input, should_fail=.true.) &
+            new_unittest("add_array_to_empty", add_array_to_empty), &
+            new_unittest("add_two_arrays", add_two_arrays), &
+            new_unittest("add_array_custom_name", add_array_custom_name), &
+            new_unittest("add_array_empty_name", add_array_empty_name, should_fail=.true.), &
+            new_unittest("add_array_duplicate_names", add_array_duplicate_names, should_fail=.true.), &
+            new_unittest("npz_save_empty_array_input", npz_save_empty_array_input, should_fail=.true.), &
+            new_unittest("npz_save_one_array", npz_save_one_array), &
+            new_unittest("npz_save_two_arrays", npz_save_two_arrays) &
             ]
     end subroutine collect_np
 
@@ -938,7 +940,7 @@ contains
         end select
     end
 
-    subroutine npz_add_arr_to_empty(error)
+    subroutine add_array_to_empty(error)
         type(error_type), allocatable, intent(out) :: error
 
         type(t_array_wrapper), allocatable :: arrays(:)
@@ -966,7 +968,7 @@ contains
         end select
     end
 
-    subroutine npz_add_two_arrays(error)
+    subroutine add_two_arrays(error)
         type(error_type), allocatable, intent(out) :: error
 
         type(t_array_wrapper), allocatable :: arrays(:)
@@ -1015,7 +1017,7 @@ contains
         end select
     end
 
-    subroutine npz_add_arr_custom_name(error)
+    subroutine add_array_custom_name(error)
         type(error_type), allocatable, intent(out) :: error
 
         type(t_array_wrapper), allocatable :: arrays(:)
@@ -1044,7 +1046,7 @@ contains
         end select
     end
 
-    subroutine npz_add_arr_empty_name(error)
+    subroutine add_array_empty_name(error)
         type(error_type), allocatable, intent(out) :: error
 
         type(t_array_wrapper), allocatable :: arrays(:)
@@ -1058,7 +1060,7 @@ contains
         call check(error, stat, "Empty file names are not allowed.")
     end
 
-    subroutine npz_add_arr_duplicate_names(error)
+    subroutine add_array_duplicate_names(error)
         type(error_type), allocatable, intent(out) :: error
 
         type(t_array_wrapper), allocatable :: arrays(:)
@@ -1088,6 +1090,129 @@ contains
         allocate(arrays(0))
         call save_npz(filename, arrays, stat)
         call check(error, stat, "Trying to save an empty array fail.")
+    end
+
+    subroutine npz_save_one_array(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:), arrays_reloaded(:)
+        integer :: stat
+        real(dp), allocatable :: input_array(:,:)
+        character(*), parameter :: output_file = "one_array.npz"
+
+        allocate(input_array(10, 4))
+        call random_number(input_array)
+        call add_array(arrays, input_array, stat)
+        call check(error, stat, "Error adding an array to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, size(arrays) == 1, "Array was not added to the list of arrays.")
+        if (allocated(error)) return
+        call save_npz(output_file, arrays, stat)
+        call check(error, stat, "Error saving the array.")
+        if (allocated(error)) then
+            call delete_file(output_file); return
+        end if
+        call check(error, exists(output_file), "Output file does not exist.")
+        if (allocated(error)) then
+            call delete_file(output_file); return
+        end if
+
+        call load_npz(output_file, arrays_reloaded, stat)
+        call check(error, stat, "Error loading the npz file.")
+        if (allocated(error)) then
+            call delete_file(output_file); return
+        end if
+        call check(error, size(arrays_reloaded) == 1, "Wrong number of arrays.")
+        if (allocated(error)) then
+            call delete_file(output_file); return
+        end if
+        select type (typed_array => arrays_reloaded(1)%array)
+          class is (t_array_rdp_2)
+            call check(error, size(typed_array%values), size(input_array), "Array sizes to not match.")
+            if (allocated(error)) then
+                call delete_file(output_file); return
+            end if
+            call check(error, any(abs(typed_array%values - input_array) <= epsilon(1.0_dp)), &
+                "Precision loss when adding array.")
+            if (allocated(error)) then
+                call delete_file(output_file); return
+            end if
+          class default
+            call test_failed(error, "Array is of wrong type.")
+        end select
+        call delete_file(output_file)
+    end
+
+    subroutine npz_save_two_arrays(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:), arrays_reloaded(:)
+        integer :: stat
+        real(dp), allocatable :: input_array_1(:,:)
+        complex(dp), allocatable :: input_array_2(:)
+        character(*), parameter :: output_file = "two_arrays.npz"
+
+        allocate(input_array_1(5, 6))
+        call random_number(input_array_1)
+        input_array_2 = [(1.0_dp, 2.0_dp), (3.0_dp, 4.0_dp), (5.0_dp, 6.0_dp)]
+        call add_array(arrays, input_array_1, stat)
+        call check(error, stat, "Error adding array 1 to the list of arrays.")
+        if (allocated(error)) return
+        call add_array(arrays, input_array_2, stat)
+        call check(error, stat, "Error adding array 2 to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, size(arrays) == 2, "Wrong array size.")
+        if (allocated(error)) return
+        call save_npz(output_file, arrays, stat)
+        call check(error, stat, "Error saving arrays as an npz file.")
+        if (allocated(error)) then
+            call delete_file(output_file); return
+        end if
+        call check(error, exists(output_file), "Output file does not exist.")
+        if (allocated(error)) then
+            call delete_file(output_file); return
+        end if
+
+        call load_npz(output_file, arrays_reloaded, stat)
+        call check(error, stat, "Error loading npz file.")
+        if (allocated(error)) then
+            call delete_file(output_file); return
+        end if
+        call check(error, size(arrays_reloaded) == 2, "Wrong number of arrays.")
+        if (allocated(error)) then
+            call delete_file(output_file); return
+        end if
+
+        select type (typed_array => arrays_reloaded(1)%array)
+          class is (t_array_rdp_2)
+            call check(error, size(typed_array%values), size(input_array_1), "Array sizes to not match.")
+            if (allocated(error)) then
+                call delete_file(output_file); return
+            end if
+            call check(error, any(abs(typed_array%values - input_array_1) <= epsilon(1.0_dp)), &
+                "Precision loss when adding array.")
+            if (allocated(error)) then
+                call delete_file(output_file); return
+            end if
+          class default
+            call test_failed(error, "Array 1 is of wrong type.")
+        end select
+
+        select type (typed_array => arrays_reloaded(2)%array)
+          class is (t_array_cdp_2)
+            call check(error, size(typed_array%values), size(input_array_2), "Array sizes to not match.")
+            if (allocated(error)) then
+                call delete_file(output_file); return
+            end if
+            call check(error, any(abs(typed_array%values - input_array_2) <= epsilon(1.0_dp)), &
+                "Precision loss when adding array.")
+            if (allocated(error)) then
+                call delete_file(output_file); return
+            end if
+          class default
+            call test_failed(error, "Array 2 is of wrong type.")
+        end select
+        call delete_file(output_file)
     end
 
     !> Makes sure that we find the file when running both `ctest` and `fpm test`.
