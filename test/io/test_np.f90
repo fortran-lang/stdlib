@@ -1150,7 +1150,7 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:), arrays_reloaded(:)
         integer :: stat, j
         real(dp), allocatable :: input_array_1(:,:)
-        complex(dp), parameter, dimension(3) :: input_array_2 = [cmplx(1, 2, kind=8), cmplx(3, 4, kind=8), cmplx(5, 6, kind=8)]
+        complex(dp), parameter :: input_array_2(3) = [(1, 2._dp), (3, 4._dp), (5, 6._dp)]
         character(*), parameter :: array_name_1 = "array_1"
         character(*), parameter :: array_name_2 = "array_2"
         character(*), parameter :: output_file = "two_arrays.npz"

@@ -170,7 +170,7 @@ contains
             end if
         end if
 
-        t_arr%values = array
+        allocate(t_arr%values, source=array)
 
         if (.not. allocated(arrays)) then
             allocate(arrays(1))
@@ -186,7 +186,7 @@ contains
             end if
         end do
 
-        wrapper%array = t_arr
+        allocate(wrapper%array, source=t_arr)
         arrays = [arrays, wrapper]
     end
 #:endfor
