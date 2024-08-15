@@ -3,7 +3,6 @@ module test_np
     use stdlib_filesystem, only : temp_dir, exists
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
     use stdlib_io_np, only : save_npy, load_npy, load_npz, add_array, save_npz
-    use stdlib_string_type, only : char
     use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
     implicit none
     private
@@ -1190,9 +1189,8 @@ contains
 
         select type (typed_array => arrays_reloaded(1)%array)
           class is (t_array_rdp_2)
-            call check(error, size(typed_array%values), size(input_array_1), &
-                "First array does not match in size: "//char(size(input_array_1))//" expected, " &
-                //char(size(typed_array%values))//" obtained.")
+            print *, size(typed_array%values), size(input_array_1)
+            call check(error, size(typed_array%values), size(input_array_1), "First array does not match in size.")
             if (allocated(error)) then
                 call delete_file(output_file); return
             end if
@@ -1207,9 +1205,7 @@ contains
 
         select type (typed_array => arrays_reloaded(2)%array)
           class is (t_array_cdp_1)
-            call check(error, size(typed_array%values), size(input_array_2), &
-                "Second array does not match in size: "//char(size(input_array_2))//" expected, " &
-                //char(size(typed_array%values))//" obtained.")
+            call check(error, size(typed_array%values), size(input_array_2), "Second array does not match in size.")
             if (allocated(error)) then
                 call delete_file(output_file); return
             end if
