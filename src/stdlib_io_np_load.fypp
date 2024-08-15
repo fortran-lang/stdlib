@@ -202,7 +202,7 @@ contains
 
                         select type (typed_array => arrays(i)%array)
                           class is (t_array_${t1[0]}$${k1}$_${rank}$)
-                            allocate(typed_array%value, source=array)
+                            allocate(typed_array%values, source=array)
                           class default
                             msg = 'Failed to allocate values.'; stat = 1
                             close(io, status='delete'); return
