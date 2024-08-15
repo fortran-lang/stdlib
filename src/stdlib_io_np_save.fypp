@@ -257,6 +257,13 @@ contains
             end select
         end do
 
+do j = 1, size(files)
+    print *, as_string(files(j))
+end do
+do j = 1, size(arrays)
+    print *, arrays(j)%array%name
+    print *, arrays(j)%array%values
+end do
         call zip(filename, files, stat, msg, is_compressed)
         if (stat /= 0) then
             if (present(iostat)) iostat = stat
