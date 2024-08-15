@@ -1150,7 +1150,7 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:), arrays_reloaded(:)
         integer :: stat, j
         real(dp), allocatable :: input_array_1(:,:)
-        complex(dp), allocatable :: input_array_2(:)
+        complex(dp), parameter, dimension(3) :: input_array_2 = [cmplx(1, 2, kind=8), cmplx(3, 4, kind=8), cmplx(5, 6, kind=8)]
         character(*), parameter :: array_name_1 = "array_1"
         character(*), parameter :: array_name_2 = "array_2"
         character(*), parameter :: output_file = "two_arrays.npz"
@@ -1162,7 +1162,6 @@ contains
         call check(error, stat, "Error adding array 1 to the list of arrays.")
         if (allocated(error)) return
 
-        input_array_2 = [cmplx(1, 2, kind=8), cmplx(3, 4, kind=8), cmplx(5, 6, kind=8)]
         call add_array(arrays, input_array_2, stat, name=array_name_2)
         call check(error, stat, "Error adding array 2 to the list of arrays.")
         if (allocated(error)) return
