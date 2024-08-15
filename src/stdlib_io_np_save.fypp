@@ -221,17 +221,6 @@ contains
         else
             is_compressed = .false.
         end if
-print *, 'in subroutine'
-do j = 1, size(arrays)
-    print *, arrays(j)%array%name
-    select type (typed_array => arrays(1)%array)
-      class is (t_array_rdp_2)
-        print *, typed_array%values
-      class is (t_array_cdp_1)
-        print *, typed_array%values
-      class default
-    end select
-end do
 
         allocate(files(0))
         do i = 1, size(arrays)
