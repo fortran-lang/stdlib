@@ -172,6 +172,15 @@ contains
 
         allocate(t_arr%values, source=array)
 
+print *, 'after allocating values'
+select type (typed_array => t_arr%values)
+  class is (t_array_rdp_2)
+    print *, typed_array%values
+  class is (t_array_cdp_1)
+    print *, typed_array%values
+  class default
+end select
+
         if (.not. allocated(arrays)) then
             allocate(arrays(1))
             allocate(arrays(1)%array, source=t_arr)
@@ -187,7 +196,29 @@ contains
         end do
 
         allocate(wrapper%array, source=t_arr)
+
+print *, 'after allocating wrapper'
+select type (typed_array => t_arr%values)
+  class is (t_array_rdp_2)
+    print *, typed_array%values
+  class is (t_array_cdp_1)
+    print *, typed_array%values
+  class default
+end select
+
         arrays = [arrays, wrapper]
+
+print *, 'after allocating arrays'
+do i = 1, size(arrays)
+    print *, arrays(i)%array%name
+    select type (typed_array => arrays(i)%array)
+      class is (t_array_rdp_2)
+        print *, typed_array%values
+      class is (t_array_cdp_1)
+        print *, typed_array%values
+      class default
+    end select
+end do
     end
 #:endfor
 #:endfor
