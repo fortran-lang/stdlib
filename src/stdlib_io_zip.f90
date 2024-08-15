@@ -88,7 +88,7 @@ contains
             end if
         end if
 
-        call run('unzip '//filename//' -d '//output_dir, run_stat)
+        call run('unzip -q '//filename//' -d '//output_dir, run_stat)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
             if (present(msg)) msg = "Error unzipping '"//filename//"'."
