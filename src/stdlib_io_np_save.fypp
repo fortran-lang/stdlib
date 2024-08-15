@@ -199,7 +199,7 @@ contains
     module subroutine save_arrays_to_npz(filename, arrays, iostat, iomsg, compressed)
         !> Name of the npz file to save to.
         character(len=*), intent(in) :: filename
-        !> Array of arrays to be saved.
+        !> Arrays to be saved.
         type(t_array_wrapper), intent(in) :: arrays(:)
         !> Optional error status of saving, zero on success.
         integer, intent(out), optional :: iostat
@@ -221,8 +221,19 @@ contains
         else
             is_compressed = .false.
         end if
+print *, 'in subroutine'
+do j = 1, size(arrays)
+    print *, arrays(j)%array%name
+    select type (typed_array => arrays(1)%array)
+      class is (t_array_rdp_2)
+        print *, typed_array%values
+      class is (t_array_cdp_1)
+        print *, typed_array%values
+      class default
+    end select
+end do
 
-        if (.not. allocated(files)) allocate(files(0))
+        allocate(files(0))
         do i = 1, size(arrays)
             select type (typed_array => arrays(i)%array)
 #:for k1, t1 in KINDS_TYPES
@@ -257,19 +268,6 @@ contains
             end select
         end do
 
-do j = 1, size(files)
-    print *, as_string(files(j))
-end do
-do j = 1, size(arrays)
-    print *, arrays(j)%array%name
-    select type (typed_array => arrays(1)%array)
-        class is (t_array_rdp_2)
-            print *, typed_array%values
-        class is (t_array_cdp_1)
-            print *, typed_array%values
-        class default
-    end select
-end do
         call zip(filename, files, stat, msg, is_compressed)
         if (stat /= 0) then
             if (present(iostat)) iostat = stat

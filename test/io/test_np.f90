@@ -1148,7 +1148,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         type(t_array_wrapper), allocatable :: arrays(:), arrays_reloaded(:)
-        integer :: stat
+        integer :: stat, j
         real(dp), allocatable :: input_array_1(:,:)
         complex(dp), allocatable :: input_array_2(:)
         character(*), parameter :: array_name_1 = "array_1"
@@ -1167,6 +1167,17 @@ contains
         if (allocated(error)) return
         call check(error, size(arrays) == 2, "Wrong array size.")
         if (allocated(error)) return
+print *, 'in test'
+do j = 1, size(arrays)
+    print *, arrays(j)%array%name
+    select type (typed_array => arrays(1)%array)
+      class is (t_array_rdp_2)
+        print *, typed_array%values
+      class is (t_array_cdp_1)
+        print *, typed_array%values
+      class default
+    end select
+end do
         call save_npz(output_file, arrays, stat)
         call check(error, stat, "Error saving arrays as an npz file.")
         if (allocated(error)) then
