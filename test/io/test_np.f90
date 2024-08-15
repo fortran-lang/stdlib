@@ -1161,15 +1161,8 @@ contains
         call add_array(arrays, input_array_1, stat, name=array_name_1)
         call check(error, stat, "Error adding array 1 to the list of arrays.")
         if (allocated(error)) return
-        
-        input_array_2 = (/(1.0_dp, 2.0_dp), (3.0_dp, 4.0_dp), (5.0_dp, 6.0_dp)/)
-        call add_array(arrays, input_array_2, stat, name=array_name_2)
-        call check(error, stat, "Error adding array 2 to the list of arrays.")
-        if (allocated(error)) return
-        call check(error, size(arrays) == 2, "Wrong array size.")
-        if (allocated(error)) return
 
-print *, 'in test'
+print *, 'first array'
 do j = 1, size(arrays)
     print *, arrays(j)%array%name
     select type (typed_array => arrays(1)%array)
@@ -1180,6 +1173,25 @@ do j = 1, size(arrays)
       class default
     end select
 end do
+
+        allocate(input_array_2, source=[(1.0_dp, 2.0_dp), (3.0_dp, 4.0_dp), (5.0_dp, 6.0_dp)])
+        call add_array(arrays, input_array_2, stat, name=array_name_2)
+        call check(error, stat, "Error adding array 2 to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, size(arrays) == 2, "Wrong array size.")
+        if (allocated(error)) return
+
+        print *, 'in test'
+        do j = 1, size(arrays)
+            print *, arrays(j)%array%name
+            select type (typed_array => arrays(1)%array)
+              class is (t_array_rdp_2)
+                print *, typed_array%values
+              class is (t_array_cdp_1)
+                print *, typed_array%values
+              class default
+            end select
+        end do
 
         call save_npz(output_file, arrays, stat)
         call check(error, stat, "Error saving arrays as an npz file.")
