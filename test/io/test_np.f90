@@ -958,7 +958,7 @@ contains
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
           class is (t_array_rdp_2)
-            call check(error, size(typed_array%values), size(input_array), "Array sizes to not match.")
+            call check(error, size(typed_array%values), size(input_array), "Array sizes do not match.")
             if (allocated(error)) return
             call check(error, any(abs(typed_array%values - input_array) <= epsilon(1.0_dp)), &
                 "Precision loss when adding array.")
@@ -987,7 +987,7 @@ contains
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
           class is (t_array_rdp_2)
-            call check(error, size(typed_array%values), size(array_1), "Array sizes to not match.")
+            call check(error, size(typed_array%values), size(array_1), "Array sizes do not match.")
             if (allocated(error)) return
             call check(error, any(abs(typed_array%values - array_1) <= epsilon(1.0_dp)), &
                 "Precision loss when adding array.")
@@ -1007,7 +1007,7 @@ contains
         if (allocated(error)) return
         select type (typed_array => arrays(2)%array)
           class is (t_array_rsp_1)
-            call check(error, size(typed_array%values), size(array_2), "Array sizes to not match.")
+            call check(error, size(typed_array%values), size(array_2), "Array sizes do not match.")
             if (allocated(error)) return
             call check(error, any(abs(typed_array%values - array_2) <= epsilon(1.0_sp)), &
                 "Precision loss when adding array.")
@@ -1036,7 +1036,7 @@ contains
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
           class is (t_array_rdp_2)
-            call check(error, size(typed_array%values), size(input_array), "Array sizes to not match.")
+            call check(error, size(typed_array%values), size(input_array), "Array sizes do not match.")
             if (allocated(error)) return
             call check(error, any(abs(typed_array%values - input_array) <= epsilon(1.0_dp)), &
                 "Precision loss when adding array.")
@@ -1099,6 +1099,7 @@ contains
         integer :: stat
         real(dp), allocatable :: input_array(:,:)
         character(*), parameter :: output_file = "one_array.npz"
+        character(*), parameter :: tmp = temp_dir//"one_array"
 
         allocate(input_array(10, 4))
         call random_number(input_array)
@@ -1117,7 +1118,7 @@ contains
             call delete_file(output_file); return
         end if
 
-        call load_npz(output_file, arrays_reloaded, stat)
+        call load_npz(output_file, arrays_reloaded, stat, tmp_dir=tmp)
         call check(error, stat, "Error loading the npz file.")
         if (allocated(error)) then
             call delete_file(output_file); return
@@ -1128,7 +1129,7 @@ contains
         end if
         select type (typed_array => arrays_reloaded(1)%array)
           class is (t_array_rdp_2)
-            call check(error, size(typed_array%values), size(input_array), "Array sizes to not match.")
+            call check(error, size(typed_array%values), size(input_array), "Array sizes do not match.")
             if (allocated(error)) then
                 call delete_file(output_file); return
             end if
@@ -1150,15 +1151,18 @@ contains
         integer :: stat
         real(dp), allocatable :: input_array_1(:,:)
         complex(dp), allocatable :: input_array_2(:)
+        character(*), parameter :: array_name_1 = "array_1"
+        character(*), parameter :: array_name_2 = "array_2"
         character(*), parameter :: output_file = "two_arrays.npz"
+        character(*), parameter :: tmp = temp_dir//"two_arrays"
 
         allocate(input_array_1(5, 6))
         call random_number(input_array_1)
         input_array_2 = [(1.0_dp, 2.0_dp), (3.0_dp, 4.0_dp), (5.0_dp, 6.0_dp)]
-        call add_array(arrays, input_array_1, stat)
+        call add_array(arrays, input_array_1, stat, name=array_name_1)
         call check(error, stat, "Error adding array 1 to the list of arrays.")
         if (allocated(error)) return
-        call add_array(arrays, input_array_2, stat)
+        call add_array(arrays, input_array_2, stat, name=array_name_2)
         call check(error, stat, "Error adding array 2 to the list of arrays.")
         if (allocated(error)) return
         call check(error, size(arrays) == 2, "Wrong array size.")
@@ -1173,7 +1177,7 @@ contains
             call delete_file(output_file); return
         end if
 
-        call load_npz(output_file, arrays_reloaded, stat)
+        call load_npz(output_file, arrays_reloaded, stat, tmp_dir=tmp)
         call check(error, stat, "Error loading npz file.")
         if (allocated(error)) then
             call delete_file(output_file); return
@@ -1185,7 +1189,7 @@ contains
 
         select type (typed_array => arrays_reloaded(1)%array)
           class is (t_array_rdp_2)
-            call check(error, size(typed_array%values), size(input_array_1), "Array sizes to not match.")
+            call check(error, size(typed_array%values), size(input_array_1), "First array does not match in size.")
             if (allocated(error)) then
                 call delete_file(output_file); return
             end if
@@ -1200,7 +1204,7 @@ contains
 
         select type (typed_array => arrays_reloaded(2)%array)
           class is (t_array_cdp_1)
-            call check(error, size(typed_array%values), size(input_array_2), "Array sizes to not match.")
+            call check(error, size(typed_array%values), size(input_array_2), "Second array does not match in size.")
             if (allocated(error)) then
                 call delete_file(output_file); return
             end if
