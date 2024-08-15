@@ -1199,7 +1199,7 @@ contains
         end select
 
         select type (typed_array => arrays_reloaded(2)%array)
-          class is (t_array_cdp_2)
+          class is (t_array_cdp_1)
             call check(error, size(typed_array%values), size(input_array_2), "Array sizes to not match.")
             if (allocated(error)) then
                 call delete_file(output_file); return
