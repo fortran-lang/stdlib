@@ -3,6 +3,7 @@ module test_np
     use stdlib_filesystem, only : temp_dir, exists
     use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
     use stdlib_io_np, only : save_npy, load_npy, load_npz, add_array, save_npz
+    use stdlib_string_type, only : char
     use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
     implicit none
     private
@@ -669,7 +670,7 @@ contains
 
         integer :: stat
         character(*), parameter :: filename = "nonexistent.npz"
-        character(*), parameter :: tmp = temp_dir//"nonexistent"
+        character(*), parameter :: tmp = temp_dir//"/nonexistent"
 
         call load_npz(filename, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading a non-existent npz file should fail.")
@@ -683,7 +684,7 @@ contains
 
         integer :: stat
         character(*), parameter :: filename = "."
-        character(*), parameter :: tmp = temp_dir//"invalid_dir"
+        character(*), parameter :: tmp = temp_dir//"/invalid_dir"
 
 
         call load_npz(filename, arrays, stat, tmp_dir=tmp)
@@ -698,7 +699,7 @@ contains
 
         integer :: io, stat
         character(*), parameter :: filename = "empty_file"
-        character(*), parameter :: tmp = temp_dir//"empty_file"
+        character(*), parameter :: tmp = temp_dir//"/empty_file"
 
         open(newunit=io, file=filename)
         close(io)
@@ -717,7 +718,7 @@ contains
         integer :: io, stat
 
         character(*), parameter :: filename = "empty.zip"
-        character(*), parameter :: tmp = temp_dir//"empty_zip"
+        character(*), parameter :: tmp = temp_dir//"/empty_zip"
         character(*), parameter:: binary_data = 'PK'//char(5)//char(6)//repeat(char(0), 18)
 
         open (newunit=io, file=filename, form='unformatted', access='stream')
@@ -736,7 +737,7 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "empty_0.npz"
-        character(*), parameter :: tmp = temp_dir//"empty_0"
+        character(*), parameter :: tmp = temp_dir//"/empty_0"
         character(:), allocatable :: path
 
 
@@ -762,7 +763,7 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "rand_2_3.npz"
-        character(*), parameter :: tmp = temp_dir//"rand_2_3"
+        character(*), parameter :: tmp = temp_dir//"/rand_2_3"
         character(:), allocatable :: path
 
         path = get_path(filename)
@@ -787,7 +788,7 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat, i
         character(*), parameter :: filename = "arange_10_20.npz"
-        character(*), parameter :: tmp = temp_dir//"arange_10_20"
+        character(*), parameter :: tmp = temp_dir//"/arange_10_20"
 
         character(:), allocatable :: path
 
@@ -820,7 +821,7 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "cmplx_arr.npz"
-        character(*), parameter :: tmp = temp_dir//"cmplx_arr"
+        character(*), parameter :: tmp = temp_dir//"/cmplx_arr"
         character(:), allocatable :: path
 
         path = get_path(filename)
@@ -852,7 +853,7 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "two_arr_iint64_rdp.npz"
-        character(*), parameter :: tmp = temp_dir//"two_arr_iint64_rdp"
+        character(*), parameter :: tmp = temp_dir//"/two_arr_iint64_rdp"
         character(:), allocatable :: path
 
         path = get_path(filename)
@@ -899,7 +900,7 @@ contains
         type(t_array_wrapper), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "two_arr_iint64_rdp_comp.npz"
-        character(*), parameter :: tmp = temp_dir//"two_arr_iint64_rdp_comp"
+        character(*), parameter :: tmp = temp_dir//"/two_arr_iint64_rdp_comp"
         character(:), allocatable :: path
 
         path = get_path(filename)
@@ -1099,7 +1100,7 @@ contains
         integer :: stat
         real(dp), allocatable :: input_array(:,:)
         character(*), parameter :: output_file = "one_array.npz"
-        character(*), parameter :: tmp = temp_dir//"one_array"
+        character(*), parameter :: tmp = temp_dir//"/one_array"
 
         allocate(input_array(10, 4))
         call random_number(input_array)
@@ -1154,7 +1155,7 @@ contains
         character(*), parameter :: array_name_1 = "array_1"
         character(*), parameter :: array_name_2 = "array_2"
         character(*), parameter :: output_file = "two_arrays.npz"
-        character(*), parameter :: tmp = temp_dir//"two_arrays"
+        character(*), parameter :: tmp = temp_dir//"/two_arrays"
 
         allocate(input_array_1(5, 6))
         call random_number(input_array_1)
@@ -1189,7 +1190,9 @@ contains
 
         select type (typed_array => arrays_reloaded(1)%array)
           class is (t_array_rdp_2)
-            call check(error, size(typed_array%values), size(input_array_1), "First array does not match in size.")
+            call check(error, size(typed_array%values), size(input_array_1), &
+                "First array does not match in size: "//char(size(input_array_1))//" expected, " &
+                //char(size(typed_array%values))//" obtained.")
             if (allocated(error)) then
                 call delete_file(output_file); return
             end if
@@ -1204,7 +1207,9 @@ contains
 
         select type (typed_array => arrays_reloaded(2)%array)
           class is (t_array_cdp_1)
-            call check(error, size(typed_array%values), size(input_array_2), "Second array does not match in size.")
+            call check(error, size(typed_array%values), size(input_array_2), &
+                "Second array does not match in size: "//char(size(input_array_2))//" expected, " &
+                //char(size(typed_array%values))//" obtained.")
             if (allocated(error)) then
                 call delete_file(output_file); return
             end if
