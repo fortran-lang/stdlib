@@ -1189,7 +1189,6 @@ contains
 
         select type (typed_array => arrays_reloaded(1)%array)
           class is (t_array_rdp_2)
-          print *, typed_array%values, input_array_1
             call check(error, size(typed_array%values), size(input_array_1), "First array does not match in size.")
             if (allocated(error)) then
                 call delete_file(output_file); return
