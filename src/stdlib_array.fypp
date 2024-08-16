@@ -9,10 +9,11 @@
 !> The specification of this module is available [here](../page/specs/stdlib_array.html).
 module stdlib_array
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    use stdlib_strings, only: to_string
     implicit none
     private
 
-    public :: trueloc, falseloc
+    public :: add_array, trueloc, falseloc
 
     !> Helper class to allocate t_array as an abstract type.
     type, public :: t_array_wrapper
@@ -31,7 +32,86 @@ module stdlib_array
 #:endfor
 #:endfor
 
+    interface add_array
+#:for k1, t1 in KINDS_TYPES
+#:for rank in RANKS
+        module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, stat, msg, name)
+            !> Array of arrays to which the array is to be added.
+            type(t_array_wrapper), allocatable, intent(inout) :: arrays(:)
+            !> Array to be added.
+            ${t1}$, intent(in) :: array${ranksuffix(rank)}$
+            !> Status of addition.
+            integer, intent(out), optional :: stat
+            !> Error message.
+            character(len=:), allocatable, intent(out), optional :: msg
+            !> Name of the array to be added. A default name will be used if not provided.
+            character(len=*), intent(in), optional :: name
+        end
+#:endfor
+#:endfor
+    end interface
+
 contains
+
+#:for k1, t1 in KINDS_TYPES
+#:for rank in RANKS
+    module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, stat, msg, name)
+        !> Array of arrays to which the array is to be added.
+        type(t_array_wrapper), allocatable, intent(inout) :: arrays(:)
+        !> Array to be added.
+        ${t1}$, intent(in) :: array${ranksuffix(rank)}$
+        !> Status of addition.
+        integer, intent(out), optional :: stat
+        !> Error message.
+        character(len=:), allocatable, intent(out), optional :: msg
+        !> Name of the array to be added. A default name will be used if not provided.
+        character(len=*), intent(in), optional :: name
+
+        integer :: i, arr_size
+        type(t_array_${t1[0]}$${k1}$_${rank}$) :: t_arr
+        type(t_array_wrapper), allocatable :: tmp_arrays(:)
+
+
+        if (present(stat)) stat = 0
+
+        if (present(name)) then
+            if (trim(name) == '') then
+                if (present(stat)) stat = 1
+                if (present(msg)) msg = "Array name cannot be empty."
+                return
+            end if
+            t_arr%name = name
+        else
+            if (allocated(arrays)) then
+                t_arr%name = "arr_"//to_string(size(arrays))//".npy"
+            else
+                t_arr%name = "arr_0.npy"
+            end if
+        end if
+
+        allocate(t_arr%values, source=array)
+        if (.not. allocated(arrays)) then
+            allocate(arrays(1))
+            allocate(arrays(1)%array, source=t_arr)
+            return
+        end if
+
+        arr_size = size(arrays)
+        do i = 1, arr_size
+            if (arrays(i)%array%name == t_arr%name) then
+                if (present(stat)) stat = 1
+                if (present(msg)) msg = "Array with the same name '"//t_arr%name//"' already exists."
+                return
+            end if
+        end do
+
+        allocate(tmp_arrays(arr_size + 1))
+        tmp_arrays(:arr_size) = arrays
+        allocate(tmp_arrays(arr_size + 1)%array, source=t_arr)
+        call move_alloc(tmp_arrays, arrays)
+    end
+#:endfor
+#:endfor
 
     !> Version: experimental
     !>

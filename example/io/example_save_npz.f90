@@ -1,6 +1,6 @@
 program example_save_npz
-    use stdlib_array, only: t_array_wrapper
-    use stdlib_io_np, only: add_array, save_npz
+    use stdlib_array, only: t_array_wrapper, add_array
+    use stdlib_io_np, only: save_npz
     implicit none
 
     type(t_array_wrapper), allocatable :: arrays(:)

@@ -74,7 +74,7 @@ module stdlib_io_np
     implicit none
     private
 
-    public :: load_npy, save_npy, load_npz, save_npz, add_array
+    public :: load_npy, save_npy, load_npz, save_npz
 
     character(len=*), parameter :: &
         type_iint8 = "<i1", type_iint16 = "<i2", type_iint32 = "<i4", type_iint64 = "<i8", &
@@ -143,24 +143,5 @@ module stdlib_io_np
             !> If true, the file is saved in compressed format. The default is false.
             logical, intent(in), optional :: compressed
         end
-    end interface
-
-    interface add_array
-#:for k1, t1 in KINDS_TYPES
-#:for rank in RANKS
-        module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, stat, msg, name)
-            !> Array of arrays to which the array is to be added.
-            type(t_array_wrapper), allocatable, intent(inout) :: arrays(:)
-            !> Array to be added.
-            ${t1}$, intent(in) :: array${ranksuffix(rank)}$
-            !> Status of addition.
-            integer, intent(out), optional :: stat
-            !> Error message.
-            character(len=:), allocatable, intent(out), optional :: msg
-            !> Name of the array to be added. A default name will be used if not provided.
-            character(len=*), intent(in), optional :: name
-        end
-#:endfor
-#:endfor
     end interface
 end
