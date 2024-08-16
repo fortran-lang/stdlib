@@ -5,17 +5,6 @@ set(
 )
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
-set(needsCPP
-    test_np.f90
-    test_zip.f90
-)
-
-if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
-  set_source_files_properties(${needsCPP} PROPERTIES COMPILE_FLAGS "-cpp")
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
-  set_source_files_properties(${needsCPP} PROPERTIES COMPILE_FLAGS "-fpp")
-endif()
-
 ADDTEST(loadtxt)
 ADDTEST(savetxt)
 
@@ -26,7 +15,10 @@ set_tests_properties(savetxt_qp PROPERTIES LABELS quadruple_precision)
 
 ADDTEST(filesystem)
 ADDTEST(getline)
-ADDTEST(np)
 ADDTEST(open)
 ADDTEST(parse_mode)
+
+ADDTEST(np)
 ADDTEST(zip)
+set_tests_properties(np PROPERTIES WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+set_tests_properties(zip PROPERTIES WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})

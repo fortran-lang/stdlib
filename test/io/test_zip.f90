@@ -8,6 +8,8 @@ module test_zip
 
     public :: collect_zip
 
+    character(*), parameter :: path_to_zip_files = "test/io/zip_files/"
+
 contains
 
     !> Collect all exported unit tests
@@ -87,12 +89,7 @@ contains
 
         integer :: stat
         character(*), parameter :: filename = "empty.zip"
-        character(:), allocatable :: path
-
-        path = get_path(filename)
-        if (.not. allocated(path)) then
-            call test_failed(error, "The file '"//filename//"' could not be found."); return
-        end if
+        character(*), parameter :: path = path_to_zip_files//filename
 
         call unzip(path, stat=stat)
         call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
@@ -103,12 +100,7 @@ contains
 
         integer :: stat
         character(*), parameter :: filename = "textfile.zip"
-        character(:), allocatable :: path
-
-        path = get_path(filename)
-        if (.not. allocated(path)) then
-            call test_failed(error, "The file '"//filename//"' could not be found."); return
-        end if
+        character(*), parameter :: path = path_to_zip_files//filename
 
         call unzip(path, stat=stat)
         call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
@@ -119,12 +111,7 @@ contains
 
         integer :: stat
         character(*), parameter :: filename = "empty_0.npz"
-        character(:), allocatable :: path
-
-        path = get_path(filename)
-        if (.not. allocated(path)) then
-            call test_failed(error, "The file '"//filename//"' could not be found."); return
-        end if
+        character(*), parameter :: path = path_to_zip_files//filename
 
         call unzip(path, stat=stat)
         call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
@@ -135,12 +122,7 @@ contains
 
         integer :: stat
         character(*), parameter :: filename = "two_files.zip"
-        character(:), allocatable :: path
-
-        path = get_path(filename)
-        if (.not. allocated(path)) then
-            call test_failed(error, "The file '"//filename//"' could not be found."); return
-        end if
+        character(*), parameter :: path = path_to_zip_files//filename
 
         call unzip(path, stat=stat)
         call check(error, stat, "Listing the contents of a zip file that contains an empty file should not fail.")
@@ -151,9 +133,8 @@ contains
 
         integer :: stat
         character(*), parameter :: filename = "two_arr_iint64_rdp_comp.npz"
-        character(:), allocatable :: path
+        character(*), parameter :: path = path_to_zip_files//filename
 
-        path = get_path(filename)
         call unzip(path, stat=stat)
         call check(error, stat, "Listing the contents of a compressed npz file should not fail.")
     end
@@ -290,18 +271,6 @@ contains
 
         call delete_file(input_file)
         call delete_file(output_file)
-    end
-
-    !> Makes sure that we find the file when running both `ctest` and `fpm test`.
-    function get_path(file) result(path)
-        character(*), intent(in) :: file
-        character(:), allocatable :: path
-
-#ifdef TEST_ROOT_DIR
-        path = TEST_ROOT_DIR//'/io/zip_files/'//file
-#else
-        path = 'test/io/zip_files/'//file
-#endif
     end
 
     subroutine delete_file(filename)

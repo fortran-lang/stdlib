@@ -9,6 +9,8 @@ module test_np
 
     public :: collect_np
 
+    character(*), parameter :: path_to_zip_files = "test/io/zip_files/"
+
 contains
 
     !> Collect all exported unit tests
@@ -737,10 +739,8 @@ contains
         integer :: stat
         character(*), parameter :: filename = "empty_0.npz"
         character(*), parameter :: tmp = temp_dir//"/empty_0"
-        character(:), allocatable :: path
+        character(*), parameter :: path = path_to_zip_files//filename
 
-
-        path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz that contains a single empty array shouldn't fail.")
         if (allocated(error)) return
@@ -763,9 +763,8 @@ contains
         integer :: stat
         character(*), parameter :: filename = "rand_2_3.npz"
         character(*), parameter :: tmp = temp_dir//"/rand_2_3"
-        character(:), allocatable :: path
+        character(*), parameter :: path = path_to_zip_files//filename
 
-        path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
         if (allocated(error)) return
@@ -788,10 +787,8 @@ contains
         integer :: stat, i
         character(*), parameter :: filename = "arange_10_20.npz"
         character(*), parameter :: tmp = temp_dir//"/arange_10_20"
+        character(*), parameter :: path = path_to_zip_files//filename
 
-        character(:), allocatable :: path
-
-        path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
         if (allocated(error)) return
@@ -821,9 +818,8 @@ contains
         integer :: stat
         character(*), parameter :: filename = "cmplx_arr.npz"
         character(*), parameter :: tmp = temp_dir//"/cmplx_arr"
-        character(:), allocatable :: path
+        character(*), parameter :: path = path_to_zip_files//filename
 
-        path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains a valid nd_array shouldn't fail.")
         if (allocated(error)) return
@@ -853,9 +849,8 @@ contains
         integer :: stat
         character(*), parameter :: filename = "two_arr_iint64_rdp.npz"
         character(*), parameter :: tmp = temp_dir//"/two_arr_iint64_rdp"
-        character(:), allocatable :: path
+        character(*), parameter :: path = path_to_zip_files//filename
 
-        path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading an npz file that contains valid nd_arrays shouldn't fail.")
         if (allocated(error)) return
@@ -900,9 +895,8 @@ contains
         integer :: stat
         character(*), parameter :: filename = "two_arr_iint64_rdp_comp.npz"
         character(*), parameter :: tmp = temp_dir//"/two_arr_iint64_rdp_comp"
-        character(:), allocatable :: path
+        character(*), parameter :: path = path_to_zip_files//filename
 
-        path = get_path(filename)
         call load_npz(path, arrays, stat, tmp_dir=tmp)
         call check(error, stat, "Loading a compressed npz file that contains valid nd_arrays shouldn't fail.")
         if (allocated(error)) return
@@ -1218,18 +1212,6 @@ contains
             call test_failed(error, "Array 2 is of wrong type.")
         end select
         call delete_file(output_file)
-    end
-
-    !> Makes sure that we find the file when running both `ctest` and `fpm test`.
-    function get_path(file) result(path)
-        character(*), intent(in) :: file
-        character(:), allocatable :: path
-
-#ifdef TEST_ROOT_DIR
-        path = TEST_ROOT_DIR//'/io/zip_files/'//file
-#else
-        path = 'test/io/zip_files/'//file
-#endif
     end
 
     subroutine delete_file(filename)

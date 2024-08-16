@@ -31,12 +31,3 @@ add_subdirectory(quadrature)
 add_subdirectory(math)
 add_subdirectory(stringlist)
 add_subdirectory(terminal)
-
-set(setRootDir
-    test_np
-    test_zip
-)
-
-foreach(target ${setRootDir})
-    target_compile_definitions(${target} PRIVATE TEST_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
-endforeach()
