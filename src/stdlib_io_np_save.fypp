@@ -149,9 +149,10 @@ contains
         !> Name of the array to be added. A default name will be used if not provided.
         character(len=*), intent(in), optional :: name
 
-        integer :: i
+        integer :: i, arr_size
         type(t_array_${t1[0]}$${k1}$_${rank}$) :: t_arr
-        type(t_array_wrapper) :: wrapper
+        type(t_array_wrapper), allocatable :: tmp_arrays(:)
+
 
         if (present(stat)) stat = 0
 
@@ -177,7 +178,8 @@ contains
             return
         end if
 
-        do i = 1, size(arrays)
+        arr_size = size(arrays)
+        do i = 1, arr_size
             if (arrays(i)%array%name == t_arr%name) then
                 if (present(stat)) stat = 1
                 if (present(msg)) msg = "Array with the same name '"//t_arr%name//"' already exists."
@@ -185,8 +187,10 @@ contains
             end if
         end do
 
-        arrays = [arrays, wrapper]
-        allocate(wrapper%array, source=t_arr)
+        allocate(tmp_arrays(arr_size + 1))
+        tmp_arrays(:arr_size) = arrays
+        allocate(tmp_arrays(arr_size + 1)%array, source=t_arr)
+        call move_alloc(tmp_arrays, arrays)
     end
 #:endfor
 #:endfor
