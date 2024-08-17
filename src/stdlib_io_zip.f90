@@ -1,6 +1,7 @@
 module stdlib_io_zip
     use stdlib_filesystem, only: exists, run, temp_dir
     use stdlib_string_type, only: string_type, char
+    use stdlib_strings, only: starts_with
     implicit none
     private
 
@@ -84,7 +85,7 @@ contains
             return
         end if
 
-        if (.not. present(outputdir) .and. .not. exists(temp_dir)) then
+        if (starts_with(output_dir, temp_dir) .and. .not. exists(temp_dir)) then
             call run('mkdir '//temp_dir, run_stat)
             if (run_stat /= 0) then
                 if (present(stat)) stat = run_stat
