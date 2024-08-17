@@ -3,7 +3,7 @@ submodule(stdlib_specialfunctions) stdlib_specialfunctions_activations
     implicit none
     
     #:for rk, rt in REAL_KINDS_TYPES
-    ${rt}$, parameter :: isqrt2_${rk}$ = 1_${rk}$ / sqrt(2._${rk}$)
+    ${rt}$, parameter :: isqrt2_${rk}$ = 1._${rk}$ / sqrt(2._${rk}$)
     #:endfor
 
 contains
@@ -37,7 +37,7 @@ elemental ${rt}$ module function elu_${rk}$( x , a ) result ( y )
     if(x >= 0._${rk}$)then
         y = x
     else
-        y = a * (exp(x) - 1_${rk}$)
+        y = a * (exp(x) - 1._${rk}$)
     end if
 end function
 
@@ -46,7 +46,7 @@ elemental ${rt}$ module function elu_grad_${rk}$( x , a ) result ( y )
     ${rt}$, intent(in) :: a
     
     if(x >= 0._${rk}$)then
-        y = 1_${rk}$ 
+        y = 1._${rk}$ 
     else
         y = a * exp(x)
     end if
@@ -68,7 +68,7 @@ elemental ${rt}$ module function relu_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
 
     if(x > 0._${rk}$)then
-        y = 1_${rk}$ 
+        y = 1._${rk}$ 
     else
         y = 0._${rk}$
     end if
@@ -118,13 +118,13 @@ end function
 elemental ${rt}$ module function sigmoid_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     
-    y = 1_${rk}$ / (1_${rk}$ + exp(-x))
+    y = 1._${rk}$ / (1._${rk}$ + exp(-x))
 end function
 
 elemental ${rt}$ module function sigmoid_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     
-    y = exp(x) / (1_${rk}$ + exp(x))**2
+    y = exp(x) / (1._${rk}$ + exp(x))**2
 end function
 
 #:endfor
@@ -137,7 +137,7 @@ elemental ${rt}$ module function Step_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
 
     if(x > 0._${rk}$)then
-        y = 1_${rk}$ 
+        y = 1._${rk}$ 
     else
         y = 0._${rk}$
     end if
@@ -164,7 +164,7 @@ end function
 elemental ${rt}$ module function tanh_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     
-    y = 1_${rk}$ - ftanh(x)**2
+    y = 1._${rk}$ - ftanh(x)**2
 end function
 
 #:endfor
@@ -246,7 +246,7 @@ pure function Softmax_grad_r1_${rk}$( x ) result( y )
     ${rt}$ :: y(size(x))
     
     y = Softmax(x)
-    y = y * (1_${rk}$ - y)
+    y = y * (1._${rk}$ - y)
 end function
 
 pure function Softmax_grad_r2_${rk}$( x , dim ) result( y )
@@ -259,7 +259,7 @@ pure function Softmax_grad_r2_${rk}$( x , dim ) result( y )
     dim_ = 1; if(present(dim)) dim_ = dim
 
     y = Softmax(x,dim_)
-    y = y * (1_${rk}$ - y)
+    y = y * (1._${rk}$ - y)
 end function
 
 pure function Softmax_grad_r3_${rk}$( x , dim ) result( y )
@@ -272,7 +272,7 @@ pure function Softmax_grad_r3_${rk}$( x , dim ) result( y )
     dim_ = 1; if(present(dim)) dim_ = dim
     
     y = Softmax(x,dim_)
-    y = y * (1_${rk}$ - y)
+    y = y * (1._${rk}$ - y)
 end function
 
 pure function Softmax_grad_r4_${rk}$( x , dim ) result( y )
@@ -285,7 +285,7 @@ pure function Softmax_grad_r4_${rk}$( x , dim ) result( y )
     dim_ = 1; if(present(dim)) dim_ = dim
     
     y = Softmax(x,dim_)
-    y = y * (1_${rk}$ - y)
+    y = y * (1._${rk}$ - y)
 end function
 
 #:endfor
@@ -297,13 +297,13 @@ end function
 elemental ${rt}$ module function Softplus_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     
-    y = log(exp(x) + 1_${rk}$)
+    y = log(exp(x) + 1._${rk}$)
 end function
 
 elemental ${rt}$ module function Softplus_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     
-    y = exp(x) / (exp(x) + 1_${rk}$)
+    y = exp(x) / (exp(x) + 1._${rk}$)
 end function
 
 #:endfor
@@ -318,9 +318,9 @@ elemental ${rt}$ module function ftanh_${rk}$( x ) result( y )
     ${rt}$ :: x2, a, b
     
     if (x > 5_${rk}$) then
-        y = 1_${rk}$
+        y = 1._${rk}$
     elseif (x < -5_${rk}$) then
-        y = -1_${rk}$
+        y = -1._${rk}$
     else
         x2 = x*x
         a = x * (135135.0_${rk}$ + x2 * (17325.0_${rk}$ + x2 * (378.0_${rk}$ + x2)))
@@ -334,7 +334,7 @@ elemental ${rt}$ module function ferf_${rk}$( x ) result( y )
     ${rt}$ :: abs_x
     
     abs_x = abs(x)
-    y = 1_${rk}$ - 1_${rk}$ / (1+ 0.278393_${rk}$*abs_x + 0.230389_${rk}$*abs_x**2 + 0.000972_${rk}$*abs_x**3 + 0.078108_${rk}$*abs_x**4)**4
+    y = 1._${rk}$ - 1._${rk}$ / (1+ 0.278393_${rk}$*abs_x + 0.230389_${rk}$*abs_x**2 + 0.000972_${rk}$*abs_x**3 + 0.078108_${rk}$*abs_x**4)**4
     y = y * sign(1.0_${rk}$,x)
 end function
 
