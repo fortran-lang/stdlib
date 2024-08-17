@@ -21,7 +21,7 @@ end function
 elemental ${rt}$ module function gaussian_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     
-    y = -2_${rk}$ * x * exp(-x**2)
+    y = -2._${rk}$ * x * exp(-x**2)
 end function
 
 #:endfor
@@ -99,13 +99,13 @@ end function
 elemental ${rt}$ module function gelu_approx_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     
-    y = 0.5_${rk}$ * x * (1 + ferf(x * isqrt2_${rk}$))
+    y = 0.5_${rk}$ * x * (1._${rk}$ + ferf(x * isqrt2_${rk}$))
 end function
 
 elemental ${rt}$ module function gelu_approx_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     
-    y = 0.5_${rk}$ * (1 + ferf(x * isqrt2_${rk}$) )
+    y = 0.5_${rk}$ * (1._${rk}$ + ferf(x * isqrt2_${rk}$) )
     y = y + x * isqrt2_${rk}$ * exp( - 0.5_${rk}$ * x**2 )
 end function
 
@@ -334,7 +334,7 @@ elemental ${rt}$ module function ferf_${rk}$( x ) result( y )
     ${rt}$ :: abs_x
     
     abs_x = abs(x)
-    y = 1._${rk}$ - 1._${rk}$ / (1+ 0.278393_${rk}$*abs_x + 0.230389_${rk}$*abs_x**2 + 0.000972_${rk}$*abs_x**3 + 0.078108_${rk}$*abs_x**4)**4
+    y = 1._${rk}$ - 1._${rk}$ / (1._${rk}$+ 0.278393_${rk}$*abs_x + 0.230389_${rk}$*abs_x**2 + 0.000972_${rk}$*abs_x**3 + 0.078108_${rk}$*abs_x**4)**4
     y = y * sign(1.0_${rk}$,x)
 end function
 
