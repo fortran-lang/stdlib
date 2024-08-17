@@ -1,0 +1,309 @@
+#:include "common.fypp"
+module stdlib_specialfunctions
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+
+    implicit none
+
+    private
+
+    interface legendre
+        !! version: experimental
+        !! 
+        !! Legendre polynomial
+        pure elemental module function legendre_fp64(n,x) result(leg)
+            integer, intent(in) :: n
+            real(dp), intent(in) :: x
+            real(dp) :: leg
+        end function
+    end interface
+    public :: legendre 
+
+    interface dlegendre
+        !! version: experimental
+        !! 
+        !! First derivative Legendre polynomial
+        pure elemental module function dlegendre_fp64(n,x) result(dleg)
+            integer, intent(in) :: n
+            real(dp), intent(in) :: x
+            real(dp) :: dleg
+        end function
+    end interface
+    public :: dlegendre 
+
+    interface gaussian
+        !! Version: experimental
+        !!
+        !! gaussian function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function gaussian_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: gaussian
+
+    interface gaussian_grad
+        !! Version: experimental
+        !!
+        !! gradient of the gaussian function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function gaussian_grad_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: gaussian_grad
+
+    interface elu
+        !! Version: experimental
+        !!
+        !! exponential linear unit function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function elu_${rk}$( x , a ) result( y )
+            ${rt}$, intent(in) :: x
+            ${rt}$, intent(in) :: a
+        end function
+        #:endfor
+    end interface
+    public :: elu
+
+    interface elu_grad
+        !! Version: experimental
+        !!
+        !! gradient of the exponential linear unit function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function elu_grad_${rk}$( x , a ) result( y )
+            ${rt}$, intent(in) :: x
+            ${rt}$, intent(in) :: a
+        end function
+        #:endfor
+    end interface
+    public :: elu_grad
+
+    interface relu
+        !! Version: experimental
+        !!
+        !! Rectified linear unit function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function relu_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: relu
+
+    interface relu_grad
+        !! Version: experimental
+        !!
+        !! Gradient rectified linear unit function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function relu_grad_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: relu_grad
+
+    interface gelu
+        !! Version: experimental
+        !!
+        !! Gaussian error linear unit function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function gelu_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: gelu
+
+    interface gelu_grad
+        !! Version: experimental
+        !!
+        !! Gradient of the gaussian error linear unit function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function gelu_grad_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: gelu_grad
+
+    interface gelu_approx
+        !! Version: experimental
+        !!
+        !! Approximated gaussian error linear unit function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function gelu_approx_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: gelu_approx
+
+    interface gelu_approx_grad
+        !! Version: experimental
+        !!
+        !! Gradient of the approximated gaussian error linear unit function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function gelu_approx_grad_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: gelu_approx_grad
+
+    interface sigmoid
+        !! Version: experimental
+        !!
+        !! Sigmoid function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function sigmoid_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: sigmoid
+
+    interface sigmoid_grad
+        !! Version: experimental
+        !!
+        !! Gradient of the sigmoid function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function sigmoid_grad_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: sigmoid_grad
+
+    interface step
+        !! Version: experimental
+        !!
+        !! Step function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function step_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: step
+
+    interface step_grad
+        !! Version: experimental
+        !!
+        !! Gradient of the step function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function step_grad_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: step_grad
+
+    interface Softmax
+        !! Version: experimental
+        !!
+        !! Softmax function. Available for ranks 1 to 4
+        #:for rk, rt in REAL_KINDS_TYPES
+        pure module function Softmax_r1_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x(:)
+            ${rt}$ :: y(size(x))
+        end function
+        pure module function Softmax_r2_${rk}$( x , dim ) result( y )
+            ${rt}$, intent(in) :: x(:,:)
+            ${rt}$ :: y(size(x,dim=1),size(x,dim=2))
+            integer, intent(in), optional :: dim
+        end function
+        pure module function Softmax_r3_${rk}$( x , dim ) result( y )
+            ${rt}$, intent(in) :: x(:,:,:)
+            ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3))
+            integer, intent(in), optional :: dim
+        end function
+        pure module function Softmax_r4_${rk}$( x , dim ) result( y )
+            ${rt}$, intent(in) :: x(:,:,:,:)
+            ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3),size(x,dim=4))
+            integer, intent(in), optional :: dim
+        end function
+        #:endfor
+    end interface
+    public :: softmax
+
+    interface Softmax_grad
+        !! Version: experimental
+        !!
+        !! Gradient of the softmax function. Available for ranks 1 to 4
+        #:for rk, rt in REAL_KINDS_TYPES
+        pure module function Softmax_grad_r1_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x(:)
+            ${rt}$ :: y(size(x))
+        end function
+        pure module function Softmax_grad_r2_${rk}$( x , dim ) result( y )
+            ${rt}$, intent(in) :: x(:,:)
+            ${rt}$ :: y(size(x,dim=1),size(x,dim=2))
+            integer, intent(in), optional :: dim
+        end function
+        pure module function Softmax_grad_r3_${rk}$( x , dim ) result( y )
+            ${rt}$, intent(in) :: x(:,:,:)
+            ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3))
+            integer, intent(in), optional :: dim
+        end function
+        pure module function Softmax_grad_r4_${rk}$( x , dim ) result( y )
+            ${rt}$, intent(in) :: x(:,:,:,:)
+            ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3),size(x,dim=4))
+            integer, intent(in), optional :: dim
+        end function
+        #:endfor
+    end interface
+    public :: Softmax_grad
+
+    interface Softplus
+        !! Version: experimental
+        !!
+        !! Softplus function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function Softplus_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: Softplus
+
+    interface Softplus_grad
+        !! Version: experimental
+        !!
+        !! Gradient of the softplus function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function Softplus_grad_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: Softplus_grad
+
+    interface ftanh 
+        !! Version: experimental
+        !!
+        !! Fast approximation of the tanh function
+        !! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function ftanh_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: ftanh
+
+    interface ferf 
+        !! Version: experimental
+        !!
+        !! Fast approximation of the erf function
+        !! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental ${rt}$ module function ferf_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+        end function
+        #:endfor
+    end interface
+    public :: ferf
+
+end module stdlib_specialfunctions
