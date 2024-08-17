@@ -83,13 +83,13 @@ end function
 elemental ${rt}$ module function gelu_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     
-    y = 0.5_${rk}$ * x * (1 + erf(x * isqrt2_${rk}$))
+    y = 0.5_${rk}$ * x * (1._${rk}$ + erf(x * isqrt2_${rk}$))
 end function
 
 elemental ${rt}$ module function gelu_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     
-    y = 0.5_${rk}$ * (1 + erf(x * isqrt2_${rk}$) )
+    y = 0.5_${rk}$ * (1._${rk}$ + erf(x * isqrt2_${rk}$) )
     y = y + x * isqrt2_${rk}$ * exp( - 0.5_${rk}$ * x**2 )
 end function
 
@@ -317,9 +317,9 @@ elemental ${rt}$ module function ftanh_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     ${rt}$ :: x2, a, b
     
-    if (x > 5_${rk}$) then
+    if (x > 5._${rk}$) then
         y = 1._${rk}$
-    elseif (x < -5_${rk}$) then
+    elseif (x < -5._${rk}$) then
         y = -1._${rk}$
     else
         x2 = x*x
