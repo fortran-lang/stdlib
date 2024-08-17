@@ -8,7 +8,6 @@ module stdlib_io_zip
 
     character(*), parameter :: default_unzip_dir = temp_dir//'/unzipped_files'
     character(*), parameter :: zip_contents = default_unzip_dir//'/zip_contents.txt'
-    character(*), parameter :: default_zip_dir = temp_dir//'.'
 
 contains
 
@@ -72,14 +71,20 @@ contains
         if (present(stat)) stat = 0
         run_stat = 0
 
-        call run('rm -rf '//default_unzip_dir, run_stat)
-        if (run_stat /= 0) then
-            if (present(stat)) stat = run_stat
-            if (present(msg)) msg = "Error removing folder '"//default_unzip_dir//"'."
+        if (.not. exists(filename)) then
+            if (present(stat)) stat = 1
+            if (present(msg)) msg = "File '"//filename//"' does not exist."
             return
         end if
 
-        if (.not. exists(temp_dir)) then
+        call run('rm -rf '//output_dir, run_stat)
+        if (run_stat /= 0) then
+            if (present(stat)) stat = run_stat
+            if (present(msg)) msg = "Error removing folder '"//output_dir//"'."
+            return
+        end if
+
+        if (.not. present(outputdir) .and. .not. exists(temp_dir)) then
             call run('mkdir '//temp_dir, run_stat)
             if (run_stat /= 0) then
                 if (present(stat)) stat = run_stat
@@ -88,8 +93,6 @@ contains
             end if
         end if
 
-        print *, 'hellohello'
-        call execute_command_line('pwd')
         call run('unzip -q '//filename//' -d '//output_dir, run_stat)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
