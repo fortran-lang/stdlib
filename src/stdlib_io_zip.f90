@@ -72,12 +72,6 @@ contains
         if (present(stat)) stat = 0
         run_stat = 0
 
-        if (.not. exists(filename)) then
-            if (present(stat)) stat = 1
-            if (present(msg)) msg = "File '"//filename//"' does not exist."
-            return
-        end if
-
         call run('rm -rf '//output_dir, run_stat)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
