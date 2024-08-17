@@ -88,6 +88,8 @@ contains
             end if
         end if
 
+        print *, 'hellohello'
+        call execute_command_line('pwd')
         call run('unzip -q '//filename//' -d '//output_dir, run_stat)
         if (run_stat /= 0) then
             if (present(stat)) stat = run_stat
