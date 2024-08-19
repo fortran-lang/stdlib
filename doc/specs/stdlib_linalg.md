@@ -1163,6 +1163,101 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 :language: Fortran
 ```
 
+
+## `cholesky` - Compute the Cholesky factorization of a rank-2 square array (matrix)
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the Cholesky factorization of a `real` or `complex` rank-2 square array (matrix), 
+\( A = L \cdot L^T \), or \( A = U^T \cdot U \). \( A \) is symmetric or complex Hermitian, and \( L \), 
+\( U \) are lower- or upper-triangular, respectively. 
+The solver is based on LAPACK's `*POTRF` backends.
+ 
+### Syntax
+
+`call ` [[stdlib_linalg(module):cholesky(interface)]] `(a, c, lower [, other_zeroed] [, err])`
+
+### Class
+Subroutine
+
+### Arguments
+
+`a`: Shall be a rank-2 square `real` or `complex` array containing the coefficient matrix of size `[n,n]`. It is an `intent(inout)` argument, but returns unchanged if the argument `c` is present.
+
+`c` (optional): Shall be a rank-2 square `real` or `complex` of the same size and kind as `a`. It is an `intent(out)` argument, that returns the triangular Cholesky matrix `L` or `U`.
+
+`lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular decomposition \( A = L \cdot L^T \) will be performed. If `.false.`, the upper decomposition \( A = U^T \cdot U \) will be performed.
+
+`other_zeroed` (optional): Shall be an input `logical` flag. If `.true.`, the unused part of the output matrix will contain zeroes. Otherwise, it will not be accessed. This saves cpu time. By default, `other_zeroed=.true.`. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
+
+### Return values
+
+The factorized matrix is returned in-place overwriting `a` if no other arguments are provided.
+Otherwise, it can be provided as a second argument `c`. In this case, `a` is not overwritten.
+The `logical` flag `lower` determines whether the lower- or the upper-triangular factorization should be performed. 
+
+Results are returned on the applicable triangular region of the output matrix, while the unused triangular region 
+is filled by zeroes by default. Optional argument `other_zeroed`, if `.false.` allows the expert user to avoid zeroing the unused part; 
+however, in this case, the unused region of the matrix is not accessed and will usually contain invalid values. 
+
+Raises `LINALG_ERROR` if the underlying process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix or any of the output arrays invalid/incompatible sizes.
+Exceptions trigger an `error stop`, unless argument `err` is present.
+
+### Example
+
+```fortran
+{!example/linalg/example_cholesky.f90!}
+```
+
+## `chol` - Compute the Cholesky factorization of a rank-2 square array (matrix)
+
+### Status
+
+Experimental
+
+### Description
+
+This is a `pure` functional interface for the Cholesky factorization of a `real` or
+`complex` rank-2 square array (matrix) computed as \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
+\( A \) is symmetric or complex Hermitian, and \( L \), \( U \) are lower- or upper-triangular, respectively. 
+The solver is based on LAPACK's `*POTRF` backends.
+
+Result matrix `c` has the same size and kind as `a`, and returns the lower or upper triangular factor. 
+ 
+### Syntax
+
+`c = ` [[stdlib_linalg(module):chol(interface)]] `(a, lower [, other_zeroed])`
+
+### Arguments
+
+`a`: Shall be a rank-2 square `real` or `complex` array containing the coefficient matrix of size `[n,n]`. It is an `intent(inout)` argument, but returns unchanged if argument `c` is present.
+
+`lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular decomposition \( A = L \cdot L^T \) will be performed. If `.false.`, the upper decomposition \( A = U^T \cdot U \) will be performed.
+
+`other_zeroed` (optional): Shall be an input `logical` flag. If `.true.`, the unused part of the output matrix will contain zeroes. Otherwise, it will not be accessed. This saves cpu time. By default, `other_zeroed=.true.`. It is an `intent(in)` argument.
+
+### Return values
+
+Returns a rank-2 array `c` of the same size and kind as `a`, that contains the triangular Cholesky matrix `L` or `U`.
+
+Raises `LINALG_ERROR` if the underlying process did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrix or any of the output arrays invalid/incompatible sizes.
+Exceptions trigger an `error stop`, unless argument `err` is present.
+
+### Example
+
+```fortran
+{!example/linalg/example_chol.f90!}
+```
+
+
 ## `.inv.` - Inverse operator of a square matrix
 
 ### Status
@@ -1191,7 +1286,6 @@ Returns a rank-2 square array with the same type, kind and rank as `a`, that con
 If an exception occurred on input errors, or singular matrix, `NaN`s will be returned.
 For fine-grained error control in case of singular matrices prefer the `subroutine` and the `function`
 interfaces.
-
 
 ### Example
 
