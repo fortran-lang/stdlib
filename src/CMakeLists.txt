@@ -40,7 +40,9 @@ set(fppFiles
     stdlib_sorting_ord_sort.fypp
     stdlib_sorting_sort.fypp
     stdlib_sorting_sort_index.fypp
+    stdlib_specialfunctions_activations.fypp
     stdlib_specialfunctions_gamma.fypp
+    stdlib_specialfunctions.fypp
     stdlib_stats.fypp
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
@@ -112,7 +114,6 @@ set(SRC
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
     stdlib_system.F90
-    stdlib_specialfunctions.f90
     stdlib_specialfunctions_legendre.f90
     stdlib_quadrature_gauss.f90
     stdlib_stringlist_type.f90
