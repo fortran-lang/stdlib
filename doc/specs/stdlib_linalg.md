@@ -1212,8 +1212,8 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Example
 
-```fortran
-{!example/linalg/example_cholesky.f90!}
+```{literalinclude} ../../example/linalg/example_cholesky.f90
+:language: Fortran
 ```
 
 ## `chol` - Compute the Cholesky factorization of a rank-2 square array (matrix)
@@ -1253,8 +1253,8 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Example
 
-```fortran
-{!example/linalg/example_chol.f90!}
+```{literalinclude} ../../example/linalg/example_chol.f90
+:language: Fortran
 ```
 
 
