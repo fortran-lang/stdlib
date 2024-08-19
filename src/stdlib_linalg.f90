@@ -9,6 +9,8 @@ module stdlib_linalg
   implicit none
   private
 
+  public :: chol
+  public :: cholesky
   public :: det
   public :: operator(.det.)
   public :: diag
@@ -42,6 +44,180 @@ module stdlib_linalg
   ! Export linalg error handling
   public :: linalg_state_type, linalg_error_handling
 
+  interface chol
+    !! version: experimental 
+    !!
+    !! Computes the Cholesky factorization \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#chol-compute-the-cholesky-factorization-of-a-rank-2-square-array-matrix))
+    !! 
+    !!### Summary 
+    !! Pure function interface for computing the Cholesky triangular factors. 
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the lower- or upper- triangular matrix from the 
+    !! Cholesky factorization of a `real` symmetric or `complex` Hermitian matrix.
+    !! Supported data types include `real` and `complex`.    
+    !! 
+    !!@note The solution is based on LAPACK's `*POTRF` methods.
+    !!     
+     pure module function stdlib_linalg_s_cholesky_fun(a,lower,other_zeroed) result(c)
+         !> Input matrix a[m,n]
+         real(sp), intent(in) :: a(:,:)
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> Output matrix with Cholesky factors c[n,n]
+         real(sp) :: c(size(a,1),size(a,2))                  
+     end function stdlib_linalg_s_cholesky_fun
+     pure module function stdlib_linalg_d_cholesky_fun(a,lower,other_zeroed) result(c)
+         !> Input matrix a[m,n]
+         real(dp), intent(in) :: a(:,:)
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> Output matrix with Cholesky factors c[n,n]
+         real(dp) :: c(size(a,1),size(a,2))                  
+     end function stdlib_linalg_d_cholesky_fun
+     pure module function stdlib_linalg_c_cholesky_fun(a,lower,other_zeroed) result(c)
+         !> Input matrix a[m,n]
+         complex(sp), intent(in) :: a(:,:)
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> Output matrix with Cholesky factors c[n,n]
+         complex(sp) :: c(size(a,1),size(a,2))                  
+     end function stdlib_linalg_c_cholesky_fun
+     pure module function stdlib_linalg_z_cholesky_fun(a,lower,other_zeroed) result(c)
+         !> Input matrix a[m,n]
+         complex(dp), intent(in) :: a(:,:)
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> Output matrix with Cholesky factors c[n,n]
+         complex(dp) :: c(size(a,1),size(a,2))                  
+     end function stdlib_linalg_z_cholesky_fun
+  end interface chol  
+
+  interface cholesky
+    !! version: experimental 
+    !!
+    !! Computes the Cholesky factorization \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#cholesky-compute-the-cholesky-factorization-of-a-rank-2-square-array-matrix))
+    !! 
+    !!### Summary 
+    !! Pure subroutine interface for computing the Cholesky triangular factors. 
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the lower- or upper- triangular matrix from the 
+    !! Cholesky factorization of a `real` symmetric or `complex` Hermitian matrix.
+    !! Supported data types include `real` and `complex`.    
+    !! The factorization is computed in-place if only one matrix argument is present; or returned into 
+    !! a second matrix argument, if present. The `lower` `logical` flag allows to select between upper or 
+    !! lower factorization; the `other_zeroed` optional `logical` flag allows to choose whether the unused
+    !! part of the triangular matrix should be filled with zeroes.
+    !! 
+    !!@note The solution is based on LAPACK's `*POTRF` methods.
+    !!         
+     pure module subroutine stdlib_linalg_s_cholesky_inplace(a,lower,other_zeroed,err) 
+         !> Input matrix a[m,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_s_cholesky_inplace
+     
+     pure module subroutine stdlib_linalg_s_cholesky(a,c,lower,other_zeroed,err) 
+         !> Input matrix a[n,n]
+         real(sp), intent(in) :: a(:,:)
+         !> Output matrix with Cholesky factors c[n,n]
+         real(sp), intent(out) :: c(:,:)         
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err     
+     end subroutine stdlib_linalg_s_cholesky
+     pure module subroutine stdlib_linalg_d_cholesky_inplace(a,lower,other_zeroed,err) 
+         !> Input matrix a[m,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_d_cholesky_inplace
+     
+     pure module subroutine stdlib_linalg_d_cholesky(a,c,lower,other_zeroed,err) 
+         !> Input matrix a[n,n]
+         real(dp), intent(in) :: a(:,:)
+         !> Output matrix with Cholesky factors c[n,n]
+         real(dp), intent(out) :: c(:,:)         
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err     
+     end subroutine stdlib_linalg_d_cholesky
+     pure module subroutine stdlib_linalg_c_cholesky_inplace(a,lower,other_zeroed,err) 
+         !> Input matrix a[m,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_c_cholesky_inplace
+     
+     pure module subroutine stdlib_linalg_c_cholesky(a,c,lower,other_zeroed,err) 
+         !> Input matrix a[n,n]
+         complex(sp), intent(in) :: a(:,:)
+         !> Output matrix with Cholesky factors c[n,n]
+         complex(sp), intent(out) :: c(:,:)         
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err     
+     end subroutine stdlib_linalg_c_cholesky
+     pure module subroutine stdlib_linalg_z_cholesky_inplace(a,lower,other_zeroed,err) 
+         !> Input matrix a[m,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_z_cholesky_inplace
+     
+     pure module subroutine stdlib_linalg_z_cholesky(a,c,lower,other_zeroed,err) 
+         !> Input matrix a[n,n]
+         complex(dp), intent(in) :: a(:,:)
+         !> Output matrix with Cholesky factors c[n,n]
+         complex(dp), intent(out) :: c(:,:)         
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err     
+     end subroutine stdlib_linalg_z_cholesky
+  end interface cholesky
+     
   interface diag
     !! version: experimental
     !!
