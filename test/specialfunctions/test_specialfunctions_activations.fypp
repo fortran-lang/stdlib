@@ -1,0 +1,127 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = [KT for KT in REAL_KINDS_TYPES if KT[0] in ["sp","dp"]]
+
+module test_specialfunctions_activation
+    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use stdlib_kinds
+    use stdlib_specialfunctions
+
+    implicit none
+    private
+
+    public :: collect_specialfunctions_activation
+
+    #:for k1, t1 in R_KINDS_TYPES
+    ${t1}$, parameter :: tol_${k1}$ = 1000 * epsilon(1.0_${k1}$)
+    #:endfor
+
+contains
+
+    subroutine collect_specialfunctions_activation(testsuite)
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [                                       &
+            new_unittest("softmax", test_softmax)           &
+            ]
+    end subroutine collect_specialfunctions_activation
+
+    subroutine test_softmax(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        real(sp) :: x(3,3,3), y(3,3,3), y_ref(3,3,3)
+
+        x = reshape( [ 0.82192878, 0.76998032, 0.98611263,&
+                       0.8621334 , 0.65358045, 0.26387113,&
+                       0.12743663, 0.35237132, 0.23801647,&
+
+                       0.69773567, 0.40568874, 0.44789482,&
+                       0.42930753, 0.49579193, 0.53139985,&
+                       0.03035799, 0.65293157, 0.47613957,&
+
+                       0.21088634, 0.9356926 , 0.0991312 ,&
+                       0.46070181, 0.02943479, 0.17557538,&
+                       0.10541313, 0.33946349, 0.34804323 ] ,[3,3,3] )
+
+        !> Softmax on dim = 1
+        y = Softmax(x,dim=1)
+
+        y_ref = reshape( [ 0.319712639, 0.303528070, 0.376759291,&
+                           0.423455358, 0.343743294, 0.232801422,&
+                           0.296809316, 0.371676773, 0.331513911,&
+
+                           0.395936400, 0.295658976, 0.308404684,&
+                           0.314838648, 0.336482018, 0.348679334,&
+                           0.225966826, 0.421138495, 0.352894694,&
+
+                           0.252614945, 0.521480858, 0.225904226,&
+                           0.416388273, 0.270521373, 0.313090324,&
+                           0.282621205, 0.357150704, 0.360228121 ] ,[3,3,3] )
+
+        call check(error, norm2(y-y_ref) < tol_sp )
+        if (allocated(error)) return
+
+        !> Softmax on dim = 2
+        y = Softmax(x,dim=2)
+
+        y_ref = reshape( [ 0.393646270, 0.392350882, 0.510482967,&
+                           0.409795105, 0.349239051, 0.247922391,&
+                           0.196558580, 0.258410037, 0.241594598,&
+
+                           0.439052343, 0.296315849, 0.320951223,&
+                           0.335690796, 0.324254662, 0.348903090,&
+                           0.225256786, 0.379429489, 0.330145657,&
+
+                           0.314101219, 0.511530280, 0.297435701,&
+                           0.403239518, 0.206675291, 0.321064562,&
+                           0.282659233, 0.281794399, 0.381499708 ] ,[3,3,3] )
+
+        call check(error, norm2(y-y_ref) < tol_sp )
+        if (allocated(error)) return
+
+        !> Softmax on dim = 3
+        y = Softmax(x,dim=3)
+
+        y_ref = reshape( [ 0.412202179, 0.347835541, 0.501081109,&
+                           0.431399941, 0.418453932, 0.310344934,&
+                           0.346536130, 0.299599379, 0.295405835,&
+
+                           0.364060789, 0.241637364, 0.292525023,&
+                           0.279837668, 0.357372403, 0.405537367,&
+                           0.314476222, 0.404643506, 0.374830246,&
+                           
+                           0.223737061, 0.410527140, 0.206393898,&
+                           0.288762331, 0.224173695, 0.284117699,&
+                           0.338987619, 0.295757085, 0.329763889 ] ,[3,3,3] )
+
+        call check(error, norm2(y-y_ref) <  tol_sp )
+        if (allocated(error)) return
+        
+    end subroutine test_softmax
+
+
+end module test_specialfunctions_activation
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_specialfunctions_activation, only : collect_specialfunctions_activation
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [new_testsuite("activation functions",                      &
+                 collect_specialfunctions_activation)]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program tester
