@@ -173,7 +173,7 @@ end function
 ! Softmax
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES
-pure function Softmax_r1_${rk}$( x ) result( y )
+pure module function Softmax_r1_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x(:)
     ${rt}$ :: y(size(x))
 
@@ -181,7 +181,7 @@ pure function Softmax_r1_${rk}$( x ) result( y )
     y = y / sum(y)
 end function
 
-pure function Softmax_r2_${rk}$( x , dim ) result( y )
+pure module function Softmax_r2_${rk}$( x , dim ) result( y )
     ${rt}$, intent(in) :: x(:,:)
     ${rt}$ :: y(size(x,dim=1),size(x,dim=2))
 
@@ -201,7 +201,7 @@ pure function Softmax_r2_${rk}$( x , dim ) result( y )
     end if
 end function
 
-pure function Softmax_r3_${rk}$( x , dim ) result( y )
+pure module function Softmax_r3_${rk}$( x , dim ) result( y )
     ${rt}$, intent(in) :: x(:,:,:)
     ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3))
 
@@ -221,7 +221,7 @@ pure function Softmax_r3_${rk}$( x , dim ) result( y )
     end if
 end function
 
-pure function Softmax_r4_${rk}$( x , dim ) result( y )
+pure module function Softmax_r4_${rk}$( x , dim ) result( y )
     ${rt}$, intent(in) :: x(:,:,:,:)
     ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3),size(x,dim=4))
 
@@ -241,7 +241,7 @@ pure function Softmax_r4_${rk}$( x , dim ) result( y )
     end if
 end function
 
-pure function Softmax_grad_r1_${rk}$( x ) result( y )
+pure module function Softmax_grad_r1_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x(:)
     ${rt}$ :: y(size(x))
     
@@ -249,7 +249,7 @@ pure function Softmax_grad_r1_${rk}$( x ) result( y )
     y = y * (1._${rk}$ - y)
 end function
 
-pure function Softmax_grad_r2_${rk}$( x , dim ) result( y )
+pure module function Softmax_grad_r2_${rk}$( x , dim ) result( y )
     ${rt}$, intent(in) :: x(:,:)
     ${rt}$ :: y(size(x,dim=1),size(x,dim=2))
 
@@ -262,7 +262,7 @@ pure function Softmax_grad_r2_${rk}$( x , dim ) result( y )
     y = y * (1._${rk}$ - y)
 end function
 
-pure function Softmax_grad_r3_${rk}$( x , dim ) result( y )
+pure module function Softmax_grad_r3_${rk}$( x , dim ) result( y )
     ${rt}$, intent(in) :: x(:,:,:)
     ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3))
     
@@ -275,7 +275,7 @@ pure function Softmax_grad_r3_${rk}$( x , dim ) result( y )
     y = y * (1._${rk}$ - y)
 end function
 
-pure function Softmax_grad_r4_${rk}$( x , dim ) result( y )
+pure module function Softmax_grad_r4_${rk}$( x , dim ) result( y )
     ${rt}$, intent(in) :: x(:,:,:,:)
     ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3),size(x,dim=4))
     
