@@ -12,15 +12,15 @@ contains
 ! Gaussian
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES
-elemental ${rt}$ module function gaussian_${rk}$( x ) result( y )
+elemental module function gaussian_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = exp(-x**2)
 end function
 
-elemental ${rt}$ module function gaussian_grad_${rk}$( x ) result( y )
+elemental module function gaussian_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = -2._${rk}$ * x * exp(-x**2)
 end function
 
@@ -30,10 +30,10 @@ end function
 ! Exponential Linear Unit
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES
-elemental ${rt}$ module function elu_${rk}$( x , a ) result ( y )
+elemental module function elu_${rk}$( x , a ) result ( y )
     ${rt}$, intent(in) :: x
     ${rt}$, intent(in) :: a
-    
+    ${rt}$ :: y
     if(x >= 0._${rk}$)then
         y = x
     else
@@ -41,10 +41,10 @@ elemental ${rt}$ module function elu_${rk}$( x , a ) result ( y )
     end if
 end function
 
-elemental ${rt}$ module function elu_grad_${rk}$( x , a ) result ( y )
+elemental module function elu_grad_${rk}$( x , a ) result ( y )
     ${rt}$, intent(in) :: x
     ${rt}$, intent(in) :: a
-    
+    ${rt}$ :: y
     if(x >= 0._${rk}$)then
         y = 1._${rk}$ 
     else
@@ -58,15 +58,15 @@ end function
 ! Rectified Linear Unit
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES
-elemental ${rt}$ module function relu_${rk}$( x ) result( y )
+elemental module function relu_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = max(0._${rk}$, x)
 end function
 
-elemental ${rt}$ module function relu_grad_${rk}$( x ) result( y )
+elemental module function relu_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-
+    ${rt}$ :: y
     if(x > 0._${rk}$)then
         y = 1._${rk}$ 
     else
@@ -80,15 +80,15 @@ end function
 ! GELU: Gaussian Error Linear Units function
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES
-elemental ${rt}$ module function gelu_${rk}$( x ) result( y )
+elemental module function gelu_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = 0.5_${rk}$ * x * (1._${rk}$ + erf(x * isqrt2_${rk}$))
 end function
 
-elemental ${rt}$ module function gelu_grad_${rk}$( x ) result( y )
+elemental module function gelu_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = 0.5_${rk}$ * (1._${rk}$ + erf(x * isqrt2_${rk}$) )
     y = y + x * isqrt2_${rk}$ * exp( - 0.5_${rk}$ * x**2 )
 end function
@@ -96,15 +96,15 @@ end function
 #:endfor
 
 #:for rk, rt in REAL_KINDS_TYPES
-elemental ${rt}$ module function gelu_approx_${rk}$( x ) result( y )
+elemental module function gelu_approx_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = 0.5_${rk}$ * x * (1._${rk}$ + ferf(x * isqrt2_${rk}$))
 end function
 
-elemental ${rt}$ module function gelu_approx_grad_${rk}$( x ) result( y )
+elemental module function gelu_approx_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = 0.5_${rk}$ * (1._${rk}$ + ferf(x * isqrt2_${rk}$) )
     y = y + x * isqrt2_${rk}$ * exp( - 0.5_${rk}$ * x**2 )
 end function
@@ -115,15 +115,15 @@ end function
 ! Sigmoid
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES
-elemental ${rt}$ module function sigmoid_${rk}$( x ) result( y )
+elemental module function sigmoid_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = 1._${rk}$ / (1._${rk}$ + exp(-x))
 end function
 
-elemental ${rt}$ module function sigmoid_grad_${rk}$( x ) result( y )
+elemental module function sigmoid_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = exp(x) / (1._${rk}$ + exp(x))**2
 end function
 
@@ -133,9 +133,9 @@ end function
 ! Step
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES
-elemental ${rt}$ module function Step_${rk}$( x ) result( y )
+elemental module function Step_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-
+    ${rt}$ :: y
     if(x > 0._${rk}$)then
         y = 1._${rk}$ 
     else
@@ -143,9 +143,9 @@ elemental ${rt}$ module function Step_${rk}$( x ) result( y )
     end if
 end function
 
-elemental ${rt}$ module function Step_grad_${rk}$( x ) result( y )
+elemental module function Step_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = 0._${rk}$
 end function
 
@@ -155,15 +155,15 @@ end function
 ! tanh
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES
-elemental ${rt}$ module function tanh_${rk}$( x ) result( y )
+elemental module function tanh_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = ftanh(x)
 end function
 
-elemental ${rt}$ module function tanh_grad_${rk}$( x ) result( y )
+elemental module function tanh_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = 1._${rk}$ - ftanh(x)**2
 end function
 
@@ -294,15 +294,15 @@ end function
 ! Softplus
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES
-elemental ${rt}$ module function Softplus_${rk}$( x ) result( y )
+elemental module function Softplus_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = log(exp(x) + 1._${rk}$)
 end function
 
-elemental ${rt}$ module function Softplus_grad_${rk}$( x ) result( y )
+elemental module function Softplus_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
-    
+    ${rt}$ :: y
     y = exp(x) / (exp(x) + 1._${rk}$)
 end function
 
@@ -313,8 +313,9 @@ end function
 !==================================================
 
 #:for rk, rt in REAL_KINDS_TYPES
-elemental ${rt}$ module function ftanh_${rk}$( x ) result( y )
+elemental module function ftanh_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
+    ${rt}$ :: y
     ${rt}$ :: x2, a, b
     
     if (x > 5._${rk}$) then
@@ -329,8 +330,9 @@ elemental ${rt}$ module function ftanh_${rk}$( x ) result( y )
     end if
 end function
 
-elemental ${rt}$ module function ferf_${rk}$( x ) result( y )
+elemental module function ferf_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
+    ${rt}$ :: y
     ${rt}$ :: abs_x
     
     abs_x = abs(x)

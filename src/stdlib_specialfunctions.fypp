@@ -35,8 +35,9 @@ module stdlib_specialfunctions
         !!
         !! gaussian function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function gaussian_${rk}$( x ) result( y )
+        elemental module function gaussian_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -47,8 +48,9 @@ module stdlib_specialfunctions
         !!
         !! gradient of the gaussian function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function gaussian_grad_${rk}$( x ) result( y )
+        elemental module function gaussian_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -59,9 +61,10 @@ module stdlib_specialfunctions
         !!
         !! exponential linear unit function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function elu_${rk}$( x , a ) result( y )
+        elemental module function elu_${rk}$( x , a ) result( y )
             ${rt}$, intent(in) :: x
             ${rt}$, intent(in) :: a
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -72,9 +75,10 @@ module stdlib_specialfunctions
         !!
         !! gradient of the exponential linear unit function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function elu_grad_${rk}$( x , a ) result( y )
+        elemental module function elu_grad_${rk}$( x , a ) result( y )
             ${rt}$, intent(in) :: x
             ${rt}$, intent(in) :: a
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -85,8 +89,9 @@ module stdlib_specialfunctions
         !!
         !! Rectified linear unit function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function relu_${rk}$( x ) result( y )
+        elemental module function relu_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -97,8 +102,9 @@ module stdlib_specialfunctions
         !!
         !! Gradient rectified linear unit function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function relu_grad_${rk}$( x ) result( y )
+        elemental module function relu_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -109,8 +115,9 @@ module stdlib_specialfunctions
         !!
         !! Gaussian error linear unit function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function gelu_${rk}$( x ) result( y )
+        elemental module function gelu_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -121,8 +128,9 @@ module stdlib_specialfunctions
         !!
         !! Gradient of the gaussian error linear unit function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function gelu_grad_${rk}$( x ) result( y )
+        elemental module function gelu_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -133,8 +141,9 @@ module stdlib_specialfunctions
         !!
         !! Approximated gaussian error linear unit function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function gelu_approx_${rk}$( x ) result( y )
+        elemental module function gelu_approx_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -145,8 +154,9 @@ module stdlib_specialfunctions
         !!
         !! Gradient of the approximated gaussian error linear unit function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function gelu_approx_grad_${rk}$( x ) result( y )
+        elemental module function gelu_approx_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -157,8 +167,9 @@ module stdlib_specialfunctions
         !!
         !! Sigmoid function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function sigmoid_${rk}$( x ) result( y )
+        elemental module function sigmoid_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -169,8 +180,9 @@ module stdlib_specialfunctions
         !!
         !! Gradient of the sigmoid function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function sigmoid_grad_${rk}$( x ) result( y )
+        elemental module function sigmoid_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -181,8 +193,9 @@ module stdlib_specialfunctions
         !!
         !! Step function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function step_${rk}$( x ) result( y )
+        elemental module function step_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -193,12 +206,39 @@ module stdlib_specialfunctions
         !!
         !! Gradient of the step function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function step_grad_${rk}$( x ) result( y )
+        elemental module function step_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
     public :: step_grad
+
+    interface tanh
+        !! Version: experimental
+        !!
+        !! gaussian function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental module function tanh_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+            ${rt}$ :: y
+        end function
+        #:endfor
+    end interface
+    public :: tanh
+
+    interface tanh_grad
+        !! Version: experimental
+        !!
+        !! gradient of the gaussian function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental module function tanh_grad_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+            ${rt}$ :: y
+        end function
+        #:endfor
+    end interface
+    public :: tanh_grad
 
     interface Softmax
         !! Version: experimental
@@ -261,8 +301,9 @@ module stdlib_specialfunctions
         !!
         !! Softplus function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function Softplus_${rk}$( x ) result( y )
+        elemental module function Softplus_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -273,8 +314,9 @@ module stdlib_specialfunctions
         !!
         !! Gradient of the softplus function
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function Softplus_grad_${rk}$( x ) result( y )
+        elemental module function Softplus_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -286,8 +328,9 @@ module stdlib_specialfunctions
         !! Fast approximation of the tanh function
         !! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function ftanh_${rk}$( x ) result( y )
+        elemental module function ftanh_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
@@ -299,8 +342,9 @@ module stdlib_specialfunctions
         !! Fast approximation of the erf function
         !! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental ${rt}$ module function ferf_${rk}$( x ) result( y )
+        elemental module function ferf_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
+            ${rt}$ :: y
         end function
         #:endfor
     end interface
