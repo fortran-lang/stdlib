@@ -130,6 +130,25 @@ end function
 #:endfor
 
 !==================================================
+! SiLU: Sigmoid Linear Unit
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function silu_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = x / (1._${rk}$ + exp(-x))
+end function
+
+elemental module function silu_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = (1._${rk}$ + exp(x))**2
+    y = exp(x) * ( x + y ) / y
+end function
+
+#:endfor
+
+!==================================================
 ! Step
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES

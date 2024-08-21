@@ -187,6 +187,32 @@ module stdlib_specialfunctions
         #:endfor
     end interface
     public :: sigmoid_grad
+    
+    interface silu
+        !! Version: experimental
+        !!
+        !! Sigmoid Linear Unit function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental module function silu_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+            ${rt}$ :: y
+        end function
+        #:endfor
+    end interface
+    public :: silu
+
+    interface silu_grad
+        !! Version: experimental
+        !!
+        !! Gradient of the Sigmoid Linear Unit function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental module function silu_grad_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+            ${rt}$ :: y
+        end function
+        #:endfor
+    end interface
+    public :: silu_grad
 
     interface step
         !! Version: experimental

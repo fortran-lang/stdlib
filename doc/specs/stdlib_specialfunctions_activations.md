@@ -354,6 +354,60 @@ Elemental function
 
 The function returns a value with the same type and kind as input argument.
 
+## `SiLU` - Sigmoid Linear Unit function
+
+### Status
+
+Experimental
+
+### Description
+
+Computes the Sigmoid Linear Unit function:
+$$f(x) = \frac{x}{1+\exp(-x)} $$
+
+### Syntax
+
+`result = ` [[stdlib_specialfunctions(module):silu(interface)]] ` (x)`
+
+### Class
+
+Elemental function
+
+### Arguments
+
+`x`: Shall be a scalar or array of any `real` kind. 
+
+### Return value
+
+The function returns a value with the same type and kind as input argument.
+
+## `Silu_grad` - Gradient of the Sigmoid Linear Unit function
+
+### Status
+
+Experimental
+
+### Description
+
+Computes the gradient of the Sigmoid function:
+$$f(x) = \frac{\exp(x)*(x+(1+\exp(x))^2)}{(1+\exp(x))^2} $$
+
+### Syntax
+
+`result = ` [[stdlib_specialfunctions(module):silu_grad(interface)]] ` (x)`
+
+### Class
+
+Elemental function
+
+### Arguments
+
+`x`: Shall be a scalar or array of any `real` kind.
+
+### Return value
+
+The function returns a value with the same type and kind as input argument.
+
 ## `Step` - Step function
 
 ### Status
@@ -442,7 +496,7 @@ Pure function for ranks 1 to 4.
 
 The function returns an array with the same rank and kind as the input argument `x`.
 
-## `Softplus_grad` - Gradient of the Softplus function
+## `Softmax_grad` - Gradient of the Softmax function
 
 ### Status
 
