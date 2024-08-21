@@ -52,13 +52,10 @@ jobs:
             python-pip
             cmake
             ninja
-      - name: Install fypp
-        run: |
+      - run: |
           python -m venv venv
           source venv/bin/activate
           pip install fypp
-      - run: |
-          source venv/bin/activate
           PATH=$PATH:/mingw64/bin/ cmake \
           -Wdev \
           -B build \
