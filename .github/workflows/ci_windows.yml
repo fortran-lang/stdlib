@@ -54,7 +54,7 @@ jobs:
             ninja
       - name: Install fypp
         run: >-
-          python -v venv venv
+          python -m venv venv
           source venv/bin/activate
           pip install fypp
       - run: >-
