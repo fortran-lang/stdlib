@@ -23,8 +23,9 @@ jobs:
         shell: msys2 {0}
     steps:
       - uses: actions/checkout@v2
-      - name: Setup environment
+      - name: Setup MinGW native environment
         uses: msys2/setup-msys2@v2
+        if: contains(matrix.msystem, 'MINGW')
         with:
           msystem: ${{ matrix.msystem }}
           update: false
@@ -33,20 +34,34 @@ jobs:
             mingw-w64-${{ matrix.arch }}-gcc
             mingw-w64-${{ matrix.arch }}-gcc-fortran
             mingw-w64-${{ matrix.arch }}-python
-            mingw-w64-${{ matrix.arch }}-python-fypp
+            mingw-w64-${{ matrix.arch }}-python-pip
+            mingw-w64-${{ matrix.arch }}-python-setuptools
             mingw-w64-${{ matrix.arch }}-cmake
             mingw-w64-${{ matrix.arch }}-ninja
-            unzip
-            zip
-
+      - name: Setup msys POSIX environment
+        uses: msys2/setup-msys2@v2
+        if: contains(matrix.msystem, 'MSYS')
+        with:
+          msystem: MSYS
+          update: false
+          install: >-
+            git
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-gcc-fortran
+            python
+            python-pip
+            cmake
+            ninja
+      - name: Install fypp
+        run: pip install fypp
       - run: >-
           PATH=$PATH:/mingw64/bin/ cmake
           -Wdev
-          -B build
-          -DCMAKE_BUILD_TYPE=Debug
-          -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
-          -DCMAKE_MAXIMUM_RANK:String=4
-          -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+           -B build
+           -DCMAKE_BUILD_TYPE=Debug
+           -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
+           -DCMAKE_MAXIMUM_RANK:String=4
+           -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         env:
           FC: gfortran
           CC: gcc
