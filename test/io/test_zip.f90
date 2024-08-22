@@ -1,5 +1,5 @@
 module test_zip
-    use stdlib_filesystem, only: exists
+    use stdlib_io_filesystem, only: exists
     use stdlib_io_zip
     use stdlib_string_type, only: string_type, char
     use testdrive, only: new_unittest, unittest_type, error_type, check, test_failed

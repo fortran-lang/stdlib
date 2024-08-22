@@ -1,8 +1,8 @@
 module test_np
     use stdlib_array
-    use stdlib_filesystem, only : temp_dir, exists
-    use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
+    use stdlib_io_filesystem, only : temp_dir, exists
     use stdlib_io_np, only : save_npy, load_npy, load_npz, save_npz
+    use stdlib_kinds, only : int8, int16, int32, int64, sp, dp
     use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
     implicit none
     private

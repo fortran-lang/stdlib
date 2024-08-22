@@ -8,10 +8,10 @@
 submodule(stdlib_io_np) stdlib_io_np_save
     use stdlib_array
     use stdlib_error, only: error_stop
-    use stdlib_filesystem, only: run
+    use stdlib_io_filesystem, only: run
+    use stdlib_io_zip, only: zip
     use stdlib_strings, only: to_string
     use stdlib_string_type, only: string_type, as_string => char
-    use stdlib_io_zip, only: zip
     implicit none
 
 contains

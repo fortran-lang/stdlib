@@ -105,11 +105,11 @@ set(SRC
     stdlib_ansi_to_string.f90
     stdlib_codata.f90
     stdlib_error.f90
-    stdlib_filesystem.f90
     stdlib_hashmap_wrappers.f90
     stdlib_hashmaps.f90
     stdlib_hashmap_chaining.f90
     stdlib_hashmap_open.f90
+    stdlib_io_filesystem.f90
     stdlib_io_zip.f90
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
@@ -124,7 +124,7 @@ set(SRC
 
 # Files that have cpp directives need to be compiled with the preprocessor.
 set(hasCPP
-    stdlib_filesystem.f90
+    stdlib_io_filesystem.f90
 )
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")

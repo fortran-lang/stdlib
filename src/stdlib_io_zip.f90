@@ -2,7 +2,7 @@
 
 !> Handling of zip files including creation and extraction.
 module stdlib_io_zip
-    use stdlib_filesystem, only: exists, run, temp_dir
+    use stdlib_io_filesystem, only: exists, run, temp_dir
     use stdlib_string_type, only: string_type, char
     use stdlib_strings, only: starts_with
     implicit none
