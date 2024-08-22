@@ -57,7 +57,11 @@ contains
             new_unittest("add_array_duplicate_names", add_array_duplicate_names, should_fail=.true.), &
             new_unittest("npz_save_empty_array_input", npz_save_empty_array_input, should_fail=.true.), &
             new_unittest("npz_save_one_array", npz_save_one_array), &
-            new_unittest("npz_save_two_arrays", npz_save_two_arrays) &
+            new_unittest("npz_save_two_arrays", npz_save_two_arrays), &
+            new_unittest("npz_get_values_unallocated", npz_get_values_unallocated, should_fail=.true.), &
+            new_unittest("npz_get_values_correct_type", npz_get_values_correct_type), &
+            new_unittest("npz_get_values_wrong_type", npz_get_values_wrong_type, should_fail=.true.), &
+            new_unittest("npz_get_values_two_arrays", npz_get_values_two_arrays) &
             ]
     end subroutine collect_np
 
@@ -1142,7 +1146,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         type(t_array_wrapper), allocatable :: arrays(:), arrays_reloaded(:)
-        integer :: stat, j
+        integer :: stat
         real(dp), allocatable :: input_array_1(:,:)
         complex(dp), parameter :: input_array_2(3) = [(1, 2._dp), (3, 4._dp), (5, 6._dp)]
         character(*), parameter :: array_name_1 = "array_1"
@@ -1212,6 +1216,98 @@ contains
             call test_failed(error, "Array 2 is of wrong type.")
         end select
         call delete_file(output_file)
+    end
+
+    subroutine npz_get_values_unallocated(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat
+        real(dp), allocatable :: input_array(:,:)
+
+        allocate(arrays(1))
+        call arrays(1)%get_values(input_array, stat)
+        call check(error, stat, "Getting values from an unallocated array should fail.")
+    end
+
+    subroutine npz_get_values_correct_type(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat
+        real(dp), allocatable :: input_array(:,:), output_array(:, :)
+
+        allocate(input_array(10, 4))
+        call random_number(input_array)
+        call add_array(arrays, input_array, stat)
+        call check(error, stat, "Error adding an array to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, size(arrays) == 1, "Array was not added to the list of arrays.")
+        if (allocated(error)) return
+        call arrays(1)%get_values(output_array, stat)
+        call check(error, stat, "Error reading values from the array.")
+        if (allocated(error)) return
+        call check(error, size(output_array), size(input_array), "Array sizes do not match.")
+        if (allocated(error)) return
+        call check(error, any(abs(output_array - input_array) <= epsilon(1.0_dp)), &
+            "Precision loss when reading values from the array.")
+    end
+
+    subroutine npz_get_values_wrong_type(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:)
+        integer :: stat
+        real(dp), allocatable :: input_array(:,:), output_array(:)
+
+        allocate(input_array(10, 4))
+        call random_number(input_array)
+        call add_array(arrays, input_array, stat)
+        call check(error, stat, "Error adding an array to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, size(arrays) == 1, "Array was not added to the list of arrays.")
+        if (allocated(error)) return
+        call arrays(1)%get_values(output_array, stat)
+        call check(error, stat, "Get values shouldn't work due to type mismatch.")
+    end
+
+    subroutine npz_get_values_two_arrays(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(t_array_wrapper), allocatable :: arrays(:), arrays_reloaded(:)
+        integer :: stat
+        real(dp), allocatable :: input_array_1(:,:), output_array_1(:,:)
+        complex(dp), parameter :: input_array_2(3) = [(1, 2._dp), (3, 4._dp), (5, 6._dp)]
+        complex(dp), allocatable :: output_array_2(:)
+
+        allocate(input_array_1(5, 6))
+        call random_number(input_array_1)
+        call add_array(arrays, input_array_1, stat)
+        call check(error, stat, "Error adding array 1 to the list of arrays.")
+        if (allocated(error)) return
+
+        call add_array(arrays, input_array_2, stat)
+        call check(error, stat, "Error adding array 2 to the list of arrays.")
+        if (allocated(error)) return
+        call check(error, size(arrays) == 2, "Wrong array size.")
+        if (allocated(error)) return
+
+        call arrays(1)%get_values(output_array_1, stat)
+        call check(error, stat, "Error reading values from the first array.")
+        if (allocated(error)) return
+        call check(error, size(input_array_1), size(output_array_1), "First array does not match in size.")
+        if (allocated(error)) return
+        call check(error, any(abs(output_array_1 - input_array_1) <= epsilon(1.0_dp)), &
+            "Precision loss when reading values from the first array.")
+        if (allocated(error)) return
+
+        call arrays(2)%get_values(output_array_2, stat)
+        call check(error, stat, "Error reading values from the second array.")
+        if (allocated(error)) return
+        call check(error, size(input_array_2), size(output_array_2), "Second array does not match in size.")
+        if (allocated(error)) return
+        call check(error, any(abs(output_array_2 - input_array_2) <= epsilon(1.0_dp)), &
+            "Precision loss when reading values from the second array.")
     end
 
     subroutine delete_file(filename)

@@ -18,6 +18,13 @@ module stdlib_array
     !> Helper class to allocate t_array as an abstract type.
     type, public :: t_array_wrapper
         class(t_array), allocatable :: array
+    contains
+#:for k1, t1 in KINDS_TYPES
+#:for rank in RANKS
+        generic :: get_values => get_values_${t1[0]}$${k1}$_${rank}$
+        procedure :: get_values_${t1[0]}$${k1}$_${rank}$
+#:endfor
+#:endfor
     end type
 
     type, abstract, public :: t_array
@@ -52,6 +59,27 @@ module stdlib_array
     end interface
 
 contains
+
+#:for k1, t1 in KINDS_TYPES
+#:for rank in RANKS
+    pure subroutine get_values_${t1[0]}$${k1}$_${rank}$(wrapper, values, stat, msg)
+        class(t_array_wrapper), intent(in) :: wrapper
+        ${t1}$, allocatable, intent(out) :: values${ranksuffix(rank)}$
+        integer, intent(out), optional :: stat
+        character(len=:), allocatable, intent(out), optional :: msg
+
+        if (present(stat)) stat = 0
+
+        select type (array_ => wrapper%array)
+          class is (t_array_${t1[0]}$${k1}$_${rank}$)
+            values = array_%values
+          class default
+            if (present(stat)) stat = 1
+            if (present(msg)) msg = "Array is of unexpected type."
+        end select
+    end
+#:endfor
+#:endfor
 
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
