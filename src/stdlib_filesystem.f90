@@ -1,3 +1,6 @@
+! SPDX-Identifier: MIT
+
+!> Interaction with the filesystem.
 module stdlib_filesystem
     use stdlib_string_type, only: string_type
     implicit none
@@ -10,7 +13,11 @@ module stdlib_filesystem
 
 contains
 
+    !> Version: experimental
+    !>
+    !> Whether a file or directory exists at the given path.
     logical function exists(filename)
+        !> Name of the file or directory.
         character(len=*), intent(in) :: filename
 
         inquire(file=filename, exist=exists)
@@ -20,11 +27,17 @@ contains
 #endif
     end
 
+    !> Version: experimental
+    !>
     !> List files and directories of a directory. Does not list hidden files.
     subroutine list_dir(dir, files, stat, msg)
+        !> Directory to list.
         character(len=*), intent(in) :: dir
+        !> List of files and directories.
         type(string_type), allocatable, intent(out) :: files(:)
+        !> Status of listing.
         integer, intent(out) :: stat
+        !> Error message.
         character(len=:), allocatable, optional, intent(out) :: msg
 
         integer :: unit, iostat
@@ -60,9 +73,15 @@ contains
         close(unit, status="delete")
     end
 
+    !> Version: experimental
+    !>
+    !> Run a command in the shell.
     subroutine run(command, stat, msg)
+        !> Command to run.
         character(len=*), intent(in) :: command
+        !> Status of the operation.
         integer, intent(out), optional :: stat
+        !> Error message.
         character(len=:), allocatable, intent(out), optional :: msg
 
         integer :: exitstat, cmdstat

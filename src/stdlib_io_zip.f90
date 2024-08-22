@@ -1,3 +1,6 @@
+! SPDX-Identifier: MIT
+
+!> Handling of zip files including creation and extraction.
 module stdlib_io_zip
     use stdlib_filesystem, only: exists, run, temp_dir
     use stdlib_string_type, only: string_type, char
@@ -12,11 +15,19 @@ module stdlib_io_zip
 
 contains
 
+    !> Version: experimental
+    !>
+    !> Create a zip file from a list of files.
     subroutine zip(output_file, files, stat, msg, compressed)
+        !> Name of the zip file to create.
         character(*), intent(in) :: output_file
+        !> List of files to include in the zip file.
         type(string_type), intent(in) :: files(:)
+        !> Optional error status of zipping, zero on success.
         integer, intent(out), optional :: stat
+        !> Optional error message.
         character(len=:), allocatable, intent(out), optional :: msg
+        !> If true, the file is saved in compressed format. The default is true.
         logical, intent(in), optional :: compressed
 
         integer :: run_stat, i
@@ -54,10 +65,17 @@ contains
         end if
     end
 
+    !> Version: experimental
+    !>
+    !> Extract a zip file to a directory.
     subroutine unzip(filename, outputdir, stat, msg)
+        !> Name of the zip file to extract.
         character(len=*), intent(in) :: filename
+        !> Directory to extract the zip file to.
         character(len=*), intent(in), optional :: outputdir
+        !> Optional error status of unzipping, zero on success.
         integer, intent(out), optional :: stat
+        !> Optional error message.
         character(len=:), allocatable, intent(out), optional :: msg
 
         integer :: run_stat
