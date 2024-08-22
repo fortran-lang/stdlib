@@ -671,7 +671,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
 
         integer :: stat
         character(*), parameter :: filename = "nonexistent.npz"
@@ -685,7 +685,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
 
         integer :: stat
         character(*), parameter :: filename = "."
@@ -700,7 +700,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
 
         integer :: io, stat
         character(*), parameter :: filename = "empty_file"
@@ -719,7 +719,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: io, stat
 
         character(*), parameter :: filename = "empty.zip"
@@ -739,7 +739,7 @@ contains
     subroutine npz_load_arr_empty_0(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "empty_0.npz"
         character(*), parameter :: tmp = temp_dir//"/empty_0"
@@ -753,7 +753,7 @@ contains
         call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
-          class is (t_array_rdp_1)
+          class is (array_type_rdp_1)
             call check(error, size(typed_array%values) == 0, "Array in '"//filename//"' is supposed to be empty.")
           class default
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
@@ -763,7 +763,7 @@ contains
     subroutine npz_load_arr_rand_2_3(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "rand_2_3.npz"
         character(*), parameter :: tmp = temp_dir//"/rand_2_3"
@@ -777,7 +777,7 @@ contains
         call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
-          class is (t_array_rdp_2)
+          class is (array_type_rdp_2)
             call check(error, size(typed_array%values) == 6, "Array in '"//filename//"' is supposed to have 6 entries.")
           class default
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
@@ -787,7 +787,7 @@ contains
     subroutine npz_load_arr_arange_10_20(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat, i
         character(*), parameter :: filename = "arange_10_20.npz"
         character(*), parameter :: tmp = temp_dir//"/arange_10_20"
@@ -801,7 +801,7 @@ contains
         call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
-          class is (t_array_iint64_1)
+          class is (array_type_iint64_1)
             call check(error, size(typed_array%values) == 10, "Array in '"//filename//"' is supposed to have 10 entries.")
             if (allocated(error)) return
             call check(error, typed_array%values(1) == 10, "First entry is supposed to be 10.")
@@ -818,7 +818,7 @@ contains
     subroutine npz_load_arr_cmplx(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "cmplx_arr.npz"
         character(*), parameter :: tmp = temp_dir//"/cmplx_arr"
@@ -832,7 +832,7 @@ contains
         call check(error, arrays(1)%array%name == "cmplx.npy", "Wrong array name.")
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
-          class is (t_array_csp_1)
+          class is (array_type_csp_1)
             call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
             if (allocated(error)) return
             call check(error, typed_array%values(1) == cmplx(1_dp, 2_dp), "First complex number does not match.")
@@ -849,7 +849,7 @@ contains
     subroutine npz_load_two_arr_iint64_rdp(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "two_arr_iint64_rdp.npz"
         character(*), parameter :: tmp = temp_dir//"/two_arr_iint64_rdp"
@@ -865,7 +865,7 @@ contains
         call check(error, arrays(2)%array%name == "arr_1.npy", "Wrong array name.")
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
-          class is (t_array_iint64_1)
+          class is (array_type_iint64_1)
             call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
             if (allocated(error)) return
             call check(error, typed_array%values(1) == 1, "First integer does not match.")
@@ -878,7 +878,7 @@ contains
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
         end select
         select type (typed_array => arrays(2)%array)
-          class is (t_array_rdp_1)
+          class is (array_type_rdp_1)
             call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
             if (allocated(error)) return
             call check(error, typed_array%values(1) == 1., "First number does not match.")
@@ -895,7 +895,7 @@ contains
     subroutine npz_load_two_arr_iint64_rdp_comp(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "two_arr_iint64_rdp_comp.npz"
         character(*), parameter :: tmp = temp_dir//"/two_arr_iint64_rdp_comp"
@@ -911,7 +911,7 @@ contains
         call check(error, arrays(2)%array%name == "arr_1.npy", "Wrong array name.")
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
-          class is (t_array_iint64_1)
+          class is (array_type_iint64_1)
             call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
             if (allocated(error)) return
             call check(error, typed_array%values(1) == 1, "First integer does not match.")
@@ -924,7 +924,7 @@ contains
             call test_failed(error, "Array in '"//filename//"' is of wrong type.")
         end select
         select type (typed_array => arrays(2)%array)
-          class is (t_array_rdp_1)
+          class is (array_type_rdp_1)
             call check(error, size(typed_array%values) == 3, "Array in '"//filename//"' is supposed to have 3 entries.")
             if (allocated(error)) return
             call check(error, typed_array%values(1) == 1., "First number does not match.")
@@ -941,7 +941,7 @@ contains
     subroutine add_array_to_empty(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         real(dp), allocatable :: input_array(:,:)
 
@@ -955,7 +955,7 @@ contains
         call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
-          class is (t_array_rdp_2)
+          class is (array_type_rdp_2)
             call check(error, size(typed_array%values), size(input_array), "Array sizes do not match.")
             if (allocated(error)) return
             call check(error, any(abs(typed_array%values - input_array) <= epsilon(1.0_dp)), &
@@ -969,7 +969,7 @@ contains
     subroutine add_two_arrays(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         real(dp), allocatable :: array_1(:,:)
         real(sp), allocatable :: array_2(:)
@@ -984,7 +984,7 @@ contains
         call check(error, arrays(1)%array%name == "arr_0.npy", "Wrong array name.")
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
-          class is (t_array_rdp_2)
+          class is (array_type_rdp_2)
             call check(error, size(typed_array%values), size(array_1), "Array sizes do not match.")
             if (allocated(error)) return
             call check(error, any(abs(typed_array%values - array_1) <= epsilon(1.0_dp)), &
@@ -1004,7 +1004,7 @@ contains
         call check(error, arrays(2)%array%name == "arr_1.npy", "Wrong array name.")
         if (allocated(error)) return
         select type (typed_array => arrays(2)%array)
-          class is (t_array_rsp_1)
+          class is (array_type_rsp_1)
             call check(error, size(typed_array%values), size(array_2), "Array sizes do not match.")
             if (allocated(error)) return
             call check(error, any(abs(typed_array%values - array_2) <= epsilon(1.0_sp)), &
@@ -1018,7 +1018,7 @@ contains
     subroutine add_array_custom_name(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         real(dp), allocatable :: input_array(:,:)
         character(*), parameter :: arr_name = "custom_name.npy"
@@ -1033,7 +1033,7 @@ contains
         call check(error, arrays(1)%array%name == arr_name, "Wrong array name.")
         if (allocated(error)) return
         select type (typed_array => arrays(1)%array)
-          class is (t_array_rdp_2)
+          class is (array_type_rdp_2)
             call check(error, size(typed_array%values), size(input_array), "Array sizes do not match.")
             if (allocated(error)) return
             call check(error, any(abs(typed_array%values - input_array) <= epsilon(1.0_dp)), &
@@ -1047,7 +1047,7 @@ contains
     subroutine add_array_empty_name(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         real(dp), allocatable :: input_array(:,:)
         character(*), parameter :: arr_name = " "
@@ -1061,7 +1061,7 @@ contains
     subroutine add_array_duplicate_names(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         real(dp), allocatable :: array_1(:,:)
         real(sp), allocatable :: array_2(:)
@@ -1081,7 +1081,7 @@ contains
     subroutine npz_save_empty_array_input(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         character(*), parameter :: filename = "output.npz"
 
@@ -1093,7 +1093,7 @@ contains
     subroutine npz_save_one_array(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:), arrays_reloaded(:)
+        type(array_wrapper_type), allocatable :: arrays(:), arrays_reloaded(:)
         integer :: stat
         real(dp), allocatable :: input_array(:,:)
         character(*), parameter :: output_file = "one_array.npz"
@@ -1126,7 +1126,7 @@ contains
             call delete_file(output_file); return
         end if
         select type (typed_array => arrays_reloaded(1)%array)
-          class is (t_array_rdp_2)
+          class is (array_type_rdp_2)
             call check(error, size(typed_array%values), size(input_array), "Array sizes do not match.")
             if (allocated(error)) then
                 call delete_file(output_file); return
@@ -1145,7 +1145,7 @@ contains
     subroutine npz_save_two_arrays(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:), arrays_reloaded(:)
+        type(array_wrapper_type), allocatable :: arrays(:), arrays_reloaded(:)
         integer :: stat
         real(dp), allocatable :: input_array_1(:,:)
         complex(dp), parameter :: input_array_2(3) = [(1, 2._dp), (3, 4._dp), (5, 6._dp)]
@@ -1187,7 +1187,7 @@ contains
         end if
 
         select type (typed_array => arrays_reloaded(1)%array)
-          class is (t_array_rdp_2)
+          class is (array_type_rdp_2)
             call check(error, size(typed_array%values), size(input_array_1), "First array does not match in size.")
             if (allocated(error)) then
                 call delete_file(output_file); return
@@ -1202,7 +1202,7 @@ contains
         end select
 
         select type (typed_array => arrays_reloaded(2)%array)
-          class is (t_array_cdp_1)
+          class is (array_type_cdp_1)
             call check(error, size(typed_array%values), size(input_array_2), "Second array does not match in size.")
             if (allocated(error)) then
                 call delete_file(output_file); return
@@ -1221,7 +1221,7 @@ contains
     subroutine npz_get_values_unallocated(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         real(dp), allocatable :: input_array(:,:)
 
@@ -1233,7 +1233,7 @@ contains
     subroutine npz_get_values_correct_type(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         real(dp), allocatable :: input_array(:,:), output_array(:, :)
 
@@ -1256,7 +1256,7 @@ contains
     subroutine npz_get_values_wrong_type(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:)
+        type(array_wrapper_type), allocatable :: arrays(:)
         integer :: stat
         real(dp), allocatable :: input_array(:,:), output_array(:)
 
@@ -1274,7 +1274,7 @@ contains
     subroutine npz_get_values_two_arrays(error)
         type(error_type), allocatable, intent(out) :: error
 
-        type(t_array_wrapper), allocatable :: arrays(:), arrays_reloaded(:)
+        type(array_wrapper_type), allocatable :: arrays(:), arrays_reloaded(:)
         integer :: stat
         real(dp), allocatable :: input_array_1(:,:), output_array_1(:,:)
         complex(dp), parameter :: input_array_2(3) = [(1, 2._dp), (3, 4._dp), (5, 6._dp)]

@@ -107,7 +107,7 @@ contains
     !> ([Specification](../page/specs/stdlib_io.html#load_npz))
     module subroutine load_npz_to_arrays(filename, arrays, iostat, iomsg, tmp_dir)
         character(len=*), intent(in) :: filename
-        type(t_array_wrapper), allocatable, intent(out) :: arrays(:)
+        type(array_wrapper_type), allocatable, intent(out) :: arrays(:)
         integer, intent(out), optional :: iostat
         character(len=:), allocatable, intent(out), optional :: iomsg
         character(*), intent(in), optional :: tmp_dir
@@ -148,7 +148,7 @@ contains
     subroutine load_unzipped_files_to_arrays(files, dir, arrays, stat, msg)
         type(string_type), intent(in) :: files(:)
         character(len=*), intent(in) :: dir
-        type(t_array_wrapper), allocatable, intent(out) :: arrays(:)
+        type(array_wrapper_type), allocatable, intent(out) :: arrays(:)
         integer, intent(out) :: stat
         character(len=:), allocatable, intent(out) :: msg
 
@@ -193,7 +193,7 @@ contains
                             close(io, status='delete'); return
                         end if
 
-                        allocate(t_array_${t1[0]}$${k1}$_${rank}$ :: arrays(i)%array, stat=stat)
+                        allocate(array_type_${t1[0]}$${k1}$_${rank}$ :: arrays(i)%array, stat=stat)
                         if (stat /= 0) then
                             msg = "Failed to allocate array of type '"//this_type//"' "//&
                             & 'with total size of '//to_string(product(vshape))
@@ -201,7 +201,7 @@ contains
                         end if
 
                         select type (typed_array => arrays(i)%array)
-                          class is (t_array_${t1[0]}$${k1}$_${rank}$)
+                          class is (array_type_${t1[0]}$${k1}$_${rank}$)
                             allocate(typed_array%values, source=array)
                           class default
                             msg = 'Failed to allocate values.'; stat = 1

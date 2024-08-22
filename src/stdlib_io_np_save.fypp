@@ -143,7 +143,7 @@ contains
         !> Name of the npz file to save to.
         character(len=*), intent(in) :: filename
         !> Arrays to be saved.
-        type(t_array_wrapper), intent(in) :: arrays(:)
+        type(array_wrapper_type), intent(in) :: arrays(:)
         !> Optional error status of saving, zero on success.
         integer, intent(out), optional :: iostat
         !> Optional error message.
@@ -170,7 +170,7 @@ contains
             select type (typed_array => arrays(i)%array)
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
-              class is (t_array_${t1[0]}$${k1}$_${rank}$)
+              class is (array_type_${t1[0]}$${k1}$_${rank}$)
                 do j = 1, size(files)
                     if (as_string(files(j)) == typed_array%name) then
                         if (present(iostat)) iostat = 1

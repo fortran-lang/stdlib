@@ -1,9 +1,9 @@
 program example_save_npz
-    use stdlib_array, only: t_array_wrapper, add_array
+    use stdlib_array, only: array_wrapper_type, add_array
     use stdlib_io_np, only: save_npz
     implicit none
 
-    type(t_array_wrapper), allocatable :: arrays(:)
+    type(array_wrapper_type), allocatable :: arrays(:)
     real :: x(3, 2) = 1
     integer :: y(2, 3) = 2
 

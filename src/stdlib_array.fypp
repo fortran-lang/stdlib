@@ -15,9 +15,13 @@ module stdlib_array
 
     public :: add_array, trueloc, falseloc
 
-    !> Helper class to allocate t_array as an abstract type.
-    type, public :: t_array_wrapper
-        class(t_array), allocatable :: array
+    !> Version: experimental
+    !>
+    !> Wrapper class that helps with allocation of array_type.
+    !> [Specification](../page/specs/stdlib_array.html#array_wrapper_type)
+    type, public :: array_wrapper_type
+        !> Polymorphic array.
+        class(array_type), allocatable :: array
     contains
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
@@ -27,24 +31,38 @@ module stdlib_array
 #:endfor
     end type
 
-    type, abstract, public :: t_array
+    !> Version: experimental
+    !>
+    !> Abstract class that is extended according to the type of the underlying array.
+    !> [Specification](../page/specs/stdlib_array.html#array_type)
+    type, abstract, public :: array_type
+        !> Name of the array.
         character(:), allocatable :: name
     end type
 
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
-    type, extends(t_array), public :: t_array_${t1[0]}$${k1}$_${rank}$
+    !> Version: experimental
+    !>
+    !> Array type for ${t1}$ arrays of rank ${rank}.
+    !> Extends array_type and contains the values of the array.
+    !> [Specification](../page/specs/stdlib_array.html#array_type_${t1[0]}$${k1}$_${rank}$)
+    type, extends(array_type), public :: array_type_${t1[0]}$${k1}$_${rank}$
         ${t1}$, allocatable :: values${ranksuffix(rank)}$
     end type
 #:endfor
 #:endfor
 
+    !> Version: experimental
+    !>
+    !> Add an array to an array of array wrappers.
+    !> [Specification](../page/specs/stdlib_array.html#add_array)
     interface add_array
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
-        module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, stat, msg, name)
+        pure module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, stat, msg, name)
             !> Array of arrays to which the array is to be added.
-            type(t_array_wrapper), allocatable, intent(inout) :: arrays(:)
+            type(array_wrapper_type), allocatable, intent(inout) :: arrays(:)
             !> Array to be added.
             ${t1}$, intent(in) :: array${ranksuffix(rank)}$
             !> Status of addition.
@@ -62,16 +80,24 @@ contains
 
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
+    !> Version: experimental
+    !>
+    !> Extract array values from an array wrapper.
+    !> [Specification](../page/specs/stdlib_array.html#get_values)
     pure subroutine get_values_${t1[0]}$${k1}$_${rank}$(wrapper, values, stat, msg)
-        class(t_array_wrapper), intent(in) :: wrapper
+        !> Array wrapper to extract the values from.
+        class(array_wrapper_type), intent(in) :: wrapper
+        !> Extracted values.
         ${t1}$, allocatable, intent(out) :: values${ranksuffix(rank)}$
+        !> Optional status of the extraction.
         integer, intent(out), optional :: stat
+        !> Optional error message.
         character(len=:), allocatable, intent(out), optional :: msg
 
         if (present(stat)) stat = 0
 
         select type (array_ => wrapper%array)
-          class is (t_array_${t1[0]}$${k1}$_${rank}$)
+          class is (array_type_${t1[0]}$${k1}$_${rank}$)
             values = array_%values
           class default
             if (present(stat)) stat = 1
@@ -83,9 +109,12 @@ contains
 
 #:for k1, t1 in KINDS_TYPES
 #:for rank in RANKS
-    module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, stat, msg, name)
-        !> Array of arrays to which the array is to be added.
-        type(t_array_wrapper), allocatable, intent(inout) :: arrays(:)
+    !> Version: experimental
+    !>
+    !> Add an array to an array of array wrappers.
+    pure module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, stat, msg, name)
+        !> Array of wrapper arrays to which the array is to be added.
+        type(array_wrapper_type), allocatable, intent(inout) :: arrays(:)
         !> Array to be added.
         ${t1}$, intent(in) :: array${ranksuffix(rank)}$
         !> Status of addition.
@@ -96,9 +125,8 @@ contains
         character(len=*), intent(in), optional :: name
 
         integer :: i, arr_size
-        type(t_array_${t1[0]}$${k1}$_${rank}$) :: t_arr
-        type(t_array_wrapper), allocatable :: tmp_arrays(:)
-
+        type(array_type_${t1[0]}$${k1}$_${rank}$) :: t_arr
+        type(array_wrapper_type), allocatable :: tmp_arrays(:)
 
         if (present(stat)) stat = 0
 

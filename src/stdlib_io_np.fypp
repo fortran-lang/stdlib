@@ -70,7 +70,7 @@
 !> utf8-encoded string, so supports structured types with any unicode field names.
 module stdlib_io_np
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
-    use stdlib_array, only: t_array_wrapper
+    use stdlib_array, only: array_wrapper_type
     implicit none
     private
 
@@ -123,7 +123,7 @@ module stdlib_io_np
     interface load_npz
         module subroutine load_npz_to_arrays(filename, arrays, iostat, iomsg, tmp_dir)
             character(len=*), intent(in) :: filename
-            type(t_array_wrapper), allocatable, intent(out) :: arrays(:)
+            type(array_wrapper_type), allocatable, intent(out) :: arrays(:)
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
             character(len=*), intent(in), optional :: tmp_dir
@@ -137,7 +137,7 @@ module stdlib_io_np
     interface save_npz
         module subroutine save_arrays_to_npz(filename, arrays, iostat, iomsg, compressed)
             character(len=*), intent(in) :: filename
-            type(t_array_wrapper), intent(in) :: arrays(:)
+            type(array_wrapper_type), intent(in) :: arrays(:)
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
             !> If true, the file is saved in compressed format. The default is false.
