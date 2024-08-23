@@ -147,7 +147,7 @@ Add an array of defined type and rank to a list of array wrappers.
 
 #### Syntax
 
-`call ` [[stdlib_array(module):add_array(interface)]] ` (arrays, array[, stat, msg, name])`
+`call ` [[stdlib_array(module):add_array(interface)]] `(arrays, array[, stat, msg, name])`
 
 #### Class
 
@@ -170,6 +170,7 @@ Pure subroutine.
 ```fortran
 {!example/io/example_save_npz.f90!}
 ```
+
 ### `get_values`
 
 #### Status
@@ -182,7 +183,7 @@ Get the values of the array within the array wrapper.
 
 #### Syntax
 
-`call ` [[stdlib_array(module):array_wrapper_type(type)]] `%` [[array_wrapper_type(type):get_values(bound)]] ` (wrapper, values[, stat, msg])`
+`call ` [[stdlib_array(module):array_wrapper_type(type)]] `%` [[array_wrapper_type(type):get_values(bound)]] `(wrapper, values[, stat, msg])`
 
 #### Class
 
