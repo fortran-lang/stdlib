@@ -67,7 +67,7 @@ contains
 
         integer :: stat
 
-        call run("invalid_command", stat=stat)
+        call run("invalid_command", iostat=stat)
         call check(error, stat, "Running an invalid command should fail.")
     end
 
@@ -76,7 +76,7 @@ contains
 
         integer :: stat
 
-        call run("whoami -X", stat=stat)
+        call run("whoami -X", iostat=stat)
         call check(error, stat, "Running a valid command with an invalid option should fail.")
     end
 
@@ -85,7 +85,7 @@ contains
 
         integer :: stat
 
-        call run("whoami", stat=stat)
+        call run("whoami", iostat=stat)
         call check(error, stat, "Running a valid command should not fail.")
     end
 
@@ -95,12 +95,12 @@ contains
         integer :: stat
         type(string_type), allocatable :: files(:)
 
-        call run('rm -rf '//temp_list_dir, stat=stat)
+        call run('rm -rf '//temp_list_dir, iostat=stat)
         if (stat /= 0) then
             call test_failed(error, "Removing directory '"//temp_list_dir//"' failed."); return
         end if
 
-        call run('mkdir '//temp_list_dir, stat=stat)
+        call run('mkdir '//temp_list_dir, iostat=stat)
         if (stat /= 0) then
             call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
@@ -109,7 +109,7 @@ contains
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
         call check(error, size(files) == 0, "The directory should be empty.")
 
-        call run('rm -rf '//temp_list_dir, stat=stat)
+        call run('rm -rf '//temp_list_dir, iostat=stat)
     end
 
     subroutine fs_list_dir_one_file(error)
@@ -120,17 +120,17 @@ contains
         type(string_type), allocatable :: files(:)
         character(*), parameter :: filename = 'abc.txt'
 
-        call run('rm -rf '//temp_list_dir, stat=stat)
+        call run('rm -rf '//temp_list_dir, iostat=stat)
         if (stat /= 0) then
             call test_failed(error, "Removing directory '"//temp_list_dir//"' failed."); return
         end if
 
-        call run('mkdir '//temp_list_dir, stat=stat)
+        call run('mkdir '//temp_list_dir, iostat=stat)
         if (stat /= 0) then
             call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
 
-        call run('touch '//temp_list_dir//'/'//filename, stat=stat)
+        call run('touch '//temp_list_dir//'/'//filename, iostat=stat)
         if (stat /= 0) then
             call test_failed(error, "Creating file'"//filename//"' in directory '"//temp_list_dir//"' failed."); return
         end if
@@ -140,7 +140,7 @@ contains
         call check(error, size(files) == 1, "The directory should contain one file.")
         call check(error, char(files(1)) == filename, "The file should be '"//filename//"'.")
 
-        call run('rm -rf '//temp_list_dir, stat=stat)
+        call run('rm -rf '//temp_list_dir, iostat=stat)
     end
 
     subroutine fs_list_dir_two_files(error)
@@ -152,22 +152,22 @@ contains
         character(*), parameter :: filename1 = 'abc.txt'
         character(*), parameter :: filename2 = 'xyz'
 
-        call run('rm -rf '//temp_list_dir, stat=stat)
+        call run('rm -rf '//temp_list_dir, iostat=stat)
         if (stat /= 0) then
             call test_failed(error, "Removing directory '"//temp_list_dir//"' failed."); return
         end if
 
-        call run('mkdir '//temp_list_dir, stat=stat)
+        call run('mkdir '//temp_list_dir, iostat=stat)
         if (stat /= 0) then
             call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
 
-        call run('touch '//temp_list_dir//'/'//filename1, stat=stat)
+        call run('touch '//temp_list_dir//'/'//filename1, iostat=stat)
         if (stat /= 0) then
             call test_failed(error, "Creating file 1 in directory '"//temp_list_dir//"' failed."); return
         end if
 
-        call run('touch '//temp_list_dir//'/'//filename2, stat=stat)
+        call run('touch '//temp_list_dir//'/'//filename2, iostat=stat)
         if (stat /= 0) then
             call test_failed(error, "Creating file 2 in directory '"//temp_list_dir//"' failed."); return
         end if
@@ -178,7 +178,7 @@ contains
         call check(error, char(files(1)) == filename1, "The file should be '"//filename1//"'.")
         call check(error, char(files(2)) == filename2, "The file should be '"//filename2//"'.")
 
-        call run('rm -rf '//temp_list_dir, stat=stat)
+        call run('rm -rf '//temp_list_dir, iostat=stat)
     end
 
     subroutine delete_file(filename)
