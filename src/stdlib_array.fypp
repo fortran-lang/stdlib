@@ -17,7 +17,7 @@ module stdlib_array
 
     !> Version: experimental
     !>
-    !> Wrapper class that helps with allocation of array_type.
+    !> Wrapper class that helps with the allocation of `array_type`.
     !> [Specification](../page/specs/stdlib_array.html#array_wrapper_type)
     type, public :: array_wrapper_type
         !> Polymorphic array.
@@ -33,7 +33,7 @@ module stdlib_array
 
     !> Version: experimental
     !>
-    !> Abstract class that is extended according to the type of the underlying array.
+    !> Abstract type that is extended according to the type and rank of the stored array.
     !> [Specification](../page/specs/stdlib_array.html#array_type)
     type, abstract, public :: array_type
         !> Name of the array.
@@ -44,9 +44,8 @@ module stdlib_array
 #:for rank in RANKS
     !> Version: experimental
     !>
-    !> Array type for ${t1}$ arrays of rank ${rank}.
-    !> Extends array_type and contains the values of the array.
-    !> [Specification](../page/specs/stdlib_array.html#array_type_${t1[0]}$${k1}$_${rank}$)
+    !> Array type for ${t1}$ arrays of ${k1} precision and rank ${rank}.
+    !> Extends `array_type` and contains the values of the array.
     type, extends(array_type), public :: array_type_${t1[0]}$${k1}$_${rank}$
         ${t1}$, allocatable :: values${ranksuffix(rank)}$
     end type
@@ -55,7 +54,7 @@ module stdlib_array
 
     !> Version: experimental
     !>
-    !> Add an array to an array of array wrappers.
+    !> Add an array of defined type and rank to an array of array wrappers.
     !> [Specification](../page/specs/stdlib_array.html#add_array)
     interface add_array
 #:for k1, t1 in KINDS_TYPES
