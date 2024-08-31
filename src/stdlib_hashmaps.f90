@@ -441,7 +441,7 @@ module stdlib_hashmaps
                                              slots_bits, &
                                              status )
 !! Version: Experimental
-!!
+!! 
 !! Routine to allocate an empty map with HASHER as the hash function,
 !! 2**SLOTS_BITS initial SIZE(map % slots), and SIZE(map % slots) limited
 !! to a maximum of 2**MAX_BITS. All fields are initialized.
