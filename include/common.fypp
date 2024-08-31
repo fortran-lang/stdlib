@@ -60,6 +60,19 @@
 #:set CMPLX_INIT = CMPLX_INIT + ["w"]
 #:endif
 
+#! BLAS/LAPACK complex->real kind initial conversion
+#! Converts a BLAS/LAPACK complex kind initial to a real kind initial
+#!
+#! Args:
+#!     ci (character): Complex kind initial in ["c","z","y","w"]
+#!
+#! Returns:
+#!     Real kind initial in ["s","d","x","q"] or an empty string on invalid input
+#!
+#:def c2ri(cmplx)
+$:"s" if cmplx=="c" else "d" if cmplx=="z" else "x" if cmplx=="y" else "q" if cmplx=="w" else "ERROR"
+#:enddef
+
 #! Complex types to be considered during templating
 #:set CMPLX_TYPES = ["complex({})".format(k) for k in CMPLX_KINDS]
 

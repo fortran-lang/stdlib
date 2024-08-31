@@ -1,3 +1,43 @@
+# Version 0.7.0
+
+Full release notes available at [v0.7.0] tag.
+
+[v0.7.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.7.0
+
+- new module `stdlib_constants`
+  [#800](https://github.com/fortran-lang/stdlib/pull/800)
+  - Many mathematical constants and most common physical ([codata](https://codata.org)) constants
+
+Changes to existing scripts and modules
+  - changes in CI
+    - Use of `fortran-setup` for GCC, Intel LLVM and Intel Classic
+      [#834](https://github.com/fortran-lang/stdlib/pull/834)
+  - change in module `stdlib_hashmaps`
+    - Support of hash map key generic interfaces
+      [#827](https://github.com/fortran-lang/stdlib/pull/827)
+  - changes in module `stdlib_io`
+    - Addition of a Fortran format specifier in `loadtxt`
+      [#805](https://github.com/fortran-lang/stdlib/pull/805)
+  - changes in module `stdlib_linalg`
+    - Support of extended and quad precision checking 
+      [#821](https://github.com/fortran-lang/stdlib/pull/821)
+    - Several fixes
+      [#815](https://github.com/fortran-lang/stdlib/pull/815)
+      [#818](https://github.com/fortran-lang/stdlib/pull/818)
+      [#826](https://github.com/fortran-lang/stdlib/pull/826)
+      [#830](https://github.com/fortran-lang/stdlib/pull/830)
+      [#836](https://github.com/fortran-lang/stdlib/pull/836)
+    - New procedures for Eigenvalues and Eigenvectors computation: `eig`, `eigh`, `eigvals`, `eigvalsh`
+      [#816](https://github.com/fortran-lang/stdlib/pull/816)
+    - New procedures for Singular Value Decomposition: `svd`, `svdvals`
+      [#808](https://github.com/fortran-lang/stdlib/pull/808)
+  - changes in module `stdlib_sorting`
+    - Renamed variable from `int_size` to `int_index`
+      [#824](https://github.com/fortran-lang/stdlib/pull/824)
+    - Support of `int32` `index` array in `sort_index`
+      [#829](https://github.com/fortran-lang/stdlib/pull/829)
+
+
 # Version 0.6.1
 
 Full release notes available at [v0.6.1] tag.

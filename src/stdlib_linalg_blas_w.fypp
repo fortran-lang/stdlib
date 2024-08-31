@@ -1,111 +1,116 @@
 #:include "common.fypp" 
-#:if WITH_QP 
-module stdlib_linalg_blas_w
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+module stdlib_linalg_blas_${ci}$
      use stdlib_linalg_constants
      use stdlib_linalg_blas_aux
      use stdlib_linalg_blas_s
      use stdlib_linalg_blas_c
      use stdlib_linalg_blas_d
      use stdlib_linalg_blas_z
-     use stdlib_linalg_blas_q
+     #:for rk,rt,ri in REAL_KINDS_TYPES
+     #:if not rk in ["sp","dp"]
+     use stdlib_linalg_blas_${ri}$
+     #:endif
+     #:endfor
      implicit none(type,external)
      private
 
 
-     public :: sp,dp,qp,lk,ilp
-     public :: stdlib_waxpy
-     public :: stdlib_wcopy
-     public :: stdlib_wdotc
-     public :: stdlib_wdotu
-     public :: stdlib_wdrot
-     public :: stdlib_wdscal
-     public :: stdlib_wgbmv
-     public :: stdlib_wgemm
-     public :: stdlib_wgemv
-     public :: stdlib_wgerc
-     public :: stdlib_wgeru
-     public :: stdlib_whbmv
-     public :: stdlib_whemm
-     public :: stdlib_whemv
-     public :: stdlib_wher
-     public :: stdlib_wher2
-     public :: stdlib_wher2k
-     public :: stdlib_wherk
-     public :: stdlib_whpmv
-     public :: stdlib_whpr
-     public :: stdlib_whpr2
-     public :: stdlib_wrotg
-     public :: stdlib_wscal
-     public :: stdlib_wswap
-     public :: stdlib_wsymm
-     public :: stdlib_wsyr2k
-     public :: stdlib_wsyrk
-     public :: stdlib_wtbmv
-     public :: stdlib_wtbsv
-     public :: stdlib_wtpmv
-     public :: stdlib_wtpsv
-     public :: stdlib_wtrmm
-     public :: stdlib_wtrmv
-     public :: stdlib_wtrsm
-     public :: stdlib_wtrsv
+     public :: sp,dp,${ck}$,lk,ilp
+     public :: stdlib_${ci}$axpy
+     public :: stdlib_${ci}$copy
+     public :: stdlib_${ci}$dotc
+     public :: stdlib_${ci}$dotu
+     public :: stdlib_${ci}$drot
+     public :: stdlib_${ci}$dscal
+     public :: stdlib_${ci}$gbmv
+     public :: stdlib_${ci}$gemm
+     public :: stdlib_${ci}$gemv
+     public :: stdlib_${ci}$gerc
+     public :: stdlib_${ci}$geru
+     public :: stdlib_${ci}$hbmv
+     public :: stdlib_${ci}$hemm
+     public :: stdlib_${ci}$hemv
+     public :: stdlib_${ci}$her
+     public :: stdlib_${ci}$her2
+     public :: stdlib_${ci}$her2k
+     public :: stdlib_${ci}$herk
+     public :: stdlib_${ci}$hpmv
+     public :: stdlib_${ci}$hpr
+     public :: stdlib_${ci}$hpr2
+     public :: stdlib_${ci}$rotg
+     public :: stdlib_${ci}$scal
+     public :: stdlib_${ci}$swap
+     public :: stdlib_${ci}$symm
+     public :: stdlib_${ci}$syr2k
+     public :: stdlib_${ci}$syrk
+     public :: stdlib_${ci}$tbmv
+     public :: stdlib_${ci}$tbsv
+     public :: stdlib_${ci}$tpmv
+     public :: stdlib_${ci}$tpsv
+     public :: stdlib_${ci}$trmm
+     public :: stdlib_${ci}$trmv
+     public :: stdlib_${ci}$trsm
+     public :: stdlib_${ci}$trsv
 
      ! 128-bit real constants 
-     real(qp),    parameter, private ::     negone = -1.00_qp
-     real(qp),    parameter, private ::       zero = 0.00_qp
-     real(qp),    parameter, private ::       half = 0.50_qp
-     real(qp),    parameter, private ::        one = 1.00_qp
-     real(qp),    parameter, private ::        two = 2.00_qp
-     real(qp),    parameter, private ::      three = 3.00_qp
-     real(qp),    parameter, private ::       four = 4.00_qp
-     real(qp),    parameter, private ::      eight = 8.00_qp
-     real(qp),    parameter, private ::        ten = 10.00_qp
+     real(${ck}$),    parameter, private ::     negone = -1.00_${ck}$
+     real(${ck}$),    parameter, private ::       zero = 0.00_${ck}$
+     real(${ck}$),    parameter, private ::       half = 0.50_${ck}$
+     real(${ck}$),    parameter, private ::        one = 1.00_${ck}$
+     real(${ck}$),    parameter, private ::        two = 2.00_${ck}$
+     real(${ck}$),    parameter, private ::      three = 3.00_${ck}$
+     real(${ck}$),    parameter, private ::       four = 4.00_${ck}$
+     real(${ck}$),    parameter, private ::      eight = 8.00_${ck}$
+     real(${ck}$),    parameter, private ::        ten = 10.00_${ck}$
 
      ! 128-bit complex constants 
-     complex(qp), parameter, private :: czero   = ( 0.0_qp,0.0_qp)
-     complex(qp), parameter, private :: chalf   = ( 0.5_qp,0.0_qp)
-     complex(qp), parameter, private :: cone    = ( 1.0_qp,0.0_qp)
-     complex(qp), parameter, private :: cnegone = (-1.0_qp,0.0_qp)
+     complex(${ck}$), parameter, private :: czero   = ( 0.0_${ck}$,0.0_${ck}$)
+     complex(${ck}$), parameter, private :: chalf   = ( 0.5_${ck}$,0.0_${ck}$)
+     complex(${ck}$), parameter, private :: cone    = ( 1.0_${ck}$,0.0_${ck}$)
+     complex(${ck}$), parameter, private :: cnegone = (-1.0_${ck}$,0.0_${ck}$)
 
      ! 128-bit scaling constants 
      integer,     parameter, private :: maxexp = maxexponent(zero) 
      integer,     parameter, private :: minexp = minexponent(zero) 
-     real(qp),    parameter, private :: rradix = real(radix(zero),qp) 
-     real(qp),    parameter, private :: ulp    = epsilon(zero) 
-     real(qp),    parameter, private :: eps    = ulp*half 
-     real(qp),    parameter, private :: safmin = rradix**max(minexp-1,1-maxexp) 
-     real(qp),    parameter, private :: safmax = one/safmin 
-     real(qp),    parameter, private :: smlnum = safmin/ulp 
-     real(qp),    parameter, private :: bignum = safmax*ulp 
-     real(qp),    parameter, private :: rtmin  = sqrt(smlnum) 
-     real(qp),    parameter, private :: rtmax  = sqrt(bignum) 
+     real(${ck}$),    parameter, private :: rradix = real(radix(zero),${ck}$) 
+     real(${ck}$),    parameter, private :: ulp    = epsilon(zero) 
+     real(${ck}$),    parameter, private :: eps    = ulp*half 
+     real(${ck}$),    parameter, private :: safmin = rradix**max(minexp-1,1-maxexp) 
+     real(${ck}$),    parameter, private :: safmax = one/safmin 
+     real(${ck}$),    parameter, private :: smlnum = safmin/ulp 
+     real(${ck}$),    parameter, private :: bignum = safmax*ulp 
+     real(${ck}$),    parameter, private :: rtmin  = sqrt(smlnum) 
+     real(${ck}$),    parameter, private :: rtmax  = sqrt(bignum) 
 
      ! 128-bit Blue's scaling constants 
      ! ssml>=1/s and sbig==1/S with s,S as defined in https://doi.org/10.1145/355769.355771 
-     real(qp),    parameter, private :: tsml   = rradix**ceiling((minexp-1)*half) 
-     real(qp),    parameter, private :: tbig   = rradix**floor((maxexp-digits(zero)+1)*half) 
-     real(qp),    parameter, private :: ssml   = rradix**(-floor((minexp-digits(zero))*half)) 
-     real(qp),    parameter, private :: sbig   = rradix**(-ceiling((maxexp+digits(zero)-1)*half)) 
+     real(${ck}$),    parameter, private :: tsml   = rradix**ceiling((minexp-1)*half) 
+     real(${ck}$),    parameter, private :: tbig   = rradix**floor((maxexp-digits(zero)+1)*half) 
+     real(${ck}$),    parameter, private :: ssml   = rradix**(-floor((minexp-digits(zero))*half)) 
+     real(${ck}$),    parameter, private :: sbig   = rradix**(-ceiling((maxexp+digits(zero)-1)*half)) 
 
 
      contains
 
 
-     pure subroutine stdlib_waxpy(n,za,zx,incx,zy,incy)
+     pure subroutine stdlib_${ci}$axpy(n,za,zx,incx,zy,incy)
      !! ZAXPY: constant times a vector plus a vector.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: za
+           complex(${ck}$), intent(in) :: za
            integer(ilp), intent(in) :: incx, incy, n
            ! Array Arguments 
-           complex(qp), intent(in) :: zx(*)
-           complex(qp), intent(inout) :: zy(*)
+           complex(${ck}$), intent(in) :: zx(*)
+           complex(${ck}$), intent(inout) :: zy(*)
         ! =====================================================================
            ! Local Scalars 
            integer(ilp) :: i, ix, iy
            if (n<=0) return
-           if (stdlib_qcabs1(za)==0.0_qp) return
+           if (stdlib_cabs1(za)==0.0_${ck}$) return
            if (incx==1 .and. incy==1) then
               ! code for both increments equal to 1
               do i = 1,n
@@ -125,10 +130,10 @@ module stdlib_linalg_blas_w
               end do
            end if
            return
-     end subroutine stdlib_waxpy
+     end subroutine stdlib_${ci}$axpy
 
 
-     pure subroutine stdlib_wcopy(n,zx,incx,zy,incy)
+     pure subroutine stdlib_${ci}$copy(n,zx,incx,zy,incy)
      !! ZCOPY: copies a vector, x, to a vector, y.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
@@ -136,8 +141,8 @@ module stdlib_linalg_blas_w
            ! Scalar Arguments 
            integer(ilp), intent(in) :: incx, incy, n
            ! Array Arguments 
-           complex(qp), intent(in) :: zx(*)
-           complex(qp), intent(out) :: zy(*)
+           complex(${ck}$), intent(in) :: zx(*)
+           complex(${ck}$), intent(out) :: zy(*)
         ! =====================================================================
            ! Local Scalars 
            integer(ilp) :: i, ix, iy
@@ -161,10 +166,10 @@ module stdlib_linalg_blas_w
               end do
            end if
            return
-     end subroutine stdlib_wcopy
+     end subroutine stdlib_${ci}$copy
 
 
-     pure complex(qp) function stdlib_wdotc(n,zx,incx,zy,incy)
+     pure complex(${ck}$) function stdlib_${ci}$dotc(n,zx,incx,zy,incy)
      !! ZDOTC: forms the dot product of two complex vectors
      !! ZDOTC = X^H * Y
         ! -- reference blas level1 routine --
@@ -173,15 +178,15 @@ module stdlib_linalg_blas_w
            ! Scalar Arguments 
            integer(ilp), intent(in) :: incx, incy, n
            ! Array Arguments 
-           complex(qp), intent(in) :: zx(*), zy(*)
+           complex(${ck}$), intent(in) :: zx(*), zy(*)
         ! =====================================================================
            ! Local Scalars 
-           complex(qp) :: ztemp
+           complex(${ck}$) :: ztemp
            integer(ilp) :: i, ix, iy
            ! Intrinsic Functions 
            intrinsic :: conjg
-           ztemp = (0.0_qp,0.0_qp)
-           stdlib_wdotc = (0.0_qp,0.0_qp)
+           ztemp = (0.0_${ck}$,0.0_${ck}$)
+           stdlib_${ci}$dotc = (0.0_${ck}$,0.0_${ck}$)
            if (n<=0) return
            if (incx==1 .and. incy==1) then
               ! code for both increments equal to 1
@@ -201,12 +206,12 @@ module stdlib_linalg_blas_w
                  iy = iy + incy
               end do
            end if
-           stdlib_wdotc = ztemp
+           stdlib_${ci}$dotc = ztemp
            return
-     end function stdlib_wdotc
+     end function stdlib_${ci}$dotc
 
 
-     pure complex(qp) function stdlib_wdotu(n,zx,incx,zy,incy)
+     pure complex(${ck}$) function stdlib_${ci}$dotu(n,zx,incx,zy,incy)
      !! ZDOTU: forms the dot product of two complex vectors
      !! ZDOTU = X^T * Y
         ! -- reference blas level1 routine --
@@ -215,13 +220,13 @@ module stdlib_linalg_blas_w
            ! Scalar Arguments 
            integer(ilp), intent(in) :: incx, incy, n
            ! Array Arguments 
-           complex(qp), intent(in) :: zx(*), zy(*)
+           complex(${ck}$), intent(in) :: zx(*), zy(*)
         ! =====================================================================
            ! Local Scalars 
-           complex(qp) :: ztemp
+           complex(${ck}$) :: ztemp
            integer(ilp) :: i, ix, iy
-           ztemp = (0.0_qp,0.0_qp)
-           stdlib_wdotu = (0.0_qp,0.0_qp)
+           ztemp = (0.0_${ck}$,0.0_${ck}$)
+           stdlib_${ci}$dotu = (0.0_${ck}$,0.0_${ck}$)
            if (n<=0) return
            if (incx==1 .and. incy==1) then
               ! code for both increments equal to 1
@@ -241,12 +246,12 @@ module stdlib_linalg_blas_w
                  iy = iy + incy
               end do
            end if
-           stdlib_wdotu = ztemp
+           stdlib_${ci}$dotu = ztemp
            return
-     end function stdlib_wdotu
+     end function stdlib_${ci}$dotu
 
 
-     pure subroutine stdlib_wdrot( n, zx, incx, zy, incy, c, s )
+     pure subroutine stdlib_${ci}$drot( n, zx, incx, zy, incy, c, s )
      !! Applies a plane rotation, where the cos and sin (c and s) are real
      !! and the vectors cx and cy are complex.
      !! jack dongarra, linpack, 3/11/78.
@@ -255,13 +260,13 @@ module stdlib_linalg_blas_w
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            integer(ilp), intent(in) :: incx, incy, n
-           real(qp), intent(in) :: c, s
+           real(${ck}$), intent(in) :: c, s
            ! Array Arguments 
-           complex(qp), intent(inout) :: zx(*), zy(*)
+           complex(${ck}$), intent(inout) :: zx(*), zy(*)
        ! =====================================================================
            ! Local Scalars 
            integer(ilp) :: i, ix, iy
-           complex(qp) :: ctemp
+           complex(${ck}$) :: ctemp
            ! Executable Statements 
            if( n<=0 )return
            if( incx==1 .and. incy==1 ) then
@@ -287,19 +292,19 @@ module stdlib_linalg_blas_w
               end do
            end if
            return
-     end subroutine stdlib_wdrot
+     end subroutine stdlib_${ci}$drot
 
 
-     pure subroutine stdlib_wdscal(n,da,zx,incx)
+     pure subroutine stdlib_${ci}$dscal(n,da,zx,incx)
      !! ZDSCAL: scales a vector by a constant.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           real(qp), intent(in) :: da
+           real(${ck}$), intent(in) :: da
            integer(ilp), intent(in) :: incx, n
            ! Array Arguments 
-           complex(qp), intent(inout) :: zx(*)
+           complex(${ck}$), intent(inout) :: zx(*)
         ! =====================================================================
            ! Local Scalars 
            integer(ilp) :: i, nincx
@@ -309,20 +314,20 @@ module stdlib_linalg_blas_w
            if (incx==1) then
               ! code for increment equal to 1
               do i = 1,n
-                 zx(i) = cmplx(da,0.0_qp,KIND=qp)*zx(i)
+                 zx(i) = cmplx(da,0.0_${ck}$,KIND=${ck}$)*zx(i)
               end do
            else
               ! code for increment not equal to 1
               nincx = n*incx
               do i = 1,nincx,incx
-                 zx(i) = cmplx(da,0.0_qp,KIND=qp)*zx(i)
+                 zx(i) = cmplx(da,0.0_${ck}$,KIND=${ck}$)*zx(i)
               end do
            end if
            return
-     end subroutine stdlib_wdscal
+     end subroutine stdlib_${ci}$dscal
 
 
-     pure subroutine stdlib_wgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
+     pure subroutine stdlib_${ci}$gbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
      !! ZGBMV:  performs one of the matrix-vector operations
      !! y := alpha*A*x + beta*y,   or   y := alpha*A**T*x + beta*y,   or
      !! y := alpha*A**H*x + beta*y,
@@ -332,17 +337,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha, beta
+           complex(${ck}$), intent(in) :: alpha, beta
            integer(ilp), intent(in) :: incx, incy, kl, ku, lda, m, n
            character, intent(in) :: trans
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*), x(*)
-           complex(qp), intent(inout) :: y(*)
+           complex(${ck}$), intent(in) :: a(lda,*), x(*)
+           complex(${ck}$), intent(inout) :: y(*)
         ! =====================================================================
            
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, iy, j, jx, jy, k, kup1, kx, ky, lenx, leny
            logical(lk) :: noconj
            ! Intrinsic Functions 
@@ -491,10 +496,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wgbmv
+     end subroutine stdlib_${ci}$gbmv
 
 
-     pure subroutine stdlib_wgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+     pure subroutine stdlib_${ci}$gemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
      !! ZGEMM:  performs one of the matrix-matrix operations
      !! C := alpha*op( A )*op( B ) + beta*C,
      !! where  op( X ) is one of
@@ -505,17 +510,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha, beta
+           complex(${ck}$), intent(in) :: alpha, beta
            integer(ilp), intent(in) :: k, lda, ldb, ldc, m, n
            character, intent(in) :: transa, transb
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*), b(ldb,*)
-           complex(qp), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(in) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
         ! =====================================================================
            ! Intrinsic Functions 
            intrinsic :: conjg,max
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, j, l, nrowa, nrowb
            logical(lk) :: conja, conjb, nota, notb
            
@@ -740,10 +745,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wgemm
+     end subroutine stdlib_${ci}$gemm
 
 
-     pure subroutine stdlib_wgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
+     pure subroutine stdlib_${ci}$gemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
      !! ZGEMV:  performs one of the matrix-vector operations
      !! y := alpha*A*x + beta*y,   or   y := alpha*A**T*x + beta*y,   or
      !! y := alpha*A**H*x + beta*y,
@@ -753,17 +758,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha, beta
+           complex(${ck}$), intent(in) :: alpha, beta
            integer(ilp), intent(in) :: incx, incy, lda, m, n
            character, intent(in) :: trans
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*), x(*)
-           complex(qp), intent(inout) :: y(*)
+           complex(${ck}$), intent(in) :: a(lda,*), x(*)
+           complex(${ck}$), intent(inout) :: y(*)
         ! =====================================================================
            
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, iy, j, jx, jy, kx, ky, lenx, leny
            logical(lk) :: noconj
            ! Intrinsic Functions 
@@ -901,10 +906,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wgemv
+     end subroutine stdlib_${ci}$gemv
 
 
-     pure subroutine stdlib_wgerc(m,n,alpha,x,incx,y,incy,a,lda)
+     pure subroutine stdlib_${ci}$gerc(m,n,alpha,x,incx,y,incy,a,lda)
      !! ZGERC:  performs the rank 1 operation
      !! A := alpha*x*y**H + A,
      !! where alpha is a scalar, x is an m element vector, y is an n element
@@ -913,15 +918,15 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha
+           complex(${ck}$), intent(in) :: alpha
            integer(ilp), intent(in) :: incx, incy, lda, m, n
            ! Array Arguments 
-           complex(qp), intent(inout) :: a(lda,*)
-           complex(qp), intent(in) :: x(*), y(*)
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: x(*), y(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, j, jy, kx
            ! Intrinsic Functions 
            intrinsic :: conjg,max
@@ -980,10 +985,10 @@ module stdlib_linalg_blas_w
                end do
            end if
            return
-     end subroutine stdlib_wgerc
+     end subroutine stdlib_${ci}$gerc
 
 
-     pure subroutine stdlib_wgeru(m,n,alpha,x,incx,y,incy,a,lda)
+     pure subroutine stdlib_${ci}$geru(m,n,alpha,x,incx,y,incy,a,lda)
      !! ZGERU:  performs the rank 1 operation
      !! A := alpha*x*y**T + A,
      !! where alpha is a scalar, x is an m element vector, y is an n element
@@ -992,15 +997,15 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha
+           complex(${ck}$), intent(in) :: alpha
            integer(ilp), intent(in) :: incx, incy, lda, m, n
            ! Array Arguments 
-           complex(qp), intent(inout) :: a(lda,*)
-           complex(qp), intent(in) :: x(*), y(*)
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: x(*), y(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, j, jy, kx
            ! Intrinsic Functions 
            intrinsic :: max
@@ -1059,10 +1064,10 @@ module stdlib_linalg_blas_w
                end do
            end if
            return
-     end subroutine stdlib_wgeru
+     end subroutine stdlib_${ci}$geru
 
 
-     pure subroutine stdlib_whbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
+     pure subroutine stdlib_${ci}$hbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
      !! ZHBMV:  performs the matrix-vector  operation
      !! y := alpha*A*x + beta*y,
      !! where alpha and beta are scalars, x and y are n element vectors and
@@ -1071,17 +1076,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha, beta
+           complex(${ck}$), intent(in) :: alpha, beta
            integer(ilp), intent(in) :: incx, incy, k, lda, n
            character, intent(in) :: uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*), x(*)
-           complex(qp), intent(inout) :: y(*)
+           complex(${ck}$), intent(in) :: a(lda,*), x(*)
+           complex(${ck}$), intent(inout) :: y(*)
         ! =====================================================================
            
            
            ! Local Scalars 
-           complex(qp) :: temp1, temp2
+           complex(${ck}$) :: temp1, temp2
            integer(ilp) :: i, info, ix, iy, j, jx, jy, kplus1, kx, ky, l
            ! Intrinsic Functions 
            intrinsic :: real,conjg,max,min
@@ -1159,7 +1164,7 @@ module stdlib_linalg_blas_w
                            y(i) = y(i) + temp1*a(l+i,j)
                            temp2 = temp2 + conjg(a(l+i,j))*x(i)
                        end do
-                       y(j) = y(j) + temp1*real(a(kplus1,j),KIND=qp) + alpha*temp2
+                       y(j) = y(j) + temp1*real(a(kplus1,j),KIND=${ck}$) + alpha*temp2
                    end do
                else
                    jx = kx
@@ -1176,7 +1181,7 @@ module stdlib_linalg_blas_w
                            ix = ix + incx
                            iy = iy + incy
                        end do
-                       y(jy) = y(jy) + temp1*real(a(kplus1,j),KIND=qp) + alpha*temp2
+                       y(jy) = y(jy) + temp1*real(a(kplus1,j),KIND=${ck}$) + alpha*temp2
                        jx = jx + incx
                        jy = jy + incy
                        if (j>k) then
@@ -1191,7 +1196,7 @@ module stdlib_linalg_blas_w
                    do j = 1,n
                        temp1 = alpha*x(j)
                        temp2 = czero
-                       y(j) = y(j) + temp1*real(a(1,j),KIND=qp)
+                       y(j) = y(j) + temp1*real(a(1,j),KIND=${ck}$)
                        l = 1 - j
                        do i = j + 1,min(n,j+k)
                            y(i) = y(i) + temp1*a(l+i,j)
@@ -1205,7 +1210,7 @@ module stdlib_linalg_blas_w
                    do j = 1,n
                        temp1 = alpha*x(jx)
                        temp2 = czero
-                       y(jy) = y(jy) + temp1*real(a(1,j),KIND=qp)
+                       y(jy) = y(jy) + temp1*real(a(1,j),KIND=${ck}$)
                        l = 1 - j
                        ix = jx
                        iy = jy
@@ -1222,10 +1227,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_whbmv
+     end subroutine stdlib_${ci}$hbmv
 
 
-     pure subroutine stdlib_whemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+     pure subroutine stdlib_${ci}$hemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
      !! ZHEMM:  performs one of the matrix-matrix operations
      !! C := alpha*A*B + beta*C,
      !! or
@@ -1236,17 +1241,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha, beta
+           complex(${ck}$), intent(in) :: alpha, beta
            integer(ilp), intent(in) :: lda, ldb, ldc, m, n
            character, intent(in) :: side, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*), b(ldb,*)
-           complex(qp), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(in) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
         ! =====================================================================
            ! Intrinsic Functions 
            intrinsic :: real,conjg,max
            ! Local Scalars 
-           complex(qp) :: temp1, temp2
+           complex(${ck}$) :: temp1, temp2
            integer(ilp) :: i, info, j, k, nrowa
            logical(lk) :: upper
            
@@ -1311,9 +1316,9 @@ module stdlib_linalg_blas_w
                                temp2 = temp2 + b(k,j)*conjg(a(k,i))
                            end do
                            if (beta==czero) then
-                               c(i,j) = temp1*real(a(i,i),KIND=qp) + alpha*temp2
+                               c(i,j) = temp1*real(a(i,i),KIND=${ck}$) + alpha*temp2
                            else
-                               c(i,j) = beta*c(i,j) + temp1*real(a(i,i),KIND=qp) +&
+                               c(i,j) = beta*c(i,j) + temp1*real(a(i,i),KIND=${ck}$) +&
                                          alpha*temp2
                            end if
                        end do
@@ -1328,9 +1333,9 @@ module stdlib_linalg_blas_w
                                temp2 = temp2 + b(k,j)*conjg(a(k,i))
                            end do
                            if (beta==czero) then
-                               c(i,j) = temp1*real(a(i,i),KIND=qp) + alpha*temp2
+                               c(i,j) = temp1*real(a(i,i),KIND=${ck}$) + alpha*temp2
                            else
-                               c(i,j) = beta*c(i,j) + temp1*real(a(i,i),KIND=qp) +&
+                               c(i,j) = beta*c(i,j) + temp1*real(a(i,i),KIND=${ck}$) +&
                                          alpha*temp2
                            end if
                        end do
@@ -1339,7 +1344,7 @@ module stdlib_linalg_blas_w
            else
               ! form  c := alpha*b*a + beta*c.
                loop_170: do j = 1,n
-                   temp1 = alpha*real(a(j,j),KIND=qp)
+                   temp1 = alpha*real(a(j,j),KIND=${ck}$)
                    if (beta==czero) then
                        do i = 1,m
                            c(i,j) = temp1*b(i,j)
@@ -1372,10 +1377,10 @@ module stdlib_linalg_blas_w
                end do loop_170
            end if
            return
-     end subroutine stdlib_whemm
+     end subroutine stdlib_${ci}$hemm
 
 
-     pure subroutine stdlib_whemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
+     pure subroutine stdlib_${ci}$hemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
      !! ZHEMV:  performs the matrix-vector  operation
      !! y := alpha*A*x + beta*y,
      !! where alpha and beta are scalars, x and y are n element vectors and
@@ -1384,17 +1389,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha, beta
+           complex(${ck}$), intent(in) :: alpha, beta
            integer(ilp), intent(in) :: incx, incy, lda, n
            character, intent(in) :: uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*), x(*)
-           complex(qp), intent(inout) :: y(*)
+           complex(${ck}$), intent(in) :: a(lda,*), x(*)
+           complex(${ck}$), intent(inout) :: y(*)
         ! =====================================================================
            
            
            ! Local Scalars 
-           complex(qp) :: temp1, temp2
+           complex(${ck}$) :: temp1, temp2
            integer(ilp) :: i, info, ix, iy, j, jx, jy, kx, ky
            ! Intrinsic Functions 
            intrinsic :: real,conjg,max
@@ -1469,7 +1474,7 @@ module stdlib_linalg_blas_w
                            y(i) = y(i) + temp1*a(i,j)
                            temp2 = temp2 + conjg(a(i,j))*x(i)
                        end do
-                       y(j) = y(j) + temp1*real(a(j,j),KIND=qp) + alpha*temp2
+                       y(j) = y(j) + temp1*real(a(j,j),KIND=${ck}$) + alpha*temp2
                    end do
                else
                    jx = kx
@@ -1485,7 +1490,7 @@ module stdlib_linalg_blas_w
                            ix = ix + incx
                            iy = iy + incy
                        end do
-                       y(jy) = y(jy) + temp1*real(a(j,j),KIND=qp) + alpha*temp2
+                       y(jy) = y(jy) + temp1*real(a(j,j),KIND=${ck}$) + alpha*temp2
                        jx = jx + incx
                        jy = jy + incy
                    end do
@@ -1496,7 +1501,7 @@ module stdlib_linalg_blas_w
                    do j = 1,n
                        temp1 = alpha*x(j)
                        temp2 = czero
-                       y(j) = y(j) + temp1*real(a(j,j),KIND=qp)
+                       y(j) = y(j) + temp1*real(a(j,j),KIND=${ck}$)
                        do i = j + 1,n
                            y(i) = y(i) + temp1*a(i,j)
                            temp2 = temp2 + conjg(a(i,j))*x(i)
@@ -1509,7 +1514,7 @@ module stdlib_linalg_blas_w
                    do j = 1,n
                        temp1 = alpha*x(jx)
                        temp2 = czero
-                       y(jy) = y(jy) + temp1*real(a(j,j),KIND=qp)
+                       y(jy) = y(jy) + temp1*real(a(j,j),KIND=${ck}$)
                        ix = jx
                        iy = jy
                        do i = j + 1,n
@@ -1525,10 +1530,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_whemv
+     end subroutine stdlib_${ci}$hemv
 
 
-     pure subroutine stdlib_wher(uplo,n,alpha,x,incx,a,lda)
+     pure subroutine stdlib_${ci}$her(uplo,n,alpha,x,incx,a,lda)
      !! ZHER:   performs the hermitian rank 1 operation
      !! A := alpha*x*x**H + A,
      !! where alpha is a real scalar, x is an n element vector and A is an
@@ -1537,16 +1542,16 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           real(qp), intent(in) :: alpha
+           real(${ck}$), intent(in) :: alpha
            integer(ilp), intent(in) :: incx, lda, n
            character, intent(in) :: uplo
            ! Array Arguments 
-           complex(qp), intent(inout) :: a(lda,*)
-           complex(qp), intent(in) :: x(*)
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: x(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, j, jx, kx
            ! Intrinsic Functions 
            intrinsic :: real,conjg,max
@@ -1566,7 +1571,7 @@ module stdlib_linalg_blas_w
                return
            end if
            ! quick return if possible.
-           if ((n==0) .or. (alpha==real(czero,KIND=qp))) return
+           if ((n==0) .or. (alpha==real(czero,KIND=${ck}$))) return
            ! set the start point in x if the increment is not unity.
            if (incx<=0) then
                kx = 1 - (n-1)*incx
@@ -1585,9 +1590,9 @@ module stdlib_linalg_blas_w
                            do i = 1,j - 1
                                a(i,j) = a(i,j) + x(i)*temp
                            end do
-                           a(j,j) = real(a(j,j),KIND=qp) + real(x(j)*temp,KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$) + real(x(j)*temp,KIND=${ck}$)
                        else
-                           a(j,j) = real(a(j,j),KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$)
                        end if
                    end do
                else
@@ -1600,9 +1605,9 @@ module stdlib_linalg_blas_w
                                a(i,j) = a(i,j) + x(ix)*temp
                                ix = ix + incx
                            end do
-                           a(j,j) = real(a(j,j),KIND=qp) + real(x(jx)*temp,KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$) + real(x(jx)*temp,KIND=${ck}$)
                        else
-                           a(j,j) = real(a(j,j),KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$)
                        end if
                        jx = jx + incx
                    end do
@@ -1613,12 +1618,12 @@ module stdlib_linalg_blas_w
                    do j = 1,n
                        if (x(j)/=czero) then
                            temp = alpha*conjg(x(j))
-                           a(j,j) = real(a(j,j),KIND=qp) + real(temp*x(j),KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$) + real(temp*x(j),KIND=${ck}$)
                            do i = j + 1,n
                                a(i,j) = a(i,j) + x(i)*temp
                            end do
                        else
-                           a(j,j) = real(a(j,j),KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$)
                        end if
                    end do
                else
@@ -1626,24 +1631,24 @@ module stdlib_linalg_blas_w
                    do j = 1,n
                        if (x(jx)/=czero) then
                            temp = alpha*conjg(x(jx))
-                           a(j,j) = real(a(j,j),KIND=qp) + real(temp*x(jx),KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$) + real(temp*x(jx),KIND=${ck}$)
                            ix = jx
                            do i = j + 1,n
                                ix = ix + incx
                                a(i,j) = a(i,j) + x(ix)*temp
                            end do
                        else
-                           a(j,j) = real(a(j,j),KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$)
                        end if
                        jx = jx + incx
                    end do
                end if
            end if
            return
-     end subroutine stdlib_wher
+     end subroutine stdlib_${ci}$her
 
 
-     pure subroutine stdlib_wher2(uplo,n,alpha,x,incx,y,incy,a,lda)
+     pure subroutine stdlib_${ci}$her2(uplo,n,alpha,x,incx,y,incy,a,lda)
      !! ZHER2:  performs the hermitian rank 2 operation
      !! A := alpha*x*y**H + conjg( alpha )*y*x**H + A,
      !! where alpha is a scalar, x and y are n element vectors and A is an n
@@ -1652,16 +1657,16 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha
+           complex(${ck}$), intent(in) :: alpha
            integer(ilp), intent(in) :: incx, incy, lda, n
            character, intent(in) :: uplo
            ! Array Arguments 
-           complex(qp), intent(inout) :: a(lda,*)
-           complex(qp), intent(in) :: x(*), y(*)
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: x(*), y(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp1, temp2
+           complex(${ck}$) :: temp1, temp2
            integer(ilp) :: i, info, ix, iy, j, jx, jy, kx, ky
            ! Intrinsic Functions 
            intrinsic :: real,conjg,max
@@ -1713,10 +1718,10 @@ module stdlib_linalg_blas_w
                            do i = 1,j - 1
                                a(i,j) = a(i,j) + x(i)*temp1 + y(i)*temp2
                            end do
-                           a(j,j) = real(a(j,j),KIND=qp) +real(x(j)*temp1+y(j)*temp2,KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$) +real(x(j)*temp1+y(j)*temp2,KIND=${ck}$)
                                      
                        else
-                           a(j,j) = real(a(j,j),KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$)
                        end if
                    end do
                else
@@ -1731,10 +1736,10 @@ module stdlib_linalg_blas_w
                                ix = ix + incx
                                iy = iy + incy
                            end do
-                           a(j,j) = real(a(j,j),KIND=qp) +real(x(jx)*temp1+y(jy)*temp2,KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$) +real(x(jx)*temp1+y(jy)*temp2,KIND=${ck}$)
                                      
                        else
-                           a(j,j) = real(a(j,j),KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$)
                        end if
                        jx = jx + incx
                        jy = jy + incy
@@ -1747,13 +1752,13 @@ module stdlib_linalg_blas_w
                        if ((x(j)/=czero) .or. (y(j)/=czero)) then
                            temp1 = alpha*conjg(y(j))
                            temp2 = conjg(alpha*x(j))
-                           a(j,j) = real(a(j,j),KIND=qp) +real(x(j)*temp1+y(j)*temp2,KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$) +real(x(j)*temp1+y(j)*temp2,KIND=${ck}$)
                                      
                            do i = j + 1,n
                                a(i,j) = a(i,j) + x(i)*temp1 + y(i)*temp2
                            end do
                        else
-                           a(j,j) = real(a(j,j),KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$)
                        end if
                    end do
                else
@@ -1761,7 +1766,7 @@ module stdlib_linalg_blas_w
                        if ((x(jx)/=czero) .or. (y(jy)/=czero)) then
                            temp1 = alpha*conjg(y(jy))
                            temp2 = conjg(alpha*x(jx))
-                           a(j,j) = real(a(j,j),KIND=qp) +real(x(jx)*temp1+y(jy)*temp2,KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$) +real(x(jx)*temp1+y(jy)*temp2,KIND=${ck}$)
                                      
                            ix = jx
                            iy = jy
@@ -1771,7 +1776,7 @@ module stdlib_linalg_blas_w
                                a(i,j) = a(i,j) + x(ix)*temp1 + y(iy)*temp2
                            end do
                        else
-                           a(j,j) = real(a(j,j),KIND=qp)
+                           a(j,j) = real(a(j,j),KIND=${ck}$)
                        end if
                        jx = jx + incx
                        jy = jy + incy
@@ -1779,10 +1784,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wher2
+     end subroutine stdlib_${ci}$her2
 
 
-     pure subroutine stdlib_wher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+     pure subroutine stdlib_${ci}$her2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
      !! ZHER2K:  performs one of the hermitian rank 2k operations
      !! C := alpha*A*B**H + conjg( alpha )*B*A**H + beta*C,
      !! or
@@ -1794,18 +1799,18 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha
-           real(qp), intent(in) :: beta
+           complex(${ck}$), intent(in) :: alpha
+           real(${ck}$), intent(in) :: beta
            integer(ilp), intent(in) :: k, lda, ldb, ldc, n
            character, intent(in) :: trans, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*), b(ldb,*)
-           complex(qp), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(in) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
         ! =====================================================================
            ! Intrinsic Functions 
            intrinsic :: real,conjg,max
            ! Local Scalars 
-           complex(qp) :: temp1, temp2
+           complex(${ck}$) :: temp1, temp2
            integer(ilp) :: i, info, j, l, nrowa
            logical(lk) :: upper
            
@@ -1843,7 +1848,7 @@ module stdlib_linalg_blas_w
            ! and when  alpha.eq.czero.
            if (alpha==czero) then
                if (upper) then
-                   if (beta==real(czero,KIND=qp)) then
+                   if (beta==real(czero,KIND=${ck}$)) then
                        do j = 1,n
                            do i = 1,j
                                c(i,j) = czero
@@ -1854,11 +1859,11 @@ module stdlib_linalg_blas_w
                            do i = 1,j - 1
                                c(i,j) = beta*c(i,j)
                            end do
-                           c(j,j) = beta*real(c(j,j),KIND=qp)
+                           c(j,j) = beta*real(c(j,j),KIND=${ck}$)
                        end do
                    end if
                else
-                   if (beta==real(czero,KIND=qp)) then
+                   if (beta==real(czero,KIND=${ck}$)) then
                        do j = 1,n
                            do i = j,n
                                c(i,j) = czero
@@ -1866,7 +1871,7 @@ module stdlib_linalg_blas_w
                        end do
                    else
                        do j = 1,n
-                           c(j,j) = beta*real(c(j,j),KIND=qp)
+                           c(j,j) = beta*real(c(j,j),KIND=${ck}$)
                            do i = j + 1,n
                                c(i,j) = beta*c(i,j)
                            end do
@@ -1881,7 +1886,7 @@ module stdlib_linalg_blas_w
                          ! c.
                if (upper) then
                    do j = 1,n
-                       if (beta==real(czero,KIND=qp)) then
+                       if (beta==real(czero,KIND=${ck}$)) then
                            do i = 1,j
                                c(i,j) = czero
                            end do
@@ -1889,9 +1894,9 @@ module stdlib_linalg_blas_w
                            do i = 1,j - 1
                                c(i,j) = beta*c(i,j)
                            end do
-                           c(j,j) = beta*real(c(j,j),KIND=qp)
+                           c(j,j) = beta*real(c(j,j),KIND=${ck}$)
                        else
-                           c(j,j) = real(c(j,j),KIND=qp)
+                           c(j,j) = real(c(j,j),KIND=${ck}$)
                        end if
                        do l = 1,k
                            if ((a(j,l)/=czero) .or. (b(j,l)/=czero)) then
@@ -1900,14 +1905,14 @@ module stdlib_linalg_blas_w
                                do i = 1,j - 1
                                    c(i,j) = c(i,j) + a(i,l)*temp1 +b(i,l)*temp2
                                end do
-                               c(j,j) = real(c(j,j),KIND=qp) +real(a(j,l)*temp1+b(j,l)*temp2,&
-                                         KIND=qp)
+                               c(j,j) = real(c(j,j),KIND=${ck}$) +real(a(j,l)*temp1+b(j,l)*temp2,&
+                                         KIND=${ck}$)
                            end if
                        end do
                    end do
                else
                    do j = 1,n
-                       if (beta==real(czero,KIND=qp)) then
+                       if (beta==real(czero,KIND=${ck}$)) then
                            do i = j,n
                                c(i,j) = czero
                            end do
@@ -1915,9 +1920,9 @@ module stdlib_linalg_blas_w
                            do i = j + 1,n
                                c(i,j) = beta*c(i,j)
                            end do
-                           c(j,j) = beta*real(c(j,j),KIND=qp)
+                           c(j,j) = beta*real(c(j,j),KIND=${ck}$)
                        else
-                           c(j,j) = real(c(j,j),KIND=qp)
+                           c(j,j) = real(c(j,j),KIND=${ck}$)
                        end if
                        do l = 1,k
                            if ((a(j,l)/=czero) .or. (b(j,l)/=czero)) then
@@ -1926,8 +1931,8 @@ module stdlib_linalg_blas_w
                                do i = j + 1,n
                                    c(i,j) = c(i,j) + a(i,l)*temp1 +b(i,l)*temp2
                                end do
-                               c(j,j) = real(c(j,j),KIND=qp) +real(a(j,l)*temp1+b(j,l)*temp2,&
-                                         KIND=qp)
+                               c(j,j) = real(c(j,j),KIND=${ck}$) +real(a(j,l)*temp1+b(j,l)*temp2,&
+                                         KIND=${ck}$)
                            end if
                        end do
                    end do
@@ -1945,14 +1950,14 @@ module stdlib_linalg_blas_w
                                temp2 = temp2 + conjg(b(l,i))*a(l,j)
                            end do
                            if (i==j) then
-                               if (beta==real(czero,KIND=qp)) then
-                                   c(j,j) = real(alpha*temp1+conjg(alpha)*temp2,KIND=qp)
+                               if (beta==real(czero,KIND=${ck}$)) then
+                                   c(j,j) = real(alpha*temp1+conjg(alpha)*temp2,KIND=${ck}$)
                                else
-                                   c(j,j) = beta*real(c(j,j),KIND=qp) +real(alpha*temp1+conjg(&
-                                             alpha)*temp2,KIND=qp)
+                                   c(j,j) = beta*real(c(j,j),KIND=${ck}$) +real(alpha*temp1+conjg(&
+                                             alpha)*temp2,KIND=${ck}$)
                                end if
                            else
-                               if (beta==real(czero,KIND=qp)) then
+                               if (beta==real(czero,KIND=${ck}$)) then
                                    c(i,j) = alpha*temp1 + conjg(alpha)*temp2
                                else
                                    c(i,j) = beta*c(i,j) + alpha*temp1 +conjg(alpha)*temp2
@@ -1970,14 +1975,14 @@ module stdlib_linalg_blas_w
                                temp2 = temp2 + conjg(b(l,i))*a(l,j)
                            end do
                            if (i==j) then
-                               if (beta==real(czero,KIND=qp)) then
-                                   c(j,j) = real(alpha*temp1+conjg(alpha)*temp2,KIND=qp)
+                               if (beta==real(czero,KIND=${ck}$)) then
+                                   c(j,j) = real(alpha*temp1+conjg(alpha)*temp2,KIND=${ck}$)
                                else
-                                   c(j,j) = beta*real(c(j,j),KIND=qp) +real(alpha*temp1+conjg(&
-                                             alpha)*temp2,KIND=qp)
+                                   c(j,j) = beta*real(c(j,j),KIND=${ck}$) +real(alpha*temp1+conjg(&
+                                             alpha)*temp2,KIND=${ck}$)
                                end if
                            else
-                               if (beta==real(czero,KIND=qp)) then
+                               if (beta==real(czero,KIND=${ck}$)) then
                                    c(i,j) = alpha*temp1 + conjg(alpha)*temp2
                                else
                                    c(i,j) = beta*c(i,j) + alpha*temp1 +conjg(alpha)*temp2
@@ -1988,10 +1993,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wher2k
+     end subroutine stdlib_${ci}$her2k
 
 
-     pure subroutine stdlib_wherk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+     pure subroutine stdlib_${ci}$herk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
      !! ZHERK:  performs one of the hermitian rank k operations
      !! C := alpha*A*A**H + beta*C,
      !! or
@@ -2003,18 +2008,18 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           real(qp), intent(in) :: alpha, beta
+           real(${ck}$), intent(in) :: alpha, beta
            integer(ilp), intent(in) :: k, lda, ldc, n
            character, intent(in) :: trans, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*)
-           complex(qp), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
         ! =====================================================================
            ! Intrinsic Functions 
            intrinsic :: real,cmplx,conjg,max
            ! Local Scalars 
-           complex(qp) :: temp
-           real(qp) :: rtemp
+           complex(${ck}$) :: temp
+           real(${ck}$) :: rtemp
            integer(ilp) :: i, info, j, l, nrowa
            logical(lk) :: upper
            
@@ -2060,7 +2065,7 @@ module stdlib_linalg_blas_w
                            do i = 1,j - 1
                                c(i,j) = beta*c(i,j)
                            end do
-                           c(j,j) = beta*real(c(j,j),KIND=qp)
+                           c(j,j) = beta*real(c(j,j),KIND=${ck}$)
                        end do
                    end if
                else
@@ -2072,7 +2077,7 @@ module stdlib_linalg_blas_w
                        end do
                    else
                        do j = 1,n
-                           c(j,j) = beta*real(c(j,j),KIND=qp)
+                           c(j,j) = beta*real(c(j,j),KIND=${ck}$)
                            do i = j + 1,n
                                c(i,j) = beta*c(i,j)
                            end do
@@ -2094,17 +2099,17 @@ module stdlib_linalg_blas_w
                            do i = 1,j - 1
                                c(i,j) = beta*c(i,j)
                            end do
-                           c(j,j) = beta*real(c(j,j),KIND=qp)
+                           c(j,j) = beta*real(c(j,j),KIND=${ck}$)
                        else
-                           c(j,j) = real(c(j,j),KIND=qp)
+                           c(j,j) = real(c(j,j),KIND=${ck}$)
                        end if
                        do l = 1,k
-                           if (a(j,l)/=cmplx(zero,KIND=qp)) then
+                           if (a(j,l)/=cmplx(zero,KIND=${ck}$)) then
                                temp = alpha*conjg(a(j,l))
                                do i = 1,j - 1
                                    c(i,j) = c(i,j) + temp*a(i,l)
                                end do
-                               c(j,j) = real(c(j,j),KIND=qp) + real(temp*a(i,l),KIND=qp)
+                               c(j,j) = real(c(j,j),KIND=${ck}$) + real(temp*a(i,l),KIND=${ck}$)
                            end if
                        end do
                    end do
@@ -2115,17 +2120,17 @@ module stdlib_linalg_blas_w
                                c(i,j) = zero
                            end do
                        else if (beta/=one) then
-                           c(j,j) = beta*real(c(j,j),KIND=qp)
+                           c(j,j) = beta*real(c(j,j),KIND=${ck}$)
                            do i = j + 1,n
                                c(i,j) = beta*c(i,j)
                            end do
                        else
-                           c(j,j) = real(c(j,j),KIND=qp)
+                           c(j,j) = real(c(j,j),KIND=${ck}$)
                        end if
                        do l = 1,k
-                           if (a(j,l)/=cmplx(zero,KIND=qp)) then
+                           if (a(j,l)/=cmplx(zero,KIND=${ck}$)) then
                                temp = alpha*conjg(a(j,l))
-                               c(j,j) = real(c(j,j),KIND=qp) + real(temp*a(j,l),KIND=qp)
+                               c(j,j) = real(c(j,j),KIND=${ck}$) + real(temp*a(j,l),KIND=${ck}$)
                                do i = j + 1,n
                                    c(i,j) = c(i,j) + temp*a(i,l)
                                end do
@@ -2155,7 +2160,7 @@ module stdlib_linalg_blas_w
                        if (beta==zero) then
                            c(j,j) = alpha*rtemp
                        else
-                           c(j,j) = alpha*rtemp + beta*real(c(j,j),KIND=qp)
+                           c(j,j) = alpha*rtemp + beta*real(c(j,j),KIND=${ck}$)
                        end if
                    end do
                else
@@ -2167,7 +2172,7 @@ module stdlib_linalg_blas_w
                        if (beta==zero) then
                            c(j,j) = alpha*rtemp
                        else
-                           c(j,j) = alpha*rtemp + beta*real(c(j,j),KIND=qp)
+                           c(j,j) = alpha*rtemp + beta*real(c(j,j),KIND=${ck}$)
                        end if
                        do i = j + 1,n
                            temp = zero
@@ -2184,10 +2189,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wherk
+     end subroutine stdlib_${ci}$herk
 
 
-     pure subroutine stdlib_whpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
+     pure subroutine stdlib_${ci}$hpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
      !! ZHPMV:  performs the matrix-vector operation
      !! y := alpha*A*x + beta*y,
      !! where alpha and beta are scalars, x and y are n element vectors and
@@ -2196,17 +2201,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha, beta
+           complex(${ck}$), intent(in) :: alpha, beta
            integer(ilp), intent(in) :: incx, incy, n
            character, intent(in) :: uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: ap(*), x(*)
-           complex(qp), intent(inout) :: y(*)
+           complex(${ck}$), intent(in) :: ap(*), x(*)
+           complex(${ck}$), intent(inout) :: y(*)
         ! =====================================================================
            
            
            ! Local Scalars 
-           complex(qp) :: temp1, temp2
+           complex(${ck}$) :: temp1, temp2
            integer(ilp) :: i, info, ix, iy, j, jx, jy, k, kk, kx, ky
            ! Intrinsic Functions 
            intrinsic :: real,conjg
@@ -2281,7 +2286,7 @@ module stdlib_linalg_blas_w
                            temp2 = temp2 + conjg(ap(k))*x(i)
                            k = k + 1
                        end do
-                       y(j) = y(j) + temp1*real(ap(kk+j-1),KIND=qp) + alpha*temp2
+                       y(j) = y(j) + temp1*real(ap(kk+j-1),KIND=${ck}$) + alpha*temp2
                        kk = kk + j
                    end do
                else
@@ -2298,7 +2303,7 @@ module stdlib_linalg_blas_w
                            ix = ix + incx
                            iy = iy + incy
                        end do
-                       y(jy) = y(jy) + temp1*real(ap(kk+j-1),KIND=qp) + alpha*temp2
+                       y(jy) = y(jy) + temp1*real(ap(kk+j-1),KIND=${ck}$) + alpha*temp2
                        jx = jx + incx
                        jy = jy + incy
                        kk = kk + j
@@ -2310,7 +2315,7 @@ module stdlib_linalg_blas_w
                    do j = 1,n
                        temp1 = alpha*x(j)
                        temp2 = czero
-                       y(j) = y(j) + temp1*real(ap(kk),KIND=qp)
+                       y(j) = y(j) + temp1*real(ap(kk),KIND=${ck}$)
                        k = kk + 1
                        do i = j + 1,n
                            y(i) = y(i) + temp1*ap(k)
@@ -2326,7 +2331,7 @@ module stdlib_linalg_blas_w
                    do j = 1,n
                        temp1 = alpha*x(jx)
                        temp2 = czero
-                       y(jy) = y(jy) + temp1*real(ap(kk),KIND=qp)
+                       y(jy) = y(jy) + temp1*real(ap(kk),KIND=${ck}$)
                        ix = jx
                        iy = jy
                        do k = kk + 1,kk + n - j
@@ -2343,10 +2348,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_whpmv
+     end subroutine stdlib_${ci}$hpmv
 
 
-     pure subroutine stdlib_whpr(uplo,n,alpha,x,incx,ap)
+     pure subroutine stdlib_${ci}$hpr(uplo,n,alpha,x,incx,ap)
      !! ZHPR:    performs the hermitian rank 1 operation
      !! A := alpha*x*x**H + A,
      !! where alpha is a real scalar, x is an n element vector and A is an
@@ -2355,16 +2360,16 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           real(qp), intent(in) :: alpha
+           real(${ck}$), intent(in) :: alpha
            integer(ilp), intent(in) :: incx, n
            character, intent(in) :: uplo
            ! Array Arguments 
-           complex(qp), intent(inout) :: ap(*)
-           complex(qp), intent(in) :: x(*)
+           complex(${ck}$), intent(inout) :: ap(*)
+           complex(${ck}$), intent(in) :: x(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, j, jx, k, kk, kx
            ! Intrinsic Functions 
            intrinsic :: real,conjg
@@ -2382,7 +2387,7 @@ module stdlib_linalg_blas_w
                return
            end if
            ! quick return if possible.
-           if ((n==0) .or. (alpha==real(czero,KIND=qp))) return
+           if ((n==0) .or. (alpha==real(czero,KIND=${ck}$))) return
            ! set the start point in x if the increment is not unity.
            if (incx<=0) then
                kx = 1 - (n-1)*incx
@@ -2403,9 +2408,9 @@ module stdlib_linalg_blas_w
                                ap(k) = ap(k) + x(i)*temp
                                k = k + 1
                            end do
-                           ap(kk+j-1) = real(ap(kk+j-1),KIND=qp) + real(x(j)*temp,KIND=qp)
+                           ap(kk+j-1) = real(ap(kk+j-1),KIND=${ck}$) + real(x(j)*temp,KIND=${ck}$)
                        else
-                           ap(kk+j-1) = real(ap(kk+j-1),KIND=qp)
+                           ap(kk+j-1) = real(ap(kk+j-1),KIND=${ck}$)
                        end if
                        kk = kk + j
                    end do
@@ -2419,10 +2424,10 @@ module stdlib_linalg_blas_w
                                ap(k) = ap(k) + x(ix)*temp
                                ix = ix + incx
                            end do
-                           ap(kk+j-1) = real(ap(kk+j-1),KIND=qp) + real(x(jx)*temp,KIND=qp)
+                           ap(kk+j-1) = real(ap(kk+j-1),KIND=${ck}$) + real(x(jx)*temp,KIND=${ck}$)
                                      
                        else
-                           ap(kk+j-1) = real(ap(kk+j-1),KIND=qp)
+                           ap(kk+j-1) = real(ap(kk+j-1),KIND=${ck}$)
                        end if
                        jx = jx + incx
                        kk = kk + j
@@ -2434,14 +2439,14 @@ module stdlib_linalg_blas_w
                    do j = 1,n
                        if (x(j)/=czero) then
                            temp = alpha*conjg(x(j))
-                           ap(kk) = real(ap(kk),KIND=qp) + real(temp*x(j),KIND=qp)
+                           ap(kk) = real(ap(kk),KIND=${ck}$) + real(temp*x(j),KIND=${ck}$)
                            k = kk + 1
                            do i = j + 1,n
                                ap(k) = ap(k) + x(i)*temp
                                k = k + 1
                            end do
                        else
-                           ap(kk) = real(ap(kk),KIND=qp)
+                           ap(kk) = real(ap(kk),KIND=${ck}$)
                        end if
                        kk = kk + n - j + 1
                    end do
@@ -2450,14 +2455,14 @@ module stdlib_linalg_blas_w
                    do j = 1,n
                        if (x(jx)/=czero) then
                            temp = alpha*conjg(x(jx))
-                           ap(kk) = real(ap(kk),KIND=qp) + real(temp*x(jx),KIND=qp)
+                           ap(kk) = real(ap(kk),KIND=${ck}$) + real(temp*x(jx),KIND=${ck}$)
                            ix = jx
                            do k = kk + 1,kk + n - j
                                ix = ix + incx
                                ap(k) = ap(k) + x(ix)*temp
                            end do
                        else
-                           ap(kk) = real(ap(kk),KIND=qp)
+                           ap(kk) = real(ap(kk),KIND=${ck}$)
                        end if
                        jx = jx + incx
                        kk = kk + n - j + 1
@@ -2465,10 +2470,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_whpr
+     end subroutine stdlib_${ci}$hpr
 
 
-     pure subroutine stdlib_whpr2(uplo,n,alpha,x,incx,y,incy,ap)
+     pure subroutine stdlib_${ci}$hpr2(uplo,n,alpha,x,incx,y,incy,ap)
      !! ZHPR2:  performs the hermitian rank 2 operation
      !! A := alpha*x*y**H + conjg( alpha )*y*x**H + A,
      !! where alpha is a scalar, x and y are n element vectors and A is an
@@ -2477,16 +2482,16 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha
+           complex(${ck}$), intent(in) :: alpha
            integer(ilp), intent(in) :: incx, incy, n
            character, intent(in) :: uplo
            ! Array Arguments 
-           complex(qp), intent(inout) :: ap(*)
-           complex(qp), intent(in) :: x(*), y(*)
+           complex(${ck}$), intent(inout) :: ap(*)
+           complex(${ck}$), intent(in) :: x(*), y(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp1, temp2
+           complex(${ck}$) :: temp1, temp2
            integer(ilp) :: i, info, ix, iy, j, jx, jy, k, kk, kx, ky
            ! Intrinsic Functions 
            intrinsic :: real,conjg
@@ -2538,10 +2543,10 @@ module stdlib_linalg_blas_w
                                ap(k) = ap(k) + x(i)*temp1 + y(i)*temp2
                                k = k + 1
                            end do
-                           ap(kk+j-1) = real(ap(kk+j-1),KIND=qp) +real(x(j)*temp1+y(j)*temp2,&
-                                     KIND=qp)
+                           ap(kk+j-1) = real(ap(kk+j-1),KIND=${ck}$) +real(x(j)*temp1+y(j)*temp2,&
+                                     KIND=${ck}$)
                        else
-                           ap(kk+j-1) = real(ap(kk+j-1),KIND=qp)
+                           ap(kk+j-1) = real(ap(kk+j-1),KIND=${ck}$)
                        end if
                        kk = kk + j
                    end do
@@ -2557,10 +2562,10 @@ module stdlib_linalg_blas_w
                                ix = ix + incx
                                iy = iy + incy
                            end do
-                           ap(kk+j-1) = real(ap(kk+j-1),KIND=qp) +real(x(jx)*temp1+y(jy)*temp2,&
-                                     KIND=qp)
+                           ap(kk+j-1) = real(ap(kk+j-1),KIND=${ck}$) +real(x(jx)*temp1+y(jy)*temp2,&
+                                     KIND=${ck}$)
                        else
-                           ap(kk+j-1) = real(ap(kk+j-1),KIND=qp)
+                           ap(kk+j-1) = real(ap(kk+j-1),KIND=${ck}$)
                        end if
                        jx = jx + incx
                        jy = jy + incy
@@ -2574,7 +2579,7 @@ module stdlib_linalg_blas_w
                        if ((x(j)/=czero) .or. (y(j)/=czero)) then
                            temp1 = alpha*conjg(y(j))
                            temp2 = conjg(alpha*x(j))
-                           ap(kk) = real(ap(kk),KIND=qp) +real(x(j)*temp1+y(j)*temp2,KIND=qp)
+                           ap(kk) = real(ap(kk),KIND=${ck}$) +real(x(j)*temp1+y(j)*temp2,KIND=${ck}$)
                                      
                            k = kk + 1
                            do i = j + 1,n
@@ -2582,7 +2587,7 @@ module stdlib_linalg_blas_w
                                k = k + 1
                            end do
                        else
-                           ap(kk) = real(ap(kk),KIND=qp)
+                           ap(kk) = real(ap(kk),KIND=${ck}$)
                        end if
                        kk = kk + n - j + 1
                    end do
@@ -2591,7 +2596,7 @@ module stdlib_linalg_blas_w
                        if ((x(jx)/=czero) .or. (y(jy)/=czero)) then
                            temp1 = alpha*conjg(y(jy))
                            temp2 = conjg(alpha*x(jx))
-                           ap(kk) = real(ap(kk),KIND=qp) +real(x(jx)*temp1+y(jy)*temp2,KIND=qp)
+                           ap(kk) = real(ap(kk),KIND=${ck}$) +real(x(jx)*temp1+y(jy)*temp2,KIND=${ck}$)
                                      
                            ix = jx
                            iy = jy
@@ -2601,7 +2606,7 @@ module stdlib_linalg_blas_w
                                ap(k) = ap(k) + x(ix)*temp1 + y(iy)*temp2
                            end do
                        else
-                           ap(kk) = real(ap(kk),KIND=qp)
+                           ap(kk) = real(ap(kk),KIND=${ck}$)
                        end if
                        jx = jx + incx
                        jy = jy + incy
@@ -2610,10 +2615,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_whpr2
+     end subroutine stdlib_${ci}$hpr2
 
 
-     pure subroutine stdlib_wrotg( a, b, c, s )
+     pure subroutine stdlib_${ci}$rotg( a, b, c, s )
      !! The computation uses the formulas
      !! |x| = sqrt( Re(x)**2 + Im(x)**2 )
      !! sgn(x) = x / |x|  if x /= 0
@@ -2631,22 +2636,22 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
         ! Constants 
-        integer, parameter :: wp = kind(1._qp)
+        integer, parameter :: wp = kind(1._${ck}$)
         ! Scaling Constants 
         ! Scalar Arguments 
-        real(qp), intent(out) :: c
-        complex(qp), intent(inout) :: a
-        complex(qp), intent(in) :: b
-        complex(qp), intent(out) :: s
+        real(${ck}$), intent(out) :: c
+        complex(${ck}$), intent(inout) :: a
+        complex(${ck}$), intent(in) :: b
+        complex(${ck}$), intent(out) :: s
         ! Local Scalars 
-        real(qp) :: d, f1, f2, g1, g2, h2, p, u, uu, v, vv, w
-        complex(qp) :: f, fs, g, gs, r, t
+        real(${ck}$) :: d, f1, f2, g1, g2, h2, p, u, uu, v, vv, w
+        complex(${ck}$) :: f, fs, g, gs, r, t
         ! Intrinsic Functions 
         intrinsic :: abs,aimag,conjg,max,min,real,sqrt
         ! Statement Functions 
-        real(qp) :: abssq
+        real(${ck}$) :: abssq
         ! Statement Function Definitions 
-        abssq( t ) = real( t,KIND=qp)**2 + aimag( t )**2
+        abssq( t ) = real( t,KIND=${ck}$)**2 + aimag( t )**2
         ! Executable Statements 
         f = a
         g = b
@@ -2656,7 +2661,7 @@ module stdlib_linalg_blas_w
            r = f
         else if( f == czero ) then
            c = zero
-           g1 = max( abs(real(g,KIND=qp)), abs(aimag(g)) )
+           g1 = max( abs(real(g,KIND=${ck}$)), abs(aimag(g)) )
            if( g1 > rtmin .and. g1 < rtmax ) then
               ! use unscaled algorithm
               g2 = abssq( g )
@@ -2674,8 +2679,8 @@ module stdlib_linalg_blas_w
               r = d*u
            end if
         else
-           f1 = max( abs(real(f,KIND=qp)), abs(aimag(f)) )
-           g1 = max( abs(real(g,KIND=qp)), abs(aimag(g)) )
+           f1 = max( abs(real(f,KIND=${ck}$)), abs(aimag(f)) )
+           g1 = max( abs(real(g,KIND=${ck}$)), abs(aimag(g)) )
      if( f1 > rtmin .and. f1 < rtmax .and.          g1 > rtmin .and. g1 < rtmax ) then
               ! use unscaled algorithm
               f2 = abssq( f )
@@ -2725,19 +2730,19 @@ module stdlib_linalg_blas_w
         end if
         a = r
         return
-     end subroutine stdlib_wrotg
+     end subroutine stdlib_${ci}$rotg
 
 
-     pure subroutine stdlib_wscal(n,za,zx,incx)
+     pure subroutine stdlib_${ci}$scal(n,za,zx,incx)
      !! ZSCAL: scales a vector by a constant.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: za
+           complex(${ck}$), intent(in) :: za
            integer(ilp), intent(in) :: incx, n
            ! Array Arguments 
-           complex(qp), intent(inout) :: zx(*)
+           complex(${ck}$), intent(inout) :: zx(*)
         ! =====================================================================
            ! Local Scalars 
            integer(ilp) :: i, nincx
@@ -2755,10 +2760,10 @@ module stdlib_linalg_blas_w
               end do
            end if
            return
-     end subroutine stdlib_wscal
+     end subroutine stdlib_${ci}$scal
 
 
-     pure subroutine stdlib_wswap(n,zx,incx,zy,incy)
+     pure subroutine stdlib_${ci}$swap(n,zx,incx,zy,incy)
      !! ZSWAP: interchanges two vectors.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
@@ -2766,10 +2771,10 @@ module stdlib_linalg_blas_w
            ! Scalar Arguments 
            integer(ilp), intent(in) :: incx, incy, n
            ! Array Arguments 
-           complex(qp), intent(inout) :: zx(*), zy(*)
+           complex(${ck}$), intent(inout) :: zx(*), zy(*)
         ! =====================================================================
            ! Local Scalars 
-           complex(qp) :: ztemp
+           complex(${ck}$) :: ztemp
            integer(ilp) :: i, ix, iy
            if (n<=0) return
            if (incx==1 .and. incy==1) then
@@ -2795,10 +2800,10 @@ module stdlib_linalg_blas_w
               end do
            end if
            return
-     end subroutine stdlib_wswap
+     end subroutine stdlib_${ci}$swap
 
 
-     pure subroutine stdlib_wsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+     pure subroutine stdlib_${ci}$symm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
      !! ZSYMM:  performs one of the matrix-matrix operations
      !! C := alpha*A*B + beta*C,
      !! or
@@ -2809,17 +2814,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha, beta
+           complex(${ck}$), intent(in) :: alpha, beta
            integer(ilp), intent(in) :: lda, ldb, ldc, m, n
            character, intent(in) :: side, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*), b(ldb,*)
-           complex(qp), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(in) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
         ! =====================================================================
            ! Intrinsic Functions 
            intrinsic :: max
            ! Local Scalars 
-           complex(qp) :: temp1, temp2
+           complex(${ck}$) :: temp1, temp2
            integer(ilp) :: i, info, j, k, nrowa
            logical(lk) :: upper
            
@@ -2943,10 +2948,10 @@ module stdlib_linalg_blas_w
                end do loop_170
            end if
            return
-     end subroutine stdlib_wsymm
+     end subroutine stdlib_${ci}$symm
 
 
-     pure subroutine stdlib_wsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+     pure subroutine stdlib_${ci}$syr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
      !! ZSYR2K:  performs one of the symmetric rank 2k operations
      !! C := alpha*A*B**T + alpha*B*A**T + beta*C,
      !! or
@@ -2958,17 +2963,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha, beta
+           complex(${ck}$), intent(in) :: alpha, beta
            integer(ilp), intent(in) :: k, lda, ldb, ldc, n
            character, intent(in) :: trans, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*), b(ldb,*)
-           complex(qp), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(in) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
         ! =====================================================================
            ! Intrinsic Functions 
            intrinsic :: max
            ! Local Scalars 
-           complex(qp) :: temp1, temp2
+           complex(${ck}$) :: temp1, temp2
            integer(ilp) :: i, info, j, l, nrowa
            logical(lk) :: upper
            
@@ -3119,10 +3124,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wsyr2k
+     end subroutine stdlib_${ci}$syr2k
 
 
-     pure subroutine stdlib_wsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+     pure subroutine stdlib_${ci}$syrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
      !! ZSYRK:  performs one of the symmetric rank k operations
      !! C := alpha*A*A**T + beta*C,
      !! or
@@ -3134,17 +3139,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha, beta
+           complex(${ck}$), intent(in) :: alpha, beta
            integer(ilp), intent(in) :: k, lda, ldc, n
            character, intent(in) :: trans, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*)
-           complex(qp), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
         ! =====================================================================
            ! Intrinsic Functions 
            intrinsic :: max
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, j, l, nrowa
            logical(lk) :: upper
            
@@ -3287,10 +3292,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wsyrk
+     end subroutine stdlib_${ci}$syrk
 
 
-     pure subroutine stdlib_wtbmv(uplo,trans,diag,n,k,a,lda,x,incx)
+     pure subroutine stdlib_${ci}$tbmv(uplo,trans,diag,n,k,a,lda,x,incx)
      !! ZTBMV:  performs one of the matrix-vector operations
      !! x := A*x,   or   x := A**T*x,   or   x := A**H*x,
      !! where x is an n element vector and  A is an n by n unit, or non-unit,
@@ -3302,12 +3307,12 @@ module stdlib_linalg_blas_w
            integer(ilp), intent(in) :: incx, k, lda, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*)
-           complex(qp), intent(inout) :: x(*)
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: x(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, j, jx, kplus1, kx, l
            logical(lk) :: noconj, nounit
            ! Intrinsic Functions 
@@ -3501,10 +3506,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wtbmv
+     end subroutine stdlib_${ci}$tbmv
 
 
-     pure subroutine stdlib_wtbsv(uplo,trans,diag,n,k,a,lda,x,incx)
+     pure subroutine stdlib_${ci}$tbsv(uplo,trans,diag,n,k,a,lda,x,incx)
      !! ZTBSV:  solves one of the systems of equations
      !! A*x = b,   or   A**T*x = b,   or   A**H*x = b,
      !! where b and x are n element vectors and A is an n by n unit, or
@@ -3519,12 +3524,12 @@ module stdlib_linalg_blas_w
            integer(ilp), intent(in) :: incx, k, lda, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*)
-           complex(qp), intent(inout) :: x(*)
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: x(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, j, jx, kplus1, kx, l
            logical(lk) :: noconj, nounit
            ! Intrinsic Functions 
@@ -3718,10 +3723,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wtbsv
+     end subroutine stdlib_${ci}$tbsv
 
 
-     pure subroutine stdlib_wtpmv(uplo,trans,diag,n,ap,x,incx)
+     pure subroutine stdlib_${ci}$tpmv(uplo,trans,diag,n,ap,x,incx)
      !! ZTPMV:  performs one of the matrix-vector operations
      !! x := A*x,   or   x := A**T*x,   or   x := A**H*x,
      !! where x is an n element vector and  A is an n by n unit, or non-unit,
@@ -3733,12 +3738,12 @@ module stdlib_linalg_blas_w
            integer(ilp), intent(in) :: incx, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: ap(*)
-           complex(qp), intent(inout) :: x(*)
+           complex(${ck}$), intent(in) :: ap(*)
+           complex(${ck}$), intent(inout) :: x(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, j, jx, k, kk, kx
            logical(lk) :: noconj, nounit
            ! Intrinsic Functions 
@@ -3935,10 +3940,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wtpmv
+     end subroutine stdlib_${ci}$tpmv
 
 
-     pure subroutine stdlib_wtpsv(uplo,trans,diag,n,ap,x,incx)
+     pure subroutine stdlib_${ci}$tpsv(uplo,trans,diag,n,ap,x,incx)
      !! ZTPSV:  solves one of the systems of equations
      !! A*x = b,   or   A**T*x = b,   or   A**H*x = b,
      !! where b and x are n element vectors and A is an n by n unit, or
@@ -3952,12 +3957,12 @@ module stdlib_linalg_blas_w
            integer(ilp), intent(in) :: incx, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: ap(*)
-           complex(qp), intent(inout) :: x(*)
+           complex(${ck}$), intent(in) :: ap(*)
+           complex(${ck}$), intent(inout) :: x(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, j, jx, k, kk, kx
            logical(lk) :: noconj, nounit
            ! Intrinsic Functions 
@@ -4154,10 +4159,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wtpsv
+     end subroutine stdlib_${ci}$tpsv
 
 
-     pure subroutine stdlib_wtrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+     pure subroutine stdlib_${ci}$trmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
      !! ZTRMM:  performs one of the matrix-matrix operations
      !! B := alpha*op( A )*B,   or   B := alpha*B*op( A )
      !! where  alpha  is a scalar,  B  is an m by n matrix,  A  is a unit, or
@@ -4167,17 +4172,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha
+           complex(${ck}$), intent(in) :: alpha
            integer(ilp), intent(in) :: lda, ldb, m, n
            character, intent(in) :: diag, side, transa, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*)
-           complex(qp), intent(inout) :: b(ldb,*)
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: b(ldb,*)
         ! =====================================================================
            ! Intrinsic Functions 
            intrinsic :: conjg,max
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, j, k, nrowa
            logical(lk) :: lside, noconj, nounit, upper
            
@@ -4396,10 +4401,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wtrmm
+     end subroutine stdlib_${ci}$trmm
 
 
-     pure subroutine stdlib_wtrmv(uplo,trans,diag,n,a,lda,x,incx)
+     pure subroutine stdlib_${ci}$trmv(uplo,trans,diag,n,a,lda,x,incx)
      !! ZTRMV:  performs one of the matrix-vector operations
      !! x := A*x,   or   x := A**T*x,   or   x := A**H*x,
      !! where x is an n element vector and  A is an n by n unit, or non-unit,
@@ -4411,12 +4416,12 @@ module stdlib_linalg_blas_w
            integer(ilp), intent(in) :: incx, lda, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*)
-           complex(qp), intent(inout) :: x(*)
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: x(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, j, jx, kx
            logical(lk) :: noconj, nounit
            ! Intrinsic Functions 
@@ -4593,10 +4598,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wtrmv
+     end subroutine stdlib_${ci}$trmv
 
 
-     pure subroutine stdlib_wtrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+     pure subroutine stdlib_${ci}$trsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
      !! ZTRSM:  solves one of the matrix equations
      !! op( A )*X = alpha*B,   or   X*op( A ) = alpha*B,
      !! where alpha is a scalar, X and B are m by n matrices, A is a unit, or
@@ -4607,17 +4612,17 @@ module stdlib_linalg_blas_w
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           complex(qp), intent(in) :: alpha
+           complex(${ck}$), intent(in) :: alpha
            integer(ilp), intent(in) :: lda, ldb, m, n
            character, intent(in) :: diag, side, transa, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*)
-           complex(qp), intent(inout) :: b(ldb,*)
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: b(ldb,*)
         ! =====================================================================
            ! Intrinsic Functions 
            intrinsic :: conjg,max
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, j, k, nrowa
            logical(lk) :: lside, noconj, nounit, upper
            
@@ -4858,10 +4863,10 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wtrsm
+     end subroutine stdlib_${ci}$trsm
 
 
-     pure subroutine stdlib_wtrsv(uplo,trans,diag,n,a,lda,x,incx)
+     pure subroutine stdlib_${ci}$trsv(uplo,trans,diag,n,a,lda,x,incx)
      !! ZTRSV:  solves one of the systems of equations
      !! A*x = b,   or   A**T*x = b,   or   A**H*x = b,
      !! where b and x are n element vectors and A is an n by n unit, or
@@ -4875,12 +4880,12 @@ module stdlib_linalg_blas_w
            integer(ilp), intent(in) :: incx, lda, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
-           complex(qp), intent(in) :: a(lda,*)
-           complex(qp), intent(inout) :: x(*)
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: x(*)
         ! =====================================================================
            
            ! Local Scalars 
-           complex(qp) :: temp
+           complex(${ck}$) :: temp
            integer(ilp) :: i, info, ix, j, jx, kx
            logical(lk) :: noconj, nounit
            ! Intrinsic Functions 
@@ -5057,9 +5062,11 @@ module stdlib_linalg_blas_w
                end if
            end if
            return
-     end subroutine stdlib_wtrsv
+     end subroutine stdlib_${ci}$trsv
 
 
 
-end module stdlib_linalg_blas_w
+end module stdlib_linalg_blas_${ci}$
+
 #:endif
+#:endfor
