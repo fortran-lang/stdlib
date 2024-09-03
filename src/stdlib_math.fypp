@@ -545,10 +545,10 @@ contains
         temp = lhs; lhs = rhs; rhs = temp
     end subroutine
 
-    elemental subroutine swap_str(lhs, rhs)
-        character(1), intent(inout) :: lhs, rhs
-        character(1) :: temp
-        temp = lhs; lhs = rhs; rhs = temp
+    elemental subroutine swap_str(lhs,rhs)
+        character(*), intent(inout) :: lhs, rhs
+        character(len=max(len(lhs),len(rhs))) :: temp
+        temp = lhs ; lhs = rhs ; rhs = temp
     end subroutine
     
 end module stdlib_math
