@@ -61,6 +61,38 @@ Here inputs are of type `real` and kind `sp`
 {!example/math/example_clip_real.f90!}
 ```
 
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `swap` function
+
+#### Description
+
+Swaps the values in `lhs` and `rhs`.
+
+#### Syntax
+
+`call` [[stdlib_math(module):swap(interface)]] ` (lhs, rhs)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental function.
+
+#### Argument(s)
+
+`lhs`: scalar or array of any of the intrinsic types `integer`, `real`, `complex`, `logical`, `character` type. This argument is `intent(inout)`.
+`rhs`: scalar or array of any of the intrinsic types `integer`, `real`, `complex`, `logical`, `character` type. This argument is `intent(inout)`.
+
+Note: All arguments must have same `type` and same `kind`.
+
+#### Example
+
+```fortran
+{!example/math/example_math_swap.f90!}
+```
+
 ### `gcd` function
 
 #### Description
