@@ -269,6 +269,12 @@ contains
         if (allocated(error)) return
         call check(error, all( y == [${t1}$ :: 1, 2, 3] ) )
         if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+
+        call check(error, all( x == [${t1}$ :: 4, 5, 6] ) )
+        if (allocated(error)) return
     end subroutine test_swap_${k1}$
     #:endfor
 
@@ -286,6 +292,12 @@ contains
         if (allocated(error)) return
         call check(error, all( y == cmplx( [1, 2, 3] , [4, 5, 6] ) ) )
         if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, all( x == cmplx( [4, 5, 6] , [1, 2, 3] ) ) )
+        if (allocated(error)) return
     end subroutine test_swap_c${k1}$
     #:endfor
 
@@ -301,6 +313,12 @@ contains
         call check(error, all( x == ['fghij','abcde'] ) )
         if (allocated(error)) return
         call check(error, all( y == ['abcde','fghij']  ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, all( x == ['fghij','abcde'] ) )
         if (allocated(error)) return
     end subroutine test_swap_str
 
