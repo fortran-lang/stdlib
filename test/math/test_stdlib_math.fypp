@@ -46,6 +46,7 @@ contains
             , new_unittest("swap_c${k1}$", test_swap_c${k1}$) &
             #:endfor
             , new_unittest("swap_str", test_swap_str) &
+            , new_unittest("swap_stt", test_swap_stt) &
 
             !> Tests for arg/argd/argpi
             #:for k1 in CMPLX_KINDS
@@ -321,6 +322,28 @@ contains
         call check(error, all( x == ['fghij','abcde'] ) )
         if (allocated(error)) return
     end subroutine test_swap_str
+
+    subroutine test_swap_stt(error)
+        use stdlib_string_type
+        type(error_type), allocatable, intent(out) :: error
+        type(string_type) :: x(2), y(2)
+        
+        x = ['abcde','fghij'] 
+        y = ['fghij','abcde']
+
+        call swap(x,y)
+        
+        call check(error, all( x == ['fghij','abcde'] ) )
+        if (allocated(error)) return
+        call check(error, all( y == ['abcde','fghij']  ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, all( x == ['fghij','abcde'] ) )
+        if (allocated(error)) return
+    end subroutine test_swap_stt
 
     #:for k1 in CMPLX_KINDS
     subroutine test_arg_${k1}$(error)

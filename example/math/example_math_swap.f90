@@ -30,4 +30,12 @@ program example_math_swap
         call swap(x,y)
     end block
 
+    block
+        use stdlib_string_type
+        type(string_type) :: x, y
+        x = 'abcde'
+        y = 'fghij'
+        call swap(x,y)
+    end block
+
 end program example_math_swap  

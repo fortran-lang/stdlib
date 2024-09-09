@@ -51,6 +51,7 @@ module stdlib_math
       #:endfor
       module procedure :: swap_bool
       module procedure :: swap_str
+      module procedure :: swap_stt
     end interface
 
     !> Returns the greatest common divisor of two integers
@@ -548,6 +549,13 @@ contains
     elemental subroutine swap_str(lhs,rhs)
         character(*), intent(inout) :: lhs, rhs
         character(len=max(len(lhs),len(rhs))) :: temp
+        temp = lhs ; lhs = rhs ; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_stt(lhs,rhs)
+        use stdlib_string_type
+        type(string_type), intent(inout) :: lhs, rhs
+        type(string_type) :: temp
         temp = lhs ; lhs = rhs ; rhs = temp
     end subroutine
     
