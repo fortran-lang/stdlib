@@ -42,6 +42,10 @@ module stdlib_math
     #:endfor
     end interface clip
 
+    !> Swap the values of the lhs and rhs arguments
+    !> ([Specification](../page/specs/stdlib_math.html#swap))
+    !>
+    !> Version: experimental
     interface swap
       #:for k1, t1 in INT_KINDS_TYPES + REAL_KINDS_TYPES
       module procedure :: swap_${k1}$
