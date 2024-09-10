@@ -62,7 +62,7 @@ Here inputs are of type `real` and kind `sp`
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `swap` function
+### `swap` subroutine
 
 #### Description
 
