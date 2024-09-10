@@ -78,7 +78,7 @@ Experimental
 
 #### Class
 
-Elemental function.
+Elemental subroutine.
 
 #### Argument(s)
 
