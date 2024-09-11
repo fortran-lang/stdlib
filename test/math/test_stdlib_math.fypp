@@ -345,6 +345,52 @@ contains
         if (allocated(error)) return
     end subroutine test_swap_stt
 
+    subroutine test_swap_bitset_64(error)
+        use stdlib_bitsets
+        type(error_type), allocatable, intent(out) :: error
+        type(bitset_64) :: x, y, u, v
+        
+        x = [.true.,.false.,.true.,.false.] 
+        u = x
+        y = [.false.,.true.,.false.,.true.]
+        v = y
+        call swap(x,y)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+        call check(error, y == u  )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+    end subroutine test_swap_bitset_64
+
+    subroutine test_swap_bitset_large(error)
+        use stdlib_bitsets
+        type(error_type), allocatable, intent(out) :: error
+        type(bitset_large) :: x, y, u, v
+        
+        x = [.true.,.false.,.true.,.false.] 
+        u = x
+        y = [.false.,.true.,.false.,.true.]
+        v = y
+        call swap(x,y)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+        call check(error, y == u )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+    end subroutine test_swap_bitset_large
+
     #:for k1 in CMPLX_KINDS
     subroutine test_arg_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error

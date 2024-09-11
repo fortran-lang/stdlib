@@ -82,8 +82,8 @@ Elemental subroutine.
 
 #### Argument(s)
 
-`lhs`: scalar or array of any of the intrinsic types `integer`, `real`, `complex`, `logical`, `character`, `string_type` type. This argument is `intent(inout)`.
-`rhs`: scalar or array of any of the intrinsic types `integer`, `real`, `complex`, `logical`, `character`, `string_type` type. This argument is `intent(inout)`.
+`lhs`: scalar or array of any of the intrinsic types `integer`, `real`, `complex`, `logical`, `character`, `string_type`, `bitset` type. This argument is `intent(inout)`.
+`rhs`: scalar or array of any of the intrinsic types `integer`, `real`, `complex`, `logical`, `character`, `string_type`, `bitset` type. This argument is `intent(inout)`.
 
 Note: All arguments must have same `type` and same `kind`.
 
