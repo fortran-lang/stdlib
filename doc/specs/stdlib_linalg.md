@@ -1382,3 +1382,111 @@ If `err` is not present, exceptions trigger an `error stop`.
 {!example/linalg/example_inverse_function.f90!}
 ```
 
+## `norm` - Computes the vector norm of a generic-rank array.
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes one of several vector norms of `real` or `complex` array \( A \), depending on 
+the value of the `order` input argument. \( A \) may be an array of any rank. 
+
+Result `x` returns a `real`, scalar norm value for the whole array; if `dim` is specified, `x` is a rank-1 
+array with the same shape as \(A \) and dimension `dim` collapsed, containing all norms evaluated along `dim`.
+
+### Syntax
+
+`x = ` [[stdlib_linalg(module):norm(interface)]] `(a, order, [, dim, err])`
+
+### Arguments
+
+`a`: Shall be a rank-n `real` or `complex` array containing the data. It is an `intent(in)` argument.
+
+`order`: Shall be an `integer` value or a `character` flag that specifies the norm type, as follows. It is an `intent(in)` argument. 
+
+| Integer input    | Character Input  | Norm type                                               |
+|------------------|------------------|---------------------------------------------------------|
+| `-huge(0)`       | `'-inf', '-Inf'` | Minimum absolute value \( \min_i{ \left|a_i\right| } \) |
+| `1`              | `'1'`            | 1-norm \( \sum_i{ \left|a_i\right| } \)                 |
+| `2`              | `'2'`            | Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \)             |
+| `>=3`            | `'3','4',...`    | p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \) |
+| `huge(0)`        | `'inf', 'Inf'`   | Maximum absolute value \( \max_i{ \left|a_i\right| } \) |
+
+`dim` (optional): Shall be a scalar `integer` value with a value in the range from `1` to `n`, where `n` is the rank of the array. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument. If `err` is not present, the function is `pure`. 
+
+### Return value
+
+By default, the return value `x` is a scalar, and contains the norm as evaluated over all elements of the generic-rank array \( A \). 
+If the optional `dim` argument is present, `x` is a rank `n-1` array with the same shape as \( A \) except 
+for dimension `dim`, that is collapsed. Each element of `x` contains the 1D norm of the elements of \( A \), 
+evaluated along dimension `dim` only.
+
+Raises `LINALG_ERROR` if the requested norm type is invalid.
+Raises `LINALG_VALUE_ERROR` if any of the arguments has an invalid size.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_norm.f90!}
+```
+
+## `get_norm` - Computes the vector norm of a generic-rank array.
+
+### Status
+
+Experimental
+
+### Description
+
+This `pure subroutine` interface computes one of several vector norms of `real` or `complex` array \( A \), depending on 
+the value of the `order` input argument. \( A \) may be an array of any rank. 
+
+Result `nrm` returns a `real`, scalar norm value for the whole array; if `dim` is specified, `nrm` is a rank-1 
+array with the same shape as \(A \) and dimension `dim` collapsed, containing all norms evaluated along `dim`.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):get_norm(interface)]] `(a, nrm, order, [, dim, err])`
+
+### Arguments
+
+`a`: Shall be a rank-n `real` or `complex` array containing the data. It is an `intent(in)` argument.
+
+`nrm`: if `dim` is absent, shall be a scalar with the norm evaluated over all the elements of the array. Otherwise, an array of rank `n-1`, and a shape similar
+to that of `a` with dimension `dim` dropped.
+
+`order`: Shall be an `integer` value or a `character` flag that specifies the norm type, as follows. It is an `intent(in)` argument. 
+
+| Integer input    | Character Input  | Norm type                                               |
+|------------------|------------------|---------------------------------------------------------|
+| `-huge(0)`       | `'-inf', '-Inf'` | Minimum absolute value \( \min_i{ \left|a_i\right| } \) |
+| `1`              | `'1'`            | 1-norm \( \sum_i{ \left|a_i\right| } \)                 |
+| `2`              | `'2'`            | Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \)             |
+| `>=3`            | `'3','4',...`    | p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \) |
+| `huge(0)`        | `'inf', 'Inf'`   | Maximum absolute value \( \max_i{ \left|a_i\right| } \) |
+
+`dim` (optional): Shall be a scalar `integer` value with a value in the range from `1` to `n`, where `n` is the rank of the array. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument. If `err` is not present, the function is `pure`. 
+
+### Return value
+
+By default, the return value `nrm` is a scalar, and contains the norm as evaluated over all elements of the generic-rank array \( A \). 
+If the optional `dim` argument is present, `nrm` is a rank `n-1` array with the same shape as \( A \) except 
+for dimension `dim`, that is collapsed. Each element of `nrm` contains the 1D norm of the elements of \( A \), 
+evaluated along dimension `dim` only.
+
+Raises `LINALG_ERROR` if the requested norm type is invalid.
+Raises `LINALG_VALUE_ERROR` if any of the arguments has an invalid size.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_get_norm.f90!}
+```
