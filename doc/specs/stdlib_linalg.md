@@ -185,7 +185,7 @@ to the original.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -231,7 +231,7 @@ Returns a diagonal array or a vector with the extracted diagonal elements.
 
 ### Status
 
-Experimental
+Stable
 
 ### Class
 
@@ -282,7 +282,7 @@ A = eye(2,2)/2.0   !! A == diag([0.5, 0.5])
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -605,7 +605,7 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -655,7 +655,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -708,7 +708,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -752,7 +752,7 @@ Exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -806,7 +806,7 @@ Exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -832,7 +832,7 @@ This subroutine computes the internal working space requirements for the least-s
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -872,7 +872,7 @@ Exceptions are returned to the `err` argument if provided; an `error stop` is tr
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -906,7 +906,7 @@ Exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -951,7 +951,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1000,7 +1000,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1039,7 +1039,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1080,7 +1080,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1134,7 +1134,7 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1266,7 +1266,7 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1301,7 +1301,7 @@ interfaces.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1350,7 +1350,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
