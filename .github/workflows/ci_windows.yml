@@ -59,7 +59,7 @@ jobs:
     - name: CTest
       run: PATH=$PATH:/mingw64/bin/ ctest --test-dir build --output-on-failure --parallel -V -LE quadruple_precision
 
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: WindowsCMakeTestlog
