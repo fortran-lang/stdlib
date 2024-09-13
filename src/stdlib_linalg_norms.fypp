@@ -102,7 +102,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
     #:for rank in range(1, MAXRANK + 1)
 
     ! Pure function interface, with order specification. On error, the code will stop
-    pure function stdlib_linalg_norm_${rank}$D_order_${ii}$_${ri}$(a, order) result(nrm)
+    pure module function stdlib_linalg_norm_${rank}$D_order_${ii}$_${ri}$(a, order) result(nrm)
         !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
         ${rt}$, intent(in) :: a${ranksuffix(rank)}$
         !> Order of the matrix norm being computed.
@@ -115,7 +115,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
     end function stdlib_linalg_norm_${rank}$D_order_${ii}$_${ri}$
     
     ! Function interface with output error
-    function stdlib_linalg_norm_${rank}$D_order_err_${ii}$_${ri}$(a, order, err) result(nrm)
+    module function stdlib_linalg_norm_${rank}$D_order_err_${ii}$_${ri}$(a, order, err) result(nrm)
         !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
         ${rt}$, intent(in) :: a${ranksuffix(rank)}$
         !> Order of the matrix norm being computed.
@@ -130,7 +130,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
     end function stdlib_linalg_norm_${rank}$D_order_err_${ii}$_${ri}$
     
     ! Internal implementation
-    pure subroutine norm_${rank}$D_${ii}$_${ri}$(a, nrm, order, err)
+    pure module subroutine norm_${rank}$D_${ii}$_${ri}$(a, nrm, order, err)
         !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
         ${rt}$, intent(in) :: a${ranksuffix(rank)}$
         !> Norm of the matrix.
@@ -196,7 +196,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
     #:for rank in range(2, MAXRANK + 1)
     
     ! Pure function interface with DIM specifier. On error, the code will stop
-    pure function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$(a, order, dim) result(nrm)
+    pure module function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$(a, order, dim) result(nrm)
         !> Input matrix a[..]
         ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
         !> Order of the matrix norm being computed.
@@ -211,7 +211,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
     end function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$
 
     ! Function interface with DIM specifier and output error state.
-    function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_err_${ii}$_${ri}$(a, order, dim, err) result(nrm)
+    module function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_err_${ii}$_${ri}$(a, order, dim, err) result(nrm)
         !> Input matrix a[..]
         ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
         !> Order of the matrix norm being computed.
@@ -228,7 +228,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
     end function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_err_${ii}$_${ri}$
     
     ! Internal implementation 
-    pure subroutine norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$(a, nrm, order, dim, err)
+    pure module subroutine norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$(a, nrm, order, dim, err)
         !> Input matrix a[..]
         ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
         !> Dimension to collapse by computing the norm w.r.t other dimensions
