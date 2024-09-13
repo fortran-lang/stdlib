@@ -6,17 +6,14 @@
 #:set INPUT_SHORT   = ["char","int"]
 #:set INPUT_OPTIONS = list(zip(INPUT_TYPE,INPUT_SHORT))
 ! Vector norms
-module stdlib_linalg_norms
+submodule(stdlib_linalg) stdlib_linalg_norms
      use stdlib_linalg_constants
      use stdlib_linalg_blas, only: nrm2
      use stdlib_linalg_lapack, only: lange
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
      implicit none(type,external)
-     private
      
-     public :: norm, get_norm
-
      character(*), parameter :: this = 'norm'
      
      !> List of internal norm flags
@@ -26,40 +23,6 @@ module stdlib_linalg_norms
      integer(ilp), parameter :: NORM_INF       = +huge(0_ilp) ! infinity norm 
      integer(ilp), parameter :: NORM_POW_LAST  = NORM_INF - 1_ilp
      integer(ilp), parameter :: NORM_MINUSINF  = -huge(0_ilp)
-     
-     !> Vector norm: function interface
-     interface norm
-        #:for rk,rt,ri in ALL_KINDS_TYPES
-        #:for it,ii in INPUT_OPTIONS
-        !> Scalar norms: ${rt}$
-        #:for rank in range(1, MAXRANK + 1)        
-        module procedure stdlib_linalg_norm_${rank}$D_order_${ii}$_${ri}$         
-        module procedure stdlib_linalg_norm_${rank}$D_order_err_${ii}$_${ri}$         
-        #:endfor
-        !> Array norms: ${rt}$
-        #:for rank in range(2, MAXRANK + 1)
-        module procedure stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$
-        module procedure stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_err_${ii}$_${ri}$
-        #:endfor
-        #:endfor        
-        #:endfor
-     end interface norm
-     
-     !> Vector norm: subroutine interface
-     interface get_norm
-        #:for rk,rt,ri in ALL_KINDS_TYPES
-        #:for it,ii in INPUT_OPTIONS
-            !> Scalar norms: ${rt}$
-            #:for rank in range(1, MAXRANK + 1)                    
-            module procedure norm_${rank}$D_${ii}$_${ri}$
-            #:endfor
-            !> Array norms: ${rt}$
-            #:for rank in range(2, MAXRANK + 1)
-            module procedure norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$
-            #:endfor
-        #:endfor
-        #:endfor
-     end interface get_norm
      
      interface parse_norm_type
         module procedure parse_norm_type_integer
@@ -335,4 +298,4 @@ module stdlib_linalg_norms
     #:endfor
     #:endfor
 
-end module stdlib_linalg_norms
+end submodule stdlib_linalg_norms
