@@ -1,4 +1,7 @@
 #:include "common.fypp"
+#:set ALL_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+
+#! Allow for integer or character norm input: i.e., norm(a,2) or norm(a, '2')
 #:set INPUT_TYPE    = ["character(len=*)","integer(ilp)"]
 #:set INPUT_SHORT   = ["char","int"]
 #:set INPUT_OPTIONS = list(zip(INPUT_TYPE,INPUT_SHORT))
