@@ -1074,6 +1074,49 @@ module stdlib_linalg
   #:set NORM_INPUT_OPTIONS = list(zip(NORM_INPUT_TYPE,NORM_INPUT_SHORT))
   ! Vector norms: function interface
   interface norm
+     !! version: experimental 
+     !!
+     !! Computes the vector norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#norm-computes-the-vector-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Return one of several scalar norm metrics of a `real` or `complex` input array \( A \), 
+     !! that can have any rank. For generic rank-n arrays, the scalar norm over the whole 
+     !! array is returned by default. If `n>=2` and the optional input dimension `dim` is specified, 
+     !! a rank `n-1` array is returned with dimension `dim` collapsed, containing all 1D array norms 
+     !! evaluated along dimension `dim` only.
+     !! 
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the vector norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays may have generic rank from 1 to ${MAXRANK}$.
+     !!
+     !! Norm type input is mandatory, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm \( \sum_i{ \left|a_i\right| } \): `order` = 1 or '1'    
+     !! - Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \): `order` = 2 or '2'
+     !! - p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \): `integer` `order`, order>=3
+     !! - Infinity norm \( \max_i{ \left|a_i\right| } \): order = huge(0) or 'inf'
+     !! - Minus-infinity norm \( \min_i{ \left|a_i\right| } \): order = -huge(0) or '-inf'
+     !! 
+     !!### Example
+     !!
+     !!```fortran
+     !!
+     !!    real(sp) :: a(3,3), na, rown(3)
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!
+     !!    ! L2 norm: whole matrix
+     !!    na = norm(a, 2)
+     !!   
+     !!    ! Infinity norm of each row
+     !!    rown = norm(a, 'inf', dim=2)
+     !!     
+     !!```     
+     !!
      #:for rk,rt,ri in RC_KINDS_TYPES
      #:for it,ii in NORM_INPUT_OPTIONS
      !> Scalar norms: ${rt}$
@@ -1128,6 +1171,50 @@ module stdlib_linalg
 
   !> Vector norm: subroutine interface
   interface get_norm
+     !! version: experimental 
+     !!
+     !! Computes the vector norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#get-norm-computes-the-vector-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Subroutine interface that returns one of several scalar norm metrics of a `real` or `complex` 
+     !! input array \( A \), that can have any rank. For generic rank-n arrays, the scalar norm over 
+     !! the whole array is returned by default. If `n>=2` and the optional input dimension `dim` is 
+     !! specified, a rank `n-1` array is returned with dimension `dim` collapsed, containing all 1D 
+     !! array norms evaluated along dimension `dim` only.
+     !! 
+     !!
+     !!### Description
+     !! 
+     !! This `pure subroutine `interface provides methods for computing the vector norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays may have generic rank from 1 to ${MAXRANK}$.
+     !!
+     !! Norm type input is mandatory, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm \( \sum_i{ \left|a_i\right| } \): `order` = 1 or '1'    
+     !! - Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \): `order` = 2 or '2'
+     !! - p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \): `integer` `order`, order>=3
+     !! - Infinity norm \( \max_i{ \left|a_i\right| } \): order = huge(0) or 'inf'
+     !! - Minus-infinity norm \( \min_i{ \left|a_i\right| } \): order = -huge(0) or '-inf'
+     !!     
+     !!### Example
+     !!
+     !!```fortran
+     !!
+     !!    real(sp) :: a(3,3), na, rown(3)
+     !!    type(linalg_state_type) :: err
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!
+     !!    ! L2 norm: whole matrix
+     !!    call get_norm(a, na, 2)
+     !!   
+     !!    ! Infinity norms of each row, with error control
+     !!    call get_norm(a, rown, 'inf', dim=2, err=err)     
+     !!     
+     !!```     
+     !!     
      #:for rk,rt,ri in RC_KINDS_TYPES
      #:for it,ii in NORM_INPUT_OPTIONS
         !> Scalar norms: ${rt}$
