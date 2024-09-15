@@ -1423,7 +1423,7 @@ containing all norms evaluated along `dim`.
 
 By default, the return value `x` is a scalar, and contains the norm as evaluated over all elements of the generic-rank array \( A \). 
 If the optional `dim` argument is present, `x` is a rank `n-1` array with the same shape as \( A \) except 
-for dimension `dim`, that is collapsed. Each element of `x` contains the 1D norm of the elements of \( A \), 
+for dimension `dim`, that is dropped. Each element of `x` contains the 1D norm of the elements of \( A \), 
 evaluated along dimension `dim` only.
 
 Raises `LINALG_ERROR` if the requested norm type is invalid.
