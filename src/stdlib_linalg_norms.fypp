@@ -144,6 +144,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         integer(ilp) :: sze,norm_request
         real(${rk}$) :: rorder
+        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -171,7 +172,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
                 #:if rt.startswith('complex')
                 nrm = sqrt( real( sum( a * conjg(a) ), ${rk}$) )
                 #:else
-                nrm = sqrt( sum( a ** 2 ) )
+                nrm = norm2( a )
                 #:endif             
             case(NORM_INF)
                 nrm = maxval( abs(a) )
@@ -244,6 +245,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
         real(${rk}$) :: rorder
+        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -278,7 +280,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
                 #:if rt.startswith('complex')
                 nrm = sqrt( real( sum( a * conjg(a) , dim = dim ), ${rk}$) )
                 #:else
-                nrm = sqrt( sum( a ** 2 , dim = dim ) )
+                nrm = norm2( a , dim = dim )
                 #:endif
             case(NORM_INF)
                 nrm = maxval( abs(a) , dim = dim )
