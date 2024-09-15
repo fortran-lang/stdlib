@@ -43,7 +43,7 @@ module stdlib_math
     end interface clip
 
     !> Swap the values of the lhs and rhs arguments
-    !> ([Specification](../page/specs/stdlib_math.html#swap))
+    !> ([Specification](../page/specs/stdlib_math.html#swap_subroutine))
     !>
     !> Version: experimental
     interface swap
