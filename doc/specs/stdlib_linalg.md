@@ -1447,7 +1447,7 @@ Experimental
 This `pure subroutine` interface computes one of several vector norms of `real` or `complex` array \( A \), depending on 
 the value of the `order` input argument. \( A \) may be an array of any rank. 
 
-Result `nrm` returns a `real`, scalar norm value for the whole array; if `dim` is specified, `nrm` is a rank-1 
+Result `nrm` returns a `real`, scalar norm value for the whole array; if `dim` is specified, `nrm` is a rank n-1 
 array with the same shape as \(A \) and dimension `dim` collapsed, containing all norms evaluated along `dim`.
 
 ### Syntax
