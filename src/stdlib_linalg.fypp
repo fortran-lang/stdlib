@@ -1147,9 +1147,9 @@ module stdlib_linalg
         ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
         !> Order of the matrix norm being computed.
         ${it}$, intent(in) :: order
-        !> Dimension to collapse by computing the norm w.r.t other dimensions
+        !> Dimension the norm is computed along 
         integer(ilp), intent(in) :: dim
-        !> Norm of the matrix.
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
         real(${rk}$) :: nrm${reduced_shape('a', rank, 'dim')}$   
      end function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$
      module function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_err_${ii}$_${ri}$(a, order, dim, err) result(nrm)
@@ -1157,11 +1157,11 @@ module stdlib_linalg
         ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
         !> Order of the matrix norm being computed.
         ${it}$, intent(in) :: order
-        !> Dimension to collapse by computing the norm w.r.t other dimensions
+        !> Dimension the norm is computed along
         integer(ilp), intent(in) :: dim
         !> Output state return flag. 
         type(linalg_state_type), intent(out) :: err                                 
-        !> Norm of the matrix.
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
         real(${rk}$) :: nrm${reduced_shape('a', rank, 'dim')}$     
      end function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_err_${ii}$_${ri}$
      #:endfor
@@ -1235,10 +1235,9 @@ module stdlib_linalg
         pure module subroutine norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$(a, nrm, order, dim, err)
            !> Input matrix a[..]
            ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
-           !> Dimension to collapse by computing the norm w.r.t other dimensions
-           !  (dim must be defined before it is used for `nrm`)
+           !> Dimension the norm is computed along
            integer(ilp), intent(in) :: dim        
-           !> Norm of the matrix.        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
            real(${rk}$), intent(out) :: nrm${reduced_shape('a', rank, 'dim')}$     
            !> Order of the matrix norm being computed.
            ${it}$, intent(in) :: order
