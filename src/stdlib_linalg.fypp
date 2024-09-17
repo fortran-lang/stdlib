@@ -1221,7 +1221,7 @@ module stdlib_linalg
         #:for rank in range(1, MAXRANK + 1)                    
         pure module subroutine norm_${rank}$D_${ii}$_${ri}$(a, nrm, order, err)
            !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
-           ${rt}$, intent(in) :: a${ranksuffix(rank)}$
+           ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
            !> Norm of the matrix.
            real(${rk}$), intent(out) :: nrm
            !> Order of the matrix norm being computed.

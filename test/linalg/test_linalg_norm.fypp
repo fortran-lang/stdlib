@@ -32,6 +32,7 @@ module test_linalg_norm
         allocate(tests(0))
         
         #:for rk,rt,ri in RC_KINDS_TYPES
+        tests = [tests,new_unittest("strided_1d_norm_${ri}$",test_strided_1d_${ri}$)]
         #:for rank in range(1, MAXRANK)
         tests = [tests,new_unittest("norm_${ri}$_${rank}$d",test_norm_${ri}$_${rank}$d)]        
         #:endfor
@@ -46,6 +47,41 @@ module test_linalg_norm
     end subroutine test_vector_norms
     
     #:for rk,rt,ri in RC_KINDS_TYPES
+    
+    !> Test strided norm
+    subroutine test_strided_1d_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        
+        integer(ilp), parameter :: m = 8_ilp
+        integer(ilp), parameter :: n = m**2
+        real(${rk}$), parameter :: tol = 10*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$, target :: a(n)
+        ${rt}$, allocatable :: slice(:)
+        ${rt}$, pointer :: twod(:,:)
+        real(${rk}$) :: rea(n),ima(n)
+        
+        call random_number(rea)
+        #:if rt.startswith('real')        
+        a = rea
+        #:else
+        call random_number(ima)
+        a = cmplx(rea,ima,kind=${rk}$)
+        #:endif
+        
+        ! Test sliced array results
+        slice = a(4:7:59)                
+        call check(error,abs(norm(a(4:7:59),2)-norm(slice,2))<tol*max(1.0_${rk}$,norm(slice,2)), &
+                         'sliced ${rt}$ norm(a(4:7:59),2)')
+        if (allocated(error)) return
+        
+        ! Test 2d array results
+        twod(1:m,1:m) => a                   
+        call check(error,abs(norm(twod,2)-norm(a,2))<tol*max(1.0_${rk}$,norm(twod,2)), &
+                         '2d-reshaped ${rt}$ norm(a,2)')
+        if (allocated(error)) return        
+        
+    end subroutine test_strided_1d_${ri}$    
+    
     #:for rank in range(1, MAXRANK)
     
     !> Test several norms with different dimensions

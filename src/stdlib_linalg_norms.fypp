@@ -8,10 +8,11 @@
 ! Vector norms
 submodule(stdlib_linalg) stdlib_linalg_norms
      use stdlib_linalg_constants
-     use stdlib_linalg_blas, only: nrm2
+     use stdlib_linalg_blas!, only: nrm2
      use stdlib_linalg_lapack, only: lange
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
+     use iso_c_binding, only: c_intptr_t,c_char,c_loc
      implicit none(type,external)
      
      character(*), parameter :: this = 'norm'
@@ -28,6 +29,13 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         module procedure parse_norm_type_integer
         module procedure parse_norm_type_character
      end interface parse_norm_type
+     
+     
+     interface stride_1d
+        #:for rk,rt,ri in ALL_KINDS_TYPES
+        module procedure stride_1d_${ri}$
+        #:endfor
+     end interface stride_1d
      
      contains
      
@@ -93,6 +101,25 @@ submodule(stdlib_linalg) stdlib_linalg_norms
      end subroutine parse_norm_type_character
 
     #:for rk,rt,ri in ALL_KINDS_TYPES
+    
+    ! Compute stride of a 1d array
+    pure integer(ilp) function stride_1d_${ri}$(a) result(stride)
+        !> Input 1-d array 
+        ${rt}$, intent(in), target :: a(:)
+        
+        integer(c_intptr_t) :: a1,a2
+        
+        if (size(a,kind=ilp)<=1_ilp) then 
+           stride = 1_ilp
+        else
+           a1 = transfer(c_loc(a(1)),a1)
+           a2 = transfer(c_loc(a(2)),a2)
+           stride = bit_size(0_c_char)*int(a2-a1, ilp)/storage_size(a, kind=ilp)
+        endif
+        
+    end function stride_1d_${ri}$
+    
+    
     #:for it,ii in INPUT_OPTIONS
 
     !==============================================
@@ -132,7 +159,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
     ! Internal implementation
     pure module subroutine norm_${rank}$D_${ii}$_${ri}$(a, nrm, order, err)
         !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
-        ${rt}$, intent(in) :: a${ranksuffix(rank)}$
+        ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
         !> Norm of the matrix.
         real(${rk}$), intent(out) :: nrm
         !> Order of the matrix norm being computed.
@@ -142,9 +169,10 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         
-        integer(ilp) :: sze,norm_request
+        integer(ilp) :: sze,norm_request,str
         real(${rk}$) :: rorder
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
+        ${rt}$, pointer :: a1d(:)
+        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -169,10 +197,12 @@ submodule(stdlib_linalg) stdlib_linalg_norms
             case(NORM_ONE)
                 nrm = sum( abs(a) )
             case(NORM_TWO)            
-                #:if rt.startswith('complex')
-                nrm = sqrt( real( sum( a * conjg(a) ), ${rk}$) )
+                #:if rank==1
+                nrm = nrm2(sze,a,incx=stride_1d(a))
+                #:elif rt.startswith('complex')
+                nrm = sqrt( real( sum( a * conjg(a) ), ${rk}$) )                
                 #:else
-                nrm = norm2( a )
+                nrm = norm2(a)
                 #:endif             
             case(NORM_INF)
                 nrm = maxval( abs(a) )
