@@ -553,7 +553,7 @@ contains
 
     elemental subroutine swap_str(lhs,rhs)
         character(*), intent(inout) :: lhs, rhs
-        character(len=:), allocatable :: temp
+        character(len=max(len(lhs), len(rhs))) :: temp
         temp = lhs ; lhs = rhs ; rhs = temp
     end subroutine
 
