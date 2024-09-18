@@ -185,7 +185,7 @@ to the original.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -231,7 +231,7 @@ Returns a diagonal array or a vector with the extracted diagonal elements.
 
 ### Status
 
-Experimental
+Stable
 
 ### Class
 
@@ -282,7 +282,7 @@ A = eye(2,2)/2.0   !! A == diag([0.5, 0.5])
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -605,7 +605,7 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -655,7 +655,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -708,7 +708,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -752,7 +752,7 @@ Exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -806,7 +806,7 @@ Exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -832,7 +832,7 @@ This subroutine computes the internal working space requirements for the least-s
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -872,7 +872,7 @@ Exceptions are returned to the `err` argument if provided; an `error stop` is tr
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -902,11 +902,88 @@ Exceptions trigger an `error stop`.
 {!example/linalg/example_determinant2.f90!}
 ```
 
-## `eig` - Eigenvalues and Eigenvectors of a Square Matrix
+## `qr` - Compute the QR factorization of a matrix
 
 ### Status
 
 Experimental
+
+### Description
+
+This subroutine computes the QR factorization of a `real` or `complex` matrix: \( A = Q R \) where \( Q \) 
+is orthonormal and \( R \) is upper-triangular. Matrix \( A \) has size `[m,n]`, with \( m \ge n \). 
+
+The results are returned in output matrices \( Q \) and \(R \), that have the same type and kind as \( A \). 
+Given `k = min(m,n)`, one can write \( A = \( Q_1  Q_2 \) \cdot \( \frac{R_1}{0}\) \). 
+Because the lower rows of \( R \) are zeros, a reduced problem \( A = Q_1 R_1 \) may be solved. The size of 
+the input arguments determines what problem is solved: on full matrices (`shape(Q)==[m,m]`, `shape(R)==[m,n]`), 
+the full problem is solved. On reduced matrices (`shape(Q)==[m,k]`, `shape(R)==[k,n]`), the reduced problem is solved.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):qr(interface)]] `(a, q, r, [, storage] [, overwrite_a] [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix of size `[m,n]`. It is an `intent(in)` argument, if `overwrite_a=.false.`. Otherwise, it is an `intent(inout)` argument, and is destroyed upon return.
+
+`q`: Shall be a rank-2 array of the same kind as `a`, containing the orthonormal matrix `q`. It is an `intent(out)` argument. It should have a shape equal to either `[m,m]` or `[m,k]`, whether the full or the reduced problem is sought for.
+
+`r`: Shall be a rank-2 array of the same kind as `a`, containing the upper triangular matrix `r`. It is an `intent(out)` argument. It should have a shape equal to either `[m,n]` or `[k,n]`, whether the full or the reduced problem is sought for.
+
+`storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to [[stdlib_linalg(module):qr_space(interface)]]. It is an `intent(out)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag (default: `.false.`). If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
+
+### Return value
+
+Returns the QR factorization matrices into the \( Q \) and \( R \) arguments. 
+
+Raises `LINALG_VALUE_ERROR` if any of the matrices has invalid or unsuitable size for the full/reduced problem.
+Raises `LINALG_ERROR` on insufficient user storage space.
+If the state argument `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_qr.f90!}
+```
+
+## `qr_space` - Compute internal working space requirements for the QR factorization.
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the internal working space requirements for the QR factorization, [[stdlib_linalg(module):qr(interface)]] .
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):qr_space(interface)]] `(a, lwork, [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. It is an `intent(in)` argument.
+
+`lwork`: Shall be an `integer` scalar, that returns the minimum array size required for the working storage in [[stdlib_linalg(module):qr(interface)]] to factorize `a`.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Example
+
+```fortran
+{!example/linalg/example_qr_space.f90!}
+```
+
+## `eig` - Eigenvalues and Eigenvectors of a Square Matrix
+
+### Status
+
+Stable
 
 ### Description
 
@@ -951,7 +1028,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1000,7 +1077,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1028,7 +1105,6 @@ Raises `LINALG_ERROR` if the calculation did not converge.
 Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
 If `err` is not present, exceptions trigger an `error stop`.
 
-
 ### Example
 
 ```fortran
@@ -1039,7 +1115,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1080,7 +1156,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1096,6 +1172,7 @@ If requested, `vt` contains the right singular vectors, as rows of \( V^T \).
 `call ` [[stdlib_linalg(module):svd(interface)]] `(a, s, [, u, vt, overwrite_a, full_matrices, err])`
 
 ### Class
+
 Subroutine
 
 ### Arguments
@@ -1134,7 +1211,7 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1266,7 +1343,7 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1301,7 +1378,7 @@ interfaces.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
@@ -1350,7 +1427,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
