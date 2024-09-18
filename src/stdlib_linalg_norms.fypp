@@ -8,7 +8,7 @@
 ! Vector norms
 submodule(stdlib_linalg) stdlib_linalg_norms
      use stdlib_linalg_constants
-     use stdlib_linalg_blas!, only: nrm2
+     use stdlib_linalg_blas, only: nrm2
      use stdlib_linalg_lapack, only: lange
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
@@ -169,7 +169,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         
-        integer(ilp) :: sze,norm_request,str
+        integer(ilp) :: sze,norm_request
         real(${rk}$) :: rorder
         ${rt}$, pointer :: a1d(:)
         intrinsic :: abs, sum, sqrt, maxval, minval, conjg
@@ -198,7 +198,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
                 nrm = sum( abs(a) )
             case(NORM_TWO)            
                 #:if rank==1
-                nrm = nrm2(sze,a,incx=stride_1d(a))
+                nrm = nrm2(sze,a,incx=1)
                 #:elif rt.startswith('complex')
                 nrm = sqrt( real( sum( a * conjg(a) ), ${rk}$) )                
                 #:else
