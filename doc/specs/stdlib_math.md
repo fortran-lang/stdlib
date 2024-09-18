@@ -85,9 +85,12 @@ Elemental subroutine.
 `lhs`: scalar or array of any of the intrinsic types `integer`, `real`, `complex`, `logical`, `character`, `string_type`, `bitset` type. This argument is `intent(inout)`.
 `rhs`: scalar or array of any of the intrinsic types `integer`, `real`, `complex`, `logical`, `character`, `string_type`, `bitset` type. This argument is `intent(inout)`.
 
-Note: All arguments must have same `type` and same `kind`.
+##### Note
+All arguments must have same `type` and same `kind`.
 
-#### Example
+**WARNING**: For fix size characters with different length, the `swap` subroutine will truncate the longest amongst `lhs` and `rhs`. To avoid truncation it is possible to pass a subsection of the string.
+
+#### Examples
 
 ```fortran
 {!example/math/example_math_swap.f90!}

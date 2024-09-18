@@ -24,10 +24,15 @@ program example_math_swap
     end block
 
     block
-        character(5) :: x, y
-        x = 'abcde'
-        y = 'fghij'
-        call swap(x,y)
+        character(4) :: x
+        character(6) :: y
+        x = 'abcd'
+        y = 'efghij'
+        call swap(x,y)      ! x=efgh,  y=abcd
+
+        x = 'abcd'
+        y = 'efghij'
+        call swap(x,y(1:4)) ! x=efgh,  y=abcdij
     end block
 
     block
