@@ -33,6 +33,8 @@ module stdlib_linalg
   public :: outer_product
   public :: kronecker_product
   public :: cross_product
+  public :: qr
+  public :: qr_space
   public :: is_square
   public :: is_diagonal
   public :: is_symmetric
@@ -1400,6 +1402,137 @@ module stdlib_linalg
          integer(ilp), intent(out) :: lrwork,liwork,lcwork         
       end subroutine stdlib_linalg_z_lstsq_space_many
   end interface lstsq_space
+
+  ! QR factorization of rank-2 array A
+  interface qr
+    !! version: experimental 
+    !!
+    !! Computes the QR factorization of matrix \( A = Q R \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#qr-compute-the-qr-factorization-of-a-matrix))
+    !! 
+    !!### Summary 
+    !! Compute the QR factorization of a `real` or `complex` matrix: \( A = Q R \), where \( Q \)  is orthonormal 
+    !! and \( R \) is upper-triangular. Matrix \( A \) has size `[m,n]`, with \( m\ge n \). 
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the QR factorization of a matrix. 
+    !! Supported data types include `real` and `complex`. If a pre-allocated work space 
+    !! is provided, no internal memory allocations take place when using this interface.
+    !!
+    !! Given `k = min(m,n)`, one can write \( A = \( Q_1  Q_2 \) \cdot \( \frac{R_1}{0}\) \). 
+    !! The user may want the full problem (provide `shape(Q)==[m,m]`, `shape(R)==[m,n]`) or the reduced  
+    !! problem only: \( A = Q_1 R_1 \) (provide `shape(Q)==[m,k]`, `shape(R)==[k,n]`).
+    !! 
+    !!@note The solution is based on LAPACK's QR factorization (`*GEQRF`) and ordered matrix output (`*ORGQR`, `*UNGQR`). 
+    !!     
+      pure module subroutine stdlib_linalg_s_qr(a,q,r,overwrite_a,storage,err) 
+         !> Input matrix a[m,n]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Orthogonal matrix Q ([m,m], or [m,k] if reduced)
+         real(sp), intent(out), contiguous, target :: q(:,:)
+         !> Upper triangular matrix R ([m,n], or [k,n] if reduced)
+         real(sp), intent(out), contiguous, target :: r(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Provide pre-allocated workspace, size to be checked with qr_space
+         real(sp), intent(out), optional, target :: storage(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_s_qr
+      pure module subroutine stdlib_linalg_d_qr(a,q,r,overwrite_a,storage,err) 
+         !> Input matrix a[m,n]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Orthogonal matrix Q ([m,m], or [m,k] if reduced)
+         real(dp), intent(out), contiguous, target :: q(:,:)
+         !> Upper triangular matrix R ([m,n], or [k,n] if reduced)
+         real(dp), intent(out), contiguous, target :: r(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Provide pre-allocated workspace, size to be checked with qr_space
+         real(dp), intent(out), optional, target :: storage(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_d_qr
+      pure module subroutine stdlib_linalg_c_qr(a,q,r,overwrite_a,storage,err) 
+         !> Input matrix a[m,n]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Orthogonal matrix Q ([m,m], or [m,k] if reduced)
+         complex(sp), intent(out), contiguous, target :: q(:,:)
+         !> Upper triangular matrix R ([m,n], or [k,n] if reduced)
+         complex(sp), intent(out), contiguous, target :: r(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Provide pre-allocated workspace, size to be checked with qr_space
+         complex(sp), intent(out), optional, target :: storage(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_c_qr
+      pure module subroutine stdlib_linalg_z_qr(a,q,r,overwrite_a,storage,err) 
+         !> Input matrix a[m,n]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Orthogonal matrix Q ([m,m], or [m,k] if reduced)
+         complex(dp), intent(out), contiguous, target :: q(:,:)
+         !> Upper triangular matrix R ([m,n], or [k,n] if reduced)
+         complex(dp), intent(out), contiguous, target :: r(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Provide pre-allocated workspace, size to be checked with qr_space
+         complex(dp), intent(out), optional, target :: storage(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_z_qr
+  end interface qr
+
+  ! Return the working array space required by the QR factorization solver
+  interface qr_space
+    !! version: experimental 
+    !!
+    !! Computes the working array space required by the QR factorization solver
+    !! ([Specification](../page/specs/stdlib_linalg.html#qr-space-compute-internal-working-space-requirements-for-the-qr-factorization))
+    !! 
+    !!### Description
+    !! 
+    !! This interface returns the size of the `real` or `complex` working storage required by the 
+    !! QR factorization solver. The working size only depends on the kind (`real` or `complex`) and size of
+    !! the matrix being factorized. Storage size can be used to pre-allocate a working array in case several 
+    !! repeated QR factorizations to a same-size matrix are sought. If pre-allocated working arrays 
+    !! are provided, no internal allocations will take place during the factorization.
+    !!     
+      pure module subroutine get_qr_s_workspace(a,lwork,err)
+         !> Input matrix a[m,n]
+         real(sp), intent(in), target :: a(:,:)
+         !> Minimum workspace size for both operations
+         integer(ilp), intent(out) :: lwork
+         !> State return flag. Returns an error if the query failed
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine get_qr_s_workspace
+      pure module subroutine get_qr_d_workspace(a,lwork,err)
+         !> Input matrix a[m,n]
+         real(dp), intent(in), target :: a(:,:)
+         !> Minimum workspace size for both operations
+         integer(ilp), intent(out) :: lwork
+         !> State return flag. Returns an error if the query failed
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine get_qr_d_workspace
+      pure module subroutine get_qr_c_workspace(a,lwork,err)
+         !> Input matrix a[m,n]
+         complex(sp), intent(in), target :: a(:,:)
+         !> Minimum workspace size for both operations
+         integer(ilp), intent(out) :: lwork
+         !> State return flag. Returns an error if the query failed
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine get_qr_c_workspace
+      pure module subroutine get_qr_z_workspace(a,lwork,err)
+         !> Input matrix a[m,n]
+         complex(dp), intent(in), target :: a(:,:)
+         !> Minimum workspace size for both operations
+         integer(ilp), intent(out) :: lwork
+         !> State return flag. Returns an error if the query failed
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine get_qr_z_workspace
+  end interface qr_space
+ 
 
   interface det
     !! version: experimental 
