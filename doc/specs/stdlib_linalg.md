@@ -943,8 +943,8 @@ If the state argument `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_qr.f90!}
+```{literalinclude} ../../example/linalg/example_qr.f90
+:language: Fortran
 ```
 
 ## `qr_space` - Compute internal working space requirements for the QR factorization.
@@ -971,8 +971,8 @@ This subroutine computes the internal working space requirements for the QR fact
 
 ### Example
 
-```fortran
-{!example/linalg/example_qr_space.f90!}
+```{literalinclude} ../../example/linalg/example_qr_space.f90
+:language: Fortran
 ```
 
 ## `eig` - Eigenvalues and Eigenvectors of a Square Matrix
