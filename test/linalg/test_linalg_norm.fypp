@@ -212,6 +212,13 @@ module test_linalg_norm
                if (allocated(error)) return                    
                
            end do 
+           
+           ! Compare ND whole vector norm with unrolled vector norm
+           write(msg,"('Unrolled (1d) vs ${rank}$d order=',i0,' norm')") order
+           call check(error,abs(norm(a,order)-norm(b,order))<tol*max(1.0_${rk}$,norm(a,order)),&
+                      trim(msg))
+           if (allocated(error)) return              
+           
             
         end do
         

@@ -9,6 +9,60 @@ module stdlib_linalg_blas
      implicit none(type,external)
      public
 
+          interface asum
+          !! ASUM takes the sum of the absolute values.
+#ifdef STDLIB_EXTERNAL_BLAS
+               pure real(dp) function dasum( n, x, incx )
+                    import sp,dp,qp,ilp,lk 
+                    implicit none(type,external) 
+                    integer(ilp), intent(in) :: incx,n
+                    real(dp), intent(in) :: x(*)
+               end function dasum
+#else 
+               module procedure stdlib_dasum
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS
+               pure real(dp) function dzasum( n, x, incx )
+                    import sp,dp,qp,ilp,lk 
+                    implicit none(type,external) 
+                    integer(ilp), intent(in) :: incx,n
+                    complex(dp), intent(in) :: x(*)
+               end function dzasum
+#else 
+               module procedure stdlib_dzasum
+#endif
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib_${ri}$asum
+#:endif
+#:endfor
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib_${c2ri(ri)}$zasum
+#:endif
+#:endfor               
+#ifdef STDLIB_EXTERNAL_BLAS
+               pure real(sp) function sasum( n, x, incx )
+                    import sp,dp,qp,ilp,lk 
+                    implicit none(type,external) 
+                    integer(ilp), intent(in) :: incx,n
+                    real(sp), intent(in) :: x(*)
+               end function sasum
+#else 
+               module procedure stdlib_sasum
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS
+               pure real(sp) function scasum( n, x, incx )
+                    import sp,dp,qp,ilp,lk 
+                    implicit none(type,external) 
+                    integer(ilp), intent(in) :: incx,n
+                    complex(sp), intent(in) :: x(*)
+               end function scasum
+#else 
+               module procedure stdlib_scasum
+#endif
+          end interface asum
+
           interface axpy
           !! AXPY constant times a vector plus a vector.
 #ifdef STDLIB_EXTERNAL_BLAS
