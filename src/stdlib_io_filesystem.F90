@@ -77,7 +77,11 @@ contains
             end if
         end if
 
-        call run('ls '//dir//' > '//listed_contents, stat)
+        if (is_windows()) then
+            call run('dir /b '//dir//' > '//listed_contents, stat)
+        else
+            call run('ls '//dir//' > '//listed_contents, stat)
+        end if
         if (stat /= 0) then
             if (present(iostat)) iostat = stat
             if (present(iomsg)) iomsg = "Failed to list files in directory '"//dir//"'."
