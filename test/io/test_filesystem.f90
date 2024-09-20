@@ -221,7 +221,11 @@ contains
             call test_failed(error, "Creating file 1 in directory '"//temp_list_dir//"' failed."); return
         end if
 
-        call run('mkdir '//temp_list_dir//'/'//dir, iostat=stat)
+        if (is_windows()) then
+            call run('mkdir '//temp_list_dir//'\'//dir, iostat=stat)
+        else
+            call run('mkdir '//temp_list_dir//'/'//dir, iostat=stat)
+        end if
         if (stat /= 0) then
             call test_failed(error, "Creating dir in directory '"//temp_list_dir//"' failed."); return
         end if

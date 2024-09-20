@@ -68,13 +68,16 @@ contains
 
         stat = 0
 
-        if (.not. exists(temp_dir)) then
+        if (is_windows()) then
             call run('mkdir '//temp_dir, stat)
-            if (stat /= 0) then
-                if (present(iostat)) iostat = stat
-                if (present(iomsg)) iomsg = "Failed to create temporary directory '"//temp_dir//"'."
-                return
-            end if
+        else
+            call run('mkdir -p '//temp_dir, stat)
+        end if
+
+        if (stat /= 0) then
+            if (present(iostat)) iostat = stat
+            if (present(iomsg)) iomsg = "Failed to create temporary directory '"//temp_dir//"'."
+            return
         end if
 
         call run('ls '//dir//' > '//listed_contents, stat)
