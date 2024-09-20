@@ -109,7 +109,7 @@ set(SRC
     stdlib_hashmaps.f90
     stdlib_hashmap_chaining.f90
     stdlib_hashmap_open.f90
-    stdlib_io_filesystem.f90
+    stdlib_io_filesystem.F90
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
     stdlib_system.F90
@@ -120,17 +120,6 @@ set(SRC
     ${outFiles}
     ${outPreprocFiles}
 )
-
-# Files that have cpp directives and need to be preprocessed.
- set(hasCPP
-     stdlib_io_filesystem.f90
- )
-
- if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
-   set_source_files_properties(${hasCPP} PROPERTIES COMPILE_FLAGS "-cpp")
- elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
-   set_source_files_properties(${hasCPP} PROPERTIES COMPILE_FLAGS "-fpp")
- endif()
 
 add_library(${PROJECT_NAME} ${SRC})
 
