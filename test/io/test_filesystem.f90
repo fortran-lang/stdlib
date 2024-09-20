@@ -27,7 +27,9 @@ contains
             new_unittest("fs_list_dir_empty", fs_list_dir_empty), &
             new_unittest("fs_list_dir_one_file", fs_list_dir_one_file), &
             new_unittest("fs_list_dir_two_files", fs_list_dir_two_files), &
-            new_unittest("fs_list_dir_one_file_one_dir", fs_list_dir_one_file_one_dir) &
+            new_unittest("fs_list_dir_one_file_one_dir", fs_list_dir_one_file_one_dir), &
+            new_unittest("fs_rm_dir_empty", fs_rm_dir_empty), &
+            new_unittest("fs_rm_dir_with_contents", fs_rm_dir_with_contents) &
             ]
     end
 
@@ -239,6 +241,37 @@ contains
         call run('rm -rf '//temp_list_dir, iostat=stat)
     end
 
+    subroutine fs_rm_dir_empty(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        character(*), parameter :: filename = "empty_dir_to_remove"
+
+        call rm_dir(filename)
+        call check(error, .not. exists(filename), "Directory should not exist.")
+        call run('mkdir '//filename)
+        call check(error, exists(filename), "Directory should exist.")
+        call rm_dir(filename)
+        call check(error, .not. exists(filename), "Directory should not exist.")
+    end
+
+    subroutine fs_rm_dir_with_contents(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        character(*), parameter :: filename = "dir_with_contents_to_remove"
+
+        call rm_dir(filename)
+        call check(error, .not. exists(filename), "Directory should not exist.")
+        call run('mkdir '//filename)
+        call check(error, exists(filename), "Directory should exist.")
+        if (is_windows()) then
+            call run('mkdir '//filename//'\'//'another_dir')
+        else
+            call run('mkdir '//filename//'/'//'another_dir')
+        end if
+        call rm_dir(filename)
+        call check(error, .not. exists(filename), "Directory should not exist.")
+    end
+
     subroutine delete_file(filename)
         character(len=*), intent(in) :: filename
 
@@ -247,7 +280,6 @@ contains
         open(newunit=io, file=filename)
         close(io, status="delete")
     end
-
 end
 
 program tester

@@ -6,7 +6,7 @@ module stdlib_io_filesystem
     implicit none
     private
 
-    public :: temp_dir, is_windows, exists, list_dir, run
+    public :: temp_dir, is_windows, exists, list_dir, rm_dir, run
 
     character(*), parameter :: temp_dir = 'temp'
     character(*), parameter :: listed_contents = temp_dir//'/listed_contents.txt'
@@ -98,6 +98,20 @@ contains
             files = [files, string_type(line)]
         end do
         close(unit, status="delete")
+    end
+
+    !> Version: experimental
+    !>
+    !> Remove a directory and its contents.
+    !> [Specification](../page/specs/stdlib_io.html#rm_dir)
+    subroutine rm_dir(dir)
+        character(len=*), intent(in) :: dir
+
+        if (is_windows()) then
+            call run('rmdir /s/q '//dir)
+        else
+            call run('rm -rf '//dir)
+        end if
     end
 
     !> Version: experimental
