@@ -6,12 +6,33 @@ module stdlib_io_filesystem
     implicit none
     private
 
-    public :: exists, list_dir, run, temp_dir
+    public :: temp_dir, is_windows, exists, list_dir, run
 
     character(*), parameter :: temp_dir = 'temp'
     character(*), parameter :: listed_contents = temp_dir//'/listed_contents.txt'
 
 contains
+
+    !> Version: experimental
+    !>
+    !> Whether the operating system is Windows.
+    !> [Specification](../page/specs/stdlib_io.html#is_windows)
+    logical function is_windows()
+        character(len=255) :: value
+        integer :: length, stat
+
+        call get_environment_variable('OSTYPE', value, length, stat)
+        if (stat == 0 .and. length > 0 .and. (index(value, 'win') > 0 .or. index(value, 'msys') > 0)) then
+            is_windows = .true.; return
+        end if
+
+        call get_environment_variable('OS', value, length, stat)
+        if (stat == 0 .and. length > 0 .and. index(value, 'Windows_NT') > 0) then
+            is_windows = .true.; return
+        end if
+
+        is_windows = .false.
+    end
 
     !> Version: experimental
     !>
