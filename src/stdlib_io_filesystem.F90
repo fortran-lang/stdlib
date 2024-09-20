@@ -6,7 +6,7 @@ module stdlib_io_filesystem
     implicit none
     private
 
-    public :: temp_dir, is_windows, exists, list_dir, rm_dir, run
+    public :: temp_dir, is_windows, exists, list_dir, mkdir, rmdir, run
 
     character(*), parameter :: temp_dir = 'temp'
     character(*), parameter :: listed_contents = temp_dir//'/listed_contents.txt'
@@ -69,7 +69,7 @@ contains
         stat = 0
 
         if (.not. exists(temp_dir)) then
-            call run('mkdir '//temp_dir, stat)
+            call mkdir(temp_dir, stat)
             if (stat /= 0) then
                 if (present(iostat)) iostat = stat
                 if (present(iomsg)) iomsg = "Failed to create temporary directory '"//temp_dir//"'."
@@ -106,9 +106,25 @@ contains
 
     !> Version: experimental
     !>
+    !> Create a directory.
+    !> [Specification](../page/specs/stdlib_io.html#mkdir)
+    subroutine mkdir(dir, iostat, iomsg)
+        character(len=*), intent(in) :: dir
+        integer, optional, intent(out) :: iostat
+        character(len=:), allocatable, optional, intent(out) :: iomsg
+
+        if (is_windows()) then
+            call run('mkdir '//dir, iostat, iomsg)
+        else
+            call run('mkdir -p '//dir, iostat, iomsg)
+        end if
+    end
+
+    !> Version: experimental
+    !>
     !> Remove a directory including its contents.
-    !> [Specification](../page/specs/stdlib_io.html#rm_dir)
-    subroutine rm_dir(dir)
+    !> [Specification](../page/specs/stdlib_io.html#rmdir)
+    subroutine rmdir(dir)
         character(len=*), intent(in) :: dir
 
         if (is_windows()) then

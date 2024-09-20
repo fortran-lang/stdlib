@@ -28,8 +28,8 @@ contains
             new_unittest("fs_list_dir_one_file", fs_list_dir_one_file), &
             new_unittest("fs_list_dir_two_files", fs_list_dir_two_files), &
             new_unittest("fs_list_dir_one_file_one_dir", fs_list_dir_one_file_one_dir), &
-            new_unittest("fs_rm_dir_empty", fs_rm_dir_empty), &
-            new_unittest("fs_rm_dir_with_contents", fs_rm_dir_with_contents) &
+            new_unittest("fs_rmdir_empty", fs_rmdir_empty), &
+            new_unittest("fs_rmdir_with_contents", fs_rmdir_with_contents) &
             ]
     end
 
@@ -113,8 +113,8 @@ contains
         integer :: stat
         type(string_type), allocatable :: files(:)
 
-        call rm_dir(temp_list_dir)
-        call run('mkdir '//temp_list_dir, iostat=stat)
+        call rmdir(temp_list_dir)
+        call mkdir(temp_list_dir, stat)
         if (stat /= 0) then
             call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
@@ -123,7 +123,7 @@ contains
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
         call check(error, size(files) == 0, "The directory should be empty.")
 
-        call rm_dir(temp_list_dir)
+        call rmdir(temp_list_dir)
     end
 
     subroutine fs_list_dir_one_file(error)
@@ -134,8 +134,8 @@ contains
         type(string_type), allocatable :: files(:)
         character(*), parameter :: filename = 'abc.txt'
 
-        call rm_dir(temp_list_dir)
-        call run('mkdir '//temp_list_dir, iostat=stat)
+        call rmdir(temp_list_dir)
+        call mkdir(temp_list_dir, stat)
         if (stat /= 0) then
             call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
@@ -150,7 +150,7 @@ contains
         call check(error, size(files) == 1, "The directory should contain one file.")
         call check(error, char(files(1)) == filename, "The file should be '"//filename//"'.")
 
-        call rm_dir(temp_list_dir)
+        call rmdir(temp_list_dir)
     end
 
     subroutine fs_list_dir_two_files(error)
@@ -162,8 +162,8 @@ contains
         character(*), parameter :: filename1 = 'abc.txt'
         character(*), parameter :: filename2 = 'xyz'
 
-        call rm_dir(temp_list_dir)
-        call run('mkdir '//temp_list_dir, iostat=stat)
+        call rmdir(temp_list_dir)
+        call mkdir(temp_list_dir, stat)
         if (stat /= 0) then
             call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
@@ -184,7 +184,7 @@ contains
         call check(error, char(files(1)) == filename1, "The file should be '"//filename1//"'.")
         call check(error, char(files(2)) == filename2, "The file should be '"//filename2//"'.")
 
-        call rm_dir(temp_list_dir)
+        call rmdir(temp_list_dir)
     end
 
     subroutine fs_list_dir_one_file_one_dir(error)
@@ -196,8 +196,8 @@ contains
         character(*), parameter :: filename1 = 'abc.txt'
         character(*), parameter :: dir = 'xyz'
 
-        call rm_dir(temp_list_dir)
-        call run('mkdir '//temp_list_dir, iostat=stat)
+        call rmdir(temp_list_dir)
+        call mkdir(temp_list_dir, stat)
         if (stat /= 0) then
             call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
@@ -208,9 +208,9 @@ contains
         end if
 
         if (is_windows()) then
-            call run('mkdir '//temp_list_dir//'\'//dir, iostat=stat)
+            call mkdir(temp_list_dir//'\'//dir, stat)
         else
-            call run('mkdir '//temp_list_dir//'/'//dir, iostat=stat)
+            call mkdir(temp_list_dir//'/'//dir, stat)
         end if
         if (stat /= 0) then
             call test_failed(error, "Creating dir in directory '"//temp_list_dir//"' failed."); return
@@ -222,38 +222,38 @@ contains
         call check(error, char(contents(1)) == filename1, "The file should be '"//filename1//"'.")
         call check(error, char(contents(2)) == dir, "The file should be '"//dir//"'.")
 
-        call rm_dir(temp_list_dir)
+        call rmdir(temp_list_dir)
     end
 
-    subroutine fs_rm_dir_empty(error)
+    subroutine fs_rmdir_empty(error)
         type(error_type), allocatable, intent(out) :: error
 
-        character(*), parameter :: filename = "empty_dir_to_remove"
+        character(*), parameter :: dir = "empty_dir_to_remove"
 
-        call rm_dir(filename)
-        call check(error, .not. exists(filename), "Directory should not exist.")
-        call run('mkdir '//filename)
-        call check(error, exists(filename), "Directory should exist.")
-        call rm_dir(filename)
-        call check(error, .not. exists(filename), "Directory should not exist.")
+        call rmdir(dir)
+        call check(error, .not. exists(dir), "Directory should not exist.")
+        call mkdir(dir)
+        call check(error, exists(dir), "Directory should exist.")
+        call rmdir(dir)
+        call check(error, .not. exists(dir), "Directory should not exist.")
     end
 
-    subroutine fs_rm_dir_with_contents(error)
+    subroutine fs_rmdir_with_contents(error)
         type(error_type), allocatable, intent(out) :: error
 
-        character(*), parameter :: filename = "dir_with_contents_to_remove"
+        character(*), parameter :: dir = "dir_with_contents_to_remove"
 
-        call rm_dir(filename)
-        call check(error, .not. exists(filename), "Directory should not exist.")
-        call run('mkdir '//filename)
-        call check(error, exists(filename), "Directory should exist.")
+        call rmdir(dir)
+        call check(error, .not. exists(dir), "Directory should not exist.")
+        call mkdir(dir)
+        call check(error, exists(dir), "Directory should exist.")
         if (is_windows()) then
-            call run('mkdir '//filename//'\'//'another_dir')
+            call mkdir(dir//'\'//'another_dir')
         else
-            call run('mkdir '//filename//'/'//'another_dir')
+            call mkdir(dir//'/'//'another_dir')
         end if
-        call rm_dir(filename)
-        call check(error, .not. exists(filename), "Directory should not exist.")
+        call rmdir(dir)
+        call check(error, .not. exists(dir), "Directory should not exist.")
     end
 
     subroutine delete_file(filename)
