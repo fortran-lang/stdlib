@@ -58,6 +58,19 @@ module stdlib_sparse_conversion
         #:endfor
     end interface
     public :: coo2csr
+
+    !! version: experimental
+    !!
+    !! Conversion from coo to csc
+    !! Enables transferring data from a COO matrix to a CSC matrix
+    !! under the hypothesis that the COO is already ordered.
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface coo2csc
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: coo2csc_${s1}$
+        #:endfor
+    end interface
+    public :: coo2csc
     
     !! version: experimental
     !!
@@ -110,6 +123,34 @@ module stdlib_sparse_conversion
     #:endfor
     end interface
     public :: csr2sellc
+
+    !! version: experimental
+    !!
+    !! Conversion from csc to coo
+    !! Enables transferring data from a CSC matrix to a COO matrix
+    !! under the hypothesis that the CSC is already ordered.
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface csc2coo
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: csc2coo_${s1}$
+        #:endfor
+    end interface
+    public :: csc2coo
+
+    !! version: experimental
+    !!
+    !! Extraction of diagonal values
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface diag
+    #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: dense2diagonal_${s1}$
+        module procedure :: coo2diagonal_${s1}$
+        module procedure :: csr2diagonal_${s1}$
+        module procedure :: csc2diagonal_${s1}$
+        module procedure :: ell2diagonal_${s1}$
+    #:endfor
+    end interface
+    public :: diag
 
     !! version: experimental
     !!
@@ -203,6 +244,45 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine coo2csc_${s1}$(COO,CSC)
+        type(COO_${s1}$_type), intent(in)  :: COO
+        type(CSC_${s1}$_type), intent(out) :: CSC
+        ${t1}$, allocatable :: data(:)
+        integer(ilp), allocatable :: temp(:,:)
+        integer(ilp) :: i, nnz
+
+        CSC%nnz = COO%nnz; CSC%nrows = COO%nrows; CSC%ncols = COO%ncols
+        CSC%storage = COO%storage
+
+        allocate(temp(2,COO%nnz))
+        temp(1,1:COO%nnz) = COO%index(2,1:COO%nnz)
+        temp(2,1:COO%nnz) = COO%index(1,1:COO%nnz)
+        allocate(data, source = COO%data )
+        nnz = COO%nnz
+        call sort_coo_unique_${s1}$( temp, data, nnz, COO%nrows, COO%ncols )
+
+        if( allocated(CSC%row) ) then
+            CSC%row(1:COO%nnz)  = temp(2,1:COO%nnz)
+            CSC%colptr(1:CSC%ncols) = 0
+            CSC%data(1:CSC%nnz) = data(1:COO%nnz)
+        else 
+            allocate( CSC%row(CSC%nnz)  , source = temp(2,1:COO%nnz) )
+            allocate( CSC%colptr(CSC%ncols+1) , source = 0 )
+            allocate( CSC%data(CSC%nnz) , source = data(1:COO%nnz) )
+        end if
+
+        CSC%colptr(1) = 1
+        do i = 1, COO%nnz
+            CSC%colptr( temp(1,i)+1 ) = CSC%colptr( temp(1,i)+1 ) + 1
+        end do
+        do i = 1, CSC%ncols
+            CSC%colptr( i+1 ) = CSC%colptr( i+1 ) + CSC%colptr( i )
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine csr2dense_${s1}$(CSR,dense)
         type(CSR_${s1}$_type), intent(in) :: CSR
         ${t1}$, allocatable, intent(out) :: dense(:,:)
@@ -250,6 +330,33 @@ contains
                 COO%index(1:2,j) = [i,CSR%col(j)]
             end do
         end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine csc2coo_${s1}$(CSC,COO)
+        type(CSC_${s1}$_type), intent(in)  :: CSC
+        type(COO_${s1}$_type), intent(out) :: COO
+        integer(ilp) :: i, j
+
+        COO%nnz = CSC%nnz; COO%nrows = CSC%nrows; COO%ncols = CSC%ncols
+        COO%storage = CSC%storage
+
+        if( .not.allocated(COO%data) ) then
+            allocate( COO%data(CSC%nnz) , source = CSC%data(1:CSC%nnz) )
+        else 
+            COO%data(1:CSC%nnz) = CSC%data(1:CSC%nnz)
+        end if
+
+        if( .not.allocated(COO%index) ) allocate( COO%index(2,CSC%nnz) )
+        
+        do j = 1, CSC%ncols
+            do i = CSC%colptr(j), CSC%colptr(j+1)-1
+                COO%index(1:2,i) = [CSC%row(i),j]
+            end do
+        end do
+        call sort_coo_unique_${s1}$( COO%index, COO%data, COO%nnz, COO%nrows, COO%ncols )
     end subroutine
 
     #:endfor
@@ -710,6 +817,121 @@ contains
             call csr2sellc(CSR,SELLC)
         end block
     end subroutine
+    #:endfor
+
+    !! Diagonal extraction
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine dense2diagonal_${s1}$(dense,diagonal)
+        ${t1}$, intent(in) :: dense(:,:)
+        ${t1}$, intent(inout), allocatable :: diagonal(:)
+        integer :: num_rows
+        integer :: i
+
+        num_rows = size(dense,dim=1)
+        if(.not.allocated(diagonal)) allocate(diagonal(num_rows))
+
+        do i = 1, num_rows
+            diagonal(i) = dense(i,i)
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine coo2diagonal_${s1}$(COO,diagonal)
+        type(COO_${s1}$_type), intent(in) :: COO
+        ${t1}$, intent(inout), allocatable :: diagonal(:)
+        integer :: idx
+
+        if(.not.allocated(diagonal)) allocate(diagonal(COO%nrows))
+
+        do concurrent(idx = 1:COO%nnz)
+            if(COO%index(1,idx)==COO%index(2,idx)) &
+            & diagonal( COO%index(1,idx) ) = COO%data(idx)
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine csr2diagonal_${s1}$(CSR,diagonal)
+        type(CSR_${s1}$_type), intent(in) :: CSR
+        ${t1}$, intent(inout), allocatable :: diagonal(:)
+        integer :: i, j
+
+        if(.not.allocated(diagonal)) allocate(diagonal(CSR%nrows))
+
+        select case(CSR%storage)
+        case(sparse_lower)
+            do i = 1, CSR%nrows
+                diagonal(i) = CSR%data( CSR%rowptr(i+1)-1 )
+            end do
+        case(sparse_upper)
+            do i = 1, CSR%nrows
+                diagonal(i) = CSR%data( CSR%rowptr(i) )
+            end do
+        case(sparse_full)
+            do i = 1, CSR%nrows
+                do j = CSR%rowptr(i), CSR%rowptr(i+1)-1
+                    if( CSR%col(j) == i ) then
+                        diagonal(i) = CSR%data(j)
+                        exit
+                    end if
+                end do
+            end do
+        end select
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine csc2diagonal_${s1}$(CSC,diagonal)
+        type(CSC_${s1}$_type), intent(in) :: CSC
+        ${t1}$, intent(inout), allocatable :: diagonal(:)
+        integer :: i, j
+
+        if(.not.allocated(diagonal)) allocate(diagonal(CSC%nrows))
+
+        select case(CSC%storage)
+        case(sparse_lower)
+            do i = 1, CSC%ncols
+                diagonal(i) = CSC%data( CSC%colptr(i+1)-1 )
+            end do
+        case(sparse_upper)
+            do i = 1, CSC%ncols
+                diagonal(i) = CSC%data( CSC%colptr(i) )
+            end do
+        case(sparse_full)
+            do i = 1, CSC%ncols
+                do j = CSC%colptr(i), CSC%colptr(i+1)-1
+                    if( CSC%row(j) == i ) then
+                        diagonal(i) = CSC%data(j)
+                        exit
+                    end if
+                end do
+            end do
+        end select
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine ell2diagonal_${s1}$(ELL,diagonal)
+        type(ELL_${s1}$_type), intent(in) :: ELL
+        ${t1}$, intent(inout), allocatable :: diagonal(:)
+        integer :: i, k
+
+        if(.not.allocated(diagonal)) allocate(diagonal(ELL%nrows))
+        if( ELL%storage == sparse_full) then
+            do i = 1, ELL%nrows
+                do k = 1, ELL%K
+                    if(ELL%index(i,k)==i) diagonal(i) = ELL%data(i,k)
+                end do
+            end do
+        end if
+    end subroutine
+
     #:endfor
 
 end module

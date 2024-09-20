@@ -259,6 +259,18 @@ This module provides facility functions for converting between storage formats.
 ```fortran
 {!example/linalg/example_sparse_from_ijv.f90!}
 ```
+### Syntax
+
+`call ` [[stdlib_sparse_conversion(module):diag(interface)]] `(matrix,diagonal)`
+
+### Arguments
+
+`matrix` : Shall be a `dense`, `COO`, `CSR` or `ELL` type. It is an `intent(in)` argument.
+
+`diagonal` : A rank-1 array of the same type as the `matrix`. It is an `intent(inout)` and `allocatable` argument.
+
+#### Note
+If the `diagonal` array has not been previously allocated, the `diag` subroutine will allocate it using the `nrows` of the `matrix`.
 
 ### Syntax
 
@@ -292,6 +304,16 @@ This module provides facility functions for converting between storage formats.
 
 ### Syntax
 
+`call ` [[stdlib_sparse_conversion(module):coo2csc(interface)]] `(coo,csc)`
+
+### Arguments
+
+`coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(in)` argument.
+
+`csc` : Shall be a `CSC` type of `real` or `complex` type. It is an `intent(out)` argument.
+
+### Syntax
+
 `call ` [[stdlib_sparse_conversion(module):csr2coo(interface)]] `(csr,coo)`
 
 ### Arguments
@@ -311,6 +333,16 @@ This module provides facility functions for converting between storage formats.
 `sellc` : Shall be a `SELLC` type of `real` or `complex` type. It is an `intent(out)` argument.
 
 `chunk`, `optional`: chunk size for the Sliced ELLPACK format. It is an `intent(in)` argument.
+
+### Syntax
+
+`call ` [[stdlib_sparse_conversion(module):csc2coo(interface)]] `(csc,coo)`
+
+### Arguments
+
+`csc` : Shall be a `CSC` type of `real` or `complex` type. It is an `intent(in)` argument.
+
+`coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(out)` argument.
 
 ## Example
 ```fortran

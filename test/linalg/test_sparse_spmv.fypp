@@ -24,6 +24,7 @@ contains
             new_unittest('ell', test_ell),  &
             new_unittest('sellc', test_sellc),  &
             new_unittest('symmetries', test_symmetries), &
+            new_unittest('diagonal', test_diagonal), &
             new_unittest('add_get_values', test_add_get_values) &
         ]
     end subroutine
@@ -248,6 +249,50 @@ contains
 
             call spmv( CSR , vec_x, vec_y3 )
             call check(error, all(vec_y1 == vec_y3) )
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_diagonal(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            ${t1}$, allocatable :: dense(:,:)
+            type(COO_${s1}$_type) :: COO
+            type(CSR_${s1}$_type) :: CSR
+            type(CSC_${s1}$_type) :: CSC
+            type(ELL_${s1}$_type) :: ELL
+            ${t1}$, allocatable :: diagonal(:)
+
+            allocate( dense(4,4) , source = &
+                    reshape(real([1,0,0,5, &
+                                  0,2,0,0, &
+                                  0,6,3,0,&
+                                  0,0,7,4],kind=wp),[4,4]) )
+
+            call diag(dense,diagonal)
+            call check(error, all(diagonal == [1,2,3,4]) )
+            if (allocated(error)) return
+
+            diagonal = 0.0
+            call dense2coo( dense , COO )
+            call diag( COO , diagonal )
+            call check(error, all(diagonal == [1,2,3,4]) )
+            if (allocated(error)) return
+
+            diagonal = 0.0
+            call coo2csr( COO, CSR )
+            call diag( CSR , diagonal )
+            call check(error, all(diagonal == [1,2,3,4]) )
+            if (allocated(error)) return
+
+            diagonal = 0.0
+            call coo2csc( COO, CSC )
+            call diag( CSC , diagonal )
+            call check(error, all(diagonal == [1,2,3,4]) )
             if (allocated(error)) return
         end block
         #:endfor
