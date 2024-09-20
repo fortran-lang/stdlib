@@ -102,7 +102,7 @@ contains
 
     !> Version: experimental
     !>
-    !> Remove a directory and its contents.
+    !> Remove a directory including its contents.
     !> [Specification](../page/specs/stdlib_io.html#rm_dir)
     subroutine rm_dir(dir)
         character(len=*), intent(in) :: dir
