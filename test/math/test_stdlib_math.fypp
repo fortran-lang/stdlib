@@ -304,23 +304,48 @@ contains
 
     subroutine test_swap_str(error)
         type(error_type), allocatable, intent(out) :: error
-        character(5) :: x(2), y(2)
-        
-        x = ['abcde','fghij'] 
-        y = ['fghij','abcde']
+        block
+            character(5) :: x(2), y(2)
+            
+            x = ['abcde','fghij'] 
+            y = ['fghij','abcde']
 
-        call swap(x,y)
-        
-        call check(error, all( x == ['fghij','abcde'] ) )
-        if (allocated(error)) return
-        call check(error, all( y == ['abcde','fghij']  ) )
-        if (allocated(error)) return
+            call swap(x,y)
+            
+            call check(error, all( x == ['fghij','abcde'] ) )
+            if (allocated(error)) return
+            call check(error, all( y == ['abcde','fghij']  ) )
+            if (allocated(error)) return
 
-        ! check self swap
-        call swap(x,x)
-        
-        call check(error, all( x == ['fghij','abcde'] ) )
-        if (allocated(error)) return
+            ! check self swap
+            call swap(x,x)
+            
+            call check(error, all( x == ['fghij','abcde'] ) )
+            if (allocated(error)) return
+        end block
+
+        block
+            character(4) :: x
+            character(6) :: y
+            
+            x = 'abcd'
+            y = 'efghij'
+            call swap(x,y)
+            
+            call check(error, x == 'efgh' )
+            if (allocated(error)) return
+            call check(error, y(1:6) == 'abcd  ' )
+            if (allocated(error)) return
+
+            x = 'abcd'
+            y = 'efghij'
+            call swap(x,y(1:4))
+            
+            call check(error, x == 'efgh' )
+            if (allocated(error)) return
+            call check(error, y == 'abcdij' )
+            if (allocated(error)) return
+        end block
     end subroutine test_swap_str
 
     subroutine test_swap_stt(error)
