@@ -21,6 +21,7 @@ contains
             new_unittest("fs_file_not_exists", fs_file_not_exists, should_fail=.true.), &
             new_unittest("fs_file_exists", fs_file_exists), &
             new_unittest("fs_current_dir_exists", fs_current_dir_exists), &
+            new_unittest("fs_path_separator", fs_path_separator), &
             new_unittest("fs_run_invalid_command", fs_run_invalid_command, should_fail=.true.), &
             new_unittest("fs_run_with_invalid_option", fs_run_with_invalid_option, should_fail=.true.), &
             new_unittest("fs_run_valid_command", fs_run_valid_command), &
@@ -78,6 +79,21 @@ contains
 
         is_existing = exists(".")
         call check(error, is_existing, "Current directory should not fail.")
+    end
+
+    subroutine fs_path_separator(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        character(*), parameter :: outer_dir = "path_separator_outer"
+        character(*), parameter :: inner_dir = "path_separator_inner"
+
+        call rmdir(outer_dir)
+        call check(error, .not. exists(outer_dir), "Directory should not exist.")
+        call mkdir(outer_dir)
+        call check(error, exists(outer_dir), "Outer directory should now exist.")
+        call mkdir(outer_dir//path_separator()//inner_dir)
+        call check(error, exists(outer_dir//path_separator()//inner_dir), "Inner directory should now exist.")
+        call rmdir(outer_dir)
     end
 
     subroutine fs_run_invalid_command(error)

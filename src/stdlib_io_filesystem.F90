@@ -6,10 +6,9 @@ module stdlib_io_filesystem
     implicit none
     private
 
-    public :: temp_dir, is_windows, exists, list_dir, mkdir, rmdir, run
+    public :: temp_dir, is_windows, exists, path_separator, list_dir, mkdir, rmdir, run
 
     character(*), parameter :: temp_dir = 'temp'
-    character(*), parameter :: listed_contents = temp_dir//'/listed_contents.txt'
 
 contains
 
@@ -32,6 +31,18 @@ contains
         end if
 
         is_windows = .false.
+    end
+
+    !> Version: experimental
+    !>
+    !> Separator for paths.
+    !> [Specification](../page/specs/stdlib_io.html#path_separator)
+    character function path_separator()
+        if (is_windows()) then
+            path_separator = '\'
+        else
+            path_separator = '/'
+        end if
     end
 
     !> Version: experimental
@@ -65,6 +76,7 @@ contains
 
         integer :: unit, stat
         character(len=256) :: line
+        character(:), allocatable :: listed_contents
 
         stat = 0
 
@@ -76,6 +88,8 @@ contains
                 return
             end if
         end if
+
+        listed_contents = temp_dir//path_separator()//'listed_contents.txt'
 
         if (is_windows()) then
             call run('dir /b '//dir//' > '//listed_contents, stat)
