@@ -35,7 +35,7 @@ contains
 
     !> Version: experimental
     !>
-    !> Separator for paths.
+    !> Returns the path separator for the current operating system.
     !> [Specification](../page/specs/stdlib_io.html#path_separator)
     character function path_separator()
         if (is_windows()) then
@@ -49,14 +49,14 @@ contains
     !>
     !> Whether a file or directory exists at the given path.
     !> [Specification](../page/specs/stdlib_io.html#exists)
-    logical function exists(filename)
-        !> Name of the file or directory.
-        character(len=*), intent(in) :: filename
+    logical function exists(path)
+        !> Path to a file or directory.
+        character(len=*), intent(in) :: path
 
-        inquire(file=filename, exist=exists)
+        inquire(file=path, exist=exists)
 
 #if defined(__INTEL_COMPILER)
-        if (.not. exists) inquire(directory=filename, exist=exists)
+        if (.not. exists) inquire(directory=path, exist=exists)
 #endif
     end
 
