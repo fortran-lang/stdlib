@@ -53,11 +53,11 @@ submodule(stdlib_linalg) stdlib_linalg_norms
                norm_type = NORM_ONE
            case (2_ilp)
                norm_type = NORM_TWO
-           case (3_ilp:huge(0_ilp)-1_ilp)
+           case (3_ilp:NORM_POW_LAST)
                norm_type = order
-           case (huge(0_ilp):)
+           case (NORM_INF:)
                norm_type = NORM_INF
-           case (:-huge(0_ilp))
+           case (:NORM_MINUSINF)
                norm_type = NORM_MINUSINF
            
            case default
@@ -209,7 +209,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
                 #:endif             
             case(NORM_INF)
                 nrm = maxval( abs(a) )
-            case(-NORM_INF)
+            case(NORM_MINUSINF)
                 nrm = minval( abs(a) )
             case (NORM_POW_FIRST:NORM_POW_LAST)
                 rorder = 1.0_${rk}$ / norm_request
@@ -317,7 +317,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
                 #:endif
             case(NORM_INF)
                 nrm = maxval( abs(a) , dim = dim )
-            case(-NORM_INF)
+            case(NORM_MINUSINF)
                 nrm = minval( abs(a) , dim = dim )
             case (NORM_POW_FIRST:NORM_POW_LAST)
                 rorder = 1.0_${rk}$ / norm_request

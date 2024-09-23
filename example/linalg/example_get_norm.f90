@@ -3,7 +3,7 @@ program example_get_norm
   use stdlib_linalg, only: get_norm, linalg_state_type
   implicit none
   
-  real :: a(3,3),nrm,nrmd(3)
+  real :: a(3,3), nrm, nrmd(3)
   integer :: j
   type(linalg_state_type) :: err
     
@@ -44,7 +44,7 @@ program example_get_norm
   print *, 'minval(||a(:,i)||)  = ',nrmd  ! 1.00000000       0.00000000       3.00000000 
   
   ! Catch Error: 
-  ! [norm] returned Value Error: dimension 4 is out of rank for shape(a)= [3 3]
+  ! [norm] returned Value Error: dimension 4 is out of rank for shape(a)= [3, 3]
   call get_norm(a, nrmd, 'inf', dim=4, err=err)
   print *, 'invalid: ',err%print()  
 

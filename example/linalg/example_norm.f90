@@ -33,7 +33,7 @@ program example_norm
   print *, 'minval(||a(:,i)||)  = ',norm(a, '-inf', dim=1)  ! 1.00000000       0.00000000       3.00000000 
   
   ! Catch Error: 
-  ! [norm] returned Value Error: dimension 4 is out of rank for shape(a)= [3 3]
+  ! [norm] returned Value Error: dimension 4 is out of rank for shape(a)= [3, 3]
   print *, 'invalid: ',norm(a,'inf', dim=4, err=err)
   print *, 'error =  ',err%print()  
 
