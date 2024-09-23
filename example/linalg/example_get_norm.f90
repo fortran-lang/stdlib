@@ -44,7 +44,7 @@ program example_get_norm
   print *, 'minval(||a(:,i)||)  = ',nrmd  ! 1.00000000       0.00000000       3.00000000 
   
   ! Catch Error: 
-  ! [norm] returned Value Error: dimension 4 is out of rank for shape(a)= [3 3]
+  ! [norm] returned Value Error: dimension 4 is out of rank for shape(a)= [3, 3]
   call get_norm(a, nrmd, 'inf', dim=4, err=err)
   print *, 'invalid: ',err%print()  
 
