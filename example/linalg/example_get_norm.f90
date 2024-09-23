@@ -3,7 +3,7 @@ program example_get_norm
   use stdlib_linalg, only: get_norm, linalg_state_type
   implicit none
   
-  real :: a(3,3),nrm,nrmd(3)
+  real :: a(3,3), nrm, nrmd(3)
   integer :: j
   type(linalg_state_type) :: err
     
