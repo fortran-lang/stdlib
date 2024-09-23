@@ -209,7 +209,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
                 #:endif             
             case(NORM_INF)
                 nrm = maxval( abs(a) )
-            case(-NORM_INF)
+            case(NORM_MINUSINF)
                 nrm = minval( abs(a) )
             case (NORM_POW_FIRST:NORM_POW_LAST)
                 rorder = 1.0_${rk}$ / norm_request
