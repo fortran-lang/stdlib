@@ -53,7 +53,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
                norm_type = NORM_ONE
            case (2_ilp)
                norm_type = NORM_TWO
-           case (3_ilp:huge(0_ilp)-1_ilp)
+           case (3_ilp:NORM_POW_LAST)
                norm_type = order
            case (huge(0_ilp):)
                norm_type = NORM_INF
