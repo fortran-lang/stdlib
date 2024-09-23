@@ -547,7 +547,7 @@ contains
 
         case (two : )
 
-            res = l_gamma(n + 1, 1.0D0)
+            res = l_gamma(n + 1, 1.0_dp)
 
         end select
     end function l_factorial_${t1[0]}$${k1}$
