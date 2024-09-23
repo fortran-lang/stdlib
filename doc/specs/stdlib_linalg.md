@@ -1393,10 +1393,6 @@ Experimental
 This function computes one of several vector norms of `real` or `complex` array \( A \), depending on 
 the value of the `order` input argument. \( A \) may be an array of any rank. 
 
-Result `x` returns a `real` scalar norm value for the whole array; if `dim` is specified, `x` is an array of rank n-1, 
-where n equals the rank of ARRAY, and a shape similar to that of \( A \) with dimension `dim` dropped,
-containing all norms evaluated along `dim`.
-
 ### Syntax
 
 `x = ` [[stdlib_linalg(module):norm(interface)]] `(a, order, [, dim, err])`
