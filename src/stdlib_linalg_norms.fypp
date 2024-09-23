@@ -57,7 +57,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
                norm_type = order
            case (NORM_INF:)
                norm_type = NORM_INF
-           case (:-huge(0_ilp))
+           case (:NORM_MINUSINF)
                norm_type = NORM_MINUSINF
            
            case default
