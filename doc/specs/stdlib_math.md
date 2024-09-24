@@ -61,6 +61,41 @@ Here inputs are of type `real` and kind `sp`
 {!example/math/example_clip_real.f90!}
 ```
 
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `swap` subroutine
+
+#### Description
+
+Swaps the values in `lhs` and `rhs`.
+
+#### Syntax
+
+`call` [[stdlib_math(module):swap(interface)]] ` (lhs, rhs)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Elemental subroutine.
+
+#### Argument(s)
+
+`lhs`: scalar or array of any of the intrinsic types `integer`, `real`, `complex`, `logical`, `character`, `string_type`, `bitset` type. This argument is `intent(inout)`.
+`rhs`: scalar or array of any of the intrinsic types `integer`, `real`, `complex`, `logical`, `character`, `string_type`, `bitset` type. This argument is `intent(inout)`.
+
+##### Note
+All arguments must have same `type` and same `kind`.
+
+**WARNING**: For fix size characters with different length, the `swap` subroutine will truncate the longest amongst `lhs` and `rhs`. To avoid truncation it is possible to pass a subsection of the string.
+
+#### Examples
+
+```fortran
+{!example/math/example_math_swap.f90!}
+```
+
 ### `gcd` function
 
 #### Description
