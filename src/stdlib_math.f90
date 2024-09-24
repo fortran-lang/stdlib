@@ -1,11 +1,11 @@
-
 module stdlib_math
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     use stdlib_optval, only: optval
+    use stdlib_bitsets, only: bitset_64, bitset_large
 
     implicit none
     private
-    public :: clip, gcd, linspace, logspace
+    public :: clip, swap, gcd, linspace, logspace
     public :: EULERS_NUMBER_SP, EULERS_NUMBER_DP
     public :: DEFAULT_LINSPACE_LENGTH, DEFAULT_LOGSPACE_BASE, DEFAULT_LOGSPACE_LENGTH
     public :: stdlib_meshgrid_ij, stdlib_meshgrid_xy
@@ -34,6 +34,26 @@ module stdlib_math
         module procedure clip_sp
         module procedure clip_dp
     end interface clip
+
+    !> Swap the values of the lhs and rhs arguments
+    !> ([Specification](../page/specs/stdlib_math.html#swap_subroutine))
+    !>
+    !> Version: experimental
+    interface swap
+      module procedure :: swap_int8
+      module procedure :: swap_int16
+      module procedure :: swap_int32
+      module procedure :: swap_int64
+      module procedure :: swap_sp
+      module procedure :: swap_dp
+      module procedure :: swap_bitset_64
+      module procedure :: swap_bitset_large
+      module procedure :: swap_csp
+      module procedure :: swap_cdp
+      module procedure :: swap_bool
+      module procedure :: swap_str
+      module procedure :: swap_stt
+    end interface
 
     !> Returns the greatest common divisor of two integers
     !> ([Specification](../page/specs/stdlib_math.html#gcd))
@@ -1604,5 +1624,86 @@ contains
         end do
     end function gcd_int64
 
+
+    elemental subroutine swap_int8(lhs, rhs)
+        integer(int8), intent(inout) :: lhs, rhs
+        integer(int8) :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_int16(lhs, rhs)
+        integer(int16), intent(inout) :: lhs, rhs
+        integer(int16) :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_int32(lhs, rhs)
+        integer(int32), intent(inout) :: lhs, rhs
+        integer(int32) :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_int64(lhs, rhs)
+        integer(int64), intent(inout) :: lhs, rhs
+        integer(int64) :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_sp(lhs, rhs)
+        real(sp), intent(inout) :: lhs, rhs
+        real(sp) :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_dp(lhs, rhs)
+        real(dp), intent(inout) :: lhs, rhs
+        real(dp) :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_bitset_64(lhs, rhs)
+        type(bitset_64), intent(inout) :: lhs, rhs
+        type(bitset_64) :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_bitset_large(lhs, rhs)
+        type(bitset_large), intent(inout) :: lhs, rhs
+        type(bitset_large) :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+
+    elemental subroutine swap_csp(lhs, rhs)
+        complex(sp), intent(inout) :: lhs, rhs
+        complex(sp) :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_cdp(lhs, rhs)
+        complex(dp), intent(inout) :: lhs, rhs
+        complex(dp) :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+
+    elemental subroutine swap_bool(lhs, rhs)
+        logical, intent(inout) :: lhs, rhs
+        logical :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_str(lhs,rhs)
+        character(*), intent(inout) :: lhs, rhs
+        character(len=max(len(lhs), len(rhs))) :: temp
+        temp = lhs ; lhs = rhs ; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_stt(lhs,rhs)
+        use stdlib_string_type, only: string_type
+        type(string_type), intent(inout) :: lhs, rhs
+        type(string_type) :: temp
+        temp = lhs ; lhs = rhs ; rhs = temp
+    end subroutine
     
 end module stdlib_math

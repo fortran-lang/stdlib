@@ -3,7 +3,7 @@
 
 module test_stdlib_math
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_math, only: clip, arg, argd, argpi, arange, is_close, all_close, diff, &
+    use stdlib_math, only: clip, swap, arg, argd, argpi, arange, is_close, all_close, diff, &
                            arange, deg2rad, rad2deg
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none
@@ -36,6 +36,18 @@ contains
             new_unittest("clip-real-quad", test_clip_rqp), &
             new_unittest("clip-real-quad-bounds", test_clip_rqp_bounds) &
             
+            !> Tests swap
+            , new_unittest("swap_int8", test_swap_int8) &
+            , new_unittest("swap_int16", test_swap_int16) &
+            , new_unittest("swap_int32", test_swap_int32) &
+            , new_unittest("swap_int64", test_swap_int64) &
+            , new_unittest("swap_sp", test_swap_sp) &
+            , new_unittest("swap_dp", test_swap_dp) &
+            , new_unittest("swap_csp", test_swap_csp) &
+            , new_unittest("swap_cdp", test_swap_cdp) &
+            , new_unittest("swap_str", test_swap_str) &
+            , new_unittest("swap_stt", test_swap_stt) &
+
             !> Tests for arg/argd/argpi
             , new_unittest("arg-cmplx-sp", test_arg_sp) &
             , new_unittest("argd-cmplx-sp", test_argd_sp) &
@@ -229,6 +241,282 @@ contains
         call skip_test(error, "Quadruple precision is not enabled")
 
     end subroutine test_clip_rqp_bounds
+
+    subroutine test_swap_int8(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer(int8) :: x(3), y(3)
+        
+        x = [integer(int8) :: 1, 2, 3]
+        y = [integer(int8) :: 4, 5, 6]
+
+        call swap(x,y)
+        
+        call check(error, all( x == [integer(int8) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+        call check(error, all( y == [integer(int8) :: 1, 2, 3] ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+
+        call check(error, all( x == [integer(int8) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+    end subroutine test_swap_int8
+    subroutine test_swap_int16(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer(int16) :: x(3), y(3)
+        
+        x = [integer(int16) :: 1, 2, 3]
+        y = [integer(int16) :: 4, 5, 6]
+
+        call swap(x,y)
+        
+        call check(error, all( x == [integer(int16) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+        call check(error, all( y == [integer(int16) :: 1, 2, 3] ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+
+        call check(error, all( x == [integer(int16) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+    end subroutine test_swap_int16
+    subroutine test_swap_int32(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer(int32) :: x(3), y(3)
+        
+        x = [integer(int32) :: 1, 2, 3]
+        y = [integer(int32) :: 4, 5, 6]
+
+        call swap(x,y)
+        
+        call check(error, all( x == [integer(int32) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+        call check(error, all( y == [integer(int32) :: 1, 2, 3] ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+
+        call check(error, all( x == [integer(int32) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+    end subroutine test_swap_int32
+    subroutine test_swap_int64(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer(int64) :: x(3), y(3)
+        
+        x = [integer(int64) :: 1, 2, 3]
+        y = [integer(int64) :: 4, 5, 6]
+
+        call swap(x,y)
+        
+        call check(error, all( x == [integer(int64) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+        call check(error, all( y == [integer(int64) :: 1, 2, 3] ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+
+        call check(error, all( x == [integer(int64) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+    end subroutine test_swap_int64
+    subroutine test_swap_sp(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(sp) :: x(3), y(3)
+        
+        x = [real(sp) :: 1, 2, 3]
+        y = [real(sp) :: 4, 5, 6]
+
+        call swap(x,y)
+        
+        call check(error, all( x == [real(sp) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+        call check(error, all( y == [real(sp) :: 1, 2, 3] ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+
+        call check(error, all( x == [real(sp) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+    end subroutine test_swap_sp
+    subroutine test_swap_dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(dp) :: x(3), y(3)
+        
+        x = [real(dp) :: 1, 2, 3]
+        y = [real(dp) :: 4, 5, 6]
+
+        call swap(x,y)
+        
+        call check(error, all( x == [real(dp) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+        call check(error, all( y == [real(dp) :: 1, 2, 3] ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+
+        call check(error, all( x == [real(dp) :: 4, 5, 6] ) )
+        if (allocated(error)) return
+    end subroutine test_swap_dp
+
+    subroutine test_swap_csp(error)
+        type(error_type), allocatable, intent(out) :: error
+        complex(sp) :: x(3), y(3)
+        
+        x = cmplx( [1, 2, 3] , [4, 5, 6] )
+        y = cmplx( [4, 5, 6] , [1, 2, 3] )
+
+        call swap(x,y)
+        
+        call check(error, all( x == cmplx( [4, 5, 6] , [1, 2, 3] ) ) )
+        if (allocated(error)) return
+        call check(error, all( y == cmplx( [1, 2, 3] , [4, 5, 6] ) ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, all( x == cmplx( [4, 5, 6] , [1, 2, 3] ) ) )
+        if (allocated(error)) return
+    end subroutine test_swap_csp
+    subroutine test_swap_cdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        complex(dp) :: x(3), y(3)
+        
+        x = cmplx( [1, 2, 3] , [4, 5, 6] )
+        y = cmplx( [4, 5, 6] , [1, 2, 3] )
+
+        call swap(x,y)
+        
+        call check(error, all( x == cmplx( [4, 5, 6] , [1, 2, 3] ) ) )
+        if (allocated(error)) return
+        call check(error, all( y == cmplx( [1, 2, 3] , [4, 5, 6] ) ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, all( x == cmplx( [4, 5, 6] , [1, 2, 3] ) ) )
+        if (allocated(error)) return
+    end subroutine test_swap_cdp
+
+    subroutine test_swap_str(error)
+        type(error_type), allocatable, intent(out) :: error
+        block
+            character(5) :: x(2), y(2)
+            
+            x = ['abcde','fghij'] 
+            y = ['fghij','abcde']
+
+            call swap(x,y)
+            
+            call check(error, all( x == ['fghij','abcde'] ) )
+            if (allocated(error)) return
+            call check(error, all( y == ['abcde','fghij']  ) )
+            if (allocated(error)) return
+
+            ! check self swap
+            call swap(x,x)
+            
+            call check(error, all( x == ['fghij','abcde'] ) )
+            if (allocated(error)) return
+        end block
+
+        block
+            character(4) :: x
+            character(6) :: y
+            
+            x = 'abcd'
+            y = 'efghij'
+            call swap(x,y)
+            
+            call check(error, x == 'efgh' )
+            if (allocated(error)) return
+            call check(error, y(1:6) == 'abcd  ' )
+            if (allocated(error)) return
+
+            x = 'abcd'
+            y = 'efghij'
+            call swap(x,y(1:4))
+            
+            call check(error, x == 'efgh' )
+            if (allocated(error)) return
+            call check(error, y == 'abcdij' )
+            if (allocated(error)) return
+        end block
+    end subroutine test_swap_str
+
+    subroutine test_swap_stt(error)
+        use stdlib_string_type
+        type(error_type), allocatable, intent(out) :: error
+        type(string_type) :: x(2), y(2)
+        
+        x = ['abcde','fghij'] 
+        y = ['fghij','abcde']
+
+        call swap(x,y)
+        
+        call check(error, all( x == ['fghij','abcde'] ) )
+        if (allocated(error)) return
+        call check(error, all( y == ['abcde','fghij']  ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, all( x == ['fghij','abcde'] ) )
+        if (allocated(error)) return
+    end subroutine test_swap_stt
+
+    subroutine test_swap_bitset_64(error)
+        use stdlib_bitsets
+        type(error_type), allocatable, intent(out) :: error
+        type(bitset_64) :: x, y, u, v
+        
+        x = [.true.,.false.,.true.,.false.] 
+        u = x
+        y = [.false.,.true.,.false.,.true.]
+        v = y
+        call swap(x,y)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+        call check(error, y == u  )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+    end subroutine test_swap_bitset_64
+
+    subroutine test_swap_bitset_large(error)
+        use stdlib_bitsets
+        type(error_type), allocatable, intent(out) :: error
+        type(bitset_large) :: x, y, u, v
+        
+        x = [.true.,.false.,.true.,.false.] 
+        u = x
+        y = [.false.,.true.,.false.,.true.]
+        v = y
+        call swap(x,y)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+        call check(error, y == u )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+    end subroutine test_swap_bitset_large
 
     subroutine test_arg_sp(error)
         type(error_type), allocatable, intent(out) :: error
