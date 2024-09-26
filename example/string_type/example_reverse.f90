@@ -1,5 +1,5 @@
 program example_reverse
-  use stdlib_string_type
+  use stdlib_strings
   implicit none
   type(string_type) :: string, reverse_string
 
