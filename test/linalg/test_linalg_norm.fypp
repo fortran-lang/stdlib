@@ -40,6 +40,7 @@ module test_linalg_norm
         #:if rt.startswith('real')
         tests = [tests,new_unittest("norm2_${ri}$_${rank}$d",test_norm2_${ri}$_${rank}$d)]        
         #:endif
+        tests = [tests,new_unittest("maxabs_${ri}$_${rank}$d",test_maxabs_${ri}$_${rank}$d)]        
         tests = [tests,new_unittest("norm_dimmed_${ri}$_${rank}$d",test_norm_dimmed_${ri}$_${rank}$d)]        
         #:endfor
         #:endfor
@@ -135,9 +136,9 @@ module test_linalg_norm
         
     end subroutine test_norm_${ri}$_${rank}$d
     #:endfor
-
-    !> Test Euclidean norm; compare with Fortran intrinsic norm2 for reals
+    
     #:for rank in range(2, MAXRANK)
+    !> Test Euclidean norm; compare with Fortran intrinsic norm2 for reals
     #:if rt.startswith('real')
     subroutine test_norm2_${ri}$_${rank}$d(error)
         type(error_type), allocatable, intent(out) :: error
@@ -177,6 +178,45 @@ module test_linalg_norm
         
     end subroutine test_norm2_${ri}$_${rank}$d
     #:endif
+    
+    !> Test Infinity norm; compare with Fortran intrinsic max(abs(a))
+    subroutine test_maxabs_${ri}$_${rank}$d(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp) :: j,dim
+        integer(ilp), parameter :: ndim = ${rank}$
+        integer(ilp), parameter :: n   = 2_ilp**ndim
+        real(${rk}$), parameter :: tol = 10*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$, allocatable :: a(:), b${ranksuffix(rank)}$
+        intrinsic :: maxval, abs
+        character(128) :: msg
+        
+        allocate(a(n), b${fixedranksuffix(rank,2)}$)
+        
+        ! Init as a range,but with small elements such that all power norms will 
+        ! never overflow, even in single precision
+        a = [(0.01_${rk}$*(j-n/2_ilp), j=1_ilp,n)]        
+        b = reshape(a, shape(b))
+        
+        ! Test some norms
+        call check(error,abs(norm(a,'inf') - maxval(abs(a)))<tol*norm(a,'inf'),&
+                         'Infinity norm does not match ${rt}$ `maxval(abs(.))` intrinsics')
+        if (allocated(error)) return               
+        
+        ! Infinity norms
+        call check(error,abs(norm(b,'inf')-maxval(abs(b)))<tol*norm(b,'inf'),&
+                         'Dimmed Infinity norm does not match ${rt}$ `maxval(abs(.))` intrinsics')
+        if (allocated(error)) return                       
+        
+        ! Test norm as collapsed around dimension
+        do dim = 1, ndim
+            write(msg,"('Not all dim=',i0,' Infinity norms match ${rt}$ `maxval(abs(.))` intrinsics')") dim
+            call check(error,all(abs(norm(b,'inf',dim)-maxval(abs(b),dim))<tol*max(1.0_${rk}$,norm(b,'inf',dim))),&
+                       trim(msg)) 
+            if (allocated(error)) return             
+        end do
+        
+    end subroutine test_maxabs_${ri}$_${rank}$d    
     
     ! Test norm along a dimension and compare it against individually evaluated norms
     subroutine test_norm_dimmed_${ri}$_${rank}$d(error)
