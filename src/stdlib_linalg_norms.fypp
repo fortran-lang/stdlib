@@ -119,8 +119,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
     end function stride_1d_${ri}$
     
-    ! Private internal implementation: 1D
-    pure subroutine internal_norm_1D_${ri}$(sze, a, nrm, norm_request, err)
+    ! Private internal 1D implementation. This has to be used only internally, 
+    ! when all inputs are already checked for correctness.
+    pure subroutine internal_norm_1D_${ri}$(sze, a, nrm, norm_request)
         !> Input matrix length
         integer(ilp), intent(in) :: sze
         !> Input contiguous 1-d matrix a(*)
@@ -129,8 +130,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         real(${rk}$), intent(out) :: nrm
         !> Internal matrix request 
         integer(ilp), intent(in) :: norm_request
-        !> State return flag. On error if not requested, the code will stop
-        type(linalg_state_type), intent(inout) :: err         
         
         integer(ilp) :: i
         real(${rk}$) :: rorder
@@ -233,7 +232,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         endif         
         
         ! Get norm
-        call internal_norm_1D_${ri}$(sze, a, nrm, norm_request, err_)
+        call internal_norm_1D_${ri}$(sze, a, nrm, norm_request)
         call linalg_error_handling(err_,err)
         
     end subroutine norm_${rank}$D_${ii}$_${ri}$
@@ -333,7 +332,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         lda = spe(dim)    
         
         ! Check if input column data is contiguous
-        contiguous_data = dim==1 .or. all(norm_request/=[NORM_ONE,NORM_TWO])   
+        contiguous_data = dim==1
         
         ! Get packed data with the norm dimension as the first dimension
         if (.not.contiguous_data) then 
@@ -345,40 +344,16 @@ submodule(stdlib_linalg) stdlib_linalg_norms
             apack = reshape(a, shape=spack, order=iperm)                 
             
 ${loop_variables_start('j', 'apack', rank-1, 1," "*12)}$
-            select case(norm_request)            
-                case(NORM_ONE)                
-                    nrm(${loop_variables('j',rank-1,1)}$) = &
-                        asum(lda,apack(:, ${loop_variables('j',rank-1,1)}$),incx=1_ilp)
-                case(NORM_TWO)                
-                    nrm(${loop_variables('j',rank-1,1)}$) = &
-                        nrm2(lda,apack(:, ${loop_variables('j',rank-1,1)}$),incx=1_ilp)                    
-            end select            
+                call internal_norm_1D_${ri}$(lda, apack(:, ${loop_variables('j',rank-1,1)}$), &
+                    nrm(${loop_variables('j',rank-1,1)}$), norm_request)
 ${loop_variables_end(rank-1," "*12)}$            
             
         else
             
-            select case(norm_request)      
-                case(NORM_ONE)             
-${loop_variables_start('j', 'a', rank-1, 1," "*20)}$                    
-                        nrm(${loop_variables('j',rank-1,1)}$) = &
-                            asum(lda,a(:, ${loop_variables('j',rank-1,1)}$),incx=1_ilp)
-${loop_variables_end(rank-1," "*20)}$                                    
-                case(NORM_TWO)                
-${loop_variables_start('j', 'a', rank-1, 1," "*20)}$                    
-                        nrm(${loop_variables('j',rank-1,1)}$) = &
-                            nrm2(lda,a(:, ${loop_variables('j',rank-1,1)}$),incx=1_ilp)                    
-${loop_variables_end(rank-1," "*20)}$                                    
-                case(NORM_INF)
-                    nrm = maxval( abs(a) , dim = dim )
-                case(NORM_MINUSINF)
-                    nrm = minval( abs(a) , dim = dim )
-                case (NORM_POW_FIRST:NORM_POW_LAST)
-                    rorder = 1.0_${rk}$ / norm_request
-                    nrm = sum( abs(a) ** norm_request , dim = dim ) ** rorder
-                case default
-                    err_ = linalg_state_type(this,LINALG_INTERNAL_ERROR,'invalid norm type after checking')
-                    call linalg_error_handling(err_,err)            
-            end select            
+${loop_variables_start('j', 'a', rank-1, 1," "*12)}$
+                call internal_norm_1D_${ri}$(lda, a(:, ${loop_variables('j',rank-1,1)}$), &
+                    nrm(${loop_variables('j',rank-1,1)}$), norm_request)
+${loop_variables_end(rank-1," "*12)}$               
             
         endif        
         
