@@ -8,8 +8,8 @@
 ! Vector norms
 submodule(stdlib_linalg) stdlib_linalg_norms
      use stdlib_linalg_constants
-     use stdlib_linalg_blas, only: nrm2,asum
-     use stdlib_linalg_lapack, only: lange
+     use stdlib_linalg_blas
+     use stdlib_linalg_lapack
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
      use iso_c_binding, only: c_intptr_t,c_char,c_loc
@@ -119,6 +119,47 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
     end function stride_1d_${ri}$
     
+    ! Private internal implementation: 1D
+    pure subroutine internal_norm_1D_${ri}$(sze, a, nrm, norm_request, err)
+        !> Input matrix length
+        integer(ilp), intent(in) :: sze
+        !> Input contiguous 1-d matrix a(*)
+        ${rt}$, intent(in) :: a(sze)
+        !> Norm of the matrix.
+        real(${rk}$), intent(out) :: nrm
+        !> Internal matrix request 
+        integer(ilp), intent(in) :: norm_request
+        !> State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(inout) :: err         
+        
+        integer(ilp) :: i
+        real(${rk}$) :: rorder
+        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
+        
+        ! Initialize norm to zero
+        nrm = 0.0_${rk}$
+        
+        select case(norm_request)
+            case(NORM_ONE)
+                nrm = asum(sze,a,incx=1_ilp)
+            case(NORM_TWO)            
+                nrm = nrm2(sze,a,incx=1_ilp)
+            case(NORM_INF)
+                #:if rt.startswith('complex')
+                ! The default BLAS stdlib_i${ri}$amax uses |Re(.)|+|Im(.)|. Do not use it.
+                i = stdlib_i${ri}$max1(sze,a,incx=1_ilp)
+                #:else
+                i = stdlib_i${ri}$amax(sze,a,incx=1_ilp)
+                #:endif                     
+                nrm = abs(a(i))
+            case(NORM_MINUSINF)
+                nrm = minval( abs(a) )
+            case (NORM_POW_FIRST:NORM_POW_LAST)
+                rorder = 1.0_${rk}$ / norm_request
+                nrm = sum( abs(a) ** norm_request ) ** rorder
+        end select
+        
+    end subroutine internal_norm_1D_${ri}$     
     
     #:for it,ii in INPUT_OPTIONS
 
@@ -155,8 +196,8 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         call norm_${rank}$D_${ii}$_${ri}$(a, nrm=nrm, order=order, err=err)
         
     end function stdlib_linalg_norm_${rank}$D_order_err_${ii}$_${ri}$
-    
-    ! Internal implementation
+
+    ! Internal implementation: ${rank}$-d    
     pure module subroutine norm_${rank}$D_${ii}$_${ri}$(a, nrm, order, err)
         !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
         ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
@@ -168,7 +209,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err         
         
         type(linalg_state_type) :: err_
-        
         integer(ilp) :: sze,norm_request
         real(${rk}$) :: rorder
         intrinsic :: abs, sum, sqrt, maxval, minval, conjg
@@ -190,34 +230,11 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         if (err_%error()) then 
             call linalg_error_handling(err_,err)
             return
-        endif          
+        endif         
         
-        select case(norm_request)
-            case(NORM_ONE)
-                #:if rank==1
-                nrm = asum(sze,a,incx=1_ilp)
-                #:else
-                nrm = sum( abs(a) )
-                #:endif
-            case(NORM_TWO)            
-                #:if rank==1
-                nrm = nrm2(sze,a,incx=1_ilp)
-                #:elif rt.startswith('complex')
-                nrm = sqrt( real( sum( a * conjg(a) ), ${rk}$) )                
-                #:else
-                nrm = norm2(a)
-                #:endif             
-            case(NORM_INF)
-                nrm = maxval( abs(a) )
-            case(NORM_MINUSINF)
-                nrm = minval( abs(a) )
-            case (NORM_POW_FIRST:NORM_POW_LAST)
-                rorder = 1.0_${rk}$ / norm_request
-                nrm = sum( abs(a) ** norm_request ) ** rorder
-            case default
-                err_ = linalg_state_type(this,LINALG_INTERNAL_ERROR,'invalid norm type after checking')
-                call linalg_error_handling(err_,err)
-        end select
+        ! Get norm
+        call internal_norm_1D_${ri}$(sze, a, nrm, norm_request, err_)
+        call linalg_error_handling(err_,err)
         
     end subroutine norm_${rank}$D_${ii}$_${ri}$
 
