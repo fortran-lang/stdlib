@@ -528,9 +528,9 @@ contains
     ! Log(n!)
     !
         ${t1}$, intent(in) :: n
-        real :: res
+        real(dp) :: res
         ${t1}$, parameter :: zero = 0_${k1}$, one = 1_${k1}$, two = 2_${k1}$
-        real, parameter :: zero_k2 = 0.0
+        real(dp), parameter :: zero_dp = 0.0_dp
 
         if(n < zero) call error_stop("Error(l_factorial): Logarithm of"        &
             //" factorial function argument must be non-negative")
@@ -539,11 +539,11 @@ contains
 
         case (zero)
 
-            res = zero_k2
+            res = zero_dp
 
         case (one)
 
-            res = zero_k2
+            res = zero_dp
 
         case (two : )
 
