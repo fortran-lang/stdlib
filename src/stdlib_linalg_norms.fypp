@@ -264,7 +264,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
     ! Internal implementation 
     pure module subroutine norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$(a, nrm, order, dim, err)
         !> Input matrix a[..]
-        ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
+        ${rt}$, intent(in) :: a${ranksuffix(rank)}$
         !> Dimension to collapse by computing the norm w.r.t other dimensions
         !  (dim must be defined before it is used for `nrm`)
         integer(ilp), intent(in) :: dim        
@@ -276,11 +276,17 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err           
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: sze,norm_request
+        integer(ilp) :: sze,lda,norm_request,${loop_variables('j',rank-1,1)}$
+        logical :: contiguous_data
         real(${rk}$) :: rorder
+        integer(ilp), dimension(${rank}$) :: spe,spack,perm,iperm
+        integer(ilp), dimension(${rank}$), parameter :: dim_range = [(lda,lda=1_ilp,${rank}$_ilp)]
+        ${rt}$, allocatable :: apack${ranksuffix(rank)}$
         intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
-        sze = size(a,kind=ilp)
+        ! Input matrix properties
+        sze = size (a,kind=ilp)
+        spe = shape(a,kind=ilp)
         
         ! Initialize norm to zero
         nrm = 0.0_${rk}$
@@ -304,28 +310,60 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         if (err_%error()) then 
             call linalg_error_handling(err_,err)
             return
-        endif                   
+        endif     
         
-        select case(norm_request)            
-            case(NORM_ONE)
-                nrm = sum( abs(a) , dim = dim )                
-            case(NORM_TWO)                
-                #:if rt.startswith('complex')
-                nrm = sqrt( real( sum( a * conjg(a) , dim = dim ), ${rk}$) )
-                #:else
-                nrm = norm2( a , dim = dim )
-                #:endif
-            case(NORM_INF)
-                nrm = maxval( abs(a) , dim = dim )
-            case(NORM_MINUSINF)
-                nrm = minval( abs(a) , dim = dim )
-            case (NORM_POW_FIRST:NORM_POW_LAST)
-                rorder = 1.0_${rk}$ / norm_request
-                nrm = sum( abs(a) ** norm_request , dim = dim ) ** rorder
-            case default
-                err_ = linalg_state_type(this,LINALG_INTERNAL_ERROR,'invalid norm type after checking')
-                call linalg_error_handling(err_,err)            
-        end select
+        ! The norm's leading dimension
+        lda = spe(dim)    
+        
+        ! Check if input column data is contiguous
+        contiguous_data = dim==1 .or. all(norm_request/=[NORM_ONE,NORM_TWO])   
+        
+        ! Get packed data with the norm dimension as the first dimension
+        if (.not.contiguous_data) then 
+            
+            ! Permute array to map dim to 1
+            perm = [dim,pack(dim_range,dim_range/=dim)]
+            iperm(perm) = dim_range            
+            spack = spe(perm)            
+            apack = reshape(a, shape=spack, order=iperm)                 
+            
+${loop_variables_start('j', 'apack', rank-1, 1," "*12)}$
+            select case(norm_request)            
+                case(NORM_ONE)                
+                    nrm(${loop_variables('j',rank-1,1)}$) = &
+                        asum(lda,apack(:, ${loop_variables('j',rank-1,1)}$),incx=1_ilp)
+                case(NORM_TWO)                
+                    nrm(${loop_variables('j',rank-1,1)}$) = &
+                        nrm2(lda,apack(:, ${loop_variables('j',rank-1,1)}$),incx=1_ilp)                    
+            end select            
+${loop_variables_end(rank-1," "*12)}$            
+            
+        else
+            
+            select case(norm_request)      
+                case(NORM_ONE)             
+${loop_variables_start('j', 'a', rank-1, 1," "*20)}$                    
+                        nrm(${loop_variables('j',rank-1,1)}$) = &
+                            asum(lda,a(:, ${loop_variables('j',rank-1,1)}$),incx=1_ilp)
+${loop_variables_end(rank-1," "*20)}$                                    
+                case(NORM_TWO)                
+${loop_variables_start('j', 'a', rank-1, 1," "*20)}$                    
+                        nrm(${loop_variables('j',rank-1,1)}$) = &
+                            nrm2(lda,a(:, ${loop_variables('j',rank-1,1)}$),incx=1_ilp)                    
+${loop_variables_end(rank-1," "*20)}$                                    
+                case(NORM_INF)
+                    nrm = maxval( abs(a) , dim = dim )
+                case(NORM_MINUSINF)
+                    nrm = minval( abs(a) , dim = dim )
+                case (NORM_POW_FIRST:NORM_POW_LAST)
+                    rorder = 1.0_${rk}$ / norm_request
+                    nrm = sum( abs(a) ** norm_request , dim = dim ) ** rorder
+                case default
+                    err_ = linalg_state_type(this,LINALG_INTERNAL_ERROR,'invalid norm type after checking')
+                    call linalg_error_handling(err_,err)            
+            end select            
+            
+        endif        
         
     end subroutine norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$
 

@@ -159,17 +159,17 @@ module test_linalg_norm
         
         ! Test some norms
         call check(error,abs(norm(a,2) - norm2(a))<tol*norm(a,2),&
-                         'Euclidean norm does not match `norm2` intrinsic')
+                         'Euclidean norm does not match ${rt}$ `norm2` intrinsic')
         if (allocated(error)) return               
         
         ! Infinity norms
         call check(error,abs(norm(b,2)-norm2(b))<tol*norm(b,2),&
-                         'Dimmed Euclidean norm does not match `norm2` intrinsic')
+                         'Dimmed Euclidean norm does not match ${rt}$ `norm2` intrinsic')
         if (allocated(error)) return                       
         
         ! Test norm as collapsed around dimension
         do dim = 1, ndim
-            write(msg,"('Not all dim=',i0,' Euclidean norms match `norm2` intrinsic')") dim
+            write(msg,"('Not all dim=',i0,' Euclidean norms match ${rt}$ `norm2` intrinsic')") dim
             call check(error,all(abs(norm(b,2,dim)-norm2(b,dim))<tol*max(1.0_${rk}$,norm(b,2,dim))),&
                        trim(msg)) 
             if (allocated(error)) return             
