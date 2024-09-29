@@ -1,4 +1,5 @@
 #:include "common.fypp"
+#:set RANKS = range(2, MAXRANK + 1)
 module stdlib_specialfunctions
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
 
@@ -271,25 +272,18 @@ module stdlib_specialfunctions
         !!
         !! Softmax function. Available for ranks 1 to 4
         #:for rk, rt in REAL_KINDS_TYPES
-        pure module function Softmax_r1_${rk}$( x ) result( y )
+        pure module function Softmax_r1_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x(:)
             ${rt}$ :: y(size(x))
-        end function
-        pure module function Softmax_r2_${rk}$( x , dim ) result( y )
-            ${rt}$, intent(in) :: x(:,:)
-            ${rt}$ :: y(size(x,dim=1),size(x,dim=2))
             integer, intent(in), optional :: dim
         end function
-        pure module function Softmax_r3_${rk}$( x , dim ) result( y )
-            ${rt}$, intent(in) :: x(:,:,:)
-            ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3))
+        #:for rank in RANKS
+        pure module function Softmax_r${rank}$_${rk}$( x , dim ) result( y )
+            ${rt}$, intent(in) :: x${ranksuffix(rank)}$
+            ${rt}$ :: y${shape('x', rank)}$
             integer, intent(in), optional :: dim
         end function
-        pure module function Softmax_r4_${rk}$( x , dim ) result( y )
-            ${rt}$, intent(in) :: x(:,:,:,:)
-            ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3),size(x,dim=4))
-            integer, intent(in), optional :: dim
-        end function
+        #:endfor
         #:endfor
     end interface
     public :: softmax
@@ -303,24 +297,37 @@ module stdlib_specialfunctions
             ${rt}$, intent(in) :: x(:)
             ${rt}$ :: y(size(x))
         end function
-        pure module function Softmax_grad_r2_${rk}$( x , dim ) result( y )
-            ${rt}$, intent(in) :: x(:,:)
-            ${rt}$ :: y(size(x,dim=1),size(x,dim=2))
-            integer, intent(in), optional :: dim
-        end function
-        pure module function Softmax_grad_r3_${rk}$( x , dim ) result( y )
-            ${rt}$, intent(in) :: x(:,:,:)
-            ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3))
-            integer, intent(in), optional :: dim
-        end function
-        pure module function Softmax_grad_r4_${rk}$( x , dim ) result( y )
-            ${rt}$, intent(in) :: x(:,:,:,:)
-            ${rt}$ :: y(size(x,dim=1),size(x,dim=2),size(x,dim=3),size(x,dim=4))
+        #:for rank in RANKS
+        pure module function Softmax_grad_r${rank}$_${rk}$( x , dim ) result( y )
+            ${rt}$, intent(in) :: x${ranksuffix(rank)}$
+            ${rt}$ :: y${shape('x', rank)}$
             integer, intent(in), optional :: dim
         end function
         #:endfor
+        #:endfor
     end interface
     public :: Softmax_grad
+
+    interface LogSoftmax
+        !! Version: experimental
+        !!
+        !! Softmax function. Available for ranks 1 to 4
+        #:for rk, rt in REAL_KINDS_TYPES
+        pure module function LogSoftmax_r1_${rk}$( x, dim ) result( y )
+            ${rt}$, intent(in) :: x(:)
+            ${rt}$ :: y(size(x))
+            integer, intent(in), optional :: dim
+        end function
+        #:for rank in RANKS
+        pure module function LogSoftmax_r${rank}$_${rk}$( x , dim ) result( y )
+            ${rt}$, intent(in) :: x${ranksuffix(rank)}$
+            ${rt}$ :: y${shape('x', rank)}$
+            integer, intent(in), optional :: dim
+        end function
+        #:endfor
+        #:endfor
+    end interface
+    public :: LogSoftmax
 
     interface Softplus
         !! Version: experimental
