@@ -120,7 +120,8 @@ contains
       !!     ...
       !!
       integer :: s
-      integer :: nrow, ncol, i, skiprows_, max_rows_
+      integer :: nrow, ncol, i, ios, skiprows_, max_rows_
+      character(len=128) :: iomsg,msgout
 
       skiprows_ = max(optval(skiprows, 0), 0)
       max_rows_ = optval(max_rows, -1)
@@ -142,7 +143,13 @@ contains
       allocate(d(max_rows_, ncol))
 
       do i = 1, skiprows_
-        read(s, *)
+        read(s, *, iostat=ios, iomsg=iomsg)
+        
+        if (ios/=0) then 
+           write(msgout,1) trim(iomsg),i,trim(filename) 
+           call error_stop(msg=trim(msgout))
+        end if
+        
       end do
       
       ! Default to format used for savetxt if fmt not specified.
@@ -157,16 +164,30 @@ contains
       if ( fmt_ == '*' ) then
         ! Use list directed read if user has specified fmt='*'
         do i = 1, max_rows_
-          read (s,*) d(i, :)
+          read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
+          
+          if (ios/=0) then 
+             write(msgout,1) trim(iomsg),i,trim(filename) 
+             call error_stop(msg=trim(msgout))
+          end if          
+          
         enddo
       else
         ! Otherwise pass default or user specified fmt string.  
         do i = 1, max_rows_
-          read (s,fmt_) d(i, :)
+          read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
+          
+          if (ios/=0) then 
+             write(msgout,1) trim(iomsg),i,trim(filename) 
+             call error_stop(msg=trim(msgout))
+          end if             
+          
         enddo
       endif
 
       close(s)
+      
+      1 format('loadtxt: error <',a,'> reading line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_${t1[0]}$${k1}$
   #:endfor
@@ -193,20 +214,31 @@ contains
       !!```
       !!
 
-      integer :: s, i
+      integer :: s, i, ios
+      character(len=128) :: iomsg,msgout      
       s = open(filename, "w")
       do i = 1, size(d, 1)
         #:if 'real' in t1
-          write(s, "(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",:,1x))") d(i, :)
+          write(s, "(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",:,1x))", &
         #:elif 'complex' in t1
-          write(s, "(*"//FMT_COMPLEX_${k1}$(1:len(FMT_COMPLEX_${k1}$)-1)//",:,1x))") d(i, :)
+          write(s, "(*"//FMT_COMPLEX_${k1}$(1:len(FMT_COMPLEX_${k1}$)-1)//",:,1x))", &
         #:elif 'integer' in t1
-          write(s, "(*"//FMT_INT(1:len(FMT_INT)-1)//",:,1x))") d(i, :)
+          write(s, "(*"//FMT_INT(1:len(FMT_INT)-1)//",:,1x))", &
         #:else
-          write(s, *) d(i, :)
+          write(s, *, &
         #:endif
+                iostat=ios,iomsg=iomsg) d(i, :)
+        
+        if (ios/=0) then 
+           write(msgout,1) trim(iomsg),i,trim(filename) 
+           call error_stop(msg=trim(msgout))
+        end if           
+        
       end do
       close(s)
+      
+      1 format('savetxt: error <',a,'> writing line ',i0,' of ',a,'.')
+      
     end subroutine savetxt_${t1[0]}$${k1}$
   #:endfor
 
