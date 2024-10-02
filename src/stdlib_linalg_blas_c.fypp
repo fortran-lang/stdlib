@@ -2549,8 +2549,6 @@ module stdlib_linalg_blas_c
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-        ! Constants 
-        integer, parameter :: wp = kind(1._sp)
         ! Scaling Constants 
         ! Scalar Arguments 
         real(sp), intent(out) :: c
