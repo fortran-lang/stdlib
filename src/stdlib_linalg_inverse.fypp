@@ -121,7 +121,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
              inva = a
 
              !> Compute matrix inverse
-             call stdlib_linalg_invert_inplace_${ri}$(inva,err=err0)      
+             call stdlib_linalg_invert_inplace_${ri}$(inva,pivot=pivot,err=err0)      
             
          end if         
          
