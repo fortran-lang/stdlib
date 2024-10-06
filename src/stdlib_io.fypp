@@ -172,7 +172,7 @@ contains
           
         enddo
       else
-        ! Otherwise pass default or user specified fmt string.  
+        ! Otherwise pass default or user specified fmt string.
         do i = 1, max_rows_
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
