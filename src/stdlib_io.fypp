@@ -120,7 +120,7 @@ contains
       !!
       integer :: s
       integer :: nrow, ncol, i, ios, skiprows_, max_rows_
-      character(len=128) :: iomsg,msgout
+      character(len=128) :: iomsg, msgout
 
       skiprows_ = max(optval(skiprows, 0), 0)
       max_rows_ = optval(max_rows, -1)
