@@ -1066,9 +1066,9 @@ contains
     ! Log(n!)
     !
         integer(int8), intent(in) :: n
-        real :: res
+        real(dp) :: res
         integer(int8), parameter :: zero = 0_int8, one = 1_int8, two = 2_int8
-        real, parameter :: zero_k2 = 0.0
+        real(dp), parameter :: zero_dp = 0.0_dp
 
         if(n < zero) call error_stop("Error(l_factorial): Logarithm of"        &
             //" factorial function argument must be non-negative")
@@ -1077,15 +1077,15 @@ contains
 
         case (zero)
 
-            res = zero_k2
+            res = zero_dp
 
         case (one)
 
-            res = zero_k2
+            res = zero_dp
 
         case (two : )
 
-            res = l_gamma(n + 1, 1.0D0)
+            res = l_gamma(n + 1, 1.0_dp)
 
         end select
     end function l_factorial_iint8
@@ -1095,9 +1095,9 @@ contains
     ! Log(n!)
     !
         integer(int16), intent(in) :: n
-        real :: res
+        real(dp) :: res
         integer(int16), parameter :: zero = 0_int16, one = 1_int16, two = 2_int16
-        real, parameter :: zero_k2 = 0.0
+        real(dp), parameter :: zero_dp = 0.0_dp
 
         if(n < zero) call error_stop("Error(l_factorial): Logarithm of"        &
             //" factorial function argument must be non-negative")
@@ -1106,15 +1106,15 @@ contains
 
         case (zero)
 
-            res = zero_k2
+            res = zero_dp
 
         case (one)
 
-            res = zero_k2
+            res = zero_dp
 
         case (two : )
 
-            res = l_gamma(n + 1, 1.0D0)
+            res = l_gamma(n + 1, 1.0_dp)
 
         end select
     end function l_factorial_iint16
@@ -1124,9 +1124,9 @@ contains
     ! Log(n!)
     !
         integer(int32), intent(in) :: n
-        real :: res
+        real(dp) :: res
         integer(int32), parameter :: zero = 0_int32, one = 1_int32, two = 2_int32
-        real, parameter :: zero_k2 = 0.0
+        real(dp), parameter :: zero_dp = 0.0_dp
 
         if(n < zero) call error_stop("Error(l_factorial): Logarithm of"        &
             //" factorial function argument must be non-negative")
@@ -1135,15 +1135,15 @@ contains
 
         case (zero)
 
-            res = zero_k2
+            res = zero_dp
 
         case (one)
 
-            res = zero_k2
+            res = zero_dp
 
         case (two : )
 
-            res = l_gamma(n + 1, 1.0D0)
+            res = l_gamma(n + 1, 1.0_dp)
 
         end select
     end function l_factorial_iint32
@@ -1153,9 +1153,9 @@ contains
     ! Log(n!)
     !
         integer(int64), intent(in) :: n
-        real :: res
+        real(dp) :: res
         integer(int64), parameter :: zero = 0_int64, one = 1_int64, two = 2_int64
-        real, parameter :: zero_k2 = 0.0
+        real(dp), parameter :: zero_dp = 0.0_dp
 
         if(n < zero) call error_stop("Error(l_factorial): Logarithm of"        &
             //" factorial function argument must be non-negative")
@@ -1164,15 +1164,15 @@ contains
 
         case (zero)
 
-            res = zero_k2
+            res = zero_dp
 
         case (one)
 
-            res = zero_k2
+            res = zero_dp
 
         case (two : )
 
-            res = l_gamma(n + 1, 1.0D0)
+            res = l_gamma(n + 1, 1.0_dp)
 
         end select
     end function l_factorial_iint64

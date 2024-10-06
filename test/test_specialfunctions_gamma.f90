@@ -194,14 +194,14 @@ contains
 
         integer(int8), parameter :: x(n) = [0_int8, 1_int8, 2_int8, 4_int8,   &
                                      5_int8, 100_int8]
-        real(sp), parameter :: ans(n) = [0.0, 0.0, 0.693147180, 3.17805383,    &
-                                         4.78749174, 3.63739376e2]
+        real(dp), parameter :: ans(n) = [0.0_dp, 0.0_dp, 0.69314718055994_dp, 3.17805383034794_dp,    &
+                                         4.78749174278204_dp, 3.637393755555e2_dp]
 
 
         do i = 1, n
 
             call check(error, log_factorial(x(i)), ans(i), "Integer kind "     &
-                       //"int8 failed", thr = tol_sp, rel = .true.)
+                       //"int8 failed", thr = tol_dp, rel = .true.)
 
         end do
     end subroutine test_logfact_iint8
@@ -215,14 +215,13 @@ contains
 
         integer(int16), parameter :: x(n) = [0_int16, 1_int16, 2_int16, 4_int16,   &
                                      7_int16, 500_int16]
-        real(sp), parameter :: ans(n) = [0.0, 0.0, 0.693147180, 3.17805383,    &
-                                         8.52516136, 2.61133046e3]
-
+        real(dp), parameter :: ans(n) = [0.0_dp, 0.0_dp, 0.69314718055994_dp, 3.17805383034794_dp,    &
+                                         8.52516136106541_dp, 2.611330458460e3_dp]
 
         do i = 1, n
 
             call check(error, log_factorial(x(i)), ans(i), "Integer kind "     &
-                       //"int16 failed", thr = tol_sp, rel = .true.)
+                       //"int16 failed", thr = tol_dp, rel = .true.)
 
         end do
     end subroutine test_logfact_iint16
@@ -236,14 +235,13 @@ contains
 
         integer(int32), parameter :: x(n) = [0_int32, 1_int32, 2_int32, 4_int32,   &
                                      12_int32, 7000_int32]
-        real(sp), parameter :: ans(n) = [0.0, 0.0, 0.693147180, 3.17805383,    &
-                                         1.99872145e1, 5.49810038e4]
-
+        real(dp), parameter :: ans(n) = [0.0_dp, 0.0_dp, 0.69314718055994_dp, 3.17805383034794_dp,    &
+                                         1.998721449566e1_dp, 5.498100377941e4_dp]
 
         do i = 1, n
 
             call check(error, log_factorial(x(i)), ans(i), "Integer kind "     &
-                       //"int32 failed", thr = tol_sp, rel = .true.)
+                       //"int32 failed", thr = tol_dp, rel = .true.)
 
         end do
     end subroutine test_logfact_iint32
@@ -257,14 +255,13 @@ contains
 
         integer(int64), parameter :: x(n) = [0_int64, 1_int64, 2_int64, 4_int64,   &
                                      20_int64, 90000_int64]
-        real(sp), parameter :: ans(n) = [0.0, 0.0, 0.693147180, 3.17805383,    &
-                                         4.23356165e1, 9.36687468e5]
-
+        real(dp), parameter :: ans(n) = [0.0_dp, 0.0_dp, 0.69314718055994_dp, 3.17805383034794_dp,    &
+                                         4.233561646075e1_dp, 9.366874681600e5_dp]
 
         do i = 1, n
 
             call check(error, log_factorial(x(i)), ans(i), "Integer kind "     &
-                       //"int64 failed", thr = tol_sp, rel = .true.)
+                       //"int64 failed", thr = tol_dp, rel = .true.)
 
         end do
     end subroutine test_logfact_iint64
