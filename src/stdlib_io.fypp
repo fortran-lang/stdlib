@@ -214,7 +214,7 @@ contains
       !!
 
       integer :: s, i, ios
-      character(len=128) :: iomsg,msgout      
+      character(len=128) :: iomsg, msgout
       s = open(filename, "w")
       do i = 1, size(d, 1)
         #:if 'real' in t1
