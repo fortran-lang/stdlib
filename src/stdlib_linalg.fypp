@@ -31,6 +31,8 @@ module stdlib_linalg
   public :: operator(.inv.)
   public :: lstsq
   public :: lstsq_space
+  public :: norm
+  public :: get_norm
   public :: solve
   public :: solve_lu  
   public :: solve_lstsq
@@ -1135,6 +1137,188 @@ module stdlib_linalg
       end function stdlib_linalg_svdvals_${ri}$
     #:endfor             
   end interface svdvals  
+
+
+  #! Allow for integer or character norm input: i.e., norm(a,2) or norm(a, '2')
+  #:set NORM_INPUT_TYPE    = ["character(len=*)","integer(ilp)"]
+  #:set NORM_INPUT_SHORT   = ["char","int"]
+  #:set NORM_INPUT_OPTIONS = list(zip(NORM_INPUT_TYPE,NORM_INPUT_SHORT))
+  ! Vector norms: function interface
+  interface norm
+     !! version: experimental 
+     !!
+     !! Computes the vector norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#norm-computes-the-vector-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Return one of several scalar norm metrics of a `real` or `complex` input array \( A \), 
+     !! that can have any rank. For generic rank-n arrays, the scalar norm over the whole 
+     !! array is returned by default. If `n>=2` and the optional input dimension `dim` is specified, 
+     !! a rank `n-1` array is returned with dimension `dim` collapsed, containing all 1D array norms 
+     !! evaluated along dimension `dim` only.
+     !! 
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the vector norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays may have generic rank from 1 to ${MAXRANK}$.
+     !!
+     !! Norm type input is mandatory, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm \( \sum_i{ \left|a_i\right| } \): `order` = 1 or '1'    
+     !! - Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \): `order` = 2 or '2'
+     !! - p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \): `integer` `order`, order>=3
+     !! - Infinity norm \( \max_i{ \left|a_i\right| } \): order = huge(0) or 'inf'
+     !! - Minus-infinity norm \( \min_i{ \left|a_i\right| } \): order = -huge(0) or '-inf'
+     !! 
+     !!### Example
+     !!
+     !!```fortran
+     !!
+     !!    real(sp) :: a(3,3), na, rown(3)
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!
+     !!    ! L2 norm: whole matrix
+     !!    na = norm(a, 2)
+     !!   
+     !!    ! Infinity norm of each row
+     !!    rown = norm(a, 'inf', dim=2)
+     !!     
+     !!```     
+     !!
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:for it,ii in NORM_INPUT_OPTIONS
+     !> Scalar norms: ${rt}$
+     #:for rank in range(1, MAXRANK + 1)        
+     pure module function stdlib_linalg_norm_${rank}$D_order_${ii}$_${ri}$(a, order) result(nrm)
+        !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
+        ${rt}$, intent(in) :: a${ranksuffix(rank)}$
+        !> Order of the matrix norm being computed.
+        ${it}$, intent(in) :: order
+        !> Norm of the matrix.
+        real(${rk}$) :: nrm       
+     end function stdlib_linalg_norm_${rank}$D_order_${ii}$_${ri}$
+     module function stdlib_linalg_norm_${rank}$D_order_err_${ii}$_${ri}$(a, order, err) result(nrm)
+        !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
+        ${rt}$, intent(in) :: a${ranksuffix(rank)}$
+        !> Order of the matrix norm being computed.
+        ${it}$, intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(${rk}$) :: nrm               
+     end function stdlib_linalg_norm_${rank}$D_order_err_${ii}$_${ri}$
+     #:endfor
+     !> Array norms: ${rt}$
+     #:for rank in range(2, MAXRANK + 1)
+     pure module function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
+        !> Order of the matrix norm being computed.
+        ${it}$, intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(${rk}$) :: nrm${reduced_shape('a', rank, 'dim')}$   
+     end function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$
+     module function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_err_${ii}$_${ri}$(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
+        !> Order of the matrix norm being computed.
+        ${it}$, intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(${rk}$) :: nrm${reduced_shape('a', rank, 'dim')}$     
+     end function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_err_${ii}$_${ri}$
+     #:endfor
+     #:endfor        
+     #:endfor            
+  end interface norm  
+
+  !> Vector norm: subroutine interface
+  interface get_norm
+     !! version: experimental 
+     !!
+     !! Computes the vector norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#get-norm-computes-the-vector-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Subroutine interface that returns one of several scalar norm metrics of a `real` or `complex` 
+     !! input array \( A \), that can have any rank. For generic rank-n arrays, the scalar norm over 
+     !! the whole array is returned by default. If `n>=2` and the optional input dimension `dim` is 
+     !! specified, a rank `n-1` array is returned with dimension `dim` collapsed, containing all 1D 
+     !! array norms evaluated along dimension `dim` only.
+     !! 
+     !!
+     !!### Description
+     !! 
+     !! This `pure subroutine `interface provides methods for computing the vector norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays may have generic rank from 1 to ${MAXRANK}$.
+     !!
+     !! Norm type input is mandatory, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm \( \sum_i{ \left|a_i\right| } \): `order` = 1 or '1'    
+     !! - Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \): `order` = 2 or '2'
+     !! - p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \): `integer` `order`, order>=3
+     !! - Infinity norm \( \max_i{ \left|a_i\right| } \): order = huge(0) or 'inf'
+     !! - Minus-infinity norm \( \min_i{ \left|a_i\right| } \): order = -huge(0) or '-inf'
+     !!     
+     !!### Example
+     !!
+     !!```fortran
+     !!
+     !!    real(sp) :: a(3,3), na, rown(3)
+     !!    type(linalg_state_type) :: err
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!
+     !!    ! L2 norm: whole matrix
+     !!    call get_norm(a, na, 2)
+     !!   
+     !!    ! Infinity norms of each row, with error control
+     !!    call get_norm(a, rown, 'inf', dim=2, err=err)     
+     !!     
+     !!```     
+     !!     
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:for it,ii in NORM_INPUT_OPTIONS
+        !> Scalar norms: ${rt}$
+        #:for rank in range(1, MAXRANK + 1)                    
+        pure module subroutine norm_${rank}$D_${ii}$_${ri}$(a, nrm, order, err)
+           !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
+           ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
+           !> Norm of the matrix.
+           real(${rk}$), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           ${it}$, intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_${rank}$D_${ii}$_${ri}$
+        #:endfor
+        !> Array norms: ${rt}$
+        #:for rank in range(2, MAXRANK + 1)
+        pure module subroutine norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           ${rt}$, intent(in) :: a${ranksuffix(rank)}$
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(${rk}$), intent(out) :: nrm${reduced_shape('a', rank, 'dim')}$     
+           !> Order of the matrix norm being computed.
+           ${it}$, intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$
+        #:endfor
+     #:endfor
+     #:endfor
+  end interface get_norm
 
 contains
 
