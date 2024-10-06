@@ -118,7 +118,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
              inva = a
 
              !> Compute matrix inverse
-             call stdlib_linalg_invert_inplace_s(inva,err=err0)      
+             call stdlib_linalg_invert_inplace_s(inva,pivot=pivot,err=err0)      
             
          end if         
          
@@ -161,8 +161,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
             if (allocated(inva)) deallocate(inva)
             allocate(inva(size(a,1,kind=ilp),size(a,2,kind=ilp))) 
             
-            inva = cmplx(ieee_value(1.0_sp,ieee_quiet_nan), &
-                         ieee_value(1.0_sp,ieee_quiet_nan), kind=sp)
+            inva = ieee_value(1.0_sp,ieee_quiet_nan)
          endif
 
      end function stdlib_linalg_inverse_s_operator
@@ -255,7 +254,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
              inva = a
 
              !> Compute matrix inverse
-             call stdlib_linalg_invert_inplace_d(inva,err=err0)      
+             call stdlib_linalg_invert_inplace_d(inva,pivot=pivot,err=err0)      
             
          end if         
          
@@ -298,8 +297,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
             if (allocated(inva)) deallocate(inva)
             allocate(inva(size(a,1,kind=ilp),size(a,2,kind=ilp))) 
             
-            inva = cmplx(ieee_value(1.0_dp,ieee_quiet_nan), &
-                         ieee_value(1.0_dp,ieee_quiet_nan), kind=dp)
+            inva = ieee_value(1.0_dp,ieee_quiet_nan)
          endif
 
      end function stdlib_linalg_inverse_d_operator
@@ -392,7 +390,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
              inva = a
 
              !> Compute matrix inverse
-             call stdlib_linalg_invert_inplace_c(inva,err=err0)      
+             call stdlib_linalg_invert_inplace_c(inva,pivot=pivot,err=err0)      
             
          end if         
          
@@ -435,7 +433,8 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
             if (allocated(inva)) deallocate(inva)
             allocate(inva(size(a,1,kind=ilp),size(a,2,kind=ilp))) 
             
-            inva = ieee_value(1.0_sp,ieee_quiet_nan)
+            inva = cmplx(ieee_value(1.0_sp,ieee_quiet_nan), &
+                         ieee_value(1.0_sp,ieee_quiet_nan), kind=sp)
          endif
 
      end function stdlib_linalg_inverse_c_operator
@@ -528,7 +527,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
              inva = a
 
              !> Compute matrix inverse
-             call stdlib_linalg_invert_inplace_z(inva,err=err0)      
+             call stdlib_linalg_invert_inplace_z(inva,pivot=pivot,err=err0)      
             
          end if         
          
@@ -571,7 +570,8 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
             if (allocated(inva)) deallocate(inva)
             allocate(inva(size(a,1,kind=ilp),size(a,2,kind=ilp))) 
             
-            inva = ieee_value(1.0_dp,ieee_quiet_nan)
+            inva = cmplx(ieee_value(1.0_dp,ieee_quiet_nan), &
+                         ieee_value(1.0_dp,ieee_quiet_nan), kind=dp)
          endif
 
      end function stdlib_linalg_inverse_z_operator
