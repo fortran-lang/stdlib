@@ -32,7 +32,7 @@ contains
             new_unittest("fs_rmdir_empty", fs_rmdir_empty), &
             new_unittest("fs_rmdir_with_contents", fs_rmdir_with_contents) &
             ]
-    end
+    end subroutine
 
     subroutine fs_is_windows(error)
         type(error_type), allocatable, intent(out) :: error
@@ -46,7 +46,7 @@ contains
         else
             call check(error, stat /= 0 .and. length == 0, "Windows should not be detected.")
         end if
-    end
+    end subroutine
 
     subroutine fs_file_not_exists(error)
         type(error_type), allocatable, intent(out) :: error
@@ -55,7 +55,7 @@ contains
 
         is_existing = exists("nonexistent")
         call check(error, is_existing, "Non-existent file should fail.")
-    end
+    end subroutine
 
     subroutine fs_file_exists(error)
         type(error_type), allocatable, intent(out) :: error
@@ -70,7 +70,7 @@ contains
         is_existing = exists(filename)
         call check(error, is_existing, "An existing file should not fail.")
         call delete_file(filename)
-    end
+    end subroutine
 
     subroutine fs_current_dir_exists(error)
         type(error_type), allocatable, intent(out) :: error
@@ -79,7 +79,7 @@ contains
 
         is_existing = exists(".")
         call check(error, is_existing, "Current directory should not fail.")
-    end
+    end subroutine
 
     subroutine fs_path_separator(error)
         type(error_type), allocatable, intent(out) :: error
@@ -94,7 +94,7 @@ contains
         call mkdir(outer_dir//path_separator()//inner_dir)
         call check(error, exists(outer_dir//path_separator()//inner_dir), "Inner directory should now exist.")
         call rmdir(outer_dir)
-    end
+    end subroutine
 
     subroutine fs_run_invalid_command(error)
         type(error_type), allocatable, intent(out) :: error
@@ -103,7 +103,7 @@ contains
 
         call run("invalid_command", iostat=stat)
         call check(error, stat, "Running an invalid command should fail.")
-    end
+    end subroutine
 
     subroutine fs_run_with_invalid_option(error)
         type(error_type), allocatable, intent(out) :: error
@@ -112,7 +112,7 @@ contains
 
         call run("whoami -X", iostat=stat)
         call check(error, stat, "Running a valid command with an invalid option should fail.")
-    end
+    end subroutine
 
     subroutine fs_run_valid_command(error)
         type(error_type), allocatable, intent(out) :: error
@@ -121,7 +121,7 @@ contains
 
         call run("whoami", iostat=stat)
         call check(error, stat, "Running a valid command should not fail.")
-    end
+    end subroutine
 
     subroutine fs_list_dir_empty(error)
         type(error_type), allocatable, intent(out) :: error
@@ -140,7 +140,7 @@ contains
         call check(error, size(files) == 0, "The directory should be empty.")
 
         call rmdir(temp_list_dir)
-    end
+    end subroutine
 
     subroutine fs_list_dir_one_file(error)
         type(error_type), allocatable, intent(out) :: error
@@ -167,7 +167,7 @@ contains
         call check(error, char(files(1)) == filename, "The file should be '"//filename//"'.")
 
         call rmdir(temp_list_dir)
-    end
+    end subroutine
 
     subroutine fs_list_dir_two_files(error)
         type(error_type), allocatable, intent(out) :: error
@@ -201,7 +201,7 @@ contains
         call check(error, char(files(2)) == filename2, "The file should be '"//filename2//"'.")
 
         call rmdir(temp_list_dir)
-    end
+    end subroutine
 
     subroutine fs_list_dir_one_file_one_dir(error)
         type(error_type), allocatable, intent(out) :: error
@@ -239,7 +239,7 @@ contains
         call check(error, char(contents(2)) == dir, "The file should be '"//dir//"'.")
 
         call rmdir(temp_list_dir)
-    end
+    end subroutine
 
     subroutine fs_rmdir_empty(error)
         type(error_type), allocatable, intent(out) :: error
@@ -252,7 +252,7 @@ contains
         call check(error, exists(dir), "Directory should exist.")
         call rmdir(dir)
         call check(error, .not. exists(dir), "Directory should not exist.")
-    end
+    end subroutine
 
     subroutine fs_rmdir_with_contents(error)
         type(error_type), allocatable, intent(out) :: error
@@ -270,7 +270,7 @@ contains
         end if
         call rmdir(dir)
         call check(error, .not. exists(dir), "Directory should not exist.")
-    end
+    end subroutine
 
     subroutine delete_file(filename)
         character(len=*), intent(in) :: filename
@@ -279,8 +279,8 @@ contains
 
         open(newunit=io, file=filename)
         close(io, status="delete")
-    end
-end
+    end subroutine
+end module
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
@@ -306,4 +306,4 @@ program tester
         write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
         error stop
     end if
-end
+end program

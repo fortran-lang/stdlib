@@ -31,7 +31,7 @@ contains
         end if
 
         is_windows = .false.
-    end
+    end function
 
     !> Version: experimental
     !>
@@ -43,7 +43,7 @@ contains
         else
             path_separator = '/'
         end if
-    end
+    end function
 
     !> Version: experimental
     !>
@@ -58,7 +58,7 @@ contains
 #if defined(__INTEL_COMPILER)
         if (.not. exists) inquire(directory=path, exist=exists)
 #endif
-    end
+    end function
 
     !> Version: experimental
     !>
@@ -116,7 +116,7 @@ contains
             files = [files, string_type(line)]
         end do
         close(unit, status="delete")
-    end
+    end subroutine
 
     !> Version: experimental
     !>
@@ -132,7 +132,7 @@ contains
         else
             call run('mkdir -p '//dir, iostat, iomsg)
         end if
-    end
+    end subroutine
 
     !> Version: experimental
     !>
@@ -146,7 +146,7 @@ contains
         else
             call run('rm -rf '//dir)
         end if
-    end
+    end subroutine
 
     !> Version: experimental
     !>
@@ -177,5 +177,5 @@ contains
             end if
             if (present(iomsg) .and. trim(adjustl(cmdmsg)) /= '') iomsg = cmdmsg
         end if
-    end
-end
+    end subroutine
+end module
