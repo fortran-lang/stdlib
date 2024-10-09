@@ -123,42 +123,6 @@ Provides a text file called `filename` that contains the rank-2 `array`.
 {!example/io/example_savetxt.f90!}
 ```
 
-## `is_windows`
-
-### Status
-
-Experimental
-
-### Description
-
-Returns a logical value indicating whether the current operating system is Windows.
-
-### Syntax
-
-`is_windows = ` [[stdlib_io_filesystem(module):is_windows(function)]] `()`
-
-### Return value
-
-A logical value indicating whether the current operating system is Windows.
-
-## `path_separator`
-
-### Status
-
-Experimental
-
-### Description
-
-Returns the path separator for the current operating system.
-
-### Syntax
-
-`separator = ` [[stdlib_io_filesystem(module):path_separator(function)]] `()`
-
-### Return value
-
-A character value containing the path separator for the current operating system.
-
 ## `exists`
 
 ### Status

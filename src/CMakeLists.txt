@@ -17,6 +17,7 @@ set(fppFiles
     stdlib_hash_64bit_pengy.fypp
     stdlib_hash_64bit_spookyv2.fypp
     stdlib_io.fypp
+    stdlib_io_filesystem.fypp
     stdlib_io_npy.fypp
     stdlib_io_npy_load.fypp
     stdlib_io_npy_save.fypp
@@ -109,7 +110,6 @@ set(SRC
     stdlib_hashmaps.f90
     stdlib_hashmap_chaining.f90
     stdlib_hashmap_open.f90
-    stdlib_io_filesystem.F90
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
     stdlib_system.F90

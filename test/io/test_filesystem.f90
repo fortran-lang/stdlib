@@ -41,7 +41,7 @@ contains
         integer :: length, stat
 
         call get_environment_variable('HOMEDRIVE', value, length, stat)
-        if (is_windows()) then
+        if (is_windows) then
             call check(error, stat == 0 .and. length > 0, "Windows should be detected.")
         else
             call check(error, stat /= 0 .and. length == 0, "Windows should not be detected.")
@@ -91,8 +91,8 @@ contains
         call check(error, .not. exists(outer_dir), "Directory should not exist.")
         call mkdir(outer_dir)
         call check(error, exists(outer_dir), "Outer directory should now exist.")
-        call mkdir(outer_dir//path_separator()//inner_dir)
-        call check(error, exists(outer_dir//path_separator()//inner_dir), "Inner directory should now exist.")
+        call mkdir(outer_dir//path_separator//inner_dir)
+        call check(error, exists(outer_dir//path_separator//inner_dir), "Inner directory should now exist.")
         call rmdir(outer_dir)
     end subroutine
 
@@ -223,7 +223,7 @@ contains
             call test_failed(error, "Creating file 1 in directory '"//temp_list_dir//"' failed."); return
         end if
 
-        if (is_windows()) then
+        if (is_windows) then
             call mkdir(temp_list_dir//'\'//dir, stat)
         else
             call mkdir(temp_list_dir//'/'//dir, stat)
@@ -263,7 +263,7 @@ contains
         call check(error, .not. exists(dir), "Directory should not exist.")
         call mkdir(dir)
         call check(error, exists(dir), "Directory should exist.")
-        if (is_windows()) then
+        if (is_windows) then
             call mkdir(dir//'\'//'another_dir')
         else
             call mkdir(dir//'/'//'another_dir')
