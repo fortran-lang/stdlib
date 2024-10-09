@@ -35519,7 +35519,7 @@ module stdlib_linalg_lapack_${ci}$
            ! Local Scalars 
            integer(ilp) :: ncols, i, j, k, kp
            real(${ck}$) :: amax, umax, rpvgrw, tmp
-           logical(lk) :: upper, lsame
+           logical(lk) :: upper
            complex(${ck}$) :: zdum
            ! Intrinsic Functions 
            intrinsic :: abs,real,aimag,max,min
