@@ -22,7 +22,7 @@ contains
             new_unittest("fs_file_not_exists", fs_file_not_exists, should_fail=.true.), &
             new_unittest("fs_file_exists", fs_file_exists), &
             new_unittest("fs_current_dir_exists", fs_current_dir_exists), &
-            new_unittest("fs_use_path_separator", fs_path_separator), &
+            new_unittest("fs_use_path_separator", fs_use_path_separator), &
             new_unittest("fs_run_invalid_command", fs_run_invalid_command, should_fail=.true.), &
             new_unittest("fs_run_with_invalid_option", fs_run_with_invalid_option, should_fail=.true.), &
             new_unittest("fs_run_valid_command", fs_run_valid_command), &
@@ -57,7 +57,7 @@ contains
 
         call get_environment_variable('HOMEDRIVE', value, length, stat)
         if (stat == 0 .and. length > 0) then
-            call check(error, path_separator == '\\', "Path separator should be set for Windows.")
+            call check(error, path_separator == '\', "Path separator should be set for Windows.")
         else
             call check(error, path_separator == '/', "Path separator should not be set for non-Windows.")
         end if
