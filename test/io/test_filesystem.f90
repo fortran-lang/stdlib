@@ -17,11 +17,12 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest("fs_file_is_windows", fs_is_windows), &
+            new_unittest("fs_is_windows", fs_is_windows), &
+            new_unittest("fs_path_separator", fs_path_separator), &
             new_unittest("fs_file_not_exists", fs_file_not_exists, should_fail=.true.), &
             new_unittest("fs_file_exists", fs_file_exists), &
             new_unittest("fs_current_dir_exists", fs_current_dir_exists), &
-            new_unittest("fs_path_separator", fs_path_separator), &
+            new_unittest("fs_use_path_separator", fs_path_separator), &
             new_unittest("fs_run_invalid_command", fs_run_invalid_command, should_fail=.true.), &
             new_unittest("fs_run_with_invalid_option", fs_run_with_invalid_option, should_fail=.true.), &
             new_unittest("fs_run_valid_command", fs_run_valid_command), &
@@ -48,6 +49,20 @@ contains
         end if
     end subroutine
 
+    subroutine fs_path_separator(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=255) :: value
+        integer :: length, stat
+
+        call get_environment_variable('HOMEDRIVE', value, length, stat)
+        if (stat == 0 .and. length > 0) then
+            call check(error, path_separator == '\\', "Path separator should be set for Windows.")
+        else
+            call check(error, path_separator == '/', "Path separator should not be set for non-Windows.")
+        end if
+    end subroutine
+
     subroutine fs_file_not_exists(error)
         type(error_type), allocatable, intent(out) :: error
 
@@ -61,12 +76,9 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
         logical :: is_existing
-        integer :: unit
         character(*), parameter :: filename = "file.tmp"
 
-        open(newunit=unit, file=filename)
-        close(unit)
-
+        call create_file(filename)
         is_existing = exists(filename)
         call check(error, is_existing, "An existing file should not fail.")
         call delete_file(filename)
@@ -81,7 +93,7 @@ contains
         call check(error, is_existing, "Current directory should not fail.")
     end subroutine
 
-    subroutine fs_path_separator(error)
+    subroutine fs_use_path_separator(error)
         type(error_type), allocatable, intent(out) :: error
 
         character(*), parameter :: outer_dir = "path_separator_outer"
@@ -156,10 +168,7 @@ contains
             call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
 
-        call run('touch '//temp_list_dir//'/'//filename, iostat=stat)
-        if (stat /= 0) then
-            call test_failed(error, "Creating file'"//filename//"' in directory '"//temp_list_dir//"' failed."); return
-        end if
+        call create_file(temp_list_dir//path_separator//filename)
 
         call list_dir(temp_list_dir, files, stat)
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
@@ -184,15 +193,8 @@ contains
             call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
 
-        call run('touch '//temp_list_dir//'/'//filename1, iostat=stat)
-        if (stat /= 0) then
-            call test_failed(error, "Creating file 1 in directory '"//temp_list_dir//"' failed."); return
-        end if
-
-        call run('touch '//temp_list_dir//'/'//filename2, iostat=stat)
-        if (stat /= 0) then
-            call test_failed(error, "Creating file 2 in directory '"//temp_list_dir//"' failed."); return
-        end if
+        call create_file(temp_list_dir//path_separator//filename1)
+        call create_file(temp_list_dir//path_separator//filename2)
 
         call list_dir(temp_list_dir, files, stat)
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
@@ -209,7 +211,7 @@ contains
         integer :: stat
 
         type(string_type), allocatable :: contents(:)
-        character(*), parameter :: filename1 = 'abc.txt'
+        character(*), parameter :: filename = 'abc.txt'
         character(*), parameter :: dir = 'xyz'
 
         call rmdir(temp_list_dir)
@@ -218,16 +220,8 @@ contains
             call test_failed(error, "Creating directory '"//temp_list_dir//"' failed."); return
         end if
 
-        call run('touch '//temp_list_dir//'/'//filename1, iostat=stat)
-        if (stat /= 0) then
-            call test_failed(error, "Creating file 1 in directory '"//temp_list_dir//"' failed."); return
-        end if
-
-        if (is_windows) then
-            call mkdir(temp_list_dir//'\'//dir, stat)
-        else
-            call mkdir(temp_list_dir//'/'//dir, stat)
-        end if
+        call create_file(temp_list_dir//path_separator//filename)
+        call mkdir(temp_list_dir//path_separator//dir, stat)
         if (stat /= 0) then
             call test_failed(error, "Creating dir in directory '"//temp_list_dir//"' failed."); return
         end if
@@ -235,7 +229,7 @@ contains
         call list_dir(temp_list_dir, contents, stat)
         call check(error, stat, "Listing the contents of an empty directory shouldn't fail.")
         call check(error, size(contents) == 2, "The directory should contain two files.")
-        call check(error, char(contents(1)) == filename1, "The file should be '"//filename1//"'.")
+        call check(error, char(contents(1)) == filename, "The file should be '"//filename//"'.")
         call check(error, char(contents(2)) == dir, "The file should be '"//dir//"'.")
 
         call rmdir(temp_list_dir)
@@ -263,13 +257,18 @@ contains
         call check(error, .not. exists(dir), "Directory should not exist.")
         call mkdir(dir)
         call check(error, exists(dir), "Directory should exist.")
-        if (is_windows) then
-            call mkdir(dir//'\'//'another_dir')
-        else
-            call mkdir(dir//'/'//'another_dir')
-        end if
+        call mkdir(dir//path_separator//'another_dir')
         call rmdir(dir)
         call check(error, .not. exists(dir), "Directory should not exist.")
+    end subroutine
+
+    subroutine create_file(filename)
+        character(len=*), intent(in) :: filename
+
+        integer :: io
+
+        open(newunit=io, file=filename)
+        close(io)
     end subroutine
 
     subroutine delete_file(filename)
