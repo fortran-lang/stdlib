@@ -123,6 +123,7 @@ Provides a text file called `filename` that contains the rank-2 `array`.
 {!example/io/example_savetxt.f90!}
 ```
 
+
 ## `load_npy`
 
 ### Status
@@ -162,6 +163,7 @@ Returns an allocated `array` with the content of `filename` in case of success.
 ```fortran
 {!example/io/example_loadnpy.f90!}
 ```
+
 
 ## `save_npy`
 
