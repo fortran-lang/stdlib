@@ -1,4 +1,5 @@
 import os
+import platform
 import fypp
 import argparse
 from joblib import Parallel, delayed
@@ -42,6 +43,7 @@ def pre_process_fypp(args):
         kwd.append("-DWITH_QP=True")
     if args.with_xdp:
         kwd.append("-DWITH_XDP=True")
+    kwd.append("-DOS=\"{}\"".format(platform.system()))
 
     optparser = fypp.get_option_parser()
     options, leftover = optparser.parse_args(args=kwd)
