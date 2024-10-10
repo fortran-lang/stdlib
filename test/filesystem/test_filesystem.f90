@@ -1,5 +1,5 @@
 module test_filesystem
-    use stdlib_io_filesystem
+    use stdlib_filesystem
     use stdlib_string_type, only: char, string_type
     use testdrive, only: new_unittest, unittest_type, error_type, check, test_failed
     implicit none
