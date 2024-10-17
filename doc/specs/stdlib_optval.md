@@ -1,11 +1,7 @@
----
-title: optval
----
+# `stdlib_optval`
 
-# Default values for optional arguments
-
-[TOC]
-
+Default values for optional arguments
+ 
 ## `optval` - fallback value for optional arguments
 
 ### Status
@@ -34,6 +30,6 @@ If `x` is present, the result is `x`, otherwise the result is `default`.
 
 ### Example
 
-```fortran
-{!example/optval/example_optval.f90!}
+```{literalinclude} ../../example/optval/example_optval.f90
+:language: Fortran
 ```

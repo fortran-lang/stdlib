@@ -1,12 +1,6 @@
----
-title: linalg
----
+# `stdlib_linalg` 
 
-# Linear Algebra
-
-[TOC]
-
-The `stdlib` linear algebra library provides high-level APIs for dealing with common linear algebra operations.
+Linear Algebra : The `stdlib` linear algebra library provides high-level APIs for dealing with common linear algebra operations.
 
 ## BLAS and LAPACK
 
@@ -109,12 +103,12 @@ and `y` (extended-precision complex numbers).
 
 ### Example
 
-```fortran
-{!example/linalg/example_blas_gemv.f90!}
+```{literalinclude} ../../example/linalg/example_blas_gemv.f90
+:language: Fortran
 ```
 
-```fortran
-{!example/linalg/example_lapack_getrf.f90!}
+```{literalinclude} ../../example/linalg/example_lapack_getrf.f90
+:language: Fortran
 ```
 
 ### Licensing
@@ -207,24 +201,24 @@ Returns a diagonal array or a vector with the extracted diagonal elements.
 
 ### Example
 
-```fortran
-{!example/linalg/example_diag1.f90!}
+```{literalinclude} ../../example/linalg/example_diag1.f90
+:language: Fortran
 ```
 
-```fortran
-{!example/linalg/example_diag2.f90!}
+```{literalinclude} ../../example/linalg/example_diag2.f90
+:language: Fortran
 ```
 
-```fortran
-{!example/linalg/example_diag3.f90!}
+```{literalinclude} ../../example/linalg/example_diag3.f90
+:language: Fortran
 ```
 
-```fortran
-{!example/linalg/example_diag4.f90!}
+```{literalinclude} ../../example/linalg/example_diag4.f90
+:language: Fortran
 ```
 
-```fortran
-{!example/linalg/example_diag5.f90!}
+```{literalinclude} ../../example/linalg/example_diag5.f90
+:language: Fortran
 ```
 
 ## `eye` - Construct the identity matrix
@@ -270,12 +264,12 @@ A = eye(2,2)/2.0   !! A == diag([0.5, 0.5])
 
 ### Example
 
-```fortran
-{!example/linalg/example_eye1.f90!}
+```{literalinclude} ../../example/linalg/example_eye1.f90
+:language: Fortran
 ```
 
-```fortran
-{!example/linalg/example_eye2.f90!}
+```{literalinclude} ../../example/linalg/example_eye2.f90
+:language: Fortran
 ```
 
 ## `trace` - Trace of a matrix
@@ -301,8 +295,8 @@ Trace of a matrix (rank-2 array)
 Returns the trace of the matrix, i.e. the sum of diagonal elements.
 
 ### Example
-```fortran
-{!example/linalg/example_trace.f90!}
+```{literalinclude} ../../example/linalg/example_trace.f90
+:language: Fortran
 ```
 
 ## `outer_product` - Computes the outer product of two vectors
@@ -331,8 +325,8 @@ Returns a rank-2 array equal to `u v^T` (where `u, v` are considered column vect
 
 ### Example
 
-```fortran
-{!example/linalg/example_outer_product.f90!}
+```{literalinclude} ../../example/linalg/example_outer_product.f90
+:language: Fortran
 ```
 
 ## `kronecker_product` - Computes the Kronecker product of two rank-2 arrays
@@ -361,8 +355,8 @@ Returns a rank-2 array equal to `A \otimes B`. The shape of the returned array i
 
 ### Example
 
-```fortran
-{!example/linalg/example_kronecker_product.f90!}
+```{literalinclude} ../../example/linalg/example_kronecker_product.f90
+:language: Fortran
 ```
 
 
@@ -392,8 +386,8 @@ Returns a rank-1 and size-3 array which is perpendicular to both `a` and `b`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_cross_product.f90!}
+```{literalinclude} ../../example/linalg/example_cross_product.f90
+:language: Fortran
 ```
 
 ## `is_square` - Checks if a matrix is square
@@ -420,8 +414,8 @@ Returns a `logical` scalar that is `.true.` if the input matrix is square, and `
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_square.f90!}
+```{literalinclude} ../../example/linalg/example_is_square.f90
+:language: Fortran
 ```
 
 ## `is_diagonal` - Checks if a matrix is diagonal
@@ -449,8 +443,8 @@ Note that nonsquare matrices may be diagonal, so long as `a_ij = 0` when `i /= j
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_diagonal.f90!}
+```{literalinclude} ../../example/linalg/example_is_diagonal.f90
+:language: Fortran
 ```
 
 ## `is_symmetric` - Checks if a matrix is symmetric
@@ -477,8 +471,8 @@ Returns a `logical` scalar that is `.true.` if the input matrix is symmetric, an
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_symmetric.f90!}
+```{literalinclude} ../../example/linalg/example_is_symmetric.f90
+:language: Fortran
 ```
 
 ## `is_skew_symmetric` - Checks if a matrix is skew-symmetric
@@ -505,8 +499,8 @@ Returns a `logical` scalar that is `.true.` if the input matrix is skew-symmetri
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_skew_symmetric.f90!}
+```{literalinclude} ../../example/linalg/example_is_skew_symmetric.f90
+:language: Fortran
 ```
 
 ## `is_hermitian` - Checks if a matrix is Hermitian
@@ -533,8 +527,8 @@ Returns a `logical` scalar that is `.true.` if the input matrix is Hermitian, an
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_hermitian.f90!}
+```{literalinclude} ../../example/linalg/example_is_hermitian.f90
+:language: Fortran
 ```
 
 ## `is_triangular` - Checks if a matrix is triangular
@@ -565,8 +559,8 @@ Specifically, upper triangular matrices satisfy `a_ij = 0` when `j < i`, and low
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_triangular.f90!}
+```{literalinclude} ../../example/linalg/example_is_triangular.f90
+:language: Fortran
 ```
 
 ## `is_hessenberg` - Checks if a matrix is hessenberg
@@ -597,8 +591,8 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_hessenberg.f90!}
+```{literalinclude} ../../example/linalg/example_is_hessenberg.f90
+:language: Fortran
 ```
 
 ## `solve` - Solves a linear matrix equation or a linear system of equations. 
@@ -645,10 +639,12 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_solve1.f90!}
+```{literalinclude} ../../example/linalg/example_solve1.f90
+:language: Fortran
+```
 
-{!example/linalg/example_solve2.f90!}
+```{literalinclude} ../../example/linalg/example_solve2.f90
+:language: Fortran
 ```
 
 ## `solve_lu` - Solves a linear matrix equation or a linear system of equations (subroutine interface). 
@@ -700,8 +696,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_solve3.f90!}
+```{literalinclude} ../../example/linalg/example_solve3.f90
+:language: Fortran
 ```
 
 ## `lstsq` - Computes the least squares solution to a linear matrix equation. 
@@ -744,8 +740,8 @@ Exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_lstsq1.f90!}
+```{literalinclude} ../../example/linalg/example_lstsq1.f90
+:language: Fortran
 ```
 
 ## `solve_lstsq` - Compute the least squares solution to a linear matrix equation (subroutine interface). 
@@ -798,8 +794,8 @@ Exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_lstsq2.f90!}
+```{literalinclude} ../../example/linalg/example_lstsq2.f90
+:language: Fortran
 ```
 
 ## `lstsq_space` - Compute internal working space requirements for the least squares solver.
@@ -864,8 +860,8 @@ Exceptions are returned to the `err` argument if provided; an `error stop` is tr
 
 ### Example
 
-```fortran
-{!example/linalg/example_determinant.f90!}
+```{literalinclude} ../../example/linalg/example_determinant.f90
+:language: Fortran
 ```
 
 ## `.det.` - Determinant operator of a square matrix
@@ -898,8 +894,8 @@ Exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_determinant2.f90!}
+```{literalinclude} ../../example/linalg/example_determinant2.f90
+:language: Fortran
 ```
 
 ## `qr` - Compute the QR factorization of a matrix
@@ -947,8 +943,8 @@ If the state argument `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_qr.f90!}
+```{literalinclude} ../../example/linalg/example_qr.f90
+:language: Fortran
 ```
 
 ## `qr_space` - Compute internal working space requirements for the QR factorization.
@@ -975,8 +971,8 @@ This subroutine computes the internal working space requirements for the QR fact
 
 ### Example
 
-```fortran
-{!example/linalg/example_qr_space.f90!}
+```{literalinclude} ../../example/linalg/example_qr_space.f90
+:language: Fortran
 ```
 
 ## `eig` - Eigenvalues and Eigenvectors of a Square Matrix
@@ -1020,8 +1016,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_eig.f90!}
+```{literalinclude} ../../example/linalg/example_eig.f90
+:language: Fortran
 ```
 
 ## `eigh` - Eigenvalues and Eigenvectors of a Real symmetric or Complex Hermitian Square Matrix
@@ -1069,8 +1065,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_eigh.f90!}
+```{literalinclude} ../../example/linalg/example_eigh.f90
+:language: Fortran
 ```
 
 ## `eigvals` - Eigenvalues of a Square Matrix
@@ -1107,8 +1103,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_eigvals.f90!}
+```{literalinclude} ../../example/linalg/example_eigvals.f90
+:language: Fortran
 ```
 
 ## `eigvalsh` - Eigenvalues of a Real Symmetric or Complex Hermitian Square Matrix
@@ -1148,8 +1144,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_eigvalsh.f90!}
+```{literalinclude} ../../example/linalg/example_eigvalsh.f90
+:language: Fortran
 ```
 
 ## `svd` - Compute the singular value decomposition of a rank-2 array (matrix).
@@ -1203,8 +1199,8 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Example
 
-```fortran
-{!example/linalg/example_svd.f90!}
+```{literalinclude} ../../example/linalg/example_svd.f90
+:language: Fortran
 ```
 
 ## `svdvals` - Compute the singular values of a rank-2 array (matrix).
@@ -1240,8 +1236,8 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Example
 
-```fortran
-{!example/linalg/example_svdvals.f90!}
+```{literalinclude} ../../example/linalg/example_svdvals.f90
+:language: Fortran
 ```
 
 
@@ -1293,8 +1289,8 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Example
 
-```fortran
-{!example/linalg/example_cholesky.f90!}
+```{literalinclude} ../../example/linalg/example_cholesky.f90
+:language: Fortran
 ```
 
 ## `chol` - Compute the Cholesky factorization of a rank-2 square array (matrix)
@@ -1334,8 +1330,8 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Example
 
-```fortran
-{!example/linalg/example_chol.f90!}
+```{literalinclude} ../../example/linalg/example_chol.f90
+:language: Fortran
 ```
 
 
@@ -1370,8 +1366,8 @@ interfaces.
 
 ### Example
 
-```fortran
-{!example/linalg/example_inverse_operator.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_operator.f90
+:language: Fortran
 ```
 
 ## `invert` - Inversion of a square matrix
@@ -1415,12 +1411,12 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_inverse_inplace.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_inplace.f90
+:language: Fortran
 ```
 
-```fortran
-{!example/linalg/example_inverse_subroutine.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_subroutine.f90
+:language: Fortran
 ```
 
 ## `inv` - Inverse of a square matrix. 
@@ -1455,8 +1451,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_inverse_function.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_function.f90
+:language: Fortran
 ```
 
 ## `get_norm` - Computes the vector norm of a generic-rank array.
