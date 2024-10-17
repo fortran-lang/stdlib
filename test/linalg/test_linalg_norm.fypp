@@ -1,0 +1,300 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+
+#! Generate an array rank suffix with the same fixed size for all dimensions.
+#!
+#! Args:
+#!     rank (int): Rank of the variable
+#!     size (int): Size along each dimension
+#!
+#! Returns:
+#!     Array rank suffix string (e.g. (4,4,4) if rank = 3 and size = 4)
+#!
+#:def fixedranksuffix(rank,size)
+#{if rank > 0}#(${str(size) + (","+str(size)) * (rank - 1)}$)#{endif}#
+#:enddef
+! Test vector norms
+module test_linalg_norm
+    use testdrive, only: error_type, check, new_unittest, unittest_type
+    use stdlib_linalg_constants
+    use stdlib_linalg, only: norm, linalg_state_type
+    use stdlib_linalg_state, only: linalg_state_type
+
+    implicit none (type,external)
+
+    contains
+
+    !> Vector norm tests
+    subroutine test_vector_norms(tests)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: tests(:)
+        
+        allocate(tests(0))
+        
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        tests = [tests,new_unittest("strided_1d_norm_${ri}$",test_strided_1d_${ri}$)]
+        #:for rank in range(1, MAXRANK)
+        tests = [tests,new_unittest("norm_${ri}$_${rank}$d",test_norm_${ri}$_${rank}$d)]        
+        #:endfor
+        #:for rank in range(2, MAXRANK)
+        #:if rt.startswith('real')
+        tests = [tests,new_unittest("norm2_${ri}$_${rank}$d",test_norm2_${ri}$_${rank}$d)]        
+        #:endif
+        tests = [tests,new_unittest("maxabs_${ri}$_${rank}$d",test_maxabs_${ri}$_${rank}$d)]        
+        tests = [tests,new_unittest("norm_dimmed_${ri}$_${rank}$d",test_norm_dimmed_${ri}$_${rank}$d)]        
+        #:endfor
+        #:endfor
+
+    end subroutine test_vector_norms
+    
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    
+    !> Test strided norm
+    subroutine test_strided_1d_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        
+        integer(ilp), parameter :: m = 8_ilp
+        integer(ilp), parameter :: n = m**2
+        real(${rk}$), parameter :: tol = 10*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$, target :: a(n)
+        ${rt}$, allocatable :: slice(:)
+        ${rt}$, pointer :: twod(:,:)
+        real(${rk}$) :: rea(n),ima(n)
+        
+        call random_number(rea)
+        #:if rt.startswith('real')        
+        a = rea
+        #:else
+        call random_number(ima)
+        a = cmplx(rea,ima,kind=${rk}$)
+        #:endif
+        
+        ! Test sliced array results
+        slice = a(4:7:59)                
+        call check(error,abs(norm(a(4:7:59),2)-norm(slice,2))<tol*max(1.0_${rk}$,norm(slice,2)), &
+                         'sliced ${rt}$ norm(a(4:7:59),2)')
+        if (allocated(error)) return
+        
+        ! Test 2d array results
+        twod(1:m,1:m) => a                   
+        call check(error,abs(norm(twod,2)-norm(a,2))<tol*max(1.0_${rk}$,norm(twod,2)), &
+                         '2d-reshaped ${rt}$ norm(a,2)')
+        if (allocated(error)) return        
+        
+        ! Test row norm (strided access)
+        slice = twod(3,:) 
+        call check(error,abs(norm(twod(3,:),2)-norm(slice,2))<tol*max(1.0_${rk}$,norm(twod(3,:),2)), &
+                         'row ${rt}$ norm(t(3,:),2)')
+        if (allocated(error)) return                
+
+
+        ! Test column norm (strided access)
+        slice = twod(::2,3) 
+        call check(error,abs(norm(twod(::2,3),2)-norm(slice,2))<tol*max(1.0_${rk}$,norm(twod(::2,3),2)), &
+                         'column ${rt}$ norm(t(::2,3),2)')
+        if (allocated(error)) return                
+
+        
+        
+    end subroutine test_strided_1d_${ri}$    
+    
+    #:for rank in range(1, MAXRANK)
+    
+    !> Test several norms with different dimensions
+    subroutine test_norm_${ri}$_${rank}$d(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp) :: j,order
+        integer(ilp), parameter :: n   = 2_ilp**${rank}$
+        real(${rk}$), parameter :: tol = 10*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$, allocatable :: a(:), b${ranksuffix(rank)}$
+        character(64) :: msg
+        
+        allocate(a(n), b${fixedranksuffix(rank,2)}$)        
+        
+        ! Init as a range,but with small elements such that all power norms will 
+        ! never overflow, even in single precision
+        a = [(0.01_${rk}$*(j-n/2_ilp), j=1_ilp,n)]        
+        b = reshape(a, shape(b))
+        
+        ! Test some norms
+        do order = 1, 10            
+           write(msg,"('reshaped order-',i0,' p-norm is the same')") order
+           call check(error,abs(norm(a,order)-norm(b,order))<tol*max(1.0_${rk}$,norm(a,order)),trim(msg))
+           if (allocated(error)) return           
+        end do
+        
+        ! Infinity norms
+        call check(error,abs(norm(a,'inf')-norm(b,'inf'))<tol*max(1.0_${rk}$,norm(a,'inf')),&
+                         'reshaped +infinity norm is the same')
+        if (allocated(error)) return        
+
+        ! Infinity norms
+        call check(error,abs(norm(a,'-inf')-norm(b,'-inf'))<tol*max(1.0_${rk}$,norm(a,'-inf')),&
+                         'reshaped -infinity norm is the same')
+        if (allocated(error)) return           
+        
+    end subroutine test_norm_${ri}$_${rank}$d
+    #:endfor
+    
+    #:for rank in range(2, MAXRANK)
+    !> Test Euclidean norm; compare with Fortran intrinsic norm2 for reals
+    #:if rt.startswith('real')
+    subroutine test_norm2_${ri}$_${rank}$d(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp) :: j,dim
+        integer(ilp), parameter :: ndim = ${rank}$
+        integer(ilp), parameter :: n   = 2_ilp**ndim
+        real(${rk}$), parameter :: tol = 10*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$, allocatable :: a(:), b${ranksuffix(rank)}$
+        intrinsic :: norm2
+        character(64) :: msg
+        
+        allocate(a(n), b${fixedranksuffix(rank,2)}$)
+        
+        ! Init as a range,but with small elements such that all power norms will 
+        ! never overflow, even in single precision
+        a = [(0.01_${rk}$*(j-n/2_ilp), j=1_ilp,n)]        
+        b = reshape(a, shape(b))
+        
+        ! Test some norms
+        call check(error,abs(norm(a,2) - norm2(a))<tol*norm(a,2),&
+                         'Euclidean norm does not match ${rt}$ `norm2` intrinsic')
+        if (allocated(error)) return               
+        
+        ! Infinity norms
+        call check(error,abs(norm(b,2)-norm2(b))<tol*norm(b,2),&
+                         'Dimmed Euclidean norm does not match ${rt}$ `norm2` intrinsic')
+        if (allocated(error)) return                       
+        
+        ! Test norm as collapsed around dimension
+        do dim = 1, ndim
+            write(msg,"('Not all dim=',i0,' Euclidean norms match ${rt}$ `norm2` intrinsic')") dim
+            call check(error,all(abs(norm(b,2,dim)-norm2(b,dim))<tol*max(1.0_${rk}$,norm(b,2,dim))),&
+                       trim(msg)) 
+            if (allocated(error)) return             
+        end do
+        
+    end subroutine test_norm2_${ri}$_${rank}$d
+    #:endif
+    
+    !> Test Infinity norm; compare with Fortran intrinsic max(abs(a))
+    subroutine test_maxabs_${ri}$_${rank}$d(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp) :: j,dim
+        integer(ilp), parameter :: ndim = ${rank}$
+        integer(ilp), parameter :: n   = 2_ilp**ndim
+        real(${rk}$), parameter :: tol = 10*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$, allocatable :: a(:), b${ranksuffix(rank)}$
+        intrinsic :: maxval, abs
+        character(128) :: msg
+        
+        allocate(a(n), b${fixedranksuffix(rank,2)}$)
+        
+        ! Init as a range,but with small elements such that all power norms will 
+        ! never overflow, even in single precision
+        a = [(0.01_${rk}$*(j-n/2_ilp), j=1_ilp,n)]        
+        b = reshape(a, shape(b))
+        
+        ! Test some norms
+        call check(error,abs(norm(a,'inf') - maxval(abs(a)))<tol*norm(a,'inf'),&
+                         'Infinity norm does not match ${rt}$ `maxval(abs(.))` intrinsics')
+        if (allocated(error)) return               
+        
+        ! Infinity norms
+        call check(error,abs(norm(b,'inf')-maxval(abs(b)))<tol*norm(b,'inf'),&
+                         'Dimmed Infinity norm does not match ${rt}$ `maxval(abs(.))` intrinsics')
+        if (allocated(error)) return                       
+        
+        ! Test norm as collapsed around dimension
+        do dim = 1, ndim
+            write(msg,"('Not all dim=',i0,' Infinity norms match ${rt}$ `maxval(abs(.))` intrinsics')") dim
+            call check(error,all(abs(norm(b,'inf',dim)-maxval(abs(b),dim))<tol*max(1.0_${rk}$,norm(b,'inf',dim))),&
+                       trim(msg)) 
+            if (allocated(error)) return             
+        end do
+        
+    end subroutine test_maxabs_${ri}$_${rank}$d    
+    
+    ! Test norm along a dimension and compare it against individually evaluated norms
+    subroutine test_norm_dimmed_${ri}$_${rank}$d(error)
+        type(error_type), allocatable, intent(out) :: error
+       
+        integer(ilp) :: j,dim,order
+        integer(ilp), parameter :: ndim = ${rank}$
+        integer(ilp), parameter :: n = 2_ilp**ndim
+        integer(ilp), parameter :: dims(*) = [(dim, dim=1,ndim)]
+        real(${rk}$), parameter :: tol = 10*sqrt(epsilon(0.0_${rk}$))
+        integer(ilp) :: coords(ndim)
+        real :: x(ndim)
+        ${rt}$, allocatable :: a(:), b${ranksuffix(rank)}$
+        real(${rk}$), allocatable :: bnrm${ranksuffix(rank-1)}$
+        character(64) :: msg
+        
+        allocate(a(n), b${fixedranksuffix(rank,2)}$)
+        
+        ! Init as a range,but with small elements such that all power norms will 
+        ! never overflow, even in single precision
+        a = [(0.01_${rk}$*(j-n/2_ilp), j=1_ilp,n)]        
+        b = reshape(a, shape(b))        
+        
+        do order = 1, 5
+        
+           do dim = 1, ndim
+            
+               bnrm = norm(b, order, dim)
+               
+               ! Assert size
+               write(msg,"('dim=',i0,', order=',i0,' ${rk}$ norm has the wrong shape')") dim, order
+               call check(error,all( shape(bnrm)==pack(shape(b),dims/=dim) ), trim(msg))
+               if (allocated(error)) return                    
+               
+           end do 
+           
+           ! Compare ND whole vector norm with unrolled vector norm
+           write(msg,"('Unrolled (1d) vs ${rank}$d order=',i0,' norm')") order
+           call check(error,abs(norm(a,order)-norm(b,order))<tol*max(1.0_${rk}$,norm(a,order)),&
+                      trim(msg))
+           if (allocated(error)) return              
+           
+            
+        end do
+        
+    end subroutine test_norm_dimmed_${ri}$_${rank}$d
+    
+
+    #:endfor
+    #:endfor
+
+
+end module test_linalg_norm
+
+program test_norm
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_linalg_norm, only : test_vector_norms
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("linalg_norm", test_vector_norms) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program test_norm
+
+
