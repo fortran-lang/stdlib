@@ -24,6 +24,8 @@ module stdlib_linalg
   public :: operator(.inv.)
   public :: lstsq
   public :: lstsq_space
+  public :: norm
+  public :: get_norm
   public :: solve
   public :: solve_lu  
   public :: solve_lstsq
@@ -2587,6 +2589,3462 @@ module stdlib_linalg
          real(dp), allocatable :: s(:)
       end function stdlib_linalg_svdvals_z
   end interface svdvals  
+
+
+  ! Vector norms: function interface
+  interface norm
+     !! version: experimental 
+     !!
+     !! Computes the vector norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#norm-computes-the-vector-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Return one of several scalar norm metrics of a `real` or `complex` input array \( A \), 
+     !! that can have any rank. For generic rank-n arrays, the scalar norm over the whole 
+     !! array is returned by default. If `n>=2` and the optional input dimension `dim` is specified, 
+     !! a rank `n-1` array is returned with dimension `dim` collapsed, containing all 1D array norms 
+     !! evaluated along dimension `dim` only.
+     !! 
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the vector norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays may have generic rank from 1 to 7.
+     !!
+     !! Norm type input is mandatory, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm \( \sum_i{ \left|a_i\right| } \): `order` = 1 or '1'    
+     !! - Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \): `order` = 2 or '2'
+     !! - p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \): `integer` `order`, order>=3
+     !! - Infinity norm \( \max_i{ \left|a_i\right| } \): order = huge(0) or 'inf'
+     !! - Minus-infinity norm \( \min_i{ \left|a_i\right| } \): order = -huge(0) or '-inf'
+     !! 
+     !!### Example
+     !!
+     !!```fortran
+     !!
+     !!    real(sp) :: a(3,3), na, rown(3)
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!
+     !!    ! L2 norm: whole matrix
+     !!    na = norm(a, 2)
+     !!   
+     !!    ! Infinity norm of each row
+     !!    rown = norm(a, 'inf', dim=2)
+     !!     
+     !!```     
+     !!
+     !> Scalar norms: real(sp)
+     pure module function stdlib_linalg_norm_1D_order_char_s(a, order) result(nrm)
+        !> Input 1-d matrix a(:)
+        real(sp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_1D_order_char_s
+     module function stdlib_linalg_norm_1D_order_err_char_s(a, order, err) result(nrm)
+        !> Input 1-d matrix a(:)
+        real(sp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_1D_order_err_char_s
+     pure module function stdlib_linalg_norm_2D_order_char_s(a, order) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        real(sp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_2D_order_char_s
+     module function stdlib_linalg_norm_2D_order_err_char_s(a, order, err) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        real(sp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_2D_order_err_char_s
+     pure module function stdlib_linalg_norm_3D_order_char_s(a, order) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        real(sp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_3D_order_char_s
+     module function stdlib_linalg_norm_3D_order_err_char_s(a, order, err) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        real(sp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_3D_order_err_char_s
+     pure module function stdlib_linalg_norm_4D_order_char_s(a, order) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_4D_order_char_s
+     module function stdlib_linalg_norm_4D_order_err_char_s(a, order, err) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_4D_order_err_char_s
+     pure module function stdlib_linalg_norm_5D_order_char_s(a, order) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_5D_order_char_s
+     module function stdlib_linalg_norm_5D_order_err_char_s(a, order, err) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_5D_order_err_char_s
+     pure module function stdlib_linalg_norm_6D_order_char_s(a, order) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_6D_order_char_s
+     module function stdlib_linalg_norm_6D_order_err_char_s(a, order, err) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_6D_order_err_char_s
+     pure module function stdlib_linalg_norm_7D_order_char_s(a, order) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_7D_order_char_s
+     module function stdlib_linalg_norm_7D_order_err_char_s(a, order, err) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_7D_order_err_char_s
+     !> Array norms: real(sp)
+     pure module function stdlib_linalg_norm_2D_to_1D_char_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))   
+     end function stdlib_linalg_norm_2D_to_1D_char_s
+     module function stdlib_linalg_norm_2D_to_1D_err_char_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+     end function stdlib_linalg_norm_2D_to_1D_err_char_s
+     pure module function stdlib_linalg_norm_3D_to_2D_char_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))   
+     end function stdlib_linalg_norm_3D_to_2D_char_s
+     module function stdlib_linalg_norm_3D_to_2D_err_char_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+     end function stdlib_linalg_norm_3D_to_2D_err_char_s
+     pure module function stdlib_linalg_norm_4D_to_3D_char_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))   
+     end function stdlib_linalg_norm_4D_to_3D_char_s
+     module function stdlib_linalg_norm_4D_to_3D_err_char_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))     
+     end function stdlib_linalg_norm_4D_to_3D_err_char_s
+     pure module function stdlib_linalg_norm_5D_to_4D_char_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))   
+     end function stdlib_linalg_norm_5D_to_4D_char_s
+     module function stdlib_linalg_norm_5D_to_4D_err_char_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+     end function stdlib_linalg_norm_5D_to_4D_err_char_s
+     pure module function stdlib_linalg_norm_6D_to_5D_char_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))   
+     end function stdlib_linalg_norm_6D_to_5D_char_s
+     module function stdlib_linalg_norm_6D_to_5D_err_char_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))     
+     end function stdlib_linalg_norm_6D_to_5D_err_char_s
+     pure module function stdlib_linalg_norm_7D_to_6D_char_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))   
+     end function stdlib_linalg_norm_7D_to_6D_char_s
+     module function stdlib_linalg_norm_7D_to_6D_err_char_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))     
+     end function stdlib_linalg_norm_7D_to_6D_err_char_s
+     !> Scalar norms: real(sp)
+     pure module function stdlib_linalg_norm_1D_order_int_s(a, order) result(nrm)
+        !> Input 1-d matrix a(:)
+        real(sp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_1D_order_int_s
+     module function stdlib_linalg_norm_1D_order_err_int_s(a, order, err) result(nrm)
+        !> Input 1-d matrix a(:)
+        real(sp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_1D_order_err_int_s
+     pure module function stdlib_linalg_norm_2D_order_int_s(a, order) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        real(sp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_2D_order_int_s
+     module function stdlib_linalg_norm_2D_order_err_int_s(a, order, err) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        real(sp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_2D_order_err_int_s
+     pure module function stdlib_linalg_norm_3D_order_int_s(a, order) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        real(sp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_3D_order_int_s
+     module function stdlib_linalg_norm_3D_order_err_int_s(a, order, err) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        real(sp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_3D_order_err_int_s
+     pure module function stdlib_linalg_norm_4D_order_int_s(a, order) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_4D_order_int_s
+     module function stdlib_linalg_norm_4D_order_err_int_s(a, order, err) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_4D_order_err_int_s
+     pure module function stdlib_linalg_norm_5D_order_int_s(a, order) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_5D_order_int_s
+     module function stdlib_linalg_norm_5D_order_err_int_s(a, order, err) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_5D_order_err_int_s
+     pure module function stdlib_linalg_norm_6D_order_int_s(a, order) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_6D_order_int_s
+     module function stdlib_linalg_norm_6D_order_err_int_s(a, order, err) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_6D_order_err_int_s
+     pure module function stdlib_linalg_norm_7D_order_int_s(a, order) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_7D_order_int_s
+     module function stdlib_linalg_norm_7D_order_err_int_s(a, order, err) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        real(sp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_7D_order_err_int_s
+     !> Array norms: real(sp)
+     pure module function stdlib_linalg_norm_2D_to_1D_int_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))   
+     end function stdlib_linalg_norm_2D_to_1D_int_s
+     module function stdlib_linalg_norm_2D_to_1D_err_int_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+     end function stdlib_linalg_norm_2D_to_1D_err_int_s
+     pure module function stdlib_linalg_norm_3D_to_2D_int_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))   
+     end function stdlib_linalg_norm_3D_to_2D_int_s
+     module function stdlib_linalg_norm_3D_to_2D_err_int_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+     end function stdlib_linalg_norm_3D_to_2D_err_int_s
+     pure module function stdlib_linalg_norm_4D_to_3D_int_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))   
+     end function stdlib_linalg_norm_4D_to_3D_int_s
+     module function stdlib_linalg_norm_4D_to_3D_err_int_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))     
+     end function stdlib_linalg_norm_4D_to_3D_err_int_s
+     pure module function stdlib_linalg_norm_5D_to_4D_int_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))   
+     end function stdlib_linalg_norm_5D_to_4D_int_s
+     module function stdlib_linalg_norm_5D_to_4D_err_int_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+     end function stdlib_linalg_norm_5D_to_4D_err_int_s
+     pure module function stdlib_linalg_norm_6D_to_5D_int_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))   
+     end function stdlib_linalg_norm_6D_to_5D_int_s
+     module function stdlib_linalg_norm_6D_to_5D_err_int_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))     
+     end function stdlib_linalg_norm_6D_to_5D_err_int_s
+     pure module function stdlib_linalg_norm_7D_to_6D_int_s(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))   
+     end function stdlib_linalg_norm_7D_to_6D_int_s
+     module function stdlib_linalg_norm_7D_to_6D_err_int_s(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))     
+     end function stdlib_linalg_norm_7D_to_6D_err_int_s
+     !> Scalar norms: real(dp)
+     pure module function stdlib_linalg_norm_1D_order_char_d(a, order) result(nrm)
+        !> Input 1-d matrix a(:)
+        real(dp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_1D_order_char_d
+     module function stdlib_linalg_norm_1D_order_err_char_d(a, order, err) result(nrm)
+        !> Input 1-d matrix a(:)
+        real(dp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_1D_order_err_char_d
+     pure module function stdlib_linalg_norm_2D_order_char_d(a, order) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        real(dp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_2D_order_char_d
+     module function stdlib_linalg_norm_2D_order_err_char_d(a, order, err) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        real(dp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_2D_order_err_char_d
+     pure module function stdlib_linalg_norm_3D_order_char_d(a, order) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        real(dp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_3D_order_char_d
+     module function stdlib_linalg_norm_3D_order_err_char_d(a, order, err) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        real(dp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_3D_order_err_char_d
+     pure module function stdlib_linalg_norm_4D_order_char_d(a, order) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_4D_order_char_d
+     module function stdlib_linalg_norm_4D_order_err_char_d(a, order, err) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_4D_order_err_char_d
+     pure module function stdlib_linalg_norm_5D_order_char_d(a, order) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_5D_order_char_d
+     module function stdlib_linalg_norm_5D_order_err_char_d(a, order, err) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_5D_order_err_char_d
+     pure module function stdlib_linalg_norm_6D_order_char_d(a, order) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_6D_order_char_d
+     module function stdlib_linalg_norm_6D_order_err_char_d(a, order, err) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_6D_order_err_char_d
+     pure module function stdlib_linalg_norm_7D_order_char_d(a, order) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_7D_order_char_d
+     module function stdlib_linalg_norm_7D_order_err_char_d(a, order, err) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_7D_order_err_char_d
+     !> Array norms: real(dp)
+     pure module function stdlib_linalg_norm_2D_to_1D_char_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))   
+     end function stdlib_linalg_norm_2D_to_1D_char_d
+     module function stdlib_linalg_norm_2D_to_1D_err_char_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+     end function stdlib_linalg_norm_2D_to_1D_err_char_d
+     pure module function stdlib_linalg_norm_3D_to_2D_char_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))   
+     end function stdlib_linalg_norm_3D_to_2D_char_d
+     module function stdlib_linalg_norm_3D_to_2D_err_char_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+     end function stdlib_linalg_norm_3D_to_2D_err_char_d
+     pure module function stdlib_linalg_norm_4D_to_3D_char_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))   
+     end function stdlib_linalg_norm_4D_to_3D_char_d
+     module function stdlib_linalg_norm_4D_to_3D_err_char_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))     
+     end function stdlib_linalg_norm_4D_to_3D_err_char_d
+     pure module function stdlib_linalg_norm_5D_to_4D_char_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))   
+     end function stdlib_linalg_norm_5D_to_4D_char_d
+     module function stdlib_linalg_norm_5D_to_4D_err_char_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+     end function stdlib_linalg_norm_5D_to_4D_err_char_d
+     pure module function stdlib_linalg_norm_6D_to_5D_char_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))   
+     end function stdlib_linalg_norm_6D_to_5D_char_d
+     module function stdlib_linalg_norm_6D_to_5D_err_char_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))     
+     end function stdlib_linalg_norm_6D_to_5D_err_char_d
+     pure module function stdlib_linalg_norm_7D_to_6D_char_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))   
+     end function stdlib_linalg_norm_7D_to_6D_char_d
+     module function stdlib_linalg_norm_7D_to_6D_err_char_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))     
+     end function stdlib_linalg_norm_7D_to_6D_err_char_d
+     !> Scalar norms: real(dp)
+     pure module function stdlib_linalg_norm_1D_order_int_d(a, order) result(nrm)
+        !> Input 1-d matrix a(:)
+        real(dp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_1D_order_int_d
+     module function stdlib_linalg_norm_1D_order_err_int_d(a, order, err) result(nrm)
+        !> Input 1-d matrix a(:)
+        real(dp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_1D_order_err_int_d
+     pure module function stdlib_linalg_norm_2D_order_int_d(a, order) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        real(dp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_2D_order_int_d
+     module function stdlib_linalg_norm_2D_order_err_int_d(a, order, err) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        real(dp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_2D_order_err_int_d
+     pure module function stdlib_linalg_norm_3D_order_int_d(a, order) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        real(dp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_3D_order_int_d
+     module function stdlib_linalg_norm_3D_order_err_int_d(a, order, err) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        real(dp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_3D_order_err_int_d
+     pure module function stdlib_linalg_norm_4D_order_int_d(a, order) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_4D_order_int_d
+     module function stdlib_linalg_norm_4D_order_err_int_d(a, order, err) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_4D_order_err_int_d
+     pure module function stdlib_linalg_norm_5D_order_int_d(a, order) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_5D_order_int_d
+     module function stdlib_linalg_norm_5D_order_err_int_d(a, order, err) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_5D_order_err_int_d
+     pure module function stdlib_linalg_norm_6D_order_int_d(a, order) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_6D_order_int_d
+     module function stdlib_linalg_norm_6D_order_err_int_d(a, order, err) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_6D_order_err_int_d
+     pure module function stdlib_linalg_norm_7D_order_int_d(a, order) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_7D_order_int_d
+     module function stdlib_linalg_norm_7D_order_err_int_d(a, order, err) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        real(dp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_7D_order_err_int_d
+     !> Array norms: real(dp)
+     pure module function stdlib_linalg_norm_2D_to_1D_int_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))   
+     end function stdlib_linalg_norm_2D_to_1D_int_d
+     module function stdlib_linalg_norm_2D_to_1D_err_int_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+     end function stdlib_linalg_norm_2D_to_1D_err_int_d
+     pure module function stdlib_linalg_norm_3D_to_2D_int_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))   
+     end function stdlib_linalg_norm_3D_to_2D_int_d
+     module function stdlib_linalg_norm_3D_to_2D_err_int_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+     end function stdlib_linalg_norm_3D_to_2D_err_int_d
+     pure module function stdlib_linalg_norm_4D_to_3D_int_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))   
+     end function stdlib_linalg_norm_4D_to_3D_int_d
+     module function stdlib_linalg_norm_4D_to_3D_err_int_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))     
+     end function stdlib_linalg_norm_4D_to_3D_err_int_d
+     pure module function stdlib_linalg_norm_5D_to_4D_int_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))   
+     end function stdlib_linalg_norm_5D_to_4D_int_d
+     module function stdlib_linalg_norm_5D_to_4D_err_int_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+     end function stdlib_linalg_norm_5D_to_4D_err_int_d
+     pure module function stdlib_linalg_norm_6D_to_5D_int_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))   
+     end function stdlib_linalg_norm_6D_to_5D_int_d
+     module function stdlib_linalg_norm_6D_to_5D_err_int_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))     
+     end function stdlib_linalg_norm_6D_to_5D_err_int_d
+     pure module function stdlib_linalg_norm_7D_to_6D_int_d(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))   
+     end function stdlib_linalg_norm_7D_to_6D_int_d
+     module function stdlib_linalg_norm_7D_to_6D_err_int_d(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        real(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))     
+     end function stdlib_linalg_norm_7D_to_6D_err_int_d
+     !> Scalar norms: complex(sp)
+     pure module function stdlib_linalg_norm_1D_order_char_c(a, order) result(nrm)
+        !> Input 1-d matrix a(:)
+        complex(sp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_1D_order_char_c
+     module function stdlib_linalg_norm_1D_order_err_char_c(a, order, err) result(nrm)
+        !> Input 1-d matrix a(:)
+        complex(sp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_1D_order_err_char_c
+     pure module function stdlib_linalg_norm_2D_order_char_c(a, order) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        complex(sp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_2D_order_char_c
+     module function stdlib_linalg_norm_2D_order_err_char_c(a, order, err) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        complex(sp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_2D_order_err_char_c
+     pure module function stdlib_linalg_norm_3D_order_char_c(a, order) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        complex(sp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_3D_order_char_c
+     module function stdlib_linalg_norm_3D_order_err_char_c(a, order, err) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        complex(sp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_3D_order_err_char_c
+     pure module function stdlib_linalg_norm_4D_order_char_c(a, order) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_4D_order_char_c
+     module function stdlib_linalg_norm_4D_order_err_char_c(a, order, err) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_4D_order_err_char_c
+     pure module function stdlib_linalg_norm_5D_order_char_c(a, order) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_5D_order_char_c
+     module function stdlib_linalg_norm_5D_order_err_char_c(a, order, err) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_5D_order_err_char_c
+     pure module function stdlib_linalg_norm_6D_order_char_c(a, order) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_6D_order_char_c
+     module function stdlib_linalg_norm_6D_order_err_char_c(a, order, err) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_6D_order_err_char_c
+     pure module function stdlib_linalg_norm_7D_order_char_c(a, order) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_7D_order_char_c
+     module function stdlib_linalg_norm_7D_order_err_char_c(a, order, err) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_7D_order_err_char_c
+     !> Array norms: complex(sp)
+     pure module function stdlib_linalg_norm_2D_to_1D_char_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))   
+     end function stdlib_linalg_norm_2D_to_1D_char_c
+     module function stdlib_linalg_norm_2D_to_1D_err_char_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+     end function stdlib_linalg_norm_2D_to_1D_err_char_c
+     pure module function stdlib_linalg_norm_3D_to_2D_char_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))   
+     end function stdlib_linalg_norm_3D_to_2D_char_c
+     module function stdlib_linalg_norm_3D_to_2D_err_char_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+     end function stdlib_linalg_norm_3D_to_2D_err_char_c
+     pure module function stdlib_linalg_norm_4D_to_3D_char_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))   
+     end function stdlib_linalg_norm_4D_to_3D_char_c
+     module function stdlib_linalg_norm_4D_to_3D_err_char_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))     
+     end function stdlib_linalg_norm_4D_to_3D_err_char_c
+     pure module function stdlib_linalg_norm_5D_to_4D_char_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))   
+     end function stdlib_linalg_norm_5D_to_4D_char_c
+     module function stdlib_linalg_norm_5D_to_4D_err_char_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+     end function stdlib_linalg_norm_5D_to_4D_err_char_c
+     pure module function stdlib_linalg_norm_6D_to_5D_char_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))   
+     end function stdlib_linalg_norm_6D_to_5D_char_c
+     module function stdlib_linalg_norm_6D_to_5D_err_char_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))     
+     end function stdlib_linalg_norm_6D_to_5D_err_char_c
+     pure module function stdlib_linalg_norm_7D_to_6D_char_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))   
+     end function stdlib_linalg_norm_7D_to_6D_char_c
+     module function stdlib_linalg_norm_7D_to_6D_err_char_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))     
+     end function stdlib_linalg_norm_7D_to_6D_err_char_c
+     !> Scalar norms: complex(sp)
+     pure module function stdlib_linalg_norm_1D_order_int_c(a, order) result(nrm)
+        !> Input 1-d matrix a(:)
+        complex(sp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_1D_order_int_c
+     module function stdlib_linalg_norm_1D_order_err_int_c(a, order, err) result(nrm)
+        !> Input 1-d matrix a(:)
+        complex(sp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_1D_order_err_int_c
+     pure module function stdlib_linalg_norm_2D_order_int_c(a, order) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        complex(sp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_2D_order_int_c
+     module function stdlib_linalg_norm_2D_order_err_int_c(a, order, err) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        complex(sp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_2D_order_err_int_c
+     pure module function stdlib_linalg_norm_3D_order_int_c(a, order) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        complex(sp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_3D_order_int_c
+     module function stdlib_linalg_norm_3D_order_err_int_c(a, order, err) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        complex(sp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_3D_order_err_int_c
+     pure module function stdlib_linalg_norm_4D_order_int_c(a, order) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_4D_order_int_c
+     module function stdlib_linalg_norm_4D_order_err_int_c(a, order, err) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_4D_order_err_int_c
+     pure module function stdlib_linalg_norm_5D_order_int_c(a, order) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_5D_order_int_c
+     module function stdlib_linalg_norm_5D_order_err_int_c(a, order, err) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_5D_order_err_int_c
+     pure module function stdlib_linalg_norm_6D_order_int_c(a, order) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_6D_order_int_c
+     module function stdlib_linalg_norm_6D_order_err_int_c(a, order, err) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_6D_order_err_int_c
+     pure module function stdlib_linalg_norm_7D_order_int_c(a, order) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(sp) :: nrm       
+     end function stdlib_linalg_norm_7D_order_int_c
+     module function stdlib_linalg_norm_7D_order_err_int_c(a, order, err) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        complex(sp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(sp) :: nrm               
+     end function stdlib_linalg_norm_7D_order_err_int_c
+     !> Array norms: complex(sp)
+     pure module function stdlib_linalg_norm_2D_to_1D_int_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))   
+     end function stdlib_linalg_norm_2D_to_1D_int_c
+     module function stdlib_linalg_norm_2D_to_1D_err_int_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+     end function stdlib_linalg_norm_2D_to_1D_err_int_c
+     pure module function stdlib_linalg_norm_3D_to_2D_int_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))   
+     end function stdlib_linalg_norm_3D_to_2D_int_c
+     module function stdlib_linalg_norm_3D_to_2D_err_int_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+     end function stdlib_linalg_norm_3D_to_2D_err_int_c
+     pure module function stdlib_linalg_norm_4D_to_3D_int_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))   
+     end function stdlib_linalg_norm_4D_to_3D_int_c
+     module function stdlib_linalg_norm_4D_to_3D_err_int_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))     
+     end function stdlib_linalg_norm_4D_to_3D_err_int_c
+     pure module function stdlib_linalg_norm_5D_to_4D_int_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))   
+     end function stdlib_linalg_norm_5D_to_4D_int_c
+     module function stdlib_linalg_norm_5D_to_4D_err_int_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+     end function stdlib_linalg_norm_5D_to_4D_err_int_c
+     pure module function stdlib_linalg_norm_6D_to_5D_int_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))   
+     end function stdlib_linalg_norm_6D_to_5D_int_c
+     module function stdlib_linalg_norm_6D_to_5D_err_int_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))     
+     end function stdlib_linalg_norm_6D_to_5D_err_int_c
+     pure module function stdlib_linalg_norm_7D_to_6D_int_c(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))   
+     end function stdlib_linalg_norm_7D_to_6D_int_c
+     module function stdlib_linalg_norm_7D_to_6D_err_int_c(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(sp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))     
+     end function stdlib_linalg_norm_7D_to_6D_err_int_c
+     !> Scalar norms: complex(dp)
+     pure module function stdlib_linalg_norm_1D_order_char_z(a, order) result(nrm)
+        !> Input 1-d matrix a(:)
+        complex(dp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_1D_order_char_z
+     module function stdlib_linalg_norm_1D_order_err_char_z(a, order, err) result(nrm)
+        !> Input 1-d matrix a(:)
+        complex(dp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_1D_order_err_char_z
+     pure module function stdlib_linalg_norm_2D_order_char_z(a, order) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        complex(dp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_2D_order_char_z
+     module function stdlib_linalg_norm_2D_order_err_char_z(a, order, err) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        complex(dp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_2D_order_err_char_z
+     pure module function stdlib_linalg_norm_3D_order_char_z(a, order) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        complex(dp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_3D_order_char_z
+     module function stdlib_linalg_norm_3D_order_err_char_z(a, order, err) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        complex(dp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_3D_order_err_char_z
+     pure module function stdlib_linalg_norm_4D_order_char_z(a, order) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_4D_order_char_z
+     module function stdlib_linalg_norm_4D_order_err_char_z(a, order, err) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_4D_order_err_char_z
+     pure module function stdlib_linalg_norm_5D_order_char_z(a, order) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_5D_order_char_z
+     module function stdlib_linalg_norm_5D_order_err_char_z(a, order, err) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_5D_order_err_char_z
+     pure module function stdlib_linalg_norm_6D_order_char_z(a, order) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_6D_order_char_z
+     module function stdlib_linalg_norm_6D_order_err_char_z(a, order, err) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_6D_order_err_char_z
+     pure module function stdlib_linalg_norm_7D_order_char_z(a, order) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_7D_order_char_z
+     module function stdlib_linalg_norm_7D_order_err_char_z(a, order, err) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_7D_order_err_char_z
+     !> Array norms: complex(dp)
+     pure module function stdlib_linalg_norm_2D_to_1D_char_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))   
+     end function stdlib_linalg_norm_2D_to_1D_char_z
+     module function stdlib_linalg_norm_2D_to_1D_err_char_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+     end function stdlib_linalg_norm_2D_to_1D_err_char_z
+     pure module function stdlib_linalg_norm_3D_to_2D_char_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))   
+     end function stdlib_linalg_norm_3D_to_2D_char_z
+     module function stdlib_linalg_norm_3D_to_2D_err_char_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+     end function stdlib_linalg_norm_3D_to_2D_err_char_z
+     pure module function stdlib_linalg_norm_4D_to_3D_char_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))   
+     end function stdlib_linalg_norm_4D_to_3D_char_z
+     module function stdlib_linalg_norm_4D_to_3D_err_char_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))     
+     end function stdlib_linalg_norm_4D_to_3D_err_char_z
+     pure module function stdlib_linalg_norm_5D_to_4D_char_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))   
+     end function stdlib_linalg_norm_5D_to_4D_char_z
+     module function stdlib_linalg_norm_5D_to_4D_err_char_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+     end function stdlib_linalg_norm_5D_to_4D_err_char_z
+     pure module function stdlib_linalg_norm_6D_to_5D_char_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))   
+     end function stdlib_linalg_norm_6D_to_5D_char_z
+     module function stdlib_linalg_norm_6D_to_5D_err_char_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))     
+     end function stdlib_linalg_norm_6D_to_5D_err_char_z
+     pure module function stdlib_linalg_norm_7D_to_6D_char_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))   
+     end function stdlib_linalg_norm_7D_to_6D_char_z
+     module function stdlib_linalg_norm_7D_to_6D_err_char_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))     
+     end function stdlib_linalg_norm_7D_to_6D_err_char_z
+     !> Scalar norms: complex(dp)
+     pure module function stdlib_linalg_norm_1D_order_int_z(a, order) result(nrm)
+        !> Input 1-d matrix a(:)
+        complex(dp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_1D_order_int_z
+     module function stdlib_linalg_norm_1D_order_err_int_z(a, order, err) result(nrm)
+        !> Input 1-d matrix a(:)
+        complex(dp), intent(in) :: a(:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_1D_order_err_int_z
+     pure module function stdlib_linalg_norm_2D_order_int_z(a, order) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        complex(dp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_2D_order_int_z
+     module function stdlib_linalg_norm_2D_order_err_int_z(a, order, err) result(nrm)
+        !> Input 2-d matrix a(:,:)
+        complex(dp), intent(in) :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_2D_order_err_int_z
+     pure module function stdlib_linalg_norm_3D_order_int_z(a, order) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        complex(dp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_3D_order_int_z
+     module function stdlib_linalg_norm_3D_order_err_int_z(a, order, err) result(nrm)
+        !> Input 3-d matrix a(:,:,:)
+        complex(dp), intent(in) :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_3D_order_err_int_z
+     pure module function stdlib_linalg_norm_4D_order_int_z(a, order) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_4D_order_int_z
+     module function stdlib_linalg_norm_4D_order_err_int_z(a, order, err) result(nrm)
+        !> Input 4-d matrix a(:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_4D_order_err_int_z
+     pure module function stdlib_linalg_norm_5D_order_int_z(a, order) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_5D_order_int_z
+     module function stdlib_linalg_norm_5D_order_err_int_z(a, order, err) result(nrm)
+        !> Input 5-d matrix a(:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_5D_order_err_int_z
+     pure module function stdlib_linalg_norm_6D_order_int_z(a, order) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_6D_order_int_z
+     module function stdlib_linalg_norm_6D_order_err_int_z(a, order, err) result(nrm)
+        !> Input 6-d matrix a(:,:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_6D_order_err_int_z
+     pure module function stdlib_linalg_norm_7D_order_int_z(a, order) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Norm of the matrix.
+        real(dp) :: nrm       
+     end function stdlib_linalg_norm_7D_order_int_z
+     module function stdlib_linalg_norm_7D_order_err_int_z(a, order, err) result(nrm)
+        !> Input 7-d matrix a(:,:,:,:,:,:,:)
+        complex(dp), intent(in) :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(dp) :: nrm               
+     end function stdlib_linalg_norm_7D_order_err_int_z
+     !> Array norms: complex(dp)
+     pure module function stdlib_linalg_norm_2D_to_1D_int_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))   
+     end function stdlib_linalg_norm_2D_to_1D_int_z
+     module function stdlib_linalg_norm_2D_to_1D_err_int_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+     end function stdlib_linalg_norm_2D_to_1D_err_int_z
+     pure module function stdlib_linalg_norm_3D_to_2D_int_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))   
+     end function stdlib_linalg_norm_3D_to_2D_int_z
+     module function stdlib_linalg_norm_3D_to_2D_err_int_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+     end function stdlib_linalg_norm_3D_to_2D_err_int_z
+     pure module function stdlib_linalg_norm_4D_to_3D_int_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))   
+     end function stdlib_linalg_norm_4D_to_3D_int_z
+     module function stdlib_linalg_norm_4D_to_3D_err_int_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim))     
+     end function stdlib_linalg_norm_4D_to_3D_err_int_z
+     pure module function stdlib_linalg_norm_5D_to_4D_int_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))   
+     end function stdlib_linalg_norm_5D_to_4D_int_z
+     module function stdlib_linalg_norm_5D_to_4D_err_int_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+     end function stdlib_linalg_norm_5D_to_4D_err_int_z
+     pure module function stdlib_linalg_norm_6D_to_5D_int_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))   
+     end function stdlib_linalg_norm_6D_to_5D_int_z
+     module function stdlib_linalg_norm_6D_to_5D_err_int_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim))     
+     end function stdlib_linalg_norm_6D_to_5D_err_int_z
+     pure module function stdlib_linalg_norm_7D_to_6D_int_z(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))   
+     end function stdlib_linalg_norm_7D_to_6D_int_z
+     module function stdlib_linalg_norm_7D_to_6D_err_int_z(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        complex(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+        !> Order of the matrix norm being computed.
+        integer(ilp), intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(dp) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim), merge(size(a, 3),&
+            & size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a, 6), mask=5<dim),&
+            & merge(size(a, 6), size(a, 7), mask=6<dim))     
+     end function stdlib_linalg_norm_7D_to_6D_err_int_z
+  end interface norm  
+
+  !> Vector norm: subroutine interface
+  interface get_norm
+     !! version: experimental 
+     !!
+     !! Computes the vector norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#get-norm-computes-the-vector-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Subroutine interface that returns one of several scalar norm metrics of a `real` or `complex` 
+     !! input array \( A \), that can have any rank. For generic rank-n arrays, the scalar norm over 
+     !! the whole array is returned by default. If `n>=2` and the optional input dimension `dim` is 
+     !! specified, a rank `n-1` array is returned with dimension `dim` collapsed, containing all 1D 
+     !! array norms evaluated along dimension `dim` only.
+     !! 
+     !!
+     !!### Description
+     !! 
+     !! This `pure subroutine `interface provides methods for computing the vector norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays may have generic rank from 1 to 7.
+     !!
+     !! Norm type input is mandatory, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm \( \sum_i{ \left|a_i\right| } \): `order` = 1 or '1'    
+     !! - Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \): `order` = 2 or '2'
+     !! - p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \): `integer` `order`, order>=3
+     !! - Infinity norm \( \max_i{ \left|a_i\right| } \): order = huge(0) or 'inf'
+     !! - Minus-infinity norm \( \min_i{ \left|a_i\right| } \): order = -huge(0) or '-inf'
+     !!     
+     !!### Example
+     !!
+     !!```fortran
+     !!
+     !!    real(sp) :: a(3,3), na, rown(3)
+     !!    type(linalg_state_type) :: err
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!
+     !!    ! L2 norm: whole matrix
+     !!    call get_norm(a, na, 2)
+     !!   
+     !!    ! Infinity norms of each row, with error control
+     !!    call get_norm(a, rown, 'inf', dim=2, err=err)     
+     !!     
+     !!```     
+     !!     
+        !> Scalar norms: real(sp)
+        pure module subroutine norm_1D_char_s(a, nrm, order, err)
+           !> Input 1-d matrix a(:)
+           real(sp), intent(in), target :: a(:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_1D_char_s
+        pure module subroutine norm_2D_char_s(a, nrm, order, err)
+           !> Input 2-d matrix a(:,:)
+           real(sp), intent(in), target :: a(:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_2D_char_s
+        pure module subroutine norm_3D_char_s(a, nrm, order, err)
+           !> Input 3-d matrix a(:,:,:)
+           real(sp), intent(in), target :: a(:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_3D_char_s
+        pure module subroutine norm_4D_char_s(a, nrm, order, err)
+           !> Input 4-d matrix a(:,:,:,:)
+           real(sp), intent(in), target :: a(:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_4D_char_s
+        pure module subroutine norm_5D_char_s(a, nrm, order, err)
+           !> Input 5-d matrix a(:,:,:,:,:)
+           real(sp), intent(in), target :: a(:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_5D_char_s
+        pure module subroutine norm_6D_char_s(a, nrm, order, err)
+           !> Input 6-d matrix a(:,:,:,:,:,:)
+           real(sp), intent(in), target :: a(:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_6D_char_s
+        pure module subroutine norm_7D_char_s(a, nrm, order, err)
+           !> Input 7-d matrix a(:,:,:,:,:,:,:)
+           real(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_7D_char_s
+        !> Array norms: real(sp)
+        pure module subroutine norm_2D_to_1D_char_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_2D_to_1D_char_s
+        pure module subroutine norm_3D_to_2D_char_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_3D_to_2D_char_s
+        pure module subroutine norm_4D_to_3D_char_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_4D_to_3D_char_s
+        pure module subroutine norm_5D_to_4D_char_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_5D_to_4D_char_s
+        pure module subroutine norm_6D_to_5D_char_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_6D_to_5D_char_s
+        pure module subroutine norm_7D_to_6D_char_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim), merge(size(a, 6), size(a, 7), mask=6<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_7D_to_6D_char_s
+        !> Scalar norms: real(sp)
+        pure module subroutine norm_1D_int_s(a, nrm, order, err)
+           !> Input 1-d matrix a(:)
+           real(sp), intent(in), target :: a(:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_1D_int_s
+        pure module subroutine norm_2D_int_s(a, nrm, order, err)
+           !> Input 2-d matrix a(:,:)
+           real(sp), intent(in), target :: a(:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_2D_int_s
+        pure module subroutine norm_3D_int_s(a, nrm, order, err)
+           !> Input 3-d matrix a(:,:,:)
+           real(sp), intent(in), target :: a(:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_3D_int_s
+        pure module subroutine norm_4D_int_s(a, nrm, order, err)
+           !> Input 4-d matrix a(:,:,:,:)
+           real(sp), intent(in), target :: a(:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_4D_int_s
+        pure module subroutine norm_5D_int_s(a, nrm, order, err)
+           !> Input 5-d matrix a(:,:,:,:,:)
+           real(sp), intent(in), target :: a(:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_5D_int_s
+        pure module subroutine norm_6D_int_s(a, nrm, order, err)
+           !> Input 6-d matrix a(:,:,:,:,:,:)
+           real(sp), intent(in), target :: a(:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_6D_int_s
+        pure module subroutine norm_7D_int_s(a, nrm, order, err)
+           !> Input 7-d matrix a(:,:,:,:,:,:,:)
+           real(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_7D_int_s
+        !> Array norms: real(sp)
+        pure module subroutine norm_2D_to_1D_int_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_2D_to_1D_int_s
+        pure module subroutine norm_3D_to_2D_int_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_3D_to_2D_int_s
+        pure module subroutine norm_4D_to_3D_int_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_4D_to_3D_int_s
+        pure module subroutine norm_5D_to_4D_int_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_5D_to_4D_int_s
+        pure module subroutine norm_6D_to_5D_int_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_6D_to_5D_int_s
+        pure module subroutine norm_7D_to_6D_int_s(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(sp), intent(in) :: a(:,:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim), merge(size(a, 6), size(a, 7), mask=6<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_7D_to_6D_int_s
+        !> Scalar norms: real(dp)
+        pure module subroutine norm_1D_char_d(a, nrm, order, err)
+           !> Input 1-d matrix a(:)
+           real(dp), intent(in), target :: a(:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_1D_char_d
+        pure module subroutine norm_2D_char_d(a, nrm, order, err)
+           !> Input 2-d matrix a(:,:)
+           real(dp), intent(in), target :: a(:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_2D_char_d
+        pure module subroutine norm_3D_char_d(a, nrm, order, err)
+           !> Input 3-d matrix a(:,:,:)
+           real(dp), intent(in), target :: a(:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_3D_char_d
+        pure module subroutine norm_4D_char_d(a, nrm, order, err)
+           !> Input 4-d matrix a(:,:,:,:)
+           real(dp), intent(in), target :: a(:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_4D_char_d
+        pure module subroutine norm_5D_char_d(a, nrm, order, err)
+           !> Input 5-d matrix a(:,:,:,:,:)
+           real(dp), intent(in), target :: a(:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_5D_char_d
+        pure module subroutine norm_6D_char_d(a, nrm, order, err)
+           !> Input 6-d matrix a(:,:,:,:,:,:)
+           real(dp), intent(in), target :: a(:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_6D_char_d
+        pure module subroutine norm_7D_char_d(a, nrm, order, err)
+           !> Input 7-d matrix a(:,:,:,:,:,:,:)
+           real(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_7D_char_d
+        !> Array norms: real(dp)
+        pure module subroutine norm_2D_to_1D_char_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_2D_to_1D_char_d
+        pure module subroutine norm_3D_to_2D_char_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_3D_to_2D_char_d
+        pure module subroutine norm_4D_to_3D_char_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_4D_to_3D_char_d
+        pure module subroutine norm_5D_to_4D_char_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_5D_to_4D_char_d
+        pure module subroutine norm_6D_to_5D_char_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_6D_to_5D_char_d
+        pure module subroutine norm_7D_to_6D_char_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim), merge(size(a, 6), size(a, 7), mask=6<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_7D_to_6D_char_d
+        !> Scalar norms: real(dp)
+        pure module subroutine norm_1D_int_d(a, nrm, order, err)
+           !> Input 1-d matrix a(:)
+           real(dp), intent(in), target :: a(:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_1D_int_d
+        pure module subroutine norm_2D_int_d(a, nrm, order, err)
+           !> Input 2-d matrix a(:,:)
+           real(dp), intent(in), target :: a(:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_2D_int_d
+        pure module subroutine norm_3D_int_d(a, nrm, order, err)
+           !> Input 3-d matrix a(:,:,:)
+           real(dp), intent(in), target :: a(:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_3D_int_d
+        pure module subroutine norm_4D_int_d(a, nrm, order, err)
+           !> Input 4-d matrix a(:,:,:,:)
+           real(dp), intent(in), target :: a(:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_4D_int_d
+        pure module subroutine norm_5D_int_d(a, nrm, order, err)
+           !> Input 5-d matrix a(:,:,:,:,:)
+           real(dp), intent(in), target :: a(:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_5D_int_d
+        pure module subroutine norm_6D_int_d(a, nrm, order, err)
+           !> Input 6-d matrix a(:,:,:,:,:,:)
+           real(dp), intent(in), target :: a(:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_6D_int_d
+        pure module subroutine norm_7D_int_d(a, nrm, order, err)
+           !> Input 7-d matrix a(:,:,:,:,:,:,:)
+           real(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_7D_int_d
+        !> Array norms: real(dp)
+        pure module subroutine norm_2D_to_1D_int_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_2D_to_1D_int_d
+        pure module subroutine norm_3D_to_2D_int_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_3D_to_2D_int_d
+        pure module subroutine norm_4D_to_3D_int_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_4D_to_3D_int_d
+        pure module subroutine norm_5D_to_4D_int_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_5D_to_4D_int_d
+        pure module subroutine norm_6D_to_5D_int_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_6D_to_5D_int_d
+        pure module subroutine norm_7D_to_6D_int_d(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           real(dp), intent(in) :: a(:,:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim), merge(size(a, 6), size(a, 7), mask=6<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_7D_to_6D_int_d
+        !> Scalar norms: complex(sp)
+        pure module subroutine norm_1D_char_c(a, nrm, order, err)
+           !> Input 1-d matrix a(:)
+           complex(sp), intent(in), target :: a(:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_1D_char_c
+        pure module subroutine norm_2D_char_c(a, nrm, order, err)
+           !> Input 2-d matrix a(:,:)
+           complex(sp), intent(in), target :: a(:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_2D_char_c
+        pure module subroutine norm_3D_char_c(a, nrm, order, err)
+           !> Input 3-d matrix a(:,:,:)
+           complex(sp), intent(in), target :: a(:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_3D_char_c
+        pure module subroutine norm_4D_char_c(a, nrm, order, err)
+           !> Input 4-d matrix a(:,:,:,:)
+           complex(sp), intent(in), target :: a(:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_4D_char_c
+        pure module subroutine norm_5D_char_c(a, nrm, order, err)
+           !> Input 5-d matrix a(:,:,:,:,:)
+           complex(sp), intent(in), target :: a(:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_5D_char_c
+        pure module subroutine norm_6D_char_c(a, nrm, order, err)
+           !> Input 6-d matrix a(:,:,:,:,:,:)
+           complex(sp), intent(in), target :: a(:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_6D_char_c
+        pure module subroutine norm_7D_char_c(a, nrm, order, err)
+           !> Input 7-d matrix a(:,:,:,:,:,:,:)
+           complex(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_7D_char_c
+        !> Array norms: complex(sp)
+        pure module subroutine norm_2D_to_1D_char_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_2D_to_1D_char_c
+        pure module subroutine norm_3D_to_2D_char_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_3D_to_2D_char_c
+        pure module subroutine norm_4D_to_3D_char_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_4D_to_3D_char_c
+        pure module subroutine norm_5D_to_4D_char_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_5D_to_4D_char_c
+        pure module subroutine norm_6D_to_5D_char_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_6D_to_5D_char_c
+        pure module subroutine norm_7D_to_6D_char_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim), merge(size(a, 6), size(a, 7), mask=6<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_7D_to_6D_char_c
+        !> Scalar norms: complex(sp)
+        pure module subroutine norm_1D_int_c(a, nrm, order, err)
+           !> Input 1-d matrix a(:)
+           complex(sp), intent(in), target :: a(:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_1D_int_c
+        pure module subroutine norm_2D_int_c(a, nrm, order, err)
+           !> Input 2-d matrix a(:,:)
+           complex(sp), intent(in), target :: a(:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_2D_int_c
+        pure module subroutine norm_3D_int_c(a, nrm, order, err)
+           !> Input 3-d matrix a(:,:,:)
+           complex(sp), intent(in), target :: a(:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_3D_int_c
+        pure module subroutine norm_4D_int_c(a, nrm, order, err)
+           !> Input 4-d matrix a(:,:,:,:)
+           complex(sp), intent(in), target :: a(:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_4D_int_c
+        pure module subroutine norm_5D_int_c(a, nrm, order, err)
+           !> Input 5-d matrix a(:,:,:,:,:)
+           complex(sp), intent(in), target :: a(:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_5D_int_c
+        pure module subroutine norm_6D_int_c(a, nrm, order, err)
+           !> Input 6-d matrix a(:,:,:,:,:,:)
+           complex(sp), intent(in), target :: a(:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_6D_int_c
+        pure module subroutine norm_7D_int_c(a, nrm, order, err)
+           !> Input 7-d matrix a(:,:,:,:,:,:,:)
+           complex(sp), intent(in), target :: a(:,:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(sp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_7D_int_c
+        !> Array norms: complex(sp)
+        pure module subroutine norm_2D_to_1D_int_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_2D_to_1D_int_c
+        pure module subroutine norm_3D_to_2D_int_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_3D_to_2D_int_c
+        pure module subroutine norm_4D_to_3D_int_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_4D_to_3D_int_c
+        pure module subroutine norm_5D_to_4D_int_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_5D_to_4D_int_c
+        pure module subroutine norm_6D_to_5D_int_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_6D_to_5D_int_c
+        pure module subroutine norm_7D_to_6D_int_c(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(sp), intent(in) :: a(:,:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(sp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim), merge(size(a, 6), size(a, 7), mask=6<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_7D_to_6D_int_c
+        !> Scalar norms: complex(dp)
+        pure module subroutine norm_1D_char_z(a, nrm, order, err)
+           !> Input 1-d matrix a(:)
+           complex(dp), intent(in), target :: a(:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_1D_char_z
+        pure module subroutine norm_2D_char_z(a, nrm, order, err)
+           !> Input 2-d matrix a(:,:)
+           complex(dp), intent(in), target :: a(:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_2D_char_z
+        pure module subroutine norm_3D_char_z(a, nrm, order, err)
+           !> Input 3-d matrix a(:,:,:)
+           complex(dp), intent(in), target :: a(:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_3D_char_z
+        pure module subroutine norm_4D_char_z(a, nrm, order, err)
+           !> Input 4-d matrix a(:,:,:,:)
+           complex(dp), intent(in), target :: a(:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_4D_char_z
+        pure module subroutine norm_5D_char_z(a, nrm, order, err)
+           !> Input 5-d matrix a(:,:,:,:,:)
+           complex(dp), intent(in), target :: a(:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_5D_char_z
+        pure module subroutine norm_6D_char_z(a, nrm, order, err)
+           !> Input 6-d matrix a(:,:,:,:,:,:)
+           complex(dp), intent(in), target :: a(:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_6D_char_z
+        pure module subroutine norm_7D_char_z(a, nrm, order, err)
+           !> Input 7-d matrix a(:,:,:,:,:,:,:)
+           complex(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_7D_char_z
+        !> Array norms: complex(dp)
+        pure module subroutine norm_2D_to_1D_char_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_2D_to_1D_char_z
+        pure module subroutine norm_3D_to_2D_char_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_3D_to_2D_char_z
+        pure module subroutine norm_4D_to_3D_char_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_4D_to_3D_char_z
+        pure module subroutine norm_5D_to_4D_char_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_5D_to_4D_char_z
+        pure module subroutine norm_6D_to_5D_char_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_6D_to_5D_char_z
+        pure module subroutine norm_7D_to_6D_char_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim), merge(size(a, 6), size(a, 7), mask=6<dim))     
+           !> Order of the matrix norm being computed.
+           character(len=*), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_7D_to_6D_char_z
+        !> Scalar norms: complex(dp)
+        pure module subroutine norm_1D_int_z(a, nrm, order, err)
+           !> Input 1-d matrix a(:)
+           complex(dp), intent(in), target :: a(:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_1D_int_z
+        pure module subroutine norm_2D_int_z(a, nrm, order, err)
+           !> Input 2-d matrix a(:,:)
+           complex(dp), intent(in), target :: a(:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_2D_int_z
+        pure module subroutine norm_3D_int_z(a, nrm, order, err)
+           !> Input 3-d matrix a(:,:,:)
+           complex(dp), intent(in), target :: a(:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_3D_int_z
+        pure module subroutine norm_4D_int_z(a, nrm, order, err)
+           !> Input 4-d matrix a(:,:,:,:)
+           complex(dp), intent(in), target :: a(:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_4D_int_z
+        pure module subroutine norm_5D_int_z(a, nrm, order, err)
+           !> Input 5-d matrix a(:,:,:,:,:)
+           complex(dp), intent(in), target :: a(:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_5D_int_z
+        pure module subroutine norm_6D_int_z(a, nrm, order, err)
+           !> Input 6-d matrix a(:,:,:,:,:,:)
+           complex(dp), intent(in), target :: a(:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_6D_int_z
+        pure module subroutine norm_7D_int_z(a, nrm, order, err)
+           !> Input 7-d matrix a(:,:,:,:,:,:,:)
+           complex(dp), intent(in), target :: a(:,:,:,:,:,:,:)
+           !> Norm of the matrix.
+           real(dp), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_7D_int_z
+        !> Array norms: complex(dp)
+        pure module subroutine norm_2D_to_1D_int_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_2D_to_1D_int_z
+        pure module subroutine norm_3D_to_2D_int_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_3D_to_2D_int_z
+        pure module subroutine norm_4D_to_3D_int_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_4D_to_3D_int_z
+        pure module subroutine norm_5D_to_4D_int_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_5D_to_4D_int_z
+        pure module subroutine norm_6D_to_5D_int_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_6D_to_5D_int_z
+        pure module subroutine norm_7D_to_6D_int_z(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           complex(dp), intent(in) :: a(:,:,:,:,:,:,:)
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(dp), intent(out) :: nrm(merge(size(a, 1), size(a, 2), mask=1<dim), merge(size(a, 2), size(a, 3), mask=2<dim),&
+               & merge(size(a, 3), size(a, 4), mask=3<dim), merge(size(a, 4), size(a, 5), mask=4<dim), merge(size(a, 5), size(a,&
+               & 6), mask=5<dim), merge(size(a, 6), size(a, 7), mask=6<dim))     
+           !> Order of the matrix norm being computed.
+           integer(ilp), intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_7D_to_6D_int_z
+  end interface get_norm
 
 contains
 

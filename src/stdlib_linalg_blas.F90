@@ -8,6 +8,50 @@ module stdlib_linalg_blas
      implicit none(type,external)
      public
 
+          interface asum
+          !! ASUM takes the sum of the absolute values.
+#ifdef STDLIB_EXTERNAL_BLAS
+               pure real(dp) function dasum( n, x, incx )
+                    import sp,dp,qp,ilp,lk 
+                    implicit none(type,external) 
+                    integer(ilp), intent(in) :: incx,n
+                    real(dp), intent(in) :: x(*)
+               end function dasum
+#else 
+               module procedure stdlib_dasum
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS
+               pure real(dp) function dzasum( n, x, incx )
+                    import sp,dp,qp,ilp,lk 
+                    implicit none(type,external) 
+                    integer(ilp), intent(in) :: incx,n
+                    complex(dp), intent(in) :: x(*)
+               end function dzasum
+#else 
+               module procedure stdlib_dzasum
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS
+               pure real(sp) function sasum( n, x, incx )
+                    import sp,dp,qp,ilp,lk 
+                    implicit none(type,external) 
+                    integer(ilp), intent(in) :: incx,n
+                    real(sp), intent(in) :: x(*)
+               end function sasum
+#else 
+               module procedure stdlib_sasum
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS
+               pure real(sp) function scasum( n, x, incx )
+                    import sp,dp,qp,ilp,lk 
+                    implicit none(type,external) 
+                    integer(ilp), intent(in) :: incx,n
+                    complex(sp), intent(in) :: x(*)
+               end function scasum
+#else 
+               module procedure stdlib_scasum
+#endif
+          end interface asum
+
           interface axpy
           !! AXPY constant times a vector plus a vector.
 #ifdef STDLIB_EXTERNAL_BLAS
@@ -818,6 +862,16 @@ module stdlib_linalg_blas
                module procedure stdlib_dnrm2
 #endif
 #ifdef STDLIB_EXTERNAL_BLAS
+               pure real(dp) function dznrm2( n, x, incx )
+                    import sp,dp,qp,ilp,lk 
+                    implicit none(type,external) 
+                    integer(ilp), intent(in) :: incx,n
+                    complex(dp), intent(in) :: x(*)
+               end function dznrm2
+#else 
+               module procedure stdlib_dznrm2
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS
                pure real(sp) function snrm2( n, x, incx )
                     import sp,dp,qp,ilp,lk 
                     implicit none(type,external) 
@@ -826,6 +880,16 @@ module stdlib_linalg_blas
                end function snrm2
 #else 
                module procedure stdlib_snrm2
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS
+               pure real(sp) function scnrm2( n, x, incx )
+                    import sp,dp,qp,ilp,lk 
+                    implicit none(type,external) 
+                    integer(ilp), intent(in) :: incx,n
+                    complex(sp), intent(in) :: x(*)
+               end function scnrm2
+#else 
+               module procedure stdlib_scnrm2
 #endif
           end interface nrm2
 
