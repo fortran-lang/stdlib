@@ -2,7 +2,6 @@ program example_determinant
   use stdlib_kinds, only: dp
   use stdlib_linalg, only: det, linalg_state_type
   implicit none
-  type(linalg_state_type) :: err
 
   real(dp) :: d
 

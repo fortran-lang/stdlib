@@ -147,7 +147,9 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          character :: task
          ${rt}$, target :: work_dummy(1),u_dummy(1,1),vt_dummy(1,1)
          ${rt}$, allocatable :: work(:)
+         #:if rt.startswith('complex')
          real(${rk}$), allocatable :: rwork(:)
+         #:endif
          ${rt}$, pointer :: amat(:,:),umat(:,:),vtmat(:,:)
 
          !> Matrix determinant size

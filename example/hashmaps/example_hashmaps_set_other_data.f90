@@ -1,5 +1,4 @@
 program example_set_other_data
-  use stdlib_kinds, only: int8
   use stdlib_hashmaps, only: open_hashmap_type
   use stdlib_hashmap_wrappers, only: fnv_1_hasher, &
                                      fnv_1a_hasher, key_type, other_type, set

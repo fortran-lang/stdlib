@@ -6071,7 +6071,7 @@ module stdlib_linalg_lapack_s
            
            
            ! Local Scalars 
-           integer(ilp) :: i, i1, i2, i3, i4, it1, it2, it3, it4, j
+           integer(ilp) :: i, i1, i2, i3, i4, it1, it2, it3, it4
            ! Local Arrays 
            integer(ilp) :: mm(lv,4)
            ! Intrinsic Functions 

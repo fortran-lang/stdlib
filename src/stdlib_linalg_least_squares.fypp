@@ -203,12 +203,18 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          !! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
-         integer(ilp) :: nrs,nis,ncs,nsvd
+         integer(ilp) :: nrs,nis,nsvd
+         #:if rt.startswith('complex')         
+         integer(ilp) :: ncs
+         #:endif
          integer(ilp), pointer :: iwork(:)
          logical(lk) :: copy_a,large_enough_x
          real(${rk}$) :: acond,rcond
          real(${rk}$), pointer :: rwork(:),singular(:)
-         ${rt}$, pointer :: xmat(:,:),amat(:,:),cwork(:)
+         ${rt}$, pointer :: xmat(:,:),amat(:,:)
+         #:if rt.startswith('complex')         
+         ${rt}$, pointer :: cwork(:)
+         #:endif  
 
          ! Problem sizes
          m     = size(a,1,kind=ilp)

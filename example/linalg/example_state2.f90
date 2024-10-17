@@ -7,7 +7,6 @@ program example_state2
   use stdlib_linalg_state, only: linalg_state_type, LINALG_VALUE_ERROR, LINALG_SUCCESS, &
           linalg_error_handling
   implicit none
-  integer :: info
   type(linalg_state_type) :: err
   real :: a_div_b
   
