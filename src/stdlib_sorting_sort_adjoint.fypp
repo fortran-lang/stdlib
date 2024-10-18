@@ -103,18 +103,10 @@ contains
 
         ${t2}$, allocatable :: buf(:)
         ${ti}$, allocatable :: ibuf(:)
-        integer(int_index) :: array_size, i
+        integer(int_index) :: array_size
         integer(int_index) :: stat
 
         array_size = size(array, kind=int_index)
-
-        if ( array_size > huge(adjoint_array)) then
-            error stop "Too many entries for the kind of adjoint_array."
-        end if
-
-        if ( array_size > size(adjoint_array, kind=int_index) ) then
-            error stop "Too many entries for the size of adjoint_array."
-        end if
 
         if ( optval(reverse, .false.) ) then
             call reverse_segment( array, adjoint_array )
