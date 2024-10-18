@@ -5,13 +5,12 @@
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"],  ["character(len=:)"], ["character(len=len(array))"], ["char"]))
 #:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_TYPES, BITSET_KINDS))
 
-#:set INT_INDEX_TYPES_ALT_NAME = list(zip(["int_index", "int_index_low"], ["integer(int_index)", "integer(int_index_low)"], ["default", "low"]))
-
 #! For better code reuse in fypp, make lists that contain the input types,
 #! with each having output types and a separate name prefix for subroutines
 #! This approach allows us to have the same code for all input types.
 #:set IRSCB_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME &
     & + BITSET_TYPES_ALT_NAME
+#:set IR_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME
 
 !! Licensing:
 !!
@@ -43,7 +42,7 @@
 !!   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 !!   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 !!
-!! The generic subroutine, `SORT_INDEX`, is substantially a translation to
+!! The generic subroutine, `SORT_ADJ`, is substantially a translation to
 !! Fortran 2008 of the `"Rust" sort` sorting routines in
 !! [`slice.rs`](https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs)
 !! The `rust sort` implementation is distributed with the header:
@@ -62,16 +61,16 @@
 !! of modified versions of the code in the Fortran Standard Library under
 !! the MIT license.
 
-submodule(stdlib_sorting) stdlib_sorting_sort_index
+submodule(stdlib_sorting) stdlib_sorting_sort_adjoint
 
     implicit none
 
 contains
 
-#:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
+#:for ki, ti, tii, namei in IR_INDEX_TYPES_ALT_NAME
   #:for t1, t2, t3, name1 in IRSCB_TYPES_ALT_NAME
 
-    module subroutine ${name1}$_sort_index_${namei}$( array, index, work, iwork, reverse )
+    module subroutine ${name1}$_${namei}$_sort_adjoint( array, adjoint_array, work, iwork, reverse )
 ! A modification of `${name1}$_ord_sort` to return an array of indices that
 ! would perform a stable sort of the `ARRAY` as input, and also sort `ARRAY`
 ! as desired. The indices by default
@@ -96,33 +95,21 @@ contains
 ! estimation of the optimal `run size` as suggested in Tim Peters'
 ! original `listsort.txt`, and the optional `work` and `iwork` arrays to be
 ! used as scratch memory.
-
         ${t1}$, intent(inout)         :: array(0:)
-        ${ti}$, intent(out)           :: index(0:)
+        ${ti}$, intent(inout)         :: adjoint_array(0:)
         ${t3}$, intent(out), optional :: work(0:)
         ${ti}$, intent(out), optional :: iwork(0:)
         logical, intent(in), optional :: reverse
 
         ${t2}$, allocatable :: buf(:)
         ${ti}$, allocatable :: ibuf(:)
-        integer(int_index) :: array_size, i, stat
+        integer(int_index) :: array_size
+        integer(int_index) :: stat
 
         array_size = size(array, kind=int_index)
 
-        if ( array_size > huge(index)) then
-            error stop "Too many entries for the kind of index."
-        end if
-
-        if ( array_size > size(index, kind=int_index) ) then
-            error stop "Too many entries for the size of index."
-        end if
-
-        do i = 0, array_size-1
-            index(i) = int(i+1, kind=${ki}$)
-        end do
-
         if ( optval(reverse, .false.) ) then
-            call reverse_segment( array, index )
+            call reverse_segment( array, adjoint_array )
         end if
 
 ! If necessary allocate buffers to serve as scratch memory.
@@ -134,13 +121,14 @@ contains
                 if ( size(iwork, kind=int_index) < array_size/2 ) then
                     error stop "iwork array is too small."
                 endif
-                call merge_sort( array, index, work, iwork )
+                call merge_sort( array, adjoint_array, work, iwork )
             else
                 allocate( ibuf(0:array_size/2-1), stat=stat )
-                if ( stat /= 0 ) error stop "Allocation of index buffer failed."
-                call merge_sort( array, index, work, ibuf )
+                if ( stat /= 0 ) error stop "Allocation of adjoint_array buffer failed."
+                call merge_sort( array, adjoint_array, work, ibuf )
             end if
         else
+! Allocate a buffer to use as scratch memory.
             #:if t1[0:4] == "char"
             allocate( ${t3}$ :: buf(0:array_size/2-1), &
                       stat=stat )
@@ -152,16 +140,16 @@ contains
                 if ( size(iwork, kind=int_index) < array_size/2 ) then
                     error stop "iwork array is too small."
                 endif
-                call merge_sort( array, index, buf, iwork )
+                call merge_sort( array, adjoint_array, buf, iwork )
             else
                 allocate( ibuf(0:array_size/2-1), stat=stat )
-                if ( stat /= 0 ) error stop "Allocation of index buffer failed."
-                call merge_sort( array, index, buf, ibuf )
+                if ( stat /= 0 ) error stop "Allocation of adjoint_array buffer failed."
+                call merge_sort( array, adjoint_array, buf, ibuf )
             end if
         end if
 
         if ( optval(reverse, .false.) ) then
-            call reverse_segment( array, index )
+            call reverse_segment( array, adjoint_array )
         end if
 
     contains
@@ -187,28 +175,28 @@ contains
         end function calc_min_run
 
 
-        pure subroutine insertion_sort( array, index )
+        pure subroutine insertion_sort( array, adjoint_array )
 ! Sorts `ARRAY` using an insertion sort, while maintaining consistency in
 ! location of the indices in `INDEX` to the elements of `ARRAY`.
             ${t1}$, intent(inout) :: array(0:)
-            ${ti}$, intent(inout) :: index(0:)
+            ${ti}$, intent(inout) :: adjoint_array(0:)
 
             integer(int_index) :: i, j
-            ${ti}$ :: key_index
+            ${ti}$ :: key_adjoint_array
             ${t3}$ :: key
 
             do j=1, size(array, kind=int_index)-1
                 key = array(j)
-                key_index = index(j)
+                key_adjoint_array = adjoint_array(j)
                 i = j - 1
                 do while( i >= 0 )
                     if ( array(i) <= key ) exit
                     array(i+1) = array(i)
-                    index(i+1) = index(i)
+                    adjoint_array(i+1) = adjoint_array(i)
                     i = i - 1
                 end do
                 array(i+1) = key
-                index(i+1) = key_index
+                adjoint_array(i+1) = key_adjoint_array
             end do
 
         end subroutine insertion_sort
@@ -265,36 +253,36 @@ contains
         end function collapse
 
 
-        pure subroutine insert_head( array, index )
+        pure subroutine insert_head( array, adjoint_array )
 ! Inserts `array(0)` into the pre-sorted sequence `array(1:)` so that the
 ! whole `array(0:)` becomes sorted, copying the first element into
 ! a temporary variable, iterating until the right place for it is found.
 ! copying every traversed element into the slot preceding it, and finally,
 ! copying data from the temporary variable into the resulting hole.
-! Consistency of the indices in `index` with the elements of `array`
+! Consistency of the indices in `adjoint_array` with the elements of `array`
 ! are maintained.
 
             ${t1}$, intent(inout) :: array(0:)
-            ${ti}$, intent(inout) :: index(0:)
+            ${ti}$, intent(inout) :: adjoint_array(0:)
 
             ${t3}$ :: tmp
             integer(int_index) :: i
-            ${ti}$ :: tmp_index
+            ${ti}$ :: tmp_adjoint_array
 
             tmp = array(0)
-            tmp_index = index(0)
+            tmp_adjoint_array = adjoint_array(0)
             find_hole: do i=1, size(array, kind=int_index)-1
                 if ( array(i) >= tmp ) exit find_hole
                 array(i-1) = array(i)
-                index(i-1) = index(i)
+                adjoint_array(i-1) = adjoint_array(i)
             end do find_hole
             array(i-1) = tmp
-            index(i-1) = tmp_index
+            adjoint_array(i-1) = tmp_adjoint_array
 
         end subroutine insert_head
 
 
-        subroutine merge_sort( array, index, buf, ibuf )
+        subroutine merge_sort( array, adjoint_array, buf, ibuf )
 ! The Rust merge sort borrows some (but not all) of the ideas from TimSort,
 ! which is described in detail at
 ! (http://svn.python.org/projects/python/trunk/Objects/listsort.txt).
@@ -312,11 +300,11 @@ contains
 !    runs(i - 1)%len + runs(i)%len`
 !
 ! The invariants ensure that the total running time is `O(n log n)`
-! worst-case. Consistency of the indices in `index` with the elements of
+! worst-case. Consistency of the indices in `adjoint_array` with the elements of
 ! `array` are maintained.
 
             ${t1}$, intent(inout) :: array(0:)
-            ${ti}$, intent(inout) :: index(0:)
+            ${ti}$, intent(inout) :: adjoint_array(0:)
             ${t3}$, intent(inout) :: buf(0:)
             ${ti}$, intent(inout) :: ibuf(0:)
 
@@ -331,7 +319,7 @@ contains
             min_run = calc_min_run( array_size )
 
             if ( array_size <= min_run ) then
-                if ( array_size >= 2 ) call insertion_sort( array, index )
+                if ( array_size >= 2 ) call insertion_sort( array, adjoint_array )
                 return
             end if
 
@@ -354,7 +342,7 @@ contains
                             start = start - 1
                         end do Descending
                         call reverse_segment( array(start:finish), &
-                                            index(start:finish) )
+                                            adjoint_array(start:finish) )
                     else
                         Ascending: do while( start > 0 )
                             if ( array(start) < array(start-1) ) exit Ascending
@@ -367,7 +355,7 @@ contains
                 Insert: do while ( start > 0 )
                     if ( finish - start >= min_run - 1 ) exit Insert
                     start = start - 1
-                    call insert_head( array(start:finish), index(start:finish) )
+                    call insert_head( array(start:finish), adjoint_array(start:finish) )
                 end do Insert
                 if ( start == 0 .and. finish == array_size - 1 ) return
 
@@ -386,7 +374,7 @@ contains
                     call merge( array( left % base: &
                                        right % base + right % len - 1 ), &
                                 left % len, buf, &
-                                index( left % base: &
+                                adjoint_array( left % base: &
                                      right % base + right % len - 1 ), ibuf )
 
                     runs(r) = run_type( base = left % base, &
@@ -402,7 +390,7 @@ contains
         end subroutine merge_sort
 
 
-        pure subroutine merge( array, mid, buf, index, ibuf )
+        pure subroutine merge( array, mid, buf, adjoint_array, ibuf )
 ! Merges the two non-decreasing runs `ARRAY(0:MID-1)` and `ARRAY(MID:)`
 ! using `BUF` as temporary storage, and stores the merged runs into
 ! `ARRAY(0:)`. `MID` must be > 0, and < `SIZE(ARRAY)-1`. Buffer `BUF`
@@ -410,7 +398,7 @@ contains
             ${t1}$, intent(inout) :: array(0:)
             integer(int_index), intent(in)  :: mid
             ${t3}$, intent(inout) :: buf(0:)
-            ${ti}$, intent(inout) :: index(0:)
+            ${ti}$, intent(inout) :: adjoint_array(0:)
             ${ti}$, intent(inout) :: ibuf(0:)
 
             integer(int_index) :: array_len, i, j, k
@@ -424,44 +412,44 @@ contains
 
             if ( mid <= array_len - mid ) then ! The left run is shorter.
                 buf(0:mid-1) = array(0:mid-1)
-                ibuf(0:mid-1) = index(0:mid-1)
+                ibuf(0:mid-1) = adjoint_array(0:mid-1)
                 i = 0
                 j = mid
                 merge_lower: do k = 0, array_len-1
                     if ( buf(i) <= array(j) ) then
                         array(k) = buf(i)
-                        index(k) = ibuf(i)
+                        adjoint_array(k) = ibuf(i)
                         i = i + 1
                         if ( i >= mid ) exit merge_lower
                     else
                         array(k) = array(j)
-                        index(k) = index(j)
+                        adjoint_array(k) = adjoint_array(j)
                         j = j + 1
                         if ( j >= array_len ) then
                             array(k+1:) = buf(i:mid-1)
-                            index(k+1:) = ibuf(i:mid-1)
+                            adjoint_array(k+1:) = ibuf(i:mid-1)
                             exit merge_lower
                         end if
                     end if
                 end do merge_lower
             else ! The right run is shorter
                 buf(0:array_len-mid-1) = array(mid:array_len-1)
-                ibuf(0:array_len-mid-1) = index(mid:array_len-1)
+                ibuf(0:array_len-mid-1) = adjoint_array(mid:array_len-1)
                 i = mid - 1
                 j = array_len - mid -1
                 merge_upper: do k = array_len-1, 0, -1
                     if ( buf(j) >= array(i) ) then
                         array(k) = buf(j)
-                        index(k) = ibuf(j)
+                        adjoint_array(k) = ibuf(j)
                         j = j - 1
                         if ( j < 0 ) exit merge_upper
                     else
                         array(k) = array(i)
-                        index(k) = index(i)
+                        adjoint_array(k) = adjoint_array(i)
                         i = i - 1
                         if ( i < 0 ) then
                             array(0:k-1) = buf(0:j)
-                            index(0:k-1) = ibuf(0:j)
+                            adjoint_array(0:k-1) = ibuf(0:j)
                             exit merge_upper
                         end if
                     end if
@@ -470,10 +458,10 @@ contains
         end subroutine merge
 
 
-        pure subroutine reverse_segment( array, index )
+        pure subroutine reverse_segment( array, adjoint_array )
 ! Reverse a segment of an array in place
             ${t1}$, intent(inout) :: array(0:)
-            ${ti}$, intent(inout) :: index(0:)
+            ${ti}$, intent(inout) :: adjoint_array(0:)
 
             ${ti}$ :: itemp
             integer(int_index) :: lo, hi
@@ -485,18 +473,19 @@ contains
                 temp = array(lo)
                 array(lo) = array(hi)
                 array(hi) = temp
-                itemp = index(lo)
-                index(lo) = index(hi)
-                index(hi) = itemp
+                itemp = adjoint_array(lo)
+                adjoint_array(lo) = adjoint_array(hi)
+                adjoint_array(hi) = itemp
                 lo = lo + 1
                 hi = hi - 1
             end do
 
         end subroutine reverse_segment
 
-    end subroutine ${name1}$_sort_index_${namei}$
+    end subroutine ${name1}$_${namei}$_sort_adjoint
 
   #:endfor
 #:endfor
 
-end submodule stdlib_sorting_sort_index
+end submodule stdlib_sorting_sort_adjoint
+
