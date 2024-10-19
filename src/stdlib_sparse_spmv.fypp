@@ -299,14 +299,24 @@ contains
 
         associate( data => matrix%data, colptr => matrix%colptr, row => matrix%row, &
             & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
-            if( storage == sparse_full) then
+            if( storage == sparse_full .and. op_==sparse_op_none ) then
                 do concurrent(j=1:ncols)
+                    aux = alpha_ * vec_x(${rksfx2(rank-1)}$j)
                     do i = colptr(j), colptr(j+1)-1
-                        vec_y(${rksfx2(rank-1)}$row(i)) = vec_y(${rksfx2(rank-1)}$row(i)) + alpha_ * data(i) * vec_x(${rksfx2(rank-1)}$j)
+                        vec_y(${rksfx2(rank-1)}$row(i)) = vec_y(${rksfx2(rank-1)}$row(i)) + data(i) * aux
                     end do
                 end do
 
-            else if( storage == sparse_lower )then
+            else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+                do concurrent(j=1:ncols)
+                    aux = zero_${k1}$
+                    do i = colptr(j), colptr(j+1)-1
+                        aux = aux + data(i) * vec_x(${rksfx2(rank-1)}$row(i))
+                    end do
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
+                end do
+
+            else if( storage == sparse_lower .and. op_/=sparse_op_hermitian )then
                 do j = 1 , ncols
                     aux  = vec_x(${rksfx2(rank-1)}$j) * data(colptr(j))
                     do i = colptr(j)+1, colptr(j+1)-1
@@ -316,7 +326,7 @@ contains
                     vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
                 end do
 
-            else if( storage == sparse_upper )then
+            else if( storage == sparse_upper .and. op_/=sparse_op_hermitian )then
                 do j = 1 , ncols
                     aux  = zero_${s1}$
                     do i = colptr(j), colptr(i+1)-2
@@ -326,7 +336,38 @@ contains
                     aux = aux + data(colptr(j)) * vec_x(${rksfx2(rank-1)}$j)
                     vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
                 end do
-                
+
+            #:if t1.startswith('complex')
+            else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
+                do concurrent(j=1:ncols)
+                    aux = zero_${k1}$
+                    do i = colptr(j), colptr(j+1)-1
+                        aux = aux + conjg(data(i)) * vec_x(${rksfx2(rank-1)}$row(i))
+                    end do
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
+                end do
+
+            else if( storage == sparse_lower .and. op_==sparse_op_hermitian )then
+                do j = 1 , ncols
+                    aux  = vec_x(${rksfx2(rank-1)}$j) * conjg(data(colptr(j)))
+                    do i = colptr(j)+1, colptr(j+1)-1
+                        aux = aux + conjg(data(i)) * vec_x(${rksfx2(rank-1)}$row(i))
+                        vec_y(${rksfx2(rank-1)}$row(i)) = vec_y(${rksfx2(rank-1)}$row(i)) + alpha_ * conjg(data(i)) * vec_x(${rksfx2(rank-1)}$j)
+                    end do
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
+                end do
+
+            else if( storage == sparse_upper .and. op_==sparse_op_hermitian )then
+                do j = 1 , ncols
+                    aux  = zero_${s1}$
+                    do i = colptr(j), colptr(i+1)-2
+                        aux = aux + conjg(data(i)) * vec_x(${rksfx2(rank-1)}$j)
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * conjg(data(i)) * vec_x(${rksfx2(rank-1)}$row(i))
+                    end do
+                    aux = aux + conjg(data(colptr(j))) * vec_x(${rksfx2(rank-1)}$j)
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
+                end do
+            #:endif
             end if
         end associate
     end subroutine
