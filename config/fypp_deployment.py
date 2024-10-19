@@ -122,11 +122,11 @@ def fpm_build(args,unknown):
             flags= flags + unknown[idx+1]
     #==========================================
     # build with fpm
-    subprocess.run(["fpm build"]+
-                   [" --compiler "]+[FPM_FC]+
-                   [" --c-compiler "]+[FPM_CC]+
-                   [" --cxx-compiler "]+[FPM_CXX]+
-                   [" --flag "]+[flags], shell=True, check=True)
+    subprocess.run("fpm build"+
+                   " --compiler "+FPM_FC+
+                   " --c-compiler "+FPM_CC+
+                   " --cxx-compiler "+FPM_CXX+
+                   " --flag \"{}\"".format(flags), shell=True, check=True)
     return
 
 if __name__ == "__main__":
@@ -137,7 +137,7 @@ if __name__ == "__main__":
     parser.add_argument("--vpatch", type=int, default=0, help="Project Version Patch")
 
     parser.add_argument("--njob", type=int, default=4, help="Number of parallel jobs for preprocessing")
-    parser.add_argument("--maxrank",type=int, default=7, help="Set the maximum allowed rank for arrays")
+    parser.add_argument("--maxrank",type=int, default=4, help="Set the maximum allowed rank for arrays")
     parser.add_argument("--with_qp",action='store_true', help="Include WITH_QP in the command")
     parser.add_argument("--with_xdp",action='store_true', help="Include WITH_XDP in the command")
     parser.add_argument("--lnumbering",action='store_true', help="Add line numbering in preprocessed files")
