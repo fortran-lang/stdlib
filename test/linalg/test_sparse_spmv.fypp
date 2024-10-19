@@ -61,6 +61,12 @@ contains
             call spmv( COO, vec_x, vec_y2 )
             call check(error, all(vec_y1 == vec_y2) )
             if (allocated(error)) return
+
+            ! Test in-place transpose
+            vec_y1 = 1._wp
+            call spmv( COO, vec_y1, vec_x, op=sparse_op_transpose )
+            call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
+            if (allocated(error)) return
         end block
         #:endfor
     end subroutine
@@ -114,6 +120,12 @@ contains
             
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
             if (allocated(error)) return
+
+            ! Test in-place transpose
+            vec_y = 1._wp
+            call spmv( CSR, vec_y, vec_x, op=sparse_op_transpose )
+            call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
+            if (allocated(error)) return
         end block
         #:endfor
     end subroutine
@@ -138,6 +150,12 @@ contains
             call spmv( CSC, vec_x, vec_y )
             
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
+            if (allocated(error)) return
+
+            ! Test in-place transpose
+            vec_y = 1._wp
+            call spmv( CSC, vec_y, vec_x, op=sparse_op_transpose )
+            call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
             if (allocated(error)) return
         end block
         #:endfor
@@ -169,6 +187,12 @@ contains
             call spmv( ELL, vec_x, vec_y )
             
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
+            if (allocated(error)) return
+
+            ! Test in-place transpose
+            vec_y = 1._wp
+            call spmv( ELL, vec_y, vec_x, op=sparse_op_transpose )
+            call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
             if (allocated(error)) return
         end block
         #:endfor
