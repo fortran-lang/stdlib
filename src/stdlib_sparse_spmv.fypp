@@ -409,11 +409,29 @@ contains
                     j = index(i,k)
                     if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$i)
                 end do
+            else if( storage /= sparse_full .and. op_/=sparse_op_hermitian ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) then
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$j)
+                        if(i==j) cycle 
+                        vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$i)
+                    end if
+                end do
             #:if t1.startswith('complex')
             else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
                 do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
                     j = index(i,k)
                     if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$i)
+                end do
+            else if( storage /= sparse_full .and. op_==sparse_op_hermitian ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) then
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$j)
+                        if(i==j) cycle 
+                        vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$i)
+                    end if
                 end do
             #:endif
             end if

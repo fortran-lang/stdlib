@@ -338,6 +338,18 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
+`call ` [[stdlib_sparse_conversion(module):csr2sellc(interface)]] `(csr,ell[,num_nz_rows])`
+
+### Arguments
+
+`csr` : Shall be a `CSR` type of `real` or `complex` type. It is an `intent(in)` argument.
+
+`ell` : Shall be a `ELL` type of `real` or `complex` type. It is an `intent(out)` argument.
+
+`num_nz_rows`, `optional`: number of non zeros per row. If not give, it will correspond to the size of the longest row in the `CSR` matrix. It is an `intent(in)` argument.
+
+### Syntax
+
 `call ` [[stdlib_sparse_conversion(module):csc2coo(interface)]] `(csc,coo)`
 
 ### Arguments

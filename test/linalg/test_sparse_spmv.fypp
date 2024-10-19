@@ -243,14 +243,16 @@ contains
             integer, parameter :: wp = ${k1}$
             type(COO_${s1}$_type) :: COO
             type(CSR_${s1}$_type) :: CSR
+            type(ELL_${s1}$_type) :: ELL
             ${t1}$, allocatable :: dense(:,:)
             ${t1}$, allocatable :: vec_x(:)
-            ${t1}$, allocatable :: vec_y1(:), vec_y2(:), vec_y3(:)
+            ${t1}$, allocatable :: vec_y1(:), vec_y2(:), vec_y3(:), vec_y4(:)
 
             allocate( vec_x(4)  , source = 1._wp )
             allocate( vec_y1(4) , source = 0._wp )
             allocate( vec_y2(4) , source = 0._wp )
             allocate( vec_y3(4) , source = 0._wp )
+            allocate( vec_y4(4) , source = 0._wp )
 
             allocate( dense(4,4) , source = &
                     reshape(real([1,0,0,0, &
@@ -261,6 +263,7 @@ contains
             call dense2coo( dense , COO )
             COO%storage = sparse_upper
             call coo2csr(COO, CSR)
+            call csr2ell(CSR, ELL)
 
             dense(2,1) = 2._wp; dense(3,2) = 2._wp; dense(4,3) = 2._wp
             vec_y1 = matmul( dense, vec_x )
@@ -273,6 +276,10 @@ contains
 
             call spmv( CSR , vec_x, vec_y3 )
             call check(error, all(vec_y1 == vec_y3) )
+            if (allocated(error)) return
+
+            call spmv( ELL , vec_x, vec_y4 )
+            call check(error, all(vec_y1 == vec_y4) )
             if (allocated(error)) return
         end block
         #:endfor

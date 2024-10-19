@@ -378,6 +378,7 @@ contains
             end do
         end if
         call ELL%malloc(CSR%nrows,CSR%ncols,num_nz_rows_)
+        ELL%storage = CSR%storage
         !-------------------------------------------
         do i = 1, CSR%nrows
             adr1 = CSR%rowptr(i)
