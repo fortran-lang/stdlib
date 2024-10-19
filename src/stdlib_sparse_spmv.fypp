@@ -358,12 +358,23 @@ contains
         endif
         associate( data => matrix%data, index => matrix%index, MNZ_P_ROW => matrix%K, &
             & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
-            if( storage == sparse_full) then
+            if( storage == sparse_full .and. op_==sparse_op_none ) then
                 do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
                     j = index(i,k)
                     if(j>0) vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$j)
                 end do
-                
+            else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$i)
+                end do
+            #:if t1.startswith('complex')
+            else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$i)
+                end do
+            #:endif
             end if
         end associate
     end subroutine
