@@ -18,7 +18,7 @@ module stdlib_sparse_spmv
 
     !! Version experimental
     !!
-    !! Applay the sparse matrix-vector product $$y = \alpha * M * x + \beta * y $$
+    !! Applay the sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
     !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
     interface spmv
         #:for k1, t1, s1 in (KINDS_TYPES)
@@ -38,15 +38,18 @@ contains
     !! spmv_coo
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine spmv_coo_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
+    subroutine spmv_coo_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
         type(COO_${s1}$_type), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
         ${t1}$ :: alpha_, beta_
+        character(1) :: op_
         integer(ilp) :: k, ik, jk
 
+        op_ = sparse_op_none; if(present(op)) op_ = op
         alpha_ = one_${k1}$
         if(present(alpha)) alpha_ = alpha
         if(present(beta)) then
@@ -55,7 +58,9 @@ contains
             vec_y = zero_${s1}$
         endif
         associate( data => matrix%data, index => matrix%index, storage => matrix%storage, nnz => matrix%nnz )
-            if( storage == sparse_full) then
+        select case(op_)
+        case(sparse_op_none)
+            if(storage == sparse_full) then
                 do concurrent (k = 1:nnz)
                     ik = index(1,k)
                     jk = index(2,k)
@@ -72,6 +77,45 @@ contains
                 end do
 
             end if
+        case(sparse_op_transpose)
+            if(storage == sparse_full) then
+                do concurrent (k = 1:nnz)
+                    jk = index(1,k)
+                    ik = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$jk)
+                end do
+
+            else 
+                do concurrent (k = 1:nnz)
+                    jk = index(1,k)
+                    ik = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$jk)
+                    if( ik==jk ) cycle
+                    vec_y(${rksfx2(rank-1)}$jk) = vec_y(${rksfx2(rank-1)}$jk) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$ik)
+                end do
+
+            end if
+        #:if t1.startswith('complex') 
+        case(sparse_op_hermitian)
+            if(storage == sparse_full) then
+                do concurrent (k = 1:nnz)
+                    jk = index(1,k)
+                    ik = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$jk)
+                end do
+
+            else 
+                do concurrent (k = 1:nnz)
+                    jk = index(1,k)
+                    ik = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$jk)
+                    if( ik==jk ) cycle
+                    vec_y(${rksfx2(rank-1)}$jk) = vec_y(${rksfx2(rank-1)}$jk) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$ik)
+                end do
+
+            end if
+        #:endif
+        end select
         end associate
     end subroutine
 
@@ -81,13 +125,15 @@ contains
     !! spmv_csr
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine spmv_csr_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
+    subroutine spmv_csr_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
         type(CSR_${s1}$_type), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
         ${t1}$ :: alpha_, beta_
+        character(1) :: op_
         integer(ilp) :: i, j
         #:if rank == 1
         ${t1}$ :: aux, aux2
@@ -95,6 +141,7 @@ contains
         ${t1}$ :: aux(size(vec_x,dim=1)), aux2(size(vec_x,dim=1))
         #:endif
         
+        op_ = sparse_op_none; if(present(op)) op_ = op
         alpha_ = one_${k1}$
         if(present(alpha)) alpha_ = alpha
         beta_ = zero_${k1}$
@@ -102,7 +149,8 @@ contains
 
         associate( data => matrix%data, col => matrix%col, rowptr => matrix%rowptr, &
             & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
-            if( storage == sparse_full) then
+    
+            if( storage == sparse_full .and. op_==sparse_op_none ) then
                 do i = 1, nrows
                     aux = zero_${k1}$
                     do j = rowptr(i), rowptr(i+1)-1
@@ -114,8 +162,21 @@ contains
                         vec_y(${rksfx2(rank-1)}$i) = alpha_ * aux
                     end if
                 end do
+
+            else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+                if(present(beta)) then
+                    vec_y = beta * vec_y
+                else 
+                    vec_y = zero_${s1}$
+                endif
+                do i = 1, nrows
+                    aux = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    do j = rowptr(i), rowptr(i+1)-1
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * aux
+                    end do
+                end do
                 
-            else if( storage == sparse_lower )then
+            else if( storage == sparse_lower .and. op_/=sparse_op_hermitian )then
                 do i = 1 , nrows
                     aux  = zero_${s1}$
                     aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
@@ -132,7 +193,7 @@ contains
                     end if
                 end do
 
-            else if( storage == sparse_upper )then
+            else if( storage == sparse_upper .and. op_/=sparse_op_hermitian )then
                 do i = 1 , nrows
                     aux  = vec_x(${rksfx2(rank-1)}$i) * data(rowptr(i))
                     aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
@@ -150,7 +211,57 @@ contains
                     end if
                     vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
                 end do
+                
+            #:if t1.startswith('complex')
+            else if( storage == sparse_full .and. op_==sparse_op_hermitian) then
+                if(present(beta)) then
+                    vec_y = beta * vec_y
+                else 
+                    vec_y = zero_${s1}$
+                endif
+                do i = 1, nrows
+                    aux = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    do j = rowptr(i), rowptr(i+1)-1
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux
+                    end do
+                end do
 
+            else if( storage == sparse_lower .and. op_==sparse_op_hermitian )then
+                do i = 1 , nrows
+                    aux  = zero_${s1}$
+                    aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    do j = rowptr(i), rowptr(i+1)-2
+                        aux = aux + conjg(data(j)) * vec_x(${rksfx2(rank-1)}$col(j))
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux2
+                    end do
+                    aux = alpha_ * aux + conjg(data(j)) * aux2
+
+                    if(present(beta)) then
+                        vec_y(${rksfx2(rank-1)}$i) = beta_ * vec_y(${rksfx2(rank-1)}$i) + aux
+                    else
+                        vec_y(${rksfx2(rank-1)}$i) = aux
+                    end if
+                end do
+
+            else if( storage == sparse_upper .and. op_==sparse_op_hermitian )then
+                do i = 1 , nrows
+                    aux  = vec_x(${rksfx2(rank-1)}$i) * conjg(data(rowptr(i)))
+                    aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    do j = rowptr(i)+1, rowptr(i+1)-1
+                        aux = aux + conjg(data(j)) * vec_x(${rksfx2(rank-1)}$col(j))
+                    end do
+                    if(present(beta)) then
+                        do j = rowptr(i)+1, rowptr(i+1)-1
+                            vec_y(${rksfx2(rank-1)}$col(j)) = beta_ * vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux2
+                        end do
+                    else
+                        do j = rowptr(i)+1, rowptr(i+1)-1
+                            vec_y(${rksfx2(rank-1)}$col(j)) = conjg(data(j)) * aux2
+                        end do
+                    end if
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
+                end do
+            #:endif
             end if
         end associate
     end subroutine
@@ -161,13 +272,15 @@ contains
     !! spmv_csc
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine spmv_csc_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
+    subroutine spmv_csc_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
         type(CSC_${s1}$_type), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
         ${t1}$ :: alpha_, beta_
+        character(1) :: op_
         integer(ilp) :: i, j
         #:if rank == 1
         ${t1}$ :: aux
@@ -175,6 +288,7 @@ contains
         ${t1}$ :: aux(size(vec_x,dim=1))
         #:endif
 
+        op_ = sparse_op_none; if(present(op)) op_ = op
         alpha_ = one_${k1}$
         if(present(alpha)) alpha_ = alpha
         if(present(beta)) then
@@ -193,7 +307,6 @@ contains
                 end do
 
             else if( storage == sparse_lower )then
-                ! NOT TESTED
                 do j = 1 , ncols
                     aux  = vec_x(${rksfx2(rank-1)}$j) * data(colptr(j))
                     do i = colptr(j)+1, colptr(j+1)-1
@@ -204,7 +317,6 @@ contains
                 end do
 
             else if( storage == sparse_upper )then
-                ! NOT TESTED
                 do j = 1 , ncols
                     aux  = zero_${s1}$
                     do i = colptr(j), colptr(i+1)-2
@@ -225,15 +337,18 @@ contains
     !! spmv_ell
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    subroutine spmv_ell_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta)
+    subroutine spmv_ell_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
         type(ELL_${s1}$_type), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
         ${t1}$ :: alpha_, beta_
+        character(1) :: op_
         integer(ilp) :: i, j, k
-
+        
+        op_ = sparse_op_none; if(present(op)) op_ = op
         alpha_ = one_${k1}$
         if(present(alpha)) alpha_ = alpha
         if(present(beta)) then
@@ -259,16 +374,19 @@ contains
     !! spmv_sellc
     #:set CHUNKS = [4,8,16]
     #:for k1, t1, s1 in (KINDS_TYPES)
-    subroutine spmv_sellc_${s1}$(matrix,vec_x,vec_y,alpha,beta)
+    subroutine spmv_sellc_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         type(SELLC_${s1}$_type), intent(in) :: matrix
         ${t1}$, intent(in)    :: vec_x(:)
         ${t1}$, intent(inout) :: vec_y(:)
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
         ${t1}$ :: alpha_, beta_
+        character(1) :: op_
         integer(ilp) :: i, nz, rowidx, num_chunks, rm
 
+        op_ = sparse_op_none; if(present(op)) op_ = op
         alpha_ = one_${s1}$
         if(present(alpha)) alpha_ = alpha
         if(present(beta)) then

@@ -12,6 +12,10 @@ module stdlib_sparse_constants
         enumerator :: sparse_lower !! Symmetric Sparse matrix with triangular inferior storage
         enumerator :: sparse_upper !! Symmetric Sparse matrix with triangular supperior storage
     end enum
+
+    character(1), parameter :: sparse_op_none = 'N' !! no transpose
+    character(1), parameter :: sparse_op_transpose = 'T' !! transpose
+    character(1), parameter :: sparse_op_hermitian = 'H' !! conjugate or hermitian transpose
     
     ! Integer size support for ILP64 builds should be done here
     integer, parameter :: ilp = int32
