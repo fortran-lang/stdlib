@@ -18,7 +18,7 @@ module stdlib_sparse_spmv
 
     !! Version experimental
     !!
-    !! Applay the sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! Apply the sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
     !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
     interface spmv
         #:for k1, t1, s1 in (KINDS_TYPES)
