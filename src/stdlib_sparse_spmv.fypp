@@ -45,7 +45,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        ${t1}$ :: alpha_, beta_
+        ${t1}$ :: alpha_
         character(1) :: op_
         integer(ilp) :: k, ik, jk
 
@@ -57,6 +57,7 @@ contains
         else 
             vec_y = zero_${s1}$
         endif
+
         associate( data => matrix%data, index => matrix%index, storage => matrix%storage, nnz => matrix%nnz )
         select case(op_)
         case(sparse_op_none)
@@ -132,7 +133,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        ${t1}$ :: alpha_, beta_
+        ${t1}$ :: alpha_
         character(1) :: op_
         integer(ilp) :: i, j
         #:if rank == 1
@@ -144,8 +145,11 @@ contains
         op_ = sparse_op_none; if(present(op)) op_ = op
         alpha_ = one_${k1}$
         if(present(alpha)) alpha_ = alpha
-        beta_ = zero_${k1}$
-        if(present(beta)) beta_ = beta
+        if(present(beta)) then
+            vec_y = beta * vec_y
+        else 
+            vec_y = zero_${s1}$
+        endif
 
         associate( data => matrix%data, col => matrix%col, rowptr => matrix%rowptr, &
             & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
@@ -156,19 +160,10 @@ contains
                     do j = rowptr(i), rowptr(i+1)-1
                         aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
                     end do
-                    if(present(beta)) then
-                        vec_y(${rksfx2(rank-1)}$i) = beta_ * vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
-                    else
-                        vec_y(${rksfx2(rank-1)}$i) = alpha_ * aux
-                    end if
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
                 end do
 
             else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
-                if(present(beta)) then
-                    vec_y = beta * vec_y
-                else 
-                    vec_y = zero_${s1}$
-                endif
                 do i = 1, nrows
                     aux = alpha_ * vec_x(${rksfx2(rank-1)}$i)
                     do j = rowptr(i), rowptr(i+1)-1
@@ -185,12 +180,7 @@ contains
                         vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * aux2
                     end do
                     aux = alpha_ * aux + data(j) * aux2
-
-                    if(present(beta)) then
-                        vec_y(${rksfx2(rank-1)}$i) = beta_ * vec_y(${rksfx2(rank-1)}$i) + aux
-                    else
-                        vec_y(${rksfx2(rank-1)}$i) = aux
-                    end if
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + aux
                 end do
 
             else if( storage == sparse_upper .and. op_/=sparse_op_hermitian )then
@@ -199,26 +189,13 @@ contains
                     aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
                     do j = rowptr(i)+1, rowptr(i+1)-1
                         aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * aux2
                     end do
-                    if(present(beta)) then
-                        do j = rowptr(i)+1, rowptr(i+1)-1
-                            vec_y(${rksfx2(rank-1)}$col(j)) = beta_ * vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * aux2
-                        end do
-                    else
-                        do j = rowptr(i)+1, rowptr(i+1)-1
-                            vec_y(${rksfx2(rank-1)}$col(j)) = data(j) * aux2
-                        end do
-                    end if
                     vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
                 end do
                 
             #:if t1.startswith('complex')
             else if( storage == sparse_full .and. op_==sparse_op_hermitian) then
-                if(present(beta)) then
-                    vec_y = beta * vec_y
-                else 
-                    vec_y = zero_${s1}$
-                endif
                 do i = 1, nrows
                     aux = alpha_ * vec_x(${rksfx2(rank-1)}$i)
                     do j = rowptr(i), rowptr(i+1)-1
@@ -235,12 +212,7 @@ contains
                         vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux2
                     end do
                     aux = alpha_ * aux + conjg(data(j)) * aux2
-
-                    if(present(beta)) then
-                        vec_y(${rksfx2(rank-1)}$i) = beta_ * vec_y(${rksfx2(rank-1)}$i) + aux
-                    else
-                        vec_y(${rksfx2(rank-1)}$i) = aux
-                    end if
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + aux
                 end do
 
             else if( storage == sparse_upper .and. op_==sparse_op_hermitian )then
@@ -249,16 +221,8 @@ contains
                     aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
                     do j = rowptr(i)+1, rowptr(i+1)-1
                         aux = aux + conjg(data(j)) * vec_x(${rksfx2(rank-1)}$col(j))
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux2
                     end do
-                    if(present(beta)) then
-                        do j = rowptr(i)+1, rowptr(i+1)-1
-                            vec_y(${rksfx2(rank-1)}$col(j)) = beta_ * vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux2
-                        end do
-                    else
-                        do j = rowptr(i)+1, rowptr(i+1)-1
-                            vec_y(${rksfx2(rank-1)}$col(j)) = conjg(data(j)) * aux2
-                        end do
-                    end if
                     vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
                 end do
             #:endif
@@ -279,7 +243,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        ${t1}$ :: alpha_, beta_
+        ${t1}$ :: alpha_
         character(1) :: op_
         integer(ilp) :: i, j
         #:if rank == 1
@@ -385,7 +349,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        ${t1}$ :: alpha_, beta_
+        ${t1}$ :: alpha_
         character(1) :: op_
         integer(ilp) :: i, j, k
         
@@ -452,7 +416,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        ${t1}$ :: alpha_, beta_
+        ${t1}$ :: alpha_
         character(1) :: op_
         integer(ilp) :: i, nz, rowidx, num_chunks, rm
 
