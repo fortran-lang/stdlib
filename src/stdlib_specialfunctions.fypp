@@ -293,9 +293,10 @@ module stdlib_specialfunctions
         !!
         !! Gradient of the softmax function. Available for ranks 1 to 4
         #:for rk, rt in REAL_KINDS_TYPES
-        pure module function Softmax_grad_r1_${rk}$( x ) result( y )
+        pure module function Softmax_grad_r1_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x(:)
             ${rt}$ :: y(size(x))
+            integer, intent(in), optional :: dim
         end function
         #:for rank in RANKS
         pure module function Softmax_grad_r${rank}$_${rk}$( x , dim ) result( y )

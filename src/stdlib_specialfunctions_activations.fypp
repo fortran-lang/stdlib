@@ -232,9 +232,10 @@ pure module function Softmax_r${rank}$_${rk}$( x , dim ) result( y )
 end function
 #:endfor
 
-pure module function Softmax_grad_r1_${rk}$( x ) result( y )
+pure module function Softmax_grad_r1_${rk}$( x , dim ) result( y )
     ${rt}$, intent(in) :: x(:)
     ${rt}$ :: y(size(x))
+    integer, intent(in), optional :: dim
     
     y = Softmax(x)
     y = y * (1._${rk}$ - y)
