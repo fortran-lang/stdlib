@@ -277,12 +277,12 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          !! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
-         integer(ilp) :: nrs,nis,ncs,nsvd
+         integer(ilp) :: nrs,nis,nsvd
          integer(ilp), pointer :: iwork(:)
          logical(lk) :: copy_a,large_enough_x
          real(sp) :: acond,rcond
          real(sp), pointer :: rwork(:),singular(:)
-         real(sp), pointer :: xmat(:,:),amat(:,:),cwork(:)
+         real(sp), pointer :: xmat(:,:),amat(:,:)
 
          ! Problem sizes
          m     = size(a,1,kind=ilp)
@@ -519,12 +519,12 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          !! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
-         integer(ilp) :: nrs,nis,ncs,nsvd
+         integer(ilp) :: nrs,nis,nsvd
          integer(ilp), pointer :: iwork(:)
          logical(lk) :: copy_a,large_enough_x
          real(dp) :: acond,rcond
          real(dp), pointer :: rwork(:),singular(:)
-         real(dp), pointer :: xmat(:,:),amat(:,:),cwork(:)
+         real(dp), pointer :: xmat(:,:),amat(:,:)
 
          ! Problem sizes
          m     = size(a,1,kind=ilp)
@@ -764,12 +764,14 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          !! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
-         integer(ilp) :: nrs,nis,ncs,nsvd
+         integer(ilp) :: nrs,nis,nsvd
+         integer(ilp) :: ncs
          integer(ilp), pointer :: iwork(:)
          logical(lk) :: copy_a,large_enough_x
          real(sp) :: acond,rcond
          real(sp), pointer :: rwork(:),singular(:)
-         complex(sp), pointer :: xmat(:,:),amat(:,:),cwork(:)
+         complex(sp), pointer :: xmat(:,:),amat(:,:)
+         complex(sp), pointer :: cwork(:)
 
          ! Problem sizes
          m     = size(a,1,kind=ilp)
@@ -1017,12 +1019,14 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          !! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
-         integer(ilp) :: nrs,nis,ncs,nsvd
+         integer(ilp) :: nrs,nis,nsvd
+         integer(ilp) :: ncs
          integer(ilp), pointer :: iwork(:)
          logical(lk) :: copy_a,large_enough_x
          real(dp) :: acond,rcond
          real(dp), pointer :: rwork(:),singular(:)
-         complex(dp), pointer :: xmat(:,:),amat(:,:),cwork(:)
+         complex(dp), pointer :: xmat(:,:),amat(:,:)
+         complex(dp), pointer :: cwork(:)
 
          ! Problem sizes
          m     = size(a,1,kind=ilp)
@@ -1267,12 +1271,12 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          !! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
-         integer(ilp) :: nrs,nis,ncs,nsvd
+         integer(ilp) :: nrs,nis,nsvd
          integer(ilp), pointer :: iwork(:)
          logical(lk) :: copy_a,large_enough_x
          real(sp) :: acond,rcond
          real(sp), pointer :: rwork(:),singular(:)
-         real(sp), pointer :: xmat(:,:),amat(:,:),cwork(:)
+         real(sp), pointer :: xmat(:,:),amat(:,:)
 
          ! Problem sizes
          m     = size(a,1,kind=ilp)
@@ -1509,12 +1513,12 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          !! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
-         integer(ilp) :: nrs,nis,ncs,nsvd
+         integer(ilp) :: nrs,nis,nsvd
          integer(ilp), pointer :: iwork(:)
          logical(lk) :: copy_a,large_enough_x
          real(dp) :: acond,rcond
          real(dp), pointer :: rwork(:),singular(:)
-         real(dp), pointer :: xmat(:,:),amat(:,:),cwork(:)
+         real(dp), pointer :: xmat(:,:),amat(:,:)
 
          ! Problem sizes
          m     = size(a,1,kind=ilp)
@@ -1754,12 +1758,14 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          !! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
-         integer(ilp) :: nrs,nis,ncs,nsvd
+         integer(ilp) :: nrs,nis,nsvd
+         integer(ilp) :: ncs
          integer(ilp), pointer :: iwork(:)
          logical(lk) :: copy_a,large_enough_x
          real(sp) :: acond,rcond
          real(sp), pointer :: rwork(:),singular(:)
-         complex(sp), pointer :: xmat(:,:),amat(:,:),cwork(:)
+         complex(sp), pointer :: xmat(:,:),amat(:,:)
+         complex(sp), pointer :: cwork(:)
 
          ! Problem sizes
          m     = size(a,1,kind=ilp)
@@ -2007,12 +2013,14 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          !! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
-         integer(ilp) :: nrs,nis,ncs,nsvd
+         integer(ilp) :: nrs,nis,nsvd
+         integer(ilp) :: ncs
          integer(ilp), pointer :: iwork(:)
          logical(lk) :: copy_a,large_enough_x
          real(dp) :: acond,rcond
          real(dp), pointer :: rwork(:),singular(:)
-         complex(dp), pointer :: xmat(:,:),amat(:,:),cwork(:)
+         complex(dp), pointer :: xmat(:,:),amat(:,:)
+         complex(dp), pointer :: cwork(:)
 
          ! Problem sizes
          m     = size(a,1,kind=ilp)

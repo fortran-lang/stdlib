@@ -847,7 +847,6 @@ module stdlib_linalg_blas_d
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! march 2021
         ! Constants 
-        integer, parameter :: wp = kind(1._dp)
         real(dp), parameter :: maxn = huge(0.0_dp)
         ! .. blue's scaling constants ..
         ! Scalar Arguments 
@@ -984,8 +983,6 @@ module stdlib_linalg_blas_d
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-        ! Constants 
-        integer, parameter :: wp = kind(1._dp)
         ! Scaling Constants 
         ! Scalar Arguments 
         real(dp), intent(inout) :: a, b
@@ -4421,7 +4418,6 @@ module stdlib_linalg_blas_d
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! march 2021
         ! Constants 
-        integer, parameter :: wp = kind(1._dp)
         real(dp), parameter :: maxn = huge(0.0_dp)
         ! .. blue's scaling constants ..
         ! Scalar Arguments 

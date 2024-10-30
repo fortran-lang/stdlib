@@ -158,14 +158,13 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
          !> Local variables
          type(linalg_state_type) :: err0
-         integer(ilp) :: m,n,lda,ldu,ldv,info,k,lwork,lrwork,neig
+         integer(ilp) :: m,n,lda,ldu,ldv,info,k,lwork,neig
          logical(lk) :: copy_a
          character :: task_u,task_v
          real(sp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          real(sp), allocatable :: work(:)
-         real(sp), allocatable :: rwork(:)
-         real(sp), pointer :: amat(:,:),lreal(:),limag(:),umat(:,:),vmat(:,:)
-
+         real(sp), pointer :: amat(:,:),umat(:,:),vmat(:,:)
+         real(sp), pointer :: lreal(:),limag(:)
          !> Matrix size
          m    = size(a,1,kind=ilp)
          n    = size(a,2,kind=ilp)
@@ -364,7 +363,6 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          character :: triangle,task
          real(sp), target :: work_dummy(1)
          real(sp), allocatable :: work(:)
-         real(sp), allocatable :: rwork(:)
          real(sp), pointer :: amat(:,:)
 
          !> Matrix size
@@ -526,14 +524,13 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
          !> Local variables
          type(linalg_state_type) :: err0
-         integer(ilp) :: m,n,lda,ldu,ldv,info,k,lwork,lrwork,neig
+         integer(ilp) :: m,n,lda,ldu,ldv,info,k,lwork,neig
          logical(lk) :: copy_a
          character :: task_u,task_v
          real(dp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          real(dp), allocatable :: work(:)
-         real(dp), allocatable :: rwork(:)
-         real(dp), pointer :: amat(:,:),lreal(:),limag(:),umat(:,:),vmat(:,:)
-
+         real(dp), pointer :: amat(:,:),umat(:,:),vmat(:,:)
+         real(dp), pointer :: lreal(:),limag(:)
          !> Matrix size
          m    = size(a,1,kind=ilp)
          n    = size(a,2,kind=ilp)
@@ -732,7 +729,6 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          character :: triangle,task
          real(dp), target :: work_dummy(1)
          real(dp), allocatable :: work(:)
-         real(dp), allocatable :: rwork(:)
          real(dp), pointer :: amat(:,:)
 
          !> Matrix size
@@ -894,14 +890,13 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
          !> Local variables
          type(linalg_state_type) :: err0
-         integer(ilp) :: m,n,lda,ldu,ldv,info,k,lwork,lrwork,neig
+         integer(ilp) :: m,n,lda,ldu,ldv,info,k,lwork,neig
          logical(lk) :: copy_a
          character :: task_u,task_v
          complex(sp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          complex(sp), allocatable :: work(:)
+         complex(sp), pointer :: amat(:,:),umat(:,:),vmat(:,:)
          real(sp), allocatable :: rwork(:)
-         complex(sp), pointer :: amat(:,:),lreal(:),limag(:),umat(:,:),vmat(:,:)
-
          !> Matrix size
          m    = size(a,1,kind=ilp)
          n    = size(a,2,kind=ilp)
@@ -1252,14 +1247,13 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
          !> Local variables
          type(linalg_state_type) :: err0
-         integer(ilp) :: m,n,lda,ldu,ldv,info,k,lwork,lrwork,neig
+         integer(ilp) :: m,n,lda,ldu,ldv,info,k,lwork,neig
          logical(lk) :: copy_a
          character :: task_u,task_v
          complex(dp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          complex(dp), allocatable :: work(:)
+         complex(dp), pointer :: amat(:,:),umat(:,:),vmat(:,:)
          real(dp), allocatable :: rwork(:)
-         complex(dp), pointer :: amat(:,:),lreal(:),limag(:),umat(:,:),vmat(:,:)
-
          !> Matrix size
          m    = size(a,1,kind=ilp)
          n    = size(a,2,kind=ilp)

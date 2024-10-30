@@ -102,24 +102,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine save_npy_rsp_4
-        module subroutine save_npy_rsp_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(sp), intent(in) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_rsp_5
-        module subroutine save_npy_rsp_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(sp), intent(in) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_rsp_6
-        module subroutine save_npy_rsp_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(sp), intent(in) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_rsp_7
         module subroutine save_npy_rdp_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             real(dp), intent(in) :: array(:)
@@ -144,24 +126,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine save_npy_rdp_4
-        module subroutine save_npy_rdp_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(dp), intent(in) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_rdp_5
-        module subroutine save_npy_rdp_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(dp), intent(in) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_rdp_6
-        module subroutine save_npy_rdp_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(dp), intent(in) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_rdp_7
         module subroutine save_npy_iint8_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             integer(int8), intent(in) :: array(:)
@@ -186,24 +150,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine save_npy_iint8_4
-        module subroutine save_npy_iint8_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int8), intent(in) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint8_5
-        module subroutine save_npy_iint8_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int8), intent(in) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint8_6
-        module subroutine save_npy_iint8_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int8), intent(in) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint8_7
         module subroutine save_npy_iint16_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             integer(int16), intent(in) :: array(:)
@@ -228,24 +174,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine save_npy_iint16_4
-        module subroutine save_npy_iint16_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int16), intent(in) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint16_5
-        module subroutine save_npy_iint16_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int16), intent(in) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint16_6
-        module subroutine save_npy_iint16_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int16), intent(in) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint16_7
         module subroutine save_npy_iint32_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             integer(int32), intent(in) :: array(:)
@@ -270,24 +198,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine save_npy_iint32_4
-        module subroutine save_npy_iint32_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int32), intent(in) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint32_5
-        module subroutine save_npy_iint32_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int32), intent(in) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint32_6
-        module subroutine save_npy_iint32_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int32), intent(in) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint32_7
         module subroutine save_npy_iint64_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             integer(int64), intent(in) :: array(:)
@@ -312,24 +222,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine save_npy_iint64_4
-        module subroutine save_npy_iint64_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int64), intent(in) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint64_5
-        module subroutine save_npy_iint64_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int64), intent(in) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint64_6
-        module subroutine save_npy_iint64_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int64), intent(in) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_iint64_7
         module subroutine save_npy_csp_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             complex(sp), intent(in) :: array(:)
@@ -354,24 +246,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine save_npy_csp_4
-        module subroutine save_npy_csp_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(sp), intent(in) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_csp_5
-        module subroutine save_npy_csp_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(sp), intent(in) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_csp_6
-        module subroutine save_npy_csp_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(sp), intent(in) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_csp_7
         module subroutine save_npy_cdp_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             complex(dp), intent(in) :: array(:)
@@ -396,24 +270,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine save_npy_cdp_4
-        module subroutine save_npy_cdp_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(dp), intent(in) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_cdp_5
-        module subroutine save_npy_cdp_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(dp), intent(in) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_cdp_6
-        module subroutine save_npy_cdp_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(dp), intent(in) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine save_npy_cdp_7
     end interface save_npy
 
     !> Version: experimental
@@ -445,24 +301,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine load_npy_rsp_4
-        module subroutine load_npy_rsp_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(sp), allocatable, intent(out) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_rsp_5
-        module subroutine load_npy_rsp_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(sp), allocatable, intent(out) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_rsp_6
-        module subroutine load_npy_rsp_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(sp), allocatable, intent(out) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_rsp_7
         module subroutine load_npy_rdp_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             real(dp), allocatable, intent(out) :: array(:)
@@ -487,24 +325,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine load_npy_rdp_4
-        module subroutine load_npy_rdp_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(dp), allocatable, intent(out) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_rdp_5
-        module subroutine load_npy_rdp_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(dp), allocatable, intent(out) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_rdp_6
-        module subroutine load_npy_rdp_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            real(dp), allocatable, intent(out) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_rdp_7
         module subroutine load_npy_iint8_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             integer(int8), allocatable, intent(out) :: array(:)
@@ -529,24 +349,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine load_npy_iint8_4
-        module subroutine load_npy_iint8_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int8), allocatable, intent(out) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint8_5
-        module subroutine load_npy_iint8_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int8), allocatable, intent(out) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint8_6
-        module subroutine load_npy_iint8_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int8), allocatable, intent(out) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint8_7
         module subroutine load_npy_iint16_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             integer(int16), allocatable, intent(out) :: array(:)
@@ -571,24 +373,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine load_npy_iint16_4
-        module subroutine load_npy_iint16_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int16), allocatable, intent(out) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint16_5
-        module subroutine load_npy_iint16_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int16), allocatable, intent(out) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint16_6
-        module subroutine load_npy_iint16_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int16), allocatable, intent(out) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint16_7
         module subroutine load_npy_iint32_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             integer(int32), allocatable, intent(out) :: array(:)
@@ -613,24 +397,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine load_npy_iint32_4
-        module subroutine load_npy_iint32_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int32), allocatable, intent(out) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint32_5
-        module subroutine load_npy_iint32_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int32), allocatable, intent(out) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint32_6
-        module subroutine load_npy_iint32_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int32), allocatable, intent(out) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint32_7
         module subroutine load_npy_iint64_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             integer(int64), allocatable, intent(out) :: array(:)
@@ -655,24 +421,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine load_npy_iint64_4
-        module subroutine load_npy_iint64_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int64), allocatable, intent(out) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint64_5
-        module subroutine load_npy_iint64_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int64), allocatable, intent(out) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint64_6
-        module subroutine load_npy_iint64_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            integer(int64), allocatable, intent(out) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_iint64_7
         module subroutine load_npy_csp_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             complex(sp), allocatable, intent(out) :: array(:)
@@ -697,24 +445,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine load_npy_csp_4
-        module subroutine load_npy_csp_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(sp), allocatable, intent(out) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_csp_5
-        module subroutine load_npy_csp_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(sp), allocatable, intent(out) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_csp_6
-        module subroutine load_npy_csp_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(sp), allocatable, intent(out) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_csp_7
         module subroutine load_npy_cdp_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
             complex(dp), allocatable, intent(out) :: array(:)
@@ -739,24 +469,6 @@ module stdlib_io_npy
             integer, intent(out), optional :: iostat
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine load_npy_cdp_4
-        module subroutine load_npy_cdp_5(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(dp), allocatable, intent(out) :: array(:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_cdp_5
-        module subroutine load_npy_cdp_6(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(dp), allocatable, intent(out) :: array(:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_cdp_6
-        module subroutine load_npy_cdp_7(filename, array, iostat, iomsg)
-            character(len=*), intent(in) :: filename
-            complex(dp), allocatable, intent(out) :: array(:,:,:,:,:,:,:)
-            integer, intent(out), optional :: iostat
-            character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine load_npy_cdp_7
     end interface load_npy
 
 

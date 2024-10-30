@@ -144,7 +144,6 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          character :: task
          real(sp), target :: work_dummy(1),u_dummy(1,1),vt_dummy(1,1)
          real(sp), allocatable :: work(:)
-         real(sp), allocatable :: rwork(:)
          real(sp), pointer :: amat(:,:),umat(:,:),vtmat(:,:)
 
          !> Matrix determinant size
@@ -366,7 +365,6 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          character :: task
          real(dp), target :: work_dummy(1),u_dummy(1,1),vt_dummy(1,1)
          real(dp), allocatable :: work(:)
-         real(dp), allocatable :: rwork(:)
          real(dp), pointer :: amat(:,:),umat(:,:),vtmat(:,:)
 
          !> Matrix determinant size

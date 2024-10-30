@@ -311,7 +311,7 @@ contains
         integer :: i
 
         real(sp), parameter :: zero_k1 = 0.0_sp
-        real(dp), parameter :: zero = 0.0_dp, half = 0.5_dp,             &
+        real(dp), parameter :: half = 0.5_dp,             &
                              one = 1.0_dp, pi = acos(- one), sqpi = sqrt(pi)
         complex(dp) :: y, x, sum
 
@@ -380,7 +380,7 @@ contains
         integer :: i
 
         real(dp), parameter :: zero_k1 = 0.0_dp
-        real(qp), parameter :: zero = 0.0_qp, half = 0.5_qp,             &
+        real(qp), parameter :: half = 0.5_qp,             &
                              one = 1.0_qp, pi = acos(- one), sqpi = sqrt(pi)
         complex(qp) :: y, x, sum
 
@@ -1462,7 +1462,7 @@ contains
         integer(int8), intent(in) :: p
         real(sp), intent(in) :: x
         real(sp) :: res, p_lim, a, b, g, c, d, y
-        integer :: n, m
+        integer :: n
         real(sp), parameter :: zero = 0.0_sp, one = 1.0_sp
         real(sp), parameter :: dm = tiny(1.0_sp) * 10 ** 6
         integer(int8), parameter :: zero_k1 = 0_int8, two = 2_int8
@@ -1595,7 +1595,7 @@ contains
         integer(int8), intent(in) :: p
         real(dp), intent(in) :: x
         real(dp) :: res, p_lim, a, b, g, c, d, y
-        integer :: n, m
+        integer :: n
         real(dp), parameter :: zero = 0.0_dp, one = 1.0_dp
         real(dp), parameter :: dm = tiny(1.0_dp) * 10 ** 6
         integer(int8), parameter :: zero_k1 = 0_int8, two = 2_int8
@@ -1728,7 +1728,7 @@ contains
         integer(int16), intent(in) :: p
         real(sp), intent(in) :: x
         real(sp) :: res, p_lim, a, b, g, c, d, y
-        integer :: n, m
+        integer :: n
         real(sp), parameter :: zero = 0.0_sp, one = 1.0_sp
         real(sp), parameter :: dm = tiny(1.0_sp) * 10 ** 6
         integer(int16), parameter :: zero_k1 = 0_int16, two = 2_int16
@@ -1861,7 +1861,7 @@ contains
         integer(int16), intent(in) :: p
         real(dp), intent(in) :: x
         real(dp) :: res, p_lim, a, b, g, c, d, y
-        integer :: n, m
+        integer :: n
         real(dp), parameter :: zero = 0.0_dp, one = 1.0_dp
         real(dp), parameter :: dm = tiny(1.0_dp) * 10 ** 6
         integer(int16), parameter :: zero_k1 = 0_int16, two = 2_int16
@@ -1994,7 +1994,7 @@ contains
         integer(int32), intent(in) :: p
         real(sp), intent(in) :: x
         real(sp) :: res, p_lim, a, b, g, c, d, y
-        integer :: n, m
+        integer :: n
         real(sp), parameter :: zero = 0.0_sp, one = 1.0_sp
         real(sp), parameter :: dm = tiny(1.0_sp) * 10 ** 6
         integer(int32), parameter :: zero_k1 = 0_int32, two = 2_int32
@@ -2127,7 +2127,7 @@ contains
         integer(int32), intent(in) :: p
         real(dp), intent(in) :: x
         real(dp) :: res, p_lim, a, b, g, c, d, y
-        integer :: n, m
+        integer :: n
         real(dp), parameter :: zero = 0.0_dp, one = 1.0_dp
         real(dp), parameter :: dm = tiny(1.0_dp) * 10 ** 6
         integer(int32), parameter :: zero_k1 = 0_int32, two = 2_int32
@@ -2260,7 +2260,7 @@ contains
         integer(int64), intent(in) :: p
         real(sp), intent(in) :: x
         real(sp) :: res, p_lim, a, b, g, c, d, y
-        integer :: n, m
+        integer :: n
         real(sp), parameter :: zero = 0.0_sp, one = 1.0_sp
         real(sp), parameter :: dm = tiny(1.0_sp) * 10 ** 6
         integer(int64), parameter :: zero_k1 = 0_int64, two = 2_int64
@@ -2393,7 +2393,7 @@ contains
         integer(int64), intent(in) :: p
         real(dp), intent(in) :: x
         real(dp) :: res, p_lim, a, b, g, c, d, y
-        integer :: n, m
+        integer :: n
         real(dp), parameter :: zero = 0.0_dp, one = 1.0_dp
         real(dp), parameter :: dm = tiny(1.0_dp) * 10 ** 6
         integer(int64), parameter :: zero_k1 = 0_int64, two = 2_int64
