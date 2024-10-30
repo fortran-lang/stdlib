@@ -12,7 +12,7 @@ set(
   "test_linalg_qr.fypp"
   "test_linalg_svd.fypp"
   "test_linalg_matrix_property_checks.fypp"
-  "test_sparse_spmv.fypp"
+  "test_linalg_sparse.fypp"
 )
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
