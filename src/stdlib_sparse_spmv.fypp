@@ -462,7 +462,7 @@ contains
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
                 rowidx = (i - 1)*cs + 1
-                associate(col => ja(1:${chunk}$,ia(i):ia(i)+nz-1), mat => data(1:${chunk}$,ia(i):ia(i)+nz-1), &
+                associate(col => ja(1:cs,ia(i):ia(i)+nz-1), mat => data(1:cs,ia(i):ia(i)+nz-1), &
                 &           x => vec_x, y => vec_y(rowidx:rowidx+rm-1) )
                 do j = 1, nz
                     where(col(1:rm,j) > 0) y = y + alpha_ * mat(1:rm,j) * x(col(1:rm,j))
@@ -495,7 +495,7 @@ contains
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
                 rowidx = (i - 1)*cs + 1
-                associate(col => ja(1:${chunk}$,ia(i):ia(i)+nz-1), mat => data(1:${chunk}$,ia(i):ia(i)+nz-1), &
+                associate(col => ja(1:cs,ia(i):ia(i)+nz-1), mat => data(1:cs,ia(i):ia(i)+nz-1), &
                 &           x => vec_x(rowidx:rowidx+rm-1), y => vec_y )
                 do j = 1, nz
                     do k = 1, rm
