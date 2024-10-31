@@ -232,7 +232,7 @@ contains
         integer :: i
 
         real(${k1}$), parameter :: zero_k1 = 0.0_${k1}$
-        ${t2}$, parameter :: zero = 0.0_${k2}$, half = 0.5_${k2}$,             &
+        ${t2}$, parameter :: half = 0.5_${k2}$,             &
                              one = 1.0_${k2}$, pi = acos(- one), sqpi = sqrt(pi)
         complex(${k2}$) :: y, x, sum
 
@@ -714,7 +714,7 @@ contains
         ${t1}$, intent(in) :: p
         ${t2}$, intent(in) :: x
         ${t2}$ :: res, p_lim, a, b, g, c, d, y
-        integer :: n, m
+        integer :: n
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
         ${t2}$, parameter :: dm = tiny(1.0_${k2}$) * 10 ** 6
         ${t1}$, parameter :: zero_k1 = 0_${k1}$, two = 2_${k1}$

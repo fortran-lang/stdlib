@@ -147,7 +147,9 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          character :: task
          ${rt}$, target :: work_dummy(1),u_dummy(1,1),vt_dummy(1,1)
          ${rt}$, allocatable :: work(:)
+         #:if rt.startswith('complex')
          real(${rk}$), allocatable :: rwork(:)
+         #:endif
          ${rt}$, pointer :: amat(:,:),umat(:,:),vtmat(:,:)
 
          !> Matrix determinant size
@@ -269,7 +271,11 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          if (info==0) then
 
             !> Prepare working storage
-            lwork = nint(real(work_dummy(1),kind=${rk}$), kind=ilp)
+            ! Check if the returned working storage space is smaller than the largest value
+            ! allowed by lwork
+            lwork = merge(nint(real(work_dummy(1),kind=${rk}$), kind=ilp) &
+                          , huge(lwork) &
+                          , real(work_dummy(1),kind=${rk}$) < real(huge(lwork),kind=${rk}$) )
             allocate(work(lwork))
 
             !> Compute SVD
