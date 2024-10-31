@@ -208,7 +208,7 @@ contains
             type(SELLC_${s1}$_type) :: SELLC
             type(CSR_${s1}$_type)   :: CSR
             ${t1}$, allocatable :: vec_x(:)
-            ${t1}$, allocatable :: vec_y(:)
+            ${t1}$, allocatable :: vec_y(:), vec_y2(:)
             integer :: i
 
             call CSR%malloc(6,6,17)
@@ -226,11 +226,21 @@ contains
 
             allocate( vec_x(6) , source = 1._wp )
             allocate( vec_y(6) , source = 0._wp )
-
+            
             call spmv( SELLC, vec_x, vec_y )
             
             call check(error, all(vec_y == real([6,22,27,23,27,48],kind=wp)) )
             if (allocated(error)) return
+
+            ! Test in-place transpose
+            vec_x = real( [1,2,3,4,5,6] , kind=wp )
+            call spmv( CSR, vec_x, vec_y , op = sparse_op_transpose )
+            allocate( vec_y2(6) , source = 0._wp )
+            call spmv( SELLC, vec_x, vec_y2 , op = sparse_op_transpose )
+            
+            call check(error, all(vec_y == vec_y2))
+            if (allocated(error)) return
+
         end block
         #:endfor
     end subroutine

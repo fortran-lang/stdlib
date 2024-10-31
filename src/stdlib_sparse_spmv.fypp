@@ -428,11 +428,18 @@ contains
         else 
             vec_y = zero_${s1}$
         endif
+
         associate( data => matrix%data, ia => matrix%rowptr , ja => matrix%col, cs => matrix%chunk_size, &
         &   nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage  )
+
+        if( .not.any( ${CHUNKS}$ == cs ) ) then
+            print *, "error: sellc chunk size not supported."
+            return
+        end if
+
         num_chunks = nrows / cs
         rm = nrows - num_chunks * cs
-        if( storage == sparse_full) then
+        if( storage == sparse_full .and. op_==sparse_op_none ) then
 
             select case(cs)
             #:for chunk in CHUNKS
@@ -443,9 +450,6 @@ contains
                     call chunk_kernel_${chunk}$(nz,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
                 end do
             #:endfor
-            case default
-                print *, "error: chunk size not supported."
-                return
             end select
             
             ! remainder
@@ -455,32 +459,79 @@ contains
                 rowidx = (i - 1)*cs + 1
                 call chunk_kernel_remainder(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
             end if
+            
+        else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
 
+            select case(cs)
+            #:for chunk in CHUNKS
+            case(${chunk}$)
+                do i = 1, num_chunks
+                    nz = ia(i+1) - ia(i)
+                    rowidx = (i - 1)*${chunk}$ + 1 
+                    call chunk_kernel_trans_${chunk}$(nz,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                end do
+            #:endfor
+            end select
+            
+            ! remainder
+            if(rm>0)then 
+                i = num_chunks + 1 
+                nz = ia(i+1) - ia(i)
+                rowidx = (i - 1)*cs + 1
+                call chunk_kernel_remainder_trans(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+            end if
+        else
+            print *, "error: sellc format for spmv operation not yet supported."
+            return
         end if
         end associate
 
     contains
     #:for chunk in CHUNKS
-    pure subroutine chunk_kernel_${chunk}$(nz,a,ja,x,y)
-        integer, value      :: nz
-        ${t1}$, intent(in)  :: a(${chunk}$,nz), x(*)
-        integer(ilp), intent(in) :: ja(${chunk}$,nz)
+    pure subroutine chunk_kernel_${chunk}$(n,a,col,x,y)
+        integer, value      :: n
+        ${t1}$, intent(in)  :: a(${chunk}$,n), x(*)
+        integer(ilp), intent(in) :: col(${chunk}$,n)
         ${t1}$, intent(inout) :: y(${chunk}$)
         integer :: j
-        do j = 1, nz
-            where(ja(:,j) > 0) y = y + alpha_ * a(:,j) * x(ja(:,j))               
+        do j = 1, n
+            where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+        end do
+    end subroutine
+    pure subroutine chunk_kernel_trans_${chunk}$(n,a,col,x,y)
+        integer, value      :: n
+        ${t1}$, intent(in)  :: a(${chunk}$,n), x(${chunk}$)
+        integer(ilp), intent(in) :: col(${chunk}$,n)
+        ${t1}$, intent(inout) :: y(*)
+        integer :: j, k
+        do j = 1, n
+            do k = 1, ${chunk}$
+                if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+            end do
         end do
     end subroutine
     #:endfor
 
-    pure subroutine chunk_kernel_remainder(nz,cs,rm,a,ja,x,y)
-        integer, value      :: nz, cs, rm
-        ${t1}$, intent(in)  :: a(cs,nz), x(*)
-        integer(ilp), intent(in) :: ja(cs,nz)
+    pure subroutine chunk_kernel_remainder(n,cs,rm,a,col,x,y)
+        integer, value      :: n, cs, rm
+        ${t1}$, intent(in)  :: a(cs,n), x(*)
+        integer(ilp), intent(in) :: col(cs,n)
         ${t1}$, intent(inout) :: y(rm)
         integer :: j
-        do j = 1, nz
-            where(ja(1:rm,j) > 0) y = y + alpha_ * a(1:rm,j) * x(ja(1:rm,j))               
+        do j = 1, n
+            where(col(1:rm,j) > 0) y = y + alpha_ * a(1:rm,j) * x(col(1:rm,j))
+        end do
+    end subroutine
+    pure subroutine chunk_kernel_remainder_trans(n,cs,rm,a,col,x,y)
+        integer, value      :: n, cs, rm
+        ${t1}$, intent(in)  :: a(cs,n), x(rm)
+        integer(ilp), intent(in) :: col(cs,n)
+        ${t1}$, intent(inout) :: y(*)
+        integer :: j, k
+        do j = 1, n
+            do k = 1, rm
+                if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+            end do
         end do
     end subroutine  
 
