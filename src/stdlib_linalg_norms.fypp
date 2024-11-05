@@ -8,8 +8,8 @@
 ! Vector norms
 submodule(stdlib_linalg) stdlib_linalg_norms
      use stdlib_linalg_constants
-     use stdlib_linalg_blas
-     use stdlib_linalg_lapack
+     use stdlib_linalg_blas, only: nrm2
+     use stdlib_linalg_lapack, only: lange
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
      use iso_c_binding, only: c_intptr_t,c_char,c_loc
@@ -459,7 +459,7 @@ ${loop_variables_end(rank-1," "*12)}$
         
         type(linalg_state_type) :: err_
         integer(ilp) :: j,m,n,lda,dims(2),norm_request
-        integer(ilp), dimension(${rank}$) :: s,spack,perm
+        integer(ilp), dimension(${rank}$) :: s,spack,perm,iperm
         integer(ilp), dimension(${rank}$), parameter :: dim_range = [(m,m=1_ilp,${rank}$_ilp)]
         integer(ilp) :: ${loop_variables('j',rank-2,2)}$
         logical :: contiguous_data
@@ -515,9 +515,10 @@ ${loop_variables_end(rank-1," "*12)}$
         else
             
             ! Dimension permutations to map dims(1),dims(2) => 1:2
-            perm  = [dims,pack(dim_range, dim_range/=dims(1) .and. dim_range/=dims(2))]            
+            perm = [dims,pack(dim_range, dim_range/=dims(1) .and. dim_range/=dims(2))]            
+            iperm(perm) = dim_range            
             spack = s(perm)            
-            apack = reshape(a, shape=spack, order=perm)            
+            apack = reshape(a, shape=spack, order=iperm)                             
             
         endif
             
@@ -542,6 +543,8 @@ ${loop_variables_end(rank-2)}$
         if (.not.contiguous_data) deallocate(apack)
                 
     end function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$    
+    
+    #:endfor
     
     #:endfor
     #:endfor
