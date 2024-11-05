@@ -8,6 +8,7 @@ set(
   "test_linalg_inverse.fypp"
   "test_linalg_lstsq.fypp"
   "test_linalg_norm.fypp"
+  "test_linalg_mnorm.fypp"
   "test_linalg_determinant.fypp"
   "test_linalg_qr.fypp"
   "test_linalg_svd.fypp"
@@ -22,6 +23,7 @@ ADDTEST(linalg_eigenvalues)
 ADDTEST(linalg_matrix_property_checks)
 ADDTEST(linalg_inverse)
 ADDTEST(linalg_norm)
+ADDTEST(linalg_mnorm)
 ADDTEST(linalg_solve)
 ADDTEST(linalg_lstsq)
 ADDTEST(linalg_qr)
