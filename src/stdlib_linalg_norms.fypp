@@ -387,6 +387,162 @@ ${loop_variables_end(rank-1," "*12)}$
     end subroutine norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$
 
     #:endfor
+    
+    !====================================================================
+    ! Matrix norms
+    !====================================================================    
+    
+    ! Internal implementation 
+    module function matrix_norm_${ii}$_${ri}$(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        ${rt}$, intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(${rk}$) :: nrm
+        !> Order of the matrix norm being computed.
+        ${it}$, intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err           
+        
+        type(linalg_state_type) :: err_
+        integer(ilp) :: m,n,norm_request
+        character :: lange_task
+        real(${rk}$), target :: work1(1)
+        real(${rk}$), pointer :: work(:)        
+        
+        m = size(a,dim=1,kind=ilp)
+        n = size(a,dim=2,kind=ilp)
+        
+        ! Initialize norm to zero
+        nrm = 0.0_${rk}$
+        
+        if (m<=0 .or. n<=0) then
+            err_ = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix shape: a=',[m,n])
+            call linalg_error_handling(err_,err)
+            return
+        end if
+
+        ! Check norm request: user + *LANGE support
+        call parse_norm_type(order,norm_request,err_)
+        call lange_task_request(norm_request,lange_task,err_)
+        if (err_%error()) then 
+            call linalg_error_handling(err_,err)
+            return
+        endif       
+        
+        if (lange_task==LANGE_NORM_INF) then 
+            allocate(work(m))
+        else
+            work => work1
+        endif
+        
+        ! LAPACK interface
+        nrm = lange(lange_task,m,n,a,m,work)
+        
+        if (lange_task==LANGE_NORM_INF) deallocate(work)
+        
+    end function matrix_norm_${ii}$_${ri}$
+    
+    #:for rank in range(3, MAXRANK + 1)
+    
+    ! Pure function interface with DIM specifier. On error, the code will stop
+    module function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$(a, order, dim, err) result(nrm)
+        !> Input matrix a(m,n)
+        ${rt}$, intent(in), contiguous, target :: a${ranksuffix(rank)}$
+        !> Norm of the matrix.        
+        real(${rk}$), allocatable :: nrm${ranksuffix(rank-2)}$
+        !> Order of the matrix norm being computed.
+        ${it}$, intent(in) :: order
+        !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+        integer(ilp), optional, intent(in) :: dim(2)
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err  
+        
+        type(linalg_state_type) :: err_
+        integer(ilp) :: j,m,n,lda,dims(2),norm_request
+        integer(ilp), dimension(${rank}$) :: s,spack,perm
+        integer(ilp), dimension(${rank}$), parameter :: dim_range = [(m,m=1_ilp,${rank}$_ilp)]
+        integer(ilp) :: ${loop_variables('j',rank-2,2)}$
+        logical :: contiguous_data
+        character :: lange_task
+        real(${rk}$), target :: work1(1)
+        real(${rk}$), pointer :: work(:)        
+        ${rt}$, pointer :: apack${ranksuffix(rank)}$
+        
+        ! Get dimensions
+        if (present(dim)) then 
+           dims = dim 
+        else
+           dims = [1,2]
+        endif
+        
+        nullify(apack)
+
+        if (dims(1)==dims(2) .or. .not.all(dims>0 .and. dims<=${rank}$)) then 
+            err_ = linalg_state_type(this,LINALG_VALUE_ERROR,'Rank-',${rank}$,' matrix norm has invalid dim=',dims)
+            allocate(nrm${emptyranksuffix(rank-2)}$)
+            call linalg_error_handling(err_,err)
+            return
+        endif
+        
+        ! Check norm request: user + *LANGE support
+        call parse_norm_type(order,norm_request,err_)
+        call lange_task_request(norm_request,lange_task,err_)
+        if (err_%error()) then 
+            call linalg_error_handling(err_,err)
+            return
+        endif             
+        
+        ! Input matrix properties
+        s = shape(a,kind=ilp)
+        
+        ! Check if input column data is contiguous
+        contiguous_data = dims(1)==1
+        
+        ! Matrix norm size
+        m = s(dims(1))
+        n = s(dims(2))
+
+        ! Get packed data with norm dimensions as 1:2
+        if (contiguous_data) then 
+            
+            ! Collapse everything before the 1st dimension as apack's dim #1
+            ! Set size==1 for all unused trailing dimensions            
+            spack  = [product(s(1:dims(2)-1)),s(dims(2):),(1_ilp,j=1,dims(2)-2)]
+            
+            ! Reshape without moving data
+            apack${shape_from_array_data('spack',rank)}$ => a
+            
+        else
+            
+            ! Dimension permutations to map dims(1),dims(2) => 1:2
+            perm  = [dims,pack(dim_range, dim_range/=dims(1) .and. dim_range/=dims(2))]            
+            spack = s(perm)            
+            apack = reshape(a, shape=spack, order=perm)            
+            
+        endif
+            
+        if (lange_task==LANGE_NORM_INF) then 
+            allocate(work(m))
+        else
+            work => work1
+        endif
+        
+        ! Allocate norm        
+        allocate(nrm${shape_from_array_size('apack',rank-2, 2)}$)
+        
+        lda = size(apack,dim=1,kind=ilp)
+        
+        ! LAPACK interface
+${loop_variables_start('j', 'apack', rank-2, 2)}$
+        nrm(${loop_variables('j',rank-2,2)}$) = &
+        lange(lange_task,m,n,apack(:,:,${loop_variables('j',rank-2,2)}$),lda,work)
+${loop_variables_end(rank-2)}$
+        
+        if (lange_task==LANGE_NORM_INF) deallocate(work)
+        if (.not.contiguous_data) deallocate(apack)
+                
+    end function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$    
+    
     #:endfor
     #:endfor
 
